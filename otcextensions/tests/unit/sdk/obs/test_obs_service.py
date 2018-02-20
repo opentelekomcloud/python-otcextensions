@@ -10,12 +10,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import testtools
+from openstack.tests.unit import base
 
 from otcextensions.sdk.obs import obs_service
 
 
-class TestObsService(testtools.TestCase):
+class TestObsService(base.TestCase)):
 
     def test_service(self):
         sot = obs_service.ObsService()
