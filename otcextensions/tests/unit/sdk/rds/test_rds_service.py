@@ -10,12 +10,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import testtools
+from openstack.tests.unit import base
 
 from otcextensions.sdk.rds import rds_service
 
 
-class TestRdsService(testtools.TestCase):
+class TestRdsService(base.TestCase):
 
     def test_service(self):
         sot = rds_service.RdsService()
