@@ -15,7 +15,7 @@ from openstack.tests.unit import base
 from otcextensions.sdk.obs import obs_service
 
 
-class TestObsService(base.TestCase)):
+class TestObsService(base.TestCase):
 
     def test_service(self):
         sot = obs_service.ObsService()
