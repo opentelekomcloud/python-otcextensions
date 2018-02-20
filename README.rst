@@ -1,4 +1,5 @@
-OpenTelekomCloud extensions
+OpenTelekomCloud extensions [![Build Status](https://travis-ci.org/gtema/python-otcextensions.svg?branch=master)](https://travis-ci.org/gtema/python-otcextensions)
+
 ===========================
 
 OTCExtensions is a project to bring OTC extensions into the native OpenStack
