@@ -6,6 +6,7 @@ OpenTelekomCloud extensions
 
 OTCExtensions is a project to bring OTC extensions into the native OpenStack
 toolstack. Covered are currently following items:
+
 * `python-openstacksdk`
 * `python-openstackclient`
 
@@ -32,12 +33,12 @@ or::
 
 In order to use SDK a following snippet can be used:
 
+.. code-block:: python
 
     import openstack
     from otcextensions import sdk
 
     conn = openstack.connect('otc') # Nave of the cloud from clouds.yaml config
-
     sdk.register_otc_extensions(conn) # Register OTC extensions in the OpenStackSDK
 
     obs = conn.obs # Get the OBS service proxy
@@ -53,23 +54,23 @@ options as listed in  https://docs.openstack.org/python-openstackclient/latest/c
 
 Authentication using username/password is most commonly used::
 
-   export OS_AUTH_URL=<url-to-openstack-identity>
-   export OS_IDENTITY_API_VERSION=3
-   export OS_PROJECT_NAME=<project-name>
-   export OS_PROJECT_DOMAIN_NAME=<project-domain-name>
-   export OS_USERNAME=<username>
-   export OS_USER_DOMAIN_NAME=<user-domain-name>
-   export OS_PASSWORD=<password>  # (optional)
+    export OS_AUTH_URL=<url-to-openstack-identity>
+    export OS_IDENTITY_API_VERSION=3
+    export OS_PROJECT_NAME=<project-name>
+    export OS_PROJECT_DOMAIN_NAME=<project-domain-name>
+    export OS_USERNAME=<username>
+    export OS_USER_DOMAIN_NAME=<user-domain-name>
+    export OS_PASSWORD=<password>  # (optional)
 
 The corresponding command-line options look very similar::
 
-   --os-auth-url <url>
-   --os-identity-api-version 3
-   --os-project-name <project-name>
-   --os-project-domain-name <project-domain-name>
-   --os-username <username>
-   --os-user-domain-name <user-domain-name>
-   [--os-password <password>]
+    --os-auth-url <url>
+    --os-identity-api-version 3
+    --os-project-name <project-name>
+    --os-project-domain-name <project-domain-name>
+    --os-username <username>
+    --os-user-domain-name <user-domain-name>
+    [--os-password <password>]
 
 If a password is not provided above (in plaintext), you will be interactively
 prompted to provide one securely.
