@@ -62,8 +62,9 @@ class Proxy(proxy.BaseProxy):
         :returns: A generator of supported datastore types
         :rtype :string
         """
-        for datastore in ('MySQL, 'PostgreeSQL', 'SQLServer'):
-            yield datastore
+
+        for ds in ['MySQL', 'PostgreeSQL', 'SQLServer']:
+            yield ds
 
         return
 
