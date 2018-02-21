@@ -130,11 +130,50 @@ class Instance(_base.Resource):
     # *Type:string*
     publicEndpoint = resource.Body('publicEndpoint')
 
+    def restart(self, session):
+        """Restart the database instance
+
+        :returns: ``None``
+        """
+        body = {'restart': {}}
+        url = utils.urljoin(self.base_path, self.id, 'action')
+        session.post(url, json=body)
+
+    def resize(self, session, flavor_reference):
+        """Resize the database instance
+
+        :returns: ``None``
+        """
+        body = {'resize': {'flavorRef': flavor_reference}}
+        url = utils.urljoin(self.base_path, self.id, 'action')
+        session.post(url, json=body)
+
+    def resize_volume(self, session, volume_size):
+        """Resize the volume attached to the instance
+
+        :returns: ``None``
+        """
+        body = {'resize': {'volume': volume_size}}
+        url = utils.urljoin(self.base_path, self.id, 'action')
+        session.post(url, json=body)
+
+    def restore(self, session, backupRef):
+        """Restores database to the given backup rference
+
+        :returns: ``None``
+        """
+        body = {"restore": {"backupRef": backupRef}}
+        url = utils.urljoin(self.base_path, self.id, 'action')
+        session.post(url, json=body)
+        # return self._action(session, {"restore": {"backupRef": backupRef}})
+
     # def _action(self, session, body):
-    #     """Perform instance action"""
-    #     url = utils.urljoin(self.base_path, self._get_id(self), 'action')
+    #     """Perform instance action
+    #
+    #     """
+    #     url = utils.urljoin(self.base_path, self.id, 'action')
     #     endpoint_override = self.service.get_endpoint_override()
-    #     resp = session.post(url, endpoint_filter=self.service,
+    #     resp = session.post(url,
     #                         endpoint_override=endpoint_override,
     #                         json=body,
     #                         headers={"Accept": "application/json",

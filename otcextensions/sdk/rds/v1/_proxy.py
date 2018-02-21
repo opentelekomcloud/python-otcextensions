@@ -14,14 +14,10 @@ from openstack import _log
 from openstack import proxy
 from openstack import utils
 
-# from openstack import exception
-
-# from otcextensions.sdk.rds.v1 import configuration as _configuration
-# from otcextensions.sdk.rds.v1 import datastore as _datastore
+from otcextensions.sdk.rds.v1 import configuration as _configuration
 from otcextensions.sdk.rds.v1 import datastore as _datastore
 from otcextensions.sdk.rds.v1 import flavor as _flavor
 from otcextensions.sdk.rds.v1 import instance as _instance
-# from otcextensions.sdk.rds.v1 import instance as _instance
 
 _logger = _log.setup_logging('openstack')
 
@@ -33,13 +29,6 @@ class Proxy(proxy.BaseProxy):
 
         """
         self.endpoint_override = self.get_endpoint(**kwargs)
-        # endpoint = super(Proxy, self).get_endpoint(**kwargs)
-        # endpoint_override = self.endpoint_override
-        # if endpoint.endswith('/rds/v1') and not endpoint_override:
-        #     _logger.debug('fixing endpoint')
-        #     endpoint_override = endpoint.rstrip('/rds/v1')
-        #     endpoint_override = utils.urljoin(endpoint_override, 'v1.0')
-        #     self.endpoint_override = endpoint_override
 
     def get_endpoint(self, **kwargs):
         """Return OpenStack compliant endpoint
@@ -67,6 +56,17 @@ class Proxy(proxy.BaseProxy):
             _logger.debug('RDS endpoint_override is set. Return it')
             return endpoint_override
 
+    def datastore_types(self):
+        """List supported datastore types
+
+        :returns: A generator of supported datastore types
+        :rtype :string
+        """
+        for datastore in ('MySQL, 'PostgreeSQL', 'SQLServer'):
+            yield datastore
+
+        return
+
     def datastores(self, db_name):
         """List datastores
 
@@ -74,7 +74,7 @@ class Proxy(proxy.BaseProxy):
             (MySQL, PostgreSQL, or SQLServer and is case-sensitive.)
 
         :returns: A generator of datastore versions
-        :rtype: :class:`~openstack.rds_os.v1.flavor.Flavor
+        :rtype: :class:`~otcextensions.sdk.rds_os.v1.flavor.Flavor
         """
         # self.check_endpoint()
         headers = {
@@ -95,7 +95,7 @@ class Proxy(proxy.BaseProxy):
         :param region: region
 
         :returns: A generator of flavor
-        :rtype: :class:`~openstack.rds_os.v1.flavor.Flavor
+        :rtype: :class:`~otcextensions.sdk.rds_os.v1.flavor.Flavor
         """
         self._fix_endpoint()
         return self._list(_flavor.Flavor, paginated=False,
@@ -106,9 +106,9 @@ class Proxy(proxy.BaseProxy):
         """Get the detail of a flavor
 
         :param id: Flavor id or an object of class
-                   :class:`~openstack.rds_os.v1.flavor.Flavor
+                   :class:`~otcextensions.sdk.rds_os.v1.flavor.Flavor
         :returns: Detail of flavor
-        :rtype: :class:`~openstack.rds_os.v1.flavor.Flavor
+        :rtype: :class:`~otcextensions.sdk.rds_os.v1.flavor.Flavor
         """
         self._fix_endpoint()
         self.additional_headers['Content-Type'] = 'application/json'
@@ -125,11 +125,11 @@ class Proxy(proxy.BaseProxy):
         """Create a new instance from attributes
 
         :param dict attrs: Keyword arguments which will be used to create
-                           a :class:`~openstack.database.v1.instance.Instance`,
+                           a :class:`~otcextensions.sdk.rds.v1.instance.Instance`,
                            comprised of the properties on the Instance class.
 
         :returns: The results of server creation
-        :rtype: :class:`~openstack.database.v1.instance.Instance`
+        :rtype: :class:`~otcextensions.sdk.rds.v1.instance.Instance`
         """
         raise NotImplementedError
         return self._create(_instance.Instance, **attrs)
@@ -138,7 +138,7 @@ class Proxy(proxy.BaseProxy):
         """Delete an instance
 
         :param instance: The value can be either the ID of an instance or a
-               :class:`~openstack.database.v1.instance.Instance` instance.
+               :class:`~otcextensions.sdk.rds.v1.instance.Instance` instance.
         :param bool ignore_missing: When set to ``False``
                     :class:`~openstack.exceptions.ResourceNotFound` will be
                     raised when the instance does not exist.
@@ -149,49 +149,48 @@ class Proxy(proxy.BaseProxy):
         """
         raise NotImplementedError
         self._delete(_instance.Instance, instance,
-                     ignore_missing=ignore_missing)
+                     ignore_missing=ignore_missing,
+                     project_id=self.session.get_project_id())
 
-    def find_instance(self, name_or_id, ignore_missing=True):
-        """Find a single instance
-
-        :param name_or_id: The name or ID of a instance.
-        :param bool ignore_missing: When set to ``False``
-                    :class:`~openstack.exceptions.ResourceNotFound` will be
-                    raised when the resource does not exist.
-                    When set to ``True``, None will be returned when
-                    attempting to find a nonexistent resource.
-        :returns: One :class:`~openstack.database.v1.instance.Instance` or None
-        """
-        raise NotImplementedError
-        return self._find(_instance.Instance, name_or_id,
-                          ignore_missing=ignore_missing)
+    # def find_database(self, name_or_id, ignore_missing=True):
+    #     """Find a single instance
+    #
+    #     :param name_or_id: The name or ID of a instance.
+    #     :param bool ignore_missing: When set to ``False``
+    #                 :class:`~openstack.exceptions.ResourceNotFound` will be
+    #                 raised when the resource does not exist.
+    #                 When set to ``True``, None will be returned when
+    #                 attempting to find a nonexistent resource.
+    #     :returns: One :class:`~otcextensions.sdk.rds.v1.instance.Instance` or None
+    #     """
+    #     raise NotImplementedError
+    #     return self._find(_instance.Instance, name_or_id,
+    #                       ignore_missing=ignore_missing,
+    #                       project_id=self.session.get_project_id())
 
     def get_instance(self, instance):
         """Get a single instance
 
         :param instance: The value can be the ID of an instance or a
-                         :class:`~openstack.database.v1.instance.Instance`
+                         :class:`~otcextensions.sdk.rds.v1.instance.Instance`
                          instance.
 
-        :returns: One :class:`~openstack.database.v1.instance.Instance`
+        :returns: One :class:`~otcextensions.sdk.rds.v1.instance.Instance`
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                  when no resource can be found.
         """
         self._fix_endpoint()
-        # self.additional_headers['Content-Type'] = 'application/json'
         return self._get(
             _instance.Instance,
             instance,
             project_id=self.session.get_project_id()
         )
-        # raise NotImplementedError
-        # return self._get(_instance.Instance, instance)
 
     def instances(self):
         """Return a generator of instances
 
         :returns: A generator of instance objects
-        :rtype: :class:`~openstack.database.v1.instance.Instance`
+        :rtype: :class:`~otcextensions.sdk.rds.v1.instance.Instance`
         """
         self._fix_endpoint()
         return self._list(_instance.Instance, paginated=False,
@@ -201,13 +200,76 @@ class Proxy(proxy.BaseProxy):
         """Update a instance
 
         :param instance: Either the id of a instance or a
-                         :class:`~openstack.database.v1.instance.Instance`
+                         :class:`~otcextensions.sdk.rds.v1.instance.Instance`
                          instance.
         :attrs kwargs: The attributes to update on the instance represented
                        by ``value``.
 
         :returns: The updated instance
-        :rtype: :class:`~openstack.database.v1.instance.Instance`
+        :rtype: :class:`~otcextensions.sdk.rds.v1.instance.Instance`
         """
         raise NotImplementedError
         return self._update(_instance.Instance, instance, **attrs)
+
+    def configuration_groups(self, **attrs):
+        """Obtaining a Parameter Group List
+
+        :returns: A generator of ParameterGroup object
+        :rtype: :class:`~otcextensions.sdk.rds.v1.configuration.ParameterGroup
+        """
+
+        return self._list(_configuration.ParameterGroup,
+                          paginated=False,
+                          project_id=self.session.get_project_id())
+
+    def get_configuration_group(self, configuration_group):
+        """Obtaining a Parameter Group
+
+        :param cg: The value can be the ID of a Parameter Group or a object of
+               :class:`~otcextensions.sdk.rds.v1.configuration.Configurations`.
+        :returns: A Parameter Group Object
+        :rtype: :class:`~otcextensions.rds.v1.configuration.ParameterGroup`.
+
+        """
+        return self._get(
+            _configuration.ParameterGroup,
+            configuration_group,
+            project_id=self.session.get_project_id())
+
+    def create_parameter_group(self, parameter_group, **attrs):
+        """Creating a Parameter Group
+
+        :param dict \*\*attrs: Dict to overwrite ParameterGroup object
+        :returns: A Parameter Group Object
+        :rtype: :class:`~otcextensions.sdk.rds.v1.configuration.ParameterGroup`.
+        """
+        raise NotImplementedError
+        return self._create(_configuration.ParameterGroup, **attrs)
+
+    def delete_configuration_group(self, cg, ignore_missing=True):
+        """Deleting a Parameter Group
+
+        :param cg: The value can be the ID of a Parameter Group or a object of
+               :class:`~otcextensions.sdk.rds.v1.configuration.ParameterGroup`.
+        :param bool ignore_missing: When set to ``False``
+                :class:`~openstack.exceptions.ResourceNotFound` will be
+                raised when the Parameter Group does not exist.
+                When set to ``True``, no exception will be set when
+                attempting to delete a nonexistent Parameter Group.
+
+        :returns: None
+        """
+        raise NotImplementedError
+        self._delete(_configuration.ParameterGroup, cg,
+                     ignore_missing=ignore_missing)
+
+    def update_configuration_group(self, cg, **attrs):
+        """Adding a Self-defined Parameter
+
+        :param cg: The value can be the ID of a Parameter Group or a object of
+               :class:`~otcextensions.sdk.rds.v1.configuration.ParameterGroup`.
+        :param dict \*\*attrs: Dict to use create Self-defined Parameter
+        :returns: An updated Parameter Group Object
+        """
+        raise NotImplementedError
+        return self._update(_configuration.ParameterGroup, cg, **attrs)
