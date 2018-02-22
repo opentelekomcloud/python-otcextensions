@@ -137,7 +137,8 @@ class Instance(_base.Resource):
         :returns: ``None``
         """
         body = {'restart': {}}
-        url = utils.urljoin(self.base_path, self.id, 'action')
+        base_url = self.base_path % self._uri.attributes
+        url = utils.urljoin(base_url, self.id, 'action')
         session.post(url, json=body)
 
     def resize(self, session, flavor_reference):
@@ -146,7 +147,8 @@ class Instance(_base.Resource):
         :returns: ``None``
         """
         body = {'resize': {'flavorRef': flavor_reference}}
-        url = utils.urljoin(self.base_path, self.id, 'action')
+        base_url = self.base_path % self._uri.attributes
+        url = utils.urljoin(base_url, self.id, 'action')
         session.post(url, json=body)
 
     def resize_volume(self, session, volume_size):
@@ -155,7 +157,8 @@ class Instance(_base.Resource):
         :returns: ``None``
         """
         body = {'resize': {'volume': volume_size}}
-        url = utils.urljoin(self.base_path, self.id, 'action')
+        base_url = self.base_path % self._uri.attributes
+        url = utils.urljoin(base_url, self.id, 'action')
         session.post(url, json=body)
 
     def restore(self, session, backupRef):
@@ -164,12 +167,25 @@ class Instance(_base.Resource):
         :returns: ``None``
         """
         body = {"restore": {"backupRef": backupRef}}
-        url = utils.urljoin(self.base_path, self.id, 'action')
+        base_url = self.base_path % self._uri.attributes
+        url = utils.urljoin(base_url, self.id, 'action')
         session.post(url, json=body)
+
+        # TODO(agoncharov) call returns jobId
         # return self._action(session, {"restore": {"backupRef": backupRef}})
+
+    def create_from_backup(self, **attrs):
+        """This interface is used to restore
+        the specified DB instance data to a new DB instance.
+
+        """
+        raise NotImplementedError
+        # TODO(agoncharov) call returns instance spec
 
     # def _action(self, session, body):
     #     """Perform instance action
+    #
+    #     Needed to set proper headers into the request
     #
     #     """
     #     url = utils.urljoin(self.base_path, self.id, 'action')

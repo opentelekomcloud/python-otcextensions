@@ -88,6 +88,7 @@ class ParameterGroup(_base.Resource):
     allow_list = True
 
     # Properties
+    project_id = resource.URI('project_id')
     #: Id of the configuration group
     id = resource.Body('id')
     #: Name of the configuration group

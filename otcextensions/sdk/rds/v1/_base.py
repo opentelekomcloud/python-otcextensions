@@ -77,12 +77,8 @@ class Resource(resource.Resource):
 
         limit = query_params.get('limit')
 
-        default_headers = {
-            "Content-Type": "application/json"
-        }
-
+        # Build additional arguments to the GET call
         get_args = {
-            'headers': default_headers,
             'params': query_params.copy()
         }
 
@@ -91,6 +87,10 @@ class Resource(resource.Resource):
 
         if headers:
             get_args['headers'] = headers
+        else:
+            get_args['headers'] = {
+                "Content-Type": "application/json"
+            }
 
         total_yielded = 0
         while uri:
@@ -133,7 +133,8 @@ class Resource(resource.Resource):
             else:
                 return
 
-    def get(self, session, headers=None, requires_id=True, error_message=None):
+    def get(self, session, headers=None, endpoint_override=None,
+            requires_id=True, error_message=None):
         """Get a remote resource based on this instance.
 
         This function overrides default Resource.get to enable GET headers
@@ -151,16 +152,164 @@ class Resource(resource.Resource):
 
         request = self._prepare_request(requires_id=requires_id)
         session = self._get_session(session)
-        req_headers = {}
-        if not headers:
-            req_headers = {
+
+        # Build additional arguments to the GET call
+        get_args = {}
+        if headers:
+            get_args['headers'] = headers
+        else:
+            get_args['headers'] = {
                 'Content-Type': 'application/json'
             }
+        # _logger.warning('endpoint=%s' % endpoint_override)
+        if endpoint_override:
+            get_args['endpoint_override'] = endpoint_override
+
         # headers = request.headers if not headers else headers
-        response = session.get(request.url, headers=req_headers)
+        response = session.get(request.url, **get_args)
         kwargs = {}
         if error_message:
             kwargs['error_message'] = error_message
 
         self._translate_response(response, **kwargs)
+        return self
+
+    def delete(self, session,
+               endpoint_override=None, headers=None,
+               error_message=None):
+        """Delete the remote resource based on this instance.
+
+        This function overrides default Resource.delete to enable headers
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+
+        :return: This :class:`Resource` instance.
+        :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
+                 :data:`Resource.allow_update` is not set to ``True``.
+        """
+        if not self.allow_delete:
+            raise exceptions.MethodNotSupported(self, "delete")
+
+        request = self._prepare_request()
+        session = self._get_session(session)
+
+        # Build additional arguments to the DELETE call
+        delete_args = {}
+        if headers:
+            delete_args['headers'] = headers
+        else:
+            delete_args['headers'] = {
+                'Content-Type': 'application/json',
+                'Accept': ''
+            }
+
+        if endpoint_override:
+            delete_args['endpoint_override'] = endpoint_override
+
+        response = session.delete(request.url,
+                                  **delete_args)
+        kwargs = {}
+        if error_message:
+            kwargs['error_message'] = error_message
+
+        self._translate_response(response, has_body=False, **kwargs)
+        return self
+
+    # def update(self, session, prepend_key=True, has_body=True,
+    #            endpoint_override=None, headers=None):
+    #     """Update the remote resource based on this instance.
+    #
+    #     :param session: The session to use for making this request.
+    #     :type session: :class:`~keystoneauth1.adapter.Adapter`
+    #     :param prepend_key: A boolean indicating whether the resource_key
+    #                         should be prepended in a resource update request.
+    #                         Default to True.
+    #
+    #     :return: This :class:`Resource` instance.
+    #     :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
+    #              :data:`Resource.allow_update` is not set to ``True``.
+    #     """
+    #     # The id cannot be dirty for an update
+    #     self._body._dirty.discard("id")
+    #
+    #     # Only try to update if we actually have anything to update.
+    #     if not any([self._body.dirty, self._header.dirty]):
+    #         return self
+    #
+    #     if not self.allow_update:
+    #         raise exceptions.MethodNotSupported(self, "update")
+    #
+    #     request = self._prepare_request(prepend_key=prepend_key)
+    #     session = self._get_session(session)
+    #
+    #     if self.update_method == 'PATCH':
+    #         response = session.patch(
+    #             request.url, json=request.body, headers=request.headers)
+    #     elif self.update_method == 'POST':
+    #         response = session.post(
+    #             request.url, json=request.body, headers=request.headers)
+    #     elif self.update_method == 'PUT':
+    #         response = session.put(
+    #             request.url, json=request.body, headers=request.headers)
+    #     else:
+    #         raise exceptions.ResourceFailure(
+    #             msg="Invalid update method: %s" % self.update_method)
+    #
+    #     self._translate_response(response, has_body=has_body)
+    #     return self
+
+    def update_no_id(self, session, prepend_key=True, has_body=True,
+                     endpoint_override=None, headers=None):
+        """Update the remote resource based on this instance.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param prepend_key: A boolean indicating whether the resource_key
+                            should be prepended in a resource update request.
+                            Default to True.
+
+        :return: This :class:`Resource` instance.
+        :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
+                 :data:`Resource.allow_update` is not set to ``True``.
+        """
+        # Only try to update if we actually have anything to update.
+        if not any([self._body.dirty, self._header.dirty]):
+            return self
+
+        if not self.allow_update:
+            raise exceptions.MethodNotSupported(self, "update")
+
+        request = self._prepare_request(
+            requires_id=False,
+            prepend_key=prepend_key)
+        session = self._get_session(session)
+
+        # Build additional arguments to the DELETE call
+        update_args = {}
+        if headers:
+            update_args['headers'] = headers
+        else:
+            update_args['headers'] = request.headers
+            # Merge defaults into the headers
+            update_args['headers']['Content-Type'] = 'application/json'
+            # update_args['headers']['Accept'] = ''
+
+        if endpoint_override:
+            update_args['endpoint_override'] = endpoint_override
+
+        if self.update_method == 'PATCH':
+            response = session.patch(
+                request.url, json=request.body, **update_args)
+        elif self.update_method == 'POST':
+            response = session.post(
+                request.url, json=request.body, **update_args)
+        elif self.update_method == 'PUT':
+            response = session.put(
+                request.url, json=request.body, **update_args)
+        else:
+            raise exceptions.ResourceFailure(
+                msg="Invalid update method: %s" % self.update_method)
+
+        self._translate_response(response, has_body=has_body)
         return self

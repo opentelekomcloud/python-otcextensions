@@ -27,6 +27,8 @@ from openstack import service_description
 from openstack import _log
 from openstack import proxy
 
+# from otcextensions.sdk import proxy as sdk_proxy
+
 
 _logger = _log.setup_logging('openstack')
 _service_type_manager = os_service_types.ServiceTypes()

@@ -275,3 +275,74 @@ class TestInstance(base.TestCase):
         self.assertEqual(res_json['instance']['id'], res.id)
         self.assertEqual(res_json['instance']['paramsGroupId'],
                          res.paramsGroupId)
+
+    def test_action_restart(self):
+        sot = instance.Instance(**EXAMPLE, project_id=PROJECT_ID)
+        response = mock.Mock()
+        response.json = mock.Mock(return_value='')
+        sess = mock.Mock()
+        sess.post = mock.Mock(return_value=response)
+
+        self.assertIsNone(sot.restart(sess))
+
+        url = ("%(project_id)s/instances/%(id)s/action" % {
+            'id': IDENTIFIER,
+            'project_id': PROJECT_ID
+        })
+        body = {'restart': {}}
+        sess.post.assert_called_with(url,
+                                     json=body)
+
+    def test_action_resize(self):
+        sot = instance.Instance(**EXAMPLE, project_id=PROJECT_ID)
+        response = mock.Mock()
+        response.json = mock.Mock(return_value='')
+        sess = mock.Mock()
+        sess.post = mock.Mock(return_value=response)
+        flavor = 'http://flavor/flav'
+
+        self.assertIsNone(sot.resize(sess, flavor))
+
+        url = ("%(project_id)s/instances/%(id)s/action" % {
+            'id': IDENTIFIER,
+            'project_id': PROJECT_ID
+        })
+        body = {'resize': {'flavorRef': flavor}}
+        sess.post.assert_called_with(url,
+                                     json=body)
+
+    def test_action_resize_volume(self):
+        sot = instance.Instance(**EXAMPLE, project_id=PROJECT_ID)
+        response = mock.Mock()
+        response.json = mock.Mock(return_value='')
+        sess = mock.Mock()
+        sess.post = mock.Mock(return_value=response)
+        size = 4
+
+        self.assertIsNone(sot.resize_volume(sess, size))
+
+        url = ("%(project_id)s/instances/%(id)s/action" % {
+            'id': IDENTIFIER,
+            'project_id': PROJECT_ID
+        })
+        body = {'resize': {'volume': size}}
+        sess.post.assert_called_with(url,
+                                     json=body)
+
+    def test_action_restore(self):
+        sot = instance.Instance(**EXAMPLE, project_id=PROJECT_ID)
+        response = mock.Mock()
+        response.json = mock.Mock(return_value='')
+        sess = mock.Mock()
+        sess.post = mock.Mock(return_value=response)
+        backupRef = 'backupRef'
+
+        self.assertIsNone(sot.restore(sess, backupRef))
+
+        url = ("%(project_id)s/instances/%(id)s/action" % {
+            'id': IDENTIFIER,
+            'project_id': PROJECT_ID
+        })
+        body = {'restore': {'backupRef': backupRef}}
+        sess.post.assert_called_with(url,
+                                     json=body)

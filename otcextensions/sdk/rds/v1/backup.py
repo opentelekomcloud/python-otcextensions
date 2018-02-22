@@ -32,9 +32,10 @@ class Backup(_base.Resource):
     allow_delete = True
     allow_list = True
 
-    project_id = resource.URL('project_id')
     # Properties
+    project_id = resource.URI('project_id')
     #: Backup id
+    #: Type: uuid*
     id = resource.Body('id')
     #: Instance id
     instance_id = resource.Body('instance_id')
@@ -67,29 +68,50 @@ class BackupPolicy(_base.Resource):
     service = rds_service.RdsService()
 
     # capabilities
-    allow_create = True
+    allow_update = True
     allow_get = True
 
-    # Properties
     #: instaceId
     instance_id = resource.URI('instance_id')
-    project_id = resource.URL('project_id')
+    project_id = resource.URI('project_id')
+    # Properties
     #: Policy keep days
+    #:  Indicates the number of days to retain the generated backup files.
+    #:  Its value range is 0 to 35. If this parameter is 0,
+    #:  the automated backup policy is not set.
     #: *Type: int*
     keepday = resource.Body('keepday', type=int)
     #: Start time
+    #:  Indicates the backup start time that has been set.
+    #:  The backup task will be triggered within one hour
+    #:  after the backup start time.
+    #:  The current time is the UTC time.
+    #: *Type: string*
     starttime = resource.Body('starttime')
 
     # use put to create, but we don't require id
-    def create(self, session, prepend_key=True):
-        endpoint_override = self.service.get_endpoint_override()
-        request = self._prepare_request(requires_id=False,
-                                        prepend_key=prepend_key)
-        if endpoint_override is None:
-            request.uri = self._get_custom_url(session, request.uri)
-        response = session.put(request.uri, endpoint_filter=self.service,
-                               endpoint_override=endpoint_override,
-                               json=request.body, headers=request.headers)
+    def update(self, session, prepend_key=True,
+               endpoint_override=None, headers=None):
+        """Create a remote resource based on this instance.
 
-        self._translate_response(response)
-        return self
+        Method is overriden, because PUT without ID should be used
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param prepend_key: A boolean indicating whether the resource_key
+                            should be prepended in a resource creation
+                            request. Default to True.
+
+        :return: None.
+        :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
+                 :data:`Resource.allow_create` is not set to ``True``.
+        """
+        self.update_no_id(
+            session, prepend_key,
+            endpoint_override=endpoint_override,
+            headers={
+                'X-Language': 'en-us',
+                'Content-Type': 'application/json'
+            } if not headers else headers)
+
+        return None
