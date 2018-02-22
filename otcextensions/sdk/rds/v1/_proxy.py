@@ -126,8 +126,8 @@ class Proxy(proxy.BaseProxy):
         """Create a new instance from attributes
 
         :param dict attrs: Keyword arguments which will be used to create
-                           a :class:`~otcextensions.sdk.rds.v1.instance.Instance`,
-                           comprised of the properties on the Instance class.
+                   a :class:`~otcextensions.sdk.rds.v1.instance.Instance`,
+                   comprised of the properties on the Instance class.
 
         :returns: The results of server creation
         :rtype: :class:`~otcextensions.sdk.rds.v1.instance.Instance`
@@ -162,7 +162,8 @@ class Proxy(proxy.BaseProxy):
     #                 raised when the resource does not exist.
     #                 When set to ``True``, None will be returned when
     #                 attempting to find a nonexistent resource.
-    #     :returns: One :class:`~otcextensions.sdk.rds.v1.instance.Instance` or None
+    #     :returns: One :class:`~otcextensions.sdk.rds.v1.instance.Instance`
+    #               or None
     #     """
     #     raise NotImplementedError
     #     return self._find(_instance.Instance, name_or_id,
@@ -242,7 +243,7 @@ class Proxy(proxy.BaseProxy):
 
         :param dict \*\*attrs: Dict to overwrite ParameterGroup object
         :returns: A Parameter Group Object
-        :rtype: :class:`~otcextensions.sdk.rds.v1.configuration.ParameterGroup`.
+        :rtype: :class:`~otcextensions.sdk.rds.v1.configuration.ParameterGroup`
         """
         raise NotImplementedError
         return self._create(_configuration.ParameterGroup, **attrs)

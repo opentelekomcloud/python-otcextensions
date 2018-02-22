@@ -12,6 +12,7 @@
 
 from openstack import _log
 from openstack import resource
+from openstack import utils
 
 from otcextensions.sdk.rds import rds_service
 

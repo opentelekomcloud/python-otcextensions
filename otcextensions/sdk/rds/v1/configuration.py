@@ -42,7 +42,8 @@ class InstanceConfiguration(_base.Resource):
 class Parameter(_base.Resource):
     # TODO(agoncharov)
 
-    base_path = '/%(project_id)s/datastores/versions/%(datastore_version_id)s/parameters/'
+    base_path = '/%(project_id)s/datastores/versions/'
+    '%(datastore_version_id)s/parameters/'
     resources_key = 'configuration-parameters'
     service = rds_service.RdsService()
 
