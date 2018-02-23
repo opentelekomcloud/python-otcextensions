@@ -12,6 +12,7 @@
 
 from openstack import _log
 from openstack import resource
+from openstack import utils
 
 from otcextensions.sdk.rds import rds_service
 
@@ -22,7 +23,7 @@ _logger = _log.setup_logging('openstack')
 
 
 class InstanceConfiguration(sdk_resource.Resource):
-    # TODO(agoncharov)
+    # TODO(agoncharov) most likely useless
 
     base_path = '/%(project_id)s/instances/%(instanceId)s/configuration'
     resource_key = 'instance'
@@ -40,7 +41,7 @@ class InstanceConfiguration(sdk_resource.Resource):
 
 
 class Parameter(sdk_resource.Resource):
-    # TODO(agoncharov)
+    # TODO(agoncharov) most likely useless
 
     base_path = '/%(project_id)s/datastores/versions/'
     '%(datastore_version_id)s/parameters/'
@@ -83,7 +84,7 @@ class ParameterGroup(sdk_resource.Resource):
     # capabilities
     allow_create = True
     allow_delete = True
-    allow_update = True
+    allow_update = False
     allow_get = True
     allow_list = True
 
@@ -116,64 +117,129 @@ class ParameterGroup(sdk_resource.Resource):
     values = resource.Body('values', type=dict)
     #: Parameter list
     #: *Type:dict*
-    parameters = resource.Body('parameters', type=dict)
+    parameters = resource.Body('parameters', type=list)
     #: Datastore dict
     #: *Type:dict*
     datastore = resource.Body('datastore', type=dict)
 
-    # def get_associated_instances(self, session):
-    #     """Get associated instancs"""
-    #     url = utils.urljoin(self.base_path, self._get_id(self), 'instances')
-    #     endpoint_override = self.service.get_endpoint_override()
-    #     # construct full http url for rds_os as rds wont' return correct
-    #     # endpoint for now and work around with get_endpoint()
-    #     if endpoint_override is None:
-    #         url = self._get_custom_url(session, url)
-    #
-    #     resp = session.get(url, endpoint_filter=self.service,
-    #                        endpoint_override=endpoint_override,
-    #                        headers={"Accept": "application/json",
-    #                                 "Content-type": "application/json"})
-    #     resp = resp.json()
-    #
-    #     if resp:
-    #         return resp['instances']
-    #
-    # def patch(self, session, **kwargs):
-    #     url = utils.urljoin(self.base_path, self._get_id(self))
-    #     endpoint_override = self.service.get_endpoint_override()
-    #     body = {
-    #         "configuration": {
-    #             "values": kwargs
-    #         }
-    #     }
-    #
-    #     if endpoint_override is None:
-    #         url = self._get_custom_url(session, url)
-    #
-    #     resp = session.patch(url, endpoint_filter=self.service,
-    #                          endpoint_override=endpoint_override,
-    #                          headers={"Accept": "application/json",
-    #                                   "Content-type": "application/json"},
-    #                          json=body)
-    #     resp = resp.json
-    #     if 'errCode' in resp:
-    #         if resp['errorCode'] == 'RDS.0041':
-    #             self._body.attributes.update({"values": kwargs})
-    #             self._body.clean()
-    #             return self
-    #
-    #     return resp
-    #
-    # def delete(self, session):
-    #     request = self._prepare_request()
-    #     endpoint_override = self.service.get_endpoint_override()
-    #     if endpoint_override is None:
-    #         request.uri = self._get_custom_url(session, request.uri)
-    #
-    #     response = session.delete(request.uri, endpoint_filter=self.service,
-    #                               endpoint_override=endpoint_override,
-    #                               headers=request.headers)
-    #
-    #     self._translate_response(response, has_body=False)
-    #     return self
+    def get_associated_instances(self, session, endpoint_override=None):
+        """Get associated instancs
+
+        :param session: session (adapter)
+        :param endpoint_override: optional endpoint_override
+
+        :returns list of instance id/name dicts with instances
+            with this configuration group
+        :rtype: list of dicts
+        """
+
+        request = self._prepare_request()
+        session = self._get_session(session)
+
+        if not endpoint_override:
+            if getattr(self, 'endpoint_override', None):
+                # If we have internal endpoint_override - use it
+                endpoint_override = self.endpoint_override
+
+        # Build additional arguments to the DELETE call
+        args = self._prepare_override_args(
+            endpoint_override=endpoint_override,
+            request_headers=request.headers,
+            additional_headers={"Content-Type": "application/json"}
+        )
+
+        # URL is a subpoin
+        url = utils.urljoin(request.url, 'instances')
+
+        resp = session.get(url, **args)
+        resp = resp.json()
+
+        if resp:
+            return resp['instances']
+
+    def add_custom_parameter(self, session, endpoint_override=None, **attrs):
+        """Add a custom parameter into the ConfigurationGroup
+
+        :param session: session (adapter)
+        :param endpoint_override: optional endpoint_override
+        :param **attrs: dict with parameter key/value
+
+        :returns RDS response if not success otherwise updated group
+        :rtype: modified ConfigurationGroup
+        """
+        request = self._prepare_request()
+        session = self._get_session(session)
+
+        if not endpoint_override:
+            if getattr(self, 'endpoint_override', None):
+                # If we have internal endpoint_override - use it
+                endpoint_override = self.endpoint_override
+
+        # Build additional arguments to the DELETE call
+        args = self._prepare_override_args(
+            endpoint_override=endpoint_override,
+            request_headers=request.headers,
+            # additional_headers={"Content-Type": "application/json"}
+        )
+
+        body = {
+            "configuration": {
+                "values": attrs
+            }
+        }
+
+        response = session.patch(
+            request.url, json=body, **args)
+
+        resp = response.json()
+        if resp:
+            errCode = resp.get('errCode', None)
+            if errCode and errCode == 'RDS.0041':
+                self._body.attributes.update({"values": attrs})
+                self._body.clean()
+                return self
+
+        return resp
+
+    def change_parameter_info(self, session, endpoint_override=None, **attrs):
+        """Add a custom parameter into the ConfigurationGroup
+
+        :param session: session (adapter)
+        :param endpoint_override: optional endpoint_override
+        :param **attrs: dict with the parameter description structure
+            (name, description, values[])
+
+        :returns RDS response
+        :rtype: modified ConfigurationGroup
+        """
+        request = self._prepare_request()
+        session = self._get_session(session)
+
+        if not endpoint_override:
+            if getattr(self, 'endpoint_override', None):
+                # If we have internal endpoint_override - use it
+                endpoint_override = self.endpoint_override
+
+        # Build additional arguments to the PUT call
+        args = self._prepare_override_args(
+            endpoint_override=endpoint_override,
+            request_headers=request.headers,
+            # additional_headers={"Content-Type": "application/json"}
+        )
+
+        body = {
+            "configuration": attrs
+        }
+
+        response = session.put(
+            request.url, json=body, **args)
+
+        resp = response.json()
+        if resp:
+            errCode = resp.get('errCode', None)
+            if errCode and errCode == 'RDS.0041':
+                self._body.attributes.update({"values": attrs})
+                self._body.clean()
+                return self
+
+        return resp

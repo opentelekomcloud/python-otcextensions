@@ -43,7 +43,6 @@ EXAMPLE = {
     },
     'instance_id': '4f87d3c4-9e33-482f-b962-e23b30d1a18c',
     'parent_id': None,
-    **RDS_HEADERS,
 }
 
 EXAMPLE_POLICY = {
@@ -131,9 +130,9 @@ class TestBackup(base.TestCase):
 
         self.assertEqual(
             backup.Backup(
-                **EXAMPLE,
                 project_id=PROJECT_ID,
-                instance='some_instance'),
+                instance='some_instance',
+                **EXAMPLE),
             result)
 
     def test_delete(self):
@@ -146,8 +145,8 @@ class TestBackup(base.TestCase):
         self.sess.delete.return_value = mock_response
 
         sot = backup.Backup(
-            **EXAMPLE,
-            project_id=PROJECT_ID
+            project_id=PROJECT_ID,
+            **EXAMPLE
         )
 
         sot.delete(self.sess, headers=RDS_HEADERS)
@@ -194,9 +193,9 @@ class TestBackup(base.TestCase):
         self.sess.put.return_value = mock_response
 
         sot = backup.BackupPolicy.new(
-            **EXAMPLE_POLICY,
             project_id=PROJECT_ID,
-            instance_id=instance_id)
+            instance_id=instance_id,
+            **EXAMPLE_POLICY)
 
         self.assertIsNone(sot.update(self.sess, headers=RDS_HEADERS))
 

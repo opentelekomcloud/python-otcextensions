@@ -287,7 +287,7 @@ class TestInstance(base.TestCase):
                          res.paramsGroupId)
 
     def test_action_restart(self):
-        sot = instance.Instance(**EXAMPLE, project_id=PROJECT_ID)
+        sot = instance.Instance(project_id=PROJECT_ID, **EXAMPLE)
         response = mock.Mock()
         response.json = mock.Mock(return_value='')
         sess = mock.Mock()
@@ -305,7 +305,7 @@ class TestInstance(base.TestCase):
                                      endpoint_override=None)
 
     def test_action_resize(self):
-        sot = instance.Instance(**EXAMPLE, project_id=PROJECT_ID)
+        sot = instance.Instance(project_id=PROJECT_ID, **EXAMPLE)
         response = mock.Mock()
         response.json = mock.Mock(return_value='')
         sess = mock.Mock()
@@ -324,7 +324,7 @@ class TestInstance(base.TestCase):
                                      endpoint_override=None)
 
     def test_action_resize_volume(self):
-        sot = instance.Instance(**EXAMPLE, project_id=PROJECT_ID)
+        sot = instance.Instance(project_id=PROJECT_ID, **EXAMPLE)
         response = mock.Mock()
         response.json = mock.Mock(return_value='')
         sess = mock.Mock()
@@ -343,7 +343,7 @@ class TestInstance(base.TestCase):
                                      endpoint_override=None)
 
     def test_action_restore(self):
-        sot = instance.Instance(**EXAMPLE, project_id=PROJECT_ID)
+        sot = instance.Instance(project_id=PROJECT_ID, **EXAMPLE)
         response = mock.Mock()
         response.json = mock.Mock(return_value='')
         sess = mock.Mock()

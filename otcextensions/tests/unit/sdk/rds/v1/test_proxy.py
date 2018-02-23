@@ -104,16 +104,49 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
         self.assertRaises(NotImplementedError, self.proxy.find_flavor, '')
 
     def test_create_instance(self):
-        self.assertRaises(NotImplementedError,
-                          self.proxy.create_instance)
+        self.verify_create(
+            self.proxy.create_instance, _instance.Instance,
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
+            method_kwargs={
+                'instance': 'test',
+                'name': 'some_name'
+            },
+            expected_kwargs={
+                'project_id': PROJECT_ID,
+                'endpoint_override': ENDPOINT_OS,
+                'headers': OS_HEADERS,
+                'instance': 'test',
+                'name': 'some_name'
+            }
+        )
 
     def test_delete_instance(self):
-        self.assertRaises(NotImplementedError,
-                          self.proxy.delete_instance, None)
+        self.verify_delete(
+            self.proxy.delete_instance,
+            _instance.Instance, True,
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
+            expected_kwargs={
+                'project_id': PROJECT_ID,
+                'endpoint_override': ENDPOINT_OS,
+                'headers': OS_HEADERS,
+            }
+        )
 
     def test_update_instance(self):
-        self.assertRaises(NotImplementedError,
-                          self.proxy.update_instance, None)
+        self._verify2(
+            'otcextensions.sdk.sdk_proxy.Proxy._update',
+            self.proxy.update_instance,
+            method_args=['INSTANCE'],
+            method_kwargs={'test': 't'},
+            expected_args=[_instance.Instance],
+            expected_kwargs={
+                'test': 't',
+                'project_id': PROJECT_ID,
+                'endpoint_override': ENDPOINT_RDS,
+                'instance': 'INSTANCE',
+                'headers': RDS_HEADERS
+            }
+        )
 
     def test_get_instance(self):
         self.verify_get(
@@ -139,9 +172,9 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
             }
         )
 
-    def test_configuration_groups(self):
+    def test_parameter_groups(self):
         self.verify_list(
-            self.proxy.configuration_groups, _configuration.ParameterGroup,
+            self.proxy.parameter_groups, _configuration.ParameterGroup,
             paginated=False,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             expected_kwargs={
@@ -151,9 +184,9 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
             }
         )
 
-    def test_get_configuration_group(self):
+    def test_get_parameter_group(self):
         self.verify_get(
-            self.proxy.get_configuration_group,
+            self.proxy.get_parameter_group,
             _configuration.ParameterGroup,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
             expected_kwargs={
@@ -163,17 +196,53 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
             }
         )
 
-    def test_create_configuration_group(self):
-        self.assertRaises(NotImplementedError,
-                          self.proxy.create_configuration_group, None)
+    def test_create_parameter_group(self):
+        self.verify_create(
+            self.proxy.create_parameter_group,
+            _configuration.ParameterGroup,
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
+            method_kwargs={
+                'instance': 'test',
+                'name': 'some_name'
+            },
+            expected_kwargs={
+                'project_id': PROJECT_ID,
+                'endpoint_override': ENDPOINT_OS,
+                'headers': OS_HEADERS,
+                'instance': 'test',
+                'name': 'some_name'
+            }
+        )
+    #
+    # def test_update_parameter_group(self):
+    #     self.verify_update(
+    #         self.proxy.update_parameter_group,
+    #         _configuration.ParameterGroup,
+    #         mock_method='otcextensions.sdk.sdk_proxy.Proxy._update',
+    #         method_kwargs={
+    #             'instance': 'test',
+    #             'name': 'some_name'
+    #         },
+    #         expected_kwargs={
+    #             'project_id': PROJECT_ID,
+    #             'endpoint_override': ENDPOINT_OS,
+    #             'headers': OS_HEADERS,
+    #             'instance_id': 'test',
+    #             'name': 'some_name'
+    #         }
+    #     )
 
-    def test_update_configuration_group(self):
-        self.assertRaises(NotImplementedError,
-                          self.proxy.update_configuration_group, None)
-
-    def test_delete_configuration_group(self):
-        self.assertRaises(NotImplementedError,
-                          self.proxy.delete_configuration_group, None)
+    def test_delete_parameter_group(self):
+        self.verify_delete(
+            self.proxy.delete_parameter_group,
+            _configuration.ParameterGroup, True,
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
+            expected_kwargs={
+                'project_id': PROJECT_ID,
+                'endpoint_override': ENDPOINT_OS,
+                'headers': OS_HEADERS,
+            }
+        )
 
     def test_backups(self):
         self.verify_list(

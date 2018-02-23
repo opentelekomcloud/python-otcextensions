@@ -131,15 +131,26 @@ class Instance(sdk_resource.Resource):
     # *Type:string*
     publicEndpoint = resource.Body('publicEndpoint')
 
+    def _action(self, exec_method, json, endpoint_override=None):
+        """Executes the action
+
+        :returns: ``None``
+        """
+        if not endpoint_override:
+            if getattr(self, 'endpoint_override', None):
+                # If we have internal endpoint_override - use it
+                endpoint_override = self.endpoint_override
+        base_url = self.base_path % self._uri.attributes
+        url = utils.urljoin(base_url, self.id, 'action')
+        return exec_method(url, json=json, endpoint_override=endpoint_override)
+
     def restart(self, session, endpoint_override=None):
         """Restart the database instance
 
         :returns: ``None``
         """
         body = {'restart': {}}
-        base_url = self.base_path % self._uri.attributes
-        url = utils.urljoin(base_url, self.id, 'action')
-        session.post(url, json=body, endpoint_override=endpoint_override)
+        self._action(session.post, body, endpoint_override)
 
     def resize(self, session, flavor_reference, endpoint_override=None):
         """Resize the database instance
@@ -147,9 +158,7 @@ class Instance(sdk_resource.Resource):
         :returns: ``None``
         """
         body = {'resize': {'flavorRef': flavor_reference}}
-        base_url = self.base_path % self._uri.attributes
-        url = utils.urljoin(base_url, self.id, 'action')
-        session.post(url, json=body, endpoint_override=endpoint_override)
+        self._action(session.post, body, endpoint_override)
 
     def resize_volume(self, session, volume_size, endpoint_override=None):
         """Resize the volume attached to the instance
@@ -157,9 +166,7 @@ class Instance(sdk_resource.Resource):
         :returns: ``None``
         """
         body = {'resize': {'volume': volume_size}}
-        base_url = self.base_path % self._uri.attributes
-        url = utils.urljoin(base_url, self.id, 'action')
-        session.post(url, json=body, endpoint_override=endpoint_override)
+        self._action(session.post, body, endpoint_override)
 
     def restore(self, session, backupRef, endpoint_override=None):
         """Restores database to the given backup rference
@@ -167,9 +174,7 @@ class Instance(sdk_resource.Resource):
         :returns: ``None``
         """
         body = {"restore": {"backupRef": backupRef}}
-        base_url = self.base_path % self._uri.attributes
-        url = utils.urljoin(base_url, self.id, 'action')
-        session.post(url, json=body, endpoint_override=endpoint_override)
+        self._action(session.post, body, endpoint_override)
 
         # TODO(agoncharov) call returns jobId
         # return self._action(session, {"restore": {"backupRef": backupRef}})
@@ -181,32 +186,3 @@ class Instance(sdk_resource.Resource):
         """
         raise NotImplementedError
         # TODO(agoncharov) call returns instance spec
-
-    # def _action(self, session, body):
-    #     """Perform instance action
-    #
-    #     Needed to set proper headers into the request
-    #
-    #     """
-    #     url = utils.urljoin(self.base_path, self.id, 'action')
-    #     endpoint_override = self.service.get_endpoint_override()
-    #     resp = session.post(url,
-    #                         endpoint_override=endpoint_override,
-    #                         json=body,
-    #                         headers={"Accept": "application/json",
-    #                                  "Content-type": "application/json",
-    #                                  "X-Language": "en-us"})
-    #
-    #     return resp.json()
-    #
-    # def resize(self, session, flavorRef):
-    #     return self._action(session, {"resize": {"flavorRef": flavorRef}})
-    #
-    # def resize_volume(self, session, size):
-    #     return self._action(session, {"resize": {"volume": {"size": size}}})
-    #
-    # def restart(self, session):
-    #     return self._action(session, {"restart": {}})
-    #
-    # def restore(self, session, backupRef):
-    #     return self._action(session, {"restore": {"backupRef": backupRef}})

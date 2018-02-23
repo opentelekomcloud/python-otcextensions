@@ -115,10 +115,11 @@ class Proxy(os_proxy.BaseProxy):
         :rtype: :class:`~openstack.resource.Resource`
         """
         res = self._get_resource(resource_type, value, **attrs)
-        return res.update(self,
-                          endpoint_override=endpoint_override,
-                          headers=headers
-                          )
+        return res.update(
+            self,
+            endpoint_override=endpoint_override,
+            headers=headers
+        )
 
     def _create(self, resource_type,
                 endpoint_override=None, headers=None,
@@ -140,10 +141,18 @@ class Proxy(os_proxy.BaseProxy):
         :rtype: :class:`~openstack.resource.Resource`
         """
         res = resource_type.new(**attrs)
-        return res.create(self,
-                          endpoint_override=endpoint_override,
-                          headers=headers
-                          )
+        persist = res.create(
+            self,
+            endpoint_override=endpoint_override,
+            headers=headers
+        )
+
+        # Inject endpoint_override into the resource for potential
+        # direct use (i.e. instance.reboot)
+        if endpoint_override:
+            persist.endpoint_override = endpoint_override
+
+        return persist
 
     @os_proxy._check_resource(strict=False)
     def _get(self, resource_type, value=None, requires_id=True,
@@ -168,13 +177,20 @@ class Proxy(os_proxy.BaseProxy):
         """
         res = self._get_resource(resource_type, value, **attrs)
 
-        return res.get(
+        persist = res.get(
             self, requires_id=requires_id,
             error_message="No {resource_type} found for {value}".format(
                 resource_type=resource_type.__name__, value=value),
             endpoint_override=endpoint_override,
             headers=headers
         )
+
+        # Inject endpoint_override into the resource for potential
+        # direct use (i.e. instance.reboot)
+        if endpoint_override:
+            persist.endpoint_override = endpoint_override
+
+        return persist
 
     def _list(self, resource_type, value=None, paginated=False,
               endpoint_override=None, headers=None,

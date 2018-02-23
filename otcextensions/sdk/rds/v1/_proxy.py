@@ -27,19 +27,6 @@ _logger = _log.setup_logging('openstack')
 
 class Proxy(sdk_proxy.Proxy):
 
-    # RDS requires those headers to be present in the request, to native API
-    # otherwise 404
-    RDS_HEADERS = {
-        'Content-Type': 'application/json',
-        'X-Language': 'en-us'
-    }
-
-    # RDS requires those headers to be present in the request, to OS-compat API
-    # otherwise 404
-    OS_HEADERS = {
-        'Content-Type': 'application/json',
-    }
-
     def get_os_endpoint(self, **kwargs):
         """Return OpenStack compliant endpoint
 
@@ -71,6 +58,10 @@ class Proxy(sdk_proxy.Proxy):
     def get_os_headers(self, language=None):
         """Get headers for request
 
+        Unfortunatels RDS requires 'Content-Type: application/json'
+        header even for GET and LIST operations with empty body
+        We need to deel with it
+
         :param language: whether language should be added to headers
             can be either bool (then self.get_language is used)
             or a language code directly (i.e. "en-us")
@@ -85,13 +76,6 @@ class Proxy(sdk_proxy.Proxy):
             elif isinstance(language, str):
                 headers['X-Language'] = language
         return headers
-    #
-    # def get_rds_headers(self):
-    #     headers = {
-    #         'Content-Type': 'application/json',
-    #         'X-Language': 'en-us'
-    #     }
-    #     return headers
 
     def get_language(self):
         """Returns language code
@@ -99,6 +83,7 @@ class Proxy(sdk_proxy.Proxy):
         """
         return 'en-us'
 
+    # ======= Datastores =======
     def datastore_types(self):
         """List supported datastore types
 
@@ -128,6 +113,7 @@ class Proxy(sdk_proxy.Proxy):
             datastore_name=db_name
         )
 
+    # ======= Flavors =======
     def flavors(self):
         """List flavors of given datastore id and region
 
@@ -161,6 +147,7 @@ class Proxy(sdk_proxy.Proxy):
     def find_flavor(self, name_or_id, ignore_missing=True):
         raise NotImplementedError
 
+    # ======= Instance =======
     def create_instance(self, **attrs):
         """Create a new instance from attributes
 
@@ -171,27 +158,32 @@ class Proxy(sdk_proxy.Proxy):
         :returns: The results of server creation
         :rtype: :class:`~otcextensions.sdk.rds.v1.instance.Instance`
         """
-        raise NotImplementedError
-        return self._create(_instance.Instance, **attrs)
+        return self._create(_instance.Instance,
+                            project_id=self.session.get_project_id(),
+                            endpoint_override=self.get_os_endpoint(),
+                            headers=self.get_os_headers(),
+                            **attrs)
 
     def delete_instance(self, instance, ignore_missing=True):
         """Delete an instance
 
         :param instance: The value can be either the ID of an instance or a
-               :class:`~otcextensions.sdk.rds.v1.instance.Instance` instance.
+            :class:`~otcextensions.sdk.rds.v1.instance.Instance` instance.
         :param bool ignore_missing: When set to ``False``
-                    :class:`~openstack.exceptions.ResourceNotFound` will be
-                    raised when the instance does not exist.
-                    When set to ``True``, no exception will be set when
-                    attempting to delete a nonexistent instance.
+            :class:`~openstack.exceptions.ResourceNotFound` will be
+            raised when the instance does not exist.
+            When set to ``True``, no exception will be set when
+            attempting to delete a nonexistent instance.
 
         :returns: ``None``
         """
-        raise NotImplementedError
-        self._delete(_instance.Instance, instance,
-                     ignore_missing=ignore_missing,
-                     project_id=self.session.get_project_id(),
-                     endpoint_override=self.get_os_endpoint())
+        self._delete(
+            _instance.Instance, instance,
+            ignore_missing=ignore_missing,
+            project_id=self.session.get_project_id(),
+            endpoint_override=self.get_os_endpoint(),
+            headers=self.get_os_headers()
+        )
 
     # def find_database(self, name_or_id, ignore_missing=True):
     #     """Find a single instance
@@ -247,16 +239,23 @@ class Proxy(sdk_proxy.Proxy):
         :param instance: Either the id of a instance or a
                          :class:`~otcextensions.sdk.rds.v1.instance.Instance`
                          instance.
-        :attrs kwargs: The attributes to update on the instance represented
+        :attrs attrs: The attributes to update on the instance represented
                        by ``value``.
 
         :returns: The updated instance
         :rtype: :class:`~otcextensions.sdk.rds.v1.instance.Instance`
         """
-        raise NotImplementedError
-        return self._update(_instance.Instance, instance, **attrs)
+        return self._update(
+            _instance.Instance,
+            instance=instance,
+            project_id=self.session.get_project_id(),
+            endpoint_override=self.get_rds_endpoint(),
+            headers=self.get_os_headers(True),
+            **attrs
+        )
 
-    def configuration_groups(self, **attrs):
+    # ======= Configuration =======
+    def parameter_groups(self, **attrs):
         """Obtaining a Parameter Group List
 
         :returns: A generator of ParameterGroup object
@@ -270,10 +269,11 @@ class Proxy(sdk_proxy.Proxy):
             headers=self.get_os_headers(),
         )
 
-    def get_configuration_group(self, configuration_group):
+    def get_parameter_group(self, parameter_group):
         """Obtaining a Parameter Group
 
-        :param cg: The value can be the ID of a Parameter Group or a object of
+        :param parameter_group: The value can be the ID of a Parameter Group
+                or a object of
                :class:`~otcextensions.sdk.rds.v1.configuration.Configurations`.
         :returns: A Parameter Group Object
         :rtype: :class:`~otcextensions.rds.v1.configuration.ParameterGroup`.
@@ -281,25 +281,26 @@ class Proxy(sdk_proxy.Proxy):
         """
         return self._get(
             _configuration.ParameterGroup,
-            configuration_group,
+            parameter_group,
             project_id=self.session.get_project_id(),
             endpoint_override=self.get_os_endpoint(),
             headers=self.get_os_headers(True)
         )
 
-    def create_configuration_group(self, parameter_group, **attrs):
+    def create_parameter_group(self, **attrs):
         """Creating a Parameter Group
 
         :param dict \*\*attrs: Dict to overwrite ParameterGroup object
         :returns: A Parameter Group Object
         :rtype: :class:`~otcextensions.sdk.rds.v1.configuration.ParameterGroup`
         """
-        raise NotImplementedError
         return self._create(_configuration.ParameterGroup,
+                            project_id=self.session.get_project_id(),
                             endpoint_override=self.get_os_endpoint(),
+                            headers=self.get_os_headers(),
                             **attrs)
 
-    def delete_configuration_group(self, cg, ignore_missing=True):
+    def delete_parameter_group(self, cg, ignore_missing=True):
         """Deleting a Parameter Group
 
         :param cg: The value can be the ID of a Parameter Group or a object of
@@ -312,21 +313,15 @@ class Proxy(sdk_proxy.Proxy):
 
         :returns: None
         """
-        raise NotImplementedError
-        self._delete(_configuration.ParameterGroup, cg,
-                     ignore_missing=ignore_missing)
+        self._delete(
+            _configuration.ParameterGroup, cg,
+            ignore_missing=ignore_missing,
+            project_id=self.session.get_project_id(),
+            endpoint_override=self.get_os_endpoint(),
+            headers=self.get_os_headers()
+        )
 
-    def update_configuration_group(self, cg, **attrs):
-        """Adding a Self-defined Parameter
-
-        :param cg: The value can be the ID of a Parameter Group or a object of
-               :class:`~otcextensions.sdk.rds.v1.configuration.ParameterGroup`.
-        :param dict \*\*attrs: Dict to use create Self-defined Parameter
-        :returns: An updated Parameter Group Object
-        """
-        raise NotImplementedError
-        return self._update(_configuration.ParameterGroup, cg, **attrs)
-
+    # ======= Backups =======
     def backups(self):
         """List Backups
 

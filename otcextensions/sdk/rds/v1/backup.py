@@ -82,8 +82,6 @@ class BackupPolicy(sdk_resource.Resource):
     instance_id = resource.URI('instance_id')
     project_id = resource.URI('project_id')
 
-    # content_type = resource.Header('content-type')
-    # x_language = resource.Header('x-language')
     # Properties
     #: Policy keep days
     #:  Indicates the number of days to retain the generated backup files.
