@@ -19,6 +19,10 @@ from openstack.tests.unit import base
 
 from otcextensions.sdk.rds.v1 import backup
 
+RDS_HEADERS = {
+    'content-type': 'application/json',
+    'x-language': 'en-us'
+}
 
 PROJECT_ID = '23'
 IDENTIFIER = 'IDENTIFIER'
@@ -38,7 +42,8 @@ EXAMPLE = {
         'version_id': 'e8a8b8cc-63f8-4fb5-8d4a-24c502317a61'
     },
     'instance_id': '4f87d3c4-9e33-482f-b962-e23b30d1a18c',
-    'parent_id': None
+    'parent_id': None,
+    **RDS_HEADERS,
 }
 
 EXAMPLE_POLICY = {
@@ -86,12 +91,14 @@ class TestBackup(base.TestCase):
 
         self.sess.get.return_value = mock_response
 
-        result = list(self.sot.list(self.sess, project_id=PROJECT_ID))
+        result = list(self.sot.list(
+            self.sess,
+            project_id=PROJECT_ID,
+            headers=RDS_HEADERS))
 
         self.sess.get.assert_called_once_with(
             '/%s/backups' % (PROJECT_ID),
-            headers={"Content-Type": "application/json"},
-            params={})
+            headers=RDS_HEADERS)
 
         self.assertEqual([backup.Backup(**EXAMPLE)], result)
 
@@ -110,11 +117,11 @@ class TestBackup(base.TestCase):
             description='descr',
             instance='some_instance')
 
-        result = sot.create(self.sess)
+        result = sot.create(self.sess, headers=RDS_HEADERS)
 
         self.sess.post.assert_called_once_with(
             '/%s/backups' % (PROJECT_ID),
-            headers={},
+            headers=RDS_HEADERS,
             json={'backup': {
                 'instance': 'some_instance',
                 'description': 'descr',
@@ -143,7 +150,7 @@ class TestBackup(base.TestCase):
             project_id=PROJECT_ID
         )
 
-        sot.delete(self.sess)
+        sot.delete(self.sess, headers=RDS_HEADERS)
 
         url = '%(project_id)s/backups/%(id)s' % \
             {
@@ -154,11 +161,26 @@ class TestBackup(base.TestCase):
         # utils.urljoin strips leading '/', but it is not a problem
         self.sess.delete.assert_called_once_with(
             url,
-            headers={
-                'Content-Type': 'application/json',
-                'Accept': ''
-            }
+            headers=RDS_HEADERS
         )
+
+    def test_policy_basic(self):
+        sot = backup.BackupPolicy()
+        self.assertEqual('policy', sot.resource_key)
+        self.assertEqual(None, sot.resources_key)
+        self.assertEqual('/%(project_id)s/instances/%(instance_id)s/'
+                         'backups/policy', sot.base_path)
+        self.assertEqual('rds', sot.service.service_type)
+        self.assertFalse(sot.allow_list)
+        self.assertFalse(sot.allow_create)
+        self.assertTrue(sot.allow_get)
+        self.assertTrue(sot.allow_update)
+        self.assertFalse(sot.allow_delete)
+
+    def test_policy_make_it(self):
+        sot = backup.BackupPolicy(**EXAMPLE_POLICY)
+        self.assertEqual(EXAMPLE_POLICY['keepday'], sot.keepday)
+        self.assertEqual(EXAMPLE_POLICY['starttime'], sot.starttime)
 
     def test_policy_update(self):
         mock_response = mock.Mock()
@@ -171,12 +193,12 @@ class TestBackup(base.TestCase):
 
         self.sess.put.return_value = mock_response
 
-        sot = backup.BackupPolicy(
+        sot = backup.BackupPolicy.new(
             **EXAMPLE_POLICY,
             project_id=PROJECT_ID,
             instance_id=instance_id)
 
-        self.assertIsNone(sot.update(self.sess))
+        self.assertIsNone(sot.update(self.sess, headers=RDS_HEADERS))
 
         url = '/%(project_id)s/instances/%(instance_id)s/backups/policy' % \
             {
@@ -186,8 +208,41 @@ class TestBackup(base.TestCase):
 
         self.sess.put.assert_called_once_with(
             url,
-            headers={
-                'Content-Type': 'application/json',
-                'X-Language': 'en-us'},
+            headers=RDS_HEADERS,
             json={'policy': EXAMPLE_POLICY}
         )
+
+    def test_policy_get(self):
+
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            'policy':
+            copy.deepcopy(EXAMPLE_POLICY)}
+        mock_response.headers = {}
+        instance_id = 'instance_id'
+
+        self.sess.get.return_value = mock_response
+
+        sot = backup.BackupPolicy.new(
+            # **EXAMPLE_POLICY,
+            project_id=PROJECT_ID,
+            instance_id=instance_id)
+
+        print('policy %s' % sot)
+
+        res = sot.get(self.sess, requires_id=False, headers=RDS_HEADERS)
+
+        url = '/%(project_id)s/instances/%(instance_id)s/backups/policy' % \
+            {
+                'project_id': PROJECT_ID,
+                'instance_id': instance_id
+            }
+
+        self.sess.get.assert_called_once_with(
+            url,
+            headers=RDS_HEADERS
+        )
+
+        self.assertEqual(EXAMPLE_POLICY['keepday'], res.keepday)
+        self.assertEqual(EXAMPLE_POLICY['starttime'], res.starttime)

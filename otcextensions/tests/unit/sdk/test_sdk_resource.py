@@ -17,7 +17,7 @@ from openstack.tests.unit import base
 
 # from openstack import resource
 
-from otcextensions.sdk.rds.v1 import _base
+from otcextensions.sdk import sdk_resource
 
 # Only a basic tests for extended functionality are implemented since
 # the _list code is copied from sdk.resource to override headers
@@ -41,16 +41,19 @@ class TestBaseResource(base.TestCase):
         self.sess = mock.Mock(spec=adapter.Adapter)
         self.sess.get_project_id = mock.Mock(return_value=PROJECT_ID)
 
-        self.sot = _base.Resource(**EXAMPLE)
+        self.sot = sdk_resource.Resource(**EXAMPLE)
+
+        # inject some properties to enable methods
+        self.sot.allow_list = True
+        self.sot.base_path = '/'
+
         self.base_path = self.sot.base_path
 
+        self.headers = {"Content-Type": "application/json"}
+
     def test_basic(self):
-        sot = _base.Resource()
-        self.assertEqual('', sot.resource_key)
-        self.assertEqual('', sot.resources_key)
-        self.assertEqual('/', sot.base_path)
-        self.assertEqual('rds', sot.service.service_type)
-        self.assertTrue(sot.allow_list)
+        sot = sdk_resource.Resource()
+        self.assertFalse(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_get)
         self.assertFalse(sot.allow_update)
@@ -67,8 +70,7 @@ class TestBaseResource(base.TestCase):
 
         self.sess.get.assert_called_once_with(
             self.base_path,
-            headers={"Content-Type": "application/json"},
-            params={})
+        )
 
         self.assertEqual([], result)
 
@@ -84,9 +86,9 @@ class TestBaseResource(base.TestCase):
         self.sess.get.assert_called_once_with(
             self.base_path,
             headers={"a": "b"},
-            params={})
+        )
 
-        self.assertEqual([_base.Resource(**EXAMPLE)], result)
+        self.assertEqual([sdk_resource.Resource(**EXAMPLE)], result)
 
     def test_list_override_endpoint(self):
         # sot = _base.Resource()
@@ -106,6 +108,6 @@ class TestBaseResource(base.TestCase):
             self.base_path,
             headers={"a": "b"},
             endpoint_override='http:example.com',
-            params={})
+        )
 
         self.assertEqual([self.sot], result)

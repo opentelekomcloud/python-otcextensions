@@ -79,7 +79,6 @@ class TestDatastore(base.TestCase):
 
         self.sess.get.assert_called_once_with(
             '/%s/datastores/%s/versions' % (PROJECT_ID, 'datastore'),
-            headers={"Content-Type": "application/json"},
-            params={})
+        )
 
         self.assertEqual([datastore.Datastore(**EXAMPLE)], result)

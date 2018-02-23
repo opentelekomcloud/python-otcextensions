@@ -19,6 +19,18 @@ from openstack.tests.unit import base
 
 from otcextensions.sdk.rds.v1 import flavor
 
+# RDS requires those headers to be present in the request, to native API
+# otherwise 404
+RDS_HEADERS = {
+    'Content-Type': 'application/json',
+    'X-Language': 'en-us'
+}
+
+# RDS requires those headers to be present in the request, to OS-compat API
+# otherwise 404
+OS_HEADERS = {
+    'Content-Type': 'application/json',
+}
 
 PROJECT_ID = '123'
 IDENTIFIER = 'IDENTIFIER'
@@ -72,8 +84,7 @@ class TestFlavor(base.TestCase):
 
         self.sess.get.assert_called_once_with(
             '/%s/flavors' % (PROJECT_ID),
-            headers={"Content-Type": "application/json"},
-            params={})
+        )
 
         self.assertEqual([flavor.Flavor(**EXAMPLE)], result)
 
@@ -133,7 +144,6 @@ class TestFlavor(base.TestCase):
 
         self.sess.get.assert_called_once_with(
             '%s/flavors/%s' % (PROJECT_ID, '123'),
-            headers={"Content-Type": "application/json"}
         )
 
         self.assertEqual(2048, res.ram)

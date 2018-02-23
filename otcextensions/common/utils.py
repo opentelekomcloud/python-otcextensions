@@ -43,3 +43,11 @@ _memoized_property_lock = threading.Lock()
 
 SENSITIVE_HEADERS = ('X-Auth-Token', )
 REQUIRED_FIELDS_ON_DATA = ('disk_format', 'container_format')
+
+
+def merge_two_dicts(x, y):
+    """Given two dicts, merge them into a new dict as a shallow copy."""
+    z = x.copy()
+    if y:
+        z.update(y)
+    return z

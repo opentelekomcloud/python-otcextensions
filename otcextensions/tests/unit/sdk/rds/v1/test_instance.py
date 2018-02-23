@@ -19,6 +19,18 @@ from openstack.tests.unit import base
 
 from otcextensions.sdk.rds.v1 import instance
 
+# RDS requires those headers to be present in the request, to native API
+# otherwise 404
+RDS_HEADERS = {
+    'Content-Type': 'application/json',
+    'X-Language': 'en-us'
+}
+
+# RDS requires those headers to be present in the request, to OS-compat API
+# otherwise 404
+OS_HEADERS = {
+    'Content-Type': 'application/json',
+}
 
 PROJECT_ID = '123'
 IDENTIFIER = '37f52707-2fb3-482c-a444-77a70a4eafd6'
@@ -184,8 +196,7 @@ class TestInstance(base.TestCase):
 
         self.sess.get.assert_called_once_with(
             '/%s/instances' % (PROJECT_ID),
-            headers={"Content-Type": "application/json"},
-            params={})
+        )
 
         self.assertEqual([instance.Instance(**EXAMPLE)], result)
 
@@ -268,7 +279,6 @@ class TestInstance(base.TestCase):
 
         self.sess.get.assert_called_once_with(
             '%s/instances/%s' % (PROJECT_ID, '1234'),
-            headers={"Content-Type": "application/json"}
         )
 
         self.assertEqual(res_json['instance']['vpc'], res.vpc)
@@ -291,7 +301,8 @@ class TestInstance(base.TestCase):
         })
         body = {'restart': {}}
         sess.post.assert_called_with(url,
-                                     json=body)
+                                     json=body,
+                                     endpoint_override=None)
 
     def test_action_resize(self):
         sot = instance.Instance(**EXAMPLE, project_id=PROJECT_ID)
@@ -309,7 +320,8 @@ class TestInstance(base.TestCase):
         })
         body = {'resize': {'flavorRef': flavor}}
         sess.post.assert_called_with(url,
-                                     json=body)
+                                     json=body,
+                                     endpoint_override=None)
 
     def test_action_resize_volume(self):
         sot = instance.Instance(**EXAMPLE, project_id=PROJECT_ID)
@@ -327,7 +339,8 @@ class TestInstance(base.TestCase):
         })
         body = {'resize': {'volume': size}}
         sess.post.assert_called_with(url,
-                                     json=body)
+                                     json=body,
+                                     endpoint_override=None)
 
     def test_action_restore(self):
         sot = instance.Instance(**EXAMPLE, project_id=PROJECT_ID)
@@ -345,4 +358,5 @@ class TestInstance(base.TestCase):
         })
         body = {'restore': {'backupRef': backupRef}}
         sess.post.assert_called_with(url,
-                                     json=body)
+                                     json=body,
+                                     endpoint_override=None)

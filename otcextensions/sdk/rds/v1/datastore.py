@@ -15,13 +15,13 @@ from openstack import resource
 
 from otcextensions.sdk.rds import rds_service
 
-from otcextensions.sdk.rds.v1 import _base
+from otcextensions.sdk import sdk_resource
 
 
 _logger = _log.setup_logging('openstack')
 
 
-class Datastore(_base.Resource):
+class Datastore(sdk_resource.Resource):
 
     base_path = '/%(project_id)s/datastores/%(datastore_name)s/versions'
     resource_key = ''

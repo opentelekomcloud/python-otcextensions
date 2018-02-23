@@ -15,12 +15,12 @@ from openstack import resource
 
 from otcextensions.sdk.rds import rds_service
 
-from otcextensions.sdk.rds.v1 import _base
+from otcextensions.sdk import sdk_resource
 
 _logger = _log.setup_logging('openstack')
 
 
-class Backup(_base.Resource):
+class Backup(sdk_resource.Resource):
 
     base_path = '/%(project_id)s/backups'
     resource_key = 'backup'
@@ -60,8 +60,15 @@ class Backup(_base.Resource):
     #: Backup type
     backuptype = resource.Body('backuptype')
 
+    # @classmethod
+    # def new(cls, **attrs):
+    #     return Backup(
+    #         content_type='application/json',
+    #         x_language='en-us',
+    #         **attrs)
 
-class BackupPolicy(_base.Resource):
+
+class BackupPolicy(sdk_resource.Resource):
 
     base_path = '/%(project_id)s/instances/%(instance_id)s/backups/policy'
     resource_key = 'policy'
@@ -74,6 +81,9 @@ class BackupPolicy(_base.Resource):
     #: instaceId
     instance_id = resource.URI('instance_id')
     project_id = resource.URI('project_id')
+
+    # content_type = resource.Header('content-type')
+    # x_language = resource.Header('x-language')
     # Properties
     #: Policy keep days
     #:  Indicates the number of days to retain the generated backup files.
@@ -88,6 +98,12 @@ class BackupPolicy(_base.Resource):
     #:  The current time is the UTC time.
     #: *Type: string*
     starttime = resource.Body('starttime')
+
+    # @classmethod
+    # def new(cls, **attrs):
+    #     return BackupPolicy(
+    #         content_type='application/json',
+    #         x_language='en-us', **attrs)
 
     # use put to create, but we don't require id
     def update(self, session, prepend_key=True,
@@ -109,9 +125,6 @@ class BackupPolicy(_base.Resource):
         self.update_no_id(
             session, prepend_key,
             endpoint_override=endpoint_override,
-            headers={
-                'X-Language': 'en-us',
-                'Content-Type': 'application/json'
-            } if not headers else headers)
+            headers=headers)
 
         return None

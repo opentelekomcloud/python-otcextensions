@@ -17,12 +17,12 @@ from openstack import exceptions
 
 from otcextensions.sdk.rds import rds_service
 
-from otcextensions.sdk.rds.v1 import _base
+from otcextensions.sdk import sdk_resource
 
 _logger = _log.setup_logging('openstack')
 
 
-class Flavor(_base.Resource):
+class Flavor(sdk_resource.Resource):
 
     base_path = '/%(project_id)s/flavors'
     # In difference to regular OS services RDS

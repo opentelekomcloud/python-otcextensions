@@ -12,9 +12,9 @@
 
 from openstack import _log
 from openstack import utils
-from openstack import proxy
+# from openstack import proxy
 
-# from otcextensions.sdk import proxy as sdk_proxy
+from otcextensions.sdk import sdk_proxy
 
 from otcextensions.sdk.rds.v1 import backup as _backup
 from otcextensions.sdk.rds.v1 import configuration as _configuration
@@ -25,7 +25,7 @@ from otcextensions.sdk.rds.v1 import instance as _instance
 _logger = _log.setup_logging('openstack')
 
 
-class Proxy(proxy.BaseProxy):
+class Proxy(sdk_proxy.Proxy):
 
     # RDS requires those headers to be present in the request, to native API
     # otherwise 404
@@ -55,7 +55,7 @@ class Proxy(proxy.BaseProxy):
             return endpoint_override
 
     def get_rds_endpoint(self, **kwargs):
-        """Return OpenStack compliant endpoint
+        """Return RDS propriatary endpoint
 
         """
         endpoint = super(Proxy, self).get_endpoint(**kwargs)
@@ -68,41 +68,36 @@ class Proxy(proxy.BaseProxy):
         else:
             return endpoint
 
-    @proxy._check_resource(strict=False)
-    def _get(self, resource_type, value=None, requires_id=True,
-             endpoint_override=None, headers=None,
-             **attrs):
-        """Get a resource
+    def get_os_headers(self, language=None):
+        """Get headers for request
 
-        overriden to incorporate optional headers and endpoint_override
-
-        :param resource_type: The type of resource to get.
-        :type resource_type: :class:`~openstack.resource.Resource`
-        :param value: The value to get. Can be either the ID of a
-                      resource or a :class:`~openstack.resource.Resource`
-                      subclass.
-        :param dict attrs: Attributes to be passed onto the
-                           :meth:`~openstack.resource.Resource.get`
-                           method. These should correspond
-                           to either :class:`~openstack.resource.Body`
-                           or :class:`~openstack.resource.Header`
-                           values on this resource.
-
-        :returns: The result of the ``get``
-        :rtype: :class:`~openstack.resource.Resource`
+        :param language: whether language should be added to headers
+            can be either bool (then self.get_language is used)
+            or a language code directly (i.e. "en-us")
+        :returns dict: dictionary with headers
         """
+        headers = {
+            'Content-Type': 'application/json',
+        }
+        if language:
+            if isinstance(language, bool):
+                headers['X-Language'] = self.get_language()
+            elif isinstance(language, str):
+                headers['X-Language'] = language
+        return headers
+    #
+    # def get_rds_headers(self):
+    #     headers = {
+    #         'Content-Type': 'application/json',
+    #         'X-Language': 'en-us'
+    #     }
+    #     return headers
 
-        res = self._get_resource(resource_type, value, **attrs)
+    def get_language(self):
+        """Returns language code
 
-        _logger.debug('resource %s' % res)
-
-        return res.get(
-            self, requires_id=requires_id,
-            error_message="No {resource_type} found for {value}".format(
-                resource_type=resource_type.__name__, value=value),
-            # endpoint_override=endpoint_override,
-            # headers=headers
-        )
+        """
+        return 'en-us'
 
     def datastore_types(self):
         """List supported datastore types
@@ -122,17 +117,13 @@ class Proxy(proxy.BaseProxy):
             (MySQL, PostgreSQL, or SQLServer and is case-sensitive.)
 
         :returns: A generator of datastore versions
-        :rtype: :class:`~otcextensions.sdk.rds_os.v1.flavor.Flavor
+        :rtype: :class:`~otcextensions.sdk.rds.v1.flavor.Flavor
         """
-        headers = {
-            'Content-Type': 'application/json',
-            'X-Language': 'en-us'
-        }
         return self._list(
             _datastore.Datastore,
             paginated=False,
             endpoint_override=self.get_rds_endpoint(),
-            headers=headers,
+            headers=self.get_os_headers(True),
             project_id=self.session.get_project_id(),
             datastore_name=db_name
         )
@@ -148,6 +139,7 @@ class Proxy(proxy.BaseProxy):
         """
         return self._list(_flavor.Flavor, paginated=False,
                           endpoint_override=self.get_os_endpoint(),
+                          headers=self.get_os_headers(),
                           project_id=self.session.get_project_id())
 
     def get_flavor(self, flavor):
@@ -163,6 +155,7 @@ class Proxy(proxy.BaseProxy):
             flavor,
             project_id=self.session.get_project_id(),
             endpoint_override=self.get_os_endpoint(),
+            headers=self.get_os_headers(),
         )
 
     def find_flavor(self, name_or_id, ignore_missing=True):
@@ -232,7 +225,8 @@ class Proxy(proxy.BaseProxy):
             _instance.Instance,
             instance,
             project_id=self.session.get_project_id(),
-            endpoint_override=self.get_os_endpoint()
+            endpoint_override=self.get_os_endpoint(),
+            headers=self.get_os_headers(),
         )
 
     def instances(self):
@@ -243,7 +237,8 @@ class Proxy(proxy.BaseProxy):
         """
         return self._list(_instance.Instance, paginated=False,
                           project_id=self.session.get_project_id(),
-                          endpoint_override=self.get_os_endpoint()
+                          endpoint_override=self.get_os_endpoint(),
+                          headers=self.get_os_headers(),
                           )
 
     def update_instance(self, instance, **attrs):
@@ -272,6 +267,7 @@ class Proxy(proxy.BaseProxy):
             paginated=False,
             project_id=self.session.get_project_id(),
             endpoint_override=self.get_os_endpoint(),
+            headers=self.get_os_headers(),
         )
 
     def get_configuration_group(self, configuration_group):
@@ -287,7 +283,9 @@ class Proxy(proxy.BaseProxy):
             _configuration.ParameterGroup,
             configuration_group,
             project_id=self.session.get_project_id(),
-            endpoint_override=self.get_os_endpoint())
+            endpoint_override=self.get_os_endpoint(),
+            headers=self.get_os_headers(True)
+        )
 
     def create_configuration_group(self, parameter_group, **attrs):
         """Creating a Parameter Group
@@ -335,10 +333,12 @@ class Proxy(proxy.BaseProxy):
         :returns: A generator of backup
         :rtype: :class:`~otcextensions.sdk.rds.v1.backup.Backup
         """
-        return self._list(_backup.Backup, paginated=False,
-                          endpoint_override=self.get_rds_endpoint(),
-                          project_id=self.session.get_project_id(),
-                          headers=self.RDS_HEADERS)
+        return self._list(
+            _backup.Backup, paginated=False,
+            project_id=self.session.get_project_id(),
+            endpoint_override=self.get_rds_endpoint(),
+            headers=self.get_os_headers(True)
+        )
 
     def create_backup(self, instance, **attrs):
         """Create a backups of instance
@@ -352,7 +352,7 @@ class Proxy(proxy.BaseProxy):
             instance_id=instance.id,
             project_id=self.session.get_project_id(),
             endpoint_override=self.get_rds_endpoint(),
-            headers=self.RDS_HEADERS,
+            headers=self.get_os_headers(True),
             **attrs
         )
 
@@ -375,7 +375,7 @@ class Proxy(proxy.BaseProxy):
             ignore_missing=ignore_missing,
             project_id=self.session.get_project_id(),
             endpoint_override=self.get_rds_endpoint(),
-            headers=self.RDS_HEADERS
+            headers=self.get_os_headers(True),
         )
 
     def get_backup_policy(self, instance):
@@ -394,7 +394,7 @@ class Proxy(proxy.BaseProxy):
             instance_id=instance.id,
             project_id=self.session.get_project_id(),
             endpoint_override=self.get_rds_endpoint(),
-            headers=self.RDS_HEADERS
+            headers=self.get_os_headers(True),
         )
 
     def set_backup_policy(self, backup_policy, instance, **attrs):
@@ -414,5 +414,5 @@ class Proxy(proxy.BaseProxy):
             instance_id=instance.id,
             project_id=self.session.get_project_id(),
             endpoint_override=self.get_rds_endpoint(),
-            headers=self.RDS_HEADERS,
+            headers=self.get_os_headers(True),
             **attrs)

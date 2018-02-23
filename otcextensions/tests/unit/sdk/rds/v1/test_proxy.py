@@ -48,6 +48,8 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
             return_value=ENDPOINT_RDS
         )
 
+        self.additional_headers = RDS_HEADERS
+
     def test_get_os_endpoint(self):
         self.assertEqual(ENDPOINT_OS, self.proxy.get_os_endpoint())
 
@@ -61,6 +63,7 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
     def test_datastores(self):
         self.verify_list(
             self.proxy.datastores, _datastore.Datastore,
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             method_kwargs={
                 'db_name': 'test',
             },
@@ -77,9 +80,11 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
         self.verify_list(
             self.proxy.flavors, _flavor.Flavor,
             paginated=False,
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             expected_kwargs={
                 'project_id': PROJECT_ID,
-                'endpoint_override': ENDPOINT_OS
+                'endpoint_override': ENDPOINT_OS,
+                'headers': OS_HEADERS
             }
         )
 
@@ -87,10 +92,11 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
         self.verify_get(
             self.proxy.get_flavor,
             _flavor.Flavor,
-            mock_method='otcextensions.sdk.rds.v1._proxy.Proxy._get',
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
             expected_kwargs={
                 'project_id': PROJECT_ID,
-                'endpoint_override': ENDPOINT_OS
+                'endpoint_override': ENDPOINT_OS,
+                'headers': OS_HEADERS
             }
         )
 
@@ -113,10 +119,11 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
         self.verify_get(
             self.proxy.get_instance,
             _instance.Instance,
-            mock_method='otcextensions.sdk.rds.v1._proxy.Proxy._get',
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
             expected_kwargs={
                 'project_id': PROJECT_ID,
                 'endpoint_override': ENDPOINT_OS,
+                'headers': OS_HEADERS
             }
         )
 
@@ -124,9 +131,11 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
         self.verify_list(
             self.proxy.instances, _instance.Instance,
             paginated=False,
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             expected_kwargs={
                 'project_id': PROJECT_ID,
-                'endpoint_override': ENDPOINT_OS
+                'endpoint_override': ENDPOINT_OS,
+                'headers': OS_HEADERS
             }
         )
 
@@ -134,10 +143,11 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
         self.verify_list(
             self.proxy.configuration_groups, _configuration.ParameterGroup,
             paginated=False,
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             expected_kwargs={
                 'project_id': PROJECT_ID,
                 'endpoint_override': ENDPOINT_OS,
-                # 'headers': OS_HEADERS
+                'headers': OS_HEADERS
             }
         )
 
@@ -145,11 +155,11 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
         self.verify_get(
             self.proxy.get_configuration_group,
             _configuration.ParameterGroup,
-            mock_method='otcextensions.sdk.rds.v1._proxy.Proxy._get',
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
             expected_kwargs={
                 'project_id': PROJECT_ID,
                 'endpoint_override': ENDPOINT_OS,
-                # 'headers': OS_HEADERS
+                'headers': RDS_HEADERS
             }
         )
 
@@ -169,6 +179,7 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
         self.verify_list(
             self.proxy.backups, _backup.Backup,
             paginated=False,
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             expected_kwargs={
                 'project_id': PROJECT_ID,
                 'endpoint_override': ENDPOINT_RDS,
@@ -179,6 +190,7 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
     def test_create_backup(self):
         self.verify_create(
             self.proxy.create_backup, _backup.Backup,
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
             method_kwargs={
                 'instance': 'test',
                 'name': 'some_name'
@@ -196,6 +208,7 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
         self.verify_delete(
             self.proxy.delete_backup,
             _backup.Backup, False,
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
             expected_kwargs={
                 'project_id': PROJECT_ID,
                 'endpoint_override': ENDPOINT_RDS,
@@ -207,7 +220,7 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
         self.verify_get(
             self.proxy.get_backup_policy, _backup.BackupPolicy,
             value=[],
-            mock_method='otcextensions.sdk.rds.v1._proxy.Proxy._get',
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
             method_kwargs={
                 'instance': 'id'
             },
@@ -223,7 +236,7 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
     def test_set_backup_policy(self):
         # TODO(agoncharov) upstream BaseProxy is renamed to Proxy
         self._verify2(
-            'openstack.proxy.BaseProxy._update',
+            'otcextensions.sdk.sdk_proxy.Proxy._update',
             self.proxy.set_backup_policy,
             method_args=['POLICY', 'INST_ID'],
             expected_args=[_backup.BackupPolicy, 'POLICY'],

@@ -15,13 +15,13 @@ from openstack import resource
 
 from otcextensions.sdk.rds import rds_service
 
-from otcextensions.sdk.rds.v1 import _base
+from otcextensions.sdk import sdk_resource
 
 
 _logger = _log.setup_logging('openstack')
 
 
-class InstanceConfiguration(_base.Resource):
+class InstanceConfiguration(sdk_resource.Resource):
     # TODO(agoncharov)
 
     base_path = '/%(project_id)s/instances/%(instanceId)s/configuration'
@@ -39,7 +39,7 @@ class InstanceConfiguration(_base.Resource):
     configuration = resource.Body('configuration', type=dict)
 
 
-class Parameter(_base.Resource):
+class Parameter(sdk_resource.Resource):
     # TODO(agoncharov)
 
     base_path = '/%(project_id)s/datastores/versions/'
@@ -73,7 +73,7 @@ class Parameter(_base.Resource):
     datastore_version_id = resource.Body('datastore_version_id')
 
 
-class ParameterGroup(_base.Resource):
+class ParameterGroup(sdk_resource.Resource):
 
     base_path = '/%(project_id)s/configurations'
     resource_key = 'configuration'

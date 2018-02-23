@@ -16,12 +16,12 @@ from openstack import utils
 
 from otcextensions.sdk.rds import rds_service
 
-from otcextensions.sdk.rds.v1 import _base
+from otcextensions.sdk import sdk_resource
 
 _logger = _log.setup_logging('openstack')
 
 
-class Instance(_base.Resource):
+class Instance(sdk_resource.Resource):
 
     base_path = '/%(project_id)s/instances'
     resource_key = 'instance'
@@ -131,7 +131,7 @@ class Instance(_base.Resource):
     # *Type:string*
     publicEndpoint = resource.Body('publicEndpoint')
 
-    def restart(self, session):
+    def restart(self, session, endpoint_override=None):
         """Restart the database instance
 
         :returns: ``None``
@@ -139,9 +139,9 @@ class Instance(_base.Resource):
         body = {'restart': {}}
         base_url = self.base_path % self._uri.attributes
         url = utils.urljoin(base_url, self.id, 'action')
-        session.post(url, json=body)
+        session.post(url, json=body, endpoint_override=endpoint_override)
 
-    def resize(self, session, flavor_reference):
+    def resize(self, session, flavor_reference, endpoint_override=None):
         """Resize the database instance
 
         :returns: ``None``
@@ -149,9 +149,9 @@ class Instance(_base.Resource):
         body = {'resize': {'flavorRef': flavor_reference}}
         base_url = self.base_path % self._uri.attributes
         url = utils.urljoin(base_url, self.id, 'action')
-        session.post(url, json=body)
+        session.post(url, json=body, endpoint_override=endpoint_override)
 
-    def resize_volume(self, session, volume_size):
+    def resize_volume(self, session, volume_size, endpoint_override=None):
         """Resize the volume attached to the instance
 
         :returns: ``None``
@@ -159,9 +159,9 @@ class Instance(_base.Resource):
         body = {'resize': {'volume': volume_size}}
         base_url = self.base_path % self._uri.attributes
         url = utils.urljoin(base_url, self.id, 'action')
-        session.post(url, json=body)
+        session.post(url, json=body, endpoint_override=endpoint_override)
 
-    def restore(self, session, backupRef):
+    def restore(self, session, backupRef, endpoint_override=None):
         """Restores database to the given backup rference
 
         :returns: ``None``
@@ -169,7 +169,7 @@ class Instance(_base.Resource):
         body = {"restore": {"backupRef": backupRef}}
         base_url = self.base_path % self._uri.attributes
         url = utils.urljoin(base_url, self.id, 'action')
-        session.post(url, json=body)
+        session.post(url, json=body, endpoint_override=endpoint_override)
 
         # TODO(agoncharov) call returns jobId
         # return self._action(session, {"restore": {"backupRef": backupRef}})
