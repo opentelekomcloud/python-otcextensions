@@ -339,6 +339,9 @@ class Resource(resource.Resource):
                      endpoint_override=None, headers=None):
         """Update the remote resource based on this instance.
 
+        Method is required for resources without ID
+        (single resource at endpoint)
+
         :param session: The session to use for making this request.
         :type session: :class:`~keystoneauth1.adapter.Adapter`
         :param prepend_key: A boolean indicating whether the resource_key
