@@ -57,8 +57,10 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
         self.assertEqual(ENDPOINT_RDS, self.proxy.get_rds_endpoint())
 
     def test_datastore_types(self):
-        result = list(self.proxy.datastore_types())
-        self.assertEqual(['MySQL', 'PostgreeSQL', 'SQLServer'], result)
+        result = self.proxy.datastore_types()
+
+        self.assertEqual(['MySQL', 'PostgreSQL', 'SQLServer'],
+                         list(s.name for s in result))
 
     def test_datastores(self):
         self.verify_list(

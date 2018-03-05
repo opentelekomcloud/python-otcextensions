@@ -10,7 +10,7 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-"""Flavor v1 action implementations"""
+"""Datastore v1 action implementations"""
 
 import logging
 
@@ -26,32 +26,24 @@ from otcextensions.i18n import _
 LOG = logging.getLogger(__name__)
 
 
-class ListFlavor(command.Lister):
-    _description = _("List flavors")
+class ListTypes(command.Lister):
+    _description = _("List Datastore types")
 
     def get_parser(self, prog_name):
-        parser = super(ListFlavor, self).get_parser(prog_name)
+        parser = super(ListTypes, self).get_parser(prog_name)
 
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.rds
 
-        data = client.flavors()
+        data = client.datastore_types()
 
         columns = (
             'name',
-            'ram',
-            # 'id',
-            'str_id',
-            'flavor_detail'
         )
         column_headers = (
             'Name',
-            'Ram',
-            'ID',
-            # 'Str_ID',
-            'Flavor details'
         )
 
         return (
@@ -63,32 +55,42 @@ class ListFlavor(command.Lister):
         )
 
 
-class ShowFlavor(command.ShowOne):
-    _description = _("Display DB Flavor details")
+class ListDatastoreVersions(command.Lister):
+    _description = _("Display Datastore version details")
 
     def get_parser(self, prog_name):
-        parser = super(ShowFlavor, self).get_parser(prog_name)
+        parser = super(ListDatastoreVersions, self).get_parser(prog_name)
         parser.add_argument(
-            'flavor',
-            metavar="<flavor>",
-            help=_("Flavor to display (name or ID)")
+            '--type',
+            metavar="<type>",
+            help=_("Datastore type (name)")
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.rds
 
-        obj = client.get_flavor(parsed_args.flavor)
+        data = client.datastores(db_name=parsed_args.type)
 
-        LOG.debug('object is %s' % obj)
         columns = (
+            'id',
             'name',
-            'ram',
-            'str_id',
-            'flavor',
-            'flavor_detail',
-            'price_detail'
+            'datastore',
+            'image',
+            'packages'
         )
-        data = utils.get_item_properties(obj, columns)
+        column_headers = (
+            'ID',
+            'Name',
+            'Datastore',
+            'Image',
+            'Packages'
+        )
 
-        return (columns, data)
+        return (
+            column_headers,
+            (utils.get_item_properties(
+                s,
+                columns,
+            ) for s in data)
+        )

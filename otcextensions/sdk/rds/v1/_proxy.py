@@ -90,8 +90,9 @@ class Proxy(sdk_proxy.Proxy):
         :returns: A generator of supported datastore types
         :rtype :string
         """
-        for ds in ['MySQL', 'PostgreeSQL', 'SQLServer']:
-            yield ds
+        for ds in ['MySQL', 'PostgreSQL', 'SQLServer']:
+            obj = type('obj', (object,), {'name': ds})
+            yield obj
 
         return
 

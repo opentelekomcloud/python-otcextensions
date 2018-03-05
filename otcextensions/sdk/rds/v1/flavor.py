@@ -38,7 +38,7 @@ class Flavor(sdk_resource.Resource):
     project_id = resource.URI('project_id')
     # Properties
     #: Flavor id
-    id = resource.Body('id')
+    # id = resource.Body('id', alias='str_id')
     #: Flavor name
     name = resource.Body('name')
     #: Ram size in MB.
@@ -50,7 +50,7 @@ class Flavor(sdk_resource.Resource):
     #: *Type:list*
     # links = resource.Body('links', type=list)
     #: String id
-    str_id = resource.Body('str_id')
+    str_id = resource.Body('str_id', alternate_id=True)
     #: Flavor detail
     #: *Type:list*
     flavor_detail = resource.Body('flavor_detail', type=list, list_type=dict)
