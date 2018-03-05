@@ -114,7 +114,7 @@ class FakeFlavor(object):
             'specCode': 'image-' + uuid.uuid4().hex,
             'flavor_detail': None,
             'price_detail': None,
-            # 'flavor': 'flavor-' + uuid.uuid4().hex,
+            'flavor': None,
         }
 
         # Overwrite default attributes.

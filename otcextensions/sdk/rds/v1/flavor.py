@@ -56,7 +56,7 @@ class Flavor(sdk_resource.Resource):
     flavor_detail = resource.Body('flavor_detail', type=list, list_type=dict)
     #: Flavor
     #: *Type:dict*
-    # flavor = resource.Body('flavor', type=dict)
+    flavor = resource.Body('flavor', type=dict)
     #: Price detail
     #: *Type:list*
     price_detail = resource.Body('price_detail', type=list)
