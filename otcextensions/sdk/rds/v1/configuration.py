@@ -14,6 +14,7 @@ from openstack import _log
 from openstack import resource
 from openstack import utils
 
+from otcextensions.common import utils as sdk_utils
 from otcextensions.sdk.rds import rds_service
 
 from otcextensions.sdk import sdk_resource
@@ -145,7 +146,7 @@ class ParameterGroup(sdk_resource.Resource):
         args = self._prepare_override_args(
             endpoint_override=endpoint_override,
             request_headers=request.headers,
-            additional_headers={"Content-Type": "application/json"}
+            additional_headers={'Content-Type': 'application/json'}
         )
 
         # URL is a subpoin
@@ -182,10 +183,11 @@ class ParameterGroup(sdk_resource.Resource):
             # additional_headers={"Content-Type": "application/json"}
         )
 
+        pg_attrs = {}
+        pg_attrs['values'] = attrs.pop('values')
+
         body = {
-            "configuration": {
-                "values": attrs
-            }
+            'configuration': dict(**pg_attrs)
         }
 
         response = session.patch(
@@ -195,8 +197,12 @@ class ParameterGroup(sdk_resource.Resource):
         if resp:
             errCode = resp.get('errCode', None)
             if errCode and errCode == 'RDS.0041':
-                self._body.attributes.update({"values": attrs})
-                self._body.clean()
+                pg_attrs['values'] = sdk_utils.merge_two_dicts(
+                    self.values,
+                    pg_attrs['values']
+                )
+
+                self._update(**pg_attrs)
                 return self
 
         return resp
@@ -227,8 +233,16 @@ class ParameterGroup(sdk_resource.Resource):
             # additional_headers={"Content-Type": "application/json"}
         )
 
+        pg_attrs = {}
+        pg_attrs['values'] = attrs.pop('values')
+
+        if 'name' in attrs:
+            pg_attrs['name'] = attrs.pop('name')
+        if 'description' in attrs:
+            pg_attrs['description'] = attrs.pop('description')
+
         body = {
-            "configuration": attrs
+            'configuration': dict(**pg_attrs)
         }
 
         response = session.put(
@@ -238,8 +252,12 @@ class ParameterGroup(sdk_resource.Resource):
         if resp:
             errCode = resp.get('errCode', None)
             if errCode and errCode == 'RDS.0041':
-                self._body.attributes.update({"values": attrs})
-                self._body.clean()
+                pg_attrs['values'] = sdk_utils.merge_two_dicts(
+                    self.values,
+                    pg_attrs['values']
+                )
+
+                self._update(**pg_attrs)
                 return self
 
         return resp

@@ -14,6 +14,8 @@ from openstack import _log
 from openstack import utils
 # from openstack import proxy
 
+from openstack import exceptions
+
 from otcextensions.sdk import sdk_proxy
 
 from otcextensions.sdk.rds.v1 import backup as _backup
@@ -321,6 +323,36 @@ class Proxy(sdk_proxy.Proxy):
             endpoint_override=self.get_os_endpoint(),
             headers=self.get_os_headers()
         )
+
+    def find_parameter_group(self, name_or_id, ignore_missing=True):
+        """Find a Parameter Group
+
+        :param parameter_group: The value can be the ID of a Parameter Group
+                or a object of
+               :class:`~otcextensions.sdk.rds.v1.configuration.Configurations`.
+        :returns: A Parameter Group Object
+        :rtype: :class:`~otcextensions.rds.v1.configuration.ParameterGroup`.
+
+        """
+        pg = None
+        try:
+            pg = self.get_parameter_group(name_or_id)
+        except exceptions.NotFoundException as e:
+            _logger.warn('ParameterGroup search by name '
+                         'has not returned results. '
+                         'Try passing ID for performance')
+        if pg:
+            return pg
+        # Search by name. Get all groups and compare individually
+        pgs = self.parameter_groups()
+        for pg in pgs:
+            if pg.id == name_or_id or pg.name == name_or_id:
+                return pg
+        if not ignore_missing:
+            raise exceptions.ResourceNotFound(
+                "No %s found for %s" % ('ParameterGroup', name_or_id))
+        # return self._find(_configuration.ParameterGroup, name_or_id,
+        #                   ignore_missing=ignore_missing)
 
     # ======= Backups =======
     def backups(self):

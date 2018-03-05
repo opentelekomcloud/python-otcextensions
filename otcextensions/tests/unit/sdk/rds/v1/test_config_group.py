@@ -148,6 +148,12 @@ class TestParameterGroup(base.TestCase):
             ),
             result)
 
+        # TODO(agoncharov)
+        # {"badRequest":{"code":400,"message":
+        # "The server could not comply with the request since it is malformed
+        # or incorrect."},"errCode":"RDS.0001","externalMessage":
+        # "Parameter error!"}
+
     def test_delete(self):
 
         mock_response = mock.Mock()
@@ -265,12 +271,14 @@ class TestParameterGroup(base.TestCase):
         mock_response.headers = {}
 
         config = {
-            'a': 'x',
-            'b': 'y'
+            'values': {
+                'a': 'x',
+                'b': 'y'
+            }
         }
 
         req = {
-            'configuration': {'values': config}
+            'configuration': dict(**config)
         }
 
         sot = configuration.ParameterGroup(
