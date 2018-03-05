@@ -15,7 +15,7 @@
 
 # import copy
 # import datetime
-# import random
+import random
 import uuid
 
 import mock
@@ -25,6 +25,7 @@ import mock
 from openstackclient.tests.unit import utils
 
 from otcextensions.sdk.rds.v1.datastore import Datastore
+from otcextensions.sdk.rds.v1.flavor import Flavor
 
 
 class TestRds(utils.TestCommand):
@@ -35,10 +36,11 @@ class TestRds(utils.TestCommand):
         self.app.client_manager.rds = mock.Mock()
 
         self.datastore_mock = FakeDatastore
+        self.flavor_mock = FakeFlavor
 
 
 class FakeDatastore(object):
-    """Fake one or more compute servers."""
+    """Fake one or more datastore versions."""
 
     @staticmethod
     def create_one_datastore(attrs=None, methods=None):
@@ -83,5 +85,57 @@ class FakeDatastore(object):
         objects = []
         for i in range(0, count):
             objects.append(FakeDatastore.create_one_datastore(attrs, methods))
+
+        return objects
+
+
+class FakeFlavor(object):
+    """Fake one or more Flavor."""
+
+    @staticmethod
+    def create_one_flavor(attrs=None, methods=None):
+        """Create a fake flavor.
+
+        :param Dictionary attrs:
+            A dictionary with all attributes
+        :param Dictionary methods:
+            A dictionary with all methods
+        :return:
+            A FakeResource object, with id, name, metadata, and so on
+        """
+        attrs = attrs or {}
+        methods = methods or {}
+
+        # Set default attributes.
+        object_info = {
+            'str_id': 'id-' + uuid.uuid4().hex,
+            'name': 'name-' + uuid.uuid4().hex,
+            'ram': random.randint(1, 10280),
+            'specCode': 'image-' + uuid.uuid4().hex,
+            'flavor_detail': None,
+            'price_detail': None,
+            # 'flavor': 'flavor-' + uuid.uuid4().hex,
+        }
+
+        # Overwrite default attributes.
+        # object_info.update(attrs)
+        return Flavor(**object_info)
+
+    @staticmethod
+    def create_flavors(attrs=None, methods=None, count=2):
+        """Create multiple fake flavors.
+
+        :param Dictionary attrs:
+            A dictionary with all attributes
+        :param Dictionary methods:
+            A dictionary with all methods
+        :param int count:
+            The number of servers to fake
+        :return:
+            A list of FakeResource objects faking the servers
+        """
+        objects = []
+        for i in range(0, count):
+            objects.append(FakeFlavor.create_one_flavor(attrs, methods))
 
         return objects

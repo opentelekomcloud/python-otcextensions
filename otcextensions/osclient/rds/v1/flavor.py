@@ -85,7 +85,7 @@ class ShowFlavor(command.ShowOne):
             'name',
             'ram',
             'str_id',
-            'flavor',
+            # 'flavor',
             'flavor_detail',
             'price_detail'
         )
