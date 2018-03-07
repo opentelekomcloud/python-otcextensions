@@ -257,57 +257,61 @@ class Proxy(sdk_proxy.Proxy):
             **attrs
         )
 
-    # ======= Configuration =======
-    def parameter_groups(self, **attrs):
-        """Obtaining a Parameter Group List
+    # ======= Configurations =======
+    def configurations(self, **attrs):
+        """Obtaining a ConfigurationGroup List
 
-        :returns: A generator of ParameterGroup object
-        :rtype: :class:`~otcextensions.sdk.rds.v1.configuration.ParameterGroup
+        :returns: A generator of ConfigurationGroup object
+        :rtype:
+            :class:`~otcextensions.sdk.rds.v1.configuration.ConfigurationGroup
         """
         return self._list(
-            _configuration.ParameterGroup,
+            _configuration.ConfigurationGroup,
             paginated=False,
             project_id=self.session.get_project_id(),
             endpoint_override=self.get_os_endpoint(),
             headers=self.get_os_headers(),
         )
 
-    def get_parameter_group(self, parameter_group):
-        """Obtaining a Parameter Group
+    def get_configuration(self, cg):
+        """Obtaining a ConfigurationGroup
 
-        :param parameter_group: The value can be the ID of a Parameter Group
+        :param parameter_group: The value can be the ID of a ConfigurationGroup
                 or a object of
-               :class:`~otcextensions.sdk.rds.v1.configuration.Configurations`.
+               :class:`~otcextensions.sdk.rds.v1.configuration.ConfigurationGroup`.
         :returns: A Parameter Group Object
-        :rtype: :class:`~otcextensions.rds.v1.configuration.ParameterGroup`.
+        :rtype:
+            :class:`~otcextensions.rds.v1.configuration.ConfigurationGroup`.
 
         """
         return self._get(
-            _configuration.ParameterGroup,
-            parameter_group,
+            _configuration.ConfigurationGroup,
+            cg,
             project_id=self.session.get_project_id(),
             endpoint_override=self.get_os_endpoint(),
             headers=self.get_os_headers(True)
         )
 
-    def create_parameter_group(self, **attrs):
-        """Creating a Parameter Group
+    def create_configuration(self, **attrs):
+        """Creating a ConfigurationGroup
 
-        :param dict \*\*attrs: Dict to overwrite ParameterGroup object
+        :param dict \*\*attrs: Dict to overwrite ConfigurationGroup object
         :returns: A Parameter Group Object
-        :rtype: :class:`~otcextensions.sdk.rds.v1.configuration.ParameterGroup`
+        :rtype:
+            :class:`~otcextensions.sdk.rds.v1.configuration.ConfigurationGroup`
         """
-        return self._create(_configuration.ParameterGroup,
+        return self._create(_configuration.ConfigurationGroup,
                             project_id=self.session.get_project_id(),
                             endpoint_override=self.get_os_endpoint(),
                             headers=self.get_os_headers(),
                             **attrs)
 
-    def delete_parameter_group(self, cg, ignore_missing=True):
-        """Deleting a Parameter Group
+    def delete_configuration(self, cg, ignore_missing=True):
+        """Deleting a ConfigurationGroup
 
-        :param cg: The value can be the ID of a Parameter Group or a object of
-               :class:`~otcextensions.sdk.rds.v1.configuration.ParameterGroup`.
+        :param cg: The value can be the ID of a ConfigurationGroup or a
+                object of
+               :class:`~otcextensions.sdk.rds.v1.configuration.ConfigurationGroup`.
         :param bool ignore_missing: When set to ``False``
                 :class:`~openstack.exceptions.ResourceNotFound` will be
                 raised when the Parameter Group does not exist.
@@ -317,40 +321,40 @@ class Proxy(sdk_proxy.Proxy):
         :returns: None
         """
         self._delete(
-            _configuration.ParameterGroup, cg,
+            _configuration.ConfigurationGroup, cg,
             ignore_missing=ignore_missing,
             project_id=self.session.get_project_id(),
             endpoint_override=self.get_os_endpoint(),
             headers=self.get_os_headers()
         )
 
-    def find_parameter_group(self, name_or_id, ignore_missing=True):
-        """Find a Parameter Group
+    def find_configuration(self, name_or_id, ignore_missing=True):
+        """Find a ConfigurationGroup
 
-        :param parameter_group: The value can be the ID of a Parameter Group
+        :param parameter_group: The value can be the ID of a ConfigurationGroup
                 or a object of
                :class:`~otcextensions.sdk.rds.v1.configuration.Configurations`.
         :returns: A Parameter Group Object
-        :rtype: :class:`~otcextensions.rds.v1.configuration.ParameterGroup`.
-
+        :rtype:
+            :class:`~otcextensions.rds.v1.configuration.ConfigurationGroup`.
         """
-        pg = None
+        cg = None
         try:
-            pg = self.get_parameter_group(name_or_id)
+            cg = self.get_configuration(name_or_id)
         except exceptions.NotFoundException as e:
-            _logger.warn('ParameterGroup search by name '
+            _logger.warn('ConfigurationGroup search by name '
                          'has not returned results. '
                          'Try passing ID for performance')
-        if pg:
-            return pg
+        if cg:
+            return cg
         # Search by name. Get all groups and compare individually
-        pgs = self.parameter_groups()
-        for pg in pgs:
-            if pg.id == name_or_id or pg.name == name_or_id:
-                return pg
+        cgs = self.configurations()
+        for cg in cgs:
+            if cg.id == name_or_id or cg.name == name_or_id:
+                return cg
         if not ignore_missing:
             raise exceptions.ResourceNotFound(
-                "No %s found for %s" % ('ParameterGroup', name_or_id))
+                "No %s found for %s" % ('ConfigurationGroup', name_or_id))
         # return self._find(_configuration.ParameterGroup, name_or_id,
         #                   ignore_missing=ignore_missing)
 

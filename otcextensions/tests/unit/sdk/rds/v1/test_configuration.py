@@ -61,14 +61,14 @@ EXAMPLE_GROUP = {
 }
 
 
-class TestParameterGroup(base.TestCase):
+class TestConfigurationGroup(base.TestCase):
 
     # TODO(agoncharov)
     # - test all fields
     # - test negative server responses
 
     def setUp(self):
-        super(TestParameterGroup, self).setUp()
+        super(TestConfigurationGroup, self).setUp()
         self.sess = mock.Mock(spec=adapter.Adapter)
         self.sess.get = mock.Mock()
         self.sess.post = mock.Mock()
@@ -76,11 +76,11 @@ class TestParameterGroup(base.TestCase):
         self.sess.put = mock.Mock()
         self.sess.patch = mock.Mock()
         self.sess.get_project_id = mock.Mock(return_value=PROJECT_ID)
-        self.sot = configuration.ParameterGroup(**EXAMPLE_GROUP)
+        self.sot = configuration.ConfigurationGroup(**EXAMPLE_GROUP)
         # print(self.sot.to_dict())
 
     def test_basic(self):
-        sot = configuration.ParameterGroup()
+        sot = configuration.ConfigurationGroup()
         self.assertEqual('configuration', sot.resource_key)
         self.assertEqual('configurations', sot.resources_key)
         self.assertEqual('/%(project_id)s/configurations', sot.base_path)
@@ -88,12 +88,12 @@ class TestParameterGroup(base.TestCase):
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_get)
-        self.assertFalse(sot.allow_update)
+        self.assertTrue(sot.allow_update)
         self.assertTrue(sot.allow_delete)
 
     def test_make_it(self):
         # TODO(agoncharov) check all parameters
-        sot = configuration.ParameterGroup(**EXAMPLE_GROUP)
+        sot = configuration.ConfigurationGroup(**EXAMPLE_GROUP)
         self.assertEqual(IDENTIFIER, sot.id)
         self.assertEqual(EXAMPLE_GROUP['name'], sot.name)
         self.assertEqual(EXAMPLE_GROUP['created'], sot.created)
@@ -115,8 +115,41 @@ class TestParameterGroup(base.TestCase):
             '/%s/configurations' % (PROJECT_ID),
             headers=OS_HEADERS)
 
-        self.assertEqual([configuration.ParameterGroup(**EXAMPLE_GROUP)],
+        self.assertEqual([configuration.ConfigurationGroup(**EXAMPLE_GROUP)],
                          result)
+
+    def test_get(self):
+
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            'configuration': copy.deepcopy(EXAMPLE_GROUP)
+        }
+        mock_response.headers = {}
+
+        self.sess.get.return_value = mock_response
+
+        sot = configuration.ConfigurationGroup.new(
+            project_id=PROJECT_ID,
+            id=IDENTIFIER,
+            # **EXAMPLE_GROUP
+        )
+
+        result = sot.get(self.sess, headers=OS_HEADERS)
+
+        self.sess.get.assert_called_once_with(
+            '%s/configurations/%s' % (PROJECT_ID, IDENTIFIER),
+            headers=OS_HEADERS,
+        )
+
+        print(result)
+
+        self.assertEqual(
+            configuration.ConfigurationGroup(
+                project_id=PROJECT_ID,
+                **EXAMPLE_GROUP
+            ),
+            result)
 
     def test_create(self):
 
@@ -129,7 +162,7 @@ class TestParameterGroup(base.TestCase):
 
         self.sess.post.return_value = mock_response
 
-        sot = configuration.ParameterGroup.new(
+        sot = configuration.ConfigurationGroup.new(
             project_id=PROJECT_ID,
             **EXAMPLE_GROUP)
 
@@ -142,7 +175,7 @@ class TestParameterGroup(base.TestCase):
         )
 
         self.assertEqual(
-            configuration.ParameterGroup(
+            configuration.ConfigurationGroup(
                 project_id=PROJECT_ID,
                 **EXAMPLE_GROUP
             ),
@@ -163,7 +196,7 @@ class TestParameterGroup(base.TestCase):
 
         self.sess.delete.return_value = mock_response
 
-        sot = configuration.ParameterGroup(
+        sot = configuration.ConfigurationGroup(
             project_id=PROJECT_ID,
             **EXAMPLE_GROUP
         )
@@ -183,7 +216,7 @@ class TestParameterGroup(base.TestCase):
         )
 
     def _verify2(self, mock_method, test_method,
-                 method_args=None, method_kwargs=None, method_result=None,
+                 method_args=None, method_kwargs={}, method_result=None,
                  expected_args=None, expected_kwargs=None,
                  expected_result=None):
         """Internal invoke helper
@@ -208,7 +241,7 @@ class TestParameterGroup(base.TestCase):
 
         self.sess.get.return_value = mock_response
 
-        sot = configuration.ParameterGroup(
+        sot = configuration.ConfigurationGroup(
             project_id=PROJECT_ID,
             **EXAMPLE_GROUP
         )
@@ -261,83 +294,83 @@ class TestParameterGroup(base.TestCase):
             }
         )
 
-    def test_add_custom_parameter(self):
-        mock_response = mock.Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {
-            'errCode': 'RDS.0041',
-            'externalMessage': 'Operation accepted success.'
-        }
-        mock_response.headers = {}
+    # def test_add_custom_parameter(self):
+    #     mock_response = mock.Mock()
+    #     mock_response.status_code = 200
+    #     mock_response.json.return_value = {
+    #         'errCode': 'RDS.0041',
+    #         'externalMessage': 'Operation accepted success.'
+    #     }
+    #     mock_response.headers = {}
+    #
+    #     config = {
+    #         'values': {
+    #             'a': 'x',
+    #             'b': 'y'
+    #         }
+    #     }
+    #
+    #     req = {
+    #         'configuration': dict(**config)
+    #     }
+    #
+    #     sot = configuration.ConfigurationGroup(
+    #         project_id=PROJECT_ID,
+    #         **EXAMPLE_GROUP
+    #     )
+    #
+    #     url = '%(project_id)s/configurations/%(id)s' % \
+    #         {
+    #             'project_id': PROJECT_ID,
+    #             'id': sot.id
+    #         }
+    #
+    #     # Invoke without endpoint_override
+    #     self._verify2(
+    #         expected_result=mock_response,
+    #         mock_method=self.sess.patch,
+    #         test_method=sot.add_custom_parameter,
+    #         method_args=[self.sess],
+    #         method_kwargs=config,
+    #         expected_args=[url],
+    #         expected_kwargs={
+    #             'json': req,
+    #             # 'headers': OS_HEADERS,
+    #         }
+    #     )
+    #
+    #     # Invoke with endpoint_override as argument
+    #     self._verify2(
+    #         expected_result=mock_response,
+    #         mock_method=self.sess.patch,
+    #         test_method=sot.add_custom_parameter,
+    #         method_args=[self.sess],
+    #         method_kwargs=dict(endpoint_override=ENDPOINT, **config),
+    #         expected_args=[url],
+    #         expected_kwargs={
+    #             'json': req,
+    #             # 'headers': OS_HEADERS,
+    #             'endpoint_override': ENDPOINT
+    #         }
+    #     )
+    #
+    #     # Invoke with endpoint_override as attribute
+    #     sot.endpoint_override = ENDPOINT
+    #     self._verify2(
+    #         expected_result=mock_response,
+    #         mock_method=self.sess.patch,
+    #         test_method=sot.add_custom_parameter,
+    #         method_args=[self.sess],
+    #         method_kwargs=config,
+    #         expected_args=[url],
+    #         expected_kwargs={
+    #             'json': req,
+    #             # 'headers': OS_HEADERS,
+    #             'endpoint_override': ENDPOINT
+    #         }
+    #     )
 
-        config = {
-            'values': {
-                'a': 'x',
-                'b': 'y'
-            }
-        }
-
-        req = {
-            'configuration': dict(**config)
-        }
-
-        sot = configuration.ParameterGroup(
-            project_id=PROJECT_ID,
-            **EXAMPLE_GROUP
-        )
-
-        url = '%(project_id)s/configurations/%(id)s' % \
-            {
-                'project_id': PROJECT_ID,
-                'id': sot.id
-            }
-
-        # Invoke without endpoint_override
-        self._verify2(
-            expected_result=mock_response,
-            mock_method=self.sess.patch,
-            test_method=sot.add_custom_parameter,
-            method_args=[self.sess],
-            method_kwargs=config,
-            expected_args=[url],
-            expected_kwargs={
-                'json': req,
-                # 'headers': OS_HEADERS,
-            }
-        )
-
-        # Invoke with endpoint_override as argument
-        self._verify2(
-            expected_result=mock_response,
-            mock_method=self.sess.patch,
-            test_method=sot.add_custom_parameter,
-            method_args=[self.sess],
-            method_kwargs=dict(endpoint_override=ENDPOINT, **config),
-            expected_args=[url],
-            expected_kwargs={
-                'json': req,
-                # 'headers': OS_HEADERS,
-                'endpoint_override': ENDPOINT
-            }
-        )
-
-        # Invoke with endpoint_override as attribute
-        sot.endpoint_override = ENDPOINT
-        self._verify2(
-            expected_result=mock_response,
-            mock_method=self.sess.patch,
-            test_method=sot.add_custom_parameter,
-            method_args=[self.sess],
-            method_kwargs=config,
-            expected_args=[url],
-            expected_kwargs={
-                'json': req,
-                # 'headers': OS_HEADERS,
-                'endpoint_override': ENDPOINT
-            }
-        )
-
-    def test_change_parameter_info(self):
+    def test_update(self):
         mock_response = mock.Mock()
         mock_response.status_code = 200
         mock_response.json.return_value = {
@@ -359,10 +392,13 @@ class TestParameterGroup(base.TestCase):
             'configuration': dict(**config)
         }
 
-        sot = configuration.ParameterGroup(
+        sot_tmpl = configuration.ConfigurationGroup.existing(
             project_id=PROJECT_ID,
             **EXAMPLE_GROUP
         )
+
+        sot = copy.deepcopy(sot_tmpl)
+        sot._update(**config)
 
         url = '%(project_id)s/configurations/%(id)s' % \
             {
@@ -374,23 +410,26 @@ class TestParameterGroup(base.TestCase):
         self._verify2(
             expected_result=mock_response,
             mock_method=self.sess.put,
-            test_method=sot.change_parameter_info,
+            test_method=sot.update,
             method_args=[self.sess],
-            method_kwargs=config,
+            # method_kwargs=None,
             expected_args=[url],
             expected_kwargs={
                 'json': req,
                 # 'headers': OS_HEADERS,
             }
         )
+
+        sot = copy.deepcopy(sot_tmpl)
+        sot._update(**config)
 
         # Invoke with endpoint_override as argument
         self._verify2(
             expected_result=mock_response,
             mock_method=self.sess.put,
-            test_method=sot.change_parameter_info,
+            test_method=sot.update,
             method_args=[self.sess],
-            method_kwargs=dict(endpoint_override=ENDPOINT, **config),
+            method_kwargs=dict(endpoint_override=ENDPOINT),
             expected_args=[url],
             expected_kwargs={
                 'json': req,
@@ -399,18 +438,21 @@ class TestParameterGroup(base.TestCase):
             }
         )
 
-        # Invoke with endpoint_override as attribute
-        sot.endpoint_override = ENDPOINT
-        self._verify2(
-            expected_result=mock_response,
-            mock_method=self.sess.put,
-            test_method=sot.change_parameter_info,
-            method_args=[self.sess],
-            method_kwargs=config,
-            expected_args=[url],
-            expected_kwargs={
-                'json': req,
-                # 'headers': OS_HEADERS,
-                'endpoint_override': ENDPOINT
-            }
-        )
+        sot = copy.deepcopy(sot_tmpl)
+        sot._update(**config)
+
+        # # Invoke with endpoint_override as attribute
+        # sot.endpoint_override = ENDPOINT
+        # self._verify2(
+        #     expected_result=mock_response,
+        #     mock_method=self.sess.put,
+        #     test_method=sot.update,
+        #     method_args=[self.sess],
+        #     # method_kwargs=None,
+        #     expected_args=[url],
+        #     expected_kwargs={
+        #         'json': req,
+        #         # 'headers': OS_HEADERS,
+        #         'endpoint_override': ENDPOINT
+        #     }
+        # )

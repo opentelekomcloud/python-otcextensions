@@ -174,9 +174,9 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
             }
         )
 
-    def test_parameter_groups(self):
+    def test_configurations(self):
         self.verify_list(
-            self.proxy.parameter_groups, _configuration.ParameterGroup,
+            self.proxy.configurations, _configuration.ConfigurationGroup,
             paginated=False,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             expected_kwargs={
@@ -186,10 +186,10 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
             }
         )
 
-    def test_get_parameter_group(self):
+    def test_get_configuration(self):
         self.verify_get(
-            self.proxy.get_parameter_group,
-            _configuration.ParameterGroup,
+            self.proxy.get_configuration,
+            _configuration.ConfigurationGroup,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
             expected_kwargs={
                 'project_id': PROJECT_ID,
@@ -198,10 +198,10 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
             }
         )
 
-    def test_create_parameter_group(self):
+    def test_create_configuration(self):
         self.verify_create(
-            self.proxy.create_parameter_group,
-            _configuration.ParameterGroup,
+            self.proxy.create_configuration,
+            _configuration.ConfigurationGroup,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
             method_kwargs={
                 'instance': 'test',
@@ -216,10 +216,10 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
             }
         )
     #
-    # def test_update_parameter_group(self):
+    # def test_update_configuration_group(self):
     #     self.verify_update(
-    #         self.proxy.update_parameter_group,
-    #         _configuration.ParameterGroup,
+    #         self.proxy.update_configuration_group,
+    #         _configuration.ConfigurationGroup,
     #         mock_method='otcextensions.sdk.sdk_proxy.Proxy._update',
     #         method_kwargs={
     #             'instance': 'test',
@@ -234,10 +234,10 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
     #         }
     #     )
 
-    def test_delete_parameter_group(self):
+    def test_delete_configuration(self):
         self.verify_delete(
-            self.proxy.delete_parameter_group,
-            _configuration.ParameterGroup, True,
+            self.proxy.delete_configuration,
+            _configuration.ConfigurationGroup, True,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
             expected_kwargs={
                 'project_id': PROJECT_ID,
@@ -245,6 +245,21 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
                 'headers': OS_HEADERS,
             }
         )
+
+    def test_find_configuration(self):
+        # TODO(agoncharov) implement it correctly
+        pass
+        # self.verify_get(
+        #     self.proxy.find_configuration,
+        #     _configuration.ConfigurationGroup,
+        #     mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
+        #     # method_kwargs={'name_or_id': 'test'},
+        #     expected_kwargs={
+        #         'project_id': PROJECT_ID,
+        #         'endpoint_override': ENDPOINT_OS,
+        #         'headers': RDS_HEADERS
+        #     }
+        # )
 
     def test_backups(self):
         self.verify_list(
