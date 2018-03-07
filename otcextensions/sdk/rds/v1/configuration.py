@@ -112,7 +112,7 @@ class ConfigurationGroup(sdk_resource.Resource):
     updated = resource.Body('updated')
     #: Allow update or not, 0 for not allowed
     #: *Type:int*
-    allowed_updated = resource.Body('allowed_updated', type=int)
+    # allowed_updated = resource.Body('allowed_updated', type=int)
     #: Count of associated instance
     #: *Type:int*
     instance_count = resource.Body('instance_count', type=int)
