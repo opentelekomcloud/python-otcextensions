@@ -63,6 +63,7 @@ class ListDatastoreVersions(command.Lister):
         parser.add_argument(
             '--type',
             metavar="<type>",
+            required=True,
             help=_("Datastore type (name)")
         )
         return parser
