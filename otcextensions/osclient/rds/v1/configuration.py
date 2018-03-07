@@ -10,7 +10,7 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-"""Flavor v1 action implementations"""
+"""Configuration v1 action implementations"""
 
 import logging
 
@@ -24,19 +24,10 @@ from osc_lib import exceptions
 from osc_lib import utils
 
 from otcextensions.i18n import _
-# from otcextensions.sdk.rds.v1.configuration import ParameterGroup
-
 
 LOG = logging.getLogger(__name__)
 
 DATASTORE_TYPE_CHOICES = ['MySQL', 'PostgreSQL', 'SQLServer']
-
-
-# def set_attributes_for_print_detail(configuration):
-#     info = configuration._info.copy()
-#     info['values'] = json.dumps(configuration.values)
-#     del info['datastore_version_id']
-#     return info
 
 
 def format_dict(data):
