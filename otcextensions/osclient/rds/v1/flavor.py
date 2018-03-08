@@ -14,7 +14,7 @@
 
 import logging
 
-# import six
+import six
 
 # from osc_lib.cli import parseractions
 from osc_lib.command import command
@@ -26,11 +26,26 @@ from otcextensions.i18n import _
 LOG = logging.getLogger(__name__)
 
 
-class ListFlavor(command.Lister):
-    _description = _("List flavors")
+def set_attributes_for_print_detail(instance):
+    info = {}  # instance.copy()
+    info['id'] = instance.str_id
+    info['ram'] = instance.ram
+    info['name'] = instance.name
+    # info['str_id'] = instance['str_id']
+    if getattr(instance, 'flavor_detail', None):
+        for det in instance.flavor_detail:
+            if det['name'] == 'cpu':
+                info['vcpus'] = det['value']
+    return info
+
+
+class ListDatabaseFlavors(command.Lister):
+
+    _description = _("List database flavors")
+    columns = ['ID', 'Name', 'RAM']
 
     def get_parser(self, prog_name):
-        parser = super(ListFlavor, self).get_parser(prog_name)
+        parser = super(ListDatabaseFlavors, self).get_parser(prog_name)
 
         return parser
 
@@ -39,39 +54,25 @@ class ListFlavor(command.Lister):
 
         data = client.flavors()
 
-        columns = (
-            'name',
-            'ram',
-            # 'id',
-            'str_id',
-            'flavor_detail'
-        )
-        column_headers = (
-            'Name',
-            'Ram',
-            'ID',
-            # 'Str_ID',
-            'Flavor details'
-        )
-
         return (
-            column_headers,
-            (utils.get_item_properties(
-                s,
-                columns,
+            self.columns,
+            (utils.get_dict_properties(
+                set_attributes_for_print_detail(s),
+                self.columns,
             ) for s in data)
         )
 
 
-class ShowFlavor(command.ShowOne):
-    _description = _("Display DB Flavor details")
+class ShowDatabaseFlavor(command.ShowOne):
+    _description = _("Shows details of a database flavor")
+    columns = ['ID', 'Name', 'RAM', 'vCPUs']
 
     def get_parser(self, prog_name):
-        parser = super(ShowFlavor, self).get_parser(prog_name)
+        parser = super(ShowDatabaseFlavor, self).get_parser(prog_name)
         parser.add_argument(
             'flavor',
-            metavar="<flavor>",
-            help=_("Flavor to display (name or ID)")
+            metavar='<flavor>',
+            help=_('ID or name of the flavor'),
         )
         return parser
 
@@ -80,15 +81,11 @@ class ShowFlavor(command.ShowOne):
 
         obj = client.get_flavor(parsed_args.flavor)
 
-        LOG.debug('object is %s' % obj)
-        columns = (
-            'name',
-            'ram',
-            'str_id',
-            # 'flavor',
-            'flavor_detail',
-            'price_detail'
-        )
-        data = utils.get_item_properties(obj, columns)
+        obj = set_attributes_for_print_detail(obj)
 
-        return (columns, data)
+        data = utils.get_dict_properties(
+            obj,
+            self.columns,
+        )
+
+        return (self.columns, data)

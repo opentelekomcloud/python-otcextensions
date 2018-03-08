@@ -19,14 +19,14 @@ from otcextensions.osclient.rds.v1 import datastore
 from otcextensions.tests.unit.osclient.rds.v1 import fakes as rds_fakes
 
 
-class TestRdsDatastoreTypes(rds_fakes.TestRds):
+class TestListDatastores(rds_fakes.TestRds):
 
-    columns_datastore_type = ('Name', )
+    columns_datastore_type = ['Name', ]
 
     def setUp(self):
-        super(TestRdsDatastoreTypes, self).setUp()
+        super(TestListDatastores, self).setUp()
 
-        self.cmd = datastore.ListTypes(self.app, None)
+        self.cmd = datastore.ListDatastores(self.app, None)
 
         self.app.client_manager.rds.datastore_types = mock.Mock()
 
@@ -61,55 +61,105 @@ class TestRdsDatastoreTypes(rds_fakes.TestRds):
         self.assertEqual(tuple(self.datastore_type_data), tuple(data))
 
 
-class TestRdsDatastoreVersions(rds_fakes.TestRds):
-    column_headers = (
+class TestListDatastoreVersions(rds_fakes.TestRds):
+    column_headers = [
         'ID',
         'Name',
-        'Datastore',
-        'Image',
-        'Packages'
-    )
+        # 'Datastore',
+        # 'Image',
+        # 'Packages'
+    ]
 
     def setUp(self):
-        super(TestRdsDatastoreVersions, self).setUp()
+        super(TestListDatastoreVersions, self).setUp()
 
         self.cmd = datastore.ListDatastoreVersions(self.app, None)
 
         self.app.client_manager.rds.datastores = mock.Mock()
 
-        self.datastores = self.datastore_mock.create_datastores(3)
+        self.datastores = self.datastore_mock.create_multiple(3)
         self.datastore_data = []
 
         for s in self.datastores:
             self.datastore_data.append((
                 s.id,
                 s.name,
-                s.datastore,
-                s.image,
-                s.packages,
+                # s.datastore,
+                # s.image,
+                # s.packages,
             ))
 
     def test_list_datastore_versions(self):
         arglist = [
-            '--type=test_type'
+            'test_type'
         ]
 
         verifylist = [
-            ('type', 'test_type')
+            ('datastore', 'test_type')
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.rds.datastores.side_effect = [
+        self.app.client_manager.rds.datastore_versions.side_effect = [
             self.datastores
         ]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.app.client_manager.rds.datastores.assert_called()
+        self.app.client_manager.rds.datastore_versions.assert_called()
 
         self.assertEqual(self.column_headers, columns)
         self.assertEqual(tuple(self.datastore_data), tuple(data))
+
+
+class TestShowDatastoreVersion(rds_fakes.TestRds):
+    columns = ['Active', 'Datastore', 'ID', 'Image', 'Name', 'Packages', ]
+
+    def setUp(self):
+        super(TestShowDatastoreVersion, self).setUp()
+
+        self.cmd = datastore.ShowDatastoreVersion(self.app, None)
+
+        self.app.client_manager.rds.datastores = mock.Mock()
+
+        self.datastore = self.datastore_mock.create_one()
+        # self.datastore_data = []
+
+        self.datastore_data = (
+            self.datastore.active,
+            self.datastore.datastore,
+            self.datastore.id,
+            self.datastore.image,
+            self.datastore.name,
+            self.datastore.packages,
+        )
+
+    def test_show_datastore_versions(self):
+        arglist = [
+            self.datastore.id,
+            '--datastore=test_ds'
+        ]
+
+        verifylist = [
+            ('datastore', 'test_ds'),
+            ('datastore_version', self.datastore.id)
+        ]
+
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.app.client_manager.rds.get_datastore_version.side_effect = [
+            self.datastore
+        ]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.app.client_manager.rds.get_datastore_version.assert_called()
+
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.datastore_data, data)

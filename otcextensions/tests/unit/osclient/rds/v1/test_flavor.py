@@ -19,20 +19,20 @@ from otcextensions.osclient.rds.v1 import flavor
 from otcextensions.tests.unit.osclient.rds.v1 import fakes as rds_fakes
 
 
-class TestRdsListFlavors(rds_fakes.TestRds):
+class TestListDatabaseFlavors(rds_fakes.TestRds):
 
-    column_list_headers = (
-        'Name',
-        'Ram',
+    column_list_headers = [
         'ID',
+        'Name',
+        'RAM',
         # 'Str_ID',
-        'Flavor details'
-    )
+        # 'vCPUs'
+    ]
 
     def setUp(self):
-        super(TestRdsListFlavors, self).setUp()
+        super(TestListDatabaseFlavors, self).setUp()
 
-        self.cmd = flavor.ListFlavor(self.app, None)
+        self.cmd = flavor.ListDatabaseFlavors(self.app, None)
 
         self.app.client_manager.rds.flavors = mock.Mock()
 
@@ -40,10 +40,9 @@ class TestRdsListFlavors(rds_fakes.TestRds):
         self.flavor_data = []
         for s in self.flavors:
             self.flavor_data.append((
+                s.id,
                 s.name,
                 s.ram,
-                s.id,
-                s.flavor_detail,
             ))
 
     def test_list_flavors(self):
@@ -70,32 +69,26 @@ class TestRdsListFlavors(rds_fakes.TestRds):
         self.assertEqual(tuple(self.flavor_data), tuple(data))
 
 
-class TestRdsShowFlavors(rds_fakes.TestRds):
+class TestShowDatabaseFlavors(rds_fakes.TestRds):
 
-    columns = (
-        'name',
-        'ram',
-        'str_id',
-        'flavor_detail',
-        'price_detail'
-    )
+    columns = ['ID', 'Name', 'RAM', 'vCPUs']
 
     def setUp(self):
-        super(TestRdsShowFlavors, self).setUp()
+        super(TestShowDatabaseFlavors, self).setUp()
 
-        self.cmd = flavor.ShowFlavor(self.app, None)
+        self.cmd = flavor.ShowDatabaseFlavor(self.app, None)
 
         self.app.client_manager.rds.get_flavor = mock.Mock()
 
         self.flavor = self.flavor_mock.create_one_flavor()
 
         self.flavor_data = (
+            self.flavor.str_id,
             self.flavor.name,
             self.flavor.ram,
-            self.flavor.str_id,
             # s.flavor,
-            self.flavor.flavor_detail,
-            self.flavor.price_detail
+            self.flavor.flavor_detail[0]['value'],
+            # self.flavor.price_detail
         )
 
     def test_show_flavor(self):

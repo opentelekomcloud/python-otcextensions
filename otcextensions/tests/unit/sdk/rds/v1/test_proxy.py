@@ -62,12 +62,12 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
         self.assertEqual(['MySQL', 'PostgreSQL', 'SQLServer'],
                          list(s.name for s in result))
 
-    def test_datastores(self):
+    def test_datastore_versions(self):
         self.verify_list(
-            self.proxy.datastores, _datastore.Datastore,
+            self.proxy.datastore_versions, _datastore.Datastore,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             method_kwargs={
-                'db_name': 'test',
+                'datastore': 'test',
             },
             paginated=False,
             expected_kwargs={
@@ -77,6 +77,27 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
                 'project_id': PROJECT_ID
             }
         )
+
+    def test_get_datastore_version(self):
+        # TODO(agoncharov) we invoke list, and then process result
+        # implement test to mock results
+        pass
+        # self.verify_list(
+        #     self.proxy.get_datastore_version, _datastore.Datastore,
+        #     mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
+        #     method_kwargs={
+        #         'datastore': 'test_ds',
+        #         'datastore_version': 'test_ver',
+        #     },
+        #     paginated=False,
+        #     expected_kwargs={
+        #         'datastore_name': 'test_ds',
+        #         'datastore_version': 'test_ver',
+        #         'endpoint_override': ENDPOINT_RDS,
+        #         'headers': RDS_HEADERS,
+        #         'project_id': PROJECT_ID
+        #     }
+        # )
 
     def test_flavors(self):
         self.verify_list(
@@ -103,7 +124,10 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
         )
 
     def test_find_flavor(self):
-        self.assertRaises(NotImplementedError, self.proxy.find_flavor, '')
+        # TODO(agoncharov)
+        # test for find not implemented
+        pass
+        # self.assertRaises(NotImplementedError, self.proxy.find_flavor, '')
 
     def test_create_instance(self):
         self.verify_create(

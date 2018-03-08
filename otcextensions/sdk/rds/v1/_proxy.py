@@ -98,7 +98,7 @@ class Proxy(sdk_proxy.Proxy):
 
         return
 
-    def datastores(self, db_name):
+    def datastore_versions(self, datastore):
         """List datastores
 
         :param dbId: database store name
@@ -113,8 +113,29 @@ class Proxy(sdk_proxy.Proxy):
             endpoint_override=self.get_rds_endpoint(),
             headers=self.get_os_headers(True),
             project_id=self.session.get_project_id(),
-            datastore_name=db_name
+            datastore_name=datastore
         )
+
+    def get_datastore_version(self, datastore, datastore_version):
+        """Get the detail of a datastore version
+
+        :param datastore: datastore name
+        :param datastore_Version: id of the datastore version
+        :returns: Detail of datastore version
+        :rtype: :class:`~otcextensions.sdk.rds.v1.datastore.Datastore
+        """
+        versions = self._list(
+            _datastore.Datastore,
+            paginated=False,
+            endpoint_override=self.get_rds_endpoint(),
+            headers=self.get_os_headers(True),
+            project_id=self.session.get_project_id(),
+            datastore_name=datastore
+        )
+        for ver in versions:
+            if ver.id == datastore_version:
+                return ver
+        return exceptions.NotFoundException('Resource not found')
 
     # ======= Flavors =======
     def flavors(self):
@@ -148,7 +169,23 @@ class Proxy(sdk_proxy.Proxy):
         )
 
     def find_flavor(self, name_or_id, ignore_missing=True):
-        raise NotImplementedError
+        obj = None
+        try:
+            obj = self.get_flavor(name_or_id)
+        except exceptions.NotFoundException as e:
+            _logger.warn('%s search by name '
+                         'has not returned results. '
+                         'Try passing ID for performance' % ('Flavor'))
+        if obj:
+            return obj
+        # Search by name. Get all groups and compare individually
+        objs = self.flavors()
+        for obj in objs:
+            if obj.id == name_or_id or obj.name == name_or_id:
+                return obj
+        if not ignore_missing:
+            raise exceptions.ResourceNotFound(
+                "No %s found for %s" % ('Flavor', name_or_id))
 
     # ======= Instance =======
     def create_instance(self, **attrs):
@@ -188,22 +225,40 @@ class Proxy(sdk_proxy.Proxy):
             headers=self.get_os_headers()
         )
 
-    # def find_database(self, name_or_id, ignore_missing=True):
-    #     """Find a single instance
-    #
-    #     :param name_or_id: The name or ID of a instance.
-    #     :param bool ignore_missing: When set to ``False``
-    #                 :class:`~openstack.exceptions.ResourceNotFound` will be
-    #                 raised when the resource does not exist.
-    #                 When set to ``True``, None will be returned when
-    #                 attempting to find a nonexistent resource.
-    #     :returns: One :class:`~otcextensions.sdk.rds.v1.instance.Instance`
-    #               or None
-    #     """
-    #     raise NotImplementedError
-    #     return self._find(_instance.Instance, name_or_id,
-    #                       ignore_missing=ignore_missing,
-    #                       project_id=self.session.get_project_id())
+    def find_instance(self, name_or_id, ignore_missing=True):
+        """Find a single instance
+
+        :param name_or_id: The name or ID of a instance.
+        :param bool ignore_missing: When set to ``False``
+                    :class:`~openstack.exceptions.ResourceNotFound` will be
+                    raised when the resource does not exist.
+                    When set to ``True``, None will be returned when
+                    attempting to find a nonexistent resource.
+        :returns: One :class:`~otcextensions.sdk.rds.v1.instance.Instance`
+                  or None
+        """
+        instance = None
+        try:
+            instance = self.get_instance(name_or_id)
+        except exceptions.NotFoundException as e:
+            _logger.warn('Instance search by name '
+                         'has not returned results. '
+                         'Try passing ID for performance')
+        if instance:
+            return instance
+        # Search by name. Get all groups and compare individually
+        instances = self.instances()
+        for instance in instances:
+            if instance.id == name_or_id or instance.name == name_or_id:
+                return instance
+        if not ignore_missing:
+            raise exceptions.ResourceNotFound(
+                "No %s found for %s" % ('Instance', name_or_id))
+        #
+        # raise NotImplementedError
+        # return self._find(_instance.Instance, name_or_id,
+        #                   ignore_missing=ignore_missing,
+        #                   project_id=self.session.get_project_id())
 
     def get_instance(self, instance):
         """Get a single instance
@@ -230,11 +285,12 @@ class Proxy(sdk_proxy.Proxy):
         :returns: A generator of instance objects
         :rtype: :class:`~otcextensions.sdk.rds.v1.instance.Instance`
         """
-        return self._list(_instance.Instance, paginated=False,
-                          project_id=self.session.get_project_id(),
-                          endpoint_override=self.get_os_endpoint(),
-                          headers=self.get_os_headers(),
-                          )
+        return self._list(
+            _instance.Instance, paginated=False,
+            project_id=self.session.get_project_id(),
+            endpoint_override=self.get_os_endpoint(),
+            headers=self.get_os_headers(),
+        )
 
     def update_instance(self, instance, **attrs):
         """Update a instance

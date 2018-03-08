@@ -66,6 +66,7 @@ class Instance(sdk_resource.Resource):
     #: Flavor information
     #: *Type: dict*
     flavor = resource.Body('flavor', type=dict)
+    flavorRef = resource.Body('flavorRef', type=dict)
     #: Volume information
     #: *Type: dict*
     volume = resource.Body('volume', type=dict)
@@ -130,6 +131,8 @@ class Instance(sdk_resource.Resource):
     # the IP address and port number.
     # *Type:string*
     publicEndpoint = resource.Body('publicEndpoint')
+
+    users = resource.Body('users', type=list)
 
     def _action(self, exec_method, json, endpoint_override=None):
         """Executes the action

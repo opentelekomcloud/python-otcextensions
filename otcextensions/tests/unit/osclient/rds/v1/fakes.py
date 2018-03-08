@@ -45,7 +45,7 @@ class FakeDatastore(object):
     """Fake one or more datastore versions."""
 
     @staticmethod
-    def create_one_datastore(attrs=None, methods=None):
+    def create_one(attrs=None, methods=None):
         """Create a fake datastore.
 
         :param Dictionary attrs:
@@ -65,6 +65,7 @@ class FakeDatastore(object):
             'datastore': 'datastore-' + uuid.uuid4().hex,
             'image': 'image-' + uuid.uuid4().hex,
             'packages': 'packages-' + uuid.uuid4().hex,
+            'active': 1,
         }
 
         # Overwrite default attributes.
@@ -72,7 +73,7 @@ class FakeDatastore(object):
         return Datastore(**object_info)
 
     @staticmethod
-    def create_datastores(attrs=None, methods=None, count=2):
+    def create_multiple(attrs=None, methods=None, count=2):
         """Create multiple fake servers.
 
         :param Dictionary attrs:
@@ -86,7 +87,7 @@ class FakeDatastore(object):
         """
         objects = []
         for i in range(0, count):
-            objects.append(FakeDatastore.create_one_datastore(attrs, methods))
+            objects.append(FakeDatastore.create_one(attrs, methods))
 
         return objects
 
@@ -114,7 +115,7 @@ class FakeFlavor(object):
             'name': 'name-' + uuid.uuid4().hex,
             'ram': random.randint(1, 10280),
             'specCode': 'image-' + uuid.uuid4().hex,
-            'flavor_detail': None,
+            'flavor_detail': [{'name': 'cpu', 'value': random.randint(1, 10)}],
             'price_detail': None,
             'flavor': None,
         }
