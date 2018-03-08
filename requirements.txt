@@ -3,5 +3,5 @@
 # process, which may cause wedges in the gate later.
 
 python-openstackclient>=3.14.0 # Apache-2.0
-openstacksdk>=0.11.3 # Apache-2.0
+openstacksdk>=0.12.0 # Apache-2.0
 boto3>=1.4.6 # ASL-2.0
