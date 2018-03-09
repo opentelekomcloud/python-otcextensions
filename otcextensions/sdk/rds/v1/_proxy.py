@@ -33,29 +33,34 @@ class Proxy(sdk_proxy.Proxy):
         """Return OpenStack compliant endpoint
 
         """
-        endpoint = super(Proxy, self).get_endpoint(**kwargs)
-        endpoint_override = self.endpoint_override
-        if endpoint.endswith('/rds/v1') and not endpoint_override:
-            endpoint_override = endpoint.rstrip('/rds/v1')
-            endpoint_override = utils.urljoin(endpoint_override, 'v1.0')
-            return endpoint_override
-        else:
-            _logger.debug('RDS endpoint_override is set. Return it')
-            return endpoint_override
+        return self.get_endpoint(service_type='database')
+        # if 'os_endpoint' not in self:
+        #     endpoint = super(Proxy, self).get_endpoint(**kwargs)
+        #     # endpoint_override = self.endpoint_override
+        #     if endpoint.endswith('/rds/v1'):  # and not endpoint_override:
+        #         endpoint = endpoint.rstrip('/rds/v1')
+        #         endpoint = utils.urljoin(endpoint, 'v1.0')
+        #         self.os_endpoint = endpoint
+        #     # else:
+        #     #     _logger.debug('RDS endpoint_override is set. Return it')
+        #     #     return endpoint_override
+        # else:
+        #     return self.os_endpoint
 
     def get_rds_endpoint(self, **kwargs):
         """Return RDS propriatary endpoint
 
         """
-        endpoint = super(Proxy, self).get_endpoint(**kwargs)
-        endpoint_override = self.endpoint_override
-        if endpoint.endswith('/rds/v1') and not endpoint_override:
-            return endpoint
-        elif endpoint_override:
-            _logger.debug('RDS endpoint_override is set. Return it')
-            return endpoint_override
-        else:
-            return endpoint
+        return self.get_endpoint(service_type='rds')
+        # endpoint = super(Proxy, self).get_endpoint(**kwargs)
+        # endpoint_override = self.endpoint_override
+        # if endpoint.endswith('/rds/v1') and not endpoint_override:
+        #     return endpoint
+        # elif endpoint_override:
+        #     _logger.debug('RDS endpoint_override is set. Return it')
+        #     return endpoint_override
+        # else:
+        #     return endpoint
 
     def get_os_headers(self, language=None):
         """Get headers for request
@@ -148,8 +153,8 @@ class Proxy(sdk_proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.rds_os.v1.flavor.Flavor
         """
         return self._list(_flavor.Flavor, paginated=False,
-                          endpoint_override=self.get_os_endpoint(),
-                          headers=self.get_os_headers(),
+                          # endpoint_override=self.get_os_endpoint(),
+                          # headers=self.get_os_headers(),
                           project_id=self.session.get_project_id())
 
     def get_flavor(self, flavor):
@@ -164,8 +169,8 @@ class Proxy(sdk_proxy.Proxy):
             _flavor.Flavor,
             flavor,
             project_id=self.session.get_project_id(),
-            endpoint_override=self.get_os_endpoint(),
-            headers=self.get_os_headers(),
+            # endpoint_override=self.get_os_endpoint(),
+            # headers=self.get_os_headers(),
         )
 
     def find_flavor(self, name_or_id, ignore_missing=True):
@@ -182,8 +187,8 @@ class Proxy(sdk_proxy.Proxy):
         """
         return self._find(_flavor.Flavor, name_or_id,
                           project_id=self.session.get_project_id(),
-                          endpoint_override=self.get_os_endpoint(),
-                          headers=self.get_os_headers(),
+                          # endpoint_override=self.get_os_endpoint(),
+                          # headers=self.get_os_headers(),
                           ignore_missing=ignore_missing)
 
     # ======= Instance =======
@@ -199,8 +204,8 @@ class Proxy(sdk_proxy.Proxy):
         """
         return self._create(_instance.Instance,
                             project_id=self.session.get_project_id(),
-                            endpoint_override=self.get_os_endpoint(),
-                            headers=self.get_os_headers(),
+                            # endpoint_override=self.get_os_endpoint(),
+                            # headers=self.get_os_headers(),
                             **attrs)
 
     def delete_instance(self, instance, ignore_missing=True):
@@ -220,8 +225,8 @@ class Proxy(sdk_proxy.Proxy):
             _instance.Instance, instance,
             ignore_missing=ignore_missing,
             project_id=self.session.get_project_id(),
-            endpoint_override=self.get_os_endpoint(),
-            headers=self.get_os_headers()
+            # endpoint_override=self.get_os_endpoint(),
+            # headers=self.get_os_headers()
         )
 
     def find_instance(self, name_or_id, ignore_missing=True):
@@ -238,8 +243,8 @@ class Proxy(sdk_proxy.Proxy):
         """
         return self._find(_instance.Instance, name_or_id,
                           project_id=self.session.get_project_id(),
-                          endpoint_override=self.get_os_endpoint(),
-                          headers=self.get_os_headers(),
+                          # endpoint_override=self.get_os_endpoint(),
+                          # headers=self.get_os_headers(),
                           ignore_missing=ignore_missing)
 
     def get_instance(self, instance):
@@ -257,8 +262,8 @@ class Proxy(sdk_proxy.Proxy):
             _instance.Instance,
             instance,
             project_id=self.session.get_project_id(),
-            endpoint_override=self.get_os_endpoint(),
-            headers=self.get_os_headers(),
+            # endpoint_override=self.get_os_endpoint(),
+            # headers=self.get_os_headers(),
         )
 
     def instances(self):
@@ -270,8 +275,8 @@ class Proxy(sdk_proxy.Proxy):
         return self._list(
             _instance.Instance, paginated=False,
             project_id=self.session.get_project_id(),
-            endpoint_override=self.get_os_endpoint(),
-            headers=self.get_os_headers(),
+            # endpoint_override=self.get_os_endpoint(),
+            # headers=self.get_os_headers(),
         )
 
     def update_instance(self, instance, **attrs):
@@ -307,8 +312,8 @@ class Proxy(sdk_proxy.Proxy):
             _configuration.ConfigurationGroup,
             paginated=False,
             project_id=self.session.get_project_id(),
-            endpoint_override=self.get_os_endpoint(),
-            headers=self.get_os_headers(),
+            # endpoint_override=self.get_os_endpoint(),
+            # headers=self.get_os_headers(),
         )
 
     def get_configuration(self, cg):
@@ -340,8 +345,8 @@ class Proxy(sdk_proxy.Proxy):
         """
         return self._create(_configuration.ConfigurationGroup,
                             project_id=self.session.get_project_id(),
-                            endpoint_override=self.get_os_endpoint(),
-                            headers=self.get_os_headers(),
+                            # endpoint_override=self.get_os_endpoint(),
+                            # headers=self.get_os_headers(),
                             **attrs)
 
     def delete_configuration(self, cg, ignore_missing=True):
@@ -362,8 +367,8 @@ class Proxy(sdk_proxy.Proxy):
             _configuration.ConfigurationGroup, cg,
             ignore_missing=ignore_missing,
             project_id=self.session.get_project_id(),
-            endpoint_override=self.get_os_endpoint(),
-            headers=self.get_os_headers()
+            # endpoint_override=self.get_os_endpoint(),
+            # headers=self.get_os_headers()
         )
 
     def find_configuration(self, name_or_id, ignore_missing=True):
@@ -378,8 +383,8 @@ class Proxy(sdk_proxy.Proxy):
         """
         return self._find(_configuration.ConfigurationGroup, name_or_id,
                           project_id=self.session.get_project_id(),
-                          endpoint_override=self.get_os_endpoint(),
-                          headers=self.get_os_headers(),
+                          # endpoint_override=self.get_os_endpoint(),
+                          # headers=self.get_os_headers(),
                           ignore_missing=ignore_missing)
 
     # ======= Backups =======

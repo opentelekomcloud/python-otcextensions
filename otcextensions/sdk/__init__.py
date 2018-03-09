@@ -18,7 +18,7 @@ import importlib
 import warnings
 # import openstack
 
-import os_service_types
+# import os_service_types
 
 from oslo_utils import importutils
 
@@ -31,7 +31,7 @@ from openstack import proxy
 
 
 _logger = _log.setup_logging('openstack')
-_service_type_manager = os_service_types.ServiceTypes()
+# _service_type_manager = os_service_types.ServiceTypes()
 
 _DOC_TEMPLATE = (
     ":class:`{class_name}` for {service_type} aka project")
@@ -50,6 +50,9 @@ found on remotely on the cloud.
 OTC_SERVICES = {
     'rds': {
         'service_type': 'rds',
+        'endpoint_service_type': 'database',
+        'additional_headers': {'content-type': 'application/json'},
+        'strip_endpoint': True,
         # 'endpoint_override': 'https://rds.%(region_name)s.otc.t-systems.com'
     },
     'obs': {
@@ -66,8 +69,10 @@ def _prepare_services(**kwargs):
         # service = OTC_SERVICES
         service_type = service['service_type']
         desc_class = service_description.OpenStackServiceDescription
-        service_filter_class = _find_service_filter_class(service_type)
+        service_filter_class = _find_service_filter_class(service_name)
+        # print(service_filter_class.service_type.__get__())
         descriptor_args = {'service_type': service_type}
+        # descriptor_args = {}
         if service_filter_class:
             _logger.debug(
                 'preparing to register service %s' %
@@ -115,6 +120,15 @@ def register_otc_extensions(connection, **kwargs):
             _logger.debug('keys %s' % service.keys())
             continue
         proxy = descriptor.__get__(connection, descriptor)
+
+        endpoint_service_type = service.get('endpoint_service_type', None)
+        if endpoint_service_type and \
+                endpoint_service_type != service.get('service_type'):
+            proxy.service_type = endpoint_service_type
+
+        if 'additional_headers' in service:
+            proxy.additional_headers = service.get('additional_headers')
+
         connection.add_service(descriptor)
 
         if service.get('require_ak', False):
