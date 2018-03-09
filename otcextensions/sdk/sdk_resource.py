@@ -368,8 +368,6 @@ class Resource(resource.Resource):
         try:
             match = cls.existing(
                 id=name_or_id,
-                # endpoint_override=endpoint_override,
-                # headers=headers,
                 **params)
             return match.get(
                 session,

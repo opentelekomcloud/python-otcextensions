@@ -142,8 +142,6 @@ class TestConfigurationGroup(base.TestCase):
             headers=OS_HEADERS,
         )
 
-        print(result)
-
         self.assertEqual(
             configuration.ConfigurationGroup(
                 project_id=PROJECT_ID,

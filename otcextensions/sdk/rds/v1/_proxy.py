@@ -180,7 +180,6 @@ class Proxy(sdk_proxy.Proxy):
         :returns: One :class:`~otcextensions.sdk.rds.v1.flavor.Flavor`
                   or None
         """
-        print('find flavor %s' % name_or_id)
         return self._find(_flavor.Flavor, name_or_id,
                           project_id=self.session.get_project_id(),
                           endpoint_override=self.get_os_endpoint(),

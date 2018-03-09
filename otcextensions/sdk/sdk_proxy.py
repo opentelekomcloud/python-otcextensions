@@ -44,7 +44,7 @@ class Proxy(os_proxy.BaseProxy):
         # Inject endpoint_override into the resource for potential
         # direct use (i.e. instance.reboot)
         if endpoint_override:
-            result.endpoint_override = endpoint_override
+            setattr(result, 'endpoint_override', endpoint_override)
 
         return result
 

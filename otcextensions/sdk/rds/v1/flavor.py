@@ -38,7 +38,7 @@ class Flavor(sdk_resource.Resource):
     project_id = resource.URI('project_id')
     # Properties
     #: Flavor id
-    # id = resource.Body('id', alias='str_id')
+    id = None
     #: Flavor name
     name = resource.Body('name')
     #: Ram size in MB.
@@ -50,13 +50,13 @@ class Flavor(sdk_resource.Resource):
     #: *Type:list*
     # links = resource.Body('links', type=list)
     #: String id
-    id = resource.Body('str_id', alternate_id=True)
+    str_id = resource.Body('str_id', alternate_id=True)
     #: Flavor detail
     #: *Type:list*
     flavor_detail = resource.Body('flavor_detail', type=list, list_type=dict)
     #: Flavor
     #: *Type:dict*
-    flavor = resource.Body('flavor', type=dict)
+    # flavor = resource.Body('flavor', type=dict)
     #: Price detail
     #: *Type:list*
     price_detail = resource.Body('price_detail', type=list)
@@ -74,16 +74,13 @@ class Flavor(sdk_resource.Resource):
         exceptions.raise_from_response(response, error_message=error_message)
         if has_body:
             body = response.json()
-            # if self.resource_key and self.resource_key in body:
-            #     body = body[self.resource_key]
-
-            body = self._consume_body_attrs(body)
-            self._body.attributes.update(body)
+            # throw away id
+            body.pop('id', None)
 
             # Because of the response type (inline structure)
             # we need to reconsume (overwrite some) attributes
             if self.resource_key and self.resource_key in body:
-                body = body[self.resource_key]
+                body['ram'] = body[self.resource_key]['ram']
 
             body = self._consume_body_attrs(body)
             self._body.attributes.update(body)
@@ -120,34 +117,44 @@ class Flavor(sdk_resource.Resource):
         :raises: :class:`openstack.exceptions.ResourceNotFound` if nothing
                  is found and ignore_missing is ``False``.
         """
-        # Try to short-circuit by looking directly for a matching ID.
-        try:
-            match = cls.existing(
-                id=name_or_id,
-                **params)
-            return match.get(
+        # invoke class method to find entity
+        result = super(Flavor, cls).find(
+            # Flavor,
+            # cls,
+            session,
+            name_or_id,
+            ignore_missing=ignore_missing,
+            endpoint_override=endpoint_override,
+            headers=headers,
+            **params
+        )
+
+        if result and not result.flavor_detail:
+            # Unfortuantely flavor_detail is missing due to list not having
+            # all the details. Refetch the entity directly
+            result = result.get(
                 session,
                 endpoint_override=endpoint_override,
                 headers=headers)
-        except (exceptions.NotFoundException, exceptions.HttpException):
-            pass
-
-        data = cls.list(session,
-                        endpoint_override=endpoint_override,
-                        headers=headers,
-                        **params)
-
-        result = cls._get_one_match(name_or_id, data)
-        # Update result with URL parameters
-        result._update(**params)
-        if result is not None:
-            # Refetch flavor to get details
-            result = result.get(session,
-                                endpoint_override=endpoint_override,
-                                headers=headers)
+            return result
+        else:
             return result
 
-        if ignore_missing:
-            return None
-        raise exceptions.ResourceNotFound(
-            "No %s found for %s" % (cls.__name__, name_or_id))
+    @classmethod
+    def existing(cls, **kwargs):
+        """Create an instance of an existing remote resource.
+
+        When creating the instance set the ``_synchronized`` parameter
+        of :class:`Resource` to ``True`` to indicate that it represents the
+        state of an existing server-side resource. As such, all attributes
+        passed in ``**kwargs`` are considered "clean", such that an immediate
+        :meth:`update` call would not generate a body of attributes to be
+        modified on the server.
+
+        :param dict kwargs: Each of the named arguments will be set as
+                            attributes on the resulting Resource object.
+        """
+        # eject corrupted id for py2
+        if 'str_id' in kwargs:
+            kwargs.pop('id', None)
+        return cls(_synchronized=True, **kwargs)
