@@ -33,7 +33,7 @@ def get_osc_show_columns_for_sdk_resource(
 
     if getattr(sdk_resource, 'allow_get', None) is not None:
         resource_dict = sdk_resource.to_dict(
-            body=True, headers=False, ignore_none=False)
+            body=True, headers=False, ignore_none=True)
     else:
         resource_dict = sdk_resource
 

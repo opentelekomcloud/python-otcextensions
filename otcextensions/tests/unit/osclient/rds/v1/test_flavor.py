@@ -36,7 +36,7 @@ class TestListDatabaseFlavors(rds_fakes.TestRds):
 
         self.app.client_manager.rds.flavors = mock.Mock()
 
-        self.flavors = self.flavor_mock.create_flavors(3)
+        self.flavors = self.flavor_mock.create_multiple(3)
         self.flavor_data = []
         for s in self.flavors:
             self.flavor_data.append((
@@ -78,12 +78,12 @@ class TestShowDatabaseFlavors(rds_fakes.TestRds):
 
         self.cmd = flavor.ShowDatabaseFlavor(self.app, None)
 
-        self.app.client_manager.rds.get_flavor = mock.Mock()
+        self.app.client_manager.rds.find_flavor = mock.Mock()
 
-        self.flavor = self.flavor_mock.create_one_flavor()
+        self.flavor = self.flavor_mock.create_one()
 
         self.flavor_data = (
-            self.flavor.str_id,
+            self.flavor.id,
             self.flavor.name,
             self.flavor.ram,
             # s.flavor,
@@ -104,14 +104,14 @@ class TestShowDatabaseFlavors(rds_fakes.TestRds):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.rds.get_flavor.side_effect = [
+        self.app.client_manager.rds.find_flavor.side_effect = [
             self.flavor
         ]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.app.client_manager.rds.get_flavor.assert_called()
+        self.app.client_manager.rds.find_flavor.assert_called()
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.flavor_data, data)

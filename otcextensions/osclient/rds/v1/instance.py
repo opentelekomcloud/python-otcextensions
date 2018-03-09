@@ -32,12 +32,10 @@ from otcextensions.i18n import _
 LOG = logging.getLogger(__name__)
 
 
-# def _get_columns(item):
-#     column_map = {
-#         'flavor.id': 'flavor_id',
-#         'tenant_id': 'project_id',
-#     }
-#     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
+def _get_columns(item):
+    column_map = {
+    }
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
 def set_attributes_for_print(instances):
@@ -58,7 +56,8 @@ def set_attributes_for_print(instances):
 
 def set_attributes_for_print_detail(instance):
     info = {}  # instance._info.copy()
-    info['flavor'] = instance.flavor['id']
+    info['name'] = instance.name
+    info['flavor_id'] = instance.flavor['id']
     if getattr(instance, 'volume', None):
         info['volume'] = instance.volume['size']
         if 'used' in instance.volume:
@@ -146,6 +145,9 @@ class ListDatabaseInstances(command.Lister):
 class ShowDatabaseInstance(command.ShowOne):
     _description = _("Show instance details")
 
+    columns = ['ID', 'Name', 'Datastore', 'Datastore Version', 'Status',
+               'Flavor ID', 'Size', 'Region']
+
     def get_parser(self, prog_name):
         parser = super(ShowDatabaseInstance, self).get_parser(prog_name)
         parser.add_argument(
@@ -159,15 +161,25 @@ class ShowDatabaseInstance(command.ShowOne):
         client = self.app.client_manager.rds
         obj = client.find_instance(parsed_args.instance)
 
-        # display_columns, columns = _get_columns(obj)
-        # data = utils.get_item_properties(obj, columns, formatters={})
+        # data = set_attributes_for_print_detail(obj)
         #
-        # return (display_columns, data)
+        # return (
+        #     self.columns,
+        #     (utils.get_dict_properties(
+        #         s,
+        #         self.columns,
+        #     ) for s in data)
+        # )
+
+        display_columns, columns = _get_columns(obj)
+        data = utils.get_item_properties(obj, columns, formatters={})
+        #
+        return (display_columns, data)
 
         #
         # print(instance)
-        instance = set_attributes_for_print_detail(obj)
-        return zip(*sorted(six.iteritems(instance)))
+        # instance = set_attributes_for_print_detail(obj)
+        # return zip(*sorted(six.iteritems(instance)))
 
 
 class CreateDatabaseInstance(command.ShowOne):
@@ -240,6 +252,7 @@ class CreateDatabaseInstance(command.ShowOne):
             default=None,
             help=_("A datastore version name or ID."),
         )
+        # API doc claims subnet, but it is network
         parser.add_argument(
             '--nic',
             metavar='<net-id=<net-uuid>,v4-fixed-ip=<ip-addr>,'
@@ -303,25 +316,25 @@ class CreateDatabaseInstance(command.ShowOne):
             help=argparse.SUPPRESS,
         )
         parser.add_argument(
-            '--router',
-            metavar='<router_id>',
+            '--network_id',
+            metavar='<network_id>',
             type=str,
             # required=True,
-            help=_('Router (VPC) ID')
+            help=_('Network (VPC) ID')
         )
-        parser.add_argument(
-            '--subnet_id',
-            metavar='<subnet_id>',
-            type=str,
-            # required=True,
-            help=_('Subnet ID')
-        )
+        # parser.add_argument(
+        #     '--subnet_id',
+        #     metavar='<subnet_id>',
+        #     type=str,
+        #     # required=True,
+        #     help=_('Subnet ID')
+        # )
         parser.add_argument(
             '--security_group',
             metavar='<security_group>',
             type=str,
             # required=True,
-            help=_('Security group ID')
+            help=_('Security group ID to be associated with NIC')
         )
         return parser
 
@@ -331,7 +344,7 @@ class CreateDatabaseInstance(command.ShowOne):
         client = self.app.client_manager.rds
 
         attrs = {}
-        attrs['flavorRef'] = client.find_flavor(parsed_args.flavor).str_id
+        attrs['flavorRef'] = client.find_flavor(parsed_args.flavor).id
         volume = None
         if parsed_args.size is not None and parsed_args.size <= 0:
             raise exceptions.ValidationError(
@@ -348,7 +361,6 @@ class CreateDatabaseInstance(command.ShowOne):
             # TODO(agoncharov)
         #     restore_point = {"backupRef": osc_utils.find_resource(
         #         database.backups, parsed_args.backup).id}
-        replica_of = None
         replica_count = parsed_args.replica_count
         if parsed_args.replica_of:
             pass
@@ -362,46 +374,29 @@ class CreateDatabaseInstance(command.ShowOne):
         #         raise exceptions.ValidationError(
         #             _('Cannot specify locality when adding replicas '
         #               'to existing master.'))
-        # databases = [{'name': value} for value in parsed_args.databases]
-        # users = [{'name': n, 'password': p, 'databases': databases} for (n, p)
         attrs['users'] = [{'name': n, 'password': p} for (n, p) in
-            [z.split(':')[:2] for z in parsed_args.users]]
-        # nics = []
-        # for nic_str in parsed_args.nics:
-        #     nic_info = dict([(k, v) for (k, v) in [z.split("=", 1)[:2] for z in
-        #                                            nic_str.split(",")]])
-        #     # need one or the other, not both, not none (!= ~ XOR)
-        #     if not (bool(nic_info.get('net-id')) != bool(
-        #             nic_info.get('port-id'))):
-        #         raise exceptions.\
-        #             ValidationError(_("Invalid NIC argument: %s. Must specify "
-        #                               "either net-id or port-id but not both. "
-        #                               "Please refer to help.")
-        #                             % (_("nic='%s'") % nic_str))
-        #     nics.append(nic_info)
+                          [z.split(':')[:2] for z in parsed_args.users]]
+        nics = []
+        for nic_str in parsed_args.nics:
+            nic_info = dict([(k, v) for (k, v) in [z.split("=", 1)[:2] for z in
+                                                   nic_str.split(",")]])
+            # need one or the other, not both, not none (!= ~ XOR)
+            if not (bool(nic_info.get('net-id')) != bool(
+                    nic_info.get('port-id'))):
+                raise exceptions.\
+                    ValidationError(_("Invalid NIC argument: %s. Must specify "
+                                      "either net-id or port-id but not both. "
+                                      "Please refer to help.")
+                                    % (_("nic='%s'") % nic_str))
+            if parsed_args.security_group:
+                nic_info['securityGroupId'] = parsed_args.security_group
+            nics.append(nic_info)
+        if len(nics):
+            attrs['nics'] = nics
         # modules = []
         # for module in parsed_args.modules:
         #     modules.append(osc_utils.find_resource(database.modules,
         #                                            module).id)
-
-        # instance = db_instances.create(parsed_args.name,
-        #                                flavor_id,
-        #                                volume=volume,
-        #                                databases=databases,
-        #                                users=users,
-        #                                restorePoint=restore_point,
-        #                                availability_zone=(parsed_args.
-        #                                                   availability_zone),
-        #                                datastore=parsed_args.datastore,
-        #                                datastore_version=(parsed_args.
-        #                                                   datastore_version),
-        #                                nics=nics,
-        #                                configuration=parsed_args.configuration,
-        #                                replica_of=replica_of,
-        #                                replica_count=replica_count,
-        #                                modules=modules,
-        #                                locality=locality,
-        #                                region_name=parsed_args.region)
 
         datastore = {
             'type': parsed_args.datastore,
@@ -415,12 +410,8 @@ class CreateDatabaseInstance(command.ShowOne):
             attrs['configuration'] = parsed_args.configuration
         if parsed_args.region:
             attrs['region_name'] = parsed_args.region
-        if parsed_args.router:
-            attrs['vpc'] = parsed_args.router
-        if parsed_args.security_group:
-            attrs['securityGroup'] = parsed_args.security_group
-        if parsed_args.subnet_id:
-            attrs['subnetid'] = parsed_args.subnet_id
+        if parsed_args.network_id:
+            attrs['vpc'] = parsed_args.network_id
         instance = client.create_instance(**attrs)
         instance = set_attributes_for_print_detail(instance)
         return zip(*sorted(six.iteritems(instance)))
@@ -467,10 +458,10 @@ class ResetDatabaseInstanceStatus(command.Command):
 
     def take_action(self, parsed_args):
         raise NotImplementedError
-        db_instances = self.app.client_manager.database.instances
-        instance = osc_utils.find_resource(db_instances,
-                                           parsed_args.instance)
-        db_instances.reset_status(instance)
+        # db_instances = self.app.client_manager.database.instances
+        # instance = osc_utils.find_resource(db_instances,
+        #                                    parsed_args.instance)
+        # db_instances.reset_status(instance)
 
 
 class ResizeDatabaseInstanceFlavor(command.Command):
@@ -496,14 +487,14 @@ class ResizeDatabaseInstanceFlavor(command.Command):
         return parser
 
     def take_action(self, parsed_args):
-        raise NotImplementedError
-        db_instances = self.app.client_manager.database.instances
-        db_flavor = self.app.client_manager.database.flavors
-        instance = osc_utils.find_resource(db_instances,
-                                           parsed_args.instance)
-        flavor = osc_utils.find_resource(db_flavor,
-                                         parsed_args.flavor_id)
-        db_instances.resize_instance(instance, flavor)
+        # raise NotImplementedError
+        client = self.app.client_manager.rds
+        instance = client.find_instance(parsed_args.instance)
+        flavor = client.find_flavor(
+            parsed_args.flavor_id,
+            ignore_missing=False)
+
+        instance.resize(client, flavor.id)
 
 
 class UpgradeDatabaseInstance(command.Command):
@@ -527,10 +518,10 @@ class UpgradeDatabaseInstance(command.Command):
 
     def take_action(self, parsed_args):
         raise NotImplementedError
-        db_instances = self.app.client_manager.database.instances
-        instance = osc_utils.find_resource(db_instances,
-                                           parsed_args.instance)
-        db_instances.upgrade(instance, parsed_args.datastore_version)
+        # db_instances = self.app.client_manager.database.instances
+        # instance = osc_utils.find_resource(db_instances,
+        #                                    parsed_args.instance)
+        # db_instances.upgrade(instance, parsed_args.datastore_version)
 
 
 class EnableDatabaseInstanceLog(command.ShowOne):
@@ -556,11 +547,11 @@ class EnableDatabaseInstanceLog(command.ShowOne):
     def take_action(self, parsed_args):
         raise NotImplementedError
         db_instances = self.app.client_manager.database.instances
-        instance = osc_utils.find_resource(db_instances,
-                                           parsed_args.instance)
-        log_info = db_instances.log_enable(instance, parsed_args.log_name)
-        result = log_info._info
-        return zip(*sorted(six.iteritems(result)))
+        # instance = osc_utils.find_resource(db_instances,
+        #                                    parsed_args.instance)
+        # log_info = db_instances.log_enable(instance, parsed_args.log_name)
+        # result = log_info._info
+        # return zip(*sorted(six.iteritems(result)))
 
 
 class ResizeDatabaseInstanceVolume(command.Command):
@@ -588,10 +579,10 @@ class ResizeDatabaseInstanceVolume(command.Command):
 
     def take_action(self, parsed_args):
         raise NotImplementedError
-        db_instances = self.app.client_manager.database.instances
-        instance = osc_utils.find_resource(db_instances,
-                                           parsed_args.instance)
-        db_instances.resize_volume(instance, parsed_args.size)
+        # db_instances = self.app.client_manager.database.instances
+        # instance = osc_utils.find_resource(db_instances,
+        #                                    parsed_args.instance)
+        # db_instances.resize_volume(instance, parsed_args.size)
 
 
 class ForceDeleteDatabaseInstance(command.Command):
@@ -610,16 +601,16 @@ class ForceDeleteDatabaseInstance(command.Command):
 
     def take_action(self, parsed_args):
         raise NotImplementedError
-        db_instances = self.app.client_manager.database.instances
-        instance = osc_utils.find_resource(db_instances,
-                                           parsed_args.instance)
-        db_instances.reset_status(instance)
-        try:
-            db_instances.delete(instance)
-        except Exception as e:
-            msg = (_("Failed to delete instance %(instance)s: %(e)s")
-                   % {'instance': parsed_args.instance, 'e': e})
-            raise exceptions.CommandError(msg)
+        # db_instances = self.app.client_manager.database.instances
+        # instance = osc_utils.find_resource(db_instances,
+        #                                    parsed_args.instance)
+        # db_instances.reset_status(instance)
+        # try:
+        #     db_instances.delete(instance)
+        # except Exception as e:
+        #     msg = (_("Failed to delete instance %(instance)s: %(e)s")
+        #            % {'instance': parsed_args.instance, 'e': e})
+        #     raise exceptions.CommandError(msg)
 
 
 class RestartDatabaseInstance(command.Command):
@@ -640,10 +631,10 @@ class RestartDatabaseInstance(command.Command):
 
     def take_action(self, parsed_args):
         raise NotImplementedError
-        db_instances = self.app.client_manager.database.instances
-        instance = osc_utils.find_resource(db_instances,
-                                           parsed_args.instance)
-        db_instances.restart(instance)
+        # db_instances = self.app.client_manager.database.instances
+        # instance = osc_utils.find_resource(db_instances,
+        #                                    parsed_args.instance)
+        # db_instances.restart(instance)
 
 
 class UpdateDatabaseInstance(command.Command):
@@ -694,10 +685,10 @@ class UpdateDatabaseInstance(command.Command):
 
     def take_action(self, parsed_args):
         raise NotImplementedError
-        db_instances = self.app.client_manager.database.instances
-        instance = osc_utils.find_resource(db_instances,
-                                           parsed_args.instance)
-        db_instances.edit(instance, parsed_args.configuration,
-                          parsed_args.name,
-                          parsed_args.detach_replica_source,
-                          parsed_args.remove_configuration)
+        # db_instances = self.app.client_manager.database.instances
+        # instance = osc_utils.find_resource(db_instances,
+        #                                    parsed_args.instance)
+        # db_instances.edit(instance, parsed_args.configuration,
+        #                   parsed_args.name,
+        #                   parsed_args.detach_replica_source,
+        #                   parsed_args.remove_configuration)

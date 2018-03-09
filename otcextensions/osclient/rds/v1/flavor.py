@@ -14,7 +14,7 @@
 
 import logging
 
-import six
+# import six
 
 # from osc_lib.cli import parseractions
 from osc_lib.command import command
@@ -28,7 +28,7 @@ LOG = logging.getLogger(__name__)
 
 def set_attributes_for_print_detail(instance):
     info = {}  # instance.copy()
-    info['id'] = instance.str_id
+    info['id'] = instance.id
     info['ram'] = instance.ram
     info['name'] = instance.name
     # info['str_id'] = instance['str_id']
@@ -79,7 +79,7 @@ class ShowDatabaseFlavor(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.rds
 
-        obj = client.get_flavor(parsed_args.flavor)
+        obj = client.find_flavor(parsed_args.flavor)
 
         obj = set_attributes_for_print_detail(obj)
 

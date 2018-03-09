@@ -169,23 +169,23 @@ class Proxy(sdk_proxy.Proxy):
         )
 
     def find_flavor(self, name_or_id, ignore_missing=True):
-        obj = None
-        try:
-            obj = self.get_flavor(name_or_id)
-        except exceptions.NotFoundException as e:
-            _logger.warn('%s search by name '
-                         'has not returned results. '
-                         'Try passing ID for performance' % ('Flavor'))
-        if obj:
-            return obj
-        # Search by name. Get all groups and compare individually
-        objs = self.flavors()
-        for obj in objs:
-            if obj.id == name_or_id or obj.name == name_or_id:
-                return obj
-        if not ignore_missing:
-            raise exceptions.ResourceNotFound(
-                "No %s found for %s" % ('Flavor', name_or_id))
+        """Find a single flavor
+
+        :param name_or_id: The name or ID of a flavor.
+        :param bool ignore_missing: When set to ``False``
+                    :class:`~openstack.exceptions.ResourceNotFound` will be
+                    raised when the resource does not exist.
+                    When set to ``True``, None will be returned when
+                    attempting to find a nonexistent resource.
+        :returns: One :class:`~otcextensions.sdk.rds.v1.flavor.Flavor`
+                  or None
+        """
+        print('find flavor %s' % name_or_id)
+        return self._find(_flavor.Flavor, name_or_id,
+                          project_id=self.session.get_project_id(),
+                          endpoint_override=self.get_os_endpoint(),
+                          headers=self.get_os_headers(),
+                          ignore_missing=ignore_missing)
 
     # ======= Instance =======
     def create_instance(self, **attrs):
@@ -237,28 +237,11 @@ class Proxy(sdk_proxy.Proxy):
         :returns: One :class:`~otcextensions.sdk.rds.v1.instance.Instance`
                   or None
         """
-        instance = None
-        try:
-            instance = self.get_instance(name_or_id)
-        except exceptions.NotFoundException as e:
-            _logger.warn('Instance search by name '
-                         'has not returned results. '
-                         'Try passing ID for performance')
-        if instance:
-            return instance
-        # Search by name. Get all groups and compare individually
-        instances = self.instances()
-        for instance in instances:
-            if instance.id == name_or_id or instance.name == name_or_id:
-                return instance
-        if not ignore_missing:
-            raise exceptions.ResourceNotFound(
-                "No %s found for %s" % ('Instance', name_or_id))
-        #
-        # raise NotImplementedError
-        # return self._find(_instance.Instance, name_or_id,
-        #                   ignore_missing=ignore_missing,
-        #                   project_id=self.session.get_project_id())
+        return self._find(_instance.Instance, name_or_id,
+                          project_id=self.session.get_project_id(),
+                          endpoint_override=self.get_os_endpoint(),
+                          headers=self.get_os_headers(),
+                          ignore_missing=ignore_missing)
 
     def get_instance(self, instance):
         """Get a single instance
@@ -394,25 +377,11 @@ class Proxy(sdk_proxy.Proxy):
         :rtype:
             :class:`~otcextensions.rds.v1.configuration.ConfigurationGroup`.
         """
-        cg = None
-        try:
-            cg = self.get_configuration(name_or_id)
-        except exceptions.NotFoundException as e:
-            _logger.warn('ConfigurationGroup search by name '
-                         'has not returned results. '
-                         'Try passing ID for performance')
-        if cg:
-            return cg
-        # Search by name. Get all groups and compare individually
-        cgs = self.configurations()
-        for cg in cgs:
-            if cg.id == name_or_id or cg.name == name_or_id:
-                return cg
-        if not ignore_missing:
-            raise exceptions.ResourceNotFound(
-                "No %s found for %s" % ('ConfigurationGroup', name_or_id))
-        # return self._find(_configuration.ParameterGroup, name_or_id,
-        #                   ignore_missing=ignore_missing)
+        return self._find(_configuration.ConfigurationGroup, name_or_id,
+                          project_id=self.session.get_project_id(),
+                          endpoint_override=self.get_os_endpoint(),
+                          headers=self.get_os_headers(),
+                          ignore_missing=ignore_missing)
 
     # ======= Backups =======
     def backups(self):

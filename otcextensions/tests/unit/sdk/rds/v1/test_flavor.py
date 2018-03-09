@@ -68,7 +68,7 @@ class TestFlavor(base.TestCase):
 
     def test_make_it(self):
         sot = flavor.Flavor(**EXAMPLE)
-        self.assertEqual(IDENTIFIER, sot.id)
+        self.assertEqual(EXAMPLE['str_id'], sot.id)
         self.assertEqual(EXAMPLE['name'], sot.name)
         self.assertEqual(EXAMPLE['ram'], sot.ram)
 
@@ -143,9 +143,9 @@ class TestFlavor(base.TestCase):
         res = sot.get(self.sess)
 
         self.sess.get.assert_called_once_with(
-            '%s/flavors/%s' % (PROJECT_ID, '123'),
+            '%s/flavors/%s' % (PROJECT_ID, 'df'),
         )
 
         self.assertEqual(2048, res.ram)
         self.assertEqual(res_json['name'], res.name)
-        self.assertEqual(res_json['str_id'], res.str_id)
+        self.assertEqual(res_json['str_id'], res.id)

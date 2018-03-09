@@ -34,6 +34,12 @@ EXAMPLE = {
 }
 
 
+class Res(sdk_resource.Resource):
+
+    base_path = '/'
+    allow_list = True
+
+
 class TestBaseResource(base.TestCase):
 
     def setUp(self):
@@ -41,11 +47,11 @@ class TestBaseResource(base.TestCase):
         self.sess = mock.Mock(spec=adapter.Adapter)
         self.sess.get_project_id = mock.Mock(return_value=PROJECT_ID)
 
-        self.sot = sdk_resource.Resource(**EXAMPLE)
+        self.sot = Res(**EXAMPLE)
 
         # inject some properties to enable methods
-        self.sot.allow_list = True
-        self.sot.base_path = '/'
+        # self.sot.allow_list = True
+        # self.sot.base_path = '/'
 
         self.base_path = self.sot.base_path
 

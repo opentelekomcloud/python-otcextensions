@@ -43,41 +43,115 @@ class Instance(sdk_resource.Resource):
     status = resource.Body('status')
     #: Instance name
     name = resource.Body('name')
-    #: Instance created time
-    created = resource.Body('created')
-    #: Host name of the instance
-    hostname = resource.Body('hostname')
-    #: Instance type readreplica/master/slave
-    type = resource.Body('type')
-    #: Region
-    region = resource.Body('region')
-    #: Instance updated time
-    updated = resource.Body('updated')
-    #: Availability Zone
-    availability_zone = resource.Body('availability_zone')
-    #: Private cloud id
-    vpc = resource.Body('vpc')
-    #: Nics interface list
-    #: *Type:dict*
-    nics = resource.Body('nics', type=dict)
-    #: Security group
-    #: *Type: dict*
-    securityGroup = resource.Body('securityGroup', type=dict)
+    #: Links
+    #: *Type:list*
+    links = resource.Body('links', type=list)
     #: Flavor information
     #: *Type: dict*
     flavor = resource.Body('flavor', type=dict)
-    flavorRef = resource.Body('flavorRef', type=dict)
-    #: Volume information
-    #: *Type: dict*
-    volume = resource.Body('volume', type=dict)
     #: Data store information
     #: *Type: dict*
     datastore = resource.Body('datastore', type=dict)
+    #: Region
+    region = resource.Body('region')
+    #: Tenant_id
+    #: *Type: str*
+    tenante_id = resource.Body('tenant_id')
+    #: Volume information
+    #: *Type: dict*
+    volume = resource.Body('volume', type=dict)
+    #: Host name of the instance
+    #: *Type:str*
+    hostname = resource.Body('hostname')
+    #: Instance ip
+    #: *Type:str*
+    created = resource.Body('ip')
+    #: Instance created time
+    #: *Type:str*
+    created = resource.Body('created')
+    #: Instance updated time
+    #: *Type:str*
+    updated = resource.Body('updated')
+    #: Fault, only validate if fault
+    #: *Type:dict*
+    fault = resource.Body('fault', type=dict)
+    #: Replicas
+    #: *Type:dict*
+    replicas = resource.Body('replicas', type=list)
+    #: Configuration
+    #: *Type:dict*
+    configuration = resource.Body('configuration', type=dict)
+    #: Locality
+    #: Not supported in RDS
+    #: *Type:str*
+    locality = resource.Body('locality')
+    #: Used local Storage
+    #: Not supported in RDS
+    local_storage_used = resource.Body('local_storage_used')
+    #: Password
+    #: The password of the database root user(i.e. the administrative user).
+    password = resource.Body('password')
+    #: Cluster id
+    cluster_id = resource.Body('cluster_id')
+    #: Shard id
+    shard_id = resource.Body('shard_id')
+    #: Server id
+    #: The ID of the underlying Nova instance for an instance.
+    #: *Type:str*
+    server_id = resource.Body('server_id')
+    #: Volume id
+    #: The ID of a volume.
+    #: *Type:str*
+    volume_id = resource.Body('volume_id')
+    #: encrypted_rpc_messaging
+    #: Whether the instance is using encrypted rpm messaging feature or not.
+    #: *Type:bool*
+    encrypted_rpc_messaging = resource.Body('encrypted_rpc_messaging')
+
+    # Additional Creation properties
+    #: Users
+    #: *Type:list*
+    users = resource.Body('users', type=list)
+    #: Flavor ID
+    #: *Type:uuid*
+    flavorRef = resource.Body('flavorRef')
+    #: Modules
+    #: *Type:dict*
+    modules = resource.Body('modules', type=dict)
+    #: Restore point
+    #: *Type:dict*
+    restore_point = resource.Body('restore_point', type=dict)
+    #: Availability Zone
+    #: The availability zone of the instance.
+    #: *Type:str*
+    availability_zone = resource.Body('availability_zone', alias='azcode')
+    #: Nics interface list
+    #: *Type:dict*
+    nics = resource.Body('nics', type=dict)
+    #: Id of the master
+    #: *Type:str*
+    replica_of = resource.Body('replica_of')
+    #: Replica of the instance
+    #: *Type:int*
+    replica_count = resource.Body('replica_count')
+    #: region name
+    #: *Type:str*
+    region_name = resource.Body('region_name')
+    #: Databases object
+    #: *Type:list*
+    databases = resource.Body('databases', type=list)
+
+    # RDS additinal attributes
+    #: Instance type readreplica/master/slave
+    type = resource.Body('type')
+    #: Private cloud id
+    vpc = resource.Body('vpc')
+    #: Security group
+    #: *Type: dict*
+    securityGroup = resource.Body('securityGroup', type=dict)
     #: Backup Strategy
     #: *Type: dict*
     backupStrategy = resource.Body('backupStrategy', type=dict)
-    #: Id of the master
-    replica_of = resource.Body('replica_of')
     #: HA information
     #: *Type: dict*
     ha = resource.Body('ha', type=dict)
@@ -102,37 +176,18 @@ class Instance(sdk_resource.Resource):
     securegroup = resource.Body('securegroup')
     #: Az code
     azcode = resource.Body('azcode')
-    #: Links
-    #: *Type:list*
-    links = resource.Body('links', type=list)
-    #: Fault, only validate if fault
-    #: *Type:dict*
-    fault = resource.Body('fault', type=dict)
-    #: Configuration
-    #: *Type:dict*
-    configuration = resource.Body('configuration', type=dict)
-    #: Replicas
-    #: *Type:dict*
-    replicas = resource.Body('replicas', type=dict)
     #: DB user
     dbuser = resource.Body('dbuser')
     #: Storage Engine
     storeEngine = resource.Body('storeEngine')
     #: Pay model
     payModel = resource.Body('payModel')
-    #: Cluster ID
-    cluster_id = resource.Body('cluster_id')
     #: Slave of instance
     slave_of = resource.Body('slave_of')
-    #: Replica of the instance
-    replica_count = resource.Body('replica_count')
-
     # Indicates the EIP for public access, including
     # the IP address and port number.
     # *Type:string*
     publicEndpoint = resource.Body('publicEndpoint')
-
-    users = resource.Body('users', type=list)
 
     def _action(self, exec_method, json, endpoint_override=None):
         """Executes the action
@@ -156,7 +211,7 @@ class Instance(sdk_resource.Resource):
         self._action(session.post, body, endpoint_override)
 
     def resize(self, session, flavor_reference, endpoint_override=None):
-        """Resize the database instance
+        """Resize the database instance flavor
 
         :returns: ``None``
         """

@@ -124,10 +124,16 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
         )
 
     def test_find_flavor(self):
-        # TODO(agoncharov)
-        # test for find not implemented
-        pass
-        # self.assertRaises(NotImplementedError, self.proxy.find_flavor, '')
+        self._verify2(
+            'otcextensions.sdk.sdk_proxy.Proxy._find',
+            self.proxy.find_flavor,
+            method_args=["flavor"],
+            expected_args=[_flavor.Flavor, "flavor"],
+            expected_kwargs={
+                'project_id': PROJECT_ID,
+                'endpoint_override': ENDPOINT_OS,
+                'headers': OS_HEADERS,
+                "ignore_missing": True})
 
     def test_create_instance(self):
         self.verify_create(
@@ -185,6 +191,18 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
                 'headers': OS_HEADERS
             }
         )
+
+    def test_find_instance(self):
+        self._verify2(
+            'otcextensions.sdk.sdk_proxy.Proxy._find',
+            self.proxy.find_instance,
+            method_args=["instance"],
+            expected_args=[_instance.Instance, "instance"],
+            expected_kwargs={
+                'project_id': PROJECT_ID,
+                'endpoint_override': ENDPOINT_OS,
+                'headers': OS_HEADERS,
+                "ignore_missing": True})
 
     def test_instances(self):
         self.verify_list(
@@ -271,19 +289,16 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
         )
 
     def test_find_configuration(self):
-        # TODO(agoncharov) implement it correctly
-        pass
-        # self.verify_get(
-        #     self.proxy.find_configuration,
-        #     _configuration.ConfigurationGroup,
-        #     mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
-        #     # method_kwargs={'name_or_id': 'test'},
-        #     expected_kwargs={
-        #         'project_id': PROJECT_ID,
-        #         'endpoint_override': ENDPOINT_OS,
-        #         'headers': RDS_HEADERS
-        #     }
-        # )
+        self._verify2(
+            'otcextensions.sdk.sdk_proxy.Proxy._find',
+            self.proxy.find_configuration,
+            method_args=["config"],
+            expected_args=[_configuration.ConfigurationGroup, "config"],
+            expected_kwargs={
+                'project_id': PROJECT_ID,
+                'endpoint_override': ENDPOINT_OS,
+                'headers': OS_HEADERS,
+                "ignore_missing": True})
 
     def test_backups(self):
         self.verify_list(

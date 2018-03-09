@@ -22,7 +22,8 @@ _logger = _log.setup_logging('openstack')
 
 class Resource(resource.Resource):
 
-    def _prepare_override_args(self,
+    @classmethod
+    def _prepare_override_args(cls,
                                endpoint_override=None,
                                request_headers=None,
                                additional_headers=None):
@@ -127,6 +128,7 @@ class Resource(resource.Resource):
             kwargs['error_message'] = error_message
 
         self._translate_response(response, **kwargs)
+
         return self
 
     def head(self, session,
@@ -240,7 +242,8 @@ class Resource(resource.Resource):
         self._translate_response(response, has_body=False, **kwargs)
         return self
 
-    def list(self, session, paginated=False,
+    @classmethod
+    def list(cls, session, paginated=False,
              endpoint_override=None, headers=None, **params):
         """Override default list to incorporate endpoint overriding
         and custom headers
@@ -277,19 +280,19 @@ class Resource(resource.Resource):
 
         """
 
-        if not self.allow_list:
-            raise exceptions.MethodNotSupported(self, "list")
+        if not cls.allow_list:
+            raise exceptions.MethodNotSupported(cls, "list")
 
-        session = self._get_session(session)
+        session = cls._get_session(session)
 
-        self._query_mapping._validate(params, base_path=self.base_path)
-        query_params = self._query_mapping._transpose(params)
-        uri = self.base_path % params
+        cls._query_mapping._validate(params, base_path=cls.base_path)
+        query_params = cls._query_mapping._transpose(params)
+        uri = cls.base_path % params
 
         limit = query_params.get('limit')
 
         # Build additional arguments to the GET call
-        get_args = self._prepare_override_args(
+        get_args = cls._prepare_override_args(
             endpoint_override=endpoint_override,
             # request_headers=request.headers,
             additional_headers=headers)
@@ -303,8 +306,8 @@ class Resource(resource.Resource):
             exceptions.raise_from_response(response)
             data = response.json()
 
-            if self.resources_key:
-                resources = data[self.resources_key]
+            if cls.resources_key:
+                resources = data[cls.resources_key]
             else:
                 resources = data
 
@@ -319,21 +322,77 @@ class Resource(resource.Resource):
                 # argument and is practically a reserved word.
                 raw_resource.pop("self", None)
 
-                if self.resource_key and self.resource_key in raw_resource:
-                    raw_resource = raw_resource[self.resource_key]
+                if cls.resource_key and cls.resource_key in raw_resource:
+                    raw_resource = raw_resource[cls.resource_key]
 
-                value = self.existing(**raw_resource)
+                value = cls.existing(**raw_resource)
 
                 marker = value.id
                 yield value
                 total_yielded += 1
 
             if resources and paginated:
-                uri, next_params = self._get_next_link(
+                uri, next_params = cls._get_next_link(
                     uri, response, data, marker, limit, total_yielded)
                 query_params.update(next_params)
             else:
                 return
+
+    @classmethod
+    def find(cls, session, name_or_id, ignore_missing=True,
+             endpoint_override=None, headers=None, **params):
+        """Find a resource by its name or id.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param name_or_id: This resource's identifier, if needed by
+                           the request. The default is ``None``.
+        :param bool ignore_missing: When set to ``False``
+                    :class:`~openstack.exceptions.ResourceNotFound` will be
+                    raised when the resource does not exist.
+                    When set to ``True``, None will be returned when
+                    attempting to find a nonexistent resource.
+        :param dict params: Any additional parameters to be passed into
+                            underlying methods, such as to
+                            :meth:`~openstack.resource.Resource.existing`
+                            in order to pass on URI parameters.
+
+        :return: The :class:`Resource` object matching the given name or id
+                 or None if nothing matches.
+        :raises: :class:`openstack.exceptions.DuplicateResource` if more
+                 than one resource is found for this request.
+        :raises: :class:`openstack.exceptions.ResourceNotFound` if nothing
+                 is found and ignore_missing is ``False``.
+        """
+        # Try to short-circuit by looking directly for a matching ID.
+        try:
+            match = cls.existing(
+                id=name_or_id,
+                # endpoint_override=endpoint_override,
+                # headers=headers,
+                **params)
+            return match.get(
+                session,
+                endpoint_override=endpoint_override,
+                headers=headers)
+        except (exceptions.NotFoundException, exceptions.HttpException):
+            pass
+
+        data = cls.list(session,
+                        endpoint_override=endpoint_override,
+                        headers=headers,
+                        **params)
+
+        result = cls._get_one_match(name_or_id, data)
+        # Update result with URL parameters
+        result._update(**params)
+        if result is not None:
+            return result
+
+        if ignore_missing:
+            return None
+        raise exceptions.ResourceNotFound(
+            "No %s found for %s" % (cls.__name__, name_or_id))
 
     def update_no_id(self, session, prepend_key=True, has_body=True,
                      endpoint_override=None, headers=None):

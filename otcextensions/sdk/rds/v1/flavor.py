@@ -50,7 +50,7 @@ class Flavor(sdk_resource.Resource):
     #: *Type:list*
     # links = resource.Body('links', type=list)
     #: String id
-    str_id = resource.Body('str_id', alternate_id=True)
+    id = resource.Body('str_id', alternate_id=True)
     #: Flavor detail
     #: *Type:list*
     flavor_detail = resource.Body('flavor_detail', type=list, list_type=dict)
@@ -93,3 +93,61 @@ class Flavor(sdk_resource.Resource):
         headers = self._consume_header_attrs(response.headers)
         self._header.attributes.update(headers)
         self._header.clean()
+
+    @classmethod
+    def find(cls, session, name_or_id, ignore_missing=True,
+             endpoint_override=None, headers=None, **params):
+        """Find a resource by its name or id.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param name_or_id: This resource's identifier, if needed by
+                           the request. The default is ``None``.
+        :param bool ignore_missing: When set to ``False``
+                    :class:`~openstack.exceptions.ResourceNotFound` will be
+                    raised when the resource does not exist.
+                    When set to ``True``, None will be returned when
+                    attempting to find a nonexistent resource.
+        :param dict params: Any additional parameters to be passed into
+                            underlying methods, such as to
+                            :meth:`~openstack.resource.Resource.existing`
+                            in order to pass on URI parameters.
+
+        :return: The :class:`Resource` object matching the given name or id
+                 or None if nothing matches.
+        :raises: :class:`openstack.exceptions.DuplicateResource` if more
+                 than one resource is found for this request.
+        :raises: :class:`openstack.exceptions.ResourceNotFound` if nothing
+                 is found and ignore_missing is ``False``.
+        """
+        # Try to short-circuit by looking directly for a matching ID.
+        try:
+            match = cls.existing(
+                id=name_or_id,
+                **params)
+            return match.get(
+                session,
+                endpoint_override=endpoint_override,
+                headers=headers)
+        except (exceptions.NotFoundException, exceptions.HttpException):
+            pass
+
+        data = cls.list(session,
+                        endpoint_override=endpoint_override,
+                        headers=headers,
+                        **params)
+
+        result = cls._get_one_match(name_or_id, data)
+        # Update result with URL parameters
+        result._update(**params)
+        if result is not None:
+            # Refetch flavor to get details
+            result = result.get(session,
+                                endpoint_override=endpoint_override,
+                                headers=headers)
+            return result
+
+        if ignore_missing:
+            return None
+        raise exceptions.ResourceNotFound(
+            "No %s found for %s" % (cls.__name__, name_or_id))

@@ -36,11 +36,17 @@ class Proxy(os_proxy.BaseProxy):
 
         :returns: An instance of ``resource_type`` or None
         """
-        return resource_type.find(self, name_or_id,
-                                  ignore_missing=ignore_missing,
-                                  endpoint_override=endpoint_override,
-                                  headers=headers,
-                                  **attrs)
+        result = resource_type.find(self, name_or_id,
+                                    ignore_missing=ignore_missing,
+                                    endpoint_override=endpoint_override,
+                                    headers=headers,
+                                    **attrs)
+        # Inject endpoint_override into the resource for potential
+        # direct use (i.e. instance.reboot)
+        if endpoint_override:
+            result.endpoint_override = endpoint_override
+
+        return result
 
     @os_proxy._check_resource(strict=False)
     def _delete(self, resource_type, value, ignore_missing=True,
