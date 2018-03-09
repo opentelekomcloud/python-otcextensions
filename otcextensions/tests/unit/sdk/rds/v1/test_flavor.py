@@ -90,7 +90,7 @@ class TestFlavor(base.TestCase):
 
     def test_get(self):
 
-        sot = flavor.Flavor.new(id='123', project_id=PROJECT_ID, str_id='df')
+        sot = flavor.Flavor.existing(str_id='123', project_id=PROJECT_ID)
         mock_response = mock.Mock()
         mock_response.status_code = 200
         mock_response.headers = {}
@@ -143,7 +143,7 @@ class TestFlavor(base.TestCase):
         res = sot.get(self.sess)
 
         self.sess.get.assert_called_once_with(
-            '%s/flavors/%s' % (PROJECT_ID, 'df'),
+            '%s/flavors/%s' % (PROJECT_ID, '123'),
         )
 
         self.assertEqual(2048, res.ram)
