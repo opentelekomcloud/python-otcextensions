@@ -1,8 +1,8 @@
 OpenTelekomCloud extensions
 ===========================
 
-.. image:: https://travis-ci.org/gtema/python-otcextensions.svg?branch=master
-    :target: https://travis-ci.org/gtema/python-otcextensions
+.. image:: https://travis-ci.org/OpenTelekomCloud/python-otcextensions.svg?branch=master
+    :target: https://travis-ci.org/OpenTelekomCloud/python-otcextensions
 
 OTCExtensions is a project to bring OTC extensions into the native OpenStack
 toolstack. Covered are currently following items:
