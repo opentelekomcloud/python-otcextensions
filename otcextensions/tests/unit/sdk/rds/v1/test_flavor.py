@@ -35,7 +35,7 @@ OS_HEADERS = {
 PROJECT_ID = '123'
 IDENTIFIER = 'IDENTIFIER'
 EXAMPLE = {
-    'id': IDENTIFIER,
+    # 'id': IDENTIFIER,
     'links': '1',
     'name': '2',
     'ram': 3,

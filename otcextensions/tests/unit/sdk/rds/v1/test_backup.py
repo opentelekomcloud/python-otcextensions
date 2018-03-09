@@ -228,8 +228,6 @@ class TestBackup(base.TestCase):
             project_id=PROJECT_ID,
             instance_id=instance_id)
 
-        print('policy %s' % sot)
-
         res = sot.get(self.sess, requires_id=False, headers=RDS_HEADERS)
 
         url = '/%(project_id)s/instances/%(instance_id)s/backups/policy' % \
