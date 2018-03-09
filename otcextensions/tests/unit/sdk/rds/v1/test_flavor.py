@@ -51,7 +51,7 @@ class TestFlavor(base.TestCase):
         self.sess = mock.Mock(spec=adapter.Adapter)
         self.sess.get = mock.Mock()
         self.sess.get_project_id = mock.Mock(return_value=PROJECT_ID)
-        self.sot = flavor.Flavor(**EXAMPLE)
+        self.sot = flavor.Flavor.existing(**EXAMPLE)
         # print(self.sot.to_dict())
 
     def test_basic(self):
@@ -67,7 +67,7 @@ class TestFlavor(base.TestCase):
         self.assertFalse(sot.allow_delete)
 
     def test_make_it(self):
-        sot = flavor.Flavor(**EXAMPLE)
+        sot = flavor.Flavor.existing(**EXAMPLE)
         self.assertEqual(EXAMPLE['str_id'], sot.id)
         self.assertEqual(EXAMPLE['name'], sot.name)
         self.assertEqual(EXAMPLE['ram'], sot.ram)
