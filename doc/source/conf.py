@@ -31,7 +31,7 @@ extensions = [
 ]
 
 # openstackdocstheme options
-repository_name = 'openstack/python-openstacksdk'
+repository_name = 'OpenTelekomCloud/python-otcextensions'
 bug_project = '760'
 bug_tag = ''
 html_last_updated_fmt = '%Y-%m-%d %H:%M'
@@ -56,8 +56,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'python-openstacksdk'
-copyright = u'2017, Various members of the OpenStack Foundation'
+project = u'python-otcextensions'
+copyright = u'2017, Various members of the OpenTelekomCloud'
 
 # A few variables have to be set for the log-a-bug feature.
 #   gitsha: The SHA checksum of the bug description. Extracted from git log.

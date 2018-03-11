@@ -1,17 +1,18 @@
-Getting started with the OpenStack SDK
-======================================
+Getting started with the OTCExtensions SDK
+==========================================
 
-For a listing of terms used throughout the SDK, including the names of
-projects and services supported by it, see the :doc:`glossary <../glossary>`.
+Please note that OTCExtensions provides an extension to the OpenStackSDK.
+Please refer to it's documentation for the details <https://docs.openstack.org/python-openstacksdk/latest/>
+
 
 Installation
 ------------
 
-The OpenStack SDK is available on
-`PyPI <https://pypi.python.org/pypi/openstacksdk>`_ under the name
-**openstacksdk**. To install it, use ``pip``::
+The OTCExtensions SDK is available on
+`GitHub <https://github.com/OpenTelekomCloud/python-otcextensions.git>`_.
+To install it, use ``pip``::
 
-   $ pip install openstacksdk
+   $ pip install otcextensions
 
 .. _user_guides:
 
@@ -26,26 +27,30 @@ approach, this is where you'll want to begin.
    :maxdepth: 1
 
    Configuration <config/index>
-   Connect to an OpenStack Cloud <guides/connect>
-   Connect to an OpenStack Cloud Using a Config File <guides/connect_from_config>
-   Using Cloud Abstration Layer <usage>
-   Logging <guides/logging>
-   Microversions <microversions>
-   Baremetal <guides/baremetal>
-   Block Storage <guides/block_storage>
-   Clustering <guides/clustering>
-   Compute <guides/compute>
-   Database <guides/database>
-   Identity <guides/identity>
-   Image <guides/image>
-   Key Manager <guides/key_manager>
-   Message <guides/message>
-   Network <guides/network>
-   Object Store <guides/object_store>
-   Orchestration <guides/orchestration>
+   Connect to an OpenStack Cloud <https://docs.openstack.org/python-openstacksdk/latest/user/guides/connect>
+   Connect to an OpenStack Cloud Using a Config File <https://docs.openstack.org/python-openstacksdk/latest/user/guides/connect_from_config>
+   Using Cloud Abstration Layer <https://docs.openstack.org/python-openstacksdk/latest/user/usage>
+   Logging <https://docs.openstack.org/python-openstacksdk/latest/user/guides/logging>
+   Microversions <https://docs.openstack.org/python-openstacksdk/latest/user/microversions>
+   Baremetal <https://docs.openstack.org/python-openstacksdk/latest/user/guides/baremetal>
+   Block Storage <https://docs.openstack.org/python-openstacksdk/latest/user/guides/block_storage>
+   Clustering <https://docs.openstack.org/python-openstacksdk/latest/user/guides/clustering>
+   Compute <https://docs.openstack.org/python-openstacksdk/latest/user/guides/compute>
+   Database <https://docs.openstack.org/python-openstacksdk/latest/user/guides/database>
+   Identity <https://docs.openstack.org/python-openstacksdk/latest/user/guides/identity>
+   Image <https://docs.openstack.org/python-openstacksdk/latest/user/guides/image>
+   Key Manager <https://docs.openstack.org/python-openstacksdk/latest/user/guides/key_manager>
+   Message <https://docs.openstack.org/python-openstacksdk/latest/user/guides/message>
+   Network <https://docs.openstack.org/python-openstacksdk/latest/user/guides/network>
+   Object Store <https://docs.openstack.org/python-openstacksdk/latest/user/guides/object_store>
+   Orchestration <https://docs.openstack.org/python-openstacksdk/latest/user/guides/orchestration>
+   RDS <guides/rds>
 
 API Documentation
 -----------------
+
+OpenStackSDK documentation is available under <https://docs.openstack.org/python-openstacksdk/latest/user/index.html#api-documentation>
+
 
 Service APIs are exposed through a two-layered approach. The classes
 exposed through our `Connection Interface`_ are
@@ -95,22 +100,23 @@ control which services can be used.
 .. toctree::
    :maxdepth: 1
 
-   Baremetal <proxies/baremetal>
-   Block Storage <proxies/block_storage>
-   Clustering <proxies/clustering>
-   Compute <proxies/compute>
-   Database <proxies/database>
-   Identity v2 <proxies/identity_v2>
-   Identity v3 <proxies/identity_v3>
-   Image v1 <proxies/image_v1>
-   Image v2 <proxies/image_v2>
-   Key Manager <proxies/key_manager>
-   Load Balancer <proxies/load_balancer_v2>
-   Message v2 <proxies/message_v2>
-   Network <proxies/network>
-   Object Store <proxies/object_store>
-   Orchestration <proxies/orchestration>
-   Workflow <proxies/workflow>
+   Baremetal <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/baremetal>
+   Block Storage <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/block_storage>
+   Clustering <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/clustering>
+   Compute <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/compute>
+   Database <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/database>
+   Identity v2 <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/identity_v2>
+   Identity v3 <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/identity_v3>
+   Image v1 <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/image_v1>
+   Image v2 <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/image_v2>
+   Key Manager <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/key_manager>
+   Load Balancer <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/load_balancer_v2>
+   Message v2 <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/message_v2>
+   Network <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/network>
+   Object Store <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/object_store>
+   Orchestration <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/orchestration>
+   Workflow <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/workflow>
+   RDS <proxies/rds>
 
 Resource Interface
 ~~~~~~~~~~~~~~~~~~
@@ -130,19 +136,19 @@ classes.
 .. toctree::
    :maxdepth: 1
 
-   Baremetal <resources/baremetal/index>
-   Block Storage <resources/block_storage/index>
-   Clustering <resources/clustering/index>
-   Compute <resources/compute/index>
-   Database <resources/database/index>
-   Identity <resources/identity/index>
-   Image <resources/image/index>
-   Key Management <resources/key_manager/index>
-   Load Balancer <resources/load_balancer/index>
-   Network <resources/network/index>
-   Orchestration <resources/orchestration/index>
-   Object Store <resources/object_store/index>
-   Workflow <resources/workflow/index>
+   Baremetal <https://docs.openstack.org/python-openstacksdk/latest/user/resources/baremetal/index>
+   Block Storage <https://docs.openstack.org/python-openstacksdk/latest/user/resources/block_storage/index>
+   Clustering <https://docs.openstack.org/python-openstacksdk/latest/user/resources/clustering/index>
+   Compute <https://docs.openstack.org/python-openstacksdk/latest/user/resources/compute/index>
+   Database <https://docs.openstack.org/python-openstacksdk/latest/user/resources/database/index>
+   Identity <https://docs.openstack.org/python-openstacksdk/latest/user/resources/identity/index>
+   Image <https://docs.openstack.org/python-openstacksdk/latest/user/resources/image/index>
+   Key Management <https://docs.openstack.org/python-openstacksdk/latest/user/resources/key_manager/index>
+   Load Balancer <https://docs.openstack.org/python-openstacksdk/latest/user/resources/load_balancer/index>
+   Network <https://docs.openstack.org/python-openstacksdk/latest/user/resources/network/index>
+   Orchestration <https://docs.openstack.org/python-openstacksdk/latest/user/resources/orchestration/index>
+   Object Store <https://docs.openstack.org/python-openstacksdk/latest/user/resources/object_store/index>
+   Workflow <https://docs.openstack.org/python-openstacksdk/latest/user/resources/workflow/index>
 
 Low-Level Classes
 ~~~~~~~~~~~~~~~~~

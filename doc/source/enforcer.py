@@ -19,6 +19,7 @@ WRITTEN_METHODS = set()
 # and then we can take this special case out.
 IGNORED_METHODS = ("wait_for_delete", "wait_for_status")
 
+
 class EnforcementError(errors.SphinxError):
     """A mismatch between what exists and what's documented"""
     category = "Enforcer"
@@ -26,22 +27,8 @@ class EnforcementError(errors.SphinxError):
 
 def get_proxy_methods():
     """Return a set of public names on all proxies"""
-    names = ["openstack.baremetal.v1._proxy",
-             "openstack.clustering.v1._proxy",
-             "openstack.block_storage.v2._proxy",
-             "openstack.compute.v2._proxy",
-             "openstack.database.v1._proxy",
-             "openstack.identity.v2._proxy",
-             "openstack.identity.v3._proxy",
-             "openstack.image.v1._proxy",
-             "openstack.image.v2._proxy",
-             "openstack.key_manager.v1._proxy",
-             "openstack.load_balancer.v2._proxy",
-             "openstack.message.v2._proxy",
-             "openstack.network.v2._proxy",
-             "openstack.object_store.v1._proxy",
-             "openstack.orchestration.v1._proxy",
-             "openstack.workflow.v2._proxy"]
+    names = ["otcextensions.sdk.rds.v1._proxy",
+             ]
 
     modules = (importlib.import_module(name) for name in names)
 

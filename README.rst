@@ -4,6 +4,10 @@ OpenTelekomCloud extensions
 .. image:: https://travis-ci.org/OpenTelekomCloud/python-otcextensions.svg?branch=master
     :target: https://travis-ci.org/OpenTelekomCloud/python-otcextensions
 
+.. image:: https://readthedocs.org/projects/python-otcextensions/badge/?version=latest
+    :target: http://python-otcextensions.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
 OTCExtensions is a project to bring OTC extensions into the native OpenStack
 toolstack. Covered are currently following items:
 
@@ -62,8 +66,8 @@ Alternatively you can install otcextensions globally without virtual environment
 Configuration
 =============
 
-The CLI is configured via environment variables and command-line
-options as listed in  https://docs.openstack.org/python-openstackclient/latest/cli/authentication.html.
+The CLI/SDK is configured via environment variables and command-line
+options as listed in https://docs.openstack.org/python-openstackclient/latest/cli/authentication.html or https://developer.openstack.org/sdks/python/openstacksdk/users/config.
 
 Authentication using username/password is most commonly used::
 
@@ -101,3 +105,51 @@ The corresponding command-line options look very similar::
     --os-url <url-to-openstack-service>
 
 In addition to that a regular `clouds.yaml` configuration file can be used
+
+openstack.config
+================
+
+``openstack.config`` will find cloud configuration for as few as 1 clouds and
+as many as you want to put in a config file. It will read environment variables
+and config files, and it also contains some vendor specific default values so
+that you don't have to know extra info to use OpenStack
+
+* If you have a config file, you will get the clouds listed in it
+* If you have environment variables, you will get a cloud named `envvars`
+* If you have neither, you will get a cloud named `defaults` with base defaults
+
+Sometimes an example is nice.
+
+Create a ``clouds.yaml`` file:
+
+.. code-block:: yaml
+
+     clouds:
+      otc:
+        region_name: Dallas
+        auth:
+          username: 'USER_NAME'
+          password: 'PASS'
+          project_name: 'eu-de'
+          auth_url: 'https://iam.eu-de.otc.t-systems.com:443/v3'
+          user_domain_name: 'OTC00000000001000000xxx'
+        interface: 'public'
+        identity_api_version: 3
+
+Please note: ``openstack.config`` will look for a file called ``clouds.yaml``
+in the following locations:
+
+* Current Directory
+* ``~/.config/openstack``
+* ``/etc/openstack``
+
+With this configuration you can start using openstackCLI simply ``openstack --os-cloud otc``
+
+More information at https://developer.openstack.org/sdks/python/openstacksdk/users/config
+
+
+Links
+=====
+
+* `Issue Tracker <https://github.com/OpenTelekomCloud/python-otcextensions/issues>`_
+* `Documentation <http://python-otcextensions.readthedocs.io/en/latest/>`_

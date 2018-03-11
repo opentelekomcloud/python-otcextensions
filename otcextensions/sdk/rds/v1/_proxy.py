@@ -110,7 +110,7 @@ class Proxy(sdk_proxy.Proxy):
             (MySQL, PostgreSQL, or SQLServer and is case-sensitive.)
 
         :returns: A generator of datastore versions
-        :rtype: :class:`~otcextensions.sdk.rds.v1.flavor.Flavor
+        :rtype: :class:`~otcextensions.sdk.rds.v1.flavor.Flavor`
         """
         return self._list(
             _datastore.Datastore,
@@ -127,7 +127,7 @@ class Proxy(sdk_proxy.Proxy):
         :param datastore: datastore name
         :param datastore_Version: id of the datastore version
         :returns: Detail of datastore version
-        :rtype: :class:`~otcextensions.sdk.rds.v1.datastore.Datastore
+        :rtype: :class:`~otcextensions.sdk.rds.v1.datastore.Datastore`
         """
         versions = self._list(
             _datastore.Datastore,
@@ -150,7 +150,7 @@ class Proxy(sdk_proxy.Proxy):
         :param region: region
 
         :returns: A generator of flavor
-        :rtype: :class:`~otcextensions.sdk.rds_os.v1.flavor.Flavor
+        :rtype: :class:`~otcextensions.sdk.rds_os.v1.flavor.Flavor`
         """
         return self._list(_flavor.Flavor, paginated=False,
                           # endpoint_override=self.get_os_endpoint(),
@@ -161,9 +161,9 @@ class Proxy(sdk_proxy.Proxy):
         """Get the detail of a flavor
 
         :param id: Flavor id or an object of class
-                   :class:`~otcextensions.sdk.rds_os.v1.flavor.Flavor
+                   :class:`~otcextensions.sdk.rds_os.v1.flavor.Flavor`
         :returns: Detail of flavor
-        :rtype: :class:`~otcextensions.sdk.rds_os.v1.flavor.Flavor
+        :rtype: :class:`~otcextensions.sdk.rds_os.v1.flavor.Flavor`
         """
         return self._get(
             _flavor.Flavor,

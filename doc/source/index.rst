@@ -1,5 +1,8 @@
-Welcome to the OpenStack SDK!
-=============================
+Welcome to the OTC Extensions of the OpenStack SDK and CLI!
+===========================================================
+
+**Note:** Currently documentation is a mostly a copy of OpenStackSDK documentation (used version).
+It will be soon extended with OTC services. Keep watching
 
 This documentation is split into three sections:
 
