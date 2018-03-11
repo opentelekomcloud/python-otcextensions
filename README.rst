@@ -10,7 +10,7 @@ toolstack. Covered are currently following items:
 * `python-openstacksdk`
 * `python-openstackclient`
 
-The primary goal is to provide a possibility to use native OpenStack SDK and CLI
+The primary goal is to provide a possibility to use native OpenStack SDK and CLI with the OTC additional services
 
 Getting Started
 ===============
@@ -44,6 +44,19 @@ In order to use SDK a following snippet can be used:
     obs = conn.obs # Get the OBS service proxy
 
     list(obs.buckets) # list the Buckets
+
+
+In order to use OTCExtensions plugin (development) in the openstackCLI the following can be done:
+
+* create virtual environment (`virtualenv-3 venv`)
+* source into the virtual env (`source venv/bin/activate`)
+* install project dependencies including openstackCLI (`pip install -r requirements.txt`)
+* install otcextensions entry_points into the environment (`python setup.py install_egg_info`)
+* start using openstackclient (inside the virtual environment) as usual (`openstack --os-cloud otc rds instance list`)
+
+Alternatively you can install otcextensions globally without virtual environment:
+
+* `python setup.py install`
 
 
 Configuration
