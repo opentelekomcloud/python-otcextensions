@@ -90,28 +90,34 @@ class ConfigurationGroup(sdk_resource.Resource):
     allow_get = True
     allow_list = True
 
-    # update_method = 'PUT'
-
     # Properties
     project_id = resource.URI('project_id')
     #: Id of the configuration group
+    #: *Type:str*
     id = resource.Body('id')
     #: Name of the configuration group
+    #: *Type:str*
     name = resource.Body('name')
     #: Description of the configuration group
+    #: *Type:str*
     description = resource.Body('description')
     #: Id of Datastore version
+    #: *Type:str*
     datastore_version_id = resource.Body('datastore_version_id')
     #: name of Datastore version
+    #: *Type:str*
     datastore_version_name = resource.Body('datastore_version_name')
     #: name of Datastore
+    #: *Type:str*
     datastore_name = resource.Body('datastore_name')
     #: Date of created
+    #: *Type:str*
     created = resource.Body('created')
     #: Date of updated
+    #: *Type:str*
     updated = resource.Body('updated')
-    #: Allow update or not, 0 for not allowed
-    #: *Type:int*
+    # : Allow update or not, 0 for not allowed
+    # : *Type:int*
     # allowed_updated = resource.Body('allowed_updated', type=int)
     #: Count of associated instance
     #: *Type:int*
@@ -132,7 +138,7 @@ class ConfigurationGroup(sdk_resource.Resource):
         :param session: session (adapter)
         :param endpoint_override: optional endpoint_override
 
-        :returns list of instance id/name dicts with instances
+        :returns: list of instance id/name dicts with instances
             with this configuration group
         :rtype: list of dicts
         """
@@ -160,53 +166,6 @@ class ConfigurationGroup(sdk_resource.Resource):
 
         if resp:
             return resp['instances']
-
-    # def add_custom_parameter(self, session, endpoint_override=None, **attrs):
-    #     """Add a custom parameter into the ConfigurationGroup
-    #
-    #     :param session: session (adapter)
-    #     :param endpoint_override: optional endpoint_override
-    #     :param **attrs: dict with parameter key/value
-    #
-    #     :returns RDS response if not success otherwise updated group
-    #     :rtype: modified ConfigurationGroup
-    #     """
-    #     request = self._prepare_request()
-    #     session = self._get_session(session)
-    #
-    #     if not endpoint_override:
-    #         if getattr(self, 'endpoint_override', None):
-    #             # If we have internal endpoint_override - use it
-    #             endpoint_override = self.endpoint_override
-    #
-    #     # Build additional arguments to the DELETE call
-    #     args = self._prepare_override_args(
-    #         endpoint_override=endpoint_override,
-    #         request_headers=request.headers,
-    #         # additional_headers={"Content-Type": "application/json"}
-    #     )
-    #
-    #     pg_attrs = {}
-    #     pg_attrs['values'] = attrs.pop('values')
-    #
-    #     body = {
-    #         'configuration': dict(**pg_attrs)
-    #     }
-    #
-    #     response = session.patch(
-    #         request.url, json=body, **args)
-    #
-    #     resp = response.json()
-    #     if resp:
-    #         errCode = resp.get('errCode', None)
-    #         if errCode and errCode == 'RDS.0041':
-    #             # merge the values changes
-    #             self.values.update(pg_attrs['values'])
-    #
-    #             # self._update(**pg_attrs)
-    #             return self
-    #
-    #     return resp
 
     def _translate_response(self, response, has_body=None, error_message=None):
         """Given a KSA response, inflate this instance with its data
@@ -249,58 +208,3 @@ class ConfigurationGroup(sdk_resource.Resource):
         headers = self._consume_header_attrs(response.headers)
         self._header.attributes.update(headers)
         self._header.clean()
-
-    # def update(self, session, endpoint_override=None, **attrs):
-    #     """Add a custom parameter into the ConfigurationGroup
-    #
-    #     :param session: session (adapter)
-    #     :param endpoint_override: optional endpoint_override
-    #     :param **attrs: dict with the parameter description structure
-    #         (name, description, values[])
-    #
-    #     :returns RDS response
-    #     :rtype: modified ConfigurationGroup
-    #     """
-    #     request = self._prepare_request()
-    #     session = self._get_session(session)
-    #
-    #     if not endpoint_override:
-    #         if getattr(self, 'endpoint_override', None):
-    #             # If we have internal endpoint_override - use it
-    #             endpoint_override = self.endpoint_override
-    #
-    #     # Build additional arguments to the PUT call
-    #     args = self._prepare_override_args(
-    #         endpoint_override=endpoint_override,
-    #         request_headers=request.headers,
-    #         # additional_headers={"Content-Type": "application/json"}
-    #     )
-    #
-    #     pg_attrs = {}
-    #     pg_attrs['values'] = attrs.pop('values')
-    #
-    #     if 'name' in attrs:
-    #         pg_attrs['name'] = attrs.pop('name')
-    #     if 'description' in attrs:
-    #         pg_attrs['description'] = attrs.pop('description')
-    #
-    #     body = {
-    #         'configuration': dict(**pg_attrs)
-    #     }
-    #
-    #     response = session.put(
-    #         request.url, json=body, **args)
-    #
-    #     resp = response.json()
-    #     if resp:
-    #         errCode = resp.get('errCode', None)
-    #         if errCode and errCode == 'RDS.0041':
-    #             pg_attrs['values'] = sdk_utils.merge_two_dicts(
-    #                 self.values,
-    #                 pg_attrs['values']
-    #             )
-    #
-    #             self._update(**pg_attrs)
-    #             return self
-    #
-    #     return resp

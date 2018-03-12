@@ -95,7 +95,7 @@ class Proxy(sdk_proxy.Proxy):
         """List supported datastore types
 
         :returns: A generator of supported datastore types
-        :rtype :string
+        :rtype object: object with name attribte
         """
         for ds in ['MySQL', 'PostgreSQL', 'SQLServer']:
             obj = type('obj', (object,), {'name': ds})
@@ -306,7 +306,7 @@ class Proxy(sdk_proxy.Proxy):
 
         :returns: A generator of ConfigurationGroup object
         :rtype:
-            :class:`~otcextensions.sdk.rds.v1.configuration.ConfigurationGroup
+            :class:`~otcextensions.sdk.rds.v1.configuration.ConfigurationGroup`
         """
         return self._list(
             _configuration.ConfigurationGroup,
@@ -320,12 +320,11 @@ class Proxy(sdk_proxy.Proxy):
         """Obtaining a ConfigurationGroup
 
         :param parameter_group: The value can be the ID of a ConfigurationGroup
-                or a object of
-               :class:`~otcextensions.sdk.rds.v1.configuration.ConfigurationGroup`.
-        :returns: A Parameter Group Object
-        :rtype:
-            :class:`~otcextensions.rds.v1.configuration.ConfigurationGroup`.
+            or a object of
+            :class:`~otcextensions.sdk.rds.v1.configuration.ConfigurationGroup`.
 
+        :returns: A Parameter Group Object
+        :rtype: :class:`~otcextensions.rds.v1.configuration.ConfigurationGroup`
         """
         return self._get(
             _configuration.ConfigurationGroup,
@@ -353,15 +352,16 @@ class Proxy(sdk_proxy.Proxy):
         """Deleting a ConfigurationGroup
 
         :param cg: The value can be the ID of a ConfigurationGroup or a
-                object of
-               :class:`~otcextensions.sdk.rds.v1.configuration.ConfigurationGroup`.
+            object of
+            :class:`~otcextensions.sdk.rds.v1.configuration.ConfigurationGroup`.
         :param bool ignore_missing: When set to ``False``
-                :class:`~openstack.exceptions.ResourceNotFound` will be
-                raised when the Parameter Group does not exist.
-                When set to ``True``, no exception will be set when
-                attempting to delete a nonexistent Parameter Group.
+            :class:`~openstack.exceptions.ResourceNotFound` will be
+            raised when the Parameter Group does not exist.
+            When set to ``True``, no exception will be set when
+            attempting to delete a nonexistent Parameter Group.
 
         :returns: None
+        :rtype: None
         """
         self._delete(
             _configuration.ConfigurationGroup, cg,
@@ -375,8 +375,8 @@ class Proxy(sdk_proxy.Proxy):
         """Find a ConfigurationGroup
 
         :param parameter_group: The value can be the ID of a ConfigurationGroup
-                or a object of
-               :class:`~otcextensions.sdk.rds.v1.configuration.Configurations`.
+            or a object of
+            :class:`~otcextensions.sdk.rds.v1.configuration.Configurations`.
         :returns: A Parameter Group Object
         :rtype:
             :class:`~otcextensions.rds.v1.configuration.ConfigurationGroup`.
@@ -392,7 +392,7 @@ class Proxy(sdk_proxy.Proxy):
         """List Backups
 
         :returns: A generator of backup
-        :rtype: :class:`~otcextensions.sdk.rds.v1.backup.Backup
+        :rtype: :class:`~otcextensions.sdk.rds.v1.backup.Backup`
         """
         return self._list(
             _backup.Backup, paginated=False,
@@ -405,7 +405,7 @@ class Proxy(sdk_proxy.Proxy):
         """Create a backups of instance
 
         :returns: A new backup object
-        :rtype: :class:`~otcextensions.sdk.rds.v1.backup.Backup
+        :rtype: :class:`~otcextensions.sdk.rds.v1.backup.Backup`
         """
         instance = self._get_resource(_instance.Instance, instance)
         return self._create(
@@ -421,12 +421,12 @@ class Proxy(sdk_proxy.Proxy):
         """Deletes given backup
 
         :param instance: The value can be either the ID of an instance or a
-               :class:`~openstack.database.v1.instance.Instance` instance.
+            :class:`~openstack.database.v1.instance.Instance` instance.
         :param bool ignore_missing: When set to ``False``
-                    :class:`~openstack.exceptions.ResourceNotFound` will be
-                    raised when the instance does not exist.
-                    When set to ``True``, no exception will be set when
-                    attempting to delete a nonexistent instance.
+            :class:`~openstack.exceptions.ResourceNotFound` will be
+            raised when the instance does not exist.
+            When set to ``True``, no exception will be set when
+            attempting to delete a nonexistent instance.
 
         :returns: ``None``
         """
@@ -443,7 +443,7 @@ class Proxy(sdk_proxy.Proxy):
         """Obtaining a backup policy of the instance
 
         :param instance: This parameter can be either the ID of an instance
-                     or a :class:`~openstack.sdk.rds.v1.instance.Instance`
+            or a :class:`~openstack.sdk.rds.v1.instance.Instance`
         :returns: A Backup policy
         :rtype: :class:`~otcextensions.sdk.rds.v1.configuration.BackupPolicy`
 
@@ -462,9 +462,9 @@ class Proxy(sdk_proxy.Proxy):
         """Sets the backup policy of the instance
 
         :param instance: This parameter can be either the ID of an instance
-                     or a :class:`~openstack.sdk.rds.v1.instance.Instance`
+            or a :class:`~openstack.sdk.rds.v1.instance.Instance`
         :param dict attrs: The attributes to update on the backup_policy
-                           represented by ``backup_policy``.
+            represented by ``backup_policy``.
 
         :returns: ``None``
         """

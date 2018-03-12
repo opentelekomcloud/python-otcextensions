@@ -8,9 +8,18 @@ For details on how to use database, see :doc:`/user/guides/rds`
 The Database Class
 ------------------
 
-The database high-level interface is available through the ``database``
-member of a :class:`~otcextensions.connection.Connection` object.  The
-``database`` member will only be added if the service is detected.
+The database high-level interface is available through the ``rds``
+member of a :class:`~openstack.connection.Connection` object.  The
+``rds`` member will only be added if the ``otcextensions.sdk.register_otc_Extensions(conn)`` method is called.
+
+Datastore Operations
+^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.rds.v1._proxy.Proxy
+
+   .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.datastore_versions
+   .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.get_datastore_version
+   .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.datastore_types
 
 Flavor Operations
 ^^^^^^^^^^^^^^^^^
@@ -32,3 +41,25 @@ Instance Operations
    .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.get_instance
    .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.find_instance
    .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.instances
+
+Configuration Operations
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.rds.v1._proxy.Proxy
+
+  .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.configurations
+  .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.get_configuration
+  .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.create_configuration
+  .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.delete_configuration
+  .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.find_configuration
+
+Backup Operations
+^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.rds.v1._proxy.Proxy
+
+  .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.backups
+  .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.create_backup
+  .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.delete_backup
+  .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.get_backup_policy
+  .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.set_backup_policy

@@ -149,6 +149,7 @@ classes.
    Orchestration <https://docs.openstack.org/python-openstacksdk/latest/user/resources/orchestration/index>
    Object Store <https://docs.openstack.org/python-openstacksdk/latest/user/resources/object_store/index>
    Workflow <https://docs.openstack.org/python-openstacksdk/latest/user/resources/workflow/index>
+   RDS <resources/rds/index>
 
 Low-Level Classes
 ~~~~~~~~~~~~~~~~~
