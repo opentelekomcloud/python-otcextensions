@@ -27,7 +27,8 @@ sys.path.insert(0, os.path.abspath('.'))
 extensions = [
     'sphinx.ext.autodoc',
     'openstackdocstheme',
-    'enforcer'
+    'enforcer',
+    'cliff.sphinxext',
 ]
 
 # openstackdocstheme options
@@ -114,3 +115,11 @@ latex_documents = [
 
 # Include both the class and __init__ docstrings when describing the class
 autoclass_content = "both"
+
+# -- Options for cliff.sphinxext plugin ---------------------------------------
+
+autoprogram_cliff_application = 'openstack'
+
+autoprogram_cliff_ignored = [
+    '--help', '--format', '--column', '--max-width', '--fit-width',
+    '--print-empty', '--prefix', '--noindent', '--quote']

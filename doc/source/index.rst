@@ -20,6 +20,16 @@ Installation
 
    install/index
 
+CLI Usage
+---------
+
+This guides give you an overview of the CLI commands
+
+.. toctree::
+   :maxdepth: 2
+
+   cli/index
+
 For Users
 ---------
 
