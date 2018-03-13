@@ -58,6 +58,7 @@ OTC_SERVICES = {
     'obs': {
         'service_type': 'obs',
         'require_ak': True,
+        'endpoint_service_name': 'objectstorage',
         'endpoint_override': 'https://obs.%(region_name)s.otc.t-systems.com'
     }
 }
@@ -122,6 +123,7 @@ def register_otc_extensions(connection, **kwargs):
         proxy = descriptor.__get__(connection, descriptor)
 
         endpoint_service_type = service.get('endpoint_service_type', None)
+        # endpoint_service_name = service.get('endpoint_service_name', None)
         if endpoint_service_type and \
                 endpoint_service_type != service.get('service_type'):
             proxy.service_type = endpoint_service_type

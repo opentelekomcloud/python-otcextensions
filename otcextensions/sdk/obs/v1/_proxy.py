@@ -23,7 +23,9 @@ from openstack import exceptions
 from otcextensions.i18n import _
 
 from otcextensions.sdk.obs.v1.bucket import Bucket
-from otcextensions.sdk.obs.v1.object import Object
+# from otcextensions.sdk.obs.v1.object import Object
+from otcextensions.sdk.obs.v1 import container as _container
+from otcextensions.sdk.obs.v1 import obj as _obj
 
 _logger = _log.setup_logging('openstack')
 
@@ -63,205 +65,213 @@ class Proxy(proxy.BaseProxy):
         else:
             return super(Proxy, self).get_endpoint(**kwargs)
 
-    def _establish_session(self):
-        _logger.debug('establishing session')
-        region = getattr(self, 'region_name', None)
-        ak = getattr(self, 'AK', None)
-        sk = getattr(self, 'SK', None)
 
-        if not region:
-            _logger.debug('region is not set in the connection. '
-                          'Default is used')
-        if ak and sk:
-            _logger.debug('SK/AK available, establish connection')
-            otcsession = boto3.session.Session()
 
-            s3client = otcsession.client(
-                's3',
-                region,
-                # config=boto3.session.Config(signature_version='s3v4'),
-                endpoint_url=self.get_endpoint(),
-                aws_access_key_id=ak,
-                aws_secret_access_key=sk
-            )
-            setattr(self, Proxy.SESSION_ATTR_NAME, s3client)
-            return s3client
-        else:
-            _logger.error('Some of AK/SK/Region is not set, abort')
-            return False
+    # ======== Containers ========
 
-    def _get_session(self):
-        """Retrieve internal session
+    def containers(self, **query):
+        """Obtain Container objects for this account.
 
+        :param kwargs query: Optional query parameters to be sent to limit
+                                 the resources being returned.
+
+        :rtype: A generator of
+            :class:`~openstack.object_store.v1.container.Container` objects.
         """
-        s3session = getattr(self, Proxy.SESSION_ATTR_NAME, None)
-        if not s3session:
-            s3session = self._establish_session()
-        return s3session
+        return self._list(_container.Container, paginated=True, **query)
 
-    def buckets(self, **attrs):
-        """Get all buckets
+    def get_container(self, container):
+        """Get the detail of a container
 
+        :param id: Container id or an object of class
+                   :class:`~otcextensions.sdk.obs.v1.container.Container`
+        :returns: Detail of container
+        :rtype: :class:`~otcextensions.sdk.obs.v1.container.Container`
         """
-        _logger.debug('OBS.buckets')
-        s3 = self._get_session()
-        if not s3:
-            _logger.error('session is not there. Please retry')
-            raise exceptions.SDKException(
-                _('OBS internal connection does not exist. Please retry'))
-        else:
-            try:
-                result = (
-                    # convert keys to lower case for further use
-                    Bucket(**{k.lower(): v for k, v in bucket.items()})
-                    for bucket in s3.list_buckets()["Buckets"])
-                return result
-            except ClientError as e:
-                print(str(e))
+        return self._get(_container.Container, container)
 
-    def get_bucket(self, bucket, **attrs):
-        """Get the bucket
+    def create_container(self, name, **attrs):
+        """Create a new container from attributes
 
-        Fetches the bucket from OBS (ensures it's existence).
-        Important is only the bucket name
+        :param container: Name of the container to create.
+        :param dict attrs: Keyword arguments which will be used to create
+               a :class:`~openstack.object_store.v1.container.Container`,
+               comprised of the properties on the Container class.
 
-        :param Bucket bucket: the bucket (i.e. created) to fetch
-
+        :returns: The results of container creation
+        :rtype: :class:`~openstack.object_store.v1.container.Container`
         """
-        _logger.debug('OBS.bucket')
-        # ensure bucket HEAD request is ok
-        result = self.get_bucket_by_name(bucket.name)
+        return self._create(_container.Container, name=name, **attrs)
 
-        return result
+    def delete_container(self, container, ignore_missing=True):
+        """Delete a container
 
-    def create_bucket(self, name, **attrs):
-        """Creates the bucket (container)
+        :param container: The value can be either the name of a container or a
+                      :class:`~openstack.object_store.v1.container.Container`
+                      instance.
+        :param bool ignore_missing: When set to ``False``
+                    :class:`~openstack.exceptions.ResourceNotFound` will be
+                    raised when the container does not exist.
+                    When set to ``True``, no exception will be set when
+                    attempting to delete a nonexistent server.
 
-        :param string name: Bucket name
-        :param **dict attrs: Additional attributes (not supported ATM)
-
-        Returns created bucket
+        :returns: ``None``
         """
-        _logger.debug('OBS.create_bucket')
-        s3 = self._get_session()
+        self._delete(_container.Container, container,
+                     ignore_missing=ignore_missing)
 
-        if not s3:
-            _logger.error('session is not there. Please retry')
-            raise exceptions.SDKException(
-                _('OBS internal connection does not exist. Please retry'))
+    def get_container_metadata(self, container):
+        """Get metadata for a container
 
-        s3.create_bucket(
-            Bucket=name
-        )
+        :param container: The value can be the name of a container or a
+               :class:`~openstack.object_store.v1.container.Container`
+               instance.
 
-        return Bucket(**{'name': name})
-
-    def get_bucket_by_name(self, bucket_name, **attrs):
-        """Get the bucket
-
+        :returns: One :class:`~openstack.object_store.v1.container.Container`
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+                 when no resource can be found.
         """
-        _logger.debug('OBS.bucket')
+        raise NotImplementedError
+        return self._head(_container.Container, container)
 
-        s3 = self._get_session()
+    def set_container_metadata(self, container, **metadata):
+        """Set metadata for a container.
 
-        if not s3:
-            _logger.error('session is not there. Please retry')
-            raise exceptions.SDKException(
-                _('OBS internal connection does not exist. Please retry'))
+        :param container: The value can be the name of a container or a
+               :class:`~openstack.object_store.v1.container.Container`
+               instance.
+        :param kwargs metadata: Key/value pairs to be set as metadata
+                                on the container. Both custom and system
+                                metadata can be set. Custom metadata are keys
+                                and values defined by the user. System
+                                metadata are keys defined by the Object Store
+                                and values defined by the user. The system
+                                metadata keys are:
 
-        result = None
-        if True:
-            # Since no bucket GET is present in OBS - list buckets
-            for bckt in self.buckets():
-                if bckt.name == bucket_name:
-                    result = bckt
-            if not result:
-                _logger.error('bucket head succedded, '
-                              'but it is not present in ls')
-                raise exceptions.SDKException(
-                    _('Bucket HEAD was ok, but in the list it was not found'))
-
-        return result
-
-    def objects(self, bucket, **attrs):
-        """List objects in the bucket
-
+                                - `content_type`
+                                - `is_content_type_detected`
+                                - `versions_location`
+                                - `read_ACL`
+                                - `write_ACL`
+                                - `sync_to`
+                                - `sync_key`
         """
-        _logger.debug('OBS.objects')
-        s3 = self._get_session()
+        raise NotImplementedError
+        res = self._get_resource(_container.Container, container)
+        res.set_metadata(self, metadata)
+        return res
 
-        if not s3:
-            _logger.error('session is not there. Please retry')
-            raise exceptions.SDKException(
-                _('OBS internal connection does not exist. Please retry'))
+    def delete_container_metadata(self, container, keys):
+        """Delete metadata for a container.
 
-        result = None
-        try:
-            # convert keys to lower case for further use
-            objects = (
-                _normalize_obs_keys(obj)
-                for obj in s3.list_objects(
-                    Bucket=bucket.name,
-                    **attrs
-                )["Contents"]
-            )
-            result = (Object(**obj) for obj in objects)
-        except ClientError as e:
-            print(str(e))
-
-        return result
-
-    def get_object_by_key(self, bucket, key, **attrs):
-        """Get object from the bucket by name
-
+        :param container: The value can be the ID of a container or a
+               :class:`~openstack.object_store.v1.container.Container`
+               instance.
+        :param keys: The keys of metadata to be deleted.
         """
-        _logger.debug('OBS.get_object_by_key')
-        s3 = self._get_session()
+        raise NotImplementedError
+        res = self._get_resource(_container.Container, container)
+        res.delete_metadata(self, keys)
+        return res
 
-        if not s3:
-            _logger.error('session is not there. Please retry')
-            raise exceptions.SDKException(
-                _('OBS internal connection does not exist. Please retry'))
+    # ======== Objects ========
 
-        result = None
-        try:
-            object_head = _normalize_obs_keys(
-                s3.head_object(Bucket=bucket.name, Key=key, **attrs))
-            _logger.debug('object data is %s' % object_head)
-            object_head['size'] = object_head['contentlength']
-            object_head['key'] = key
-            object_head['bucket'] = bucket.name
-            result = Object(**object_head)
-        except ClientError as e:
-            error_code = int(e.response['Error']['Code'])
-            if 404 == error_code:
-                raise exceptions.ResourceNotFound(
-                    _('Object is not present'))
-            print(str(e))
+    def objects(self, container, **query):
+        """Return a generator that yields the Container's objects.
 
-        return result
+        :param container: A container object or the name of a container
+            that you want to retrieve objects from.
+        :type container:
+            :class:`~openstack.object_store.v1.container.Container`
+        :param kwargs \*\*query: Optional query parameters to be sent to limit
+                                 the resources being returned.
 
-    def get_object(self, bucket, obj, **attrs):
-        """HEAD object
-
-        refetch the Object
-
-        :param Bucket bucket: bucket
-        :param Object obj: Object to fetch (key should be set)
-
+        :rtype: A generator of
+            :class:`~openstack.object_store.v1.obj.Object` objects.
         """
-        _logger.debug('OBS.get_object')
+        container = self._get_container_name(container=container)
 
-        return self.get_object_by_key(bucket, obj.key)
+        for obj in self._list(
+                _obj.Object, container=container,
+                paginated=True, **query):
+            obj.container = container
+            yield obj
 
-    def create_object(self, bucket, name, filename, **attrs):
+    def _get_container_name(self, obj=None, container=None):
+        if obj is not None:
+            obj = self._get_resource(_obj.Object, obj)
+            if obj.container is not None:
+                return obj.container
+        if container is not None:
+            container = self._get_resource(_container.Container, container)
+            return container.name
+
+        raise ValueError("container must be specified")
+
+    def get_object(self, obj, container=None):
+        """Get the data associated with an object
+
+        :param obj: The value can be the name of an object or a
+                       :class:`~openstack.object_store.v1.obj.Object` instance.
+        :param container: The value can be the name of a container or a
+               :class:`~openstack.object_store.v1.container.Container`
+               instance.
+
+        :returns: The contents of the object.  Use the
+                  :func:`~get_object_metadata`
+                  method if you want an object resource.
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+                 when no resource can be found.
+        """
+        container_name = self._get_container_name(
+            obj=obj, container=container)
+        return self._get(_obj.Object, obj, container=container_name)
+
+    def download_object(self, obj, container=None, **attrs):
+        """Download the data contained inside an object.
+
+        :param obj: The value can be the name of an object or a
+                       :class:`~openstack.object_store.v1.obj.Object` instance.
+        :param container: The value can be the name of a container or a
+               :class:`~openstack.object_store.v1.container.Container`
+               instance.
+
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+                 when no resource can be found.
+        """
+        container_name = self._get_container_name(
+            obj=obj, container=container)
+        obj = self._get_resource(
+            _obj.Object, obj, container=container_name, **attrs)
+        return obj.download(self, filename=attrs.pop('file', '-'))
+
+    def stream_object(self, obj, container=None, chunk_size=1024, **attrs):
+        """Stream the data contained inside an object.
+
+        :param obj: The value can be the name of an object or a
+                       :class:`~openstack.object_store.v1.obj.Object` instance.
+        :param container: The value can be the name of a container or a
+               :class:`~openstack.object_store.v1.container.Container`
+               instance.
+
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+                 when no resource can be found.
+        :returns: An iterator that iterates over chunk_size bytes
+        """
+        container_name = self._get_container_name(
+            obj=obj, container=container)
+        container_name = self._get_container_name(container=container)
+        obj = self._get_resource(
+            _obj.Object, obj, container=container_name, **attrs)
+        return obj.stream(self, chunk_size=chunk_size)
+
+    def create_object(self, container, name, **attrs):
         """Upload a new object from attributes
 
-        :param bucket: The value can be the name of a bucket or a
-               :class:`~otcextensions.sdk.obs.v1.Bucket`
+        :param container: The value can be the name of a container or a
+               :class:`~openstack.object_store.v1.container.Container`
                instance.
-        :param name: Name (key) of the object to create.
-        :param file: File ptr
+        :param name: Name of the object to create.
         :param dict attrs: Keyword arguments which will be used to create
                a :class:`~openstack.object_store.v1.obj.Object`,
                comprised of the properties on the Object class.
@@ -269,94 +279,101 @@ class Proxy(proxy.BaseProxy):
         :returns: The results of object creation
         :rtype: :class:`~openstack.object_store.v1.container.Container`
         """
-        _logger.debug('OBS.create_object')
-        s3 = self._get_session()
+        # TODO(mordred) Add ability to stream data from a file
+        # TODO(mordred) Use create_object from OpenStackCloud
+        container_name = self._get_container_name(container=container)
+        return self._create(
+            _obj.Object, container=container_name, name=name, **attrs)
+    # Backwards compat
+    upload_object = create_object
 
-        if not s3:
-            _logger.error('session is not there. Please retry')
-            raise exceptions.SDKException(
-                _('OBS internal connection does not exist. Please retry'))
+    def copy_object(self):
+        """Copy an object."""
+        raise NotImplementedError
 
-        # Ensure bucket exists
-        self._head_bucket(bucket_name=bucket.name)
+    def delete_object(self, obj, ignore_missing=True, container=None):
+        """Delete an object
 
-        if os.path.isfile(filename) and os.access(filename, os.R_OK):
-            _logger.debug('uploading file %s to OBS' % filename)
-            s3.upload_file(
-                filename,
-                bucket.name,
-                name
-            )
-        else:
-            _logger.error('given file is not accessible')
-            raise exceptions.SDKException(
-                _('File %s is not accessible') % filename)
+        :param obj: The value can be either the name of an object or a
+                       :class:`~openstack.object_store.v1.container.Container`
+                       instance.
+        :param container: The value can be the ID of a container or a
+               :class:`~openstack.object_store.v1.container.Container`
+               instance.
+        :param bool ignore_missing: When set to ``False``
+                    :class:`~openstack.exceptions.ResourceNotFound` will be
+                    raised when the object does not exist.
+                    When set to ``True``, no exception will be set when
+                    attempting to delete a nonexistent server.
 
-    def download_object(self, obj, filename, **attrs):
-        """Download the data contained inside an object into the file
+        :returns: ``None``
+        """
+        container_name = self._get_container_name(obj, container)
+
+        self._delete(_obj.Object, obj, ignore_missing=ignore_missing,
+                     container=container_name)
+
+    def get_object_metadata(self, obj, container=None):
+        """Get metadata for an object.
 
         :param obj: The value can be the name of an object or a
-                       :class:`~openstack.object_store.v1.obj.Object` instance.
-        :param filename: Filename to which object content will be saved
+                    :class:`~openstack.object_store.v1.obj.Object` instance.
+        :param container: The value can be the ID of a container or a
+               :class:`~openstack.object_store.v1.container.Container`
+               instance.
 
+        :returns: One :class:`~openstack.object_store.v1.obj.Object`
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                  when no resource can be found.
         """
-        _logger.debug('OBS.download_object')
-        s3 = self._get_session()
+        raise NotImplementedError
+        container_name = self._get_container_name(obj, container)
 
-        if not s3:
-            _logger.error('session is not there. Please retry')
-            raise exceptions.SDKException(
-                _('OBS internal connection does not exist. Please retry'))
+        return self._head(_obj.Object, obj, container=container_name)
 
-        if not obj or not isinstance(obj, Object):
-            raise exceptions.ResourceNotFound(_('Object is not present'))
+    def set_object_metadata(self, obj, container=None, **metadata):
+        """Set metadata for an object.
 
-        try:
-            s3.download_file(
-                Bucket=obj.bucket,
-                Key=obj.key,
-                Filename=filename
-            )
-        except ClientError as e:
-            raise exceptions.SDKException(
-                _('OBS internal error occured '
-                  'while downloading object (%s)') % str(e))
+        Note: This method will do an extra HEAD call.
 
-    def _head_bucket(self, bucket_name, **kwargs):
-        """Head bucket - ensure bucket existence
+        :param obj: The value can be the name of an object or a
+                    :class:`~openstack.object_store.v1.obj.Object` instance.
+        :param container: The value can be the name of a container or a
+               :class:`~openstack.object_store.v1.container.Container`
+               instance.
+        :param kwargs metadata: Key/value pairs to be set as metadata
+                                on the container. Both custom and system
+                                metadata can be set. Custom metadata are keys
+                                and values defined by the user. System
+                                metadata are keys defined by the Object Store
+                                and values defined by the user. The system
+                                metadata keys are:
 
+                                - `content_type`
+                                - `content_encoding`
+                                - `content_disposition`
+                                - `delete_after`
+                                - `delete_at`
+                                - `is_content_type_detected`
         """
-        s3 = self._get_session()
-        try:
-            return s3.head_bucket(Bucket=bucket_name, **kwargs)
-        except ClientError as e:
-            error_code = int(e.response['Error']['Code'])
-            if 404 == error_code:
-                raise exceptions.ResourceNotFound(
-                    _('Bucket is not present'))
+        raise NotImplementedError
+        container_name = self._get_container_name(obj, container)
+        res = self._get_resource(_obj.Object, obj, container=container_name)
+        res.set_metadata(self, metadata)
+        return res
 
-            raise exceptions.SDKException(
-                _('OBS internal error (%s)') % str(e)
-            )
+    def delete_object_metadata(self, obj, container=None, keys=None):
+        """Delete metadata for an object.
 
-    def _head_object(self, bucket, object_name, **kwargs):
-        """Head object - ensure object existence
-
+        :param obj: The value can be the name of an object or a
+                    :class:`~openstack.object_store.v1.obj.Object` instance.
+        :param container: The value can be the ID of a container or a
+               :class:`~openstack.object_store.v1.container.Container`
+               instance.
+        :param keys: The keys of metadata to be deleted.
         """
-        s3 = self._get_session()
-        try:
-            return s3.head_object(
-                Bucket=bucket.name,
-                Key=object_name,
-                **kwargs)
-        except ClientError as e:
-            error_code = int(e.response['Error']['Code'])
-            if 404 == error_code:
-                raise exceptions.ResourceNotFound(
-                    _('Object is not present'))
-
-            raise exceptions.SDKException(
-                _('OBS internal error (%s)') % str(e)
-            )
+        raise NotImplementedError
+        container_name = self._get_container_name(obj, container)
+        res = self._get_resource(_obj.Object, obj, container=container_name)
+        res.delete_metadata(self, keys)
+        return res

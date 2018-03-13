@@ -22,9 +22,6 @@ try:
     profile = None
 except ImportError:
     from openstack import profile
-# from osc_lib import utils
-
-# from otcextensions.i18n import _
 
 from otcextensions import sdk
 
@@ -55,55 +52,7 @@ def make_client(instance):
 
     :param ClientManager instance: The ClientManager that owns the new client
     """
-    # version = instance._api_version[API_NAME]
-
-    # plugin_client = utils.get_client_class(
-    #     API_NAME,
-    #     instance._api_version[API_NAME],
-    #     API_VERSIONS)
-    #
-    # LOG.debug('Instantiating OBS Client: %s', plugin_client)
-    #
-    # conf = instance.get_configuration()
-    # s3_ak = conf.get('s3_ak')
-    # s3_sk = conf.get('s3_sk')
-    # s3_host = conf.get('s3_hostname')
-    #
-    # # Defer client import until we actually need them
-    # # from obsextensions.obsclient import client as obs_client
-    #
-    # client = plugin_client(
-    #     session=instance.session,
-    #     s3_ak=s3_ak,
-    #     s3_sk=s3_sk,
-    #     s3_hostname=s3_host,
-    #     region=instance.region_name
-    # )
-    #
-    # endpoint = instance.get_endpoint_for_service_type(
-    #     OBS_API_TYPE,
-    #     region_name=instance.region_name,
-    #     interface=instance.interface,
-    # )
-    #
-    # print(endpoint)
-    #
-    # obs_api = utils.get_client_class(
-    #     API_NAME,
-    #     instance._api_version[API_NAME],
-    #     OBS_API_VERSIONS,
-    # )
-    # LOG.debug('Instantiating OBS API: %s', obs_api)
-    #
-    # client.api = obs_api(
-    #     session=instance.session,
-    #     service_type=OBS_API_TYPE,
-    #     client=client,
-    # )
-    #
-    # return client
-
-    LOG.debug('Instantiating RDS Client: ')
+    LOG.debug('Instantiating OBS Client: ')
 
     if getattr(instance, "sdk_connection", None) is None:
         if profile is None:
@@ -162,12 +111,12 @@ def build_option_parser(parser):
              ' (Env: OS_OBS_API_VERSION)')
 
     parser.add_argument(
-        '--s3-ak',
+        '--ak',
         metavar='<ak>',
         help='OTC OBS Plugin AK' +
              ' (Env: AK)')
     parser.add_argument(
-        '--s3-sk',
+        '--sk',
         metavar='<sk>',
         help='OTC OBS Plugin SK' +
              ' (Env: SK)')
