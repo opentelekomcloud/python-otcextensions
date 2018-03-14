@@ -28,7 +28,7 @@ class Proxy(sdk_proxy.Proxy):
         """Retrieve a generator of groups
 
         :param dict query: Optional query parameters to be sent to limit the
-                      resources being returned.
+            resources being returned.
             * ``name``: group name
             * ``status``: group status, ``INSERVICE``, ``PAUSED``, ``ERROR``
             * ``scaling_configuration_id``: scaling configuration id

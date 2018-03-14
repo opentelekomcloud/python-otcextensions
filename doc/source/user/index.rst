@@ -45,6 +45,8 @@ approach, this is where you'll want to begin.
    Object Store <https://docs.openstack.org/python-openstacksdk/latest/user/guides/object_store>
    Orchestration <https://docs.openstack.org/python-openstacksdk/latest/user/guides/orchestration>
    RDS <guides/rds>
+   OBS <guides/obs>
+   AutoScaling <guides/auto_scaling>
 
 API Documentation
 -----------------
@@ -117,6 +119,8 @@ control which services can be used.
    Orchestration <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/orchestration>
    Workflow <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/workflow>
    RDS <proxies/rds>
+   OBS <proxies/obs>
+   AutoScaling <proxies/auto_scaling>
 
 Resource Interface
 ~~~~~~~~~~~~~~~~~~
@@ -150,6 +154,8 @@ classes.
    Object Store <https://docs.openstack.org/python-openstacksdk/latest/user/resources/object_store/index>
    Workflow <https://docs.openstack.org/python-openstacksdk/latest/user/resources/workflow/index>
    RDS <resources/rds/index>
+   OBS <resources/obs/index>
+   AutoScaling <resources/auto_scaling/index>
 
 Low-Level Classes
 ~~~~~~~~~~~~~~~~~
