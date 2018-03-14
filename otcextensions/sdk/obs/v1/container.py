@@ -11,7 +11,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from openstack import exceptions
 from openstack import resource
+from openstack import utils
+
 
 from openstack.object_store.v1 import container
 from otcextensions.sdk.obs.v1 import _base
@@ -89,8 +92,15 @@ class Container(container.Container, _base.BaseResource):
         if self.name:
             body['Bucket'] = self.name
 
+        base_path = '/'
         headers = {}
-        uri = self.base_path % self._uri.attributes
+        uri = base_path % self._uri.attributes
+        if requires_id:
+            if self.id is None:
+                raise exceptions.InvalidRequest(
+                    "Request requires an ID but none was found")
+
+            uri = utils.urljoin(uri, self.id)
 
         return resource._Request(uri, body, headers)
 
