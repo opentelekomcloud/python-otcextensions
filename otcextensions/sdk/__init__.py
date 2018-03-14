@@ -60,7 +60,12 @@ OTC_SERVICES = {
         'require_ak': True,
         'endpoint_service_name': 'objectstorage',
         # 'endpoint_override': 'https://obs.%(region_name)s.otc.t-systems.com'
-    }
+    },
+    'auto_scaling': {
+        'service_type': 'auto_scaling',
+        'endpoint_service_type': 'as',
+        # 'endpoint_override': 'https://obs.%(region_name)s.otc.t-systems.com'
+    },
 }
 
 
