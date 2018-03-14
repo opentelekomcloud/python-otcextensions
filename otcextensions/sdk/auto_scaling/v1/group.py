@@ -94,20 +94,21 @@ class Group(sdk_resource.Resource):
     #: Create time of the group
     create_time = resource.Body("create_time")
 
-    @classmethod
-    def get_next_marker(cls, response_json, yielded, query_params):
-        from openstack.auto_scaling.v1 import get_next_marker
-        return get_next_marker(response_json, yielded)
+    # @classmethod
+    # def get_next_marker(cls, response_json, yielded, query_params):
+    #     from otcextensions.sdk.auto_scaling.v1 import get_next_marker
+    #     return get_next_marker(response, total_yielded)
+    # TODO(agoncharov) listing is different with respect to marker/limit
+    # implement it correctly
 
     def _action(self, session, body):
         """Preform group actions given the message body."""
         url = utils.urljoin(self.base_path, self.id, "action")
-        endpoint_override = self.service.get_endpoint_override()
-        return session.post(url,
-                            endpoint_filter=self.service,
-                            endpoint_override=endpoint_override,
-                            json=body,
-                            headers={})
+        return session.post(
+            url,
+            json=body,
+            headers={}
+        )
 
     def resume(self, session):
         """resume group"""

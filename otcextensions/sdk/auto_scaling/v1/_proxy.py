@@ -18,12 +18,14 @@ from otcextensions.sdk import sdk_proxy
 # from otcextensions.i18n import _
 
 from otcextensions.sdk.auto_scaling.v1 import group as _group
+from otcextensions.sdk.auto_scaling.v1 import config as _config
 
 _logger = _log.setup_logging('openstack')
 
 
 class Proxy(sdk_proxy.Proxy):
 
+    # ======== Groups ========
     def groups(self, **query):
         """Retrieve a generator of groups
 
@@ -145,3 +147,96 @@ class Proxy(sdk_proxy.Proxy):
             _group.Group, group
         )
         group.pause(self._session)
+
+    # ======== Configurations ========
+    def configs(self, **query):
+        """Retrieve a generator of configs
+
+        :param dict query: Optional query parameters to be sent to limit the
+                      resources being returned.
+            * ``name``: configuration name
+            * ``image_id``: image id
+            * ``marker``:  pagination marker
+            * ``limit``: pagination limit
+
+        :returns: A generator of config
+                  (:class:`~openstack.auto_scaling.v2.config.Config`) instances
+        """
+        return self._list(
+            _config.Config, paginated=True,
+            project_id=self.session.get_project_id(),
+            **query)
+
+    def create_config(self, name, **attrs):
+        """Create a new config from config name and instance-config attributes
+
+        :param name: auto scaling config name
+        :param dict attrs: Keyword arguments which will be used to create
+                a :class:`~openstack.auto_scaling.v2.config.InstanceConfig`,
+                comprised of the properties on the InstanceConfig class.
+        :returns: The results of config creation
+        :rtype: :class:`~openstack.auto_scaling.v2.config.Config`
+        """
+        instance_config = _config.InstanceConfig.new(**attrs)
+        config = _config.Config(
+            name=name, instance_config=instance_config,
+            project_id=self.session.get_project_id(),
+            )
+        return config.create(self._session, prepend_key=False)
+
+    def get_config(self, config):
+        """Get a config
+
+        :param config: The value can be the ID of a config
+             or a :class:`~openstack.auto_scaling.v2.config.Config` instance.
+        :returns: Config instance
+        :rtype: :class:`~openstack.auto_scaling.v2.config.Config`
+        """
+        return self._get(
+            _config.Config, config,
+            project_id=self.session.get_project_id(),)
+
+    def delete_config(self, config, ignore_missing=True):
+        """Delete a config
+
+        :param config: The value can be the ID of a config
+             or a :class:`~openstack.auto_scaling.v2.config.Config` instance.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the config does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent config.
+
+        :returns: Config been deleted
+        :rtype: :class:`~openstack.auto_scaling.v2.config.Config`
+        """
+        return self._delete(
+            _config.Config, config,
+            ignore_missing=ignore_missing,
+            project_id=self.session.get_project_id()
+        )
+
+    # def batch_delete_configs(self, configs):
+    #     """batch delete configs
+    #
+    #     :param list configs: The list item value can be the ID of a config
+    #          or a :class:`~openstack.auto_scaling.v2.config.Config` instance.
+    #     """
+    #     config = _config.Config()
+    #     return config.batch_delete(self._session, configs)
+    #
+    # def find_config(self, name_or_id, ignore_missing=True):
+    #     """Find a single config
+    #
+    #     :param name_or_id: The name or ID of a config
+    #     :param bool ignore_missing: When set to ``False``
+    #         :class:`~openstack.exceptions.ResourceNotFound` will be raised
+    #         when the config does not exist.
+    #         When set to ``True``, no exception will be set when attempting
+    #         to delete a nonexistent config.
+    #
+    #     :returns: ``None``
+    #     """
+    #     return self._find(_config.Config, name_or_id,
+    #                       ignore_missing=ignore_missing,
+    #                       name=name_or_id)
