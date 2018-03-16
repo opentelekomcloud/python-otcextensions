@@ -74,7 +74,7 @@ class TestGroup(base.TestCase):
         sot = group.Group()
         self.assertEqual('scaling_group', sot.resource_key)
         self.assertEqual('scaling_groups', sot.resources_key)
-        self.assertEqual('/%(project_id)s/scaling_group', sot.base_path)
+        self.assertEqual('/scaling_group', sot.base_path)
         self.assertEqual('as', sot.service.service_type)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
@@ -95,10 +95,10 @@ class TestGroup(base.TestCase):
 
         self.sess.get.return_value = mock_response
 
-        result = list(self.sot.list(self.sess, project_id=PROJECT_ID))
+        result = list(self.sot.list(self.sess))
 
         self.sess.get.assert_called_once_with(
-            '/%s/scaling_group' % (PROJECT_ID),
+            '/scaling_group',
         )
 
         self.assertEqual([group.Group(**EXAMPLE)], result)
@@ -117,7 +117,7 @@ class TestGroup(base.TestCase):
         result = sot.get(self.sess)
 
         self.sess.get.assert_called_once_with(
-            '%s/scaling_group/%s' % (PROJECT_ID, EXAMPLE['scaling_group_id']),
+            'scaling_group/%s' % EXAMPLE['scaling_group_id'],
         )
 
         self.assertEqual(sot, result)

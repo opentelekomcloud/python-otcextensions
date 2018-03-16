@@ -40,9 +40,10 @@ class Proxy(sdk_proxy.Proxy):
         :returns: A generator of group
             (:class:`~otcextensions.sdk.auto_scaling.v1.group.Group`) instances
         """
+        print('get groups is called')
         return self._list(
             _group.Group, paginated=True,
-            project_id=self.session.get_project_id(), **query
+            **query
         )
 
     def create_group(self, **attrs):
@@ -55,8 +56,7 @@ class Proxy(sdk_proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.auto_scaling.v1.group.Group`
         """
         return self._create(
-            _group.Group, prepend_key=False,
-            project_id=self.session.get_project_id(), **attrs
+            _group.Group, prepend_key=False, **attrs
         )
 
     def update_group(self, group, **attrs):
@@ -72,8 +72,7 @@ class Proxy(sdk_proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.auto_scaling.v1.group.Group`
         """
         return self._update(
-            _group.Group, group, prepend_key=False,
-            project_id=self.session.get_project_id(), **attrs)
+            _group.Group, group, prepend_key=False, **attrs)
 
     def get_group(self, group):
         """Get a group
@@ -86,7 +85,6 @@ class Proxy(sdk_proxy.Proxy):
         """
         return self._get(
             _group.Group, group,
-            project_id=self.session.get_project_id()
         )
 
     def delete_group(self, group, ignore_missing=True):
@@ -103,7 +101,6 @@ class Proxy(sdk_proxy.Proxy):
         """
         return self._delete(
             _group.Group, group, ignore_missing=ignore_missing,
-            project_id=self.session.get_project_id()
         )
 
     def find_group(self, name_or_id, ignore_missing=True):
@@ -122,7 +119,6 @@ class Proxy(sdk_proxy.Proxy):
             _group.Group, name_or_id,
             ignore_missing=ignore_missing,
             # name=name_or_id,
-            project_id=self.session.get_project_id()
         )
 
     def resume_group(self, group):
@@ -164,7 +160,6 @@ class Proxy(sdk_proxy.Proxy):
         """
         return self._list(
             _config.Config, paginated=True,
-            project_id=self.session.get_project_id(),
             **query)
 
     def create_config(self, name, **attrs):
@@ -180,8 +175,7 @@ class Proxy(sdk_proxy.Proxy):
         instance_config = _config.InstanceConfig.new(**attrs)
         config = _config.Config(
             name=name, instance_config=instance_config,
-            project_id=self.session.get_project_id(),
-            )
+        )
         return config.create(self._session, prepend_key=False)
 
     def get_config(self, config):
@@ -193,8 +187,8 @@ class Proxy(sdk_proxy.Proxy):
         :rtype: :class:`~openstack.auto_scaling.v2.config.Config`
         """
         return self._get(
-            _config.Config, config,
-            project_id=self.session.get_project_id(),)
+            _config.Config, config
+        )
 
     def delete_config(self, config, ignore_missing=True):
         """Delete a config
@@ -213,7 +207,6 @@ class Proxy(sdk_proxy.Proxy):
         return self._delete(
             _config.Config, config,
             ignore_missing=ignore_missing,
-            project_id=self.session.get_project_id()
         )
 
     # def batch_delete_configs(self, configs):

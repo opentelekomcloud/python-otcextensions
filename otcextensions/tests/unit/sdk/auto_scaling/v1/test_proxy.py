@@ -9,7 +9,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import mock
+# import mock
 
 # from otcextensions.sdk.auto_scaling import auto_scaling_service
 from otcextensions.sdk.auto_scaling.v1 import _proxy
@@ -22,14 +22,12 @@ from otcextensions.sdk.auto_scaling.v1 import group as _group
 # from openstack.tests.unit.test_proxy_base3 import BaseProxyTestCase
 from openstack.tests.unit import test_proxy_base
 
-PROJECT_ID = '123'
-
 
 class TestAutoScalingProxy(test_proxy_base.TestProxyBase):
     def setUp(self):
         super(TestAutoScalingProxy, self).setUp()
         self.proxy = _proxy.Proxy(self.session)
-        self.session.get_project_id = mock.Mock(return_value=PROJECT_ID)
+        # self.session.get_project_id = mock.Mock(return_value=PROJECT_ID)
 
 
 class TestAutoScalingGroups(TestAutoScalingProxy):
@@ -44,7 +42,6 @@ class TestAutoScalingGroups(TestAutoScalingProxy):
             paginated=True,
             expected_kwargs={
                 'some_arg': 'arg_value',
-                'project_id': PROJECT_ID
             }
         )
 
@@ -54,7 +51,6 @@ class TestAutoScalingGroups(TestAutoScalingProxy):
             _group.Group,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
             expected_kwargs={
-                'project_id': PROJECT_ID,
             }
         )
 
@@ -65,7 +61,6 @@ class TestAutoScalingGroups(TestAutoScalingProxy):
             method_args=["flavor"],
             expected_args=[_group.Group, "flavor"],
             expected_kwargs={
-                'project_id': PROJECT_ID,
                 "ignore_missing": True})
 
     def test_create(self):
@@ -77,7 +72,6 @@ class TestAutoScalingGroups(TestAutoScalingProxy):
                 'name': 'some_name'
             },
             expected_kwargs={
-                'project_id': PROJECT_ID,
                 'prepend_key': False,
                 'instance': 'test',
                 'name': 'some_name'
@@ -90,7 +84,6 @@ class TestAutoScalingGroups(TestAutoScalingProxy):
             _group.Group, True,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
             expected_kwargs={
-                'project_id': PROJECT_ID,
             }
         )
 
@@ -103,7 +96,6 @@ class TestAutoScalingGroups(TestAutoScalingProxy):
             expected_args=[_group.Group, 'INSTANCE'],
             expected_kwargs={
                 'test': 't',
-                'project_id': PROJECT_ID,
                 'prepend_key': False,
             }
         )

@@ -26,6 +26,7 @@ from openstack import service_description
 
 from openstack import _log
 from openstack import proxy
+from openstack import utils
 
 # from otcextensions.sdk import proxy as sdk_proxy
 
@@ -64,7 +65,7 @@ OTC_SERVICES = {
     'auto_scaling': {
         'service_type': 'auto_scaling',
         'endpoint_service_type': 'as',
-        # 'endpoint_override': 'https://obs.%(region_name)s.otc.t-systems.com'
+        'append_project_id': True,
     },
 }
 
@@ -156,6 +157,12 @@ def register_otc_extensions(connection, **kwargs):
             _logger.debug('Setting endpoint_override into the %s.Proxy' %
                           service_name)
             proxy.endpoint_override = endpoint_override
+
+        append_project_id = service.get('append_project_id', False)
+        if append_project_id:
+            ep = proxy.get_endpoint()
+            if ep and not ep.rstrip('/').endswith('\%(project_id)s'):
+                proxy.endpoint_override = utils.urljoin(ep, '%(project_id)s')
 
         # recover conn.service.__get__ descriptor, since it is lost
         setattr(

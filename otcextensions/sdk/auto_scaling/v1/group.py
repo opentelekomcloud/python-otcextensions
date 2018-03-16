@@ -19,7 +19,7 @@ from openstack import utils
 class Group(sdk_resource.Resource):
     resource_key = "scaling_group"
     resources_key = "scaling_groups"
-    base_path = "/%(project_id)s/scaling_group"
+    base_path = "/scaling_group"
     query_marker_key = "start_number"
     service = auto_scaling_service.AutoScalingService()
 
@@ -36,8 +36,6 @@ class Group(sdk_resource.Resource):
         status="scaling_group_status",
         marker=query_marker_key
     )
-
-    project_id = resource.URI('project_id')
 
     #: Properties
     #: AutoScaling group ID

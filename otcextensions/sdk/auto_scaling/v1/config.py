@@ -50,7 +50,7 @@ class InstanceConfig(sdk_resource.Resource):
 class Config(sdk_resource.Resource):
     resource_key = 'scaling_configuration'
     resources_key = 'scaling_configurations'
-    base_path = '/%(project_id)s/scaling_configuration'
+    base_path = '/scaling_configuration'
     query_marker_key = 'start_number'
     service = auto_scaling_service.AutoScalingService()
 
@@ -78,8 +78,6 @@ class Config(sdk_resource.Resource):
     instance_config = resource.Body('instance_config',
                                     default={},
                                     type=InstanceConfig)
-
-    project_id = resource.URI('project_id')
 
     def batch_delete(self, session, configs):
         """batch delete auto-scaling configs
