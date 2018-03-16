@@ -35,6 +35,10 @@ def _get_columns(item):
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
+def _format_instance(inst):
+    return inst.to_dict()
+
+
 class ListAutoScalingConfiguration(command.Lister):
     _description = _("List AutoScaling Configurations")
     columns = ('ID', 'Name', 'Status', 'Detail')
@@ -82,7 +86,10 @@ class ShowAutoScalingConfiguration(command.ShowOne):
                'current_instance_number', 'desire_instance_number',
                'min_instance_number', 'max_instance_number',
                'cool_down_time', 'networks', 'available_zones',
-               'security_group']
+               'security_group',
+               'scaling_configuration_id', 'scaling_configuration_name',
+               'create_time'
+               ]
 
     def get_parser(self, prog_name):
         parser = super(ShowAutoScalingConfiguration, self).get_parser(prog_name)
@@ -99,7 +106,8 @@ class ShowAutoScalingConfiguration(command.ShowOne):
         obj = client.find_config(parsed_args.config, ignore_missing=False)
 
         display_columns, columns = _get_columns(obj)
-        data = utils.get_item_properties(obj, columns, formatters={})
+        data = utils.get_item_properties(
+            obj, columns, formatters={'instance_config': _format_instance})
 
         return (display_columns, data)
 
