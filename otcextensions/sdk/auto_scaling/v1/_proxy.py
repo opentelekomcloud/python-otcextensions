@@ -173,10 +173,16 @@ class Proxy(sdk_proxy.Proxy):
         :rtype: :class:`~openstack.auto_scaling.v2.config.Config`
         """
         instance_config = _config.InstanceConfig.new(**attrs)
-        config = _config.Config(
-            name=name, instance_config=instance_config,
+        return self._create(
+            _config.Config,
+            prepend_key=False,
+            name=name,
+            instance_config=instance_config
         )
-        return config.create(self._session, prepend_key=False)
+        # config = _config.Config(
+        #     name=name, instance_config=instance_config,
+        # )
+        # return config.create(self._session, prepend_key=False)
 
     def get_config(self, config):
         """Get a config
@@ -188,6 +194,19 @@ class Proxy(sdk_proxy.Proxy):
         """
         return self._get(
             _config.Config, config
+        )
+
+    def find_config(self, name_or_id, ignore_missing=True):
+        """Get a config
+
+        :param config: The value can be the ID of a config
+             or a :class:`~openstack.auto_scaling.v2.config.Config` instance.
+        :returns: Config instance
+        :rtype: :class:`~openstack.auto_scaling.v2.config.Config`
+        """
+        return self._find(
+            _config.Config, name_or_id,
+            ignore_missing=ignore_missing,
         )
 
     def delete_config(self, config, ignore_missing=True):

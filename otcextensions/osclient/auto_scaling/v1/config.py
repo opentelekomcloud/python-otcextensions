@@ -10,7 +10,7 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-"""AS Groups v1 action implementations"""
+"""AS Configurations v1 action implementations"""
 
 import logging
 
@@ -35,12 +35,12 @@ def _get_columns(item):
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
-class ListAutoScalingGroup(command.Lister):
-    _description = _("List AutoScaling Groups")
+class ListAutoScalingConfiguration(command.Lister):
+    _description = _("List AutoScaling Configurations")
     columns = ('ID', 'Name', 'Status', 'Detail')
 
     def get_parser(self, prog_name):
-        parser = super(ListAutoScalingGroup, self).get_parser(prog_name)
+        parser = super(ListAutoScalingConfiguration, self).get_parser(prog_name)
         parser.add_argument(
             '--limit',
             dest='limit',
@@ -64,7 +64,7 @@ class ListAutoScalingGroup(command.Lister):
     def take_action(self, parsed_args):
         client = self.app.client_manager.auto_scaling
 
-        data = client.groups()
+        data = client.configs()
 
         return (
             self.columns,
@@ -75,7 +75,7 @@ class ListAutoScalingGroup(command.Lister):
         )
 
 
-class ShowAutoScalingGroup(command.ShowOne):
+class ShowAutoScalingConfiguration(command.ShowOne):
     _description = _("Shows details of a AutoScalinig group")
     columns = ['ID', 'Name', 'Status', 'Detail',
                'Scaling Configuration ID', 'Scaling Configuration Name',
@@ -85,10 +85,10 @@ class ShowAutoScalingGroup(command.ShowOne):
                'security_group']
 
     def get_parser(self, prog_name):
-        parser = super(ShowAutoScalingGroup, self).get_parser(prog_name)
+        parser = super(ShowAutoScalingConfiguration, self).get_parser(prog_name)
         parser.add_argument(
-            'group',
-            metavar="<group>",
+            'config',
+            metavar="<config>",
             help=_("ID or name of the configuration group")
         )
         return parser
@@ -96,7 +96,7 @@ class ShowAutoScalingGroup(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.auto_scaling
 
-        obj = client.find_group(parsed_args.group, ignore_missing=False)
+        obj = client.find_config(parsed_args.config, ignore_missing=False)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns, formatters={})
@@ -104,65 +104,65 @@ class ShowAutoScalingGroup(command.ShowOne):
         return (display_columns, data)
 
 
-class CreateAutoScalingGroup(command.ShowOne):
+class CreateAutoScalingConfiguration(command.ShowOne):
     _description = _("Creates AutoScalinig group")
     columns = ['ID', 'Name', 'Status', 'Detail',
                'Datastore Version Name', 'Is Scaling']
 
     def get_parser(self, prog_name):
-        parser = super(CreateAutoScalingGroup, self).get_parser(prog_name)
+        parser = super(CreateAutoScalingConfiguration, self).get_parser(prog_name)
         return parser
 
     def take_action(self, parsed_args):
         raise NotImplementedError
 
 
-class DeleteAutoScalingGroup(command.ShowOne):
+class DeleteAutoScalingConfiguration(command.ShowOne):
     _description = _("Deletes AutoScalinig group")
     columns = ['ID', 'Name', 'Status', 'Detail',
                'Datastore Version Name', 'Is Scaling']
 
     def get_parser(self, prog_name):
-        parser = super(DeleteAutoScalingGroup, self).get_parser(prog_name)
+        parser = super(DeleteAutoScalingConfiguration, self).get_parser(prog_name)
         return parser
 
     def take_action(self, parsed_args):
         raise NotImplementedError
 
 
-class UpdateAutoScalingGroup(command.ShowOne):
+class UpdateAutoScalingConfiguration(command.ShowOne):
     _description = _("Updates AutoScalinig group")
     columns = ['ID', 'Name', 'Status', 'Detail',
                'Datastore Version Name', 'Is Scaling']
 
     def get_parser(self, prog_name):
-        parser = super(UpdateAutoScalingGroup, self).get_parser(prog_name)
+        parser = super(UpdateAutoScalingConfiguration, self).get_parser(prog_name)
         return parser
 
     def take_action(self, parsed_args):
         raise NotImplementedError
 
 
-class DisableAutoScalingGroup(command.ShowOne):
+class DisableAutoScalingConfiguration(command.ShowOne):
     _description = _("Disable/pause AutoScalinig group")
     columns = ['ID', 'Name', 'Status', 'Detail',
                'Datastore Version Name', 'Is Scaling']
 
     def get_parser(self, prog_name):
-        parser = super(DisableAutoScalingGroup, self).get_parser(prog_name)
+        parser = super(DisableAutoScalingConfiguration, self).get_parser(prog_name)
         return parser
 
     def take_action(self, parsed_args):
         raise NotImplementedError
 
 
-class EnableAutoScalingGroup(command.ShowOne):
+class EnableAutoScalingConfiguration(command.ShowOne):
     _description = _("Enable/resume AutoScalinig group")
     columns = ['ID', 'Name', 'Status', 'Detail',
                'Datastore Version Name', 'Is Scaling']
 
     def get_parser(self, prog_name):
-        parser = super(EnableAutoScalingGroup, self).get_parser(prog_name)
+        parser = super(EnableAutoScalingConfiguration, self).get_parser(prog_name)
         return parser
 
     def take_action(self, parsed_args):
