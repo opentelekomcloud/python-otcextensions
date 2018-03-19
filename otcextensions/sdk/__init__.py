@@ -15,24 +15,19 @@ __all__ = [
 ]
 
 import importlib
+import types
 import warnings
-# import openstack
-
-# import os_service_types
 
 from oslo_utils import importutils
 
-from openstack import service_description
-
 from openstack import _log
+from openstack import connection
 from openstack import proxy
+from openstack import service_description
 from openstack import utils
-
-# from otcextensions.sdk import proxy as sdk_proxy
 
 
 _logger = _log.setup_logging('openstack')
-# _service_type_manager = os_service_types.ServiceTypes()
 
 _DOC_TEMPLATE = (
     ":class:`{class_name}` for {service_type} aka project")
@@ -70,16 +65,13 @@ OTC_SERVICES = {
 }
 
 
-def _prepare_services(**kwargs):
-    # services = []
-    for (service_name, service) in OTC_SERVICES.items():
-        # service = OTC_SERVICES
+def _get_descriptor(service_name):
+    service = OTC_SERVICES.get(service_name, None)
+    if service:
         service_type = service['service_type']
         desc_class = service_description.OpenStackServiceDescription
         service_filter_class = _find_service_filter_class(service_name)
-        # print(service_filter_class.service_type.__get__())
         descriptor_args = {'service_type': service_type}
-        # descriptor_args = {}
         if service_filter_class:
             _logger.debug(
                 'preparing to register service %s' %
@@ -110,23 +102,53 @@ def _prepare_services(**kwargs):
         descriptor.__doc__ = doc
         _logger.debug('proxy is %s' % descriptor.proxy_class())
 
-        service['descriptor'] = descriptor
-        # services.append(descriptor)
+        return descriptor
+    else:
+        return None
 
-    return None
+
+def patch_connection(target):
+    # descriptors are not working out of box for runtime attributes
+    # So we need to inject them
+    def __getattribute__(self, name):
+        print('getattr invoked on %s with %s' % (self, name))
+        value = object.__getattribute__(self, name)
+        if hasattr(value, '__get__'):
+            value = value.__get__(self, self.__class__)
+        return value
+
+    def __setattr__(self, name, value):
+        try:
+            obj = object.__getattribute__(self, name)
+        except AttributeError:
+            pass
+        else:
+            if hasattr(obj, '__set__'):
+                return obj.__set__(self, value)
+        return object.__setattr__(self, name, value)
+    connection.Connection.__getattribute__ = types.MethodType(__getattribute__, target)
+    connection.Connection.__setattr__ = types.MethodType(__setattr__, target)
+
+
+def add_service_to_sdk(connection, service_descriptor):
+    # descriptors are not working out of box for runtime attributes
+    connection.add_service(service_descriptor)
+    # Unless connection is patched real proxy can be obtained only so
+    proxy = service_descriptor.__get__(connection, service_descriptor)
+    return proxy
 
 
 def register_otc_extensions(connection, **kwargs):
-    _prepare_services()
+
     for (service_name, service) in OTC_SERVICES.items():
         _logger.debug('trying to register service %s' % service_name)
-        descriptor = service.get('descriptor', None)
+        descriptor = _get_descriptor(service_name)
         if not descriptor:
             _logger.error('descriptor for service %s is missing' %
                           service_name)
             _logger.debug('keys %s' % service.keys())
             continue
-        proxy = descriptor.__get__(connection, descriptor)
+        proxy = add_service_to_sdk(connection, descriptor)
 
         endpoint_service_type = service.get('endpoint_service_type', None)
         # endpoint_service_name = service.get('endpoint_service_name', None)
@@ -136,8 +158,6 @@ def register_otc_extensions(connection, **kwargs):
 
         if 'additional_headers' in service:
             proxy.additional_headers = service.get('additional_headers')
-
-        connection.add_service(descriptor)
 
         if service.get('require_ak', False):
             _logger.debug('during registration found that ak is required')
@@ -164,11 +184,9 @@ def register_otc_extensions(connection, **kwargs):
             if ep and not ep.rstrip('/').endswith('\%(project_id)s'):
                 proxy.endpoint_override = utils.urljoin(ep, '%(project_id)s')
 
-        # recover conn.service.__get__ descriptor, since it is lost
-        setattr(
-            connection,
-            service['service_type'],
-            proxy)
+    # Can be done only that late
+    patch_connection(connection)
+    return None
 
 
 # def _get_aliases(service_type, aliases=None):
