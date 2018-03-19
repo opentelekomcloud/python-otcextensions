@@ -129,6 +129,7 @@ class Proxy(os_proxy.BaseProxy):
 
     def _create(self, resource_type,
                 endpoint_override=None, headers=None,
+                prepend_key=True,
                 **attrs):
         """Create a resource from attributes
 
@@ -150,7 +151,8 @@ class Proxy(os_proxy.BaseProxy):
         persist = res.create(
             self,
             endpoint_override=endpoint_override,
-            headers=headers
+            headers=headers,
+            prepend_key=prepend_key,
         )
 
         # Inject endpoint_override into the resource for potential
