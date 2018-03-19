@@ -158,16 +158,3 @@ class TestAutoScalingConfigs(TestAutoScalingProxy):
             expected_kwargs={
             }
         )
-
-    # def test_update(self):
-    #     self._verify2(
-    #         'otcextensions.sdk.sdk_proxy.Proxy._update',
-    #         self.proxy.update_config,
-    #         method_args=['INSTANCE'],
-    #         method_kwargs={'test': 't'},
-    #         expected_args=[_config.Config, 'INSTANCE'],
-    #         expected_kwargs={
-    #             'test': 't',
-    #             'prepend_key': False,
-    #         }
-    #     )
