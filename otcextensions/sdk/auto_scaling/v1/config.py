@@ -76,7 +76,7 @@ class Config(sdk_resource.Resource):
     status = resource.Body('status')
     #: Use the exists instance as template to create new instance
     instance_config = resource.Body('instance_config',
-                                    default={},
+                                    # default={},
                                     type=InstanceConfig)
 
     def batch_delete(self, session, configs):
@@ -91,6 +91,6 @@ class Config(sdk_resource.Resource):
         ids = [config.id if isinstance(config, Config) else config
                for config in configs]
         json_body = {"scaling_configuration_id": ids}
-        return session.post("/%(project_id)s/scaling_configurations",
+        return session.post("/scaling_configurations",
                             headers={"Accept": "*"},
                             json=json_body)

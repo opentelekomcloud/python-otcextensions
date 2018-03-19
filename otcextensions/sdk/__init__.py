@@ -111,7 +111,7 @@ def patch_connection(target):
     # descriptors are not working out of box for runtime attributes
     # So we need to inject them
     def __getattribute__(self, name):
-        print('getattr invoked on %s with %s' % (self, name))
+        # print('getattr invoked on %s with %s' % (self, name))
         value = object.__getattribute__(self, name)
         if hasattr(value, '__get__'):
             value = value.__get__(self, self.__class__)

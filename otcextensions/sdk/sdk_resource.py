@@ -20,6 +20,65 @@ from otcextensions.common import utils
 _logger = _log.setup_logging('openstack')
 
 
+def raise_from_response(response, error_message=None):
+    """Raise an instance of an HTTPException based on keystoneauth response."""
+    if response.status_code < 400:
+        return
+
+    if response.status_code == 404:
+        cls = exceptions.NotFoundException
+    elif response.status_code == 400:
+        cls = exceptions.BadRequestException
+    else:
+        cls = exceptions.HttpException
+
+    details = None
+    content_type = response.headers.get('content-type', '')
+    if response.content and 'application/json' in content_type:
+        # Iterate over the nested objects to retrieve "message" attribute.
+        # TODO(shade) Add exception handling for times when the content type
+        # is lying.
+
+        try:
+            content = response.json()
+            error = content.get('error', None)
+            messages = []
+            if error:
+                messages = [error.get('message', None)]
+            else:
+                messages = [obj.get('message') for obj in content.values()
+                            if isinstance(obj, dict)]
+            # Join all of the messages together nicely and filter out any
+            # objects that don't have a "message" attr.
+            details = '\n'.join(msg for msg in messages if msg)
+        except Exception:
+            details = response.text
+    elif response.content and 'text/html' in content_type:
+        # Split the lines, strip whitespace and inline HTML from the response.
+        details = [re.sub(r'<.+?>', '', i.strip())
+                   for i in response.text.splitlines()]
+        details = list(set([msg for msg in details if msg]))
+        # Return joined string separated by colons.
+        details = ': '.join(details)
+    if not details and response.reason:
+        details = response.reason
+    elif not details and response.text:
+        details = response.text
+
+    http_status = response.status_code
+    request_id = response.headers.get('x-openstack-request-id')
+
+    # sdk.exception define default for message to Error, but we need
+    # have a better info
+    if not error_message and details:
+        error_message = details
+
+    raise cls(
+        message=error_message, response=response, details=details,
+        http_status=http_status, request_id=request_id
+    )
+
+
 class Resource(resource.Resource):
 
     @classmethod
@@ -51,6 +110,31 @@ class Resource(resource.Resource):
             req_args['endpoint_override'] = endpoint_override
 
         return req_args
+
+    def _translate_response(self, response, has_body=None, error_message=None):
+        """Given a KSA response, inflate this instance with its data
+
+        'DELETE' operations don't return a body, so only try to work
+        with a body when has_body is True.
+
+        This method updates attributes that correspond to headers
+        and body on this instance and clears the dirty set.
+        """
+        if has_body is None:
+            has_body = self.has_body
+        raise_from_response(response, error_message=error_message)
+        if has_body:
+            body = response.json()
+            if self.resource_key and self.resource_key in body:
+                body = body[self.resource_key]
+
+            body = self._consume_body_attrs(body)
+            self._body.attributes.update(body)
+            self._body.clean()
+
+        headers = self._consume_header_attrs(response.headers)
+        self._header.attributes.update(headers)
+        self._header.clean()
 
     def create(self, session, prepend_key=True, requires_id=True,
                endpoint_override=None, headers=None):
@@ -94,6 +178,7 @@ class Resource(resource.Resource):
                 msg="Invalid create method: %s" % self.create_method)
 
         self._translate_response(response)
+
         return self
 
     def get(self, session, error_message=None, requires_id=True,

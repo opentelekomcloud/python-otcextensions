@@ -140,12 +140,12 @@ class TestAutoScalingConfigs(TestAutoScalingProxy):
             self.proxy.create_config, _config.Config,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
             method_kwargs={
-                'instance': 'test',
+                'instance_config': {},
                 'name': 'some_name'
             },
             expected_kwargs={
                 'prepend_key': False,
-                'instance_config': _config.InstanceConfig(),
+                'instance_config': {},
                 'name': 'some_name'
             }
         )

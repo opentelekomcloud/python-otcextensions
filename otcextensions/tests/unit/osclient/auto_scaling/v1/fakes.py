@@ -24,7 +24,8 @@ import mock
 from openstackclient.tests.unit import fakes
 from openstackclient.tests.unit import utils
 
-# from otcextensions.sdk.auto_scaling.v1.group import Group
+from otcextensions.sdk.auto_scaling.v1 import config
+from otcextensions.sdk.auto_scaling.v1 import group
 # from otcextensions.sdk.obs.v1.object import Object
 
 # from otcextensions.obs.v1.api import API
@@ -45,15 +46,16 @@ class Fake(object):
         """
         attrs = attrs or {}
 
-        new_attrs = cls.generate()
+        resource = cls.generate()
+        # new_attrs = cls.generate()
 
-        new_attrs.update(attrs)
+        resource.update(attrs)
 
-        new_resource = fakes.FakeResource(
-            info=copy.deepcopy(new_attrs),
-            loaded=True)
+        # new_resource = fakes.FakeResource(
+        #     info=copy.deepcopy(new_attrs),
+        #     loaded=True)
 
-        return new_resource
+        return resource
 
     @classmethod
     def create_multiple(cls, count=2, attrs=None):
@@ -85,7 +87,7 @@ class TestAutoScaling(utils.TestCommand):
         # self.app.client_manager.obs.api = s3api
 
         self.group_mock = FakeGroup
-        # self.configuratio_mock = FakeConfiguration
+        self.config_mock = FakeConfig
 
 
 class FakeGroup(Fake):
@@ -105,4 +107,36 @@ class FakeGroup(Fake):
             'detail': 'detail-' + uuid.uuid4().hex,
             'vpc_id': 'vpc-' + uuid.uuid4().hex,
         }
-        return object_info
+        obj = group.Group.existing(**object_info)
+        return obj
+
+class FakeConfig(Fake):
+    """Fake one or more AS Config"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'create_time': datetime.datetime(
+                random.randint(2000, 2020),
+                random.randint(1, 12),
+                random.randint(1, 28)
+            ),
+            'name': 'name-' + uuid.uuid4().hex,
+            'id': 'id-' + uuid.uuid4().hex,
+            'instance_config': {
+                'instance_id': 'inst_id-' + uuid.uuid4().hex,
+                'instance_name': 'inst-name-' + uuid.uuid4().hex,
+                'flavor_id': 'flavor-' + uuid.uuid4().hex,
+                'image_id': 'image-' + uuid.uuid4().hex,
+                'disk': [
+                    {
+                        'size': random.randint(1, 200),
+                        'volume_type': 'SSD',
+                        'disk_type': 'SYS'
+                    }
+                ],
+                'public_ip': None,
+            }
+        }
+        obj = config.Config.existing(**object_info)
+        return obj
