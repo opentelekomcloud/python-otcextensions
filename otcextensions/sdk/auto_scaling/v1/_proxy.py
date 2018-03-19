@@ -172,18 +172,12 @@ class Proxy(sdk_proxy.Proxy):
         :returns: The results of config creation
         :rtype: :class:`~openstack.auto_scaling.v2.config.Config`
         """
-        # instance_config = _config.InstanceConfig.new(**attrs)
-        # print('instance config is %s' % instance_config)
         return self._create(
             _config.Config,
             prepend_key=False,
             name=name,
             **attrs
         )
-        # config = _config.Config(
-        #     name=name, instance_config=instance_config,
-        # )
-        # return config.create(self._session, prepend_key=False)
 
     def get_config(self, config):
         """Get a config
