@@ -109,11 +109,14 @@ class TestConfigurationGroup(base.TestCase):
         result = list(self.sot.list(
             self.sess,
             project_id=PROJECT_ID,
-            headers=OS_HEADERS))
+            headers=OS_HEADERS
+        ))
 
         self.sess.get.assert_called_once_with(
             '/%s/configurations' % (PROJECT_ID),
-            headers=OS_HEADERS)
+            headers=OS_HEADERS,
+            params={}
+        )
 
         self.assertEqual([configuration.ConfigurationGroup(**EXAMPLE_GROUP)],
                          result)

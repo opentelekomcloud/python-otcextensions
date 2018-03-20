@@ -196,6 +196,7 @@ class TestInstance(base.TestCase):
 
         self.sess.get.assert_called_once_with(
             '/%s/instances' % (PROJECT_ID),
+            params={},
         )
 
         self.assertEqual([instance.Instance(**EXAMPLE)], result)

@@ -76,6 +76,7 @@ class TestBaseResource(base.TestCase):
 
         self.sess.get.assert_called_once_with(
             self.base_path,
+            params={},
         )
 
         self.assertEqual([], result)
@@ -92,6 +93,7 @@ class TestBaseResource(base.TestCase):
         self.sess.get.assert_called_once_with(
             self.base_path,
             headers={"a": "b"},
+            params={},
         )
 
         self.assertEqual([sdk_resource.Resource(**EXAMPLE)], result)
@@ -114,6 +116,7 @@ class TestBaseResource(base.TestCase):
             self.base_path,
             headers={"a": "b"},
             endpoint_override='http:example.com',
+            params={},
         )
 
         self.assertEqual([self.sot], result)

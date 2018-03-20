@@ -99,6 +99,7 @@ class TestGroup(base.TestCase):
 
         self.sess.get.assert_called_once_with(
             '/scaling_group',
+            params={},
         )
 
         self.assertEqual([group.Group(**EXAMPLE)], result)

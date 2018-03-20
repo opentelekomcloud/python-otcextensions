@@ -386,10 +386,15 @@ class Resource(resource.Resource):
         while uri:
             response = session.get(
                 uri,
-                **get_args
+                params=query_params.copy(),
+                **get_args,
             )
             exceptions.raise_from_response(response)
             data = response.json()
+
+            # Discard any existing pagination keys
+            query_params.pop('marker', None)
+            query_params.pop('limit', None)
 
             if cls.resources_key:
                 resources = data[cls.resources_key]
@@ -399,6 +404,7 @@ class Resource(resource.Resource):
             if not isinstance(resources, list):
                 resources = [resources]
 
+            marker = None
             for raw_resource in resources:
                 # Do not allow keys called "self" through. Glance chose
                 # to name a key "self", so we need to pop it out because
@@ -417,6 +423,7 @@ class Resource(resource.Resource):
                 total_yielded += 1
 
             if resources and paginated:
+                print('invoke get_next with %s, %s, %s' % (marker, limit, total_yielded))
                 uri, next_params = cls._get_next_link(
                     uri, response, data, marker, limit, total_yielded)
                 query_params.update(next_params)

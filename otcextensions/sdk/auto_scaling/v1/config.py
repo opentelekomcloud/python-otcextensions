@@ -1,19 +1,20 @@
-# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# Licensed under the Apache License, Version 2.0 (the 'License'); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
 #
 #      http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# distributed under the License is distributed on an 'AS IS' BASIS, WITHOUT
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from otcextensions.sdk.auto_scaling import auto_scaling_service
-from otcextensions.sdk import sdk_resource
 
 from openstack import resource
-# from openstack import utils
+
+from otcextensions.sdk.auto_scaling import auto_scaling_service
+from otcextensions.sdk import sdk_resource
+from otcextensions.sdk.auto_scaling.v1 import _base
 
 
 class InstanceConfig(sdk_resource.Resource):
@@ -47,12 +48,12 @@ class InstanceConfig(sdk_resource.Resource):
     metadata = resource.Body('metadata', type=dict)
 
 
-class Config(sdk_resource.Resource):
+class Config(_base.Resource):
     resource_key = 'scaling_configuration'
     resources_key = 'scaling_configurations'
     base_path = '/scaling_configuration'
-    query_marker_key = 'start_number'
-    service = auto_scaling_service.AutoScalingService()
+    # query_marker_key = 'start_number'
+    # service = auto_scaling_service.AutoScalingService()
 
     # capabilities
     allow_create = True
@@ -60,10 +61,12 @@ class Config(sdk_resource.Resource):
     allow_get = True
     allow_delete = True
 
-    _query_mapping = resource.QueryParameters(
-        'image_id', 'limit',
-        name='scaling_configuration_name', marker=query_marker_key
-    )
+    # _query_mapping = resource.QueryParameters(
+    #     'marker', 'limit',
+    #     # name='scaling_configuration_name',
+    #     marker=query_marker_key,
+    #     limit='limit'
+    # )
 
     #: Properties
     #: AutoScaling config ID
@@ -80,17 +83,30 @@ class Config(sdk_resource.Resource):
                                     type=InstanceConfig)
 
     def batch_delete(self, session, configs):
-        """batch delete auto-scaling configs
+        '''batch delete auto-scaling configs
 
         make sure all configs should not been used by auto-scaling group
         :param session: openstack session
         :param list configs: The list item value can be the ID of a config
              or a :class:`~openstack.auto_scaling.v2.config.Config` instance.
         :return:
-        """
+        '''
         ids = [config.id if isinstance(config, Config) else config
                for config in configs]
-        json_body = {"scaling_configuration_id": ids}
-        return session.post("/scaling_configurations",
-                            headers={"Accept": "*"},
+        json_body = {'scaling_configuration_id': ids}
+        return session.post('/scaling_configurations',
+                            headers={'Accept': '*'},
                             json=json_body)
+
+    @classmethod
+    def _get_next_link(cls, uri, response, data, marker, limit, total_yielded):
+        next_link = None
+        params = {}
+        if total_yielded < data['total_number']:
+            next_link = uri
+            params['marker'] = total_yielded
+            params['limit'] = limit
+        else:
+            next_link = None
+        query_params = cls._query_mapping._transpose(params)
+        return next_link, query_params

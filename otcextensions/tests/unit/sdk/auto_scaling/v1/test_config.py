@@ -159,6 +159,7 @@ class TestConfig(base.TestCase):
 
         self.sess.get.assert_called_once_with(
             '/scaling_configuration',
+            params={},
         )
 
         expected_list = [

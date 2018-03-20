@@ -97,7 +97,9 @@ class TestBackup(base.TestCase):
 
         self.sess.get.assert_called_once_with(
             '/%s/backups' % (PROJECT_ID),
-            headers=RDS_HEADERS)
+            headers=RDS_HEADERS,
+            params={},
+        )
 
         self.assertEqual([backup.Backup(**EXAMPLE)], result)
 

@@ -118,7 +118,13 @@ class ListAutoScalingConfig(command.Lister):
     def take_action(self, parsed_args):
         client = self.app.client_manager.auto_scaling
 
-        data = client.configs()
+        args = {}
+        if parsed_args.limit:
+            args['limit'] = parsed_args.limit
+        if parsed_args.marker:
+            args['marker'] = parsed_args.marker
+
+        data = client.configs(**args)
 
         return (
             self.columns,

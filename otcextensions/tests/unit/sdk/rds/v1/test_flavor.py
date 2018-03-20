@@ -84,6 +84,7 @@ class TestFlavor(base.TestCase):
 
         self.sess.get.assert_called_once_with(
             '/%s/flavors' % (PROJECT_ID),
+            params={},
         )
 
         self.assertEqual([flavor.Flavor(**EXAMPLE)], result)
