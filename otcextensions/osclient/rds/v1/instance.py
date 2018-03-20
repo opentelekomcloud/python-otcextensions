@@ -546,7 +546,7 @@ class EnableDatabaseInstanceLog(command.ShowOne):
 
     def take_action(self, parsed_args):
         raise NotImplementedError
-        db_instances = self.app.client_manager.database.instances
+        # db_instances = self.app.client_manager.database.instances
         # instance = osc_utils.find_resource(db_instances,
         #                                    parsed_args.instance)
         # log_info = db_instances.log_enable(instance, parsed_args.log_name)

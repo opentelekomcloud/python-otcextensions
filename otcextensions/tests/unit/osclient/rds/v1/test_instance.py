@@ -246,7 +246,7 @@ class TestCreateDatabaseInstance(rds_fakes.TestRds):
         ]
 
         # Trigger the action
-        res = self.cmd.take_action(parsed_args)
+        self.cmd.take_action(parsed_args)
 
         self.app.client_manager.rds.find_flavor.assert_called()
         self.app.client_manager.rds.create_instance.assert_called()

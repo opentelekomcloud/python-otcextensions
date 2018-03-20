@@ -15,12 +15,12 @@
 import argparse
 import logging
 
-import six
+# import six
 
 from osc_lib.command import command
-from osc_lib.cli import format_columns
-from osc_lib.cli import parseractions
-from osc_lib import exceptions
+# from osc_lib.cli import format_columns
+# from osc_lib.cli import parseractions
+# from osc_lib import exceptions
 from osc_lib import utils
 
 from otcextensions.i18n import _
@@ -58,7 +58,8 @@ def set_attributes_for_print_detail(instance):
         info['public_ip'] = instance_config.public_ip
         info['user_data'] = instance_config.user_data
         info['disk'] = instance_config.disk
-    # info['instance_config'] = format_columns.DictColumn(instance.instance_config),
+    # info['instance_config'] =
+    #  format_columns.DictColumn(instance.instance_config),
     # info['flavor_id'] = instance.flavor['id']
     # if getattr(instance, 'volume', None):
     #     info['volume'] = instance.volume['size']
@@ -182,7 +183,8 @@ class CreateAutoScalingConfig(command.ShowOne):
             metavar="<name>",
             help=_("AS Configuration name")
         )
-        group1 = parser.add_argument_group('ECS', 'New scpecification template')
+        group1 = parser.add_argument_group(
+            'ECS', 'New scpecification template')
         group1.add_argument(
             '--flavor',
             metavar="<flavor>",
@@ -236,8 +238,12 @@ class CreateAutoScalingConfig(command.ShowOne):
         if parsed_args.instance_id:
             config_attrs['instance_id'] = parsed_args.instance_id
         else:
-            if not all([parsed_args.flavor, parsed_args.image_id, parsed_args.disk]):
-                msg = _("Either instance_id or all of the [flavor, image, disk] "
+            if not all(
+                    [parsed_args.flavor,
+                     parsed_args.image_id,
+                     parsed_args.disk]):
+                msg = _("Either instance_id or all of the "
+                        "[flavor, image, disk] "
                         "should be given")
                 raise argparse.ArgumentTypeError(msg)
             # config_attrs['name'] = parsed_args.name
@@ -270,12 +276,10 @@ class CreateAutoScalingConfig(command.ShowOne):
                     msg = _("Cannot parse disk information")
                     raise argparse.ArgumentTypeError(msg)
 
-
         args = {}
         args['instance_config'] = config_attrs
 
         instance = client.create_config(name=parsed_args.name, **args)
-
 
         fmt = set_attributes_for_print_detail(instance)
         # display_columns, columns = _get_columns(obj)

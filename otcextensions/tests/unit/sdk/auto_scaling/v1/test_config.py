@@ -26,80 +26,17 @@ EXAMPLE = {
     'scaling_configuration_id': '6afe46f9-7d3d-4046-8748-3b2a1085ad86',
     'scaling_configuration_name': 'config_name_1',
     'instance_config': {
-      'disk': [
-        {
-          'size': 40,
-          'volume_type': 'SATA',
-          'disk_type': 'SYS'
-        },
-        {
-          'size': 100,
-          'volume_type': 'SATA',
-          'disk_type': 'DATA'
-        }
-      ],
-      'adminPass': '***',
-      'personality': None,
-      'instance_name': None,
-      'instance_id': None,
-      'flavorRef': '103',
-      'imageRef': '37ca2b35-6fc7-47ab-93c7-900324809c5c',
-      'key_name': 'keypair01',
-      'public_ip': None,
-      'user_data': None,
-      'metadata': {}
-    },
-    'create_time': '2015-07-23T01:04:07Z'
-}
-
-EXAMPLE_LIST = {
-    'limit': 20,
-    'total_number': 2,
-    'start_number': 0,
-    'scaling_configurations': [
-    {
-      'tenant_id': 'ce061903a53545dcaddb300093b477d2',
-      'status': 'STANDBY',
-      'scaling_configuration_id': '6afe46f9-7d3d-4046-8748-3b2a1085ad86',
-      'scaling_configuration_name': 'config_name_1',
-      'instance_config': {
         'disk': [
-          {
-            'size': 40,
-            'volume_type': 'SATA',
-            'disk_type': 'SYS'
-          },
-          {
-            'size': 100,
-            'volume_type': 'SATA',
-            'disk_type': 'DATA'
-          }
-        ],
-        'adminPass': '***',
-        'personality': None,
-        'instance_name': None,
-        'instance_id': None,
-        'flavorRef': '103',
-        'imageRef': '37ca2b35-6fc7-47ab-93c7-900324809c5c',
-        'key_name': 'keypair02',
-        'public_ip': None,
-        'user_data': None,
-        'metadate': {}
-      },
-      'create_time': '2015-07-23T01:04:07Z'
-    },
-    {
-      'tenant_id': 'ce061903a53545dcaddb300093b477d2',
-      'status': 'ACTIVE',
-      'scaling_configuration_id': '24a8c5f3-c713-4aba-ac29-c17101009e5d',
-      'scaling_configuration_name': 'config_name_2',
-      'instance_config': {
-        'disk': [
-          {
-            'size': 40,
-            'volume_type': 'SATA',
-            'disk_type': 'SYS'
-          }
+            {
+                'size': 40,
+                'volume_type': 'SATA',
+                'disk_type': 'SYS'
+            },
+            {
+                'size': 100,
+                'volume_type': 'SATA',
+                'disk_type': 'DATA'
+            }
         ],
         'adminPass': '***',
         'personality': None,
@@ -111,9 +48,72 @@ EXAMPLE_LIST = {
         'public_ip': None,
         'user_data': None,
         'metadata': {}
-      },
-      'create_time': '2015-07-22T01:08:41Z'
-    }
+    },
+    'create_time': '2015-07-23T01:04:07Z'
+}
+
+EXAMPLE_LIST = {
+    'limit': 20,
+    'total_number': 2,
+    'start_number': 0,
+    'scaling_configurations': [
+        {
+            'tenant_id': 'ce061903a53545dcaddb300093b477d2',
+            'status': 'STANDBY',
+            'scaling_configuration_id': '6afe46f9-7d3d-4046-8748-3b2a1085ad86',
+            'scaling_configuration_name': 'config_name_1',
+            'instance_config': {
+                'disk': [
+                    {
+                        'size': 40,
+                        'volume_type': 'SATA',
+                        'disk_type': 'SYS'
+                    },
+                    {
+                        'size': 100,
+                        'volume_type': 'SATA',
+                        'disk_type': 'DATA'
+                    }
+                ],
+                'adminPass': '***',
+                'personality': None,
+                'instance_name': None,
+                'instance_id': None,
+                'flavorRef': '103',
+                'imageRef': '37ca2b35-6fc7-47ab-93c7-900324809c5c',
+                'key_name': 'keypair02',
+                'public_ip': None,
+                'user_data': None,
+                'metadate': {}
+            },
+            'create_time': '2015-07-23T01:04:07Z'
+        },
+        {
+            'tenant_id': 'ce061903a53545dcaddb300093b477d2',
+            'status': 'ACTIVE',
+            'scaling_configuration_id': '24a8c5f3-c713-4aba-ac29-c17101009e5d',
+            'scaling_configuration_name': 'config_name_2',
+            'instance_config': {
+                'disk': [
+                    {
+                        'size': 40,
+                        'volume_type': 'SATA',
+                        'disk_type': 'SYS'
+                    }
+                ],
+                'adminPass': '***',
+                'personality': None,
+                'instance_name': None,
+                'instance_id': None,
+                'flavorRef': '103',
+                'imageRef': '37ca2b35-6fc7-47ab-93c7-900324809c5c',
+                'key_name': 'keypair01',
+                'public_ip': None,
+                'user_data': None,
+                'metadata': {}
+            },
+            'create_time': '2015-07-22T01:08:41Z'
+        }
     ]
 }
 
@@ -163,8 +163,10 @@ class TestConfig(base.TestCase):
         )
 
         expected_list = [
-            config.Config.existing(**EXAMPLE_LIST['scaling_configurations'][0]),
-            config.Config.existing(**EXAMPLE_LIST['scaling_configurations'][1])
+            config.Config.existing(
+                **EXAMPLE_LIST['scaling_configurations'][0]),
+            config.Config.existing(
+                **EXAMPLE_LIST['scaling_configurations'][1])
         ]
 
         self.assertEqual(expected_list, result)
@@ -175,7 +177,8 @@ class TestConfig(base.TestCase):
         mock_response = mock.Mock()
         mock_response.status_code = 200
         mock_response.headers = {}
-        mock_response.json.return_value = {'scaling_configuration': EXAMPLE.copy()}
+        mock_response.json.return_value = {
+            'scaling_configuration': EXAMPLE.copy()}
 
         self.sess.get.return_value = mock_response
 
@@ -183,7 +186,7 @@ class TestConfig(base.TestCase):
 
         self.sess.get.assert_called_once_with(
             'scaling_configuration/%s' %
-                EXAMPLE['scaling_configuration_id'],
+            EXAMPLE['scaling_configuration_id'],
         )
 
         self.assertEqual(sot, result)

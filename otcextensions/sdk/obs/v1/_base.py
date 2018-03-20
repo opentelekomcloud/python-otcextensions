@@ -45,8 +45,8 @@ class BaseResource(sdk_resource.Resource):
         if not endpoint:
             raise exceptions.SDKException(
                 _('Can\'t get endpoint from the catalogue for the '
-                  'service_type = %(type)s, service_name = %(name)s' %
-                  {'type': 'object', 'name': 'objectstoage'})
+                  'service_type = %(type)s, service_name = %(name)s') %
+                {'type': 'object', 'name': 'objectstoage'}
             )
         else:
             _logger.debug('endpoint for OBS is %s' % endpoint)

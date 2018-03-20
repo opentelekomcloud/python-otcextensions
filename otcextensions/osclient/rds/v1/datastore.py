@@ -14,7 +14,7 @@
 
 import logging
 
-import six
+# import six
 
 # from osc_lib.cli import parseractions
 from osc_lib.command import command

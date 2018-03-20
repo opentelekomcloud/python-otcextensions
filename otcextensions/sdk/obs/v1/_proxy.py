@@ -10,19 +10,19 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import os
+# import os
 
 from openstack import _log
 from openstack import proxy
 
-import boto3
-from botocore.exceptions import ClientError
+# import boto3
+# from botocore.exceptions import ClientError
 
-from openstack import exceptions
+# from openstack import exceptions
 
-from otcextensions.i18n import _
+# from otcextensions.i18n import _
 
-from otcextensions.sdk.obs.v1.bucket import Bucket
+# from otcextensions.sdk.obs.v1.bucket import Bucket
 # from otcextensions.sdk.obs.v1.object import Object
 from otcextensions.sdk.obs.v1 import container as _container
 from otcextensions.sdk.obs.v1 import obj as _obj
@@ -64,8 +64,6 @@ class Proxy(proxy.BaseProxy):
             return override % {'region_name': region}
         else:
             return super(Proxy, self).get_endpoint(**kwargs)
-
-
 
     # ======== Containers ========
 

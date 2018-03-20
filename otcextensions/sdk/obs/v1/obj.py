@@ -54,7 +54,7 @@ class Object(obj.Object, _base.BaseResource):
 
         response = None
         try:
-            response = session.download_fileobj(**request.body)
+            session.download_fileobj(**request.body)
         except ClientError as e:
             raise exceptions.SDKException(_(str(e)))
 

@@ -13,7 +13,7 @@
 #   under the License.
 #
 
-import copy
+# import copy
 import datetime
 import random
 import uuid
@@ -21,7 +21,7 @@ import uuid
 import mock
 # from osc_lib import utils as common_utils
 
-from openstackclient.tests.unit import fakes
+# from openstackclient.tests.unit import fakes
 from openstackclient.tests.unit import utils
 
 from otcextensions.sdk.auto_scaling.v1 import config
@@ -109,6 +109,7 @@ class FakeGroup(Fake):
         }
         obj = group.Group.existing(**object_info)
         return obj
+
 
 class FakeConfig(Fake):
     """Fake one or more AS Config"""

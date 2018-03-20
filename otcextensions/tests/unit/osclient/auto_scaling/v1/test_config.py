@@ -16,7 +16,7 @@
 import argparse
 import mock
 # from osc_lib import utils as common_utils
-from osc_lib.cli import format_columns
+# from osc_lib.cli import format_columns
 
 from otcextensions.tests.unit.osclient.auto_scaling.v1 import fakes
 

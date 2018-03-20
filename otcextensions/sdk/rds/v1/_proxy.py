@@ -11,7 +11,7 @@
 # under the License.
 
 from openstack import _log
-from openstack import utils
+# from openstack import utils
 # from openstack import proxy
 
 from openstack import exceptions

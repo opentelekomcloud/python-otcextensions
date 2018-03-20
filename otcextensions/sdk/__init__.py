@@ -126,8 +126,10 @@ def patch_connection(target):
             if hasattr(obj, '__set__'):
                 return obj.__set__(self, value)
         return object.__setattr__(self, name, value)
-    connection.Connection.__getattribute__ = types.MethodType(__getattribute__, target)
-    connection.Connection.__setattr__ = types.MethodType(__setattr__, target)
+    connection.Connection.__getattribute__ = types.MethodType(
+        __getattribute__, target)
+    connection.Connection.__setattr__ = types.MethodType(
+        __setattr__, target)
 
 
 def add_service_to_sdk(connection, service_descriptor):

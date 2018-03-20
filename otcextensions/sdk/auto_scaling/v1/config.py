@@ -12,7 +12,7 @@
 
 from openstack import resource
 
-from otcextensions.sdk.auto_scaling import auto_scaling_service
+# from otcextensions.sdk.auto_scaling import auto_scaling_service
 from otcextensions.sdk import sdk_resource
 from otcextensions.sdk.auto_scaling.v1 import _base
 
