@@ -15,8 +15,9 @@
 
 import re
 import sys
-
 import six
+
+from openstack import exceptions
 
 
 class BaseException(Exception):
@@ -203,3 +204,62 @@ class SSLConfigurationError(BaseException):
 
 class SSLCertificateError(BaseException):
     pass
+
+
+def raise_from_response(response, error_message=None):
+    """Raise an instance of an HTTPException based on keystoneauth response."""
+    if response.status_code < 400:
+        return
+
+    if response.status_code == 404:
+        cls = exceptions.NotFoundException
+    elif response.status_code == 400:
+        cls = exceptions.BadRequestException
+    else:
+        cls = exceptions.HttpException
+
+    details = None
+    content_type = response.headers.get('content-type', '')
+    if response.content and 'application/json' in content_type:
+        # Iterate over the nested objects to retrieve "message" attribute.
+        # TODO(shade) Add exception handling for times when the content type
+        # is lying.
+
+        try:
+            content = response.json()
+            error = content.get('error', None)
+            messages = []
+            if error:
+                messages = [error.get('message', None)]
+            else:
+                messages = [obj.get('message') for obj in content.values()
+                            if isinstance(obj, dict)]
+            # Join all of the messages together nicely and filter out any
+            # objects that don't have a "message" attr.
+            details = '\n'.join(msg for msg in messages if msg)
+        except Exception:
+            details = response.text
+    elif response.content and 'text/html' in content_type:
+        # Split the lines, strip whitespace and inline HTML from the response.
+        details = [re.sub(r'<.+?>', '', i.strip())
+                   for i in response.text.splitlines()]
+        details = list(set([msg for msg in details if msg]))
+        # Return joined string separated by colons.
+        details = ': '.join(details)
+    if not details and response.reason:
+        details = response.reason
+    elif not details and response.text:
+        details = response.text
+
+    http_status = response.status_code
+    request_id = response.headers.get('x-openstack-request-id')
+
+    # sdk.exception define default for message to Error, but we need
+    # have a better info
+    if not error_message and details:
+        error_message = details
+
+    raise cls(
+        message=error_message, response=response, details=details,
+        http_status=http_status, request_id=request_id
+    )
