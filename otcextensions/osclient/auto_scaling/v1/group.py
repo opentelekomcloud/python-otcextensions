@@ -223,7 +223,7 @@ class CreateAutoScalingGroup(command.ShowOne):
             '--terminate_policy',
             metavar='<terminate_policy>',
             help=_('Specifies the termination policy'
-                   ' [*OLD_CONFIG_OLD_INSTANCE*(default), '
+                   ' [*OLD_CONFIG_OLD_INSTANCE* (default), '
                    '*OLD_CONFIG_NEW_INSTANCE*, '
                    '*OLD_INSTANCE*, '
                    '*NEW_INSTANCE*]')
