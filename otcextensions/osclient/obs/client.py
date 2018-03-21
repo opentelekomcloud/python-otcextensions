@@ -103,12 +103,12 @@ def build_option_parser(parser):
     :param argparse.ArgumentParser parser: The parser object that has been
         initialized by OpenStackShell.
     """
-    parser.add_argument(
-        '--os-obs-api-version',
-        metavar='<obs-api-version>',
-        help='OSC OBS Plugin API version, default=' +
-             DEFAULT_API_VERSION +
-             ' (Env: OS_OBS_API_VERSION)')
+    # parser.add_argument(
+    #     '--os-obs-api-version',
+    #     metavar='<obs-api-version>',
+    #     help='OSC OBS Plugin API version, default=' +
+    #          DEFAULT_API_VERSION +
+    #          ' (Env: OS_OBS_API_VERSION)')
 
     parser.add_argument(
         '--ak',
