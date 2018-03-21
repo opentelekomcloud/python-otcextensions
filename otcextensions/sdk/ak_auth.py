@@ -96,14 +96,13 @@ class AKRequestsAuth(requests.auth.AuthBase):
     """
     IDENTITY_AUTH_HEADER_NAME = 'X-Amz-Security-Token'
 
-
     def __init__(self,
-                 aws_access_key,
-                 aws_secret_access_key,
-                 aws_host,
-                 aws_region,
-                 aws_service,
-                 aws_token=None):
+                 access_key,
+                 secret_access_key,
+                 host,
+                 region,
+                 service,
+                 token=None):
         """
         Example usage for talking to an AWS Elasticsearch Service:
         AKRequestsAuth(aws_access_key='YOURKEY',
@@ -115,21 +114,21 @@ class AKRequestsAuth(requests.auth.AuthBase):
         The aws_token is optional and is used only if you are using STS
         temporary credentials.
         """
-        self.aws_access_key = aws_access_key
-        self.aws_secret_access_key = aws_secret_access_key
-        self.aws_host = aws_host
-        self.aws_region = aws_region
-        self.service = aws_service
-        self.aws_token = aws_token
+        self.aws_access_key = access_key
+        self.aws_secret_access_key = secret_access_key
+        self.aws_host = host
+        self.aws_region = region
+        self.service = service
+        self.aws_token = token
 
-        self.auth = auth.S3SigV4QueryAuth(
-            credentials={
-                'access_key': aws_access_key,
-                'secret_key': aws_secret_access_key,
-            },
-            region_name=aws_region,
-            service_name=aws_service,
-        )
+        # self.auth = auth.S3SigV4QueryAuth(
+        #     credentials={
+        #         'access_key': access_key,
+        #         'secret_key': secret_access_key,
+        #     },
+        #     region_name=aws_region,
+        #     service_name=aws_service,
+        # )
 
     def __call__(self, r):
         """
@@ -139,6 +138,7 @@ class AKRequestsAuth(requests.auth.AuthBase):
         """
         print('auth is invoked')
         self.add_auth(r)
+        print('auth result %s' % r.headers)
         # aws_headers = self.get_aws_request_headers_handler(r)
         # r.headers.update(aws_headers)
         # r.headers.pop('X-Auth-Token')
@@ -297,6 +297,17 @@ class AKRequestsAuth(requests.auth.AuthBase):
         return headers
 
     def add_auth(self, request):
+        """
+        Returns a dictionary containing the necessary headers for Amazon's
+        signature version 4 signing process. An example return value might
+        look like
+            {
+                'Authorization': 'AWS4-HMAC-SHA256 Credential=YOURKEY/20160618/us-east-1/es/aws4_request, '
+                                 'SignedHeaders=host;x-amz-date, '
+                                 'Signature=ca0a856286efce2a4bd96a978ca6c8966057e53184776c0685169d08abd74739',
+                'x-amz-date': '20160618T220405Z',
+            }
+        """
 
         datetime_now = datetime.datetime.utcnow()
         self.timestamp = datetime_now.strftime(SIGV4_TIMESTAMP)
@@ -497,13 +508,6 @@ class AKRequestsAuth(requests.auth.AuthBase):
         # Strip out auth if it's present in the netloc.
         return url_parts.netloc.rsplit('@', 1)[-1]
 
-    def credential_scope(self, request):
-        scope = []
-        scope.append(self.timestamp[0:8])
-        scope.append(self.aws_region)
-        scope.append(self.service)
-        scope.append('aws4_request')
-        return '/'.join(scope)
 
     def string_to_sign(self, request, canonical_request):
         """
@@ -540,6 +544,14 @@ class AKRequestsAuth(requests.auth.AuthBase):
         k_service = self._sign(k_region, self.service)
         k_signing = self._sign(k_service, 'aws4_request')
         return self._sign(k_signing, string_to_sign, hex=True)
+
+    def credential_scope(self, request):
+        scope = []
+        scope.append(self.timestamp[0:8])
+        scope.append(self.aws_region)
+        scope.append(self.service)
+        scope.append('aws4_request')
+        return '/'.join(scope)
 
     def scope(self, request):
         scope = [self.aws_access_key]

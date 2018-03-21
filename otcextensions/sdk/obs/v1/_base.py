@@ -10,6 +10,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+# from xml.etree import ElementTree
+
 from openstack import _log
 
 from otcextensions.i18n import _
@@ -19,6 +21,7 @@ from openstack import exceptions
 from otcextensions.sdk.obs import obs_service
 
 from otcextensions.sdk import sdk_resource
+from otcextensions.sdk import ak_auth
 
 import boto3
 from botocore.exceptions import ClientError
@@ -84,6 +87,25 @@ class BaseResource(sdk_resource.Resource):
         else:
             _logger.error('Some of AK/SK/Region is not set, abort')
             return False
+
+    @classmethod
+    def _get_req_auth(cls, session):
+        auth = getattr(session, '_ak_auth', None)
+        if not auth:
+            region = getattr(session, 'region_name', None)
+            ak = getattr(session, 'AK', None)
+            sk = getattr(session, 'SK', None)
+            endpoint = cls._get_endpoint(session)
+
+            auth = ak_auth.AKRequestsAuth(
+                access_key=ak,
+                secret_access_key=sk,
+                host=endpoint,
+                region=region,
+                service='s3'
+            )
+            setattr(session, '_ak_auth', auth)
+        return auth
 
     @classmethod
     def _get_boto_session(cls, session):
@@ -173,6 +195,8 @@ class BaseResource(sdk_resource.Resource):
 
         request = self._prepare_request(requires_id=requires_id)
         session = self._get_boto_session(session)
+        # sess = self._get_session(session)
+        # req_auth = self._get_req_auth(session)
 
         response = None
         try:
