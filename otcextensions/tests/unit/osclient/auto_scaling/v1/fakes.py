@@ -137,6 +137,8 @@ class FakeConfig(Fake):
                     }
                 ],
                 'public_ip': None,
+                'user_data': None,
+                'metadata': {},
             }
         }
         obj = config.Config.existing(**object_info)

@@ -9,10 +9,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import json
+import six
 
+from openstack import exceptions
 from openstack import resource
 
-# from otcextensions.sdk.auto_scaling import auto_scaling_service
+from otcextensions.common import exc
+from otcextensions.i18n import _
 from otcextensions.sdk import sdk_resource
 from otcextensions.sdk.auto_scaling.v1 import _base
 
@@ -82,31 +86,41 @@ class Config(_base.Resource):
                                     # default={},
                                     type=InstanceConfig)
 
-    def batch_delete(self, session, configs):
+    @classmethod
+    def batch_delete(cls, session, configs):
         '''batch delete auto-scaling configs
 
         make sure all configs should not been used by auto-scaling group
         :param session: openstack session
         :param list configs: The list item value can be the ID of a config
-             or a :class:`~openstack.auto_scaling.v2.config.Config` instance.
+            or a :class:`~otcextensions.auto_scaling.v1.config.Config` instance.
         :return:
         '''
         ids = [config.id if isinstance(config, Config) else config
                for config in configs]
         json_body = {'scaling_configuration_id': ids}
-        return session.post('/scaling_configurations',
+        response = session.post('/scaling_configurations',
                             headers={'Accept': '*'},
                             json=json_body)
-
-    @classmethod
-    def _get_next_link(cls, uri, response, data, marker, limit, total_yielded):
-        next_link = None
-        params = {}
-        if total_yielded < data['total_number']:
-            next_link = uri
-            params['marker'] = total_yielded
-            params['limit'] = limit
-        else:
-            next_link = None
-        query_params = cls._query_mapping._transpose(params)
-        return next_link, query_params
+        if response.status_code == 400:
+            # Check if failed due to not exist
+            content = response.json()
+            error = content.get('error', None)
+            if error.get('code', None) == 'AS.1038':
+                ids = []
+                message = error.get('message', None)
+                if message.startswith('['):
+                    items = json.loads(message)
+                    for config_message in items:
+                        id = config_message.get('id', None)
+                        code = config_message.get('errorCode', None)
+                        if code == 'AS.1004':
+                            # Config does not exist
+                            ids.append(id)
+                if len(ids) > 0:
+                    message = (_('AS Configurations (%(ids)s) not found') %
+                        {'ids': ids})
+                    raise exceptions.ResourceNotFound(message=message)
+        # unknown failure
+        exc.raise_from_response(response)
+        return response

@@ -18,6 +18,8 @@ import mock
 # from osc_lib import utils as common_utils
 # from osc_lib.cli import format_columns
 
+from openstackclient.tests.unit import utils
+
 from otcextensions.tests.unit.osclient.auto_scaling.v1 import fakes
 
 from otcextensions.osclient.auto_scaling.v1 import config
@@ -27,6 +29,7 @@ class TestAutoScalingConfig(fakes.TestAutoScaling):
 
     def setUp(self):
         super(TestAutoScalingConfig, self).setUp()
+        self.client = self.app.client_manager.auto_scaling
 
 
 class TestListAutoScalingConfig(TestAutoScalingConfig):
@@ -48,7 +51,7 @@ class TestListAutoScalingConfig(TestAutoScalingConfig):
 
         self.cmd = config.ListAutoScalingConfig(self.app, None)
 
-        self.app.client_manager.auto_scaling.configs = mock.Mock()
+        self.client.configs = mock.Mock()
 
     def test_list_default(self):
         arglist = [
@@ -60,14 +63,14 @@ class TestListAutoScalingConfig(TestAutoScalingConfig):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.auto_scaling.configs.side_effect = [
+        self.client.configs.side_effect = [
             self.configs
         ]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.app.client_manager.auto_scaling.configs.assert_called_once_with()
+        self.client.configs.assert_called_once_with()
         # self.app.client_manager.obs.buckets.assert_called()
 
         self.assertEqual(self.columns, columns)
@@ -76,9 +79,9 @@ class TestListAutoScalingConfig(TestAutoScalingConfig):
 
 class TestShowAutoScalingConfig(TestAutoScalingConfig):
 
-    columns = ['ID', 'Name', 'Instance ID', 'Instance Name',
-               'Flavor ID', 'Image ID', 'Disk',
-               'Key Name', 'Public IP'
+    columns = ['ID', 'Name', 'instance_id', 'instance_name',
+               'flavor_id', 'image_id', 'disk',
+               'key_name', 'public_ip', 'user_data', 'metadata'
                ]
 
     _config = fakes.FakeConfig.create_one()
@@ -94,6 +97,8 @@ class TestShowAutoScalingConfig(TestAutoScalingConfig):
         _config.instance_config.disk,
         _config.instance_config.key_name,
         _config.instance_config.public_ip,
+        _config.instance_config.user_data,
+        _config.instance_config.metadata,
         # format_columns.DictColumn(_config.instance_config).human_readable(),
     )
 
@@ -102,7 +107,7 @@ class TestShowAutoScalingConfig(TestAutoScalingConfig):
 
         self.cmd = config.ShowAutoScalingConfig(self.app, None)
 
-        self.app.client_manager.auto_scaling.find_config = mock.Mock()
+        self.client.find_config = mock.Mock()
 
     def test_show_default(self):
         arglist = [
@@ -115,14 +120,14 @@ class TestShowAutoScalingConfig(TestAutoScalingConfig):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.auto_scaling.find_config.side_effect = [
+        self.client.find_config.side_effect = [
             self._config
         ]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.app.client_manager.auto_scaling.find_config.assert_called()
+        self.client.find_config.assert_called()
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -130,15 +135,14 @@ class TestShowAutoScalingConfig(TestAutoScalingConfig):
 
 class TestCreateAutoScalingGroup(TestAutoScalingConfig):
 
-    columns = ['ID', 'Name', 'Instance ID', 'Instance Name',
-               'Flavor ID', 'Image ID', 'Disk',
-               'Key Name', 'Public IP'
+    columns = ['ID', 'Name', 'instance_id', 'instance_name',
+               'flavor_id', 'image_id', 'disk',
+               'key_name', 'public_ip', 'user_data', 'metadata'
                ]
 
     _config = fakes.FakeConfig.create_one()
 
     data = (
-        # _config.create_time,
         _config.id,
         _config.name,
         _config.instance_config.instance_id,
@@ -148,7 +152,8 @@ class TestCreateAutoScalingGroup(TestAutoScalingConfig):
         _config.instance_config.disk,
         _config.instance_config.key_name,
         _config.instance_config.public_ip,
-        # format_columns.DictColumn(_config.instance_config).human_readable(),
+        _config.instance_config.user_data,
+        _config.instance_config.metadata,
     )
 
     def setUp(self):
@@ -156,7 +161,7 @@ class TestCreateAutoScalingGroup(TestAutoScalingConfig):
 
         self.cmd = config.CreateAutoScalingConfig(self.app, None)
 
-        self.app.client_manager.auto_scaling.create_config = mock.Mock()
+        self.client.create_config = mock.Mock()
 
     def test_create_no_details(self):
         arglist = [
@@ -187,14 +192,14 @@ class TestCreateAutoScalingGroup(TestAutoScalingConfig):
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        self.app.client_manager.auto_scaling.create_config.side_effect = [
+        self.client.create_config.side_effect = [
             self._config
         ]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.app.client_manager.auto_scaling.create_config.assert_called()
+        self.client.create_config.assert_called()
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -207,15 +212,48 @@ class TestDeleteAutoScalingConfig(TestAutoScalingConfig):
 
         self.cmd = config.DeleteAutoScalingConfig(self.app, None)
 
-        # self.app.client_manager.auto_scaling.find_group = mock.Mock()
+        self.client = self.app.client_manager.auto_scaling
 
-    def test_show_default(self):
+        self.client.delete_config = mock.Mock()
+        self.client.batch_delete_configs = mock.Mock()
+
+    def test_delete_single(self):
         arglist = [
+            'config_id'
         ]
         verifylist = [
+            ('config', ['config_id'])
         ]
+
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        self.assertRaises(NotImplementedError,
-                          self.cmd.take_action, parsed_args)
+        self.client.delete_config.side_effect = [ {} ]
+
+        # Trigger the action
+        self.cmd.take_action(parsed_args)
+
+        self.client.delete_config.assert_called_with(
+            'config_id',
+            ignore_missing=False)
+
+    def test_delete_multiple(self):
+        arglist = [
+            'config_id1',
+            'config_id2'
+        ]
+        verifylist = [
+            ('config', ['config_id1', 'config_id2'])
+        ]
+
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        self.client.batch_delete_configs.side_effect = [ {} ]
+
+        # Trigger the action
+        self.cmd.take_action(parsed_args)
+
+        self.client.delete_config.assert_not_called()
+        self.client.batch_delete_configs.assert_called_with(
+            ['config_id1', 'config_id2'])

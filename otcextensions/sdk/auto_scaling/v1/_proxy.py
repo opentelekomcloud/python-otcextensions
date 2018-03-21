@@ -118,7 +118,6 @@ class Proxy(sdk_proxy.Proxy):
         return self._find(
             _group.Group, name_or_id,
             ignore_missing=ignore_missing,
-            # name=name_or_id,
         )
 
     def resume_group(self, group):
@@ -130,7 +129,7 @@ class Proxy(sdk_proxy.Proxy):
         """
         group = self._get_resource(
             _group.Group, group)
-        group.resume(self._session)
+        group.resume(self)
 
     def pause_group(self, group):
         """pause group
@@ -142,7 +141,7 @@ class Proxy(sdk_proxy.Proxy):
         group = self._get_resource(
             _group.Group, group
         )
-        group.pause(self._session)
+        group.pause(self)
 
     # ======== Configurations ========
     def configs(self, **query):
@@ -156,7 +155,7 @@ class Proxy(sdk_proxy.Proxy):
             * ``limit``: pagination limit
 
         :returns: A generator of config
-                  (:class:`~openstack.auto_scaling.v2.config.Config`) instances
+                  (:class:`~otcextensions.auto_scaling.v1.config.Config`) instances
         """
         return self._list(
             _config.Config, paginated=True,
@@ -167,10 +166,10 @@ class Proxy(sdk_proxy.Proxy):
 
         :param name: auto scaling config name
         :param dict attrs: Keyword arguments which will be used to create
-                a :class:`~openstack.auto_scaling.v2.config.InstanceConfig`,
+                a :class:`~otcextensions.auto_scaling.v1.config.InstanceConfig`,
                 comprised of the properties on the InstanceConfig class.
         :returns: The results of config creation
-        :rtype: :class:`~openstack.auto_scaling.v2.config.Config`
+        :rtype: :class:`~otcextensions.auto_scaling.v1.config.Config`
         """
         return self._create(
             _config.Config,
@@ -183,21 +182,26 @@ class Proxy(sdk_proxy.Proxy):
         """Get a config
 
         :param config: The value can be the ID of a config
-             or a :class:`~openstack.auto_scaling.v2.config.Config` instance.
+             or a :class:`~otcextensions.auto_scaling.v1.config.Config` instance.
         :returns: Config instance
-        :rtype: :class:`~openstack.auto_scaling.v2.config.Config`
+        :rtype: :class:`~otcextensions.auto_scaling.v1.config.Config`
         """
         return self._get(
             _config.Config, config
         )
 
+    # Name is not unique, so find might return multiple results
     def find_config(self, name_or_id, ignore_missing=True):
         """Get a config
 
-        :param config: The value can be the ID of a config
-             or a :class:`~openstack.auto_scaling.v2.config.Config` instance.
+        :param name_or_id: The name or ID of a config
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the config does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to delete a nonexistent config.
         :returns: Config instance
-        :rtype: :class:`~openstack.auto_scaling.v2.config.Config`
+        :rtype: :class:`~otcextensions.auto_scaling.v1.config.Config`
         """
         return self._find(
             _config.Config, name_or_id,
@@ -208,7 +212,7 @@ class Proxy(sdk_proxy.Proxy):
         """Delete a config
 
         :param config: The value can be the ID of a config
-             or a :class:`~openstack.auto_scaling.v2.config.Config` instance.
+             or a :class:`~otcextensions.auto_scaling.v1.config.Config` instance.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
             the config does not exist.
@@ -216,34 +220,18 @@ class Proxy(sdk_proxy.Proxy):
             delete a nonexistent config.
 
         :returns: Config been deleted
-        :rtype: :class:`~openstack.auto_scaling.v2.config.Config`
+        :rtype: :class:`~otcextensions.auto_scaling.v1.config.Config`
         """
         return self._delete(
             _config.Config, config,
             ignore_missing=ignore_missing,
         )
 
-    # def batch_delete_configs(self, configs):
-    #     """batch delete configs
-    #
-    #     :param list configs: The list item value can be the ID of a config
-    #          or a :class:`~openstack.auto_scaling.v2.config.Config` instance.
-    #     """
-    #     config = _config.Config()
-    #     return config.batch_delete(self._session, configs)
-    #
-    # def find_config(self, name_or_id, ignore_missing=True):
-    #     """Find a single config
-    #
-    #     :param name_or_id: The name or ID of a config
-    #     :param bool ignore_missing: When set to ``False``
-    #         :class:`~openstack.exceptions.ResourceNotFound` will be raised
-    #         when the config does not exist.
-    #         When set to ``True``, no exception will be set when attempting
-    #         to delete a nonexistent config.
-    #
-    #     :returns: ``None``
-    #     """
-    #     return self._find(_config.Config, name_or_id,
-    #                       ignore_missing=ignore_missing,
-    #                       name=name_or_id)
+    def batch_delete_configs(self, configs):
+        """batch delete configs
+
+        :param list configs: The list item value can be the ID of a config
+             or a :class:`~otcextensions.auto_scaling.v1.config.Config` instance.
+        """
+        config = _config.Config()
+        return config.batch_delete(self, configs)

@@ -9,11 +9,10 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack import resource
+
 from otcextensions.sdk.auto_scaling import auto_scaling_service
 from otcextensions.sdk import sdk_resource
-
-from openstack import resource
-# from openstack import utils
 
 
 class Resource(sdk_resource.Resource):
@@ -29,6 +28,7 @@ class Resource(sdk_resource.Resource):
 
     @classmethod
     def _get_next_link(cls, uri, response, data, marker, limit, total_yielded):
+        # AS service pagination. Returns query for the next page
         next_link = None
         params = {}
         if total_yielded < data['total_number']:

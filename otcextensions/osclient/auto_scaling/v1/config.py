@@ -13,6 +13,7 @@
 """AS Configurations v1 action implementations"""
 
 import argparse
+import base64
 import logging
 
 # import six
@@ -20,8 +21,10 @@ import logging
 from osc_lib.command import command
 # from osc_lib.cli import format_columns
 # from osc_lib.cli import parseractions
-# from osc_lib import exceptions
+from osc_lib import exceptions
 from osc_lib import utils
+
+from openstack import exceptions as sdk_exceptions
 
 from otcextensions.i18n import _
 
@@ -57,36 +60,17 @@ def set_attributes_for_print_detail(instance):
         info['key_name'] = instance_config.key_name
         info['public_ip'] = instance_config.public_ip
         info['user_data'] = instance_config.user_data
-        info['disk'] = instance_config.disk
-    # info['instance_config'] =
-    #  format_columns.DictColumn(instance.instance_config),
-    # info['flavor_id'] = instance.flavor['id']
-    # if getattr(instance, 'volume', None):
-    #     info['volume'] = instance.volume['size']
-    #     if 'used' in instance.volume:
-    #         info['volume_used'] = instance.volume['used']
-    # if getattr(instance, 'ip', None):
-    #     info['ip'] = ', '.join(instance.ip)
-    # if getattr(instance, 'datastore', None):
-    #     info['datastore'] = instance.datastore['type']
-    #     info['datastore_version'] = instance.datastore['version']
-    # if getattr(instance, 'configuration', None):
-    #     info['configuration'] = instance.configuration['id']
-    # if getattr(instance, 'replica_of', None):
-    #     info['replica_of'] = instance.replica_of['id']
-    # if getattr(instance, 'replicas', None):
-    #     replicas = [replica['id'] for replica in instance.replicas]
-    #     info['replicas'] = ', '.join(replicas)
-    # if getattr(instance, 'networks', None):
-    #     info['networks'] = instance.networks['name']
-    #     info['networks_id'] = instance.networks['id']
-    # if getattr(instance, 'fault', None):
-    #     info.pop('fault', None)
-    #     info['fault'] = instance.fault['message']
-    #     info['fault_date'] = instance.fault['created']
-    #     if 'details' in instance.fault and instance.fault['details']:
-    #         info['fault_details'] = instance.fault['details']
-    # info.pop('links', None)
+        info['metadata'] = instance_config.metadata
+        disks = []
+        for disk in instance_config.disk:
+            dsk = {
+                'size': disk['size'],
+                'volume_type': disk['volume_type'],
+                'disk_type': disk['disk_type'],
+            }
+            disks.append(dsk)
+        info['disk'] = disks
+
     return info
 
 
@@ -138,9 +122,9 @@ class ListAutoScalingConfig(command.Lister):
 
 class ShowAutoScalingConfig(command.ShowOne):
     _description = _("Shows details of a AutoScalinig group")
-    columns = ['ID', 'Name', 'Instance ID', 'Instance Name',
-               'Flavor ID', 'Image ID', 'Disk',
-               'Key Name', 'Public IP'
+    columns = ['ID', 'Name', 'instance_id', 'instance_name',
+               'flavor_id', 'image_id', 'disk',
+               'key_name', 'public_ip', 'user_data', 'metadata'
                ]
 
     def get_parser(self, prog_name):
@@ -171,9 +155,9 @@ class ShowAutoScalingConfig(command.ShowOne):
 
 class CreateAutoScalingConfig(command.ShowOne):
     _description = _("Creates AutoScalinig group")
-    columns = ['ID', 'Name', 'Instance ID', 'Instance Name',
-               'Flavor ID', 'Image ID', 'Disk',
-               'Key Name', 'Public IP'
+    columns = ['ID', 'Name', 'instance_id', 'instance_name',
+               'flavor_id', 'image_id', 'disk',
+               'key_name', 'public_ip', 'user_data', 'metadata'
                ]
 
     def get_parser(self, prog_name):
@@ -224,10 +208,23 @@ class CreateAutoScalingConfig(command.ShowOne):
             help=_("Key name for the new ECS instance")
         )
         parser.add_argument(
-            '--public_ip',
-            metavar="<public_ip>",
+            '--public_ip_bandwith',
+            metavar="<public_ip_bandwith>",
+            type=int,
             help=_("Defines EIP Bandwith (Mbit/s) to be attached "
                    "to the new ECS instance")
+        )
+        parser.add_argument(
+            '--user_data',
+            metavar="<user_data>",
+            help=_("Path to the cloud-init user_data file")
+        )
+        parser.add_argument(
+            '--metadata',
+            metavar="<metadata>",
+            help=_("User defined key=value pair "
+                   "format KEY=VALUE "
+                   "Cannot contain dot (`.`) or start with `$`")
         )
         return parser
 
@@ -249,32 +246,57 @@ class CreateAutoScalingConfig(command.ShowOne):
             # config_attrs['name'] = parsed_args.name
             config_attrs['imageRef'] = parsed_args.image_id
             config_attrs['flavorRef'] = parsed_args.flavor
-            config_attrs['key_name'] = parsed_args.key
+        config_attrs['key_name'] = parsed_args.key
 
-            config_attrs['disk'] = []
-            for disk in parsed_args.disk:
-                disk_parts = disk.split(',')
-                disk_data = {}
-                if 3 == len(disk_parts):
-                    if disk_parts[0] in ('SYS', 'DATA'):
-                        disk_data['disk_type'] = disk_parts[0]
-                    else:
-                        msg = _("Disk Type is not in (SYS, DATA)")
-                        raise argparse.ArgumentTypeError(msg)
-                    if disk_parts[1] in ('SATA', 'SAS', 'SSD'):
-                        disk_data['volume_type'] = disk_parts[1]
-                    else:
-                        msg = _("Volume Type is not in (SATA, SAS, SSD)")
-                        raise argparse.ArgumentTypeError(msg)
-                    if disk_parts[2].isdigit:
-                        disk_data['size'] = disk_parts[2]
-                    else:
-                        msg = _("Volume SIZE is not a digit")
-                        raise argparse.ArgumentTypeError(msg)
-                    config_attrs['disk'].append(disk_data)
+        config_attrs['disk'] = []
+        for disk in parsed_args.disk:
+            disk_parts = disk.split(',')
+            disk_data = {}
+            if 3 == len(disk_parts):
+                if disk_parts[0] in ('SYS', 'DATA'):
+                    disk_data['disk_type'] = disk_parts[0]
                 else:
-                    msg = _("Cannot parse disk information")
+                    msg = _("Disk Type is not in (SYS, DATA)")
                     raise argparse.ArgumentTypeError(msg)
+                if disk_parts[1] in ('SATA', 'SAS', 'SSD'):
+                    disk_data['volume_type'] = disk_parts[1]
+                else:
+                    msg = _("Volume Type is not in (SATA, SAS, SSD)")
+                    raise argparse.ArgumentTypeError(msg)
+                if disk_parts[2].isdigit:
+                    disk_data['size'] = disk_parts[2]
+                else:
+                    msg = _("Volume SIZE is not a digit")
+                    raise argparse.ArgumentTypeError(msg)
+                config_attrs['disk'].append(disk_data)
+            else:
+                msg = _("Cannot parse disk information")
+                raise argparse.ArgumentTypeError(msg)
+
+        if parsed_args.public_ip_bandwith:
+            ip_struct = {
+                'eip': {
+                    'ip_type': '5_bgp',
+                    'bandwidth': {
+                        'size': parsed_args.public_ip_bandwith,
+                        'share_type': 'PER',
+                        'charging_mode': 'traffic'
+                    }
+                }
+            }
+            config_attrs['public_ip'] = ip_struct
+
+        if parsed_args.user_data:
+            with open(parsed_args.user_data, 'r') as file:
+                # Read the file (ASCII), encode Base64 and use that
+                data = file.read().encode('ascii')
+                data_b64 = base64.b64encode(data).decode('ascii')
+                config_attrs['user_data'] = data_b64
+
+        if parsed_args.metadata:
+            config_attrs['metadata'] = {}
+            k,v = md.split('=')
+            config_attrs['metadata'][k] = v
 
         args = {}
         args['instance_config'] = config_attrs
@@ -288,18 +310,26 @@ class CreateAutoScalingConfig(command.ShowOne):
 
         return (self.columns, data)
 
-        # return None
-        # raise NotImplementedError
 
-
-class DeleteAutoScalingConfig(command.ShowOne):
+class DeleteAutoScalingConfig(command.Command):
     _description = _("Deletes AutoScalinig group")
-    columns = ['ID', 'Name', 'Status', 'Detail',
-               'Datastore Version Name', 'Is Scaling']
 
     def get_parser(self, prog_name):
         parser = super(DeleteAutoScalingConfig, self).get_parser(prog_name)
+        parser.add_argument(
+            'config',
+            nargs='+',
+            metavar="<config>",
+            help=_("AS Configuration ID")
+        )
         return parser
 
     def take_action(self, parsed_args):
-        raise NotImplementedError
+        client = self.app.client_manager.auto_scaling
+
+        # TODO(agoncharov) - proper error handling (reporting)
+
+        if len(parsed_args.config) > 1:
+            client.batch_delete_configs(parsed_args.config)
+        elif len(parsed_args.config) == 1:
+            client.delete_config(parsed_args.config[0], ignore_missing=False)
