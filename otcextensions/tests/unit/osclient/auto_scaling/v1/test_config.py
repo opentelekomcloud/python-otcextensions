@@ -12,11 +12,8 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-
 import argparse
 import mock
-# from osc_lib import utils as common_utils
-# from osc_lib.cli import format_columns
 
 from openstackclient.tests.unit import utils
 
@@ -211,8 +208,6 @@ class TestDeleteAutoScalingConfig(TestAutoScalingConfig):
         super(TestDeleteAutoScalingConfig, self).setUp()
 
         self.cmd = config.DeleteAutoScalingConfig(self.app, None)
-
-        self.client = self.app.client_manager.auto_scaling
 
         self.client.delete_config = mock.Mock()
         self.client.batch_delete_configs = mock.Mock()

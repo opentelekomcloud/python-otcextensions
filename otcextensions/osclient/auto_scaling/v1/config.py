@@ -44,14 +44,12 @@ def _format_instance(inst):
     return inst.to_dict()
 
 
-def set_attributes_for_print_detail(instance):
-    info = {}  # instance._info.copy()
-    info['name'] = instance.name
-    info['id'] = instance.id
-    info['create_time'] = instance.create_time
-    instance_config = instance.instance_config
-    # for (k,v) in six.iteritems(instance_config):
-    #     info[k] = v
+def set_attributes_for_print_detail(obj):
+    info = {}
+    info['name'] = obj.name
+    info['id'] = obj.id
+    info['create_time'] = obj.create_time
+    instance_config = obj.instance_config
     if instance_config:
         info['instance_name'] = instance_config.instance_name
         info['instance_id'] = instance_config.instance_id
@@ -200,7 +198,7 @@ class CreateAutoScalingConfig(command.ShowOne):
                 '*SATA* = Common I/O \n'
                 '*SAS* = High I/O \n'
                 '*SSD* = Ultra-High I/O \n'
-                '**SIZE** is size in Gb \n'
+                '**SIZE** is size in Gb\n'
                 '(Repeat multiple times for multiple disks)')
         )
 

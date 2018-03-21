@@ -129,7 +129,7 @@ class Proxy(sdk_proxy.Proxy):
         """
         group = self._get_resource(
             _group.Group, group)
-        group.resume(self)
+        return group.resume(self)
 
     def pause_group(self, group):
         """pause group
@@ -141,7 +141,7 @@ class Proxy(sdk_proxy.Proxy):
         group = self._get_resource(
             _group.Group, group
         )
-        group.pause(self)
+        return group.pause(self)
 
     # ======== Configurations ========
     def configs(self, **query):
