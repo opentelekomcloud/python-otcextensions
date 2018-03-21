@@ -25,4 +25,4 @@ Config operations
 -----------------
 
 .. autoprogram-cliff:: openstack.auto_scaling.v1
-  :command: as config *
+   :command: as configuration *

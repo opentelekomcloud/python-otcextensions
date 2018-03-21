@@ -1,16 +1,16 @@
-#   Licensed under the Apache License, Version 2.0 (the "License"); you may
+#   Licensed under the Apache License, Version 2.0 (the 'License'); you may
 #   not use this file except in compliance with the License. You may obtain
 #   a copy of the License at
 #
 #        http://www.apache.org/licenses/LICENSE-2.0
 #
 #   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#   distributed under the License is distributed on an 'AS IS' BASIS, WITHOUT
 #   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-"""AS Configurations v1 action implementations"""
+'''AS Configurations v1 action implementations'''
 
 import argparse
 import base64
@@ -75,7 +75,7 @@ def set_attributes_for_print_detail(instance):
 
 
 class ListAutoScalingConfig(command.Lister):
-    _description = _("List AutoScaling Configurations")
+    _description = _('List AutoScaling Configurations')
     columns = ('ID', 'Name')
 
     def get_parser(self, prog_name):
@@ -121,7 +121,7 @@ class ListAutoScalingConfig(command.Lister):
 
 
 class ShowAutoScalingConfig(command.ShowOne):
-    _description = _("Shows details of a AutoScalinig group")
+    _description = _('Shows details of a AutoScalinig group')
     columns = ['ID', 'Name', 'instance_id', 'instance_name',
                'flavor_id', 'image_id', 'disk',
                'key_name', 'public_ip', 'user_data', 'metadata'
@@ -131,8 +131,8 @@ class ShowAutoScalingConfig(command.ShowOne):
         parser = super(ShowAutoScalingConfig, self).get_parser(prog_name)
         parser.add_argument(
             'config',
-            metavar="<config>",
-            help=_("ID or name of the configuration group")
+            metavar='<config>',
+            help=_('ID or name of the configuration group')
         )
         return parser
 
@@ -154,7 +154,7 @@ class ShowAutoScalingConfig(command.ShowOne):
 
 
 class CreateAutoScalingConfig(command.ShowOne):
-    _description = _("Creates AutoScalinig group")
+    _description = _('Creates AutoScalinig group')
     columns = ['ID', 'Name', 'instance_id', 'instance_name',
                'flavor_id', 'image_id', 'disk',
                'key_name', 'public_ip', 'user_data', 'metadata'
@@ -164,67 +164,69 @@ class CreateAutoScalingConfig(command.ShowOne):
         parser = super(CreateAutoScalingConfig, self).get_parser(prog_name)
         parser.add_argument(
             'name',
-            metavar="<name>",
-            help=_("AS Configuration name")
+            metavar='<name>',
+            help=_('AS Configuration name')
         )
         group1 = parser.add_argument_group(
             'ECS', 'New scpecification template')
         group1.add_argument(
             '--flavor',
-            metavar="<flavor>",
-            help=_("Flavor ID or Name for the ECS instance")
+            metavar='<flavor>',
+            help=_('Flavor ID or Name for the ECS instance')
         )
         group1.add_argument(
             '--image_id',
-            metavar="<image_id>",
-            help=_("Image ID for the ECS instance to be created")
-        )
-        group1.add_argument(
-            '--disk',
-            metavar="<disk>",
-            action='append',
-            help=_("Disk information to attach to the instance. \n"
-                   "format = DISK_TYPE,VOLUME_TYPE,SIZE\n"
-                   "'DISK_TYPE' can be in [SYS, DATA] and identifies "
-                   "whether disk should be a system or data disk\n"
-                   "'VOLUME_TYPE' can be in [SATA, SAS, SSD]\n"
-                   "\t SATA = Common I/O\n"
-                   "\t SAS = High I/O\n"
-                   "\t SSD = Ultra-High I/O\n"
-                   "'SIZE' is size in Gb\n"
-                   "(Repeat multiple times for multiple disks)")
+            metavar='<image_id>',
+            help=_('Image ID for the ECS instance to be created')
         )
         group = parser.add_mutually_exclusive_group()
         group.add_argument(
             '--instance_id',
-            metavar="<instance_id>",
-            help=_("AS Configuration name\n"
-                   "Is mutually exclusive with ECS group")
+            metavar='<instance_id>',
+            help=_('AS Configuration name\n'
+                   'Is mutually exclusive with ECS group')
+        )
+
+        parser.add_argument(
+            '--disk',
+            metavar='<disk>',
+            action='append',
+            help=_(
+                'Disk information to attach to the instance.\n'
+                'format = DISK_TYPE,VOLUME_TYPE,SIZE\n'
+                '**DISK_TYPE** can be in [SYS, DATA] and identifies '
+                'whether disk should be a system or data disk\n'
+                '**VOLUME_TYPE** can be in: \n'
+                '*SATA* = Common I/O \n'
+                '*SAS* = High I/O \n'
+                '*SSD* = Ultra-High I/O \n'
+                '**SIZE** is size in Gb \n'
+                '(Repeat multiple times for multiple disks)')
         )
 
         parser.add_argument(
             '--key',
-            metavar="<key>",
-            help=_("Key name for the new ECS instance")
+            metavar='<key>',
+            help=_('Key name for the new ECS instance')
         )
         parser.add_argument(
             '--public_ip_bandwith',
-            metavar="<public_ip_bandwith>",
+            metavar='<public_ip_bandwith>',
             type=int,
-            help=_("Defines EIP Bandwith (Mbit/s) to be attached "
-                   "to the new ECS instance")
+            help=_('Defines EIP Bandwith (Mbit/s) to be attached '
+                   'to the new ECS instance')
         )
         parser.add_argument(
             '--user_data',
-            metavar="<user_data>",
-            help=_("Path to the cloud-init user_data file")
+            metavar='<user_data>',
+            help=_('Path to the cloud-init user_data file')
         )
         parser.add_argument(
             '--metadata',
-            metavar="<metadata>",
-            help=_("User defined key=value pair "
-                   "format KEY=VALUE "
-                   "Cannot contain dot (`.`) or start with `$`")
+            metavar='<metadata>',
+            help=_('User defined key=value pair '
+                   'format KEY=VALUE '
+                   'Cannot contain dot (`.`) or start with `$`')
         )
         return parser
 
@@ -239,9 +241,9 @@ class CreateAutoScalingConfig(command.ShowOne):
                     [parsed_args.flavor,
                      parsed_args.image_id,
                      parsed_args.disk]):
-                msg = _("Either instance_id or all of the "
-                        "[flavor, image, disk] "
-                        "should be given")
+                msg = _('Either instance_id or all of the '
+                        '[flavor, image, disk] '
+                        'should be given')
                 raise argparse.ArgumentTypeError(msg)
             # config_attrs['name'] = parsed_args.name
             config_attrs['imageRef'] = parsed_args.image_id
@@ -256,21 +258,21 @@ class CreateAutoScalingConfig(command.ShowOne):
                 if disk_parts[0] in ('SYS', 'DATA'):
                     disk_data['disk_type'] = disk_parts[0]
                 else:
-                    msg = _("Disk Type is not in (SYS, DATA)")
+                    msg = _('Disk Type is not in (SYS, DATA)')
                     raise argparse.ArgumentTypeError(msg)
                 if disk_parts[1] in ('SATA', 'SAS', 'SSD'):
                     disk_data['volume_type'] = disk_parts[1]
                 else:
-                    msg = _("Volume Type is not in (SATA, SAS, SSD)")
+                    msg = _('Volume Type is not in (SATA, SAS, SSD)')
                     raise argparse.ArgumentTypeError(msg)
                 if disk_parts[2].isdigit:
                     disk_data['size'] = disk_parts[2]
                 else:
-                    msg = _("Volume SIZE is not a digit")
+                    msg = _('Volume SIZE is not a digit')
                     raise argparse.ArgumentTypeError(msg)
                 config_attrs['disk'].append(disk_data)
             else:
-                msg = _("Cannot parse disk information")
+                msg = _('Cannot parse disk information')
                 raise argparse.ArgumentTypeError(msg)
 
         if parsed_args.public_ip_bandwith:
@@ -312,15 +314,15 @@ class CreateAutoScalingConfig(command.ShowOne):
 
 
 class DeleteAutoScalingConfig(command.Command):
-    _description = _("Deletes AutoScalinig group")
+    _description = _('Deletes AutoScalinig group')
 
     def get_parser(self, prog_name):
         parser = super(DeleteAutoScalingConfig, self).get_parser(prog_name)
         parser.add_argument(
             'config',
             nargs='+',
-            metavar="<config>",
-            help=_("AS Configuration ID")
+            metavar='<config>',
+            help=_('AS Configuration ID')
         )
         return parser
 
