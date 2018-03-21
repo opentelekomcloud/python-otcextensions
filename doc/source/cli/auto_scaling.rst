@@ -17,4 +17,12 @@ Group operations
 ----------------
 
 .. autoprogram-cliff:: openstack.auto_scaling.v1
- :command: as group *
+   :command: as group *
+
+.. _config:
+
+Config operations
+-----------------
+
+.. autoprogram-cliff:: openstack.auto_scaling.v1
+  :command: as config *

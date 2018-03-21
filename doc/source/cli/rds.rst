@@ -17,7 +17,7 @@ Flavor operations
 -----------------
 
 .. autoprogram-cliff:: openstack.rds.v1
- :command: rds flavor *
+   :command: rds flavor *
 
 .. _instance:
 
@@ -25,7 +25,7 @@ Instance operations
 -------------------
 
 .. autoprogram-cliff:: openstack.rds.v1
-  :command: rds instance *
+   :command: rds instance *
 
 .. _configuration:
 
@@ -33,4 +33,4 @@ Configuration operations
 ------------------------
 
 .. autoprogram-cliff:: openstack.rds.v1
-  :command: rds configuration *
+   :command: rds configuration *

@@ -17,7 +17,7 @@ Container (bucket) operations
 -----------------------------
 
 .. autoprogram-cliff:: openstack.obs.v1
- :command: obs container *
+  :command: obs container *
 
 .. _object:
 
@@ -25,4 +25,4 @@ Object operations
 -----------------
 
 .. autoprogram-cliff:: openstack.obs.v1
-  :command: obs object instance *
+   :command: obs object instance *
