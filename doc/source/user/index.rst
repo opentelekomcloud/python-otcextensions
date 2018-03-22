@@ -12,7 +12,7 @@ The OTCExtensions SDK is available on
 `GitHub <https://github.com/OpenTelekomCloud/python-otcextensions.git>`_.
 To install it, use ``pip``::
 
-   $ pip install otcextensions
+   $ pip install python-otcextensions
 
 .. _user_guides:
 
@@ -81,7 +81,7 @@ higher-level interfaces to work with OpenStack services.
    connection
 
 Once you have a :class:`~openstack.connection.Connection` instance, services
-are accessed through instances of :class:`~openstack.proxy.BaseProxy` or
+are accessed through instances of :class:`~openstack.proxy.Proxy` or
 subclasses of it that exist as attributes on the
 :class:`~openstack.connection.Connection`.
 
