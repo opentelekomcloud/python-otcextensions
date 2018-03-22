@@ -17,7 +17,7 @@ from openstack import proxy as os_proxy
 _logger = _log.setup_logging('openstack')
 
 
-class Proxy(os_proxy.BaseProxy):
+class Proxy(os_proxy.Proxy):
 
     def _find(self, resource_type, name_or_id, ignore_missing=True,
               endpoint_override=None, headers=None,
