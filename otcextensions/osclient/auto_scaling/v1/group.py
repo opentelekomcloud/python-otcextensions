@@ -211,7 +211,7 @@ class CreateAutoScalingGroup(command.ShowOne):
         parser.add_argument(
             '--audit_method',
             metavar='<audit_method>',
-            help=_('Specifies the audit method [*NOVA_AUDIT*, *ELB_AUDIT*]')
+            help=_('Specifies the audit method [`NOVA_AUDIT`, `ELB_AUDIT`]')
         )
         parser.add_argument(
             '--audit_time',
@@ -223,16 +223,16 @@ class CreateAutoScalingGroup(command.ShowOne):
             '--terminate_policy',
             metavar='<terminate_policy>',
             help=_('Specifies the termination policy'
-                   ' [*OLD_CONFIG_OLD_INSTANCE* (default), '
-                   '*OLD_CONFIG_NEW_INSTANCE*, '
-                   '*OLD_INSTANCE*, '
-                   '*NEW_INSTANCE*]')
+                   ' [`OLD_CONFIG_OLD_INSTANCE` (default), '
+                   '`OLD_CONFIG_NEW_INSTANCE`, '
+                   '`OLD_INSTANCE`, '
+                   '`NEW_INSTANCE`]')
         )
         parser.add_argument(
             '--notification',
             metavar='<notification>',
             action='append',
-            help=_('Specifies the notification method (*EMAIL* for Email) '
+            help=_('Specifies the notification method (`EMAIL` for Email) '
                    '(Repeat multiple times)')
         )
         parser.add_argument(
@@ -244,7 +244,6 @@ class CreateAutoScalingGroup(command.ShowOne):
         return parser
 
     def take_action(self, parsed_args):
-        client = self.app.client_manager.auto_scaling
 
         args = {}
         args['name'] = parsed_args.name
@@ -302,6 +301,7 @@ class CreateAutoScalingGroup(command.ShowOne):
                 lst.append(notification)
             args['notifications'] = lst
 
+        client = self.app.client_manager.auto_scaling
         group = client.create_group(**args)
         display_columns, columns = _get_columns(group)
         data = utils.get_item_properties(group, columns, formatters={})

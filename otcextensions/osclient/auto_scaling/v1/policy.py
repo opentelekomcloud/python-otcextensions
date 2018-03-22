@@ -49,25 +49,13 @@ def set_attributes_for_print_detail(obj):
     info['name'] = obj.name
     info['id'] = obj.id
     info['create_time'] = obj.create_time
-    instance_config = obj.instance_config
-    if instance_config:
-        info['instance_name'] = instance_config.instance_name
-        info['instance_id'] = instance_config.instance_id
-        info['flavor_id'] = instance_config.flavor_id
-        info['image_id'] = instance_config.image_id
-        info['key_name'] = instance_config.key_name
-        info['public_ip'] = instance_config.public_ip
-        info['user_data'] = instance_config.user_data
-        info['metadata'] = instance_config.metadata
-        disks = []
-        for disk in instance_config.disk:
-            dsk = {
-                'size': disk['size'],
-                'volume_type': disk['volume_type'],
-                'disk_type': disk['disk_type'],
-            }
-            disks.append(dsk)
-        info['disk'] = disks
+    info['type'] = obj.type
+    info['status'] = obj.status
+    info['scaling_group_id'] = obj.scaling_group_id
+    info['alarm_id'] = obj.alarm_id
+    info['cool_down_time'] = obj.cool_down_time
+    info['scheduled_policy'] = obj.scheduled_policy
+    info['scaling_policy_action'] = obj.scaling_policy_action
 
     return info
 
@@ -113,7 +101,9 @@ class ListAutoScalingPolicy(command.Lister):
         if parsed_args.marker:
             args['marker'] = parsed_args.marker
 
-        data = client.policies(group=parsed_args.group, **args)
+        group = client.find_group(parsed_args.group, ignore_missing=False)
+
+        data = client.policies(group=group.id, **args)
 
         return (
             self.columns,
@@ -124,198 +114,188 @@ class ListAutoScalingPolicy(command.Lister):
         )
 
 
-# class ShowAutoScalingConfig(command.ShowOne):
-#     _description = _('Shows details of a AutoScalinig group')
+class ShowAutoScalingPolicy(command.ShowOne):
+    _description = _('Shows details of a AutoScalinig policy')
+    columns = ['ID', 'Name', 'scaling_group_id', 'status',
+               'type', 'alarm_id', 'scheduled_policy',
+               'scaling_policy_action', 'cool_down_time'
+              ]
+
+    def get_parser(self, prog_name):
+        parser = super(ShowAutoScalingPolicy, self).get_parser(prog_name)
+        parser.add_argument(
+            'policy',
+            metavar='<policy>',
+            help=_('ID of the configuration policy')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.auto_scaling
+
+        obj = client.get_policy(parsed_args.policy)
+
+        # display_columns, columns = _get_columns(obj)
+        # data = utils.get_item_properties(
+        #     obj, columns, formatters={'instance_config': _format_instance})
+
+        fmt = set_attributes_for_print_detail(obj)
+        # display_columns, columns = _get_columns(obj)
+        data = utils.get_dict_properties(
+            fmt, self.columns, formatters={})
+
+        return (self.columns, data)
+
+
+class CreateAutoScalingPolicy(command.ShowOne):
+    _description = _('Creates AutoScalinig Policy')
+    columns = ['ID', 'Name', 'scaling_group_id', 'status',
+               'type', 'alarm_id', 'scheduled_policy',
+               'scaling_policy_action', 'cool_down_time'
+               ]
 #     columns = ['ID', 'Name', 'instance_id', 'instance_name',
 #                'flavor_id', 'image_id', 'disk',
 #                'key_name', 'public_ip', 'user_data', 'metadata'
 #                ]
 #
-#     def get_parser(self, prog_name):
-#         parser = super(ShowAutoScalingConfig, self).get_parser(prog_name)
-#         parser.add_argument(
-#             'config',
-#             metavar='<config>',
-#             help=_('ID or name of the configuration group')
-#         )
-#         return parser
-#
-#     def take_action(self, parsed_args):
-#         client = self.app.client_manager.auto_scaling
-#
-#         obj = client.find_config(parsed_args.config, ignore_missing=False)
-#
-#         # display_columns, columns = _get_columns(obj)
-#         # data = utils.get_item_properties(
-#         #     obj, columns, formatters={'instance_config': _format_instance})
-#
-#         fmt = set_attributes_for_print_detail(obj)
-#         # display_columns, columns = _get_columns(obj)
-#         data = utils.get_dict_properties(
-#             fmt, self.columns, formatters={})
-#
-#         return (self.columns, data)
-#
-#
-# class CreateAutoScalingConfig(command.ShowOne):
-#     _description = _('Creates AutoScalinig group')
-#     columns = ['ID', 'Name', 'instance_id', 'instance_name',
-#                'flavor_id', 'image_id', 'disk',
-#                'key_name', 'public_ip', 'user_data', 'metadata'
-#                ]
-#
-#     def get_parser(self, prog_name):
-#         parser = super(CreateAutoScalingConfig, self).get_parser(prog_name)
-#         parser.add_argument(
-#             'name',
-#             metavar='<name>',
-#             help=_('AS Configuration name')
-#         )
-#         group1 = parser.add_argument_group(
-#             'ECS', 'New scpecification template')
-#         group1.add_argument(
-#             '--flavor',
-#             metavar='<flavor>',
-#             help=_('Flavor ID or Name for the ECS instance')
-#         )
-#         group1.add_argument(
-#             '--image_id',
-#             metavar='<image_id>',
-#             help=_('Image ID for the ECS instance to be created')
-#         )
-#         group = parser.add_mutually_exclusive_group()
-#         group.add_argument(
-#             '--instance_id',
-#             metavar='<instance_id>',
-#             help=_('AS Configuration name\n'
-#                    'Is mutually exclusive with ECS group')
-#         )
-#
-#         parser.add_argument(
-#             '--disk',
-#             metavar='<disk>',
-#             action='append',
-#             help=_(
-#                 'Disk information to attach to the instance.\n'
-#                 'format = DISK_TYPE,VOLUME_TYPE,SIZE\n'
-#                 '**DISK_TYPE** can be in [SYS, DATA] and identifies '
-#                 'whether disk should be a system or data disk\n'
-#                 '**VOLUME_TYPE** can be in: \n'
-#                 '*SATA* = Common I/O \n'
-#                 '*SAS* = High I/O \n'
-#                 '*SSD* = Ultra-High I/O \n'
-#                 '**SIZE** is size in Gb\n'
-#                 '(Repeat multiple times for multiple disks)')
-#         )
-#
-#         parser.add_argument(
-#             '--key',
-#             metavar='<key>',
-#             help=_('Key name for the new ECS instance')
-#         )
-#         parser.add_argument(
-#             '--public_ip_bandwith',
-#             metavar='<public_ip_bandwith>',
-#             type=int,
-#             help=_('Defines EIP Bandwith (Mbit/s) to be attached '
-#                    'to the new ECS instance')
-#         )
-#         parser.add_argument(
-#             '--user_data',
-#             metavar='<user_data>',
-#             help=_('Path to the cloud-init user_data file')
-#         )
-#         parser.add_argument(
-#             '--metadata',
-#             metavar='<metadata>',
-#             help=_('User defined key=value pair '
-#                    'format KEY=VALUE '
-#                    'Cannot contain dot (`.`) or start with `$`')
-#         )
-#         return parser
-#
-#     def take_action(self, parsed_args):
-#         client = self.app.client_manager.auto_scaling
-#
-#         config_attrs = {}
-#         if parsed_args.instance_id:
-#             config_attrs['instance_id'] = parsed_args.instance_id
-#         else:
-#             if not all(
-#                     [parsed_args.flavor,
-#                      parsed_args.image_id,
-#                      parsed_args.disk]):
-#                 msg = _('Either instance_id or all of the '
-#                         '[flavor, image, disk] '
-#                         'should be given')
-#                 raise argparse.ArgumentTypeError(msg)
-#             # config_attrs['name'] = parsed_args.name
-#             config_attrs['imageRef'] = parsed_args.image_id
-#             config_attrs['flavorRef'] = parsed_args.flavor
-#         config_attrs['key_name'] = parsed_args.key
-#
-#         config_attrs['disk'] = []
-#         for disk in parsed_args.disk:
-#             disk_parts = disk.split(',')
-#             disk_data = {}
-#             if 3 == len(disk_parts):
-#                 if disk_parts[0] in ('SYS', 'DATA'):
-#                     disk_data['disk_type'] = disk_parts[0]
-#                 else:
-#                     msg = _('Disk Type is not in (SYS, DATA)')
-#                     raise argparse.ArgumentTypeError(msg)
-#                 if disk_parts[1] in ('SATA', 'SAS', 'SSD'):
-#                     disk_data['volume_type'] = disk_parts[1]
-#                 else:
-#                     msg = _('Volume Type is not in (SATA, SAS, SSD)')
-#                     raise argparse.ArgumentTypeError(msg)
-#                 if disk_parts[2].isdigit:
-#                     disk_data['size'] = disk_parts[2]
-#                 else:
-#                     msg = _('Volume SIZE is not a digit')
-#                     raise argparse.ArgumentTypeError(msg)
-#                 config_attrs['disk'].append(disk_data)
-#             else:
-#                 msg = _('Cannot parse disk information')
-#                 raise argparse.ArgumentTypeError(msg)
-#
-#         if parsed_args.public_ip_bandwith:
-#             ip_struct = {
-#                 'eip': {
-#                     'ip_type': '5_bgp',
-#                     'bandwidth': {
-#                         'size': parsed_args.public_ip_bandwith,
-#                         'share_type': 'PER',
-#                         'charging_mode': 'traffic'
-#                     }
-#                 }
-#             }
-#             config_attrs['public_ip'] = ip_struct
-#
-#         if parsed_args.user_data:
-#             with open(parsed_args.user_data, 'r') as file:
-#                 # Read the file (ASCII), encode Base64 and use that
-#                 data = file.read().encode('ascii')
-#                 data_b64 = base64.b64encode(data).decode('ascii')
-#                 config_attrs['user_data'] = data_b64
-#
-#         if parsed_args.metadata:
-#             config_attrs['metadata'] = {}
-#             k,v = md.split('=')
-#             config_attrs['metadata'][k] = v
-#
-#         args = {}
-#         args['instance_config'] = config_attrs
-#
-#         instance = client.create_config(name=parsed_args.name, **args)
-#
-#         fmt = set_attributes_for_print_detail(instance)
-#         # display_columns, columns = _get_columns(obj)
-#         data = utils.get_dict_properties(
-#             fmt, self.columns, formatters={})
-#
-#         return (self.columns, data)
-#
+    POLICY_TYPES = ['ALARM', 'SCHEDULED', 'RECURRENCE']
+
+    def get_parser(self, prog_name):
+        parser = super(CreateAutoScalingPolicy, self).get_parser(prog_name)
+        parser.add_argument(
+            'name',
+            metavar='<name>',
+            help=_('AS Policy name')
+        )
+        parser.add_argument(
+            '--group',
+            metavar='<group>',
+            required=True,
+            help=_('AS Group ID or Name for the AS Policy')
+        )
+        parser.add_argument(
+            '--type',
+            metavar='<type>',
+            required=True,
+            # choices=['ALARM', 'SCHEDULED', 'RECURRENCE'],
+            help=_('AS Policy type [`ALARM`, `SCHEDULED`, `RECURRENCE`]')
+        )
+        parser.add_argument(
+            '--cool_down_time',
+            metavar='<cool_down_time>',
+            type=int,
+            help=_('Specifies the cooling time in seconds for the policy')
+        )
+        parser.add_argument(
+            '--alarm_id',
+            metavar='<alarm_id>',
+            help=_('Specifies the alarm_id for the policy')
+        )
+        parser.add_argument(
+            '--action_operation',
+            metavar='<action_operation>',
+            help=_('Specifies the policy operation '
+                   'Can be [`ADD`, `REMOVE`, `SET`]')
+        )
+        parser.add_argument(
+            '--action_instance_number',
+            metavar='<action_instance_number>',
+            type=int,
+            help=_('Specifies number of instances to be operated')
+        )
+        parser.add_argument(
+            '--launch_time',
+            metavar='<launch_time>',
+            help=_('Specifies the time when the scaling action is triggered. '
+                   'The time format must comply with UTC.\n'
+                   '* when type=`SCHEDULED`, then `YYYY-MM-DDThh:mmZ`\n'
+                   '* when type=`RECURRENCE`, then `hh:mm`\n')
+        )
+        parser.add_argument(
+            '--recurrence_type',
+            metavar='<recurrence_type>',
+            help=_(
+                'Specifies the periodic triggering type\n'
+                'This parameter is mandatory when type=`RECURRENCE`\n'
+                'Can be [`Daily`, `Weekly`, `Monthly`]'
+            )
+        )
+        parser.add_argument(
+            '--recurrence_value',
+            metavar='<recurrence_value>',
+            help=_(
+                'Specifies the frequency, at which actions are triggered\n'
+                'When recurrente_type=`Daily` it is Null\n'
+                'When recurrente_type=`Weekly` it is a week day number [1..7]\n'
+                ' where 1 is for Sunday'
+                'When recurrente_type=`Monthly` it is a day number [1..31]\n'
+            )
+        )
+        parser.add_argument(
+            '--start_time',
+            metavar='<start_time>',
+            help=_('Specifies the start time in of the action in the '
+                   '`YYYY-MM-DDThh:mmZ` format')
+        )
+        parser.add_argument(
+            '--end_time',
+            metavar='<end_time>',
+            help=_('Specifies the end time in of the action in the '
+                   '`YYYY-MM-DDThh:mmZ` format\n'
+                   'Mandatory when type=`RECURRENCE`')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+
+        policy_attrs = {}
+        policy_attrs['name'] = parsed_args.name
+        policy_attrs['scaling_group_id'] = parsed_args.group
+        policy_type = parsed_args.type.upper()
+        if policy_type not in self.POLICY_TYPES:
+            msg = (_('Unsupported policy type. Should be one of %s')
+                % self.POLICY_TYPES)
+            raise argparse.ArgumentTypeError(msg)
+        else:
+            policy_attrs['type'] = policy_type
+        if parsed_args.alarm_id:
+            policy_attrs['alarm_id'] = parsed_args.alarm_id
+        if parsed_args.cool_down_time:
+            policy_attrs['cool_down_time'] = parsed_args.cool_down_time
+        policy_action = {}
+        if parsed_args.action_operation:
+            policy_action['operation'] = parsed_args.action_operation
+        if parsed_args.action_instance_number:
+            policy_action['instance_number'] = \
+                parsed_args.action_instance_number
+        if policy_action.keys():
+            policy_attrs['scaling_policy_action'] = policy_action
+        scheduled_policy = {}
+        if parsed_args.launch_time:
+            scheduled_policy['launch_time'] = parsed_args.launch_time
+        if parsed_args.recurrence_type:
+            # TODO(agoncharov) validate input
+            scheduled_policy['recurrence_type'] = parsed_args.recurrence_type
+        if parsed_args.recurrence_value:
+            scheduled_policy['recurrence_value'] = parsed_args.recurrence_value
+        if parsed_args.launch_time:
+            scheduled_policy['start_time'] = parsed_args.start_time
+        if parsed_args.launch_time:
+            scheduled_policy['end_time'] = parsed_args.end_time
+        if scheduled_policy.keys():
+            policy_attrs['scheduled_policy'] = scheduled_policy
+
+        client = self.app.client_manager.auto_scaling
+
+        policy = client.create_policy(**args)
+
+        fmt = set_attributes_for_print_detail(instance)
+        # display_columns, columns = _get_columns(obj)
+        data = utils.get_dict_properties(
+            fmt, self.columns, formatters={})
+
+        return (self.columns, data)
+
 #
 # class DeleteAutoScalingConfig(command.Command):
 #     _description = _('Deletes AutoScalinig group')

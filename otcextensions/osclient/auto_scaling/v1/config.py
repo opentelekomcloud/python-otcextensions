@@ -191,14 +191,14 @@ class CreateAutoScalingConfig(command.ShowOne):
             action='append',
             help=_(
                 'Disk information to attach to the instance.\n'
-                'format = DISK_TYPE,VOLUME_TYPE,SIZE\n'
-                '**DISK_TYPE** can be in [SYS, DATA] and identifies '
+                'format = `DISK_TYPE`,`VOLUME_TYPE`,`SIZE`\n'
+                '`DISK_TYPE` can be in [SYS, DATA] and identifies '
                 'whether disk should be a system or data disk\n'
-                '**VOLUME_TYPE** can be in: \n'
-                '*SATA* = Common I/O \n'
-                '*SAS* = High I/O \n'
-                '*SSD* = Ultra-High I/O \n'
-                '**SIZE** is size in Gb\n'
+                '`VOLUME_TYPE` can be in: \n'
+                '* `SATA` = Common I/O \n'
+                '* `SAS` = High I/O \n'
+                '* `SSD` = Ultra-High I/O \n'
+                '`SIZE` is size in Gb\n'
                 '(Repeat multiple times for multiple disks)')
         )
 
@@ -229,7 +229,6 @@ class CreateAutoScalingConfig(command.ShowOne):
         return parser
 
     def take_action(self, parsed_args):
-        client = self.app.client_manager.auto_scaling
 
         config_attrs = {}
         if parsed_args.instance_id:
@@ -300,6 +299,8 @@ class CreateAutoScalingConfig(command.ShowOne):
 
         args = {}
         args['instance_config'] = config_attrs
+
+        client = self.app.client_manager.auto_scaling
 
         instance = client.create_config(name=parsed_args.name, **args)
 

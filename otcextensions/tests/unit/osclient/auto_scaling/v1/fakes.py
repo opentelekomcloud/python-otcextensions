@@ -26,6 +26,7 @@ from openstackclient.tests.unit import utils
 
 from otcextensions.sdk.auto_scaling.v1 import config
 from otcextensions.sdk.auto_scaling.v1 import group
+from otcextensions.sdk.auto_scaling.v1 import policy
 # from otcextensions.sdk.obs.v1.object import Object
 
 # from otcextensions.obs.v1.api import API
@@ -88,6 +89,7 @@ class TestAutoScaling(utils.TestCommand):
 
         self.group_mock = FakeGroup
         self.config_mock = FakeConfig
+        self.policy_mock = FakePolicy
 
 
 class FakeGroup(Fake):
@@ -142,4 +144,37 @@ class FakeConfig(Fake):
             }
         }
         obj = config.Config.existing(**object_info)
+        return obj
+
+class FakePolicy(Fake):
+    """Fake one or more AS Policy"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'create_time': datetime.datetime(
+                random.randint(2000, 2020),
+                random.randint(1, 12),
+                random.randint(1, 28)
+            ),
+            'name': 'name-' + uuid.uuid4().hex,
+            'id': 'id-' + uuid.uuid4().hex,
+            'type': 'type-' + uuid.uuid4().hex,
+            'scaling_group_id': 'sgid-' + uuid.uuid4().hex,
+            'alarm_id': 'alarmid-' + uuid.uuid4().hex,
+            'cool_down_time': random.randint(1, 10000),
+            'status': 'status-' + uuid.uuid4().hex,
+            'scheduled_policy': {
+                'launch_time': 'launch_time-' + uuid.uuid4().hex,
+                'recurrence_type': 'recurrence_type-' + uuid.uuid4().hex,
+                'recurrence_value': 'recurrence_value-' + uuid.uuid4().hex,
+                'start_time': 'start_time-' + uuid.uuid4().hex,
+                'end_time': 'end_time-' + uuid.uuid4().hex,
+            },
+            'scaling_policy_action': {
+                'operation': 'operation-' + uuid.uuid4().hex,
+                'instance_number': random.randint(1, 100),
+            }
+        }
+        obj = policy.Policy.existing(**object_info)
         return obj
