@@ -393,12 +393,13 @@ class Proxy(sdk_proxy.Proxy):
                         ignore_missing=True):
         """Remove an instance of auto scaling group
 
-        precondition:
-        * the instance must in ``INSERVICE`` status
-        * after remove the instance number of auto scaling group should not
-            be less than min instance number
-        * The own auto scaling group should not in scaling status
-        :param instance:  The value can be the ID of a instance or a
+        :precondition:
+            * the instance must in ``INSERVICE`` status
+            * after remove the instance number of auto scaling group should not
+                be less than min instance number
+            * The own auto scaling group should not in scaling status
+
+        :param instance: The value can be the ID of a instance or a
             :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`
             instance.
         :param bool delete_instance: When set to ``True``, instance will be
@@ -408,7 +409,8 @@ class Proxy(sdk_proxy.Proxy):
             the config does not exist.
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent config.
-        :return:
+
+        :returns: None
         """
         instance = self._get_resource(_instance.Instance, instance)
         return instance.remove(self,
@@ -418,15 +420,16 @@ class Proxy(sdk_proxy.Proxy):
     def batch_remove_instances(self, group, instances, delete_instance=False):
         """Batch remove instances of auto scaling group
 
-         precondition:
-        * the instance must in ``INSERVICE`` status
-        * after batch remove the current instance number of auto scaling group
-            should not be less than min instance number
-        * The own auto scaling group should not in scaling status
+        :precondition:
+            * the instance must in ``INSERVICE`` status
+            * after batch remove the current instance number of auto scaling
+                group should not be less than min instance number
+            * The own auto scaling group should not in scaling status
+
         :param group: The group of instances that to be removed, The value can
             be the ID of a group or a
             :class:`~otcextensions.sdk.auto_scaling.v1.group.Group` instance.
-        :param list instances: The list item value can be ID of an instance
+        :param instances: The list item value can be ID of an instance
             or a :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`
             instance
         :param bool delete_instance: When set to ``True``, instance will be
@@ -442,10 +445,12 @@ class Proxy(sdk_proxy.Proxy):
         """Batch add instances for auto scaling group
 
         :param group: The group which instances will be added to,
-                The value can be the ID of a group or a
-                :class:`~otcextensions.sdk.auto_scaling.v1.group.Group` instance.
-        :param list instances: The list item value can be ID of an instance
-            or a :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance` instance
+            The value can be the ID of a group or a
+            :class:`~otcextensions.sdk.auto_scaling.v1.group.Group`
+            instance.
+        :param instances: The list item value can be ID of an instance or a
+            :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`
+            instance
         """
         group = self._get_resource(_group.Group, group)
         instance = _instance.Instance(scaling_group_id=group.id)
