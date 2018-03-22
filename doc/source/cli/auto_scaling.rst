@@ -25,4 +25,11 @@ Config operations
 -----------------
 
 .. autoprogram-cliff:: openstack.auto_scaling.v1
-   :command: as configuration *
+   :command: as config *
+   
+
+Policy operations
+-----------------
+
+.. autoprogram-cliff:: openstack.auto_scaling.v1
+  :command: as policy *

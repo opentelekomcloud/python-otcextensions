@@ -148,14 +148,14 @@ class Proxy(sdk_proxy.Proxy):
         """Retrieve a generator of configs
 
         :param dict query: Optional query parameters to be sent to limit the
-                      resources being returned.
+            resources being returned.
             * ``name``: configuration name
             * ``image_id``: image id
             * ``marker``:  pagination marker
             * ``limit``: pagination limit
 
         :returns: A generator of config
-                  (:class:`~otcextensions.auto_scaling.v1.config.Config`) instances
+            (:class:`~otcextensions.auto_scaling.v1.config.Config`) instances
         """
         return self._list(
             _config.Config, paginated=True,
@@ -166,8 +166,8 @@ class Proxy(sdk_proxy.Proxy):
 
         :param name: auto scaling config name
         :param dict attrs: Keyword arguments which will be used to create
-                a :class:`~otcextensions.auto_scaling.v1.config.InstanceConfig`,
-                comprised of the properties on the InstanceConfig class.
+            a :class:`~otcextensions.auto_scaling.v1.config.InstanceConfig`,
+            comprised of the properties on the InstanceConfig class.
         :returns: The results of config creation
         :rtype: :class:`~otcextensions.auto_scaling.v1.config.Config`
         """
@@ -182,7 +182,8 @@ class Proxy(sdk_proxy.Proxy):
         """Get a config
 
         :param config: The value can be the ID of a config
-             or a :class:`~otcextensions.auto_scaling.v1.config.Config` instance.
+             or a :class:`~otcextensions.auto_scaling.v1.config.Config`
+             instance.
         :returns: Config instance
         :rtype: :class:`~otcextensions.auto_scaling.v1.config.Config`
         """
@@ -212,7 +213,8 @@ class Proxy(sdk_proxy.Proxy):
         """Delete a config
 
         :param config: The value can be the ID of a config
-             or a :class:`~otcextensions.auto_scaling.v1.config.Config` instance.
+             or a :class:`~otcextensions.auto_scaling.v1.config.Config`
+             instance.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
             the config does not exist.
@@ -230,8 +232,9 @@ class Proxy(sdk_proxy.Proxy):
     def batch_delete_configs(self, configs):
         """batch delete configs
 
-        :param list configs: The list item value can be the ID of a config
-             or a :class:`~otcextensions.auto_scaling.v1.config.Config` instance.
+        :param configs: The list item value can be the ID of a config
+             or a :class:`~otcextensions.auto_scaling.v1.config.Config`
+             instance.
         """
         config = _config.Config()
         return config.batch_delete(self, configs)
@@ -241,7 +244,8 @@ class Proxy(sdk_proxy.Proxy):
         """Retrieve a generator of policies
 
         :param group: The value can be the ID of a group
-            or a :class:`~otcextensions.sdk.auto_scaling.v1.group.Group` instance.
+            or a :class:`~otcextensions.sdk.auto_scaling.v1.group.Group`
+            instance.
         :param dict query: Optional query parameters to be sent to limit the
             resources being returned.
             * ``name``: policy name
@@ -251,7 +255,8 @@ class Proxy(sdk_proxy.Proxy):
             * ``limit``: pagination limit
 
         :returns: A generator of policy
-            (:class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`) instances
+            (:class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`)
+            instances
         """
         group = self._get_resource(_group.Group, group)
         return self._list(
@@ -263,8 +268,8 @@ class Proxy(sdk_proxy.Proxy):
         """Create a new policy from attributes
 
         :param dict attrs: Keyword arguments which will be used to create
-                           a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`,
-                           comprised of the properties on the Policy class.
+            a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`,
+            comprised of the properties on the Policy class.
         :returns: The results of policy creation
         :rtype: :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`
         """
@@ -274,10 +279,11 @@ class Proxy(sdk_proxy.Proxy):
         """update policy with attributes
 
         :param policy: The value can be the ID of a policy
-             or a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy` instance.
+             or a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`
+             instance.
         :param dict attrs: Keyword arguments which will be used to create
-                           a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`,
-                           comprised of the properties on the Policy class.
+            a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`,
+            comprised of the properties on the Policy class.
         :returns: The results of policy creation
         :rtype: :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`
         """
@@ -287,7 +293,8 @@ class Proxy(sdk_proxy.Proxy):
         """Get a policy
 
         :param policy: The value can be the ID of a policy
-             or a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy` instance.
+             or a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`
+             instance.
         :returns: Policy instance
         :rtype: :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`
         """
@@ -297,7 +304,8 @@ class Proxy(sdk_proxy.Proxy):
         """Delete a policy
 
         :param policy: The value can be the ID of a policy
-             or a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy` instance.
+             or a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`
+             instance.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
             the policy does not exist.
@@ -329,7 +337,8 @@ class Proxy(sdk_proxy.Proxy):
         """execute policy
 
         :param policy: The value can be the ID of a policy
-             or a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy` instance.
+             or a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`
+             instance.
         """
         policy = self._get_resource(_policy.Policy, policy)
         policy.execute(self)
@@ -338,7 +347,8 @@ class Proxy(sdk_proxy.Proxy):
         """resume policy
 
         :param policy: The value can be the ID of a policy
-             or a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy` instance.
+             or a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`
+             instance.
         """
         policy = self._get_resource(_policy.Policy, policy)
         policy.resume(self)
@@ -347,7 +357,8 @@ class Proxy(sdk_proxy.Proxy):
         """pause policy
 
         :param policy: The value can be the ID of a policy
-             or a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy` instance.
+             or a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`
+             instance.
         """
         policy = self._get_resource(_policy.Policy, policy)
         policy.pause(self)
