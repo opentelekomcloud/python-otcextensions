@@ -53,3 +53,21 @@ Policy Operations
   .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.resume_policy
   .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.pause_policy
   .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.execute_policy
+
+Instance Operations
+^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy
+
+  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.instances
+  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.remove_instance
+  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.batch_remove_instances
+  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.batch_add_instances
+
+Actions and Quotas
+^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy
+
+  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.activities
+  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.quotas

@@ -9,13 +9,15 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-# import mock
 from openstack.tests.unit import test_proxy_base
 
 from otcextensions.sdk.auto_scaling.v1 import _proxy
 from otcextensions.sdk.auto_scaling.v1 import group as _group
 from otcextensions.sdk.auto_scaling.v1 import config as _config
 from otcextensions.sdk.auto_scaling.v1 import policy as _policy
+from otcextensions.sdk.auto_scaling.v1 import activity as _activity
+from otcextensions.sdk.auto_scaling.v1 import quota as _quota
+from otcextensions.sdk.auto_scaling.v1 import instance as _instance
 
 
 class TestAutoScalingProxy(test_proxy_base.TestProxyBase):
@@ -235,4 +237,84 @@ class TestAutoScalingPolicy(TestAutoScalingProxy):
             self.proxy.pause_policy,
             method_args=['INSTANCE'],
             expected_args=[self.proxy, {'action': 'pause'}]
+        )
+
+class TestAutoScalingActivityLog(TestAutoScalingProxy):
+
+    def test_list(self):
+        self.verify_list(
+            self.proxy.activities, _activity.Activity,
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
+            method_kwargs={
+                'some_arg': 'arg_value',
+                'group': 'group_id'
+            },
+            paginated=True,
+            expected_kwargs={
+                'some_arg': 'arg_value',
+                'scaling_group_id': 'group_id',
+            }
+        )
+
+class TestAutoScalingQuota(TestAutoScalingProxy):
+
+    def test_list(self):
+        self.verify_list(
+            self.proxy.quotas, _quota.Quota,
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
+            paginated=False,
+        )
+
+    def test_list_scaling(self):
+        self.verify_list(
+            self.proxy.quotas, _quota.ScalingQuota,
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
+            method_args=['INSTANCE'],
+            paginated=False,
+            expected_kwargs={
+                'scaling_group_id': 'INSTANCE'
+            }
+        )
+
+class TestAutoScalingInstance(TestAutoScalingProxy):
+
+    def test_list(self):
+        self.verify_list(
+            self.proxy.instances, _instance.Instance,
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
+            method_args=['group'],
+            expected_kwargs={
+                'scaling_group_id': 'group'
+            },
+            paginated=True,
+        )
+
+    def test_batch_add(self):
+        self._verify2(
+            'otcextensions.sdk.auto_scaling.v1.instance.Instance.batch_add',
+            self.proxy.batch_add_instances,
+            method_args=['INSTANCE', ['a1', 'a2']],
+            expected_args=[self.proxy, ['a1', 'a2']]
+        )
+
+    def test_batch_remove(self):
+        self._verify2(
+            'otcextensions.sdk.auto_scaling.v1.instance.Instance.batch_remove',
+            self.proxy.batch_remove_instances,
+            method_args=['INSTANCE', ['a1', 'a2']],
+            expected_args=[self.proxy, ['a1', 'a2']],
+            expected_kwargs={
+                'delete_instance': False,
+            }
+        )
+
+    def test_delete(self):
+        self.verify_delete(
+            self.proxy.remove_instance,
+            _instance.Instance, True,
+            mock_method='otcextensions.sdk.auto_scaling.v1.instance.Instance.remove',
+            expected_args=[self.proxy],
+            expected_kwargs={
+                'delete_instance': False
+            }
         )

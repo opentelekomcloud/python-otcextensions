@@ -9,17 +9,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
 import copy
+import mock
 
 from keystoneauth1 import adapter
-import mock
 
 from openstack.tests.unit import base
 
 from otcextensions.sdk.auto_scaling.v1 import config
-
-PROJECT_ID = '123'
 
 EXAMPLE = {
     'tenant': 'ce061903a53545dcaddb300093b477d2',
@@ -127,7 +124,7 @@ class TestConfig(base.TestCase):
         self.sess.post = mock.Mock()
         self.sess.delete = mock.Mock()
         self.sess.put = mock.Mock()
-        self.sess.get_project_id = mock.Mock(return_value=PROJECT_ID)
+        self.sess.get_project_id = mock.Mock()
         self.sot = config.Config(**EXAMPLE)
 
     def test_basic(self):

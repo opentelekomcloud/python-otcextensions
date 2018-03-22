@@ -9,17 +9,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
+import mock
 import copy
 
 from keystoneauth1 import adapter
-import mock
 
 from openstack.tests.unit import base
 
 from otcextensions.sdk.auto_scaling.v1 import policy
-
-PROJECT_ID = '123'
 
 EXAMPLE = {
     'scaling_policy_id': 'fd7d63ce-8f5c-443e-b9a0-bef9386b23b3',
@@ -73,7 +70,7 @@ class TestPolicy(base.TestCase):
         self.sess.delete = mock.Mock()
         self.sess.put = mock.Mock()
         # self.sess.get_project_id = mock.Mock(return_value=PROJECT_ID)
-        self.sot = policy.Policy(**EXAMPLE)
+        self.sot = policy.Policy()
 
     def test_basic(self):
         sot = policy.Policy()

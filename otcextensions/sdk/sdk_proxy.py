@@ -55,27 +55,27 @@ class Proxy(os_proxy.BaseProxy):
         """Delete a resource
 
         :param resource_type: The type of resource to delete. This should
-                              be a :class:`~openstack.resource.Resource`
-                              subclass with a ``from_id`` method.
+            be a :class:`~openstack.resource.Resource`
+            subclass with a ``from_id`` method.
         :param value: The value to delete. Can be either the ID of a
-                      resource or a :class:`~openstack.resource.Resource`
-                      subclass.
+            resource or a :class:`~openstack.resource.Resource`
+            subclass.
         :param bool ignore_missing: When set to ``False``
-                    :class:`~openstack.exceptions.ResourceNotFound` will be
-                    raised when the resource does not exist.
-                    When set to ``True``, no exception will be set when
-                    attempting to delete a nonexistent resource.
+            :class:`~openstack.exceptions.ResourceNotFound` will be
+            raised when the resource does not exist.
+            When set to ``True``, no exception will be set when
+            attempting to delete a nonexistent resource.
         :param dict attrs: Attributes to be passed onto the
-                           :meth:`~openstack.resource.Resource.delete`
-                           method, such as the ID of a parent resource.
+            :meth:`~openstack.resource.Resource.delete`
+            method, such as the ID of a parent resource.
 
         :returns: The result of the ``delete``
         :raises: ``ValueError`` if ``value`` is a
-                 :class:`~openstack.resource.Resource` that doesn't match
-                 the ``resource_type``.
-                 :class:`~openstack.exceptions.ResourceNotFound` when
-                 ignore_missing if ``False`` and a nonexistent resource
-                 is attempted to be deleted.
+            :class:`~openstack.resource.Resource` that doesn't match
+            the ``resource_type``.
+            :class:`~openstack.exceptions.ResourceNotFound` when
+            ignore_missing if ``False`` and a nonexistent resource
+            is attempted to be deleted.
 
         """
         res = self._get_resource(resource_type, value, **attrs)

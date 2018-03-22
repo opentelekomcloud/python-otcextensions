@@ -235,7 +235,7 @@ class Resource(resource.Resource):
         return self
 
     def delete(self, session, error_message=None,
-               endpoint_override=None, headers=None):
+               endpoint_override=None, headers=None, params=None):
         """Delete the remote resource based on this instance.
 
         This function overrides default Resource.delete to enable headers
@@ -258,6 +258,8 @@ class Resource(resource.Resource):
             endpoint_override=endpoint_override,
             request_headers=request.headers,
             additional_headers=headers)
+        if params:
+            delete_args['params'] = params
 
         response = session.delete(request.url,
                                   **delete_args)

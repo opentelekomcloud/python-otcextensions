@@ -20,6 +20,9 @@ from otcextensions.sdk import sdk_proxy
 from otcextensions.sdk.auto_scaling.v1 import group as _group
 from otcextensions.sdk.auto_scaling.v1 import config as _config
 from otcextensions.sdk.auto_scaling.v1 import policy as _policy
+from otcextensions.sdk.auto_scaling.v1 import activity as _activity
+from otcextensions.sdk.auto_scaling.v1 import instance as _instance
+from otcextensions.sdk.auto_scaling.v1 import quota as _quota
 
 _logger = _log.setup_logging('openstack')
 
@@ -362,3 +365,130 @@ class Proxy(sdk_proxy.Proxy):
         """
         policy = self._get_resource(_policy.Policy, policy)
         policy.pause(self)
+
+    # ======== Instances ========
+    def instances(self, group, **query):
+        """Retrieve a generator of instances
+
+        :param group: The value can be the ID of a group
+             or a :class:`~otcextensions.sdk.auto_scaling.v1.group.Group`
+             instance.
+        :param dict query: Optional query parameters to be sent to limit the
+            resources being returned.
+            * ``health_status``: instance health status
+            * ``lifecycle_status``: policy type
+            * ``scaling_group_id``: scaling group id the policy applied to
+            * ``marker``:  pagination marker
+            * ``limit``: pagination limit
+
+        :returns: A generator of instances with type
+            (:class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`)
+        """
+        group = self._get_resource(_group.Group, group)
+        return self._list(
+            _instance.Instance, paginated=True,
+            scaling_group_id = group.id, **query)
+
+    def remove_instance(self, instance, delete_instance=False,
+                        ignore_missing=True):
+        """Remove an instance of auto scaling group
+
+        precondition:
+        * the instance must in ``INSERVICE`` status
+        * after remove the instance number of auto scaling group should not
+            be less than min instance number
+        * The own auto scaling group should not in scaling status
+        :param instance:  The value can be the ID of a instance or a
+            :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`
+            instance.
+        :param bool delete_instance: When set to ``True``, instance will be
+            deleted after removed
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the config does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent config.
+        :return:
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.remove(self,
+                               delete_instance=delete_instance,
+                               ignore_missing=ignore_missing)
+
+    def batch_remove_instances(self, group, instances, delete_instance=False):
+        """Batch remove instances of auto scaling group
+
+         precondition:
+        * the instance must in ``INSERVICE`` status
+        * after batch remove the current instance number of auto scaling group
+            should not be less than min instance number
+        * The own auto scaling group should not in scaling status
+        :param group: The group of instances that to be removed, The value can
+            be the ID of a group or a
+            :class:`~otcextensions.sdk.auto_scaling.v1.group.Group` instance.
+        :param list instances: The list item value can be ID of an instance
+            or a :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`
+            instance
+        :param bool delete_instance: When set to ``True``, instance will be
+            deleted after removed
+        """
+        group = self._get_resource(_group.Group, group)
+        instance = _instance.Instance(scaling_group_id=group.id)
+        return instance.batch_remove(self,
+                                     instances,
+                                     delete_instance=delete_instance)
+
+    def batch_add_instances(self, group, instances):
+        """Batch add instances for auto scaling group
+
+        :param group: The group which instances will be added to,
+                The value can be the ID of a group or a
+                :class:`~otcextensions.sdk.auto_scaling.v1.group.Group` instance.
+        :param list instances: The list item value can be ID of an instance
+            or a :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance` instance
+        """
+        group = self._get_resource(_group.Group, group)
+        instance = _instance.Instance(scaling_group_id=group.id)
+        return instance.batch_add(self, instances)
+
+    # ======== Activities ========
+    def activities(self, group, **query):
+        """Retrieve a generator of Activity
+
+        :param group: The value can be the ID of a group
+            or a :class:`~otcextensions.sdk.auto_scaling.v1.group.Group`
+            instance.
+        :param dict query: Optional query parameters to be sent to limit the
+            resources being returned.
+            * ``start_time``: activity start time
+            * ``end_time``: activity end time
+            * ``marker``:  pagination marker, known as ``start_number``
+            * ``limit``: pagination limit
+
+        :returns: A generator of group
+            (:class:`~otcextensions.sdk.auto_scaling.v1.activity.Activity`)
+            instances
+        """
+        group = self._get_resource(_group.Group, group)
+        return self._list(_activity.Activity,
+                          paginated=True,
+                          scaling_group_id=group.id,
+                          **query)
+
+    # ======== Quotas ========
+    def quotas(self, group=None):
+        """Retrieve a generator of Quota
+
+        :param group: If group is set, will query quota for the group instead
+            of quota of user. The value can be the ID of a group or a
+            :class:`~otcextensions.sdk.auto_scaling.v1.group.Group` instance.
+        :returns: A generator of quota
+            (:class:`~otcextensions.sdk.auto_scaling.v1.quota.Quota`) instances
+        """
+        if group:
+            group = self._get_resource(_group.Group, group)
+            return self._list(_quota.ScalingQuota,
+                              paginated=False,
+                              scaling_group_id=group.id)
+        else:
+            return self._list(_quota.Quota, paginated=False)

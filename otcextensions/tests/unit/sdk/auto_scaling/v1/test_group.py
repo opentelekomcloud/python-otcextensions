@@ -9,17 +9,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
+import mock
 import copy
 
 from keystoneauth1 import adapter
-import mock
 
 from openstack.tests.unit import base
 
 from otcextensions.sdk.auto_scaling.v1 import group
-
-PROJECT_ID = '123'
 
 EXAMPLE = {
     "networks": [
@@ -66,9 +63,8 @@ class TestGroup(base.TestCase):
         self.sess.post = mock.Mock()
         self.sess.delete = mock.Mock()
         self.sess.put = mock.Mock()
-        self.sess.get_project_id = mock.Mock(return_value=PROJECT_ID)
+        self.sess.get_project_id = mock.Mock()
         self.sot = group.Group(**EXAMPLE)
-        # print(self.sot.to_dict())
 
     def test_basic(self):
         sot = group.Group()
@@ -106,8 +102,7 @@ class TestGroup(base.TestCase):
 
     def test_get(self):
         sot = group.Group.existing(
-            id=EXAMPLE['scaling_group_id'],
-            project_id=PROJECT_ID)
+            id=EXAMPLE['scaling_group_id'])
         mock_response = mock.Mock()
         mock_response.status_code = 200
         mock_response.headers = {}
