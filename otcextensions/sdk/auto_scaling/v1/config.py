@@ -21,7 +21,7 @@ from otcextensions.sdk import sdk_resource
 from otcextensions.sdk.auto_scaling.v1 import _base
 
 
-class InstanceConfig(sdk_resource.Resource):
+class InstanceConfig(resource.Resource):
     #: Properties
     #: reserved property
     #: Server Instance reference Id, if set, auto-scaling-group will create
@@ -83,7 +83,6 @@ class Config(_base.Resource):
     status = resource.Body('status')
     #: Use the exists instance as template to create new instance
     instance_config = resource.Body('instance_config',
-                                    # default={},
                                     type=InstanceConfig)
 
     @classmethod

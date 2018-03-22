@@ -19,6 +19,7 @@ from otcextensions.sdk import sdk_proxy
 
 from otcextensions.sdk.auto_scaling.v1 import group as _group
 from otcextensions.sdk.auto_scaling.v1 import config as _config
+from otcextensions.sdk.auto_scaling.v1 import policy as _policy
 
 _logger = _log.setup_logging('openstack')
 
@@ -40,7 +41,6 @@ class Proxy(sdk_proxy.Proxy):
         :returns: A generator of group
             (:class:`~otcextensions.sdk.auto_scaling.v1.group.Group`) instances
         """
-        print('get groups is called')
         return self._list(
             _group.Group, paginated=True,
             **query
@@ -235,3 +235,119 @@ class Proxy(sdk_proxy.Proxy):
         """
         config = _config.Config()
         return config.batch_delete(self, configs)
+
+    # ======== Policy ========
+    def policies(self, group, **query):
+        """Retrieve a generator of policies
+
+        :param group: The value can be the ID of a group
+            or a :class:`~otcextensions.sdk.auto_scaling.v1.group.Group` instance.
+        :param dict query: Optional query parameters to be sent to limit the
+            resources being returned.
+            * ``name``: policy name
+            * ``type``: policy type
+            * ``scaling_group_id``: scaling group id the policy applied to
+            * ``marker``:  pagination marker
+            * ``limit``: pagination limit
+
+        :returns: A generator of policy
+            (:class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`) instances
+        """
+        group = self._get_resource(_group.Group, group)
+        return self._list(
+            _policy.Policy, paginated=True,
+            scaling_group_id = group.id,
+            **query)
+
+    def create_policy(self, **attrs):
+        """Create a new policy from attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+                           a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`,
+                           comprised of the properties on the Policy class.
+        :returns: The results of policy creation
+        :rtype: :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`
+        """
+        return self._create(_policy.Policy, prepend_key=False, **attrs)
+
+    def update_policy(self, policy, **attrs):
+        """update policy with attributes
+
+        :param policy: The value can be the ID of a policy
+             or a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy` instance.
+        :param dict attrs: Keyword arguments which will be used to create
+                           a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`,
+                           comprised of the properties on the Policy class.
+        :returns: The results of policy creation
+        :rtype: :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`
+        """
+        return self._update(_policy.Policy, policy, prepend_key=False, **attrs)
+
+    def get_policy(self, policy):
+        """Get a policy
+
+        :param policy: The value can be the ID of a policy
+             or a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy` instance.
+        :returns: Policy instance
+        :rtype: :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`
+        """
+        return self._get(_policy.Policy, policy)
+
+    def delete_policy(self, policy, ignore_missing=True):
+        """Delete a policy
+
+        :param policy: The value can be the ID of a policy
+             or a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy` instance.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the policy does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent policy.
+
+        :returns: Policy been deleted
+        :rtype: :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`
+        """
+        return self._delete(_policy.Policy, policy,
+                            ignore_missing=ignore_missing)
+
+    def find_policy(self, name_or_id, ignore_missing=True):
+        """Find a single policy
+
+        :param name_or_id: The name or ID of a policy
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the policy does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to delete a nonexistent policy.
+
+        :returns: ``None``
+        """
+        return self._find(_policy.Policy, name_or_id,
+                          ignore_missing=ignore_missing)
+
+    def execute_policy(self, policy):
+        """execute policy
+
+        :param policy: The value can be the ID of a policy
+             or a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy` instance.
+        """
+        policy = self._get_resource(_policy.Policy, policy)
+        policy.execute(self)
+
+    def resume_policy(self, policy):
+        """resume policy
+
+        :param policy: The value can be the ID of a policy
+             or a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy` instance.
+        """
+        policy = self._get_resource(_policy.Policy, policy)
+        policy.resume(self)
+
+    def pause_policy(self, policy):
+        """pause policy
+
+        :param policy: The value can be the ID of a policy
+             or a :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy` instance.
+        """
+        policy = self._get_resource(_policy.Policy, policy)
+        policy.pause(self)
