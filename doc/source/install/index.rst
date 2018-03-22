@@ -10,6 +10,8 @@ As of now no pip package exist, therefore the project could be installed followi
 * alternatively, instead of creating virtual env and installing requirements use tox venv manager `tox -e py36`
 * register CLI plugin using `python setup.py install_egg_info` or alternatively install project into venv `python setup.py install`
 
+Later, when the pip package will be available the procedure will be following:
+
 At the command line::
 
     $ pip install python-otcextensions
