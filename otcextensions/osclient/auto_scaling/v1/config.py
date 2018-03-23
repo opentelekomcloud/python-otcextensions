@@ -99,7 +99,6 @@ class ListAutoScalingConfig(command.Lister):
         return parser
 
     def take_action(self, parsed_args):
-        client = self.app.client_manager.auto_scaling
 
         args = {}
         if parsed_args.limit:
@@ -107,6 +106,8 @@ class ListAutoScalingConfig(command.Lister):
         if parsed_args.marker:
             args['marker'] = parsed_args.marker
 
+        client = self.app.client_manager.auto_scaling
+        
         data = client.configs(**args)
 
         return (
