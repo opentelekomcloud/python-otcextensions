@@ -287,35 +287,33 @@ class CreateAutoScalingPolicy(command.ShowOne):
 
         client = self.app.client_manager.auto_scaling
 
-        policy = client.create_policy(**args)
+        policy = client.create_policy(**policy_attrs)
 
-        fmt = set_attributes_for_print_detail(instance)
+        fmt = set_attributes_for_print_detail(policy)
         # display_columns, columns = _get_columns(obj)
         data = utils.get_dict_properties(
             fmt, self.columns, formatters={})
 
         return (self.columns, data)
 
-#
-# class DeleteAutoScalingConfig(command.Command):
-#     _description = _('Deletes AutoScalinig group')
-#
-#     def get_parser(self, prog_name):
-#         parser = super(DeleteAutoScalingConfig, self).get_parser(prog_name)
-#         parser.add_argument(
-#             'config',
-#             nargs='+',
-#             metavar='<config>',
-#             help=_('AS Configuration ID')
-#         )
-#         return parser
-#
-#     def take_action(self, parsed_args):
-#         client = self.app.client_manager.auto_scaling
-#
-#         # TODO(agoncharov) - proper error handling (reporting)
-#
-#         if len(parsed_args.config) > 1:
-#             client.batch_delete_configs(parsed_args.config)
-#         elif len(parsed_args.config) == 1:
-#             client.delete_config(parsed_args.config[0], ignore_missing=False)
+
+class DeleteAutoScalingPolicy(command.Command):
+    _description = _('Deletes AutoScalinig policy')
+
+    def get_parser(self, prog_name):
+        parser = super(DeleteAutoScalingPolicy, self).get_parser(prog_name)
+        parser.add_argument(
+            'policy',
+            nargs='+',
+            metavar='<policy>',
+            help=_('AS Policy ID')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.auto_scaling
+
+        # TODO(agoncharov) - proper error handling (reporting)
+
+        for pol in parsed_args.policy:
+            client.delete_policy(pol)

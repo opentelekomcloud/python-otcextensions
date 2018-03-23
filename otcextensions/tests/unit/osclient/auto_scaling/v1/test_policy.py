@@ -159,132 +159,127 @@ class TestShowAutoScalingPolicy(TestAutoScalingPolicy):
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
-#
-#
-# class TestCreateAutoScalingPolicy(TestAutoScalingPolicy):
-#
-#     columns = ('create_time', 'detail', 'id', 'name', 'network_id', 'status')
-#
-#     _group = fakes.FakePolicy.create_one()
-#
-#     data = (
-#         _group.create_time,
-#         _group.detail,
-#         _group.id,
-#         _group.name,
-#         _group.network_id,
-#         _group.status,
-#     )
-#
-#     def setUp(self):
-#         super(TestCreateAutoScalingPolicy, self).setUp()
-#
-#         self.cmd = group.CreateAutoScalingPolicy(self.app, None)
-#
-#         self.client.create_group = mock.Mock()
-#
-#     def test_create(self):
-#         arglist = [
-#             '--desire_instance_number', '10',
-#             '--min_instance_number', '1',
-#             '--max_instance_number', '15',
-#             '--cool_down_time', '1',
-#             '--availability_zone', 'eu-1',
-#             '--availability_zone', 'eu-2',
-#             '--subnetwork', 'sub1',
-#             '--subnetwork', 'sub2',
-#             '--network_id', 'vpc-1',
-#             '--security_group', 'sg1',
-#             '--security_group', 'sg2',
-#             '--lb_listener_id', 'lb1',
-#             '--lbaas_listener', 'lbas1:14',
-#             '--lbaas_listener', 'lbas2:15:10',
-#             '--audit_method', 'some_method',
-#             '--audit_time', '15',
-#             '--terminate_policy', 'pol',
-#             '--notification', 'EMAIL',
-#             '--notification', 'SMS',
-#
-#             'test_name'
-#         ]
-#         verifylist = [
-#             ('desire_instance_number', 10),
-#             ('min_instance_number', 1),
-#             ('max_instance_number', 15),
-#             ('cool_down_time', 1),
-#             ('availability_zone', ['eu-1', 'eu-2']),
-#             ('subnetwork', ['sub1', 'sub2']),
-#             ('security_group', ['sg1', 'sg2']),
-#             ('network_id', 'vpc-1'),
-#             ('lb_listener_id', 'lb1'),
-#             ('lbaas_listener', ['lbas1:14', 'lbas2:15:10']),
-#             ('audit_method', 'some_method'),
-#             ('audit_time', 15),
-#             ('terminate_policy', 'pol'),
-#             ('notification', ['EMAIL', 'SMS']),
-#             ('name', 'test_name')
-#         ]
-#         # Verify cm is triggereg with default parameters
-#         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-#
-#         # Set the response
-#         self.client.create_group.side_effect = [
-#             self._group
-#         ]
-#
-#         # Trigger the action
-#         columns, data = self.cmd.take_action(parsed_args)
-#
-#         self.client.create_group.assert_called_with(
-#             available_zones=['eu-1', 'eu-2'],
-#             cool_down_time=1,
-#             desire_instance_number=10,
-#             health_periodic_audit_method='some_method',
-#             health_periodic_audit_time=15,
-#             instance_terminate_policy='pol',
-#             lb_listener_id='lb1',
-#             lbaas_listeners=[
-#                 {'id': 'lbas1', 'protocol_port': '14'},
-#                 {'id': 'lbas2', 'protocol_port': '15', 'weight': '10'}],
-#             max_instance_number=15,
-#             min_instance_number=1,
-#             name='test_name',
-#             networks=[{'id': 'sub1'}, {'id': 'sub2'}],
-#             notifications=['EMAIL', 'SMS'],
-#             security_groups=[{'id': 'sg1'}, {'id': 'sg2'}],
-#             vpc_id='vpc-1'
-#         )
-#
-#         self.assertEqual(self.columns, columns)
-#         self.assertEqual(self.data, data)
-#
-#
-# class TestDeleteAutoScalingPolicy(TestAutoScalingPolicy):
-#
-#     def setUp(self):
-#         super(TestDeleteAutoScalingPolicy, self).setUp()
-#
-#         self.cmd = group.DeleteAutoScalingPolicy(self.app, None)
-#
-#         self.client.delete_group = mock.Mock()
-#
-#     def test_sdelete(self):
-#         arglist = [
-#             'group1'
-#         ]
-#         verifylist = [
-#             ('group', 'group1')
-#         ]
-#         # Verify cm is triggereg with default parameters
-#         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-#
-#         # Set the response
-#         self.client.delete_group.side_effect = [ {} ]
-#
-#         # Trigger the action
-#         self.cmd.take_action(parsed_args)
-#
-#         self.client.delete_group.assert_called()
+
+
+class TestCreateAutoScalingPolicy(TestAutoScalingPolicy):
+
+    columns = ['ID', 'Name', 'scaling_group_id', 'status',
+               'type', 'alarm_id', 'scheduled_policy',
+               'scaling_policy_action', 'cool_down_time'
+               ]
+
+    _obj = fakes.FakePolicy.create_one()
+
+    data = (
+        _obj.id,
+        _obj.name,
+        _obj.scaling_group_id,
+        _obj.status,
+        _obj.type,
+        _obj.alarm_id,
+        _obj.scheduled_policy,
+        _obj.scaling_policy_action,
+        _obj.cool_down_time,
+    )
+
+    def setUp(self):
+        super(TestCreateAutoScalingPolicy, self).setUp()
+
+        self.cmd = policy.CreateAutoScalingPolicy(self.app, None)
+
+        self.client.create_policy = mock.Mock()
+
+    def test_create(self):
+        arglist = [
+            '--group', 'group1',
+            '--type', 'ALARM',
+            '--cool_down_time', '1',
+            '--alarm_id', 'alarm1',
+            '--action_operation', 'ADD',
+            '--action_instance_number', '7',
+            '--launch_time', 'launch_time1',
+            '--recurrence_type', 'recurrence_type1',
+            '--recurrence_value', 'recurrence_value1',
+            '--start_time', 'st1',
+            '--end_time', 'et1',
+
+            'test_name'
+        ]
+        verifylist = [
+            ('group', 'group1'),
+            ('cool_down_time', 1),
+            ('type', 'ALARM'),
+            ('alarm_id', 'alarm1'),
+            ('action_operation', 'ADD'),
+            ('action_instance_number', 7),
+            ('launch_time', 'launch_time1'),
+            ('recurrence_type', 'recurrence_type1'),
+            ('recurrence_value', 'recurrence_value1'),
+            ('start_time', 'st1'),
+            ('end_time', 'et1'),
+            ('name', 'test_name')
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.create_policy.side_effect = [
+            self._obj
+        ]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.create_policy.assert_called_with(
+            alarm_id='alarm1',
+            cool_down_time=1,
+            name='test_name',
+            scaling_group_id='group1',
+            scaling_policy_action={'operation': 'ADD', 'instance_number': 7},
+            scheduled_policy={
+                'launch_time': 'launch_time1',
+                'recurrence_type': 'recurrence_type1',
+                'recurrence_value': 'recurrence_value1',
+                'start_time': 'st1',
+                'end_time': 'et1'
+            },
+            type='ALARM'
+        )
+
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
+
+
+class TestDeleteAutoScalingPolicy(TestAutoScalingPolicy):
+
+    def setUp(self):
+        super(TestDeleteAutoScalingPolicy, self).setUp()
+
+        self.cmd = policy.DeleteAutoScalingPolicy(self.app, None)
+
+        self.client.delete_policy = mock.Mock()
+
+    def test_delete(self):
+        arglist = [
+            'policy1',
+            'policy2',
+        ]
+        verifylist = [
+            ('policy', ['policy1', 'policy2'])
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.delete_policy.side_effect = [ {}, {} ]
+
+        # Trigger the action
+        self.cmd.take_action(parsed_args)
+
+        calls = [mock.call('policy1'), mock.call('policy2')]
+
+        self.client.delete_policy.assert_has_calls(calls)
+        self.assertEquals(2, self.client.delete_policy.call_count)
 #
 #
 # class TestUpdateAutoScalingPolicy(TestAutoScalingPolicy):
