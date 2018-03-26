@@ -280,94 +280,176 @@ class TestDeleteAutoScalingPolicy(TestAutoScalingPolicy):
 
         self.client.delete_policy.assert_has_calls(calls)
         self.assertEquals(2, self.client.delete_policy.call_count)
-#
-#
-# class TestUpdateAutoScalingPolicy(TestAutoScalingPolicy):
-#
-#     def setUp(self):
-#         super(TestUpdateAutoScalingPolicy, self).setUp()
-#
-#         self.cmd = group.UpdateAutoScalingPolicy(self.app, None)
-#
-#         # self.client.find_group = mock.Mock()
-#
-#     def test_show_default(self):
-#         arglist = [
-#         ]
-#         verifylist = [
-#         ]
-#         # Verify cm is triggereg with default parameters
-#         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-#
-#         self.assertRaises(NotImplementedError,
-#                           self.cmd.take_action, parsed_args)
-#
-#
-# class TestEnableAutoScalingPolicy(TestAutoScalingPolicy):
-#
-#     _group = fakes.FakePolicy.create_one()
-#
-#     def setUp(self):
-#         super(TestEnableAutoScalingPolicy, self).setUp()
-#
-#         self.cmd = group.EnableAutoScalingPolicy(self.app, None)
-#
-#         self.client.find_group = mock.Mock()
-#         self.client.resume_group = mock.Mock()
-#
-#     def test_enable(self):
-#         arglist = [
-#             'group1'
-#         ]
-#         verifylist = [
-#             ('group', 'group1')
-#         ]
-#         # Verify cm is triggereg with default parameters
-#         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-#
-#         # Set the response
-#         self.client.find_group.side_effect = [
-#             self._group
-#         ]
-#         self.client.resume_group.side_effect = [ {} ]
-#
-#         # Trigger the action
-#         self.cmd.take_action(parsed_args)
-#
-#         self.client.find_group.assert_called()
-#         self.client.resume_group.assert_called()
-#
-#
-# class TestDisableAutoScalingPolicy(TestAutoScalingPolicy):
-#
-#     _group = fakes.FakePolicy.create_one()
-#
-#     def setUp(self):
-#         super(TestDisableAutoScalingPolicy, self).setUp()
-#
-#         self.cmd = group.DisableAutoScalingPolicy(self.app, None)
-#
-#         self.client.find_group = mock.Mock()
-#         self.client.pause_group = mock.Mock()
-#
-#     def test_disable(self):
-#         arglist = [
-#             'group1'
-#         ]
-#         verifylist = [
-#             ('group', 'group1')
-#         ]
-#         # Verify cm is triggereg with default parameters
-#         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-#
-#         # Set the response
-#         self.client.find_group.side_effect = [
-#             self._group
-#         ]
-#         self.client.pause_group.side_effect = [ {} ]
-#
-#         # Trigger the action
-#         self.cmd.take_action(parsed_args)
-#
-#         self.client.find_group.assert_called()
-#         self.client.pause_group.assert_called()
+
+
+class TestUpdateAutoScalingPolicy(TestAutoScalingPolicy):
+
+    columns = ['ID', 'Name', 'scaling_group_id', 'status',
+               'type', 'alarm_id', 'scheduled_policy',
+               'scaling_policy_action', 'cool_down_time'
+               ]
+
+    _obj = fakes.FakePolicy.create_one()
+
+    data = (
+        _obj.id,
+        _obj.name,
+        _obj.scaling_group_id,
+        _obj.status,
+        _obj.type,
+        _obj.alarm_id,
+        _obj.scheduled_policy,
+        _obj.scaling_policy_action,
+        _obj.cool_down_time,
+    )
+
+    def setUp(self):
+        super(TestUpdateAutoScalingPolicy, self).setUp()
+
+        self.cmd = policy.UpdateAutoScalingPolicy(self.app, None)
+
+        self.client.update_policy = mock.Mock()
+
+    def test_create(self):
+        arglist = [
+            '--group', 'group1',
+            '--type', 'ALARM',
+            '--cool_down_time', '1',
+            '--alarm_id', 'alarm1',
+            '--action_operation', 'ADD',
+            '--action_instance_number', '7',
+            '--launch_time', 'launch_time1',
+            '--recurrence_type', 'recurrence_type1',
+            '--recurrence_value', 'recurrence_value1',
+            '--start_time', 'st1',
+            '--end_time', 'et1',
+
+            'policy1'
+        ]
+        verifylist = [
+            ('group', 'group1'),
+            ('cool_down_time', 1),
+            ('type', 'ALARM'),
+            ('alarm_id', 'alarm1'),
+            ('action_operation', 'ADD'),
+            ('action_instance_number', 7),
+            ('launch_time', 'launch_time1'),
+            ('recurrence_type', 'recurrence_type1'),
+            ('recurrence_value', 'recurrence_value1'),
+            ('start_time', 'st1'),
+            ('end_time', 'et1'),
+            ('policy', 'policy1')
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.update_policy.side_effect = [
+            self._obj
+        ]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.update_policy.assert_called_with(
+            alarm_id='alarm1',
+            cool_down_time=1,
+            policy='policy1',
+            scaling_group_id='group1',
+            scaling_policy_action={'operation': 'ADD', 'instance_number': 7},
+            scheduled_policy={
+                'launch_time': 'launch_time1',
+                'recurrence_type': 'recurrence_type1',
+                'recurrence_value': 'recurrence_value1',
+                'start_time': 'st1',
+                'end_time': 'et1'
+            },
+            type='ALARM'
+        )
+
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
+
+
+class TestEnableAutoScalingPolicy(TestAutoScalingPolicy):
+
+    def setUp(self):
+        super(TestEnableAutoScalingPolicy, self).setUp()
+
+        self.cmd = policy.EnableAutoScalingPolicy(self.app, None)
+
+        self.client.resume_policy = mock.Mock()
+
+    def test_enable(self):
+        arglist = [
+            'policy1'
+        ]
+        verifylist = [
+            ('policy', 'policy1')
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.resume_policy.side_effect = [ {} ]
+
+        # Trigger the action
+        self.cmd.take_action(parsed_args)
+
+        self.client.resume_policy.assert_called()
+
+
+class TestDisableAutoScalingPolicy(TestAutoScalingPolicy):
+
+    def setUp(self):
+        super(TestDisableAutoScalingPolicy, self).setUp()
+
+        self.cmd = policy.DisableAutoScalingPolicy(self.app, None)
+
+        self.client.pause_policy = mock.Mock()
+
+    def test_enable(self):
+        arglist = [
+            'policy1'
+        ]
+        verifylist = [
+            ('policy', 'policy1')
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.pause_policy.side_effect = [ {} ]
+
+        # Trigger the action
+        self.cmd.take_action(parsed_args)
+
+        self.client.pause_policy.assert_called()
+
+
+class TestExecuteAutoScalingPolicy(TestAutoScalingPolicy):
+
+    def setUp(self):
+        super(TestExecuteAutoScalingPolicy, self).setUp()
+
+        self.cmd = policy.ExecuteAutoScalingPolicy(self.app, None)
+
+        self.client.execute_policy = mock.Mock()
+
+    def test_enable(self):
+        arglist = [
+            'policy1'
+        ]
+        verifylist = [
+            ('policy', 'policy1')
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.execute_policy.side_effect = [ {} ]
+
+        # Trigger the action
+        self.cmd.take_action(parsed_args)
+
+        self.client.execute_policy.assert_called()

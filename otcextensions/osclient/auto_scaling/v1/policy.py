@@ -317,3 +317,210 @@ class DeleteAutoScalingPolicy(command.Command):
 
         for pol in parsed_args.policy:
             client.delete_policy(pol)
+
+
+class UpdateAutoScalingPolicy(command.ShowOne):
+    _description = _('Updates AutoScalinig Policy')
+    columns = ['ID', 'Name', 'scaling_group_id', 'status',
+               'type', 'alarm_id', 'scheduled_policy',
+               'scaling_policy_action', 'cool_down_time'
+               ]
+#     columns = ['ID', 'Name', 'instance_id', 'instance_name',
+#                'flavor_id', 'image_id', 'disk',
+#                'key_name', 'public_ip', 'user_data', 'metadata'
+#                ]
+#
+    POLICY_TYPES = ['ALARM', 'SCHEDULED', 'RECURRENCE']
+
+    def get_parser(self, prog_name):
+        parser = super(UpdateAutoScalingPolicy, self).get_parser(prog_name)
+        parser.add_argument(
+            'policy',
+            metavar='<policy>',
+            help=_('AS Policy name or ID')
+        )
+        parser.add_argument(
+            '--group',
+            metavar='<group>',
+            required=True,
+            help=_('AS Group ID or Name for the AS Policy')
+        )
+        parser.add_argument(
+            '--type',
+            metavar='<type>',
+            required=True,
+            # choices=['ALARM', 'SCHEDULED', 'RECURRENCE'],
+            help=_('AS Policy type [`ALARM`, `SCHEDULED`, `RECURRENCE`]')
+        )
+        parser.add_argument(
+            '--cool_down_time',
+            metavar='<cool_down_time>',
+            type=int,
+            help=_('Specifies the cooling time in seconds for the policy')
+        )
+        parser.add_argument(
+            '--alarm_id',
+            metavar='<alarm_id>',
+            help=_('Specifies the alarm_id for the policy')
+        )
+        parser.add_argument(
+            '--action_operation',
+            metavar='<action_operation>',
+            help=_('Specifies the policy operation '
+                   'Can be [`ADD`, `REMOVE`, `SET`]')
+        )
+        parser.add_argument(
+            '--action_instance_number',
+            metavar='<action_instance_number>',
+            type=int,
+            help=_('Specifies number of instances to be operated')
+        )
+        parser.add_argument(
+            '--launch_time',
+            metavar='<launch_time>',
+            help=_('Specifies the time when the scaling action is triggered. '
+                   'The time format must comply with UTC.\n'
+                   '* when type=`SCHEDULED`, then `YYYY-MM-DDThh:mmZ`\n'
+                   '* when type=`RECURRENCE`, then `hh:mm`\n')
+        )
+        parser.add_argument(
+            '--recurrence_type',
+            metavar='<recurrence_type>',
+            help=_(
+                'Specifies the periodic triggering type\n'
+                'This parameter is mandatory when type=`RECURRENCE`\n'
+                'Can be [`Daily`, `Weekly`, `Monthly`]'
+            )
+        )
+        parser.add_argument(
+            '--recurrence_value',
+            metavar='<recurrence_value>',
+            help=_(
+                'Specifies the frequency, at which actions are triggered\n'
+                'When recurrente_type=`Daily` it is Null\n'
+                'When recurrente_type=`Weekly` it is a week day number [1..7]\n'
+                ' where 1 is for Sunday'
+                'When recurrente_type=`Monthly` it is a day number [1..31]\n'
+            )
+        )
+        parser.add_argument(
+            '--start_time',
+            metavar='<start_time>',
+            help=_('Specifies the start time in of the action in the '
+                   '`YYYY-MM-DDThh:mmZ` format')
+        )
+        parser.add_argument(
+            '--end_time',
+            metavar='<end_time>',
+            help=_('Specifies the end time in of the action in the '
+                   '`YYYY-MM-DDThh:mmZ` format\n'
+                   'Mandatory when type=`RECURRENCE`')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+
+        policy_attrs = {}
+        # policy_attrs['name'] = parsed_args.name
+        policy_attrs['scaling_group_id'] = parsed_args.group
+        policy_type = parsed_args.type.upper()
+        if policy_type not in self.POLICY_TYPES:
+            msg = (_('Unsupported policy type. Should be one of %s')
+                % self.POLICY_TYPES)
+            raise argparse.ArgumentTypeError(msg)
+        else:
+            policy_attrs['type'] = policy_type
+        if parsed_args.alarm_id:
+            policy_attrs['alarm_id'] = parsed_args.alarm_id
+        if parsed_args.cool_down_time:
+            policy_attrs['cool_down_time'] = parsed_args.cool_down_time
+        policy_action = {}
+        if parsed_args.action_operation:
+            policy_action['operation'] = parsed_args.action_operation
+        if parsed_args.action_instance_number:
+            policy_action['instance_number'] = \
+                parsed_args.action_instance_number
+        if policy_action.keys():
+            policy_attrs['scaling_policy_action'] = policy_action
+        scheduled_policy = {}
+        if parsed_args.launch_time:
+            scheduled_policy['launch_time'] = parsed_args.launch_time
+        if parsed_args.recurrence_type:
+            # TODO(agoncharov) validate input
+            scheduled_policy['recurrence_type'] = parsed_args.recurrence_type
+        if parsed_args.recurrence_value:
+            scheduled_policy['recurrence_value'] = parsed_args.recurrence_value
+        if parsed_args.launch_time:
+            scheduled_policy['start_time'] = parsed_args.start_time
+        if parsed_args.launch_time:
+            scheduled_policy['end_time'] = parsed_args.end_time
+        if scheduled_policy.keys():
+            policy_attrs['scheduled_policy'] = scheduled_policy
+
+        client = self.app.client_manager.auto_scaling
+
+        policy = client.update_policy(policy=parsed_args.policy, **policy_attrs)
+
+        fmt = set_attributes_for_print_detail(policy)
+        # display_columns, columns = _get_columns(obj)
+        data = utils.get_dict_properties(
+            fmt, self.columns, formatters={})
+
+        return (self.columns, data)
+
+
+class ExecuteAutoScalingPolicy(command.Command):
+    _description = _('Executes AutoScalinig policy')
+
+    def get_parser(self, prog_name):
+        parser = super(ExecuteAutoScalingPolicy, self).get_parser(prog_name)
+        parser.add_argument(
+            'policy',
+            metavar='<policy>',
+            help=_('AS Policy ID or name')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.auto_scaling
+
+        if parsed_args.policy:
+            client.execute_policy(parsed_args.policy)
+
+
+class EnableAutoScalingPolicy(command.Command):
+    _description = _('Enables (resume) AutoScalinig policy')
+
+    def get_parser(self, prog_name):
+        parser = super(EnableAutoScalingPolicy, self).get_parser(prog_name)
+        parser.add_argument(
+            'policy',
+            metavar='<policy>',
+            help=_('AS Policy ID or name')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.auto_scaling
+
+        if parsed_args.policy:
+            client.resume_policy(parsed_args.policy)
+
+
+class DisableAutoScalingPolicy(command.Command):
+    _description = _('Disables (pause) AutoScalinig policy')
+
+    def get_parser(self, prog_name):
+        parser = super(DisableAutoScalingPolicy, self).get_parser(prog_name)
+        parser.add_argument(
+            'policy',
+            metavar='<policy>',
+            help=_('AS Policy ID or name')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.auto_scaling
+
+        if parsed_args.policy:
+            client.pause_policy(parsed_args.policy)
