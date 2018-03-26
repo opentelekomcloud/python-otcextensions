@@ -11,11 +11,8 @@
 #   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #   License for the specific language governing permissions and limitations
 #   under the License.
-#
 import argparse
 import mock
-
-from openstackclient.tests.unit import utils
 
 from otcextensions.tests.unit.osclient.auto_scaling.v1 import fakes
 
@@ -68,7 +65,6 @@ class TestListAutoScalingConfig(TestAutoScalingConfig):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.configs.assert_called_once_with()
-        # self.app.client_manager.obs.buckets.assert_called()
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
@@ -223,7 +219,7 @@ class TestDeleteAutoScalingConfig(TestAutoScalingConfig):
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        self.client.delete_config.side_effect = [ {} ]
+        self.client.delete_config.side_effect = [{}]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
@@ -244,7 +240,7 @@ class TestDeleteAutoScalingConfig(TestAutoScalingConfig):
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        self.client.batch_delete_configs.side_effect = [ {} ]
+        self.client.batch_delete_configs.side_effect = [{}]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)

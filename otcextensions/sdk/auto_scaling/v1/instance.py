@@ -13,10 +13,14 @@ from openstack import exceptions
 from openstack import resource
 from openstack import utils
 
+from otcextensions.i18n import _
+
 from otcextensions.sdk.auto_scaling.v1 import _base
 
 
 class Instance(_base.Resource):
+    ACTION_TYPES = ['ADD', 'REMOVE', 'PROTECT', 'UNPROTECT']
+
     resource_key = 'scaling_group_instance'
     resources_key = 'scaling_group_instances'
     # ok, we just fix the base path to list because there are no common rules
@@ -99,6 +103,39 @@ class Instance(_base.Resource):
             url,
             # endpoint_override=endpoint_override,
             json=body)
+
+    def batch_action(self, session, instances, action, delete_instance=False):
+        """batch action on auto-scaling instances
+
+        make sure all configs should not been used by auto-scaling group
+        :param session: openstack session
+        :param list instances: The list item value can be the ID of an instance
+            or a :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`
+            instance
+        :param action: Action to execute on instances:
+            [``ADD``, ``REMOVE``, ``PROTECT``, ``UNPROTECT``]
+        :param bool delete_instance: When set to ``True``, instance will be
+            deleted after removed
+        :return:
+        """
+        act = action.upper()
+        if act not in self.ACTION_TYPES:
+            msg = (_('Action type %s is not supported %s') %
+                   (action, self.ACTION_TYPES))
+            raise exceptions.SDKException(msg)
+        if delete_instance and act != 'REMOVE':
+            msg = (_('Action type %s does not support delete_instance arg') %
+                   (action))
+            raise exceptions.SDKException(msg)
+        ids = [instance.id if isinstance(instance, Instance) else instance
+               for instance in instances]
+        json_body = {
+            'action': act,
+            'instances_id': ids
+        }
+        if delete_instance:
+            json_body['instance_delete'] = 'yes'
+        return self._action(session, json_body)
 
     def batch_remove(self, session, instances, delete_instance=False):
         """batch remove auto-scaling instances

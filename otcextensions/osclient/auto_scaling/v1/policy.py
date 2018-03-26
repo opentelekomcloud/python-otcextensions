@@ -11,37 +11,15 @@
 #   under the License.
 #
 '''AS Configurations v1 action implementations'''
-
 import argparse
-import base64
 import logging
 
-# import six
-
 from osc_lib.command import command
-# from osc_lib.cli import format_columns
-# from osc_lib.cli import parseractions
-from osc_lib import exceptions
 from osc_lib import utils
-
-from openstack import exceptions as sdk_exceptions
 
 from otcextensions.i18n import _
 
-from otcextensions.osclient.auto_scaling import sdk_utils
-
 LOG = logging.getLogger(__name__)
-
-
-def _get_columns(item):
-    column_map = {
-        # 'instance_config:image_id': 'instance_config:image_id'
-    }
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
-
-
-def _format_instance(inst):
-    return inst.to_dict()
 
 
 def set_attributes_for_print_detail(obj):
@@ -72,7 +50,7 @@ class ListAutoScalingPolicy(command.Lister):
             metavar='<limit>',
             type=int,
             default=None,
-            help=_('Limit the number of results displayed. (Not supported)')
+            help=_('Limit the number of results displayed')
         )
         parser.add_argument(
             '--marker',
@@ -80,14 +58,13 @@ class ListAutoScalingPolicy(command.Lister):
             metavar='<ID>',
             help=_('Begin displaying the results for IDs greater than the '
                    'specified marker. When used with --limit, set this to '
-                   'the last ID displayed in the previous run. '
-                   '(Not supported)')
+                   'the last ID displayed in the previous run')
         )
         parser.add_argument(
             '--group',
             metavar='<group>',
             required=True,
-            help = _('ScalingGroup ID or Name')
+            help=_('ScalingGroup ID or Name')
         )
 
         return parser
@@ -118,8 +95,7 @@ class ShowAutoScalingPolicy(command.ShowOne):
     _description = _('Shows details of a AutoScalinig policy')
     columns = ['ID', 'Name', 'scaling_group_id', 'status',
                'type', 'alarm_id', 'scheduled_policy',
-               'scaling_policy_action', 'cool_down_time'
-              ]
+               'scaling_policy_action', 'cool_down_time']
 
     def get_parser(self, prog_name):
         parser = super(ShowAutoScalingPolicy, self).get_parser(prog_name)
@@ -226,9 +202,9 @@ class CreateAutoScalingPolicy(command.ShowOne):
             help=_(
                 'Specifies the frequency, at which actions are triggered\n'
                 'When recurrente_type=`Daily` it is Null\n'
-                'When recurrente_type=`Weekly` it is a week day number [1..7]\n'
-                ' where 1 is for Sunday'
-                'When recurrente_type=`Monthly` it is a day number [1..31]\n'
+                'When recurrente_type=`Weekly` it\'s a week day number '
+                '[1..7], where 1 is for Sunday\n'
+                'When recurrente_type=`Monthly` it\'s a day number [1..31]\n'
             )
         )
         parser.add_argument(
@@ -254,7 +230,7 @@ class CreateAutoScalingPolicy(command.ShowOne):
         policy_type = parsed_args.type.upper()
         if policy_type not in self.POLICY_TYPES:
             msg = (_('Unsupported policy type. Should be one of %s')
-                % self.POLICY_TYPES)
+                   % self.POLICY_TYPES)
             raise argparse.ArgumentTypeError(msg)
         else:
             policy_attrs['type'] = policy_type
@@ -398,8 +374,8 @@ class UpdateAutoScalingPolicy(command.ShowOne):
             help=_(
                 'Specifies the frequency, at which actions are triggered\n'
                 'When recurrente_type=`Daily` it is Null\n'
-                'When recurrente_type=`Weekly` it is a week day number [1..7]\n'
-                ' where 1 is for Sunday'
+                'When recurrente_type=`Weekly` it is a week day number '
+                '[1..7], where 1 is for Sunday’n'
                 'When recurrente_type=`Monthly` it is a day number [1..31]\n'
             )
         )
@@ -426,7 +402,7 @@ class UpdateAutoScalingPolicy(command.ShowOne):
         policy_type = parsed_args.type.upper()
         if policy_type not in self.POLICY_TYPES:
             msg = (_('Unsupported policy type. Should be one of %s')
-                % self.POLICY_TYPES)
+                   % self.POLICY_TYPES)
             raise argparse.ArgumentTypeError(msg)
         else:
             policy_attrs['type'] = policy_type
@@ -459,7 +435,8 @@ class UpdateAutoScalingPolicy(command.ShowOne):
 
         client = self.app.client_manager.auto_scaling
 
-        policy = client.update_policy(policy=parsed_args.policy, **policy_attrs)
+        policy = client.update_policy(
+            policy=parsed_args.policy, **policy_attrs)
 
         fmt = set_attributes_for_print_detail(policy)
         # display_columns, columns = _get_columns(obj)

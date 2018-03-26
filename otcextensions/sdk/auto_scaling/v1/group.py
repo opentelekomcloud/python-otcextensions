@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
-from openstack import utils
 
 from otcextensions.sdk.auto_scaling.v1 import _base
 

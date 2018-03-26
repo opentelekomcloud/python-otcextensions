@@ -61,8 +61,7 @@ Instance Operations
 
   .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.instances
   .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.remove_instance
-  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.batch_remove_instances
-  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.batch_add_instances
+  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.batch_instance_action
 
 Actions and Quotas
 ^^^^^^^^^^^^^^^^^^

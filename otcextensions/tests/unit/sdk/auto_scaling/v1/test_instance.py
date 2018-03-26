@@ -16,6 +16,8 @@ from keystoneauth1 import adapter
 
 from openstack.tests.unit import base
 
+from openstack import exceptions
+
 from otcextensions.sdk.auto_scaling.v1 import instance
 
 # EXAMPLE = {
@@ -88,8 +90,10 @@ class TestInstance(base.TestCase):
         self.assertEqual(obj['scaling_group_name'], sot.scaling_group_name)
         self.assertEqual(obj['life_cycle_state'], sot.lifecycle_state)
         self.assertEqual(obj['health_status'], sot.health_status)
-        self.assertEqual(obj['scaling_configuration_name'], sot.scaling_configuration_name)
-        self.assertEqual(obj['scaling_configuration_id'], sot.scaling_configuration_id)
+        self.assertEqual(obj['scaling_configuration_name'],
+                         sot.scaling_configuration_name)
+        self.assertEqual(obj['scaling_configuration_id'],
+                         sot.scaling_configuration_id)
         self.assertEqual(obj['create_time'], sot.create_time)
 
     def test_list(self):
@@ -138,11 +142,11 @@ class TestInstance(base.TestCase):
 
         obj_list = ['i1', 'i2']
 
-        result = sot.batch_add(self.sess, obj_list)
+        sot.batch_add(self.sess, obj_list)
 
         self.sess.post.assert_called_once_with(
             'scaling_group_instance/grp_id/action',
-            json={'action':'ADD', 'instances_id': obj_list}
+            json={'action': 'ADD', 'instances_id': obj_list}
         )
 
     def test_batch_remove(self):
@@ -156,16 +160,132 @@ class TestInstance(base.TestCase):
 
         obj_list = ['i1', 'i2']
 
-        result = sot.batch_remove(self.sess, obj_list, delete_instance=True)
+        sot.batch_remove(self.sess, obj_list, delete_instance=True)
 
         self.sess.post.assert_called_once_with(
             'scaling_group_instance/grp_id/action',
             json={
-                'action':'REMOVE',
+                'action': 'REMOVE',
                 'instances_id': obj_list,
                 'instance_delete': 'yes'
             }
         )
+
+    def test_batch_action_act_check(self):
+        mock_response = mock.Mock()
+        mock_response.status_code = 204
+        mock_response.json.return_value = None
+
+        self.sess.post.return_value = mock_response
+
+        sot = instance.Instance.existing(scaling_group_id='grp_id')
+
+        obj_list = ['i1', 'i2']
+
+        self.assertRaises(
+            exceptions.SDKException, sot.batch_action,
+            session=self.sess, instances=obj_list, action='f')
+
+    def test_batch_action_add(self):
+        mock_response = mock.Mock()
+        mock_response.status_code = 204
+        mock_response.json.return_value = None
+
+        self.sess.post.return_value = mock_response
+
+        sot = instance.Instance.existing(scaling_group_id='grp_id')
+
+        obj_list = ['i1', 'i2']
+
+        sot.batch_action(self.sess, obj_list, 'ADD')
+
+        self.sess.post.assert_called_once_with(
+            'scaling_group_instance/grp_id/action',
+            json={
+                'action': 'ADD',
+                'instances_id': obj_list,
+            }
+        )
+
+    def test_batch_action_remove(self):
+        mock_response = mock.Mock()
+        mock_response.status_code = 204
+        mock_response.json.return_value = None
+
+        self.sess.post.return_value = mock_response
+
+        sot = instance.Instance.existing(scaling_group_id='grp_id')
+
+        obj_list = ['i1', 'i2']
+
+        sot.batch_action(self.sess, obj_list, 'REMOVE', delete_instance=True)
+
+        self.sess.post.assert_called_once_with(
+            'scaling_group_instance/grp_id/action',
+            json={
+                'action': 'REMOVE',
+                'instances_id': obj_list,
+                'instance_delete': 'yes'
+            }
+        )
+
+    def test_batch_action_protect(self):
+        mock_response = mock.Mock()
+        mock_response.status_code = 204
+        mock_response.json.return_value = None
+
+        self.sess.post.return_value = mock_response
+
+        sot = instance.Instance.existing(scaling_group_id='grp_id')
+
+        obj_list = ['i1', 'i2']
+
+        sot.batch_action(self.sess, obj_list, 'PROTECT')
+
+        self.sess.post.assert_called_once_with(
+            'scaling_group_instance/grp_id/action',
+            json={
+                'action': 'PROTECT',
+                'instances_id': obj_list,
+            }
+        )
+
+    def test_batch_action_unprotect(self):
+        mock_response = mock.Mock()
+        mock_response.status_code = 204
+        mock_response.json.return_value = None
+
+        self.sess.post.return_value = mock_response
+
+        sot = instance.Instance.existing(scaling_group_id='grp_id')
+
+        obj_list = ['i1', 'i2']
+
+        sot.batch_action(self.sess, obj_list, 'UNPROTECT')
+
+        self.sess.post.assert_called_once_with(
+            'scaling_group_instance/grp_id/action',
+            json={
+                'action': 'UNPROTECT',
+                'instances_id': obj_list,
+            }
+        )
+
+    def test_batch_action_delete_instance_not_expected(self):
+        mock_response = mock.Mock()
+        mock_response.status_code = 204
+        mock_response.json.return_value = None
+
+        self.sess.post.return_value = mock_response
+
+        sot = instance.Instance.existing(scaling_group_id='grp_id')
+
+        obj_list = ['i1', 'i2']
+
+        self.assertRaises(
+            exceptions.SDKException, sot.batch_action,
+            session=self.sess, instances=obj_list,
+            action='PROTECT', delete_instance=True)
 
     def test_remove(self):
         mock_response = mock.Mock()
@@ -176,7 +296,7 @@ class TestInstance(base.TestCase):
 
         sot = instance.Instance.existing(id='id1', scaling_group_id='grp_id')
 
-        result = sot.remove(self.sess, delete_instance=True)
+        sot.remove(self.sess, delete_instance=True)
 
         self.sess.delete.assert_called_once_with(
             'scaling_group_instance/%s' % sot.id,
@@ -194,7 +314,7 @@ class TestInstance(base.TestCase):
 
         sot = instance.Instance.existing(id='id1', scaling_group_id='grp_id')
 
-        result = sot.remove(self.sess)
+        sot.remove(self.sess)
 
         self.sess.delete.assert_called_once_with(
             'scaling_group_instance/%s' % sot.id,

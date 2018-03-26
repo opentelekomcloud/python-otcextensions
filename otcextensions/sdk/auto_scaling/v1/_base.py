@@ -58,7 +58,7 @@ class Resource(sdk_resource.Resource):
     # with support of other url just for one service
     @classmethod
     def list_ext(cls, session, paginated=False,
-             endpoint_override=None, headers=None, **params):
+                 endpoint_override=None, headers=None, **params):
         """Override default list to incorporate endpoint overriding
         and custom headers
 

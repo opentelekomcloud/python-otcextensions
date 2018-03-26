@@ -11,25 +11,28 @@
 #   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #   License for the specific language governing permissions and limitations
 #   under the License.
-#
-
-# import copy
 import datetime
 import random
 import uuid
 
 import mock
-# from osc_lib import utils as common_utils
 
-# from openstackclient.tests.unit import fakes
 from openstackclient.tests.unit import utils
 
 from otcextensions.sdk.auto_scaling.v1 import config
 from otcextensions.sdk.auto_scaling.v1 import group
 from otcextensions.sdk.auto_scaling.v1 import policy
-# from otcextensions.sdk.obs.v1.object import Object
+from otcextensions.sdk.auto_scaling.v1 import activity
+from otcextensions.sdk.auto_scaling.v1 import instance
+from otcextensions.sdk.auto_scaling.v1 import quota
 
-# from otcextensions.obs.v1.api import API
+
+class TestAutoScaling(utils.TestCommand):
+
+    def setUp(self):
+        super(TestAutoScaling, self).setUp()
+
+        self.app.client_manager.auto_scaling = mock.Mock()
 
 
 class Fake(object):
@@ -52,10 +55,6 @@ class Fake(object):
 
         resource.update(attrs)
 
-        # new_resource = fakes.FakeResource(
-        #     info=copy.deepcopy(new_attrs),
-        #     loaded=True)
-
         return resource
 
     @classmethod
@@ -75,21 +74,6 @@ class Fake(object):
                 cls.create_one(attrs))
 
         return objects
-
-
-class TestAutoScaling(utils.TestCommand):
-
-    def setUp(self):
-        super(TestAutoScaling, self).setUp()
-
-        self.app.client_manager.auto_scaling = mock.Mock()
-
-        # s3api = API(client=self.app.client_manager.obs)
-        # self.app.client_manager.obs.api = s3api
-
-        self.group_mock = FakeGroup
-        self.config_mock = FakeConfig
-        self.policy_mock = FakePolicy
 
 
 class FakeGroup(Fake):
@@ -146,6 +130,7 @@ class FakeConfig(Fake):
         obj = config.Config.existing(**object_info)
         return obj
 
+
 class FakePolicy(Fake):
     """Fake one or more AS Policy"""
 
@@ -177,4 +162,61 @@ class FakePolicy(Fake):
             }
         }
         obj = policy.Policy.existing(**object_info)
+        return obj
+
+
+class FakeActivity(Fake):
+    """Fake one or more AS Activity"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'id': 'id-' + uuid.uuid4().hex,
+            'start_time': 'st-' + uuid.uuid4().hex,
+            'end_time': 'et-' + uuid.uuid4().hex,
+            'description': 'description-' + uuid.uuid4().hex,
+            'status': 'status-' + uuid.uuid4().hex,
+            'scaling_value': 'sv-' + uuid.uuid4().hex,
+            'instance_value': random.randint(1, 10000),
+            'desire_value': random.randint(1, 10000),
+        }
+        obj = activity.Activity.existing(**object_info)
+        return obj
+
+
+class FakeInstance(Fake):
+    """Fake one or more AS Instance"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'id': 'id-' + uuid.uuid4().hex,
+            'name': 'name-' + uuid.uuid4().hex,
+            'scaling_group_name': 'sgn-' + uuid.uuid4().hex,
+            'scaling_configuration_id': 'sci-' + uuid.uuid4().hex,
+            'scaling_configuration_name': 'scn-' + uuid.uuid4().hex,
+            'lifecycle_state': 'ls-' + uuid.uuid4().hex,
+            'health_status': 'hs-' + uuid.uuid4().hex,
+            'create_time': datetime.datetime(
+                random.randint(2000, 2020),
+                random.randint(1, 12),
+                random.randint(1, 28)
+            ),
+        }
+        obj = instance.Instance.existing(**object_info)
+        return obj
+
+
+class FakeQuota(Fake):
+    """Fake one or more AS Quota"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'type': 'id-' + uuid.uuid4().hex,
+            'used': random.randint(1, 10000),
+            'quota': random.randint(1, 10000),
+            'max': random.randint(1, 10000),
+        }
+        obj = quota.Quota.existing(**object_info)
         return obj

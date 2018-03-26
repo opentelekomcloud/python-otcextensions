@@ -10,14 +10,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import json
-import six
 
 from openstack import exceptions
 from openstack import resource
 
 from otcextensions.common import exc
 from otcextensions.i18n import _
-from otcextensions.sdk import sdk_resource
 from otcextensions.sdk.auto_scaling.v1 import _base
 
 
@@ -92,15 +90,16 @@ class Config(_base.Resource):
         make sure all configs should not been used by auto-scaling group
         :param session: openstack session
         :param list configs: The list item value can be the ID of a config
-            or a :class:`~otcextensions.auto_scaling.v1.config.Config` instance.
+            or a :class:`~otcextensions.auto_scaling.v1.config.Config`
+            instance.
         :return:
         '''
         ids = [config.id if isinstance(config, Config) else config
                for config in configs]
         json_body = {'scaling_configuration_id': ids}
         response = session.post('/scaling_configurations',
-                            headers={'Accept': '*'},
-                            json=json_body)
+                                headers={'Accept': '*'},
+                                json=json_body)
         if response.status_code == 400:
             # Check if failed due to not exist
             content = response.json()
@@ -118,7 +117,7 @@ class Config(_base.Resource):
                             ids.append(id)
                 if len(ids) > 0:
                     message = (_('AS Configurations (%(ids)s) not found') %
-                        {'ids': ids})
+                               {'ids': ids})
                     raise exceptions.ResourceNotFound(message=message)
         # unknown failure
         exc.raise_from_response(response)

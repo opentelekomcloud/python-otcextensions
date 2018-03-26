@@ -11,10 +11,7 @@
 #   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #   License for the specific language governing permissions and limitations
 #   under the License.
-#
-
 import mock
-# from osc_lib import utils as common_utils
 
 from otcextensions.tests.unit.osclient.auto_scaling.v1 import fakes
 
@@ -56,23 +53,6 @@ class TestListAutoScalingPolicy(TestAutoScalingPolicy):
 
         self.client.groups = mock.Mock()
 
-    # def test_list_default(self):
-    #     arglist = [
-    #     ]
-    #
-    #     verifylist = [
-    #     ]
-    #     # Verify cm is triggereg with default parameters
-    #     parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-    #
-    #     # Set the response
-    #     self.client.groups.side_effect = [
-    #         self.policies
-    #     ]
-    #
-    #     self.assertRaises(argparse.ArgumentTypeError,
-    #                       self.cmd.take_action, parsed_args)
-
     def test_list(self):
         arglist = [
             '--group', 'grp',
@@ -103,7 +83,6 @@ class TestListAutoScalingPolicy(TestAutoScalingPolicy):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.policies.assert_called_once_with(group=grp_mock.id)
-        # self.app.client_manager.obs.buckets.assert_called()
 
         self.assertEqual(self.columns, list(columns))
         self.assertEqual(self.data, list(data))
@@ -114,21 +93,21 @@ class TestShowAutoScalingPolicy(TestAutoScalingPolicy):
     _policy = fakes.FakePolicy.create_one()
 
     columns = ['ID', 'Name', 'scaling_group_id', 'status',
-           'type', 'alarm_id', 'scheduled_policy',
-           'scaling_policy_action', 'cool_down_time'
-          ]
+               'type', 'alarm_id', 'scheduled_policy',
+               'scaling_policy_action', 'cool_down_time'
+               ]
 
     data = (
-            _policy.id,
-            _policy.name,
-            _policy.scaling_group_id,
-            _policy.status,
-            _policy.type,
-            _policy.alarm_id,
-            _policy.scheduled_policy,
-            _policy.scaling_policy_action,
-            _policy.cool_down_time,
-        )
+        _policy.id,
+        _policy.name,
+        _policy.scaling_group_id,
+        _policy.status,
+        _policy.type,
+        _policy.alarm_id,
+        _policy.scheduled_policy,
+        _policy.scaling_policy_action,
+        _policy.cool_down_time,
+    )
 
     def setUp(self):
         super(TestShowAutoScalingPolicy, self).setUp()
@@ -271,7 +250,7 @@ class TestDeleteAutoScalingPolicy(TestAutoScalingPolicy):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.delete_policy.side_effect = [ {}, {} ]
+        self.client.delete_policy.side_effect = [{}, {}]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
@@ -279,7 +258,7 @@ class TestDeleteAutoScalingPolicy(TestAutoScalingPolicy):
         calls = [mock.call('policy1'), mock.call('policy2')]
 
         self.client.delete_policy.assert_has_calls(calls)
-        self.assertEquals(2, self.client.delete_policy.call_count)
+        self.assertEqual(2, self.client.delete_policy.call_count)
 
 
 class TestUpdateAutoScalingPolicy(TestAutoScalingPolicy):
@@ -391,7 +370,7 @@ class TestEnableAutoScalingPolicy(TestAutoScalingPolicy):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.resume_policy.side_effect = [ {} ]
+        self.client.resume_policy.side_effect = [{}]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
@@ -419,7 +398,7 @@ class TestDisableAutoScalingPolicy(TestAutoScalingPolicy):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.pause_policy.side_effect = [ {} ]
+        self.client.pause_policy.side_effect = [{}]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
@@ -447,7 +426,7 @@ class TestExecuteAutoScalingPolicy(TestAutoScalingPolicy):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.execute_policy.side_effect = [ {} ]
+        self.client.execute_policy.side_effect = [{}]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)

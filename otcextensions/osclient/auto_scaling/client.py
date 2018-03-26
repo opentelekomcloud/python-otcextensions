@@ -21,9 +21,6 @@ try:
     profile = None
 except ImportError:
     from openstack import profile
-from osc_lib import utils
-
-from otcextensions.i18n import _
 
 from otcextensions import sdk
 

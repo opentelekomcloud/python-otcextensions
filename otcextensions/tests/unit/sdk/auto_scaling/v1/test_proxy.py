@@ -154,6 +154,7 @@ class TestAutoScalingConfigs(TestAutoScalingProxy):
             }
         )
 
+
 class TestAutoScalingPolicy(TestAutoScalingProxy):
 
     def test_list(self):
@@ -239,6 +240,7 @@ class TestAutoScalingPolicy(TestAutoScalingProxy):
             expected_args=[self.proxy, {'action': 'pause'}]
         )
 
+
 class TestAutoScalingActivityLog(TestAutoScalingProxy):
 
     def test_list(self):
@@ -255,6 +257,7 @@ class TestAutoScalingActivityLog(TestAutoScalingProxy):
                 'scaling_group_id': 'group_id',
             }
         )
+
 
 class TestAutoScalingQuota(TestAutoScalingProxy):
 
@@ -276,6 +279,7 @@ class TestAutoScalingQuota(TestAutoScalingProxy):
             }
         )
 
+
 class TestAutoScalingInstance(TestAutoScalingProxy):
 
     def test_list(self):
@@ -289,30 +293,44 @@ class TestAutoScalingInstance(TestAutoScalingProxy):
             paginated=True,
         )
 
-    def test_batch_add(self):
+    def test_batch_action_remove(self):
         self._verify2(
-            'otcextensions.sdk.auto_scaling.v1.instance.Instance.batch_add',
-            self.proxy.batch_add_instances,
-            method_args=['INSTANCE', ['a1', 'a2']],
-            expected_args=[self.proxy, ['a1', 'a2']]
+            'otcextensions.sdk.auto_scaling.v1.instance.Instance.batch_action',
+            self.proxy.batch_instance_action,
+            method_args=['INSTANCE', ['a1', 'a2'], 'REMOVE'],
+            expected_args=[self.proxy, ['a1', 'a2'], 'REMOVE', False]
         )
 
-    def test_batch_remove(self):
+    def test_batch_action_add(self):
         self._verify2(
-            'otcextensions.sdk.auto_scaling.v1.instance.Instance.batch_remove',
-            self.proxy.batch_remove_instances,
-            method_args=['INSTANCE', ['a1', 'a2']],
-            expected_args=[self.proxy, ['a1', 'a2']],
-            expected_kwargs={
-                'delete_instance': False,
-            }
+            'otcextensions.sdk.auto_scaling.v1.instance.Instance.batch_action',
+            self.proxy.batch_instance_action,
+            method_args=['INSTANCE', ['a1', 'a2'], 'ADD'],
+            expected_args=[self.proxy, ['a1', 'a2'], 'ADD', False]
+        )
+
+    def test_batch_action_protect(self):
+        self._verify2(
+            'otcextensions.sdk.auto_scaling.v1.instance.Instance.batch_action',
+            self.proxy.batch_instance_action,
+            method_args=['INSTANCE', ['a1', 'a2'], 'PROTECT'],
+            expected_args=[self.proxy, ['a1', 'a2'], 'PROTECT', False]
+        )
+
+    def test_batch_action_unprotect(self):
+        self._verify2(
+            'otcextensions.sdk.auto_scaling.v1.instance.Instance.batch_action',
+            self.proxy.batch_instance_action,
+            method_args=['INSTANCE', ['a1', 'a2'], 'UNPROTECT'],
+            expected_args=[self.proxy, ['a1', 'a2'], 'UNPROTECT', False]
         )
 
     def test_delete(self):
         self.verify_delete(
             self.proxy.remove_instance,
             _instance.Instance, True,
-            mock_method='otcextensions.sdk.auto_scaling.v1.instance.Instance.remove',
+            mock_method='otcextensions.sdk.auto_scaling.v1.'
+                        'instance.Instance.remove',
             expected_args=[self.proxy],
             expected_kwargs={
                 'delete_instance': False

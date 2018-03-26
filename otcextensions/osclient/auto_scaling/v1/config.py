@@ -16,32 +16,12 @@ import argparse
 import base64
 import logging
 
-# import six
-
 from osc_lib.command import command
-# from osc_lib.cli import format_columns
-# from osc_lib.cli import parseractions
-from osc_lib import exceptions
 from osc_lib import utils
-
-from openstack import exceptions as sdk_exceptions
 
 from otcextensions.i18n import _
 
-from otcextensions.osclient.auto_scaling import sdk_utils
-
 LOG = logging.getLogger(__name__)
-
-
-def _get_columns(item):
-    column_map = {
-        # 'instance_config:image_id': 'instance_config:image_id'
-    }
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
-
-
-def _format_instance(inst):
-    return inst.to_dict()
 
 
 def set_attributes_for_print_detail(obj):
@@ -84,7 +64,7 @@ class ListAutoScalingConfig(command.Lister):
             metavar='<limit>',
             type=int,
             default=None,
-            help=_('Limit the number of results displayed. (Not supported)')
+            help=_('Limit the number of results displayed')
         )
         parser.add_argument(
             '--marker',
@@ -92,8 +72,7 @@ class ListAutoScalingConfig(command.Lister):
             metavar='<ID>',
             help=_('Begin displaying the results for IDs greater than the '
                    'specified marker. When used with --limit, set this to '
-                   'the last ID displayed in the previous run. '
-                   '(Not supported)')
+                   'the last ID displayed in the previous run')
         )
 
         return parser
@@ -107,7 +86,7 @@ class ListAutoScalingConfig(command.Lister):
             args['marker'] = parsed_args.marker
 
         client = self.app.client_manager.auto_scaling
-        
+
         data = client.configs(**args)
 
         return (
@@ -295,7 +274,7 @@ class CreateAutoScalingConfig(command.ShowOne):
 
         if parsed_args.metadata:
             config_attrs['metadata'] = {}
-            k,v = md.split('=')
+            k, v = parsed_args.metadata.split('=')
             config_attrs['metadata'][k] = v
 
         args = {}

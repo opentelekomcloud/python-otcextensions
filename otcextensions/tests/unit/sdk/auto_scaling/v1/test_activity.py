@@ -25,8 +25,8 @@ EXAMPLE_LIST = {
             'id': 'a8924393-1024-4c24-8ac6-e4d481360884',
             'status': 'SUCCESS',
             'description': '{\'reason\':[{\'change_reason\':\'SCHEDULED\','
-                '\'old_value\':1,\'change_time\':\'2015-07-24T01:21:00Z\','
-                '\'new_value\':0}]}',
+                           '\'old_value\':1,\'change_time\':\''
+                           '2015-07-24T01:21:00Z\',\'new_value\':0}]}',
             'instance_value': 1,
             'desire_value': 0,
             'start_time': '2015-07-24T01:21:02Z',
@@ -40,8 +40,8 @@ EXAMPLE_LIST = {
             'id': '423bbb2d-043c-4afe-8754-03e418a6ac42',
             'status': 'SUCCESS',
             'description': '{\'reason\':[{\'change_reason\':\'DIFF\','
-                '\'old_value\':0,\'change_time\':\'2015-07-23T15:11:52Z\','
-                '\'new_value\':1}]}',
+                           '\'old_value\':0,\'change_time\':\''
+                           '2015-07-23T15:11:52Z\',\'new_value\':1}]}',
             'instance_value': 0,
             'desire_value': 1,
             'start_time': '2015-07-23T15:11:52Z',

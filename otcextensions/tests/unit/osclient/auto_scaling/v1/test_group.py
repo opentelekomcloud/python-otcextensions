@@ -14,7 +14,6 @@
 #
 
 import mock
-# from osc_lib import utils as common_utils
 
 from otcextensions.tests.unit.osclient.auto_scaling.v1 import fakes
 
@@ -69,7 +68,6 @@ class TestListAutoScalingGroup(TestAutoScalingGroup):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.groups.assert_called_once_with()
-        # self.app.client_manager.obs.buckets.assert_called()
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
@@ -239,7 +237,7 @@ class TestDeleteAutoScalingGroup(TestAutoScalingGroup):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.delete_group.side_effect = [ {} ]
+        self.client.delete_group.side_effect = [{}]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
@@ -249,23 +247,100 @@ class TestDeleteAutoScalingGroup(TestAutoScalingGroup):
 
 class TestUpdateAutoScalingGroup(TestAutoScalingGroup):
 
+    columns = ('create_time', 'detail', 'id', 'name', 'network_id', 'status')
+
+    _group = fakes.FakeGroup.create_one()
+
+    data = (
+        _group.create_time,
+        _group.detail,
+        _group.id,
+        _group.name,
+        _group.network_id,
+        _group.status,
+    )
+
     def setUp(self):
         super(TestUpdateAutoScalingGroup, self).setUp()
 
         self.cmd = group.UpdateAutoScalingGroup(self.app, None)
 
-        # self.client.find_group = mock.Mock()
+        self.client.update_group = mock.Mock()
 
-    def test_show_default(self):
+    def test_create(self):
         arglist = [
+            '--desire_instance_number', '10',
+            '--min_instance_number', '1',
+            '--max_instance_number', '15',
+            '--cool_down_time', '1',
+            '--availability_zone', 'eu-1',
+            '--availability_zone', 'eu-2',
+            '--subnetwork', 'sub1',
+            '--subnetwork', 'sub2',
+            '--network_id', 'vpc-1',
+            '--security_group', 'sg1',
+            '--security_group', 'sg2',
+            '--lb_listener_id', 'lb1',
+            '--lbaas_listener', 'lbas1:14',
+            '--lbaas_listener', 'lbas2:15:10',
+            '--audit_method', 'some_method',
+            '--audit_time', '15',
+            '--terminate_policy', 'pol',
+            '--notification', 'EMAIL',
+            '--notification', 'SMS',
+
+            'test_name'
         ]
         verifylist = [
+            ('desire_instance_number', 10),
+            ('min_instance_number', 1),
+            ('max_instance_number', 15),
+            ('cool_down_time', 1),
+            ('availability_zone', ['eu-1', 'eu-2']),
+            ('subnetwork', ['sub1', 'sub2']),
+            ('security_group', ['sg1', 'sg2']),
+            ('network_id', 'vpc-1'),
+            ('lb_listener_id', 'lb1'),
+            ('lbaas_listener', ['lbas1:14', 'lbas2:15:10']),
+            ('audit_method', 'some_method'),
+            ('audit_time', 15),
+            ('terminate_policy', 'pol'),
+            ('notification', ['EMAIL', 'SMS']),
+            ('group', 'test_name')
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        self.assertRaises(NotImplementedError,
-                          self.cmd.take_action, parsed_args)
+        # Set the response
+        self.client.update_group.side_effect = [
+            self._group
+        ]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.update_group.assert_called_with(
+            available_zones=['eu-1', 'eu-2'],
+            cool_down_time=1,
+            desire_instance_number=10,
+            health_periodic_audit_method='some_method',
+            health_periodic_audit_time=15,
+            instance_terminate_policy='pol',
+            lb_listener_id='lb1',
+            lbaas_listeners=[
+                {'id': 'lbas1', 'protocol_port': '14'},
+                {'id': 'lbas2', 'protocol_port': '15', 'weight': '10'}],
+            max_instance_number=15,
+            min_instance_number=1,
+            group='test_name',
+            networks=[{'id': 'sub1'}, {'id': 'sub2'}],
+            notifications=['EMAIL', 'SMS'],
+            security_groups=[{'id': 'sg1'}, {'id': 'sg2'}],
+            vpc_id='vpc-1'
+        )
+
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
 
 
 class TestEnableAutoScalingGroup(TestAutoScalingGroup):
@@ -294,7 +369,7 @@ class TestEnableAutoScalingGroup(TestAutoScalingGroup):
         self.client.find_group.side_effect = [
             self._group
         ]
-        self.client.resume_group.side_effect = [ {} ]
+        self.client.resume_group.side_effect = [{}]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
@@ -329,7 +404,7 @@ class TestDisableAutoScalingGroup(TestAutoScalingGroup):
         self.client.find_group.side_effect = [
             self._group
         ]
-        self.client.pause_group.side_effect = [ {} ]
+        self.client.pause_group.side_effect = [{}]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)

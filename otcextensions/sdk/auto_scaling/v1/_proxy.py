@@ -264,7 +264,7 @@ class Proxy(sdk_proxy.Proxy):
         group = self._get_resource(_group.Group, group)
         return self._list(
             _policy.Policy, paginated=True,
-            scaling_group_id = group.id,
+            scaling_group_id=group.id,
             **query)
 
     def create_policy(self, **attrs):
@@ -387,7 +387,7 @@ class Proxy(sdk_proxy.Proxy):
         group = self._get_resource(_group.Group, group)
         return self._list(
             _instance.Instance, paginated=True,
-            scaling_group_id = group.id, **query)
+            scaling_group_id=group.id, **query)
 
     def remove_instance(self, instance, delete_instance=False,
                         ignore_missing=True):
@@ -417,31 +417,9 @@ class Proxy(sdk_proxy.Proxy):
                                delete_instance=delete_instance,
                                ignore_missing=ignore_missing)
 
-    def batch_remove_instances(self, group, instances, delete_instance=False):
-        """Batch remove instances of auto scaling group
-
-        :precondition:
-            * the instance must in ``INSERVICE`` status
-            * after batch remove the current instance number of auto scaling
-                group should not be less than min instance number
-            * The own auto scaling group should not in scaling status
-
-        :param group: The group of instances that to be removed, The value can
-            be the ID of a group or a
-            :class:`~otcextensions.sdk.auto_scaling.v1.group.Group` instance.
-        :param instances: The list item value can be ID of an instance
-            or a :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`
-            instance
-        :param bool delete_instance: When set to ``True``, instance will be
-            deleted after removed
-        """
-        group = self._get_resource(_group.Group, group)
-        instance = _instance.Instance(scaling_group_id=group.id)
-        return instance.batch_remove(self,
-                                     instances,
-                                     delete_instance=delete_instance)
-
-    def batch_add_instances(self, group, instances):
+    def batch_instance_action(
+            self, group, instances,
+            action, delete_instance=False):
         """Batch add instances for auto scaling group
 
         :param group: The group which instances will be added to,
@@ -451,10 +429,14 @@ class Proxy(sdk_proxy.Proxy):
         :param instances: The list item value can be ID of an instance or a
             :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`
             instance
+        :param action: Action type
+            [``ADD``, ``REMOVE``, ``PROTECT``, ``UNPROTECT``]
+        :param delete_instance: When set to ``True``, instance will be
+            deleted after removed
         """
         group = self._get_resource(_group.Group, group)
         instance = _instance.Instance(scaling_group_id=group.id)
-        return instance.batch_add(self, instances)
+        return instance.batch_action(self, instances, action, delete_instance)
 
     # ======== Activities ========
     def activities(self, group, **query):

@@ -50,11 +50,11 @@ EXAMPLE_LIST = {
             },
             'cool_down_time': 300,
             'scaling_policy_action': {
-            'operation': 'REMOVE',
-            'instance_number': 1
-        },
-        'policy_status': 'INSERVICE',
-        'create_time': '2015-07-24T01:09:30Z'
+                'operation': 'REMOVE',
+                'instance_number': 1
+            },
+            'policy_status': 'INSERVICE',
+            'create_time': '2015-07-24T01:09:30Z'
         }
     ]
 }
@@ -187,7 +187,7 @@ class TestPolicy(base.TestCase):
 
         sot = policy.Policy.existing(id=EXAMPLE['scaling_policy_id'])
 
-        result = sot.delete(self.sess)
+        sot.delete(self.sess)
 
         self.sess.delete.assert_called_once()
 
@@ -198,7 +198,8 @@ class TestPolicy(base.TestCase):
         mock_response.json.return_value = {
             'scaling_policy': {
                 'scaling_policy_id': EXAMPLE['scaling_policy_id']
-        }}
+            }
+        }
 
         self.sess.put.return_value = mock_response
 
@@ -235,11 +236,11 @@ class TestPolicy(base.TestCase):
 
         sot = policy.Policy.existing(id=EXAMPLE['scaling_policy_id'])
 
-        result = sot.execute(self.sess)
+        sot.execute(self.sess)
 
         self.sess.post.assert_called_once_with(
             'scaling_policy/%s/action' % EXAMPLE['scaling_policy_id'],
-            json={'action':'execute'}
+            json={'action': 'execute'}
         )
 
     def test_pause(self):
@@ -252,11 +253,11 @@ class TestPolicy(base.TestCase):
 
         sot = policy.Policy.existing(id=EXAMPLE['scaling_policy_id'])
 
-        result = sot.pause(self.sess)
+        sot.pause(self.sess)
 
         self.sess.post.assert_called_once_with(
             'scaling_policy/%s/action' % EXAMPLE['scaling_policy_id'],
-            json={'action':'pause'}
+            json={'action': 'pause'}
         )
 
     def test_resume(self):
@@ -269,9 +270,9 @@ class TestPolicy(base.TestCase):
 
         sot = policy.Policy.existing(id=EXAMPLE['scaling_policy_id'])
 
-        result = sot.resume(self.sess)
+        sot.resume(self.sess)
 
         self.sess.post.assert_called_once_with(
             'scaling_policy/%s/action' % EXAMPLE['scaling_policy_id'],
-            json={'action':'resume'}
+            json={'action': 'resume'}
         )
