@@ -131,46 +131,6 @@ class TestInstance(base.TestCase):
 
         self.assertEqual(expected_list, result)
 
-    def test_batch_add(self):
-        mock_response = mock.Mock()
-        mock_response.status_code = 204
-        mock_response.json.return_value = None
-
-        self.sess.post.return_value = mock_response
-
-        sot = instance.Instance.existing(scaling_group_id='grp_id')
-
-        obj_list = ['i1', 'i2']
-
-        sot.batch_add(self.sess, obj_list)
-
-        self.sess.post.assert_called_once_with(
-            'scaling_group_instance/grp_id/action',
-            json={'action': 'ADD', 'instances_id': obj_list}
-        )
-
-    def test_batch_remove(self):
-        mock_response = mock.Mock()
-        mock_response.status_code = 204
-        mock_response.json.return_value = None
-
-        self.sess.post.return_value = mock_response
-
-        sot = instance.Instance.existing(scaling_group_id='grp_id')
-
-        obj_list = ['i1', 'i2']
-
-        sot.batch_remove(self.sess, obj_list, delete_instance=True)
-
-        self.sess.post.assert_called_once_with(
-            'scaling_group_instance/grp_id/action',
-            json={
-                'action': 'REMOVE',
-                'instances_id': obj_list,
-                'instance_delete': 'yes'
-            }
-        )
-
     def test_batch_action_act_check(self):
         mock_response = mock.Mock()
         mock_response.status_code = 204
