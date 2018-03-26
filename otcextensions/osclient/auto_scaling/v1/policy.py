@@ -375,7 +375,7 @@ class UpdateAutoScalingPolicy(command.ShowOne):
                 'Specifies the frequency, at which actions are triggered\n'
                 'When recurrente_type=`Daily` it is Null\n'
                 'When recurrente_type=`Weekly` it is a week day number '
-                '[1..7], where 1 is for Sunday’n'
+                '[1..7], where 1 is for Sunday\n'
                 'When recurrente_type=`Monthly` it is a day number [1..31]\n'
             )
         )
