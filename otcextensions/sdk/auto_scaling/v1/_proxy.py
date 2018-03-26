@@ -216,8 +216,8 @@ class Proxy(sdk_proxy.Proxy):
         """Delete a config
 
         :param config: The value can be the ID of a config
-             or a :class:`~otcextensions.auto_scaling.v1.config.Config`
-             instance.
+            or a :class:`~otcextensions.auto_scaling.v1.config.Config`
+            instance.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
             the config does not exist.
@@ -236,8 +236,8 @@ class Proxy(sdk_proxy.Proxy):
         """batch delete configs
 
         :param configs: The list item value can be the ID of a config
-             or a :class:`~otcextensions.auto_scaling.v1.config.Config`
-             instance.
+            or a :class:`~otcextensions.auto_scaling.v1.config.Config`
+            instance.
         """
         config = _config.Config()
         return config.batch_delete(self, configs)
@@ -403,7 +403,7 @@ class Proxy(sdk_proxy.Proxy):
             :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`
             instance.
         :param bool delete_instance: When set to ``True``, instance will be
-            deleted after removed
+            deleted after removed.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
             the config does not exist.

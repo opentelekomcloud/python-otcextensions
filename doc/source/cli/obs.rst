@@ -25,4 +25,4 @@ Object operations
 -----------------
 
 .. autoprogram-cliff:: openstack.obs.v1
-   :command: obs object instance *
+   :command: obs object *

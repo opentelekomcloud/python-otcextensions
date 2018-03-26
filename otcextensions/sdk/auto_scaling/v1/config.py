@@ -85,15 +85,15 @@ class Config(_base.Resource):
 
     @classmethod
     def batch_delete(cls, session, configs):
-        '''batch delete auto-scaling configs
+        """Batch delete auto-scaling configs
 
-        make sure all configs should not been used by auto-scaling group
-        :param session: openstack session
-        :param list configs: The list item value can be the ID of a config
-            or a :class:`~otcextensions.auto_scaling.v1.config.Config`
+        :param session: openstack session.
+        :param configs: The list item value can contain IDs of a config
+            or a :class:`~otcextensions.sdk.auto_scaling.v1.config.Config`
             instance.
-        :return:
-        '''
+
+        :returns: None
+        """
         ids = [config.id if isinstance(config, Config) else config
                for config in configs]
         json_body = {'scaling_configuration_id': ids}

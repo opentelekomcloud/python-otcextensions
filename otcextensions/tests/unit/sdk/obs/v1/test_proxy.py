@@ -13,8 +13,6 @@
 from openstack.tests.unit import test_proxy_base
 
 from otcextensions.sdk.obs.v1 import _proxy
-# from otcextensions.sdk.obs.v1 import bucket as _bucket
-# from otcextensions.sdk.obs.v1 import object as _object
 
 
 class TestObsProxy(test_proxy_base.TestProxyBase):
@@ -25,67 +23,3 @@ class TestObsProxy(test_proxy_base.TestProxyBase):
         super(TestObsProxy, self).setUp()
         self.proxy = _proxy.Proxy(self.session)
         self.session.get_project_id.side_effect = [TestObsProxy.PROJECT_ID]
-
-    def test_normalize_keys(self):
-        # TODO(agoncharov)
-        pass
-
-    def test_set_ak(self):
-        # TODO(agoncharov)
-        pass
-
-    def test_get_endpoint(self):
-        # TODO(agoncharov)
-        pass
-
-    def test_establish_session(self):
-        # TODO(agoncharov)
-        pass
-
-    def test_get_session(self):
-        # TODO(agoncharov)
-        pass
-
-    def test_buckets(self):
-        # TODO(agoncharov)
-        pass
-
-    def test_get_bucket(self):
-        # TODO(agoncharov)
-        pass
-
-    def test_get_bucket_by_name(self):
-        # TODO(agoncharov)
-        pass
-
-    def test_create_bucket(self):
-        # TODO(agoncharov)
-        pass
-
-    def test_object(self):
-        # TODO(agoncharov)
-        pass
-
-    def test_get_object_by_key(self):
-        # TODO(agoncharov)
-        pass
-
-    def test_get_object(self):
-        # TODO(agoncharov)
-        pass
-
-    def test_create_object(self):
-        # TODO(agoncharov)
-        pass
-
-    def test_download_object(self):
-        # TODO(agoncharov)
-        pass
-
-    def test_head_bucket(self):
-        # TODO(agoncharov)
-        pass
-
-    def test_head_object(self):
-        # TODO(agoncharov)
-        pass

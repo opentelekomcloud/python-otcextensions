@@ -15,15 +15,6 @@
 from openstack import _log
 from openstack import proxy
 
-# import boto3
-# from botocore.exceptions import ClientError
-
-# from openstack import exceptions
-
-# from otcextensions.i18n import _
-
-# from otcextensions.sdk.obs.v1.bucket import Bucket
-# from otcextensions.sdk.obs.v1.object import Object
 from otcextensions.sdk.obs.v1 import container as _container
 from otcextensions.sdk.obs.v1 import obj as _obj
 

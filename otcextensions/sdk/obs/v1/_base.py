@@ -214,8 +214,8 @@ class BaseResource(sdk_resource.Resource):
         return self
 
     @classmethod
-    def list(cls, session, remote_func, normalize_func,
-             paginated=False, **params):
+    def _list(cls, session, remote_func, normalize_func,
+              paginated=False, **params):
         """Override default list to incorporate endpoint overriding
         and custom headers
 

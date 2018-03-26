@@ -74,20 +74,22 @@ class Instance(_base.Resource):
     def remove(self, session, delete_instance=False, ignore_missing=True):
         """Remove an instance of auto scaling group
 
-        precondition:
-        * the instance must in ``INSERVICE`` status
-        * after remove the instance number of auto scaling group should not
-            be less than min instance number
-        * The owner auto scaling group should not in scaling status
+        :precondition:
+            * the instance must in ``INSERVICE`` status.
+            * after remove the instance number of auto scaling group should not
+                be less than min instance number.
+            * The owner auto scaling group should not in scaling status.
+
         :param session: openstack session
         :param bool delete_instance: When set to ``True``, instance will be
-            deleted after removed
+            deleted after removed.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
             the config does not exist.
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent config.
-        :return:
+
+        :returns: None
        """
         uri = utils.urljoin('/scaling_group_instance', self.id)
         delete_instance = 'yes' if delete_instance else 'no'
@@ -108,15 +110,17 @@ class Instance(_base.Resource):
         """batch action on auto-scaling instances
 
         make sure all configs should not been used by auto-scaling group
+
         :param session: openstack session
-        :param list instances: The list item value can be the ID of an instance
+        :param instances: The list item value can be the ID of an instance
             or a :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`
             instance
         :param action: Action to execute on instances:
             [``ADD``, ``REMOVE``, ``PROTECT``, ``UNPROTECT``]
         :param bool delete_instance: When set to ``True``, instance will be
             deleted after removed
-        :return:
+
+        :returns: None
         """
         act = action.upper()
         if act not in self.ACTION_TYPES:
@@ -136,60 +140,3 @@ class Instance(_base.Resource):
         if delete_instance:
             json_body['instance_delete'] = 'yes'
         return self._action(session, json_body)
-
-    def batch_remove(self, session, instances, delete_instance=False):
-        """batch remove auto-scaling instances
-
-        make sure all configs should not been used by auto-scaling group
-        :param session: openstack session
-        :param list instances: The list item value can be the ID of an instance
-            or a :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`
-            instance
-        :param bool delete_instance: When set to ``True``, instance will be
-                deleted after removed
-        :return:
-        """
-        ids = [instance.id if isinstance(instance, Instance) else instance
-               for instance in instances]
-        json_body = {
-            'action': 'REMOVE',
-            'instances_id': ids,
-            'instance_delete': 'yes' if delete_instance else 'no'
-        }
-        return self._action(session, json_body)
-        # endpoint_override = self.service.get_endpoint_override()
-        # uri = utils.urljoin("/scaling_group_instance",
-        #                     self.scaling_group_id,
-        #                     "action")
-        # return session.post(uri,
-        #                     headers={"Accept": "*"},
-        #                     endpoint_filter=self.service,
-        #                     endpoint_override=endpoint_override,
-        #                     json=json_body)
-
-    def batch_add(self, session, instances):
-        """batch add auto-scaling instances
-
-        make sure all configs should not been used by auto-scaling group
-        :param session: openstack session
-        :param list instances: The list item value can be the ID of an instance
-            or a :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`
-            instance
-        :return:
-        """
-        ids = [instance.id if isinstance(instance, Instance) else instance
-               for instance in instances]
-        json_body = {
-            'action': 'ADD',
-            'instances_id': ids
-        }
-        return self._action(session, json_body)
-        # endpoint_override = self.service.get_endpoint_override()
-        # uri = utils.urljoin('/scaling_group_instance',
-        #                     self.scaling_group_id,
-        #                     'action')
-        # return session.post(uri,
-        #                     headers={'Accept': '*'},
-        #                     endpoint_filter=self.service,
-        #                     endpoint_override=endpoint_override,
-        #                     json=json_body)

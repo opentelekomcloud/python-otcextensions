@@ -85,7 +85,7 @@ are accessed through instances of :class:`~openstack.proxy.Proxy` or
 subclasses of it that exist as attributes on the
 :class:`~openstack.connection.Connection`.
 
-.. autoclass:: openstack.proxy.BaseProxy
+.. autoclass:: openstack.proxy.Proxy
    :members:
 
 .. _service-proxies:

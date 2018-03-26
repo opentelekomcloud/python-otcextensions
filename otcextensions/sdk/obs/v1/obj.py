@@ -52,7 +52,7 @@ class Object(obj.Object, _base.BaseResource):
         f = open(filename, 'wb')
         request.body['Fileobj'] = f
 
-        response = None
+        # response = None
         try:
             session.download_fileobj(**request.body)
         except ClientError as e:
@@ -165,58 +165,12 @@ class Object(obj.Object, _base.BaseResource):
 
     @classmethod
     def list(cls, session, paginated=False, **params):
-        """Override default list to incorporate endpoint overriding
-        and custom headers
-
-        Since SDK Resource.list method is passing hardcoded headers
-        do override the function
-
-        This resource object list generator handles pagination and takes query
-        params for response filtering.
-
-        :param session: The session to use for making this request.
-        :type session: :class:`~keystoneauth1.adapter.Adapter`
-        :param bool paginated: ``True`` if a GET to this resource returns
-                               a paginated series of responses, or ``False``
-                               if a GET returns only one page of data.
-                               **When paginated is False only one
-                               page of data will be returned regardless
-                               of the API's support of pagination.**
-        :param dict params: These keyword arguments are passed through the
-            :meth:`~openstack.resource.QueryParamter._transpose` method
-            to find if any of them match expected query parameters to be
-            sent in the *params* argument to
-            :meth:`~keystoneauth1.adapter.Adapter.get`. They are additionally
-            checked against the
-            :data:`~openstack.resource.Resource.base_path` format string
-            to see if any path fragments need to be filled in by the contents
-            of this argument.
-
-        :return: A generator of :class:`Resource` objects.
-        :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
-                 :data:`Resource.allow_list` is not set to ``True``.
-        :raises: :exc:`~openstack.exceptions.InvalidResourceQuery` if query
-                 contains invalid params.
-
-        """
-        return super(Object, cls).list(
+        return super(Object, cls)._list(
             session, 'list_objects_v2', '_normalize_obs_keys',
             paginated, **params
         )
 
     def get(self, session, error_message=None, requires_id=True):
-        """Get a remote resource based on this instance.
-
-        This function overrides default Resource.get to enable GET headers
-
-        :param session: The session to use for making this request.
-        :type session: :class:`~keystoneauth1.adapter.Adapter`
-        :param boolean requires_id: A boolean indicating whether resource ID
-                                    should be part of the requested URI.
-        :return: This :class:`Resource` instance.
-        :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
-                 :data:`Resource.allow_get` is not set to ``True``.
-        """
         return super(Object, self).get(
             session, 'head_object', error_message, requires_id
         )
@@ -230,17 +184,6 @@ class Object(obj.Object, _base.BaseResource):
         return self.get(session)
 
     def delete(self, session, error_message=None):
-        """Delete the remote resource based on this instance.
-
-        This function overrides default Resource.delete to enable headers
-
-        :param session: The session to use for making this request.
-        :type session: :class:`~keystoneauth1.adapter.Adapter`
-
-        :return: This :class:`Resource` instance.
-        :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
-                 :data:`Resource.allow_update` is not set to ``True``.
-        """
         return super(Object, self).delete(
             session, 'delete_object', error_message
         )
