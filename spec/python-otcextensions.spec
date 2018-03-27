@@ -19,7 +19,7 @@ Release:          1%{?dist}
 Summary:          OpenTelekomCloud Extensions to the OpenStack Command-line Client and the SDK
 License:          ASL 2.0
 URL:              https://github.com/OpenTelekomCloud/%{name}
-Source0:          https://github.com/OpenTelekomCloud/%{name}/archive/%{commit}/%{name}-%{commit}.tar.gz
+Source0:          https://github.com/OpenTelekomCloud/%{name}/archive/%{commit}/%{name}-%{shortcommit}.tar.gz
 BuildArch:        noarch
 # Source0:          https://github.com/OpenTelekomCloud/% { name}/archive/master.zip
 
