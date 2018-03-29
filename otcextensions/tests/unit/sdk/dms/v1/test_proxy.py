@@ -12,9 +12,9 @@
 
 import mock
 
-from openstack.dms.v1 import _proxy
-from openstack.dms.v1 import queue as _queue
-from openstack.tests.unit import test_proxy_base2
+from otcextensions.dms.v1 import _proxy
+from otcextensions.dms.v1 import queue as _queue
+from openstack.tests.unit import base
 
 
 class TestDMSProxy(test_proxy_base2.TestProxyBase):

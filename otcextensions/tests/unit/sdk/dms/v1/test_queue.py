@@ -115,7 +115,7 @@ class TestGroup(base.TestCase):
         self.objcls.create_groups(sess, queue_id=fake_queue_id)
         sess.post.assert_called_with(url, 
         #endpoint_filter=self.objcls.service,
-                                     #endpoint_override=mock_svc(), 
+        #endpoint_override=mock_svc(), 
                                      json={}, headers=headers)
 
 
