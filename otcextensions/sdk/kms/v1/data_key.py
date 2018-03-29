@@ -12,9 +12,9 @@
 import hashlib
 import binascii
 
-from openstack import exceptions
+# from openstack import exceptions
 from openstack import resource
-from openstack import utils
+# from openstack import utils
 
 from otcextensions.sdk.kms.v1 import _base
 
@@ -62,13 +62,8 @@ class DataKey(_base.Resource):
     #: *Type:str*
     cipher_text = resource.Body('cipher_text')
 
-    # def create_data_key(self, session, **kwargs):
-    #     return self._post(session,
-    #                       'create-datakey',
-    #                       **kwargs)
-
     def create_wo_plain(self, session, prepend_key=True, requires_id=True,
-               endpoint_override=None, headers=None):
+                        endpoint_override=None, headers=None):
         return super(DataKey, self).create(
             session, prepend_key=prepend_key, requires_id=requires_id,
             endpoint_override=endpoint_override, headers=headers,
@@ -98,8 +93,6 @@ class DataKey(_base.Resource):
         if self.encryption_context:
             body['encryption_context'] = self.encryption_context
 
-        print('body=%s' % body)
-
         url = '/kms/encrypt-datakey'
         response = session.post(
             url,
@@ -114,6 +107,10 @@ class DataKey(_base.Resource):
         return self
 
     def decrypt(self, session):
+        """Decrypt Key
+
+        Decrypts `cipher_text` into `plain_text` with the given CMK
+        """
         session = self._get_session(session)
         body = {
             'key_id': self.key_id,
@@ -130,7 +127,6 @@ class DataKey(_base.Resource):
             url,
             json=body)
 
-
         self._translate_response(response)
         data = response.json()
         self._update(
@@ -138,10 +134,3 @@ class DataKey(_base.Resource):
         )
 
         return self
-    #
-    # def decrypt(self, session, **params):
-    #
-    #     if self.cipher_text is not None:
-    #         params.update({
-    #             'cipher_text': self.cipher_text})
-    #     return self._post(session, 'decrypt-datakey', **params)

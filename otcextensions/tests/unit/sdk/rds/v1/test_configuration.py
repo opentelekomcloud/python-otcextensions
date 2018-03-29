@@ -77,7 +77,6 @@ class TestConfigurationGroup(base.TestCase):
         self.sess.patch = mock.Mock()
         self.sess.get_project_id = mock.Mock(return_value=PROJECT_ID)
         self.sot = configuration.ConfigurationGroup(**EXAMPLE_GROUP)
-        # print(self.sot.to_dict())
 
     def test_basic(self):
         sot = configuration.ConfigurationGroup()

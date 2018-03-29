@@ -19,22 +19,28 @@ class Proxy(sdk_proxy.Proxy):
 
     # ======== CMK Keys ========
     def keys(self, **query):
-        """List all keys.
+        """List all master keys.
 
-        :param dict kwargs: Keyword arguments which will be used to list keys.
-                            limit, marker, sequence are allowed.
+        :param dict query: Keyword arguments which will be used to list keys.
+            limit, marker, sequence, key_state are allowed.
+            Key state can be:
+            * 1 indicates that the CMK is waiting to be activated.
+            * 2 indicates that the CMK is enabled.
+            * 3 indicates that the CMK is disabled.
+            * 4 indicates that the CMK is scheduled for deletion.
 
+        :returns: a generator of
+            (:class:`~otcextensions.sdk.kms.v1.key.Key`) instances
         """
         return self._list(_key.Key, paginated=True, **query)
 
     def create_key(self, **attrs):
-        """Create a encrypt key for encrypt a data key
+        """Create master key
 
-        :param dict kwargs: Keyword arguments which will be used to overwrite a
-            :class:`~otcextensions.sdk.v1.key.Key`
+        :param dict attrs: Keyword arguments which will be used to overwrite a
+            :class:`~otcextensions.sdk.kms.v1.key.Key`
 
-        :returns: Updated key instance
-        :rtype: :class:`~otcextensions.sdk.v1.key.Key`
+        :returns: instance of :class:`~otcextensions.sdk.kms.v1.key.Key`
         """
         return self._create(
             _key.Key, prepend_key=False, **attrs
@@ -44,17 +50,15 @@ class Proxy(sdk_proxy.Proxy):
         """Describe a encrypt key by given key id or key object
 
         :param key: key id or an instance of
-            :class:`~otcextensions.sdk.v1.key.Key`
-        :param dict kwargs: Keyword arguments which will be used to describe
-            the key. e.g. sequence
-        :rtype: :class:`~otcextensions.sdk.v1.key.Key`
+            :class:`~otcextensions.sdk.kms.v1.key.Key`
+        :returns: instance of :class:`~otcextensions.sdk.kms.v1.key.Key`
         """
         return self._get(
             _key.Key, key,
         )
 
     def find_key(self, alias, ignore_missing=True):
-        """Find a single group
+        """Find a single key
 
         :param alias: The key alias
         :param bool ignore_missing: When set to ``False``
@@ -63,7 +67,7 @@ class Proxy(sdk_proxy.Proxy):
             When set to ``True``, no exception will be set when attempting
             to delete a nonexistent group.
 
-        :returns: ``None``
+        :returns: instance of :class:`~otcextensions.sdk.kms.v1.key.Key`
         """
         return self._find(
             _key.Key, alias,
@@ -74,9 +78,10 @@ class Proxy(sdk_proxy.Proxy):
         """Enable a key
 
         :param key: key id or an instance of
-            :class:`~otcextensions.sdk.v1.key.Key`
+            :class:`~otcextensions.sdk.kms.v1.key.Key`
 
-        :returns: Updated instance of :class:`~otcextensions.sdk.v1.key.Key`
+        :returns: Updated instance of
+            :class:`~otcextensions.sdk.kms.v1.key.Key`
         """
         key = self._get_resource(_key.Key, key)
         return key.enable(self)
@@ -85,19 +90,22 @@ class Proxy(sdk_proxy.Proxy):
         """Disable a key
 
         :param key: key id or an instance of
-            :class:`~otcextensions.sdk.v1.key.Key`
-        :returns: Updated instance of :class:`~otcextensions.sdk.v1.key.Key`
+            :class:`~otcextensions.sdk.kms.v1.key.Key`
+
+        :returns: Updated instance of
+            :class:`~otcextensions.sdk.kms.v1.key.Key`
         """
         key = self._get_resource(_key.Key, key)
         return key.disable(self)
 
-    def schedule_key_deletion(self, key, pending_days):
+    def schedule_key_deletion(self, key, pending_days=7):
         """Schedule a key deletion
 
         :param key: key id or an instance of
-            :class:`~otcextensions.sdk.v1.key.Key`
+            :class:`~otcextensions.sdk.kms.v1.key.Key`
         :param pending_days: Pending days before deletion, allow 7 to 1096
-        :returns: Updated instance of :class:`~otcextensions.sdk.v1.key.Key`
+        :returns: Updated instance of
+            :class:`~otcextensions.sdk.kms.v1.key.Key`
         """
         key = self._get_resource(_key.Key, key)
         return key.schedule_deletion(self, pending_days)
@@ -106,8 +114,9 @@ class Proxy(sdk_proxy.Proxy):
         """Cancel a key deletion
 
         :param key: key id or an instance of
-            :class:`~otcextensions.sdk.v1.key.Key`
-        :returns: Updated instance of :class:`~otcextensions.sdk.v1.key.Key`
+            :class:`~otcextensions.sdk.kms.v1.key.Key`
+        :returns: Updated instance of
+            :class:`~otcextensions.sdk.kms.v1.key.Key`
         """
         key = self._get_resource(_key.Key, key)
         return key.cancel_deletion(self)
@@ -116,12 +125,13 @@ class Proxy(sdk_proxy.Proxy):
     def create_datakey(self, cmk, **attrs):
         """Create a data key
 
-        :param cmk: key id or an instance of
-            :class:`~otcextensions.sdk.v1.key.Key`
+        :param cmk: key id or an instance of master key
+            :class:`~otcextensions.sdk.kms.v1.key.Key`
         :param dict attrs: Keyword arguments which will be used to create a
-            Data key, datakey_length is required,
-            encryption_context, sequence are optional.
-        :rtype: :class:`~otcextensions.sdk.v1.key.DataKey`
+            Data key.
+            encryption_context, sequence are optional parameters.
+        :returns: instance of
+            :class:`~otcextensions.sdk.kms.v1.data_key.DataKey`
         """
         key = self._get_resource(_key.Key, cmk)
         attrs['key_id'] = key.id
@@ -133,11 +143,11 @@ class Proxy(sdk_proxy.Proxy):
         """Create a data key without plain text
 
         :param cmk: key id or an instance of
-            :class:`~otcextensions.sdk.v1.key.Key`
+            :class:`~otcextensions.sdk.kms.v1.key.Key`
         :param dict attrs: Keyword arguments which will be used to create a
-            Data key, datakey_length is required,
-            encryption_context, sequence are optional.
-        :rtype: :class:`~otcextensions.sdk.v1.key.DataKey`
+            Data key. encryption_context, sequence are optional parameters.
+        :returns: instance of
+            :class:`~otcextensions.sdk.kms.v1.data_key.DataKey`
         """
         key = self._get_resource(_key.Key, cmk)
         attrs['key_id'] = key.id
@@ -148,31 +158,32 @@ class Proxy(sdk_proxy.Proxy):
         )
         return persist
 
-    def encrypt_datakey(self, datakey, **params):
+    def encrypt_datakey(self, datakey):
         """Encrypt a data key
 
+        Requires `plain_text` to be filled with the hex key value.
+        Populates `cipher_text` with the encrypted value.
+
         :param datakey: key id or an instance of
-            :class:`~otcextensions.sdk.v1.key.DataKey`
-        :param dict kwargs: Keyword arguments which will be used to encrypt a
-            Data key, encryption_context, plain_text,
-            datakey_plain_length are required,
-            encryption_context, sequence are optional.
-        :rtype: :class:`~otcextensions.sdk.v1.key.DataKey`
+            :class:`~otcextensions.sdk.kms.v1.data_key.DataKey`
+        :returns: instance of
+            :class:`~otcextensions.sdk.kms.v1.data_key.DataKey`
         """
         key = self._get_resource(_data_key.DataKey, datakey)
         key.encrypt(self)
         return key
 
-    def decrypt_datakey(self, datakey, **params):
+    def decrypt_datakey(self, datakey):
         """Decrypt a data key
 
+        Requires `cipher_text` to be filled with value retrieved from
+        :func:`~otcextensions.sdk.kms.v1.data_key.DataKey.encrypt` call.
+        Populates `plain_text` attribute.
+
         :param datakey: key id or an instance of
-            :class:`~otcextensions.sdk.v1.key.DataKey`
-        :param dict kwargs: Keyword arguments which will be used to decrypt a
-            Data key, cipher_text, datakey_cipher_length are
-            required, encryption_context, sequence are
-            optional.
-        :rtype: :class:`~otcextensions.sdk.v1.key.DataKey`
+            :class:`~otcextensions.sdk.kms.v1.data_key.DataKey`
+        :returns: update key instance
+            :class:`~otcextensions.sdk.kms.v1.data_key.DataKey`
         """
         key = self._get_resource(_data_key.DataKey, datakey)
         key.decrypt(self)
@@ -183,7 +194,7 @@ class Proxy(sdk_proxy.Proxy):
         """Generate random data
 
         :param random_data_length: random data size in bits [0..512]
-        :rtype: :class:`~otcextensions.sdk.v1.random.Random`
+        :returns: instance of :class:`~otcextensions.sdk.kms.v1.random.Random`
         """
         return self._create(
             _misc.Random, prepend_key=False,
@@ -191,9 +202,10 @@ class Proxy(sdk_proxy.Proxy):
         )
 
     def get_instance_number(self):
-        """Get encrpt key instance total number
+        """Get encrypt key instance total number
 
-        :rtype: :class:`~otcextensions.sdk.v1.key.InstanceNumber`
+        :returns: instance of
+            :class:`~otcextensions.sdk.kms.v1.key.InstanceNumber`
         """
         instance_num_obj = _misc.InstanceNumber()
         return instance_num_obj.get(self)
@@ -201,7 +213,7 @@ class Proxy(sdk_proxy.Proxy):
     def quotas(self):
         """List quota resources for KMS service
 
-        :returns: A generator of Quota object
-        :rtype: :class:`~otcextensions.sdk.v1.key.Quota`
+        :returns: A generator of
+            :class:`~otcextensions.sdk.kms.v1.key.Quota` objects
         """
         return _misc.Quota.list(self)

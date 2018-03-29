@@ -177,7 +177,6 @@ class ShowDatabaseInstance(command.ShowOne):
         return (display_columns, data)
 
         #
-        # print(instance)
         # instance = set_attributes_for_print_detail(obj)
         # return zip(*sorted(six.iteritems(instance)))
 

@@ -57,7 +57,9 @@ Create a ``clouds.yaml`` file:
           auth_url: 'https://iam.eu-de.otc.t-systems.com:443/v3'
           user_domain_name: 'OTC00000000001000000xxx'
         interface: 'public'
-        identity_api_version: 3
+        identity_api_version: 3 # !Important
+        ak: 'AK_VALUE' # AK/SK pair for access to OBS
+        sk: 'SK_VALUE'
 
 Please note: ``openstack.config`` will look for a file called ``clouds.yaml``
 in the following locations:

@@ -138,5 +138,4 @@ class API(api.BaseAPI):
                     ObsError.ERROR_INTERNAL
                 )
 
-        print(result['Mode'])
         return result

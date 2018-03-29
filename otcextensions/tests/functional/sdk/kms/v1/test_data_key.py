@@ -41,8 +41,6 @@ class TestDataKey(base.BaseFunctionalTest):
 
     def test_dek(self):
 
-        print(list(self.conn.kms.keys()))
-
         cmk = self.cmk
 
         dek = self.conn.kms.create_datakey(

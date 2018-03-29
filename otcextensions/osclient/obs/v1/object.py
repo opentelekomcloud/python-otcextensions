@@ -30,7 +30,6 @@ LOG = logging.getLogger(__name__)
 
 
 def _get_columns(item):
-    print(item.to_dict())
     column_map = {
         'Content Type': 'content_type',
         'Last Modified': 'last_modified_at',
