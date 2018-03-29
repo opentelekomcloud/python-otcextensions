@@ -1,0 +1,41 @@
+* on 28.03 native service version discovery request to https://as.eu-de.otc.t-systems.com/autoscaling-api/ caused timeout. AS service is temporarily disabled
+
+* KMS service version discovery is broken. On https://kms.eu-de.otc.t-systems.com/ it returns
+  {"versions": [{"status": "CURRENT", "id": "v1.0", "links": [{"href": "https://rts.eu-de.otc.t-systems.com/v1/", "rel": "self"}]}]}
+  In the keystoneauth1 it results to get_endpoint=https://kms.eu-de.otc.t-systems.com/v1 (instead of V1.0). Detailed investigation is expensive, therefore aborted
+
+* KMS does not follow REST, everything is POST with different URLs and not even json['action']
+
+* KMS is conceptually far away from Barbican
+
+* KSM API Doc: This API allows you to create a plaintext-free DEK, that is, the returned result of this API includes `only the plaintext` of the DEK.
+
+* KMS: purpose of KMS is not preciese. Attributes change their names/meaning depending on call
+
+* KMS: encryption_context is described to be string, in reality dict is expected
+
+* KMS: max_length is always expected to be exactly max. Make no sence as a param
+
+* Inconsistent naming between services (AS:create_time, KMS:creation_date)
+
+* Inconsistent error message structure between services (i.e. KMS vs RDS). This prohibits code generalization
+
+* DCS: Since Redis 3.0.7 (only available in DCS) lots of critical issues (incl. security and possible data corruption), online memory defrag, less mem usage were fixed
+
+* DCS: in OS DCS is part of Trove. The API is same. In the DCS API is similar to RDS, but not easy mappable
+
+* CCE: far away from Magnum
+
+* OBS has storage class on Bucket level, but in AWS and all corresponding tools (also s3cmd, s4cmd, Boto) it is on the Object level
+
+* No custom service supports proper version discovery. Leads to error messages in the OSC tool and execution delays
+
+* DNS: nothing supports private zone (ansible, heat, ~terraform, SDK/CLI). Very hard to cover that everywhere
+
+* DNS: Zone transfer feature of API V2 is not present. Modern Designateclient is not getting clear with response of designate
+
+* HEAT: very old level, blocking many OpenSource projects, including i.e. ansible-openshift, RedhatDNS.
+
+* HEAT: (to be doublechecked) template version check is likely not done, since features of later templates with older version header are passing validation (in the ranges of supported versions)
+
+* HEAT: not all CLI calls return result
