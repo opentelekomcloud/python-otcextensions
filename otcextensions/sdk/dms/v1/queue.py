@@ -26,7 +26,7 @@ class Queue(sdk_resource.Resource):
     #base_path = '/%(project_id)s/queues'
 
     base_path = '/queues'
-    service = dms_service.DMSService()
+    service = dms_service.DmsService()
 
     # capabilities
     allow_create = True
@@ -70,7 +70,7 @@ class Group(sdk_resource.Resource):
 
 
     base_path = 'queues/%(queue_id)s/groups'
-    service = dms_service.DMSService()
+    service = dms_service.DmsService()
 
     # capabilities
     allow_list = True
@@ -96,15 +96,15 @@ class Group(sdk_resource.Resource):
     # This does a post and return a list of self
     @classmethod
     def create_groups(cls, session, queue_id=queue_id, **kwargs):
-        endpoint_override = cls.service.get_endpoint_override()
+        #endpoint_override = cls.service.get_endpoint_override()
         uri = cls.base_path % {'queue_id': queue_id}
 
         headers = {}
         headers.update({'Content-type': 'application/json'})
         headers.update({'Content-Length': str(len(str(kwargs)))})
 
-        response = session.post(uri, endpoint_filter=cls.service,
-                                endpoint_override=endpoint_override,
+        response = session.post(uri,
+         #endpoint_filter=cls.service, endpoint_override=endpoint_override,
                                 json=kwargs, headers=headers)
 
         if response is not None:
@@ -127,7 +127,7 @@ class Message(sdk_resource.Resource):
     # No response for this post method
     base_path = '/queues/%(queue_id)s/messages'
 
-    service = dms_service.DMSService()
+    service = dms_service.DmsService()
 
     # capabilities
     allow_create = True
@@ -138,15 +138,15 @@ class Message(sdk_resource.Resource):
 
     @classmethod
     def create_messages(cls, session, queue_id=queue_id, **kwargs):
-        endpoint_override = cls.service.get_endpoint_override()
+        #endpoint_override = cls.service.get_endpoint_override()
         uri = cls.base_path % {'queue_id': queue_id}
 
         headers = {}
         headers.update({'Content-type': 'application/json'})
         headers.update({'Content-Length': str(len(str(kwargs)))})
 
-        response = session.post(uri, endpoint_filter=cls.service,
-                                endpoint_override=endpoint_override,
+        response = session.post(uri,
+         #endpoint_filter=cls.service, endpoint_override=endpoint_override,
                                 json=kwargs, headers=headers)
 
         return response
@@ -158,7 +158,7 @@ class MessageConsume(resource.Resource):
     project_id = resource.URI('project_id')
     #base_path = '/%(project_id)s/queues/%(queue_id)s/groups/%(consumer_group_id)s/messages'
 
-    service = dms_service.DMSService()
+    service = dms_service.DmsService()
 
     _query_mapping = resource.QueryParameters('max_msgs', 'time_wait')
 
@@ -212,29 +212,28 @@ class MessageConsume(resource.Resource):
         headers = {"Accept": "application/json",
                    "Content-type": "application/json"}
         uri = cls.base_path % params
-        endpoint_override = cls.service.get_endpoint_override()
+        #endpoint_override = cls.service.get_endpoint_override()
 
         tags = params.get("tags", None)
         # NOTES: this API is so different from others, it's not a RESTFUL
         # style, allow user to pass mulitple tags as the query parameters
         # which can not leverage method of session directlly.
-        if tags is not None:
-            if endpoint_override is not None:
-                uri = cls._assemble_query_params(uri, params)
-                full_url = endpoint_override % {'project_id':
-                                                session.get_project_id()}
-                full_url = full_url + uri
-                resp = session.get(full_url, endpoint_filter=cls.service,
-                                   headers=headers)
-            else:
-                # TOOD: Don't support non override yet
-                resp = None
-        else:
-            query_params = cls._query_mapping._transpose(params)
-            resp = session.get(uri, endpoint_filter=cls.service,
-                               endpoint_override=endpoint_override,
-                               headers=headers,
-                               params=query_params)
+        # if tags is not None:
+        #     if endpoint_override is not None:
+        #         uri = cls._assemble_query_params(uri, params)
+        #         full_url = endpoint_override % {'project_id':
+        #                                         session.get_project_id()}
+        #         full_url = full_url + uri
+        #         resp = session.get(full_url, endpoint_filter=cls.service,
+        #                            headers=headers)
+        #     else:
+        #         # TOOD: Don't support non override yet
+        #         resp = None
+        # else:
+        query_params = cls._query_mapping._transpose(params)
+        resp = session.get(uri, 
+        #endpoint_filter=cls.service,endpoint_override=endpoint_override,
+                               headers=headers, params=query_params)
 
         if resp is not None:
             resp = resp.json()
@@ -248,7 +247,7 @@ class MessageConsume(resource.Resource):
             return ret
 
     def ack(self, session, status='success'):
-        endpoint_override = self.service.get_endpoint_override()
+        #endpoint_override = self.service.get_endpoint_override()
         # base_path is /queues/{queue_id}/groups/{consumer_group_id}/ack
         base_path = 'ack'.join(self.base_path.rsplit('messages', 1))
         uri = base_path % self._uri.attributes
@@ -266,8 +265,8 @@ class MessageConsume(resource.Resource):
         headers.update({'Content-type': 'application/json'})
         headers.update({'Content-Length': str(len(str(body)))})
 
-        response = session.post(uri, endpoint_filter=self.service,
-                                endpoint_override=endpoint_override,
+        response = session.post(uri, 
+        #endpoint_filter=self.service, endpoint_override=endpoint_override,
                                 json=body, headers=headers)
 
         self._translate_response(response)
@@ -279,7 +278,7 @@ class Quota(resource.Resource):
     base_path = '/quotas/dms'
     project_id = resource.URI('project_id')
     #base_path = '/%(project_id)s/quotas/dms'
-    service = dms_service.DMSService()
+    service = dms_service.DmsService()
 
     allow_list = True
 
@@ -306,9 +305,9 @@ class Quota(resource.Resource):
                    "Content-type": "application/json"}
 
         while more_data:
-            endpoint_override = cls.service.get_endpoint_override()
-            resp = session.get(uri, endpoint_filter=cls.service,
-                               endpoint_override=endpoint_override,
+            #endpoint_override = cls.service.get_endpoint_override()
+            resp = session.get(uri,
+             #endpoint_filter=cls.service, endpoint_override=endpoint_override,
                                headers=headers,
                                params=query_params)
             resp = resp.json()
