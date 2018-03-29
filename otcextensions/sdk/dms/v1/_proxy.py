@@ -11,10 +11,10 @@
 # under the License.
 
 from otcextensions.sdk.dms.v1 import queue as _queue
-from otcextensions.skd import sdk_proxy
+from otcextensions.sdk import sdk_proxy
 
 
-class Proxy(sdk_proxy.BaseProxy):
+class Proxy(sdk_proxy.Proxy):
 
     def create_queue(self, **kwargs):
         """Create a queue

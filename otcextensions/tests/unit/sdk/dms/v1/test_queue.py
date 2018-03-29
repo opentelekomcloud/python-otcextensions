@@ -103,8 +103,7 @@ class TestGroup(base.TestCase):
         self.assertEqual(self.example['available_messages'],
                          sot.available_messages)
 
-    #@mock.patch("openstack.service_filter.ServiceFilter."
-                "get_endpoint_override")
+    #@mock.patch("openstack.service_filter.ServiceFilter."                "get_endpoint_override")
     def test_create_groups(self, mock_svc):
         fake_queue_id = 'fake'
         sess = mock.Mock()
@@ -123,8 +122,7 @@ class TestMessage(base.TestCase):
 
     objcls = queue.Message
 
-    #@mock.patch("openstack.service_filter.ServiceFilter."
-                "get_endpoint_override")
+    #@mock.patch("openstack.service_filter.ServiceFilter."                "get_endpoint_override")
     def test_create_messages(self, mock_svc):
         fake_queue_id = 'fake'
         sess = mock.Mock()

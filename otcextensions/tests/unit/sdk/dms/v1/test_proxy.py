@@ -12,12 +12,14 @@
 
 import mock
 
-from otcextensions.dms.v1 import _proxy
-from otcextensions.dms.v1 import queue as _queue
+from otcextensions.sdk.dms.v1 import _proxy
+from otcextensions.sdk.dms.v1 import queue as _queue
 from openstack.tests.unit import base
 
+from openstack.tests.unit import test_proxy_base
 
-class TestDMSProxy(test_proxy_base2.TestProxyBase):
+
+class TestDMSProxy(test_proxy_base.TestProxyBase):
     def setUp(self):
         super(TestDMSProxy, self).setUp()
         self.proxy = _proxy.Proxy(self.session)
