@@ -68,6 +68,10 @@ in the following locations:
 * ``~/.config/openstack``
 * ``/etc/openstack``
 
+AK/SK values required for access to some services (i.e. OBS) can be either configured as shown above in the clouds.yaml/secure.yaml,
+or they can be automatically retrieved from the S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY.
+Values from the clouds.yaml/secure.yaml take precedence over the ones from environment.
+
 With this configuration you can start using openstackCLI simply ``openstack --os-cloud otc``
 
 More information at https://developer.openstack.org/sdks/python/openstacksdk/users/config
@@ -87,6 +91,8 @@ Authentication using username/password is often used::
     export OS_USERNAME=<username>
     export OS_USER_DOMAIN_NAME=<user-domain-name>
     export OS_PASSWORD=<password>  # (optional)
+    export S3_ACCESS_KEY_ID=<access_key>
+    export S3_SECRET_ACCESS_KEY=<secret_access_key>
 
 The corresponding command-line options look very similar::
 
