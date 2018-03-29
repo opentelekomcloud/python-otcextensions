@@ -14,6 +14,7 @@ __all__ = [
     'register_otc_extensions',
 ]
 
+import os
 import importlib
 import types
 import warnings
@@ -171,6 +172,11 @@ def register_otc_extensions(connection, **kwargs):
 
             ak = config.get('ak', None)
             sk = config.get('sk', None)
+
+            if not ak:
+                ak = os.getenv('S3_ACCESS_KEY_ID', None)
+            if not sk:
+                sk = os.getenv('S3_SECRET_ACCESS_KEY', None)
 
             if ak and sk:
                 proxy._set_ak(ak=ak, sk=sk)
