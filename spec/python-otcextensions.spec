@@ -10,8 +10,9 @@
 # disable docs
 %global with_doc 0
 
-%global commit 671e031b2037a6618ebc27b1f5ff8f554a268006
+%global commit 923e90b7ffb1ab8797a4922392ffb105bc2f408c
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
+# %global shortcommit 923e90b
 
 Name:             python-otcextensions
 Version:          0.0.1
@@ -56,7 +57,7 @@ BuildRequires: python3-openstackclient
 BuildRequires: python3-boto3
 BuildRequires: python3-mock
 BuildRequires: python3-stestr
-Requires:      python3-openstacksdk
+Requires:      python3-openstacksdk >= 0.11.0
 Requires:      python3-openstackclient >= 3.12.0
 Requires:      python3-boto3 >= 1.4.6
 
