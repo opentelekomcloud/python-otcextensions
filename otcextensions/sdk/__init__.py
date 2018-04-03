@@ -65,6 +65,10 @@ OTC_SERVICES = {
         'service_type': 'kms',
         'append_project_id': True,
     },
+    'cce': {
+        'service_type': 'cce',
+        'append_project_id': False,
+    },
 }
 
 

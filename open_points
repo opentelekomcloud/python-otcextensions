@@ -22,7 +22,13 @@
 
 * KMS: no way to get response in english
 
-* Inconsistent naming between services (AS:create_time, KMS:creation_date)
+* CCE: required header applicytion/type also for GET
+
+* CCE: cluster UUID is hidden in a inline metadata structure, making it hard to address it without dirty hacks
+
+* CCE: undocumented properties of the cluster.spec field (i.e. `cidr`)
+
+* Inconsistent naming between services (AS:create_time, KMS:creation_date, CCE:createAt)
 
 * Inconsistent error message structure between services (i.e. KMS vs RDS). This prohibits code generalization
 
