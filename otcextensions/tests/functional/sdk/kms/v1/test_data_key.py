@@ -24,6 +24,7 @@ class TestDataKey(base.BaseFunctionalTest):
     @classmethod
     def setUpClass(cls):
         super(TestDataKey, cls).setUpClass()
+        # cls.cmk = cls.conn.kms.find_key(alias='sdk_test_key1')
         cls.cmk = cls.conn.kms.create_key(
             key_alias=uuid.uuid4().hex
         )
@@ -64,6 +65,9 @@ class TestDataKey(base.BaseFunctionalTest):
         self.assertNotEqual(not_encrypted_value, encrypted_value)
         _logger.debug('encrypted DEK = %s' % encrypted_value)
 
-        self.conn.kms.decrypt_datakey(dek)
-        decrypted_value = dek.plain_text
+        decrypt_key = self.conn.kms.decrypt_datakey(
+            cmk=cmk,
+            cipher_text=encrypted_value,
+            datakey_cipher_length=dek.datakey_cipher_length)
+        decrypted_value = decrypt_key.plain_text
         self.assertEqual(not_encrypted_value, decrypted_value)

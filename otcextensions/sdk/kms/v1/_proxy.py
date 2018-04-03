@@ -57,7 +57,7 @@ class Proxy(sdk_proxy.Proxy):
             _key.Key, key,
         )
 
-    def find_key(self, alias, ignore_missing=True):
+    def find_key(self, alias, ignore_missing=False):
         """Find a single key
 
         :param alias: The key alias
@@ -110,7 +110,7 @@ class Proxy(sdk_proxy.Proxy):
         key = self._get_resource(_key.Key, key)
         return key.schedule_deletion(self, pending_days)
 
-    def cancel_key_deletion(self, key, **params):
+    def cancel_key_deletion(self, key):
         """Cancel a key deletion
 
         :param key: key id or an instance of
@@ -173,19 +173,40 @@ class Proxy(sdk_proxy.Proxy):
         key.encrypt(self)
         return key
 
-    def decrypt_datakey(self, datakey):
+    # def decrypt_datakey(self, datakey):
+    #     """Decrypt a data key
+    #
+    #     Requires `cipher_text` to be filled with value retrieved from
+    #     :func:`~otcextensions.sdk.kms.v1.data_key.DataKey.encrypt` call.
+    #     Populates `plain_text` attribute.
+    #
+    #     :param datakey: key id or an instance of
+    #         :class:`~otcextensions.sdk.kms.v1.data_key.DataKey`
+    #     :returns: update key instance
+    #         :class:`~otcextensions.sdk.kms.v1.data_key.DataKey`
+    #     """
+    #     key = self._get_resource(_data_key.DataKey, datakey)
+    #     key.decrypt(self)
+    #     return key
+
+    def decrypt_datakey(self, cmk, cipher_text, datakey_cipher_length):
         """Decrypt a data key
 
-        Requires `cipher_text` to be filled with value retrieved from
-        :func:`~otcextensions.sdk.kms.v1.data_key.DataKey.encrypt` call.
-        Populates `plain_text` attribute.
+        :param cipher_text: encrypted value retrieved from
+            :func:`~otcextensions.sdk.kms.v1.data_key.DataKey.encrypt` call.
+        :param datakey_cipher_length: datakey_cipher_length (expected value 64)
 
-        :param datakey: key id or an instance of
-            :class:`~otcextensions.sdk.kms.v1.data_key.DataKey`
-        :returns: update key instance
-            :class:`~otcextensions.sdk.kms.v1.data_key.DataKey`
+        :returns: decrypted key instance of
+            :class:`~otcextensions.sdk.kms.v1.data_key.DataKey` with plain_text
+            populated
         """
-        key = self._get_resource(_data_key.DataKey, datakey)
+        cmk_key = self._get_resource(_key.Key, cmk)
+        key_attrs = {
+            'key_id': cmk_key.id,
+            'cipher_text': cipher_text,
+            'datakey_cipher_length': datakey_cipher_length
+        }
+        key = self._get_resource(_data_key.DataKey, value=None, **key_attrs)
         key.decrypt(self)
         return key
 

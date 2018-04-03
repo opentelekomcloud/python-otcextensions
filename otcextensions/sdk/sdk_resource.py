@@ -417,8 +417,8 @@ class Resource(resource.Resource):
 
         result = cls._get_one_match(name_or_id, data)
         # Update result with URL parameters
-        result._update(**params)
         if result is not None:
+            result._update(**params)
             return result
 
         if ignore_missing:

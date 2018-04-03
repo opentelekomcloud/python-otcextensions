@@ -12,7 +12,6 @@
 
 %global commit 923e90b7ffb1ab8797a4922392ffb105bc2f408c
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
-# %global shortcommit 923e90b
 
 Name:             python-otcextensions
 Version:          0.0.1
@@ -76,7 +75,7 @@ A collection of libraries for building applications to work with OTC cloud - doc
 %endif
 
 %prep
-%autosetup -n %{name}-%{commit} -S git
+%autosetup -n %{name}-%{upstream_version} -S git
 
 # We handle requirements ourselves
 rm -rf requirements.txt test-requirements.txt
