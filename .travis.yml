@@ -21,5 +21,5 @@ deploy:
   password:
     secure: eztz1cbpP5Z/rWRAEEC/+VFKejEyiXveNdJC9K3BbgDSir7G3GyNLA7x9R0B6ebcUXoPaDMa7Pe6bt8FIOr2yU2rfifwXYRTWfcrnx5uTjQFw/PrgtXei0M+nrhSbfpROXw5tMm8KSeyzfCqahi3S8LmsZgLbGQUHeaIHkTu/VUgk3BLlwGE8SZyqWXS1FvDtJSTjmIrMUsySFDZpuhz+z7A7NcJmoT/+iW/YXyJNj1WNsbn/2Et4LhidRbRUtPz22K9Rf17ieBZ/SvucGBTgAk7UXrCBq4MXYtvGFhSfVLdj9E+NLZRQifUynRgte+4c5HefMzUYi5cdJyUr/fy1ApAko9F/Uq8DgOOBwyPxmjNvJZ+4LgL9VBUF2biLmLFA5WRqBsfKKAi4K1uRWvtoYCeuTmSB3mJZZcRXoydfV58XPI2Lih0kJOO0cV74Q6nBVOdYNfPxV5XTpgs29DJ6InPlV/NyNls8QwsFJ5KMAHiyahXr1KWKYOxvvymI1yG0NoExb6pCYi2+6FWSyhLGzaZHZrF4WrQoja8epzQjIDQyA9mq1b/S2K0RVx+CtF4YVrzIAJKsBg/YuBcBrWeIcpYJFiH5CrJ0EA0vVIPA8JSTiy5uCkydumliJe1rCwoNMpq81Su4H2Vx4SbUxqvI7Ny7ru3OusKfG1+50CKW8g=
   on:
-    # tags: true
+    tags: true
     condition: "$TOXENV = py36"
