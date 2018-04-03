@@ -16,6 +16,12 @@
 
 * KMS: max_length is always expected to be exactly max. Make no sence as a param
 
+* KMS: list CMK filter by key_state not working as documented
+
+* KMS: format of the timestamp is unknown
+
+* KMS: no way to get response in english
+
 * Inconsistent naming between services (AS:create_time, KMS:creation_date)
 
 * Inconsistent error message structure between services (i.e. KMS vs RDS). This prohibits code generalization
