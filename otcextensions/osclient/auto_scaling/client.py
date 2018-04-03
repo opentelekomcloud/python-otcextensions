@@ -37,7 +37,7 @@ API_VERSIONS = {
 
 
 def make_client(instance):
-    """Returns a rds proxy"""
+    """Returns a AS proxy"""
 
     LOG.debug('Instantiating AS Client: ')
 
@@ -81,11 +81,4 @@ def make_client(instance):
 
 def build_option_parser(parser):
     """Hook to add global options"""
-    # parser.add_argument(
-    #     '--os-as-api-version',
-    #     metavar='<rds-api-version>',
-    #     default=utils.env('OS_AS_API_VERSION'),
-    #     help=_("RDS API version, default=%s "
-    #            "(Env: OS_RDS_API_VERSION)") % DEFAULT_API_VERSION
-    # )
     return parser

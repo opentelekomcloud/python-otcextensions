@@ -84,11 +84,11 @@ def make_client(instance):
 
 def build_option_parser(parser):
     """Hook to add global options"""
-    parser.add_argument(
-        '--os-rds-api-version',
-        metavar='<rds-api-version>',
-        default=utils.env('OS_RDS_API_VERSION'),
-        help=_("RDS API version, default=%s "
-               "(Env: OS_RDS_API_VERSION)") % DEFAULT_API_VERSION
-    )
+    # parser.add_argument(
+    #     '--os-rds-api-version',
+    #     metavar='<rds-api-version>',
+    #     default=utils.env('OS_RDS_API_VERSION'),
+    #     help=_("RDS API version, default=%s "
+    #            "(Env: OS_RDS_API_VERSION)") % DEFAULT_API_VERSION
+    # )
     return parser

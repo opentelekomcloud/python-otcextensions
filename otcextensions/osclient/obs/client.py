@@ -110,16 +110,16 @@ def build_option_parser(parser):
     #          DEFAULT_API_VERSION +
     #          ' (Env: OS_OBS_API_VERSION)')
 
-    parser.add_argument(
-        '--ak',
-        metavar='<ak>',
-        help='OTC OBS Plugin AK' +
-             ' (Env: AK)')
-    parser.add_argument(
-        '--sk',
-        metavar='<sk>',
-        help='OTC OBS Plugin SK' +
-             ' (Env: SK)')
+    # parser.add_argument(
+    #     '--ak',
+    #     metavar='<ak>',
+    #     help='OTC OBS Plugin AK' +
+    #          ' (Env: AK)')
+    # parser.add_argument(
+    #     '--sk',
+    #     metavar='<sk>',
+    #     help='OTC OBS Plugin SK' +
+    #          ' (Env: SK)')
     # parser.add_argument(
     #     '--s3-hostname',
     #     metavar='<host>',
