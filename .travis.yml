@@ -8,14 +8,12 @@ matrix:
     env: TOXENV=py36
 install: pip install tox
 script: tox
-# deploy:
-#   provider: pypi
-#   user: gtema
-#   # distributions: sdist bdist_wheel
-#   password:
-#     secure: N4s5CTaWGanNJx/yxSsabAyk3JnpnzRQRPBjQKLSsBF40gjpOU5ui46BzKa1BCTUxitRbwyZlf1joumKdfgoOW4yIec0jsj8pAfVJo6ldwvMhQd51QCQfoKmuvPy7i8X5pLWzaYFtIzZR7eCztcwAGfqnYeRn0KO9u2pGUp1Bx/9f92qQ2K2NGM17OMYlWDL+Shb4YVOsOQHtTSc7KBjolUKAwibbX/ENGkysjsyOGOIaTYb10gANoBqxr5/3M+kzwR2EZkrkzU4NgeloFAM7sOt4WnsZwLHICzgwqW+bKMZ00/jOdB+sqMiErxXPG/HWLdEae73TN3lQYjc6+RHeh4V+VFhwvOZ45XRbJ0lDndjGNRYjsamOob1YaY5WsqBoiS7RfLAysbm5Vh42RhsXLoOUe3A2v92ryYH22KqraRDYYKFf0/3h18TsR3bBj4neZB0F6W2fSaGujKAjWk++BwsLwhS7mY638QUf7JR4piMXILTnBVkTGK7PEv1RiMtc+bv5lkdIowF4Bddc2OqjiSbMjhR8aUVZ4Aa64aJK6uez2L2DbHiNC5UUwjFmiS0hoRJYJSgv/qwkHJnfrQDxVCJ0aVrfqBkoWeY0qyDdoeYTubDhVZO88wuvXoazPei+oj7gJDvVlVPa/RnmQu9Sxoqb9vYn0mT7hyBKL+DP/0=
-#   # skip_cleanup: true
-#   on:
-#     # tags: true
-#     condition: "$TOXENV = py36"
-#     branch: master
+deploy:
+  provider: pypi
+  user: gtema
+  password:
+    secure: RME8zXB1ynBbmSHEx0kkFzViq56mYKleTuN/om+I+4uTxyTJQjbRkN3AJNKO9CX8V1l9KMeSQ/9a6c9Wmqwn7f+Mps1WwMwhAGqZpyV6ea16Z+G2GYR82lAGBqCIU0JWd2WOrwZ05PvPk0UMT8PkvJGPEl32BtIi7y3DTQa3U2Lpzvb2B3B15PMuFgGRDJgMtTfCtqpzJ9Afqa6X2x70HVXViJgCVKfk10NywNk0kqjFNOGnRXGH1w0oIkj7kSuDA2LRU9exNQZAdU5e2rre+BWae7H0/cYB0H58y5Ax5MA8Nga4o/wRy8MFaIB+9xG+fbo1PIRQtkdim2gwuR3ZkBjN5KHuMH1nnC6R5iMdNSmEaV63YST2YaVfWYA2HvSh6U5DI2ES+4FT8MtA3mFFVg2eOi8/r4c3V5EeLt7iR27R1pkWj83vcYCIXj20j/O6LkGkz+kOLgyfP7oGEgIZyXFDqoWk5pdW15eBHQ3hX5q+hT4oTYpF87i45/6SLfDZ/UWNRmASWBGelFRIEZCs69JvIxrbFHPf8kxzI+QIeouC2uV6MklyTq9iFUcZotUBL+WDOkUqO95VKsSlhIJYWBJiPBliXzBXM30XWexfZD49+b5tQqY1zJ0VCYn9YUkoAO08TQiNJbej8F6A9SOqI7FCB28RgW5D6XrfsXGHXzs=
+  on:
+    # tags: true
+    distributions: sdist bdist_wheel
+    repo: OpenTelekomCloud/python-otcextensions
