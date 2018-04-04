@@ -124,3 +124,33 @@ class TestShowCluster(TestCluster):
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
+
+
+class TestDeleteCluster(TestCluster):
+
+    def setUp(self):
+        super(TestDeleteCluster, self).setUp()
+
+        self.cmd = cluster.DeleteCCECluster(self.app, None)
+
+        self.client.delete_cluster = mock.Mock()
+
+    def test_delete(self):
+        arglist = [
+            'cluster_uuid'
+        ]
+
+        verifylist = [
+            ('cluster', 'cluster_uuid')
+        ]
+
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.delete_cluster.side_effect = [{}]
+
+        # Trigger the action
+        self.cmd.take_action(parsed_args)
+
+        self.client.delete_cluster.assert_called_once_with('cluster_uuid')

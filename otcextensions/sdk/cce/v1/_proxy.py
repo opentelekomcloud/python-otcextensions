@@ -64,3 +64,20 @@ class Proxy(sdk_proxy.Proxy):
             _cluster.Cluster, cluster,
             headers=self.get_os_headers()
         )
+
+    def delete_cluster(self, cluster, ignore_missing=True):
+        """Delete a cluster
+
+        :param cluster: The value can be the ID of a cluster
+             or a :class:`~otcextensions.sdk.cce.v1.cluster.Cluster`
+             instance.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the group does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent cluster.
+        """
+        return self._delete(
+            _cluster.Cluster, cluster, ignore_missing=ignore_missing,
+            headers=self.get_os_headers()
+        )

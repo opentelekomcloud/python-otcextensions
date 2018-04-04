@@ -113,6 +113,7 @@ class TestCluster(base.TestCase):
         super(TestCluster, self).setUp()
         self.sess = mock.Mock(spec=adapter.Adapter)
         self.sess.get = mock.Mock()
+        self.sess.delete = mock.Mock()
 
         self.sot = cluster.Cluster()
 
@@ -162,14 +163,10 @@ class TestCluster(base.TestCase):
     def test_get(self):
         sot = cluster.Cluster.existing(id=EXAMPLE_LIST[0]['metadata']['uuid'])
 
-        print(sot)
-
         mock_response = mock.Mock()
         mock_response.status_code = 200
         mock_response.headers = {}
         mock_response.json.return_value = copy.deepcopy(EXAMPLE_LIST[0])
-
-        # print('response is %s' % mock_response.json.return_value)
 
         self.sess.get.return_value = mock_response
 
@@ -182,3 +179,18 @@ class TestCluster(base.TestCase):
         self.assertDictEqual(
             cluster.Cluster.existing(**EXAMPLE_LIST[0]).to_dict(),
             result.to_dict())
+
+    def test_delete(self):
+        sot = cluster.Cluster.existing(id=EXAMPLE_LIST[0]['metadata']['uuid'])
+
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.headers = {}
+        mock_response.json.return_value = None
+
+        self.sess.delete.return_value = mock_response
+
+        sot.delete(self.sess)
+
+        self.sess.delete.assert_called_once_with(
+            'clusters/%s' % sot.id)

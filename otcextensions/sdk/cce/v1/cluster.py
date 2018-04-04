@@ -136,6 +136,8 @@ class ClusterSpec(sdk_resource.Resource):
     type = resource.Body('clustertype')
     #: host list
     host_list = resource.Body('hostList', type=ClusterHostList)
+    #: Region (used for create cluster)
+    region = resource.Body('region')
 
 
 class Cluster(sdk_resource.Resource):

@@ -89,3 +89,22 @@ class ShowCCECluster(command.ShowOne):
         data = utils.get_dict_properties(_flatten_cluster(obj), self.columns)
 
         return (self.columns, data)
+
+
+class DeleteCCECluster(command.Command):
+    _description = _('Delete CCE Cluster')
+
+    def get_parser(self, prog_name):
+        parser = super(DeleteCCECluster, self).get_parser(prog_name)
+        parser.add_argument(
+            'cluster',
+            metavar='<cluster>',
+            help=_('ID of the cluster')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+
+        if parsed_args.cluster:
+            client = self.app.client_manager.cce
+            client.delete_cluster(parsed_args.cluster)
