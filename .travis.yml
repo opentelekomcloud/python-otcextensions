@@ -17,3 +17,4 @@ deploy:
     # tags: true
     distributions: sdist bdist_wheel
     repo: OpenTelekomCloud/python-otcextensions
+    condition: "$TOXENV = py36"
