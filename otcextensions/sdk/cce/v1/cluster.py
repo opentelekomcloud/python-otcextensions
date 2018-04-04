@@ -39,7 +39,60 @@ class Metadata(sdk_resource.Resource):
     update_time = resource.Body('updateAt')
 
 
-class Spec(sdk_resource.Resource):
+class HostSpec(sdk_resource.Resource):
+    # Properties
+    #: Cluster UUID
+    cluster_uuid = resource.Body('clusteruuid')
+    #: Private IP
+    private_ip = resource.Body('privateip')
+    #: Public IP
+    public_ip = resource.Body('publicip')
+    #: Flavor
+    flavor = resource.Body('flavor')
+    #: CPU
+    cpu = resource.Body('cpu')
+    #: Memory
+    memory = resource.Body('memory')
+    #: availability zone
+    availability_zone = resource.Body('az')
+    #: volume
+    volume = resource.Body('volume', type=list, list_type=dict)
+    #: SSH Key
+    ssh_key = resource.Body('sshkey')
+    #: status
+    status = resource.Body('status', type=dict)
+
+
+class HostListEntity(sdk_resource.Resource):
+    # Properties
+    #: Kind
+    kind = resource.Body('kind')
+    #: metadata
+    metadata = resource.Body('metadata', type=Metadata)
+    #: Spec
+    spec = resource.Body('spec', type=HostSpec)
+    #: Status
+    status = resource.Body('status')
+    #: Message
+    message = resource.Body('message')
+
+
+class HostListSpec(sdk_resource.Resource):
+    # Properties
+    host_list = resource.Body('hostList', type=list, list_type=HostListEntity)
+
+
+class ClusterHostList(sdk_resource.Resource):
+    # Properties
+    #: Kind
+    kind = resource.Body('kind')
+    #: metadata
+    metadata = resource.Body('metadata', type=Metadata)
+    #: Spec
+    spec = resource.Body('spec', type=HostListSpec)
+
+
+class ClusterSpec(sdk_resource.Resource):
 
     # Properties
     #: Description
@@ -78,6 +131,11 @@ class Spec(sdk_resource.Resource):
     #: External endpoint
     #: *Type:str*
     external_endpoint = resource.Body('external_endpoint')
+    #: Cluster type
+    #: *Type:str*
+    type = resource.Body('clustertype')
+    #: host list
+    host_list = resource.Body('hostList', type=ClusterHostList)
 
 
 class Cluster(sdk_resource.Resource):
@@ -100,9 +158,9 @@ class Cluster(sdk_resource.Resource):
     #: metadata
     metadata = resource.Body('metadata', type=Metadata)
     #: specification
-    spec = resource.Body('spec', type=Spec)
-    #: host list
-    host_list = resource.Body('hostList', type=list)
+    spec = resource.Body('spec', type=ClusterSpec)
+    #: Cluster status
+    status = resource.Body('clusterStatus', type=dict)
 
     @staticmethod
     def _get_id(value):
@@ -134,6 +192,18 @@ class Cluster(sdk_resource.Resource):
                     metadata = self._body['metadata']
                     if isinstance(metadata, dict):
                         return metadata['uuid']
+                    elif isinstance(metadata, Metadata):
+                        return metadata._body[metadata._alternate_id()]
+                except KeyError:
+                    return None
+        elif name == "name":
+            if name in self._body:
+                return self._body[name]
+            else:
+                try:
+                    metadata = self._body['metadata']
+                    if isinstance(metadata, dict):
+                        return metadata['name']
                     elif isinstance(metadata, Metadata):
                         return metadata._body[metadata._alternate_id()]
                 except KeyError:
