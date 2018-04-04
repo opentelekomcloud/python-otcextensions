@@ -122,6 +122,7 @@ control which services can be used.
    Object Block Storage <proxies/obs>
    AutoScaling Service <proxies/auto_scaling>
    Key Management Service <proxies/kms>
+   Cloud Container Engine <proxies/cce>
 
 Resource Interface
 ~~~~~~~~~~~~~~~~~~
@@ -158,6 +159,7 @@ classes.
    Object Block Storage <resources/obs/index>
    AutoScaling Service <resources/auto_scaling/index>
    Key Management Service <resources/kms/index>
+   Cloud Container Engine <resources/cce/index>
 
 Low-Level Classes
 ~~~~~~~~~~~~~~~~~

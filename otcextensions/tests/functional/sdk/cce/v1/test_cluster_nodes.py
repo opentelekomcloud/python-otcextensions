@@ -18,28 +18,23 @@ from otcextensions.tests.functional import base
 _logger = _log.setup_logging('openstack')
 
 
-class TestCluster(base.BaseFunctionalTest):
+class TestClusterNodes(base.BaseFunctionalTest):
+
     TEST_CLUSTER = '5a66a449-668c-492f-8c33-5cdbdeaadd2e'
 
     def setUp(self):
-        super(TestCluster, self).setUp()
+        super(TestClusterNodes, self).setUp()
         self.cce = self.conn.cce
 
-    def test_list(self):
+    def test_list_nodes(self):
+        cluster = self.cce.get_cluster(self.TEST_CLUSTER)
+        nodes = list(self.cce.cluster_nodes(cluster))
 
-        objects = list(self.cce.clusters())
+        self.assertGreaterEqual(len(nodes), 0)
 
-        for obj in objects:
-            self.assertIsNotNone(obj.id)
+    def test_get_node(self):
+        cluster = self.cce.get_cluster(self.TEST_CLUSTER)
+        nodes = list(self.cce.cluster_nodes(cluster))
+        node = self.cce.get_cluster_node(cluster, nodes[0].id)
 
-        self.assertGreaterEqual(len(objects), 0)
-
-    def test_get(self):
-        obj = self.cce.get_cluster(self.TEST_CLUSTER)
-
-        self.assertIsNotNone(obj.id)
-
-        print(obj.to_dict())
-        print('id=%s' % obj.id)
-        print('name=%s' % obj.metadata.name)
-        self.assertIsNotNone(obj)
+        self.assertIsNotNone(node)

@@ -4,3 +4,4 @@
    obs.rst
    auto_scaling.rst
    kms.rst
+   cce.rst

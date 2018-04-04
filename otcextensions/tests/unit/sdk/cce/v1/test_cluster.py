@@ -18,6 +18,10 @@ from openstack.tests.unit import base
 
 from otcextensions.sdk.cce.v1 import cluster
 
+OS_HEADERS = {
+    'Content-Type': 'application/json',
+}
+
 EXAMPLE_LIST = [{
     'kind': 'cluster',
     'apiVersion': 'v1',
@@ -151,7 +155,8 @@ class TestCluster(base.TestCase):
 
         self.sess.get.assert_called_once_with(
             '/clusters',
-            params={}
+            params={},
+            headers=OS_HEADERS
         )
 
         expected_list = [
@@ -173,7 +178,8 @@ class TestCluster(base.TestCase):
         result = sot.get(self.sess)
 
         self.sess.get.assert_called_once_with(
-            'clusters/%s' % EXAMPLE_LIST[0]['metadata']['uuid']
+            'clusters/%s' % EXAMPLE_LIST[0]['metadata']['uuid'],
+            headers=OS_HEADERS
         )
 
         self.assertDictEqual(
@@ -193,4 +199,41 @@ class TestCluster(base.TestCase):
         sot.delete(self.sess)
 
         self.sess.delete.assert_called_once_with(
-            'clusters/%s' % sot.id)
+            'clusters/%s' % sot.id,
+            headers=OS_HEADERS)
+
+    def test_delete_nodes(self):
+        sot = cluster.Cluster.existing(id=EXAMPLE_LIST[0]['metadata']['uuid'])
+
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.headers = {}
+        mock_response.json.return_value = None
+
+        self.sess.delete.return_value = mock_response
+
+        sot.delete_nodes(self.sess, ['n1', 'n2'])
+
+        self.sess.delete.assert_called_once_with(
+            'clusters/%s/hosts' % sot.id,
+            json={
+                'hosts': [
+                    {'name': 'n1'},
+                    {'name': 'n2'},
+                ]
+            },
+            headers=OS_HEADERS
+        )
+
+        self.sess.delete.reset_mock()
+        sot.delete_nodes(self.sess, 'n3')
+
+        self.sess.delete.assert_called_once_with(
+            'clusters/%s/hosts' % sot.id,
+            json={
+                'hosts': [
+                    {'name': 'n3'},
+                ]
+            },
+            headers=OS_HEADERS
+        )

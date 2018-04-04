@@ -9,85 +9,27 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import six
+# import six
 
 # from openstack import exceptions
 from openstack import resource
+from openstack import utils
 
 from otcextensions.sdk import sdk_resource
 
 from otcextensions.sdk.cce import cce_service
-
-
-class Metadata(sdk_resource.Resource):
-
-    # Properties
-    #: UUID
-    #: *Type:str
-    id = resource.Body('uuid', alternate_id=True)
-    #: Name
-    #: *Type:str
-    name = resource.Body('name')
-    #: Space UUID
-    #: *Type:str
-    space_uuid = resource.Body('spaceuuid')
-    #: Create time
-    #: *Type:str
-    create_time = resource.Body('createAt')
-    #: Update time
-    #: *Type:str
-    update_time = resource.Body('updateAt')
-
-
-class HostSpec(sdk_resource.Resource):
-    # Properties
-    #: Cluster UUID
-    cluster_uuid = resource.Body('clusteruuid')
-    #: Private IP
-    private_ip = resource.Body('privateip')
-    #: Public IP
-    public_ip = resource.Body('publicip')
-    #: Flavor
-    flavor = resource.Body('flavor')
-    #: CPU
-    cpu = resource.Body('cpu')
-    #: Memory
-    memory = resource.Body('memory')
-    #: availability zone
-    availability_zone = resource.Body('az')
-    #: volume
-    volume = resource.Body('volume', type=list, list_type=dict)
-    #: SSH Key
-    ssh_key = resource.Body('sshkey')
-    #: status
-    status = resource.Body('status', type=dict)
-
-
-class HostListEntity(sdk_resource.Resource):
-    # Properties
-    #: Kind
-    kind = resource.Body('kind')
-    #: metadata
-    metadata = resource.Body('metadata', type=Metadata)
-    #: Spec
-    spec = resource.Body('spec', type=HostSpec)
-    #: Status
-    status = resource.Body('status')
-    #: Message
-    message = resource.Body('message')
+from otcextensions.sdk.cce.v1 import _base
+from otcextensions.sdk.cce.v1 import cluster_host
 
 
 class HostListSpec(sdk_resource.Resource):
     # Properties
-    host_list = resource.Body('hostList', type=list, list_type=HostListEntity)
+    host_list = resource.Body('hostList', type=list,
+                              list_type=cluster_host.ClusterHost)
 
 
-class ClusterHostList(sdk_resource.Resource):
+class ClusterHostList(_base.Resource):
     # Properties
-    #: Kind
-    kind = resource.Body('kind')
-    #: metadata
-    metadata = resource.Body('metadata', type=Metadata)
     #: Spec
     spec = resource.Body('spec', type=HostListSpec)
 
@@ -138,9 +80,11 @@ class ClusterSpec(sdk_resource.Resource):
     host_list = resource.Body('hostList', type=ClusterHostList)
     #: Region (used for create cluster)
     region = resource.Body('region')
+    #: Public IP ID or EIP ID (used for create cluster)
+    publicip_id = resource.Body('publicip_id')
 
 
-class Cluster(sdk_resource.Resource):
+class Cluster(_base.Resource):
     base_path = '/clusters'
 
     service = cce_service.CceService()
@@ -155,29 +99,25 @@ class Cluster(sdk_resource.Resource):
     allow_delete = True
 
     # Properties
-    #: Kind
-    kind = resource.Body('kind')
-    #: metadata
-    metadata = resource.Body('metadata', type=Metadata)
     #: specification
     spec = resource.Body('spec', type=ClusterSpec)
     #: Cluster status
     status = resource.Body('clusterStatus', type=dict)
 
-    @staticmethod
-    def _get_id(value):
-        """If a value is a Resource, return the canonical ID
-
-        This will return either the value specified by `id` or
-        `alternate_id` in that order if `value` is a Resource.
-        If `value` is anything other than a Resource, likely to
-        be a string already representing an ID, it is returned.
-        """
-        print('in the _get_id')
-        if isinstance(value, resource.Resource):
-            return value.metadata.id
-        else:
-            return value
+    # @staticmethod
+    # def _get_id(value):
+    #     """If a value is a Resource, return the canonical ID
+    #
+    #     This will return either the value specified by `id` or
+    #     `alternate_id` in that order if `value` is a Resource.
+    #     If `value` is anything other than a Resource, likely to
+    #     be a string already representing an ID, it is returned.
+    #     """
+    #     print('in the _get_id')
+    #     if isinstance(value, resource.Resource):
+    #         return value.metadata.id
+    #     else:
+    #         return value
 
     def __getattribute__(self, name):
         """Return an attribute on this instance
@@ -186,32 +126,49 @@ class Cluster(sdk_resource.Resource):
         the 'id' name, as this can exist under a different name via the
         `alternate_id` argument to resource.Body.
         """
-        if name == "id":
+        if name == 'id' or name == 'name':
             if name in self._body:
                 return self._body[name]
             else:
                 try:
                     metadata = self._body['metadata']
-                    if isinstance(metadata, dict):
-                        return metadata['uuid']
-                    elif isinstance(metadata, Metadata):
-                        return metadata._body[metadata._alternate_id()]
-                except KeyError:
-                    return None
-        elif name == "name":
-            if name in self._body:
-                return self._body[name]
-            else:
-                try:
-                    metadata = self._body['metadata']
-                    if isinstance(metadata, dict):
-                        return metadata['name']
-                    elif isinstance(metadata, Metadata):
-                        return metadata._body[metadata._alternate_id()]
+                    if name == 'id':
+                        if isinstance(metadata, dict):
+                            return metadata['uuid']
+                        elif isinstance(metadata, _base.Metadata):
+                            return metadata._body[metadata._alternate_id()]
+                    else:
+                        if isinstance(metadata, dict):
+                            return metadata['name']
+                        elif isinstance(metadata, _base.Metadata):
+                            return metadata.name
                 except KeyError:
                     return None
         else:
             return object.__getattribute__(self, name)
+
+    def delete_nodes(self, session, node_names, headers=None):
+        """Delete nodes from the cluster by their name
+        """
+        nodes = []
+        if isinstance(node_names, list):
+            # Is given a list
+            for node in node_names:
+                nodes.append({'name': node})
+        elif isinstance(node_names, str):
+            # a single string, consider as a name of single host
+            nodes.append({'name': node_names})
+        message = {
+            'hosts': nodes
+        }
+
+        # Build additional arguments to the DELETE call
+        args = self._prepare_override_args(
+            additional_headers=headers
+        )
+
+        url = utils.urljoin(self.base_path, self.id, 'hosts')
+        session.delete(url, json=message, **args)
 
     # @classmethod
     # def flatten(cls, **kwargs):

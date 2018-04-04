@@ -12,44 +12,19 @@
 from otcextensions.sdk import sdk_proxy
 
 from otcextensions.sdk.cce.v1 import cluster as _cluster
+from otcextensions.sdk.cce.v1 import cluster_host as _cluster_host
 
 
 class Proxy(sdk_proxy.Proxy):
-
-    def get_os_headers(self, language=None):
-        """Get headers for request
-
-        Unfortunatels RDS requires 'Content-Type: application/json'
-        header even for GET and LIST operations with empty body
-        We need to deel with it
-
-        :param language: whether language should be added to headers
-            can be either bool (then self.get_language is used)
-            or a language code directly (i.e. "en-us")
-        :returns dict: dictionary with headers
-        """
-        headers = {
-            'Content-Type': 'application/json',
-        }
-        if language:
-            if isinstance(language, bool):
-                headers['X-Language'] = self.get_language()
-            elif isinstance(language, str):
-                headers['X-Language'] = language
-        return headers
 
     # ======== Cluster ========
     def clusters(self):
         """List all Clusters.
 
-
-
         :returns: a generator of
             (:class:`~otcextensions.sdk.cce.v1.cluster.Cluster`) instances
         """
-        return self._list(
-            _cluster.Cluster, paginated=True,
-            headers=self.get_os_headers())
+        return self._list(_cluster.Cluster, paginated=False)
 
     def get_cluster(self, cluster):
         """Get the cluster by UUID
@@ -62,7 +37,6 @@ class Proxy(sdk_proxy.Proxy):
         """
         return self._get(
             _cluster.Cluster, cluster,
-            headers=self.get_os_headers()
         )
 
     def delete_cluster(self, cluster, ignore_missing=True):
@@ -79,5 +53,73 @@ class Proxy(sdk_proxy.Proxy):
         """
         return self._delete(
             _cluster.Cluster, cluster, ignore_missing=ignore_missing,
-            headers=self.get_os_headers()
+        )
+
+    # ======== Cluster Nodes ========
+    def cluster_nodes(self, cluster):
+        """List all Cluster nodes.
+
+        :param cluster: The value can be the ID of a cluster
+             or a :class:`~otcextensions.sdk.cce.v1.cluster.Cluster`
+             instance.
+
+        :returns: a generator of
+            (:class:`~otcextensions.sdk.cce.v1.cluster_host.ClusterHost`)
+            instances
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return self._list(
+            _cluster_host.ClusterHost, cluster_uuid=cluster.id,
+            paginated=False
+        )
+
+    def get_cluster_node(self, cluster, node_id):
+        """Get the cluster node by it's UUID
+
+        :param cluster: key id or an instance of
+            :class:`~otcextensions.sdk.cce.v1.cluster.Cluster`
+        :param node_id: Cluster node id to be fetched
+
+        :returns: instance of
+            :class:`~otcextensions.sdk.cce.v1.cluster_node.ClusterNode`
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return self._get(
+            _cluster_host.ClusterHost,
+            node_id,
+            cluster_uuid=cluster.id,
+        )
+
+    def delete_cluster_nodes(self, cluster, node_names):
+        """Delete nodes from the cluster
+
+        :param cluster: The value can be the ID of a cluster
+             or a :class:`~otcextensions.sdk.cce.v1.cluster.Cluster`
+             instance.
+        :param node_names: List of node names to be deleted.
+            Can be also a single node name.
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return cluster.delete_nodes(
+            self,
+            node_names,
+        )
+
+    def add_node(self, cluster, **attrs):
+        """Add a new node to the cluster
+
+        :param cluster: The value can be the ID of a cluster
+             or a :class:`~otcextensions.sdk.cce.v1.cluster.Cluster`
+             instance.
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.cce.v1.cluster_host.ClusterHost`,
+            comprised of the properties on the ClusterHost class.
+        :returns: The results of config creation
+        :rtype: :class:`~otcextensions.sdk.cce.v1.config.Config`
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return self._create(
+            _cluster_host.ClusterHost,
+            cluster_uuid=cluster.id,
+            **attrs
         )
