@@ -25,7 +25,16 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
         self.proxy = _proxy.Proxy(self.session)
 
     def test_create_queue(self):
-        self.verify_create(self.proxy.create_queue, _queue.Queue)
+        self.verify_create(self.proxy.create_queue, _queue.Queue,
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
+            method_kwargs={
+                'name': 'some_name'
+            },
+            expected_kwargs={
+                'prepend_key': False,
+                'name': 'some_name'
+            }
+        )        
 
     # def test_queues(self):
     #     self.verify_list(self.proxy.queues, _queue.Queue)
@@ -34,8 +43,11 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
     #     self.verify_get(self.proxy.get_queue, _queue.Queue)
 
     def test_delete_queue(self):
-        self.verify_delete(self.proxy.delete_queue, _queue.Queue, True)
-
+        self.verify_delete(self.proxy.delete_queue, _queue.Queue, True,
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
+            expected_kwargs={
+            }
+        )
     # def test_create_groups(self):
     #     self._verify2('openstack.dms.v1.queue.Group.create_groups',
     #                   self.proxy.create_groups,

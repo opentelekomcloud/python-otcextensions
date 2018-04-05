@@ -39,27 +39,33 @@ class Queue(sdk_resource.Resource):
     id = resource.Body('id')
     #: Queue name
     name = resource.Body('name')
-    #: Created time
-    #: *Type: int*
-    created = resource.Body('created', type=int)
+     #: Queue mode
+    queue_mode = resource.Body('queue_mode')   
     #: Description for the queue
     description = resource.Body('description')
-    #: reservation time (min)
-    #: *Type: int*
-    reservation = resource.Body('reservation', type=int)
-    #: Max mesage size in Byte
-    #: *Type: int*
-    max_msg_size_byte = resource.Body('max_msg_size_byte', type=int)
-    #: Total message number
-    #: *Type: int*
-    produced_messages = resource.Body('produced_messages', type=int)
-    #: Queue mode
-    queue_mode = resource.Body('queue_mode')
     #: Redrive policy
     redrive_policy = resource.Body('redrive_policy')
      #: Max consume count number
     #: *Type: int*
     max_consume_count = resource.Body('max_consume_count', type=int)
+    #: Retentions hours
+    #: *Type: int*
+    retention_hours = resource.Body('retention_hours', type=int)
+
+    # #: reservation time (min)
+    # #: *Type: int*
+    # reservation = resource.Body('reservation', type=int)
+    # #: Max mesage size in Byte
+    # #: *Type: int*
+    # max_msg_size_byte = resource.Body('max_msg_size_byte', type=int)
+    # #: Total message number
+    # #: *Type: int*
+    # produced_messages = resource.Body('produced_messages', type=int)
+
+
+    # #: Created time
+    # #: *Type: int*
+    # created = resource.Body('created', type=int)
 
 
 class Group(sdk_resource.Resource):
