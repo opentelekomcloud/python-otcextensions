@@ -104,7 +104,7 @@ class TestGroup(base.TestCase):
                          sot.available_messages)
 
     #@mock.patch("openstack.service_filter.ServiceFilter."                "get_endpoint_override")
-    def test_create_groups(self, mock_svc):
+    def test_create_groups(self):
         fake_queue_id = 'fake'
         sess = mock.Mock()
         sess.post.return_value = None
@@ -123,7 +123,7 @@ class TestMessage(base.TestCase):
     objcls = queue.Message
 
     #@mock.patch("openstack.service_filter.ServiceFilter."                "get_endpoint_override")
-    def test_create_messages(self, mock_svc):
+    def test_create_messages(self):
         fake_queue_id = 'fake'
         sess = mock.Mock()
         sess.post.return_value = None
