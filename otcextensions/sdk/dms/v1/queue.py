@@ -63,9 +63,9 @@ class Queue(sdk_resource.Resource):
     # produced_messages = resource.Body('produced_messages', type=int)
 
 
-    # #: Created time
-    # #: *Type: int*
-    # created = resource.Body('created', type=int)
+    #: Created time
+    #: *Type: int*
+    created = resource.Body('created', type=int)
 
 
 class Group(sdk_resource.Resource):

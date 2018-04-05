@@ -23,10 +23,8 @@ EXAMPLE = {
     "id": "9bf46390-38a2-462d-b392-4d5b2d519c55",
     "name": "queue_001",
     "description": "test1",
-    "created": 1470063965218,
-    "reservation": 4320,
-    "max_msg_size_byte": 524288,
-    "produced_messages": 5
+    "redrive_policy": "enable",
+    "max_consume_count": 1
 }
 
 GROUP_EXAMPLE = {
@@ -73,12 +71,10 @@ class TestQueue(base.TestCase):
         self.assertEqual(self.example['id'], sot.id)
         self.assertEqual(self.example['name'], sot.name)
         self.assertEqual(self.example['description'], sot.description)
-        self.assertEqual(self.example['created'], sot.created)
-        self.assertEqual(self.example['reservation'], sot.reservation)
-        self.assertEqual(self.example['max_msg_size_byte'],
-                         sot.max_msg_size_byte)
-        self.assertEqual(self.example['produced_messages'],
-                         sot.produced_messages)
+        self.assertEqual(self.example['max_consume_count'],
+                         sot.max_consume_count)
+        self.assertEqual(self.example['redrive_policy'],
+                         sot.redrive_policy)
 
 
 class TestGroup(base.TestCase):

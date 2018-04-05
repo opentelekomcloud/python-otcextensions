@@ -28,13 +28,12 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
         self.verify_create(self.proxy.create_queue, _queue.Queue,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
             method_kwargs={
-                'name': 'some_name'
+                'name': 'queue_001'
             },
             expected_kwargs={
-                'prepend_key': False,
-                'name': 'some_name'
+                'name': 'queue_001'
             }
-        )        
+        )
 
     # def test_queues(self):
     #     self.verify_list(self.proxy.queues, _queue.Queue)
