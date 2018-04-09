@@ -158,7 +158,8 @@ class Proxy(sdk_proxy.Proxy):
             * ``limit``: pagination limit
 
         :returns: A generator of config
-            (:class:`~otcextensions.auto_scaling.v1.config.Config`) instances
+            (:class:`~otcextensions.sdk.auto_scaling.v1.config.Config`)
+            instances
         """
         return self._list(
             _config.Config, paginated=True,
@@ -169,10 +170,10 @@ class Proxy(sdk_proxy.Proxy):
 
         :param name: auto scaling config name
         :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.auto_scaling.v1.config.InstanceConfig`,
-            comprised of the properties on the InstanceConfig class.
+            a :class:`~otcextensions.sdk.auto_scaling.v1.config.InstanceConfig`
+            , comprised of the properties on the InstanceConfig class.
         :returns: The results of config creation
-        :rtype: :class:`~otcextensions.auto_scaling.v1.config.Config`
+        :rtype: :class:`~otcextensions.sdk.auto_scaling.v1.config.Config`
         """
         return self._create(
             _config.Config,
@@ -185,10 +186,10 @@ class Proxy(sdk_proxy.Proxy):
         """Get a config
 
         :param config: The value can be the ID of a config
-             or a :class:`~otcextensions.auto_scaling.v1.config.Config`
+             or a :class:`~otcextensions.sdk.auto_scaling.v1.config.Config`
              instance.
         :returns: Config instance
-        :rtype: :class:`~otcextensions.auto_scaling.v1.config.Config`
+        :rtype: :class:`~otcextensions.sdk.auto_scaling.v1.config.Config`
         """
         return self._get(
             _config.Config, config
@@ -205,7 +206,7 @@ class Proxy(sdk_proxy.Proxy):
             When set to ``True``, no exception will be set when attempting
             to delete a nonexistent config.
         :returns: Config instance
-        :rtype: :class:`~otcextensions.auto_scaling.v1.config.Config`
+        :rtype: :class:`~otcextensions.sdk.auto_scaling.v1.config.Config`
         """
         return self._find(
             _config.Config, name_or_id,
@@ -216,7 +217,7 @@ class Proxy(sdk_proxy.Proxy):
         """Delete a config
 
         :param config: The value can be the ID of a config
-            or a :class:`~otcextensions.auto_scaling.v1.config.Config`
+            or a :class:`~otcextensions.sdk.auto_scaling.v1.config.Config`
             instance.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
@@ -225,7 +226,7 @@ class Proxy(sdk_proxy.Proxy):
             delete a nonexistent config.
 
         :returns: Config been deleted
-        :rtype: :class:`~otcextensions.auto_scaling.v1.config.Config`
+        :rtype: :class:`~otcextensions.sdk.auto_scaling.v1.config.Config`
         """
         return self._delete(
             _config.Config, config,
@@ -236,7 +237,7 @@ class Proxy(sdk_proxy.Proxy):
         """batch delete configs
 
         :param configs: The list item value can be the ID of a config
-            or a :class:`~otcextensions.auto_scaling.v1.config.Config`
+            or a :class:`~otcextensions.sdk.auto_scaling.v1.config.Config`
             instance.
         """
         config = _config.Config()

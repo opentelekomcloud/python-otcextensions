@@ -57,7 +57,9 @@ Create a ``clouds.yaml`` file:
           auth_url: 'https://iam.eu-de.otc.t-systems.com:443/v3'
           user_domain_name: 'OTC00000000001000000xxx'
         interface: 'public'
-        identity_api_version: 3
+        identity_api_version: 3 # !Important
+        ak: 'AK_VALUE' # AK/SK pair for access to OBS
+        sk: 'SK_VALUE'
 
 Please note: ``openstack.config`` will look for a file called ``clouds.yaml``
 in the following locations:
@@ -65,6 +67,10 @@ in the following locations:
 * Current Directory
 * ``~/.config/openstack``
 * ``/etc/openstack``
+
+AK/SK values required for access to some services (i.e. OBS) can be either configured as shown above in the clouds.yaml/secure.yaml,
+or they can be automatically retrieved from the S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY.
+Values from the clouds.yaml/secure.yaml take precedence over the ones from environment.
 
 With this configuration you can start using openstackCLI simply ``openstack --os-cloud otc``
 
@@ -85,6 +91,8 @@ Authentication using username/password is often used::
     export OS_USERNAME=<username>
     export OS_USER_DOMAIN_NAME=<user-domain-name>
     export OS_PASSWORD=<password>  # (optional)
+    export S3_ACCESS_KEY_ID=<access_key>
+    export S3_SECRET_ACCESS_KEY=<secret_access_key>
 
 The corresponding command-line options look very similar::
 

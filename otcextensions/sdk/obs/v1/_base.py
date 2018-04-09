@@ -266,7 +266,6 @@ class BaseResource(sdk_resource.Resource):
 
         total_yielded = 0
         while uri:
-            # print(session)
             func = getattr(session, remote_func)
             response = func(**query_params.copy())
             # exceptions.raise_from_response(response_mock)

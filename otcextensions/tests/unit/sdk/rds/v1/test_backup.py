@@ -62,7 +62,6 @@ class TestBackup(base.TestCase):
         self.sess.put = mock.Mock()
         self.sess.get_project_id = mock.Mock(return_value=PROJECT_ID)
         self.sot = backup.Backup(**EXAMPLE)
-        # print(self.sot.to_dict())
 
     def test_basic(self):
         sot = backup.Backup()

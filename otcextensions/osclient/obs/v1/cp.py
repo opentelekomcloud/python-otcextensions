@@ -148,5 +148,4 @@ class Copy(command.ShowOne):
         #             ObsError.ERROR_INTERNAL
         #         )
 
-        print(result['Mode'])
         return result

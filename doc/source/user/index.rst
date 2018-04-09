@@ -119,8 +119,10 @@ control which services can be used.
    Orchestration <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/orchestration>
    Workflow <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/workflow>
    RDS <proxies/rds>
-   OBS <proxies/obs>
-   AutoScaling <proxies/auto_scaling>
+   Object Block Storage <proxies/obs>
+   AutoScaling Service <proxies/auto_scaling>
+   Key Management Service <proxies/kms>
+   Cloud Container Engine <proxies/cce>
 
 Resource Interface
 ~~~~~~~~~~~~~~~~~~
@@ -154,8 +156,10 @@ classes.
    Object Store <https://docs.openstack.org/python-openstacksdk/latest/user/resources/object_store/index>
    Workflow <https://docs.openstack.org/python-openstacksdk/latest/user/resources/workflow/index>
    RDS <resources/rds/index>
-   OBS <resources/obs/index>
-   AutoScaling <resources/auto_scaling/index>
+   Object Block Storage <resources/obs/index>
+   AutoScaling Service <resources/auto_scaling/index>
+   Key Management Service <resources/kms/index>
+   Cloud Container Engine <resources/cce/index>
 
 Low-Level Classes
 ~~~~~~~~~~~~~~~~~

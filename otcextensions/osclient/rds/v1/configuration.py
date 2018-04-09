@@ -307,8 +307,6 @@ class SetConfiguration(command.ShowOne):
 
         config = config.change_parameter_info(session=client, **config_attrs)
 
-        print(config)
-
         data = utils.get_item_properties(
             config, self.columns,
             formatters={
