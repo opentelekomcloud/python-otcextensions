@@ -93,8 +93,6 @@ class List(command.Lister):
             **kwargs
         )
 
-        # print(tuple(data))
-
         if mode == 'Objects':
             if not parsed_args.long:
                 columns = (

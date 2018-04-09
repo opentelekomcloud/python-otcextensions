@@ -1,7 +1,7 @@
 AutoScaling API
 ===============
 
-For details on how to use database, see :doc:`/user/guides/auto_scaling`
+For details on how to use auto scaling, see :doc:`/user/guides/auto_scaling`
 
 .. automodule:: otcextensions.sdk.auto_scaling.v1._proxy
 

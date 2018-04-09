@@ -18,12 +18,14 @@ from keystoneauth1 import exceptions as _exceptions
 from openstack import connection
 from openstack.tests import base
 
+from otcextensions import sdk
+
 
 #: Defines the OpenStack Client Config (OCC) cloud key in your OCC config
 #: file, typically in $HOME/.config/openstack/clouds.yaml. That configuration
 #: will determine where the functional tests will be run and what resource
 #: defaults will be used to run the functional tests.
-TEST_CLOUD_NAME = os.getenv('OS_CLOUD', 'devstack')
+TEST_CLOUD_NAME = os.getenv('OS_CLOUD', 'otc')
 TEST_CLOUD_REGION = openstack.config.get_cloud_region(cloud=TEST_CLOUD_NAME)
 
 
@@ -40,9 +42,16 @@ FLAVOR_NAME = _get_resource_value('flavor_name', 'm1.small')
 
 class BaseFunctionalTest(base.TestCase):
 
-    def setUp(self):
-        super(BaseFunctionalTest, self).setUp()
-        self.conn = connection.Connection(config=TEST_CLOUD_REGION)
+    @classmethod
+    def setUpClass(cls):
+        super(BaseFunctionalTest, cls).setUpClass()
+        cls.conn = connection.Connection(config=TEST_CLOUD_REGION)
+        sdk.register_otc_extensions(cls.conn)
+
+    # def setUp(self):
+    #     super(BaseFunctionalTest, self).setUp()
+    #     self.conn = connection.Connection(config=TEST_CLOUD_REGION)
+    #     sdk.register_otc_extensions(self.conn)
 
     def addEmptyCleanup(self, func, *args, **kwargs):
         def cleanup():

@@ -22,6 +22,8 @@ _logger = _log.setup_logging('openstack')
 
 class Resource(resource.Resource):
 
+    service_expectes_json_type = False
+
     @classmethod
     def _prepare_override_args(cls,
                                endpoint_override=None,
@@ -36,6 +38,11 @@ class Resource(resource.Resource):
         :returns arguments dict
         """
         req_args = {}
+
+        if cls.service_expectes_json_type:
+            # Some services are stupid and expect
+            # 'Content-Type': 'application/json' even for empty requests
+            req_args['headers'] = {'Content-Type': 'application/json'}
 
         if additional_headers and request_headers:
             req_args['headers'] = utils.merge_two_dicts(
@@ -417,8 +424,8 @@ class Resource(resource.Resource):
 
         result = cls._get_one_match(name_or_id, data)
         # Update result with URL parameters
-        result._update(**params)
         if result is not None:
+            result._update(**params)
             return result
 
         if ignore_missing:

@@ -14,6 +14,7 @@ __all__ = [
     'register_otc_extensions',
 ]
 
+import os
 import importlib
 import types
 import warnings
@@ -49,13 +50,11 @@ OTC_SERVICES = {
         'endpoint_service_type': 'database',
         'additional_headers': {'content-type': 'application/json'},
         'strip_endpoint': True,
-        # 'endpoint_override': 'https://rds.%(region_name)s.otc.t-systems.com'
     },
     'obs': {
         'service_type': 'obs',
         'require_ak': True,
         'endpoint_service_type': 'object',
-        # 'endpoint_override': 'https://obs.%(region_name)s.otc.t-systems.com'
     },
     'auto_scaling': {
         'service_type': 'auto_scaling',
@@ -66,6 +65,14 @@ OTC_SERVICES = {
         'service_type': 'dms',
         'endpoint_service_type': 'dms',
         'append_project_id': True,
+    },
+    'kms': {
+        'service_type': 'kms',
+        'append_project_id': True,
+    },
+    'cce': {
+        'service_type': 'cce',
+        'append_project_id': False,
     },
 }
 
@@ -101,11 +108,12 @@ def _get_descriptor(service_name):
 
         else:
             descriptor_args['proxy_class'] = proxy.Proxy
+            descriptor_args['version'] = 'v1.0'
             doc = _DOC_TEMPLATE.format(
                 class_name='~openstack.proxy.Proxy', **service)
         descriptor = desc_class(**descriptor_args)
         descriptor.__doc__ = doc
-        _logger.debug('proxy is %s' % descriptor.proxy_class())
+        _logger.debug('proxy is %s' % descriptor.proxy_class)
 
         return descriptor
     else:
@@ -137,11 +145,12 @@ def patch_connection(target):
         __setattr__, target)
 
 
-def add_service_to_sdk(connection, service_descriptor):
+def add_service_to_sdk(connection, service_name, service_descriptor):
     # descriptors are not working out of box for runtime attributes
     connection.add_service(service_descriptor)
     # Unless connection is patched real proxy can be obtained only so
     proxy = service_descriptor.__get__(connection, service_descriptor)
+    setattr(connection, service_name, proxy)
     return proxy
 
 
@@ -155,7 +164,7 @@ def register_otc_extensions(connection, **kwargs):
                           service_name)
             _logger.debug('keys %s' % service.keys())
             continue
-        proxy = add_service_to_sdk(connection, descriptor)
+        proxy = add_service_to_sdk(connection, service_name, descriptor)
 
         endpoint_service_type = service.get('endpoint_service_type', None)
         # endpoint_service_name = service.get('endpoint_service_name', None)
@@ -173,6 +182,11 @@ def register_otc_extensions(connection, **kwargs):
             ak = config.get('ak', None)
             sk = config.get('sk', None)
 
+            if not ak:
+                ak = os.getenv('S3_ACCESS_KEY_ID', None)
+            if not sk:
+                sk = os.getenv('S3_SECRET_ACCESS_KEY', None)
+
             if ak and sk:
                 proxy._set_ak(ak=ak, sk=sk)
             else:
@@ -187,31 +201,14 @@ def register_otc_extensions(connection, **kwargs):
 
         append_project_id = service.get('append_project_id', False)
         if append_project_id:
-            ep = proxy.get_endpoint()
+            ep = proxy.get_endpoint_data().catalog_url
             if ep and not ep.rstrip('/').endswith('\%(project_id)s'):
                 proxy.endpoint_override = utils.urljoin(ep, '%(project_id)s')
 
-    # Can be done only that late
-    patch_connection(connection)
+        # Can be done only that late
+        # patch_connection(connection)
+        # setattr(connection, service_name, proxy)
     return None
-
-
-# def _get_aliases(service_type, aliases=None):
-#     # We make connection attributes for all official real type names
-#     # and aliases. Three services have names they were called by in
-#     # openstacksdk that are not covered by Service Types Authority aliases.
-#     # Include them here - but take heed, no additional values should ever
-#     # be added to this list.
-#     # that were only used in openstacksdk resource naming.
-#     LOCAL_ALIASES = {
-#         'rds': 'rds',
-#     }
-#     all_types = set(_service_type_manager.get_aliases(service_type))
-#     if aliases:
-#         all_types.update(aliases)
-#     if service_type in LOCAL_ALIASES:
-#         all_types.add(LOCAL_ALIASES[service_type])
-#     return all_types
 
 
 def _find_service_filter_class(service_type):

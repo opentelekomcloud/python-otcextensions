@@ -28,7 +28,6 @@ class TestInstance(base.BaseFunctionalTest):
         self.instances = list(self.conn.rds.instances())
         self.assertGreaterEqual(len(self.instances), 1)
         self.assertIsNotNone(self.instances[0].name)
-        print(self.instances)
 
     def test_get_instance(self):
         if not self.instances:

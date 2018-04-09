@@ -38,7 +38,6 @@ class TestDatastore(base.TestCase):
         self.sess.get = mock.Mock()
         self.sess.get_project_id = mock.Mock(return_value=PROJECT_ID)
         self.sot = datastore.Datastore(**EXAMPLE)
-        # print(self.sot.to_dict())
 
     def test_basic(self):
         sot = datastore.Datastore()
