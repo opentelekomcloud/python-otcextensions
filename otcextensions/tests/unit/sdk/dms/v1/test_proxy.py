@@ -35,11 +35,19 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
             }
         )
 
-    # def test_queues(self):
-    #     self.verify_list(self.proxy.queues, _queue.Queue)
+    def test_queues(self):
+        self.verify_list(self.proxy.queues, _queue.Queue,
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
+            expected_kwargs={
+            }
+        )
 
-    # def test_get_queue(self):
-    #     self.verify_get(self.proxy.get_queue, _queue.Queue)
+    def test_get_queue(self):
+        self.verify_get(self.proxy.get_queue, _queue.Queue,
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
+            expected_kwargs={
+            }
+        )
 
     def test_delete_queue(self):
         self.verify_delete(self.proxy.delete_queue, _queue.Queue, True,
@@ -47,27 +55,49 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
             expected_kwargs={
             }
         )
-    # def test_create_groups(self):
-    #     self._verify2('openstack.dms.v1.queue.Group.create_groups',
-    #                   self.proxy.create_groups,
-    #                   method_args=['queue'],
-    #                   expected_args=[mock.ANY],
-    #                   expected_kwargs={'queue_id': 'queue'})
 
-    # def test_groups(self):
-    #     self._verify2('openstack.proxy2.BaseProxy._list',
-    #                   self.proxy.groups,
-    #                   method_args=['queue'],
-    #                   expected_args=[mock.ANY],
-    #                   expected_kwargs={'queue_id': 'queue',
-    #                                    'paginated': False})
+    def test_create_groups(self):
+        self.verify_create(self.proxy.create_groups,_queue.Group,
+            'otcextensions.dms.v1.queue.Group.create_groups',
+            method_kwargs={
+                'queue_id': 'queue'
+            },
+            expected_kwargs={
+                'queue_id': 'queue'
+            }            
+                    #   method_args=['queue'],
+                    #   expected_args=[mock.ANY],
+                    #   expected_kwargs={'queue_id': 'queue'}
+                      )
 
-    # def test_delete_group(self):
-    #     self._verify2('openstack.proxy2.BaseProxy._delete',
-    #                   self.proxy.delete_group,
-    #                   method_args=['queue', 'group'],
-    #                   expected_args=[mock.ANY, 'group'],
-    #                   expected_kwargs={'queue_id': 'queue'})
+    def test_groups(self):
+        self.verify_list(
+            self.proxy.groups, _queue.Group,
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
+            method_args=['group'],
+            expected_kwargs={
+                'scaling_group_id': 'group'
+            },
+            paginated=True,
+        )        
+        # self._verify2('openstack.proxy2.BaseProxy._list',
+        #               self.proxy.groups,
+        #               method_args=['queue'],
+        #               expected_args=[mock.ANY],
+        #               expected_kwargs={'queue_id': 'queue',
+        #                                'paginated': False})
+
+    def test_delete_group(self):
+        self.verify_delete(
+            self.proxy.delete_group, _queue.Group, True,
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
+                      expected_args=[mock.ANY, 'group'],
+                      expected_kwargs={'queue_id': 'queue'})   
+        # self._verify2('openstack.proxy2.BaseProxy._delete',
+        #               self.proxy.delete_group,
+        #               method_args=['queue', 'group'],
+        #               expected_args=[mock.ANY, 'group'],
+        #               expected_kwargs={'queue_id': 'queue'})
 
     # def test_send_messages(self):
     #     self._verify2('openstack.dms.v1.queue.Message.create_messages',
