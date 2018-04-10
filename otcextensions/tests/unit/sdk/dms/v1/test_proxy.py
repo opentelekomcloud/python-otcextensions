@@ -18,6 +18,7 @@ from openstack.tests.unit import base
 
 from openstack.tests.unit import test_proxy_base
 
+GROUP_ID = 'g-5ec247fd-d4a2-4d4f-9876-e4ff3280c461'
 
 class TestDMSProxy(test_proxy_base.TestProxyBase):
     def setUp(self):
@@ -90,7 +91,12 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
     def test_delete_group(self):
         self.verify_delete(
             self.proxy.delete_group, _queue.Group, True,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete'
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
+            expected_kwargs={
+                'group': GROUP_ID,
+                # 'endpoint_override': ENDPOINT_OS,
+                # 'headers': OS_HEADERS,
+            }            
                       #,expected_args=[mock.ANY, 'group'],
                       #expected_kwargs={'queue_id': 'queue'}
 			)   
