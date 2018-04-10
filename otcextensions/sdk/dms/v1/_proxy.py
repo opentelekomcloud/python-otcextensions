@@ -69,7 +69,7 @@ class Proxy(sdk_proxy.Proxy):
         if isinstance(queue, _queue.Queue):
             queue_id = queue.id
 
-        return _queue.Group.create_groups(self._session,
+        return _queue.Group.create_groups(self.session,
                                           queue_id=queue_id,
                                           **kwargs)
 
@@ -112,7 +112,7 @@ class Proxy(sdk_proxy.Proxy):
         queue_id = queue
         if isinstance(queue, _queue.Queue):
             queue_id = queue.id
-        _queue.Message.create_messages(self._session,
+        _queue.Message.create_messages(self.session,
                                        queue_id=queue_id, **kwargs)
 
     def consume_message(self, queue, consume_group, **query):
@@ -146,7 +146,7 @@ class Proxy(sdk_proxy.Proxy):
         :returns: An object of an instance of
                   :class:`~openstack.dms.v1.queue.MessageConsume`
         """
-        return consumed_message.ack(self._session, status=status)
+        return consumed_message.ack(self.session, status=status)
 
     def quotas(self):
         return self._list(_queue.Quota)
