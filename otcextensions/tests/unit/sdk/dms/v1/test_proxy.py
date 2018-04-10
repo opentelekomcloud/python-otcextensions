@@ -58,18 +58,12 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
         )
 
     def test_create_groups(self):
-        self.verify_create(self.proxy.create_groups,_queue.Group,
-            'otcextensions.sdk.dms.v1.queue.Group.create_groups',
-            method_kwargs={
-                'queue_id': 'queue'
-            },
-            expected_kwargs={
-                'queue_id': 'queue'
-            }            
-                    #   method_args=['queue'],
-                    #   expected_args=[mock.ANY],
-                    #   expected_kwargs={'queue_id': 'queue'}
-                      )
+        self._verify2('otcextensions.sdk.dms.v1.queue.Group.create_groups',
+                      self.proxy.create_groups,
+                      method_args=['queue'],
+                      expected_args=[mock.ANY],
+                      expected_kwargs={'queue_id': 'queue'})
+
 
     def test_groups(self):
         self.verify_list(
