@@ -86,7 +86,7 @@ class Proxy(sdk_proxy.Proxy):
             queue_id = queue.id
         return self._list(_queue.Group, queue_id=queue_id, paginated=False)
 
-    def delete_group(self, queue, group, ignore_missing=True):
+    def delete_group(self, queue, group):
         """Delete a consume on the queue
 
         :param queue: The queue id or an instance of
@@ -99,7 +99,7 @@ class Proxy(sdk_proxy.Proxy):
         if isinstance(queue, _queue.Queue):
             queue_id = queue.id
 
-        self._delete(_queue.Group, group, queue_id=queue_id,ignore_missing=ignore_missing)
+        self._delete(_queue.Group, group, queue_id=queue_id)
 
     def send_messages(self, queue, **kwargs):
         """Send messages for a given queue
