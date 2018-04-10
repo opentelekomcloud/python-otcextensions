@@ -1,4 +1,4 @@
-# Licensed under the Apache License, Version 2.0 (the "License"); you may
+0# Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
 #
@@ -86,7 +86,7 @@ class Proxy(sdk_proxy.Proxy):
             queue_id = queue.id
         return self._list(_queue.Group, queue_id=queue_id, paginated=False)
 
-    def delete_group(self, queue, group):
+    def delete_group(self, queue, group, ignore_missing=True):
         """Delete a consume on the queue
 
         :param queue: The queue id or an instance of
@@ -99,7 +99,7 @@ class Proxy(sdk_proxy.Proxy):
         if isinstance(queue, _queue.Queue):
             queue_id = queue.id
 
-        self._delete(_queue.Group, group, queue_id=queue_id)
+        self._delete(_queue.Group, group, queue_id=queue_id,ignore_missing=ignore_missing)
 
     def send_messages(self, queue, **kwargs):
         """Send messages for a given queue
