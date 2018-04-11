@@ -14,16 +14,13 @@ from openstack import _log
 
 
 from otcextensions.sdk.dms import dms_service
-#from openstack.dms.v1 import dmsresource as _dmsresource
+from otcextensions.sdk.dms.v1 import dmsresource as _base
 from otcextensions.sdk import sdk_resource
 _logger= _log.setup_logging('openstack')
 
-class Queue(sdk_resource.Resource):
+class Queue(_base.Resource):
 
     resources_key = 'queues'
-
-    project_id = resource.URI('project_id')
-    #base_path = '/%(project_id)s/queues'
 
     base_path = '/queues'
     service = dms_service.DmsService()
@@ -51,29 +48,14 @@ class Queue(sdk_resource.Resource):
     #: Retentions hours
     #: *Type: int*
     retention_hours = resource.Body('retention_hours', type=int)
-
-    # #: reservation time (min)
-    # #: *Type: int*
-    # reservation = resource.Body('reservation', type=int)
-    # #: Max mesage size in Byte
-    # #: *Type: int*
-    # max_msg_size_byte = resource.Body('max_msg_size_byte', type=int)
-    # #: Total message number
-    # #: *Type: int*
-    # produced_messages = resource.Body('produced_messages', type=int)
-
-
     #: Created time
     #: *Type: int*
     created = resource.Body('created', type=int)
 
 
-class Group(sdk_resource.Resource):
+class Group(_base.Resource):
 
     resources_key = 'groups'
-    project_id = resource.URI('project_id')
-    #base_path = '/%(project_id)s/queues/%(queue_id)s/groups'
-
 
     base_path = 'queues/%(queue_id)s/groups'
     service = dms_service.DmsService()
@@ -102,16 +84,13 @@ class Group(sdk_resource.Resource):
     # This does a post and return a list of self
     @classmethod
     def create_groups(cls, session, queue_id=queue_id, **kwargs):
-        #endpoint_override = cls.service.get_endpoint_override()
         uri = cls.base_path % {'queue_id': queue_id}
 
         headers = {}
         headers.update({'Content-type': 'application/json'})
         headers.update({'Content-Length': str(len(str(kwargs)))})
 
-        response = session.post(uri,
-         #endpoint_filter=cls.service, endpoint_override=endpoint_override,
-                                json=kwargs, headers=headers)
+        response = session.post(uri,json=kwargs, headers=headers)
 
         if response is not None:
             response = response.json()
@@ -125,10 +104,7 @@ class Group(sdk_resource.Resource):
             return ret
 
 
-class Message(sdk_resource.Resource):
-
-    project_id = resource.URI('project_id')
-    #base_path = '/%(project_id)s/queues/%(queue_id)s/messages'
+class Message(_base.Resource):
 
     # No response for this post method
     base_path = '/queues/%(queue_id)s/messages'
@@ -144,25 +120,20 @@ class Message(sdk_resource.Resource):
 
     @classmethod
     def create_messages(cls, session, queue_id=queue_id, **kwargs):
-        #endpoint_override = cls.service.get_endpoint_override()
         uri = cls.base_path % {'queue_id': queue_id}
 
         headers = {}
         headers.update({'Content-type': 'application/json'})
         headers.update({'Content-Length': str(len(str(kwargs)))})
 
-        response = session.post(uri,
-         #endpoint_filter=cls.service, endpoint_override=endpoint_override,
-                                json=kwargs, headers=headers)
+        response = session.post(uri,json=kwargs, headers=headers)
 
         return response
 
 
-class MessageConsume(resource.Resource):
+class MessageConsumer(_base.Resource):
 
     base_path = '/queues/%(queue_id)s/groups/%(consumer_group_id)s/messages'
-    project_id = resource.URI('project_id')
-    #base_path = '/%(project_id)s/queues/%(queue_id)s/groups/%(consumer_group_id)s/messages'
 
     service = dms_service.DmsService()
 
@@ -192,7 +163,6 @@ class MessageConsume(resource.Resource):
     # which can not leverage method of session directlly.
     # return an url with query params
     # it accepts multiple query params e.g. tag=tag1&tag=tag2
-    # S-u-c-k-s, huh !
     @classmethod
     def _assemble_query_params(cls, base_url, params):
         # pop queue_id and consumer_group_id
@@ -207,8 +177,6 @@ class MessageConsume(resource.Resource):
                     base_url = base_url + 'tag=' + tag + '&'
             else:
                 base_url = base_url + p + '=' + str(v) + '&'
-
-        # remove last `&`
         return base_url[:-1]
 
     # use get method to consume message, return a list of self
@@ -218,28 +186,16 @@ class MessageConsume(resource.Resource):
         headers = {"Accept": "application/json",
                    "Content-type": "application/json"}
         uri = cls.base_path % params
-        #endpoint_override = cls.service.get_endpoint_override()
 
-        tags = params.get("tags", None)
         # NOTES: this API is so different from others, it's not a RESTFUL
         # style, allow user to pass mulitple tags as the query parameters
         # which can not leverage method of session directlly.
-        # if tags is not None:
-        #     if endpoint_override is not None:
-        #         uri = cls._assemble_query_params(uri, params)
-        #         full_url = endpoint_override % {'project_id':
-        #                                         session.get_project_id()}
-        #         full_url = full_url + uri
-        #         resp = session.get(full_url, endpoint_filter=cls.service,
-        #                            headers=headers)
-        #     else:
-        #         # TOOD: Don't support non override yet
-        #         resp = None
-        # else:
+
         query_params = cls._query_mapping._transpose(params)
-        resp = session.get(uri, 
-        #endpoint_filter=cls.service,endpoint_override=endpoint_override,
-                               headers=headers, params=query_params)
+        resp = session.get(
+            uri, 
+            headers=headers, 
+            params=query_params)
 
         if resp is not None:
             resp = resp.json()
@@ -253,8 +209,6 @@ class MessageConsume(resource.Resource):
             return ret
 
     def ack(self, session, status='success'):
-        #endpoint_override = self.service.get_endpoint_override()
-        # base_path is /queues/{queue_id}/groups/{consumer_group_id}/ack
         base_path = 'ack'.join(self.base_path.rsplit('messages', 1))
         uri = base_path % self._uri.attributes
 
@@ -271,19 +225,18 @@ class MessageConsume(resource.Resource):
         headers.update({'Content-type': 'application/json'})
         headers.update({'Content-Length': str(len(str(body)))})
 
-        response = session.post(uri, 
-        #endpoint_filter=self.service, endpoint_override=endpoint_override,
-                                json=body, headers=headers)
+        response = session.post(
+            uri, 
+            json=body, 
+            headers=headers)
 
         self._translate_response(response)
         return self
 
 
-class Quota(resource.Resource):
+class Quota(_base.Resource):
 
     base_path = '/quotas/dms'
-    project_id = resource.URI('project_id')
-    #base_path = '/%(project_id)s/quotas/dms'
     service = dms_service.DmsService()
 
     allow_list = True
@@ -300,22 +253,18 @@ class Quota(resource.Resource):
 
     @classmethod
     def list(cls, session, paginated=False, **params):
+
         more_data = True
         query_params = cls._query_mapping._transpose(params)
         uri = cls.base_path % params
-
-        # Notes: dms requires to have Content-type Header, but there's no way
-        # to update header in list method, rewrite it, most are copied from
-        # resource2.py.list
         headers = {"Accept": "application/json",
                    "Content-type": "application/json"}
 
         while more_data:
-            #endpoint_override = cls.service.get_endpoint_override()
-            resp = session.get(uri,
-             #endpoint_filter=cls.service, endpoint_override=endpoint_override,
-                               headers=headers,
-                               params=query_params)
+            resp = session.get(
+                uri,
+                headers=headers,
+                params=query_params)
             resp = resp.json()
 
             # Quota for dms are a list of resources
