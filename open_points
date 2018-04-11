@@ -53,4 +53,14 @@
 
 * HEAT: (to be doublechecked) template version check is likely not done, since features of later templates with older version header are passing validation (in the ranges of supported versions)
 
+* HEAT: validate return ok, doesn't mean create will pass (validation errors i.e. template version doesn't match, condition on a resource level was also added on newton)
+
 * HEAT: not all CLI calls return result
+
+* Shade/Ansible: enabling SNAT through Ansible not possible, since upstream expects default as true and sends only false if set (shade:_build_external_gateway_info)
+
+* Shade/Ansible: only able to pass SYS volume size if boot_from_volume=True (default=false)
+
+* Shade/Ansible: on a play retry port in the subnet changes if exists (change IP) and corrupts connection
+
+* VPC!: VPC uses network wrapped subnets. Simple net with multiple subnets is not properly visible in OTC (in VPCs list subnet count includes all subnets, but in VPC show subnets are missing)

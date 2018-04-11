@@ -18,7 +18,6 @@ from otcextensions.sdk import sdk_resource
 
 from otcextensions.sdk.cce import cce_service
 
-
 class Metadata(sdk_resource.Resource):
 
     # Properties
