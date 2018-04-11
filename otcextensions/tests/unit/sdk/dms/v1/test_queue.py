@@ -24,7 +24,8 @@ EXAMPLE = {
     "name": "queue_001",
     "description": "test1",
     "redrive_policy": "enable",
-    "max_consume_count": 1
+    "max_consume_count": 1,
+    "retention_hours": 7
 }
 
 GROUP_EXAMPLE = {
@@ -76,7 +77,6 @@ class TestQueue(base.TestCase):
         self.assertEqual(self.example['redrive_policy'],
                          sot.redrive_policy)
         self.assertEqual(self.example['retention_hours'], sot.retention_hours)
-        self.assertEqual(self.example['created'], sot.created)
 
 
 class TestGroup(base.TestCase):
