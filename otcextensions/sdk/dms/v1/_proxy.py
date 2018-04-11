@@ -69,9 +69,10 @@ class Proxy(sdk_proxy.Proxy):
         if isinstance(queue, _queue.Queue):
             queue_id = queue.id
 
-        return _queue.Group.create_groups(self.session,
-                                          queue_id=queue_id,
-                                          **kwargs)
+        return _queue.Group.create_groups(
+                    self.session,
+                    queue_id=queue_id,
+                    **kwargs)
 
     def groups(self, queue):
         """List all groups for a given queue
@@ -119,13 +120,13 @@ class Proxy(sdk_proxy.Proxy):
         """Consume queue's message
 
         :param queue: The queue id or an instance of
-                      :class:`~otcextensions.sdk.dms.v1.queue.Queue`
+          :class:`~otcextensions.sdk.dms.v1.queue.Queue`
         :param consume_group: The consume group id or an instance of
-                      :class:`~otcextensions.sdk.dms.v1.queue.Group`
+          :class:`~otcextensions.sdk.dms.v1.queue.Group`
         :param kwargs \*\*query: Optional query parameters to be sent to limit
-                                 the resources being returned.
+          the resources being returned.
         :returns: A list of object
-                  :class:`~otcextensions.sdk.dms.v1.queue.MessageConsume`
+          :class:`~otcextensions.sdk.dms.v1.queue.MessageConsumer`
         """
         queue_id = queue
         if isinstance(queue, _queue.Queue):
@@ -134,17 +135,20 @@ class Proxy(sdk_proxy.Proxy):
         if isinstance(queue, _queue.Group):
             consumer_group_id = consume_group.id
 
-        return self._list(_queue.MessageConsume, queue_id=queue_id,
-                          consumer_group_id=consumer_group_id, **query)
+        return self._list(
+            _queue.MessageConsumer, 
+            queue_id=queue_id,
+            consumer_group_id=consumer_group_id, 
+            **query)
 
     def ack_consumed_message(self, consumed_message, status='success'):
         """Confirm consumed message
 
         :param consumed_message: An object of an instance of
-                               :class:`~otcextensions.sdk.dms.v1.queue.MessageConsume`
+          :class:`~otcextensions.sdk.dms.v1.queue.MessageConsumer
         :param status: The expeced status of the consumed message
         :returns: An object of an instance of
-                  :class:`~otcextensions.sdk.dms.v1.queue.MessageConsume`
+          :class:`~otcextensions.sdk.dms.v1.queue.MessageConsumer`
         """
         return consumed_message.ack(self.session, status=status)
 
