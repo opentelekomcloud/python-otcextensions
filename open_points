@@ -37,6 +37,9 @@
 
 * DCS: Since Redis 3.0.7 (only available in DCS) lots of critical issues (incl. security and possible data corruption), online memory defrag, less mem usage were fixed
 
+* MRS: Inconsistent naming between services ( data_processing-mrs ),  initial plugin not visible in command list 
+
+
 * DCS: in OS DCS is part of Trove. The API is same. In the DCS API is similar to RDS, but not easy mappable
 
 * CCE: far away from Magnum
