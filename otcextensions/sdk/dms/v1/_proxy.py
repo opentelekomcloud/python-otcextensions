@@ -20,8 +20,8 @@ class Proxy(sdk_proxy.Proxy):
         """Create a queue
 
         :param dict kwargs: Keyword arguments which will be used to overwrite a
-                            :class:`~openstack.dms.v1.queue.Queue`
-        ::rtype: :class:`~openstack.dms.v1.queue.Queue`
+                            :class:`~otcextensions.sdk.dms.v1.queue.Queue`
+        ::rtype: :class:`~otcextensions.sdk.dms.v1.queue.Queue`
         """
         return self._create(_queue.Queue, **kwargs)
 
@@ -29,7 +29,7 @@ class Proxy(sdk_proxy.Proxy):
         """List all queues
 
         :returns: A generator of Queue object
-        ::rtype: :class:`~openstack.dms.v1.queue.Queue`
+        ::rtype: :class:`~otcextensions.sdk.dms.v1.queue.Queue`
         """
         return self._list(_queue.Queue, paginated=False)
 
@@ -37,9 +37,9 @@ class Proxy(sdk_proxy.Proxy):
         """Get detail about a given queue id
 
         :param queue: The queue id or an instance of
-                      :class:`~openstack.dms.v1.queue.Queue`
-        :returns: one object of class :class:`~openstack.dms.v1.queue.Queue`
-        ::rtype: :class:`~openstack.dms.v1.queue.Queue`
+                      :class:`~otcextensions.sdk.dms.v1.queue.Queue`
+        :returns: one object of class :class:`~otcextensions.sdk.dms.v1.queue.Queue`
+        ::rtype: :class:`~otcextensions.sdk.dms.v1.queue.Queue`
         """
         return self._get(_queue.Queue, queue)
 
@@ -47,9 +47,9 @@ class Proxy(sdk_proxy.Proxy):
         """Delete queue
 
         :param queue: The queue id or an instance of
-                      :class:`~openstack.dms.v1.queue.Queue`
+                      :class:`~otcextensions.sdk.dms.v1.queue.Queue`
         :param bool ignore_missing: When set to ``False``
-                    :class:`~openstack.exceptions.ResourceNotFound` will be
+                    :class:`~otcextensions.sdk.exceptions.ResourceNotFound` will be
                     raised when the queue does not exist.
         :returns: ``None``
         """
@@ -60,10 +60,10 @@ class Proxy(sdk_proxy.Proxy):
         """Create a list consume groups for a queue
 
         :param queue: The queue id or an instance of
-                      :class:`~openstack.dms.v1.queue.Queue`
+                      :class:`~otcextensions.sdk.dms.v1.queue.Queue`
         :param dict kwargs: Keyword arguments which will be used to overwrite a
-                            :class:`~openstack.dms.v1.queue.Group`
-        :returns: A list of object :class:`~openstack.dms.v1.queue.Group`
+                            :class:`~otcextensions.sdk.dms.v1.queue.Group`
+        :returns: A list of object :class:`~otcextensions.sdk.dms.v1.queue.Group`
         """
         queue_id = queue
         if isinstance(queue, _queue.Queue):
@@ -77,9 +77,9 @@ class Proxy(sdk_proxy.Proxy):
         """List all groups for a given queue
 
         :param queue: The queue id or an instance of
-                      :class:`~openstack.dms.v1.queue.Queue`
+                      :class:`~otcextensions.sdk.dms.v1.queue.Queue`
         :returns: A generator of Group object
-        ::rtype: :class:`~openstack.dms.v1.queue.Group`
+        ::rtype: :class:`~otcextensions.sdk.dms.v1.queue.Group`
         """
         queue_id = queue
         if isinstance(queue, _queue.Queue):
@@ -90,9 +90,9 @@ class Proxy(sdk_proxy.Proxy):
         """Delete a consume on the queue
 
         :param queue: The queue id or an instance of
-                      :class:`~openstack.dms.v1.queue.Queue`
+                      :class:`~otcextensions.sdk.dms.v1.queue.Queue`
         :param group: The consume group id or an instance of
-                      :class:`~openstack.dms.v1.queue.Group`
+                      :class:`~otcextensions.sdk.dms.v1.queue.Group`
         :returns: ``None``
         """
         queue_id = queue
@@ -105,7 +105,7 @@ class Proxy(sdk_proxy.Proxy):
         """Send messages for a given queue
 
         :param queue: The queue id or an instance of
-                      :class:`~openstack.dms.v1.queue.Queue`
+                      :class:`~otcextensions.sdk.dms.v1.queue.Queue`
         :param dict kwargs: Keyword to create messages
         :returns: dict
         """
@@ -119,13 +119,13 @@ class Proxy(sdk_proxy.Proxy):
         """Consume queue's message
 
         :param queue: The queue id or an instance of
-                      :class:`~openstack.dms.v1.queue.Queue`
+                      :class:`~otcextensions.sdk.dms.v1.queue.Queue`
         :param consume_group: The consume group id or an instance of
-                      :class:`~openstack.dms.v1.queue.Group`
+                      :class:`~otcextensions.sdk.dms.v1.queue.Group`
         :param kwargs \*\*query: Optional query parameters to be sent to limit
                                  the resources being returned.
         :returns: A list of object
-                  :class:`~openstack.dms.v1.queue.MessageConsume`
+                  :class:`~otcextensions.sdk.dms.v1.queue.MessageConsume`
         """
         queue_id = queue
         if isinstance(queue, _queue.Queue):
@@ -141,10 +141,10 @@ class Proxy(sdk_proxy.Proxy):
         """Confirm consumed message
 
         :param consumed_message: An object of an instance of
-                               :class:`~openstack.dms.v1.queue.MessageConsume`
+                               :class:`~otcextensions.sdk.dms.v1.queue.MessageConsume`
         :param status: The expeced status of the consumed message
         :returns: An object of an instance of
-                  :class:`~openstack.dms.v1.queue.MessageConsume`
+                  :class:`~otcextensions.sdk.dms.v1.queue.MessageConsume`
         """
         return consumed_message.ack(self.session, status=status)
 

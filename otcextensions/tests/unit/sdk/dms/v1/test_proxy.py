@@ -94,6 +94,8 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
                        expected_args=[mock.ANY],
                        expected_kwargs={'queue_id': 'queue',
                                         'consumer_group_id': 'group',
+                                        'endpoint_override': None,
+                                        'headers': None,
                                         'paginated': False})
 
     def test_ack_consumed_message(self):
