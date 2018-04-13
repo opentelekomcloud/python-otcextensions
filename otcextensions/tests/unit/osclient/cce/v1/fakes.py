@@ -19,13 +19,13 @@ import mock
 
 from openstackclient.tests.unit import utils
 
-from otcextensions.tests.unit.osclient import fake_base
+from otcextensions.tests.unit.osclient import test_base
 
 from otcextensions.sdk.cce.v1 import cluster
 # from otcextensions.sdk.kms.v1 import data_key
 
 
-class TestCCE(utils.TestCommand):
+class TestCCE(test_base.TestCommand):
 
     def setUp(self):
         super(TestCCE, self).setUp()
@@ -34,7 +34,7 @@ class TestCCE(utils.TestCommand):
         self.client = self.app.client_manager.cce
 
 
-class FakeCluster(fake_base.Fake):
+class FakeCluster(test_base.Fake):
     """Fake one or more Cluster"""
 
     @classmethod
