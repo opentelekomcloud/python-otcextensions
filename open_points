@@ -37,7 +37,7 @@
 
 * DCS: Since Redis 3.0.7 (only available in DCS) lots of critical issues (incl. security and possible data corruption), online memory defrag, less mem usage were fixed
 
-* MRS: Inconsistent naming between services ( data_processing-mrs ),  initial plugin not visible in command list 
+* MRS: Inconsistent naming between services ( data_processing-mrs ),  initial plugin not visible in command list
 
 
 * DCS: in OS DCS is part of Trove. The API is same. In the DCS API is similar to RDS, but not easy mappable
@@ -67,3 +67,26 @@
 * Shade/Ansible: on a play retry port in the subnet changes if exists (change IP) and corrupts connection
 
 * VPC!: VPC uses network wrapped subnets. Simple net with multiple subnets is not properly visible in OTC (in VPCs list subnet count includes all subnets, but in VPC show subnets are missing)
+
+* EVS: volume type list --long returns changing results
+
+* Ansible: no support for load balancer
+
+* HEAT: Not possible to rely on mountpoint of the OS::Cinder::VolumeAttachment
+
+* HEAT: block_device_mapping_v2 with >1 device fails
+
+* Server create through HEAT fails with volume (SYS) not found (disappear) with >1 mapping (=1 everything ok).
+    - fedora atomic image
+    - block_device_mapping_v2 with multiple entries
+    - delete_on_terminate=true, with "false" loop with server is being constantly recreated (state faulty)
+    - all devices are present and attached while server is in state creating
+  Not possible to remove stack/sg/subnet, since Neutron claims in use.
+  Reason: port in the subnet is not released (net might be unattached from router, so not even visible in GUI)
+
+* SDK LBaaS: pool.healthmonitor_id according to ref api (and in OTC), but in the SDK it is health_monitor_ids (list). Some other attributes missing
+  - pool_member operating_status missing
+* SDK LBaaS HM: max_retries_down missing (optional and not present in OTC)
+
+
+* General: at least on example of ULB LIST allows filtering, but it is not documented
