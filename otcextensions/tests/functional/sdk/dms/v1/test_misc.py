@@ -21,6 +21,6 @@ _logger = _log.setup_logging('openstack')
 class TestMisc(base.BaseFunctionalTest):
 
     def test_initialize(self):
-        cce = self.conn.dms
+        dms = self.conn.dms
 
         self.assertIsNotNone(dms)
