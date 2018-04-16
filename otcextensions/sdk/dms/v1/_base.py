@@ -22,7 +22,7 @@ from otcextensions.sdk.dms import dms_service
 class Resource(sdk_resource.Resource):
     base_path = ''
 
-    service = cce_service.CceService()
+    service = dms_service.DmsService()
     service_expectes_json_type = True
 
     # Properties

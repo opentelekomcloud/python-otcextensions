@@ -26,7 +26,7 @@ class TestQueue(base.BaseFunctionalTest):
         super(TestQueue, cls).setUpClass()
         try:
             cls.queue = cls.conn.dms.create_queue(
-                queue_alias=TestQueue.QUEUE_ALIAS
+                name=TestQueue.QUEUE_ALIAS
             )
         except exceptions.DuplicateResource:
             cls.queue = cls.conn.dms.find_queue(alias=TestQueue.QUEUE_ALIAS)
