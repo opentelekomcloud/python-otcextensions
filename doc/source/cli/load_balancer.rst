@@ -1,15 +1,15 @@
-==============================================
-LoadBalancer service (ULB) command-line client
-==============================================
+========================================
+LoadBalancer service command-line client
+========================================
 
-The ULB client is the command-line interface (CLI) for
+The load_balancer client is the command-line interface (CLI) for
 the native Neutron/Octavia LoadBalancer service (load_balancer) API.
 
-For help on a specific `ulb` command, enter:
+For help on a specific `load balancer` command, enter:
 
 .. code-block:: console
 
-   $ openstack ulb help SUBCOMMAND
+   $ openstack load balancer help SUBCOMMAND
 
 .. _load_balancer:
 
@@ -17,19 +17,19 @@ Load Balancer operations
 ------------------------
 
 .. autoprogram-cliff:: openstack.load_balancer.v1
-   :command: ulb list
+   :command: load balancer list
 
 .. autoprogram-cliff:: openstack.load_balancer.v1
-   :command: ulb show
+   :command: load balancer show
 
 .. autoprogram-cliff:: openstack.load_balancer.v1
-   :command: ulb create
+   :command: load balancer create
 
 .. autoprogram-cliff:: openstack.load_balancer.v1
-   :command: ulb update
+   :command: load balancer update
 
 .. autoprogram-cliff:: openstack.load_balancer.v1
-   :command: ulb delete
+   :command: load balancer delete
 
 .. _listener:
 
@@ -37,7 +37,7 @@ Listeners operations
 --------------------
 
 .. autoprogram-cliff:: openstack.load_balancer.v1
-   :command: ulb listener *
+   :command: load balancer listener *
 
 .. _pool:
 
@@ -45,19 +45,19 @@ Pools operations
 ----------------
 
 .. autoprogram-cliff:: openstack.load_balancer.v1
-  :command: ulb pool list
+  :command: load balancer pool list
 
 .. autoprogram-cliff:: openstack.load_balancer.v1
-  :command: ulb pool show
+  :command: load balancer pool show
 
 .. autoprogram-cliff:: openstack.load_balancer.v1
-  :command: ulb pool create
+  :command: load balancer pool create
 
 .. autoprogram-cliff:: openstack.load_balancer.v1
-  :command: ulb pool update
+  :command: load balancer pool update
 
 .. autoprogram-cliff:: openstack.load_balancer.v1
-  :command: ulb pool delete
+  :command: load balancer pool delete
 
 .. _pool_member:
 
@@ -65,7 +65,7 @@ Pool Members operations
 -----------------------
 
 .. autoprogram-cliff:: openstack.load_balancer.v1
-  :command: ulb pool member *
+  :command: load balancer pool member *
 
 .. _hm:
 
@@ -73,4 +73,4 @@ Health Monitor operations
 -------------------------
 
 .. autoprogram-cliff:: openstack.load_balancer.v1
-  :command: ulb health monitor *
+  :command: load balancer health monitor *
