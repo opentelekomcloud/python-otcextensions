@@ -26,8 +26,8 @@ except ImportError:
 LOG = logging.getLogger(__name__)
 
 DEFAULT_API_VERSION = '1.0'
-API_VERSION_OPTION = 'os_lb_api_version'
-API_NAME = "lb"
+API_VERSION_OPTION = 'os_load_balancer_api_version'
+API_NAME = "load_balancer"
 API_VERSIONS = {
     "1.0": "openstack.connection.Connection",
     "1": "openstack.connection.Connection",
