@@ -14,7 +14,8 @@ from openstack import _log
 
 
 from otcextensions.sdk.dms import dms_service
-from otcextensions.sdk.dms.v1 import dmsresource as _base
+#from otcextensions.sdk.dms.v1 import dmsresource as _base
+from otcextensions.sdk.dms.v1 import _base
 from otcextensions.sdk import sdk_resource
 _logger= _log.setup_logging('openstack')
 
