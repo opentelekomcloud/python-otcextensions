@@ -9,17 +9,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
 __all__ = [
     'register_otc_extensions',
 ]
 
-import os
 import importlib
+import os
 import types
 import warnings
-
-from oslo_utils import importutils
 
 from openstack import _log
 from openstack import connection
@@ -27,6 +24,7 @@ from openstack import proxy
 from openstack import service_description
 from openstack import utils
 
+from oslo_utils import importutils
 
 _logger = _log.setup_logging('openstack')
 

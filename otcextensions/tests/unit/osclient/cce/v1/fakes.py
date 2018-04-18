@@ -11,18 +11,13 @@
 #   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #   License for the specific language governing permissions and limitations
 #   under the License.
-import datetime
 import random
 import uuid
 
 import mock
 
-from openstackclient.tests.unit import utils
-
-from otcextensions.tests.unit.osclient import test_base
-
 from otcextensions.sdk.cce.v1 import cluster
-# from otcextensions.sdk.kms.v1 import data_key
+from otcextensions.tests.unit.osclient import test_base
 
 
 class TestCCE(test_base.TestCommand):

@@ -10,8 +10,10 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 import argparse
-import six
+
 from cliff import columns
+
+import six
 
 
 def get_osc_show_columns_for_sdk_resource(

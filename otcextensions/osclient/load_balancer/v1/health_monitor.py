@@ -13,13 +13,12 @@
 '''LoadBalancer Health Monitor v1 action implementations'''
 import logging
 
-from osc_lib.command import command
 from osc_lib import exceptions
 from osc_lib import utils
-
-from otcextensions.i18n import _
+from osc_lib.command import command
 
 from otcextensions.common import sdk_utils
+from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
@@ -107,15 +106,18 @@ class ListHealthMonitor(command.Lister):
             if parsed_args.http_method.upper() in HTTP_METHODS:
                 args['http_method'] = parsed_args.http_method
             else:
-                msg = (_('http_method %s is not one of the supported %s')
-                       % (parsed_args.http_method, HTTP_METHODS))
+                msg = (_('http_method %(method)s is not one of the '
+                         'supported %(values)s')
+                       % {'method': parsed_args.http_method,
+                          'values': HTTP_METHODS})
                 raise exceptions.CommandError(msg)
         if parsed_args.type:
             if parsed_args.type.upper() in TYPE_VALUES:
                 args['type'] = parsed_args.type
             else:
-                msg = (_('type %s is not one of the supported %s')
-                       % (parsed_args.type, TYPE_VALUES))
+                msg = (_('type %(type)s is not one of the '
+                         'supported %(values)s')
+                       % {'type': parsed_args.type, 'values': TYPE_VALUES})
                 raise exceptions.CommandError(msg)
 
         client = self.app.client_manager.network
@@ -268,15 +270,18 @@ class CreateHealthMonitor(command.ShowOne):
             if parsed_args.http_method.upper() in HTTP_METHODS:
                 args['http_method'] = parsed_args.http_method
             else:
-                msg = (_('http_method %s is not one of the supported %s')
-                       % (parsed_args.http_method, HTTP_METHODS))
+                msg = (_('http_method %(method)s is not one of the '
+                         'supported %(values)s')
+                       % {'method': parsed_args.http_method,
+                          'values': HTTP_METHODS})
                 raise exceptions.CommandError(msg)
         if parsed_args.type:
             if parsed_args.type.upper() in TYPE_VALUES:
                 args['type'] = parsed_args.type
             else:
-                msg = (_('type %s is not one of the supported %s')
-                       % (parsed_args.type, TYPE_VALUES))
+                msg = (_('type %(type)s is not one of the '
+                         'supported %(values)s')
+                       % {'type': parsed_args.type, 'values': TYPE_VALUES})
                 raise exceptions.CommandError(msg)
         if parsed_args.pool_id:
             args['pool_id'] = parsed_args.pool_id
@@ -393,8 +398,10 @@ class UpdateHealthMonitor(command.ShowOne):
             if parsed_args.http_method.upper() in HTTP_METHODS:
                 args['http_method'] = parsed_args.http_method
             else:
-                msg = (_('http_method %s is not one of the supported %s')
-                       % (parsed_args.http_method, HTTP_METHODS))
+                msg = (_('http_method %(method)s is not one of the '
+                         'supported %(values)s')
+                       % {'method': parsed_args.http_method,
+                          'values': HTTP_METHODS})
                 raise exceptions.CommandError(msg)
         if parsed_args.name:
             args['name'] = parsed_args.name

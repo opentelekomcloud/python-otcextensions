@@ -15,9 +15,8 @@ import mock
 
 from osc_lib import exceptions
 
-from otcextensions.tests.unit.osclient.auto_scaling.v1 import fakes
-
 from otcextensions.osclient.auto_scaling.v1 import instance
+from otcextensions.tests.unit.osclient.auto_scaling.v1 import fakes
 
 
 class TestAutoScalingInstance(fakes.TestAutoScaling):

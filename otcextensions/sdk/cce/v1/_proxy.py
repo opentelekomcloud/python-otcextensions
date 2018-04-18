@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from otcextensions.sdk import sdk_proxy
-
 from otcextensions.sdk.cce.v1 import cluster as _cluster
 from otcextensions.sdk.cce.v1 import cluster_host as _cluster_host
 

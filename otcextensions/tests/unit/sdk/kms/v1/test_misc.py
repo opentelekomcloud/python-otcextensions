@@ -9,9 +9,9 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import mock
-
 from keystoneauth1 import adapter
+
+import mock
 
 from openstack.tests.unit import base
 
@@ -65,7 +65,7 @@ class TestRandom(base.TestCase):
 
         call_args = self.sess.post.call_args_list[0]
 
-        self.assertEquals('/kms/gen-random', call_args[0][0])
+        self.assertEqual('/kms/gen-random', call_args[0][0])
         self.assertDictEqual({'random_data_length': 200}, call_args[1]['json'])
 
         self.sess.post.assert_called_once()

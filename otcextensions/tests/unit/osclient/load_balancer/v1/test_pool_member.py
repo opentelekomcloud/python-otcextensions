@@ -16,9 +16,8 @@ import mock
 
 from openstackclient.tests.unit import utils
 
-from otcextensions.tests.unit.osclient.load_balancer.v1 import fakes
-
 from otcextensions.osclient.load_balancer.v1 import pool_member
+from otcextensions.tests.unit.osclient.load_balancer.v1 import fakes
 
 
 class TestListPoolMember(fakes.TestLoadBalancer):

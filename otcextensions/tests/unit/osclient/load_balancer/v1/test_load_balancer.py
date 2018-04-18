@@ -14,13 +14,9 @@
 #
 import mock
 
-# from osc_lib import utils
-
 from otcextensions.common import sdk_utils
-
-from otcextensions.tests.unit.osclient.load_balancer.v1 import fakes
-
 from otcextensions.osclient.load_balancer.v1 import load_balancer
+from otcextensions.tests.unit.osclient.load_balancer.v1 import fakes
 
 
 class TestListLoadBalancer(fakes.TestLoadBalancer):

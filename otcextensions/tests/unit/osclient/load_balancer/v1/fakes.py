@@ -11,18 +11,18 @@
 #   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #   License for the specific language governing permissions and limitations
 #   under the License.
-import uuid
 import random
+import uuid
 
 import mock
 
-from otcextensions.tests.unit.osclient import test_base
-
-from openstack.network.v2 import load_balancer
+from openstack.network.v2 import health_monitor
 from openstack.network.v2 import listener
+from openstack.network.v2 import load_balancer
 from openstack.network.v2 import pool
 from openstack.network.v2 import pool_member
-from openstack.network.v2 import health_monitor
+
+from otcextensions.tests.unit.osclient import test_base
 
 
 class TestLoadBalancer(test_base.TestCommand):
