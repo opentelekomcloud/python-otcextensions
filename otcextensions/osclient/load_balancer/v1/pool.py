@@ -67,7 +67,11 @@ class ListPool(command.Lister):
             help=_("Load balancer pool protocol to query"
                    "one of [`HTTP`, `HTTPS`, `PROXY`, `TCP`]")
         )
-
+        parser.add_argument(
+            '--load_balancer_id',
+            metavar='<load_balancer_id>',
+            help=_("The ID of the load balancer to query pools for")
+        )
         return parser
 
     def take_action(self, parsed_args):
@@ -79,6 +83,8 @@ class ListPool(command.Lister):
             args['lb_algorithm'] = parsed_args.lb_algorithm
         if parsed_args.name:
             args['name'] = parsed_args.name
+        if parsed_args.load_balancer_id:
+            args['load_balancer_id'] = parsed_args.load_balancer_id
         if parsed_args.protocol:
             if parsed_args.protocol.upper() in PROTOCOL_VALUES:
                 args['protocol'] = parsed_args.protocol

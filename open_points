@@ -10,22 +10,22 @@
 
 * KSM API Doc: This API allows you to create a plaintext-free DEK, that is, the returned result of this API includes `only the plaintext` of the DEK.
 
-* KMS: purpose of KMS is not preciese. Attributes change their names/meaning depending on call
+* KMS: purpose of KMS is not precise. Attributes change their names/meaning depending on call
 
 * KMS: encryption_context is described to be string, in reality dict is expected
 
-* KMS: max_length is always expected to be exactly max. Make no sence as a param
+* KMS: max_length is always expected to be exactly max. Make no sense as a param
 
 * KMS: list CMK filter by key_state not working as documented
 
 * KMS: format of the timestamp is unknown
 
-* KMS: no way to get response in english
+* KMS: no way to get response in English
 
-* CCE: required header applicytion/type also for GET
+* CCE: required header application/type also for GET
 
 * CCE: cluster UUID is hidden in a inline metadata structure, making it hard to address it without dirty hacks.
-  Apis are jumping throught this structure in anti-rest pattern
+  Apis are jumping through this structure in anti-rest pattern
 
 * CCE: attribute naming: metadata.uuid vs metadata.uid
 
@@ -37,8 +37,7 @@
 
 * DCS: Since Redis 3.0.7 (only available in DCS) lots of critical issues (incl. security and possible data corruption), online memory defrag, less mem usage were fixed
 
-* MRS: Inconsistent naming between services ( data_processing-mrs ),  initial plugin not visible in command list
-
+* MRS: Inconsistent naming between services ( data_processing-mrs )
 
 * DCS: in OS DCS is part of Trove. The API is same. In the DCS API is similar to RDS, but not easy mappable
 
@@ -88,5 +87,8 @@
   - pool_member operating_status missing
 * SDK LBaaS HM: max_retries_down missing (optional and not present in OTC)
 
+* LB: while Neutron LBaaS is considered as deprecated and no bindings are present in Ansible/OSC
+  it will likely not be possible/challenge to upstream this support.
 
+* DOC:
 * General: at least on example of ULB LIST allows filtering, but it is not documented

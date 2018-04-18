@@ -79,14 +79,16 @@ class TestListPool(fakes.TestLoadBalancer):
             '--name', 'name',
             '--protocol', 'TCP',
             '--lb_algorithm', 'ROUND_ROBIN',
-            '--description', 'descr'
+            '--description', 'descr',
+            '--load_balancer_id', 'lb',
         ]
 
         verifylist = [
             ('name', 'name'),
             ('protocol', 'TCP'),
             ('lb_algorithm', 'ROUND_ROBIN'),
-            ('description', 'descr')
+            ('description', 'descr'),
+            ('load_balancer_id', 'lb')
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -103,7 +105,8 @@ class TestListPool(fakes.TestLoadBalancer):
             name='name',
             protocol='TCP',
             lb_algorithm='ROUND_ROBIN',
-            description='descr'
+            description='descr',
+            load_balancer_id='lb'
         )
 
     def test_list_filter_exceptions_proto(self):
