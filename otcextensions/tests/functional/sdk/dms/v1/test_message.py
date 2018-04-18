@@ -36,7 +36,7 @@ class TestMessage(base.BaseFunctionalTest):
         cls.queues.append(cls.queue)
         
         try:
-            cls.group = cls.conn.dms.create_group(
+            cls.group = cls.conn.dms.create_groups(
                 cls.queue
             )
             

@@ -62,6 +62,7 @@ class Group(_base.Resource):
     service = dms_service.DmsService()
 
     # capabilities
+    allow_create = True
     allow_list = True
     allow_delete = True
 
