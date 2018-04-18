@@ -202,6 +202,7 @@ class TestShowHealthMonitor(fakes.TestLoadBalancer):
 
         self.client.find_health_monitor.assert_called_once_with(
             name_or_id='hm',
+            ignore_missing=False
         )
 
         self.assertEqual(self.columns, columns)

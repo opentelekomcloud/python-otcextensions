@@ -80,6 +80,7 @@ class ShowLoadBalancer(command.ShowOne):
 
         obj = client.find_load_balancer(
             name_or_id=parsed_args.load_balancer,
+            ignore_missing=False
         )
 
         data = utils.get_item_properties(

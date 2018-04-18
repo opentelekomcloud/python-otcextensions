@@ -153,7 +153,9 @@ class ShowHealthMonitor(command.ShowOne):
         client = self.app.client_manager.network
 
         obj = client.find_health_monitor(
-            name_or_id=parsed_args.health_monitor, **args)
+            name_or_id=parsed_args.health_monitor,
+            ignore_missing=False,
+            **args)
 
         data = utils.get_item_properties(
             obj, self.columns, formatters=_formatters)
