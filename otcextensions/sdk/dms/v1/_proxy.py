@@ -69,10 +69,13 @@ class Proxy(sdk_proxy.Proxy):
         if isinstance(queue, _queue.Queue):
             queue_id = queue.id
 
-        return _queue.Group.create_groups(
-                    self.session,
-                    queue_id=queue_id,
-                    **kwargs)
+        return self._create(_queue.Group,queue_id=queue_id,  **kwargs)
+
+
+        #return _queue.Group.create_groups(
+        #            self.session,
+        #            queue_id=queue_id,
+        #            **kwargs)
 
     def groups(self, queue):
         """List all groups for a given queue
