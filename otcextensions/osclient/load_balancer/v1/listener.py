@@ -108,7 +108,9 @@ class ShowListener(command.ShowOne):
 
         client = self.app.client_manager.network
 
-        obj = client.find_listener(**args)
+        obj = client.find_listener(
+            name_or_id=parsed_args.listener,
+            ignore_missing=False)
 
         data = utils.get_item_properties(
             obj, self.columns, formatters=_formatters)

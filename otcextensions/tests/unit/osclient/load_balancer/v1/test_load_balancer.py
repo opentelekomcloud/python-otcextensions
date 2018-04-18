@@ -129,7 +129,8 @@ class TestShowLoadBalancer(fakes.TestLoadBalancer):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_load_balancer.assert_called_once_with(
-            name_or_id='lb'
+            name_or_id='lb',
+            ignore_missing=False
         )
 
         self.assertEqual(self.columns, columns)

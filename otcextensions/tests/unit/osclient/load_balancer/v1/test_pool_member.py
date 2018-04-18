@@ -191,7 +191,8 @@ class TestShowPoolMember(fakes.TestLoadBalancer):
 
         self.client.find_pool_member.assert_called_once_with(
             name_or_id='member',
-            pool='pool_id'
+            pool='pool_id',
+            ignore_missing=False
         )
 
         self.assertEqual(self.columns, columns)

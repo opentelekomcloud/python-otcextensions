@@ -133,12 +133,13 @@ class ShowPool(command.ShowOne):
 
         args = {}
 
-        if parsed_args.pool is not None:
-            args['name_or_id'] = parsed_args.pool
-
         client = self.app.client_manager.network
 
-        obj = client.find_pool(**args)
+        obj = client.find_pool(
+            name_or_id=parsed_args.pool,
+            ignore_missing=False,
+            **args
+        )
 
         data = utils.get_item_properties(
             obj, self.columns, formatters=_formatters)

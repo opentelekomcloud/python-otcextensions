@@ -115,7 +115,9 @@ class ShowPoolMember(command.ShowOne):
 
         obj = client.find_pool_member(
             name_or_id=parsed_args.member,
-            pool=parsed_args.pool, **args)
+            pool=parsed_args.pool,
+            ignore_missing=False,
+            **args)
 
         data = utils.get_item_properties(
             obj, self.columns,)
