@@ -12,10 +12,9 @@
 from openstack import _log
 from openstack import exceptions
 from openstack import resource
-# from openstack import utils
 
-from otcextensions.common import utils
 from otcextensions.common import exc
+from otcextensions.common import utils
 
 _logger = _log.setup_logging('openstack')
 

@@ -13,13 +13,12 @@
 '''LoadBalancer Listener v1 action implementations'''
 import logging
 
-from osc_lib.command import command
 from osc_lib import exceptions
 from osc_lib import utils
-
-from otcextensions.i18n import _
+from osc_lib.command import command
 
 from otcextensions.common import sdk_utils
+from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
@@ -62,8 +61,10 @@ class ListListener(command.Lister):
             if parsed_args.protocol.upper() in SUPPORTED_PROTOCOLS:
                 args['protocol'] = parsed_args.protocol
             else:
-                msg = (_('Protocol %s is not one of the supported %s')
-                       % (parsed_args.protocol, SUPPORTED_PROTOCOLS))
+                msg = (_('Protocol %(proto)s is not one of the '
+                         'supported %(values)s')
+                       % {'proto': parsed_args.protocol,
+                          'values': SUPPORTED_PROTOCOLS})
                 raise exceptions.CommandError(msg)
 
         if parsed_args.protocol_port:
@@ -194,8 +195,10 @@ class CreateListener(command.ShowOne):
             if parsed_args.protocol.upper() in SUPPORTED_PROTOCOLS:
                 args['protocol'] = parsed_args.protocol
             else:
-                msg = (_('Protocol %s is not one of the supported %s')
-                       % (parsed_args.protocol, SUPPORTED_PROTOCOLS))
+                msg = (_('Protocol %(proto)s is not one of the '
+                         'supported %(values)s')
+                       % {'proto': parsed_args.protocol,
+                          'values': SUPPORTED_PROTOCOLS})
                 raise exceptions.CommandError(msg)
         if parsed_args.protocol_port:
             args['protocol_port'] = parsed_args.protocol_port

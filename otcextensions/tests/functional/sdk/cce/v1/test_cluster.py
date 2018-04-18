@@ -10,10 +10,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import _log
-# from openstack import exceptions
-from otcextensions.tests.functional import base
 
-# from otcextensions.i18n import _
+from otcextensions.tests.functional import base
 
 _logger = _log.setup_logging('openstack')
 

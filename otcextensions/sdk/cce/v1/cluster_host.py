@@ -13,7 +13,6 @@ from openstack import exceptions
 from openstack import resource
 
 from otcextensions.sdk import sdk_resource
-
 from otcextensions.sdk.cce.v1 import _base
 
 

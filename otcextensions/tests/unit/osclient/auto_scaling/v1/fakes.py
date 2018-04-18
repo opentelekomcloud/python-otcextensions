@@ -19,11 +19,11 @@ import mock
 
 from openstackclient.tests.unit import utils
 
+from otcextensions.sdk.auto_scaling.v1 import activity
 from otcextensions.sdk.auto_scaling.v1 import config
 from otcextensions.sdk.auto_scaling.v1 import group
-from otcextensions.sdk.auto_scaling.v1 import policy
-from otcextensions.sdk.auto_scaling.v1 import activity
 from otcextensions.sdk.auto_scaling.v1 import instance
+from otcextensions.sdk.auto_scaling.v1 import policy
 from otcextensions.sdk.auto_scaling.v1 import quota
 
 

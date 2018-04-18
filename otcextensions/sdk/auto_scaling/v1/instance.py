@@ -14,7 +14,6 @@ from openstack import resource
 from openstack import utils
 
 from otcextensions.i18n import _
-
 from otcextensions.sdk.auto_scaling.v1 import _base
 
 
@@ -124,8 +123,8 @@ class Instance(_base.Resource):
         """
         act = action.upper()
         if act not in self.ACTION_TYPES:
-            msg = (_('Action type %s is not supported %s') %
-                   (action, self.ACTION_TYPES))
+            msg = (_('Action type %(action)s is not supported %(types)s') %
+                   {'action': action, 'types': self.ACTION_TYPES})
             raise exceptions.SDKException(msg)
         if delete_instance and act != 'REMOVE':
             msg = (_('Action type %s does not support delete_instance arg') %

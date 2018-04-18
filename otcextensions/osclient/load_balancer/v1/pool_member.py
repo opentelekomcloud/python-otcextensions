@@ -13,12 +13,10 @@
 '''LoadBalancer Pool Member v1 action implementations'''
 import logging
 
-from osc_lib.command import command
-# from osc_lib import exceptions
 from osc_lib import utils
+from osc_lib.command import command
 
 from otcextensions.common import sdk_utils
-
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)

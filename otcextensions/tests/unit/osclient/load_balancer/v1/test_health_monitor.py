@@ -17,10 +17,8 @@ import mock
 from osc_lib import exceptions
 
 from otcextensions.common import sdk_utils
-
-from otcextensions.tests.unit.osclient.load_balancer.v1 import fakes
-
 from otcextensions.osclient.load_balancer.v1 import health_monitor
+from otcextensions.tests.unit.osclient.load_balancer.v1 import fakes
 
 
 class TestListHealthMonitor(fakes.TestLoadBalancer):

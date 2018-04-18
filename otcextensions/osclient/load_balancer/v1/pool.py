@@ -11,17 +11,15 @@
 #   under the License.
 #
 '''LoadBalancer Pool v1 action implementations'''
-
-import logging
 import json
+import logging
 
-from osc_lib.command import command
 from osc_lib import exceptions
 from osc_lib import utils
-
-from otcextensions.i18n import _
+from osc_lib.command import command
 
 from otcextensions.common import sdk_utils
+from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
@@ -89,15 +87,19 @@ class ListPool(command.Lister):
             if parsed_args.protocol.upper() in PROTOCOL_VALUES:
                 args['protocol'] = parsed_args.protocol
             else:
-                msg = (_('Protocol %s is not one of the supported %s')
-                       % (parsed_args.protocol, PROTOCOL_VALUES))
+                msg = (_('Protocol %(proto)s is not one of the '
+                         'supported %(values)s')
+                       % {'proto': parsed_args.protocol,
+                          'values': PROTOCOL_VALUES})
                 raise exceptions.CommandError(msg)
         if parsed_args.lb_algorithm:
             if parsed_args.lb_algorithm.upper() in LB_ALGORITHM_VALUES:
                 args['lb_algorithm'] = parsed_args.lb_algorithm
             else:
-                msg = (_('lb_algorithm %s is not one of the supported %s')
-                       % (parsed_args.lb_algorithm, LB_ALGORITHM_VALUES))
+                msg = (_('lb_algorithm %(algo)s is not one of the '
+                         'supported %(values)s')
+                       % {'algo': parsed_args.lb_algorithm,
+                          'values': LB_ALGORITHM_VALUES})
                 raise exceptions.CommandError(msg)
 
         client = self.app.client_manager.network
@@ -217,15 +219,19 @@ class CreatePool(command.ShowOne):
             if parsed_args.protocol.upper() in PROTOCOL_VALUES:
                 args['protocol'] = parsed_args.protocol
             else:
-                msg = (_('Protocol %s is not one of the supported %s')
-                       % (parsed_args.protocol, PROTOCOL_VALUES))
+                msg = (_('Protocol %(proto)s is not one of the '
+                         'supported %(values)s')
+                       % {'proto': parsed_args.protocol,
+                          'values': PROTOCOL_VALUES})
                 raise exceptions.CommandError(msg)
         if parsed_args.lb_algorithm:
             if parsed_args.lb_algorithm.upper() in LB_ALGORITHM_VALUES:
                 args['lb_algorithm'] = parsed_args.lb_algorithm
             else:
-                msg = (_('lb_algorithm %s is not one of the supported %s')
-                       % (parsed_args.lb_algorithm, LB_ALGORITHM_VALUES))
+                msg = (_('lb_algorithm %(algo)s is not one of the '
+                         'supported %(values)s')
+                       % {'algo': parsed_args.lb_algorithm,
+                          'values': LB_ALGORITHM_VALUES})
                 raise exceptions.CommandError(msg)
 
         if parsed_args.listener_id is not None:
@@ -309,8 +315,12 @@ class UpdatePool(command.ShowOne):
             if parsed_args.lb_algorithm.upper() in LB_ALGORITHM_VALUES:
                 args['lb_algorithm'] = parsed_args.lb_algorithm
             else:
-                msg = (_('lb_algorithm %s is not one of the supported %s')
-                       % (parsed_args.lb_algorithm, LB_ALGORITHM_VALUES))
+                msg = (_('lb_algorithm %(algo)s is not one of '
+                         'the supported %(const)s')
+                       % {
+                       'algo': parsed_args.lb_algorithm,
+                       'const': LB_ALGORITHM_VALUES}
+                       )
                 raise exceptions.CommandError(msg)
 
         if parsed_args.admin_state_up is not None:
