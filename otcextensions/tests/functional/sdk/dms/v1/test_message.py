@@ -11,6 +11,7 @@
 # under the License.
 from openstack import _log
 from openstack import exceptions
+from openstack import utils
 
 from otcextensions.tests.functional import base
 
@@ -25,19 +26,21 @@ class TestMessage(base.BaseFunctionalTest):
     @classmethod
     def setUpClass(cls):
         super(TestMessage, cls).setUpClass()
+        utils.enable_logging(debug=True, http_debug=True)
         try:
             cls.queue = cls.conn.dms.create_queue(
                 name=TestMessage.QUEUE_ALIAS
             )
             
-        except exceptions.DuplicateResource:
-            cls.queue = cls.conn.dms.find_queue(alias=TestMessage.QUEUE_ALIAS)
+        except exceptions.BadRequestException:
+            cls.queue =  cls.conn.dms.get_queue(TestMessage.QUEUE_ALIAS)
+            #cls.queue = cls.conn.dms.queues(name=TestMessage.QUEUE_ALIAS)
 
         cls.queues.append(cls.queue)
         
         try:
             cls.group = cls.conn.dms.create_groups(
-                cls.queue
+                cls.queue, groups=[{"name": "test_group"}]
             )
             
         except exceptions.DuplicateResource:
