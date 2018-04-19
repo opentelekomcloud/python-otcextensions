@@ -53,6 +53,11 @@ class Queue(_base.Resource):
     #: *Type: int*
     created = resource.Body('created', type=int)
 
+class GroupSpec(_base.Resource):
+    # Properties
+    #: Name
+    name = resource.Body('name')
+
 
 class Group(_base.Resource):
 
@@ -71,6 +76,8 @@ class Group(_base.Resource):
     queue_id = resource.URI('queue_id')
     #: Consume roup Id
     id = resource.Body('id')
+    #: groups (mandatory)
+    volume = resource.Body('groups', type=list, list_type=GroupSpec)
     #: Consume group name
     name = resource.Body('name')
     #: Total message number, not including deleted message
