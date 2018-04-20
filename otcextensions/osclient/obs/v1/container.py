@@ -19,7 +19,7 @@ from osc_lib import utils
 from osc_lib.cli import parseractions
 from osc_lib.command import command
 
-from otcextensions.osclient.obs import sdk_utils
+from otcextensions.common import sdk_utils
 
 
 LOG = logging.getLogger(__name__)
