@@ -14,6 +14,10 @@ import mock
 
 from otcextensions.sdk.dms.v1 import _proxy
 from otcextensions.sdk.dms.v1 import queue as _queue
+from otcextensions.sdk.dms.v1 import group as _group
+from otcextensions.sdk.dms.v1 import message as _message
+from otcextensions.sdk.dms.v1 import message_consumer as _message_consumer
+
 from openstack.tests.unit import base
 
 from openstack.tests.unit import test_proxy_base
