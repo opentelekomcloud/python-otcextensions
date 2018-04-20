@@ -69,7 +69,8 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
 
     def test_create_groups(self):
         self._verify2(
-            'otcextensions.sdk.dms.v1.group.Group.create_groups',
+            'otcextensions.sdk.sdk_proxy.Proxy._create',
+            #'otcextensions.sdk.dms.v1.group.Group.create_groups',
             self.proxy.create_groups,
             method_args=['queue'],
             expected_args=[mock.ANY],
@@ -94,7 +95,8 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
 
     def test_send_messages(self):
          self._verify2(
-            'otcextensions.sdk.dms.v1.message.Message.create_messages',
+             'otcextensions.sdk.sdk_proxy.Proxy._create',
+            #'otcextensions.sdk.dms.v1.message.Message.create_messages',
             self.proxy.send_messages,
             method_args=['queue'],
             expected_args=[mock.ANY],
