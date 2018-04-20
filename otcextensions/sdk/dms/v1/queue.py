@@ -53,7 +53,7 @@ class Queue(_base.Resource):
     #: *Type: int*
     created = resource.Body('created', type=int)
 
-class GroupSpec(_base.Resource):
+""" class GroupSpec(_base.Resource):
     # Properties
     #: Name
     name = resource.Body('name')
@@ -241,7 +241,7 @@ class MessageConsumer(_base.Resource):
 
         self._translate_response(response)
         return self
-
+ """
 
 class Quota(_base.Resource):
 

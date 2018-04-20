@@ -11,6 +11,9 @@
 # under the License.
 
 from otcextensions.sdk.dms.v1 import queue as _queue
+from otcextensions.sdk.dms.v1 import group as _group
+from otcextensions.sdk.dms.v1 import message as _message
+from otcextensions.sdk.dms.v1 import message_consumer as _message_consumer
 from otcextensions.sdk import sdk_proxy
 
 
@@ -69,7 +72,7 @@ class Proxy(sdk_proxy.Proxy):
         if isinstance(queue, _queue.Queue):
             queue_id = queue.id
 
-        return self._create(_queue.Group,queue_id=queue_id,  **kwargs)
+        return self._create(_group.Group,queue_id=queue_id,  **kwargs)
 
 
         #return _queue.Group.create_groups(
@@ -88,7 +91,7 @@ class Proxy(sdk_proxy.Proxy):
         queue_id = queue
         if isinstance(queue, _queue.Queue):
             queue_id = queue.id
-        return self._list(_queue.Group, queue_id=queue_id, paginated=False)
+        return self._list(_group.Group, queue_id=queue_id, paginated=False)
 
     def delete_group(self, queue, group):
         """Delete a consume on the queue
@@ -96,14 +99,14 @@ class Proxy(sdk_proxy.Proxy):
         :param queue: The queue id or an instance of
                       :class:`~otcextensions.sdk.dms.v1.queue.Queue`
         :param group: The consume group id or an instance of
-                      :class:`~otcextensions.sdk.dms.v1.queue.Group`
+                      :class:`~otcextensions.sdk.dms.v1.group.Group`
         :returns: ``None``
         """
         queue_id = queue
         if isinstance(queue, _queue.Queue):
             queue_id = queue.id
 
-        self._delete(_queue.Group, group, queue_id=queue_id)
+        self._delete(_group.Group, group, queue_id=queue_id)
 
     def send_messages(self, queue, **kwargs):
         """Send messages for a given queue
@@ -116,8 +119,10 @@ class Proxy(sdk_proxy.Proxy):
         queue_id = queue
         if isinstance(queue, _queue.Queue):
             queue_id = queue.id
-        _queue.Message.create_messages(self.session,
-                                       queue_id=queue_id, **kwargs)
+
+        return self._create(_message.Message,queue_id=queue_id,  **kwargs)
+        # _message.Message.create_messages(self.session,
+        #                                queue_id=queue_id, **kwargs)
 
     def consume_message(self, queue, consume_group, **query):
         """Consume queue's message
@@ -125,21 +130,21 @@ class Proxy(sdk_proxy.Proxy):
         :param queue: The queue id or an instance of
           :class:`~otcextensions.sdk.dms.v1.queue.Queue`
         :param consume_group: The consume group id or an instance of
-          :class:`~otcextensions.sdk.dms.v1.queue.Group`
+          :class:`~otcextensions.sdk.dms.v1.group.Group`
         :param kwargs \*\*query: Optional query parameters to be sent to limit
           the resources being returned.
         :returns: A list of object
-          :class:`~otcextensions.sdk.dms.v1.queue.MessageConsumer`
+          :class:`~otcextensions.sdk.dms.v1.message_consumer.MessageConsumer`
         """
         queue_id = queue
         if isinstance(queue, _queue.Queue):
             queue_id = queue.id
         consumer_group_id = consume_group
-        if isinstance(queue, _queue.Group):
+        if isinstance(consume_group, _group.Group):
             consumer_group_id = consume_group.id
 
         return self._list(
-            _queue.MessageConsumer, 
+            _message_consumer.MessageConsumer, 
             queue_id=queue_id,
             consumer_group_id=consumer_group_id, 
             **query)
@@ -148,10 +153,10 @@ class Proxy(sdk_proxy.Proxy):
         """Confirm consumed message
 
         :param consumed_message: An object of an instance of
-          :class:`~otcextensions.sdk.dms.v1.queue.MessageConsumer
+          :class:`~otcextensions.sdk.dms.v1.message_consumer.MessageConsumer
         :param status: The expeced status of the consumed message
         :returns: An object of an instance of
-          :class:`~otcextensions.sdk.dms.v1.queue.MessageConsumer`
+          :class:`~otcextensions.sdk.dms.v1.message_consumer.MessageConsumer`
         """
         return consumed_message.ack(self.session, status=status)
 
