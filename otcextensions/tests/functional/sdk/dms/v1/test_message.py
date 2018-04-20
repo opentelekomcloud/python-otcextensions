@@ -66,3 +66,22 @@ class TestMessage(base.BaseFunctionalTest):
             queue = self.queues[0]
             q = self.conn.dms.get_queue(queue=queue.id)
             self.assertIsNotNone(q)
+
+    def create_group(self):
+        self.queues = list(self.conn.dms.queues())
+        self.assertGreaterEqual(len(self.queues), 0)
+        if len(self.queues) > 0:
+            queue = self.queues[0]
+            q = self.conn.dms.get_queue(queue=queue.id)
+            self.assertIsNotNone(q)
+            def test_list(self):
+                try:
+                    cls.group = cls.conn.dms.create_groups(
+                        cls.queue, groups=[{"name": "test_group"}]
+                    )
+            
+                except exceptions.DuplicateResource:
+                    cls.queue = cls.conn.dms.groups(cls.queue)
+                
+                cls.groups.append(cls.group)
+
