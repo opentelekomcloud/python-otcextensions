@@ -59,7 +59,6 @@ class TestMessage(base.BaseFunctionalTest):
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
 
-    @classmethod
     def test_list(cls):
         cls.queues = list(cls.conn.dms.queues())
         cls.assertGreaterEqual(len(cls.queues), 0)
@@ -69,22 +68,21 @@ class TestMessage(base.BaseFunctionalTest):
             cls.assertIsNotNone(q)
 
     @classmethod
-    def create_group(cls):
+    def test_group(cls):
         cls.queues = list(cls.conn.dms.queues())
-        cls.assertGreaterEqual(len(cls.queues), 0)
+        #cls.assertGreaterEqual(len(cls.queues), 0)
         if len(cls.queues) > 0:
             queue = cls.queues[0]
             q = cls.conn.dms.get_queue(queue=queue.id)
-            cls.assertIsNotNone(q)
-            def test_list(cls):
-                try:
-                    cls.group = cls.conn.dms.create_groups(
-                        cls.queue, groups=[{"name": "test_group"}]
-                    )
+            #cls.assertIsNotNone(q)
+            try:
+                cls.group = cls.conn.dms.create_groups(
+                    cls.queue, groups=[{"name": "test_group"}]
+                )
             
-                except exceptions.DuplicateResource:
-                    cls.queue = cls.conn.dms.groups(cls.queue)
+            except exceptions.BadRequestException:
+                cls.queue = cls.conn.dms.groups(cls.queue)
                 
-                cls.groups.append(cls.group)
+            cls.groups.append(cls.group)
 
 
