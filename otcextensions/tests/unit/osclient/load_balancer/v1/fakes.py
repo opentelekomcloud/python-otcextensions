@@ -95,6 +95,7 @@ class FakePool(test_base.Fake):
             'session_persistence': True,
             'healthmonitor_id': 'hmid-' + uuid.uuid4().hex,
             'health_monitor_ids': [{'id': 'id-' + uuid.uuid4().hex}],
+            'member_ids': [{'id': 'id-' + uuid.uuid4().hex}],
             'lb_algorithm': 'algo-' + uuid.uuid4().hex,
 
         }
