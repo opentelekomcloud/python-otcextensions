@@ -21,11 +21,30 @@ _logger= _log.setup_logging('openstack')
 
 class GroupSpec(_base.Resource):
     # Properties
+    #: Consume group Id
+    id = resource.Body('id')    
     #: Name
     name = resource.Body('name')
+    #: Consume group name
+    name = resource.Body('name')
+    #: Total message number, not including deleted message
+    #: *Type: int*
+    produced_messages = resource.Body('produced_messages', type=int)
+    #: Consumed message number
+    #: *Type: int*
+    consumed_messages = resource.Body('consumed_messages', type=int)
+    #: Available message number
+    #: *Type: int*
+    available_messages = resource.Body('available_messages', type=int)    
+    #: Total deadletters number
+    #: *Type: int*
+    produced_deadletters = resource.Body('produced_deadletters', type=int)
+    #: Available deadletters number
+    #: *Type: int*
+    available_deadletters = resource.Body('available_deadletters', type=int)    
 
 
-class Group(_base.Resource):
+class Group(GroupSpec):
 
     resources_key = 'groups'
 
@@ -40,21 +59,11 @@ class Group(_base.Resource):
     # Properties
     #: Queue id
     queue_id = resource.URI('queue_id')
-    #: Consume roup Id
-    id = resource.Body('id')
     #: groups (mandatory)
     groups = resource.Body('groups', type=list, list_type=GroupSpec)
-    #: Consume group name
-    name = resource.Body('name')
-    #: Total message number, not including deleted message
-    #: *Type: int*
-    produced_messages = resource.Body('produced_messages', type=int)
-    #: Consumed message number
-    #: *Type: int*
-    consumed_messages = resource.Body('consumed_messages', type=int)
-    #: Available message number
-    #: *Type: int*
-    available_messages = resource.Body('available_messages', type=int)
+    #: Redrive policy
+    redrive_policy = resource.Body('redrive_policy')    
+
 
 """     # This does a post and return a list of self
     @classmethod
