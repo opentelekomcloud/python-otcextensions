@@ -1,3 +1,4 @@
+#   Copyright 2012-2013 OpenStack Foundation
 #   Copyright 2013 Nebula Inc.
 #
 #   Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -11,6 +12,29 @@
 #   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #   License for the specific language governing permissions and limitations
 #   under the License.
+#
+from cliff import columns as cliff_columns
+
+from openstackclient.tests.unit import utils
+
+
+class TestCommand(utils.TestCommand):
+    """Test cliff command classes"""
+
+    def assertListItemEqual(self, expected, actual):
+        self.assertEqual(len(expected), len(actual))
+        for item_expected, item_actual in zip(expected, actual):
+            self.assertItemEqual(item_expected, item_actual)
+
+    def assertItemEqual(self, expected, actual):
+        self.assertEqual(len(expected), len(actual))
+        for col_expected, col_actual in zip(expected, actual):
+            if isinstance(col_expected, cliff_columns.FormattableColumn):
+                self.assertIsInstance(col_actual, col_expected.__class__)
+                self.assertEqual(col_expected.human_readable(),
+                                 col_actual.human_readable())
+            else:
+                self.assertEqual(col_expected, col_actual)
 
 
 class Fake(object):

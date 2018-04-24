@@ -11,9 +11,10 @@
 # under the License.
 import binascii
 import hashlib
-import mock
 
 from keystoneauth1 import adapter
+
+import mock
 
 from openstack.tests.unit import base
 
@@ -73,7 +74,7 @@ class TestKey(base.TestCase):
 
         call_args = self.sess.post.call_args_list[0]
 
-        self.assertEquals('/kms/create-datakey', call_args[0][0])
+        self.assertEqual('/kms/create-datakey', call_args[0][0])
         self.assertDictEqual(key, call_args[1]['json'])
 
         self.sess.post.assert_called_once()
@@ -106,8 +107,9 @@ class TestKey(base.TestCase):
 
         call_args = self.sess.post.call_args_list[0]
 
-        self.assertEquals('/kms/create-datakey-without-plaintext',
-                          call_args[0][0])
+        self.assertEqual(
+            '/kms/create-datakey-without-plaintext',
+            call_args[0][0])
         self.assertDictEqual(key, call_args[1]['json'])
 
         self.sess.post.assert_called_once()
@@ -157,7 +159,7 @@ class TestKey(base.TestCase):
 
         call_args = self.sess.post.call_args_list[0]
 
-        self.assertEquals('/kms/encrypt-datakey', call_args[0][0])
+        self.assertEqual('/kms/encrypt-datakey', call_args[0][0])
         self.assertDictEqual(expected_json, call_args[1]['json'])
 
         self.sess.post.assert_called_once()
@@ -193,7 +195,7 @@ class TestKey(base.TestCase):
 
         call_args = self.sess.post.call_args_list[0]
 
-        self.assertEquals('/kms/decrypt-datakey', call_args[0][0])
+        self.assertEqual('/kms/decrypt-datakey', call_args[0][0])
         self.assertDictEqual(expected_json, call_args[1]['json'])
 
         self.sess.post.assert_called_once()

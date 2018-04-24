@@ -10,13 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 # import six
-
-# from openstack import exceptions
 from openstack import resource
 from openstack import utils
 
 from otcextensions.sdk import sdk_resource
-
 from otcextensions.sdk.cce import cce_service
 from otcextensions.sdk.cce.v1 import _base
 from otcextensions.sdk.cce.v1 import cluster_host

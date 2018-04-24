@@ -12,9 +12,9 @@
 
 import os
 
-import openstack.config
-
 from keystoneauth1 import exceptions as _exceptions
+
+import openstack.config
 from openstack import connection
 from openstack.tests import base
 

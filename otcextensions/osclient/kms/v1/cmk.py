@@ -11,17 +11,13 @@
 #   under the License.
 #
 '''CMK v1 action implementations'''
-# import argparse
-# import datetime
 import logging
 
-from osc_lib.command import command
 from osc_lib import exceptions
 from osc_lib import utils
+from osc_lib.command import command
 
 from otcextensions.i18n import _
-
-# from otcextensions.common import sdk_utils
 
 LOG = logging.getLogger(__name__)
 

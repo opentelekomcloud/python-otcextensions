@@ -9,22 +9,19 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
 # from xml.etree import ElementTree
+import boto3
+
+from botocore.exceptions import ClientError
 
 from openstack import _log
-
-from otcextensions.i18n import _
-
 from openstack import exceptions
 
+from otcextensions.i18n import _
+from otcextensions.sdk import ak_auth
+from otcextensions.sdk import sdk_resource
 from otcextensions.sdk.obs import obs_service
 
-from otcextensions.sdk import sdk_resource
-from otcextensions.sdk import ak_auth
-
-import boto3
-from botocore.exceptions import ClientError
 
 _logger = _log.setup_logging('openstack')
 
@@ -139,7 +136,7 @@ class BaseResource(sdk_resource.Resource):
             func = getattr(session, remote_method)
             response = func(**request.body)
         except ClientError as e:
-            raise exceptions.SDKException(_(str(e)))
+            raise exceptions.SDKException(_('Exception %s') % str(e))
 
         self._translate_response(response, has_body=False)
         return self
@@ -167,7 +164,7 @@ class BaseResource(sdk_resource.Resource):
             func = getattr(session, remote_method)
             response = func(**request.body)
         except ClientError as e:
-            raise exceptions.SDKException(_(str(e)))
+            raise exceptions.SDKException(_('Exception %s') % str(e))
 
         kwargs = {}
         if error_message:
@@ -203,7 +200,7 @@ class BaseResource(sdk_resource.Resource):
             func = getattr(session, remote_method)
             response = func(**request.body)
         except ClientError as e:
-            raise exceptions.SDKException(_(str(e)))
+            raise exceptions.SDKException(_('Exception %s') % str(e))
 
         kwargs = {}
         if error_message:

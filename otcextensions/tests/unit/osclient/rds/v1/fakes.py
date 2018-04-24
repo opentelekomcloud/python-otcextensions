@@ -12,22 +12,17 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-
-# import copy
-# import datetime
 import random
 import uuid
 
 import mock
-# from osc_lib import utils as common_utils
 
-# from openstackclient.tests.unit import fakes
 from openstackclient.tests.unit import utils
 
+from otcextensions.sdk.rds.v1.configuration import ConfigurationGroup
 from otcextensions.sdk.rds.v1.datastore import Datastore
 from otcextensions.sdk.rds.v1.flavor import Flavor
 from otcextensions.sdk.rds.v1.instance import Instance
-from otcextensions.sdk.rds.v1.configuration import ConfigurationGroup
 
 
 class TestRds(utils.TestCommand):

@@ -14,10 +14,9 @@ from openstack import exceptions
 from openstack import resource
 from openstack import utils
 
+from otcextensions.i18n import _
 from otcextensions.sdk import sdk_resource
 from otcextensions.sdk.kms import kms_service
-
-from otcextensions.i18n import _
 
 _logger = _log.setup_logging('openstack')
 

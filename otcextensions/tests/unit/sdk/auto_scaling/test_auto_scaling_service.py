@@ -9,10 +9,9 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from otcextensions.sdk.auto_scaling import auto_scaling_service
 
 import testtools
-
-from otcextensions.sdk.auto_scaling import auto_scaling_service
 
 
 class TestAutoScalingService(testtools.TestCase):

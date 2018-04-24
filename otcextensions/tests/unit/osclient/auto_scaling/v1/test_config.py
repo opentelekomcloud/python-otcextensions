@@ -12,11 +12,11 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 import argparse
+
 import mock
 
-from otcextensions.tests.unit.osclient.auto_scaling.v1 import fakes
-
 from otcextensions.osclient.auto_scaling.v1 import config
+from otcextensions.tests.unit.osclient.auto_scaling.v1 import fakes
 
 
 class TestAutoScalingConfig(fakes.TestAutoScaling):

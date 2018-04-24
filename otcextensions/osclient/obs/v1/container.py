@@ -10,18 +10,16 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-
 """OBS Container v1 action implementations"""
-
 import logging
-
-from osc_lib.cli import parseractions
-from osc_lib.command import command
-from osc_lib import utils
 
 from openstackclient.i18n import _
 
-from otcextensions.osclient.obs import sdk_utils
+from osc_lib import utils
+from osc_lib.cli import parseractions
+from osc_lib.command import command
+
+from otcextensions.common import sdk_utils
 
 
 LOG = logging.getLogger(__name__)
