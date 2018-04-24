@@ -10,13 +10,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import copy
-import mock
 
 from keystoneauth1 import adapter
 
-from openstack.tests.unit import base
+import mock
 
 from openstack import exceptions
+from openstack.tests.unit import base
 
 from otcextensions.sdk.auto_scaling.v1 import instance
 

@@ -9,10 +9,11 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import mock
 import copy
 
 from keystoneauth1 import adapter
+
+import mock
 
 from openstack.tests.unit import base
 
@@ -116,7 +117,7 @@ class TestKey(base.TestCase):
         # self.assertEqual(EXAMPLE['error_msg'], sot.error_msg)
 
     def mocked_requests_list(*args, **kwargs):
-        class MockResponse:
+        class MockResponse(object):
             def __init__(self, json_data, status_code):
                 self.json_data = copy.deepcopy(json_data)
                 self.status_code = status_code
@@ -228,7 +229,7 @@ class TestKey(base.TestCase):
         expected_json = copy.deepcopy(key)
         # expected_json.pop('scaling_group_id')
         #
-        self.assertEquals('/kms/create-key', call_args[0][0])
+        self.assertEqual('/kms/create-key', call_args[0][0])
         self.assertDictEqual(expected_json, call_args[1]['json'])
 
         self.sess.post.assert_called_once(

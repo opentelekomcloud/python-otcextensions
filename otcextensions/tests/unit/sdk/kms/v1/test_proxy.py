@@ -12,8 +12,8 @@
 from openstack.tests.unit import test_proxy_base
 
 from otcextensions.sdk.kms.v1 import _proxy
-from otcextensions.sdk.kms.v1 import key as _key
 from otcextensions.sdk.kms.v1 import data_key as _data_key
+from otcextensions.sdk.kms.v1 import key as _key
 from otcextensions.sdk.kms.v1 import misc as _misc
 
 

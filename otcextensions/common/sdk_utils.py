@@ -9,6 +9,9 @@
 #   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #   License for the specific language governing permissions and limitations
 #   under the License.
+import argparse
+
+from cliff import columns
 
 import six
 
@@ -58,3 +61,23 @@ def get_osc_show_columns_for_sdk_resource(
         new_column = attr_map[column] if column in attr_map else column
         attr_columns.append(new_column)
     return tuple(sorted_display_columns), tuple(attr_columns)
+
+
+class ListOfIdsColumn(columns.FormattableColumn):
+
+    def human_readable(self):
+        if self._value is None:
+            return None
+
+        return '[' + ','.join(i['id'] for i in self._value if 'id' in i) + ']'
+
+
+def str2bool(v):
+    """Convert input (CLI) boolean text value into boolean
+    """
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')

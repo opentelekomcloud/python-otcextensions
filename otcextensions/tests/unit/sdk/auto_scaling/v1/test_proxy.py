@@ -12,12 +12,12 @@
 from openstack.tests.unit import test_proxy_base
 
 from otcextensions.sdk.auto_scaling.v1 import _proxy
-from otcextensions.sdk.auto_scaling.v1 import group as _group
-from otcextensions.sdk.auto_scaling.v1 import config as _config
-from otcextensions.sdk.auto_scaling.v1 import policy as _policy
 from otcextensions.sdk.auto_scaling.v1 import activity as _activity
-from otcextensions.sdk.auto_scaling.v1 import quota as _quota
+from otcextensions.sdk.auto_scaling.v1 import config as _config
+from otcextensions.sdk.auto_scaling.v1 import group as _group
 from otcextensions.sdk.auto_scaling.v1 import instance as _instance
+from otcextensions.sdk.auto_scaling.v1 import policy as _policy
+from otcextensions.sdk.auto_scaling.v1 import quota as _quota
 
 
 class TestAutoScalingProxy(test_proxy_base.TestProxyBase):

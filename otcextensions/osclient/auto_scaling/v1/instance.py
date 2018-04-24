@@ -13,9 +13,9 @@
 '''AS Instance v1 action implementations'''
 import logging
 
-from osc_lib.command import command
 from osc_lib import exceptions
 from osc_lib import utils
+from osc_lib.command import command
 
 from otcextensions.i18n import _
 
@@ -146,8 +146,10 @@ class BatchActionAutoScalingInstance(command.Command):
 
         action = parsed_args.action.upper()
         if action not in self.SUPPORTED_ACTIONS:
-            msg = (_('Action %s is not one of the supported %s') %
-                   (parsed_args.action, self.SUPPORTED_ACTIONS))
+            msg = (_('Action %(action)s is not one of '
+                     'the supported %(types)s') %
+                   {'action': parsed_args.action,
+                    'types': self.SUPPORTED_ACTIONS})
             raise exceptions.CommandError(msg)
 
         client = self.app.client_manager.auto_scaling

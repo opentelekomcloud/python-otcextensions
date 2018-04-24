@@ -9,19 +9,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
 from openstack import _log
-# from openstack import exceptions
 
 from otcextensions.sdk import sdk_proxy
-
-# from otcextensions.i18n import _
-
-from otcextensions.sdk.auto_scaling.v1 import group as _group
-from otcextensions.sdk.auto_scaling.v1 import config as _config
-from otcextensions.sdk.auto_scaling.v1 import policy as _policy
 from otcextensions.sdk.auto_scaling.v1 import activity as _activity
+from otcextensions.sdk.auto_scaling.v1 import config as _config
+from otcextensions.sdk.auto_scaling.v1 import group as _group
 from otcextensions.sdk.auto_scaling.v1 import instance as _instance
+from otcextensions.sdk.auto_scaling.v1 import policy as _policy
 from otcextensions.sdk.auto_scaling.v1 import quota as _quota
 
 _logger = _log.setup_logging('openstack')
