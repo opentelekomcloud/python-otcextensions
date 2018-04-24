@@ -18,11 +18,11 @@ For a full guide see TODO(etoews):link to docs on developer.openstack.org
 
 import argparse
 import os
+import sys
 
 import openstack
 from openstack import config as occ
 from openstack import utils
-import sys
 
 utils.enable_logging(True, stream=sys.stdout)
 
@@ -46,6 +46,7 @@ def _get_resource_value(resource_key, default):
         return cloud.config['example'][resource_key]
     except KeyError:
         return default
+
 
 config = occ.OpenStackConfig()
 cloud = openstack.connect(cloud=TEST_CLOUD)

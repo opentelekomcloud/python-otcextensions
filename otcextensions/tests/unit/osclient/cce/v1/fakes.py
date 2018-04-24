@@ -11,21 +11,16 @@
 #   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #   License for the specific language governing permissions and limitations
 #   under the License.
-import datetime
 import random
 import uuid
 
 import mock
 
-from openstackclient.tests.unit import utils
-
-from otcextensions.tests.unit.osclient import fake_base
-
 from otcextensions.sdk.cce.v1 import cluster
-# from otcextensions.sdk.kms.v1 import data_key
+from otcextensions.tests.unit.osclient import test_base
 
 
-class TestCCE(utils.TestCommand):
+class TestCCE(test_base.TestCommand):
 
     def setUp(self):
         super(TestCCE, self).setUp()
@@ -34,7 +29,7 @@ class TestCCE(utils.TestCommand):
         self.client = self.app.client_manager.cce
 
 
-class FakeCluster(fake_base.Fake):
+class FakeCluster(test_base.Fake):
     """Fake one or more Cluster"""
 
     @classmethod

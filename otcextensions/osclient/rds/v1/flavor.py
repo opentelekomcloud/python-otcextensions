@@ -11,17 +11,12 @@
 #   under the License.
 #
 """Flavor v1 action implementations"""
-
 import logging
 
-# import six
-
-# from osc_lib.cli import parseractions
-from osc_lib.command import command
 from osc_lib import utils
+from osc_lib.command import command
 
 from otcextensions.i18n import _
-
 
 LOG = logging.getLogger(__name__)
 

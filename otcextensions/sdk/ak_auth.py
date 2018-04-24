@@ -9,18 +9,21 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import hmac
-import hashlib
 import datetime
 import functools
+import hashlib
+import hmac
+
+import requests
+
 import six
 
 try:
     # python 2
+    from email.message import Message
     from urllib import quote
     from urlparse import urlparse
     from urlparse import urlsplit
-    from email.message import Message
 
     class HTTPHeaders(Message):
 
@@ -33,13 +36,14 @@ try:
     def ensure_unicode(s, encoding='utf-8', errors='strict'):
         if isinstance(s, six.text_type):
             return s
-        return unicode(s, encoding, errors)
+        return unicode(s, encoding, errors)  # noqa
 
 except ImportError:
     # python 3
     from urllib.parse import quote
     from urllib.parse import urlparse
     from urllib.parse import urlsplit
+
     from six.moves import http_client
 
     class HTTPHeaders(http_client.HTTPMessage):
@@ -49,7 +53,6 @@ except ImportError:
         # NOOP in Python 3, because every string is already unicode
         return s
 
-import requests
 
 # from keystoneauth1 import plugin
 
@@ -71,14 +74,16 @@ SIGV4_TIMESTAMP = '%Y%m%dT%H%M%SZ'
 
 def sign(key, msg):
     """
-    Copied from https://docs.aws.amazon.com/general/latest/gr/sigv4-signed-request-examples.html
+    Copied from
+        https://docs.aws.amazon.com/general/latest/gr/sigv4-signed-request-examples.html
     """
     return hmac.new(key, msg.encode('utf-8'), hashlib.sha256).digest()
 
 
 def getSignatureKey(key, dateStamp, regionName, serviceName):
     """
-    Copied from https://docs.aws.amazon.com/general/latest/gr/sigv4-signed-request-examples.html
+    Copied from
+        https://docs.aws.amazon.com/general/latest/gr/sigv4-signed-request-examples.html
     """
     kDate = sign(('AWS4' + key).encode('utf-8'), dateStamp)
     kRegion = sign(kDate, regionName)
@@ -91,7 +96,8 @@ class AKRequestsAuth(requests.auth.AuthBase):
     """
     Auth class that allows us to connect to AWS services
     via Amazon's signature version 4 signing process
-    Adapted from https://docs.aws.amazon.com/general/latest/gr/sigv4-signed-request-examples.html
+    Adapted from
+        https://docs.aws.amazon.com/general/latest/gr/sigv4-signed-request-examples.html
     """
     IDENTITY_AUTH_HEADER_NAME = 'X-Amz-Security-Token'
 
@@ -105,11 +111,11 @@ class AKRequestsAuth(requests.auth.AuthBase):
         """
         Example usage for talking to an AWS Elasticsearch Service:
         AKRequestsAuth(aws_access_key='YOURKEY',
-                       aws_secret_access_key='YOURSECRET',
-                       aws_host='search-service-foobar.us-east-1.es.amazonaws.com',
-                       aws_region='us-east-1',
-                       aws_service='es',
-                       aws_token='...')
+               aws_secret_access_key='YOURSECRET',
+               aws_host='search-service-foobar.us-east-1.es.amazonaws.com',
+               aws_region='us-east-1',
+               aws_service='es',
+               aws_token='...')
         The aws_token is optional and is used only if you are using STS
         temporary credentials.
         """
@@ -133,7 +139,8 @@ class AKRequestsAuth(requests.auth.AuthBase):
         """
         Adds the authorization headers required by Amazon's signature
         version 4 signing process to the request.
-        Adapted from https://docs.aws.amazon.com/general/latest/gr/sigv4-signed-request-examples.html
+        Adapted from
+            https://docs.aws.amazon.com/general/latest/gr/sigv4-signed-request-examples.html
         """
         print('auth is invoked')
         self.add_auth(r)
@@ -166,7 +173,7 @@ class AKRequestsAuth(requests.auth.AuthBase):
     #                                    (optional, defaults to True)
     #     :param kwargs: Ignored.
     #     :raises keystoneauth1.exceptions.http.HttpError: An error from an
-    #                                                      invalid HTTP response.
+#                                                      invalid HTTP response.
     #     :return: Valid EndpointData or None if not available.
     #     :rtype: `keystoneauth1.discover.EndpointData` or None
     #     """
@@ -190,18 +197,21 @@ class AKRequestsAuth(requests.auth.AuthBase):
         calls get_aws_request_headers() with self.aws_access_key,
         self.aws_secret_access_key, and self.aws_token
         """
-        return self.get_aws_request_headers(r=r,
-                                            aws_access_key=self.aws_access_key,
-                                            aws_secret_access_key=self.aws_secret_access_key,
-                                            aws_token=self.aws_token)
+        return self.get_aws_request_headers(
+            r=r,
+            aws_access_key=self.aws_access_key,
+            aws_secret_access_key=self.aws_secret_access_key,
+            aws_token=self.aws_token)
 
-    def get_aws_request_headers(self, r, aws_access_key, aws_secret_access_key, aws_token):
+    def get_aws_request_headers(
+            self, r, aws_access_key, aws_secret_access_key, aws_token):
         """
         Returns a dictionary containing the necessary headers for Amazon's
         signature version 4 signing process. An example return value might
         look like
             {
-                'Authorization': 'AWS4-HMAC-SHA256 Credential=YOURKEY/20160618/us-east-1/es/aws4_request, '
+                'Authorization': 'AWS4-HMAC-SHA256 Credential=YOURKEY/'
+                                 '20160618/us-east-1/es/aws4_request, '
                                  'SignedHeaders=host;x-amz-date, '
                                  'Signature=ca0a856286efce2a4bd96a978ca6c8966057e53184776c0685169d08abd74739',
                 'x-amz-date': '20160618T220405Z',
@@ -237,7 +247,8 @@ class AKRequestsAuth(requests.auth.AuthBase):
         # Note that there is a trailing \n.
         canonical_headers = ('host:' + self.aws_host + '\n' +
                              'x-amz-date:' + amzdate + '\n' +
-                             'x-amz-content-sha256:' + EMPTY_SHA256_HASH + '\n')
+                             'x-amz-content-sha256:' + EMPTY_SHA256_HASH +
+                             '\n')
         if aws_token:
             canonical_headers += 'x-amz-security-token:' + aws_token + '\n'
 
@@ -260,8 +271,11 @@ class AKRequestsAuth(requests.auth.AuthBase):
         algorithm = 'AWS4-HMAC-SHA256'
         credential_scope = (datestamp + '/' + self.aws_region + '/' +
                             self.service + '/' + 'aws4_request')
-        string_to_sign = (algorithm + '\n' + amzdate + '\n' + credential_scope +
-                          '\n' + hashlib.sha256(canonical_request.encode('utf-8')).hexdigest())
+        string_to_sign = (
+            algorithm + '\n' +
+            amzdate + '\n' +
+            credential_scope + '\n' +
+            hashlib.sha256(canonical_request.encode('utf-8')).hexdigest())
 
         print('')
         print('can_req=%s' % canonical_request)
@@ -282,9 +296,11 @@ class AKRequestsAuth(requests.auth.AuthBase):
         # The signing information can be either in a query string value or in
         # a header named Authorization. This code shows how to use a header.
         # Create authorization header and add to request headers
-        authorization_header = (algorithm + ' ' + 'Credential=' + aws_access_key +
-                                '/' + credential_scope + ', ' + 'SignedHeaders=' +
-                                signed_headers + ', ' + 'Signature=' + signature)
+        authorization_header = (
+            algorithm + ' ' +
+            'Credential=' + aws_access_key + '/' + credential_scope + ', ' +
+            'SignedHeaders=' + signed_headers + ', ' +
+            'Signature=' + signature)
 
         headers = {
             'Authorization': authorization_header,
@@ -300,12 +316,13 @@ class AKRequestsAuth(requests.auth.AuthBase):
         Returns a dictionary containing the necessary headers for Amazon's
         signature version 4 signing process. An example return value might
         look like
-            {
-                'Authorization': 'AWS4-HMAC-SHA256 Credential=YOURKEY/20160618/us-east-1/es/aws4_request, '
-                                 'SignedHeaders=host;x-amz-date, '
-                                 'Signature=ca0a856286efce2a4bd96a978ca6c8966057e53184776c0685169d08abd74739',
-                'x-amz-date': '20160618T220405Z',
-            }
+        {
+            'Authorization': 'AWS4-HMAC-SHA256 Credential=YOURKEY/20160618'
+                             '/us-east-1/es/aws4_request, '
+                             'SignedHeaders=host;x-amz-date, '
+                             'Signature=ca0a856286efce2a4bd96a978ca6c8966057e53184776c0685169d08abd74739',
+            'x-amz-date': '20160618T220405Z',
+        }
         """
 
         datetime_now = datetime.datetime.utcnow()
@@ -351,11 +368,11 @@ class AKRequestsAuth(requests.auth.AuthBase):
         request.headers['X-Amz-Date'] = self.timestamp
 
     def _inject_signature_to_request(self, request, signature):
-        l = ['AWS4-HMAC-SHA256 Credential=%s' % self.scope(request)]
+        hdrs = ['AWS4-HMAC-SHA256 Credential=%s' % self.scope(request)]
         headers_to_sign = self.headers_to_sign(request)
-        l.append('SignedHeaders=%s' % self.signed_headers(headers_to_sign))
-        l.append('Signature=%s' % signature)
-        request.headers['Authorization'] = ', '.join(l)
+        hdrs.append('SignedHeaders=%s' % self.signed_headers(headers_to_sign))
+        hdrs.append('Signature=%s' % signature)
+        request.headers['Authorization'] = ', '.join(hdrs)
         return request
 
     def payload(self, request):
@@ -420,8 +437,6 @@ class AKRequestsAuth(requests.auth.AuthBase):
         string (use '/' if no path)
         """
         parsedurl = urlparse(r.url)
-
-        # print('canonical_path=%s' % quote(parsedurl.path if parsedurl.path else '/', safe='/-_.~'))
 
         # safe chars adapted from boto's use of urllib.parse.quote
         # https://github.com/boto/boto/blob/d9e5cfe900e1a58717e393c76a6e3580305f217a/boto/auth.py#L393
@@ -507,7 +522,6 @@ class AKRequestsAuth(requests.auth.AuthBase):
         # Strip out auth if it's present in the netloc.
         return url_parts.netloc.rsplit('@', 1)[-1]
 
-
     def string_to_sign(self, request, canonical_request):
         """
         Return the canonical StringToSign as well as a dict
@@ -517,20 +531,25 @@ class AKRequestsAuth(requests.auth.AuthBase):
         sts = ['AWS4-HMAC-SHA256']
         sts.append(self.timestamp)
         sts.append(self.credential_scope(request))
-        sts.append(hashlib.sha256(canonical_request.encode('utf-8')).hexdigest())
+        sts.append(
+            hashlib.sha256(canonical_request.encode('utf-8')).hexdigest()
+        )
         return '\n'.join(sts)
 
     def signed_headers(self, headers_to_sign):
-        l = ['%s' % n.lower().strip() for n in set(headers_to_sign)]
-        l = sorted(l)
-        return ';'.join(l)
+        hdrs = ['%s' % n.lower().strip() for n in set(headers_to_sign)]
+        hdrs = sorted(hdrs)
+        return ';'.join(hdrs)
     # def _normalize_url_path(self, path):
     #     normalized_path = quote(normalize_url_path(path), safe='/~')
     #     return normalized_path
 
     def _sign(self, key, msg, hex=False):
         if hex:
-            sig = hmac.new(key, msg.encode('utf-8'), hashlib.sha256).hexdigest()
+            sig = hmac.new(
+                key,
+                msg.encode('utf-8'),
+                hashlib.sha256).hexdigest()
         else:
             sig = hmac.new(key, msg.encode('utf-8'), hashlib.sha256).digest()
         return sig

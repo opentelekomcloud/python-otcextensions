@@ -16,9 +16,8 @@ import mock
 
 from osc_lib import exceptions
 
-from otcextensions.tests.unit.osclient.kms.v1 import fakes
-
 from otcextensions.osclient.kms.v1 import cmk
+from otcextensions.tests.unit.osclient.kms.v1 import fakes
 
 
 class TestCMK(fakes.TestKMS):
