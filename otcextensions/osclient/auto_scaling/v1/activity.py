@@ -13,8 +13,8 @@
 '''AS Activity Log v1 action implementations'''
 import logging
 
-from osc_lib.command import command
 from osc_lib import utils
+from osc_lib.command import command
 
 from otcextensions.i18n import _
 

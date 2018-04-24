@@ -11,19 +11,17 @@
 #   under the License.
 #
 """Configuration v1 action implementations"""
-
+import json
 import logging
 
-import json
-import six
-
-# from osc_lib.cli import parseractions
-from osc_lib.command import command
-from osc_lib.cli import parseractions
 from osc_lib import exceptions
 from osc_lib import utils
+from osc_lib.cli import parseractions
+from osc_lib.command import command
 
 from otcextensions.i18n import _
+
+import six
 
 LOG = logging.getLogger(__name__)
 

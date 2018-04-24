@@ -14,11 +14,8 @@
 #
 import mock
 
-from osc_lib import exceptions
-
-from otcextensions.tests.unit.osclient.cce.v1 import fakes
-
 from otcextensions.osclient.cce.v1 import cluster
+from otcextensions.tests.unit.osclient.cce.v1 import fakes
 
 
 class TestCluster(fakes.TestCCE):

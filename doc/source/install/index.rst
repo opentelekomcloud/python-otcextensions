@@ -7,13 +7,13 @@ Each OS version has it's own package names, versions, bugs. Therefore installati
 With a pip package can be installed the following way (please remember, it is not the latest development state). At the command line::
 
     $ sudo yum install python-pip
-    $ sudo pip install python-otcextensions --upgrade
+    $ sudo pip install otcextensions --upgrade
 
 Or, if you have virtualenv wrapper installed (more suitable for development)::
 
     $ virtualenv venv
     $ source venv/bin/activate
-    $ pip install python-otcextensions
+    $ pip install otcextensions
     $ python setup.py install
 
 A more reliable and at the moment tested way is a "developer" approach with a latest state:

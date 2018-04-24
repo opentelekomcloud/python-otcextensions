@@ -10,18 +10,16 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from botocore.exceptions import ClientError
 
 from openstack import _log
 from openstack import exceptions
 from openstack import resource
-
 from openstack.object_store.v1 import obj
 
+from otcextensions.i18n import _
 from otcextensions.sdk.obs.v1 import _base
 
-from otcextensions.i18n import _
-
-from botocore.exceptions import ClientError
 
 _logger = _log.setup_logging('openstack')
 
@@ -56,7 +54,7 @@ class Object(obj.Object, _base.BaseResource):
         try:
             session.download_fileobj(**request.body)
         except ClientError as e:
-            raise exceptions.SDKException(_(str(e)))
+            raise exceptions.SDKException(_('Exception %s') % str(e))
 
         # _logger.debug('response=%s' % response)
         # kwargs = {}

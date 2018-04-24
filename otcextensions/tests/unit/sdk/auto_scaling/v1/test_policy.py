@@ -9,10 +9,11 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import mock
 import copy
 
 from keystoneauth1 import adapter
+
+import mock
 
 from openstack.tests.unit import base
 
@@ -168,7 +169,7 @@ class TestPolicy(base.TestCase):
         expected_json = copy.deepcopy(EXAMPLE)
         expected_json.pop('scaling_group_id')
 
-        self.assertEquals('/scaling_policy', call_args[0][0])
+        self.assertEqual('/scaling_policy', call_args[0][0])
         self.assertDictEqual(expected_json, call_args[1]['json'])
 
         self.sess.post.assert_called_once()
@@ -215,7 +216,7 @@ class TestPolicy(base.TestCase):
         expected_json.pop('scaling_policy_id')
         expected_json.pop('scaling_group_id')
 
-        self.assertEquals(
+        self.assertEqual(
             'scaling_policy/%s' % EXAMPLE['scaling_policy_id'],
             call_args[0][0])
         self.assertDictEqual(expected_json, call_args[1]['json'])

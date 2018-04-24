@@ -13,9 +13,8 @@
 #   under the License.
 import mock
 
-from otcextensions.tests.unit.osclient.auto_scaling.v1 import fakes
-
 from otcextensions.osclient.auto_scaling.v1 import policy
+from otcextensions.tests.unit.osclient.auto_scaling.v1 import fakes
 
 
 class TestAutoScalingPolicy(fakes.TestAutoScaling):

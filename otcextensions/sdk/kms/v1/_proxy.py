@@ -9,10 +9,10 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from otcextensions.sdk.kms.v1 import key as _key
-from otcextensions.sdk.kms.v1 import data_key as _data_key
-from otcextensions.sdk.kms.v1 import misc as _misc
 from otcextensions.sdk import sdk_proxy
+from otcextensions.sdk.kms.v1 import data_key as _data_key
+from otcextensions.sdk.kms.v1 import key as _key
+from otcextensions.sdk.kms.v1 import misc as _misc
 
 
 class Proxy(sdk_proxy.Proxy):
