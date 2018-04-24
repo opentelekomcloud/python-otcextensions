@@ -21,7 +21,7 @@ _logger= _log.setup_logging('openstack')
 
 class Message(_base.Resource):
 
-    # No response for this post method
+    resources_key = 'messages'
     base_path = '/queues/%(queue_id)s/messages'
 
     service = dms_service.DmsService()
@@ -32,6 +32,7 @@ class Message(_base.Resource):
     # Properties
     #: Queue id
     queue_id = resource.URI('queue_id')
+    messages = resource.Body('messages', type=list)
 
     # @classmethod
     # def create_messages(cls, session, queue_id=queue_id, **kwargs):

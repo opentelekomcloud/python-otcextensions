@@ -14,6 +14,7 @@ from openstack import exceptions
 from openstack import utils
 
 from otcextensions.tests.functional import base
+import time
 
 _logger = _log.setup_logging('openstack')
 
@@ -39,15 +40,15 @@ class TestMessage(base.BaseFunctionalTest):
 
         cls.queues.append(cls.queue)
         
-        try:
-            cls.group = cls.conn.dms.create_groups(
-                cls.queue, groups=[{"name": "test_group"}]
-            )
-            
-        except exceptions.DuplicateResource:
-            cls.queue = cls.conn.dms.groups(cls.queue)
+        #try:
+        #    cls.group = cls.conn.dms.create_groups(
+        #        cls.queue, groups=[{"name": "test_group"}]
+        #    )
+        #    
+        #except exceptions.DuplicateResource:
+        #    cls.queue = cls.conn.dms.groups(cls.queue)
 
-        cls.groups.append(cls.group)
+        #cls.groups.append(cls.group)
         
 
     @classmethod
@@ -68,7 +69,6 @@ class TestMessage(base.BaseFunctionalTest):
             q = cls.conn.dms.get_queue(queue=queue.id)
             cls.assertIsNotNone(q)
 
-    @classmethod
     def test_group(cls):
         cls.queues = list(cls.conn.dms.queues())
         #cls.assertGreaterEqual(len(cls.queues), 0)
@@ -94,17 +94,18 @@ class TestMessage(base.BaseFunctionalTest):
         if len(cls.queues) > 0:
             queue = cls.queues[0]
             q = cls.conn.dms.get_queue(queue=queue.id)
+            time.sleep(1)
             #cls.assertIsNotNone(q)
             cls.message = cls.conn.dms.send_messages(
                 cls.queue, messages=[
                     {"body" : "TEST11", 
                     "attributes" : { 
                         "attribute1" : "value1", 
-                        "attribute2" : "value2" } }, 
-                    { "body" : { "foo" : "test02" }, 
-                    "attributes" : { 
-                        "attribute1" : "value1", 
-                        "attribute2" : "value2" } }  
+                        "attribute2" : "value2" } } 
+            #        ,{ "body" : { "foo" : "test02" }, 
+            #        "attributes" : { 
+            #            "attribute1" : "value1", 
+            #            "attribute2" : "value2" } }  
                             ] )
             
             cls.messages.append(cls.message)
