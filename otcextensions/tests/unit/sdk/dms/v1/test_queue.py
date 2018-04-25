@@ -27,11 +27,17 @@ EXAMPLE = {
 }
 
 GROUP_EXAMPLE = {
-    "id": "g-5ec247fd-d4a2-4d4f-9876-e4ff3280c461",
-    "name": "abcDffD",
-    "produced_messages": 0,
-    "consumed_messages": 0,
-    "available_messages": 0
+    "queue_name" : "queue_001",
+    "groups" : [{
+                "id": "g-5ec247fd-d4a2-4d4f-9876-e4ff3280c461",
+                "name": "abcDffD",
+                "produced_messages": 0,
+                "consumed_messages": 0,
+                "available_messages": 0
+        }
+    ],
+    "redrive_policy" : "enable",
+    "queue_id" : "9bf46390-38a2-462d-b392-4d5b2d519c55"
 }
 
 MSG_CONSUME_EXAMPLE = {
@@ -90,43 +96,22 @@ class TestGroup(base.TestCase):
     def test_make_it(self):
 
         sot = self.objcls(**self.example)
-        self.assertEqual(self.example['id'], sot.id)
-        self.assertEqual(self.example['name'], sot.name)
-        self.assertEqual(self.example['produced_messages'],
-                         sot.produced_messages)
-        self.assertEqual(self.example['consumed_messages'],
-                         sot.consumed_messages)
-        self.assertEqual(self.example['available_messages'],
-                         sot.available_messages)
-"""
-    def test_create_groups(self):
-        fake_queue_id = 'fake'
-        sess = mock.Mock()
-        sess.post.return_value = None
-        url = self.objcls.base_path % {'queue_id': fake_queue_id}
-        headers = {'Content-type': 'application/json', 'Content-Length': '2'}
-
-        self.objcls.create_groups(sess, queue_id=fake_queue_id)
-        sess.post.assert_called_with(
-            url,
-            json={}, headers=headers) """
-
+        self.assertEqual(self.example['groups'], sot.groups)
 
 class TestMessage(base.TestCase):
 
     objcls = message.Message
-"""
-    def test_create_messages(self):
-        fake_queue_id = 'fake'
-        sess = mock.Mock()
-        sess.post.return_value = None
-        url = self.objcls.base_path % {'queue_id': fake_queue_id}
-        headers = {'Content-type': 'application/json', 'Content-Length': '2'}
 
-        self.objcls.create_messages(sess, queue_id=fake_queue_id)
-        sess.post.assert_called_with(
-            url,
-            json={},headers=headers) """
+    def test_basic(self):
+        sot = self.objcls()
+
+        self.assertEqual('/queues/%(queue_id)s/messages', sot.base_path)
+
+    def test_make_it(self):
+
+        sot = self.objcls(**self.example)
+        self.assertEqual(self.example['messages'], sot.messages)
+
 
 
 class TestMessageConsumer(base.TestCase):
