@@ -9,9 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-# import six
-
-# from openstack import exceptions
 from openstack import resource
 
 from otcextensions.sdk import sdk_resource
@@ -24,10 +21,4 @@ class Resource(sdk_resource.Resource):
 
     service = dms_service.DmsService()
     service_expectes_json_type = True
-
-    # Properties
-    #: Kind
-    kind = resource.Body('kind')
-    #: api version
-    api_version = resource.Body('apiVersion', default='v1')
 

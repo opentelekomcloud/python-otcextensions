@@ -12,18 +12,13 @@
 from openstack import resource
 from openstack import _log
 
-
-from otcextensions.sdk.dms import dms_service
-#from otcextensions.sdk.dms.v1 import dmsresource as _base
 from otcextensions.sdk.dms.v1 import _base
-from otcextensions.sdk import sdk_resource
 _logger= _log.setup_logging('openstack')
+
 
 class MessageConsumer(_base.Resource):
 
     base_path = '/queues/%(queue_id)s/groups/%(consumer_group_id)s/messages'
-
-    service = dms_service.DmsService()
 
     _query_mapping = resource.QueryParameters('max_msgs', 'time_wait')
 
@@ -51,21 +46,21 @@ class MessageConsumer(_base.Resource):
     # which can not leverage method of session directlly.
     # return an url with query params
     # it accepts multiple query params e.g. tag=tag1&tag=tag2
-    @classmethod
-    def _assemble_query_params(cls, base_url, params):
-        # pop queue_id and consumer_group_id
-        params.pop('queue_id', None)
-        params.pop('consumer_group_id', None)
-        if len(params) == 0:
-            return base_url
-        base_url = base_url + '?'
-        for (p, v) in params.items():
-            if p == 'tags':
-                for tag in v:
-                    base_url = base_url + 'tag=' + tag + '&'
-            else:
-                base_url = base_url + p + '=' + str(v) + '&'
-        return base_url[:-1]
+    # @classmethod
+    # def _assemble_query_params(cls, base_url, params):
+    #     # pop queue_id and consumer_group_id
+    #     params.pop('queue_id', None)
+    #     params.pop('consumer_group_id', None)
+    #     if len(params) == 0:
+    #         return base_url
+    #     base_url = base_url + '?'
+    #     for (p, v) in params.items():
+    #         if p == 'tags':
+    #             for tag in v:
+    #                 base_url = base_url + 'tag=' + tag + '&'
+    #         else:
+    #             base_url = base_url + p + '=' + str(v) + '&'
+    #     return base_url[:-1]
 
     # use get method to consume message, return a list of self
     @classmethod
@@ -81,8 +76,8 @@ class MessageConsumer(_base.Resource):
 
         query_params = cls._query_mapping._transpose(params)
         resp = session.get(
-            uri, 
-            headers=headers, 
+            uri,
+            headers=headers,
             params=query_params)
 
         if resp is not None:
@@ -97,7 +92,8 @@ class MessageConsumer(_base.Resource):
             return ret
 
     def ack(self, session, status='success'):
-        base_path = 'ack'.join(self.base_path.rsplit('messages', 1))
+        base_path = '/queues/%(queue_id)s/groups/%(consumer_group_id)s/ack'
+
         uri = base_path % self._uri.attributes
 
         body = {
@@ -109,14 +105,15 @@ class MessageConsumer(_base.Resource):
             ]
         }
 
-        headers = self._header.dirty
-        headers.update({'Content-type': 'application/json'})
-        headers.update({'Content-Length': str(len(str(body)))})
+        # headers = self._header.dirty
+        # headers.update({'Content-type': 'application/json'})
+        # headers.update({'Content-Length': str(len(str(body)))})
 
         response = session.post(
-            uri, 
-            json=body, 
-            headers=headers)
+            uri,
+            json=body,
+            #headers=headers
+            )
 
         self._translate_response(response)
         return self
