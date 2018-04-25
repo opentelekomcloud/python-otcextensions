@@ -25,4 +25,3 @@ class TestDMSService(base.TestCase):
         self.assertEqual(1, len(sot.valid_versions))
         self.assertEqual('v1', sot.valid_versions[0].module)
         self.assertEqual('v1', sot.valid_versions[0].path)
-        self.assertTrue(sot.requires_project_id)
