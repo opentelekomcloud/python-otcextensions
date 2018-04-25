@@ -27,17 +27,16 @@ EXAMPLE = {
 }
 
 GROUP_EXAMPLE = {
-    "queue_name" : "queue_001",
-    "groups" : [{
+    "queue_name": "queue_001",
+    "groups": [{
                 "id": "g-5ec247fd-d4a2-4d4f-9876-e4ff3280c461",
                 "name": "abcDffD",
                 "produced_messages": 0,
                 "consumed_messages": 0,
                 "available_messages": 0
-        }
-    ],
-    "redrive_policy" : "enable",
-    "queue_id" : "9bf46390-38a2-462d-b392-4d5b2d519c55"
+              }],
+    "redrive_policy": "enable",
+    "queue_id": "9bf46390-38a2-462d-b392-4d5b2d519c55"
 }
 
 MSG_CONSUME_EXAMPLE = {
@@ -98,6 +97,7 @@ class TestGroup(base.TestCase):
         sot = self.objcls(**self.example)
         self.assertEqual(self.example['groups'], sot.groups)
 
+
 class TestMessage(base.TestCase):
 
     objcls = message.Message
@@ -111,7 +111,6 @@ class TestMessage(base.TestCase):
 
         sot = self.objcls(**self.example)
         self.assertEqual(self.example['messages'], sot.messages)
-
 
 
 class TestMessageConsumer(base.TestCase):
