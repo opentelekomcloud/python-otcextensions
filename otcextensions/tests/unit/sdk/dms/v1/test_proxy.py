@@ -77,8 +77,9 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
             self.proxy.groups,
             method_args=['queue'],
             expected_args=[mock.ANY],
-            expected_kwargs={'queue_id': 'queue',
-                            'paginated': False})
+            expected_kwargs={
+                'queue_id': 'queue',
+                'paginated': False})
 
     def test_delete_group(self):
         self._verify2(
@@ -102,11 +103,12 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
             self.proxy.consume_message,
             method_args=['queue', 'group'],
             expected_args=[mock.ANY],
-            expected_kwargs={'queue_id': 'queue',
-                            'consumer_group_id': 'group',
-                            'endpoint_override': None,
-                            'headers': None,
-                            'paginated': False})
+            expected_kwargs={
+                'queue_id': 'queue',
+                'consumer_group_id': 'group',
+                'endpoint_override': None,
+                'headers': None,
+                'paginated': False})
 
     def test_ack_consumed_message(self):
         pass
