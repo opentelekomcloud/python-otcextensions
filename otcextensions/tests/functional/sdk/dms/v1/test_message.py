@@ -33,23 +33,22 @@ class TestMessage(base.BaseFunctionalTest):
             cls.queue = cls.conn.dms.create_queue(
                 name=TestMessage.QUEUE_ALIAS
             )
-            
+
         except exceptions.BadRequestException:
             cls.queue =  cls.conn.dms.get_queue(TestMessage.QUEUE_ALIAS)
             #cls.queue = cls.conn.dms.queues(name=TestMessage.QUEUE_ALIAS)
 
         cls.queues.append(cls.queue)
-        
-        #try:
+
+        # try:
         #    cls.group = cls.conn.dms.create_groups(
         #        cls.queue, groups=[{"name": "test_group"}]
         #    )
-        #    
-        #except exceptions.DuplicateResource:
+        #
+        # except exceptions.DuplicateResource:
         #    cls.queue = cls.conn.dms.groups(cls.queue)
 
-        #cls.groups.append(cls.group)
-        
+        # cls.groups.append(cls.group)
 
     @classmethod
     def tearDownClass(cls):
@@ -71,41 +70,40 @@ class TestMessage(base.BaseFunctionalTest):
 
     def test_group(cls):
         cls.queues = list(cls.conn.dms.queues())
-        #cls.assertGreaterEqual(len(cls.queues), 0)
+        # cls.assertGreaterEqual(len(cls.queues), 0)
         if len(cls.queues) > 0:
             queue = cls.queues[0]
-            q = cls.conn.dms.get_queue(queue=queue.id)
-            #cls.assertIsNotNone(q)
+            # q = cls.conn.dms.get_queue(queue=queue.id)
+            # cls.assertIsNotNone(q)
             try:
                 cls.group = cls.conn.dms.create_groups(
                     cls.queue, groups=[{"name": "test_group"}]
                 )
-            
+
             except exceptions.BadRequestException:
                 cls.queue = cls.conn.dms.groups(cls.queue)
-                
-            cls.groups.append(cls.group)
 
+            cls.groups.append(cls.group)
 
     @classmethod
     def test_message(cls):
         cls.queues = list(cls.conn.dms.queues())
-        #cls.assertGreaterEqual(len(cls.queues), 0)
+        # cls.assertGreaterEqual(len(cls.queues), 0)
         if len(cls.queues) > 0:
             queue = cls.queues[0]
             q = cls.conn.dms.get_queue(queue=queue.id)
             time.sleep(1)
-            #cls.assertIsNotNone(q)
+            # cls.assertIsNotNone(q)
             cls.message = cls.conn.dms.send_messages(
                 cls.queue, messages=[
-                    {"body" : "TEST11", 
-                    "attributes" : { 
-                        "attribute1" : "value1", 
-                        "attribute2" : "value2" } } 
-            #        ,{ "body" : { "foo" : "test02" }, 
-            #        "attributes" : { 
-            #            "attribute1" : "value1", 
-            #            "attribute2" : "value2" } }  
+                    {"body": "TEST11",
+                    "attributes": {
+                        "attribute1": "value1",
+                        "attribute2": "value2" } }
+            #        ,{ "body" : { "foo" : "test02" },
+            #        "attributes" : {
+            #            "attribute1" : "value1",
+            #            "attribute2" : "value2" } }
                             ] )
-            
+
             cls.messages.append(cls.message)

@@ -16,13 +16,13 @@ from otcextensions.sdk.dms.v1 import _proxy
 from otcextensions.sdk.dms.v1 import queue as _queue
 from otcextensions.sdk.dms.v1 import group as _group
 from otcextensions.sdk.dms.v1 import message as _message
-from otcextensions.sdk.dms.v1 import message_consumer as _message_consumer
 
 from openstack.tests.unit import base
 
 from openstack.tests.unit import test_proxy_base
 
 GROUP_ID = 'g-5ec247fd-d4a2-4d4f-9876-e4ff3280c461'
+
 
 class TestDMSProxy(test_proxy_base.TestProxyBase):
     def setUp(self):
@@ -31,7 +31,7 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
 
     def test_create_queue(self):
         self.verify_create(
-            self.proxy.create_queue, 
+            self.proxy.create_queue,
             _queue.Queue,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
             method_kwargs={
@@ -44,7 +44,7 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
 
     def test_queues(self):
         self.verify_list(
-            self.proxy.queues, 
+            self.proxy.queues,
             _queue.Queue,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             expected_kwargs={}
@@ -70,15 +70,13 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
     def test_create_groups(self):
         self._verify2(
             'otcextensions.sdk.sdk_proxy.Proxy._create',
-            #'otcextensions.sdk.dms.v1.group.Group.create_groups',
             self.proxy.create_groups,
             method_args=['queue'],
             expected_args=[mock.ANY],
             expected_kwargs={'queue_id': 'queue'})
 
-
     def test_groups(self):
-         self._verify2(
+        self._verify2(
             'otcextensions.sdk.sdk_proxy.Proxy._list',
             self.proxy.groups,
             method_args=['queue'],
@@ -94,16 +92,15 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
             expected_kwargs={'queue_id': 'queue'})
 
     def test_send_messages(self):
-         self._verify2(
+        self._verify2(
              'otcextensions.sdk.sdk_proxy.Proxy._create',
-            #'otcextensions.sdk.dms.v1.message.Message.create_messages',
             self.proxy.send_messages,
             method_args=['queue'],
             expected_args=[mock.ANY],
             expected_kwargs={'queue_id': 'queue'})
 
     def test_consume_message(self):
-         self._verify2(
+        self._verify2(
             'otcextensions.sdk.dms.v1.message_consumer.MessageConsumer.list',
             self.proxy.consume_message,
             method_args=['queue', 'group'],

@@ -23,5 +23,5 @@ class DmsService(service_filter.ServiceFilter):
         super(DmsService, self).__init__(
             service_type='dms',
             version=version,
-            requires_project_id=True,
+            #requires_project_id=True,
         )
