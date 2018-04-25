@@ -29,12 +29,12 @@ EXAMPLE = {
 GROUP_EXAMPLE = {
     "queue_name": "queue_001",
     "groups": [{
-                "id": "g-5ec247fd-d4a2-4d4f-9876-e4ff3280c461",
-                "name": "abcDffD",
-                "produced_messages": 0,
-                "consumed_messages": 0,
-                "available_messages": 0
-              }],
+               "id": "g-5ec247fd-d4a2-4d4f-9876-e4ff3280c461",
+               "name": "abcDffD",
+               "produced_messages": 0,
+               "consumed_messages": 0,
+               "available_messages": 0
+               }],
     "redrive_policy": "enable",
     "queue_id": "9bf46390-38a2-462d-b392-4d5b2d519c55"
 }
