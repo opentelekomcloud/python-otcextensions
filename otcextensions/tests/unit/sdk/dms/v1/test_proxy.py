@@ -14,10 +14,6 @@ import mock
 
 from otcextensions.sdk.dms.v1 import _proxy
 from otcextensions.sdk.dms.v1 import queue as _queue
-from otcextensions.sdk.dms.v1 import group as _group
-from otcextensions.sdk.dms.v1 import message as _message
-
-from openstack.tests.unit import base
 
 from openstack.tests.unit import test_proxy_base
 
@@ -85,7 +81,8 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
                             'paginated': False})
 
     def test_delete_group(self):
-        self._verify2('otcextensions.sdk.sdk_proxy.Proxy._delete',
+        self._verify2(
+            'otcextensions.sdk.sdk_proxy.Proxy._delete',
             self.proxy.delete_group,
             method_args=['queue', 'group'],
             expected_args=[mock.ANY, 'group'],
@@ -93,7 +90,7 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
 
     def test_send_messages(self):
         self._verify2(
-             'otcextensions.sdk.sdk_proxy.Proxy._create',
+            'otcextensions.sdk.sdk_proxy.Proxy._create',
             self.proxy.send_messages,
             method_args=['queue'],
             expected_args=[mock.ANY],
