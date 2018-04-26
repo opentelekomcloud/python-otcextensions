@@ -37,8 +37,8 @@ def _flatten_cluster(obj):
         data['status'] = obj.status['status']
     try:
         data['nodes'] = len(obj.spec.host_list.spec.host_list)
-    except AttributeError:
-        pass
+    except (TypeError, AttributeError):
+        data['nodes'] = 0
 
     return data
 

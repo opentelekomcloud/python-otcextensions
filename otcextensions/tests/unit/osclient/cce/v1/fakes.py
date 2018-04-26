@@ -34,7 +34,11 @@ class FakeCluster(test_base.Fake):
     """Fake one or more Cluster"""
 
     @classmethod
-    def generate(cls):
+    def generate(cls, cnt_hosts=1):
+        hosts = []
+        for i in range(cnt_hosts-1):
+            host = {'kind': 'host'}
+            hosts.append(host)
         object_info = {
             'kind': 'cluster',
             'metadata': {
@@ -49,9 +53,7 @@ class FakeCluster(test_base.Fake):
                 'vpc': 'vpc-' + uuid.uuid4().hex,
                 'hostList': {
                     'spec': {
-                        'hostList': [{
-                            'kind': 'host'
-                        }]
+                        'hostList': hosts
                     }
                 }
             },
@@ -61,6 +63,25 @@ class FakeCluster(test_base.Fake):
         }
         obj = cluster.Cluster.existing(**object_info)
         return obj
+
+    @classmethod
+    def create_one(cls, cnt_hosts=1):
+        """Create a fake resource.
+        """
+        resource = cls.generate(cnt_hosts)
+
+        return resource
+
+    @classmethod
+    def create_multiple(cls, count=2, attrs=None):
+        """Create multiple fake resources.
+        """
+        objects = []
+        for i in range(0, count):
+            objects.append(
+                cls.create_one(1))
+
+        return objects
 
 
 class FakeClusterNode(test_base.Fake):
