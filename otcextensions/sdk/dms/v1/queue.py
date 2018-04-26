@@ -13,7 +13,7 @@ from openstack import resource
 from openstack import _log
 
 from otcextensions.sdk.dms.v1 import _base
-_logger= _log.setup_logging('openstack')
+_logger = _log.setup_logging('openstack')
 
 
 class Queue(_base.Resource):
@@ -39,7 +39,7 @@ class Queue(_base.Resource):
     description = resource.Body('description')
     #: Redrive policy
     redrive_policy = resource.Body('redrive_policy')
-     #: Max consume count number
+    #: Max consume count number
     #: *Type: int*
     max_consume_count = resource.Body('max_consume_count', type=int)
     #: Retentions hours

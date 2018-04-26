@@ -13,7 +13,7 @@ from openstack import resource
 from openstack import _log
 
 from otcextensions.sdk.dms.v1 import _base
-_logger= _log.setup_logging('openstack')
+_logger = _log.setup_logging('openstack')
 
 
 class GroupSpec(_base.Resource):
@@ -56,4 +56,3 @@ class Group(_base.Resource):
     groups = resource.Body('groups', type=list, list_type=GroupSpec)
     #: Redrive policy
     redrive_policy = resource.Body('redrive_policy')
-

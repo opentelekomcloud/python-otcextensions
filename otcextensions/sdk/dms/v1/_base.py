@@ -9,8 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import resource
-
 from otcextensions.sdk import sdk_resource
 
 from otcextensions.sdk.dms import dms_service

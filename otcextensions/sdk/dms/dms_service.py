@@ -22,6 +22,5 @@ class DmsService(service_filter.ServiceFilter):
         """Create a DMS service."""
         super(DmsService, self).__init__(
             service_type='dms',
-            version=version,
-            #requires_project_id=True,
+            version=version
         )

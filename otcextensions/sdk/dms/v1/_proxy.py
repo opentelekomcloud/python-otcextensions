@@ -67,7 +67,8 @@ class Proxy(sdk_proxy.Proxy):
             :class:`~otcextensions.sdk.dms.v1.queue.Queue`
         :param dict kwargs: Keyword arguments which will be used to overwrite a
             :class:`~otcextensions.sdk.dms.v1.queue.Group`
-        :returns: A list of object :class:`~otcextensions.sdk.dms.v1.queue.Group`
+        :returns: A list of object
+            :class:`~otcextensions.sdk.dms.v1.queue.Group`
         """
         queue_id = queue
         if isinstance(queue, _queue.Queue):
