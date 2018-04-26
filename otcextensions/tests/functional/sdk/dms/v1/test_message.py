@@ -40,9 +40,11 @@ class TestMessage(base.BaseFunctionalTest):
         cls.queues.append(cls.queue)
 
         try:
-            cls.group = cls.conn.dms.create_groups(
-               cls.queue, groups=[{"name": "test_group"}]
-           )
+            cls.group = cls.conn.dms.create_groups
+            (
+                cls.queue,
+                groups=[{"name": "test_group"}]
+            )
 
         except exceptions.DuplicateResource:
             cls.queue = cls.conn.dms.groups(cls.queue)
@@ -100,10 +102,10 @@ class TestMessage(base.BaseFunctionalTest):
                             {
                                 "attribute1": "value1",
                                 "attribute2": "value2"}}
-                                    ])
-                #        ,{ "body" : { "foo" : "test02" },
-                #        "attributes" : {
-                #            "attribute1" : "value1",
-                #            "attribute2" : "value2" } }
+                                ])
+            #        ,{ "body" : { "foo" : "test02" },
+            #        "attributes" : {
+            #            "attribute1" : "value1",
+            #            "attribute2" : "value2" } }
 
             cls.messages.append(cls.message)
