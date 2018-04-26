@@ -95,7 +95,7 @@ class TestShowCluster(TestCluster):
 
         self.cmd = cluster.ShowCCECluster(self.app, None)
 
-        self.client.get_cluster = mock.Mock()
+        self.client.find_cluster = mock.Mock()
 
     def test_get(self):
         arglist = [
@@ -110,14 +110,89 @@ class TestShowCluster(TestCluster):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.get_cluster.side_effect = [
+        self.client.find_cluster.side_effect = [
             self._obj
         ]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.get_cluster.assert_called_once_with('cluster_uuid')
+        self.client.find_cluster.assert_called_once_with('cluster_uuid')
+
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
+
+
+class TestCreateCluster(TestCluster):
+
+    _obj = fakes.FakeCluster.create_one()
+
+    columns = ('ID', 'name', 'status', 'cpu', 'memory', 'endpoint',
+               'availability_zone',
+               'vpc', 'nodes')
+
+    data = (
+        _obj.metadata.id,
+        _obj.metadata.name,
+        _obj.status['status'],
+        _obj.spec.cpu,
+        _obj.spec.memory,
+        _obj.spec.endpoint,
+        _obj.spec.availability_zone,
+        _obj.spec.vpc,
+        len(_obj.spec.host_list.spec.host_list)
+    )
+
+    def setUp(self):
+        super(TestCreateCluster, self).setUp()
+
+        self.cmd = cluster.CreateCCECluster(self.app, None)
+
+        self.client.create_cluster = mock.Mock()
+
+    def test_create(self):
+        arglist = [
+            'cluster_name',
+            'vpc_id',
+            'subnet_id',
+            '--description', 'descr',
+            '--region', 'regio',
+            '--security_group', 'sg',
+            '--type', 'HA'
+        ]
+
+        verifylist = [
+            ('name', 'cluster_name'),
+            ('vpc', 'vpc_id'),
+            ('subnet', 'subnet_id'),
+            ('description', 'descr'),
+            ('region', 'regio'),
+            ('security_group', 'sg'),
+            ('type', 'HA')
+        ]
+
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.create_cluster.side_effect = [
+            self._obj
+        ]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.create_cluster.assert_called_once_with(
+            name='cluster_name',
+            spec={
+                'vpc': 'vpc_id',
+                'subnet': 'subnet_id',
+                'region': 'regio',
+                'description': 'descr',
+                'security_group_id': 'sg',
+                'cluster_type': 'HA'
+            }
+        )
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)

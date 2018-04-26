@@ -16,19 +16,19 @@ from openstack import utils
 from otcextensions.sdk import sdk_resource
 from otcextensions.sdk.cce import cce_service
 from otcextensions.sdk.cce.v1 import _base
-from otcextensions.sdk.cce.v1 import cluster_host
+from otcextensions.sdk.cce.v1 import cluster_node
 
 
-class HostListSpec(sdk_resource.Resource):
+class NodeListSpec(sdk_resource.Resource):
     # Properties
     host_list = resource.Body('hostList', type=list,
-                              list_type=cluster_host.ClusterHost)
+                              list_type=cluster_node.ClusterNode)
 
 
-class ClusterHostList(_base.Resource):
+class ClusterNodeList(_base.Resource):
     # Properties
     #: Spec
-    spec = resource.Body('spec', type=HostListSpec)
+    spec = resource.Body('spec', type=NodeListSpec)
 
 
 class ClusterSpec(sdk_resource.Resource):
@@ -59,9 +59,11 @@ class ClusterSpec(sdk_resource.Resource):
     #: *Type:str*
     cidr = resource.Body('cidr')
     #: Cluster type
+    #: possible values: (HA, Single)
     #: *Type:str*
     cluster_type = resource.Body('clustertype')
     #: Security group id
+    #: when left empty on creation CCE will create one
     #: *Type:str*
     security_group_id = resource.Body('security_group_id')
     #: Endpoint
@@ -74,7 +76,7 @@ class ClusterSpec(sdk_resource.Resource):
     #: *Type:str*
     type = resource.Body('clustertype')
     #: host list
-    host_list = resource.Body('hostList', type=ClusterHostList)
+    host_list = resource.Body('hostList', type=ClusterNodeList)
     #: Region (used for create cluster)
     region = resource.Body('region')
     #: Public IP ID or EIP ID (used for create cluster)
@@ -100,6 +102,20 @@ class Cluster(_base.Resource):
     spec = resource.Body('spec', type=ClusterSpec)
     #: Cluster status
     status = resource.Body('clusterStatus', type=dict)
+
+    @classmethod
+    def new(cls, **kwargs):
+        if 'kind' not in kwargs:
+            kwargs['kind'] = 'cluster'
+        if 'apiVersion' not in kwargs:
+            kwargs['apiVersion'] = 'v1'
+        metadata = kwargs.get('metadata', '')
+        if 'name' in kwargs and not metadata:
+            name = kwargs.pop('name', '')
+            kwargs['metadata'] = {
+                'name': name
+            }
+        return cls(_synchronized=False, **kwargs)
 
     # @staticmethod
     # def _get_id(value):
@@ -166,15 +182,3 @@ class Cluster(_base.Resource):
 
         url = utils.urljoin(self.base_path, self.id, 'hosts')
         session.delete(url, json=message, **args)
-
-    # @classmethod
-    # def flatten(cls, **kwargs):
-    #     result_dict = {}
-    #     for (k, v) in six.iteritems(kwargs):
-    #         if isinstance(v, dict):
-    #             for (new_k, new_v) in six.iteritems(cls.flatten(**v)):
-    #                 key = k + '.' + new_k
-    #                 result_dict[key] = new_v
-    #         else:
-    #             result_dict[k] = v
-    #     return result_dict

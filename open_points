@@ -10,6 +10,7 @@ This document gathers issues, which are found during diggint the API and other O
 * LB: while Neutron LBaaS is "strongly" considered as deprecated and no bindings are present in Ansible/OSC
   it will likely not be possible/challenge to upstream this support.
 * EVS: volume type list --long returns changing results
+* Subnet (in some APIs) is most likely net_id
 
 # KMS:
 
@@ -34,6 +35,10 @@ This document gathers issues, which are found during diggint the API and other O
 * attribute naming: metadata.uuid vs metadata.uid
 * undocumented properties of the cluster.spec field (i.e. `cidr`)
 * far away from Magnum
+* Cluster has both VPC and VPC_ID, in GET VPC is name, in POST it should be ID
+* Subnet is most likely net_id
+* In AS sys disk has type "SYS", in CCE - "root"
+* Node delete possible only by name, and not id
 
 # DCS:
 

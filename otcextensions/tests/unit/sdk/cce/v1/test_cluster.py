@@ -17,7 +17,7 @@ import mock
 
 from openstack.tests.unit import base
 
-from otcextensions.sdk.cce.v1 import cluster
+from otcextensions.sdk.cce.v1 import cluster as _cluster
 
 OS_HEADERS = {
     'Content-Type': 'application/json',
@@ -119,11 +119,13 @@ class TestCluster(base.TestCase):
         self.sess = mock.Mock(spec=adapter.Adapter)
         self.sess.get = mock.Mock()
         self.sess.delete = mock.Mock()
+        self.sess.post = mock.Mock()
+        self.sess.put = mock.Mock()
 
-        self.sot = cluster.Cluster()
+        self.sot = _cluster.Cluster()
 
     def test_basic(self):
-        sot = cluster.Cluster()
+        sot = _cluster.Cluster()
         self.assertEqual('', sot.resource_key)
         self.assertEqual('', sot.resources_key)
         self.assertEqual('/clusters',
@@ -137,7 +139,7 @@ class TestCluster(base.TestCase):
 
     def test_make_it(self):
         obj = EXAMPLE_LIST[0]
-        sot = cluster.Cluster.existing(**obj)
+        sot = _cluster.Cluster.existing(**obj)
         self.assertEqual(obj['metadata']['uuid'], sot.id)
         self.assertEqual(obj['kind'], sot.kind)
 
@@ -161,13 +163,13 @@ class TestCluster(base.TestCase):
         )
 
         expected_list = [
-            cluster.Cluster.existing(**EXAMPLE_LIST[0]),
+            _cluster.Cluster.existing(**EXAMPLE_LIST[0]),
         ]
 
         self.assertEqual(expected_list, result)
 
     def test_get(self):
-        sot = cluster.Cluster.existing(id=EXAMPLE_LIST[0]['metadata']['uuid'])
+        sot = _cluster.Cluster.existing(id=EXAMPLE_LIST[0]['metadata']['uuid'])
 
         mock_response = mock.Mock()
         mock_response.status_code = 200
@@ -184,11 +186,115 @@ class TestCluster(base.TestCase):
         )
 
         self.assertDictEqual(
-            cluster.Cluster.existing(**EXAMPLE_LIST[0]).to_dict(),
+            _cluster.Cluster.existing(**EXAMPLE_LIST[0]).to_dict(),
             result.to_dict())
 
+    def test_create(self):
+        cluster = {
+            'metadata': {
+                'name': 'test',
+            },
+            'spec': {
+                'description': 'descr',
+                'vpc': 'vpc-id',
+                'subnet': 'subnet-id',
+                'region': 'regio',
+                'security_group_id': 'sg_id',
+                'clustertype': 'Single'
+            }
+        }
+        sot = _cluster.Cluster.new(**cluster)
+
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.headers = {}
+        mock_response.json.return_value = copy.deepcopy(EXAMPLE_LIST[0])
+
+        self.sess.post.return_value = mock_response
+
+        result = sot.create(self.sess, prepend_key=False)
+
+        call_args = self.sess.post.call_args_list[0]
+
+        expected_json = copy.deepcopy(cluster)
+        expected_json['kind'] = 'cluster'
+        expected_json['apiVersion'] = 'v1'
+
+        self.assertEqual('/clusters', call_args[0][0])
+        self.assertDictEqual(expected_json, call_args[1]['json'])
+
+        self.sess.post.assert_called_once()
+
+        self.assertDictEqual(
+            result.to_dict(),
+            _cluster.Cluster.existing(**EXAMPLE_LIST[0]).to_dict())
+
+    def test_create_name_normalize(self):
+        """Ensure name passed in the root is properly mapped into metadata
+        """
+        cluster = {
+            'name': 'test',
+            'spec': {
+                'description': 'descr',
+                'vpc': 'vpc-id',
+                'subnet': 'subnet-id',
+                'region': 'regio',
+                'security_group_id': 'sg_id',
+                'clustertype': 'Single'
+            }
+        }
+        sot = _cluster.Cluster.new(**cluster)
+
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.headers = {}
+        mock_response.json.return_value = copy.deepcopy(EXAMPLE_LIST[0])
+
+        self.sess.post.return_value = mock_response
+
+        sot.create(self.sess, prepend_key=False)
+
+        call_args = self.sess.post.call_args_list[0]
+
+        expected_json = copy.deepcopy(cluster)
+        expected_json['kind'] = 'cluster'
+        expected_json['apiVersion'] = 'v1'
+        expected_json['metadata'] = {'name': 'test'}
+        expected_json.pop('name')
+
+        self.assertEqual('/clusters', call_args[0][0])
+        self.assertDictEqual(expected_json, call_args[1]['json'])
+
+        self.sess.post.assert_called_once()
+
+    def test_update(self):
+
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.headers = {}
+        mock_response.json.return_value = copy.deepcopy(EXAMPLE_LIST[0])
+
+        self.sess.put.return_value = mock_response
+
+        sot = _cluster.Cluster.existing(**EXAMPLE_LIST[0])
+
+        sot._update(**{'spec': {
+            'publicip_id': 'some_ip',
+            'description': 'descr'}})
+
+        sot.update(self.sess, prepend_key=False)
+
+        call_args = self.sess.put.call_args_list[0]
+
+        self.assertEqual('clusters/' + sot.id, call_args[0][0])
+        self.assertDictEqual(
+            {'spec': {'publicip_id': 'some_ip', 'description': 'descr'}},
+            call_args[1]['json'])
+
+        self.sess.put.assert_called_once()
+
     def test_delete(self):
-        sot = cluster.Cluster.existing(id=EXAMPLE_LIST[0]['metadata']['uuid'])
+        sot = _cluster.Cluster.existing(id=EXAMPLE_LIST[0]['metadata']['uuid'])
 
         mock_response = mock.Mock()
         mock_response.status_code = 200
@@ -204,7 +310,7 @@ class TestCluster(base.TestCase):
             headers=OS_HEADERS)
 
     def test_delete_nodes(self):
-        sot = cluster.Cluster.existing(id=EXAMPLE_LIST[0]['metadata']['uuid'])
+        sot = _cluster.Cluster.existing(id=EXAMPLE_LIST[0]['metadata']['uuid'])
 
         mock_response = mock.Mock()
         mock_response.status_code = 200
