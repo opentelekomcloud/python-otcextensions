@@ -12,7 +12,7 @@ The OTCExtensions SDK is available on
 `GitHub <https://github.com/OpenTelekomCloud/python-otcextensions.git>`_.
 To install it, use ``pip``::
 
-   $ pip install python-otcextensions
+   $ pip install otcextensions
 
 .. _user_guides:
 
