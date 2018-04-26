@@ -42,8 +42,7 @@ class TestMessage(base.BaseFunctionalTest):
         try:
             cls.group = cls.conn.dms.create_groups
             (
-                cls.queue,
-                groups = [{"name": "test_group"}]
+                cls.queue, groups=[{"name": "test_group"}]
             )
 
         except exceptions.DuplicateResource:
