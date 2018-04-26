@@ -36,7 +36,7 @@ class FakeCluster(test_base.Fake):
     @classmethod
     def generate(cls, cnt_hosts=1):
         hosts = []
-        for i in range(cnt_hosts-1):
+        for i in range(cnt_hosts - 1):
             host = {'kind': 'host'}
             hosts.append(host)
         object_info = {
