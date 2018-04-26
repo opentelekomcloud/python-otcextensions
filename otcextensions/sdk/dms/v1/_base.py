@@ -19,4 +19,3 @@ class Resource(sdk_resource.Resource):
 
     service = dms_service.DmsService()
     service_expectes_json_type = True
-

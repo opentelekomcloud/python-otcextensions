@@ -105,15 +105,10 @@ class MessageConsumer(_base.Resource):
             ]
         }
 
-        # headers = self._header.dirty
-        # headers.update({'Content-type': 'application/json'})
-        # headers.update({'Content-Length': str(len(str(body)))})
-
         response = session.post(
             uri,
             json=body
-            # ,headers=headers
-                )
+            )
 
         self._translate_response(response)
         return self
