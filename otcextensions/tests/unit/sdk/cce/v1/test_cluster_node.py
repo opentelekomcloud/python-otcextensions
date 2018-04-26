@@ -17,7 +17,7 @@ import mock
 
 from openstack.tests.unit import base
 
-from otcextensions.sdk.cce.v1 import cluster_host
+from otcextensions.sdk.cce.v1 import cluster_node
 
 OS_HEADERS = {
     'Content-Type': 'application/json',
@@ -102,19 +102,19 @@ EXAMPLE_CREATE = {
 }
 
 
-class TestClusterHost(base.TestCase):
+class TestClusterNode(base.TestCase):
 
     def setUp(self):
-        super(TestClusterHost, self).setUp()
+        super(TestClusterNode, self).setUp()
         self.sess = mock.Mock(spec=adapter.Adapter)
         self.sess.delete = mock.Mock()
         self.sess.post = mock.Mock()
         self.sess.get = mock.Mock()
 
-        self.sot = cluster_host.ClusterHost(cluster_uuid='cluster_uuid')
+        self.sot = cluster_node.ClusterNode(cluster_uuid='cluster_uuid')
 
     def test_basic(self):
-        sot = cluster_host.ClusterHost()
+        sot = cluster_node.ClusterNode()
         self.assertEqual(None, sot.resource_key)
         self.assertEqual(None, sot.resources_key)
         self.assertEqual('/clusters/%(cluster_uuid)s/hosts',
@@ -154,7 +154,7 @@ class TestClusterHost(base.TestCase):
         )
 
         expected_list = [
-            cluster_host.ClusterHost.existing(
+            cluster_node.ClusterNode.existing(
                 **EXAMPLE_LIST['spec']['hostList'][0]),
         ]
 
@@ -162,7 +162,7 @@ class TestClusterHost(base.TestCase):
 
     def test_get(self):
         host = EXAMPLE_LIST['spec']['hostList'][0]
-        sot = cluster_host.ClusterHost.existing(
+        sot = cluster_node.ClusterNode.existing(
             id=host['metadata']['uuid'],
             cluster_uuid='cluster_uuid'
         )
@@ -185,12 +185,12 @@ class TestClusterHost(base.TestCase):
         )
 
         self.assertDictEqual(
-            cluster_host.ClusterHost.existing(**host).to_dict(),
+            cluster_node.ClusterNode.existing(**host).to_dict(),
             result.to_dict()
         )
 
     def test_delete(self):
-        sot = cluster_host.ClusterHost.existing(
+        sot = cluster_node.ClusterNode.existing(
             cluster_uuid='bla',
             **EXAMPLE_LIST['spec']['hostList'][0])
 
@@ -209,7 +209,7 @@ class TestClusterHost(base.TestCase):
             headers=OS_HEADERS)
 
     def test_create(self):
-        sot = cluster_host.ClusterHost.new(
+        sot = cluster_node.ClusterNode.new(
             cluster_uuid='bla',
             **EXAMPLE_CREATE)
 
