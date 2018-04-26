@@ -40,8 +40,7 @@ class TestMessage(base.BaseFunctionalTest):
         cls.queues.append(cls.queue)
 
         try:
-            cls.group = cls.conn.dms.create_groups
-            (
+            cls.group = cls.conn.dms.create_groups(
                 cls.queue, groups=[{"name": "test_group"}]
             )
 
@@ -95,13 +94,15 @@ class TestMessage(base.BaseFunctionalTest):
             time.sleep(1)
             # cls.assertIsNotNone(q)
             cls.message = cls.conn.dms.send_messages(
-                cls.queue, messages=[
+                cls.queue,
+                messages=[
                     {"body": "TEST11",
                         "attributes":
                             {
                                 "attribute1": "value1",
                                 "attribute2": "value2"}}
-                            ])
+                ]
+            )
             #        ,{ "body" : { "foo" : "test02" },
             #        "attributes" : {
             #            "attribute1" : "value1",
