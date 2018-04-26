@@ -43,7 +43,7 @@ class TestMessage(base.BaseFunctionalTest):
             cls.group = cls.conn.dms.create_groups
             (
                 cls.queue,
-                groups=[{"name": "test_group"}]
+                groups = [{"name": "test_group"}]
             )
 
         except exceptions.DuplicateResource:
@@ -102,7 +102,7 @@ class TestMessage(base.BaseFunctionalTest):
                             {
                                 "attribute1": "value1",
                                 "attribute2": "value2"}}
-                                ])
+                            ])
             #        ,{ "body" : { "foo" : "test02" },
             #        "attributes" : {
             #            "attribute1" : "value1",

@@ -105,10 +105,11 @@ class MessageConsumer(_base.Resource):
             ]
         }
 
-        response = session.post(
+        response = session.post
+        (
             uri,
             json=body
-            )
+        )
 
         self._translate_response(response)
         return self
