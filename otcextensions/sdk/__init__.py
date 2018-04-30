@@ -67,6 +67,10 @@ OTC_SERVICES = {
         'service_type': 'cce',
         'append_project_id': False,
     },
+    'volume_backup': {
+        'service_type': 'vbs',
+        'append_project_id': True,
+    },
 }
 
 
