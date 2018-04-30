@@ -421,6 +421,7 @@ class TestBackup(TestVolumeBackupProxy):
 #                          task.resource_id)
 #         self.assertEqual("volume", task.resource_type)
 
+
 class TestJob(TestVolumeBackupProxy):
 
     def test_get(self):
