@@ -10,4 +10,4 @@
     description: |
       Run tox python 35 unittests against master of important libs
     vars:
-      tox_install_siblings: true
+      tox_envlist: py36
