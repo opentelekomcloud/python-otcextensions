@@ -127,7 +127,6 @@ class Proxy(sdk_proxy.Proxy):
         backup = self._get_resource(_backup.CloudBackup, backup)
         return backup.restore(self._session, volume_id)
 
-
     # ======== Backup Policy ========
     def backup_policies(self):
         """Retrieve a generator of backup_policys

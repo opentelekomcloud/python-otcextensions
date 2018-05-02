@@ -151,12 +151,12 @@ class LinkedResource(sdk_resource.Resource):
         if response_json and response_json["success_resources"]:
             for _resource in response_json["success_resources"]:
                 _resource["success"] = True
-                result.append(LindedResource.new(**_resource))
+                result.append(LinkedResource.new(**_resource))
 
         if response_json and response_json["fail_resources"]:
             for _resource in response_json["fail_resources"]:
                 _resource["success"] = False
-                result.append(LindedResource.new(**_resource))
+                result.append(LinkedResource.new(**_resource))
 
         return result
 

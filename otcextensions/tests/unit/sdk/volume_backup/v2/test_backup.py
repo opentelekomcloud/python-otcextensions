@@ -129,7 +129,6 @@ class TestBackup(base.TestCase):
 
         self.assertEqual(len(self.list_backup_data), len(result))
 
-
     # def test_get(self):
     #     sot = _job.Job.existing(id=EXAMPLE['job_id'])
     #
