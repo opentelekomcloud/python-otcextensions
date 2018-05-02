@@ -14,7 +14,8 @@ from openstack.tests.unit import test_proxy_base
 
 from otcextensions.sdk.volume_backup.v2 import _proxy
 from otcextensions.sdk.volume_backup.v2 import backup as _backup
-# from otcextensions.sdk.volume_backup.v2 import backup_policy as _backup_policy
+# from otcextensions.sdk.volume_backup.v2 import
+# backup_policy as _backup_policy
 from otcextensions.sdk.volume_backup.v2 import job as _job
 # from otcextensions.sdk.volume_backup import volume_backup_service
 
@@ -229,7 +230,8 @@ class TestBackup(TestVolumeBackupProxy):
 #         self.assertEqual("plan01", policy.name)
 #         self.assertEqual(0, policy.policy_resource_count)
 #         scheduled_policy = policy.scheduled_policy
-#         self.assertIsInstance(scheduled_policy, _backup_policy.SchedulePolicy)
+#         self.assertIsInstance(scheduled_policy,
+#             _backup_policy.SchedulePolicy)
 #         self.assertEqual(False,
 #                          scheduled_policy.remain_first_backup_of_curMonth)
 #         self.assertEqual(10, scheduled_policy.rentention_num)
