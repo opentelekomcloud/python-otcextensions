@@ -1,11 +1,11 @@
 - project:
     check:
       jobs:
-        - openstacksdk-tox-py36-tips
+        - openstacksdk-tox-py36-tips1
         - noop
 
 - job:
-    name: openstacksdk-tox-py36-tips
+    name: openstacksdk-tox-py36-tips1
     parent: tox-py36
     description: |
       Run tox python 35 unittests against master of important libs
