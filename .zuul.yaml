@@ -2,6 +2,4 @@
     check:
       jobs:
         - tox-py36
-        - tox-py35
         - tox-py27
-        - noop
