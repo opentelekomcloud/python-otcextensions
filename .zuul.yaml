@@ -2,6 +2,7 @@
     check:
       jobs:
         - openstacksdk-tox-py36-tips
+        - noop
 
 - job:
     name: openstacksdk-tox-py36-tips
