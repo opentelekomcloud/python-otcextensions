@@ -1,12 +1,5 @@
 - project:
     check:
       jobs:
-        - openstacksdk-tox-py36-tips
-
-- job:
-    name: openstacksdk-tox-py36-tips
-    parent: tox-py36
-    description: |
-      Run tox python 35 unittests against master of important libs
-    vars:
-      tox_install_siblings: true
+        - tox-py36
+        - tox-py27
