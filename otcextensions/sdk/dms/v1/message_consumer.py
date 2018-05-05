@@ -16,7 +16,7 @@ from otcextensions.sdk.dms.v1 import _base
 _logger = _log.setup_logging('openstack')
 
 
-class MessageConsumer(_base.Resource):
+class GroupMessage(_base.Resource):
 
     base_path = '/queues/%(queue_id)s/groups/%(consumer_group_id)s/messages'
 

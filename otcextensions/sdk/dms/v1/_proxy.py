@@ -128,7 +128,7 @@ class Proxy(sdk_proxy.Proxy):
         :param kwargs \*\*query: Optional query parameters to be sent to limit
           the resources being returned.
         :returns: A list of object
-          :class:`~otcextensions.sdk.dms.v1.message_consumer.MessageConsumer`
+          :class:`~otcextensions.sdk.dms.v1.message_consumer.GroupMessage`
         """
         queue_id = queue
         if isinstance(queue, _queue.Queue):
@@ -138,7 +138,7 @@ class Proxy(sdk_proxy.Proxy):
             consumer_group_id = consume_group.id
 
         return self._list(
-            _message_consumer.MessageConsumer,
+            _message_consumer.GroupMessage,
             queue_id=queue_id,
             consumer_group_id=consumer_group_id,
             **query)
@@ -147,10 +147,10 @@ class Proxy(sdk_proxy.Proxy):
         """Confirm consumed message
 
         :param consumed_message: An object of an instance of
-          :class:`~otcextensions.sdk.dms.v1.message_consumer.MessageConsumer
+          :class:`~otcextensions.sdk.dms.v1.message_consumer.GroupMessage
         :param status: The expeced status of the consumed message
         :returns: An object of an instance of
-          :class:`~otcextensions.sdk.dms.v1.message_consumer.MessageConsumer`
+          :class:`~otcextensions.sdk.dms.v1.message_consumer.GroupMessage`
         """
         return consumed_message.ack(self.session, status=status)
 
