@@ -39,7 +39,7 @@ GROUP_EXAMPLE = {
     "queue_id": "9bf46390-38a2-462d-b392-4d5b2d519c55"
 }
 
-MSG_CONSUME_EXAMPLE = {
+MSG_GROUP_EXAMPLE = {
     "message": {
         "body": {
             "foo": "123="
@@ -127,10 +127,10 @@ class TestMessage(base.TestCase):
         self.assertEqual(self.example['messages'], sot.messages)
 
 
-class TestMessageConsumer(base.TestCase):
+class TestGroupMessage(base.TestCase):
 
-    example = MSG_CONSUME_EXAMPLE
-    objcls = message_consumer.MessageConsumer
+    example = MSG_GROUP_EXAMPLE
+    objcls = message_consumer.GroupMessage
 
     def test_basic(self):
         sot = self.objcls()
