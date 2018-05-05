@@ -3,3 +3,4 @@
       jobs:
         - tox-py36
         - tox-py27
+        - tox-pep8
