@@ -52,6 +52,19 @@ MSG_CONSUME_EXAMPLE = {
     "handler": "eyJjZyI6Im15X2pzb25fZ3JvdXAiLCJjaSI6InJlc3QtY29uc3VtZXItYz",
 }
 
+MSG_EXAMPLE = {
+    "messages":
+    [
+        {
+            "body": "TEST11",
+            "attributes": {
+                "attribute1": "value1",
+                "attribute2": "value2"
+            }
+        }
+    ]
+}
+
 
 class TestQueue(base.TestCase):
 
@@ -95,11 +108,12 @@ class TestGroup(base.TestCase):
     def test_make_it(self):
 
         sot = self.objcls(**self.example)
-        self.assertEqual(self.example['groups'], sot.groups)
+        self.assertEqual(self.example['redrive_policy'], sot.redrive_policy)
 
 
 class TestMessage(base.TestCase):
 
+    example = MSG_EXAMPLE
     objcls = message.Message
 
     def test_basic(self):
