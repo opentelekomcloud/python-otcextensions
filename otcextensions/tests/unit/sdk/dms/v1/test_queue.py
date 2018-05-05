@@ -15,7 +15,7 @@ from openstack.tests.unit import base
 from otcextensions.sdk.dms.v1 import queue
 from otcextensions.sdk.dms.v1 import group
 from otcextensions.sdk.dms.v1 import message
-from otcextensions.sdk.dms.v1 import message_consumer
+from otcextensions.sdk.dms.v1 import group_message
 
 EXAMPLE = {
     "id": "9bf46390-38a2-462d-b392-4d5b2d519c55",
@@ -130,7 +130,7 @@ class TestMessage(base.TestCase):
 class TestGroupMessage(base.TestCase):
 
     example = MSG_GROUP_EXAMPLE
-    objcls = message_consumer.GroupMessage
+    objcls = group_message.GroupMessage
 
     def test_basic(self):
         sot = self.objcls()
