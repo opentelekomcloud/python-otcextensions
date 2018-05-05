@@ -99,7 +99,7 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
 
     def test_consume_message(self):
         self._verify2(
-            'otcextensions.sdk.dms.v1.message_consumer.MessageConsumer.list',
+            'otcextensions.sdk.dms.v1.group_message.MessageConsumer.list',
             self.proxy.consume_message,
             method_args=['queue', 'group'],
             expected_args=[mock.ANY],
