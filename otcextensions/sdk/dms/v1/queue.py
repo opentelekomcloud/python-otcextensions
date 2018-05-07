@@ -49,7 +49,7 @@ class Queue(_base.Resource):
     #: *Type: int*
     created = resource.Body('created', type=int)
 
-
+"""
 class Quota(_base.Resource):
 
     base_path = '/quotas/dms'
@@ -106,3 +106,4 @@ class Quota(_base.Resource):
                 return
             query_params["limit"] = yielded
             query_params["marker"] = new_marker
+ """
