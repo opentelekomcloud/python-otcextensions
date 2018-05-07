@@ -64,7 +64,6 @@ class TestQuota(base.TestCase):
         self.assertEqual(obj['min'], sot.min)
         self.assertEqual(obj['max'], sot.max)
 
-
     def test_list(self):
         sot = quota.Quota()
         mock_response = mock.Mock()
@@ -79,7 +78,6 @@ class TestQuota(base.TestCase):
 
         expected_list = [
             quota.Quota.existing(
-                **EXAMPLE_LIST['quotas']['resources'][0])
-                        ]
+                **EXAMPLE_LIST['quotas']['resources'][0])]
 
         self.assertEqual(expected_list, result)

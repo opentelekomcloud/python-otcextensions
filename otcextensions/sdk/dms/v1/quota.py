@@ -11,6 +11,8 @@
 # under the License.
 from openstack import resource
 
+from openstack import _log
+
 from otcextensions.sdk.dms.v1 import _base
 _logger = _log.setup_logging('openstack')
 
