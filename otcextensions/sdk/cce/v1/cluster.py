@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 # import six
+from openstack import exceptions
 from openstack import resource
 from openstack import utils
 
@@ -117,20 +118,40 @@ class Cluster(_base.Resource):
             }
         return cls(_synchronized=False, **kwargs)
 
-    # @staticmethod
-    # def _get_id(value):
-    #     """If a value is a Resource, return the canonical ID
-    #
-    #     This will return either the value specified by `id` or
-    #     `alternate_id` in that order if `value` is a Resource.
-    #     If `value` is anything other than a Resource, likely to
-    #     be a string already representing an ID, it is returned.
-    #     """
-    #     print('in the _get_id')
-    #     if isinstance(value, resource.Resource):
-    #         return value.metadata.id
-    #     else:
-    #         return value
+    @classmethod
+    def _get_one_match(cls, name_or_id, results):
+        """Given a list of results, return the match"""
+        the_result = None
+        for maybe_result in results:
+            id_value = cls._get_id(maybe_result)
+            name_value = maybe_result.metadata.name
+
+            if (id_value == name_or_id) or (name_value == name_or_id):
+                # Only allow one resource to be found. If we already
+                # found a match, raise an exception to show it.
+                if the_result is None:
+                    the_result = maybe_result
+                else:
+                    msg = "More than one %s exists with the name '%s'."
+                    msg = (msg % (cls.__name__, name_or_id))
+                    raise exceptions.DuplicateResource(msg)
+
+        return the_result
+
+    @staticmethod
+    def _get_id(value):
+        """If a value is a Resource, return the canonical ID
+
+        This will return either the value specified by `id` or
+        `alternate_id` in that order if `value` is a Resource.
+        If `value` is anything other than a Resource, likely to
+        be a string already representing an ID, it is returned.
+        """
+        print('in the _get_id')
+        if isinstance(value, resource.Resource):
+            return value.metadata.id
+        else:
+            return value
 
     def __getattribute__(self, name):
         """Return an attribute on this instance
