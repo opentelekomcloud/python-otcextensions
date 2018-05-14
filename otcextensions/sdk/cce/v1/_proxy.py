@@ -96,10 +96,7 @@ class Proxy(sdk_proxy.Proxy):
             (:class:`~otcextensions.sdk.cce.v1.cluster_node.ClusterNode`)
             instances
         """
-        cluster = self._find(
-            _cluster.Cluster, cluster,
-            ignore_missing=False,
-        )
+        cluster = self._get_resource(_cluster.Cluster, cluster)
         return self._list(
             _cluster_node.ClusterNode, cluster_uuid=cluster.id,
             paginated=False
@@ -115,10 +112,7 @@ class Proxy(sdk_proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.cce.v1.cluster_node.ClusterNode`
         """
-        cluster = self._find(
-            _cluster.Cluster, cluster,
-            ignore_missing=False,
-        )
+        cluster = self._get_resource(_cluster.Cluster, cluster)
         return self._get(
             _cluster_node.ClusterNode,
             node_id,
@@ -135,10 +129,7 @@ class Proxy(sdk_proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.cce.v1.cluster_node.ClusterNode`
         """
-        cluster = self._find(
-            _cluster.Cluster, cluster,
-            ignore_missing=False,
-        )
+        cluster = self._get_resource(_cluster.Cluster, cluster)
         return self._find(
             _cluster_node.ClusterNode,
             node,
@@ -154,10 +145,7 @@ class Proxy(sdk_proxy.Proxy):
         :param node_names: List of node names to be deleted.
             Can be also a single node name.
         """
-        cluster = self._find(
-            _cluster.Cluster, cluster,
-            ignore_missing=False,
-        )
+        cluster = self._get_resource(_cluster.Cluster, cluster)
         return cluster.delete_nodes(
             self,
             node_names,
@@ -175,10 +163,7 @@ class Proxy(sdk_proxy.Proxy):
         :returns: The results of config creation
         :rtype: :class:`~otcextensions.sdk.cce.v1.config.Config`
         """
-        cluster = self._find(
-            _cluster.Cluster, cluster,
-            ignore_missing=False,
-        )
+        cluster = self._get_resource(_cluster.Cluster, cluster)
         return self._create(
             _cluster_node.ClusterNode,
             cluster_uuid=cluster.id,

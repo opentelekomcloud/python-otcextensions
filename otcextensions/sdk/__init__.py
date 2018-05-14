@@ -9,10 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-__all__ = [
-    'register_otc_extensions',
-]
-
 import importlib
 import os
 import types
@@ -27,6 +23,10 @@ from openstack import utils
 from oslo_utils import importutils
 
 _logger = _log.setup_logging('openstack')
+
+__all__ = [
+    'register_otc_extensions',
+]
 
 _DOC_TEMPLATE = (
     ":class:`{class_name}` for {service_type} aka project")
