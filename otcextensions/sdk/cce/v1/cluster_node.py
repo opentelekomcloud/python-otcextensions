@@ -168,7 +168,10 @@ class ClusterNode(_base.Resource):
             )
             exceptions.raise_from_response(response)
             data = response.json()
-            resources = data['spec']['hostList']
+            spec = data.get('spec', None)
+            resources = []
+            if spec:
+                resources = spec.get('hostList', [])
 
             for raw_resource in resources:
                 # Do not allow keys called "self" through. Glance chose
