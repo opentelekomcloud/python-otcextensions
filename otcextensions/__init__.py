@@ -10,10 +10,10 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
+import pbr.version
 
 __all__ = ['__version__']
 
-import pbr.version
 
 version_info = pbr.version.VersionInfo('python-otcextensions')
 try:
