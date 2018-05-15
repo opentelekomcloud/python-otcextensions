@@ -74,7 +74,7 @@ class TestQuota(base.TestCase):
 
         result = list(sot.list(self.sess))
 
-        self.sess.get.assert_called_once_with('/quotas/dms', params={})
+        self.sess.get.assert_called_once_with('/quotas/dms', headers={'Content-Type': 'application/json'}, params={})
 
         expected_list = [
             quota.Quota.existing(

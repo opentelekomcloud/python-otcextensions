@@ -84,6 +84,8 @@ class TestMessage(base.BaseFunctionalTest):
 
             cls.groups.append(cls.group)
 
+
+    # OS_TEST_TIMEOUT=60 is needed due to testbed slowness
     @classmethod
     def test_message(cls):
         cls.queues = list(cls.conn.dms.queues())
@@ -91,7 +93,8 @@ class TestMessage(base.BaseFunctionalTest):
         if len(cls.queues) > 0:
             # queue = cls.queues[0]
             # q = cls.conn.dms.get_queue(queue=queue.id)
-            time.sleep(1)
+            time.sleep(50)
+
             # cls.assertIsNotNone(q)
             cls.message = cls.conn.dms.send_messages(
                 cls.queue,
