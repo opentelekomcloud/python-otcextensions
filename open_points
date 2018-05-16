@@ -62,6 +62,7 @@ This document gathers issues, which are found during diggint the API and other O
 # VBS:
 
 * uses offset as a pagination, instead of marker (in docs, in reality marker is supported)
+* backup creation takes too long. 1Gb empty volume takes >4 minutes. Functional tests are not reasonable with that.
 
 # HEAT:
 

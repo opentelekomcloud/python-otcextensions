@@ -1,21 +1,17 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-#   Licensed under the Apache License, Version 2.0 (the "License"); you may
-#   not use this file except in compliance with the License. You may obtain
-#   a copy of the License at
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
 #
-#        http://www.apache.org/licenses/LICENSE-2.0
+#      http://www.apache.org/licenses/LICENSE-2.0
 #
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-#   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-#   License for the specific language governing permissions and limitations
-#   under the License.
-#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
 from openstack import resource
 from openstack import utils
 
-from otcextensions.common import format
 from otcextensions.sdk import sdk_resource
 from otcextensions.sdk.volume_backup import volume_backup_service
 
@@ -23,7 +19,7 @@ from otcextensions.sdk.volume_backup import volume_backup_service
 class SchedulePolicy(sdk_resource.Resource):
     #: whether keep the first backup of current month
     remain_first_backup_of_curMonth = resource.Body(
-        "remain_first_backup_of_curMonth", type=format.YNBool)
+        "remain_first_backup_of_curMonth")
     #: the max backup amount, min value is 2
     rentention_num = resource.Body("rentention_num", type=int)
     #: backup period, valid values, 1..14 (days)
@@ -35,7 +31,7 @@ class SchedulePolicy(sdk_resource.Resource):
 
 
 class BackupPolicy(sdk_resource.Resource):
-    """Cloud Backup"""
+    """Volume BackupPolicy"""
     resources_key = "backup_policies"
     base_path = "/backuppolicy"
     service = volume_backup_service.VolumeBackupService()
@@ -45,16 +41,19 @@ class BackupPolicy(sdk_resource.Resource):
     allow_delete = True
     allow_list = True
     allow_update = True
+    # allow_get = True
 
     #: Properties
     #: Backup Policy id
-    id = resource.Body("backup_policy_id")
+    id = resource.Body("backup_policy_id", alternate_id=True)
     #: Backup Policy name
     name = resource.Body("backup_policy_name")
     #: Backup Policy resource count
     policy_resource_count = resource.Body("policy_resource_count")
     #: Backup Policy schedule detail
     scheduled_policy = resource.Body("scheduled_policy", type=SchedulePolicy)
+    #: tags
+    tags = resource.Body("tags", type=list)
 
     def execute(self, session):
         """execute backup policy immediately
@@ -63,59 +62,10 @@ class BackupPolicy(sdk_resource.Resource):
         :return: request response
         """
         url = utils.urljoin(self.base_path, self.id, "action")
-        endpoint_override = self.service.get_endpoint_override()
-        return session.post(url,
-                            endpoint_filter=self.service,
-                            endpoint_override=endpoint_override,
-                            headers={},
-                            json=None)
+        return session.post(url, json=None)
 
 
-class BindResource(sdk_resource.Resource):
-    resources_key = "success_resources"
-    base_path = "/backuppolicyresources"
-    service = volume_backup_service.VolumeBackupService()
-
-    # capabilities
-    allow_create = True
-
-    #: Properties
-    resource_id = resource.Body("resource_id")
-    os_vol_host_attr = resource.Body("os_vol_host_attr")
-    availability_zone = resource.Body("availability_zone")
-    resource_type = resource.Body("resource_type")
-
-    def bind_resources(self, session, backup_policy_id, resources):
-        """bind resources to backup policy
-
-        :param session: openstack session
-        :param backup_policy_id: backup policy id
-        :param resources: resources to bound, should be a list of volume id
-        :return:
-        """
-        _resources = [dict(resource_id=volume_id, resource_type="volume")
-                      for volume_id in resources]
-        body = {
-            "backup_policy_id": backup_policy_id,
-            "resources": _resources
-        }
-        endpoint_override = self.service.get_endpoint_override()
-        response = session.post(self.base_path,
-                                endpoint_filter=self.service,
-                                endpoint_override=endpoint_override,
-                                json=body,
-                                headers={})
-        self._translate_response(response)
-        return self
-
-
-class LinkedResource(sdk_resource.Resource):
-    base_path = "/backuppolicyresources"
-    service = volume_backup_service.VolumeBackupService()
-
-    # capabilities
-    allow_create = True
-
+class BackupPolicyAssociatedResource(sdk_resource.Resource):
     #: Properties
     resource_id = resource.Body("resource_id")
     resource_type = resource.Body("resource_type")
@@ -123,7 +73,62 @@ class LinkedResource(sdk_resource.Resource):
     os_vol_host_attr = resource.Body("os_vol_host_attr")
     message = resource.Body("message")
     code = resource.Body("code")
-    success = resource.Body("success", type=bool)
+
+
+class BackupPolicyResource(sdk_resource.Resource):
+    base_path = "/backuppolicyresources"
+    service = volume_backup_service.VolumeBackupService()
+
+    # capabilities
+    allow_create = True
+
+    #: Properties
+    # backup_policy_id = resource.Body('backup_policy_id')
+    resources = resource.Body(
+        'resources', type=list, list_type=BackupPolicyAssociatedResource)
+    fail_resources = resource.Body(
+        "fail_resources",
+        type=list, list_type=BackupPolicyAssociatedResource)
+    success_resources = resource.Body(
+        "success_resources",
+        type=list, list_type=BackupPolicyAssociatedResource)
+
+    def _process(self, session, backup_policy_id, link=True, resources=[]):
+        """Link or unlink resources to/from BackupPolicy
+        """
+        _resources = [dict(resource_id=volume_id, resource_type="volume")
+                      for volume_id in resources]
+        body = {
+            "resources": _resources
+        }
+        if link:
+            body['backup_policy_id'] = backup_policy_id
+            uri = self.base_path
+        else:
+            uri = utils.urljoin(
+                self.base_path, backup_policy_id, "deleted_resources")
+
+        response = session.post(uri, json=body)
+
+        fail_resources = []
+        success_resources = []
+
+        response_json = response.json()
+        for type in ['success_resources', 'fail_resources']:
+            if type in response_json:
+                for res in response_json[type]:
+                    assocResource = \
+                        BackupPolicyAssociatedResource.existing(**res)
+                    if assocResource.code:
+                        fail_resources.append(assocResource)
+                    else:
+                        success_resources.append(assocResource)
+        self._update(
+            success_resources=success_resources,
+            fail_resources=fail_resources
+        )
+
+        return self
 
     def link(self, session, backup_policy_id, resources):
         """link resources to backup policy
@@ -133,77 +138,14 @@ class LinkedResource(sdk_resource.Resource):
         :param resources: resources to bound, should be a list of volume id
         :return:
         """
-        _resources = [dict(resource_id=volume_id, resource_type="volume")
-                      for volume_id in resources]
-        body = {
-            "backup_policy_id": backup_policy_id,
-            "resources": _resources
-        }
-        endpoint_override = self.service.get_endpoint_override()
-        response = session.post(self.base_path,
-                                endpoint_filter=self.service,
-                                endpoint_override=endpoint_override,
-                                json=body,
-                                headers={})
-
-        result = []
-        response_json = response.json()
-        if response_json and response_json["success_resources"]:
-            for _resource in response_json["success_resources"]:
-                _resource["success"] = True
-                result.append(LinkedResource.new(**_resource))
-
-        if response_json and response_json["fail_resources"]:
-            for _resource in response_json["fail_resources"]:
-                _resource["success"] = False
-                result.append(LinkedResource.new(**_resource))
-
-        return result
-
-
-class UnlinkedResource(sdk_resource.Resource):
-    base_path = "/backuppolicyresources"
-    service = volume_backup_service.VolumeBackupService()
-
-    # capabilities
-    allow_create = True
-
-    #: Properties
-    resource_id = resource.Body("resource_id")
-    message = resource.Body("message")
-    code = resource.Body("code")
-    success = resource.Body("success", type=bool)
+        return self._process(session, backup_policy_id, True, resources)
 
     def unlink(self, session, backup_policy_id, resources):
-        """unlink resources of backup policy
+        """unlink resources from backup policy
 
         :param session: openstack session
         :param backup_policy_id: backup policy id
-        :param resources: resources to bound, should be a list of volume id
+        :param resources: resources to unbound, should be a list of volume id
         :return:
         """
-        _resources = [dict(resource_id=volume_id) for volume_id in resources]
-        body = {"resources": _resources}
-        endpoint_override = self.service.get_endpoint_override()
-        uri = utils.urljoin(self.base_path,
-                            backup_policy_id,
-                            "deleted_resources")
-        response = session.post(uri,
-                                endpoint_filter=self.service,
-                                endpoint_override=endpoint_override,
-                                json=body,
-                                headers={})
-
-        result = []
-        response_json = response.json()
-        if response_json and response_json["success_resources"]:
-            for _resource in response_json["success_resources"]:
-                _resource["success"] = True
-                result.append(UnlinkedResource.new(**_resource))
-
-        if response_json and response_json["fail_resources"]:
-            for _resource in response_json["fail_resources"]:
-                _resource["success"] = False
-                result.append(UnlinkedResource.new(**_resource))
-
-        return result
+        return self._process(session, backup_policy_id, False, resources)

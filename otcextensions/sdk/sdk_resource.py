@@ -413,7 +413,8 @@ class Resource(resource.Resource):
                 session,
                 endpoint_override=endpoint_override,
                 headers=headers)
-        except (exceptions.NotFoundException, exceptions.HttpException):
+        except (exceptions.NotFoundException, exceptions.HttpException,
+                exceptions.MethodNotSupported):
             pass
 
         data = cls.list(session,
