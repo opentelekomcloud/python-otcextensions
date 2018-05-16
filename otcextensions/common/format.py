@@ -9,53 +9,10 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import six
+from openstack import format
 
 
-class Formatter(object):
-    @classmethod
-    def serialize(cls, value):
-        """Return a string representing the formatted value"""
-        raise NotImplementedError
-
-    @classmethod
-    def deserialize(cls, value):
-        """Return a formatted object representing the value"""
-        raise NotImplementedError
-
-
-class BoolStr(Formatter):
-    @classmethod
-    def deserialize(cls, value):
-        """Convert a boolean string to a boolean"""
-        if isinstance(value, bool):
-            return value
-        expr = str(value).lower()
-        if "true" == expr:
-            return True
-        elif "false" == expr:
-            return False
-        else:
-            raise ValueError("Unable to deserialize boolean string: %s"
-                             % value)
-
-    @classmethod
-    def serialize(cls, value):
-        """Convert a boolean to a boolean string"""
-        if isinstance(value, six.string_types):
-            if str(value).lower() in ["true", "false"]:
-                return str(value).lower()
-        if isinstance(value, bool):
-            if value:
-                return "true"
-            else:
-                return "false"
-        else:
-            raise ValueError("Unable to serialize boolean string: %s"
-                             % value)
-
-
-class YNBool(Formatter):
+class YNBool(format.Formatter):
     @classmethod
     def deserialize(cls, value):
         """Convert a boolean string to a boolean"""
@@ -85,7 +42,7 @@ class YNBool(Formatter):
                              % value)
 
 
-class ListRef(Formatter):
+class ListRef(format.Formatter):
     """A formatter used to serialize/deserialize list reference
 
     [{"id": "any-id"}] <-> ["any-id"], for example.

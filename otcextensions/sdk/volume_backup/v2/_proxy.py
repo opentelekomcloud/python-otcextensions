@@ -9,6 +9,8 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack import resource
+
 from otcextensions.sdk import sdk_proxy
 from otcextensions.sdk.volume_backup.v2 import backup as _backup
 from otcextensions.sdk.volume_backup.v2 import backup_policy as _backup_policy
@@ -41,8 +43,11 @@ class Proxy(sdk_proxy.Proxy):
             (:class:`~otcextensions.sdk.volume_backup.v2.backup.Backup`)
             instances
         """
-        resource_cls = _backup.BackupDetail if details else _backup.Backup
-        return self._list(resource_cls, paginated=True, **query)
+        return self._list(
+            _backup.Backup,
+            paginated=True,
+            details=details,
+            **query)
 
     def get_backup(self, backup):
         """Get a backup
@@ -59,8 +64,8 @@ class Proxy(sdk_proxy.Proxy):
         """Create a new Backup from attributes with native API
 
         :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.volume_backup.v2.backup.CloudBackup`
-            comprised of the properties on the CloudBackup class.
+            a :class:`~otcextensions.sdk.volume_backup.v2.backup.Backup`
+            comprised of the properties on the Backup class.
         :returns: The results of Backup creation
         :rtype: :class:`~otcextensions.sdk.volume_backup.v2.backup.Backup`
         """
@@ -84,48 +89,26 @@ class Proxy(sdk_proxy.Proxy):
                             backup,
                             ignore_missing=ignore_missing)
 
-    def create_propriatary_backup(self, **attrs):
-        """Create a new CloudBackup from attributes
-
-        :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.volume_backup.v2.backup.CloudBackup`
-            comprised of the properties on the CloudBackup class.
-        :returns: The results of CloudBackup creation
-        :rtype: :class:`~otcextensions.sdk.volume_backup.v2.backup.CloudBackup`
-        """
-        return self._create(_backup.CloudBackup, **attrs)
-
-# def delete_backup(self, backup, ignore_missing=True):
-#     """Delete a CloudBackup
-#
-#     :param backup: The value can be the ID of a backup or a :class:`
-#             ~otcextensions.sdk.volume_backup.v2.backup.CloudBackup` instance
-#     :param bool ignore_missing: When set to ``False``
-#         :class:`~openstack.exceptions.ResourceNotFound` will be raised when
-#         the zone does not exist.
-#         When set to ``True``, no exception will be set when attempting to
-#         delete a nonexistent zone.
-#
-#     :returns: rsync job
-#     :rtype: :class:`~otcextensions.sdk.volume_backup.v2.backup.Backup`
-#     """
-#     return self._delete(_backup.CloudBackup,
-#                         backup,
-#                         ignore_missing=ignore_missing)
-
     def restore_backup(self, backup, volume_id):
-        """Restore a CloudBackup to volume
+        """Restore a Backup to volume
 
         :param backup: The value can be the ID of a zone or a :class:`
-            ~otcextensions.sdk.volume_backup.v2.backup.CloudBackup` instance
+            ~otcextensions.sdk.volume_backup.v2.backup.Backup` instance
         :param volume_id: the volume to restore to
         :returns: A sync Job of restore backup
         :rtype: :class:`~otcextensions.sdk.volume_backup.v2.backup.Backup`
         """
-        if isinstance(backup, _backup.Backup):
-            backup = backup.id
-        backup = self._get_resource(_backup.CloudBackup, backup)
-        return backup.restore(self._session, volume_id)
+        backup = self._get_resource(_backup.Backup, backup)
+        return backup.restore(self, volume_id)
+
+    def wait_for_backup(self, backup, status='available', failures=['error'],
+                        interval=2, wait=120):
+        return resource.wait_for_status(
+            self, backup, status, failures, interval, wait)
+
+    def wait_for_backup_delete(self, backup, interval=2, wait=120):
+        return resource.wait_for_delete(
+            self, backup, interval, wait)
 
     # ======== Backup Policy ========
     def backup_policies(self):
@@ -136,21 +119,20 @@ class Proxy(sdk_proxy.Proxy):
         """
         return self._list(_backup_policy.BackupPolicy, paginated=False)
 
-    def create_backup_policy(self, name, **attrs):
+    def create_backup_policy(self, **attrs):
         """Create a new backup policy from name and scheduled policy attributes
 
-        :param name: Backup Policy name
         :param dict attrs: Keyword arguments which will be used to create a
-        :class:`~otcextensions.sdk.volume_backup.v2.backup_policy.ScheduledPolicy`,
-            comprised of the properties on the SchedulePolicy class.
+        :class:`~otcextensions.sdk.volume_backup.v2.backup_policy.BackupPolicy`
         :returns: The results of backup policy creation
         :rtype:
             :class:`~otcextensions.sdk.volume_backup.v2.backup_policy.BackupPolicy`
         """
-        scheduled_policy = _backup_policy.SchedulePolicy.new(**attrs)
-        backup_policy = _backup_policy.BackupPolicy(
-            name=name, scheduled_policy=scheduled_policy)
-        return backup_policy.create(self._session, prepend_key=False)
+        return self._create(_backup_policy.BackupPolicy, **attrs)
+        # scheduled_policy = _backup_policy.SchedulePolicy.new(**attrs)
+        # backup_policy = _backup_policy.BackupPolicy(
+        #     name=name, scheduled_policy=scheduled_policy)
+        # return backup_policy.create(self, prepend_key=False)
 
     def update_backup_policy(self, backup_policy, **attrs):
         """update a backup_policy from backup policy attributes
@@ -202,49 +184,10 @@ class Proxy(sdk_proxy.Proxy):
 
         :returns: ``None``
         """
+        if isinstance(name_or_id, _backup_policy.BackupPolicy):
+            name_or_id = name_or_id.id
         return self._find(_backup_policy.BackupPolicy, name_or_id,
-                          ignore_missing=ignore_missing,
-                          name=name_or_id)
-
-    def link_resources_to_policy(self, backup_policy, resources):
-        """link resource to backup policy
-
-        :param backup_policy: The value can be the ID of a backup_policy or a
-            :class:`~otcextensions.sdk.volume_backup.v2.backup_policy.BackupPolicy`
-            instance
-        :param resources: resources to bound, should be a list of volume id
-        :returns: list of
-            `~otcextensions.sdk.volume_backup.v2.backup_policy.BindResource`
-            instance
-        :rtype: :class:`~otcextensions.sdk.volume_backup.v2.backup_policy
-                    .LindedResource`
-        """
-        backup_policy = self._get_resource(_backup_policy.BackupPolicy,
-                                           backup_policy)
-        linked_resource = _backup_policy.LinkedResource()
-        return linked_resource.link(self._session,
-                                    backup_policy.id,
-                                    resources)
-
-    def unlink_resources_of_policy(self, backup_policy, resources):
-        """Bind resource to backup policy
-
-        :param backup_policy: The value can be the ID of a backup_policy or a
-            :class:`~otcextensions.sdk.volume_backup.v2.backup_policy.BackupPolicy`
-            instance
-        :param resources: resources to bound, should be a list of volume id
-        :returns: list of
-            `~otcextensions.sdk.volume_backup.v2.backup_policy.BindResource`
-            instance
-        :rtype: :class:`~otcextensions.sdk.volume_backup.v2.backup_policy.
-                        UnlinkedResource`
-        """
-        backup_policy = self._get_resource(_backup_policy.BackupPolicy,
-                                           backup_policy)
-        unlinked_resource = _backup_policy.UnlinkedResource()
-        return unlinked_resource.unlink(self._session,
-                                        backup_policy.id,
-                                        resources)
+                          ignore_missing=ignore_missing)
 
     def execute_policy(self, backup_policy):
         """Execute policy immediately
@@ -255,7 +198,7 @@ class Proxy(sdk_proxy.Proxy):
         """
         backup_policy = self._get_resource(_backup_policy.BackupPolicy,
                                            backup_policy)
-        return backup_policy.execute(self._session)
+        return backup_policy.execute(self)
 
     def enable_policy(self, backup_policy):
         """Enable policy
@@ -285,6 +228,40 @@ class Proxy(sdk_proxy.Proxy):
         }
         return self.update_backup_policy(backup_policy, **updated)
 
+    def link_resources_to_policy(self, backup_policy, resources):
+        """link resource to backup policy
+
+        :param backup_policy: The value can be the ID of a backup_policy or a
+            :class:`~otcextensions.sdk.volume_backup.v2.backup_policy.BackupPolicy`
+            instance
+        :param resources: resources to bound, should be a list of volume id
+        :rtype: :class:`~otcextensions.sdk.volume_backup.v2.backup_policy
+                    .BackupPolicyResource`
+        """
+        backup_policy = self._get_resource(_backup_policy.BackupPolicy,
+                                           backup_policy)
+        policy_resource = _backup_policy.BackupPolicyResource()
+        return policy_resource.link(self,
+                                    backup_policy.id,
+                                    resources)
+
+    def unlink_resources_of_policy(self, backup_policy, resources):
+        """Unlink resources of backup policy
+
+        :param backup_policy: The value can be the ID of a backup_policy or a
+            :class:`~otcextensions.sdk.volume_backup.v2.backup_policy.BackupPolicy`
+            instance
+        :param resources: resources to bound, should be a list of volume id
+        :rtype: :class:`~otcextensions.sdk.volume_backup.v2.backup_policy.
+                        BackupPolicyResource`
+        """
+        backup_policy = self._get_resource(_backup_policy.BackupPolicy,
+                                           backup_policy)
+        policy_resource = _backup_policy.BackupPolicyResource()
+        return policy_resource.unlink(self,
+                                      backup_policy.id,
+                                      resources)
+
     # ======== Misc ========
     def tasks(self, backup_policy, **query):
         """Retrieve a generator of tasks
@@ -311,7 +288,7 @@ class Proxy(sdk_proxy.Proxy):
         backup_policy = self._get_resource(_backup_policy.BackupPolicy,
                                            backup_policy)
         query["policy_id"] = backup_policy.id
-        return self._list(_backup_task.BackupTask, paginated=True, **query)
+        return self._list(_backup_task.BackupTask, paginated=False, **query)
 
     def get_job(self, job):
         """Get a job detail
