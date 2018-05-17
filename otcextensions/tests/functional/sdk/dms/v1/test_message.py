@@ -24,6 +24,7 @@ class TestMessage(base.BaseFunctionalTest):
     queues = []
     groups = []
     messages = []
+    received_messages = []
 
     @classmethod
     def setUpClass(cls):
@@ -112,3 +113,18 @@ class TestMessage(base.BaseFunctionalTest):
             #            "attribute2" : "value2" } }
 
             cls.messages.append(cls.message)
+            try:
+                cls.group = cls.conn.dms.create_groups(
+                    cls.queue, groups=[{"name": "test_group2"}]
+                )
+
+            except exceptions.BadRequestException:
+                cls.queue = cls.conn.dms.groups(cls.queue)
+
+            cls.groups.append(cls.group)
+
+            cls.received_messages = cls.dms.consume_message(
+                cls.queue,
+                cls.group
+            )
+            cls.assertGreaterEqual(len(cls.received_messages), 0)
