@@ -26,3 +26,9 @@
         - tox-py27
         - tox-pep8
         - openstacksdk-functional-otc-python3
+    gate:
+      jobs:
+        - tox-py36
+        - tox-py27
+        - tox-pep8
+        - openstacksdk-functional-otc-python3
