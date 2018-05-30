@@ -16,9 +16,6 @@ import mock
 
 from openstackclient.tests.unit import utils
 
-from osc_lib import exceptions
-
-from otcextensions.common import sdk_utils
 from otcextensions.osclient.volume_backup.v2 import policy
 from otcextensions.tests.unit.osclient.volume_backup.v2 import fakes
 
