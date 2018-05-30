@@ -21,6 +21,8 @@ from openstackclient.tests.functional import base
 CREATE_COMMAND = 'vbs policy create -f json %(name)s --start_time "10:00" ' \
     '--frequency 14 --rentention_num 2 --enable'
 
+DELETE_COMMAND = 'vbs policy delete %(id)s'
+
 
 class VolumeBackupPolicyTests(base.TestCase):
     """Functional tests for vbs. """
@@ -41,9 +43,7 @@ class VolumeBackupPolicyTests(base.TestCase):
     def tearDownClass(cls):
         try:
             cls.openstack(
-                '--os-image-api-version 2 '
-                'vbs policy delete ' +
-                cls.policy_id
+                DELETE_COMMAND % {'id': cls.policy_id}
             )
         finally:
             super(VolumeBackupPolicyTests, cls).tearDownClass()
@@ -86,6 +86,9 @@ class VolumeBackupPolicyTests(base.TestCase):
         self.assertEqual(
             name + 'xx',
             json_output["name"],
+        )
+        self.openstack(
+            DELETE_COMMAND % {'id': json_output['id']}
         )
 
     def test_policy_execute(self):
