@@ -30,14 +30,14 @@ class Proxy(sdk_proxy.Proxy):
             :class:`~otcextensions.sdk.volume_backup.v2.backup.Backup`.
             *Default: ``False``*
         :param dict query: Optional query parameters to be sent to limit the
-            resources being returned.
-                * ``name``: backup name
-                * ``status``: backup status :
-                    ``available``, ``error``, ``restoring``, ``creating``,
-                    ``deleting``, ``error_restoring``
-                * ``volume_id``: backup of volume
-                * ``offset``:  pagination marker
-                * ``limit``: pagination limit
+            resources being returned:
+            * ``name``: backup name
+            * ``status``: backup status :
+            ``available``, ``error``, ``restoring``, ``creating``,
+            ``deleting``, ``error_restoring``
+            * ``volume_id``: backup of volume
+            * ``offset``:  pagination marker
+            * ``limit``: pagination limit
 
         :returns: A generator of backup
             (:class:`~otcextensions.sdk.volume_backup.v2.backup.Backup`)
@@ -103,10 +103,32 @@ class Proxy(sdk_proxy.Proxy):
 
     def wait_for_backup(self, backup, status='available', failures=['error'],
                         interval=2, wait=120):
+        """Wait for the backup appear with the asked status
+
+        :param backup: The value can be the ID of a backup or a :class:`
+            ~otcextensions.sdk.volume_backup.v2.backup.Backup` instance
+        :param status: requested Status to be waited for.
+        :param failures: status of failure
+        :param interval: interval for a check
+        :param wait: maximal time in secods to wait for the backup
+
+        :returns: Backup object
+        :rtype: :class:`~otcextensions.sdk.volume_backup.v2.backup.Backup`
+        """
         return resource.wait_for_status(
             self, backup, status, failures, interval, wait)
 
     def wait_for_backup_delete(self, backup, interval=2, wait=120):
+        """Wait for the backup be deleted
+
+        :param backup: The value can be the ID of a backup or a :class:`
+            ~otcextensions.sdk.volume_backup.v2.backup.Backup` instance
+        :param interval: interval for a check
+        :param wait: maximal time in secods to wait for the backup
+
+        :returns: Backup object
+        :rtype: :class:`~otcextensions.sdk.volume_backup.v2.backup.Backup`
+        """
         return resource.wait_for_delete(
             self, backup, interval, wait)
 
@@ -123,7 +145,8 @@ class Proxy(sdk_proxy.Proxy):
         """Create a new backup policy from name and scheduled policy attributes
 
         :param dict attrs: Keyword arguments which will be used to create a
-        :class:`~otcextensions.sdk.volume_backup.v2.backup_policy.BackupPolicy`
+            :class:`~otcextensions.sdk.volume_backup.v2.backup_policy.BackupPolicy`
+
         :returns: The results of backup policy creation
         :rtype:
             :class:`~otcextensions.sdk.volume_backup.v2.backup_policy.BackupPolicy`
@@ -141,8 +164,9 @@ class Proxy(sdk_proxy.Proxy):
             :class:`~otcextensions.sdk.volume_backup.v2.backup_policy.BackupPolicy`
             instance
         :param dict attrs: Keyword arguments which will be used to create a
-        :class:`~otcextensions.sdk.volume_backup.v2.backup_policy.ScheduledPolicy`,
+            :class:`~otcextensions.sdk.volume_backup.v2.backup_policy.ScheduledPolicy`,
             comprised of the properties on the SchedulePolicy class.
+
         :returns: The results of backup_policy creation
         :rtype:
             :class:`~otcextensions.sdk.volume_backup.v2.backup_policy.BackupPolicy`
