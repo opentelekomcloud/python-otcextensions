@@ -18,6 +18,7 @@
     vars:
       tox_environment:
         OPENSTACKSDK_TOX_PYTHON: python3
+        OS_CLOUD: otc
 
 - project:
     check:

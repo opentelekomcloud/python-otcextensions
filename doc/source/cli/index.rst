@@ -6,3 +6,4 @@
    kms.rst
    cce.rst
    load_balancer.rst
+   volume_backup.rst

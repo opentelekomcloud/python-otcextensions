@@ -11,6 +11,7 @@ This document gathers issues, which are found during diggint the API and other O
   it will likely not be possible/challenge to upstream this support.
 * EVS: volume type list --long returns changing results
 * Subnet (in some APIs) is most likely net_id
+* Without service discovery and multiple versions it is not possible to get the proper service version in SDK. It falls back to first entry in the VersionFilter
 
 # KMS:
 
@@ -57,6 +58,12 @@ This document gathers issues, which are found during diggint the API and other O
 * nothing supports private zone (ansible, heat, ~terraform, SDK/CLI). Very hard to cover that everywhere
 * Zone transfer, slave zone are not present. Modern Designateclient is not getting clear with response of designate
 * API v2 is not implemented
+
+# VBS:
+
+* uses offset as a pagination, instead of marker (in docs, in reality marker is supported)
+* backup creation takes too long. 1Gb empty volume takes >4 minutes. Functional tests are not reasonable with that.
+* create policy requires frequency to be set
 
 # HEAT:
 
