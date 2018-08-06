@@ -5,4 +5,4 @@ AutoScaling Resources
    :maxdepth: 1
 
    v1/cluster
-   v1/cluster_host
+   v1/cluster_node

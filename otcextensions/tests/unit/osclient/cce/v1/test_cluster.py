@@ -23,8 +23,75 @@ class TestCluster(fakes.TestCCE):
     def setUp(self):
         super(TestCluster, self).setUp()
 
+    def test_flatten(self):
+        _obj = fakes.FakeCluster.create_one()
 
-class TestListCluster(TestCluster):
+        flat_data = cluster._flatten_cluster(_obj)
+
+        data = (
+            flat_data['id'],
+            flat_data['name'],
+            flat_data['cpu'],
+            flat_data['memory'],
+            flat_data['endpoint'],
+            flat_data['availability_zone'],
+            flat_data['vpc'],
+            flat_data['status'],
+            flat_data['nodes']
+        )
+
+        cmp_data = (
+            _obj.metadata.id,
+            _obj.metadata.name,
+            _obj.spec.cpu,
+            _obj.spec.memory,
+            _obj.spec.endpoint,
+            _obj.spec.availability_zone,
+            _obj.spec.vpc,
+            _obj.status['status'],
+            len(_obj.spec.host_list.spec.host_list)
+        )
+
+        self.assertEqual(data, cmp_data)
+
+    def test_flatten_no_nodes(self):
+        _obj = fakes.FakeCluster.create_one(0)
+
+        print(_obj.to_dict())
+
+        # remove hosts to ensure count is properly calculated
+        # _obj._update(spec={'host_list': {'spec': {'host_list': []}}})
+
+        flat_data = cluster._flatten_cluster(_obj)
+
+        data = (
+            flat_data['id'],
+            flat_data['name'],
+            flat_data['cpu'],
+            flat_data['memory'],
+            flat_data['endpoint'],
+            flat_data['availability_zone'],
+            flat_data['vpc'],
+            flat_data['status'],
+            flat_data['nodes']
+        )
+
+        cmp_data = (
+            _obj.metadata.id,
+            _obj.metadata.name,
+            _obj.spec.cpu,
+            _obj.spec.memory,
+            _obj.spec.endpoint,
+            _obj.spec.availability_zone,
+            _obj.spec.vpc,
+            _obj.status['status'],
+            0
+        )
+
+        self.assertEqual(data, cmp_data)
+
+
+class TestListCluster(fakes.TestCCE):
 
     _objs = fakes.FakeCluster.create_multiple(3)
 
@@ -33,12 +100,13 @@ class TestListCluster(TestCluster):
     data = []
 
     for s in _objs:
+        flat_data = cluster._flatten_cluster(s)
         data.append((
-            s.metadata.id,
-            s.metadata.name,
-            s.spec.cpu,
-            s.spec.memory,
-            s.spec.endpoint,
+            flat_data['id'],
+            flat_data['name'],
+            flat_data['cpu'],
+            flat_data['memory'],
+            flat_data['endpoint'],
         ))
 
     def setUp(self):
@@ -70,24 +138,24 @@ class TestListCluster(TestCluster):
         self.assertEqual(self.data, list(data))
 
 
-class TestShowCluster(TestCluster):
+class TestShowCluster(fakes.TestCCE):
 
     _obj = fakes.FakeCluster.create_one()
 
     columns = ('ID', 'name', 'status', 'cpu', 'memory', 'endpoint',
                'availability_zone',
                'vpc', 'nodes')
-
+    flat_data = cluster._flatten_cluster(_obj)
     data = (
-        _obj.metadata.id,
-        _obj.metadata.name,
-        _obj.status['status'],
-        _obj.spec.cpu,
-        _obj.spec.memory,
-        _obj.spec.endpoint,
-        _obj.spec.availability_zone,
-        _obj.spec.vpc,
-        len(_obj.spec.host_list.spec.host_list)
+        flat_data['id'],
+        flat_data['name'],
+        flat_data['status'],
+        flat_data['cpu'],
+        flat_data['memory'],
+        flat_data['endpoint'],
+        flat_data['availability_zone'],
+        flat_data['vpc'],
+        flat_data['nodes']
     )
 
     def setUp(self):
@@ -95,7 +163,7 @@ class TestShowCluster(TestCluster):
 
         self.cmd = cluster.ShowCCECluster(self.app, None)
 
-        self.client.get_cluster = mock.Mock()
+        self.client.find_cluster = mock.Mock()
 
     def test_get(self):
         arglist = [
@@ -110,20 +178,96 @@ class TestShowCluster(TestCluster):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.get_cluster.side_effect = [
+        self.client.find_cluster.side_effect = [
             self._obj
         ]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.get_cluster.assert_called_once_with('cluster_uuid')
+        self.client.find_cluster.assert_called_once_with('cluster_uuid')
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
 
 
-class TestDeleteCluster(TestCluster):
+class TestCreateCluster(fakes.TestCCE):
+
+    _obj = fakes.FakeCluster.create_one()
+
+    columns = ('ID', 'name', 'status', 'cpu', 'memory', 'endpoint',
+               'availability_zone',
+               'vpc', 'nodes')
+
+    flat_data = cluster._flatten_cluster(_obj)
+    data = (
+        flat_data['id'],
+        flat_data['name'],
+        flat_data['status'],
+        flat_data['cpu'],
+        flat_data['memory'],
+        flat_data['endpoint'],
+        flat_data['availability_zone'],
+        flat_data['vpc'],
+        flat_data['nodes']
+    )
+
+    def setUp(self):
+        super(TestCreateCluster, self).setUp()
+
+        self.cmd = cluster.CreateCCECluster(self.app, None)
+
+        self.client.create_cluster = mock.Mock()
+
+    def test_create(self):
+        arglist = [
+            'cluster_name',
+            'vpc_id',
+            'subnet_id',
+            '--description', 'descr',
+            '--region', 'regio',
+            '--security_group', 'sg',
+            '--type', 'HA'
+        ]
+
+        verifylist = [
+            ('name', 'cluster_name'),
+            ('vpc', 'vpc_id'),
+            ('subnet', 'subnet_id'),
+            ('description', 'descr'),
+            ('region', 'regio'),
+            ('security_group', 'sg'),
+            ('type', 'HA')
+        ]
+
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.create_cluster.side_effect = [
+            self._obj
+        ]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.create_cluster.assert_called_once_with(
+            name='cluster_name',
+            spec={
+                'vpc': 'vpc_id',
+                'subnet': 'subnet_id',
+                'region': 'regio',
+                'description': 'descr',
+                'security_group_id': 'sg',
+                'cluster_type': 'HA'
+            }
+        )
+
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
+
+
+class TestDeleteCluster(fakes.TestCCE):
 
     def setUp(self):
         super(TestDeleteCluster, self).setUp()

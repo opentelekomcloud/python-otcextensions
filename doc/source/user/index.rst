@@ -12,7 +12,7 @@ The OTCExtensions SDK is available on
 `GitHub <https://github.com/OpenTelekomCloud/python-otcextensions.git>`_.
 To install it, use ``pip``::
 
-   $ pip install python-otcextensions
+   $ pip install otcextensions
 
 .. _user_guides:
 
@@ -47,6 +47,7 @@ approach, this is where you'll want to begin.
    RDS <guides/rds>
    OBS <guides/obs>
    AutoScaling <guides/auto_scaling>
+   Volume Backup <guides/volume_backup>
 
 API Documentation
 -----------------
@@ -123,6 +124,7 @@ control which services can be used.
    AutoScaling Service <proxies/auto_scaling>
    Key Management Service <proxies/kms>
    Cloud Container Engine <proxies/cce>
+   Volume Backup Service <proxies/volume_backup>
 
 Resource Interface
 ~~~~~~~~~~~~~~~~~~

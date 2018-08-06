@@ -33,6 +33,6 @@ class TestClusterNodes(base.BaseFunctionalTest):
     def test_get_node(self):
         cluster = self.cce.get_cluster(self.TEST_CLUSTER)
         nodes = list(self.cce.cluster_nodes(cluster))
-        node = self.cce.get_cluster_node(cluster, nodes[0].id)
-
-        self.assertIsNotNone(node)
+        if len(nodes) > 0:
+            node = self.cce.get_cluster_node(cluster, nodes[0].id)
+            self.assertIsNotNone(node)

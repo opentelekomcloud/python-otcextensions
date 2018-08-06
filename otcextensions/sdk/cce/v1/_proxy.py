@@ -11,7 +11,7 @@
 # under the License.
 from otcextensions.sdk import sdk_proxy
 from otcextensions.sdk.cce.v1 import cluster as _cluster
-from otcextensions.sdk.cce.v1 import cluster_host as _cluster_host
+from otcextensions.sdk.cce.v1 import cluster_node as _cluster_node
 
 
 class Proxy(sdk_proxy.Proxy):
@@ -36,6 +36,36 @@ class Proxy(sdk_proxy.Proxy):
         """
         return self._get(
             _cluster.Cluster, cluster,
+        )
+
+    def create_cluster(self, **attrs):
+        """Create a cluster from attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.cce.v1.cluster.Cluster`,
+            comprised of the properties on the Cluster class.
+        :returns: The results of cluster creation
+        :rtype: :class:`~otcextensions.sdk.cce.v1.cluster.Cluster`
+        """
+        return self._create(
+            _cluster.Cluster, prepend_key=False, **attrs
+        )
+
+    def find_cluster(self, name_or_id, ignore_missing=True):
+        """Find a single cluster
+
+        :param name_or_id: The name or ID of a cluster
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the group does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to delete a nonexistent group.
+
+        :returns: ``None``
+        """
+        return self._find(
+            _cluster.Cluster, name_or_id,
+            ignore_missing=ignore_missing,
         )
 
     def delete_cluster(self, cluster, ignore_missing=True):
@@ -63,12 +93,12 @@ class Proxy(sdk_proxy.Proxy):
              instance.
 
         :returns: a generator of
-            (:class:`~otcextensions.sdk.cce.v1.cluster_host.ClusterHost`)
+            (:class:`~otcextensions.sdk.cce.v1.cluster_node.ClusterNode`)
             instances
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return self._list(
-            _cluster_host.ClusterHost, cluster_uuid=cluster.id,
+            _cluster_node.ClusterNode, cluster_uuid=cluster.id,
             paginated=False
         )
 
@@ -84,8 +114,25 @@ class Proxy(sdk_proxy.Proxy):
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return self._get(
-            _cluster_host.ClusterHost,
+            _cluster_node.ClusterNode,
             node_id,
+            cluster_uuid=cluster.id,
+        )
+
+    def find_cluster_node(self, cluster, node):
+        """Find the cluster node by it's UUID or name
+
+        :param cluster: key id or an instance of
+            :class:`~otcextensions.sdk.cce.v1.cluster.Cluster`
+        :param node: Cluster node id or name to be fetched
+
+        :returns: instance of
+            :class:`~otcextensions.sdk.cce.v1.cluster_node.ClusterNode`
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return self._find(
+            _cluster_node.ClusterNode,
+            node,
             cluster_uuid=cluster.id,
         )
 
@@ -111,14 +158,14 @@ class Proxy(sdk_proxy.Proxy):
              or a :class:`~otcextensions.sdk.cce.v1.cluster.Cluster`
              instance.
         :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.cce.v1.cluster_host.ClusterHost`,
+            a :class:`~otcextensions.sdk.cce.v1.cluster_node.ClusterHost`,
             comprised of the properties on the ClusterHost class.
         :returns: The results of config creation
         :rtype: :class:`~otcextensions.sdk.cce.v1.config.Config`
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return self._create(
-            _cluster_host.ClusterHost,
+            _cluster_node.ClusterNode,
             cluster_uuid=cluster.id,
             **attrs
         )

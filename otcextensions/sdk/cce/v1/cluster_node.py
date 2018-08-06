@@ -26,7 +26,32 @@ class VolumeSpec(sdk_resource.Resource):
     volume_type = resource.Body('volumeType')
 
 
-class HostSpec(sdk_resource.Resource):
+class CapacitySpec(sdk_resource.Resource):
+    # Properties
+    #: CPU
+    #: *Type: str*
+    cpu = resource.Body('cpu')
+    #: Memory
+    #: *Type: str*
+    memory = resource.Body('memory')
+    #: Pods
+    #: *Type: str*
+    pods = resource.Body('pods')
+
+
+class StatusSpec(sdk_resource.Resource):
+    # Properties
+    #: Capacity - maximal resources capacity
+    #: *Type: CapacitySpec*
+    capacity = resource.Body('capacity', type=CapacitySpec)
+    #: Allocatable - available resources capacity
+    #: *Type: CapacitySpec*
+    allocatable = resource.Body('allocatable', type=CapacitySpec)
+    #: Conditions - health conditions
+    conditions = resource.Body('conditions', type=list, list_type=dict)
+
+
+class NodeSpec(sdk_resource.Resource):
     # Properties
     #: Cluster UUID
     cluster_uuid = resource.Body('clusteruuid')
@@ -49,20 +74,30 @@ class HostSpec(sdk_resource.Resource):
     #: SSH Key (mandatory)
     ssh_key = resource.Body('sshkey')
     #: status
-    status = resource.Body('status', type=dict)
+    status = resource.Body('status', type=StatusSpec)
     #: Tags (array in format key.value)
+    tags = resource.Body('tags', type=list)
+    #: assign_floating_ip - whether to assign floating IP to the server
+    #: (used only during create)
+    #: *Type:bool*
+    assign_floating_ip = resource.Body('snat', type=bool)
+    #: tags (only used in creation). Format: "KEY.VALUE"
+    #: *Type:list*
     tags = resource.Body('tags', type=list)
 
 
-class ClusterHost(_base.Resource):
+class ClusterNode(_base.Resource):
     base_path = '/clusters/%(cluster_uuid)s/hosts'
     allow_create = True
     allow_delete = True
     allow_list = True
     allow_get = True
+    # Responses do not have body
+    # has_body = False
+
     # Properties
     #: Spec
-    spec = resource.Body('spec', type=HostSpec)
+    spec = resource.Body('spec', type=NodeSpec)
     #: Status
     status = resource.Body('status')
     #: Replicas count
@@ -71,6 +106,14 @@ class ClusterHost(_base.Resource):
     message = resource.Body('message')
 
     cluster_uuid = resource.URI('cluster_uuid')
+
+    @classmethod
+    def new(cls, **kwargs):
+        if 'kind' not in kwargs:
+            kwargs['kind'] = 'host'
+        if 'apiVersion' not in kwargs:
+            kwargs['apiVersion'] = 'v1'
+        return cls(_synchronized=False, **kwargs)
 
     def __getattribute__(self, name):
         """Return an attribute on this instance
@@ -125,7 +168,10 @@ class ClusterHost(_base.Resource):
             )
             exceptions.raise_from_response(response)
             data = response.json()
-            resources = data['spec']['hostList']
+            spec = data.get('spec', None)
+            resources = []
+            if spec:
+                resources = spec.get('hostList', [])
 
             for raw_resource in resources:
                 # Do not allow keys called "self" through. Glance chose
@@ -188,18 +234,6 @@ class ClusterHost(_base.Resource):
 
     def create(self, session, prepend_key=True, requires_id=True,
                endpoint_override=None, headers=None):
-        """Create a remote resource based on this instance.
-
-        :param session: The session to use for making this request.
-        :type session: :class:`~keystoneauth1.adapter.Adapter`
-        :param prepend_key: A boolean indicating whether the resource_key
-                            should be prepended in a resource creation
-                            request. Default to True.
-
-        :return: This :class:`Resource` instance.
-        :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
-                 :data:`Resource.allow_create` is not set to ``True``.
-        """
         if not self.allow_create:
             raise exceptions.MethodNotSupported(self, "create")
 
@@ -227,6 +261,7 @@ class ClusterHost(_base.Resource):
             raise exceptions.ResourceFailure(
                 msg="Invalid create method: %s" % self.create_method)
 
+        # This is an only difference to the existing sdk_resource.create
         self._translate_response(response, has_body=False)
 
         return self

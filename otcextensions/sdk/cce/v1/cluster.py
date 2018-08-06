@@ -10,25 +10,26 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 # import six
+from openstack import exceptions
 from openstack import resource
 from openstack import utils
 
 from otcextensions.sdk import sdk_resource
 from otcextensions.sdk.cce import cce_service
 from otcextensions.sdk.cce.v1 import _base
-from otcextensions.sdk.cce.v1 import cluster_host
+from otcextensions.sdk.cce.v1 import cluster_node
 
 
-class HostListSpec(sdk_resource.Resource):
+class NodeListSpec(sdk_resource.Resource):
     # Properties
     host_list = resource.Body('hostList', type=list,
-                              list_type=cluster_host.ClusterHost)
+                              list_type=cluster_node.ClusterNode)
 
 
-class ClusterHostList(_base.Resource):
+class ClusterNodeList(_base.Resource):
     # Properties
     #: Spec
-    spec = resource.Body('spec', type=HostListSpec)
+    spec = resource.Body('spec', type=NodeListSpec)
 
 
 class ClusterSpec(sdk_resource.Resource):
@@ -59,9 +60,11 @@ class ClusterSpec(sdk_resource.Resource):
     #: *Type:str*
     cidr = resource.Body('cidr')
     #: Cluster type
+    #: possible values: (HA, Single)
     #: *Type:str*
     cluster_type = resource.Body('clustertype')
     #: Security group id
+    #: when left empty on creation CCE will create one
     #: *Type:str*
     security_group_id = resource.Body('security_group_id')
     #: Endpoint
@@ -74,7 +77,7 @@ class ClusterSpec(sdk_resource.Resource):
     #: *Type:str*
     type = resource.Body('clustertype')
     #: host list
-    host_list = resource.Body('hostList', type=ClusterHostList)
+    host_list = resource.Body('hostList', type=ClusterNodeList)
     #: Region (used for create cluster)
     region = resource.Body('region')
     #: Public IP ID or EIP ID (used for create cluster)
@@ -101,20 +104,54 @@ class Cluster(_base.Resource):
     #: Cluster status
     status = resource.Body('clusterStatus', type=dict)
 
-    # @staticmethod
-    # def _get_id(value):
-    #     """If a value is a Resource, return the canonical ID
-    #
-    #     This will return either the value specified by `id` or
-    #     `alternate_id` in that order if `value` is a Resource.
-    #     If `value` is anything other than a Resource, likely to
-    #     be a string already representing an ID, it is returned.
-    #     """
-    #     print('in the _get_id')
-    #     if isinstance(value, resource.Resource):
-    #         return value.metadata.id
-    #     else:
-    #         return value
+    @classmethod
+    def new(cls, **kwargs):
+        if 'kind' not in kwargs:
+            kwargs['kind'] = 'cluster'
+        if 'apiVersion' not in kwargs:
+            kwargs['apiVersion'] = 'v1'
+        metadata = kwargs.get('metadata', '')
+        if 'name' in kwargs and not metadata:
+            name = kwargs.pop('name', '')
+            kwargs['metadata'] = {
+                'name': name
+            }
+        return cls(_synchronized=False, **kwargs)
+
+    @classmethod
+    def _get_one_match(cls, name_or_id, results):
+        """Given a list of results, return the match"""
+        the_result = None
+        for maybe_result in results:
+            id_value = cls._get_id(maybe_result)
+            name_value = maybe_result.metadata.name
+
+            if (id_value == name_or_id) or (name_value == name_or_id):
+                # Only allow one resource to be found. If we already
+                # found a match, raise an exception to show it.
+                if the_result is None:
+                    the_result = maybe_result
+                else:
+                    msg = "More than one %s exists with the name '%s'."
+                    msg = (msg % (cls.__name__, name_or_id))
+                    raise exceptions.DuplicateResource(msg)
+
+        return the_result
+
+    @staticmethod
+    def _get_id(value):
+        """If a value is a Resource, return the canonical ID
+
+        This will return either the value specified by `id` or
+        `alternate_id` in that order if `value` is a Resource.
+        If `value` is anything other than a Resource, likely to
+        be a string already representing an ID, it is returned.
+        """
+        print('in the _get_id')
+        if isinstance(value, resource.Resource):
+            return value.metadata.id
+        else:
+            return value
 
     def __getattribute__(self, name):
         """Return an attribute on this instance
@@ -166,15 +203,3 @@ class Cluster(_base.Resource):
 
         url = utils.urljoin(self.base_path, self.id, 'hosts')
         session.delete(url, json=message, **args)
-
-    # @classmethod
-    # def flatten(cls, **kwargs):
-    #     result_dict = {}
-    #     for (k, v) in six.iteritems(kwargs):
-    #         if isinstance(v, dict):
-    #             for (new_k, new_v) in six.iteritems(cls.flatten(**v)):
-    #                 key = k + '.' + new_k
-    #                 result_dict[key] = new_v
-    #         else:
-    #             result_dict[k] = v
-    #     return result_dict
