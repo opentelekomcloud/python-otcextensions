@@ -19,6 +19,7 @@ from otcextensions.sdk import sdk_proxy
 
 class Proxy(sdk_proxy.Proxy):
 
+    # ======== Queues ========
     def create_queue(self, **kwargs):
         """Create a queue
 
@@ -60,6 +61,7 @@ class Proxy(sdk_proxy.Proxy):
 
         self._delete(_queue.Queue, queue, ignore_missing=ignore_missing)
 
+    # ======== Groups ========
     def create_groups(self, queue, **kwargs):
         """Create a list consume groups for a queue
 
@@ -104,6 +106,7 @@ class Proxy(sdk_proxy.Proxy):
 
         self._delete(_group.Group, group, queue_id=queue_id)
 
+    # ======== Messages ========
     def send_messages(self, queue, **kwargs):
         """Send messages for a given queue
 
