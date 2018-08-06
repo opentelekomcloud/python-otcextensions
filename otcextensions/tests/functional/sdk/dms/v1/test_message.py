@@ -85,7 +85,6 @@ class TestMessage(base.BaseFunctionalTest):
 
             cls.groups.append(cls.group)
 
-
     # OS_TEST_TIMEOUT=60 is needed due to testbed slowness
     @classmethod
     def test_message(cls):
