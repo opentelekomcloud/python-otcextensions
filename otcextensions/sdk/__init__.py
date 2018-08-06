@@ -59,6 +59,11 @@ OTC_SERVICES = {
         'endpoint_service_type': 'as',
         'append_project_id': True,
     },
+    'dms': {
+        'service_type': 'dms',
+        'endpoint_service_type': 'dms',
+        'append_project_id': True,
+    },
     'kms': {
         'service_type': 'kms',
         'append_project_id': True,
