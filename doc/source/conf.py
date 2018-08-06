@@ -15,7 +15,7 @@ import os
 import sys
 import warnings
 
-import openstackdocstheme
+import otcdocstheme
 
 sys.path.insert(0, os.path.abspath('../..'))
 sys.path.insert(0, os.path.abspath('.'))
@@ -26,17 +26,15 @@ sys.path.insert(0, os.path.abspath('.'))
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'openstackdocstheme',
+    'otcdocstheme',
     'enforcer',
     'cliff.sphinxext',
 ]
 
 # openstackdocstheme options
 repository_name = 'OpenTelekomCloud/python-otcextensions'
-bug_project = '760'
-bug_tag = ''
 html_last_updated_fmt = '%Y-%m-%d %H:%M'
-html_theme = 'openstackdocs'
+html_theme = 'otcdocs'
 
 # TODO(shade) Set this to true once the build-openstack-sphinx-docs job is
 # updated to use sphinx-build.
@@ -76,9 +74,7 @@ bug_tag = "docs"
 pwd = os.getcwd()
 # html_context allows us to pass arbitrary values into the html template
 html_context = {"pwd": pwd,
-                "gitsha": gitsha,
-                "bug_tag": bug_tag,
-                "bug_project": "python-openstacksdk"}
+                "gitsha": gitsha}
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
 add_function_parentheses = True
@@ -110,7 +106,7 @@ latex_documents = [
     ('index',
      '%s.tex' % project,
      u'%s Documentation' % project,
-     u'OpenStack Foundation', 'manual'),
+     u'OpenTelekomCloud', 'manual'),
 ]
 
 # Include both the class and __init__ docstrings when describing the class
