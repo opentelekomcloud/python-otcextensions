@@ -13,6 +13,7 @@ from openstack import resource
 from openstack import _log
 
 from otcextensions.sdk.dms.v1 import _base
+
 _logger = _log.setup_logging('openstack')
 
 
@@ -40,27 +41,6 @@ class GroupMessage(_base.Resource):
     #: Fail number of the message
     #: *Type: int
     fail = resource.Body('fail', type=int)
-
-    # NOTES: this API is so different from others, it's not a RESTFUL
-    # style, allow user to pass mulitple tags as the query parameters
-    # which can not leverage method of session directlly.
-    # return an url with query params
-    # it accepts multiple query params e.g. tag=tag1&tag=tag2
-    # @classmethod
-    # def _assemble_query_params(cls, base_url, params):
-    #     # pop queue_id and consumer_group_id
-    #     params.pop('queue_id', None)
-    #     params.pop('consumer_group_id', None)
-    #     if len(params) == 0:
-    #         return base_url
-    #     base_url = base_url + '?'
-    #     for (p, v) in params.items():
-    #         if p == 'tags':
-    #             for tag in v:
-    #                 base_url = base_url + 'tag=' + tag + '&'
-    #         else:
-    #             base_url = base_url + p + '=' + str(v) + '&'
-    #     return base_url[:-1]
 
     # use get method to consume message, return a list of self
     @classmethod
