@@ -12,10 +12,10 @@
 
 from openstack.tests.unit import base
 
-from otcextensions.sdk.dms.v1 import queue
 from otcextensions.sdk.dms.v1 import group
-from otcextensions.sdk.dms.v1 import message
 from otcextensions.sdk.dms.v1 import group_message
+from otcextensions.sdk.dms.v1 import message
+from otcextensions.sdk.dms.v1 import queue
 
 EXAMPLE = {
     "id": "9bf46390-38a2-462d-b392-4d5b2d519c55",
