@@ -77,18 +77,20 @@ class DeleteDMSQueue(command.Command):
         parser.add_argument(
             'queue',
             metavar='<queue>',
+            nargs='+',
             help=_('ID of the queue')
         )
         return parser
 
     def take_action(self, parsed_args):
 
-        if parsed_args.cluster:
+        if parsed_args.queue:
             client = self.app.client_manager.dms
-            client.delete_queue(parsed_args.queue)
+            for queue in parsed_args.queue:
+                client.delete_queue(queue)
 
 
-class CreateDMSQueue(command.Command):
+class CreateDMSQueue(command.ShowOne):
     _description = _('Create DMS Queue')
     columns = ('ID', 'name', 'queue_mode', 'description', 'redrive_policy',
                'max_consume_count', 'retention_hours')
@@ -98,7 +100,6 @@ class CreateDMSQueue(command.Command):
         parser.add_argument(
             'name',
             metavar='<name>',
-            required=True,
             help=_('Name of the cluster.')
         )
         parser.add_argument(
