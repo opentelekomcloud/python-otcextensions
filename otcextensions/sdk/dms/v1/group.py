@@ -9,16 +9,33 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import resource
 from openstack import _log
+from openstack import resource
+# from openstack import utils
 
 from otcextensions.sdk.dms.v1 import _base
 
 _logger = _log.setup_logging('openstack')
 
 
-class GroupSpec(_base.Resource):
+class Group(_base.Resource):
+
+    # NOTE: we are not interested in the also returned short queue info
+    resources_key = 'groups'
+
+    base_path = 'queues/%(queue_id)s/groups'
+    # capabilities
+    allow_create = True
+    allow_list = True
+    allow_delete = True
+
+    _query_mapping = resource.QueryParameters(
+        'include_deadletter'
+    )
+
     # Properties
+    queue_id = resource.URI('queue_id')
+
     #: Consume group Id
     id = resource.Body('id')
     #: Name
@@ -39,21 +56,25 @@ class GroupSpec(_base.Resource):
     #: *Type: int*
     available_deadletters = resource.Body('available_deadletters', type=int)
 
+    def create(self, session, group):
+        """create group"""
+        body = {"groups": [{'name': group}]}
 
-class Group(_base.Resource):
+        request = self._prepare_request(requires_id=False,
+                                        prepend_key=False)
 
-    resources_key = 'groups'
+        response = session.post(
+            request.url,
+            json=body,
+            headers={'Content-Length': str(len(str(body)))})
 
-    base_path = 'queues/%(queue_id)s/groups'
-    # capabilities
-    allow_create = True
-    allow_list = True
-    allow_delete = True
+        # Squize groups into single response entity
+        resp = response.json()
+        if self.resources_key in resp:
+            res = resp[self.resources_key][0]
 
-    # Properties
-    #: Queue id
-    queue_id = resource.URI('queue_id')
-    #: groups (mandatory)
-    groups = resource.Body('groups', type=list, list_type=GroupSpec)
-    #: Redrive policy
-    redrive_policy = resource.Body('redrive_policy')
+            res = self._consume_body_attrs(res)
+            self._body.attributes.update(res)
+            self._body.clean()
+
+        return self

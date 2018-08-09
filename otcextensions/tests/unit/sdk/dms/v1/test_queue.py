@@ -12,10 +12,10 @@
 
 from openstack.tests.unit import base
 
-from otcextensions.sdk.dms.v1 import queue
 from otcextensions.sdk.dms.v1 import group
-from otcextensions.sdk.dms.v1 import message
 from otcextensions.sdk.dms.v1 import group_message
+from otcextensions.sdk.dms.v1 import message
+from otcextensions.sdk.dms.v1 import queue
 
 EXAMPLE = {
     "id": "9bf46390-38a2-462d-b392-4d5b2d519c55",
@@ -97,7 +97,7 @@ class TestQueue(base.TestCase):
 
 class TestGroup(base.TestCase):
 
-    example = GROUP_EXAMPLE
+    example = GROUP_EXAMPLE['groups'][0]
     objcls = group.Group
 
     def test_basic(self):
@@ -108,7 +108,17 @@ class TestGroup(base.TestCase):
     def test_make_it(self):
 
         sot = self.objcls(**self.example)
-        self.assertEqual(self.example['redrive_policy'], sot.redrive_policy)
+        self.assertEqual(self.example['id'], sot.id)
+        self.assertEqual(self.example['name'], sot.name)
+        self.assertEqual(
+            self.example['produced_messages'],
+            sot.produced_messages)
+        self.assertEqual(
+            self.example['consumed_messages'],
+            sot.consumed_messages)
+        self.assertEqual(
+            self.example['available_messages'],
+            sot.available_messages)
 
 
 class TestMessage(base.TestCase):

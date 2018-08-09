@@ -63,13 +63,13 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
             expected_kwargs={}
         )
 
-    def test_create_groups(self):
+    def test_create_group(self):
         self._verify2(
-            'otcextensions.sdk.sdk_proxy.Proxy._create',
-            self.proxy.create_groups,
-            method_args=['queue'],
+            'otcextensions.sdk.dms.v1.group.Group.create',
+            self.proxy.create_group,
+            method_args=['queue', 'name'],
             expected_args=[mock.ANY],
-            expected_kwargs={'queue_id': 'queue'})
+            expected_kwargs={'group': 'name'})
 
     def test_groups(self):
         self._verify2(
@@ -79,7 +79,8 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
             expected_args=[mock.ANY],
             expected_kwargs={
                 'queue_id': 'queue',
-                'paginated': False})
+                'paginated': False,
+                'include_deadletter': False})
 
     def test_delete_group(self):
         self._verify2(
