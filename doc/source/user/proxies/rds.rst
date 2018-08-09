@@ -10,7 +10,7 @@ The Database Class
 
 The database high-level interface is available through the ``rds``
 member of a :class:`~openstack.connection.Connection` object.  The
-``rds`` member will only be added if the ``otcextensions.sdk.register_otc_Extensions(conn)`` method is called.
+``rds`` member will only be added if the ``otcextensions.sdk.register_otc_extensions(conn)`` method is called.
 
 Datastore Operations
 ^^^^^^^^^^^^^^^^^^^^
@@ -27,7 +27,6 @@ Flavor Operations
 .. autoclass:: otcextensions.sdk.rds.v1._proxy.Proxy
 
    .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.get_flavor
-   .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.find_flavor
    .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.flavors
 
 Instance Operations
@@ -42,16 +41,6 @@ Instance Operations
    .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.find_instance
    .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.instances
 
-Configuration Operations
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. autoclass:: otcextensions.sdk.rds.v1._proxy.Proxy
-
-  .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.configurations
-  .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.get_configuration
-  .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.create_configuration
-  .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.delete_configuration
-  .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.find_configuration
 
 Backup Operations
 ^^^^^^^^^^^^^^^^^
