@@ -19,6 +19,8 @@ import mock
 
 from openstackclient.tests.unit import utils
 
+from otcextensions.tests.unit.osclient import test_base
+
 from otcextensions.sdk.auto_scaling.v1 import activity
 from otcextensions.sdk.auto_scaling.v1 import config
 from otcextensions.sdk.auto_scaling.v1 import group
@@ -35,48 +37,7 @@ class TestAutoScaling(utils.TestCommand):
         self.app.client_manager.auto_scaling = mock.Mock()
 
 
-class Fake(object):
-
-    @classmethod
-    def create_one(cls, attrs=None):
-        """Create a fake resource.
-
-        :param Dictionary attrs:
-            A dictionary with all attributes
-        :param Dictionary methods:
-            A dictionary with all methods
-        :return:
-            A FakeResource object, with id, name, metadata, and so on
-        """
-        attrs = attrs or {}
-
-        resource = cls.generate()
-        # new_attrs = cls.generate()
-
-        resource.update(attrs)
-
-        return resource
-
-    @classmethod
-    def create_multiple(cls, count=2, attrs=None):
-        """Create multiple fake resources.
-
-        :param Dictionary attrs:
-            A dictionary with all attributes
-        :param int count:
-            The number of address scopes to fake
-        :return:
-            A list of FakeResource objects faking the address scopes
-        """
-        objects = []
-        for i in range(0, count):
-            objects.append(
-                cls.create_one(attrs))
-
-        return objects
-
-
-class FakeGroup(Fake):
+class FakeGroup(test_base.Fake):
     """Fake one or more Group"""
 
     @classmethod
@@ -97,7 +58,7 @@ class FakeGroup(Fake):
         return obj
 
 
-class FakeConfig(Fake):
+class FakeConfig(test_base.Fake):
     """Fake one or more AS Config"""
 
     @classmethod
@@ -131,7 +92,7 @@ class FakeConfig(Fake):
         return obj
 
 
-class FakePolicy(Fake):
+class FakePolicy(test_base.Fake):
     """Fake one or more AS Policy"""
 
     @classmethod
@@ -165,7 +126,7 @@ class FakePolicy(Fake):
         return obj
 
 
-class FakeActivity(Fake):
+class FakeActivity(test_base.Fake):
     """Fake one or more AS Activity"""
 
     @classmethod
@@ -184,7 +145,7 @@ class FakeActivity(Fake):
         return obj
 
 
-class FakeInstance(Fake):
+class FakeInstance(test_base.Fake):
     """Fake one or more AS Instance"""
 
     @classmethod
@@ -207,7 +168,7 @@ class FakeInstance(Fake):
         return obj
 
 
-class FakeQuota(Fake):
+class FakeQuota(test_base.Fake):
     """Fake one or more AS Quota"""
 
     @classmethod
