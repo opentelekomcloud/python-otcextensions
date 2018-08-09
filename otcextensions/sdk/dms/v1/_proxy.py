@@ -10,15 +10,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from otcextensions.sdk import sdk_proxy
 from otcextensions.sdk.dms.v1 import queue as _queue
+from otcextensions.sdk.dms.v1 import quota as _quota
 from otcextensions.sdk.dms.v1 import group as _group
 from otcextensions.sdk.dms.v1 import message as _message
 from otcextensions.sdk.dms.v1 import group_message as _group_message
-from otcextensions.sdk import sdk_proxy
 
 
 class Proxy(sdk_proxy.Proxy):
 
+    # ======== Queues ========
     def create_queue(self, **kwargs):
         """Create a queue
 
@@ -60,7 +62,8 @@ class Proxy(sdk_proxy.Proxy):
 
         self._delete(_queue.Queue, queue, ignore_missing=ignore_missing)
 
-    def create_groups(self, queue, **kwargs):
+    # ======== Groups ========
+    def create_group(self, queue, group):
         """Create a list consume groups for a queue
 
         :param queue: The queue id or an instance of
@@ -70,13 +73,17 @@ class Proxy(sdk_proxy.Proxy):
         :returns: A list of object
             :class:`~otcextensions.sdk.dms.v1.queue.Group`
         """
+
         queue_id = queue
         if isinstance(queue, _queue.Queue):
             queue_id = queue.id
 
-        return self._create(_group.Group, queue_id=queue_id, **kwargs)
+        # Use a dummy group first to have control over create request
+        res = _group.Group.new(queue_id=queue_id)
 
-    def groups(self, queue):
+        return res.create(self, group=group)
+
+    def groups(self, queue, include_deadletter=False):
         """List all groups for a given queue
 
         :param queue: The queue id or an instance of
@@ -87,7 +94,11 @@ class Proxy(sdk_proxy.Proxy):
         queue_id = queue
         if isinstance(queue, _queue.Queue):
             queue_id = queue.id
-        return self._list(_group.Group, queue_id=queue_id, paginated=False)
+
+        return self._list(_group.Group,
+                          queue_id=queue_id,
+                          include_deadletter=include_deadletter,
+                          paginated=False)
 
     def delete_group(self, queue, group):
         """Delete a consume on the queue
@@ -104,6 +115,7 @@ class Proxy(sdk_proxy.Proxy):
 
         self._delete(_group.Group, group, queue_id=queue_id)
 
+    # ======== Messages ========
     def send_messages(self, queue, **kwargs):
         """Send messages for a given queue
 
@@ -125,7 +137,7 @@ class Proxy(sdk_proxy.Proxy):
           :class:`~otcextensions.sdk.dms.v1.queue.Queue`
         :param consume_group: The consume group id or an instance of
           :class:`~otcextensions.sdk.dms.v1.group.Group`
-        :param kwargs \*\*query: Optional query parameters to be sent to limit
+        :param kwargs query: Optional query parameters to be sent to limit
           the resources being returned.
         :returns: A list of object
           :class:`~otcextensions.sdk.dms.v1.group_message.GroupMessage`
@@ -155,4 +167,9 @@ class Proxy(sdk_proxy.Proxy):
         return consumed_message.ack(self.session, status=status)
 
     def quotas(self):
-        return self._list(_queue.Quota)
+        """List quota
+
+        :returns: A generator of Quota object
+        ::rtype: :class:`~otcextensions.sdk.dms.v1.quota.Quota`
+        """
+        return self._list(_quota.Quota)
