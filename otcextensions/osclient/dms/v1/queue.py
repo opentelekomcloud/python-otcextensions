@@ -170,7 +170,7 @@ class CreateDMSQueue(command.ShowOne):
                    'consumed after the number of consumption attempts of '
                    'this message reaches this value, DMS stores this message '
                    'into the dead letter queue.\n'
-                   'Value range: 1–100.')
+                   'Value range: 1-100.')
         )
         parser.add_argument(
             '--retention_hours',
