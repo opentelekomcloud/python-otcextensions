@@ -12,6 +12,7 @@
 
 from otcextensions.sdk import sdk_proxy
 from otcextensions.sdk.dms.v1 import queue as _queue
+from otcextensions.sdk.dms.v1 import quota as _quota
 from otcextensions.sdk.dms.v1 import group as _group
 from otcextensions.sdk.dms.v1 import message as _message
 from otcextensions.sdk.dms.v1 import group_message as _group_message
@@ -166,4 +167,9 @@ class Proxy(sdk_proxy.Proxy):
         return consumed_message.ack(self.session, status=status)
 
     def quotas(self):
-        return self._list(_queue.Quota)
+        """List quota
+
+        :returns: A generator of Quota object
+        ::rtype: :class:`~otcextensions.sdk.dms.v1.quota.Quota`
+        """
+        return self._list(_quota.Quota)

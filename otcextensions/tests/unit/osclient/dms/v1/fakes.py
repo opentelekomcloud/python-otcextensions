@@ -18,9 +18,11 @@ import uuid
 import mock
 
 from openstackclient.tests.unit import utils
+from otcextensions.tests.unit.osclient import test_base
 
 from otcextensions.sdk.dms.v1 import group
 from otcextensions.sdk.dms.v1 import queue
+from otcextensions.sdk.dms.v1 import quota
 
 
 class TestDMS(utils.TestCommand):
@@ -31,48 +33,7 @@ class TestDMS(utils.TestCommand):
         self.app.client_manager.dms = mock.Mock()
 
 
-class Fake(object):
-
-    @classmethod
-    def create_one(cls, attrs=None):
-        """Create a fake resource.
-
-        :param Dictionary attrs:
-            A dictionary with all attributes
-        :param Dictionary methods:
-            A dictionary with all methods
-        :return:
-            A FakeResource object, with id, name, metadata, and so on
-        """
-        attrs = attrs or {}
-
-        resource = cls.generate()
-        # new_attrs = cls.generate()
-
-        resource.update(attrs)
-
-        return resource
-
-    @classmethod
-    def create_multiple(cls, count=2, attrs=None):
-        """Create multiple fake resources.
-
-        :param Dictionary attrs:
-            A dictionary with all attributes
-        :param int count:
-            The number of address scopes to fake
-        :return:
-            A list of FakeResource objects faking the address scopes
-        """
-        objects = []
-        for i in range(0, count):
-            objects.append(
-                cls.create_one(attrs))
-
-        return objects
-
-
-class FakeQueue(Fake):
+class FakeQueue(test_base.Fake):
     """Fake one or more Queue"""
 
     @classmethod
@@ -91,7 +52,7 @@ class FakeQueue(Fake):
         return obj
 
 
-class FakeGroup(Fake):
+class FakeGroup(test_base.Fake):
     """Fake one or more Group"""
 
     @classmethod
@@ -106,4 +67,20 @@ class FakeGroup(Fake):
             'available_deadletters': random.randint(1, 100),
         }
         obj = group.Group.existing(**object_info)
+        return obj
+
+
+class FakeQuota(test_base.Fake):
+    """Fake one or more Quota"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'type': 'type-' + uuid.uuid4().hex,
+            'quota': random.randint(1, 100),
+            'min': random.randint(1, 100),
+            'max': random.randint(1, 100),
+            'used': random.randint(1, 100),
+        }
+        obj = quota.Quota.existing(**object_info)
         return obj
