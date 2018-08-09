@@ -32,7 +32,7 @@ OS_HEADERS = {
     'Content-Type': 'application/json',
 }
 
-PROJECT_ID = '123'
+# PROJECT_ID = '123'
 IDENTIFIER = '37f52707-2fb3-482c-a444-77a70a4eafd6'
 EXAMPLE = {
     "status": "ACTIVE",
@@ -98,14 +98,14 @@ class TestInstance(base.TestCase):
         super(TestInstance, self).setUp()
         self.sess = mock.Mock(spec=adapter.Adapter)
         self.sess.get = mock.Mock()
-        self.sess.get_project_id = mock.Mock(return_value=PROJECT_ID)
+        # self.sess.get_project_id = mock.Mock(return_value=PROJECT_ID)
         self.sot = instance.Instance(**EXAMPLE)
 
     def test_basic(self):
         sot = instance.Instance()
         self.assertEqual('instance', sot.resource_key)
         self.assertEqual('instances', sot.resources_key)
-        self.assertEqual('/%(project_id)s/instances', sot.base_path)
+        self.assertEqual('/instances', sot.base_path)
         self.assertEqual('rds', sot.service.service_type)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
@@ -118,7 +118,7 @@ class TestInstance(base.TestCase):
         self.assertEqual(IDENTIFIER, sot.id)
         self.assertEqual(EXAMPLE['status'], sot.status)
         self.assertEqual(EXAMPLE['hostname'], sot.hostname)
-        self.assertEqual(EXAMPLE['links'], sot.links)
+        # self.assertEqual(EXAMPLE['links'], sot.links)
         self.assertEqual(EXAMPLE['volume'], sot.volume)
         self.assertEqual(EXAMPLE['flavor'], sot.flavor)
         self.assertEqual(EXAMPLE['datastore'], sot.datastore)
@@ -191,10 +191,10 @@ class TestInstance(base.TestCase):
 
         self.sess.get.return_value = mock_response
 
-        result = list(self.sot.list(self.sess, project_id=PROJECT_ID))
+        result = list(self.sot.list(self.sess))
 
         self.sess.get.assert_called_once_with(
-            '/%s/instances' % (PROJECT_ID),
+            '/instances',
             params={},
         )
 
@@ -202,7 +202,7 @@ class TestInstance(base.TestCase):
 
     def test_get(self):
 
-        sot = instance.Instance.new(id='1234', project_id=PROJECT_ID)
+        sot = instance.Instance.new(id='1234')
         mock_response = mock.Mock()
         mock_response.status_code = 200
         mock_response.headers = {}
@@ -278,7 +278,7 @@ class TestInstance(base.TestCase):
         res = sot.get(self.sess)
 
         self.sess.get.assert_called_once_with(
-            '%s/instances/%s' % (PROJECT_ID, '1234'),
+            'instances/1234',
         )
 
         self.assertEqual(res_json['instance']['vpc'], res.vpc)
@@ -287,76 +287,72 @@ class TestInstance(base.TestCase):
                          res.paramsGroupId)
 
     def test_action_restart(self):
-        sot = instance.Instance(project_id=PROJECT_ID, **EXAMPLE)
+        sot = instance.Instance(**EXAMPLE)
         response = mock.Mock()
         response.json = mock.Mock(return_value='')
         sess = mock.Mock()
         sess.post = mock.Mock(return_value=response)
 
-        self.assertIsNone(sot.restart(sess))
+        self.assertIsNotNone(sot.restart(sess))
 
-        url = ("%(project_id)s/instances/%(id)s/action" % {
+        url = ("instances/%(id)s/action" % {
             'id': IDENTIFIER,
-            'project_id': PROJECT_ID
         })
         body = {'restart': {}}
         sess.post.assert_called_with(url,
                                      json=body,
-                                     endpoint_override=None)
+                                     headers={'X-Language': 'en-us'})
 
     def test_action_resize(self):
-        sot = instance.Instance(project_id=PROJECT_ID, **EXAMPLE)
+        sot = instance.Instance(**EXAMPLE)
         response = mock.Mock()
         response.json = mock.Mock(return_value='')
         sess = mock.Mock()
         sess.post = mock.Mock(return_value=response)
         flavor = 'http://flavor/flav'
 
-        self.assertIsNone(sot.resize(sess, flavor))
+        self.assertIsNotNone(sot.resize(sess, flavor))
 
-        url = ("%(project_id)s/instances/%(id)s/action" % {
+        url = ("instances/%(id)s/action" % {
             'id': IDENTIFIER,
-            'project_id': PROJECT_ID
         })
         body = {'resize': {'flavorRef': flavor}}
         sess.post.assert_called_with(url,
                                      json=body,
-                                     endpoint_override=None)
+                                     headers={'X-Language': 'en-us'})
 
     def test_action_resize_volume(self):
-        sot = instance.Instance(project_id=PROJECT_ID, **EXAMPLE)
+        sot = instance.Instance(**EXAMPLE)
         response = mock.Mock()
         response.json = mock.Mock(return_value='')
         sess = mock.Mock()
         sess.post = mock.Mock(return_value=response)
         size = 4
 
-        self.assertIsNone(sot.resize_volume(sess, size))
+        self.assertIsNotNone(sot.resize_volume(sess, size))
 
-        url = ("%(project_id)s/instances/%(id)s/action" % {
+        url = ("instances/%(id)s/action" % {
             'id': IDENTIFIER,
-            'project_id': PROJECT_ID
         })
         body = {'resize': {'volume': size}}
         sess.post.assert_called_with(url,
                                      json=body,
-                                     endpoint_override=None)
+                                     headers={'X-Language': 'en-us'})
 
     def test_action_restore(self):
-        sot = instance.Instance(project_id=PROJECT_ID, **EXAMPLE)
+        sot = instance.Instance(**EXAMPLE)
         response = mock.Mock()
         response.json = mock.Mock(return_value='')
         sess = mock.Mock()
         sess.post = mock.Mock(return_value=response)
         backupRef = 'backupRef'
 
-        self.assertIsNone(sot.restore(sess, backupRef))
+        self.assertIsNotNone(sot.restore(sess, backupRef))
 
-        url = ("%(project_id)s/instances/%(id)s/action" % {
+        url = ("instances/%(id)s/action" % {
             'id': IDENTIFIER,
-            'project_id': PROJECT_ID
         })
         body = {'restore': {'backupRef': backupRef}}
         sess.post.assert_called_with(url,
                                      json=body,
-                                     endpoint_override=None)
+                                     headers={'X-Language': 'en-us'})
