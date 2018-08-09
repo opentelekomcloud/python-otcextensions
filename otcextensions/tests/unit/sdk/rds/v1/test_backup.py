@@ -24,7 +24,7 @@ RDS_HEADERS = {
     'x-language': 'en-us'
 }
 
-PROJECT_ID = '23'
+# PROJECT_ID = '23'
 IDENTIFIER = 'IDENTIFIER'
 EXAMPLE = {
     'id': IDENTIFIER,
@@ -60,14 +60,14 @@ class TestBackup(base.TestCase):
         self.sess.post = mock.Mock()
         self.sess.delete = mock.Mock()
         self.sess.put = mock.Mock()
-        self.sess.get_project_id = mock.Mock(return_value=PROJECT_ID)
+        # self.sess.get_project_id = mock.Mock(return_value=PROJECT_ID)
         self.sot = backup.Backup(**EXAMPLE)
 
     def test_basic(self):
         sot = backup.Backup()
         self.assertEqual('backup', sot.resource_key)
         self.assertEqual('backups', sot.resources_key)
-        self.assertEqual('/%(project_id)s/backups', sot.base_path)
+        self.assertEqual('/backups', sot.base_path)
         self.assertEqual('rds', sot.service.service_type)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
@@ -91,11 +91,10 @@ class TestBackup(base.TestCase):
 
         result = list(self.sot.list(
             self.sess,
-            project_id=PROJECT_ID,
             headers=RDS_HEADERS))
 
         self.sess.get.assert_called_once_with(
-            '/%s/backups' % (PROJECT_ID),
+            '/backups',
             headers=RDS_HEADERS,
             params={},
         )
@@ -112,7 +111,7 @@ class TestBackup(base.TestCase):
         self.sess.post.return_value = mock_response
 
         sot = backup.Backup.new(
-            project_id=PROJECT_ID,
+            # project_id=PROJECT_ID,
             name='backup_name',
             description='descr',
             instance='some_instance')
@@ -120,7 +119,7 @@ class TestBackup(base.TestCase):
         result = sot.create(self.sess, headers=RDS_HEADERS)
 
         self.sess.post.assert_called_once_with(
-            '/%s/backups' % (PROJECT_ID),
+            '/backups',
             headers=RDS_HEADERS,
             json={'backup': {
                 'instance': 'some_instance',
@@ -131,7 +130,7 @@ class TestBackup(base.TestCase):
 
         self.assertEqual(
             backup.Backup(
-                project_id=PROJECT_ID,
+                # project_id=PROJECT_ID,
                 instance='some_instance',
                 **EXAMPLE),
             result)
@@ -146,15 +145,14 @@ class TestBackup(base.TestCase):
         self.sess.delete.return_value = mock_response
 
         sot = backup.Backup(
-            project_id=PROJECT_ID,
+            # project_id=PROJECT_ID,
             **EXAMPLE
         )
 
         sot.delete(self.sess, headers=RDS_HEADERS)
 
-        url = '%(project_id)s/backups/%(id)s' % \
+        url = 'backups/%(id)s' % \
             {
-                'project_id': PROJECT_ID,
                 'id': sot.id
             }
 
@@ -168,7 +166,7 @@ class TestBackup(base.TestCase):
         sot = backup.BackupPolicy()
         self.assertEqual('policy', sot.resource_key)
         self.assertEqual(None, sot.resources_key)
-        self.assertEqual('/%(project_id)s/instances/%(instance_id)s/'
+        self.assertEqual('/instances/%(instance_id)s/'
                          'backups/policy', sot.base_path)
         self.assertEqual('rds', sot.service.service_type)
         self.assertFalse(sot.allow_list)
@@ -194,15 +192,14 @@ class TestBackup(base.TestCase):
         self.sess.put.return_value = mock_response
 
         sot = backup.BackupPolicy.new(
-            project_id=PROJECT_ID,
+            # project_id=PROJECT_ID,
             instance_id=instance_id,
             **EXAMPLE_POLICY)
 
         self.assertIsNone(sot.update(self.sess, headers=RDS_HEADERS))
 
-        url = '/%(project_id)s/instances/%(instance_id)s/backups/policy' % \
+        url = '/instances/%(instance_id)s/backups/policy' % \
             {
-                'project_id': PROJECT_ID,
                 'instance_id': instance_id
             }
 
@@ -226,14 +223,13 @@ class TestBackup(base.TestCase):
 
         sot = backup.BackupPolicy.new(
             # **EXAMPLE_POLICY,
-            project_id=PROJECT_ID,
+            # project_id=PROJECT_ID,
             instance_id=instance_id)
 
         res = sot.get(self.sess, requires_id=False, headers=RDS_HEADERS)
 
-        url = '/%(project_id)s/instances/%(instance_id)s/backups/policy' % \
+        url = '/instances/%(instance_id)s/backups/policy' % \
             {
-                'project_id': PROJECT_ID,
                 'instance_id': instance_id
             }
 
