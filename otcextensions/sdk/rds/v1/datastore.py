@@ -20,7 +20,7 @@ _logger = _log.setup_logging('openstack')
 
 class Datastore(sdk_resource.Resource):
 
-    base_path = '/%(project_id)s/datastores/%(datastore_name)s/versions'
+    base_path = '/datastores/%(datastore_name)s/versions'
     resource_key = ''
     resources_key = 'dataStores'
     service = rds_service.RdsService()

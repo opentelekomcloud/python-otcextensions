@@ -18,7 +18,6 @@ from openstack.tests.unit import base
 from otcextensions.sdk.rds.v1 import datastore
 
 
-PROJECT_ID = '123'
 IDENTIFIER = 'IDENTIFIER'
 EXAMPLE = {
     "id": IDENTIFIER,
@@ -36,14 +35,13 @@ class TestDatastore(base.TestCase):
         super(TestDatastore, self).setUp()
         self.sess = mock.Mock(spec=adapter.Adapter)
         self.sess.get = mock.Mock()
-        self.sess.get_project_id = mock.Mock(return_value=PROJECT_ID)
         self.sot = datastore.Datastore(**EXAMPLE)
 
     def test_basic(self):
         sot = datastore.Datastore()
         self.assertEqual('', sot.resource_key)
         self.assertEqual('dataStores', sot.resources_key)
-        self.assertEqual('/%(project_id)s/datastores/%(datastore_name)s'
+        self.assertEqual('/datastores/%(datastore_name)s'
                          '/versions',
                          sot.base_path)
         self.assertEqual('rds', sot.service.service_type)
@@ -72,12 +70,11 @@ class TestDatastore(base.TestCase):
 
         result = list(self.sot.list(
             self.sess,
-            project_id=PROJECT_ID,
             datastore_name='datastore')
         )
 
         self.sess.get.assert_called_once_with(
-            '/%s/datastores/%s/versions' % (PROJECT_ID, 'datastore'),
+            '/datastores/%s/versions' % ('datastore'),
             params={},
         )
 
