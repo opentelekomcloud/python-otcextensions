@@ -39,12 +39,13 @@ def set_attributes_for_print(instances):
             setattr(instance, 'size', instance.volume['size'])
         else:
             setattr(instance, 'size', '-')
-        if getattr(instance, 'datastore', None):
-            if instance.datastore.get('version'):
-                setattr(instance, 'datastore_version',
-                        instance.datastore['version'])
-            if instance.datastore.get('type'):
-                setattr(instance, 'datastore_type', instance.datastore['type'])
+        datastore = instance.datastore
+        if datastore.get('version'):
+            setattr(instance, 'datastore_version',
+                    datastore['version'])
+        if datastore.get('type'):
+            setattr(instance, 'datastore_type', datastore['type'])
+        setattr(instance, 'type', instance.type)
         yield instance
 
 
@@ -84,7 +85,7 @@ def set_attributes_for_print_detail(instance):
 class ListDatabaseInstances(command.Lister):
     _description = _('List database instances')
     columns = ['ID', 'Name', 'Datastore Type', 'Datastore Version', 'Status',
-               'Flavor ID', 'Size', 'Region']
+               'Flavor ID', 'Type', 'Size', 'Region']
 
     def get_parser(self, prog_name):
         parser = super(ListDatabaseInstances, self).get_parser(prog_name)
@@ -410,6 +411,95 @@ class CreateDatabaseInstance(command.ShowOne):
         return zip(*sorted(six.iteritems(instance)))
 
 
+class CreateInstanceFromBackup(command.ShowOne):
+    _description = _("Creates a new database instance from backup.")
+
+    def get_parser(self, prog_name):
+        parser = super(CreateInstanceFromBackup, self).get_parser(prog_name)
+        parser.add_argument(
+            'name',
+            metavar='<name>',
+            help=_("Name of the instance."),
+        )
+        parser.add_argument(
+            '--flavor',
+            metavar='<flavor>',
+            required=True,
+            help=_("A flavor ID or name."),
+        )
+        parser.add_argument(
+            '--size',
+            metavar='<size>',
+            type=int,
+            required=True,
+            help=_("Size of the instance disk volume in GB. "
+                   "Required when volume support is enabled."),
+        )
+        parser.add_argument(
+            '--enable_ha',
+            action='store_true',
+            help=_('Specifies the HA configuration parameter.\n'
+                   'The value `true` indicates creating a primary/standby '
+                   'DB instance. The value `false` indicates creating '
+                   'a single DB instance.'),
+        )
+        parser.add_argument(
+            '--replication_mode',
+            metavar='<replication_mode>',
+            default=None,
+            choices=('async', 'sync', 'semisync'),
+            help=_('Specifies the replication mode for the standby DB '
+                   'instance. Valid values:'
+                   '* `async`: indicates the asynchronous replication mode.'
+                   '* `sync`: indicates the synchronous replication mode.'
+                   '* `semisync`: indicates the semisynchronous '
+                   'replication mode.'),
+        )
+        parser.add_argument(
+            '--backup',
+            metavar='<backup>',
+            help=_("ID or name of the backup to create instance from."),
+        )
+        parser.add_argument(
+            '--si',
+            metavar='<si>',
+            help=_("ID or name of the backup to create instance from."),
+        )
+
+        return parser
+
+    def take_action(self, parsed_args):
+        # raise NotImplementedError
+        # Attention: not conform password result in BadRequest with no info
+        client = self.app.client_manager.rds
+
+        attrs = {}
+        # attrs['flavorRef'] = client.find_flavor(parsed_args.flavor).id
+        attrs['flavorRef'] = parsed_args.flavor
+        volume = None
+        if parsed_args.size is not None and parsed_args.size <= 0:
+            raise exceptions.ValidationError(
+                _("Volume size '%s' must be an integer and greater than 0.")
+                % parsed_args.size)
+        elif parsed_args.size:
+            volume = {"size": parsed_args.size}
+            attrs['volume'] = volume
+        if parsed_args.enable_ha or parsed_args.replication_mode:
+            attrs['ha'] = {
+                'enable': True,
+                'replicationMode': parsed_args.replication_mode
+            }
+        # restore_point = None
+        if parsed_args.backup:
+            attrs['restore_point'] = {'backupRef': parsed_args.backup}
+            if parsed_args.si:
+                attrs['restore_point']['sourceInstanceId'] = parsed_args.si
+        attrs['name'] = parsed_args.name
+        instance = client.create_instance(**attrs)
+        instance = set_attributes_for_print_detail(instance)
+        return zip(*sorted(six.iteritems(instance)))
+
+
 class DeleteDatabaseInstance(command.Command):
 
     _description = _("Deletes an instance.")
@@ -623,11 +713,39 @@ class RestartDatabaseInstance(command.Command):
         return parser
 
     def take_action(self, parsed_args):
-        raise NotImplementedError
-        # db_instances = self.app.client_manager.database.instances
-        # instance = osc_utils.find_resource(db_instances,
-        #                                    parsed_args.instance)
-        # db_instances.restart(instance)
+        client = self.app.client_manager.rds
+
+        client.restart_instance(parsed_args.instance)
+
+
+class RestoreDatabaseInstance(command.Command):
+
+    _description = _("Restores an instance from backup.")
+
+    def get_parser(self, prog_name):
+        parser = super(RestoreDatabaseInstance, self).get_parser(
+            prog_name
+        )
+        parser.add_argument(
+            'instance',
+            metavar='<instance>',
+            type=str,
+            help=_('ID or name of the instance.')
+        )
+        parser.add_argument(
+            '--backup',
+            metavar='<backup>',
+            type=str,
+            help=_('ID or name of the backup.')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.rds
+
+        client.restore_instance(
+            instance=parsed_args.instance,
+            backup=parsed_args.backup)
 
 
 class UpdateDatabaseInstance(command.Command):

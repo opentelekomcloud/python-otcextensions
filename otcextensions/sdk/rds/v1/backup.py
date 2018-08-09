@@ -20,10 +20,11 @@ _logger = _log.setup_logging('openstack')
 
 class Backup(sdk_resource.Resource):
 
-    base_path = '/%(project_id)s/backups'
+    base_path = '/backups'
     resource_key = 'backup'
     resources_key = 'backups'
     service = rds_service.RdsService()
+    service_expectes_json_type = True
 
     # capabilities
     allow_create = True
@@ -31,7 +32,7 @@ class Backup(sdk_resource.Resource):
     allow_list = True
 
     # Properties
-    project_id = resource.URI('project_id')
+    # project_id = resource.URI('project_id')
     #: Backup id
     #: Type: uuid*
     id = resource.Body('id')
@@ -43,7 +44,7 @@ class Backup(sdk_resource.Resource):
     created = resource.Body('created')
     #: Data store information
     #: *Type: dict*
-    dataStore = resource.Body('dataStore', type=dict)
+    datastore = resource.Body('dataStore', type=dict)
     #: Data backup description
     description = resource.Body('description')
     #: Back file name
@@ -68,7 +69,7 @@ class Backup(sdk_resource.Resource):
 
 class BackupPolicy(sdk_resource.Resource):
 
-    base_path = '/%(project_id)s/instances/%(instance_id)s/backups/policy'
+    base_path = '/instances/%(instance_id)s/backups/policy'
     resource_key = 'policy'
     service = rds_service.RdsService()
 
@@ -78,7 +79,7 @@ class BackupPolicy(sdk_resource.Resource):
 
     #: instaceId
     instance_id = resource.URI('instance_id')
-    project_id = resource.URI('project_id')
+    # project_id = resource.URI('project_id')
 
     # Properties
     #: Policy keep days
@@ -120,7 +121,7 @@ class BackupPolicy(sdk_resource.Resource):
         """
         self.update_no_id(
             session, prepend_key,
-            endpoint_override=endpoint_override,
+            # endpoint_override=endpoint_override,
             headers=headers)
 
         return None
