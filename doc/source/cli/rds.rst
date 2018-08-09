@@ -11,6 +11,14 @@ For help on a specific `rds` command, enter:
 
    $ openstack rds help SUBCOMMAND
 
+.. _datastore:
+
+Datastore operations
+--------------------
+
+.. autoprogram-cliff:: openstack.rds.v1
+   :command: rds datastore *
+
 .. _flavor:
 
 Flavor operations
@@ -27,10 +35,10 @@ Instance operations
 .. autoprogram-cliff:: openstack.rds.v1
    :command: rds instance *
 
-.. _configuration:
+.. _backup:
 
-Configuration operations
-------------------------
+Backup operations
+-----------------
 
 .. autoprogram-cliff:: openstack.rds.v1
-   :command: rds configuration *
+   :command: rds backup *

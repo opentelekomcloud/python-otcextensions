@@ -37,22 +37,36 @@ def set_attributes_for_print_detail(instance):
 class ListDatabaseFlavors(command.Lister):
 
     _description = _("List database flavors")
-    columns = ['ID', 'Name', 'RAM']
+    columns = ['ID', 'Name', 'ram', 'spec_code']
 
     def get_parser(self, prog_name):
         parser = super(ListDatabaseFlavors, self).get_parser(prog_name)
+
+        parser.add_argument(
+            'dbId',
+            metavar='<dbId>',
+            help=_('ID of the datastore version.'),
+        )
+
+        parser.add_argument(
+            'region',
+            metavar='<region>',
+            default='eu-de',
+            nargs='?',
+            help=_('Region. `eu-de` is left empty'),
+        )
 
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.rds
 
-        data = client.flavors()
+        data = client.flavors(dbId=parsed_args.dbId, region=parsed_args.region)
 
         return (
             self.columns,
-            (utils.get_dict_properties(
-                set_attributes_for_print_detail(s),
+            (utils.get_item_properties(
+                s,
                 self.columns,
             ) for s in data)
         )
@@ -60,7 +74,7 @@ class ListDatabaseFlavors(command.Lister):
 
 class ShowDatabaseFlavor(command.ShowOne):
     _description = _("Shows details of a database flavor")
-    columns = ['ID', 'Name', 'RAM', 'vCPUs']
+    columns = ('ID', 'Name', 'ram', 'spec_code')
 
     def get_parser(self, prog_name):
         parser = super(ShowDatabaseFlavor, self).get_parser(prog_name)
@@ -74,13 +88,12 @@ class ShowDatabaseFlavor(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.rds
 
-        obj = client.find_flavor(parsed_args.flavor)
+        obj = client.get_flavor(parsed_args.flavor)
 
-        obj = set_attributes_for_print_detail(obj)
-
-        data = utils.get_dict_properties(
-            obj,
+        return (
             self.columns,
+            utils.get_item_properties(
+                obj,
+                self.columns,
+            )
         )
-
-        return (self.columns, data)

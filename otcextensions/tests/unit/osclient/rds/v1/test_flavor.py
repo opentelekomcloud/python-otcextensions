@@ -24,7 +24,8 @@ class TestListDatabaseFlavors(rds_fakes.TestRds):
     column_list_headers = [
         'ID',
         'Name',
-        'RAM',
+        'ram',
+        'spec_code'
         # 'Str_ID',
         # 'vCPUs'
     ]
@@ -43,13 +44,18 @@ class TestListDatabaseFlavors(rds_fakes.TestRds):
                 s.id,
                 s.name,
                 s.ram,
+                s.spec_code
             ))
 
     def test_list_flavors(self):
         arglist = [
+            'dbId',
+            'regio'
         ]
 
         verifylist = [
+            ('dbId', 'dbId'),
+            ('region', 'regio')
         ]
 
         # Verify cm is triggereg with default parameters
@@ -68,17 +74,30 @@ class TestListDatabaseFlavors(rds_fakes.TestRds):
         self.assertEqual(self.column_list_headers, columns)
         self.assertEqual(tuple(self.flavor_data), tuple(data))
 
+    def test_list_flavors_default_region(self):
+        arglist = [
+            'dbId',
+        ]
+
+        verifylist = [
+            ('dbId', 'dbId'),
+            ('region', 'eu-de')
+        ]
+
+        # Verify cm is triggereg with default parameters
+        self.check_parser(self.cmd, arglist, verifylist)
+
 
 class TestShowDatabaseFlavors(rds_fakes.TestRds):
 
-    columns = ['ID', 'Name', 'RAM', 'vCPUs']
+    columns = ('ID', 'Name', 'ram', 'spec_code')
 
     def setUp(self):
         super(TestShowDatabaseFlavors, self).setUp()
 
         self.cmd = flavor.ShowDatabaseFlavor(self.app, None)
 
-        self.app.client_manager.rds.find_flavor = mock.Mock()
+        self.app.client_manager.rds.get_flavor = mock.Mock()
 
         self.flavor = self.flavor_mock.create_one()
 
@@ -86,9 +105,7 @@ class TestShowDatabaseFlavors(rds_fakes.TestRds):
             self.flavor.id,
             self.flavor.name,
             self.flavor.ram,
-            # s.flavor,
-            self.flavor.flavor_detail[0]['value'],
-            # self.flavor.price_detail
+            self.flavor.spec_code
         )
 
     def test_show_flavor(self):
@@ -104,14 +121,14 @@ class TestShowDatabaseFlavors(rds_fakes.TestRds):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.rds.find_flavor.side_effect = [
+        self.app.client_manager.rds.get_flavor.side_effect = [
             self.flavor
         ]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.app.client_manager.rds.find_flavor.assert_called()
+        self.app.client_manager.rds.get_flavor.assert_called()
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.flavor_data, data)
