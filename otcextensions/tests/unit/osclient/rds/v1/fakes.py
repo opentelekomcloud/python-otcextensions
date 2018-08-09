@@ -19,10 +19,13 @@ import mock
 
 from openstackclient.tests.unit import utils
 
+from otcextensions.tests.unit.osclient import test_base
+
 from otcextensions.sdk.rds.v1.configuration import ConfigurationGroup
 from otcextensions.sdk.rds.v1.datastore import Datastore
-from otcextensions.sdk.rds.v1.flavor import Flavor
+from otcextensions.sdk.rds.v1 import flavor
 from otcextensions.sdk.rds.v1.instance import Instance
+from otcextensions.sdk.rds.v1 import backup
 
 
 class TestRds(utils.TestCommand):
@@ -31,6 +34,8 @@ class TestRds(utils.TestCommand):
         super(TestRds, self).setUp()
 
         self.app.client_manager.rds = mock.Mock()
+
+        self.client = self.app.client_manager.rds
 
         self.datastore_mock = FakeDatastore
         self.flavor_mock = FakeFlavor
@@ -89,56 +94,19 @@ class FakeDatastore(object):
         return objects
 
 
-class FakeFlavor(object):
-    """Fake one or more Flavor."""
+class FakeFlavor(test_base.Fake):
+    """Fake one or more VBS Policy"""
 
-    @staticmethod
-    def create_one(attrs=None, methods=None):
-        """Create a fake flavor.
-
-        :param Dictionary attrs:
-            A dictionary with all attributes
-        :param Dictionary methods:
-            A dictionary with all methods
-        :return:
-            A FakeResource object, with id, name, metadata, and so on
-        """
-        attrs = attrs or {}
-        methods = methods or {}
-
-        # Set default attributes.
+    @classmethod
+    def generate(cls):
         object_info = {
-            'str_id': 'id-' + uuid.uuid4().hex,
+            'id': 'id-' + uuid.uuid4().hex,
             'name': 'name-' + uuid.uuid4().hex,
+            'spec_code': uuid.uuid4().hex,
             'ram': random.randint(1, 10280),
-            'specCode': 'image-' + uuid.uuid4().hex,
-            'flavor_detail': [{'name': 'cpu', 'value': random.randint(1, 10)}],
-            'price_detail': None,
-            'flavor': None,
         }
-
-        # Overwrite default attributes.
-        # object_info.update(attrs)
-        return Flavor(**object_info)
-
-    @staticmethod
-    def create_multiple(attrs=None, methods=None, count=2):
-        """Create multiple fake flavors.
-
-        :param Dictionary attrs:
-            A dictionary with all attributes
-        :param Dictionary methods:
-            A dictionary with all methods
-        :param int count:
-            The number of servers to fake
-        :return:
-            A list of FakeResource objects faking the servers
-        """
-        objects = []
-        for i in range(0, count):
-            objects.append(FakeFlavor.create_one(attrs, methods))
-
-        return objects
+        obj = flavor.Flavor.existing(**object_info)
+        return obj
 
 
 class FakeConfiguration(object):
@@ -252,3 +220,27 @@ class FakeInstance(object):
             )
 
         return objects
+
+
+class FakeBackup(test_base.Fake):
+    """Fake one or more VBS Policy"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'id': 'id-' + uuid.uuid4().hex,
+            'name': 'name-' + uuid.uuid4().hex,
+            'description': uuid.uuid4().hex,
+            'datastore': {
+                'type': 'datastore-' + uuid.uuid4().hex,
+                'version': 'version-' + uuid.uuid4().hex,
+            },
+            'instance_id': 'instance_id-' + uuid.uuid4().hex,
+            'size': random.randint(0, 100),
+            'status': random.choice(['BUILDING', 'COMPLETED', 'FAILED',
+                                     'DELETING']),
+            'created': uuid.uuid4().hex,
+            'updated': uuid.uuid4().hex,
+        }
+        obj = backup.Backup.existing(**object_info)
+        return obj

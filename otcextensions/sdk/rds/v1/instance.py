@@ -21,10 +21,11 @@ _logger = _log.setup_logging('openstack')
 
 class Instance(sdk_resource.Resource):
 
-    base_path = '/%(project_id)s/instances'
+    base_path = '/instances'
     resource_key = 'instance'
     resources_key = 'instances'
     service = rds_service.RdsService()
+    # service_expectes_json_type = True
 
     # capabilities
     allow_create = True
@@ -33,7 +34,7 @@ class Instance(sdk_resource.Resource):
     allow_update = True
     allow_list = True
 
-    project_id = resource.URI('project_id')
+    # project_id = resource.URI('project_id')
     # Properties
     #: Instance id
     id = resource.Body('id')
@@ -43,13 +44,15 @@ class Instance(sdk_resource.Resource):
     name = resource.Body('name')
     #: Links
     #: *Type:list*
-    links = resource.Body('links', type=list)
+    # links = resource.Body('links', type=list)
     #: Flavor information
     #: *Type: dict*
     flavor = resource.Body('flavor', type=dict)
     #: Data store information
     #: *Type: dict*
-    datastore = resource.Body('datastore', type=dict)
+    datastore = resource.Body('datastore', alias='datastore_info', type=dict)
+    datastore_info = resource.Body('dataStoreInfo', type=dict)
+    # datastore_info = resource.Body('dataStoreInfo', type=dict)
     #: Region
     region = resource.Body('region')
     #: Tenant_id
@@ -101,6 +104,10 @@ class Instance(sdk_resource.Resource):
     #: The ID of a volume.
     #: *Type:str*
     volume_id = resource.Body('volume_id')
+
+    port = resource.Body('dbPort', type=int)
+
+    slave_id = resource.Body('slaveId')
     #: encrypted_rpc_messaging
     #: Whether the instance is using encrypted rpm messaging feature or not.
     #: *Type:bool*
@@ -122,7 +129,7 @@ class Instance(sdk_resource.Resource):
     #: Availability Zone
     #: The availability zone of the instance.
     #: *Type:str*
-    availability_zone = resource.Body('availability_zone', alias='azcode')
+    availability_zone = resource.Body('availabilityZone', alias='azcode')
     #: Nics interface list
     #: *Type:dict*
     nics = resource.Body('nics', type=dict)
@@ -146,16 +153,16 @@ class Instance(sdk_resource.Resource):
     vpc = resource.Body('vpc')
     #: Security group
     #: *Type: dict*
-    securityGroup = resource.Body('securityGroup', type=dict)
+    security_group = resource.Body('securityGroup', type=dict)
     #: Backup Strategy
     #: *Type: dict*
-    backupStrategy = resource.Body('backupStrategy', type=dict)
+    backup_strategy = resource.Body('backupStrategy', type=dict)
     #: HA information
     #: *Type: dict*
     ha = resource.Body('ha', type=dict)
     #: Restore Point, create new instance from restore
     #: *Type: dict*
-    restorePoint = resource.Body("restorePoint", type=dict)
+    restore_point = resource.Body("restorePoint", type=dict)
     #: Root password
     dbRtPd = resource.Body("dbRtPd")
     #: Status of configuration
@@ -187,58 +194,50 @@ class Instance(sdk_resource.Resource):
     # *Type:string*
     publicEndpoint = resource.Body('publicEndpoint')
 
-    def _action(self, exec_method, json, endpoint_override=None):
+    def _action(self, exec_method, json):
         """Executes the action
 
         :returns: ``None``
         """
-        if not endpoint_override:
-            if getattr(self, 'endpoint_override', None):
-                # If we have internal endpoint_override - use it
-                endpoint_override = self.endpoint_override
         base_url = self.base_path % self._uri.attributes
         url = utils.urljoin(base_url, self.id, 'action')
-        return exec_method(url, json=json, endpoint_override=endpoint_override)
+        # NOTE: due to the API stupidity we need to send also X-Language
+        return exec_method(
+            url,
+            json=json,
+            headers={'X-Language': 'en-us'}
+        )
 
-    def restart(self, session, endpoint_override=None):
+    def restart(self, session):
         """Restart the database instance
 
         :returns: ``None``
         """
         body = {'restart': {}}
-        self._action(session.post, body, endpoint_override)
+        return self._action(session.post, body)
 
-    def resize(self, session, flavor_reference, endpoint_override=None):
+    def resize(self, session, flavor_reference):
         """Resize the database instance flavor
 
         :returns: ``None``
         """
         body = {'resize': {'flavorRef': flavor_reference}}
-        self._action(session.post, body, endpoint_override)
+        return self._action(session.post, body)
 
-    def resize_volume(self, session, volume_size, endpoint_override=None):
+    def resize_volume(self, session, volume_size):
         """Resize the volume attached to the instance
 
         :returns: ``None``
         """
         body = {'resize': {'volume': volume_size}}
-        self._action(session.post, body, endpoint_override)
+        return self._action(session.post, body)
 
-    def restore(self, session, backupRef, endpoint_override=None):
+    def restore(self, session, backupRef):
         """Restores database to the given backup rference
 
         :returns: ``None``
         """
         body = {"restore": {"backupRef": backupRef}}
-        self._action(session.post, body, endpoint_override)
+        return self._action(session.post, body)
 
         # TODO(agoncharov) call returns jobId
-        # return self._action(session, {"restore": {"backupRef": backupRef}})
-
-    def create_from_backup(self, **attrs):
-        """This interface is used to restore
-        the specified DB instance data to a new DB instance.
-
-        """
-        raise NotImplementedError
-        # TODO(agoncharov) call returns instance spec

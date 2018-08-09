@@ -32,7 +32,6 @@ OS_HEADERS = {
     'Content-Type': 'application/json',
 }
 
-PROJECT_ID = '123'
 IDENTIFIER = 'IDENTIFIER'
 EXAMPLE = {
     # 'id': IDENTIFIER,
@@ -50,14 +49,13 @@ class TestFlavor(base.TestCase):
         super(TestFlavor, self).setUp()
         self.sess = mock.Mock(spec=adapter.Adapter)
         self.sess.get = mock.Mock()
-        self.sess.get_project_id = mock.Mock(return_value=PROJECT_ID)
         self.sot = flavor.Flavor.existing(**EXAMPLE)
 
     def test_basic(self):
         sot = flavor.Flavor()
         self.assertEqual('flavor', sot.resource_key)
         self.assertEqual('flavors', sot.resources_key)
-        self.assertEqual('/%(project_id)s/flavors', sot.base_path)
+        self.assertEqual('/flavors', sot.base_path)
         self.assertEqual('rds', sot.service.service_type)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
@@ -67,7 +65,7 @@ class TestFlavor(base.TestCase):
 
     def test_make_it(self):
         sot = flavor.Flavor.existing(**EXAMPLE)
-        self.assertEqual(EXAMPLE['str_id'], sot.id)
+        # self.assertEqual(EXAMPLE['str_id'], sot.id)
         self.assertEqual(EXAMPLE['name'], sot.name)
         self.assertEqual(EXAMPLE['ram'], sot.ram)
 
@@ -79,10 +77,10 @@ class TestFlavor(base.TestCase):
 
         self.sess.get.return_value = mock_response
 
-        result = list(self.sot.list(self.sess, project_id=PROJECT_ID))
+        result = list(self.sot.list(self.sess))
 
         self.sess.get.assert_called_once_with(
-            '/%s/flavors' % (PROJECT_ID),
+            '/flavors',
             params={},
         )
 
@@ -90,48 +88,17 @@ class TestFlavor(base.TestCase):
 
     def test_get(self):
 
-        sot = flavor.Flavor.existing(str_id='123', project_id=PROJECT_ID)
+        sot = flavor.Flavor.existing(id=123)
         mock_response = mock.Mock()
         mock_response.status_code = 200
         mock_response.headers = {}
 
         res_json = {
-            "ram": 2,
+            "ram": 2048,
             "id": 1,
             "links": None,
             "name": "rds.pg.c2.medium",
-            "str_id": "9ff2a3a5-c859-bbc0-67f7-86ce59432b1d",
-            "flavor_detail": [
-                {
-                    "name": "cpu",
-                    "value": "1"
-                },
-                {
-                    "name": "flavor",
-                    "value": "computev2-1"
-                },
-                {
-                    "name": "mem",
-                    "value": "2"
-                }
-            ],
-            "price_detail": [],
-            "flavor": {
-                "ram": 2048,
-                "id": 1,
-                "links": [
-                    {
-                        "rel": "self",
-                        "href": ""
-                    },
-                    {
-                        "rel": "bookmark",
-                        "href": ""
-                    }
-                ],
-                "name": "rds.pg.c2.medium",
-                "str_id": "9ff2a3a5-c859-bbc0-67f7-86ce59432b1d"
-            }
+            "specCode": "rds.pg.c2.medium",
         }
 
         # Sadly res_json is deleted somewhere in __GET__, so
@@ -143,9 +110,8 @@ class TestFlavor(base.TestCase):
         res = sot.get(self.sess)
 
         self.sess.get.assert_called_once_with(
-            '%s/flavors/%s' % (PROJECT_ID, '123'),
+            'flavors/123',
         )
 
         self.assertEqual(2048, res.ram)
         self.assertEqual(res_json['name'], res.name)
-        self.assertEqual(res_json['str_id'], res.id)

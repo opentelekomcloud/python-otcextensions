@@ -45,9 +45,10 @@ found on remotely on the cloud.
 OTC_SERVICES = {
     'rds': {
         'service_type': 'rds',
-        'endpoint_service_type': 'database',
-        'additional_headers': {'content-type': 'application/json'},
-        'strip_endpoint': True,
+        # 'endpoint_service_type': 'database',
+        # 'additional_headers': {'content-type': 'application/json'},
+        # 'strip_endpoint': True,
+        'append_project_id': True,
     },
     'obs': {
         'service_type': 'obs',
