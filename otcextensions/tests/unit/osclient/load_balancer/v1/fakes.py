@@ -47,7 +47,7 @@ class FakeLoadBalancer(test_base.Fake):
             'name': 'name-' + uuid.uuid4().hex,
             'operating_status': 'op_stat-' + uuid.uuid4().hex,
             'provisioning_status': 'ps-' + uuid.uuid4().hex,
-            'tenant_id': 'ten-' + uuid.uuid4().hex,
+            'project_id': 'ten-' + uuid.uuid4().hex,
             'vip_address': 'vip_addr-' + uuid.uuid4().hex,
             'vip_subnet_id': 'vip_subn-' + uuid.uuid4().hex,
             'vip_port_id': 'vip_port-' + uuid.uuid4().hex,

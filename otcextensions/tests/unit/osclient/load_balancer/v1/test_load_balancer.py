@@ -23,10 +23,8 @@ class TestListLoadBalancer(fakes.TestLoadBalancer):
 
     _objects = fakes.FakeLoadBalancer.create_multiple(3)
 
-    columns = (
-        'ID', 'Name', 'description',
-        'provisioning_status', 'operating_status', 'is_admin_state_up',
-        'vip_address', 'vip_subnet_id')
+    columns = ('id', 'name', 'project_id', 'vip_address',
+               'provisioning_status', 'provider')
 
     data = []
 
@@ -34,12 +32,10 @@ class TestListLoadBalancer(fakes.TestLoadBalancer):
         data.append((
             s.id,
             s.name,
-            s.description,
-            s.provisioning_status,
-            s.operating_status,
-            s.is_admin_state_up,
+            s.project_id,
             s.vip_address,
-            s.vip_subnet_id,
+            s.provisioning_status,
+            s.provider,
         ))
 
     def setUp(self):
@@ -76,26 +72,25 @@ class TestShowLoadBalancer(fakes.TestLoadBalancer):
 
     _object = fakes.FakeLoadBalancer.create_one()
 
-    columns = (
-        'ID', 'Name', 'description',
-        'provisioning_status', 'operating_status', 'is_admin_state_up',
-        'provider', 'pool_ids', 'listener_ids',
-        'vip_address', 'vip_subnet_id', 'vip_port_id'
-    )
+    columns = ('admin_state_up', 'description', 'id',
+               'listener_ids', 'name', 'operating_status', 'pool_ids',
+               'project_id', 'provider', 'provisioning_status', 'vip_address',
+               'vip_port_id', 'vip_subnet_id')
 
     data = (
-        _object.id,
-        _object.name,
-        _object.description,
-        _object.provisioning_status,
-        _object.operating_status,
         _object.is_admin_state_up,
+        _object.description,
+        _object.id,
+        sdk_utils.ListOfIdsColumnBR(_object.listener_ids),
+        _object.name,
+        _object.operating_status,
+        sdk_utils.ListOfIdsColumnBR(_object.pool_ids),
+        _object.project_id,
         _object.provider,
-        sdk_utils.ListOfIdsColumn(_object.pool_ids),
-        sdk_utils.ListOfIdsColumn(_object.listener_ids),
+        _object.provisioning_status,
         _object.vip_address,
+        _object.vip_port_id,
         _object.vip_subnet_id,
-        _object.vip_port_id
     )
 
     def setUp(self):
@@ -138,25 +133,34 @@ class TestCreateLoadBalancer(fakes.TestLoadBalancer):
     _object = fakes.FakeLoadBalancer.create_one()
 
     columns = (
-        'ID', 'Name', 'description',
-        'provisioning_status', 'operating_status', 'is_admin_state_up',
-        'provider', 'pool_ids', 'listener_ids',
-        'vip_address', 'vip_subnet_id', 'vip_port_id'
-    )
+        'admin_state_up',
+        'description',
+        'id',
+        'listener_ids',
+        'name',
+        'operating_status',
+        'pool_ids',
+        'project_id',
+        'provider',
+        'provisioning_status',
+        'vip_address',
+        'vip_port_id',
+        'vip_subnet_id')
 
     data = (
-        _object.id,
-        _object.name,
-        _object.description,
-        _object.provisioning_status,
-        _object.operating_status,
         _object.is_admin_state_up,
+        _object.description,
+        _object.id,
+        sdk_utils.ListOfIdsColumnBR(_object.listener_ids),
+        _object.name,
+        _object.operating_status,
+        sdk_utils.ListOfIdsColumnBR(_object.pool_ids),
+        _object.project_id,
         _object.provider,
-        sdk_utils.ListOfIdsColumn(_object.pool_ids),
-        sdk_utils.ListOfIdsColumn(_object.listener_ids),
+        _object.provisioning_status,
         _object.vip_address,
+        _object.vip_port_id,
         _object.vip_subnet_id,
-        _object.vip_port_id
     )
 
     def setUp(self):
@@ -168,7 +172,7 @@ class TestCreateLoadBalancer(fakes.TestLoadBalancer):
 
     def test_create_default(self):
         arglist = [
-            '--admin_state_up', 'true',
+            '--disable',
             '--description', 'descr',
             '--name', 'nm',
             '--vip_address', 'vip_addr',
@@ -177,7 +181,7 @@ class TestCreateLoadBalancer(fakes.TestLoadBalancer):
         ]
 
         verifylist = [
-            ('admin_state_up', True),
+            ('disable', True),
             ('description', 'descr'),
             ('name', 'nm'),
             ('vip_address', 'vip_addr'),
@@ -196,7 +200,7 @@ class TestCreateLoadBalancer(fakes.TestLoadBalancer):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.create_load_balancer.assert_called_once_with(
-            admin_state_up=True,
+            is_admin_state_up=False,
             description='descr',
             name='nm',
             vip_address='vip_addr',
@@ -265,38 +269,39 @@ class TestUpdateLoadBalancer(fakes.TestLoadBalancer):
     _object = fakes.FakeLoadBalancer.create_one()
 
     columns = (
-        'ID', 'Name', 'description',
-        'provisioning_status', 'operating_status', 'is_admin_state_up',
-        'provider', 'pool_ids', 'listener_ids',
-        'vip_address', 'vip_subnet_id', 'vip_port_id'
-    )
+        'admin_state_up', 'description', 'id',
+        'listener_ids', 'name', 'operating_status',
+        'pool_ids', 'project_id', 'provider',
+        'provisioning_status', 'vip_address',
+        'vip_port_id', 'vip_subnet_id')
 
     data = (
-        _object.id,
-        _object.name,
-        _object.description,
-        _object.provisioning_status,
-        _object.operating_status,
         _object.is_admin_state_up,
+        _object.description,
+        _object.id,
+        sdk_utils.ListOfIdsColumnBR(_object.listener_ids),
+        _object.name,
+        _object.operating_status,
+        sdk_utils.ListOfIdsColumnBR(_object.pool_ids),
+        _object.project_id,
         _object.provider,
-        sdk_utils.ListOfIdsColumn(_object.pool_ids),
-        sdk_utils.ListOfIdsColumn(_object.listener_ids),
+        _object.provisioning_status,
         _object.vip_address,
+        _object.vip_port_id,
         _object.vip_subnet_id,
-        _object.vip_port_id
     )
 
     def setUp(self):
         super(TestUpdateLoadBalancer, self).setUp()
 
-        self.cmd = load_balancer.UpdateLoadBalancer(self.app, None)
+        self.cmd = load_balancer.SetLoadBalancer(self.app, None)
 
         self.client.update_load_balancer = mock.Mock()
 
     def test_update_default(self):
         arglist = [
             'lb',
-            '--admin_state_up', 'true',
+            '--disable',
             '--description', 'descr',
             '--name', 'nm',
             '--vip_qos_policy_id', 'vip_qos_policy_id'
@@ -304,7 +309,7 @@ class TestUpdateLoadBalancer(fakes.TestLoadBalancer):
 
         verifylist = [
             ('load_balancer', 'lb'),
-            ('admin_state_up', True),
+            ('disable', True),
             ('description', 'descr'),
             ('name', 'nm'),
             ('vip_qos_policy_id', 'vip_qos_policy_id'),
@@ -322,7 +327,7 @@ class TestUpdateLoadBalancer(fakes.TestLoadBalancer):
 
         self.client.update_load_balancer.assert_called_once_with(
             load_balancer='lb',
-            admin_state_up=True,
+            # is_admin_state_up=False,
             description='descr',
             name='nm',
             vip_qos_policy_id='vip_qos_policy_id'
