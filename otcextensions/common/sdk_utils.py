@@ -72,6 +72,15 @@ class ListOfIdsColumn(columns.FormattableColumn):
         return '[' + ','.join(i['id'] for i in self._value if 'id' in i) + ']'
 
 
+class ListOfIdsColumnBR(columns.FormattableColumn):
+
+    def human_readable(self):
+        if self._value is None:
+            return None
+
+        return '\n'.join(i['id'] for i in self._value if 'id' in i)
+
+
 def str2bool(v):
     """Convert input (CLI) boolean text value into boolean
     """
