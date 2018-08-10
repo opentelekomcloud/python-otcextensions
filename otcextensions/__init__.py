@@ -15,7 +15,7 @@ import pbr.version
 __all__ = ['__version__']
 
 
-version_info = pbr.version.VersionInfo('python-otcextensions')
+version_info = pbr.version.VersionInfo('otcextensions')
 try:
     __version__ = version_info.version_string()
 except AttributeError:
