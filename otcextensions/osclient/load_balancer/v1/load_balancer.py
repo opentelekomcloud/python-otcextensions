@@ -253,10 +253,8 @@ class SetLoadBalancer(command.ShowOne):
 
         args = {}
 
-        # if parsed_args.enable:
-        #     args['is_admin_state_up'] = True
-        # elif parsed_args.disable:
-        #     args['is_admin_state_up'] = False
+        if parsed_args.disable:
+            args['is_admin_state_up'] = False
         if parsed_args.name:
             args['name'] = parsed_args.name
         if parsed_args.description:
@@ -296,8 +294,9 @@ class DeleteLoadBalancer(command.Command):
         client = self.app.client_manager.network
 
         for lb in parsed_args.load_balancer:
+            obj = client.find_load_balancer(name_or_id=lb)
             client.delete_load_balancer(
-                load_balancer=lb,
+                load_balancer=obj.id,
                 ignore_missing=False
             )
 

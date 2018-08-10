@@ -327,7 +327,7 @@ class TestUpdateLoadBalancer(fakes.TestLoadBalancer):
 
         self.client.update_load_balancer.assert_called_once_with(
             load_balancer='lb',
-            # is_admin_state_up=False,
+            is_admin_state_up=False,
             description='descr',
             name='nm',
             vip_qos_policy_id='vip_qos_policy_id'
@@ -339,12 +339,15 @@ class TestUpdateLoadBalancer(fakes.TestLoadBalancer):
 
 class TestDeleteLoadBalancer(fakes.TestLoadBalancer):
 
+    _object = fakes.FakeLoadBalancer.create_one()
+
     def setUp(self):
         super(TestDeleteLoadBalancer, self).setUp()
 
         self.cmd = load_balancer.DeleteLoadBalancer(self.app, None)
 
         self.client.delete_load_balancer = mock.Mock()
+        self.client.find_load_balancer = mock.Mock()
 
     def test_create_default(self):
         arglist = [
@@ -361,11 +364,14 @@ class TestDeleteLoadBalancer(fakes.TestLoadBalancer):
         self.client.delete_load_balancer.side_effect = [
             {}
         ]
+        self.client.find_load_balancer.side_effect = [
+            self._object
+        ]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
         self.client.delete_load_balancer.assert_called_once_with(
-            load_balancer='lb',
+            load_balancer=self._object.id,
             ignore_missing=False
         )

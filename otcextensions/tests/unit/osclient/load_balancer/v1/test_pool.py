@@ -27,8 +27,9 @@ class TestListPool(fakes.TestLoadBalancer):
 
     _objects = fakes.FakePool.create_multiple(3)
 
-    columns = ('ID', 'Name', 'description', 'is_admin_state_up',
-               'lb_algorithm', 'protocol', 'load_balancer_ids')
+    columns = (
+        'id', 'name', 'project_id', 'provisioning_status',
+        'protocol', 'lb_algorithm', 'admin_state_up')
 
     data = []
 
@@ -36,11 +37,11 @@ class TestListPool(fakes.TestLoadBalancer):
         data.append((
             s.id,
             s.name,
-            s.description,
-            s.is_admin_state_up,
-            s.lb_algorithm,
+            s.project_id,
+            '',
             s.protocol,
-            sdk_utils.ListOfIdsColumn(s.load_balancer_ids),
+            s.lb_algorithm,
+            s.is_admin_state_up,
         ))
 
     def setUp(self):
@@ -78,7 +79,7 @@ class TestListPool(fakes.TestLoadBalancer):
             '--protocol', 'TCP',
             '--lb_algorithm', 'ROUND_ROBIN',
             '--description', 'descr',
-            '--load_balancer_id', 'lb',
+            '--load_balancer', 'lb',
         ]
 
         verifylist = [
@@ -86,7 +87,7 @@ class TestListPool(fakes.TestLoadBalancer):
             ('protocol', 'TCP'),
             ('lb_algorithm', 'ROUND_ROBIN'),
             ('description', 'descr'),
-            ('load_balancer_id', 'lb')
+            ('load_balancer', 'lb')
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -116,13 +117,10 @@ class TestListPool(fakes.TestLoadBalancer):
             ('protocol', 'bad'),
         ]
 
-        # Verify cm is triggereg with default parameters
-        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-
         # Ensure exception is raised
         self.assertRaises(
-            exceptions.CommandError,
-            self.cmd.take_action, parsed_args)
+            utils.ParserException,
+            self.check_parser, self.cmd, arglist, verifylist)
 
     def test_list_filter_exceptions_algo(self):
         arglist = [
@@ -133,36 +131,36 @@ class TestListPool(fakes.TestLoadBalancer):
             ('lb_algorithm', 'bad'),
         ]
 
-        # Verify cm is triggereg with default parameters
-        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-
         # Ensure exception is raised
         self.assertRaises(
-            exceptions.CommandError,
-            self.cmd.take_action, parsed_args)
+            utils.ParserException,
+            self.check_parser, self.cmd, arglist, verifylist)
 
 
 class TestShowPool(fakes.TestLoadBalancer):
 
     _object = fakes.FakePool.create_one()
 
-    columns = ('ID', 'Name', 'description', 'is_admin_state_up',
-               'lb_algorithm', 'protocol', 'session_persistence',
-               'healthmonitor_id', 'load_balancer_ids',
-               'listener_ids', 'member_ids')
+    columns = (
+        'admin_state_up', 'description',
+        'healthmonitor_id', 'id', 'lb_algorithm', 'listeners',
+        'loadbalancers', 'member_ids', 'name', 'protocol',
+        'provisioning_status', 'session_persistence')
 
     data = (
-        _object.id,
-        _object.name,
-        _object.description,
         _object.is_admin_state_up,
+        _object.description,
+        # sdk_utils.ListOfIdsColumnBR(_object.health_monitor_ids),
+        _object.health_monitor_id,
+        _object.id,
         _object.lb_algorithm,
+        sdk_utils.ListOfIdsColumnBR(_object.listener_ids),
+        sdk_utils.ListOfIdsColumnBR(_object.load_balancer_ids),
+        sdk_utils.ListOfIdsColumnBR(_object.member_ids),
+        _object.name,
         _object.protocol,
+        _object.status,
         _object.session_persistence,
-        '',  # _object.health_monitor_id,
-        sdk_utils.ListOfIdsColumn(_object.load_balancer_ids),
-        sdk_utils.ListOfIdsColumn(_object.listener_ids),
-        sdk_utils.ListOfIdsColumn(_object.member_ids),
     )
 
     def setUp(self):
@@ -204,23 +202,25 @@ class TestCreatePool(fakes.TestLoadBalancer):
 
     _object = fakes.FakePool.create_one()
 
-    columns = ('ID', 'Name', 'description', 'is_admin_state_up',
-               'lb_algorithm', 'protocol', 'session_persistence',
-               'healthmonitor_id', 'load_balancer_ids',
-               'listener_ids', 'member_ids')
+    columns = (
+        'admin_state_up', 'description',
+        'healthmonitor_id', 'id', 'lb_algorithm', 'listeners',
+        'loadbalancers', 'member_ids', 'name', 'protocol',
+        'provisioning_status', 'session_persistence')
 
     data = (
-        _object.id,
-        _object.name,
-        _object.description,
         _object.is_admin_state_up,
+        _object.description,
+        _object.health_monitor_id,
+        _object.id,
         _object.lb_algorithm,
+        sdk_utils.ListOfIdsColumnBR(_object.listener_ids),
+        sdk_utils.ListOfIdsColumnBR(_object.load_balancer_ids),
+        sdk_utils.ListOfIdsColumnBR(_object.member_ids),
+        _object.name,
         _object.protocol,
+        _object.status,
         _object.session_persistence,
-        '',  # _object.health_monitor_id,
-        sdk_utils.ListOfIdsColumn(_object.load_balancer_ids),
-        sdk_utils.ListOfIdsColumn(_object.listener_ids),
-        sdk_utils.ListOfIdsColumn(_object.member_ids),
     )
 
     def setUp(self):
@@ -232,20 +232,20 @@ class TestCreatePool(fakes.TestLoadBalancer):
 
     def test_create_default(self):
         arglist = [
-            'HTTP',
-            'ROUND_ROBIN',
+            '--protocol', 'HTTP',
+            '--lb_algorithm', 'ROUND_ROBIN',
             '--listener_id', 'listener',
             '--name', 'name',
             '--description', 'descr',
             '--session_persistence', '{"a": "b"}',
-            '--admin_state_up', 'false'
+            '--disable'
         ]
 
         verifylist = [
             ('protocol', 'HTTP'),
             ('lb_algorithm', 'ROUND_ROBIN'),
             ('listener_id', 'listener'),
-            ('admin_state_up', False),
+            ('disable', True),
             ('name', 'name'),
             ('description', 'descr'),
             ('session_persistence', '{"a": "b"}'),
@@ -268,7 +268,7 @@ class TestCreatePool(fakes.TestLoadBalancer):
             name='name',
             protocol='HTTP',
             session_persistence={'a': 'b'},
-            admin_state_up=False,
+            is_admin_state_up=False,
             description='descr'
         )
 
@@ -277,8 +277,8 @@ class TestCreatePool(fakes.TestLoadBalancer):
 
     def test_create_with_lb(self):
         arglist = [
-            'HTTP',
-            'ROUND_ROBIN',
+            '--protocol', 'HTTP',
+            '--lb_algorithm', 'ROUND_ROBIN',
             '--loadbalancer_id', 'lb',
         ]
 
@@ -339,29 +339,31 @@ class TestUpdatePool(fakes.TestLoadBalancer):
 
     _object = fakes.FakePool.create_one()
 
-    columns = ('ID', 'Name', 'description', 'is_admin_state_up',
-               'lb_algorithm', 'protocol', 'session_persistence',
-               'healthmonitor_id', 'load_balancer_ids',
-               'listener_ids', 'member_ids')
+    columns = (
+        'admin_state_up', 'description',
+        'healthmonitor_id', 'id', 'lb_algorithm', 'listeners',
+        'loadbalancers', 'member_ids', 'name', 'protocol',
+        'provisioning_status', 'session_persistence')
 
     data = (
-        _object.id,
-        _object.name,
-        _object.description,
         _object.is_admin_state_up,
+        _object.description,
+        _object.health_monitor_id,
+        _object.id,
         _object.lb_algorithm,
+        sdk_utils.ListOfIdsColumnBR(_object.listener_ids),
+        sdk_utils.ListOfIdsColumnBR(_object.load_balancer_ids),
+        sdk_utils.ListOfIdsColumnBR(_object.member_ids),
+        _object.name,
         _object.protocol,
+        _object.status,
         _object.session_persistence,
-        '',  # _object.health_monitor_id,
-        sdk_utils.ListOfIdsColumn(_object.load_balancer_ids),
-        sdk_utils.ListOfIdsColumn(_object.listener_ids),
-        sdk_utils.ListOfIdsColumn(_object.member_ids),
     )
 
     def setUp(self):
         super(TestUpdatePool, self).setUp()
 
-        self.cmd = pool.UpdatePool(self.app, None)
+        self.cmd = pool.SetPool(self.app, None)
 
         self.client.update_pool = mock.Mock()
 
@@ -372,13 +374,13 @@ class TestUpdatePool(fakes.TestLoadBalancer):
             '--name', 'name',
             '--description', 'descr',
             '--session_persistence', '{"a": "b"}',
-            '--admin_state_up', 'yes'
+            '--disable'
         ]
 
         verifylist = [
             ('pool', 'pool'),
             ('lb_algorithm', 'ROUND_ROBIN'),
-            ('admin_state_up', True),
+            ('disable', True),
             ('name', 'name'),
             ('description', 'descr'),
             ('session_persistence', '{"a": "b"}'),
@@ -400,7 +402,7 @@ class TestUpdatePool(fakes.TestLoadBalancer):
             pool='pool',
             name='name',
             session_persistence={'a': 'b'},
-            admin_state_up=True,
+            is_admin_state_up=False,
             description='descr'
         )
 
@@ -410,12 +412,15 @@ class TestUpdatePool(fakes.TestLoadBalancer):
 
 class TestDeletePool(fakes.TestLoadBalancer):
 
+    _object = fakes.FakePool.create_one()
+
     def setUp(self):
         super(TestDeletePool, self).setUp()
 
         self.cmd = pool.DeletePool(self.app, None)
 
         self.client.delete_pool = mock.Mock()
+        self.client.find_pool = mock.Mock()
 
     def test_delete_default(self):
         arglist = [
@@ -433,11 +438,14 @@ class TestDeletePool(fakes.TestLoadBalancer):
         self.client.delete_pool.side_effect = [
             {}
         ]
+        self.client.find_pool.side_effect = [
+            self._object
+        ]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
         self.client.delete_pool.assert_called_once_with(
-            pool='pool',
+            pool=self._object.id,
             ignore_missing=False
         )

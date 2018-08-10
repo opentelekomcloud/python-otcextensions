@@ -25,9 +25,10 @@ LOG = logging.getLogger(__name__)
 
 
 _formatters = {
-    'listener_ids': sdk_utils.ListOfIdsColumn,
-    'load_balancer_ids': sdk_utils.ListOfIdsColumn,
-    'member_ids': sdk_utils.ListOfIdsColumn,
+    'health_monitor_ids': sdk_utils.ListOfIdsColumnBR,
+    'listener_ids': sdk_utils.ListOfIdsColumnBR,
+    'load_balancer_ids': sdk_utils.ListOfIdsColumnBR,
+    'member_ids': sdk_utils.ListOfIdsColumnBR,
 }
 
 
@@ -35,10 +36,27 @@ LB_ALGORITHM_VALUES = ['LEAST_CONNECTIONS', 'ROUND_ROBIN', 'SOURCE_IP']
 PROTOCOL_VALUES = ['HTTP', 'HTTPS', 'PROXY', 'TCP']
 
 
+def _get_columns(item):
+    column_map = {
+        'is_admin_state_up': 'admin_state_up',
+        'load_balancer_ids': 'loadbalancers',
+        'listener_ids': 'listeners',
+        'status': 'provisioning_status',
+        'health_monitor_id': 'healthmonitor_id'
+        # 'listeners': 'listener_ids',
+        # 'pools': 'pool_ids',
+    }
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
+
+
 class ListPool(command.Lister):
     _description = _('List LoadBalancer pools')
-    columns = ('ID', 'Name', 'description', 'is_admin_state_up',
-               'lb_algorithm', 'protocol', 'load_balancer_ids')
+    column_headers = (
+        'id', 'name', 'project_id', 'provisioning_status', 'protocol',
+        'lb_algorithm', 'admin_state_up')
+    columns = (
+        'id', 'name', 'project_id', 'provisioning_status', 'protocol',
+        'lb_algorithm', 'is_admin_state_up')
 
     def get_parser(self, prog_name):
         parser = super(ListPool, self).get_parser(prog_name)
@@ -46,30 +64,39 @@ class ListPool(command.Lister):
         parser.add_argument(
             '--description',
             metavar='<description>',
-            help=_("Load balancer pool description to query")
+            help=_('Load balancer pool description to query')
         )
         parser.add_argument(
             '--lb_algorithm',
-            metavar='<lb_algorithm>',
-            help=_("Load balancer pool algorithm to query"
-                   "one of [`LEAST_CONNECTIONS`, `ROUND_ROBIN`, `SOURCE_IP`]")
+            metavar='{' + ','.join(LB_ALGORITHM_VALUES) + '}',
+            type=lambda s: s.upper(),
+            choices=LB_ALGORITHM_VALUES,
+            help=_('Load balancer pool algorithm to query'
+                   'one of [`LEAST_CONNECTIONS`, `ROUND_ROBIN`, `SOURCE_IP`]')
         )
         parser.add_argument(
             '--name',
             metavar='<name>',
-            help=_("Load balancer pool name to query")
+            help=_('Load balancer pool name to query')
         )
         parser.add_argument(
             '--protocol',
-            metavar='<protocol>',
-            help=_("Load balancer pool protocol to query"
-                   "one of [`HTTP`, `HTTPS`, `PROXY`, `TCP`]")
+            metavar='{' + ','.join(PROTOCOL_VALUES) + '}',
+            type=lambda s: s.upper(),
+            choices=PROTOCOL_VALUES,
+            help=_('Load balancer pool protocol to query'
+                   'one of [`HTTP`, `HTTPS`, `PROXY`, `TCP`]')
         )
         parser.add_argument(
-            '--load_balancer_id',
-            metavar='<load_balancer_id>',
-            help=_("The ID of the load balancer to query pools for")
+            '--load_balancer',
+            metavar='<load_balancer>',
+            help=_('Filter by load balancer (name or ID).')
         )
+        # parser.add_argument(
+        #     '--listener',
+        #     metavar='<listener>',
+        #     help=_('Filter by listener (name or ID).')
+        # )
         return parser
 
     def take_action(self, parsed_args):
@@ -81,33 +108,21 @@ class ListPool(command.Lister):
             args['lb_algorithm'] = parsed_args.lb_algorithm
         if parsed_args.name:
             args['name'] = parsed_args.name
-        if parsed_args.load_balancer_id:
-            args['load_balancer_id'] = parsed_args.load_balancer_id
+        if parsed_args.load_balancer:
+            args['load_balancer_id'] = parsed_args.load_balancer
         if parsed_args.protocol:
-            if parsed_args.protocol.upper() in PROTOCOL_VALUES:
-                args['protocol'] = parsed_args.protocol
-            else:
-                msg = (_('Protocol %(proto)s is not one of the '
-                         'supported %(values)s')
-                       % {'proto': parsed_args.protocol,
-                          'values': PROTOCOL_VALUES})
-                raise exceptions.CommandError(msg)
+            args['protocol'] = parsed_args.protocol
         if parsed_args.lb_algorithm:
-            if parsed_args.lb_algorithm.upper() in LB_ALGORITHM_VALUES:
-                args['lb_algorithm'] = parsed_args.lb_algorithm
-            else:
-                msg = (_('lb_algorithm %(algo)s is not one of the '
-                         'supported %(values)s')
-                       % {'algo': parsed_args.lb_algorithm,
-                          'values': LB_ALGORITHM_VALUES})
-                raise exceptions.CommandError(msg)
+            args['lb_algorithm'] = parsed_args.lb_algorithm
+        # if parsed_args.listener:
+        #     args['listener_id'] = parsed_args.listener
 
         client = self.app.client_manager.network
 
         data = client.pools(**args)
 
         return (
-            self.columns,
+            self.column_headers,
             (utils.get_item_properties(
                 s, self.columns, formatters=_formatters
             ) for s in data))
@@ -115,10 +130,6 @@ class ListPool(command.Lister):
 
 class ShowPool(command.ShowOne):
     _description = _('Show LoadBalancer pool details')
-    columns = ('ID', 'Name', 'description', 'is_admin_state_up',
-               'lb_algorithm', 'protocol', 'session_persistence',
-               'healthmonitor_id', 'load_balancer_ids',
-               'listener_ids', 'member_ids')
 
     def get_parser(self, prog_name):
         parser = super(ShowPool, self).get_parser(prog_name)
@@ -126,7 +137,7 @@ class ShowPool(command.ShowOne):
         parser.add_argument(
             'pool',
             metavar='<pool>',
-            help=_("Load balancer pool id to show")
+            help=_('Load balancer pool id to show.')
         )
 
         return parser
@@ -143,72 +154,80 @@ class ShowPool(command.ShowOne):
             **args
         )
 
-        data = utils.get_item_properties(
-            obj, self.columns, formatters=_formatters)
+        display_columns, columns = _get_columns(obj)
+        data = utils.get_item_properties(obj, columns, formatters=_formatters)
 
-        return (self.columns, data)
+        return (display_columns, data)
 
 
 class CreatePool(command.ShowOne):
-    _description = _('Create LoadBalancer Pool')
-    columns = ('ID', 'Name', 'description', 'is_admin_state_up',
-               'lb_algorithm', 'protocol', 'session_persistence',
-               'healthmonitor_id', 'load_balancer_ids',
-               'listener_ids', 'member_ids')
+    _description = _('Create a pool')
 
     def get_parser(self, prog_name):
         parser = super(CreatePool, self).get_parser(prog_name)
 
         parser.add_argument(
-            'protocol',
-            metavar='<protocol>',
-            help=_("The protocol for the resource. "
-                   "One of [`HTTP`, `HTTPS`, `PROXY`, `TCP`].")
-        )
-        parser.add_argument(
-            'lb_algorithm',
-            metavar='<lb_algorithm>',
-            help=_("The load balancing algorithm for the pool. "
-                   "One of [`LEAST_CONNECTIONS`, `ROUND_ROBIN`, `SOURCE_IP`].")
-        )
-        group = parser.add_mutually_exclusive_group()
-        group.add_argument(
-            '--listener_id',
-            metavar='<listener_id>',
-            help=_("The ID of the listener for the pool. "
-                   "Either listener_id or loadbalancer_id must be specified.")
-        )
-        group.add_argument(
-            '--loadbalancer_id',
-            metavar='<loadbalancer_id>',
-            help=_("The ID of the loadbalancer for the pool. "
-                   "Either listener_id or loadbalancer_id must be specified.")
-        )
-        parser.add_argument(
-            '--admin_state_up',
-            dest='admin_state_up',
-            type=sdk_utils.str2bool,
-            nargs='?',
-            help=_("The administrative state of the resource, which is up "
-                   "(true) or down (false). Default is true.")
+            '--name',
+            metavar='<name>',
+            help=_('Set pool name.')
         )
         parser.add_argument(
             '--description',
             metavar='<description>',
-            help=_("A human-readable description for the resource.")
+            help=_('Set pool description.')
         )
         parser.add_argument(
-            '--name',
-            metavar='<name>',
-            help=_("Human-readable name of the resource.")
+            '--protocol',
+            metavar='{' + ','.join(PROTOCOL_VALUES) + '}',
+            type=lambda s: s.upper(),
+            choices=PROTOCOL_VALUES,
+            required=True,
+            help=_('The protocol for the pool. '
+                   'One of [`HTTP`, `HTTPS`, `PROXY`, `TCP`].')
+        )
+        parser.add_argument(
+            '--lb_algorithm',
+            metavar='{' + ','.join(LB_ALGORITHM_VALUES) + '}',
+            type=lambda s: s.upper(),
+            choices=LB_ALGORITHM_VALUES,
+            required=True,
+            help=_('The load balancing algorithm for the pool. '
+                   'One of [`LEAST_CONNECTIONS`, `ROUND_ROBIN`, `SOURCE_IP`].')
+        )
+        group = parser.add_mutually_exclusive_group()
+        group.add_argument(
+            '--listener_id',
+            metavar='<listener>',
+            help=_('The ID of the listener for the pool. '
+                   'Either listener_id or loadbalancer_id must be specified.')
+        )
+        group.add_argument(
+            '--loadbalancer_id',
+            metavar='<loadbalancer>',
+            help=_('The ID of the loadbalancer for the pool. '
+                   'Either listener_id or loadbalancer_id must be specified.')
         )
         parser.add_argument(
             '--session_persistence',
             metavar='<session_persistence>',
-            help=_("A JSON object specifying the session persistence "
-                   "for the pool or null for no session persistence. "
-                   "See Pool Session Persistence. Default is null.")
+            help=_('A JSON object specifying the session persistence '
+                   'for the pool or null for no session persistence. '
+                   'See Pool Session Persistence. Default is null.')
         )
+        admin_group = parser.add_mutually_exclusive_group()
+        admin_group.add_argument(
+            '--enable',
+            action='store_true',
+            default=True,
+            help=_('Enable pool (default).')
+        )
+        admin_group.add_argument(
+            '--disable',
+            action='store_true',
+            default=None,
+            help=_('Disable pool.')
+        )
+
         return parser
 
     def take_action(self, parsed_args):
@@ -216,30 +235,15 @@ class CreatePool(command.ShowOne):
         args = {}
 
         if parsed_args.protocol:
-            if parsed_args.protocol.upper() in PROTOCOL_VALUES:
-                args['protocol'] = parsed_args.protocol
-            else:
-                msg = (_('Protocol %(proto)s is not one of the '
-                         'supported %(values)s')
-                       % {'proto': parsed_args.protocol,
-                          'values': PROTOCOL_VALUES})
-                raise exceptions.CommandError(msg)
+            args['protocol'] = parsed_args.protocol
         if parsed_args.lb_algorithm:
-            if parsed_args.lb_algorithm.upper() in LB_ALGORITHM_VALUES:
-                args['lb_algorithm'] = parsed_args.lb_algorithm
-            else:
-                msg = (_('lb_algorithm %(algo)s is not one of the '
-                         'supported %(values)s')
-                       % {'algo': parsed_args.lb_algorithm,
-                          'values': LB_ALGORITHM_VALUES})
-                raise exceptions.CommandError(msg)
-
+            args['lb_algorithm'] = parsed_args.lb_algorithm
         if parsed_args.listener_id is not None:
             args['listener_id'] = parsed_args.listener_id
         if parsed_args.loadbalancer_id is not None:
             args['loadbalancer_id'] = parsed_args.loadbalancer_id
-        if parsed_args.admin_state_up is not None:
-            args['admin_state_up'] = parsed_args.admin_state_up
+        if parsed_args.disable is not None:
+            args['is_admin_state_up'] = False
         if parsed_args.name is not None:
             args['name'] = parsed_args.name
         if parsed_args.description is not None:
@@ -252,58 +256,60 @@ class CreatePool(command.ShowOne):
 
         obj = client.create_pool(**args)
 
-        data = utils.get_item_properties(
-            obj, self.columns, formatters=_formatters)
+        display_columns, columns = _get_columns(obj)
+        data = utils.get_item_properties(obj, columns, formatters=_formatters)
 
-        return (self.columns, data)
+        return (display_columns, data)
 
 
-class UpdatePool(command.ShowOne):
-    _description = _('Update LoadBalancer Pool details')
-    columns = ('ID', 'Name', 'description', 'is_admin_state_up',
-               'lb_algorithm', 'protocol', 'session_persistence',
-               'healthmonitor_id', 'load_balancer_ids',
-               'listener_ids', 'member_ids')
+class SetPool(command.ShowOne):
+    _description = _('Update a pool')
 
     def get_parser(self, prog_name):
-        parser = super(UpdatePool, self).get_parser(prog_name)
+        parser = super(SetPool, self).get_parser(prog_name)
 
         parser.add_argument(
             'pool',
             metavar='<pool>',
-            help=_("The ID of the pool to delete.")
-        )
-        parser.add_argument(
-            '--admin_state_up',
-            dest='admin_state_up',
-            type=sdk_utils.str2bool,
-            nargs='?',
-            help=_("The administrative state of the resource, which is up "
-                   "(true) or down (false). Default is true.")
-        )
-
-        parser.add_argument(
-            '--description',
-            metavar='<description>',
-            help=_("A human-readable description for the resource.")
-        )
-        parser.add_argument(
-            '--lb_algorithm',
-            metavar='<lb_algorithm>',
-            help=_("The load balancing algorithm for the pool. "
-                   "One of [`LEAST_CONNECTIONS`, `ROUND_ROBIN`, `SOURCE_IP`].")
+            help=_('The ID of the pool to update.')
         )
         parser.add_argument(
             '--name',
             metavar='<name>',
-            help=_("Human-readable name of the resource.")
+            help=_('Human-readable name of the resource.')
+        )
+        parser.add_argument(
+            '--description',
+            metavar='<description>',
+            help=_('A human-readable description for the resource.')
         )
         parser.add_argument(
             '--session_persistence',
             metavar='<session_persistence>',
-            help=_("A JSON object specifying the session persistence "
-                   "for the pool or null for no session persistence. "
-                   "See Pool Session Persistence. Default is null.")
+            help=_('A JSON object specifying the session persistence '
+                   'for the pool or null for no session persistence. '
+                   'See Pool Session Persistence. Default is null.')
+        )
+        parser.add_argument(
+            '--lb_algorithm',
+            metavar='{' + ','.join(LB_ALGORITHM_VALUES) + '}',
+            type=lambda s: s.upper(),
+            choices=LB_ALGORITHM_VALUES,
+            help=_('The load balancing algorithm for the pool. '
+                   'One of [`LEAST_CONNECTIONS`, `ROUND_ROBIN`, `SOURCE_IP`].')
+        )
+        admin_group = parser.add_mutually_exclusive_group()
+        admin_group.add_argument(
+            '--enable',
+            action='store_true',
+            default=True,
+            help=_('Enable pool (default).')
+        )
+        admin_group.add_argument(
+            '--disable',
+            action='store_true',
+            default=None,
+            help=_('Disable pool.')
         )
         return parser
 
@@ -312,19 +318,9 @@ class UpdatePool(command.ShowOne):
         args = {}
 
         if parsed_args.lb_algorithm:
-            if parsed_args.lb_algorithm.upper() in LB_ALGORITHM_VALUES:
-                args['lb_algorithm'] = parsed_args.lb_algorithm
-            else:
-                msg = (_('lb_algorithm %(algo)s is not one of '
-                         'the supported %(const)s')
-                       % {
-                       'algo': parsed_args.lb_algorithm,
-                       'const': LB_ALGORITHM_VALUES}
-                       )
-                raise exceptions.CommandError(msg)
-
-        if parsed_args.admin_state_up is not None:
-            args['admin_state_up'] = parsed_args.admin_state_up
+            args['lb_algorithm'] = parsed_args.lb_algorithm
+        if parsed_args.disable is not None:
+            args['is_admin_state_up'] = False
         if parsed_args.name is not None:
             args['name'] = parsed_args.name
         if parsed_args.description is not None:
@@ -339,14 +335,14 @@ class UpdatePool(command.ShowOne):
             pool=parsed_args.pool,
             **args)
 
-        data = utils.get_item_properties(
-            obj, self.columns, formatters=_formatters)
+        display_columns, columns = _get_columns(obj)
+        data = utils.get_item_properties(obj, columns, formatters=_formatters)
 
-        return (self.columns, data)
+        return (display_columns, data)
 
 
 class DeletePool(command.Command):
-    _description = _('Delete LoadBalancer Pool')
+    _description = _('Delete a pool')
 
     def get_parser(self, prog_name):
         parser = super(DeletePool, self).get_parser(prog_name)
@@ -355,7 +351,7 @@ class DeletePool(command.Command):
             'pool',
             metavar='<pool>',
             nargs='+',
-            help=_("The ID of the pool to delete.")
+            help=_('The ID of the pool to delete.')
         )
 
         return parser
@@ -365,6 +361,7 @@ class DeletePool(command.Command):
         client = self.app.client_manager.network
 
         for pool in parsed_args.pool:
-            client.delete_pool(pool=pool, ignore_missing=False)
+            obj = client.find_pool(name_or_id=pool, ignore_missing=False)
+            client.delete_pool(pool=obj.id, ignore_missing=False)
 
         return

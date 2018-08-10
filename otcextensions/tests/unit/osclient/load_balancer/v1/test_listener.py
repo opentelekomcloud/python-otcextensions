@@ -28,22 +28,21 @@ class TestListListener(fakes.TestLoadBalancer):
     _objects = fakes.FakeListener.create_multiple(3)
 
     columns = (
-        'ID', 'Name', 'description',
-        'is_admin_state_up', 'protocol', 'protocol_port',
-        'load_balancer_ids', 'default_pool_id')
+        'id', 'default_pool_id', 'name', 'project_id',
+        'protocol', 'protocol_port', 'admin_state_up')
 
     data = []
 
     for s in _objects:
         data.append((
             s.id,
+            s.default_pool_id,
             s.name,
-            s.description,
-            s.is_admin_state_up,
+            s.project_id,
             s.protocol,
             s.protocol_port,
-            sdk_utils.ListOfIdsColumn(s.load_balancer_ids),
-            s.default_pool_id,
+            # sdk_utils.ListOfIdsColumn(s.load_balancer_ids),
+            s.is_admin_state_up,
         ))
 
     def setUp(self):
@@ -78,12 +77,16 @@ class TestListListener(fakes.TestLoadBalancer):
     def test_list_filters(self):
         arglist = [
             '--protocol', 'TCP',
-            '--protocol_port', '12'
+            '--protocol_port', '12',
+            '--name', 'some_name',
+            '--load_balancer', 'lb'
         ]
 
         verifylist = [
             ('protocol', 'TCP'),
-            ('protocol_port', 12)
+            ('protocol_port', 12),
+            ('name', 'some_name'),
+            ('load_balancer', 'lb')
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -98,7 +101,9 @@ class TestListListener(fakes.TestLoadBalancer):
 
         self.client.listeners.assert_called_once_with(
             protocol='TCP',
-            protocol_port=12
+            protocol_port=12,
+            name='some_name',
+            load_balancer_id='lb'
         )
 
         self.assertEqual(self.columns, columns)
@@ -114,13 +119,10 @@ class TestListListener(fakes.TestLoadBalancer):
             ('protocol', 'UDP'),
             ('protocol_port', 12)
         ]
-        # Verify cm is triggereg with default parameters
-        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        # Ensure exception is raised
         self.assertRaises(
-            exceptions.CommandError,
-            self.cmd.take_action, parsed_args)
+            utils.ParserException,
+            self.check_parser, self.cmd, arglist, verifylist)
 
     def test_list_filters_exceptions_port(self):
         arglist = [
@@ -142,21 +144,20 @@ class TestShowListener(fakes.TestLoadBalancer):
     _object = fakes.FakeListener.create_one()
 
     columns = (
-        'ID', 'Name', 'description',
-        'is_admin_state_up', 'protocol', 'protocol_port',
-        'load_balancer_ids', 'default_pool_id',
-        'connection_limit')
+        'admin_state_up', 'connection_limit', 'default_pool_id',
+        'description', 'id', 'loadbalancers', 'name', 'protocol',
+        'protocol_port')
 
     data = (
-        _object.id,
-        _object.name,
-        _object.description,
         _object.is_admin_state_up,
+        _object.connection_limit,
+        _object.default_pool_id,
+        _object.description,
+        _object.id,
+        sdk_utils.ListOfIdsColumnBR(_object.load_balancer_ids),
+        _object.name,
         _object.protocol,
         _object.protocol_port,
-        sdk_utils.ListOfIdsColumn(_object.load_balancer_ids),
-        _object.default_pool_id,
-        _object.connection_limit,
     )
 
     def setUp(self):
@@ -199,21 +200,20 @@ class TestCreateListener(fakes.TestLoadBalancer):
     _object = fakes.FakeListener.create_one()
 
     columns = (
-        'ID', 'Name', 'description',
-        'is_admin_state_up', 'protocol', 'protocol_port',
-        'load_balancer_ids', 'default_pool_id',
-        'connection_limit')
+        'admin_state_up', 'connection_limit', 'default_pool_id',
+        'description', 'id', 'loadbalancers', 'name', 'protocol',
+        'protocol_port')
 
     data = (
-        _object.id,
-        _object.name,
-        _object.description,
         _object.is_admin_state_up,
+        _object.connection_limit,
+        _object.default_pool_id,
+        _object.description,
+        _object.id,
+        sdk_utils.ListOfIdsColumnBR(_object.load_balancer_ids),
+        _object.name,
         _object.protocol,
         _object.protocol_port,
-        sdk_utils.ListOfIdsColumn(_object.load_balancer_ids),
-        _object.default_pool_id,
-        _object.connection_limit,
     )
 
     def setUp(self):
@@ -225,11 +225,12 @@ class TestCreateListener(fakes.TestLoadBalancer):
 
     def test_create_default(self):
         arglist = [
-            'TCP',
-            '134',
-            '--admin_state_up', 'false',
+            'lb',
+            '--protocol', 'tcp',
+            '--protocol_port', '134',
+            '--disable',
             '--connection_limit', '-1',
-            '--default_pool_id', 'pool',
+            '--default_pool', 'pool',
             '--default_tls_container_ref', 'default_tls_container_ref',
             '--description', 'description',
             '--name', 'name'
@@ -238,9 +239,10 @@ class TestCreateListener(fakes.TestLoadBalancer):
         verifylist = [
             ('protocol', 'TCP'),
             ('protocol_port', 134),
-            ('admin_state_up', False),
+            ('load_balancer', 'lb'),
+            ('disable', True),
             ('connection_limit', -1),
-            ('default_pool_id', 'pool'),
+            ('default_pool', 'pool'),
             ('default_tls_container_ref', 'default_tls_container_ref'),
             ('description', 'description'),
             ('name', 'name')
@@ -262,6 +264,8 @@ class TestCreateListener(fakes.TestLoadBalancer):
             default_pool_id='pool',
             default_tls_container_ref='default_tls_container_ref',
             description='description',
+            is_admin_state_up=False,
+            load_balancer_id='lb',
             name='name',
             protocol='TCP',
             protocol_port=134
@@ -296,16 +300,16 @@ class TestUpdateListener(fakes.TestLoadBalancer):
     def setUp(self):
         super(TestUpdateListener, self).setUp()
 
-        self.cmd = listener.UpdateListener(self.app, None)
+        self.cmd = listener.SetListener(self.app, None)
 
         self.client.update_listener = mock.Mock()
 
     def test_update_default(self):
         arglist = [
             'lsnr',
-            '--admin_state_up', 'false',
+            '--disable',
             '--connection_limit', '-1',
-            '--default_pool_id', 'pool',
+            '--default_pool', 'pool',
             '--default_tls_container_ref', 'default_tls_container_ref',
             '--description', 'description',
             '--name', 'name'
@@ -313,9 +317,9 @@ class TestUpdateListener(fakes.TestLoadBalancer):
 
         verifylist = [
             ('listener', 'lsnr'),
-            ('admin_state_up', False),
+            ('disable', True),
             ('connection_limit', -1),
-            ('default_pool_id', 'pool'),
+            ('default_pool', 'pool'),
             ('default_tls_container_ref', 'default_tls_container_ref'),
             ('description', 'description'),
             ('name', 'name')
@@ -333,6 +337,7 @@ class TestUpdateListener(fakes.TestLoadBalancer):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.update_listener.assert_called_once_with(
+            is_admin_state_up=False,
             listener='lsnr',
             connection_limit=-1,
             default_pool_id='pool',
@@ -344,12 +349,15 @@ class TestUpdateListener(fakes.TestLoadBalancer):
 
 class TestDeleteListener(fakes.TestLoadBalancer):
 
+    _object = fakes.FakeListener.create_one()
+
     def setUp(self):
         super(TestDeleteListener, self).setUp()
 
         self.cmd = listener.DeleteListener(self.app, None)
 
         self.client.delete_listener = mock.Mock()
+        self.client.find_listener = mock.Mock()
 
     def test_delete_default(self):
         arglist = [
@@ -367,11 +375,14 @@ class TestDeleteListener(fakes.TestLoadBalancer):
         self.client.delete_listener.side_effect = [
             {}
         ]
+        self.client.find_listener.side_effect = [
+            self._object
+        ]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
         self.client.delete_listener.assert_called_once_with(
-            listener='lsnr',
+            listener=self._object.id,
             ignore_missing=False
         )
