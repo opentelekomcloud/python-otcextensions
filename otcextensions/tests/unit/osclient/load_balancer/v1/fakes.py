@@ -94,9 +94,10 @@ class FakePool(test_base.Fake):
             'protocol': 'proto-' + uuid.uuid4().hex,
             'session_persistence': True,
             'healthmonitor_id': 'hmid-' + uuid.uuid4().hex,
-            'health_monitor_ids': [{'id': 'id-' + uuid.uuid4().hex}],
+            # 'health_monitor_ids': [{'id': 'hmid-' + uuid.uuid4().hex}],
             'member_ids': [{'id': 'id-' + uuid.uuid4().hex}],
             'lb_algorithm': 'algo-' + uuid.uuid4().hex,
+            'status': 'dummy'
 
         }
         obj = pool.Pool.existing(**object_info)
