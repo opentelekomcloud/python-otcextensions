@@ -7,3 +7,4 @@
    cce.rst
    load_balancer.rst
    volume_backup.rst
+   dms.rst
