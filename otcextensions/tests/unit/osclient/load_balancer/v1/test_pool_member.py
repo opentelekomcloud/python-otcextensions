@@ -24,8 +24,9 @@ class TestListPoolMember(fakes.TestLoadBalancer):
 
     _objects = fakes.FakePoolMember.create_multiple(3)
 
-    columns = ('ID', 'Name', 'address', 'is_admin_state_up',
-               'protocol_port', 'subnet_id', 'operating_status', 'weight')
+    columns = (
+        'id', 'name', 'project_id', 'provisioning_status', 'address',
+        'protocol_port', 'operating_status', 'weight')
 
     data = []
 
@@ -33,10 +34,10 @@ class TestListPoolMember(fakes.TestLoadBalancer):
         data.append((
             s.id,
             s.name,
+            s.project_id,
+            '',  # provisioning_status
             s.address,
-            s.is_admin_state_up,
             s.protocol_port,
-            s.subnet_id,
             '',  # s.operating_status,
             s.weight,
         ))
@@ -144,20 +145,20 @@ class TestShowPoolMember(fakes.TestLoadBalancer):
 
     _object = fakes.FakePoolMember.create_one()
 
-    columns = ('ID', 'Name', 'address', 'is_admin_state_up',
-               'protocol_port', 'operating_status',
-               'subnet_id', 'weight', 'pool_id')
+    columns = (
+        'address', 'admin_state_up', 'id', 'name',
+        # 'operating_status',
+        'protocol_port', 'subnet_id', 'weight')
 
     data = (
-        _object.id,
-        _object.name,
         _object.address,
         _object.is_admin_state_up,
+        _object.id,
+        _object.name,
+        # _object.operating_status,
         _object.protocol_port,
-        '',  # _object.operating_status,
         _object.subnet_id,
         _object.weight,
-        _object.pool_id,
     )
 
     def setUp(self):
@@ -202,20 +203,20 @@ class TestCreatePoolMember(fakes.TestLoadBalancer):
 
     _object = fakes.FakePoolMember.create_one()
 
-    columns = ('ID', 'Name', 'address', 'is_admin_state_up',
-               'protocol_port', 'operating_status',
-               'subnet_id', 'weight', 'pool_id')
+    columns = (
+        'address', 'admin_state_up', 'id', 'name',
+        # 'operating_status',
+        'protocol_port', 'subnet_id', 'weight')
 
     data = (
-        _object.id,
-        _object.name,
         _object.address,
         _object.is_admin_state_up,
+        _object.id,
+        _object.name,
+        # _object.operating_status,
         _object.protocol_port,
-        '',  # _object.operating_status,
         _object.subnet_id,
         _object.weight,
-        _object.pool_id,
     )
 
     def setUp(self):
@@ -228,9 +229,9 @@ class TestCreatePoolMember(fakes.TestLoadBalancer):
     def test_create_default(self):
         arglist = [
             'pool_id',
-            'addr',
-            '123',
-            '--admin_state_up', 'true',
+            '--address', 'addr',
+            '--protocol_port', '123',
+            '--disable',
             '--name', 'name',
             '--subnet_id', 'subnet',
             '--weight', '13'
@@ -240,7 +241,7 @@ class TestCreatePoolMember(fakes.TestLoadBalancer):
             ('pool', 'pool_id'),
             ('address', 'addr'),
             ('protocol_port', 123),
-            ('admin_state_up', True),
+            ('disable', True),
             ('name', 'name'),
             ('subnet_id', 'subnet'),
             ('weight', 13),
@@ -258,7 +259,7 @@ class TestCreatePoolMember(fakes.TestLoadBalancer):
 
         self.client.create_pool_member.assert_called_once_with(
             address='addr',
-            admin_state_up=True,
+            is_admin_state_up=False,
             name='name',
             pool='pool_id',
             protocol_port=123,
@@ -274,26 +275,26 @@ class TestUpdatePoolMember(fakes.TestLoadBalancer):
 
     _object = fakes.FakePoolMember.create_one()
 
-    columns = ('ID', 'Name', 'address', 'is_admin_state_up',
-               'protocol_port', 'operating_status',
-               'subnet_id', 'weight', 'pool_id')
+    columns = (
+        'address', 'admin_state_up', 'id', 'name',
+        # 'operating_status',
+        'protocol_port', 'subnet_id', 'weight')
 
     data = (
-        _object.id,
-        _object.name,
         _object.address,
         _object.is_admin_state_up,
+        _object.id,
+        _object.name,
+        # _object.operating_status,
         _object.protocol_port,
-        '',  # _object.operating_status,
         _object.subnet_id,
         _object.weight,
-        _object.pool_id,
     )
 
     def setUp(self):
         super(TestUpdatePoolMember, self).setUp()
 
-        self.cmd = pool_member.UpdatePoolMember(self.app, None)
+        self.cmd = pool_member.SetPoolMember(self.app, None)
 
         self.client.update_pool_member = mock.Mock()
 
@@ -301,7 +302,7 @@ class TestUpdatePoolMember(fakes.TestLoadBalancer):
         arglist = [
             'pool_id',
             'member',
-            '--admin_state_up', 'true',
+            '--disable',
             '--name', 'name',
             '--weight', '13'
         ]
@@ -309,7 +310,7 @@ class TestUpdatePoolMember(fakes.TestLoadBalancer):
         verifylist = [
             ('pool', 'pool_id'),
             ('member', 'member'),
-            ('admin_state_up', True),
+            ('disable', True),
             ('name', 'name'),
             ('weight', 13),
         ]
@@ -326,7 +327,7 @@ class TestUpdatePoolMember(fakes.TestLoadBalancer):
 
         self.client.update_pool_member.assert_called_once_with(
             pool_member='member',
-            admin_state_up=True,
+            is_admin_state_up=False,
             name='name',
             pool='pool_id',
             weight=13
@@ -338,14 +339,18 @@ class TestUpdatePoolMember(fakes.TestLoadBalancer):
 
 class TestDeletePoolMember(fakes.TestLoadBalancer):
 
+    _object = fakes.FakePoolMember.create_one()
+    _pool = fakes.FakePool.create_one()
+
     def setUp(self):
         super(TestDeletePoolMember, self).setUp()
 
         self.cmd = pool_member.DeletePoolMember(self.app, None)
 
         self.client.delete_pool_member = mock.Mock()
+        self.client.find_pool_member = mock.Mock()
 
-    def test_update_default(self):
+    def test_delete_default(self):
         arglist = [
             'pool_id',
             'member',
@@ -359,15 +364,18 @@ class TestDeletePoolMember(fakes.TestLoadBalancer):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.update_pool_member.side_effect = [
+        self.client.delete_pool_member.side_effect = [
             {}
+        ]
+        self.client.find_pool_member.side_effect = [
+            self._object
         ]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
         self.client.delete_pool_member.assert_called_once_with(
-            pool_member='member',
+            pool_member=self._object.id,
             pool='pool_id',
             ignore_missing=False
         )

@@ -14,7 +14,6 @@
 import json
 import logging
 
-from osc_lib import exceptions
 from osc_lib import utils
 from osc_lib.command import command
 
