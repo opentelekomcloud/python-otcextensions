@@ -26,7 +26,7 @@ Load Balancer operations
    :command: loadbalancer create
 
 .. autoprogram-cliff:: openstack.load_balancer.v1
-   :command: loadbalancer update
+   :command: loadbalancer set
 
 .. autoprogram-cliff:: openstack.load_balancer.v1
    :command: loadbalancer delete
@@ -54,7 +54,7 @@ Pools operations
   :command: loadbalancer pool create
 
 .. autoprogram-cliff:: openstack.load_balancer.v1
-  :command: loadbalancer pool update
+  :command: loadbalancer pool set
 
 .. autoprogram-cliff:: openstack.load_balancer.v1
   :command: loadbalancer pool delete
@@ -65,7 +65,7 @@ Pool Members operations
 -----------------------
 
 .. autoprogram-cliff:: openstack.load_balancer.v1
-  :command: loadbalancer pool member *
+  :command: loadbalancer member *
 
 .. _hm:
 
@@ -73,4 +73,4 @@ Health Monitor operations
 -------------------------
 
 .. autoprogram-cliff:: openstack.load_balancer.v1
-  :command: loadbalancer health monitor *
+  :command: loadbalancer healthmonitor *
