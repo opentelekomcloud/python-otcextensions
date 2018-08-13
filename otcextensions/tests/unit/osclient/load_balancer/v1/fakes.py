@@ -119,7 +119,6 @@ class FakePoolMember(test_base.Fake):
             'protocol_port': random.randint(1, 65535),
             'weight': random.randint(1, 65535),
             'subnet_id': 'subnet-' + uuid.uuid4().hex,
-
         }
         obj = pool_member.PoolMember.existing(**object_info)
         return obj
