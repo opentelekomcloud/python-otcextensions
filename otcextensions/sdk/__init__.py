@@ -45,9 +45,7 @@ found on remotely on the cloud.
 OTC_SERVICES = {
     'rds': {
         'service_type': 'rds',
-        # 'endpoint_service_type': 'database',
         # 'additional_headers': {'content-type': 'application/json'},
-        # 'strip_endpoint': True,
         'append_project_id': True,
     },
     'obs': {
@@ -81,6 +79,9 @@ OTC_SERVICES = {
 
 
 def _get_descriptor(service_name):
+    """Find ServiceDescriptor class by the service name
+    and instanciate it
+    """
     service = OTC_SERVICES.get(service_name, None)
     if service:
         service_type = service['service_type']
@@ -123,98 +124,9 @@ def _get_descriptor(service_name):
         return None
 
 
-def patch_connection(target):
-    # descriptors are not working out of box for runtime attributes
-    # So we need to inject them
-    def __getattribute__(self, name):
-        # print('getattr invoked on %s with %s' % (self, name))
-        value = object.__getattribute__(self, name)
-        if hasattr(value, '__get__'):
-            value = value.__get__(self, self.__class__)
-        return value
-
-    def __setattr__(self, name, value):
-        try:
-            obj = object.__getattribute__(self, name)
-        except AttributeError:
-            pass
-        else:
-            if hasattr(obj, '__set__'):
-                return obj.__set__(self, value)
-        return object.__setattr__(self, name, value)
-    connection.Connection.__getattribute__ = types.MethodType(
-        __getattribute__, target)
-    connection.Connection.__setattr__ = types.MethodType(
-        __setattr__, target)
-
-
-def add_service_to_sdk(connection, service_name, service_descriptor):
-    # descriptors are not working out of box for runtime attributes
-    connection.add_service(service_descriptor)
-    # Unless connection is patched real proxy can be obtained only so
-    proxy = service_descriptor.__get__(connection, service_descriptor)
-    setattr(connection, service_name, proxy)
-    return proxy
-
-
-def register_otc_extensions(connection, **kwargs):
-
-    for (service_name, service) in OTC_SERVICES.items():
-        _logger.debug('trying to register service %s' % service_name)
-        descriptor = _get_descriptor(service_name)
-        if not descriptor:
-            _logger.error('descriptor for service %s is missing' %
-                          service_name)
-            _logger.debug('keys %s' % service.keys())
-            continue
-        proxy = add_service_to_sdk(connection, service_name, descriptor)
-
-        endpoint_service_type = service.get('endpoint_service_type', None)
-        # endpoint_service_name = service.get('endpoint_service_name', None)
-        if endpoint_service_type and \
-                endpoint_service_type != service.get('service_type'):
-            proxy.service_type = endpoint_service_type
-
-        if 'additional_headers' in service:
-            proxy.additional_headers = service.get('additional_headers')
-
-        if service.get('require_ak', False):
-            _logger.debug('during registration found that ak is required')
-            config = connection.config.config
-
-            ak = config.get('ak', None)
-            sk = config.get('sk', None)
-
-            if not ak:
-                ak = os.getenv('S3_ACCESS_KEY_ID', None)
-            if not sk:
-                sk = os.getenv('S3_SECRET_ACCESS_KEY', None)
-
-            if ak and sk:
-                proxy._set_ak(ak=ak, sk=sk)
-            else:
-                _logger.error('AK/SK pair is not available')
-                continue
-
-        endpoint_override = service.get('endpoint_override', None)
-        if endpoint_override:
-            _logger.debug('Setting endpoint_override into the %s.Proxy' %
-                          service_name)
-            proxy.endpoint_override = endpoint_override
-
-        append_project_id = service.get('append_project_id', False)
-        if append_project_id:
-            ep = proxy.get_endpoint_data().catalog_url
-            if ep and not ep.rstrip('/').endswith('\%(project_id)s'):
-                proxy.endpoint_override = utils.urljoin(ep, '%(project_id)s')
-
-        # Can be done only that late
-        # patch_connection(connection)
-        # setattr(connection, service_name, proxy)
-    return None
-
-
 def _find_service_filter_class(service_type):
+    """Find ServiceFilter class
+    """
     package_name = 'otcextensions.sdk.{service_type}'.format(
         service_type=service_type).replace('-', '_')
     module_name = service_type.replace('-', '_') + '_service'
@@ -236,3 +148,100 @@ def _find_service_filter_class(service_type):
     # inside it.
     service_filter_class = getattr(service_filter_module, class_name)
     return service_filter_class
+
+
+def patch_connection(target):
+    # descriptors are not working out of box for runtime attributes
+    # So we need to inject them. Additionally we need to override some
+    # properties of the proxy
+
+    def get_otc_proxy(self, service_name=None, service=None):
+        _logger.debug('get_otc_proxy is %s, %s, %s' %
+                      (self, service_name, service))
+
+        if service['service_type'] not in self._proxies:
+            # Initialize proxy and inject required properties
+            descriptor = _get_descriptor(service_name)
+            if not descriptor:
+                _logger.error('descriptor for service %s is missing' %
+                              service_name)
+                return
+
+            proxy = descriptor.__get__(self, descriptor)
+
+            endpoint_service_type = service.get('endpoint_service_type', None)
+            if endpoint_service_type and \
+                    endpoint_service_type != service.get('service_type'):
+                proxy.service_type = endpoint_service_type
+
+            # Set additional_headers into the proxy
+            if 'additional_headers' in service:
+                proxy.additional_headers = service.get('additional_headers')
+
+            # If service requires AK/SK - inject them
+            if service.get('require_ak', False):
+                _logger.debug('during registration found that ak is required')
+                config = self.config.config
+
+                ak = config.get('ak', None)
+                sk = config.get('sk', None)
+
+                if not ak:
+                    ak = os.getenv('S3_ACCESS_KEY_ID', None)
+                if not sk:
+                    sk = os.getenv('S3_SECRET_ACCESS_KEY', None)
+
+                if ak and sk:
+                    proxy._set_ak(ak=ak, sk=sk)
+                else:
+                    _logger.error('AK/SK pair is not available')
+                    return
+
+            # Set endpoint_override
+            endpoint_override = service.get('endpoint_override', None)
+            if endpoint_override:
+                _logger.debug('Setting endpoint_override into the %s.Proxy' %
+                              service_name)
+                proxy.endpoint_override = endpoint_override
+
+            # Ensure EP contain %project_id
+            append_project_id = service.get('append_project_id', False)
+            if append_project_id:
+                ep = proxy.get_endpoint_data().catalog_url
+                if ep and not ep.rstrip('/').endswith('\\%(project_id)s'):
+                    proxy.endpoint_override = \
+                        utils.urljoin(ep, '%(project_id)s')
+        else:
+            proxy = self._proxies[service['service_type']]
+
+        return proxy
+
+    connection.Connection.get_otc_proxy = types.MethodType(
+        get_otc_proxy, target)
+
+
+def inject_service_to_sdk(conn, service_name, service):
+    """Inject service into the SDK space
+
+    For some reason it should be a separate function
+    """
+    setattr(
+        conn.__class__,
+        service_name,
+        property(
+            fget=lambda self: self.get_otc_proxy(service_name, service)
+        )
+    )
+
+
+def register_otc_extensions(conn, **kwargs):
+    """Register supported OTC services and make them known to the OpenStackSDK
+    """
+    patch_connection(conn)
+
+    for (service_name, service) in OTC_SERVICES.items():
+        _logger.debug('trying to register service %s' % service_name)
+
+        inject_service_to_sdk(conn, service_name, service)
+
+    return None
