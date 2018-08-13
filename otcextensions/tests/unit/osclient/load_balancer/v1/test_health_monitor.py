@@ -15,6 +15,7 @@
 import mock
 
 from osc_lib import exceptions
+from openstackclient.tests.unit import utils
 
 from otcextensions.common import sdk_utils
 from otcextensions.osclient.load_balancer.v1 import health_monitor
@@ -25,9 +26,7 @@ class TestListHealthMonitor(fakes.TestLoadBalancer):
 
     _objects = fakes.FakeHealthMonitor.create_multiple(3)
 
-    columns = ('ID', 'Name', 'type', 'is_admin_state_up',
-               'url_path', 'expected_codes',
-               'delay', 'max_retries', 'timeout', 'pool_ids')
+    columns = ('id', 'name', 'project_id', 'type', 'admin_state_up')
 
     data = []
 
@@ -35,14 +34,9 @@ class TestListHealthMonitor(fakes.TestLoadBalancer):
         data.append((
             s.id,
             s.name,
+            s.project_id,
             s.type,
             s.is_admin_state_up,
-            s.url_path,
-            s.expected_codes,
-            s.delay,
-            s.max_retries,
-            s.timeout,
-            sdk_utils.ListOfIdsColumn(s.pool_ids),
         ))
 
     def setUp(self):
@@ -76,22 +70,22 @@ class TestListHealthMonitor(fakes.TestLoadBalancer):
 
     def test_list_filter_values(self):
         arglist = [
-            '--delay', '1',
-            '--expected_codes', 'codes',
-            '--http_method', 'GET',
-            '--max_retries', '2',
-            '--timeout', '3',
-            '--url_path', 'url_path',
+            # '--delay', '1',
+            # '--expected_codes', 'codes',
+            # '--http_method', 'GET',
+            # '--max_retries', '2',
+            # '--timeout', '3',
+            # '--url_path', 'url_path',
             '--type', 'HTTP',
         ]
 
         verifylist = [
-            ('delay', 1),
-            ('max_retries', 2),
-            ('timeout', 3),
-            ('expected_codes', 'codes'),
-            ('http_method', 'GET'),
-            ('url_path', 'url_path'),
+            # ('delay', 1),
+            # ('max_retries', 2),
+            # ('timeout', 3),
+            # ('expected_codes', 'codes'),
+            # ('http_method', 'GET'),
+            # ('url_path', 'url_path'),
             ('type', 'HTTP'),
         ]
         # Verify cm is triggereg with default parameters
@@ -106,12 +100,12 @@ class TestListHealthMonitor(fakes.TestLoadBalancer):
         self.cmd.take_action(parsed_args)
 
         self.client.health_monitors.assert_called_once_with(
-            delay=1,
-            max_retries=2,
-            timeout=3,
-            expected_codes='codes',
-            http_method='GET',
-            url_path='url_path',
+            # delay=1,
+            # max_retries=2,
+            # timeout=3,
+            # expected_codes='codes',
+            # http_method='GET',
+            # url_path='url_path',
             type='HTTP'
         )
 
@@ -124,13 +118,10 @@ class TestListHealthMonitor(fakes.TestLoadBalancer):
             ('http_method', 'bad')
         ]
 
-        # Verify cm is triggereg with default parameters
-        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-
         # Ensure exception is raised
         self.assertRaises(
-            exceptions.CommandError,
-            self.cmd.take_action, parsed_args)
+            utils.ParserException,
+            self.check_parser, self.cmd, arglist, verifylist)
 
     def test_list_filter_exceptions_type(self):
         arglist = [
@@ -141,35 +132,32 @@ class TestListHealthMonitor(fakes.TestLoadBalancer):
             ('type', 'bad')
         ]
 
-        # Verify cm is triggereg with default parameters
-        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-
         # Ensure exception is raised
         self.assertRaises(
-            exceptions.CommandError,
-            self.cmd.take_action, parsed_args)
+            utils.ParserException,
+            self.check_parser, self.cmd, arglist, verifylist)
 
 
 class TestShowHealthMonitor(fakes.TestLoadBalancer):
 
     _object = fakes.FakeHealthMonitor.create_one()
 
-    columns = ('ID', 'Name', 'type', 'is_admin_state_up',
-               'http_method', 'url_path', 'expected_codes',
-               'delay', 'max_retries', 'timeout', 'pool_ids')
+    columns = (
+        'admin_state_up', 'expected_codes', 'http_method',
+        'id', 'max_retries', 'name', 'pool_ids', 'timeout',
+        'type', 'url_path')
 
     data = (
-        _object.id,
-        _object.name,
-        _object.type,
         _object.is_admin_state_up,
-        _object.http_method,
-        _object.url_path,
         _object.expected_codes,
-        _object.delay,
+        _object.http_method,
+        _object.id,
         _object.max_retries,
+        _object.name,
+        sdk_utils.ListOfIdsColumnBR(_object.pool_ids),
         _object.timeout,
-        sdk_utils.ListOfIdsColumn(_object.pool_ids),
+        _object.type,
+        _object.url_path,
     )
 
     def setUp(self):
@@ -210,23 +198,24 @@ class TestShowHealthMonitor(fakes.TestLoadBalancer):
 class TestCreateHealthMonitor(fakes.TestLoadBalancer):
 
     _object = fakes.FakeHealthMonitor.create_one()
+    _pool = fakes.FakePool.create_one()
 
-    columns = ('ID', 'Name', 'type', 'is_admin_state_up',
-               'http_method', 'url_path', 'expected_codes',
-               'delay', 'max_retries', 'timeout', 'pool_ids')
+    columns = (
+        'admin_state_up', 'expected_codes', 'http_method',
+        'id', 'max_retries', 'name', 'pool_ids', 'timeout',
+        'type', 'url_path')
 
     data = (
-        _object.id,
-        _object.name,
-        _object.type,
         _object.is_admin_state_up,
-        _object.http_method,
-        _object.url_path,
         _object.expected_codes,
-        _object.delay,
+        _object.http_method,
+        _object.id,
         _object.max_retries,
+        _object.name,
+        sdk_utils.ListOfIdsColumnBR(_object.pool_ids),
         _object.timeout,
-        sdk_utils.ListOfIdsColumn(_object.pool_ids),
+        _object.type,
+        _object.url_path,
     )
 
     def setUp(self):
@@ -235,29 +224,30 @@ class TestCreateHealthMonitor(fakes.TestLoadBalancer):
         self.cmd = health_monitor.CreateHealthMonitor(self.app, None)
 
         self.client.create_health_monitor = mock.Mock()
+        self.client.find_pool = mock.Mock()
 
     def test_create_default(self):
         arglist = [
-            '--admin_state_up', 'true',
+            'pool_id',
+            '--disable',
             '--delay', '1',
             '--expected_codes', '100',
             '--http_method', 'CONNECT',
             '--name', 'name',
             '--max_retries', '2',
-            '--pool_id', 'pool',
             '--timeout', '3',
             '--type', 'PING',
             '--url_path', 'url'
         ]
 
         verifylist = [
-            ('admin_state_up', True),
+            ('disable', True),
             ('delay', 1),
             ('expected_codes', '100'),
             ('http_method', 'CONNECT'),
             ('name', 'name'),
             ('max_retries', 2),
-            ('pool_id', 'pool'),
+            ('pool', 'pool_id'),
             ('timeout', 3),
             ('type', 'PING'),
             ('url_path', 'url')
@@ -269,18 +259,21 @@ class TestCreateHealthMonitor(fakes.TestLoadBalancer):
         self.client.create_health_monitor.side_effect = [
             self._object
         ]
+        self.client.find_pool.side_effect = [
+            self._pool
+        ]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.create_health_monitor.assert_called_once_with(
-            admin_state_up=True,
+            is_admin_state_up=False,
             delay=1,
             expected_codes='100',
             http_method='CONNECT',
             max_retries=2,
             name='name',
-            pool_id='pool',
+            pool_id=self._pool.id,
             timeout=3,
             type='PING',
             url_path='url'
@@ -294,35 +287,36 @@ class TestUpdateHealthMonitor(fakes.TestLoadBalancer):
 
     _object = fakes.FakeHealthMonitor.create_one()
 
-    columns = ('ID', 'Name', 'type', 'is_admin_state_up',
-               'http_method', 'url_path', 'expected_codes',
-               'delay', 'max_retries', 'timeout', 'pool_ids')
+    columns = (
+        'admin_state_up', 'expected_codes', 'http_method',
+        'id', 'max_retries', 'name', 'pool_ids', 'timeout',
+        'type', 'url_path')
 
     data = (
-        _object.id,
-        _object.name,
-        _object.type,
         _object.is_admin_state_up,
-        _object.http_method,
-        _object.url_path,
         _object.expected_codes,
-        _object.delay,
+        _object.http_method,
+        _object.id,
         _object.max_retries,
+        _object.name,
+        sdk_utils.ListOfIdsColumnBR(_object.pool_ids),
         _object.timeout,
-        sdk_utils.ListOfIdsColumn(_object.pool_ids),
+        _object.type,
+        _object.url_path,
     )
 
     def setUp(self):
         super(TestUpdateHealthMonitor, self).setUp()
 
-        self.cmd = health_monitor.UpdateHealthMonitor(self.app, None)
+        self.cmd = health_monitor.SetHealthMonitor(self.app, None)
 
         self.client.update_health_monitor = mock.Mock()
+        self.client.find_health_monitor = mock.Mock()
 
     def test_update_default(self):
         arglist = [
             'hm',
-            '--admin_state_up', 'true',
+            '--disable',
             '--delay', '1',
             '--expected_codes', '100',
             '--http_method', 'CONNECT',
@@ -334,7 +328,7 @@ class TestUpdateHealthMonitor(fakes.TestLoadBalancer):
 
         verifylist = [
             ('health_monitor', 'hm'),
-            ('admin_state_up', True),
+            ('disable', True),
             ('delay', 1),
             ('expected_codes', '100'),
             ('http_method', 'CONNECT'),
@@ -350,13 +344,16 @@ class TestUpdateHealthMonitor(fakes.TestLoadBalancer):
         self.client.update_health_monitor.side_effect = [
             self._object
         ]
+        self.client.find_health_monitor.side_effect = [
+            self._object
+        ]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.update_health_monitor.assert_called_once_with(
-            health_monitor='hm',
-            admin_state_up=True,
+            health_monitor=self._object.id,
+            is_admin_state_up=False,
             delay=1,
             expected_codes='100',
             http_method='CONNECT',
@@ -380,6 +377,7 @@ class TestDeleteHealthMonitor(fakes.TestLoadBalancer):
         self.cmd = health_monitor.DeleteHealthMonitor(self.app, None)
 
         self.client.delete_health_monitor = mock.Mock()
+        self.client.find_health_monitor = mock.Mock()
 
     def test_delete_default(self):
         arglist = [
@@ -396,11 +394,14 @@ class TestDeleteHealthMonitor(fakes.TestLoadBalancer):
         self.client.delete_health_monitor.side_effect = [
             {}
         ]
+        self.client.find_health_monitor.side_effect = [
+            self._object
+        ]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
         self.client.delete_health_monitor.assert_called_once_with(
-            health_monitor='hm',
+            health_monitor=self._object.id,
             ignore_missing=False
         )
