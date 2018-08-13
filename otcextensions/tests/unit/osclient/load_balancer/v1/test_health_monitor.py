@@ -14,7 +14,6 @@
 #
 import mock
 
-from osc_lib import exceptions
 from openstackclient.tests.unit import utils
 
 from otcextensions.common import sdk_utils
