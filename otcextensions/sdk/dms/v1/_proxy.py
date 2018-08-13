@@ -26,15 +26,14 @@ class Proxy(sdk_proxy.Proxy):
 
         :param dict kwargs: Keyword arguments which will be used to overwrite a
             :class:`~otcextensions.sdk.dms.v1.queue.Queue`
-        ::rtype: :class:`~otcextensions.sdk.dms.v1.queue.Queue`
         """
         return self._create(_queue.Queue, **kwargs)
 
     def queues(self):
         """List all queues
 
-        :returns: A generator of Queue object
-        ::rtype: :class:`~otcextensions.sdk.dms.v1.queue.Queue`
+        :returns: A generator of Queue object of
+            :class:`~otcextensions.sdk.dms.v1.queue.Queue`
         """
         return self._list(_queue.Queue, paginated=False)
 
@@ -45,7 +44,6 @@ class Proxy(sdk_proxy.Proxy):
             :class:`~otcextensions.sdk.dms.v1.queue.Queue`
         :returns: one object of class
             :class:`~otcextensions.sdk.dms.v1.queue.Queue`
-        ::rtype: :class:`~otcextensions.sdk.dms.v1.queue.Queue`
         """
         return self._get(_queue.Queue, queue)
 
@@ -57,7 +55,7 @@ class Proxy(sdk_proxy.Proxy):
         :param bool ignore_missing: When set to ``False``
             :class:`~otcextensions.sdk.exceptions.ResourceNotFound` will be
             raised when the queue does not exist.
-        :returns: ``None``
+        :returns: `None`
         """
 
         self._delete(_queue.Queue, queue, ignore_missing=ignore_missing)
@@ -89,7 +87,7 @@ class Proxy(sdk_proxy.Proxy):
         :param queue: The queue id or an instance of
             :class:`~otcextensions.sdk.dms.v1.queue.Queue`
         :returns: A generator of Group object
-        ::rtype: :class:`~otcextensions.sdk.dms.v1.queue.Group`
+        :rtype: :class:`~otcextensions.sdk.dms.v1.queue.Group`
         """
         queue_id = queue
         if isinstance(queue, _queue.Queue):
@@ -170,6 +168,6 @@ class Proxy(sdk_proxy.Proxy):
         """List quota
 
         :returns: A generator of Quota object
-        ::rtype: :class:`~otcextensions.sdk.dms.v1.quota.Quota`
+        :rtype: :class:`~otcextensions.sdk.dms.v1.quota.Quota`
         """
         return self._list(_quota.Quota)

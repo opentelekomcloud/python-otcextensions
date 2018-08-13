@@ -125,6 +125,7 @@ control which services can be used.
    Key Management Service <proxies/kms>
    Cloud Container Engine <proxies/cce>
    Volume Backup Service <proxies/volume_backup>
+   Distributed Message Service <proxies/dms>
 
 Resource Interface
 ~~~~~~~~~~~~~~~~~~
