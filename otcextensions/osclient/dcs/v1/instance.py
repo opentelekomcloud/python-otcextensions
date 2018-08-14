@@ -477,3 +477,59 @@ class ExtendInstance(command.ShowOne):
         data = utils.get_item_properties(obj, columns, formatters=_formatters)
 
         return (display_columns, data)
+
+
+class _OperationInstance(command.ShowOne):
+    def get_parser(self, prog_name):
+        parser = super(_OperationInstance, self).get_parser(prog_name)
+        parser.add_argument(
+            'instance',
+            metavar='<instance>',
+            help=_('ID or Name of the instance to modify')
+        )
+        return parser
+
+
+class StopInstance(_OperationInstance):
+    _description = _('Stop a single DCS instance')
+
+    def take_action(self, parsed_args):
+
+        client = self.app.client_manager.dcs
+
+        obj = client.stop_instance(instance=parsed_args.instance)
+
+        display_columns, columns = _get_columns(obj)
+        data = utils.get_item_properties(obj, columns, formatters=_formatters)
+
+        return (display_columns, data)
+
+
+class StartInstance(_OperationInstance):
+    _description = _('Start a single DCS instance')
+
+    def take_action(self, parsed_args):
+
+        client = self.app.client_manager.dcs
+
+        obj = client.start_instance(instance=parsed_args.instance)
+
+        display_columns, columns = _get_columns(obj)
+        data = utils.get_item_properties(obj, columns, formatters=_formatters)
+
+        return (display_columns, data)
+
+
+class RestartInstance(_OperationInstance):
+    _description = _('Restart a single DCS instance')
+
+    def take_action(self, parsed_args):
+
+        client = self.app.client_manager.dcs
+
+        obj = client.restart_instance(instance=parsed_args.instance)
+
+        display_columns, columns = _get_columns(obj)
+        data = utils.get_item_properties(obj, columns, formatters=_formatters)
+
+        return (display_columns, data)

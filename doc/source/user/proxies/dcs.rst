@@ -21,3 +21,7 @@ Instance Operations
    .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.find_instance
    .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.delete_instance
    .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.update_instance
+   .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.extend_instance
+   .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.start_instance
+   .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.restart_instance
+   .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.stop_instance

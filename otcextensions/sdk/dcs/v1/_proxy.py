@@ -101,3 +101,39 @@ class Proxy(sdk_proxy.Proxy):
         res = self._get_resource(_instance.Instance, instance)
         res.extend(self, capacity)
         return self._get(_instance.Instance, res)
+
+    def stop_instance(self, instance):
+        """Stop existing instance
+
+        :param instance: The instance id, name or an instance of
+            :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
+        :returns: Updated instance
+        :rtype: :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
+        """
+        res = self.find_instance(instance)
+        res.stop(self)
+        return self._get(_instance.Instance, res)
+
+    def start_instance(self, instance):
+        """Start existing instance
+
+        :param instance: The instance id, name or an instance of
+            :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
+        :returns: Updated instance
+        :rtype: :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
+        """
+        res = self.find_instance(instance)
+        res.start(self)
+        return self._get(_instance.Instance, res)
+
+    def restart_instance(self, instance):
+        """Retart existing instance
+
+        :param instance: The instance id, name or an instance of
+            :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
+        :returns: Updated instance
+        :rtype: :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
+        """
+        res = self.find_instance(instance)
+        res.restart(self)
+        return self._get(_instance.Instance, res)
