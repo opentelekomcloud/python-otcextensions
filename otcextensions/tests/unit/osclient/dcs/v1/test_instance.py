@@ -123,7 +123,7 @@ class TestListInstance(fakes.TestDCS):
             self.check_parser, self.cmd, arglist, verifylist)
 
 
-class TestShowInstance(fakes.TestDCS):
+class TestBasicInstance(fakes.TestDCS):
 
     _data = fakes.FakeInstance.create_one()
 
@@ -168,6 +168,12 @@ class TestShowInstance(fakes.TestDCS):
         _data.vpc_id,
         _data.vpc_name
     )
+
+    def setUp(self):
+        super(TestBasicInstance, self).setUp()
+
+
+class TestShowInstance(TestBasicInstance):
 
     def setUp(self):
         super(TestShowInstance, self).setUp()
@@ -259,51 +265,7 @@ class TestDeleteInstance(fakes.TestDCS):
         self.assertEqual(2, self.client.delete_instance.call_count)
 
 
-class TestCreateInstance(fakes.TestDCS):
-
-    _data = fakes.FakeInstance.create_one()
-
-    columns = (
-        'available_zones', 'capacity', 'charging_mode', 'created_at',
-        'description', 'engine', 'engine_version', 'error_code',
-        'id', 'internal_version', 'ip', 'maintain_begin', 'maintain_end',
-        'max_memory', 'name', 'order_id', 'port', 'product_id',
-        'resource_spec_code', 'security_group_id', 'security_group_name',
-        'status', 'subnet_cidr', 'subnet_id', 'subnet_name',
-        'used_memory', 'user_id', 'user_name', 'vpc_id', 'vpc_name')
-
-    data = (
-        _data.available_zones,
-        _data.capacity,
-        _data.charging_mode,
-        _data.created_at,
-        _data.description,
-        _data.engine,
-        _data.engine_version,
-        _data.error_code,
-        _data.id,
-        _data.internal_version,
-        _data.ip,
-        _data.maintain_begin,
-        _data.maintain_end,
-        _data.max_memory,
-        _data.name,
-        _data.order_id,
-        _data.port,
-        _data.product_id,
-        _data.resource_spec_code,
-        _data.security_group_id,
-        _data.security_group_name,
-        _data.status,
-        _data.subnet_cidr,
-        _data.subnet_id,
-        _data.subnet_name,
-        _data.used_memory,
-        _data.user_id,
-        _data.user_name,
-        _data.vpc_id,
-        _data.vpc_name
-    )
+class TestCreateInstance(TestBasicInstance):
 
     def setUp(self):
         super(TestCreateInstance, self).setUp()
@@ -377,51 +339,7 @@ class TestCreateInstance(fakes.TestDCS):
         self.assertEqual(self.data, data)
 
 
-class TestSetInstance(fakes.TestDCS):
-
-    _data = fakes.FakeInstance.create_one()
-
-    columns = (
-        'available_zones', 'capacity', 'charging_mode', 'created_at',
-        'description', 'engine', 'engine_version', 'error_code',
-        'id', 'internal_version', 'ip', 'maintain_begin', 'maintain_end',
-        'max_memory', 'name', 'order_id', 'port', 'product_id',
-        'resource_spec_code', 'security_group_id', 'security_group_name',
-        'status', 'subnet_cidr', 'subnet_id', 'subnet_name',
-        'used_memory', 'user_id', 'user_name', 'vpc_id', 'vpc_name')
-
-    data = (
-        _data.available_zones,
-        _data.capacity,
-        _data.charging_mode,
-        _data.created_at,
-        _data.description,
-        _data.engine,
-        _data.engine_version,
-        _data.error_code,
-        _data.id,
-        _data.internal_version,
-        _data.ip,
-        _data.maintain_begin,
-        _data.maintain_end,
-        _data.max_memory,
-        _data.name,
-        _data.order_id,
-        _data.port,
-        _data.product_id,
-        _data.resource_spec_code,
-        _data.security_group_id,
-        _data.security_group_name,
-        _data.status,
-        _data.subnet_cidr,
-        _data.subnet_id,
-        _data.subnet_name,
-        _data.used_memory,
-        _data.user_id,
-        _data.user_name,
-        _data.vpc_id,
-        _data.vpc_name
-    )
+class TestSetInstance(TestBasicInstance):
 
     def setUp(self):
         super(TestSetInstance, self).setUp()
@@ -474,51 +392,7 @@ class TestSetInstance(fakes.TestDCS):
         self.assertEqual(self.data, data)
 
 
-class TestExtendInstance(fakes.TestDCS):
-
-    _data = fakes.FakeInstance.create_one()
-
-    columns = (
-        'available_zones', 'capacity', 'charging_mode', 'created_at',
-        'description', 'engine', 'engine_version', 'error_code',
-        'id', 'internal_version', 'ip', 'maintain_begin', 'maintain_end',
-        'max_memory', 'name', 'order_id', 'port', 'product_id',
-        'resource_spec_code', 'security_group_id', 'security_group_name',
-        'status', 'subnet_cidr', 'subnet_id', 'subnet_name',
-        'used_memory', 'user_id', 'user_name', 'vpc_id', 'vpc_name')
-
-    data = (
-        _data.available_zones,
-        _data.capacity,
-        _data.charging_mode,
-        _data.created_at,
-        _data.description,
-        _data.engine,
-        _data.engine_version,
-        _data.error_code,
-        _data.id,
-        _data.internal_version,
-        _data.ip,
-        _data.maintain_begin,
-        _data.maintain_end,
-        _data.max_memory,
-        _data.name,
-        _data.order_id,
-        _data.port,
-        _data.product_id,
-        _data.resource_spec_code,
-        _data.security_group_id,
-        _data.security_group_name,
-        _data.status,
-        _data.subnet_cidr,
-        _data.subnet_id,
-        _data.subnet_name,
-        _data.used_memory,
-        _data.user_id,
-        _data.user_name,
-        _data.vpc_id,
-        _data.vpc_name
-    )
+class TestExtendInstance(TestBasicInstance):
 
     def setUp(self):
         super(TestExtendInstance, self).setUp()
@@ -555,6 +429,105 @@ class TestExtendInstance(fakes.TestDCS):
         self.client.extend_instance.assert_called_with(
             instance=self._data.id,
             capacity=2,
+        )
+
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
+
+
+class TestStopInstance(TestBasicInstance):
+
+    def setUp(self):
+        super(TestStopInstance, self).setUp()
+
+        self.cmd = instance.StopInstance(self.app, None)
+
+    def test_default(self):
+        arglist = [
+            'inst',
+        ]
+        verifylist = [
+            ('instance', 'inst'),
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.stop_instance.side_effect = [
+            self._data
+        ]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.stop_instance.assert_called_with(
+            instance='inst',
+        )
+
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
+
+
+class TestStartInstance(TestBasicInstance):
+
+    def setUp(self):
+        super(TestStartInstance, self).setUp()
+
+        self.cmd = instance.StartInstance(self.app, None)
+
+    def test_default(self):
+        arglist = [
+            'inst',
+        ]
+        verifylist = [
+            ('instance', 'inst'),
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.start_instance.side_effect = [
+            self._data
+        ]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.start_instance.assert_called_with(
+            instance='inst',
+        )
+
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
+
+
+class TestRestartInstance(TestBasicInstance):
+
+    def setUp(self):
+        super(TestRestartInstance, self).setUp()
+
+        self.cmd = instance.RestartInstance(self.app, None)
+
+    def test_default(self):
+        arglist = [
+            'inst',
+        ]
+        verifylist = [
+            ('instance', 'inst'),
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.restart_instance.side_effect = [
+            self._data
+        ]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.restart_instance.assert_called_with(
+            instance='inst',
         )
 
         self.assertEqual(self.columns, columns)

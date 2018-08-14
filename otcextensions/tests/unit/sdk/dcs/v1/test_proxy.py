@@ -115,3 +115,51 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
             self.proxy.delete_instance, _instance.Instance, True,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
         )
+
+    def test_stop_instance(self):
+        self.sot = _instance.Instance()
+        self.sot.stop = mock.Mock(return_value={})
+        self.proxy._get = mock.Mock(return_value=self.sot)
+        self.proxy._find = mock.Mock(return_value=self.sot)
+        self.proxy._get_resource = mock.Mock(return_value=self.sot)
+
+        self.proxy.stop_instance(self.sot)
+        self.sot.stop.assert_called_with(
+            self.proxy,
+        )
+        self.proxy._get.assert_called_with(
+            _instance.Instance,
+            self.sot
+        )
+
+    def test_start_instance(self):
+        self.sot = _instance.Instance()
+        self.sot.start = mock.Mock(return_value={})
+        self.proxy._get = mock.Mock(return_value=self.sot)
+        self.proxy._find = mock.Mock(return_value=self.sot)
+        self.proxy._get_resource = mock.Mock(return_value=self.sot)
+
+        self.proxy.start_instance(self.sot)
+        self.sot.start.assert_called_with(
+            self.proxy,
+        )
+        self.proxy._get.assert_called_with(
+            _instance.Instance,
+            self.sot
+        )
+
+    def test_restart_instance(self):
+        self.sot = _instance.Instance()
+        self.sot.restart = mock.Mock(return_value={})
+        self.proxy._get = mock.Mock(return_value=self.sot)
+        self.proxy._find = mock.Mock(return_value=self.sot)
+        self.proxy._get_resource = mock.Mock(return_value=self.sot)
+
+        self.proxy.restart_instance(self.sot)
+        self.sot.restart.assert_called_with(
+            self.proxy,
+        )
+        self.proxy._get.assert_called_with(
+            _instance.Instance,
+            self.sot
+        )

@@ -9,6 +9,9 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import mock
+
+from keystoneauth1 import adapter
 
 from openstack.tests.unit import base
 
@@ -49,6 +52,11 @@ EXAMPLE = {
 
 
 class TestInstance(base.TestCase):
+
+    def setUp(self):
+        super(TestInstance, self).setUp()
+        self.sess = mock.Mock(spec=adapter.Adapter)
+        self.sess.put = mock.Mock()
 
     def test_basic(self):
         sot = instance.Instance()
@@ -93,3 +101,63 @@ class TestInstance(base.TestCase):
         self.assertEqual(EXAMPLE['user_name'], sot.user_name)
         self.assertEqual(EXAMPLE['maintain_begin'], sot.maintain_begin)
         self.assertEqual(EXAMPLE['maintain_end'], sot.maintain_end)
+
+    def test_stop(self):
+
+        sot = instance.Instance(**EXAMPLE)
+
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {}
+        mock_response.headers = {}
+
+        self.sess.put.return_value = mock_response
+
+        sot.stop(self.sess)
+
+        self.sess.put.assert_called_once_with(
+            'instances/status',
+            json={
+                'action': 'stop',
+                'instances': [FAKE_ID]}
+        )
+
+    def test_start(self):
+
+        sot = instance.Instance(**EXAMPLE)
+
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {}
+        mock_response.headers = {}
+
+        self.sess.put.return_value = mock_response
+
+        sot.start(self.sess)
+
+        self.sess.put.assert_called_once_with(
+            'instances/status',
+            json={
+                'action': 'start',
+                'instances': [FAKE_ID]}
+        )
+
+    def test_restart(self):
+
+        sot = instance.Instance(**EXAMPLE)
+
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {}
+        mock_response.headers = {}
+
+        self.sess.put.return_value = mock_response
+
+        sot.restart(self.sess)
+
+        self.sess.put.assert_called_once_with(
+            'instances/status',
+            json={
+                'action': 'restart',
+                'instances': [FAKE_ID]}
+        )

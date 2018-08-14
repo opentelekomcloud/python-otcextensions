@@ -159,10 +159,35 @@ class Instance(sdk_resource.Resource):
             "No %s found for %s" % (cls.__name__, name_or_id))
 
     def extend(self, session, capacity):
-        '''extend instance capacity'''
+        """Extend instance capacity
+        """
         body = {'new_capacity': capacity}
         url = utils.urljoin(self.base_path, self.id, 'extend')
         response = session.post(
+            url,
+            json=body)
+        return self._translate_response(response, False)
+
+    def stop(self, session):
+        """Stop instance
+        """
+        return self._status_action(session, 'stop')
+
+    def start(self, session):
+        """Start instance
+        """
+        return self._status_action(session, 'start')
+
+    def restart(self, session):
+        """Retart instance
+        """
+        return self._status_action(session, 'restart')
+
+    def _status_action(self, session, action):
+        '''perform status action on instance'''
+        body = {'action': action, 'instances': [self.id]}
+        url = utils.urljoin(self.base_path, 'status')
+        response = session.put(
             url,
             json=body)
         return self._translate_response(response, False)
