@@ -126,6 +126,7 @@ control which services can be used.
    Cloud Container Engine <proxies/cce>
    Volume Backup Service <proxies/volume_backup>
    Distributed Message Service <proxies/dms>
+   Distributed Cache Service <proxies/dcs>
 
 Resource Interface
 ~~~~~~~~~~~~~~~~~~
