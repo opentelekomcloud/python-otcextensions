@@ -533,3 +533,49 @@ class RestartInstance(_OperationInstance):
         data = utils.get_item_properties(obj, columns, formatters=_formatters)
 
         return (display_columns, data)
+
+
+class ChangePasswordInstance(command.ShowOne):
+    _description = _('Change a password of a single DCS instance')
+
+    def get_parser(self, prog_name):
+        parser = super(ChangePasswordInstance, self).get_parser(prog_name)
+        parser.add_argument(
+            'instance',
+            metavar='<instance>',
+            help=_('ID or Name of the instance to modify')
+        )
+        parser.add_argument(
+            '--current_password',
+            metavar='<pwd>',
+            help=_('Current instance password')
+        )
+        parser.add_argument(
+            '--new_password',
+            metavar='<pwd>',
+            help=_('New password of a DCS instance. Password complexity '
+                   'requirements:\n'
+                   '* A string of 8-32 characters.\n'
+                   '* Contains at least three types of the following '
+                   'characters:\n'
+                   '* Uppercase letters\n'
+                   '* Lowercase letters\n'
+                   '* Digits\n'
+                   '* Special characters, such as '
+                   '~!@#$%%^&*()-_=+\\|[{}]:\'",<.>/?')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+
+        client = self.app.client_manager.dcs
+
+        obj = client.change_instance_password(
+            instance=parsed_args.instance,
+            current_password=parsed_args.current_password,
+            new_password=parsed_args.new_password)
+
+        display_columns, columns = _get_columns(obj)
+        data = utils.get_item_properties(obj, columns, formatters=_formatters)
+
+        return (display_columns, data)

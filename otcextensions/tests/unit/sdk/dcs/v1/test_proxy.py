@@ -165,6 +165,21 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
             self.sot
         )
 
+    def test_change_pwd(self):
+        self.sot = _instance.Instance()
+        self.sot.change_password = mock.Mock(return_value={})
+        self.proxy._get = mock.Mock(return_value=self.sot)
+        self.proxy._find = mock.Mock(return_value=self.sot)
+        self.proxy._get_resource = mock.Mock(return_value=self.sot)
+
+        self.proxy.change_instance_password(self.sot, 'curr', 'new')
+        self.sot.change_password.assert_called_with(
+            self.proxy,
+            current_password='curr',
+            new_password='new'
+        )
+        self.proxy._get.assert_not_called()
+
     def test_statistics(self):
         self.verify_list(
             self.proxy.statistics, _stat.Statistic,
