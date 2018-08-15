@@ -12,7 +12,10 @@
 import mock
 
 from otcextensions.sdk.dcs.v1 import _proxy
+from otcextensions.sdk.dcs.v1 import backup as _backup
+from otcextensions.sdk.dcs.v1 import config as _config
 from otcextensions.sdk.dcs.v1 import instance as _instance
+from otcextensions.sdk.dcs.v1 import restore as _restore
 from otcextensions.sdk.dcs.v1 import statistic as _stat
 
 from openstack.tests.unit import test_proxy_base
@@ -184,4 +187,114 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
         self.verify_list(
             self.proxy.statistics, _stat.Statistic,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
+        )
+
+    def test_backups(self):
+        self.sot = _backup.Backup()
+        self.inst = _instance.Instance(id='1')
+        self.proxy._get_resource = mock.Mock(return_value=self.inst)
+        self.proxy._list = mock.Mock(return_value=self.sot)
+
+        self.proxy.backups('inst')
+        self.proxy._list.assert_called_with(
+            _backup.Backup,
+            paginated=False,
+            instance_id='1'
+        )
+
+    def test_backups_query(self):
+        self.sot = _backup.Backup()
+        self.inst = _instance.Instance(id='1')
+        self.proxy._get_resource = mock.Mock(return_value=self.inst)
+        self.proxy._list = mock.Mock(return_value=self.sot)
+
+        self.proxy.backups(
+            'inst',
+            start='1',
+            end='2',
+            start_time='3',
+            end_time='4')
+        self.proxy._list.assert_called_with(
+            _backup.Backup,
+            paginated=False,
+            instance_id='1',
+            start='1',
+            end='2',
+            start_time='3',
+            end_time='4'
+        )
+
+    def test_create_backup(self):
+        self.sot = _backup.Backup()
+        self.proxy._create = mock.Mock(return_value=self.sot)
+
+        self.proxy.backup_instance('1', remark='rem')
+        self.proxy._create.assert_called_with(
+            _backup.Backup,
+            instance_id='1',
+            remark='rem'
+        )
+
+    def test_delete_backup(self):
+        self.verify_delete(
+            self.proxy.delete_instance_backup, _backup.Backup, True,
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
+        )
+
+    def test_restores_query(self):
+        self.sot = _restore.Restore()
+        self.proxy._list = mock.Mock(return_value=self.sot)
+
+        self.proxy.restore_records(
+            instance='inst',
+            start='1',
+            end='2',
+            start_time='3',
+            end_time='4')
+        self.proxy._list.assert_called_with(
+            _restore.Restore,
+            paginated=False,
+            instance_id='inst',
+            start='1',
+            end='2',
+            start_time='3',
+            end_time='4'
+        )
+
+    def test_restore_backup(self):
+        self.proxy._create = mock.Mock()
+
+        self.proxy.restore_instance(
+            instance='1',
+            backup_id='bck',
+            remark='rem')
+        self.proxy._create.assert_called_with(
+            _restore.Restore,
+            instance_id='1',
+            backup_id='bck',
+            remark='rem'
+        )
+
+    def test_configs(self):
+        self.proxy._list = mock.Mock()
+
+        self.proxy.instance_params('1')
+        self.proxy._list.assert_called_with(
+            _config.Config,
+            paginated=False,
+            instance_id='1'
+        )
+
+    def test_update_configs(self):
+        self.sot = _config.Config()
+        self.proxy._get_resource = mock.Mock(return_value=self.sot)
+        self.sot._update = mock.Mock()
+        params = []
+
+        self.proxy.update_instance_params(
+            instance='inst_id',
+            params=params)
+        self.sot._update.assert_called_with(
+            self.proxy,
+            params
         )

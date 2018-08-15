@@ -13,8 +13,6 @@
 #   under the License.
 import mock
 
-from openstackclient.tests.unit import utils
-
 from otcextensions.osclient.dcs.v1 import statistic
 from otcextensions.tests.unit.osclient.dcs.v1 import fakes
 

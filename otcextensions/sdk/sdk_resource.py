@@ -71,6 +71,10 @@ class Resource(resource.Resource):
             has_body = self.has_body
         exc.raise_from_response(response, error_message=error_message)
         if has_body:
+            if response.status_code == 204:
+                # Some bad APIs (i.e. DCS.Backup.List) return emptiness
+                _logger.warn('API returned no content, while it was expected')
+                return
             body = response.json()
             if self.resource_key and self.resource_key in body:
                 body = body[self.resource_key]
@@ -339,6 +343,9 @@ class Resource(resource.Resource):
                 **get_args
             )
             exceptions.raise_from_response(response)
+            if response.status_code == 204:
+                # Some bad APIs (i.e. DCS.Backup.List) return emptiness
+                return
             data = response.json()
 
             # Discard any existing pagination keys
