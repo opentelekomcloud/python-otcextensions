@@ -8,7 +8,8 @@ The Distributed Message Service Class
 
 The dcs high-level interface is available through the ``dcs``
 member of a :class:`~openstack.connection.Connection` object.  The
-``dcs`` member will only be added if the ``otcextensions.sdk.register_otc_extensions(conn)`` method is called.
+``dcs`` member will only be added if the
+``otcextensions.sdk.register_otc_extensions(conn)`` method is called.
 
 Instance Operations
 ^^^^^^^^^^^^^^^^^^^
@@ -25,3 +26,10 @@ Instance Operations
    .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.start_instance
    .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.restart_instance
    .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.stop_instance
+
+Statistics Operations
+^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.dcs.v1._proxy.Proxy
+
+  .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.statistics

@@ -13,6 +13,7 @@
 # from openstack import proxy
 from otcextensions.sdk import sdk_proxy
 from otcextensions.sdk.dcs.v1 import instance as _instance
+from otcextensions.sdk.dcs.v1 import statistic as _stat
 
 
 class Proxy(sdk_proxy.Proxy):
@@ -137,3 +138,12 @@ class Proxy(sdk_proxy.Proxy):
         res = self.find_instance(instance)
         res.restart(self)
         return self._get(_instance.Instance, res)
+
+    # ======== Misc ========
+    def statistics(self):
+        """Query statisctics for all instances
+
+        :returns: A generator of Instance object of
+            :class:`~otcextensions.sdk.dcs.v1.stat.Statistics`
+        """
+        return self._list(_stat.Statistic, paginated=False)

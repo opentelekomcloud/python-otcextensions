@@ -21,6 +21,7 @@ from openstackclient.tests.unit import utils
 from otcextensions.tests.unit.osclient import test_base
 
 from otcextensions.sdk.dcs.v1 import instance
+from otcextensions.sdk.dcs.v1 import statistic
 
 
 class TestDCS(utils.TestCommand):
@@ -86,4 +87,24 @@ class FakeInstance(test_base.Fake):
             'maintain_end': uuid.uuid4().hex,
         }
         obj = instance.Instance.existing(**object_info)
+        return obj
+
+
+class FakeStatistic(test_base.Fake):
+    """Fake one or more Statistic"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'instance_id': 'instance_id-' + uuid.uuid4().hex,
+            'max_memory': random.randint(1, 65535),
+            'used_memory': random.randint(1, 65535),
+            'cmd_get_count': random.randint(1, 65535),
+            'cmd_set_count': random.randint(1, 65535),
+            'used_cpu': 'cpu-' + uuid.uuid4().hex,
+            'input_kbps': 'input-' + uuid.uuid4().hex,
+            'output_kbps': 'output-' + uuid.uuid4().hex,
+
+        }
+        obj = statistic.Statistic.existing(**object_info)
         return obj
