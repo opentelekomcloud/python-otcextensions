@@ -161,3 +161,23 @@ class TestInstance(base.TestCase):
                 'action': 'restart',
                 'instances': [FAKE_ID]}
         )
+
+    def test_change_pwd(self):
+
+        sot = instance.Instance(**EXAMPLE)
+
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {}
+        mock_response.headers = {}
+
+        self.sess.put.return_value = mock_response
+
+        sot.change_pwd(self.sess, 'curr', 'new')
+
+        self.sess.put.assert_called_once_with(
+            'instances/%s/password' % (FAKE_ID),
+            json={
+                'old_password': 'curr',
+                'new_password': 'new'}
+        )

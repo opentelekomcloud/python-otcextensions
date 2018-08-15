@@ -532,3 +532,42 @@ class TestRestartInstance(TestBasicInstance):
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
+
+
+class TestChangePwdInstance(TestBasicInstance):
+
+    def setUp(self):
+        super(TestChangePwdInstance, self).setUp()
+
+        self.cmd = instance.ChangePasswordInstance(self.app, None)
+
+    def test_default(self):
+        arglist = [
+            'inst',
+            '--current_password', 'curr',
+            '--new_password', 'new'
+        ]
+        verifylist = [
+            ('instance', 'inst'),
+            ('current_password', 'curr'),
+            ('new_password', 'new')
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.change_instance_password.side_effect = [
+            self._data
+        ]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.change_instance_password.assert_called_with(
+            instance='inst',
+            current_password='curr',
+            new_password='new'
+        )
+
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)

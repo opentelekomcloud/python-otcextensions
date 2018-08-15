@@ -139,6 +139,23 @@ class Proxy(sdk_proxy.Proxy):
         res.restart(self)
         return self._get(_instance.Instance, res)
 
+    def change_instance_password(self, instance,
+                                 current_password, new_password):
+        """Change instance password
+
+        :param instance: The instance id, name or an instance of
+            :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
+        :param current_password: Current instance password
+        :param new_password: New instance password
+        :returns: Updated instance
+        :rtype: :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
+        """
+        res = self.find_instance(instance)
+        return res.change_password(
+            self,
+            current_password=current_password,
+            new_password=new_password)
+
     # ======== Misc ========
     def statistics(self):
         """Query statisctics for all instances

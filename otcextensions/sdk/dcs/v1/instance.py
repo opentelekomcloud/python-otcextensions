@@ -70,6 +70,10 @@ class Instance(sdk_resource.Resource):
     internal_version = resource.Body('internal_version')
     #: Cache node's IP address in tenant's VPC.
     ip = resource.Body('ip')
+    #: Account lockout duration.
+    lock_time = resource.Body('lock_time')
+    #: Remaining time before the account is unlocked.
+    lock_time_left = resource.Body('lock_time_left')
     #: Time at which the maintenance time window starts.
     #: Format: HH:mm:ss.
     maintain_begin = resource.Body('maintain_begin')
@@ -79,6 +83,8 @@ class Instance(sdk_resource.Resource):
     #: Overall memory size.
     #: Unit: MB.
     max_memory = resource.Body('max_memory', type=int)
+    #: Return message of the operation on the instance
+    message = resource.Body('message')
     #: Instance name
     name = resource.Body('name')
     #: Order ID.
@@ -93,6 +99,11 @@ class Instance(sdk_resource.Resource):
     #: * OTC_DCS_MS: indicates a master/standby DCS instance.
     #: * OTC_DCS_CL: indicates a DCS instance in cluster mode.
     product_id = resource.Body('product_id')
+    #: Result of the operation on the instance
+    result = resource.Body('result')
+    #: Count of the change password retries
+    #: *Type: str*
+    retry_times_left = resource.Body('retry_times_left')
     security_group_id = resource.Body('security_group_id')
     security_group_name = resource.Body('security_group_name')
     #: Cache instance status. Instance Statuses.
@@ -137,6 +148,19 @@ class Instance(sdk_resource.Resource):
             return None
         raise exceptions.ResourceNotFound(
             "No %s found for %s" % (cls.__name__, name_or_id))
+
+    def change_pwd(self, session, current_password, new_password):
+        """Schange instance password
+        """
+        body = {
+            'old_password': current_password,
+            'new_password': new_password
+        }
+        url = utils.urljoin(self.base_path, self.id, 'password')
+        response = session.put(
+            url,
+            json=body)
+        return self._translate_response(response, False)
 
     def extend(self, session, capacity):
         """Extend instance capacity
