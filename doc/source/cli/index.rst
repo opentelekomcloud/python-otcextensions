@@ -8,3 +8,4 @@
    load_balancer.rst
    volume_backup.rst
    dms.rst
+   dcs.rst
