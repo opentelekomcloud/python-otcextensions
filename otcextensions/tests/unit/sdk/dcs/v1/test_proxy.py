@@ -13,6 +13,7 @@ import mock
 
 from otcextensions.sdk.dcs.v1 import _proxy
 from otcextensions.sdk.dcs.v1 import instance as _instance
+from otcextensions.sdk.dcs.v1 import statistic as _stat
 
 from openstack.tests.unit import test_proxy_base
 
@@ -162,4 +163,10 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
         self.proxy._get.assert_called_with(
             _instance.Instance,
             self.sot
+        )
+
+    def test_statistics(self):
+        self.verify_list(
+            self.proxy.statistics, _stat.Statistic,
+            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
         )

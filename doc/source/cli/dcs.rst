@@ -18,3 +18,11 @@ Instance operations
 
 .. autoprogram-cliff:: openstack.dcs.v1
    :command: dcs instance *
+
+.. _dcs_stat:
+
+Statistics operations
+---------------------
+
+.. autoprogram-cliff:: openstack.dcs.v1
+   :command: dcs stat *
