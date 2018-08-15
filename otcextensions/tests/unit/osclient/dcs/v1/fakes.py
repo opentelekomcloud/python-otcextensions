@@ -20,7 +20,10 @@ import mock
 from openstackclient.tests.unit import utils
 from otcextensions.tests.unit.osclient import test_base
 
+from otcextensions.sdk.dcs.v1 import backup
+from otcextensions.sdk.dcs.v1 import config
 from otcextensions.sdk.dcs.v1 import instance
+from otcextensions.sdk.dcs.v1 import restore
 from otcextensions.sdk.dcs.v1 import statistic
 
 
@@ -107,4 +110,66 @@ class FakeStatistic(test_base.Fake):
 
         }
         obj = statistic.Statistic.existing(**object_info)
+        return obj
+
+
+class FakeBackup(test_base.Fake):
+    """Fake one or more Backup"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'instance_id': 'instance_id-' + uuid.uuid4().hex,
+            'id': 'id-' + uuid.uuid4().hex,
+            'size': random.randint(1, 65535),
+            'period': uuid.uuid4().hex,
+            'description': uuid.uuid4().hex,
+            'progress': uuid.uuid4().hex,
+            'created_at': uuid.uuid4().hex,
+            'updated_at': uuid.uuid4().hex,
+            'type': uuid.uuid4().hex,
+            'name': uuid.uuid4().hex,
+            'error_code': uuid.uuid4().hex,
+            'is_restorable': True,
+
+        }
+        obj = backup.Backup.existing(**object_info)
+        return obj
+
+
+class FakeRestore(test_base.Fake):
+    """Fake one or more Restore"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'instance_id': 'instance_id-' + uuid.uuid4().hex,
+            'max_memory': random.randint(1, 65535),
+            'used_memory': random.randint(1, 65535),
+            'cmd_get_count': random.randint(1, 65535),
+            'cmd_set_count': random.randint(1, 65535),
+            'used_cpu': 'cpu-' + uuid.uuid4().hex,
+            'input_kbps': 'input-' + uuid.uuid4().hex,
+            'output_kbps': 'output-' + uuid.uuid4().hex
+        }
+        obj = restore.Restore.existing(**object_info)
+        return obj
+
+
+class FakeConfig(test_base.Fake):
+    """Fake one or more Config"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'instance_id': 'instance_id-' + uuid.uuid4().hex,
+            'id': uuid.uuid4().hex,
+            'name': uuid.uuid4().hex,
+            'value': uuid.uuid4().hex,
+            'value_type': uuid.uuid4().hex,
+            'value_range': uuid.uuid4().hex,
+            'default_value': uuid.uuid4().hex,
+            'description': uuid.uuid4().hex
+        }
+        obj = config.Config.existing(**object_info)
         return obj

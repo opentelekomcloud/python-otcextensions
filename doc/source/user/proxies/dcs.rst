@@ -26,6 +26,8 @@ Instance Operations
    .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.start_instance
    .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.restart_instance
    .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.stop_instance
+   .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.stop_instance
+   .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.stop_instance
 
 Statistics Operations
 ^^^^^^^^^^^^^^^^^^^^^
@@ -33,3 +35,22 @@ Statistics Operations
 .. autoclass:: otcextensions.sdk.dcs.v1._proxy.Proxy
 
   .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.statistics
+
+Backup Operations
+^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.dcs.v1._proxy.Proxy
+
+  .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.backup_instance
+  .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.backups
+  .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.delete_instance_backup
+  .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.restore_instance
+  .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.restore_records
+
+Instance Configuration Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.dcs.v1._proxy.Proxy
+
+  .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.instance_params
+  .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.update_instance_params

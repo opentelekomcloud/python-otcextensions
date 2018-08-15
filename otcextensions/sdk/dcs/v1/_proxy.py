@@ -12,7 +12,10 @@
 
 # from openstack import proxy
 from otcextensions.sdk import sdk_proxy
+from otcextensions.sdk.dcs.v1 import backup as _backup
+from otcextensions.sdk.dcs.v1 import config as _config
 from otcextensions.sdk.dcs.v1 import instance as _instance
+from otcextensions.sdk.dcs.v1 import restore as _restore
 from otcextensions.sdk.dcs.v1 import statistic as _stat
 
 
@@ -156,6 +159,69 @@ class Proxy(sdk_proxy.Proxy):
             current_password=current_password,
             new_password=new_password)
 
+    # ======== Backups ========
+    def backup_instance(self, instance, **kwargs):
+        """Create an instance backup
+
+        :param instance: The instance id or an instance of
+            :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
+        :param dict kwargs: Keyword arguments which will be used to overwrite a
+            :class:`~otcextensions.sdk.dcs.v1.backup.Backup`
+        """
+        inst = self._get_resource(_instance.Instance, instance)
+        return self._create(_backup.Backup, instance_id=inst.id, **kwargs)
+
+    def backups(self, instance, **query):
+        """List all instance backups
+
+        :returns: A generator of Instance object of
+            :class:`~otcextensions.sdk.dcs.v1.backup.Backup`
+        """
+        inst = self._get_resource(_instance.Instance, instance)
+        return self._list(
+            _backup.Backup, paginated=False,
+            instance_id=inst.id, **query)
+
+    def delete_instance_backup(self, backup, ignore_missing=True, **attrs):
+        """Delete an instance backup
+
+        :param backup: The instance id, an instance of
+            :class:`~otcextensions.sdk.dcs.v1.backup.Backup`
+        :param bool ignore_missing: When set to ``False``
+            :class:`~otcextensions.sdk.exceptions.ResourceNotFound` will be
+            raised when the queue does not exist.
+        :returns: `None`
+        """
+        self._delete(_backup.Backup, backup,
+                     ignore_missing=ignore_missing,
+                     **attrs)
+
+    # ======== Restores ========
+    def restore_instance(self, instance, backup=None, **kwargs):
+        """Restore instance from backup
+
+        :param instance: The instance id or an instance of
+            :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
+        :param dict kwargs: Keyword arguments which will be used to overwrite a
+            :class:`~otcextensions.sdk.dcs.v1.restore.Restore`
+            `backup_id` and `description` are expected
+        """
+        inst = self._get_resource(_instance.Instance, instance)
+        return self._create(_restore.Restore, instance_id=inst.id, **kwargs)
+
+    def restore_records(self, instance, **query):
+        """List all instance restore records
+
+        :param instance: The instance id or an instance of
+            :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
+        :returns: A generator of Instance object of
+            :class:`~otcextensions.sdk.dcs.v1.restore.Restore`
+        """
+        inst = self._get_resource(_instance.Instance, instance)
+        return self._list(
+            _restore.Restore, paginated=False,
+            instance_id=inst.id, **query)
+
     # ======== Misc ========
     def statistics(self):
         """Query statisctics for all instances
@@ -164,3 +230,33 @@ class Proxy(sdk_proxy.Proxy):
             :class:`~otcextensions.sdk.dcs.v1.stat.Statistics`
         """
         return self._list(_stat.Statistic, paginated=False)
+
+    def instance_params(self, instance):
+        """List all instance configuration records
+
+        :param instance: The instance id or an instance of
+            :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
+        :returns: A generator of Instance object of
+            :class:`~otcextensions.sdk.dcs.v1.config.Config`
+        """
+        inst = self._get_resource(_instance.Instance, instance)
+        return self._list(
+            _config.Config, paginated=False,
+            instance_id=inst.id)
+
+    def update_instance_params(self, instance, params):
+        """Update instance configuration parameter with attributes
+
+        :param instance: The value can be the ID of an instance
+            or a :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
+            instance.
+        :param paramss: List of parameters of
+            a :class:`~otcextensions.sdk.dcs.v1.config.Config`.
+        :returns: None
+        """
+        res = self._get_resource(_instance.Instance, instance)
+        obj = self._get_resource(_config.Config, None, instance_id=res.id)
+        return obj._update(
+            self,
+            params
+        )
