@@ -29,17 +29,17 @@ class GroupMessage(_base.Resource):
     #: Consumer group id
     consumer_group_id = resource.URI('consumer_group_id')
     #: Message dict
-    #: *Type: dict
+    #: *Type: dict*
     message = resource.Body('message', type=dict)
     #: handler
     handler = resource.Body('handler')
     #: Status of the message
     status = resource.Body('status')
     #: Success number of the message
-    #: *Type: int
+    #: *Type: int*
     success = resource.Body('success', type=int)
     #: Fail number of the message
-    #: *Type: int
+    #: *Type: int*
     fail = resource.Body('fail', type=int)
 
     # use get method to consume message, return a list of self

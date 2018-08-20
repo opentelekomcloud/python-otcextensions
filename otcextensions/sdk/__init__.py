@@ -43,6 +43,10 @@ found on remotely on the cloud.
 #   Generally it is possible to iterate over known endpoints, but some
 #   services requires injection of AK/SK
 OTC_SERVICES = {
+    'cts': {
+        'service_type': 'cts',
+        # 'append_project_id': True,
+    },
     'rds': {
         'service_type': 'rds',
         # 'additional_headers': {'content-type': 'application/json'},
