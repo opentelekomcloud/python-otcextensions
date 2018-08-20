@@ -9,3 +9,4 @@
    volume_backup.rst
    dms.rst
    dcs.rst
+   cts.rst
