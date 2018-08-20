@@ -127,6 +127,7 @@ control which services can be used.
    Volume Backup Service <proxies/volume_backup>
    Distributed Message Service <proxies/dms>
    Distributed Cache Service <proxies/dcs>
+   Cloud Trace Service <proxies/cts>
 
 Resource Interface
 ~~~~~~~~~~~~~~~~~~
@@ -164,6 +165,9 @@ classes.
    AutoScaling Service <resources/auto_scaling/index>
    Key Management Service <resources/kms/index>
    Cloud Container Engine <resources/cce/index>
+   Distributed Message Service <resources/dms/index>
+   Distributed Cache Service <resources/dcs/index>
+   Cloud Trace Service <resources/cts/index>
 
 Low-Level Classes
 ~~~~~~~~~~~~~~~~~
