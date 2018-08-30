@@ -42,7 +42,7 @@ class Proxy(sdk_proxy.Proxy):
     def floating_ips(self, **query):
         """Get the list of anti-ddos Floating IPs
 
-        :param kwargs **query: Optional query parameters to be sent to limit
+        :param kwargs query: Optional query parameters to be sent to limit
             the resources being returned.
 
         :returns: A generator of FloatingIP object

@@ -128,6 +128,7 @@ control which services can be used.
    Distributed Message Service <proxies/dms>
    Distributed Cache Service <proxies/dcs>
    Cloud Trace Service <proxies/cts>
+   Anti DDoS Service <proxies/anti_ddos>
 
 Resource Interface
 ~~~~~~~~~~~~~~~~~~
@@ -168,6 +169,7 @@ classes.
    Distributed Message Service <resources/dms/index>
    Distributed Cache Service <resources/dcs/index>
    Cloud Trace Service <resources/cts/index>
+   Anti DDoS Service <resources/anti_ddos/index>
 
 Low-Level Classes
 ~~~~~~~~~~~~~~~~~

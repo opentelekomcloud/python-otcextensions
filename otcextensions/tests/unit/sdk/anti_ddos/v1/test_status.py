@@ -9,10 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import mock
-
-from keystoneauth1 import adapter
-
 from openstack.tests.unit import base
 
 from otcextensions.common import format
