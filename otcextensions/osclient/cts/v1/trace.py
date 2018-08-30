@@ -150,8 +150,6 @@ class ListTrace(command.Lister):
             query['to'] = format.TimeTMsStr().serialize(
                 parsed_args.end_time)
 
-        LOG.debug('query=%s' % query)
-
         data = client.traces(
             tracker=parsed_args.tracker,
             **query
