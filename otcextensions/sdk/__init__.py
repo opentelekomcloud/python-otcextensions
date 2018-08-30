@@ -43,6 +43,11 @@ found on remotely on the cloud.
 #   Generally it is possible to iterate over known endpoints, but some
 #   services requires injection of AK/SK
 OTC_SERVICES = {
+    'anti_ddos': {
+        'service_type': 'anti_ddos',
+        'append_project_id': True,
+        'endpoint_service_type': 'Anti-DDoS',
+    },
     'cts': {
         'service_type': 'cts',
         # 'append_project_id': True,
@@ -96,6 +101,7 @@ def _get_descriptor(service_name):
         service_type = service['service_type']
         desc_class = service_description.OpenStackServiceDescription
         service_filter_class = _find_service_filter_class(service_name)
+        _logger.debug('sfc=%s' % service_filter_class)
         descriptor_args = {'service_type': service_type}
         if service_filter_class:
             _logger.debug(
