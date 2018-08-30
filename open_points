@@ -85,6 +85,7 @@ This document gathers issues, which are found during diggint the API and other O
 * Ansible: no support for load balancer
 * Ansible (Heat): https://github.com/ansible/ansible/issues/30786 - small fix to see the failure message if stack create/update fails
 * Private: yes helps to get public_v4 filled, but it hinders create request with auto_ip:true
+* add router interface
 
 # VPC:
 
