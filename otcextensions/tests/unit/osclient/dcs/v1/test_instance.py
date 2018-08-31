@@ -274,7 +274,7 @@ class TestCreateInstance(TestBasicInstance):
 
         self.client.create_instance = mock.Mock()
 
-    def test_show_default(self):
+    def test_default(self):
         arglist = [
             '--name', '1',
             '--description', '2',
@@ -348,7 +348,7 @@ class TestSetInstance(TestBasicInstance):
 
         self.client.update_instance = mock.Mock()
 
-    def test_show_default(self):
+    def test_default(self):
         arglist = [
             'inst',
             '--name', '1',
