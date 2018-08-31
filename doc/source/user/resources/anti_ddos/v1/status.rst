@@ -19,12 +19,12 @@ The ``FloatingIPStatus`` class inherits from :class:`~otcextensions.sdk.sdk_reso
 .. autoclass:: otcextensions.sdk.anti_ddos.v1.status.FloatingIPStatus
    :members:
 
-The Anti DDoS FloatingIPLog Class
----------------------------------
+The Anti DDoS FloatingIPEvent Class
+-----------------------------------
 
-The ``FloatingIPLog`` class inherits from :class:`~otcextensions.sdk.sdk_resource.Resource`.
+The ``FloatingIPEvent`` class inherits from :class:`~otcextensions.sdk.sdk_resource.Resource`.
 
-.. autoclass:: otcextensions.sdk.anti_ddos.v1.status.FloatingIPLog
+.. autoclass:: otcextensions.sdk.anti_ddos.v1.status.FloatingIPEvent
    :members:
 
 The Anti DDoS FloatingIPDayStat Class

@@ -50,7 +50,7 @@ class FloatingIPStatus(sdk_resource.Resource):
     status = resource.Body('status')
 
 
-class FloatingIPLog(sdk_resource.Resource):
+class FloatingIPEvent(sdk_resource.Resource):
 
     resources_key = 'logs'
     base_path = '/antiddos/%(floating_ip_id)s/logs'
@@ -61,6 +61,7 @@ class FloatingIPLog(sdk_resource.Resource):
     allow_list = True
 
     # Properties
+    floating_ip_id = resource.URI('floating_ip_id')
     #: start time
     #: *Type: int*
     start_time = resource.Body('start_time', type=format.TimeTMsStr)
@@ -68,6 +69,9 @@ class FloatingIPLog(sdk_resource.Resource):
     #: *Type: int*
     end_time = resource.Body('end_time', type=format.TimeTMsStr)
     #: Anti-ddos status
+    #: Defense status, the possible value of which is one of the following:
+    #: * 1: indicates that traffic cleaning is underway.
+    #: * 2: indicates that traffic is discarded.
     #: *Type: int*
     status = resource.Body('status', type=int)
     #: Trigger bps (bit/s)
@@ -124,8 +128,6 @@ class FloatingIPWeekStatData(sdk_resource.Resource):
     max_attack_bps = resource.Body('max_attack_bps', type=int)
     #: *Type: int*
     max_attack_conns = resource.Body('max_attack_conns ', type=int)
-    #: *Type: int*
-    ddos_blackhole_times = resource.Body('ddos_blackhole_times', type=int)
     #: Data start time
     #: *Type: int*
     period_start_date = resource.Body('period_start_date',
@@ -137,7 +139,7 @@ class FloatingIPWeekStat(sdk_resource.Resource):
     base_path = '/antiddos/weekly'
 
     # capabilities
-    allow_list = True
+    allow_get = True
 
     _query_mapping = resource.QueryParameters('period_start_date')
 

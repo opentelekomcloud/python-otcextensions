@@ -66,7 +66,7 @@ class TestAntiDdosProxy(test_proxy_base.TestProxyBase):
 
     def test_float_ip_logs(self):
         self.verify_list(
-            self.proxy.floating_ip_logs, _status.FloatingIPLog, False,
+            self.proxy.floating_ip_events, _status.FloatingIPEvent, False,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             method_kwargs={
                 'floating_ip_id': 'ip_id'
@@ -90,16 +90,17 @@ class TestAntiDdosProxy(test_proxy_base.TestProxyBase):
         )
 
     def test_float_ip_stat_week(self):
-        self.verify_list(
-            self.proxy.floating_ip_stat_week, _status.FloatingIPWeekStat,
-            False,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
+        self._verify2(
+            'otcextensions.sdk.sdk_proxy.Proxy._get',
+            self.proxy.floating_ip_stat_week,
+            method_args=None,
             method_kwargs={
-                'floating_ip_id': 'ip_id',
-                'period_start_date': 'fake'
+                'a': 'b'
             },
+            expected_args=[_status.FloatingIPWeekStat],
             expected_kwargs={
-                'floating_ip_id': 'ip_id',
-                'period_start_date': 'fake'
+                'a': 'b',
+                'requires_id': False,
+                'value': None
             }
         )

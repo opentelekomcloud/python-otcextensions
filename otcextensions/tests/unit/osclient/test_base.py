@@ -54,8 +54,6 @@ class Fake(object):
 
         resource = cls.generate()
 
-        resource.update(attrs)
-
         return resource
 
     @classmethod

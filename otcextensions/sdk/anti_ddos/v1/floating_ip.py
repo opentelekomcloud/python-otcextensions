@@ -37,9 +37,11 @@ class FloatingIP(sdk_resource.Resource):
 
     # Properties
     floating_ip_id = resource.Body('floating_ip_id', alternate_id=True)
-    #: Whether enable L7 protect
+    #: Floating ipaddress
+    floating_ip_address = resource.Body('floating_ip_address')
+    #: Flag to indicate whether L7 protection is enabled
     #: *Type: bool*
-    enable_L7 = resource.Body('enable_L7', type=bool)
+    is_enable_l7 = resource.Body('enable_L7', type=bool)
     #: Traffic segment id
     #: Valid values are from `1` to `9`
     #: *Type: int*
@@ -56,8 +58,7 @@ class FloatingIP(sdk_resource.Resource):
     #: Valid values are from `0`, `1`
     #: *Type: int*
     app_type_id = resource.Body('app_type_id', type=int)
-    #: Floating ipaddress
-    floating_ip_address = resource.Body('floating_ip_address')
+
     #: Network type: EIP or ELB
     network_type = resource.Body('network_type')
     #: Status of the EIP
@@ -77,13 +78,13 @@ class FloatingIP(sdk_resource.Resource):
         # http_request_pos_id, cleaning_access_pos_id, app_type_id`
         # so enforce them dirty
 
-        self.body._dirty.add('enable_L7')
-        self.body._dirty.add('traffic_pos_id')
-        self.body._dirty.add('http_request_pos_id')
-        self.body._dirty.add('cleaning_access_pos_id')
-        self.body._dirty.add('app_type_id')
+        self._body._dirty.add('enable_L7')
+        self._body._dirty.add('traffic_pos_id')
+        self._body._dirty.add('http_request_pos_id')
+        self._body._dirty.add('cleaning_access_pos_id')
+        self._body._dirty.add('app_type_id')
 
-        return super(resource.Resource, self).update(
+        return super(FloatingIP, self).update(
             session,
             prepend_key=prepend_key,
             has_body=has_body)
