@@ -49,7 +49,7 @@ class TestFloatingIP(base.TestCase):
 
         sot = floating_ip.FloatingIP(**EXAMPLE)
         self.assertEqual(EXAMPLE['floating_ip_id'], sot.id)
-        self.assertEqual(EXAMPLE['enable_L7'], sot.enable_L7)
+        self.assertEqual(EXAMPLE['enable_L7'], sot.is_enable_l7)
         self.assertEqual(EXAMPLE['traffic_pos_id'], sot.traffic_pos_id)
         self.assertEqual(
             EXAMPLE['http_request_pos_id'],

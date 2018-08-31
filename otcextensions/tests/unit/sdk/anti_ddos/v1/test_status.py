@@ -98,7 +98,7 @@ class TestTask(base.TestCase):
 class TestLog(base.TestCase):
 
     def test_basic(self):
-        sot = status.FloatingIPLog()
+        sot = status.FloatingIPEvent()
 
         self.assertEqual('/antiddos/%(floating_ip_id)s/logs', sot.base_path)
         self.assertEqual('logs', sot.resources_key)
@@ -107,7 +107,7 @@ class TestLog(base.TestCase):
 
     def test_make_it(self):
 
-        sot = status.FloatingIPLog(**EXAMPLE_LOG)
+        sot = status.FloatingIPEvent(**EXAMPLE_LOG)
         self.assertEqual(
             format.TimeTMsStr().deserialize(EXAMPLE_LOG['start_time']),
             sot.start_time),
@@ -152,7 +152,7 @@ class TestStatWeek(base.TestCase):
 
         self.assertEqual('/antiddos/weekly', sot.base_path)
 
-        self.assertTrue(sot.allow_list)
+        self.assertTrue(sot.allow_get)
 
     def test_make_it(self):
 

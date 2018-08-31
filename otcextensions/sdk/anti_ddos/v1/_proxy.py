@@ -115,8 +115,8 @@ class Proxy(sdk_proxy.Proxy):
             requires_id=False,
         )
 
-    def floating_ip_logs(self, floating_ip_id, **query):
-        """List specific floating ip logs by floating ip id.
+    def floating_ip_events(self, floating_ip_id, **query):
+        """List specific floating ip events by floating ip id.
 
         :param floating_ip_id: The floating ip id
         :param dict query: Optional query parameters to be sent to limit
@@ -125,7 +125,7 @@ class Proxy(sdk_proxy.Proxy):
         :returns: A generator of FloatingIPLog object
         :rtype: :class:`~otcextensions.sdk.anti_ddos.v1.status.FloatingIPLog`
         """
-        return self._list(_status.FloatingIPLog, paginated=False,
+        return self._list(_status.FloatingIPEvent, paginated=False,
                           floating_ip_id=floating_ip_id, **query)
 
     def floating_ip_stat_day(self, floating_ip_id):
@@ -140,10 +140,9 @@ class Proxy(sdk_proxy.Proxy):
         return self._list(_status.FloatingIPDayStat, paginated=False,
                           floating_ip_id=floating_ip_id)
 
-    def floating_ip_stat_week(self, floating_ip_id, **query):
-        """List specific floating ip logs by floating ip id.
+    def floating_ip_stat_week(self, **query):
+        """List weekly defence statisticsabout all floating ips.
 
-        :param floating_ip_id: The floating ip id
         :param dict query: Optional query parameters to be sent to limit
             the resources being returned:
             * period_start_date - start day of the 7 day period to query
@@ -152,5 +151,5 @@ class Proxy(sdk_proxy.Proxy):
         :rtype:
             :class:`~otcextensions.sdk.anti_ddos.v1.status.FloatingIPWeekStat`
         """
-        return self._list(_status.FloatingIPWeekStat, paginated=False,
-                          floating_ip_id=floating_ip_id, **query)
+        return self._get(_status.FloatingIPWeekStat, requires_id=False,
+                         value=None, **query)
