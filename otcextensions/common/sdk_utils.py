@@ -81,6 +81,17 @@ class ListOfIdsColumnBR(columns.FormattableColumn):
         return '\n'.join(i['id'] for i in self._value if 'id' in i)
 
 
+class ListOfDictColumn(columns.FormattableColumn):
+    """Format OSC ListOfDicts column
+    """
+
+    def human_readable(self):
+        if self._value is None:
+            return None
+
+        return '\n'.join(str(i) for i in self._value)
+
+
 def str2bool(v):
     """Convert input (CLI) boolean text value into boolean
     """
