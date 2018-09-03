@@ -48,23 +48,22 @@ OTC_SERVICES = {
         'append_project_id': True,
         'endpoint_service_type': 'Anti-DDoS',
     },
+    'auto_scaling': {
+        'service_type': 'auto_scaling',
+        'endpoint_service_type': 'as',
+        'append_project_id': True,
+    },
+    'cce': {
+        'service_type': 'cce',
+        'append_project_id': False,
+    },
     'cts': {
         'service_type': 'cts',
         # 'append_project_id': True,
     },
-    'rds': {
-        'service_type': 'rds',
-        # 'additional_headers': {'content-type': 'application/json'},
-        'append_project_id': True,
-    },
-    'obs': {
-        'service_type': 'obs',
-        'require_ak': True,
-        'endpoint_service_type': 'object',
-    },
-    'auto_scaling': {
-        'service_type': 'auto_scaling',
-        'endpoint_service_type': 'as',
+    'dcs': {
+        'service_type': 'dcs',
+        # 'endpoint_service_type': 'dms',
         'append_project_id': True,
     },
     'dms': {
@@ -72,18 +71,19 @@ OTC_SERVICES = {
         'endpoint_service_type': 'dms',
         'append_project_id': True,
     },
-    'dcs': {
-        'service_type': 'dcs',
-        # 'endpoint_service_type': 'dms',
-        'append_project_id': True,
-    },
     'kms': {
         'service_type': 'kms',
         'append_project_id': True,
     },
-    'cce': {
-        'service_type': 'cce',
-        'append_project_id': False,
+    'obs': {
+        'service_type': 'obs',
+        'require_ak': True,
+        'endpoint_service_type': 'object',
+    },
+    'rds': {
+        'service_type': 'rds',
+        # 'additional_headers': {'content-type': 'application/json'},
+        'append_project_id': True,
     },
     'volume_backup': {
         'service_type': 'vbs',
