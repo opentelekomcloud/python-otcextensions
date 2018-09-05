@@ -11,8 +11,8 @@ member of a :class:`~openstack.connection.Connection` object.  The
 ``anti_ddos`` member will only be added if the
 ``otcextensions.sdk.register_otc_extensions(conn)`` method is called.
 
-Floatin IP Operations
-^^^^^^^^^^^^^^^^^^^^^
+Floating IP Operations
+^^^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.anti_ddos.v1._proxy.Proxy
 
