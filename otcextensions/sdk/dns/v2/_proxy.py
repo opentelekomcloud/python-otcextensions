@@ -225,7 +225,7 @@ class Proxy(sdk_proxy.Proxy):
         return self._list(_ptr.PTR, paginated=True, **query)
 
     def create_ptr(self, region, floating_ip_id, **attrs):
-        """Set FloatingIP’s PTR record
+        """Set FloatingIP PTR record
 
         :param region: project region
         :param floating_ip_id: floating ip id
@@ -241,7 +241,7 @@ class Proxy(sdk_proxy.Proxy):
         return self._update(_ptr.PTR, prepend_key=False, **attrs)
 
     def get_ptr(self, region, floating_ip_id):
-        """Show FloatingIP’s PTR record
+        """Show FloatingIP's PTR record
 
         :param region: project region
         :param floating_ip_id: the PTR floating ip id
@@ -253,7 +253,7 @@ class Proxy(sdk_proxy.Proxy):
         return self._get(_ptr.PTR, ptr_id)
 
     def restore_ptr(self, region, floating_ip_id):
-        """Unset FloatingIP’s PTR record
+        """Unset FloatingIP's PTR record
 
         :param region: project region
         :param floating_ip_id: floating ip id
