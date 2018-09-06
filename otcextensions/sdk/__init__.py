@@ -73,6 +73,7 @@ OTC_SERVICES = {
     },
     'dns': {
         'service_type': 'dns',
+        'replace_system': True,
         # 'append_project_id': True,
     },
     'kms': {
@@ -140,6 +141,7 @@ def _get_descriptor(service_name):
 
         return descriptor
     else:
+        _logger.warn('unknown service %s was requested' % service_name)
         return None
 
 
@@ -260,6 +262,9 @@ def register_otc_extensions(conn, **kwargs):
 
     for (service_name, service) in OTC_SERVICES.items():
         _logger.debug('trying to register service %s' % service_name)
+
+        if service.get('replace_system', False):
+            conn._proxies.pop(service_name, None)
 
         inject_service_to_sdk(conn, service_name, service)
 
