@@ -506,3 +506,62 @@ class TestDisassociateRouter(fakes.TestDNS):
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
+
+
+class TestListNameserver(fakes.TestDNS):
+
+    objects = fakes.FakeNameserver.create_multiple(3)
+    _zone = fakes.FakeZone.create_one()
+
+    columns = (
+        'address', 'hostname', 'priority'
+    )
+
+    data = []
+
+    for s in objects:
+        data.append(fakes.gen_data(s, columns))
+
+    def setUp(self):
+        super(TestListNameserver, self).setUp()
+
+        self.cmd = zone.ListNameserver(self.app, None)
+
+        self.client.nameservers = mock.Mock()
+        self.client.find_zone = mock.Mock()
+        self.client.api_mock = self.client.nameservers
+
+    def test_default(self):
+        arglist = [
+            'zn'
+        ]
+
+        verifylist = [
+            ('zone', 'zn')
+        ]
+
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.api_mock.side_effect = [
+            self.objects
+        ]
+        self.client.find_zone.side_effect = [
+            self._zone
+        ]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.find_zone.assert_called_once_with(
+            'zn',
+            ignore_missing=False
+        )
+
+        self.client.api_mock.assert_called_once_with(
+            zone=self._zone
+        )
+
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, list(data))
