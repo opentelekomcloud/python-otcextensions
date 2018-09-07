@@ -22,6 +22,7 @@ from openstackclient.tests.unit import utils
 from otcextensions.tests.unit.osclient import test_base
 
 from otcextensions.sdk.dns.v2 import zone
+from otcextensions.sdk.dns.v2 import nameserver
 
 
 def gen_data(data, columns):
@@ -65,4 +66,19 @@ class FakeZone(test_base.Fake):
             'zone_type': uuid.uuid4().hex,
         }
         obj = zone.Zone.existing(**object_info)
+        return obj
+
+
+class FakeNameserver(test_base.Fake):
+    """Fake one or more Zone"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'zone_id': 'id-' + uuid.uuid4().hex,
+            'address': uuid.uuid4().hex,
+            'hostname': uuid.uuid4().hex,
+            'priority': random.randint(1, 600),
+        }
+        obj = nameserver.NameServer.existing(**object_info)
         return obj
