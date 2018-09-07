@@ -363,3 +363,35 @@ class DisassociateRouterToZone(command.ShowOne):
             data = utils.get_item_properties(obj, columns)
 
             return (display_columns, data)
+
+
+class ListNameserver(command.Lister):
+    _description = _('List DNS zone nameservers')
+    columns = (
+        'address', 'hostname', 'priority'
+    )
+
+    def get_parser(self, prog_name):
+        parser = super(ListNameserver, self).get_parser(prog_name)
+
+        parser.add_argument(
+            'zone',
+            metavar='<zone>',
+            help=_('UUID or name of the zone.')
+        )
+
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.dns
+
+        zone = client.find_zone(parsed_args.zone, ignore_missing=False)
+
+        if zone:
+            data = client.nameservers(zone=zone)
+
+            table = (self.columns,
+                     (utils.get_item_properties(
+                         s, self.columns, formatters=_formatters
+                     ) for s in data))
+            return table
