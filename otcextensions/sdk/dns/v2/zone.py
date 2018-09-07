@@ -46,6 +46,8 @@ class Zone(sdk_resource.Resource):
         zone_type='type')
 
     #: Properties
+    #: current action in progress on the resource
+    action = resource.Body('action')
     #: Timestamp when the zone was created
     created_at = resource.Body('created_at')
     #: Zone description
