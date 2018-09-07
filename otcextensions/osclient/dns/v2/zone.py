@@ -156,7 +156,8 @@ class CreateZone(command.ShowOne):
             '--ttl',
             metavar='<300-2147483647>',
             type=int,
-            choices=range(300, 2147483647),
+            # NOTE: py2 does not support such big int, skip unless py3-only
+            # choices=range(300, 2147483647),
             help=_('TTL (Time to Live) for the zone.')
         )
         parser.add_argument(
@@ -234,7 +235,8 @@ class SetZone(command.ShowOne):
             '--ttl',
             metavar='<300-2147483647>',
             type=int,
-            choices=range(300, 2147483647),
+            # NOTE: py2 does not support such big int, skip unless py3-only
+            # choices=range(300, 2147483647),
             help=_('TTL (Time to Live) for the zone.')
         )
 

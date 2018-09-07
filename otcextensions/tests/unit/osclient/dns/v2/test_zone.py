@@ -403,7 +403,7 @@ class TestAssociateRouter(fakes.TestDNS):
         self.client.find_zone = mock.Mock()
         self.client.api_mock = self.client.add_router_to_zone
 
-    def test_update(self):
+    def test_default(self):
         arglist = [
             'zn',
             '--router_id', 'rid',
@@ -466,7 +466,7 @@ class TestDisassociateRouter(fakes.TestDNS):
         self.client.find_zone = mock.Mock()
         self.client.api_mock = self.client.remove_router_from_zone
 
-    def test_update(self):
+    def test_default(self):
         arglist = [
             'zn',
             '--router_id', 'rid',
