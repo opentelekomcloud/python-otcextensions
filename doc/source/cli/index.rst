@@ -6,6 +6,7 @@
    cts.rst
    dcs.rst
    dms.rst
+   dns.rst
    rds.rst
    kms.rst
    load_balancer.rst
