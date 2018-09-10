@@ -178,9 +178,16 @@ class TestDNSProxy(test_proxy_base.TestProxyBase):
         self._verify2(
             'otcextensions.sdk.sdk_proxy.Proxy._get',
             self.proxy.get_ptr,
-            method_args=['region', 'flop'],
+            method_args=[None, 'region', 'flop'],
             method_kwargs={},
             expected_args=[_ptr.PTR, 'region:flop'],
+        )
+        self._verify2(
+            'otcextensions.sdk.sdk_proxy.Proxy._get',
+            self.proxy.get_ptr,
+            method_args=['ptr_id', None, None],
+            method_kwargs={},
+            expected_args=[_ptr.PTR, 'ptr_id'],
         )
 
     def test_create_ptr(self):
@@ -205,7 +212,19 @@ class TestDNSProxy(test_proxy_base.TestProxyBase):
         self._verify2(
             'otcextensions.sdk.sdk_proxy.Proxy._update',
             self.proxy.restore_ptr,
-            method_args=['region', 'flop'],
+            method_args=[None, 'region', 'flop'],
+            method_kwargs={},
+            expected_args=[_ptr.PTR, 'region:flop'],
+            expected_kwargs={
+                'has_body': False,
+                'prepend_key': False,
+                'ptrdname': None
+            }
+        )
+        self._verify2(
+            'otcextensions.sdk.sdk_proxy.Proxy._update',
+            self.proxy.restore_ptr,
+            method_args=['region:flop', None, None],
             method_kwargs={},
             expected_args=[_ptr.PTR, 'region:flop'],
             expected_kwargs={
