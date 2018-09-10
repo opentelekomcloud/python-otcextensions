@@ -23,6 +23,7 @@ from otcextensions.tests.unit.osclient import test_base
 
 from otcextensions.sdk.dns.v2 import zone
 from otcextensions.sdk.dns.v2 import nameserver
+from otcextensions.sdk.dns.v2 import recordset
 
 
 def gen_data(data, columns):
@@ -81,4 +82,22 @@ class FakeNameserver(test_base.Fake):
             'priority': random.randint(1, 600),
         }
         obj = nameserver.NameServer.existing(**object_info)
+        return obj
+
+
+class FakeRecordset(test_base.Fake):
+    """Fake one or more recordset"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'zone_id': 'id-' + uuid.uuid4().hex,
+            'name': uuid.uuid4().hex,
+            'description': uuid.uuid4().hex,
+            'status': uuid.uuid4().hex,
+            'ttl': random.randint(1, 600),
+            'type': random.choice(['A', 'AAAA', 'SRV']),
+            'records': list(random.randint(1, 600) for i in range(0, 5))
+        }
+        obj = recordset.Recordset.existing(**object_info)
         return obj

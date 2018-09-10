@@ -14,7 +14,15 @@ For help on a specific `dns` command, enter:
 .. _dns_zone:
 
 Zone operations
--------------------
+---------------
 
 .. autoprogram-cliff:: openstack.dns.v2
    :command: dns zone *
+
+.. _dns_rs:
+
+Recordset operations
+--------------------
+
+.. autoprogram-cliff:: openstack.dns.v2
+   :command: dns recordset *
