@@ -193,11 +193,14 @@ class Proxy(sdk_proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.dns.v2.recordset.Recordset`
         """
         zone = self._get_resource(_zone.Zone, zone)
-        return self._get(_rs.ZoneRecordset, zone_id=zone.id)
+        return self._get(_rs.ZoneRecordset, recordset, zone_id=zone.id)
 
-    def delete_recordset(self, recordset, ignore_missing=True):
+    def delete_recordset(self, recordset, zone=None, ignore_missing=True):
         """Delete a zone
 
+        :param recordset: The value can be the ID of a recordset
+             or a :class:`~otcextensions.sdk.dns.v2.recordset.Recordset`
+             instance.
         :param zone: The value can be the ID of a zone
              or a :class:`~otcextensions.sdk.dns.v2.zone.Zone` instance.
         :param bool ignore_missing: When set to ``False``
@@ -208,6 +211,10 @@ class Proxy(sdk_proxy.Proxy):
         :returns: Recordset instance been deleted
         :rtype: :class:`~otcextensions.sdk.dns.v2.recordset.Recordset`
         """
+        if zone:
+            zone = self._get_resource(_zone.Zone, zone)
+            recordset = self._get(
+                _rs.ZoneRecordset, recordset, zone_id=zone.id)
         return self._delete(_rs.ZoneRecordset, recordset,
                             ignore_missing=ignore_missing)
 

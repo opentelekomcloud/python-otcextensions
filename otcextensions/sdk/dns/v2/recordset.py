@@ -48,7 +48,7 @@ class ZoneRecordset(sdk_resource.Resource):
     is_default = resource.Body('default', type=bool)
     #: Links contains a `self` pertaining to this zone or a `next` pertaining
     #: to next page
-    links = resource.Body('links', type=dict)
+    # links = resource.Body('links', type=dict)
     #: Recordset name
     name = resource.Body('name')
     #: ID of the project which the recordset belongs to

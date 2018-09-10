@@ -133,7 +133,7 @@ class TestDNSProxy(test_proxy_base.TestProxyBase):
             self.proxy.get_recordset,
             method_args=['zone_id', 'rs_id'],
             method_kwargs={},
-            expected_args=[_rs.ZoneRecordset],
+            expected_args=[_rs.ZoneRecordset, 'rs_id'],
             expected_kwargs={
                 'zone_id': 'zone_id'
             }
