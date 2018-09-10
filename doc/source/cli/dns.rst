@@ -26,3 +26,11 @@ Recordset operations
 
 .. autoprogram-cliff:: openstack.dns.v2
    :command: dns recordset *
+
+.. _dns_ptr:
+
+PTR operations
+--------------
+
+.. autoprogram-cliff:: openstack.dns.v2
+   :command: dns ptr *

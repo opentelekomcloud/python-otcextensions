@@ -42,7 +42,7 @@ class PTR(sdk_resource.Resource):
     floating_ip_id = resource.Body('floatingip_id')
     #: Links contains a `self` pertaining to this zone or a `next` pertaining
     #: to next page
-    links = resource.Body('links', type=dict)
+    # links = resource.Body('links', type=dict)
     #: PTR domain name
     ptrdname = resource.Body('ptrdname')
     #: Region
