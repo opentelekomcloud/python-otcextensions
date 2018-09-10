@@ -247,30 +247,36 @@ class Proxy(sdk_proxy.Proxy):
         attrs.update({'id': ptr_id})
         return self._update(_ptr.PTR, prepend_key=False, **attrs)
 
-    def get_ptr(self, region, floating_ip_id):
+    def get_ptr(self, ptr=None, region=None, floating_ip_id=None):
         """Show FloatingIP's PTR record
 
+        :param ptr: ID or instance of
+            :class:`~otcextensions.sdk.dns.v2.ptr.PTR`
         :param region: project region
         :param floating_ip_id: the PTR floating ip id
         :returns: PTR instance
         :rtype: :class:`~otcextensions.sdk.dns.v2.ptr.PTR`
         """
         # concat `region:floating_ip_id` as id
-        ptr_id = region + ':' + floating_ip_id
-        return self._get(_ptr.PTR, ptr_id)
+        if not ptr:
+            ptr = region + ':' + floating_ip_id
+        return self._get(_ptr.PTR, ptr)
 
-    def restore_ptr(self, region, floating_ip_id):
+    def restore_ptr(self, ptr=None, region=None, floating_ip_id=None):
         """Unset FloatingIP's PTR record
 
+        :param ptr: ID or instance of
+            :class:`~otcextensions.sdk.dns.v2.ptr.PTR`
         :param region: project region
         :param floating_ip_id: floating ip id
         :returns: PTR instance been deleted
         :rtype: :class:`~otcextensions.sdk.dns.v2.ptr.PTR`
         """
         # concat `region:floating_ip_id` as id
-        ptr_id = region + ':' + floating_ip_id
+        if not ptr:
+            ptr = region + ':' + floating_ip_id
         return self._update(_ptr.PTR,
-                            ptr_id,
+                            ptr,
                             prepend_key=False,
                             has_body=False,
                             ptrdname=None)
