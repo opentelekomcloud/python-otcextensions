@@ -24,6 +24,8 @@ from otcextensions.common import sdk_utils
 
 LOG = logging.getLogger(__name__)
 
+STORAGE_CLASSES = ['STANDARD', 'STANDARD_IA', 'GLACIER']
+
 
 def _get_columns(item):
     column_map = {
@@ -35,38 +37,39 @@ def _get_columns(item):
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
-class CreateContainer(command.Lister):
+class CreateContainer(command.ShowOne):
     _description = _("Create new container")
 
     def get_parser(self, prog_name):
         parser = super(CreateContainer, self).get_parser(prog_name)
         parser.add_argument(
-            'containers',
+            'container',
             metavar='<container-name>',
-            nargs="+",
             help=_('New container name(s)'),
+        )
+        parser.add_argument(
+            '--storage_class',
+            metavar='{' + ','.join(STORAGE_CLASSES) + '}',
+            type=lambda s: s.upper(),
+            choices=STORAGE_CLASSES,
+            help=_('Storage class'),
         )
         return parser
 
     def take_action(self, parsed_args):
         # raise NotImplementedError
-        results = []
-        for container in parsed_args.containers:
-            if len(container) > 256:
-                LOG.warning(
-                    _('Container name is %s characters long, the default limit'
-                      ' is 256'), len(container))
-            data = self.app.client_manager.obs.create_container(
-                name=container,
-            )
-            results.append(data)
+        attrs = {
+            'name': parsed_args.container
+        }
 
-        columns = ("name",)
-        return (columns,
-                (utils.get_item_properties(
-                    s, columns,
-                    formatters={},
-                ) for s in results))
+        if parsed_args.storage_class:
+            attrs['storage_class'] = parsed_args.storage_class
+
+        data = self.app.client_manager.obs.create_container(**attrs)
+        display_columns, columns = _get_columns(data)
+        data = utils.get_item_properties(data, columns)
+        #
+        return (display_columns, data)
 
 
 class DeleteContainer(command.Command):
@@ -110,59 +113,59 @@ class ListContainer(command.Lister):
 
     def get_parser(self, prog_name):
         parser = super(ListContainer, self).get_parser(prog_name)
-        parser.add_argument(
-            "--prefix",
-            metavar="<prefix>",
-            help=_("Filter list using <prefix>"),
-        )
-        parser.add_argument(
-            "--marker",
-            metavar="<marker>",
-            help=_("Anchor for paging"),
-        )
-        parser.add_argument(
-            "--end-marker",
-            metavar="<end-marker>",
-            help=_("End anchor for paging"),
-        )
-        parser.add_argument(
-            "--limit",
-            metavar="<num-containers>",
-            type=int,
-            help=_("Limit the number of containers returned"),
-        )
-        parser.add_argument(
-            '--long',
-            action='store_true',
-            default=False,
-            help=_('List additional fields in output'),
-        )
-        parser.add_argument(
-            '--all',
-            action='store_true',
-            default=False,
-            help=_('List all containers (default is 10000)'),
-        )
+        # parser.add_argument(
+        #     "--prefix",
+        #     metavar="<prefix>",
+        #     help=_("Filter list using <prefix>"),
+        # )
+        # parser.add_argument(
+        #     "--marker",
+        #     metavar="<marker>",
+        #     help=_("Anchor for paging"),
+        # )
+        # parser.add_argument(
+        #     "--end-marker",
+        #     metavar="<end-marker>",
+        #     help=_("End anchor for paging"),
+        # )
+        # parser.add_argument(
+        #     "--limit",
+        #     metavar="<num-containers>",
+        #     type=int,
+        #     help=_("Limit the number of containers returned"),
+        # )
+        # parser.add_argument(
+        #     '--long',
+        #     action='store_true',
+        #     default=False,
+        #     help=_('List additional fields in output'),
+        # )
+        # parser.add_argument(
+        #     '--all',
+        #     action='store_true',
+        #     default=False,
+        #     help=_('List all containers (default is 10000)'),
+        # )
         return parser
 
     def take_action(self, parsed_args):
 
-        if parsed_args.long:
-            columns = ('Name', 'Bytes', 'Count')
-        else:
-            columns = ('Name',)
+        # if parsed_args.long:
+            # columns = ('Name', 'Bytes', 'Count')
+        # else:
+        columns = ('name', 'creation_date')
 
         kwargs = {}
-        if parsed_args.prefix:
-            kwargs['prefix'] = parsed_args.prefix
-        if parsed_args.marker:
-            kwargs['marker'] = parsed_args.marker
-        if parsed_args.end_marker:
-            kwargs['end_marker'] = parsed_args.end_marker
-        if parsed_args.limit:
-            kwargs['limit'] = parsed_args.limit
-        if parsed_args.all:
-            kwargs['full_listing'] = True
+        # if parsed_args.prefix:
+        #     kwargs['prefix'] = parsed_args.prefix
+        # if parsed_args.marker:
+        #     kwargs['marker'] = parsed_args.marker
+        # if parsed_args.end_marker:
+        #     kwargs['end_marker'] = parsed_args.end_marker
+        # if parsed_args.limit:
+        #     kwargs['limit'] = parsed_args.limit
+        # if parsed_args.all:
+        #     kwargs['full_listing'] = True
 
         data = self.app.client_manager.obs.containers(
             **kwargs

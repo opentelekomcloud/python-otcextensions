@@ -117,7 +117,8 @@ class TestCCEClusterNode(TestCCEProxy):
                 expected_kwargs={
                     'endpoint_override': None,
                     'headers': None,
-                    'prepend_key': True
+                    'prepend_key': True,
+                    'requests_auth': None
                 }
             )
 

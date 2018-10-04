@@ -109,7 +109,8 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
                 'consumer_group_id': 'group',
                 'endpoint_override': None,
                 'headers': None,
-                'paginated': False})
+                'paginated': False,
+                'requests_auth': None})
 
     def test_ack_consumed_message(self):
         pass
