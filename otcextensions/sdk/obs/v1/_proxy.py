@@ -9,27 +9,25 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
-# import os
-
 from openstack import _log
-from openstack import proxy
+
+from otcextensions.sdk import ak_auth
+from otcextensions.sdk import sdk_proxy
 
 from otcextensions.sdk.obs.v1 import container as _container
 from otcextensions.sdk.obs.v1 import obj as _obj
 
 _logger = _log.setup_logging('openstack')
 
-# TODO(agoncharov) regulate use of exceptions
-
 
 def _normalize_obs_keys(obj):
     return {k.lower(): v for k, v in obj.items()}
 
 
-class Proxy(proxy.BaseProxy):
+class Proxy(sdk_proxy.Proxy):
 
-    SESSION_ATTR_NAME = '_boto_session'
+    CONTAINER_ENDPOINT = \
+        'https://%(container)s.obs.%(region_name)s.otc.t-systems.com'
 
     def _set_ak(self, ak, sk):
         """Inject AK/SK into the proxy for use
@@ -41,21 +39,35 @@ class Proxy(proxy.BaseProxy):
 
         pass
 
-    def get_endpoint(self, **kwargs):
+    def get_container_endpoint(self, container):
         """Override to return mapped endpoint if override and region are set
 
         """
-        region = getattr(self, 'region_name', 'eu-de')
-        if not region:
-            # region_name attr might be set to empty
-            region = 'eu-de'
-        override = getattr(self, 'endpoint_override',
-                           'https://obs.%(region_name)s.otc.t-systems.com')
-        if region and override:
-            return override % {'region_name': region}
-        else:
-            return super(Proxy, self).get_endpoint(**kwargs)
+        region_name = getattr(self, 'region_name', 'eu-de')
+        endpoint = self.CONTAINER_ENDPOINT % {
+            'container': container,
+            'region_name': region_name
+        }
+        return endpoint
 
+    def _get_req_auth(self, host=None):
+        auth = getattr(self, '_ak_auth', None)
+        if not auth:
+            region = getattr(self, 'region_name', 'eu-de')
+            ak = getattr(self, 'AK', None)
+            sk = getattr(self, 'SK', None)
+            if not host:
+                host = self.get_endpoint()
+
+            auth = ak_auth.AKRequestsAuth(
+                access_key=ak,
+                secret_access_key=sk,
+                host=host,
+                region=region,
+                service='s3'
+            )
+            setattr(self, '_ak_auth', auth)
+        return auth
     # ======== Containers ========
 
     def containers(self, **query):
@@ -65,9 +77,12 @@ class Proxy(proxy.BaseProxy):
                                  the resources being returned.
 
         :rtype: A generator of
-            :class:`~openstack.object_store.v1.container.Container` objects.
+            :class:`~otcextensions.sdk.obs.v1.container.Container` objects.
         """
-        return self._list(_container.Container, paginated=True, **query)
+        return self._list(_container.Container,
+                          paginated=True,
+                          requests_auth=self._get_req_auth(),
+                          **query)
 
     def get_container(self, container):
         """Get the detail of a container
@@ -77,26 +92,33 @@ class Proxy(proxy.BaseProxy):
         :returns: Detail of container
         :rtype: :class:`~otcextensions.sdk.obs.v1.container.Container`
         """
-        return self._get(_container.Container, container)
+        return self._head(_container.Container, container)
 
-    def create_container(self, name, **attrs):
+    def create_container(self, **attrs):
         """Create a new container from attributes
 
         :param container: Name of the container to create.
         :param dict attrs: Keyword arguments which will be used to create
-               a :class:`~openstack.object_store.v1.container.Container`,
+               a :class:`~otcextensions.sdk.obs.v1.container.Container`,
                comprised of the properties on the Container class.
 
         :returns: The results of container creation
-        :rtype: :class:`~openstack.object_store.v1.container.Container`
+        :rtype: :class:`~otcextensions.sdk.obs.v1.container.Container`
         """
-        return self._create(_container.Container, name=name, **attrs)
+        container = attrs.get('name', None)
+        endpoint = self.get_container_endpoint(container)
+        return self._create(
+            _container.Container,
+            endpoint_override=endpoint,
+            requests_auth=self._get_req_auth(endpoint),
+            # prepend_key=False,
+            **attrs)
 
     def delete_container(self, container, ignore_missing=True):
         """Delete a container
 
         :param container: The value can be either the name of a container or a
-                      :class:`~openstack.object_store.v1.container.Container`
+                      :class:`~otcextensions.sdk.obs.v1.container.Container`
                       instance.
         :param bool ignore_missing: When set to ``False``
                     :class:`~openstack.exceptions.ResourceNotFound` will be
@@ -106,17 +128,20 @@ class Proxy(proxy.BaseProxy):
 
         :returns: ``None``
         """
+        endpoint = self.get_container_endpoint(container)
         self._delete(_container.Container, container,
+                     endpoint_override=endpoint,
+                     requests_auth=self._get_req_auth(endpoint),
                      ignore_missing=ignore_missing)
 
     def get_container_metadata(self, container):
         """Get metadata for a container
 
         :param container: The value can be the name of a container or a
-               :class:`~openstack.object_store.v1.container.Container`
+               :class:`~otcextensions.sdk.obs.v1.container.Container`
                instance.
 
-        :returns: One :class:`~openstack.object_store.v1.container.Container`
+        :returns: One :class:`~otcextensions.sdk.obs.v1.container.Container`
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                  when no resource can be found.
         """
@@ -127,7 +152,7 @@ class Proxy(proxy.BaseProxy):
         """Set metadata for a container.
 
         :param container: The value can be the name of a container or a
-               :class:`~openstack.object_store.v1.container.Container`
+               :class:`~otcextensions.sdk.obs.v1.container.Container`
                instance.
         :param kwargs metadata: Key/value pairs to be set as metadata
                                 on the container. Both custom and system
@@ -154,7 +179,7 @@ class Proxy(proxy.BaseProxy):
         """Delete metadata for a container.
 
         :param container: The value can be the ID of a container or a
-               :class:`~openstack.object_store.v1.container.Container`
+               :class:`~otcextensions.sdk.obs.v1.container.Container`
                instance.
         :param keys: The keys of metadata to be deleted.
         """
@@ -171,20 +196,20 @@ class Proxy(proxy.BaseProxy):
         :param container: A container object or the name of a container
             that you want to retrieve objects from.
         :type container:
-            :class:`~openstack.object_store.v1.container.Container`
-        :param kwargs \*\*query: Optional query parameters to be sent to limit
-                                 the resources being returned.
+            :class:`~otcextensions.sdk.obs.v1.container.Container`
+        :param kwargs query: Optional query parameters to be sent to limit
+                               the resources being returned.
 
         :rtype: A generator of
-            :class:`~openstack.object_store.v1.obj.Object` objects.
+            :class:`~otcextensions.sdk.obs.v1.obj.Object` objects.
         """
         container = self._get_container_name(container=container)
-
-        for obj in self._list(
-                _obj.Object, container=container,
-                paginated=True, **query):
-            obj.container = container
-            yield obj
+        endpoint = self.get_container_endpoint(container)
+        return self._list(
+            _obj.Object,
+            endpoint_override=endpoint,
+            requests_auth=self._get_req_auth(endpoint),
+            paginated=True, **query)
 
     def _get_container_name(self, obj=None, container=None):
         if obj is not None:
@@ -201,9 +226,9 @@ class Proxy(proxy.BaseProxy):
         """Get the data associated with an object
 
         :param obj: The value can be the name of an object or a
-                       :class:`~openstack.object_store.v1.obj.Object` instance.
+                       :class:`~otcextensions.sdk.obs.v1.obj.Object` instance.
         :param container: The value can be the name of a container or a
-               :class:`~openstack.object_store.v1.container.Container`
+               :class:`~otcextensions.sdk.obs.v1.container.Container`
                instance.
 
         :returns: The contents of the object.  Use the
@@ -214,15 +239,18 @@ class Proxy(proxy.BaseProxy):
         """
         container_name = self._get_container_name(
             obj=obj, container=container)
-        return self._get(_obj.Object, obj, container=container_name)
+        endpoint = self.get_container_endpoint(container_name)
+        return self._get(_obj.Object, obj, container=container_name,
+                         endpoint_override=endpoint,
+                         requests_auth=self._get_req_auth(endpoint))
 
     def download_object(self, obj, container=None, **attrs):
         """Download the data contained inside an object.
 
         :param obj: The value can be the name of an object or a
-                       :class:`~openstack.object_store.v1.obj.Object` instance.
+                       :class:`~otcextensions.sdk.obs.v1.obj.Object` instance.
         :param container: The value can be the name of a container or a
-               :class:`~openstack.object_store.v1.container.Container`
+               :class:`~otcextensions.sdk.obs.v1.container.Container`
                instance.
 
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
@@ -230,51 +258,66 @@ class Proxy(proxy.BaseProxy):
         """
         container_name = self._get_container_name(
             obj=obj, container=container)
+        endpoint = self.get_container_endpoint(container_name)
         obj = self._get_resource(
             _obj.Object, obj, container=container_name, **attrs)
-        return obj.download(self, filename=attrs.pop('file', '-'))
+        return obj.download(
+            self,
+            endpoint_override=endpoint,
+            requests_auth=self._get_req_auth(endpoint),
+            filename=attrs.pop('file', '-'))
 
     def stream_object(self, obj, container=None, chunk_size=1024, **attrs):
         """Stream the data contained inside an object.
 
         :param obj: The value can be the name of an object or a
-                       :class:`~openstack.object_store.v1.obj.Object` instance.
+                       :class:`~otcextensions.sdk.obs.v1.obj.Object` instance.
         :param container: The value can be the name of a container or a
-               :class:`~openstack.object_store.v1.container.Container`
+               :class:`~otcextensions.sdk.obs.v1.container.Container`
                instance.
 
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                  when no resource can be found.
         :returns: An iterator that iterates over chunk_size bytes
         """
-        container_name = self._get_container_name(
-            obj=obj, container=container)
+        raise NotImplementedError
+        # container_name = self._get_container_name(
+        #     obj=obj, container=container)
         container_name = self._get_container_name(container=container)
+        endpoint = self.get_container_endpoint(container_name)
         obj = self._get_resource(
-            _obj.Object, obj, container=container_name, **attrs)
+            _obj.Object, obj, container=container_name,
+            endpoint_override=endpoint,
+            requests_auth=self._get_req_auth(endpoint),
+            **attrs)
         return obj.stream(self, chunk_size=chunk_size)
 
     def create_object(self, container, name, **attrs):
         """Upload a new object from attributes
 
         :param container: The value can be the name of a container or a
-               :class:`~openstack.object_store.v1.container.Container`
+               :class:`~otcextensions.sdk.obs.v1.container.Container`
                instance.
         :param name: Name of the object to create.
         :param dict attrs: Keyword arguments which will be used to create
-               a :class:`~openstack.object_store.v1.obj.Object`,
+               a :class:`~otcextensions.sdk.obs.v1.obj.Object`,
                comprised of the properties on the Object class.
 
         :returns: The results of object creation
-        :rtype: :class:`~openstack.object_store.v1.container.Container`
+        :rtype: :class:`~otcextensions.sdk.obs.v1.container.Container`
         """
         # TODO(mordred) Add ability to stream data from a file
         # TODO(mordred) Use create_object from OpenStackCloud
-        container_name = self._get_container_name(container=container)
+        # container_name = self._get_container_name(container=container)
+        endpoint = self.get_container_endpoint(container)
         return self._create(
-            _obj.Object, container=container_name, name=name, **attrs)
+            _obj.Object,
+            # container=container_name,
+            endpoint_override=endpoint,
+            requests_auth=self._get_req_auth(endpoint),
+            name=name, **attrs)
     # Backwards compat
-    upload_object = create_object
+    # upload_object = create_object
 
     def copy_object(self):
         """Copy an object."""
@@ -284,10 +327,10 @@ class Proxy(proxy.BaseProxy):
         """Delete an object
 
         :param obj: The value can be either the name of an object or a
-                       :class:`~openstack.object_store.v1.container.Container`
+                       :class:`~otcextensions.sdk.obs.v1.container.Container`
                        instance.
         :param container: The value can be the ID of a container or a
-               :class:`~openstack.object_store.v1.container.Container`
+               :class:`~otcextensions.sdk.obs.v1.container.Container`
                instance.
         :param bool ignore_missing: When set to ``False``
                     :class:`~openstack.exceptions.ResourceNotFound` will be
@@ -297,28 +340,34 @@ class Proxy(proxy.BaseProxy):
 
         :returns: ``None``
         """
-        container_name = self._get_container_name(obj, container)
-
+        # container_name = self._get_container_name(obj, container)
+        endpoint = self.get_container_endpoint(container)
         self._delete(_obj.Object, obj, ignore_missing=ignore_missing,
-                     container=container_name)
+                     # container=container_name,
+                     endpoint_override=endpoint,
+                     requests_auth=self._get_req_auth(endpoint),
+                     )
 
     def get_object_metadata(self, obj, container=None):
         """Get metadata for an object.
 
         :param obj: The value can be the name of an object or a
-                    :class:`~openstack.object_store.v1.obj.Object` instance.
+                    :class:`~otcextensions.sdk.obs.v1.obj.Object` instance.
         :param container: The value can be the ID of a container or a
-               :class:`~openstack.object_store.v1.container.Container`
+               :class:`~otcextensions.sdk.obs.v1.container.Container`
                instance.
 
-        :returns: One :class:`~openstack.object_store.v1.obj.Object`
+        :returns: One :class:`~otcextensions.sdk.obs.v1.obj.Object`
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                  when no resource can be found.
         """
         raise NotImplementedError
         container_name = self._get_container_name(obj, container)
+        endpoint = self.get_container_endpoint(container_name)
 
-        return self._head(_obj.Object, obj, container=container_name)
+        return self._head(_obj.Object, obj, container=container_name,
+                          endpoint_override=endpoint,
+                          requests_auth=self._get_req_auth(endpoint))
 
     def set_object_metadata(self, obj, container=None, **metadata):
         """Set metadata for an object.
@@ -326,9 +375,9 @@ class Proxy(proxy.BaseProxy):
         Note: This method will do an extra HEAD call.
 
         :param obj: The value can be the name of an object or a
-                    :class:`~openstack.object_store.v1.obj.Object` instance.
+                    :class:`~otcextensions.sdk.obs.v1.obj.Object` instance.
         :param container: The value can be the name of a container or a
-               :class:`~openstack.object_store.v1.container.Container`
+               :class:`~otcextensions.sdk.obs.v1.container.Container`
                instance.
         :param kwargs metadata: Key/value pairs to be set as metadata
                                 on the container. Both custom and system
@@ -355,9 +404,9 @@ class Proxy(proxy.BaseProxy):
         """Delete metadata for an object.
 
         :param obj: The value can be the name of an object or a
-                    :class:`~openstack.object_store.v1.obj.Object` instance.
+                    :class:`~otcextensions.sdk.obs.v1.obj.Object` instance.
         :param container: The value can be the ID of a container or a
-               :class:`~openstack.object_store.v1.container.Container`
+               :class:`~otcextensions.sdk.obs.v1.container.Container`
                instance.
         :param keys: The keys of metadata to be deleted.
         """

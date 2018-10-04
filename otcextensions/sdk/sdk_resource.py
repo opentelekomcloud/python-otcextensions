@@ -27,7 +27,8 @@ class Resource(resource.Resource):
     def _prepare_override_args(cls,
                                endpoint_override=None,
                                request_headers=None,
-                               additional_headers=None):
+                               additional_headers=None,
+                               requests_auth=None):
         """Prepare additional (override) arguments for the REST call
 
         :param endpoint_override: optional endpoint_override argument
@@ -55,6 +56,9 @@ class Resource(resource.Resource):
 
         if endpoint_override:
             req_args['endpoint_override'] = endpoint_override
+
+        if requests_auth:
+            req_args['requests_auth'] = requests_auth
 
         return req_args
 
@@ -87,8 +91,8 @@ class Resource(resource.Resource):
         self._header.attributes.update(headers)
         self._header.clean()
 
-    def create(self, session, prepend_key=True, requires_id=True,
-               endpoint_override=None, headers=None):
+    def create(self, session, prepend_key=True,
+               endpoint_override=None, headers=None, requests_auth=None):
         """Create a remote resource based on this instance.
 
         :param session: The session to use for making this request.
@@ -112,7 +116,8 @@ class Resource(resource.Resource):
             req_args = self._prepare_override_args(
                 endpoint_override=endpoint_override,
                 request_headers=request.headers,
-                additional_headers=headers)
+                additional_headers=headers,
+                requests_auth=requests_auth)
             response = session.put(request.url,
                                    json=request.body, **req_args)
         elif self.create_method == 'POST':
@@ -121,7 +126,8 @@ class Resource(resource.Resource):
             req_args = self._prepare_override_args(
                 endpoint_override=endpoint_override,
                 request_headers=request.headers,
-                additional_headers=headers)
+                additional_headers=headers,
+                requests_auth=requests_auth)
             response = session.post(request.url,
                                     json=request.body, **req_args)
         else:
@@ -133,7 +139,7 @@ class Resource(resource.Resource):
         return self
 
     def get(self, session, error_message=None, requires_id=True,
-            endpoint_override=None, headers=None):
+            endpoint_override=None, headers=None, requests_auth=None):
         """Get a remote resource based on this instance.
 
         This function overrides default Resource.get to enable GET headers
@@ -156,7 +162,8 @@ class Resource(resource.Resource):
         get_args = self._prepare_override_args(
             endpoint_override=endpoint_override,
             request_headers=request.headers,
-            additional_headers=headers)
+            additional_headers=headers,
+            requests_auth=requests_auth)
 
         response = session.get(request.url, **get_args)
         kwargs = {}
@@ -168,7 +175,7 @@ class Resource(resource.Resource):
         return self
 
     def head(self, session,
-             endpoint_override=None, headers=None):
+             endpoint_override=None, headers=None, requests_auth=None):
         """Get headers from a remote resource based on this instance.
 
         :param session: The session to use for making this request.
@@ -197,7 +204,7 @@ class Resource(resource.Resource):
         return self
 
     def update(self, session, prepend_key=True, has_body=True,
-               endpoint_override=None, headers=None):
+               endpoint_override=None, headers=None, requests_auth=None):
         """Update the remote resource based on this instance.
 
         :param session: The session to use for making this request.
@@ -226,7 +233,8 @@ class Resource(resource.Resource):
         args = self._prepare_override_args(
             endpoint_override=endpoint_override,
             request_headers=request.headers,
-            additional_headers=headers)
+            additional_headers=headers,
+            requests_auth=requests_auth)
 
         if self.update_method == 'PATCH':
             response = session.patch(
@@ -245,7 +253,8 @@ class Resource(resource.Resource):
         return self
 
     def delete(self, session, error_message=None,
-               endpoint_override=None, headers=None, params=None):
+               endpoint_override=None, headers=None,
+               requests_auth=None, params=None):
         """Delete the remote resource based on this instance.
 
         This function overrides default Resource.delete to enable headers
@@ -267,7 +276,8 @@ class Resource(resource.Resource):
         delete_args = self._prepare_override_args(
             endpoint_override=endpoint_override,
             request_headers=request.headers,
-            additional_headers=headers)
+            additional_headers=headers,
+            requests_auth=requests_auth)
         if params:
             delete_args['params'] = params
 
@@ -282,7 +292,8 @@ class Resource(resource.Resource):
 
     @classmethod
     def list(cls, session, paginated=False,
-             endpoint_override=None, headers=None, **params):
+             endpoint_override=None, headers=None, requests_auth=None,
+             **params):
         """Override default list to incorporate endpoint overriding
         and custom headers
 

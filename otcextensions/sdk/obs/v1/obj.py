@@ -10,109 +10,63 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from botocore.exceptions import ClientError
+# from botocore.exceptions import ClientError
+import base64
+import hashlib
 
 from openstack import _log
 from openstack import exceptions
 from openstack import resource
-from openstack.object_store.v1 import obj
 
-from otcextensions.i18n import _
+# from otcextensions.i18n import _
 from otcextensions.sdk.obs.v1 import _base
+
+import xml.etree.ElementTree as ET
 
 
 _logger = _log.setup_logging('openstack')
 
 
-class Object(obj.Object, _base.BaseResource):
-    # It should be redefined here again
-    #: The unique name for the object.
-    name = resource.Body("name", alternate_id=True)
+class Object(_base.BaseResource):
+
+    base_path = '/'
+
+    allow_create = True
+    allow_get = True
+    allow_commit = True
+    allow_delete = True
+    allow_list = True
+    allow_head = True
+
+    resources_key = ''
+    resource_key = 'Contents'
 
     _query_mapping = resource.QueryParameters(
-        'container', 'prefix', 'delimiter', 'id', 'data', 'name',
-        container='Bucket',
-        prefix='Prefix',
-        delimiter='Delimiter',
-        id='Key',
-        data='Fileobj',
-        name='Key'
+        'prefix', 'delimiter',
+        'limit',
+        prefix='prefix',
+        delimiter='delimiter',
+        limit='max-keys'
     )
 
-    resources_key = 'Contents'
+    data = None
 
-    def download(self, session, filename=None):
-        _logger.debug('download object into %s' % filename)
+    name = resource.Body('Key', alternate_id=True)
+    last_modified = resource.Body('LastModified')
+    etag = resource.Body('ETag')
+    content_length = resource.Body('Size', type=int)
+    storage_class = resource.Body('StorageClass')
 
-        request = self._prepare_request()
-        session = self._get_boto_session(session)
+    content_md5 = resource.Header('Content-MD5', type=str)
+    #: private, public-read, public-read-write, authenticated-read
+    #: bucket-owner-read, bucket-owner-full-control
+    acl = resource.Header('x-amz-acl')
+    object_storage_class = resource.Header('x-amz-storage-class')
+    container = resource.URI('container')
 
-        f = open(filename, 'wb')
-        request.body['Fileobj'] = f
-
-        # response = None
-        try:
-            session.download_fileobj(**request.body)
-        except ClientError as e:
-            raise exceptions.SDKException(_('Exception %s') % str(e))
-
-        # _logger.debug('response=%s' % response)
-        # kwargs = {}
-        # if error_message:
-        #     kwargs['error_message'] = error_message
-        #
-        # self._translate_response(response, **kwargs)
-        return
-        pass
-
-    @classmethod
-    def new(cls, **kwargs):
-        # Object uses name as id. Proxy._get_resource calls
-        # Resource.new(id=name) but then we need to do container.name
-        # It's the same thing for Container - make it be the same.
-        obj = kwargs.pop('object', None)
-        name = kwargs.pop('name', None)
-        if not name and obj:
-            kwargs['name'] = obj
-        else:
-            kwargs['name'] = name
-        if obj:
-            # Only in the create object the data is passed
-            kwargs['data'] = open(obj, 'rb')
-
-        return Object(_synchronized=True, **kwargs)
-
-    @classmethod
-    def _normalize_obs_keys(cls, entity):
-        resource = {}
-
-        resource['last-modified'] = \
-            entity.get('LastModified', None)
-
-        name = entity.get('Key', None)
-        if name:
-            resource['name'] = name
-
-        resource['content-type'] = \
-            entity.get('ContentType', None)
-
-        size = entity.get('ContentLength', None)
-        if not size:
-            # in list mode
-            size = entity.get('Size', None)
-        if size:
-            resource['content-length'] = size
-
-        etag = entity.get('ETag', None)
-        if not etag:
-            etag = entity.get('etag', None)
-        resource['etag'] = etag
-
-        resource['accept-ranges'] = entity.get('AcceptRanges', None)
-
-        _logger.debug('mapped resources = %s' % resource)
-
-        return resource
+    def __init__(self, data=None, **attrs):
+        super(_base.BaseResource, self).__init__(**attrs)
+        self.data = data
 
     def _translate_response(self, response, has_body=True, error_message=None):
         """Given a KSA response, inflate this instance with its data
@@ -120,68 +74,118 @@ class Object(obj.Object, _base.BaseResource):
         This method updates attributes that correspond to headers
         and body on this instance and clears the dirty set.
         """
+        exceptions.raise_from_response(response, error_message=response.text)
+        _logger.debug(response.text)
         if response:
-            # if has_body:
-
-            resource = self._normalize_obs_keys(response)
-            resource['name'] = self.id
-
-            self._update(**resource)
-
-    def _prepare_request(self, requires_id=None, prepend_key=False):
-        """Prepare a request to be sent to the server
-
-        Create operations don't require an ID, but all others do,
-        so only try to append an ID when it's needed with
-        requires_id. Create and update operations sometimes require
-        their bodies to be contained within an dict -- if the
-        instance contains a resource_key and prepend_key=True,
-        the body will be wrapped in a dict with that key.
-
-        Return a _Request object that contains the constructed URI
-        as well a body and headers that are ready to send.
-        Only dirty body and header contents will be returned.
-        """
-        if requires_id is None:
-            requires_id = self.requires_id
-
-        _logger.debug('self=%s' % self)
-        params = {
-            'id': self.id,
-            'container': self.container,
-        }
-        if self.data and prepend_key:
-            params['data'] = self.data
-
-        self._query_mapping._validate(params, base_path=self.base_path)
-        query_params = self._query_mapping._transpose(params)
-        _logger.debug('params=%s' % query_params)
-
-        body = query_params.copy()
-
-        return resource._Request(None, body, None)
+            if has_body:
+                # TODO(agoncharov): do nothing so far. Generally need
+                # to parse different responses
+                pass
 
     @classmethod
-    def list(cls, session, paginated=False, **params):
-        return super(Object, cls)._list(
-            session, 'list_objects_v2', '_normalize_obs_keys',
-            paginated, **params
-        )
+    def list(cls, session, paginated=False,
+             endpoint_override=None, headers=None, requests_auth=None,
+             **params):
+        if not cls.allow_list:
+            raise exceptions.MethodNotSupported(cls, "list")
 
-    def get(self, session, error_message=None, requires_id=True):
-        return super(Object, self).get(
-            session, 'head_object', error_message, requires_id
-        )
+        cls._query_mapping._validate(params, base_path=cls.base_path)
+        query_params = cls._query_mapping._transpose(params)
+        uri = cls.base_path % params
 
-    def create(self, session, prepend_key=True):
-        super(Object, self)._create(
-            session, 'upload_fileobj', prepend_key
-        )
-        # refetch the object, since boto does not return
-        # any useful data upon create
-        return self.get(session)
+        # Build additional arguments to the GET call
+        get_args = cls._prepare_override_args(
+            endpoint_override=endpoint_override,
+            additional_headers=headers)
 
-    def delete(self, session, error_message=None):
-        return super(Object, self).delete(
-            session, 'delete_object', error_message
-        )
+        while uri:
+
+            response = session.get(
+                uri,
+                params=query_params.copy(),
+                requests_auth=requests_auth,
+                **get_args
+            )
+
+            uri = None
+            next_params = {}
+
+            root = ET.fromstring(response.content)
+
+            if root.tag != ET.QName(cls.OBS_NS, 'ListBucketResult'):
+                _logger.warn('Namespace in the response does not match '
+                             'expectation')
+                cls.OBS_NS = root.tag.split('}', 1)[0][1:]
+
+            for element in root:
+
+                if element.tag == ET.QName(cls.OBS_NS, cls.resource_key):
+                    # Convert XML part into dict
+                    dict_raw_resource = cls.etree_to_dict(element)
+                    # extract resource data
+                    dict_resource = dict_raw_resource[cls.resource_key]
+                    value = cls.existing(**dict_resource)
+                    yield value
+
+                elif element.tag == ET.QName(cls.OBS_NS, 'NextMarker'):
+                    next_params['marker'] = element.text
+
+            if 'marker' in next_params:
+                uri = cls.base_path % params
+                query_params.update(next_params)
+
+        return
+
+    def create(self, session, prepend_key=True,
+               endpoint_override=None, headers=None, requests_auth=None):
+
+        if not self.allow_create:
+            raise exceptions.MethodNotSupported(self, 'create')
+
+        session = self._get_session(session)
+
+        if not self.content_md5 and self.data:
+            md5 = hashlib.md5()
+            md5.update(str.encode(self.data))
+            self.content_md5 = base64.b64encode(md5.digest()).decode()
+
+        request = self._prepare_request(
+            requires_id=True,
+            prepend_key=prepend_key)
+
+        req_args = self._prepare_override_args(
+            endpoint_override=endpoint_override,
+            request_headers=request.headers,
+            additional_headers=headers,
+            requests_auth=requests_auth)
+
+        response = session.put(
+            request.url,
+            data=self.data,
+            **req_args)
+        self._translate_response(response)
+        return self
+
+    def download(self, session, filename=None,
+                 endpoint_override=None, requests_auth=None):
+
+        session = self._get_session(session)
+
+        request = self._prepare_request(requires_id=True)
+
+        req_args = self._prepare_override_args(
+            endpoint_override=endpoint_override,
+            request_headers=request.headers,
+            requests_auth=requests_auth)
+
+        response = session.get(
+            request.url,
+            **req_args)
+        self._translate_response(response)
+
+        _logger.debug(response.content)
+
+        with open(filename, 'wb') as f:
+            f.write(response.content)
+
+        return
