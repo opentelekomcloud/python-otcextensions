@@ -1,17 +1,18 @@
-#   Licensed under the Apache License, Version 2.0 (the "License"); you may
+#   Licensed under the Apache License, Version 2.0 (the 'License'); you may
 #   not use this file except in compliance with the License. You may obtain
 #   a copy of the License at
 #
 #        http://www.apache.org/licenses/LICENSE-2.0
 #
 #   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#   distributed under the License is distributed on an 'AS IS' BASIS, WITHOUT
 #   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-"""OBS Object v1 action implementations"""
+'''OBS Object v1 action implementations'''
 import logging
+import os
 
 from openstackclient.i18n import _
 
@@ -23,6 +24,8 @@ from osc_lib.command import command
 from otcextensions.common import sdk_utils
 
 LOG = logging.getLogger(__name__)
+
+_file_hash_cache = dict()
 
 
 def _get_columns(item):
@@ -36,8 +39,8 @@ def _get_columns(item):
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
-class CreateObject(command.Lister):
-    _description = _("Upload object to container")
+class CreateObject(command.ShowOne):
+    _description = _('Upload object to container')
 
     def get_parser(self, prog_name):
         parser = super(CreateObject, self).get_parser(prog_name)
@@ -49,7 +52,7 @@ class CreateObject(command.Lister):
         parser.add_argument(
             'objects',
             metavar='<filename>',
-            nargs="+",
+            nargs='+',
             help=_('Local filename(s) to upload'),
         )
         parser.add_argument(
@@ -74,21 +77,18 @@ class CreateObject(command.Lister):
                       ' is 1024'), len(obj))
             data = self.app.client_manager.obs.create_object(
                 container=parsed_args.container,
-                object=obj,
-                name=parsed_args.name,
+                name=os.path.basename(obj),
+                data=open(obj, 'r').read()
             )
             results.append(data)
 
-        columns = ("name", "container", "etag")
-        return (columns,
-                (utils.get_item_properties(
-                    s, columns,
-                    formatters={},
-                ) for s in results))
+        display_columns, columns = _get_columns(data)
+        data = utils.get_item_properties(data, columns)
+        return (display_columns, data)
 
 
 class DeleteObject(command.Command):
-    _description = _("Delete object from container")
+    _description = _('Delete object from container')
 
     def get_parser(self, prog_name):
         parser = super(DeleteObject, self).get_parser(prog_name)
@@ -100,7 +100,7 @@ class DeleteObject(command.Command):
         parser.add_argument(
             'objects',
             metavar='<object>',
-            nargs="+",
+            nargs='+',
             help=_('Object(s) to delete'),
         )
         return parser
@@ -115,40 +115,40 @@ class DeleteObject(command.Command):
 
 
 class ListObject(command.Lister):
-    _description = _("List objects")
+    _description = _('List objects')
 
     def get_parser(self, prog_name):
         parser = super(ListObject, self).get_parser(prog_name)
         parser.add_argument(
-            "container",
-            metavar="<container>",
-            help=_("Container to list"),
+            'container',
+            metavar='<container>',
+            help=_('Container to list'),
         )
         parser.add_argument(
-            "--prefix",
-            metavar="<prefix>",
-            help=_("Filter list using <prefix>"),
+            '--prefix',
+            metavar='<prefix>',
+            help=_('Filter list using <prefix>'),
         )
         parser.add_argument(
-            "--delimiter",
-            metavar="<delimiter>",
-            help=_("Roll up items with <delimiter>"),
+            '--delimiter',
+            metavar='<delimiter>',
+            help=_('Roll up items with <delimiter>'),
         )
         parser.add_argument(
-            "--marker",
-            metavar="<marker>",
-            help=_("Anchor for paging"),
+            '--marker',
+            metavar='<marker>',
+            help=_('Anchor for paging'),
         )
         parser.add_argument(
-            "--end-marker",
-            metavar="<end-marker>",
-            help=_("End anchor for paging"),
+            '--end-marker',
+            metavar='<end-marker>',
+            help=_('End anchor for paging'),
         )
         parser.add_argument(
-            "--limit",
-            metavar="<num-objects>",
+            '--limit',
+            metavar='<num-objects>',
             type=int,
-            help=_("Limit the number of objects returned"),
+            help=_('Limit the number of objects returned'),
         )
         parser.add_argument(
             '--long',
@@ -168,14 +168,14 @@ class ListObject(command.Lister):
 
         if parsed_args.long:
             columns = (
-                'Name',
-                'Content Length',
-                'ETag',
+                'name',
+                'content length',
+                'etag',
                 # 'Content Type',
-                'Last Modified At',
+                'last modified',
             )
         else:
-            columns = ('Name',)
+            columns = ('name',)
 
         kwargs = {}
         if parsed_args.prefix:
@@ -204,15 +204,16 @@ class ListObject(command.Lister):
 
 
 class SaveObject(command.Command):
-    _description = _("Save object locally")
+    _description = _('Save object locally')
 
     def get_parser(self, prog_name):
         parser = super(SaveObject, self).get_parser(prog_name)
         parser.add_argument(
-            "--file",
-            metavar="<filename>",
-            help=_("Destination filename (defaults to object name); using '-'"
-                   " as the filename will print the file to stdout"),
+            '--file',
+            metavar='<filename>',
+            default='-',
+            help=_('Destination filename (defaults to object name); using "-"'
+                   ' as the filename will print the file to stdout'),
         )
         parser.add_argument(
             'container',
@@ -220,9 +221,9 @@ class SaveObject(command.Command):
             help=_('Download <object> from <container>'),
         )
         parser.add_argument(
-            "object",
-            metavar="<object>",
-            help=_("Object to save"),
+            'object',
+            metavar='<object>',
+            help=_('Object to save'),
         )
         return parser
 
@@ -233,16 +234,10 @@ class SaveObject(command.Command):
             obj=parsed_args.object,
             file=parsed_args.file
         )
-        #
-        # self.app.client_manager.obs.object_save(
-        #     container=parsed_args.container,
-        #     object=parsed_args.object,
-        #     file=parsed_args.file,
-        # )
 
 
 class SetObject(command.Command):
-    _description = _("Set object properties")
+    _description = _('Set object properties')
 
     def get_parser(self, prog_name):
         parser = super(SetObject, self).get_parser(prog_name)
@@ -257,12 +252,12 @@ class SetObject(command.Command):
             help=_('Object to modify'),
         )
         parser.add_argument(
-            "--property",
-            metavar="<key=value>",
+            '--property',
+            metavar='<key=value>',
             required=True,
             action=parseractions.KeyValueAction,
-            help=_("Set a property on this object "
-                   "(repeat option to set multiple properties)")
+            help=_('Set a property on this object '
+                   '(repeat option to set multiple properties)')
         )
         return parser
 
@@ -275,7 +270,7 @@ class SetObject(command.Command):
 
 
 class ShowObject(command.ShowOne):
-    _description = _("Display object details")
+    _description = _('Display object details')
 
     def get_parser(self, prog_name):
         parser = super(ShowObject, self).get_parser(prog_name)
@@ -305,7 +300,7 @@ class ShowObject(command.ShowOne):
 
 
 class UnsetObject(command.Command):
-    _description = _("Unset object properties")
+    _description = _('Unset object properties')
 
     def get_parser(self, prog_name):
         parser = super(UnsetObject, self).get_parser(prog_name)

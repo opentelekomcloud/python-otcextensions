@@ -10,11 +10,12 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import xml.etree.ElementTree as ET
+
 from openstack import _log
 from openstack import exceptions
 from openstack import resource
 from openstack import utils
-from openstack.object_store.v1 import container
 
 from otcextensions.sdk.obs.v1 import _base
 
@@ -22,36 +23,28 @@ from otcextensions.sdk.obs.v1 import _base
 _logger = _log.setup_logging('openstack')
 
 
-class Container(container.Container, _base.BaseResource):
-
-    # #should be redefined here
-    # #: The name of the container.
-    name = resource.Body("name", alternate_id=True)
+class Container(_base.BaseResource):
 
     resources_key = 'Buckets'
+    resource_key = 'Bucket'
 
-    @classmethod
-    def new(cls, **kwargs):
-        # Container uses name as id. Proxy._get_resource calls
-        # Resource.new(id=name) but then we need to do container.name
-        # It's the same thing for Container - make it be the same.
-        name = kwargs.pop('id', None)
-        if name:
-            kwargs.setdefault('name', name)
-        return Container(_synchronized=True, **kwargs)
+    allow_get = True
+    allow_head = True
+    allow_list = True
+    allow_create = True
+    allow_delete = True
 
-    @classmethod
-    def _normalize_obs_keys(cls, entity):
-        resource = {}
+    create_method = 'PUT'
 
-        name = entity.get('Name', None)
-        if name:
-            resource['name'] = name
+    base_path = '/'
 
-        resource['x-container-object-count'] = -1
-        resource['x-container-bytes-used'] = -1
+    # all requests (except create) will default to requires_id = None
+    requires_id = None
 
-        return resource
+    name = resource.Body('Name', alternate_id=True, alias='id')
+    creation_date = resource.Body('CreationDate')
+
+    storage_class = resource.Header('x-default-storage-class')
 
     def _translate_response(self, response, has_body=True, error_message=None):
         """Given a KSA response, inflate this instance with its data
@@ -59,12 +52,13 @@ class Container(container.Container, _base.BaseResource):
         This method updates attributes that correspond to headers
         and body on this instance and clears the dirty set.
         """
-        # if has_body is None:
-        #     has_body = self.has_body
+        exceptions.raise_from_response(response, error_message=response.text)
+        _logger.debug(response.text)
         if response:
             if has_body:
-                resource = self._normalize_obs_keys(response)
-                self._update(**resource)
+                # TODO(agoncharov): do nothing so far. Generally need
+                # to parse different responses
+                pass
 
     def _prepare_request(self, requires_id=None, prepend_key=False):
         """Prepare a request to be sent to the server
@@ -83,12 +77,13 @@ class Container(container.Container, _base.BaseResource):
         if requires_id is None:
             requires_id = self.requires_id
 
-        body = self._body.dirty
-        if prepend_key and self.resource_key is not None:
-            body = {self.resource_key: body}
+        body = None
+        # body = self._body.dirty
+        # if prepend_key and self.resource_key is not None:
+        #     body = {self.resource_key: body}
 
-        if self.name:
-            body['Bucket'] = self.name
+        # if self.name:
+        #     body['Bucket'] = self.name
 
         base_path = '/'
         headers = {}
@@ -103,23 +98,62 @@ class Container(container.Container, _base.BaseResource):
         return resource._Request(uri, body, headers)
 
     @classmethod
-    def list(cls, session, paginated=False, **params):
-        return super(Container, cls)._list(
-            session, 'list_buckets', '_normalize_obs_keys',
-            paginated, **params
+    def list(cls, session, paginated=False,
+             endpoint_override=None, headers=None, requests_auth=None,
+             **params):
+        if not cls.allow_list:
+            raise exceptions.MethodNotSupported(cls, "list")
+
+        cls._query_mapping._validate(params, base_path=cls.base_path)
+        query_params = cls._query_mapping._transpose(params)
+
+        response = session.get(
+            session.get_endpoint(),
+            params=query_params.copy(),
+            requests_auth=requests_auth
         )
 
-    def create(self, session, prepend_key=True):
-        return super(Container, self)._create(
-            session, 'create_bucket', prepend_key
-        )
+        _logger.debug('containers = %s' % response.content)
 
-    def delete(self, session, error_message=None):
-        return super(Container, self).delete(
-            session, 'delete_bucket', error_message
-        )
+        root = ET.fromstring(response.content)
 
-    def get(self, session, error_message=None, requires_id=True):
-        return super(Container, self).get(
-            session, 'head_bucket', error_message, requires_id
-        )
+        if root.tag != ET.QName(cls.OBS_NS, 'ListAllMyBucketsResult'):
+            _logger.warn('Namespace in the response does not match '
+                         'expectation')
+            cls.OBS_NS = root.tag.split('}', 1)[0][1:]
+
+        for elements in root:
+
+            if elements.tag == ET.QName(cls.OBS_NS, cls.resources_key):
+                for el in elements:
+                    if el.tag == ET.QName(cls.OBS_NS, cls.resource_key):
+                        # Convert XML part into dict
+                        dict_raw_resource = cls.etree_to_dict(el)
+                        # extract resource data
+                        dict_resource = dict_raw_resource[cls.resource_key]
+                        value = cls.existing(**dict_resource)
+                        yield value
+
+        return
+
+    def create(self, session, prepend_key=True,
+               endpoint_override=None, headers=None, requests_auth=None):
+
+        if not self.allow_create:
+            raise exceptions.MethodNotSupported(self, "create")
+
+        session = self._get_session(session)
+
+        request = self._prepare_request()
+
+        req_args = self._prepare_override_args(
+            endpoint_override=endpoint_override,
+            request_headers=request.headers,
+            additional_headers=headers,
+            requests_auth=requests_auth)
+
+        response = session.put(request.url,
+                               data=request.body, **req_args)
+
+        self._translate_response(response)
+        return self
