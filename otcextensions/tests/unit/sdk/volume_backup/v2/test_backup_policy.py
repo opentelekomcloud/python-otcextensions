@@ -62,7 +62,6 @@ class TestBackupPolicy(base.TestCase):
         sot = _backup_policy.BackupPolicy()
         self.assertEqual('backup_policies', sot.resources_key)
         self.assertEqual('/backuppolicy', sot.base_path)
-        self.assertEqual('vbs', sot.service.service_type)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertFalse(sot.allow_get)
@@ -281,7 +280,6 @@ class TestBackupPolicyResource(base.TestCase):
     def test_basic(self):
         sot = _backup_policy.BackupPolicyResource()
         self.assertEqual('/backuppolicyresources', sot.base_path)
-        self.assertEqual('vbs', sot.service.service_type)
         self.assertFalse(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertFalse(sot.allow_get)

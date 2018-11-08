@@ -92,7 +92,6 @@ class TestKey(base.TestCase):
         self.assertEqual('key_details', sot.resources_key)
         self.assertEqual('/kms', sot.base_path)
         self.assertEqual('/kms/list-keys', sot.list_path)
-        self.assertEqual('kms', sot.service.service_type)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_get)

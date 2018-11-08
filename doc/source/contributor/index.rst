@@ -3,7 +3,7 @@ Contributing to the OpenStack SDK
 
 This section of documentation pertains to those who wish to contribute to the
 development of this SDK. If you're looking for documentation on how to use
-the SDK to build applications, please see the `user <../users>`_ section.
+the SDK to build applications, please see the `user <../user>`_ section.
 
 About the Project
 -----------------
@@ -36,9 +36,9 @@ as occasional talk about SDKs created for languages outside of Python.
 Email
 *****
 
-The `openstack-dev <mailto:openstack-dev@openstack.org?subject=[python-openstacksdk]%20Question%20about%20the%20python-openstacksdk>`_
+The `openstack-dev <mailto:openstack-dev@openstack.org?subject=[sdk]%20Question%20about%20openstacksdk>`_
 mailing list fields questions of all types on OpenStack. Using the
-``[python-openstacksdk]`` filter to begin your email subject will ensure
+``[sdk]`` filter to begin your email subject will ensure
 that the message gets to SDK developers.
 
 Coding Standards

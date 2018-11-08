@@ -13,7 +13,6 @@ from openstack import _log
 from openstack import resource
 
 from otcextensions.sdk import sdk_resource
-from otcextensions.sdk.rds import rds_service
 
 _logger = _log.setup_logging('openstack')
 
@@ -23,7 +22,6 @@ class Backup(sdk_resource.Resource):
     base_path = '/backups'
     resource_key = 'backup'
     resources_key = 'backups'
-    service = rds_service.RdsService()
     service_expectes_json_type = True
 
     # capabilities
@@ -71,7 +69,6 @@ class BackupPolicy(sdk_resource.Resource):
 
     base_path = '/instances/%(instance_id)s/backups/policy'
     resource_key = 'policy'
-    service = rds_service.RdsService()
 
     # capabilities
     allow_update = True

@@ -83,7 +83,6 @@ class TestConfigurationGroup(base.TestCase):
         self.assertEqual('configuration', sot.resource_key)
         self.assertEqual('configurations', sot.resources_key)
         self.assertEqual('/%(project_id)s/configurations', sot.base_path)
-        self.assertEqual('rds', sot.service.service_type)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_get)
@@ -370,89 +369,71 @@ class TestConfigurationGroup(base.TestCase):
     #         }
     #     )
 
-    def test_update(self):
-        mock_response = mock.Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {
-            'errCode': 'RDS.0041',
-            'externalMessage': 'Operation accepted success.'
-        }
-        mock_response.headers = {}
-
-        config = {
-            'name': 'test',
-            'description': 'descr',
-            'values': {
-                'a': 'x',
-                'b': 'y'
-            }
-        }
-
-        req = {
-            'configuration': dict(**config)
-        }
-
-        sot_tmpl = configuration.ConfigurationGroup.existing(
-            project_id=PROJECT_ID,
-            **EXAMPLE_GROUP
-        )
-
-        sot = copy.deepcopy(sot_tmpl)
-        sot._update(**config)
-
-        url = '%(project_id)s/configurations/%(id)s' % \
-            {
-                'project_id': PROJECT_ID,
-                'id': sot.id
-            }
-
-        # Invoke without endpoint_override
-        self._verify2(
-            expected_result=mock_response,
-            mock_method=self.sess.put,
-            test_method=sot.update,
-            method_args=[self.sess],
-            # method_kwargs=None,
-            expected_args=[url],
-            expected_kwargs={
-                'json': req,
-                # 'headers': OS_HEADERS,
-            }
-        )
-
-        sot = copy.deepcopy(sot_tmpl)
-        sot._update(**config)
-
-        # Invoke with endpoint_override as argument
-        self._verify2(
-            expected_result=mock_response,
-            mock_method=self.sess.put,
-            test_method=sot.update,
-            method_args=[self.sess],
-            method_kwargs=dict(endpoint_override=ENDPOINT),
-            expected_args=[url],
-            expected_kwargs={
-                'json': req,
-                # 'headers': OS_HEADERS,
-                'endpoint_override': ENDPOINT
-            }
-        )
-
-        sot = copy.deepcopy(sot_tmpl)
-        sot._update(**config)
-
-        # # Invoke with endpoint_override as attribute
-        # sot.endpoint_override = ENDPOINT
-        # self._verify2(
-        #     expected_result=mock_response,
-        #     mock_method=self.sess.put,
-        #     test_method=sot.update,
-        #     method_args=[self.sess],
-        #     # method_kwargs=None,
-        #     expected_args=[url],
-        #     expected_kwargs={
-        #         'json': req,
-        #         # 'headers': OS_HEADERS,
-        #         'endpoint_override': ENDPOINT
-        #     }
-        # )
+    # def test_update(self):
+    #     mock_response = mock.Mock()
+    #     mock_response.status_code = 200
+    #     mock_response.json.return_value = {
+    #         'errCode': 'RDS.0041',
+    #         'externalMessage': 'Operation accepted success.'
+    #     }
+    #     mock_response.headers = {}
+    #
+    #     config = {
+    #         'name': 'test',
+    #         'description': 'descr',
+    #         'values': {
+    #             'a': 'x',
+    #             'b': 'y'
+    #         }
+    #     }
+    #
+    #     req = {
+    #         'configuration': dict(**config)
+    #     }
+    #
+    #     sot_tmpl = configuration.ConfigurationGroup.existing(
+    #         project_id=PROJECT_ID,
+    #         **EXAMPLE_GROUP
+    #     )
+    #
+    #     sot = copy.deepcopy(sot_tmpl)
+    #     sot._update(**config)
+    #
+    #     url = '%(project_id)s/configurations/%(id)s' % \
+    #         {
+    #             'project_id': PROJECT_ID,
+    #             'id': sot.id
+    #         }
+    #
+    #     # Invoke without endpoint_override
+    #     self._verify2(
+    #         expected_result=mock_response,
+    #         mock_method=self.sess.put,
+    #         test_method=sot.update,
+    #         method_args=[self.sess],
+    #         # method_kwargs=None,
+    #         expected_args=[url],
+    #         expected_kwargs={
+    #             'json': req,
+    #         }
+    #     )
+    #
+    #     sot = copy.deepcopy(sot_tmpl)
+    #     sot._update(**config)
+    #
+    #     # Invoke with endpoint_override as argument
+    #     self._verify2(
+    #         expected_result=mock_response,
+    #         mock_method=self.sess.put,
+    #         test_method=sot.update,
+    #         method_args=[self.sess],
+    #         method_kwargs=dict(endpoint_override=ENDPOINT),
+    #         expected_args=[url],
+    #         expected_kwargs={
+    #             'json': req,
+    #             'endpoint_override': ENDPOINT
+    #         }
+    #     )
+    #
+    #     sot = copy.deepcopy(sot_tmpl)
+    #     sot._update(**config)

@@ -29,12 +29,11 @@ approach, this is where you'll want to begin.
    Configuration <config/index>
    Connect to an OpenStack Cloud <https://docs.openstack.org/python-openstacksdk/latest/user/guides/connect>
    Connect to an OpenStack Cloud Using a Config File <https://docs.openstack.org/python-openstacksdk/latest/user/guides/connect_from_config>
+   Microversions <microversions>
    Using Cloud Abstration Layer <https://docs.openstack.org/python-openstacksdk/latest/user/usage>
    Logging <https://docs.openstack.org/python-openstacksdk/latest/user/guides/logging>
    Microversions <https://docs.openstack.org/python-openstacksdk/latest/user/microversions>
-   Baremetal <https://docs.openstack.org/python-openstacksdk/latest/user/guides/baremetal>
    Block Storage <https://docs.openstack.org/python-openstacksdk/latest/user/guides/block_storage>
-   Clustering <https://docs.openstack.org/python-openstacksdk/latest/user/guides/clustering>
    Compute <https://docs.openstack.org/python-openstacksdk/latest/user/guides/compute>
    Database <https://docs.openstack.org/python-openstacksdk/latest/user/guides/database>
    Identity <https://docs.openstack.org/python-openstacksdk/latest/user/guides/identity>
@@ -103,9 +102,7 @@ control which services can be used.
 .. toctree::
    :maxdepth: 1
 
-   Baremetal <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/baremetal>
    Block Storage <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/block_storage>
-   Clustering <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/clustering>
    Compute <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/compute>
    Database <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/database>
    Identity v2 <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/identity_v2>
@@ -185,7 +182,6 @@ can be customized.
    :maxdepth: 1
 
    resource
-   service_filter
    utils
 
 Presentations

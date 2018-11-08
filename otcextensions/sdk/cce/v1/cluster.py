@@ -15,7 +15,6 @@ from openstack import resource
 from openstack import utils
 
 from otcextensions.sdk import sdk_resource
-from otcextensions.sdk.cce import cce_service
 from otcextensions.sdk.cce.v1 import _base
 from otcextensions.sdk.cce.v1 import cluster_node
 
@@ -86,8 +85,6 @@ class ClusterSpec(sdk_resource.Resource):
 
 class Cluster(_base.Resource):
     base_path = '/clusters'
-
-    service = cce_service.CceService()
 
     resources_key = ''
     resource_key = ''

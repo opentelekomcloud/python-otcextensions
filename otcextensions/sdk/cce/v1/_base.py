@@ -12,7 +12,6 @@
 from openstack import resource
 
 from otcextensions.sdk import sdk_resource
-from otcextensions.sdk.cce import cce_service
 
 
 class Metadata(sdk_resource.Resource):
@@ -38,7 +37,6 @@ class Metadata(sdk_resource.Resource):
 class Resource(sdk_resource.Resource):
     base_path = ''
 
-    service = cce_service.CceService()
     service_expectes_json_type = True
 
     # Properties

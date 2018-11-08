@@ -9,18 +9,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack import service_description
 
-from openstack import service_filter
+from otcextensions.sdk.obs.v1 import _proxy
 
 
-class ObsService(service_filter.ServiceFilter):
+class ObsService(service_description.ServiceDescription):
     """The OBS service."""
 
-    valid_versions = [service_filter.ValidVersion('v1')]
-
-    def __init__(self, version=None):
-        """Create a OBS service."""
-        super(ObsService, self).__init__(
-            service_type='obs',
-            version=version,
-        )
+    supported_versions = {
+        '1': _proxy.Proxy
+    }

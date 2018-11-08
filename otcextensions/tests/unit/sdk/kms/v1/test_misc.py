@@ -38,7 +38,6 @@ class TestRandom(base.TestCase):
         self.assertEqual(None, sot.resources_key)
         self.assertEqual(
             '/kms/gen-random', sot.create_path)
-        self.assertEqual('kms', sot.service.service_type)
         self.assertFalse(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertFalse(sot.allow_get)

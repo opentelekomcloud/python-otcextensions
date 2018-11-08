@@ -44,7 +44,6 @@ class TestDatastore(base.TestCase):
         self.assertEqual('/datastores/%(datastore_name)s'
                          '/versions',
                          sot.base_path)
-        self.assertEqual('rds', sot.service.service_type)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_get)

@@ -50,7 +50,6 @@ class TestJob(base.TestCase):
         self.assertEqual(None, sot.resources_key)
         self.assertEqual('/jobs',
                          sot.base_path)
-        self.assertEqual('vbs', sot.service.service_type)
         self.assertFalse(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertTrue(sot.allow_get)

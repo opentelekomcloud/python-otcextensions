@@ -10,17 +10,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from openstack import service_filter
+from openstack import service_description
+from otcextensions.sdk.anti_ddos.v1 import _proxy
 
 
-class AntiDdosService(service_filter.ServiceFilter):
+class AntiDdosService(service_description.ServiceDescription):
     """The Anti_DDOS service."""
 
-    valid_versions = [service_filter.ValidVersion('v1')]
-
-    def __init__(self, version=None):
-        """Create a AntiDDos service."""
-        super(AntiDdosService, self).__init__(
-            service_type='anti_ddos',
-            version=version
-        )
+    supported_versions = {
+        '1': _proxy.Proxy
+    }

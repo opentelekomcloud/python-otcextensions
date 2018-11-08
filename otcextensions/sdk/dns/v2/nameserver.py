@@ -13,7 +13,6 @@ from openstack import resource
 from openstack import _log
 
 from otcextensions.sdk import sdk_resource
-from otcextensions.sdk.dns import dns_service
 
 _logger = _log.setup_logging('openstack')
 
@@ -22,7 +21,6 @@ class NameServer(sdk_resource.Resource):
     resource_key = 'nameserver'
     resources_key = 'nameservers'
     base_path = '/zones/%(zone_id)s/nameservers'
-    service = dns_service.DnsService()
 
     # capabilities
     allow_create = False

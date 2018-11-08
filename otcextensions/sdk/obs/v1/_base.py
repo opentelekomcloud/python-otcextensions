@@ -15,14 +15,12 @@ from openstack import _log
 from collections import defaultdict
 
 from otcextensions.sdk import sdk_resource
-from otcextensions.sdk.obs import obs_service
 
 
 _logger = _log.setup_logging('openstack')
 
 
 class BaseResource(sdk_resource.Resource):
-    service = obs_service.ObsService()
     OBS_NS = "http://obs.otc.t-systems.com/doc/2016-01-01/"
 
     @classmethod

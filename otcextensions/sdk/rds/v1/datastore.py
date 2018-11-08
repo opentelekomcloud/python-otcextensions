@@ -13,7 +13,6 @@ from openstack import _log
 from openstack import resource
 
 from otcextensions.sdk import sdk_resource
-from otcextensions.sdk.rds import rds_service
 
 _logger = _log.setup_logging('openstack')
 
@@ -23,7 +22,6 @@ class Datastore(sdk_resource.Resource):
     base_path = '/datastores/%(datastore_name)s/versions'
     resource_key = ''
     resources_key = 'dataStores'
-    service = rds_service.RdsService()
 
     # capabilities
     allow_get = False

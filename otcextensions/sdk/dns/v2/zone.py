@@ -14,7 +14,6 @@ from openstack import resource
 from openstack import utils
 
 from otcextensions.sdk import sdk_resource
-from otcextensions.sdk.dns import dns_service
 
 _logger = _log.setup_logging('openstack')
 
@@ -31,7 +30,6 @@ class Zone(sdk_resource.Resource):
     resource_key = 'zone'
     resources_key = 'zones'
     base_path = '/zones'
-    service = dns_service.DnsService()
 
     # capabilities
     allow_create = True

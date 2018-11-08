@@ -10,20 +10,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from openstack import service_filter
+from openstack import service_description
+
+from otcextensions.sdk.cts.v1 import _proxy
 
 
-class CtsService(service_filter.ServiceFilter):
+class CtsService(service_description.ServiceDescription):
     """The CTS service."""
 
-    valid_versions = [
-        service_filter.ValidVersion('v1'),
-        service_filter.ValidVersion('v2')
-    ]
-
-    def __init__(self, version=None):
-        """Create a CTS service."""
-        super(CtsService, self).__init__(
-            service_type='cts',
-            version=version
-        )
+    supported_versions = {
+        '1': _proxy.Proxy
+    }

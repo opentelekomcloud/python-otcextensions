@@ -57,7 +57,6 @@ class TestBackupPolicyTask(base.TestCase):
         self.assertEqual('tasks', sot.resources_key)
         self.assertEqual(
             '/backuppolicy/%(policy_id)s/backuptasks', sot.base_path)
-        self.assertEqual('vbs', sot.service.service_type)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_get)

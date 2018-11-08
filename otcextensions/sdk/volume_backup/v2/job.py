@@ -12,13 +12,11 @@
 from openstack import resource
 
 from otcextensions.sdk import sdk_resource
-from otcextensions.sdk.volume_backup import volume_backup_service
 
 
 class Job(sdk_resource.Resource):
     """Volume backup Job Resource"""
     base_path = "/jobs"
-    service = volume_backup_service.VolumeBackupService()
 
     # capabilities
     allow_get = True

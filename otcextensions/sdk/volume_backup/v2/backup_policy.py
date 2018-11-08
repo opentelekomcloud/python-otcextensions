@@ -13,7 +13,6 @@ from openstack import resource
 from openstack import utils
 
 from otcextensions.sdk import sdk_resource
-from otcextensions.sdk.volume_backup import volume_backup_service
 
 
 class SchedulePolicy(sdk_resource.Resource):
@@ -34,7 +33,6 @@ class BackupPolicy(sdk_resource.Resource):
     """Volume BackupPolicy"""
     resources_key = "backup_policies"
     base_path = "/backuppolicy"
-    service = volume_backup_service.VolumeBackupService()
 
     # capabilities
     allow_create = True
@@ -77,7 +75,6 @@ class BackupPolicyAssociatedResource(sdk_resource.Resource):
 
 class BackupPolicyResource(sdk_resource.Resource):
     base_path = "/backuppolicyresources"
-    service = volume_backup_service.VolumeBackupService()
 
     # capabilities
     allow_create = True

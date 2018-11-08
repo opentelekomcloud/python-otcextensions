@@ -13,7 +13,6 @@ from openstack import resource
 from openstack import _log
 
 from otcextensions.sdk import sdk_resource
-from otcextensions.sdk.anti_ddos import anti_ddos_service
 
 _logger = _log.setup_logging('openstack')
 
@@ -22,7 +21,6 @@ class FloatingIP(sdk_resource.Resource):
 
     resources_key = 'ddosStatus'
     base_path = '/antiddos'
-    service = anti_ddos_service.AntiDdosService()
 
     # capabilities
     allow_list = True

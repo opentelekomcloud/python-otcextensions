@@ -55,7 +55,6 @@ class TestBackup(base.TestCase):
         self.assertEqual('backups', sot.resources_key)
         self.assertEqual('/backups',
                          sot.base_path)
-        self.assertEqual('vbs', sot.service.service_type)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_get)

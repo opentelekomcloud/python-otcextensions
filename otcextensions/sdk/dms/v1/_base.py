@@ -11,11 +11,8 @@
 # under the License.
 from otcextensions.sdk import sdk_resource
 
-from otcextensions.sdk.dms import dms_service
-
 
 class Resource(sdk_resource.Resource):
     base_path = ''
 
-    service = dms_service.DmsService()
     service_expectes_json_type = True

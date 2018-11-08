@@ -10,17 +10,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from openstack import service_filter
+from openstack import service_description
+
+from otcextensions.sdk.dcs.v1 import _proxy
 
 
-class DcsService(service_filter.ServiceFilter):
+class DcsService(service_description.ServiceDescription):
     """The DCS service."""
 
-    valid_versions = [service_filter.ValidVersion('v1')]
-
-    def __init__(self, version=None):
-        """Create a DcS service."""
-        super(DcsService, self).__init__(
-            service_type='dcs',
-            version=version
-        )
+    supported_versions = {
+        '1': _proxy.Proxy
+    }

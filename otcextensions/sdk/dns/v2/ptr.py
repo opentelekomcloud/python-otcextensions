@@ -13,7 +13,6 @@ from openstack import resource
 from openstack import _log
 
 from otcextensions.sdk import sdk_resource
-from otcextensions.sdk.dns import dns_service
 
 _logger = _log.setup_logging('openstack')
 
@@ -22,7 +21,6 @@ class PTR(sdk_resource.Resource):
     """DNS reverse record resource"""
     resources_key = 'floatingips'
     base_path = '/reverse/floatingips'
-    service = dns_service.DnsService()
 
     # capabilities
     allow_get = True

@@ -80,7 +80,6 @@ class TestPolicy(base.TestCase):
         self.assertEqual('/scaling_policy', sot.base_path)
         self.assertEqual(
             '/scaling_policy/%(scaling_group_id)s/list', sot.list_path)
-        self.assertEqual('as', sot.service.service_type)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_get)

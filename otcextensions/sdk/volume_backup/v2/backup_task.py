@@ -12,14 +12,12 @@
 from openstack import resource
 
 from otcextensions.sdk import sdk_resource
-from otcextensions.sdk.volume_backup import volume_backup_service
 
 
 class BackupTask(sdk_resource.Resource):
     """Cloud Backup"""
     resources_key = "tasks"
     base_path = "/backuppolicy/%(policy_id)s/backuptasks"
-    service = volume_backup_service.VolumeBackupService()
 
     # capabilities
     allow_list = True

@@ -14,7 +14,6 @@ from openstack import _log
 from openstack import resource
 
 from otcextensions.sdk import sdk_resource
-from otcextensions.sdk.rds import rds_service
 
 _logger = _log.setup_logging('openstack')
 
@@ -26,7 +25,6 @@ class Flavor(sdk_resource.Resource):
     # does not return single item with a proper element tag
     resource_key = 'flavor'
     resources_key = 'flavors'
-    service = rds_service.RdsService()
 
     # capabilities
     allow_get = True

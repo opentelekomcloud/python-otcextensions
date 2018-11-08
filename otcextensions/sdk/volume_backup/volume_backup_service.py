@@ -9,16 +9,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import service_filter
+from openstack import service_description
+
+from otcextensions.sdk.volume_backup.v1 import _proxy
 
 
-class VolumeBackupService(service_filter.ServiceFilter):
+class VolumeBackupService(service_description.ServiceDescription):
     """The Volume Backup service."""
 
-    valid_versions = [service_filter.ValidVersion('v2', 'v2')]
-
-    def __init__(self, version=None):
-        """Create Volume Backup service."""
-        super(VolumeBackupService, self).__init__(
-            service_type='vbs',
-            version=version)
+    supported_versions = {
+        '2': _proxy.Proxy
+    }

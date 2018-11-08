@@ -23,6 +23,12 @@ class Resource(resource.Resource):
 
     service_expectes_json_type = False
 
+    allow_get = False
+    allow_list = False
+    allow_create = False
+    allow_update = False
+    allow_delete = False
+
     @classmethod
     def _prepare_override_args(cls,
                                endpoint_override=None,
@@ -236,18 +242,18 @@ class Resource(resource.Resource):
             additional_headers=headers,
             requests_auth=requests_auth)
 
-        if self.update_method == 'PATCH':
+        if self.commit_method == 'PATCH':
             response = session.patch(
                 request.url, json=request.body, **args)
-        elif self.update_method == 'POST':
+        elif self.commit_method == 'POST':
             response = session.post(
                 request.url, json=request.body, **args)
-        elif self.update_method == 'PUT':
+        elif self.commit_method == 'PUT':
             response = session.put(
                 request.url, json=request.body, **args)
         else:
             raise exceptions.ResourceFailure(
-                msg="Invalid update method: %s" % self.update_method)
+                msg="Invalid update method: %s" % self.commit_method)
 
         self._translate_response(response, has_body=has_body)
         return self
@@ -608,18 +614,18 @@ class Resource(resource.Resource):
             request_headers=request.headers,
             additional_headers=headers)
 
-        if self.update_method == 'PATCH':
+        if self.commit_method == 'PATCH':
             response = session.patch(
                 request.url, json=request.body, **update_args)
-        elif self.update_method == 'POST':
+        elif self.commit_method == 'POST':
             response = session.post(
                 request.url, json=request.body, **update_args)
-        elif self.update_method == 'PUT':
+        elif self.commit_method == 'PUT':
             response = session.put(
                 request.url, json=request.body, **update_args)
         else:
             raise exceptions.ResourceFailure(
-                msg="Invalid update method: %s" % self.update_method)
+                msg="Invalid update method: %s" % self.commit_method)
 
         self._translate_response(response, has_body=has_body)
         return self

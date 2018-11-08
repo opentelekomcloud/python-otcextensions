@@ -10,17 +10,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from openstack import service_filter
+from openstack import service_description
+
+from otcextensions.sdk.auto_scaling.v1 import _proxy
 
 
-class AutoScalingService(service_filter.ServiceFilter):
+class AutoScalingService(service_description.ServiceDescription):
     """The AutoScaling service."""
 
-    valid_versions = [service_filter.ValidVersion('v1')]
-
-    def __init__(self, version=None):
-        """Create a AS service."""
-        super(AutoScalingService, self).__init__(
-            service_type='as',
-            version=version,
-        )
+    supported_versions = {
+        '1': _proxy.Proxy
+    }
