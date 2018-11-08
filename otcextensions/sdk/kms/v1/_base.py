@@ -16,14 +16,12 @@ from openstack import utils
 
 from otcextensions.i18n import _
 from otcextensions.sdk import sdk_resource
-from otcextensions.sdk.kms import kms_service
 
 _logger = _log.setup_logging('openstack')
 
 
 class Resource(sdk_resource.Resource):
     base_path = '/kms'
-    service = kms_service.KmsService()
 
     #: Error code when create a secret key
     error_code = resource.Body('error_code')

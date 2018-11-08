@@ -13,7 +13,7 @@
 """OBS Container v1 action implementations"""
 import logging
 
-from openstackclient.i18n import _
+from otcextensions.i18n import _
 
 from osc_lib import utils
 from osc_lib.cli import parseractions

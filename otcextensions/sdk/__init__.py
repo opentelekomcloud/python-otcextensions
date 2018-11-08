@@ -11,16 +11,17 @@
 # under the License.
 import importlib
 import os
+import sys
+import traceback
 import types
 import warnings
 
 from openstack import _log
 from openstack import connection
-from openstack import proxy
+# from openstack import proxy
 from openstack import service_description
 from openstack import utils
 
-from oslo_utils import importutils
 
 _logger = _log.setup_logging('openstack')
 
@@ -97,6 +98,20 @@ OTC_SERVICES = {
 }
 
 
+def _import_class(import_str):
+    """Returns a class from a string including module and class.
+    .. versionadded:: 0.3
+    """
+    mod_str, _sep, class_str = import_str.rpartition('.')
+    __import__(mod_str)
+    try:
+        return getattr(sys.modules[mod_str], class_str)
+    except AttributeError:
+        raise ImportError('Class %s cannot be found (%s)' %
+                          (class_str,
+                           traceback.format_exception(*sys.exc_info())))
+
+
 def _get_descriptor(service_name):
     """Find ServiceDescriptor class by the service name
     and instanciate it
@@ -104,40 +119,34 @@ def _get_descriptor(service_name):
     service = OTC_SERVICES.get(service_name, None)
     if service:
         service_type = service['service_type']
-        desc_class = service_description.OpenStackServiceDescription
-        service_filter_class = _find_service_filter_class(service_name)
-        _logger.debug('sfc=%s' % service_filter_class)
-        descriptor_args = {'service_type': service_type}
-        if service_filter_class:
-            _logger.debug(
-                'preparing to register service %s' %
-                service_filter_class)
-            desc_class = service_description.OpenStackServiceDescription
-            descriptor_args['service_filter_class'] = service_filter_class
-            class_names = service_filter_class._get_proxy_class_names()
-            if len(class_names) == 1:
-                _logger.debug('proxy_class_names: %s' % class_names[0])
-                doc = _DOC_TEMPLATE.format(
-                    class_name="{service_type} Proxy <{name}>".format(
-                        service_type=service_type, name=class_names[0]),
-                    **service)
-                proxy_module = importutils.import_class(class_names[0])
-                descriptor_args['proxy_class'] = proxy_module
-            else:
-                class_doc_strings = "\n".join([
-                    ":class:`{class_name}`".format(class_name=class_name)
-                    for class_name in class_names])
-                doc = _PROXY_TEMPLATE.format(
-                    class_doc_strings=class_doc_strings, **service)
 
-        else:
-            descriptor_args['proxy_class'] = proxy.Proxy
-            descriptor_args['version'] = 'v1.0'
+        desc_class = _find_service_description_class(service_type)
+        # _logger.debug('descriptor class %s' % desc_class)
+        descriptor_args = {'service_type': service_type}
+
+        if not desc_class.supported_versions:
             doc = _DOC_TEMPLATE.format(
-                class_name='~openstack.proxy.Proxy', **service)
+                class_name="{service_type} Proxy".format(
+                    service_type=service_type),
+                **service)
+        elif len(desc_class.supported_versions) == 1:
+            supported_version = list(
+                desc_class.supported_versions.keys())[0]
+            doc = _DOC_TEMPLATE.format(
+                class_name="{service_type} Proxy <{name}>".format(
+                    service_type=service_type, name=supported_version),
+                **service)
+        else:
+            class_doc_strings = "\n".join([
+                ":class:`{class_name}`".format(
+                    class_name=proxy_class.__name__)
+                for proxy_class in desc_class.supported_versions.values()])
+            doc = _PROXY_TEMPLATE.format(
+                class_doc_strings=class_doc_strings, **service)
         descriptor = desc_class(**descriptor_args)
         descriptor.__doc__ = doc
-        _logger.debug('proxy is %s' % descriptor.proxy_class)
+
+        # _logger.debug('proxy is %s' % descriptor.proxy_class)
 
         return descriptor
     else:
@@ -145,9 +154,7 @@ def _get_descriptor(service_name):
         return None
 
 
-def _find_service_filter_class(service_type):
-    """Find ServiceFilter class
-    """
+def _find_service_description_class(service_type):
     package_name = 'otcextensions.sdk.{service_type}'.format(
         service_type=service_type).replace('-', '_')
     module_name = service_type.replace('-', '_') + '_service'
@@ -155,20 +162,20 @@ def _find_service_filter_class(service_type):
         [part.capitalize() for part in module_name.split('_')])
     try:
         import_name = '.'.join([package_name, module_name])
-        service_filter_module = importlib.import_module(import_name)
+        service_description_module = importlib.import_module(import_name)
     except ImportError as e:
         # ImportWarning is ignored by default. This warning is here
         # as an opt-in for people trying to figure out why something
         # didn't work.
         warnings.warn(
-            "Could not import {service_type} service filter: {e}".format(
+            "Could not import {service_type} service description: {e}".format(
                 service_type=service_type, e=str(e)),
             ImportWarning)
-        return None
+        return service_description.ServiceDescription
     # There are no cases in which we should have a module but not the class
     # inside it.
-    service_filter_class = getattr(service_filter_module, class_name)
-    return service_filter_class
+    service_description_class = getattr(service_description_module, class_name)
+    return service_description_class
 
 
 def patch_connection(target):
@@ -229,7 +236,10 @@ def patch_connection(target):
             append_project_id = service.get('append_project_id', False)
             if append_project_id:
                 ep = proxy.get_endpoint_data().catalog_url
-                if ep and not ep.rstrip('/').endswith('\\%(project_id)s'):
+                project_id = proxy.get_project_id()
+                if ep and not ep.rstrip('/').endswith('\\%(project_id)s') \
+                        and not ep.rstrip('/').endswith('$(tenant_id)s') \
+                        and not ep.rstrip('/').endswith(project_id):
                     proxy.endpoint_override = \
                         utils.urljoin(ep, '%(project_id)s')
         else:

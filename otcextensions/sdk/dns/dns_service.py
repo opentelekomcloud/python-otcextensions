@@ -10,17 +10,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from openstack import service_filter
+from openstack import service_description
+
+from otcextensions.sdk.dns.v1 import _proxy
 
 
-class DnsService(service_filter.ServiceFilter):
+class DnsService(service_description.ServiceDescription):
     """The DNS service."""
 
-    valid_versions = [service_filter.ValidVersion('v2')]
-
-    def __init__(self, version=None):
-        """Create a DNS service."""
-        super(DnsService, self).__init__(
-            service_type='dns',
-            version=version
-        )
+    supported_versions = {
+        '2': _proxy.Proxy
+    }

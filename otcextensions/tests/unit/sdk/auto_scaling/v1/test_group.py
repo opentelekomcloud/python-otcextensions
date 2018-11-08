@@ -72,7 +72,6 @@ class TestGroup(base.TestCase):
         self.assertEqual('scaling_group', sot.resource_key)
         self.assertEqual('scaling_groups', sot.resources_key)
         self.assertEqual('/scaling_group', sot.base_path)
-        self.assertEqual('as', sot.service.service_type)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_get)

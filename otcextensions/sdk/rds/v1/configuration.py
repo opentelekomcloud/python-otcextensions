@@ -15,7 +15,6 @@ from openstack import resource
 from openstack import utils
 
 from otcextensions.sdk import sdk_resource
-from otcextensions.sdk.rds import rds_service
 
 _logger = _log.setup_logging('openstack')
 
@@ -77,7 +76,6 @@ class ConfigurationGroup(sdk_resource.Resource):
     base_path = '/%(project_id)s/configurations'
     resource_key = 'configuration'
     resources_key = 'configurations'
-    service = rds_service.RdsService()
 
     # capabilities
     allow_create = True

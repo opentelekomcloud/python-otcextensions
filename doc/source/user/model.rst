@@ -56,7 +56,7 @@ If all of the project information is None, then
 
   Location = dict(
     cloud=str(),
-    region=str(),
+    region_name=str(),
     zone=str() or None,
     project=dict(
       id=str() or None,
@@ -208,6 +208,7 @@ A Server from Nova
     accessIPv6=str(),
     addresses=dict(),  # string, list(Address)
     created=str(),
+    created_at=str(),
     key_name=str(),
     metadata=dict(),  # string, string
     private_v4=str(),

@@ -14,7 +14,6 @@ from openstack import resource
 from openstack import utils
 
 from otcextensions.sdk import sdk_resource
-from otcextensions.sdk.rds import rds_service
 
 _logger = _log.setup_logging('openstack')
 
@@ -24,7 +23,6 @@ class Instance(sdk_resource.Resource):
     base_path = '/instances'
     resource_key = 'instance'
     resources_key = 'instances'
-    service = rds_service.RdsService()
     # service_expectes_json_type = True
 
     # capabilities

@@ -68,7 +68,6 @@ class TestBackup(base.TestCase):
         self.assertEqual('backup', sot.resource_key)
         self.assertEqual('backups', sot.resources_key)
         self.assertEqual('/backups', sot.base_path)
-        self.assertEqual('rds', sot.service.service_type)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertFalse(sot.allow_get)
@@ -168,7 +167,6 @@ class TestBackup(base.TestCase):
         self.assertEqual(None, sot.resources_key)
         self.assertEqual('/instances/%(instance_id)s/'
                          'backups/policy', sot.base_path)
-        self.assertEqual('rds', sot.service.service_type)
         self.assertFalse(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertTrue(sot.allow_get)

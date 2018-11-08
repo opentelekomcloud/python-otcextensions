@@ -16,8 +16,6 @@ from otcextensions.common import exc
 
 from otcextensions.sdk import sdk_resource
 
-from otcextensions.sdk.cts import cts_service
-
 _logger = _log.setup_logging('openstack')
 
 
@@ -52,7 +50,6 @@ class Smn(sdk_resource.Resource):
 class Tracker(sdk_resource.Resource):
 
     base_path = '/tracker'
-    service = cts_service.CtsService()
 
     _query_mapping = resource.QueryParameters('tracker_name')
 

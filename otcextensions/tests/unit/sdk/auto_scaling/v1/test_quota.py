@@ -65,7 +65,6 @@ class TestQuota(base.TestCase):
         self.assertEqual(None, sot.resource_key)
         self.assertEqual('quotas.resources', sot.resources_key)
         self.assertEqual('/quotas', sot.base_path)
-        self.assertEqual('as', sot.service.service_type)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_get)

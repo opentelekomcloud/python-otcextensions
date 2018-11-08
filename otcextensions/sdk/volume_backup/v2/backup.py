@@ -14,7 +14,6 @@ from openstack import resource
 from openstack import utils
 
 from otcextensions.sdk import sdk_resource
-from otcextensions.sdk.volume_backup import volume_backup_service
 
 
 class Backup(sdk_resource.Resource):
@@ -23,7 +22,6 @@ class Backup(sdk_resource.Resource):
     resources_key = "backups"
     base_path = "/backups"
     details_list_path = "/backups/detail"
-    service = volume_backup_service.VolumeBackupService()
 
     _query_mapping = resource.QueryParameters(
         'all_tenants', 'name', 'status', 'project_id')

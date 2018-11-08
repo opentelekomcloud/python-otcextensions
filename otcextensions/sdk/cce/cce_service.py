@@ -9,19 +9,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import service_filter
+from openstack import service_description
+
+from otcextensions.sdk.cce.v1 import _proxy
 
 
-class CceService(service_filter.ServiceFilter):
+class CceService(service_description.ServiceDescription):
     """The CCE service."""
 
-    valid_versions = [
-        service_filter.ValidVersion('v1'),
-    ]
-
-    def __init__(self, version=None):
-        """Create a CCE service."""
-        super(CceService, self).__init__(
-            service_type='cce',
-            version=version,
-        )
+    supported_versions = {
+        '1': _proxy.Proxy
+    }

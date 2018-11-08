@@ -14,7 +14,6 @@ from openstack import resource
 from openstack import _log
 
 from otcextensions.sdk import sdk_resource
-from otcextensions.sdk.dns import dns_service
 
 _logger = _log.setup_logging('openstack')
 
@@ -25,7 +24,6 @@ class ZoneRecordset(sdk_resource.Resource):
     resources_key = 'recordsets'
     base_path = '/zones/%(zone_id)s/recordsets'
     # list_all_base_path = '/recordsets'
-    service = dns_service.DnsService()
 
     # capabilities
     allow_create = True

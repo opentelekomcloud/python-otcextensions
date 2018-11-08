@@ -12,6 +12,7 @@ This document gathers issues, which are found during diggint the API and other O
 * EVS: volume type list --long returns changing results
 * Subnet (in some APIs) is most likely net_id
 * Without service discovery and multiple versions it is not possible to get the proper service version in SDK. It falls back to first entry in the VersionFilter
+* Tags require different format ("key=value" vs "key*value")
 
 # KMS:
 
@@ -90,6 +91,14 @@ This document gathers issues, which are found during diggint the API and other O
 # VPC:
 
 * VPC uses network wrapped subnets. Simple net with multiple subnets is not properly visible in OTC (in VPCs list subnet count includes all subnets, but in VPC show subnets are missing)
+
+# TMS:
+
+* How to assign tag to resource from API?
+
+# BMS:
+
+* it is not Ironic, but ECS
 
 # Network:
 

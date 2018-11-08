@@ -10,17 +10,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from openstack import service_filter
+from openstack import service_description
+
+from otcextensions.sdk.dms.v1 import _proxy
 
 
-class DmsService(service_filter.ServiceFilter):
+class DmsService(service_description.ServiceDescription):
     """The DMS service."""
 
-    valid_versions = [service_filter.ValidVersion('v1')]
-
-    def __init__(self, version=None):
-        """Create a DMS service."""
-        super(DmsService, self).__init__(
-            service_type='dms',
-            version=version
-        )
+    supported_versions = {
+        '1': _proxy.Proxy
+    }

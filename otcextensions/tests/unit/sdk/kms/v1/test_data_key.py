@@ -41,7 +41,6 @@ class TestKey(base.TestCase):
         self.assertEqual(None, sot.resources_key)
         self.assertEqual('/kms', sot.base_path)
         self.assertEqual('/kms/create-datakey', sot.create_path)
-        self.assertEqual('kms', sot.service.service_type)
         self.assertFalse(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertFalse(sot.allow_get)
@@ -64,12 +63,14 @@ class TestKey(base.TestCase):
 
         key = {
             'key_id': 'key',
-            'encryption_context': 'context',
+            'encryption_context': {
+                'a': 'b'
+            },
             'datakey_length': 200,
             'sequence': 'seq',
         }
 
-        sot = _key.DataKey.new(**key)
+        sot = _key.DataKey(**key)
         result = sot.create(self.sess, prepend_key=False)
 
         call_args = self.sess.post.call_args_list[0]
@@ -97,12 +98,14 @@ class TestKey(base.TestCase):
 
         key = {
             'key_id': 'key',
-            'encryption_context': 'context',
+            'encryption_context': {
+                'a': 'b'
+            },
             'datakey_length': 200,
             'sequence': 'seq',
         }
 
-        sot = _key.DataKey.new(**key)
+        sot = _key.DataKey(**key)
         result = sot.create_wo_plain(self.sess, prepend_key=False)
 
         call_args = self.sess.post.call_args_list[0]

@@ -75,7 +75,6 @@ class TestInstance(base.TestCase):
         self.assertEqual('/scaling_group_instance', sot.base_path)
         self.assertEqual(
             '/scaling_group_instance/%(scaling_group_id)s/list', sot.list_path)
-        self.assertEqual('as', sot.service.service_type)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_get)

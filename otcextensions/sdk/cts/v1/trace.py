@@ -16,7 +16,6 @@ from openstack import _log
 from otcextensions.common import format
 from otcextensions.sdk import sdk_resource
 
-from otcextensions.sdk.cts import cts_service
 
 _logger = _log.setup_logging('openstack')
 
@@ -25,7 +24,6 @@ class Trace(sdk_resource.Resource):
 
     base_path = '/%(tracker_name)s/trace'
     resources_key = 'traces'
-    service = cts_service.CtsService()
     service_expectes_json_type = True
 
     allow_list = True

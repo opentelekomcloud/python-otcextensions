@@ -14,13 +14,11 @@ from openstack import resource
 from openstack import utils
 
 from otcextensions.sdk import sdk_resource
-from otcextensions.sdk.auto_scaling import auto_scaling_service
 
 
 class Resource(sdk_resource.Resource):
 
     query_marker_key = 'start_number'
-    service = auto_scaling_service.AutoScalingService()
 
     _query_mapping = resource.QueryParameters(
         'marker', 'limit',

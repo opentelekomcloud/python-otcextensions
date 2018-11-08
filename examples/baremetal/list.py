@@ -9,18 +9,17 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from otcextensions.sdk.cce import cce_service
 
-import testtools
+"""
+List resources from the Bare Metal service.
+"""
 
 
-class TestCceService(testtools.TestCase):
-    def test_service(self):
-        sot = cce_service.CceService()
-        self.assertEqual('cce', sot.service_type)
-        self.assertEqual('public', sot.interface)
-        self.assertIsNone(sot.region)
-        self.assertIsNone(sot.service_name)
-        self.assertEqual(1, len(sot.valid_versions))
-        self.assertEqual('v1', sot.valid_versions[0].module)
-        self.assertEqual('v1', sot.valid_versions[0].path)
+def list_nodes(conn):
+    print("List Nodes:")
+
+    for node in conn.baremetal.nodes():
+        print(node)
+
+
+# TODO(dtantsur): other resources

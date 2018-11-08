@@ -70,7 +70,6 @@ class TestActivity(base.TestCase):
         self.assertEqual('scaling_activity_log', sot.resources_key)
         self.assertEqual('/scaling_activity_log/%(scaling_group_id)s',
                          sot.base_path)
-        self.assertEqual('as', sot.service.service_type)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_get)

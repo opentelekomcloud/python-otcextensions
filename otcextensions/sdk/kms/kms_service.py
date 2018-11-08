@@ -9,19 +9,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import service_filter
+from openstack import service_description
+
+from otcextensions.sdk.kms.v1 import _proxy
 
 
-class KmsService(service_filter.ServiceFilter):
+class KmsService(service_description.ServiceDescription):
     """The KMS service."""
 
-    valid_versions = [
-        service_filter.ValidVersion('v1', 'v1.0'),
-    ]
-
-    def __init__(self, version=None):
-        """Create a KMS service."""
-        super(KmsService, self).__init__(
-            service_type='kms',
-            version=version,
-        )
+    supported_versions = {
+        '1': _proxy.Proxy
+    }

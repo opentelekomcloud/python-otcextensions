@@ -119,7 +119,6 @@ class TestClusterNode(base.TestCase):
         self.assertEqual(None, sot.resources_key)
         self.assertEqual('/clusters/%(cluster_uuid)s/hosts',
                          sot.base_path)
-        self.assertEqual('cce', sot.service.service_type)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_get)
