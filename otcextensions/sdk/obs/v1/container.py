@@ -53,7 +53,6 @@ class Container(_base.BaseResource):
         and body on this instance and clears the dirty set.
         """
         exceptions.raise_from_response(response, error_message=response.text)
-        _logger.debug(response.text)
         if response:
             if has_body:
                 # TODO(agoncharov): do nothing so far. Generally need
@@ -112,8 +111,6 @@ class Container(_base.BaseResource):
             params=query_params.copy(),
             requests_auth=requests_auth
         )
-
-        _logger.debug('containers = %s' % response.content)
 
         root = ET.fromstring(response.content)
 
