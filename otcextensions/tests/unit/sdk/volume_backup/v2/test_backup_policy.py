@@ -240,8 +240,6 @@ class TestBackupPolicy(base.TestCase):
 
         self.sess.get.assert_has_calls(calls)
 
-        print('res=%s' % result)
-
         expected_data = \
             _get_fixture('list_backup_policies.json')['backup_policies'][1]
 
