@@ -124,6 +124,8 @@ class TestCluster(base.TestCase):
 
         self.sot = _cluster.Cluster()
 
+        self.sot_expected = _cluster.Cluster(**EXAMPLE_LIST[0])
+
     def test_basic(self):
         sot = _cluster.Cluster()
         self.assertEqual('', sot.resource_key)
@@ -162,7 +164,7 @@ class TestCluster(base.TestCase):
         )
 
         expected_list = [
-            _cluster.Cluster.existing(**EXAMPLE_LIST[0]),
+            self.sot_expected,
         ]
 
         self.assertEqual(expected_list, result)
@@ -185,8 +187,9 @@ class TestCluster(base.TestCase):
         )
 
         self.assertDictEqual(
-            _cluster.Cluster.existing(**EXAMPLE_LIST[0]).to_dict(),
-            result.to_dict())
+            result.to_dict(),
+            self.sot_expected.to_dict()
+        )
 
     def test_create(self):
         cluster = {
@@ -211,7 +214,7 @@ class TestCluster(base.TestCase):
 
         self.sess.post.return_value = mock_response
 
-        sot.create(self.sess, prepend_key=False)
+        result = sot.create(self.sess, prepend_key=False)
 
         call_args = self.sess.post.call_args_list[0]
 
@@ -224,9 +227,9 @@ class TestCluster(base.TestCase):
 
         self.sess.post.assert_called_once()
 
-        # self.assertDictEqual(
-        #     result.to_dict(),
-        #     _cluster.Cluster(**EXAMPLE_LIST[0]).to_dict())
+        self.assertDictEqual(
+            result.to_dict(),
+            self.sot_expected.to_dict())
 
     def test_create_name_normalize(self):
         """Ensure name passed in the root is properly mapped into metadata
