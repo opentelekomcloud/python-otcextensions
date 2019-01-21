@@ -11,14 +11,11 @@
 # under the License.
 import importlib
 import os
-import sys
-import traceback
 import types
 import warnings
 
 from openstack import _log
 from openstack import connection
-# from openstack import proxy
 from openstack import service_description
 from openstack import utils
 
@@ -47,7 +44,7 @@ OTC_SERVICES = {
     'anti_ddos': {
         'service_type': 'anti_ddos',
         'append_project_id': True,
-        'endpoint_service_type': 'Anti-DDoS',
+        'endpoint_service_type': 'antiddos',
     },
     'auto_scaling': {
         'service_type': 'auto_scaling',
@@ -98,20 +95,6 @@ OTC_SERVICES = {
 }
 
 
-def _import_class(import_str):
-    """Returns a class from a string including module and class.
-    .. versionadded:: 0.3
-    """
-    mod_str, _sep, class_str = import_str.rpartition('.')
-    __import__(mod_str)
-    try:
-        return getattr(sys.modules[mod_str], class_str)
-    except AttributeError:
-        raise ImportError('Class %s cannot be found (%s)' %
-                          (class_str,
-                           traceback.format_exception(*sys.exc_info())))
-
-
 def _get_descriptor(service_name):
     """Find ServiceDescriptor class by the service name
     and instanciate it
@@ -122,7 +105,10 @@ def _get_descriptor(service_name):
 
         desc_class = _find_service_description_class(service_type)
         # _logger.debug('descriptor class %s' % desc_class)
-        descriptor_args = {'service_type': service_type}
+        descriptor_args = {
+            'service_type': service.get('endpoint_service_type', service_type)
+            # 'service_type': service_type
+        }
 
         if not desc_class.supported_versions:
             doc = _DOC_TEMPLATE.format(
@@ -196,11 +182,6 @@ def patch_connection(target):
                 return
 
             proxy = descriptor.__get__(self, descriptor)
-
-            endpoint_service_type = service.get('endpoint_service_type', None)
-            if endpoint_service_type and \
-                    endpoint_service_type != service.get('service_type'):
-                proxy.service_type = endpoint_service_type
 
             # Set additional_headers into the proxy
             if 'additional_headers' in service:

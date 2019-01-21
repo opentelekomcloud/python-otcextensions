@@ -17,6 +17,8 @@ from otcextensions.sdk.cts.v1 import trace as _trace
 
 class Proxy(sdk_proxy.Proxy):
 
+    skip_discovery = True
+
     def traces(self, tracker='system', limit=50, **query):
         """List all traces
 

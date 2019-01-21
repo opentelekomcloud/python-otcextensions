@@ -21,6 +21,8 @@ from otcextensions.sdk.dcs.v1 import statistic as _stat
 
 class Proxy(sdk_proxy.Proxy):
 
+    skip_discovery = True
+
     # ======== Instances ========
     def create_instance(self, **kwargs):
         """Create an instance

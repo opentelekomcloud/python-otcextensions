@@ -20,6 +20,8 @@ from otcextensions.sdk.anti_ddos.v1 import status as _status
 
 class Proxy(sdk_proxy.Proxy):
 
+    skip_discovery = True
+
     # ======== Alert Config ========
     def get_alert_config(self, **kwargs):
         """Get Alarm configuration

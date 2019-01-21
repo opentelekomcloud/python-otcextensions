@@ -24,6 +24,8 @@ _logger = _log.setup_logging('openstack')
 
 class Proxy(sdk_proxy.Proxy):
 
+    skip_discovery = True
+
     def get_os_endpoint(self, **kwargs):
         """Return OpenStack compliant endpoint
 
