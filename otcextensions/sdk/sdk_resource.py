@@ -363,7 +363,7 @@ class Resource(resource.Resource):
             if response.status_code == 204 or \
                     (response.status_code == 200 and not response.json()):
                 # Some bad APIs (i.e. DCS.Backup.List) return emptiness
-                return None
+                return
             data = response.json()
 
             # Discard any existing pagination keys
