@@ -16,6 +16,8 @@ from otcextensions.sdk.cce.v1 import cluster_node as _cluster_node
 
 class Proxy(sdk_proxy.Proxy):
 
+    skip_discovery = True
+
     # ======== Cluster ========
     def clusters(self):
         """List all Clusters.

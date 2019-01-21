@@ -26,6 +26,8 @@ def _normalize_obs_keys(obj):
 
 class Proxy(sdk_proxy.Proxy):
 
+    skip_discovery = True
+
     CONTAINER_ENDPOINT = \
         'https://%(container)s.obs.%(region_name)s.otc.t-systems.com'
 

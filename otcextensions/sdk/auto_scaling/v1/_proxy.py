@@ -24,6 +24,8 @@ _logger = _log.setup_logging('openstack')
 
 class Proxy(sdk_proxy.Proxy):
 
+    skip_discovery = True
+
     # ======== Groups ========
     def groups(self, **query):
         """Retrieve a generator of groups

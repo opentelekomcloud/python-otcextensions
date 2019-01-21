@@ -360,9 +360,10 @@ class Resource(resource.Resource):
                 **get_args
             )
             exceptions.raise_from_response(response)
-            if response.status_code == 204:
+            if response.status_code == 204 or \
+                    (response.status_code == 200 and not response.json()):
                 # Some bad APIs (i.e. DCS.Backup.List) return emptiness
-                return
+                return None
             data = response.json()
 
             # Discard any existing pagination keys

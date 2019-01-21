@@ -20,6 +20,8 @@ from otcextensions.sdk.dms.v1 import group_message as _group_message
 
 class Proxy(sdk_proxy.Proxy):
 
+    skip_discovery = True
+
     # ======== Queues ========
     def create_queue(self, **kwargs):
         """Create a queue

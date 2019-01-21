@@ -17,6 +17,8 @@ from otcextensions.sdk.kms.v1 import misc as _misc
 
 class Proxy(sdk_proxy.Proxy):
 
+    skip_discovery = True
+
     # ======== CMK Keys ========
     def keys(self, **query):
         """List all master keys.
