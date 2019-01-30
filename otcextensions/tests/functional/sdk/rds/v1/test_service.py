@@ -16,9 +16,9 @@ from otcextensions.tests.functional import base
 _logger = _log.setup_logging('openstack')
 
 
-class TestMisc(base.BaseFunctionalTest):
+class TestService(base.BaseFunctionalTest):
 
     def test_initialize(self):
-        cce = self.conn.cce
+        client = self.conn.rds
 
-        self.assertIsNotNone(cce)
+        self.assertIsNotNone(client)
