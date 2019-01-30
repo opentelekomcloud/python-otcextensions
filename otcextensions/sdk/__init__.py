@@ -64,6 +64,10 @@ OTC_SERVICES = {
         # 'endpoint_service_type': 'dms',
         'append_project_id': True,
     },
+    'deh': {
+        'service_type': 'deh',
+        'append_project_id': True,
+    },
     'dms': {
         'service_type': 'dms',
         'endpoint_service_type': 'dms',

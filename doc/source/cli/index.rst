@@ -5,6 +5,7 @@
    cce.rst
    cts.rst
    dcs.rst
+   deh.rst
    dms.rst
    dns.rst
    rds.rst

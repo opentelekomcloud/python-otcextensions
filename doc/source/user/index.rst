@@ -116,17 +116,18 @@ control which services can be used.
    Object Store <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/object_store>
    Orchestration <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/orchestration>
    Workflow <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/workflow>
-   RDS <proxies/rds>
-   Object Block Storage <proxies/obs>
-   AutoScaling Service <proxies/auto_scaling>
-   Key Management Service <proxies/kms>
-   Cloud Container Engine <proxies/cce>
-   Volume Backup Service <proxies/volume_backup>
-   Distributed Message Service <proxies/dms>
-   Distributed Cache Service <proxies/dcs>
-   Cloud Trace Service <proxies/cts>
    Anti DDoS Service <proxies/anti_ddos>
+   AutoScaling Service <proxies/auto_scaling>
+   Cloud Container Engine <proxies/cce>
+   Cloud Trace Service <proxies/cts>
+   Distributed Cache Service <proxies/dcs>
+   Dedicated Host Service <proxies/deh>
+   Distributed Message Service <proxies/dms>
    DNS Service <proxies/dns>
+   Key Management Service <proxies/kms>
+   Object Block Storage <proxies/obs>
+   Volume Backup Service <proxies/volume_backup>
+   RDS <proxies/rds>
 
 Resource Interface
 ~~~~~~~~~~~~~~~~~~
@@ -159,16 +160,17 @@ classes.
    Orchestration <https://docs.openstack.org/python-openstacksdk/latest/user/resources/orchestration/index>
    Object Store <https://docs.openstack.org/python-openstacksdk/latest/user/resources/object_store/index>
    Workflow <https://docs.openstack.org/python-openstacksdk/latest/user/resources/workflow/index>
-   RDS <resources/rds/index>
-   Object Block Storage <resources/obs/index>
-   AutoScaling Service <resources/auto_scaling/index>
-   Key Management Service <resources/kms/index>
-   Cloud Container Engine <resources/cce/index>
-   Distributed Message Service <resources/dms/index>
-   Distributed Cache Service <resources/dcs/index>
-   Cloud Trace Service <resources/cts/index>
    Anti DDoS Service <resources/anti_ddos/index>
+   AutoScaling Service <resources/auto_scaling/index>
    DNS Service <resources/dns/index>
+   Cloud Container Engine <resources/cce/index>
+   Cloud Trace Service <resources/cts/index>
+   Distributed Cache Service <resources/dcs/index>
+   Dedicated Host Service <resources/deh/index>
+   Distributed Message Service <resources/dms/index>
+   Key Management Service <resources/kms/index>
+   Object Block Storage <resources/obs/index>
+   RDS <resources/rds/index>
 
 Low-Level Classes
 ~~~~~~~~~~~~~~~~~

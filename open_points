@@ -104,6 +104,10 @@ This document gathers issues, which are found during diggint the API and other O
 
 * SecGroup rule "Any" (value=0) is not working as designed. OSC uses defaults, use of 0 results in really 0 as a value. Effect is unknown yet
 
+# DeH
+
+* Tag support is not OS compatible 
+
 # OpenStackSDK:
 
 * LBaaS: pool.healthmonitor_id according to ref api (and in OTC), but in the SDK it is health_monitor_ids (list) (reported under https://storyboard.openstack.org/#!/story/2001872). Some other attributes missing
