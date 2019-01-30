@@ -26,16 +26,14 @@ approach, this is where you'll want to begin.
 .. toctree::
    :maxdepth: 1
 
+   Plain-simple connect to OTC <guides/connect_otc>
    Configuration <config/index>
-   Connect to an OpenStack Cloud <https://docs.openstack.org/python-openstacksdk/latest/user/guides/connect>
    Connect to an OpenStack Cloud Using a Config File <https://docs.openstack.org/python-openstacksdk/latest/user/guides/connect_from_config>
-   Microversions <microversions>
    Using Cloud Abstration Layer <https://docs.openstack.org/python-openstacksdk/latest/user/usage>
-   Logging <https://docs.openstack.org/python-openstacksdk/latest/user/guides/logging>
+   Logging <guides/logging>
    Microversions <https://docs.openstack.org/python-openstacksdk/latest/user/microversions>
    Block Storage <https://docs.openstack.org/python-openstacksdk/latest/user/guides/block_storage>
    Compute <https://docs.openstack.org/python-openstacksdk/latest/user/guides/compute>
-   Database <https://docs.openstack.org/python-openstacksdk/latest/user/guides/database>
    Identity <https://docs.openstack.org/python-openstacksdk/latest/user/guides/identity>
    Image <https://docs.openstack.org/python-openstacksdk/latest/user/guides/image>
    Key Manager <https://docs.openstack.org/python-openstacksdk/latest/user/guides/key_manager>
@@ -47,6 +45,7 @@ approach, this is where you'll want to begin.
    OBS <guides/obs>
    AutoScaling <guides/auto_scaling>
    Volume Backup <guides/volume_backup>
+   Dedicated Host <guides/deh>
 
 API Documentation
 -----------------
@@ -116,17 +115,18 @@ control which services can be used.
    Object Store <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/object_store>
    Orchestration <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/orchestration>
    Workflow <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/workflow>
-   RDS <proxies/rds>
-   Object Block Storage <proxies/obs>
-   AutoScaling Service <proxies/auto_scaling>
-   Key Management Service <proxies/kms>
-   Cloud Container Engine <proxies/cce>
-   Volume Backup Service <proxies/volume_backup>
-   Distributed Message Service <proxies/dms>
-   Distributed Cache Service <proxies/dcs>
-   Cloud Trace Service <proxies/cts>
    Anti DDoS Service <proxies/anti_ddos>
+   AutoScaling Service <proxies/auto_scaling>
+   Cloud Container Engine <proxies/cce>
+   Cloud Trace Service <proxies/cts>
+   Distributed Cache Service <proxies/dcs>
+   Dedicated Host Service <proxies/deh>
+   Distributed Message Service <proxies/dms>
    DNS Service <proxies/dns>
+   Key Management Service <proxies/kms>
+   Object Block Storage <proxies/obs>
+   Volume Backup Service <proxies/volume_backup>
+   RDS <proxies/rds>
 
 Resource Interface
 ~~~~~~~~~~~~~~~~~~
@@ -159,16 +159,17 @@ classes.
    Orchestration <https://docs.openstack.org/python-openstacksdk/latest/user/resources/orchestration/index>
    Object Store <https://docs.openstack.org/python-openstacksdk/latest/user/resources/object_store/index>
    Workflow <https://docs.openstack.org/python-openstacksdk/latest/user/resources/workflow/index>
-   RDS <resources/rds/index>
-   Object Block Storage <resources/obs/index>
-   AutoScaling Service <resources/auto_scaling/index>
-   Key Management Service <resources/kms/index>
-   Cloud Container Engine <resources/cce/index>
-   Distributed Message Service <resources/dms/index>
-   Distributed Cache Service <resources/dcs/index>
-   Cloud Trace Service <resources/cts/index>
    Anti DDoS Service <resources/anti_ddos/index>
+   AutoScaling Service <resources/auto_scaling/index>
    DNS Service <resources/dns/index>
+   Cloud Container Engine <resources/cce/index>
+   Cloud Trace Service <resources/cts/index>
+   Distributed Cache Service <resources/dcs/index>
+   Dedicated Host Service <resources/deh/index>
+   Distributed Message Service <resources/dms/index>
+   Key Management Service <resources/kms/index>
+   Object Block Storage <resources/obs/index>
+   RDS <resources/rds/index>
 
 Low-Level Classes
 ~~~~~~~~~~~~~~~~~

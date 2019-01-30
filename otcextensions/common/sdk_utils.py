@@ -92,6 +92,16 @@ class ListOfDictColumn(columns.FormattableColumn):
         return '\n'.join(str(i) for i in self._value)
 
 
+class DictListColumn(columns.FormattableColumn):
+    """Format column for dict, key is string, value is list"""
+
+    def human_readable(self):
+        if self._value is None:
+            return None
+
+        return str(self._value)
+
+
 def str2bool(v):
     """Convert input (CLI) boolean text value into boolean
     """

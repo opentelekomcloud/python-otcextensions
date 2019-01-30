@@ -64,6 +64,10 @@ OTC_SERVICES = {
         # 'endpoint_service_type': 'dms',
         'append_project_id': True,
     },
+    'deh': {
+        'service_type': 'deh',
+        'append_project_id': True,
+    },
     'dms': {
         'service_type': 'dms',
         'endpoint_service_type': 'dms',
@@ -248,6 +252,10 @@ def inject_service_to_sdk(conn, service_name, service):
 
 def register_otc_extensions(conn, **kwargs):
     """Register supported OTC services and make them known to the OpenStackSDK
+
+    :param conn: An established OpenStack cloud connection
+
+    :returns: none
     """
     patch_connection(conn)
 

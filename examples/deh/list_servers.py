@@ -9,16 +9,17 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import _log
 
-from otcextensions.tests.functional import base
+"""
+List servers on the given DeH host.
 
-_logger = _log.setup_logging('openstack')
+For a full guide see
+http://developer.openstack.org/sdks/python/openstacksdk/user/guides/deh.html
+"""
 
 
-class TestMisc(base.BaseFunctionalTest):
+def list_host_servers(conn, host):
+    print("List Servers running on host")
 
-    def test_initialize(self):
-        cce = self.conn.cce
-
-        self.assertIsNotNone(cce)
+    for server in conn.deh.servers(host):
+        print(server)

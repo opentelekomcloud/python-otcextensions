@@ -2,7 +2,9 @@
 Installation
 ============
 
-Each OS version has it's own package names, versions, bugs. Therefore installation as RPM is available at the moment only for Fedora through CORP `<https://copr.fedorainfracloud.org/coprs/gtema/OTC/>`_
+Each OS version has it's own package names, versions, bugs. However there is a repository,
+which tries to address those issues (at least for RPM based distributions) - https://build.opensuse.org/project/show/Cloud:OTC:Tools:OpenStack.
+RPMs for most often used OSs are prepared and can be taken there. 
 
 With a pip package can be installed the following way (please remember, it is not the latest development state). At the command line::
 
