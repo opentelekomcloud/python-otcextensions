@@ -1,17 +1,10 @@
-Contributing to the OpenStack SDK
-=================================
+Contributing to the OTC Extensions
+==================================
 
 This section of documentation pertains to those who wish to contribute to the
-development of this SDK. If you're looking for documentation on how to use
+development of this project. If you're looking for documentation on how to use
 the SDK to build applications, please see the `user <../user>`_ section.
 
-About the Project
------------------
-
-The OpenStack SDK is a OpenStack project aimed at providing a complete
-software development kit for the programs which make up the OpenStack
-community. It is a set of Python-based libraries, documentation, examples,
-and tools released under the Apache 2 license.
 
 Contribution Mechanics
 ----------------------
@@ -24,22 +17,15 @@ Contribution Mechanics
 Contacting the Developers
 -------------------------
 
-IRC
-***
+GitHub
+******
 
-The developers of this project are available in the
-`#openstack-sdks <http://webchat.freenode.net?channels=%23openstack-sdks>`_
-channel on Freenode. This channel includes conversation on SDKs and tools
-within the general OpenStack community, including OpenStackClient as well
-as occasional talk about SDKs created for languages outside of Python.
+Currently no official communication other than GitHub is available
 
 Email
 *****
 
-The `openstack-dev <mailto:openstack-dev@openstack.org?subject=[sdk]%20Question%20about%20openstacksdk>`_
-mailing list fields questions of all types on OpenStack. Using the
-``[sdk]`` filter to begin your email subject will ensure
-that the message gets to SDK developers.
+???
 
 Coding Standards
 ----------------

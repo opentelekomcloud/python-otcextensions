@@ -26,16 +26,14 @@ approach, this is where you'll want to begin.
 .. toctree::
    :maxdepth: 1
 
+   Plain-simple connect to OTC <guides/connect_otc>
    Configuration <config/index>
-   Connect to an OpenStack Cloud <https://docs.openstack.org/python-openstacksdk/latest/user/guides/connect>
    Connect to an OpenStack Cloud Using a Config File <https://docs.openstack.org/python-openstacksdk/latest/user/guides/connect_from_config>
-   Microversions <microversions>
    Using Cloud Abstration Layer <https://docs.openstack.org/python-openstacksdk/latest/user/usage>
-   Logging <https://docs.openstack.org/python-openstacksdk/latest/user/guides/logging>
+   Logging <guides/logging>
    Microversions <https://docs.openstack.org/python-openstacksdk/latest/user/microversions>
    Block Storage <https://docs.openstack.org/python-openstacksdk/latest/user/guides/block_storage>
    Compute <https://docs.openstack.org/python-openstacksdk/latest/user/guides/compute>
-   Database <https://docs.openstack.org/python-openstacksdk/latest/user/guides/database>
    Identity <https://docs.openstack.org/python-openstacksdk/latest/user/guides/identity>
    Image <https://docs.openstack.org/python-openstacksdk/latest/user/guides/image>
    Key Manager <https://docs.openstack.org/python-openstacksdk/latest/user/guides/key_manager>
@@ -47,6 +45,7 @@ approach, this is where you'll want to begin.
    OBS <guides/obs>
    AutoScaling <guides/auto_scaling>
    Volume Backup <guides/volume_backup>
+   Dedicated Host <guides/deh>
 
 API Documentation
 -----------------

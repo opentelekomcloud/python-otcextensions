@@ -252,6 +252,10 @@ def inject_service_to_sdk(conn, service_name, service):
 
 def register_otc_extensions(conn, **kwargs):
     """Register supported OTC services and make them known to the OpenStackSDK
+
+    :param conn: An established OpenStack cloud connection
+
+    :returns: none
     """
     patch_connection(conn)
 

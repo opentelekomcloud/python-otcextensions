@@ -35,7 +35,7 @@ cloud = openstack.connect(cloud=TEST_CLOUD)
 
 
 class Opts(object):
-    def __init__(self, cloud_name='devstack-admin', debug=False):
+    def __init__(self, cloud_name='devstack-admin', debug=True):
         self.cloud = cloud_name
         self.debug = debug
         # Use identity v3 API for examples.

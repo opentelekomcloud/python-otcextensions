@@ -1,4 +1,8 @@
+OpenStackClient CLI Usage
+=========================
+
 .. toctree::
+   :maxdepth: 2
 
    anti_ddos.rst
    auto_scaling.rst
