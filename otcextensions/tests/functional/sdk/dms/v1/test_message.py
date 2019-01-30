@@ -9,14 +9,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import _log
-from openstack import exceptions
-from openstack import utils
+import openstack
+# from openstack import exceptions
+# from openstack import utils
 
 from otcextensions.tests.functional import base
 import time
 
-_logger = _log.setup_logging('openstack')
+_logger = openstack._log.setup_logging('openstack')
 
 
 class TestMessage(base.BaseFunctionalTest):
@@ -29,23 +29,23 @@ class TestMessage(base.BaseFunctionalTest):
     @classmethod
     def setUpClass(cls):
         super(TestMessage, cls).setUpClass()
-        utils.enable_logging(debug=True, http_debug=True)
+        openstack.enable_logging(debug=True, http_debug=True)
         try:
             cls.queue = cls.conn.dms.create_queue(
                 name=TestMessage.QUEUE_ALIAS
             )
 
-        except exceptions.BadRequestException:
+        except openstack.exceptions.BadRequestException:
             cls.queue = cls.conn.dms.get_queue(TestMessage.QUEUE_ALIAS)
 
         cls.queues.append(cls.queue)
 
         try:
-            cls.group = cls.conn.dms.create_groups(
-                cls.queue, groups=[{"name": "test_group"}]
+            cls.group = cls.conn.dms.create_group(
+                cls.queue, {"name": "test_group"}
             )
 
-        except exceptions.DuplicateResource:
+        except openstack.exceptions.DuplicateResource:
             cls.queue = cls.conn.dms.groups(cls.queue)
 
         cls.groups.append(cls.group)
@@ -56,7 +56,7 @@ class TestMessage(base.BaseFunctionalTest):
             for queue in cls.queues:
                 if queue.id:
                     cls.conn.dms.delete_queue(queue)
-        except exceptions.SDKException as e:
+        except openstack.exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
 
@@ -76,11 +76,11 @@ class TestMessage(base.BaseFunctionalTest):
             # q = cls.conn.dms.get_queue(queue=queue.id)
             # cls.assertIsNotNone(q)
             try:
-                cls.group = cls.conn.dms.create_groups(
-                    cls.queue, groups=[{"name": "test_group"}]
+                cls.group = cls.conn.dms.create_group(
+                    cls.queue, {"name": "test_group"}
                 )
 
-            except exceptions.BadRequestException:
+            except openstack.exceptions.BadRequestException:
                 cls.queue = cls.conn.dms.groups(cls.queue)
 
             cls.groups.append(cls.group)
@@ -113,11 +113,11 @@ class TestMessage(base.BaseFunctionalTest):
 
             cls.messages.append(cls.message)
             try:
-                cls.group = cls.conn.dms.create_groups(
-                    cls.queue, groups=[{"name": "test_group2"}]
+                cls.group = cls.conn.dms.create_group(
+                    cls.queue, {"name": "test_group2"}
                 )
 
-            except exceptions.BadRequestException:
+            except openstack.exceptions.BadRequestException:
                 cls.queue = cls.conn.dms.groups(cls.queue)
 
             cls.groups.append(cls.group)

@@ -6,6 +6,11 @@ Connection
    -----------
    .. autofunction:: openstack.connection.from_config
 
+Registering OTC extensions
+==========================
+
+.. autofunction:: otcextensions.sdk.register_otc_extensions
+
 Connection Object
 -----------------
 
