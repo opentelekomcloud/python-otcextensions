@@ -38,13 +38,13 @@ class Cluster(sdk_resource.Resource):
     name = resource.Body('clusterName')
 
     #: status of the cluster 
-    status = resource.Body('status')
+    status = resource.Body('clusterState')
 
     #: tpye of the cluster 
     cluster_type = resource.Body('clusterType')
 
     #: flavor of the cluster 
-    flavor = resource.Body('mesterNodeSize')
+    flavor = resource.Body('masterNodeSize')
 
     #: core_flavor  of the cluster 
     core_flavor = resource.Body('coreNodeSize')
