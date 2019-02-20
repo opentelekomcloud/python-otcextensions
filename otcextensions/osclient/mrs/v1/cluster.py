@@ -21,7 +21,7 @@ from otcextensions.common import sdk_utils
 
 LOG = logging.getLogger(__name__)
 
-HOST_STATES = ['available', 'fault', 'released']
+CLUSTER_STATES = ['available', 'fault', 'released']
 
 
 _formatters = {
@@ -37,7 +37,7 @@ def _get_columns(item):
 class ListCluster(command.Lister):
     _description = _('List MRS clusters')
     columns = (
-        'id', 'name'
+        'id', 'name','status','flavor', 'cluster_type','availability_zone','version'
     )
 
     def get_parser(self, prog_name):
@@ -45,22 +45,22 @@ class ListCluster(command.Lister):
         parser.add_argument(
             '--id',
             metavar='<id>',
-            help=_('Host id.')
+            help=_('Cluster id.')
         )
         parser.add_argument(
             '--name',
             metavar='<name>',
-            help=_('Host name.')
+            help=_('Cluster name.')
         )
         parser.add_argument(
-            '--host_type',
-            metavar='<host_type>',
-            help=_('Host type.')
+            '--cluster_type',
+            metavar='<cluster_type>',
+            help=_('Cluster type.')
         )
         parser.add_argument(
-            '--host_type_name',
-            metavar='<host_type_name>',
-            help=_('Host type name.')
+            '--version',
+            metavar='<version>',
+            help=_('Cluster version.')
         )
         parser.add_argument(
             '--flavor',
@@ -68,16 +68,11 @@ class ListCluster(command.Lister):
             help=_('Flavor ID.')
         )
         parser.add_argument(
-            '--state',
-            metavar='{' + ','.join(HOST_STATES) + '}',
+            '--status',
+            metavar='{' + ','.join(CLUSTER_STATES) + '}',
             type=lambda s: s.lower(),
-            choices=HOST_STATES,
-            help=_('Host state filter.')
-        )
-        parser.add_argument(
-            '--tenant',
-            metavar='<tenant>',
-            help=_('Tenant ID or "all".')
+            choices=CLUSTER_STATES,
+            help=_('Cluster status filter.')
         )
         parser.add_argument(
             '--availability_zone',
@@ -113,16 +108,14 @@ class ListCluster(command.Lister):
             query['id'] = parsed_args.id
         if parsed_args.name:
             query['name'] = parsed_args.name
-        if parsed_args.host_type:
-            query['host_type'] = parsed_args.host_type
-        if parsed_args.host_type_name:
-            query['host_type_name'] = parsed_args.host_type_name
         if parsed_args.flavor:
             query['flavor'] = parsed_args.flavor
-        if parsed_args.state:
-            query['state'] = parsed_args.state
-        if parsed_args.tenant:
-            query['tenant'] = parsed_args.tenant
+        if parsed_args.status:
+            query['status'] = parsed_args.status
+        if parsed_args.cluster_type:
+            query['cluster_type'] = parsed_args.cluster_type
+        if parsed_args.version:
+            query['version'] = parsed_args.version
         if parsed_args.availability_zone:
             query['availability_zone'] = parsed_args.availability_zone
         if parsed_args.limit:
@@ -142,15 +135,15 @@ class ListCluster(command.Lister):
 
 
 class ShowCluster(command.ShowOne):
-    _description = _('Show the MRS Host details')
+    _description = _('Show the MRS Cluster details')
 
     def get_parser(self, prog_name):
-        parser = super(ShowHost, self).get_parser(prog_name)
+        parser = super(ShowCluster, self).get_parser(prog_name)
 
         parser.add_argument(
-            'host',
-            metavar='<host>',
-            help=_('UUID of the host.')
+            'id',
+            metavar='<id>',
+            help=_('id of the cluster.')
         )
 
         return parser
@@ -159,8 +152,8 @@ class ShowCluster(command.ShowOne):
 
         client = self.app.client_manager.mrs
 
-        obj = client.find_host(
-            parsed_args.host,
+        obj = client.find_cluster(
+            parsed_args.id,
         )
 
         display_columns, columns = _get_columns(obj)
@@ -191,8 +184,8 @@ class DeleteHost(command.Command):
                 client.delete_host(host=host, ignore_missing=False)
 
 
-class CreateHost(command.ShowOne):
-    _description = _('Create/allocate host')
+class CreateCluster(command.ShowOne):
+    _description = _('Create/allocate cluster')
 
     columns = ('id')
 

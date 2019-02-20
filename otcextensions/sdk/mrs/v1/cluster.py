@@ -28,11 +28,41 @@ class Cluster(sdk_resource.Resource):
     allow_delete = True
     allow_update = True
 
-    _query_mapping = resource.QueryParameters(
-        'id', 'name')
+    _query_mapping = resource.QueryParameters('id', 'name','status','cluster_type','flavor','core_flavor','masternum','corenum','vpc','availability_zone','version','keypair')
 
     #: Properties
     #: Specifies CLUSTER ID
     id = resource.Body('clusterId', alternate_id=True)
-    #: Time at which the DeH has been allocated
+
+    #: Name of the cluster 
     name = resource.Body('clusterName')
+
+    #: status of the cluster 
+    status = resource.Body('status')
+
+    #: tpye of the cluster 
+    cluster_type = resource.Body('clusterType')
+
+    #: flavor of the cluster 
+    flavor = resource.Body('mesterNodeSize')
+
+    #: core_flavor  of the cluster 
+    core_flavor = resource.Body('coreNodeSize')
+
+    #:  master node number of the cluster 
+    masternum = resource.Body('masterNodeNum')
+
+    #: core node number of the clsuter 
+    corenum = resource.Body('coreNodeNum')
+
+    #: vpc of the cluster 
+    vpc = resource.Body('vpc')
+
+    #: az of the cluster 
+    availability_zone = resource.Body('azName')
+
+    #:version of the cluster 
+    version = resource.Body('clusterVersion')
+
+    #: keypair of the cluster 
+    keypair = resource.Body('nodePublicCertName')

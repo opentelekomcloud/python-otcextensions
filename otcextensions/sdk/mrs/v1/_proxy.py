@@ -19,7 +19,7 @@ class Proxy(sdk_proxy.Proxy):
 
     # ======== clusters ========
     def clusters(self, **query):
-        print( "aaaaaaaaaaaaaaaaaaaaaaaa")
+        #print( "aaaaaaaaaaaaaaaaaaaaaaaa")
         """Retrieve a generator of hosts
 
         :param dict query: Optional query parameters to be sent to limit the
