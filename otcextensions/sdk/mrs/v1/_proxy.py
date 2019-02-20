@@ -33,10 +33,7 @@ class Proxy(sdk_proxy.Proxy):
             * `flavor`: Specifies flavor ID of master.
             * `status`: Specifies the MRS status.
                 The value can be TERMINATED, fault or AVALIABLE.
-            * `availability_host`:  Specifies the AZ to which the DeH belongs.
-            * `changes_since`: Filters the response by a date and time
-                stamp when the DeH last changed status
-                (CCYY-MM-DDThh:mm:ss+hh:mm)
+            * `availability_zone`:  Specifies the AZ to which the MRS belongs.
 
         :returns: A generator of host
             :class:`~otcextensions.sdk.mrs.v1.cluster.Cluster` instances
@@ -53,15 +50,11 @@ class Proxy(sdk_proxy.Proxy):
             * `limit`: pagination limit
             * `id`: Specifies MRS ID.
             * `name`: Specifies the MRS name.
-            * `cluster_type`: Specifes the DeH type.
+            * `type`: Specifes the MRS type.
             * `host_type_name`: Specifes the DeH name of type.
             * `flavor`: Specifies flavor ID of master.
             * `status`: Specifies the MRS status.
                 The value can be TERMINATED, fault or AVALIABLE.
-            * `availability_host`:  Specifies the AZ to which the DeH belongs.
-            * `changes_since`: Filters the response by a date and time
-                stamp when the DeH last changed status
-                (CCYY-MM-DDThh:mm:ss+hh:mm)
 
         :returns: A generator of host
             :class:`~otcextensions.sdk.mrs.v1.cluster.Cluster` instances
