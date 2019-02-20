@@ -134,17 +134,27 @@ class ListCluster(command.Lister):
         return table
 
 
-class ShowCluster(command.ShowOne):
-    _description = _('Show the MRS Cluster details')
+class ListClusterHost(command.Lister):
+    _description = _('Show the MRS Cluster Hosts')
+    columns = (
+        'id', 'name','status','flavor', 'type','ip','mem','cpu','data_volume_size'
+    )
+
 
     def get_parser(self, prog_name):
-        parser = super(ShowCluster, self).get_parser(prog_name)
+        parser = super(ListClusterHost, self).get_parser(prog_name)
 
         parser.add_argument(
-            'id',
-            metavar='<id>',
+            'cluster_id',
+            metavar='<cluster_id>',
             help=_('id of the cluster.')
         )
+
+        #parser.add_argument(
+        #    'name',
+        #    metavar='<name>',
+        #    help=_('name of the cluster.')
+        #)
 
         return parser
 
@@ -152,36 +162,70 @@ class ShowCluster(command.ShowOne):
 
         client = self.app.client_manager.mrs
 
-        obj = client.find_cluster(
-            parsed_args.id,
-        )
+        query = {}
 
-        display_columns, columns = _get_columns(obj)
-        data = utils.get_item_properties(obj, columns)
+        if parsed_args.cluster_id:
+            query['cluster_id'] = parsed_args.cluster_id
+        #if parsed_args.id:
+        #    query['id'] = parsed_args.id
+        #if parsed_args.name:
+        #    query['name'] = parsed_args.name
+        #if parsed_args.flavor:
+        #    query['flavor'] = parsed_args.flavor
+        #if parsed_args.status:
+        #    query['status'] = parsed_args.status
+        #if parsed_args.type:
+        #    query['type'] = parsed_args.type
+        #if parsed_args.ip:
+        #    query['ip'] = parsed_args.ip
+        #if parsed_args.mem:
+        #    query['mem'] = parsed_args.mem
+        #if parsed_args.limit:
+        #    query['limit'] = parsed_args.limit
+        #if parsed_args.marker:
+        #    query['marker'] = parsed_args.marker
+        #if parsed_args.changes_since:
+        #    query['changes_since'] = parsed_args.changes_since
 
-        return (display_columns, data)
+
+        data = client.hosts(**query)
+
+        table = (self.columns,
+                 (utils.get_item_properties(
+                     s, self.columns, formatters=_formatters
+                 ) for s in data))
+        return table
 
 
-class DeleteHost(command.Command):
-    _description = _('Delete host')
+        #obj = client.find_cluster(
+        #    parsed_args.id,
+        #)
+        #
+        #display_columns, columns = _get_columns(obj)
+        #data = utils.get_item_properties(obj, columns)
+        #return (display_columns, data)
+
+
+class DeleteCluster(command.Command):
+    _description = _('Delete Cluster')
 
     def get_parser(self, prog_name):
-        parser = super(DeleteHost, self).get_parser(prog_name)
+        parser = super(DeleteCluster, self).get_parser(prog_name)
 
         parser.add_argument(
-            'host',
-            metavar='<host>',
+            'id',
+            metavar='<id>',
             nargs='+',
-            help=_('UUID or name of the host.')
+            help=_('UUID or name of the cluster.')
         )
 
         return parser
 
     def take_action(self, parsed_args):
         if parsed_args.host:
-            client = self.app.client_manager.deh
-            for host in parsed_args.host:
-                client.delete_host(host=host, ignore_missing=False)
+            client = self.app.client_manager.mrs
+            for id in parsed_args.id:
+                client.delete_cluster(id=id, ignore_missing=False)
 
 
 class CreateCluster(command.ShowOne):

@@ -66,3 +66,50 @@ class Cluster(sdk_resource.Resource):
 
     #: keypair of the cluster 
     keypair = resource.Body('nodePublicCertName')
+
+
+class Host(sdk_resource.Resource):
+    resource_key = 'host'
+    resources_key = 'hosts'
+    base_path = '/clusters/%(cluster_id)s/hosts'
+
+
+    # capabilities
+    allow_create = True
+    allow_list = True
+    allow_get = True
+    allow_delete = True
+    allow_update = True
+
+    _query_mapping = resource.QueryParameters('id', 'name','status','type','flavor','ip','mem','cpu','data_volume_size')
+
+
+    cluster_id = resource.URI('cluster_id')
+    
+    #: Properties
+    #: Specifies HOST ID
+    id = resource.Body('id', alternate_id=True)
+
+    #: Name of the host
+    name = resource.Body('name')
+
+    #: status of the host
+    status = resource.Body('status')
+
+    #: type of the host
+    type = resource.Body('type')
+
+    #: flavor of the host
+    flavor = resource.Body('flavor')
+
+    #: ip  of the host
+    ip = resource.Body('ip')
+
+    #:  mem of the host
+    mem = resource.Body('mem')
+
+    #:  cpu of the host
+    cpu = resource.Body('cpu')
+
+    #:  data_volume_size of the host
+    data_volume_size = resource.Body('data_volume_size')
