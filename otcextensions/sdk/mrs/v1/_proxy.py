@@ -19,7 +19,6 @@ class Proxy(sdk_proxy.Proxy):
 
     # ======== clusters ========
     def clusters(self, **query):
-        #print( "aaaaaaaaaaaaaaaaaaaaaaaa")
         """Retrieve a generator of hosts
 
         :param dict query: Optional query parameters to be sent to limit the
@@ -27,15 +26,13 @@ class Proxy(sdk_proxy.Proxy):
 
             * `marker`:  pagination marker
             * `limit`: pagination limit
-            * `id`: Specifies DeH ID.
-            * `name`: Specifies the DeH name.
-            * `host_type`: Specifes the DeH type.
+            * `id`: Specifies MRS ID.
+            * `name`: Specifies the MRS name.
+            * `cluster_type`: Specifes the DeH type.
             * `host_type_name`: Specifes the DeH name of type.
-            * `flavor`: Specifies flavor ID.
-            * `state`: Specifies the DeH status.
-                The value can be available, fault or released.
-            * `tenant`: The value can be Tenant ID or all.
-                Permits administrator.
+            * `flavor`: Specifies flavor ID of master.
+            * `status`: Specifies the MRS status.
+                The value can be TERMINATED, fault or AVALIABLE.
             * `availability_host`:  Specifies the AZ to which the DeH belongs.
             * `changes_since`: Filters the response by a date and time
                 stamp when the DeH last changed status
