@@ -187,6 +187,9 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
         self.verify_list(
             self.proxy.statistics, _stat.Statistic,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
+            expected_kwargs={
+                'paginated': False
+            }
         )
 
     def test_backups(self):

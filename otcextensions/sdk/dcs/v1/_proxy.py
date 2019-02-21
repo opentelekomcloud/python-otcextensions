@@ -38,7 +38,7 @@ class Proxy(sdk_proxy.Proxy):
         :returns: A generator of Instance object of
             :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
         """
-        return self._list(_instance.Instance, paginated=False, **query)
+        return self._list(_instance.Instance, **query)
 
     def get_instance(self, instance):
         """Get detail about a given instance

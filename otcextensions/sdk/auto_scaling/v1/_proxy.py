@@ -41,10 +41,7 @@ class Proxy(sdk_proxy.Proxy):
         :returns: A generator of group
             (:class:`~otcextensions.sdk.auto_scaling.v1.group.Group`) instances
         """
-        return self._list(
-            _group.Group, paginated=True,
-            **query
-        )
+        return self._list(_group.Group, **query)
 
     def create_group(self, **attrs):
         """Create a new group from attributes
@@ -158,9 +155,7 @@ class Proxy(sdk_proxy.Proxy):
             (:class:`~otcextensions.sdk.auto_scaling.v1.config.Config`)
             instances
         """
-        return self._list(
-            _config.Config, paginated=True,
-            **query)
+        return self._list(_config.Config, **query)
 
     def create_config(self, name, **attrs):
         """Create a new config from config name and instance-config attributes
@@ -188,9 +183,7 @@ class Proxy(sdk_proxy.Proxy):
         :returns: Config instance
         :rtype: :class:`~otcextensions.sdk.auto_scaling.v1.config.Config`
         """
-        return self._get(
-            _config.Config, config
-        )
+        return self._get(_config.Config, config)
 
     # Name is not unique, so find might return multiple results
     def find_config(self, name_or_id, ignore_missing=True):
@@ -260,10 +253,7 @@ class Proxy(sdk_proxy.Proxy):
             instances
         """
         group = self._get_resource(_group.Group, group)
-        return self._list(
-            _policy.Policy, paginated=True,
-            scaling_group_id=group.id,
-            **query)
+        return self._list(_policy.Policy, scaling_group_id=group.id, **query)
 
     def create_policy(self, **attrs):
         """Create a new policy from attributes
@@ -383,9 +373,8 @@ class Proxy(sdk_proxy.Proxy):
             (:class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`)
         """
         group = self._get_resource(_group.Group, group)
-        return self._list(
-            _instance.Instance, paginated=True,
-            scaling_group_id=group.id, **query)
+        return self._list(_instance.Instance,
+                          scaling_group_id=group.id, **query)
 
     def remove_instance(self, instance, delete_instance=False,
                         ignore_missing=True):
@@ -456,7 +445,6 @@ class Proxy(sdk_proxy.Proxy):
         """
         group = self._get_resource(_group.Group, group)
         return self._list(_activity.Activity,
-                          paginated=True,
                           scaling_group_id=group.id,
                           **query)
 

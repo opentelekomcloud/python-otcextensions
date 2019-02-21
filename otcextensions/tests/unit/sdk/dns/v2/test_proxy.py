@@ -27,7 +27,7 @@ class TestDNSProxy(test_proxy_base.TestProxyBase):
 
     def test_zones(self):
         self.verify_list(
-            self.proxy.zones, _zone.Zone, paginated=True,
+            self.proxy.zones, _zone.Zone,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             expected_kwargs={
             }
@@ -94,19 +94,20 @@ class TestDNSProxy(test_proxy_base.TestProxyBase):
 
     def test_ns(self):
         self.verify_list(
-            self.proxy.nameservers, _ns.NameServer, paginated=False,
+            self.proxy.nameservers, _ns.NameServer,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             method_kwargs={
                 'zone': 'zone_id'
             },
             expected_kwargs={
+                'paginated': False,
                 'zone_id': 'zone_id'
             }
         )
 
     def test_recordset_all(self):
         self.verify_list(
-            self.proxy.recordsets, _rs.Recordset, paginated=True,
+            self.proxy.recordsets, _rs.Recordset,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             method_kwargs={
                 'zone': None
@@ -117,7 +118,7 @@ class TestDNSProxy(test_proxy_base.TestProxyBase):
 
     def test_recordset_zone(self):
         self.verify_list(
-            self.proxy.recordsets, _rs.ZoneRecordset, paginated=True,
+            self.proxy.recordsets, _rs.ZoneRecordset,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             method_kwargs={
                 'zone': 'zoneid'
@@ -170,7 +171,7 @@ class TestDNSProxy(test_proxy_base.TestProxyBase):
 
     def test_ptrs(self):
         self.verify_list(
-            self.proxy.ptrs, _ptr.PTR, paginated=True,
+            self.proxy.ptrs, _ptr.PTR,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
         )
 

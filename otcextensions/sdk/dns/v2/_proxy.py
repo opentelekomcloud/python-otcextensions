@@ -32,7 +32,7 @@ class Proxy(sdk_proxy.Proxy):
         :returns: A generator of zone
             :class:`~otcextensions.sdk.dns.v2.zone.Zone` instances
         """
-        return self._list(_zone.Zone, paginated=True, **query)
+        return self._list(_zone.Zone, **query)
 
     def create_zone(self, **attrs):
         """Create a new zone from attributes
@@ -156,7 +156,7 @@ class Proxy(sdk_proxy.Proxy):
             query.update({'zone_id': zone.id})
         else:
             resource_cls = _rs.Recordset
-        return self._list(resource_cls, paginated=True, **query)
+        return self._list(resource_cls, **query)
 
     def create_recordset(self, zone, **attrs):
         """Create a new recordset in the zone
@@ -229,7 +229,7 @@ class Proxy(sdk_proxy.Proxy):
         :returns: A generator of PTR
             :class:`~otcextensions.sdk.dns.v2.ptr.PTR` instances
         """
-        return self._list(_ptr.PTR, paginated=True, **query)
+        return self._list(_ptr.PTR, **query)
 
     def create_ptr(self, region, floating_ip_id, **attrs):
         """Set FloatingIP PTR record

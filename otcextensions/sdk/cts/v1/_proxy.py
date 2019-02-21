@@ -24,15 +24,14 @@ class Proxy(sdk_proxy.Proxy):
 
         :param tracker: The name or an tracker of
             :class:`~otcextensions.sdk.cts.v1.tracker.Tracker`
+        :param limit: default limit of resources
         :returns: A generator of tracker object of
             :class:`~otcextensions.sdk.cts.v1.trace.Trace`
         """
         if isinstance(tracker, str):
             tracker = self._get_resource(_tracker.Tracker, {'name': tracker})
         query['limit'] = limit
-        return self._list(
-            _trace.Trace, paginated=True,
-            tracker_name=tracker.name, **query)
+        return self._list(_trace.Trace, tracker_name=tracker.name, **query)
 
     def get_tracker(self, tracker):
         """Get detail about a given tracker

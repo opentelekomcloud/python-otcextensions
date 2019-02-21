@@ -82,7 +82,6 @@ class Proxy(sdk_proxy.Proxy):
             :class:`~otcextensions.sdk.obs.v1.container.Container` objects.
         """
         return self._list(_container.Container,
-                          paginated=True,
                           requests_auth=self._get_req_auth(),
                           **query)
 
@@ -210,8 +209,7 @@ class Proxy(sdk_proxy.Proxy):
         return self._list(
             _obj.Object,
             endpoint_override=endpoint,
-            requests_auth=self._get_req_auth(endpoint),
-            paginated=True, **query)
+            requests_auth=self._get_req_auth(endpoint), **query)
 
     def _get_container_name(self, obj=None, container=None):
         if obj is not None:

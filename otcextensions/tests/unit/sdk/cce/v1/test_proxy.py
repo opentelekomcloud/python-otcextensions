@@ -38,8 +38,9 @@ class TestCCECluster(TestCCEProxy):
             self.proxy.clusters, _cluster.Cluster,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             method_kwargs={},
-            paginated=False,
-            expected_kwargs={}
+            expected_kwargs={
+                'paginated': False
+            }
         )
 
     def test_get(self):
@@ -85,8 +86,8 @@ class TestCCEClusterNode(TestCCEProxy):
                 mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
                 method_args=['cluster_id'],
                 method_kwargs={},
-                paginated=False,
                 expected_kwargs={
+                    'paginated': False,
                     'cluster_uuid': 'cluster_id'
                 }
             )

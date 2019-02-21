@@ -70,8 +70,8 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
             method_kwargs={
                 'datastore': 'test',
             },
-            paginated=False,
             expected_kwargs={
+                'paginated': False,
                 'datastore_name': 'test',
                 'headers': RDS_HEADERS,
             }
@@ -101,10 +101,10 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
     def test_flavors(self):
         self.verify_list(
             self.proxy.flavors, _flavor.Flavor,
-            paginated=False,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             method_args=["dbId", "regio"],
             expected_kwargs={
+                'paginated': False,
                 'dbId': 'dbId',
                 'region': 'regio',
                 'headers': RDS_HEADERS
@@ -192,9 +192,9 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
     def test_instances(self):
         self.verify_list(
             self.proxy.instances, _instance.Instance,
-            paginated=False,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             expected_kwargs={
+                'paginated': False,
                 'headers': RDS_HEADERS
             }
         )
@@ -278,9 +278,9 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
     def test_backups(self):
         self.verify_list(
             self.proxy.backups, _backup.Backup,
-            paginated=False,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             expected_kwargs={
+                'paginated': False,
                 'headers': RDS_HEADERS
             }
         )

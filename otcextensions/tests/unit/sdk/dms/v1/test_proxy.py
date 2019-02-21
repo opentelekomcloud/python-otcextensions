@@ -43,7 +43,9 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
             self.proxy.queues,
             _queue.Queue,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
-            expected_kwargs={}
+            expected_kwargs={
+                'paginated': False
+            }
         )
 
     def test_get_queue(self):
