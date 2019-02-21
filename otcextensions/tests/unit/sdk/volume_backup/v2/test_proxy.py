@@ -33,8 +33,8 @@ class TestBackup(TestVolumeBackupProxy):
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             method_kwargs={
             },
-            paginated=True,
             expected_kwargs={
+                'paginated': True,
                 'details': False
             }
         )
@@ -46,8 +46,8 @@ class TestBackup(TestVolumeBackupProxy):
             method_kwargs={
                 'details': True,
             },
-            paginated=True,
             expected_kwargs={
+                'paginated': True,
                 'details': True
             }
         )
@@ -103,8 +103,8 @@ class TestBackupPolicy(TestVolumeBackupProxy):
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             method_kwargs={
             },
-            paginated=False,
             expected_kwargs={
+                'paginated': False,
             }
         )
 
@@ -222,9 +222,8 @@ class TestTask(TestVolumeBackupProxy):
             self.proxy.tasks, _backup_task.BackupTask,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             method_args=['pol_id'],
-            paginated=False,
-
             expected_kwargs={
+                'paginated': False,
                 'policy_id': 'pol_id'
             }
         )

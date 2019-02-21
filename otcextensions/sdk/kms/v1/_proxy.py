@@ -34,7 +34,7 @@ class Proxy(sdk_proxy.Proxy):
         :returns: a generator of
             (:class:`~otcextensions.sdk.kms.v1.key.Key`) instances
         """
-        return self._list(_key.Key, paginated=True, **query)
+        return self._list(_key.Key, **query)
 
     def create_key(self, **attrs):
         """Create master key

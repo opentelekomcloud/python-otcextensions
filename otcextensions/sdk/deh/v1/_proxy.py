@@ -45,7 +45,7 @@ class Proxy(sdk_proxy.Proxy):
         :returns: A generator of host
             :class:`~otcextensions.sdk.deh.v1.host.Host` instances
         """
-        return self._list(_host.Host, paginated=True, **query)
+        return self._list(_host.Host, **query)
 
     def create_host(self, **attrs):
         """Create (allocate) a new host from attributes
@@ -125,10 +125,7 @@ class Proxy(sdk_proxy.Proxy):
             :class:`~otcextensions.sdk.deh.v1.server.Server` instances
         """
         host = self._get_resource(_host.Host, host)
-        return self._list(
-            _server.Server, dedicated_host_id=host.id,
-            paginated=False, **query
-        )
+        return self._list(_server.Server, dedicated_host_id=host.id, **query)
 
     # ======== HostTypes ========
     def host_types(self, az):

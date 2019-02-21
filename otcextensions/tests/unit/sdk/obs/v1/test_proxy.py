@@ -37,7 +37,7 @@ class TestObsProxy(test_proxy_base.TestProxyBase):
 
     def test_containers(self):
         self.verify_list(
-            self.proxy.containers, _container.Container, paginated=True,
+            self.proxy.containers, _container.Container,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             expected_kwargs={
                 'requests_auth': self._ak_auth
@@ -95,7 +95,7 @@ class TestObsProxy(test_proxy_base.TestProxyBase):
 
     def test_objects(self):
         self.verify_list(
-            self.proxy.objects, _obj.Object, paginated=True,
+            self.proxy.objects, _obj.Object,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             method_args={
                 'container': 'container'
@@ -103,7 +103,6 @@ class TestObsProxy(test_proxy_base.TestProxyBase):
             expected_kwargs={
                 'endpoint_override': 'https://container.obs.regio.'
                                      'otc.t-systems.com',
-                'paginated': True,
                 'requests_auth': self._ak_auth
             }
         )

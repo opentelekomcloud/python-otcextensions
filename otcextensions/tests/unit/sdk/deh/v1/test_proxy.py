@@ -25,7 +25,7 @@ class TestDehProxy(test_proxy_base.TestProxyBase):
 
     def test_hosts(self):
         self.verify_list(
-            self.proxy.hosts, _host.Host, paginated=True,
+            self.proxy.hosts, _host.Host,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             expected_kwargs={
             }
@@ -76,7 +76,6 @@ class TestDehProxy(test_proxy_base.TestProxyBase):
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             method_args=[{'id': 'host_id'}],
             method_kwargs={},
-            paginated=False,
             expected_kwargs={
                 'dedicated_host_id': 'host_id'
             }
@@ -88,8 +87,8 @@ class TestDehProxy(test_proxy_base.TestProxyBase):
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             method_args=['az'],
             method_kwargs={},
-            paginated=False,
             expected_kwargs={
+                'paginated': False,
                 'availability_zone': 'az'
             }
         )

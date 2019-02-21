@@ -32,7 +32,6 @@ class TestKmsKeys(TestKmsProxy):
             method_kwargs={
                 'some_arg': 'arg_value',
             },
-            paginated=True,
             expected_kwargs={
                 'some_arg': 'arg_value',
             }

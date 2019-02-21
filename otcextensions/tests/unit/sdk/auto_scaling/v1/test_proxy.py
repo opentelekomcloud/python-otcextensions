@@ -35,7 +35,6 @@ class TestAutoScalingGroups(TestAutoScalingProxy):
             method_kwargs={
                 'some_arg': 'arg_value',
             },
-            paginated=True,
             expected_kwargs={
                 'some_arg': 'arg_value',
             }
@@ -106,7 +105,6 @@ class TestAutoScalingConfigs(TestAutoScalingProxy):
             method_kwargs={
                 'some_arg': 'arg_value',
             },
-            paginated=True,
             expected_kwargs={
                 'some_arg': 'arg_value',
             }
@@ -165,7 +163,6 @@ class TestAutoScalingPolicy(TestAutoScalingProxy):
                 'some_arg': 'arg_value',
                 'group': 'group_id'
             },
-            paginated=True,
             expected_kwargs={
                 'some_arg': 'arg_value',
                 'scaling_group_id': 'group_id',
@@ -251,7 +248,6 @@ class TestAutoScalingActivityLog(TestAutoScalingProxy):
                 'some_arg': 'arg_value',
                 'group': 'group_id'
             },
-            paginated=True,
             expected_kwargs={
                 'some_arg': 'arg_value',
                 'scaling_group_id': 'group_id',
@@ -265,7 +261,9 @@ class TestAutoScalingQuota(TestAutoScalingProxy):
         self.verify_list(
             self.proxy.quotas, _quota.Quota,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
-            paginated=False,
+            expected_kwargs={
+                'paginated': False
+            }
         )
 
     def test_list_scaling(self):
@@ -273,8 +271,8 @@ class TestAutoScalingQuota(TestAutoScalingProxy):
             self.proxy.quotas, _quota.ScalingQuota,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             method_args=['INSTANCE'],
-            paginated=False,
             expected_kwargs={
+                'paginated': False,
                 'scaling_group_id': 'INSTANCE'
             }
         )
@@ -290,7 +288,6 @@ class TestAutoScalingInstance(TestAutoScalingProxy):
             expected_kwargs={
                 'scaling_group_id': 'group'
             },
-            paginated=True,
         )
 
     def test_batch_action_remove(self):

@@ -25,7 +25,7 @@ class TestCTSProxy(test_proxy_base.TestProxyBase):
 
     def test_traces(self):
         self.verify_list(
-            self.proxy.traces, _trace.Trace, paginated=True,
+            self.proxy.traces, _trace.Trace,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             expected_kwargs={
                 'limit': 50,
@@ -35,7 +35,7 @@ class TestCTSProxy(test_proxy_base.TestProxyBase):
 
     def test_traces_query(self):
         self.verify_list(
-            self.proxy.traces, _trace.Trace, paginated=True,
+            self.proxy.traces, _trace.Trace,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             method_kwargs={
                 'next': '1',
