@@ -62,5 +62,20 @@ class Proxy(sdk_proxy.Proxy):
         return self._list(_cluster.Host, paginated=True, **query)
 
 
+    def delete_cluster(self, cluster, ignore_missing=True):
+        """Delete (release) a cluster
+
+        :param host: The value can be the ID of a host
+             or a :class:`~otcextensions.sdk.mrs.v1.host.Cluster` instance.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the host does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent host.
+
+        :returns: host been deleted
+        :rtype: :class:`~otcextensions.sdk.deh.v1.cluster.Cluster`
+        """
+        return self._delete(_cluster.Cluster, cluster, ignore_missing=ignore_missing)
 
 

@@ -20,6 +20,8 @@ class Cluster(sdk_resource.Resource):
     resource_key = 'cluster'
     resources_key = 'clusters'
     base_path = '/cluster_infos'
+    #base_path = '/clusters/'
+    #list_path = '/cluster_infos'
 
     # capabilities
     allow_create = True
@@ -82,7 +84,6 @@ class Host(sdk_resource.Resource):
     allow_update = True
 
     _query_mapping = resource.QueryParameters('id', 'name','status','type','flavor','ip','mem','cpu','data_volume_size')
-
 
     cluster_id = resource.URI('cluster_id')
     

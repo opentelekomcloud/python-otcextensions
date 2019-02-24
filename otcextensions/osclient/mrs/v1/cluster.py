@@ -222,9 +222,9 @@ class DeleteCluster(command.Command):
         return parser
 
     def take_action(self, parsed_args):
-        if parsed_args.host:
+        if parsed_args.cluster_id:
             client = self.app.client_manager.mrs
-            for id in parsed_args.id:
+            for id in parsed_args.cluster_id:
                 client.delete_cluster(id=id, ignore_missing=False)
 
 
