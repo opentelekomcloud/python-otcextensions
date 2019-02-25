@@ -9,7 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import uuid
 import openstack
 
 from otcextensions.tests.functional import base
@@ -24,23 +23,23 @@ class TestHost(base.BaseFunctionalTest):
         super(TestHost, cls).setUpClass()
         openstack.enable_logging(debug=True, http_debug=True)
         cls.client = cls.conn.mrs
-        #res = cls.client.create_host(
-        #    name=uuid.uuid4().hex,
-        #    availability_zone='eu-de-01',
-        #    host_type='general',
-        #    quantity=1
-        #)
-        #assert len(res.dedicated_host_ids) == 1
-        #host_id = res.dedicated_host_ids[0]
-        #cls.host = cls.client.get_host(host_id)
+        # res = cls.client.create_host(
+        #     name=uuid.uuid4().hex,
+        #     availability_zone='eu-de-01',
+        #     host_type='general',
+        #     quantity=1
+        # )
+        # assert len(res.dedicated_host_ids) == 1
+        # host_id = res.dedicated_host_ids[0]
+        # cls.host = cls.client.get_host(host_id)
 
     @classmethod
     def tearDownClass(cls):
         try:
             pass
-            #if cls.cluster.id:
-            #    pass
-                #cls.client.delete_cluster(cls.cluster)
+            # if cls.cluster.id:
+            #     pass
+            #     cls.client.delete_cluster(cls.cluster)
         except openstack.exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
@@ -54,10 +53,8 @@ class TestHost(base.BaseFunctionalTest):
             for server in servers:
                 _logger.debug(server)
 
-    #def test_host_types(self):
-    #    mrs = self.conn.mrs
-    #
-    #    host_types = list(deh.host_types('eu-de-01'))
-    #
-    #    self.assertIsNotNone(host_types)
-    #    _logger.debug(host_types)
+    # def test_host_types(self):
+    #     mrs = self.conn.mrs
+    #     host_types = list(deh.host_types('eu-de-01'))
+    #     self.assertIsNotNone(host_types)
+    #     _logger.debug(host_types)
