@@ -61,7 +61,6 @@ class Proxy(sdk_proxy.Proxy):
         """
         return self._list(_cluster.Host, paginated=True, **query)
 
-
     def delete_cluster(self, cluster, ignore_missing=True):
         """Delete (release) a cluster
 
@@ -76,6 +75,7 @@ class Proxy(sdk_proxy.Proxy):
         :returns: host been deleted
         :rtype: :class:`~otcextensions.sdk.deh.v1.cluster.Cluster`
         """
-        return self._delete(_cluster.Cluster, cluster, ignore_missing=ignore_missing)
-
-
+        return self._delete(
+            _cluster.Cluster,
+            cluster,
+            ignore_missing=ignore_missing)

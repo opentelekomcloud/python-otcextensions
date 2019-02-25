@@ -37,7 +37,8 @@ def _get_columns(item):
 class ListCluster(command.Lister):
     _description = _('List MRS clusters')
     columns = (
-        'id', 'name','status','flavor', 'cluster_type','availability_zone','version'
+        'id', 'name', 'status', 'flavor',
+        'cluster_type', 'availability_zone', 'version'
     )
 
     def get_parser(self, prog_name):
@@ -137,9 +138,9 @@ class ListCluster(command.Lister):
 class ListClusterHost(command.Lister):
     _description = _('Show the MRS Cluster Hosts')
     columns = (
-        'id', 'name','status','flavor', 'type','ip','mem','cpu','data_volume_size'
+        'id', 'name', 'status', 'flavor', 'type',
+        'ip', 'mem', 'cpu', 'data_volume_size'
     )
-
 
     def get_parser(self, prog_name):
         parser = super(ListClusterHost, self).get_parser(prog_name)
@@ -150,11 +151,11 @@ class ListClusterHost(command.Lister):
             help=_('id of the cluster.')
         )
 
-        #parser.add_argument(
+        # parser.add_argument(
         #    'name',
         #    metavar='<name>',
         #    help=_('name of the cluster.')
-        #)
+        # )
 
         return parser
 
@@ -166,27 +167,26 @@ class ListClusterHost(command.Lister):
 
         if parsed_args.cluster_id:
             query['cluster_id'] = parsed_args.cluster_id
-        #if parsed_args.id:
-        #    query['id'] = parsed_args.id
-        #if parsed_args.name:
-        #    query['name'] = parsed_args.name
-        #if parsed_args.flavor:
-        #    query['flavor'] = parsed_args.flavor
-        #if parsed_args.status:
-        #    query['status'] = parsed_args.status
-        #if parsed_args.type:
-        #    query['type'] = parsed_args.type
-        #if parsed_args.ip:
-        #    query['ip'] = parsed_args.ip
-        #if parsed_args.mem:
-        #    query['mem'] = parsed_args.mem
-        #if parsed_args.limit:
-        #    query['limit'] = parsed_args.limit
-        #if parsed_args.marker:
-        #    query['marker'] = parsed_args.marker
-        #if parsed_args.changes_since:
-        #    query['changes_since'] = parsed_args.changes_since
-
+        # if parsed_args.id:
+        #     query['id'] = parsed_args.id
+        # if parsed_args.name:
+        #     query['name'] = parsed_args.name
+        # if parsed_args.flavor:
+        #     query['flavor'] = parsed_args.flavor
+        # if parsed_args.status:
+        #     query['status'] = parsed_args.status
+        # if parsed_args.type:
+        #     query['type'] = parsed_args.type
+        # if parsed_args.ip:
+        #     query['ip'] = parsed_args.ip
+        # if parsed_args.mem:
+        #     query['mem'] = parsed_args.mem
+        # if parsed_args.limit:
+        #     query['limit'] = parsed_args.limit
+        # if parsed_args.marker:
+        #     query['marker'] = parsed_args.marker
+        # if parsed_args.changes_since:
+        #     query['changes_since'] = parsed_args.changes_since
 
         data = client.hosts(**query)
 
@@ -196,14 +196,12 @@ class ListClusterHost(command.Lister):
                  ) for s in data))
         return table
 
-
-        #obj = client.find_cluster(
-        #    parsed_args.id,
-        #)
-        #
-        #display_columns, columns = _get_columns(obj)
-        #data = utils.get_item_properties(obj, columns)
-        #return (display_columns, data)
+        # obj = client.find_cluster(
+        #     parsed_args.id,
+        # )
+        # display_columns, columns = _get_columns(obj)
+        # data = utils.get_item_properties(obj, columns)
+        # return (display_columns, data)
 
 
 class DeleteCluster(command.Command):
@@ -234,7 +232,7 @@ class CreateCluster(command.ShowOne):
     columns = ('id')
 
     def get_parser(self, prog_name):
-        parser = super(CreateHost, self).get_parser(prog_name)
+        parser = super(CreateCluster, self).get_parser(prog_name)
 
         parser.add_argument(
             '--name',
@@ -299,7 +297,6 @@ class CreateCluster(command.ShowOne):
                  ) for s in obj.dedicated_host_ids))
         return table
 
-        #
         # display_columns, columns = _get_columns(obj)
         # data = utils.get_item_properties(obj, columns)
         #
@@ -336,7 +333,7 @@ class SetHost(command.ShowOne):
 
     def take_action(self, parsed_args):
 
-        client = self.app.client_manager.deh
+        client = self.app.client_manager.mrs
 
         attrs = {}
 
