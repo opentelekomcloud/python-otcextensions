@@ -98,7 +98,6 @@ OTC_SERVICES = {
     },
     'mrs': {
         'service_type': 'mrs',
-        'endpoint_service_type': 'mrs',
         'additional_headers': {'content-type': 'application/json'},
         'append_project_id': True,
     },

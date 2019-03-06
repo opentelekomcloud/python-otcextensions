@@ -30,9 +30,13 @@ def make_client(instance):
     """Returns a MRS proxy"""
 
     conn = instance.sdk_connection
+    if getattr(conn, 'mrs', None) is None:
+        LOG.debug('OTC extensions are not registered. Do that now')
+        sdk.register_otc_extensions(conn)
+
 
     # register unconditionally, since we need to override default MRS
-    sdk.register_otc_extensions(conn)
+    # sdk.register_otc_extensions(conn)
 
     LOG.debug('mrs client initialized using OpenStack OTC SDK: %s',
               conn.mrs)

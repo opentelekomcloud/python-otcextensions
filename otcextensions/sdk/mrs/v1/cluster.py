@@ -21,8 +21,6 @@ class Cluster(sdk_resource.Resource):
     resource_key = 'cluster'
     resources_key = 'clusters'
     base_path = '/cluster_infos'
-    # base_path = '/clusters/'
-    # list_path = '/cluster_infos'
 
     # capabilities
     allow_create = True

@@ -151,12 +151,6 @@ class ListClusterHost(command.Lister):
             help=_('id of the cluster.')
         )
 
-        # parser.add_argument(
-        #    'name',
-        #    metavar='<name>',
-        #    help=_('name of the cluster.')
-        # )
-
         return parser
 
     def take_action(self, parsed_args):
@@ -167,26 +161,6 @@ class ListClusterHost(command.Lister):
 
         if parsed_args.cluster_id:
             query['cluster_id'] = parsed_args.cluster_id
-        # if parsed_args.id:
-        #     query['id'] = parsed_args.id
-        # if parsed_args.name:
-        #     query['name'] = parsed_args.name
-        # if parsed_args.flavor:
-        #     query['flavor'] = parsed_args.flavor
-        # if parsed_args.status:
-        #     query['status'] = parsed_args.status
-        # if parsed_args.type:
-        #     query['type'] = parsed_args.type
-        # if parsed_args.ip:
-        #     query['ip'] = parsed_args.ip
-        # if parsed_args.mem:
-        #     query['mem'] = parsed_args.mem
-        # if parsed_args.limit:
-        #     query['limit'] = parsed_args.limit
-        # if parsed_args.marker:
-        #     query['marker'] = parsed_args.marker
-        # if parsed_args.changes_since:
-        #     query['changes_since'] = parsed_args.changes_since
 
         data = client.hosts(**query)
 
@@ -195,13 +169,6 @@ class ListClusterHost(command.Lister):
                      s, self.columns, formatters=_formatters
                  ) for s in data))
         return table
-
-        # obj = client.find_cluster(
-        #     parsed_args.id,
-        # )
-        # display_columns, columns = _get_columns(obj)
-        # data = utils.get_item_properties(obj, columns)
-        # return (display_columns, data)
 
 
 class DeleteCluster(command.Command):
@@ -296,11 +263,6 @@ class CreateCluster(command.ShowOne):
                      s, self.columns, formatters=_formatters
                  ) for s in obj.dedicated_host_ids))
         return table
-
-        # display_columns, columns = _get_columns(obj)
-        # data = utils.get_item_properties(obj, columns)
-        #
-        # return (display_columns, data)
 
 
 class SetHost(command.ShowOne):
