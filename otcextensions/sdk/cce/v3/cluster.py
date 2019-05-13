@@ -205,26 +205,3 @@ class Cluster(_base.Resource):
                 yield value
 
             return
-
-    def delete_nodes(self, session, node_names, headers=None):
-        """Delete nodes from the cluster by their name
-        """
-        nodes = []
-        if isinstance(node_names, list):
-            # Is given a list
-            for node in node_names:
-                nodes.append({'name': node})
-        elif isinstance(node_names, str):
-            # a single string, consider as a name of single host
-            nodes.append({'name': node_names})
-        message = {
-            'hosts': nodes
-        }
-
-        # Build additional arguments to the DELETE call
-        args = self._prepare_override_args(
-            additional_headers=headers
-        )
-
-        url = utils.urljoin(self.base_path, self.id, 'hosts')
-        session.delete(url, json=message, **args)
