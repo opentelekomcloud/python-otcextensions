@@ -44,6 +44,54 @@ class YNBool(format.Formatter):
                              % value)
 
 
+class Bool_10(format.Formatter):
+    @classmethod
+    def deserialize(cls, value):
+        """Convert a boolean string to a boolean"""
+        if isinstance(value, bool):
+            return value
+        expr = str(value).lower()
+        if "1" == expr:
+            return True
+        elif "0" == expr:
+            return False
+        else:
+            raise ValueError("Unable to deserialize boolean string: %s"
+                             % value)
+
+    @classmethod
+    def serialize(cls, value):
+        """Convert a boolean to a boolean string"""
+        if value in ["1", "0"]:
+            return str(value).upper()
+        if isinstance(value, bool):
+            if value:
+                return "1"
+            else:
+                return "0"
+        else:
+            raise ValueError("Unable to serialize boolean string: %s"
+                             % value)
+
+class BoolStr_1(format.BoolStr):
+    """Deserialize bool, which can be either bool or string
+    """
+
+    @classmethod
+    def deserialize(cls, value):
+        """Convert a boolean string to a boolean"""
+        if isinstance(value, bool):
+            return value
+        expr = str(value).lower()
+        if "true" == expr:
+            return True
+        elif "false" == expr:
+            return False
+        else:
+            raise ValueError("Unable to deserialize boolean string: %s"
+                             % value)
+
+
 class ListRef(format.Formatter):
     """A formatter used to serialize/deserialize list reference
 

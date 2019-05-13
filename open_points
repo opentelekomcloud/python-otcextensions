@@ -67,6 +67,11 @@ This document gathers issues, which are found during diggint the API and other O
 * create policy requires frequency to be set
 * shift implemented stuff to osc
 
+# CSS:
+
+* upon creation httpsEnable is str, upon read - bool
+* flavors is not OpenStack compatible
+
 # HEAT:
 
 * very old level, blocking many OpenSource projects, including i.e. ansible-openshift, RedhatDNS.
@@ -106,7 +111,7 @@ This document gathers issues, which are found during diggint the API and other O
 
 # DeH
 
-* Tag support is not OS compatible 
+* Tag support is not OS compatible
 
 # OpenStackSDK:
 
