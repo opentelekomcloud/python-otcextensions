@@ -73,6 +73,7 @@ class Bool_10(format.Formatter):
             raise ValueError("Unable to serialize boolean string: %s"
                              % value)
 
+
 class BoolStr_1(format.BoolStr):
     """Deserialize bool, which can be either bool or string
     """

@@ -11,8 +11,8 @@
 # under the License.
 # import six
 from openstack import exceptions
-from openstack import format
 from openstack import resource
+from openstack import utils
 
 from otcextensions.common import format as otc_format
 
@@ -46,7 +46,8 @@ class InstanceSpec(object):
 
 class DiskEncryption(object):
     #: Disk encryption flag
-    is_disk_encrypted = resource.Body('systemEncypted', type=otc_format.Bool_10)
+    is_disk_encrypted = resource.Body('systemEncypted',
+                                      type=otc_format.Bool_10)
     #: KMS Key ID
     cms_id = resource.Body('systemCmkId')
 

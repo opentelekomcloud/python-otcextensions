@@ -104,7 +104,6 @@ class Flavor(resource.Resource):
                         connection=session._get_connection(),
                         version=version,
                         **raw_resource)
-                    marker = value.id
                     yield value
         else:
             return
