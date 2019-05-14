@@ -119,8 +119,6 @@ class TestClusterNode(base.TestCase):
     def setUp(self):
         super(TestClusterNode, self).setUp()
         self.sess = mock.Mock(spec=adapter.Adapter)
-        self.sess.delete = mock.Mock()
-        self.sess.post = mock.Mock()
         self.sess.get = mock.Mock()
         self.sess.default_microversion = '1'
         self.sess._get_connection = mock.Mock(return_value=self.cloud)

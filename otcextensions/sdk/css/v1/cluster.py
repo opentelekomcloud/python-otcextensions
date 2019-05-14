@@ -17,14 +17,14 @@ from openstack import utils
 from otcextensions.common import format as otc_format
 
 
-class DatastoreSpec(object):
+class DatastoreSpec(resource.Resource):
     #: Datastore version
     version = resource.Body('version', default='6.2.3')
     #: Engine type
     type = resource.Body('type', default='elasticsearch')
 
 
-class NetworkSpec(object):
+class NetworkSpec(resource.Resource):
     #: Router ID (VPC id)
     router_id = resource.Body('vpcId')
     #: Network ID
@@ -33,7 +33,7 @@ class NetworkSpec(object):
     security_group_id = resource.Body('securityGroupId')
 
 
-class InstanceSpec(object):
+class InstanceSpec(resource.Resource):
     #: Instance flavor name
     flavor = resource.Body('flavorRef')
     #: Volume object {volume_type:[COMMON, HIGH, ULTRAHIGH], size:int}
@@ -44,12 +44,12 @@ class InstanceSpec(object):
     availability_zone = resource.Body('availability_zone')
 
 
-class DiskEncryption(object):
+class DiskEncryption(resource.Resource):
     #: Disk encryption flag
-    is_disk_encrypted = resource.Body('systemEncypted',
+    is_disk_encrypted = resource.Body('systemEncrypted',
                                       type=otc_format.Bool_10)
     #: KMS Key ID
-    cms_id = resource.Body('systemCmkId')
+    cms_id = resource.Body('systemCmkid')
 
 
 class Cluster(resource.Resource):
@@ -87,11 +87,9 @@ class Cluster(resource.Resource):
     #: Number of cluster instances (1..32)
     instance_count = resource.Body('instanceNum', type=int)
     #: Disk encryption flag (read only)
-    is_disk_encrypted = resource.Body('diskEncypted', type=otc_format.Bool_10)
+    is_disk_encrypted = resource.Body('diskEncrypted', type=bool)
     #: Whether communication encyption is performed on the cluster
     is_https_enabled = resource.Body('httpsEnable', type=otc_format.BoolStr_1)
-    #: Network ID (read only)
-    network_id = resource.Body('netId')
     #: Operation progress
     progress = resource.Body('actionProgress', type=dict)
     #: Router ID (read only)
@@ -103,6 +101,8 @@ class Cluster(resource.Resource):
     #:  - 200: Available
     #:  - 300: Unavailable
     status = resource.Body('status')
+    #: Subnetwork ID (read only)
+    subnet_id = resource.Body('subnetId')
     #: Cluster update time
     updated_at = resource.Body('updated')
 
