@@ -12,7 +12,6 @@
 # import six
 from openstack import exceptions
 from openstack import resource
-from openstack import utils
 
 from otcextensions.sdk.cce.v3 import _base
 from otcextensions.sdk.cce.v3 import cluster_node

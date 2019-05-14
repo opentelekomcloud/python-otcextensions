@@ -136,7 +136,7 @@ class Proxy(proxy.Proxy):
         return self._get(
             _cluster_node.ClusterNode,
             node_id,
-            cluster_uuid=cluster.id,
+            cluster_id=cluster.id,
         )
 
     def find_cluster_node(self, cluster, node):
@@ -153,7 +153,7 @@ class Proxy(proxy.Proxy):
         return self._find(
             _cluster_node.ClusterNode,
             node,
-            cluster_uuid=cluster.id,
+            cluster_id=cluster.id,
         )
 
     def delete_cluster_node(self, cluster, node, ignore_missing=True):
@@ -179,7 +179,7 @@ class Proxy(proxy.Proxy):
             cluster_id=cluster.id,
         )
 
-    def create_node(self, cluster, **attrs):
+    def create_cluster_node(self, cluster, **attrs):
         """Add a new node to the cluster.
 
         :param cluster: The value can be the ID of a cluster
