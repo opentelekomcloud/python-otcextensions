@@ -14,22 +14,28 @@ from openstack import exceptions
 from openstack import resource
 
 from otcextensions.sdk.cce.v3 import _base
-from otcextensions.sdk.cce.v3 import cluster_node
+# from otcextensions.sdk.cce.v3 import cluster_node
 
-
-class NodeListSpec(resource.Resource):
-    # Properties
-    host_list = resource.Body('hostList', type=list,
-                              list_type=cluster_node.ClusterNode)
-
-
-class ClusterNodeList(_base.Resource):
-    # Properties
-    #: Spec
-    spec = resource.Body('spec', type=NodeListSpec)
+#
+# class NodeListSpec(object):
+#     # Properties
+#     host_list = resource.Body('hostList', type=list,
+#                               list_type=cluster_node.ClusterNode)
+#
+#
+# class ClusterNodeList(object):
+#     # Properties
+#     #: Spec
+#     spec = resource.Body('spec', type=NodeListSpec)
 
 
 class HostNetworkSpec(resource.Resource):
+
+    # def __init__(self, **kwargs):
+    #     self.highway_subnet = kwargs.pop(
+    #         'highwaySubnet', kwargs.pop('highway_subnet', None))
+    #     self.security_group = kwargs.pop(
+    #         'highwaySubnet', kwargs.pop('highway_subnet', None))
     # Properties
     #: ID of the high-speed network that is used to create a bare metal node.
     highway_subnet = resource.Body('highwaySubnet')
@@ -57,6 +63,8 @@ class ClusterSpec(resource.Resource):
     flavor = resource.Body('flavor')
     #: Node network parameters.
     host_network = resource.Body('hostNetwork', type=HostNetworkSpec)
+    #: Cluster type.
+    type = resource.Body('type')
     #: Cluster version ['v1.9.2-r2', 'v1.11.3-r1'].
     version = resource.Body('version')
 
@@ -66,7 +74,7 @@ class StatusSpec(resource.Resource):
     #: Cluster status.
     status = resource.Body('phase')
     #: Access address of the kube-apiserver in the cluster.
-    endpoints = resource.Body('endpoints', type=list, list_Type=dict)
+    endpoints = resource.Body('endpoints', type=dict)
 
 
 class Cluster(_base.Resource):
@@ -90,7 +98,7 @@ class Cluster(_base.Resource):
     @classmethod
     def new(cls, **kwargs):
         if 'kind' not in kwargs:
-            kwargs['kind'] = 'cluster'
+            kwargs['kind'] = 'Cluster'
         if 'apiVersion' not in kwargs:
             kwargs['apiVersion'] = 'v3'
         metadata = kwargs.get('metadata', '')

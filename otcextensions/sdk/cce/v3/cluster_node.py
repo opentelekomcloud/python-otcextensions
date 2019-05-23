@@ -72,8 +72,6 @@ class NodeSpec(resource.Resource):
     os = resource.Body('os')
     #: System disk parameters of the node.
     root_volume = resource.Body('rootVolume', type=VolumeSpec)
-    #: Node status.
-    status = resource.Body('status', type=StatusSpec)
 
 
 class ClusterNode(_base.Resource):
@@ -87,16 +85,17 @@ class ClusterNode(_base.Resource):
     allow_list = True
 
     # Properties
+    #: Cluster id.
     cluster_id = resource.URI('cluster_id')
     #: Spec
     spec = resource.Body('spec', type=NodeSpec)
     #: Status
-    status = resource.Body('status')
+    status = resource.Body('status', type=StatusSpec)
 
     @classmethod
     def new(cls, **kwargs):
         if 'kind' not in kwargs:
-            kwargs['kind'] = 'node'
+            kwargs['kind'] = 'Node'
         if 'apiVersion' not in kwargs:
             kwargs['apiVersion'] = 'v3'
         return cls(_synchronized=False, **kwargs)

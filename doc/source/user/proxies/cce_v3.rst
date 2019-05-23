@@ -30,4 +30,4 @@ Cluster Nodes Operations
   .. automethod:: otcextensions.sdk.cce.v3._proxy.Proxy.get_cluster_node
   .. automethod:: otcextensions.sdk.cce.v3._proxy.Proxy.find_cluster_node
   .. automethod:: otcextensions.sdk.cce.v3._proxy.Proxy.delete_cluster_node
-  .. automethod:: otcextensions.sdk.cce.v3._proxy.Proxy.create_node
+  .. automethod:: otcextensions.sdk.cce.v3._proxy.Proxy.create_cluster_node

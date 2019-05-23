@@ -30,13 +30,10 @@ class Metadata(resource.Resource):
     created_at = resource.Body('creationTimeStamp')
     #: Update time
     #: *Type:str
-    update_at = resource.Body('updateTimeStamp')
+    updated_at = resource.Body('updateTimeStamp')
 
 
 class Resource(resource.Resource):
-    base_path = ''
-
-    service_expectes_json_type = True
 
     # Properties
     #: Kind
@@ -45,3 +42,7 @@ class Resource(resource.Resource):
     api_version = resource.Body('apiVersion', default='v3')
     #: metadata
     metadata = resource.Body('metadata', type=Metadata)
+
+    def create(self, session, prepend_key=False, base_path=None):
+        # Overriden here to override prepend_key default value
+        return super(Resource, self).create(session, prepend_key, base_path)
