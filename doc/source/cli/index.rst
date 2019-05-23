@@ -6,7 +6,7 @@ OpenStackClient CLI Usage
 
    anti_ddos.rst
    auto_scaling.rst
-   cce.rst
+   cce_v2.rst
    cts.rst
    dcs.rst
    deh.rst

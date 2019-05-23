@@ -41,6 +41,7 @@ This document gathers issues, which are found during diggint the API and other O
 * Subnet is most likely net_id
 * In AS sys disk has type "SYS", in CCE - "root"
 * Node delete possible only by name, and not id
+* service catalog configuration is broken v1 vs v2(v3) with no corrupted discovery and new service type
 
 # DCS:
 
@@ -66,6 +67,11 @@ This document gathers issues, which are found during diggint the API and other O
 * backup creation takes too long. 1Gb empty volume takes >4 minutes. Functional tests are not reasonable with that.
 * create policy requires frequency to be set
 * shift implemented stuff to osc
+
+# CSS:
+
+* upon creation httpsEnable is str, upon read - bool
+* flavors is not OpenStack compatible
 
 # HEAT:
 
@@ -106,7 +112,7 @@ This document gathers issues, which are found during diggint the API and other O
 
 # DeH
 
-* Tag support is not OS compatible 
+* Tag support is not OS compatible
 
 # OpenStackSDK:
 

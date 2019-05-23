@@ -10,14 +10,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from openstack import service_description
-
-from otcextensions.sdk.dns.v2 import _proxy
+from otcextensions.tests.functional import base
 
 
-class DnsService(service_description.ServiceDescription):
-    """The DNS service."""
+class TestService(base.BaseFunctionalTest):
 
-    supported_versions = {
-        '2': _proxy.Proxy
-    }
+    def test_initialize(self):
+        client = self.conn.css
+
+        self.assertIsNotNone(client)
