@@ -53,10 +53,15 @@ OTC_SERVICES = {
     },
     'cce': {
         'service_type': 'cce',
-        'append_project_id': False,
+        'endpoint_service_type': 'ccev2.0',
+        # 'append_project_id': False,
     },
     'cts': {
         'service_type': 'cts',
+        # 'append_project_id': True,
+    },
+    'css': {
+        'service_type': 'css',
         # 'append_project_id': True,
     },
     'dcs': {

@@ -117,7 +117,8 @@ control which services can be used.
    Workflow <https://docs.openstack.org/python-openstacksdk/latest/user/proxies/workflow>
    Anti DDoS Service <proxies/anti_ddos>
    AutoScaling Service <proxies/auto_scaling>
-   Cloud Container Engine <proxies/cce>
+   Cloud Container Engine v1<proxies/cce_v1>
+   Cloud Container Engine v2<proxies/cce_v3>
    Cloud Trace Service <proxies/cts>
    Distributed Cache Service <proxies/dcs>
    Dedicated Host Service <proxies/deh>

@@ -9,15 +9,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
 from openstack import service_description
 
-from otcextensions.sdk.dns.v2 import _proxy
+from otcextensions.sdk.css.v1 import _proxy
 
 
-class DnsService(service_description.ServiceDescription):
-    """The DNS service."""
+class CssService(service_description.ServiceDescription):
+    """The CSS service."""
 
     supported_versions = {
-        '2': _proxy.Proxy
+        '1': _proxy.Proxy
     }
