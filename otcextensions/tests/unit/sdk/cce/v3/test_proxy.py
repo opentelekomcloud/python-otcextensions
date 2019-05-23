@@ -125,10 +125,10 @@ class TestCCEClusterNode(TestCCEProxy):
             method_args=[cluster],
             method_kwargs=attrs,
             expected_args=[_cluster_node.ClusterNode],
-            expected_kwargs={
-                'cluster_id': cluster.id,
+            expected_kwargs=dict(
+                cluster_id=cluster.id,
                 **attrs
-            }
+            )
         )
 
     def test_delete_node(self):

@@ -75,5 +75,5 @@ class TestFlavor(base.TestCase):
 
         result = list(sot.list(self.sess))
 
-        self.assertEquals(1, len(result))
-        self.assertEquals(EXAMPLE['versions'][0]['version'], result[0].version)
+        self.assertEqual(1, len(result))
+        self.assertEqual(EXAMPLE['versions'][0]['version'], result[0].version)
