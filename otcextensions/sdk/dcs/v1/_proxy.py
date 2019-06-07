@@ -10,8 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-# from openstack import proxy
-from otcextensions.sdk import sdk_proxy
+from openstack import proxy
 from otcextensions.sdk.dcs.v1 import backup as _backup
 from otcextensions.sdk.dcs.v1 import config as _config
 from otcextensions.sdk.dcs.v1 import instance as _instance
@@ -19,7 +18,7 @@ from otcextensions.sdk.dcs.v1 import restore as _restore
 from otcextensions.sdk.dcs.v1 import statistic as _stat
 
 
-class Proxy(sdk_proxy.Proxy):
+class Proxy(proxy.Proxy):
 
     skip_discovery = True
 

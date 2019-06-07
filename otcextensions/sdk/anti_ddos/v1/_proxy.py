@@ -10,15 +10,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-# from openstack import proxy
-from otcextensions.sdk import sdk_proxy
+from openstack import proxy
 from otcextensions.sdk.anti_ddos.v1 import alert_config as _alert
 from otcextensions.sdk.anti_ddos.v1 import config as _config
 from otcextensions.sdk.anti_ddos.v1 import floating_ip as _floating_ip
 from otcextensions.sdk.anti_ddos.v1 import status as _status
 
 
-class Proxy(sdk_proxy.Proxy):
+class Proxy(proxy.Proxy):
 
     skip_discovery = True
 

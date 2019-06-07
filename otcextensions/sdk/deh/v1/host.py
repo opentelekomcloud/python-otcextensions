@@ -10,11 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
-from openstack import _log
-
-from otcextensions.sdk import sdk_resource
-
-_logger = _log.setup_logging('openstack')
 
 
 class HostInstanceCapacity(resource.Resource):
@@ -42,7 +37,7 @@ class HostProperties(resource.Resource):
     vcpus = resource.Body('vcpus', type=int)
 
 
-class Host(sdk_resource.Resource):
+class Host(resource.Resource):
     resource_key = 'dedicated_host'
     resources_key = 'dedicated_hosts'
     base_path = '/dedicated-hosts'
@@ -50,9 +45,9 @@ class Host(sdk_resource.Resource):
     # capabilities
     allow_create = True
     allow_list = True
-    allow_get = True
+    allow_fetch = True
     allow_delete = True
-    allow_update = True
+    allow_commit = True
 
     _query_mapping = resource.QueryParameters(
         'id', 'name', 'host_type', 'host_type_name',

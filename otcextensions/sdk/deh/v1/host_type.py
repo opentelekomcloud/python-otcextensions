@@ -11,10 +11,8 @@
 # under the License.
 from openstack import resource
 
-from otcextensions.sdk import sdk_resource
 
-
-class HostType(sdk_resource.Resource):
+class HostType(resource.Resource):
     resource_key = ''
     resources_key = 'dedicated_host_types'
     base_path = '/availability-zone/%(availability_zone)s/dedicated-host-types'

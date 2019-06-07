@@ -9,15 +9,10 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import _log
 from openstack import resource
 
-from otcextensions.sdk import sdk_resource
 
-_logger = _log.setup_logging('openstack')
-
-
-class Config(sdk_resource.Resource):
+class Config(resource.Resource):
 
     resources_key = 'redis_config'
 
@@ -25,8 +20,8 @@ class Config(sdk_resource.Resource):
 
     # capabilities
     allow_list = True
-    allow_update = True
-    update_method = "PUT"
+    allow_commit = True
+    commit_method = "PUT"
 
     # Properties
     #: Instance ID

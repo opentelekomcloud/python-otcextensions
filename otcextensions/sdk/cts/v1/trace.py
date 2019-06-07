@@ -11,16 +11,11 @@
 # under the License.
 
 from openstack import resource
-from openstack import _log
 
 from otcextensions.common import format
-from otcextensions.sdk import sdk_resource
 
 
-_logger = _log.setup_logging('openstack')
-
-
-class Trace(sdk_resource.Resource):
+class Trace(resource.Resource):
 
     base_path = '/%(tracker_name)s/trace'
     resources_key = 'traces'

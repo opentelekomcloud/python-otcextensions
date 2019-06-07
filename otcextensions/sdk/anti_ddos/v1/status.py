@@ -10,20 +10,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
-from openstack import _log
 
 from otcextensions.common import format
-from otcextensions.sdk import sdk_resource
-
-_logger = _log.setup_logging('openstack')
 
 
-class TaskStatus(sdk_resource.Resource):
+class TaskStatus(resource.Resource):
 
     base_path = '/query_task_status'
 
     # capabilities
-    allow_get = True
+    allow_fetch = True
 
     _query_mapping = resource.QueryParameters('task_id')
 
@@ -35,7 +31,7 @@ class TaskStatus(sdk_resource.Resource):
     task_msg = resource.Body('task_msg')
 
 
-class FloatingIPStatus(sdk_resource.Resource):
+class FloatingIPStatus(resource.Resource):
 
     base_path = '/antiddos/%(floating_ip_id)s/status'
 
@@ -50,7 +46,7 @@ class FloatingIPStatus(sdk_resource.Resource):
     status = resource.Body('status')
 
 
-class FloatingIPEvent(sdk_resource.Resource):
+class FloatingIPEvent(resource.Resource):
 
     resources_key = 'logs'
     base_path = '/antiddos/%(floating_ip_id)s/logs'
@@ -85,7 +81,7 @@ class FloatingIPEvent(sdk_resource.Resource):
     trigger_http_pps = resource.Body('trigger_http_pps', type=int)
 
 
-class FloatingIPDayStat(sdk_resource.Resource):
+class FloatingIPDayStat(resource.Resource):
 
     resources_key = 'data'
     base_path = '/antiddos/%(floating_ip_id)s/daily'
@@ -117,7 +113,7 @@ class FloatingIPDayStat(sdk_resource.Resource):
     total_pps = resource.Body('total_pps', type=int)
 
 
-class FloatingIPWeekStatData(sdk_resource.Resource):
+class FloatingIPWeekStatData(resource.Resource):
     # Properties
     #: Intercept time in one week
     #: *Type: int*
@@ -134,7 +130,7 @@ class FloatingIPWeekStatData(sdk_resource.Resource):
                                       type=format.TimeTMsStr)
 
 
-class FloatingIPWeekStat(sdk_resource.Resource):
+class FloatingIPWeekStat(resource.Resource):
 
     base_path = '/antiddos/weekly'
 

@@ -9,14 +9,19 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import service_description
 
-from otcextensions.sdk.volume_backup.v2 import _proxy
+import openstack
+
+from otcextensions.tests.functional import base
 
 
-class VolumeBackupService(service_description.ServiceDescription):
-    """The Volume Backup service."""
+class TestOtcextensionsInitialization(base.BaseFunctionalTest):
 
-    supported_versions = {
-        '2': _proxy.Proxy
-    }
+    def test_basic(self):
+        conn = openstack.connect(
+            vendor_hook='otcextensions.sdk:load'
+        )
+
+        self.assertTrue(hasattr(conn.dns, 'add_router_to_zone'))
+        list(conn.volume_backup.backup_policies())
+        list(conn.obs.containers())

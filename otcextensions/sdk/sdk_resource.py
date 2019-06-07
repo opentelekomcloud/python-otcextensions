@@ -463,6 +463,8 @@ class Resource(resource.Resource):
         if scaling_group_id:
             uri_params = {'scaling_group_id': scaling_group_id}
 
+        print('got params %s' % params)
+
         cls._query_mapping._validate(params, base_path=cls.base_path)
         query_params = cls._query_mapping._transpose(params)
         uri = None
