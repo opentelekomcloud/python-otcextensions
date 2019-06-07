@@ -12,14 +12,9 @@
 from openstack import exceptions
 from openstack import resource
 from openstack import utils
-from openstack import _log
-
-from otcextensions.sdk import sdk_resource
-
-_logger = _log.setup_logging('openstack')
 
 
-class Instance(sdk_resource.Resource):
+class Instance(resource.Resource):
 
     resources_key = 'instances'
 
@@ -28,9 +23,7 @@ class Instance(sdk_resource.Resource):
     # capabilities
     allow_create = True
     allow_list = True
-    allow_get = True
     allow_delete = True
-    allow_update = True
     allow_fetch = True
     allow_commit = True
 
@@ -133,8 +126,8 @@ class Instance(sdk_resource.Resource):
             return match.get(session)
         except (exceptions.NotFoundException, exceptions.HttpException,
                 exceptions.MethodNotSupported, exceptions.BadRequestException):
-            _logger.warn('Please specify instance ID if known for '
-                         'better performance')
+            session.log.warn('Please specify instance ID if known for '
+                             'better performance')
 
         data = cls.list(session, **params)
 

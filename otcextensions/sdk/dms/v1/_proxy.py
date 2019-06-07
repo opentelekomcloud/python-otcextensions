@@ -39,6 +39,15 @@ class Proxy(sdk_proxy.Proxy):
         """
         return self._list(_queue.Queue, paginated=False)
 
+    def find_queue(self, name_or_id):
+        """Find queue by name or id
+
+        :param name_or_id: Name or ID
+        :returns: one object of class
+            :class:`~otcextensions.sdk.dms.v1.queue.Queue`
+        """
+        return self._find(_queue.Queue, name_or_id)
+
     def get_queue(self, queue):
         """Get detail about a given queue id
 

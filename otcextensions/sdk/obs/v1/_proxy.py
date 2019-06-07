@@ -9,15 +9,12 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import _log
 
 from otcextensions.sdk import ak_auth
 from otcextensions.sdk import sdk_proxy
 
 from otcextensions.sdk.obs.v1 import container as _container
 from otcextensions.sdk.obs.v1 import obj as _obj
-
-_logger = _log.setup_logging('openstack')
 
 
 def _normalize_obs_keys(obj):
@@ -35,7 +32,7 @@ class Proxy(sdk_proxy.Proxy):
         """Inject AK/SK into the proxy for use
 
         """
-        _logger.debug('injecting ak/sk')
+        self.log.debug('injecting ak/sk')
         setattr(self, 'AK', ak)
         setattr(self, 'SK', sk)
 

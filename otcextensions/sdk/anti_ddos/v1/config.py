@@ -11,10 +11,8 @@
 # under the License.
 from openstack import resource
 
-from otcextensions.sdk import sdk_resource
 
-
-class Config(sdk_resource.Resource):
+class Config(resource.Resource):
 
     base_path = '/antiddos/query_config_list'
 

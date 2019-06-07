@@ -66,10 +66,12 @@ class TestPolicy(base.TestCase):
     def setUp(self):
         super(TestPolicy, self).setUp()
         self.sess = mock.Mock(spec=adapter.Adapter)
+        self.sess.default_microversion = None
         self.sess.get = mock.Mock()
         self.sess.post = mock.Mock()
         self.sess.delete = mock.Mock()
         self.sess.put = mock.Mock()
+        self.sess.retriable_status_codes = ()
         # self.sess.get_project_id = mock.Mock(return_value=PROJECT_ID)
         self.sot = policy.Policy()
 
@@ -82,8 +84,8 @@ class TestPolicy(base.TestCase):
             '/scaling_policy/%(scaling_group_id)s/list', sot.list_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
-        self.assertTrue(sot.allow_get)
-        self.assertTrue(sot.allow_update)
+        self.assertTrue(sot.allow_fetch)
+        self.assertTrue(sot.allow_commit)
         self.assertTrue(sot.allow_delete)
 
     def test_make_it(self):
@@ -138,11 +140,12 @@ class TestPolicy(base.TestCase):
 
         self.sess.get.return_value = mock_response
 
-        result = sot.get(self.sess)
+        result = sot.fetch(self.sess)
 
         self.sess.get.assert_called_once_with(
             'scaling_policy/%s' %
             EXAMPLE['scaling_policy_id'],
+            microversion=None
         )
 
         self.assertEqual(sot, result)
@@ -207,7 +210,7 @@ class TestPolicy(base.TestCase):
 
         sot._update(**EXAMPLE)
 
-        result = sot.update(self.sess, prepend_key=False)
+        result = sot.commit(self.sess, prepend_key=False)
 
         call_args = self.sess.put.call_args_list[0]
 

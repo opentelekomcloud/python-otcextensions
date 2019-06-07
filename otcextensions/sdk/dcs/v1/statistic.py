@@ -10,14 +10,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
-from openstack import _log
-
-from otcextensions.sdk import sdk_resource
-
-_logger = _log.setup_logging('openstack')
 
 
-class Statistic(sdk_resource.Resource):
+class Statistic(resource.Resource):
 
     resources_key = 'statistics'
 

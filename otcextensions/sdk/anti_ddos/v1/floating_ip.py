@@ -10,23 +10,18 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
-from openstack import _log
-
-from otcextensions.sdk import sdk_resource
-
-_logger = _log.setup_logging('openstack')
 
 
-class FloatingIP(sdk_resource.Resource):
+class FloatingIP(resource.Resource):
 
     resources_key = 'ddosStatus'
     base_path = '/antiddos'
 
     # capabilities
     allow_list = True
-    allow_get = True
+    allow_fetch = True
     allow_delete = True
-    allow_update = True
+    allow_commit = True
 
     _query_mapping = resource.QueryParameters('status',
                                               'limit',

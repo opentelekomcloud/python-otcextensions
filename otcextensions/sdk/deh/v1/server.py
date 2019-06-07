@@ -11,10 +11,8 @@
 # under the License.
 from openstack import resource
 
-from otcextensions.sdk import sdk_resource
 
-
-class Server(sdk_resource.Resource):
+class Server(resource.Resource):
     resource_key = ''
     resources_key = 'servers'
     base_path = '/dedicated-hosts/%(dedicated_host_id)s/servers'

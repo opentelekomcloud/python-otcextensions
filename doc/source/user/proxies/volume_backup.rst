@@ -12,18 +12,8 @@ The VBS high-level interface is available through the ``volume_backup``
 member of a :class:`~openstack.connection.Connection` object.  The
 ``volume_backup`` member will only be added if the ``otcextensions.sdk.register_otc_extensions(conn)`` method is called.
 
-Backup Operations
-^^^^^^^^^^^^^^^^^
+The Backup itself is an OpenStack entity and supported natively as block_storage.Backup.
 
-.. autoclass:: otcextensions.sdk.volume_backup.v2._proxy.Proxy
-
-   .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.backups
-   .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.get_backup
-   .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.create_backup
-   .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.delete_backup
-   .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.restore_backup
-   .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.wait_for_backup
-   .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.wait_for_backup_delete
 
 Backup Policy Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^

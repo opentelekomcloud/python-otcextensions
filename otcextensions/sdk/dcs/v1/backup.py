@@ -10,11 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
-from openstack import _log
-
-from otcextensions.sdk import sdk_resource
-
-_logger = _log.setup_logging('openstack')
 
 
 class DcsBool(object):
@@ -40,7 +35,7 @@ class DcsBool(object):
         return self.val == other
 
 
-class Backup(sdk_resource.Resource):
+class Backup(resource.Resource):
 
     resources_key = 'backup_record_response'
 
@@ -49,7 +44,7 @@ class Backup(sdk_resource.Resource):
     # capabilities
     allow_create = True
     allow_list = True
-    allow_get = True
+    allow_fetch = True
     allow_delete = True
 
     _query_mapping = resource.QueryParameters(

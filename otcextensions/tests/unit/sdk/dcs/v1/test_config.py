@@ -42,7 +42,7 @@ class TestConfig(base.TestCase):
 
         self.assertEqual('/instances/%(instance_id)s/configs', sot.base_path)
 
-        self.assertTrue(sot.allow_update)
+        self.assertTrue(sot.allow_commit)
         self.assertTrue(sot.allow_list)
 
     def test_make_it(self):

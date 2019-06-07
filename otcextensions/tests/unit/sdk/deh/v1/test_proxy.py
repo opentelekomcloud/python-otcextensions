@@ -26,7 +26,6 @@ class TestDehProxy(test_proxy_base.TestProxyBase):
     def test_hosts(self):
         self.verify_list(
             self.proxy.hosts, _host.Host,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             expected_kwargs={
             }
         )
@@ -34,19 +33,16 @@ class TestDehProxy(test_proxy_base.TestProxyBase):
     def test_get_host(self):
         self.verify_get(
             self.proxy.get_host, _host.Host,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
         )
 
     def test_find_host(self):
         self.verify_find(
             self.proxy.find_host, _host.Host,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._find',
         )
 
     def test_create_host(self):
         self.verify_create(
             self.proxy.create_host, _host.Host,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
             method_kwargs={
                 'x': 1,
                 'y': '2'
@@ -61,19 +57,16 @@ class TestDehProxy(test_proxy_base.TestProxyBase):
     def test_delete_host(self):
         self.verify_delete(
             self.proxy.delete_host, _host.Host, ignore=True,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
         )
 
     def test_update_host(self):
         self.verify_update(
             self.proxy.update_host, _host.Host,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._update',
         )
 
     def test_servers(self):
         self.verify_list(
             self.proxy.servers, _server.Server,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             method_args=[{'id': 'host_id'}],
             method_kwargs={},
             expected_kwargs={
@@ -84,7 +77,6 @@ class TestDehProxy(test_proxy_base.TestProxyBase):
     def test_host_types(self):
         self.verify_list(
             self.proxy.host_types, _host_type.HostType,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             method_args=['az'],
             method_kwargs={},
             expected_kwargs={
