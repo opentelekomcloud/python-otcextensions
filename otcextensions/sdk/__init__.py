@@ -12,11 +12,12 @@
 import importlib
 import os
 import types
-import warnings
+# import warnings
 
 from openstack import _log
+# from openstack import config
 from openstack import connection
-from openstack import service_description
+# from openstack import service_description
 from openstack import utils
 
 
@@ -81,7 +82,6 @@ OTC_SERVICES = {
     'dns': {
         'service_type': 'dns',
         'replace_system': True,
-        # 'append_project_id': True,
     },
     'kms': {
         'service_type': 'kms',
@@ -115,8 +115,8 @@ def _get_descriptor(service_name):
         desc_class = _find_service_description_class(service_type)
         # _logger.debug('descriptor class %s' % desc_class)
         descriptor_args = {
-            'service_type': service.get('endpoint_service_type', service_type)
-            # 'service_type': service_type
+            'service_type': service.get('endpoint_service_type', service_type),
+            'aliases': [service.get('service_type', service_type)]
         }
 
         if not desc_class.supported_versions:
@@ -155,18 +155,18 @@ def _find_service_description_class(service_type):
     module_name = service_type.replace('-', '_') + '_service'
     class_name = ''.join(
         [part.capitalize() for part in module_name.split('_')])
-    try:
-        import_name = '.'.join([package_name, module_name])
-        service_description_module = importlib.import_module(import_name)
-    except ImportError as e:
-        # ImportWarning is ignored by default. This warning is here
-        # as an opt-in for people trying to figure out why something
-        # didn't work.
-        warnings.warn(
-            "Could not import {service_type} service description: {e}".format(
-                service_type=service_type, e=str(e)),
-            ImportWarning)
-        return service_description.ServiceDescription
+    # try:
+    import_name = '.'.join([package_name, module_name])
+    service_description_module = importlib.import_module(import_name)
+    # except ImportError as e:
+    #     # ImportWarning is ignored by default. This warning is here
+    #     # as an opt-in for people trying to figure out why something
+    #     # didn't work.
+    #     _logger.warn("Could not import {service_type} "
+    #                  "service description: {e}".format(
+    #                     service_type=service_type, e=str(e)),
+    #                  ImportWarning)
+    #     return service_description.ServiceDescription
     # There are no cases in which we should have a module but not the class
     # inside it.
     service_description_class = getattr(service_description_module, class_name)
@@ -246,30 +246,52 @@ def inject_service_to_sdk(conn, service_name, service):
 
     For some reason it should be a separate function
     """
-    setattr(
-        conn.__class__,
-        service_name,
-        property(
-            fget=lambda self: self.get_otc_proxy(service_name, service)
-        )
-    )
+    conn.add_service(service)
+    # setattr(
+    #     conn.__class__,
+    #     service_name,
+    #     property(
+    #         fget=lambda self: self.get_otc_proxy(service_name, service)
+    #     )
+    # )
 
 
-def register_otc_extensions(conn, **kwargs):
+def load(conn, **kwargs):
     """Register supported OTC services and make them known to the OpenStackSDK
 
     :param conn: An established OpenStack cloud connection
 
     :returns: none
     """
-    patch_connection(conn)
+    conn.authorize()
+    project_id = conn._get_project_info().id
 
     for (service_name, service) in OTC_SERVICES.items():
         _logger.debug('trying to register service %s' % service_name)
 
         if service.get('replace_system', False):
-            conn._proxies.pop(service_name, None)
+            delattr(conn, service_name)
 
-        inject_service_to_sdk(conn, service_name, service)
+        sd = _get_descriptor(service_name)
+
+        conn.add_service(sd)
+
+        append_project_id = service.get('append_project_id', False)
+        if append_project_id:
+            # If service requires project_id, but it is not present in the
+            # service catalog - set endpoint_override
+            ep = conn.endpoint_for(sd.service_type)
+            if ep and not ep.rstrip('/').endswith('\\%(project_id)s') \
+                    and not ep.rstrip('/').endswith('$(tenant_id)s') \
+                    and not ep.rstrip('/').endswith(project_id):
+                conn.config.config[
+                    '_'.join([
+                        sd.service_type.lower().replace('-', '_'),
+                        'endpoint_override'
+                    ])
+                ] = utils.urljoin(ep, '%(project_id)s')
 
     return None
+
+
+register_otc_extensions = load
