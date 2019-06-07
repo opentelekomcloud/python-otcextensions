@@ -14,7 +14,6 @@ from openstack import resource
 from openstack import utils
 
 
-
 class Resource(resource.Resource):
 
     query_marker_key = 'start_number'

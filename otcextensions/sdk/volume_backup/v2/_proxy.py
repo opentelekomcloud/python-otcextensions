@@ -9,7 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import resource
 from openstack import proxy
 from otcextensions.sdk.volume_backup.v2 import backup_policy as _backup_policy
 from otcextensions.sdk.volume_backup.v2 import backup_task as _backup_task

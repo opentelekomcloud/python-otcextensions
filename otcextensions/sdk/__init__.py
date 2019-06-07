@@ -11,13 +11,8 @@
 # under the License.
 import importlib
 import os
-import types
-# import warnings
 
 from openstack import _log
-# from openstack import config
-from openstack import connection
-# from openstack import service_description
 from openstack import utils
 
 

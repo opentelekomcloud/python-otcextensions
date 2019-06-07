@@ -126,8 +126,8 @@ class Instance(resource.Resource):
             return match.get(session)
         except (exceptions.NotFoundException, exceptions.HttpException,
                 exceptions.MethodNotSupported, exceptions.BadRequestException):
-            _logger.warn('Please specify instance ID if known for '
-                         'better performance')
+            session.log.warn('Please specify instance ID if known for '
+                             'better performance')
 
         data = cls.list(session, **params)
 

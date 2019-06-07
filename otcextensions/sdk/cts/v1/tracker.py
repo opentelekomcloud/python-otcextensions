@@ -84,7 +84,7 @@ class Tracker(resource.Resource):
         if has_body:
             if response.status_code == 204:
                 # Some bad APIs (i.e. DCS.Backup.List) return emptiness
-                _logger.warn('API returned no content, while it was expected')
+                self.log.warn('API returned no content, while it was expected')
                 return
             # NOTE: in difference to doc "GET" method return list with 1 item
             body = response.json()

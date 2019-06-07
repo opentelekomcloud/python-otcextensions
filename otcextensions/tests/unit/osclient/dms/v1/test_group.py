@@ -116,7 +116,6 @@ class TestListGroup(TestGroup):
             self.queue
         ]
 
-
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
