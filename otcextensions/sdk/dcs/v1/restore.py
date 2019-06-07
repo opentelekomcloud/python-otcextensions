@@ -10,14 +10,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
-from openstack import _log
-
-from otcextensions.sdk import sdk_resource
-
-_logger = _log.setup_logging('openstack')
 
 
-class Restore(sdk_resource.Resource):
+class Restore(resource.Resource):
 
     resources_key = 'restore_record_response'
 

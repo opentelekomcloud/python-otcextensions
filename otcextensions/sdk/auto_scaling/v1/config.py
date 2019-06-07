@@ -60,7 +60,7 @@ class Config(_base.Resource):
     # capabilities
     allow_create = True
     allow_list = True
-    allow_get = True
+    allow_fetch = True
     allow_delete = True
 
     # _query_mapping = resource.QueryParameters(

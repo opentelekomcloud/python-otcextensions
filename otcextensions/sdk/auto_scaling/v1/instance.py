@@ -29,9 +29,7 @@ class Instance(_base.Resource):
     query_marker_key = 'start_number'
 
     # capabilities
-    allow_create = False
     allow_list = True
-    allow_get = False
     allow_delete = True
 
     _query_mapping = resource.QueryParameters(

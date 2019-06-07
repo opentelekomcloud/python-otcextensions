@@ -10,16 +10,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
-from openstack import _log
 
 from otcextensions.common import exc
 
-from otcextensions.sdk import sdk_resource
 
-_logger = _log.setup_logging('openstack')
-
-
-class Smn(sdk_resource.Resource):
+class Smn(resource.Resource):
     #: Specifies whether SMN is supported.
     enabled = resource.Body('is_support_smn', type=bool)
     #: Specifies the theme of the SMN service.
@@ -47,7 +42,7 @@ class Smn(sdk_resource.Resource):
     notify_users = resource.Body('need_notify_user_list', type=list)
 
 
-class Tracker(sdk_resource.Resource):
+class Tracker(resource.Resource):
 
     base_path = '/tracker'
 
@@ -55,8 +50,8 @@ class Tracker(sdk_resource.Resource):
 
     # capabilities
     allow_create = True
-    allow_update = True
-    allow_get = True
+    allow_commit = True
+    allow_fetch = True
     allow_delete = True
 
     # Properties

@@ -49,10 +49,10 @@ class TestHost(base.TestCase):
                          sot.base_path)
 
         self.assertTrue(sot.allow_list)
-        self.assertFalse(sot.allow_get)
+        self.assertFalse(sot.allow_fetch)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_delete)
-        self.assertFalse(sot.allow_update)
+        self.assertFalse(sot.allow_commit)
 
     def test_make_it(self):
 

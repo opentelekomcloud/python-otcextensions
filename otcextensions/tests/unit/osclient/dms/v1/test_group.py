@@ -27,6 +27,7 @@ class TestGroup(fakes.TestDMS):
 class TestListGroup(TestGroup):
 
     groups = fakes.FakeGroup.create_multiple(3)
+    queue = fakes.FakeQueue.create_one()
 
     columns = ('ID', 'name', 'produced_messages', 'consumed_messages',
                'available_messages')
@@ -61,6 +62,7 @@ class TestListGroup(TestGroup):
         self.cmd = group.ListGroup(self.app, None)
 
         self.client.groups = mock.Mock()
+        self.client.find_queue = mock.Mock()
 
     def test_list_group(self):
         arglist = [
@@ -78,12 +80,15 @@ class TestListGroup(TestGroup):
         self.client.groups.side_effect = [
             self.groups
         ]
+        self.client.find_queue.side_effect = [
+            self.queue
+        ]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.groups.assert_called_once_with(
-            queue='queue_id',
+            queue=self.queue.id,
             include_deadletter=False)
 
         self.assertEqual(self.columns, columns)
@@ -107,12 +112,16 @@ class TestListGroup(TestGroup):
         self.client.groups.side_effect = [
             self.groups
         ]
+        self.client.find_queue.side_effect = [
+            self.queue
+        ]
+
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.groups.assert_called_once_with(
-            queue='queue_id',
+            queue=self.queue.id,
             include_deadletter=True)
 
         self.assertEqual(self.columns_with_dead, columns)

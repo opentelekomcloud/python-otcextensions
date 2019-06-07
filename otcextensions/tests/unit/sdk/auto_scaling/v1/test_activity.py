@@ -60,7 +60,9 @@ class TestActivity(base.TestCase):
     def setUp(self):
         super(TestActivity, self).setUp()
         self.sess = mock.Mock(spec=adapter.Adapter)
+        self.sess.default_microversion = None
         self.sess.get = mock.Mock()
+        self.sess._get_connection = mock.Mock(return_value=self.cloud)
 
         self.sot = activity.Activity()
 
@@ -72,8 +74,8 @@ class TestActivity(base.TestCase):
                          sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
-        self.assertFalse(sot.allow_get)
-        self.assertFalse(sot.allow_update)
+        self.assertFalse(sot.allow_commit)
+        self.assertFalse(sot.allow_commit)
         self.assertFalse(sot.allow_delete)
 
     def test_make_it(self):
@@ -93,40 +95,3 @@ class TestActivity(base.TestCase):
         self.assertEqual(obj['instance_deleted_list'],
                          sot.instance_deleted_list)
         self.assertEqual(obj['description'], sot.description)
-
-    def test_list(self):
-        mock_response = mock.Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = copy.deepcopy(EXAMPLE_LIST)
-
-        self.sess.get.return_value = mock_response
-
-        result = list(
-            self.sot.list(
-                self.sess,
-                scaling_group_id='grp_id',
-                limit=3,
-                marker=4,
-                start_time='a',
-                end_time='b'
-            )
-        )
-
-        self.sess.get.assert_called_once_with(
-            '/scaling_activity_log/grp_id',
-            params={
-                'limit': 3,
-                'start_number': 4,
-                'start_time': 'a',
-                'end_time': 'b'
-            },
-        )
-
-        expected_list = [
-            activity.Activity.existing(
-                **EXAMPLE_LIST['scaling_activity_log'][0]),
-            activity.Activity.existing(
-                **EXAMPLE_LIST['scaling_activity_log'][1]),
-        ]
-
-        self.assertEqual(expected_list, result)

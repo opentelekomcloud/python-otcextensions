@@ -91,6 +91,7 @@ OTC_SERVICES = {
         'service_type': 'obs',
         'require_ak': True,
         'endpoint_service_type': 'object',
+        'set_endpoint_override': True
     },
     'rds': {
         'service_type': 'rds',
@@ -98,8 +99,9 @@ OTC_SERVICES = {
         'append_project_id': True,
     },
     'volume_backup': {
-        'service_type': 'vbs',
+        'service_type': 'volume_backup',
         'append_project_id': True,
+        'endpoint_service_type': 'vbs',
     },
 }
 
@@ -173,89 +175,6 @@ def _find_service_description_class(service_type):
     return service_description_class
 
 
-def patch_connection(target):
-    # descriptors are not working out of box for runtime attributes
-    # So we need to inject them. Additionally we need to override some
-    # properties of the proxy
-
-    def get_otc_proxy(self, service_name=None, service=None):
-        _logger.debug('get_otc_proxy is %s, %s, %s' %
-                      (self, service_name, service))
-
-        if service['service_type'] not in self._proxies:
-            # Initialize proxy and inject required properties
-            descriptor = _get_descriptor(service_name)
-            if not descriptor:
-                _logger.error('descriptor for service %s is missing' %
-                              service_name)
-                return
-
-            proxy = descriptor.__get__(self, descriptor)
-
-            # Set additional_headers into the proxy
-            if 'additional_headers' in service:
-                proxy.additional_headers = service.get('additional_headers')
-
-            # If service requires AK/SK - inject them
-            if service.get('require_ak', False):
-                _logger.debug('during registration found that ak is required')
-                config = self.config.config
-
-                ak = config.get('ak', None)
-                sk = config.get('sk', None)
-
-                if not ak:
-                    ak = os.getenv('S3_ACCESS_KEY_ID', None)
-                if not sk:
-                    sk = os.getenv('S3_SECRET_ACCESS_KEY', None)
-
-                if ak and sk:
-                    proxy._set_ak(ak=ak, sk=sk)
-                else:
-                    _logger.error('AK/SK pair is not available')
-                    return
-
-            # Set endpoint_override
-            endpoint_override = service.get('endpoint_override', None)
-            if endpoint_override:
-                _logger.debug('Setting endpoint_override into the %s.Proxy' %
-                              service_name)
-                proxy.endpoint_override = endpoint_override
-
-            # Ensure EP contain %project_id
-            append_project_id = service.get('append_project_id', False)
-            if append_project_id:
-                ep = proxy.get_endpoint_data().catalog_url
-                project_id = proxy.get_project_id()
-                if ep and not ep.rstrip('/').endswith('\\%(project_id)s') \
-                        and not ep.rstrip('/').endswith('$(tenant_id)s') \
-                        and not ep.rstrip('/').endswith(project_id):
-                    proxy.endpoint_override = \
-                        utils.urljoin(ep, '%(project_id)s')
-        else:
-            proxy = self._proxies[service['service_type']]
-
-        return proxy
-
-    connection.Connection.get_otc_proxy = types.MethodType(
-        get_otc_proxy, target)
-
-
-def inject_service_to_sdk(conn, service_name, service):
-    """Inject service into the SDK space
-
-    For some reason it should be a separate function
-    """
-    conn.add_service(service)
-    # setattr(
-    #     conn.__class__,
-    #     service_name,
-    #     property(
-    #         fget=lambda self: self.get_otc_proxy(service_name, service)
-    #     )
-    # )
-
-
 def load(conn, **kwargs):
     """Register supported OTC services and make them known to the OpenStackSDK
 
@@ -270,14 +189,18 @@ def load(conn, **kwargs):
         _logger.debug('trying to register service %s' % service_name)
 
         if service.get('replace_system', False):
-            delattr(conn, service_name)
+            # system_proxy = getattr(conn, service['service_type'])
+            # for service_type in system_proxy.all_types:
+            if service['service_type'] in conn._proxies:
+                del conn._proxies[service['service_type']]
+            # print(hasattr(conn, service_name))
+            # delattr(conn, service['service_type'])
 
         sd = _get_descriptor(service_name)
 
         conn.add_service(sd)
 
-        append_project_id = service.get('append_project_id', False)
-        if append_project_id:
+        if service.get('append_project_id', False):
             # If service requires project_id, but it is not present in the
             # service catalog - set endpoint_override
             ep = conn.endpoint_for(sd.service_type)
@@ -290,6 +213,37 @@ def load(conn, **kwargs):
                         'endpoint_override'
                     ])
                 ] = utils.urljoin(ep, '%(project_id)s')
+        elif service.get('set_endpoint_override', False):
+            # We need to set endpoint_override for OBS, since otherwise it
+            # fails dramatically
+            ep = conn.endpoint_for(sd.service_type)
+            conn.config.config[
+                '_'.join([
+                    sd.service_type.lower().replace('-', '_'),
+                    'endpoint_override'
+                ])
+            ] = utils.urljoin(ep)
+
+        # If service requires AK/SK - inject them
+        if service.get('require_ak', False):
+            _logger.debug('during registration found that ak is required')
+            config = conn.config.config
+
+            proxy = getattr(conn, service_name)
+
+            ak = config.get('ak', None)
+            sk = config.get('sk', None)
+
+            if not ak:
+                ak = os.getenv('S3_ACCESS_KEY_ID', None)
+            if not sk:
+                sk = os.getenv('S3_SECRET_ACCESS_KEY', None)
+
+            if ak and sk:
+                proxy._set_ak(ak=ak, sk=sk)
+            else:
+                _logger.error('AK/SK pair is not available')
+                # return
 
     return None
 

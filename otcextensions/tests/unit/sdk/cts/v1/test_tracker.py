@@ -37,10 +37,10 @@ class TestTracker(base.TestCase):
 
         self.assertEqual('/tracker', sot.base_path)
 
-        self.assertTrue(sot.allow_get)
+        self.assertTrue(sot.allow_fetch)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_delete)
-        self.assertTrue(sot.allow_update)
+        self.assertTrue(sot.allow_commit)
 
     def test_make_it(self):
 

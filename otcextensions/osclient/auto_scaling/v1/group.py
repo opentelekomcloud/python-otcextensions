@@ -181,8 +181,8 @@ class CreateAutoScalingGroup(command.ShowOne):
                    '(Repeat multiple times)')
         )
         parser.add_argument(
-            '--subnetwork',
-            metavar='<subnetwork_id>',
+            '--subnet',
+            metavar='<subnet_id>',
             action='append',
             required=True,
             help=_('Network ID of the subnet'
@@ -197,10 +197,10 @@ class CreateAutoScalingGroup(command.ShowOne):
                    '(Repeat multiple times)')
         )
         parser.add_argument(
-            '--network_id',
-            metavar='<network_id>',
+            '--router',
+            metavar='<router>',
             required=True,
-            help=_('Network (VPC) ID')
+            help=_('Router (VPC) ID')
         )
         parser.add_argument(
             '--audit_method',
@@ -241,10 +241,10 @@ class CreateAutoScalingGroup(command.ShowOne):
 
         args = {}
         args['name'] = parsed_args.name
-        args['vpc_id'] = parsed_args.network_id
+        args['vpc_id'] = parsed_args.router
 
         subnets = []
-        for subnet in parsed_args.subnetwork:
+        for subnet in parsed_args.subnet:
             subnets.append({'id': subnet})
         args['networks'] = subnets
 

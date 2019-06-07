@@ -20,12 +20,6 @@ LOG = logging.getLogger(__name__)
 
 DEFAULT_API_VERSION = '1'
 
-OBS_API_TYPE = 'object'
-OBS_API_SERVICE_NAME = 'objectstorage'
-OBS_API_VERSIONS = {
-    '1': 'otcextensions.obs.v1.api.API',
-}
-
 API_VERSION_OPTION = 'os_obs_api_version'
 API_NAME = "obs"
 API_VERSIONS = {

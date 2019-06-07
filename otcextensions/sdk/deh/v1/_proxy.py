@@ -9,13 +9,13 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from otcextensions.sdk import sdk_proxy
+from openstack import proxy
 from otcextensions.sdk.deh.v1 import host as _host
 from otcextensions.sdk.deh.v1 import server as _server
 from otcextensions.sdk.deh.v1 import host_type as _host_type
 
 
-class Proxy(sdk_proxy.Proxy):
+class Proxy(proxy.Proxy):
 
     skip_discovery = True
 

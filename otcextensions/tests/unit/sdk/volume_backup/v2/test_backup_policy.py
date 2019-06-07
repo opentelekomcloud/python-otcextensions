@@ -64,9 +64,9 @@ class TestBackupPolicy(base.TestCase):
         self.assertEqual('/backuppolicy', sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
-        self.assertFalse(sot.allow_get)
+        self.assertFalse(sot.allow_fetch)
         self.assertTrue(sot.allow_delete)
-        self.assertTrue(sot.allow_update)
+        self.assertTrue(sot.allow_commit)
 
     def test_make_it(self):
         sot = _backup_policy.BackupPolicy.existing(**EXAMPLE)
@@ -93,160 +93,6 @@ class TestBackupPolicy(base.TestCase):
         self.assertEqual(
             sp_compare['start_time'],
             sp.start_time)
-
-    def test_list(self):
-        response = _get_fixture('list_backup_policies.json')
-        mock_response = mock.Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = copy.deepcopy(response)
-
-        self.sess.get.return_value = mock_response
-
-        result = list(self.sot.list(self.sess))
-
-        self.sess.get.assert_called_once_with(
-            '/backuppolicy',
-            params={}
-        )
-
-        self.assertIsNotNone(result)
-
-        for bp in result:
-            assert isinstance(bp, _backup_policy.BackupPolicy)
-
-    def test_create(self):
-        sot = _backup_policy.BackupPolicy.new(**EXAMPLE)
-
-        mock_response = mock.Mock()
-        mock_response.status_code = 200
-        mock_response.headers = {}
-        mock_response.json.return_value = {'backup_policy_id': 'some_id'}
-
-        self.sess.post.return_value = mock_response
-
-        result = sot.create(self.sess, prepend_key=True)
-
-        call_args = self.sess.post.call_args_list[0]
-
-        expected_json = {
-            'backup_policy_id': 'XX',
-            'policy_resource_count': 0,
-            'scheduled_policy': {
-                'remain_first_backup_of_curMonth': 'N',
-                'rentention_num': 10,
-                'frequency': 1,
-                'start_time': '12:00',
-                'status': 'ON'
-            },
-            'backup_policy_name': 'plan01'
-        }
-
-        self.assertEqual('/backuppolicy', call_args[0][0])
-        self.assertDictEqual(expected_json, call_args[1]['json'])
-
-        self.sess.post.assert_called_once()
-
-        self.assertEqual('some_id', result.id)
-
-    def test_delete(self):
-        sot = _backup_policy.BackupPolicy.existing(id='some_id')
-
-        mock_response = mock.Mock()
-        mock_response.status_code = 200
-        mock_response.headers = {}
-        mock_response.json.return_value = {}
-
-        self.sess.delete.return_value = mock_response
-
-        sot.delete(self.sess)
-
-        self.sess.delete.assert_called_once_with(
-            'backuppolicy/%s' % 'some_id',
-        )
-
-    def test_update(self):
-        sot = _backup_policy.BackupPolicy.existing(id='XX')
-
-        mock_response = mock.Mock()
-        mock_response.status_code = 200
-        mock_response.headers = {}
-        mock_response.json.return_value = {'backup_policy_id': 'XX'}
-
-        self.sess.put.return_value = mock_response
-
-        sot._update(**EXAMPLE)
-
-        result = sot.update(self.sess)
-
-        call_args = self.sess.put.call_args_list[0]
-
-        expected_json = {
-            'policy_resource_count': 0,
-            'scheduled_policy': {
-                'remain_first_backup_of_curMonth': 'N',
-                'rentention_num': 10,
-                'frequency': 1,
-                'start_time': '12:00',
-                'status': 'ON'
-            },
-            'backup_policy_name': 'plan01'
-        }
-
-        self.assertEqual('backuppolicy/XX', call_args[0][0])
-        self.assertDictEqual(expected_json, call_args[1]['json'])
-
-        self.sess.put.assert_called_once()
-
-        self.assertDictEqual(
-            _backup_policy.BackupPolicy.existing(**EXAMPLE).to_dict(),
-            result.to_dict()
-        )
-
-    def mocked_requests_find(*args, **kwargs):
-
-        class MockResponse(object):
-            def __init__(self, json_data, status_code):
-                self.json_data = copy.deepcopy(json_data)
-                self.status_code = status_code
-                self.headers = {}
-
-            def json(self):
-                return self.json_data
-
-        if args[1] == '/backuppolicy/plan02':
-            return MockResponse(None, 404)
-        elif args[1] == '/backuppolicy':
-            response = _get_fixture('list_backup_policies.json')
-            return MockResponse(response, 200)
-
-    def test_find(self):
-        sot = _backup_policy.BackupPolicy()
-
-        self.sess.get.side_effect = self.mocked_requests_find
-
-        result = sot.find(self.sess, 'plan02')
-
-        calls = [
-            # if allow_get is False this will not be invoked
-            # mock.call(
-            #     '/backuppolicy/plan02',
-            #     params={}
-            #     ),
-            mock.call(
-                '/backuppolicy',
-                params={}
-            )
-        ]
-
-        self.sess.get.assert_has_calls(calls)
-
-        expected_data = \
-            _get_fixture('list_backup_policies.json')['backup_policies'][1]
-
-        self.assertDictEqual(
-            _backup_policy.BackupPolicy.existing(**expected_data).to_dict(),
-            result.to_dict()
-        )
 
     def test_execute_policy(self):
         sot = _backup_policy.BackupPolicy.existing(id='XX')
@@ -280,9 +126,9 @@ class TestBackupPolicyResource(base.TestCase):
         self.assertEqual('/backuppolicyresources', sot.base_path)
         self.assertFalse(sot.allow_list)
         self.assertTrue(sot.allow_create)
-        self.assertFalse(sot.allow_get)
+        self.assertFalse(sot.allow_fetch)
         self.assertFalse(sot.allow_delete)
-        self.assertFalse(sot.allow_update)
+        self.assertFalse(sot.allow_commit)
 
     def test_make_it(self):
         sot = _backup_policy.BackupPolicyResource()

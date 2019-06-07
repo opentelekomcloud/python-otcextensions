@@ -30,19 +30,16 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
     def test_create_instance(self):
         self.verify_create(
             self.proxy.create_instance, _instance.Instance,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
         )
 
     def test_instances(self):
         self.verify_list(
             self.proxy.instances, _instance.Instance,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
         )
 
     def test_instances_query(self):
         self.verify_list(
             self.proxy.instances, _instance.Instance,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             method_kwargs={
                 'start': '1',
                 'limit': '2',
@@ -64,13 +61,11 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
     def test_get_instance(self):
         self.verify_get(
             self.proxy.get_instance, _instance.Instance,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
         )
 
     def test_find_instance(self):
         self.verify_find(
             self.proxy.find_instance, _instance.Instance,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._find',
         )
 
     def test_update_instance(self):
@@ -117,7 +112,6 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
     def test_delete_instance(self):
         self.verify_delete(
             self.proxy.delete_instance, _instance.Instance, True,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
         )
 
     def test_stop_instance(self):
@@ -186,7 +180,6 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
     def test_statistics(self):
         self.verify_list(
             self.proxy.statistics, _stat.Statistic,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             expected_kwargs={
                 'paginated': False
             }
@@ -241,7 +234,6 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
     def test_delete_backup(self):
         self.verify_delete(
             self.proxy.delete_instance_backup, _backup.Backup, True,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
         )
 
     def test_restores_query(self):

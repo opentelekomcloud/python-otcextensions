@@ -13,7 +13,6 @@
 from openstack.tests.unit import test_proxy_base
 
 from otcextensions.sdk.volume_backup.v2 import _proxy
-from otcextensions.sdk.volume_backup.v2 import backup as _backup
 from otcextensions.sdk.volume_backup.v2 import backup_policy as _backup_policy
 from otcextensions.sdk.volume_backup.v2 import backup_task as _backup_task
 from otcextensions.sdk.volume_backup.v2 import job as _job
@@ -25,82 +24,12 @@ class TestVolumeBackupProxy(test_proxy_base.TestProxyBase):
         self.proxy = _proxy.Proxy(self.session)
 
 
-class TestBackup(TestVolumeBackupProxy):
-
-    def test_list(self):
-        self.verify_list(
-            self.proxy.backups, _backup.Backup,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
-            method_kwargs={
-            },
-            expected_kwargs={
-                'paginated': True,
-                'details': False
-            }
-        )
-
-        # verify list with details
-        self.verify_list(
-            self.proxy.backups, _backup.Backup,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
-            method_kwargs={
-                'details': True,
-            },
-            expected_kwargs={
-                'paginated': True,
-                'details': True
-            }
-        )
-
-    def test_get(self):
-        self.verify_get(
-            self.proxy.get_backup,
-            _backup.Backup,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
-            expected_kwargs={
-            }
-        )
-
-    def test_create(self):
-        self.verify_create(
-            self.proxy.create_backup, _backup.Backup,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
-            method_kwargs={
-                'instance': 'test',
-                'name': 'some_name'
-            },
-            expected_kwargs={
-                'instance': 'test',
-                'name': 'some_name'
-            }
-        )
-
-    def test_delete(self):
-        self.verify_delete(
-            self.proxy.delete_backup,
-            _backup.Backup, True,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
-            expected_kwargs={
-            }
-        )
-
-    def test_restore(self):
-        self._verify2(
-            'otcextensions.sdk.volume_backup.v2.backup.Backup.restore',
-            self.proxy.restore_backup,
-            method_args=["volume_id"],
-            method_kwargs={'volume_id': 'vol_id'},
-            expected_args=[self.proxy, 'vol_id'],
-            expected_kwargs={}
-        )
-
-
 class TestBackupPolicy(TestVolumeBackupProxy):
 
     def test_list(self):
         self.verify_list(
             self.proxy.backup_policies, _backup_policy.BackupPolicy,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
+            mock_method='openstack.proxy.Proxy._list',
             method_kwargs={
             },
             expected_kwargs={
@@ -112,13 +41,13 @@ class TestBackupPolicy(TestVolumeBackupProxy):
         self.verify_find(
             self.proxy.find_backup_policy,
             _backup_policy.BackupPolicy,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._find',
+            mock_method='openstack.proxy.Proxy._find',
         )
 
     def test_create(self):
         self.verify_create(
             self.proxy.create_backup_policy, _backup_policy.BackupPolicy,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
+            mock_method='openstack.proxy.Proxy._create',
             method_kwargs={
                 'name': 'some_name'
             },
@@ -131,14 +60,14 @@ class TestBackupPolicy(TestVolumeBackupProxy):
         self.verify_delete(
             self.proxy.delete_backup_policy,
             _backup_policy.BackupPolicy, True,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
+            mock_method='openstack.proxy.Proxy._delete',
             expected_kwargs={
             }
         )
 
     def test_update(self):
         self._verify2(
-            'otcextensions.sdk.sdk_proxy.Proxy._update',
+            'openstack.proxy.Proxy._update',
             self.proxy.update_backup_policy,
             method_args=['INSTANCE'],
             method_kwargs={'test': 't'},
@@ -160,7 +89,7 @@ class TestBackupPolicy(TestVolumeBackupProxy):
 
     def test_enable_policy(self):
         self._verify2(
-            'otcextensions.sdk.sdk_proxy.Proxy._update',
+            'openstack.proxy.Proxy._update',
             self.proxy.enable_policy,
             method_args=['INSTANCE'],
             expected_args=[_backup_policy.BackupPolicy, 'INSTANCE'],
@@ -172,7 +101,7 @@ class TestBackupPolicy(TestVolumeBackupProxy):
 
     def test_disable_policy(self):
         self._verify2(
-            'otcextensions.sdk.sdk_proxy.Proxy._update',
+            'openstack.proxy.Proxy._update',
             self.proxy.disable_policy,
             method_args=['INSTANCE'],
             expected_args=[_backup_policy.BackupPolicy, 'INSTANCE'],
@@ -220,7 +149,7 @@ class TestTask(TestVolumeBackupProxy):
     def test_list(self):
         self.verify_list(
             self.proxy.tasks, _backup_task.BackupTask,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
+            mock_method='openstack.proxy.Proxy._list',
             method_args=['pol_id'],
             expected_kwargs={
                 'paginated': False,
@@ -235,7 +164,7 @@ class TestJob(TestVolumeBackupProxy):
         self.verify_get(
             self.proxy.get_job,
             _job.Job,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
+            mock_method='openstack.proxy.Proxy._get',
             expected_kwargs={
             }
         )

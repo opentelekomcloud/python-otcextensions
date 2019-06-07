@@ -40,7 +40,8 @@ class Quota(_base.Resource):
 
     @classmethod
     def list(cls, session, paginated=False,
-             endpoint_override=None, headers=None, **params):
+             endpoint_override=None, headers=None, requests_auth=None,
+             **params):
         return super(Quota, cls).list_ext(
             session, paginated,
             endpoint_override, headers,

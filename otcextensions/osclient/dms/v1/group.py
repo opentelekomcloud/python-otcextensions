@@ -44,8 +44,10 @@ class ListGroup(command.Lister):
     def take_action(self, parsed_args):
         client = self.app.client_manager.dms
 
+        queue = client.find_queue(parsed_args.queue)
+
         data = client.groups(
-            queue=parsed_args.queue,
+            queue=queue.id,
             include_deadletter=parsed_args.include_deadletter)
 
         if parsed_args.include_deadletter:

@@ -12,10 +12,8 @@
 from openstack import resource
 from openstack import utils
 
-from otcextensions.sdk import sdk_resource
 
-
-class SchedulePolicy(sdk_resource.Resource):
+class SchedulePolicy(resource.Resource):
     #: whether keep the first backup of current month
     remain_first_backup_of_curMonth = resource.Body(
         "remain_first_backup_of_curMonth")
@@ -29,7 +27,7 @@ class SchedulePolicy(sdk_resource.Resource):
     status = resource.Body("status")
 
 
-class BackupPolicy(sdk_resource.Resource):
+class BackupPolicy(resource.Resource):
     """Volume BackupPolicy"""
     resources_key = "backup_policies"
     base_path = "/backuppolicy"
@@ -38,7 +36,7 @@ class BackupPolicy(sdk_resource.Resource):
     allow_create = True
     allow_delete = True
     allow_list = True
-    allow_update = True
+    allow_commit = True
     # allow_get = True
 
     #: Properties
@@ -63,7 +61,7 @@ class BackupPolicy(sdk_resource.Resource):
         return session.post(url, json=None)
 
 
-class BackupPolicyAssociatedResource(sdk_resource.Resource):
+class BackupPolicyAssociatedResource(resource.Resource):
     #: Properties
     resource_id = resource.Body("resource_id")
     resource_type = resource.Body("resource_type")
@@ -73,7 +71,7 @@ class BackupPolicyAssociatedResource(sdk_resource.Resource):
     code = resource.Body("code")
 
 
-class BackupPolicyResource(sdk_resource.Resource):
+class BackupPolicyResource(resource.Resource):
     base_path = "/backuppolicyresources"
 
     # capabilities

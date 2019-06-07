@@ -11,15 +11,13 @@
 # under the License.
 from openstack import resource
 
-from otcextensions.sdk import sdk_resource
 
-
-class AlertConfig(sdk_resource.Resource):
+class AlertConfig(resource.Resource):
 
     base_path = '/warnalert/alertconfig/query'
 
     # capabilities
-    allow_get = True
+    allow_fetch = True
 
     # Properties
     #: warn alert config information

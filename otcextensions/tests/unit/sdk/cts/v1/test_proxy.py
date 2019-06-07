@@ -26,7 +26,6 @@ class TestCTSProxy(test_proxy_base.TestProxyBase):
     def test_traces(self):
         self.verify_list(
             self.proxy.traces, _trace.Trace,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             expected_kwargs={
                 'limit': 50,
                 'tracker_name': 'system'
@@ -36,7 +35,6 @@ class TestCTSProxy(test_proxy_base.TestProxyBase):
     def test_traces_query(self):
         self.verify_list(
             self.proxy.traces, _trace.Trace,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             method_kwargs={
                 'next': '1',
                 'limit': '2',
@@ -71,7 +69,6 @@ class TestCTSProxy(test_proxy_base.TestProxyBase):
     def test_get_tracker(self):
         self.verify_get(
             self.proxy.get_tracker, _tracker.Tracker,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
             expected_args=[_tracker.Tracker, 'value'],
             expected_kwargs={
                 'requires_id': False
@@ -81,17 +78,14 @@ class TestCTSProxy(test_proxy_base.TestProxyBase):
     def test_create_tracker(self):
         self.verify_create(
             self.proxy.create_tracker, _tracker.Tracker,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
         )
 
     def test_update_tracker(self):
         self.verify_update(
             self.proxy.update_tracker, _tracker.Tracker,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._update',
         )
 
     def test_delete_tracker(self):
         self.verify_delete(
             self.proxy.delete_tracker, _tracker.Tracker, True,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
         )

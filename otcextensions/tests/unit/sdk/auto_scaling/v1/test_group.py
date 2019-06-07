@@ -83,39 +83,3 @@ class TestGroup(base.TestCase):
         self.assertEqual(EXAMPLE['scaling_group_id'], sot.id)
         self.assertEqual(EXAMPLE['scaling_group_name'], sot.name)
         self.assertEqual(EXAMPLE['create_time'], sot.create_time)
-
-    def test_list(self):
-        mock_response = mock.Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {'scaling_groups': [EXAMPLE]}
-
-        self.sess.get.return_value = mock_response
-
-        result = list(self.sot.list(self.sess))
-
-        self.sess.get.assert_called_once_with(
-            '/scaling_group',
-            params={},
-        )
-
-        self.assertEqual([group.Group(**EXAMPLE)], result)
-
-    def test_get(self):
-        sot = group.Group.existing(
-            id=EXAMPLE['scaling_group_id'])
-        mock_response = mock.Mock()
-        mock_response.status_code = 200
-        mock_response.headers = {}
-        mock_response.json.return_value = copy.deepcopy(EXAMPLE)
-
-        self.sess.get.return_value = mock_response
-
-        result = sot.get(self.sess)
-
-        self.sess.get.assert_called_once_with(
-            'scaling_group/%s' % EXAMPLE['scaling_group_id'],
-        )
-
-        self.assertEqual(sot, result)
-        self.assertEqual(EXAMPLE['scaling_group_id'], result.id)
-        self.assertEqual(EXAMPLE['scaling_group_name'], result.name)

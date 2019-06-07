@@ -136,7 +136,7 @@ class TestConfig(base.TestCase):
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_get)
-        self.assertFalse(sot.allow_update)
+        self.assertFalse(sot.allow_commit)
         self.assertTrue(sot.allow_delete)
 
     def test_make_it(self):
@@ -144,48 +144,3 @@ class TestConfig(base.TestCase):
         self.assertEqual(EXAMPLE['scaling_configuration_id'], sot.id)
         self.assertEqual(EXAMPLE['scaling_configuration_name'], sot.name)
         self.assertEqual(EXAMPLE['create_time'], sot.create_time)
-
-    def test_list(self):
-        mock_response = mock.Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = copy.deepcopy(EXAMPLE_LIST)
-
-        self.sess.get.return_value = mock_response
-
-        result = list(self.sot.list(self.sess))
-
-        self.sess.get.assert_called_once_with(
-            '/scaling_configuration',
-            params={},
-        )
-
-        expected_list = [
-            config.Config.existing(
-                **EXAMPLE_LIST['scaling_configurations'][0]),
-            config.Config.existing(
-                **EXAMPLE_LIST['scaling_configurations'][1])
-        ]
-
-        self.assertEqual(expected_list, result)
-
-    def test_get(self):
-        sot = config.Config.existing(
-            id=EXAMPLE['scaling_configuration_id'])
-        mock_response = mock.Mock()
-        mock_response.status_code = 200
-        mock_response.headers = {}
-        mock_response.json.return_value = {
-            'scaling_configuration': EXAMPLE.copy()}
-
-        self.sess.get.return_value = mock_response
-
-        result = sot.get(self.sess)
-
-        self.sess.get.assert_called_once_with(
-            'scaling_configuration/%s' %
-            EXAMPLE['scaling_configuration_id'],
-        )
-
-        self.assertEqual(sot, result)
-        self.assertEqual(EXAMPLE['scaling_configuration_id'], result.id)
-        self.assertEqual(EXAMPLE['scaling_configuration_name'], result.name)
