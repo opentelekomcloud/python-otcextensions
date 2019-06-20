@@ -89,7 +89,7 @@ A virtual environment seperates your installed packages from other libraries and
    $ python3 -m venv os-dev
    $ source os-dev/bin/activate
 
-Switch into the new folder which is created by cloning the repository and install install the project dependencies into the virtual environment:
+Change into the directory which is created by cloning the repository and install the project dependencies into your virtual environment:
 
 .. code-block:: bash
 
