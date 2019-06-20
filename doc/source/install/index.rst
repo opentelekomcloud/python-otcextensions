@@ -203,7 +203,7 @@ In some scenarios a split of security credentials from the configuration file is
       auth:
         password: '<PASSWORD>'
 
-Configuration of Environment Variable
+Configuration of Environment Variables
 -------------------------------------
 
 Instead of using the clouds.yaml file, environmnt variables can be configured to connect to the Open Telekom Cloud. Create a simple file like ``.ostackrc`` in the home directory and source the file to make the variables available. On Open Telekom Cloud servers this file exists on bootup and needs to be changed according to your credentials.
