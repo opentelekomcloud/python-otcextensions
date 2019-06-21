@@ -188,6 +188,7 @@ def load(conn, **kwargs):
             # for service_type in system_proxy.all_types:
             if service['service_type'] in conn._proxies:
                 del conn._proxies[service['service_type']]
+            # attr = getattr(conn, service_name)
             # print(hasattr(conn, service_name))
             # delattr(conn, service['service_type'])
 

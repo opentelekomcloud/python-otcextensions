@@ -57,7 +57,10 @@ class ListCCEClusterNode(command.Lister):
     def take_action(self, parsed_args):
         client = self.app.client_manager.cce
 
-        data = client.cluster_nodes(parsed_args.cluster)
+        cluster = client.find_cluster(parsed_args.cluster,
+                                      ignore_missing=False)
+
+        data = client.cluster_nodes(cluster.id)
 
         table = (self.columns,
                  (utils.get_dict_properties(
@@ -89,8 +92,11 @@ class ShowCCEClusterNode(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.cce
 
+        cluster = client.find_cluster(parsed_args.cluster,
+                                      ignore_missing=False)
+
         obj = client.find_cluster_node(
-            cluster=parsed_args.cluster,
+            cluster=cluster.id,
             node=parsed_args.node
         )
 
@@ -122,9 +128,11 @@ class DeleteCCEClusterNode(command.Command):
 
         if parsed_args.cluster and parsed_args.node:
             client = self.app.client_manager.cce
+            cluster = client.find_cluster(parsed_args.cluster,
+                                          ignore_missing=False)
             for node in parsed_args.node:
                 client.delete_cluster_node(
-                    cluster=parsed_args.cluster,
+                    cluster=cluster.id,
                     node=node,
                     ignore_missing=False)
 
@@ -263,7 +271,10 @@ class CreateCCEClusterNode(command.Command):
 
         client = self.app.client_manager.cce
 
-        obj = client.create_cluster_node(**attrs)
+        cluster = client.find_cluster(parsed_args.cluster,
+                                      ignore_missing=False)
+
+        obj = client.create_cluster_node(cluster=cluster.id, **attrs)
 
         data = utils.get_dict_properties(
             _flatten_cluster_node(obj),
