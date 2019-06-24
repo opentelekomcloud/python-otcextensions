@@ -63,20 +63,18 @@ class ShowPTR(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(ShowPTR, self).get_parser(prog_name)
 
-        group = parser.add_mutually_exclusive_group()
-        group.add_argument(
+        parser.add_argument(
             '--ptr',
             metavar='<ID>',
             help=_('PTR record ID.')
         )
-        fgrp = group.add_argument_group()
-        fgrp.add_argument(
+        parser.add_argument(
             '--region',
             metavar='<region>',
             default='en-de',
             help=_('Region of the FloatingIP.')
         )
-        fgrp.add_argument(
+        parser.add_argument(
             '--floating_ip',
             metavar='<UUID>',
             help=_('FloatingIP ID.')
@@ -110,20 +108,18 @@ class DeletePTR(command.Command):
     def get_parser(self, prog_name):
         parser = super(DeletePTR, self).get_parser(prog_name)
 
-        group = parser.add_mutually_exclusive_group()
-        group.add_argument(
+        parser.add_argument(
             '--ptr',
             metavar='<ID>',
             help=_('PTR record ID.')
         )
-        fgrp = group.add_argument_group()
-        fgrp.add_argument(
+        parser.add_argument(
             '--region',
             metavar='<region>',
             default='en-de',
             help=_('Region of the FloatingIP.')
         )
-        fgrp.add_argument(
+        parser.add_argument(
             '--floating_ip',
             metavar='<UUID>',
             help=_('FloatingIP ID.')
