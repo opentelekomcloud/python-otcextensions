@@ -40,7 +40,7 @@ A virtual environment seperates your installed packages from other libraries and
     $ source venv/bin/activate
     (venv) $
 
-Now, install all libraries and programs at once with the Python package manager pip. The library wheel caches the built artifacts:
+Now, install all libraries and programs at once with the Python package manager pip:
 
 .. code-block:: bash
 
@@ -64,7 +64,7 @@ A virtual environment seperates your installed packages from other libraries and
    $ python3 -m venv venv
    $ source venv/bin/activate
 
-Now, install all libraries and programs at once with the Python package manager pip. The library wheel caches the built artifacts:
+Now, install all libraries and programs at once with the Python package manager pip:
 
 .. code-block:: bash
 
