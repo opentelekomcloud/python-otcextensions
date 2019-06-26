@@ -21,7 +21,7 @@ from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
-DEFAULT_API_VERSION = '1.0'
+DEFAULT_API_VERSION = '3'
 API_VERSION_OPTION = 'os_cce_api_version'
 API_NAME = "cce"
 API_VERSIONS = {
