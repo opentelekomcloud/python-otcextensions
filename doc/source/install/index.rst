@@ -32,19 +32,19 @@ After a new installation: a C compiler, Python3 with developer libraries, packag
    $ sudo apt update
    $ sudo apt install gcc python3 python3-dev python3-pip python3-venv libssl-dev
 
-A virtual environment seperates your installed packages from other libraries and should be used as well. You can name the virtual environment on your own desires, in our example it is: "os-dev". The second command will switch on "os-dev":
+A virtual environment seperates your installed packages from other libraries and should be used as well. You can name the virtual environment on your own desires, in our example it is: "venv". The second command will switch on "venv":
 
 .. code-block:: bash
 
-    $ python3 -m venv os-dev
-    $ source os-dev/bin/activate
-    (os-dev) $
+    $ python3 -m venv venv
+    $ source venv/bin/activate
+    (venv) $
 
 Now, install all libraries and programs at once with the Python package manager pip. The library wheel caches the built artifacts:
 
 .. code-block:: bash
 
-    $ pip install wheel openstacksdk otcextensions openstackclient
+    $ pip install otcextensions openstackclient
 
 
 Installation under Fedora, Red Hat Enterprise Linux, or CentOS with pip
@@ -57,18 +57,18 @@ After a new installation: a C compiler, Python3 with developer libraries, packag
    $ sudo yum update
    $ sudo yum install gcc python3 python3-dev python3-pip python3-venv openssl-devel
 
-A virtual environment seperates your installed packages from other libraries and should be used as well. You can name the virtual environment on your own desires, in our example it is: "os-dev". The second command will switch on "os-dev":
+A virtual environment seperates your installed packages from other libraries and should be used as well. You can name the virtual environment on your own desires, in our example it is: "venv". The second command will switch on "venv":
 
 .. code-block:: bash
 
-   $ python3 -m venv os-dev
+   $ python3 -m venv venv
    $ source os-dev/bin/activate
 
 Now, install all libraries and programs at once with the Python package manager pip. The library wheel caches the built artifacts:
 
 .. code-block:: bash
 
-   $ pip install wheel openstacksdk otcextensions openstackclient
+   $ pip install otcextensions openstackclient
 
 
 Installation from Github sources
@@ -82,12 +82,12 @@ Cloning the Github repository:
 
    $ git clone git@github.com:OpenTelekomCloud/python-otcextensions.git
 
-A virtual environment seperates your installed packages from other libraries and should be used as well. You can name the virtual environment on your own desires, in our example it is: "os-dev". The second command will switch on "os-dev":
+A virtual environment seperates your installed packages from other libraries and should be used as well. You can name the virtual environment on your own desires, in our example it is: "venv". The second command will switch on "venv":
 
 .. code-block:: bash
 
-   $ python3 -m venv os-dev
-   $ source os-dev/bin/activate
+   $ python3 -m venv venv
+   $ source venv/bin/activate
 
 Switch into the new folder which is created by cloning the repository and install install the project dependencies into the virtual environment:
 
