@@ -88,19 +88,25 @@ A virtual environment seperates your installed packages from other libraries and
 
    $ python3 -m venv venv
    $ source venv/bin/activate
+   (venv) $
 
 Switch into the new folder which is created by cloning the repository and install install the project dependencies into the virtual environment:
 
 .. code-block:: bash
 
-   $ cd ./python-otcextensions.git
-   ~/python-otcextensions$ pip install -r requirements.txt
+   (venv) $ cd ./python-otcextensions.git
 
 Register the CLI plugin using:
 
 .. code-block:: bash
 
-   ~/python-otcextensions$ python setup.py install
+   (venv) ~/python-otcextensions$ python setup.py install
+   
+Install Openstack-Client binary from pip-Repository:
+
+.. code-block:: bash
+
+   (venv) ~/python-otcextensions$ pip install openstackclient
 
 Configuration for the Cloud Connection
 --------------------------------------
@@ -108,7 +114,7 @@ Configuration for the Cloud Connection
 You can connect to the Open Telekom Cloud and OpenStack clouds in general using two approaches. The first one uses a credential file called ``clouds.yaml`` and the other one is to use environment variables.
 
 Configuring a clouds.yaml file
-------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The credential file clouds.yaml will be queried automatically in different locations with increasing precedence:
 
