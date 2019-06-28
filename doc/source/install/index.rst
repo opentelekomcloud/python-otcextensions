@@ -50,12 +50,21 @@ Now, install all libraries and programs at once with the Python package manager 
 Installation under Fedora, Red Hat Enterprise Linux, or CentOS with pip
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-After a new installation: a C compiler, Python3 with developer libraries, package manager, and virtual environment are required:
+After a new installation: a C compiler, Python3 with developer libraries, package manager, and virtual environment are required.
+If you want to use python3 which is recommended, you need to install the epel repository, first:
+
 
 .. code-block:: bash
 
    $ sudo yum update
-   $ sudo yum install gcc python3 python3-dev python3-pip python3-venv openssl-devel
+   $ sudo yum install epel-release   
+
+No the python packages are needed:
+
+.. code-block:: bash
+
+   $ sudo yum update
+   $ sudo yum install gcc python36 python36-devel python-pip python-virtualenv openssl-devel
 
 A virtual environment seperates your installed packages from other libraries and should be used as well. You can name the virtual environment on your own desires, in our example it is: "venv". The second command will switch on "venv":
 
