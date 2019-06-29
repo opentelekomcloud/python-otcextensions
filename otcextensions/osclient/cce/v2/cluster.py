@@ -140,6 +140,7 @@ class CreateCCECluster(command.Command):
         parser.add_argument(
             '--flavor',
             metavar='<flavor>',
+	    required=True,
             help=_('Cluster flavor.')
         )
         parser.add_argument(
