@@ -42,7 +42,7 @@ class CceService(service_description.ServiceDescription):
 
         # First, check to see if we've got config that matches what we
         # understand in the SDK.
-        version_string = config.get_api_version('cce') or '1'
+        version_string = config.get_api_version('cce') or '3'
         endpoint_override = config.get_endpoint(self.service_type)
 
         epo = self.endpoint_override.get(version_string, None)

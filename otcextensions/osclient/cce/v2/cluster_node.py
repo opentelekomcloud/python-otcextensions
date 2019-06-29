@@ -193,6 +193,7 @@ class CreateCCEClusterNode(command.Command):
         parser.add_argument(
             '--availability_zone',
             metavar='<availability_zone>',
+	    required=True,
             help=_('Availability zone to place server in.')
         )
         parser.add_argument(
@@ -231,7 +232,7 @@ class CreateCCEClusterNode(command.Command):
                 raise argparse.ArgumentTypeError(msg)
             # Size only relevant for data disk
             if disk_parts[1].isdigit:
-                disk_data['size'] = disk_parts[1]
+                disk_data['size'] = int(disk_parts[1])
             else:
                 msg = _('Volume SIZE is not a digit')
                 raise argparse.ArgumentTypeError(msg)
@@ -243,8 +244,6 @@ class CreateCCEClusterNode(command.Command):
     def take_action(self, parsed_args):
 
         attrs = {'metadata': {}}
-
-        attrs['metadata']['name'] = parsed_args.cluster
 
         spec = {}
         spec['flavor'] = parsed_args.flavor
