@@ -4,11 +4,11 @@ Installation
 
 There are several ways to install python-otcextensions to enhance the native ``openstack`` CLI client and to extend the OpenStack SDK to cover the additional Open Telekom Cloud services providing a larger functionality on top of OpenStack.
 
-The easiest way is to use the Python pip installer which is working distribution independent. 
+The easiest way is to use the Python pip installer which is working distribution independent and can be used in an isolated virtual environment.
 There are also ready-made installation packages for various operating systems which have their own versions, package names and sometimes bugs. A repository based on openSUSE's build services tries to cover these issues which is available under: https://build.opensuse.org/project/show/Cloud:OTC:Tools:OpenStack.
 
 Package Overview
----------------------
+----------------
 
 **openstacksdk:** 
   A library on the client side that translates API calls to an OpenStack cloud into Python function calls.
@@ -17,13 +17,75 @@ Package Overview
 **openstackclient:** 
   An application that turns the Python interface of openstacksdk and otcextensions into a CLI tool.
 
-Installation via pip Installer
-------------------------------
+Installation with pip installer
+-------------------------------
 
 All three packages are written in Python and stored as Python libraries in the PyPi repository. The following section describes the installation of ``openstacksdk``, ``otcextensions`` and ``openstackclient``. Please remember, it is not the latest development state. For this purpose the latest sources needs to be installed.
 
-Installation under Ubuntu or Debian with pip
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Installation under Ubuntu or Debian
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+After a new installation: a C compiler, Python3 with developer libraries, and package manager pip are required:
+
+.. code-block:: bash
+
+   $ sudo apt update
+   $ sudo apt install gcc python3 python3-dev python3-pip libssl-dev
+
+Now, install all libraries and programs at once with the Python package manager pip. The --user flag provides user wide installation instead of a global installation.
+
+.. code-block:: bash
+
+    $ sudo pip3 install otcextensions openstackclient
+    $# pip3 install otcextensions python-openstackclient --user
+
+
+Installation under CentOS (not working)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+After a new installation: a C compiler, Python3 with developer libraries, and package manager pip are required. If you want to use python3 which is recommended, you need to install the epel repository, first:
+
+
+.. code-block:: bash
+
+   $ sudo yum update 
+   $ sudo yum install epel-release
+   $ sudo yum install gcc python36 python36-devel python36-pip openssl-devel
+
+
+Now, install all libraries and programs at once with the Python package manager pip:
+
+.. code-block:: bash
+
+   $ sudo pip3 install otcextensions python-openstackclient
+   $# pip3 install otcextensions python-openstackclient --user
+
+Installation under Fedora (under review)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+After a new installation: a C compiler, Python3 with developer libraries, and package manager pip are required:
+
+
+.. code-block:: bash
+
+   $ sudo dnf upgrade
+   $ sudo dnf install gcc python3 python3-devel python3-pip python3-virtualenv openssl-devel
+
+Now, install all libraries and programs at once with the Python package manager pip:
+
+.. code-block:: bash
+
+   $ sudo pip3 install otcextensions python-openstackclient
+   $# pip3 install otcextensions python-openstackclient --user
+   
+
+Installation in a virtual environment with pip installer
+--------------------------------------------------------------
+
+A virtual environment seperates your installed packages from other libraries and should be used as well.
+
+Installation under Ubuntu or Debian
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 After a new installation: a C compiler, Python3 with developer libraries, package manager, and virtual environment are required:
 
@@ -47,8 +109,8 @@ Now, install all libraries and programs at once with the Python package manager 
     $ pip install otcextensions openstackclient
 
 
-Installation under Fedora, Red Hat Enterprise Linux, or CentOS with pip
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Installation under CentOS
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 After a new installation: a C compiler, Python3 with developer libraries, package manager, and virtual environment are required.
 If you want to use python3 which is recommended, you need to install the epel repository, first:
@@ -56,8 +118,8 @@ If you want to use python3 which is recommended, you need to install the epel re
 
 .. code-block:: bash
 
-   $ sudo yum update
-   $ sudo yum install epel-release   
+   $ sudo yum update 
+   $ sudo yum install epel-release
 
 No the python packages are needed:
 
@@ -79,6 +141,30 @@ Now, install all libraries and programs at once with the Python package manager 
 
    $ pip install otcextensions openstackclient
 
+Installation under Fedora (under review)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+After a new installation: a C compiler, Python3 with developer libraries, package manager, and a virtual environment are required:
+
+
+.. code-block:: bash
+
+   $ sudo dnf upgrade
+   $ sudo dnf install gcc python3 python3-devel python3-pip python3-virtualenv openssl-devel
+
+The virtual environment will be created and activated. You can name the virtual environment on your own desires, in our example it is "venv":
+
+.. code-block:: bash
+
+   $ python3 -m venv venv
+   $ source venv/bin/activate
+
+Now, install all libraries and programs at once with the Python package manager pip:
+
+.. code-block:: bash
+
+   (venv) $ pip install otcextensions openstackclient
+   
 
 Installation from Github sources
 --------------------------------
@@ -219,7 +305,7 @@ In some scenarios a split of security credentials from the configuration file is
         password: '<PASSWORD>'
 
 Configuration of Environment Variables
--------------------------------------
+--------------------------------------
 
 Instead of using the clouds.yaml file, environmnt variables can be configured to connect to the Open Telekom Cloud. Create a simple file like ``.ostackrc`` in the home directory and source the file to make the variables available. On Open Telekom Cloud servers this file exists on bootup and needs to be changed according to your credentials.
 
