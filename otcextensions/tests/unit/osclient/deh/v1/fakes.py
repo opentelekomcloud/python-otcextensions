@@ -19,8 +19,6 @@ import mock
 
 from keystoneauth1 import adapter
 
-from openstackclient.tests.unit import utils
-
 from otcextensions.tests.unit.osclient import test_base
 
 from otcextensions.common import sdk_utils
@@ -44,7 +42,6 @@ def gen_data(data, columns):
         else:
             result.append(_data)
     return tuple(result)
-                          #tuple(getattr(data, attr, '') for attr in columns)
 
 
 class TestDeH(test_base.TestCommand):

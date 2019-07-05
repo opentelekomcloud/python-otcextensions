@@ -242,7 +242,6 @@ class TestCreateClusterNode(fakes.TestCCE):
         self.client.create_cluster_node.assert_called_once_with(
             cluster='cluster_id',
             metadata={
-                'name': 'cluster_name',
                 'annotations': {'a1': 'v1', 'a2': 'v2'},
                 'labels': {'l1': 'v1', 'l2': 'v2'}
             },
@@ -251,8 +250,8 @@ class TestCreateClusterNode(fakes.TestCCE):
                 'login': {'sshKey': 'key'},
                 'az': 'az',
                 'count': 12,
-                'rootVolume': {'volumetype': 'SATA', 'size': '230'},
-                'dataVolumes': [{'volumetype': 'SATA', 'size': '30'}]
+                'rootVolume': {'volumetype': 'SATA', 'size': 230},
+                'dataVolumes': [{'volumetype': 'SATA', 'size': 30}]
             }
         )
 
