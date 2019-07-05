@@ -128,7 +128,7 @@ class TestShowHost(fakes.TestDeH):
     columns = (
         'allocated_at', 'auto_placement', 'availability_zone',
         'available_memory', 'available_vcpus', 'host_properties', 'id',
-        'instance_total', 'name', 'project_id', 'released_at', 'state'
+        'instance_total', 'name', 'project_id', 'released_at', 'state', 'tags'
     )
 
     data = fakes.gen_data(_data, columns)
@@ -140,6 +140,7 @@ class TestShowHost(fakes.TestDeH):
 
         self.client.find_host = mock.Mock()
         self.client.api_mock = self.client.find_host
+        self._data.fetch_tags = mock.Mock()
 
     def test_default(self):
         arglist = [
@@ -166,7 +167,7 @@ class TestShowHost(fakes.TestDeH):
         )
 
         self.assertEqual(self.columns, columns)
-        self.assertEqual(self.data, data)
+        self.assertItemEqual(self.data, data)
 
 
 class TestCreateHost(fakes.TestDeH):
@@ -264,15 +265,15 @@ class TestCreateHost(fakes.TestDeH):
 
 class TestSetHost(fakes.TestDeH):
 
-    _data = fakes.FakeHost.create_one()
+    _fake = fakes.FakeHost.create_one()
 
     columns = (
         'allocated_at', 'auto_placement', 'availability_zone',
         'available_memory', 'available_vcpus', 'host_properties', 'id',
-        'instance_total', 'name', 'project_id', 'released_at', 'state'
+        'instance_total', 'name', 'project_id', 'released_at', 'state', 'tags'
     )
 
-    data = fakes.gen_data(_data, columns)
+    data = fakes.gen_data(_fake, columns)
 
     def setUp(self):
         super(TestSetHost, self).setUp()
@@ -282,6 +283,8 @@ class TestSetHost(fakes.TestDeH):
         self.client.update_host = mock.Mock()
         self.client.find_host = mock.Mock()
         self.client.api_mock = self.client.update_host
+        self._fake.fetch_tags = mock.Mock()
+        self._fake.add_tags = mock.Mock()
 
     def test_update(self):
         arglist = [
@@ -293,7 +296,7 @@ class TestSetHost(fakes.TestDeH):
         verifylist = [
             ('host', 'zn'),
             ('name', 'name'),
-            ('auto_placement', 'on'),
+            ('auto_placement', 'on')
         ]
 
         # Verify cm is triggereg with default parameters
@@ -301,10 +304,10 @@ class TestSetHost(fakes.TestDeH):
 
         # Set the response
         self.client.api_mock.side_effect = [
-            self._data
+            self._fake
         ]
         self.client.find_host.side_effect = [
-            self._data
+            self._fake
         ]
 
         # Trigger the action
@@ -316,13 +319,13 @@ class TestSetHost(fakes.TestDeH):
         )
 
         self.client.api_mock.assert_called_once_with(
-            host=self._data,
+            host=self._fake,
             name='name',
             auto_placement='on',
         )
 
         self.assertEqual(self.columns, columns)
-        self.assertEqual(self.data, data)
+        self.assertItemEqual(self.data, data)
 
     def test_update_disable_placement(self):
         arglist = [
@@ -342,10 +345,10 @@ class TestSetHost(fakes.TestDeH):
 
         # Set the response
         self.client.api_mock.side_effect = [
-            self._data
+            self._fake
         ]
         self.client.find_host.side_effect = [
-            self._data
+            self._fake
         ]
 
         # Trigger the action
@@ -357,13 +360,171 @@ class TestSetHost(fakes.TestDeH):
         )
 
         self.client.api_mock.assert_called_once_with(
-            host=self._data,
+            host=self._fake,
             name='name',
             auto_placement='off',
         )
 
         self.assertEqual(self.columns, columns)
-        self.assertEqual(self.data, data)
+        self.assertItemEqual(self.data, data)
+
+    def test_add_tags(self):
+        arglist = [
+            'zn',
+            '--tag', 'a=b',
+            '--tag', 'c=d'
+        ]
+
+        verifylist = [
+            ('host', 'zn'),
+            ('tag', ['a=b', 'c=d'])
+        ]
+
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.find_host.side_effect = [
+            self._fake
+        ]
+        self._fake.add_tags.side_effect = [
+            self._fake
+        ]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.find_host.assert_called_once_with(
+            'zn',
+            ignore_missing=False
+        )
+
+        self.client.api_mock.assert_not_called()
+
+        self._fake.add_tags.assert_called_once_with(
+            mock.ANY,
+            [{'key': 'a', 'value': 'b'},
+             {'key': 'c', 'value': 'd'}]
+        )
+
+        self.assertEqual(self.columns, columns)
+        self.assertItemEqual(self.data, data)
+
+class TestUnsetHost(fakes.TestDeH):
+
+    _fake = fakes.FakeHost.create_one()
+
+    columns = (
+        'allocated_at', 'auto_placement', 'availability_zone',
+        'available_memory', 'available_vcpus', 'host_properties', 'id',
+        'instance_total', 'name', 'project_id', 'released_at', 'state', 'tags'
+    )
+
+    data = fakes.gen_data(_fake, columns)
+
+    def setUp(self):
+        super(TestUnsetHost, self).setUp()
+
+        self.cmd = host.UnsetHost(self.app, None)
+
+        self.client.update_host = mock.Mock()
+        self.client.find_host = mock.Mock()
+        self.client.api_mock = self.client.update_host
+        self._fake.fetch_tags = mock.Mock()
+        self._fake.remove_tags = mock.Mock()
+
+    def test_remove_tags_with_value(self):
+        tag = self._fake.tags[0]
+        tag_str = '{key}={value}'.format(
+            key=tag['key'],
+            value=tag['value'])
+        arglist = [
+            'zn',
+            '--tag', tag_str,
+            '--tag', 'e'
+        ]
+
+        verifylist = [
+            ('host', 'zn'),
+            ('tag', [tag_str, 'e'])
+        ]
+
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.find_host.side_effect = [
+            self._fake
+        ]
+        self._fake.fetch_tags.side_effect = [
+            self._fake
+        ]
+        self._fake.remove_tags.side_effect = [
+            self._fake
+        ]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.find_host.assert_called_once_with(
+            'zn',
+            ignore_missing=False
+        )
+
+        self.client.api_mock.assert_not_called()
+
+        self._fake.remove_tags.assert_called_once_with(
+            mock.ANY,
+            [tag]
+        )
+
+        self.assertEqual(self.columns, columns)
+        self.assertItemEqual(self.data, data)
+
+    def test_remove_tags_without_value(self):
+        tag = self._fake.tags[0]
+        arglist = [
+            'zn',
+            '--tag', tag['key'],
+            '--tag', 'e'
+        ]
+
+        verifylist = [
+            ('host', 'zn'),
+            ('tag', [tag['key'], 'e'])
+        ]
+
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.find_host.side_effect = [
+            self._fake
+        ]
+        self._fake.fetch_tags.side_effect = [
+            self._fake
+        ]
+        self._fake.remove_tags.side_effect = [
+            self._fake
+        ]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.find_host.assert_called_once_with(
+            'zn',
+            ignore_missing=False
+        )
+
+        self.client.api_mock.assert_not_called()
+
+        self._fake.remove_tags.assert_called_once_with(
+            mock.ANY,
+            [tag]
+        )
+
+        self.assertEqual(self.columns, columns)
+        self.assertItemEqual(self.data, data)
 
 
 class TestDeleteHost(fakes.TestDeH):

@@ -17,8 +17,14 @@ import uuid
 
 import mock
 
+from keystoneauth1 import adapter
+
 from openstackclient.tests.unit import utils
+
 from otcextensions.tests.unit.osclient import test_base
+
+from otcextensions.common import sdk_utils
+from otcextensions.osclient.deh.v1 import host as _host
 
 from otcextensions.sdk.deh.v1 import host
 from otcextensions.sdk.deh.v1 import host_type
@@ -28,16 +34,28 @@ from otcextensions.sdk.deh.v1 import server
 def gen_data(data, columns):
     """Fill expected data tuple based on columns list
     """
-    return tuple(getattr(data, attr, '') for attr in columns)
+    result = []
+    for attr in columns:
+        _data = getattr(data, attr, '')
+        if attr == 'host_properties':
+            result.append(_host.HostPropertiesFormatter(_data))
+        elif attr == 'tags':
+            result.append(sdk_utils.ListOfDictColumn(_data))
+        else:
+            result.append(_data)
+    return tuple(result)
+                          #tuple(getattr(data, attr, '') for attr in columns)
 
 
-class TestDeH(utils.TestCommand):
+class TestDeH(test_base.TestCommand):
 
     def setUp(self):
         super(TestDeH, self).setUp()
 
         self.app.client_manager.deh = mock.Mock()
         self.client = self.app.client_manager.deh
+        self.client.session = mock.Mock(spec=adapter.Adapter)
+        self.client.get = mock.Mock()
 
 
 class FakeHost(test_base.Fake):
@@ -68,7 +86,9 @@ class FakeHost(test_base.Fake):
                 'available_instance_capacities': [
                     {'flavor': uuid.uuid4().hex}
                 ],
-            }
+            },
+            'tags': [{'key': uuid.uuid4().hex, 'value': uuid.uuid4().hex}]
+
         }
         obj = host.Host.existing(**object_info)
         return obj
