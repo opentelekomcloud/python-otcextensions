@@ -9,7 +9,9 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack import exceptions
 from openstack import resource
+from openstack import utils
 
 
 class HostInstanceCapacity(resource.Resource):
@@ -52,7 +54,7 @@ class Host(resource.Resource):
     _query_mapping = resource.QueryParameters(
         'id', 'name', 'host_type', 'host_type_name',
         'flavor', 'state', 'tenant', 'availability_zone',
-        'changes_since',
+        'changes_since', 'tags', 'instance_uuid', 'released_at',
         changes_since='changes-since')
 
     #: Properties
@@ -90,3 +92,50 @@ class Host(resource.Resource):
     #: Specifies the DeH status.
     #: The value can be available, fault or released
     state = resource.Body('state')
+    #: Tag.
+    tags = resource.Body('tags', type=list)
+
+    def fetch_tags(self, session):
+        """Lists tags set on the entity.
+
+        :param session: The session to use for making this request.
+        :return: The list with tags attached to the entity
+        """
+        url = utils.urljoin('dedicated-host-tags', self.id, 'tags')
+        session = self._get_session(session)
+        response = session.get(url)
+        exceptions.raise_from_response(response)
+        # NOTE(gtema): since this is a common method
+        # we can't rely on the resource_key, because tags are returned
+        # without resource_key. Do parse response here
+        json = response.json()
+        if 'tags' in json:
+            self._body.attributes.update({'tags': json['tags']})
+        return self
+
+    def set_tags(self, session, tags=[]):
+        """Sets/Replaces all tags on the resource.
+
+        :param session: The session to use for making this request.
+        :param list tags: List with tags to be set on the resource
+        """
+        url = utils.urljoin('dedicated-host-tags', self.id, 'tags', 'action')
+        session = self._get_session(session)
+        response = session.post(url, json={'action': 'create', 'tags': tags})
+        exceptions.raise_from_response(response)
+        self.fetch_tags(session)
+        return self
+
+    def remove_tags(self, session, tags=[]):
+        """Sets/Replaces all tags on the resource.
+
+        :param session: The session to use for making this request.
+        :param list tags: List with tags to be removed on the resource
+        """
+        url = utils.urljoin('dedicated-host-tags', self.id, 'tags', 'action')
+        session = self._get_session(session)
+        response = session.post(url, json={'action': 'delete', 'tags': tags})
+        exceptions.raise_from_response(response)
+        self.fetch_tags(session)
+        return self
+
