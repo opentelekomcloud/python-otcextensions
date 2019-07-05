@@ -125,9 +125,9 @@ class TimeTMsStr(format.Formatter):
         """Convert a time_t with msec precision to ISO8601"""
         _time = time.gmtime(value / 1000)
         # Embed MS placeholder into the format string directly
-        _format = '%Y-%m-%dT%H:%M:%S.%(ms)i+00:00'
-        return time.strftime(_format, _time) % \
-            ({'ms': value % 1000})
+        _format = '%Y-%m-%dT%H:%M:%S.{ms}+00:00'
+        return time.strftime(_format, _time).format(
+            ms=int(value % 1000))
 
     @classmethod
     def serialize(cls, value):
