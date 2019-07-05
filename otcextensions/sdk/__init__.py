@@ -238,7 +238,8 @@ def load(conn, **kwargs):
             if ak and sk:
                 proxy._set_ak(ak=ak, sk=sk)
             else:
-                _logger.error('AK/SK pair is not available')
+                _logger.warn('AK/SK pair is not configured in the connection. '
+                            'It is only required for CCE')
                 # return
 
     return None
