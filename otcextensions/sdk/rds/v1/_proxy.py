@@ -385,7 +385,7 @@ class Proxy(sdk_proxy.Proxy):
     def create_configuration(self, **attrs):
         """Creating a ConfigurationGroup
 
-        :param dict \*\*attrs: Dict to overwrite ConfigurationGroup object
+        :param dict **attrs: Dict to overwrite ConfigurationGroup object
         :returns: A Parameter Group Object
         :rtype:
             :class:`~otcextensions.sdk.rds.v1.configuration.ConfigurationGroup`

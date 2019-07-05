@@ -138,4 +138,3 @@ class Host(resource.Resource):
         exceptions.raise_from_response(response)
         self.fetch_tags(session)
         return self
-

@@ -32,6 +32,7 @@ def _get_fixture(name):
     with open(fixture, 'r') as data:
         return json.load(data)
 
+
 EXAMPLE = {
     "status": "EXECUTE_SUCCESS",
     "job_id": "c11b5a18-4559-4731-b7b3-58e2bd89cdb9",

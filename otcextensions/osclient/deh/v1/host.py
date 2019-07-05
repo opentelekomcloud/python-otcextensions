@@ -15,7 +15,6 @@ import logging
 
 from cliff import columns
 from osc_lib import utils
-from osc_lib.cli import format_columns
 from osc_lib.command import command
 
 from otcextensions.i18n import _
@@ -414,7 +413,7 @@ class UnsetHost(command.ShowOne):
                             xtag = {
                                 'key': k,
                                 'value': tag_pair[1]
-                           }
+                            }
                         else:
                             # Existing tag value will be used
                             xtag = {
@@ -432,7 +431,6 @@ class UnsetHost(command.ShowOne):
                                              formatters=_formatters)
 
             return (display_columns, data)
-
 
 
 class ListServer(command.Lister):

@@ -113,35 +113,35 @@ class TestBackupPolicy(TestVolumeBackupProxy):
 
 
 class TestBackupPolicyResource(TestVolumeBackupProxy):
-        def test_link(self):
-            self._verify2(
-                'otcextensions.sdk.volume_backup.v2.backup_policy.'
-                'BackupPolicyResource._process',
-                self.proxy.link_resources_to_policy,
-                method_args=['policy', ['r1', 'r2']],
-                expected_args=[
-                    self.proxy,
-                    'policy',
-                    True,
-                    ['r1', 'r2']],
-                expected_kwargs={
-                }
-            )
+    def test_link(self):
+        self._verify2(
+            'otcextensions.sdk.volume_backup.v2.backup_policy.'
+            'BackupPolicyResource._process',
+            self.proxy.link_resources_to_policy,
+            method_args=['policy', ['r1', 'r2']],
+            expected_args=[
+                self.proxy,
+                'policy',
+                True,
+                ['r1', 'r2']],
+            expected_kwargs={
+            }
+        )
 
-        def test_unlink(self):
-            self._verify2(
-                'otcextensions.sdk.volume_backup.v2.backup_policy.'
-                'BackupPolicyResource._process',
-                self.proxy.unlink_resources_of_policy,
-                method_args=['policy', ['r1', 'r2']],
-                expected_args=[
-                    self.proxy,
-                    'policy',
-                    False,
-                    ['r1', 'r2']],
-                expected_kwargs={
-                }
-            )
+    def test_unlink(self):
+        self._verify2(
+            'otcextensions.sdk.volume_backup.v2.backup_policy.'
+            'BackupPolicyResource._process',
+            self.proxy.unlink_resources_of_policy,
+            method_args=['policy', ['r1', 'r2']],
+            expected_args=[
+                self.proxy,
+                'policy',
+                False,
+                ['r1', 'r2']],
+            expected_kwargs={
+            }
+        )
 
 
 class TestTask(TestVolumeBackupProxy):

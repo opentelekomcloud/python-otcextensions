@@ -193,7 +193,7 @@ class CreateCCEClusterNode(command.Command):
         parser.add_argument(
             '--availability_zone',
             metavar='<availability_zone>',
-	    required=True,
+            required=True,
             help=_('Availability zone to place server in.')
         )
         parser.add_argument(

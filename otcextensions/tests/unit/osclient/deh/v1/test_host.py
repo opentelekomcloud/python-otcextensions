@@ -410,6 +410,7 @@ class TestSetHost(fakes.TestDeH):
         self.assertEqual(self.columns, columns)
         self.assertItemEqual(self.data, data)
 
+
 class TestUnsetHost(fakes.TestDeH):
 
     _fake = fakes.FakeHost.create_one()
