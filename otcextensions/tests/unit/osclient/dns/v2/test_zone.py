@@ -132,7 +132,8 @@ class TestShowZone(fakes.TestDNS):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_once_with(
-            'zone'
+            'zone',
+            ignore_missing=False
         )
 
         self.assertEqual(self.columns, columns)
@@ -161,7 +162,7 @@ class TestCreateZone(fakes.TestDNS):
 
     def test_create(self):
         arglist = [
-            '--name', 'zn',
+            'zn',
             '--email', 'eml',
             '--description', 'descr',
             '--type', 'public',
@@ -204,7 +205,7 @@ class TestCreateZone(fakes.TestDNS):
 
     def test_create_private(self):
         arglist = [
-            '--name', 'zn',
+            'zn',
             '--email', 'eml',
             '--description', 'descr',
             '--type', 'private',
@@ -248,7 +249,7 @@ class TestCreateZone(fakes.TestDNS):
 
     def test_create_private_raise_no_rid(self):
         arglist = [
-            '--name', 'zn',
+            'zn',
             '--email', 'eml',
             '--description', 'descr',
             '--type', 'private',

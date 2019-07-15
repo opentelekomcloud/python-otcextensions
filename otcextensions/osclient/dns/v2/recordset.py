@@ -37,13 +37,13 @@ def _get_columns(item):
 class ListRS(command.Lister):
     _description = _('List recordsets.')
     columns = (
-        'id', 'name', 'type', 'status', 'description'
+        'id', 'name', 'type', 'status', 'description', 'records'
     )
 
     def get_parser(self, prog_name):
         parser = super(ListRS, self).get_parser(prog_name)
         parser.add_argument(
-            '--zone',
+            'zone',
             metavar='<zone>',
             help=_('UUID or name of the zone. Recordsets of all zones '
                    'will be returned if not given.')
@@ -117,10 +117,9 @@ class DeleteRS(command.Command):
         )
 
         parser.add_argument(
-            '--recordset',
+            'recordset',
             metavar='<id>',
-            required=True,
-            action='append',
+            nargs='+',
             help=_('UUID of the recordset.')
         )
 
@@ -142,9 +141,8 @@ class CreateRS(command.ShowOne):
         parser = super(CreateRS, self).get_parser(prog_name)
 
         parser.add_argument(
-            '--zone',
+            'zone',
             metavar='<zone>',
-            required=True,
             help=_('UUID or name of the zone.')
         )
         parser.add_argument(
@@ -273,7 +271,10 @@ class SetRS(command.ShowOne):
         for rec in parsed_args.record:
             attrs['records'].append(rec)
 
+        recordset = client.get_recordset(zone.id, parsed_args.recordset)
+
         obj = client.update_recordset(
+            recordset=recordset,
             **attrs
         )
 

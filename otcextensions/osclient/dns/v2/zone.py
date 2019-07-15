@@ -92,6 +92,7 @@ class ShowZone(command.ShowOne):
 
         obj = client.find_zone(
             parsed_args.zone,
+            ignore_missing=False
         )
 
         display_columns, columns = _get_columns(obj)
@@ -129,9 +130,8 @@ class CreateZone(command.ShowOne):
         parser = super(CreateZone, self).get_parser(prog_name)
 
         parser.add_argument(
-            '--name',
+            'name',
             metavar='<name>',
-            required=True,
             help=_('DNS Name for the zone.')
         )
         parser.add_argument(

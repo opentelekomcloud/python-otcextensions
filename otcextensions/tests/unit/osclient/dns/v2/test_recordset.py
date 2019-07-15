@@ -23,7 +23,7 @@ class TestListRS(fakes.TestDNS):
     _zone = fakes.FakeZone.create_one()
 
     columns = (
-        'id', 'name', 'type', 'status', 'description'
+        'id', 'name', 'type', 'status', 'description', 'records'
     )
 
     data = []
@@ -40,34 +40,9 @@ class TestListRS(fakes.TestDNS):
         self.client.find_zone = mock.Mock()
         self.client.api_mock = self.client.recordsets
 
-    def test_default(self):
-        arglist = [
-        ]
-
-        verifylist = [
-        ]
-
-        # Verify cm is triggereg with default parameters
-        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-
-        # Set the response
-        self.client.api_mock.side_effect = [
-            self.objects
-        ]
-
-        # Trigger the action
-        columns, data = self.cmd.take_action(parsed_args)
-
-        self.client.api_mock.assert_called_once_with(
-            zone=None
-        )
-
-        self.assertEqual(self.columns, columns)
-        self.assertEqual(self.data, list(data))
-
     def test_default_zone(self):
         arglist = [
-            '--zone', 'zn'
+            'zn'
         ]
 
         verifylist = [
@@ -176,7 +151,7 @@ class TestCreateRS(fakes.TestDNS):
 
     def test_create(self):
         arglist = [
-            '--zone', 'zn',
+            'zn',
             '--name', 'rs',
             '--description', 'descr',
             '--type', 'A',
@@ -239,6 +214,7 @@ class TestSetRS(fakes.TestDNS):
 
         self.client.update_recordset = mock.Mock()
         self.client.find_zone = mock.Mock()
+        self.client.get_recordset = mock.Mock()
         self.client.api_mock = self.client.update_recordset
 
     def test_create(self):
@@ -269,11 +245,15 @@ class TestSetRS(fakes.TestDNS):
         self.client.api_mock.side_effect = [
             self._data
         ]
+        self.client.get_recordset.side_effect = [
+            self._data
+        ]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_once_with(
+            recordset=self._data,
             description='descr',
             records=['a=b', 'c=d'],
             ttl=500,
@@ -299,8 +279,8 @@ class TestDeleteRS(fakes.TestDNS):
     def test_delete_multiple(self):
         arglist = [
             'zn',
-            '--recordset', 't1',
-            '--recordset', 't2',
+            't1',
+            't2',
         ]
         verifylist = [
             ('zone', 'zn'),
