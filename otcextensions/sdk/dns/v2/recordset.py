@@ -20,7 +20,7 @@ _logger = _log.setup_logging('openstack')
 
 class ZoneRecordset(sdk_resource.Resource):
     """ZoneRecordset Resource"""
-    resource_key = 'recordset'
+    # resource_key = 'recordset'
     resources_key = 'recordsets'
     base_path = '/zones/%(zone_id)s/recordsets'
     # list_all_base_path = '/recordsets'
