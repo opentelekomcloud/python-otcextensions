@@ -11,66 +11,42 @@
 # under the License.
 
 from otcextensions.sdk.dns.v2 import _proxy
-from otcextensions.sdk.dns.v2 import zone as _zone
+from otcextensions.sdk.dns.v2 import zone
 from otcextensions.sdk.dns.v2 import nameserver as _ns
-from otcextensions.sdk.dns.v2 import ptr as _ptr
-from otcextensions.sdk.dns.v2 import recordset as _rs
+from otcextensions.sdk.dns.v2 import floating_ip
+from otcextensions.sdk.dns.v2 import recordset
 
 from openstack.tests.unit import test_proxy_base
 
 
-class TestDNSProxy(test_proxy_base.TestProxyBase):
-
+class TestDnsProxy(test_proxy_base.TestProxyBase):
     def setUp(self):
-        super(TestDNSProxy, self).setUp()
+        super(TestDnsProxy, self).setUp()
         self.proxy = _proxy.Proxy(self.session)
 
+
+class TestDnsZone(TestDnsProxy):
+    def test_zone_create(self):
+        self.verify_create(self.proxy.create_zone, zone.Zone,
+                           method_kwargs={'name': 'id'},
+                           expected_kwargs={'name': 'id',
+                                            'prepend_key': False})
+
+    def test_zone_delete(self):
+        self.verify_delete(self.proxy.delete_zone,
+                           zone.Zone, True)
+
+    def test_zone_find(self):
+        self.verify_find(self.proxy.find_zone, zone.Zone)
+
+    def test_zone_get(self):
+        self.verify_get(self.proxy.get_zone, zone.Zone)
+
     def test_zones(self):
-        self.verify_list(
-            self.proxy.zones, _zone.Zone,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
-            expected_kwargs={
-            }
-        )
+        self.verify_list(self.proxy.zones, zone.Zone)
 
-    def test_get_zone(self):
-        self.verify_get(
-            self.proxy.get_zone, _zone.Zone,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
-        )
-
-    def test_find_zone(self):
-        self.verify_find(
-            self.proxy.find_zone, _zone.Zone,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._find',
-        )
-
-    def test_create_zone(self):
-        self.verify_create(
-            self.proxy.create_zone, _zone.Zone,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
-            method_kwargs={
-                'x': 1,
-                'y': '2'
-            },
-            expected_kwargs={
-                'prepend_key': False,
-                'x': 1,
-                'y': '2'
-            }
-        )
-
-    def test_delete_zone(self):
-        self.verify_delete(
-            self.proxy.delete_zone, _zone.Zone, ignore=True,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
-        )
-
-    def test_update_zone(self):
-        self.verify_update(
-            self.proxy.update_zone, _zone.Zone,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._update',
-        )
+    def test_zone_update(self):
+        self.verify_update(self.proxy.update_zone, zone.Zone)
 
     def test_associate_router(self):
         self._verify2(
@@ -95,7 +71,6 @@ class TestDNSProxy(test_proxy_base.TestProxyBase):
     def test_ns(self):
         self.verify_list(
             self.proxy.nameservers, _ns.NameServer,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             method_kwargs={
                 'zone': 'zone_id'
             },
@@ -105,132 +80,65 @@ class TestDNSProxy(test_proxy_base.TestProxyBase):
             }
         )
 
-    def test_recordset_all(self):
-        self.verify_list(
-            self.proxy.recordsets, _rs.Recordset,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
-            method_kwargs={
-                'zone': None
-            },
-            expected_kwargs={
-            }
-        )
 
-    def test_recordset_zone(self):
-        self.verify_list(
-            self.proxy.recordsets, _rs.ZoneRecordset,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
-            method_kwargs={
-                'zone': 'zoneid'
-            },
-            expected_kwargs={
-                'zone_id': 'zoneid'
-            }
-        )
+class TestDnsRecordset(TestDnsProxy):
+    def test_recordset_create(self):
+        self.verify_create(self.proxy.create_recordset, recordset.Recordset,
+                           method_kwargs={'zone': 'id'},
+                           expected_kwargs={'zone_id': 'id',
+                                            'prepend_key': False})
 
-    def test_get_rs(self):
-        self._verify2(
-            'otcextensions.sdk.sdk_proxy.Proxy._get',
-            self.proxy.get_recordset,
-            method_args=['zone_id', 'rs_id'],
-            method_kwargs={},
-            expected_args=[_rs.ZoneRecordset, 'rs_id'],
-            expected_kwargs={
-                'zone_id': 'zone_id'
-            }
-        )
+    def test_recordset_delete(self):
+        self.verify_delete(self.proxy.delete_recordset,
+                           recordset.Recordset, True)
 
-    def test_create_recordset(self):
-        self.verify_create(
-            self.proxy.create_recordset, _rs.ZoneRecordset,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
-            method_args=['zone_id'],
-            method_kwargs={
-                'x': 1,
-                'y': '2'
-            },
-            expected_kwargs={
-                'prepend_key': False,
-                'zone_id': 'zone_id',
-                'x': 1,
-                'y': '2'
-            }
-        )
+    def test_recordset_update(self):
+        self.verify_update(self.proxy.update_recordset, recordset.Recordset)
 
-    def test_update_recordset(self):
-        self.verify_update(
-            self.proxy.update_recordset, _rs.ZoneRecordset,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._update',
-        )
+    def test_recordset_get(self):
+        self.verify_get(self.proxy.get_recordset, recordset.Recordset,
+                        method_kwargs={'zone': 'zid'},
+                        expected_kwargs={'zone_id': 'zid'}
+                        )
 
-    def test_delete_recordset(self):
-        self.verify_delete(
-            self.proxy.delete_recordset, _rs.ZoneRecordset, ignore=True,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
-        )
+    def test_recordsets(self):
+        self.verify_list(self.proxy.recordsets, recordset.Recordset,
+                         base_path='/recordsets')
 
-    def test_ptrs(self):
-        self.verify_list(
-            self.proxy.ptrs, _ptr.PTR,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
-        )
+    def test_recordsets_zone(self):
+        self.verify_list(self.proxy.recordsets, recordset.Recordset,
+                         method_kwargs={'zone': 'zid'},
+                         expected_kwargs={'zone_id': 'zid'})
 
-    def test_get_ptr(self):
-        self._verify2(
-            'otcextensions.sdk.sdk_proxy.Proxy._get',
-            self.proxy.get_ptr,
-            method_args=[None, 'region', 'flop'],
-            method_kwargs={},
-            expected_args=[_ptr.PTR, 'region:flop'],
-        )
-        self._verify2(
-            'otcextensions.sdk.sdk_proxy.Proxy._get',
-            self.proxy.get_ptr,
-            method_args=['ptr_id', None, None],
-            method_kwargs={},
-            expected_args=[_ptr.PTR, 'ptr_id'],
-        )
+    def test_recordset_find(self):
+        self._verify2("openstack.proxy.Proxy._find",
+                      self.proxy.find_recordset,
+                      method_args=['zone', 'rs'],
+                      method_kwargs={},
+                      expected_args=[recordset.Recordset, 'rs'],
+                      expected_kwargs={'ignore_missing': True,
+                                       'zone_id': 'zone'})
 
-    def test_create_ptr(self):
-        self._verify2(
-            'otcextensions.sdk.sdk_proxy.Proxy._update',
-            self.proxy.create_ptr,
-            method_args=['region', 'flop'],
-            method_kwargs={
-                'x': 1,
-                'y': 2
-            },
-            expected_args=[_ptr.PTR],
-            expected_kwargs={
-                'prepend_key': False,
-                'id': 'region:flop',
-                'x': 1,
-                'y': 2
-            }
-        )
 
-    def test_delete_ptr(self):
-        self._verify2(
-            'otcextensions.sdk.sdk_proxy.Proxy._update',
-            self.proxy.restore_ptr,
-            method_args=[None, 'region', 'flop'],
-            method_kwargs={},
-            expected_args=[_ptr.PTR, 'region:flop'],
-            expected_kwargs={
-                'has_body': False,
-                'prepend_key': False,
-                'ptrdname': None
-            }
-        )
-        self._verify2(
-            'otcextensions.sdk.sdk_proxy.Proxy._update',
-            self.proxy.restore_ptr,
-            method_args=['region:flop', None, None],
-            method_kwargs={},
-            expected_args=[_ptr.PTR, 'region:flop'],
-            expected_kwargs={
-                'has_body': False,
-                'prepend_key': False,
-                'ptrdname': None
-            }
-        )
+class TestDnsFloatIP(TestDnsProxy):
+    def test_floating_ips(self):
+        self.verify_list(self.proxy.floating_ips, floating_ip.FloatingIP)
+
+    def test_floating_ip_get(self):
+        self.verify_get(self.proxy.get_floating_ip, floating_ip.FloatingIP)
+
+    def test_floating_ip_update(self):
+        self.verify_update(self.proxy.update_floating_ip,
+                           floating_ip.FloatingIP)
+
+    def test_floating_ip_set(self):
+        self.verify_update(self.proxy.set_floating_ip,
+                           floating_ip.FloatingIP)
+
+    def test_floating_ip_unset(self):
+        self._verify2('openstack.proxy.Proxy._update',
+                      self.proxy.unset_floating_ip,
+                      method_args=['value'],
+                      method_kwargs={},
+                      expected_args=[floating_ip.FloatingIP, 'value'],
+                      expected_kwargs={'ptrdname': None})

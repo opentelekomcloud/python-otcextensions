@@ -19,10 +19,10 @@ from otcextensions.tests.unit.osclient.dns.v2 import fakes
 
 class TestListPTR(fakes.TestDNS):
 
-    objects = fakes.FakePTR.create_multiple(3)
+    objects = fakes.FakeFloatingIP.create_multiple(3)
 
     columns = (
-        'id', 'name', 'type', 'status', 'description'
+        'id', 'ptrdname', 'address', 'status', 'description', 'ttl'
     )
 
     data = []
@@ -36,7 +36,7 @@ class TestListPTR(fakes.TestDNS):
         self.cmd = ptr.ListPTR(self.app, None)
 
         self.client.ptrs = mock.Mock()
-        self.client.api_mock = self.client.ptrs
+        self.client.api_mock = self.client.floating_ips
 
     def test_default(self):
         arglist = [
@@ -65,11 +65,11 @@ class TestListPTR(fakes.TestDNS):
 
 class TestShowPTR(fakes.TestDNS):
 
-    _data = fakes.FakePTR.create_one()
+    _data = fakes.FakeFloatingIP.create_one()
 
     columns = (
-        'address', 'description', 'floating_ip_id', 'id',
-        'ptrdname', 'region', 'ttl'
+        'address', 'description', 'id',
+        'ptrdname', 'ttl'
     )
 
     data = fakes.gen_data(_data, columns)
@@ -80,19 +80,15 @@ class TestShowPTR(fakes.TestDNS):
         self.cmd = ptr.ShowPTR(self.app, None)
 
         self.client.get_ptr = mock.Mock()
-        self.client.api_mock = self.client.get_ptr
+        self.client.api_mock = self.client.get_floating_ip
 
     def test_default(self):
         arglist = [
-            '--ptr', 'ptr_id',
-            '--region', 'regio',
-            '--floating_ip', 'fpid'
+            'fpid'
         ]
 
         verifylist = [
-            ('ptr', 'ptr_id'),
-            ('region', 'regio'),
-            ('floating_ip', 'fpid')
+            ('floatingip_id', 'fpid')
         ]
 
         # Verify cm is triggereg with default parameters
@@ -107,37 +103,7 @@ class TestShowPTR(fakes.TestDNS):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_once_with(
-            ptr='ptr_id'
-        )
-
-        self.assertEqual(self.columns, columns)
-        self.assertEqual(self.data, data)
-
-    def test_default_no_id(self):
-        arglist = [
-            '--region', 'regio',
-            '--floating_ip', 'fpid'
-        ]
-
-        verifylist = [
-            ('region', 'regio'),
-            ('floating_ip', 'fpid')
-        ]
-
-        # Verify cm is triggereg with default parameters
-        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-
-        # Set the response
-        self.client.api_mock.side_effect = [
-            self._data
-        ]
-
-        # Trigger the action
-        columns, data = self.cmd.take_action(parsed_args)
-
-        self.client.api_mock.assert_called_once_with(
-            floating_ip_id='fpid',
-            region='regio'
+            'fpid'
         )
 
         self.assertEqual(self.columns, columns)
@@ -146,11 +112,11 @@ class TestShowPTR(fakes.TestDNS):
 
 class TestSetPTR(fakes.TestDNS):
 
-    _data = fakes.FakePTR.create_one()
+    _data = fakes.FakeFloatingIP.create_one()
 
     columns = (
-        'address', 'description', 'floating_ip_id', 'id',
-        'ptrdname', 'region', 'ttl'
+        'address', 'description', 'id',
+        'ptrdname', 'ttl'
     )
 
     data = fakes.gen_data(_data, columns)
@@ -161,20 +127,18 @@ class TestSetPTR(fakes.TestDNS):
         self.cmd = ptr.SetPTR(self.app, None)
 
         self.client.create_ptr = mock.Mock()
-        self.client.api_mock = self.client.create_ptr
+        self.client.api_mock = self.client.set_floating_ip
 
     def test_default(self):
         arglist = [
-            '--region', 'regio',
-            '--floating_ip', 'fpid',
-            '--ptrdname', 'dname',
+            'fpid',
+            'dname',
             '--description', 'descr',
             '--ttl', '350'
         ]
 
         verifylist = [
-            ('region', 'regio'),
-            ('floating_ip', 'fpid'),
+            ('floatingip_id', 'fpid'),
             ('ptrdname', 'dname'),
             ('description', 'descr'),
             ('ttl', 350)
@@ -193,9 +157,8 @@ class TestSetPTR(fakes.TestDNS):
 
         self.client.api_mock.assert_called_once_with(
             description='descr',
-            floating_ip_id='fpid',
+            floating_ip='fpid',
             ptrdname='dname',
-            region='regio',
             ttl=350
         )
 
@@ -216,19 +179,15 @@ class TestDeletePTR(fakes.TestDNS):
         self.cmd = ptr.DeletePTR(self.app, None)
 
         self.client.restore_ptr = mock.Mock()
-        self.client.api_mock = self.client.restore_ptr
+        self.client.api_mock = self.client.unset_floating_ip
 
     def test_default(self):
         arglist = [
-            '--ptr', 'ptr_id',
-            '--region', 'regio',
-            '--floating_ip', 'fpid'
+            'fpid'
         ]
 
         verifylist = [
-            ('ptr', 'ptr_id'),
-            ('region', 'regio'),
-            ('floating_ip', 'fpid')
+            ('floatingip_id', 'fpid')
         ]
 
         # Verify cm is triggereg with default parameters
@@ -241,30 +200,5 @@ class TestDeletePTR(fakes.TestDNS):
         self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_once_with(
-            ptr='ptr_id'
-        )
-
-    def test_default_no_id(self):
-        arglist = [
-            '--region', 'regio',
-            '--floating_ip', 'fpid'
-        ]
-
-        verifylist = [
-            ('region', 'regio'),
-            ('floating_ip', 'fpid')
-        ]
-
-        # Verify cm is triggereg with default parameters
-        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-
-        # Set the response
-        self.client.api_mock.side_effect = [{}]
-
-        # Trigger the action
-        self.cmd.take_action(parsed_args)
-
-        self.client.api_mock.assert_called_once_with(
-            floating_ip_id='fpid',
-            region='regio'
+            'fpid'
         )

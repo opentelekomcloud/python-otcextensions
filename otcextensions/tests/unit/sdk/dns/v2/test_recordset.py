@@ -40,30 +40,19 @@ EXAMPLE = {
 class TestRecordSet(base.TestCase):
 
     def test_basic(self):
-        sot = recordset.ZoneRecordset()
+        sot = recordset.Recordset()
 
         self.assertEqual('/zones/%(zone_id)s/recordsets', sot.base_path)
 
         self.assertTrue(sot.allow_list)
-        self.assertTrue(sot.allow_get)
+        self.assertTrue(sot.allow_fetch)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_delete)
-        self.assertTrue(sot.allow_update)
-
-    def test_basic2(self):
-        sot = recordset.Recordset()
-
-        self.assertEqual('/recordsets', sot.base_path)
-
-        self.assertTrue(sot.allow_list)
-        self.assertTrue(sot.allow_get)
-        self.assertTrue(sot.allow_create)
-        self.assertTrue(sot.allow_delete)
-        self.assertTrue(sot.allow_update)
+        self.assertTrue(sot.allow_commit)
 
     def test_make_it(self):
 
-        sot = recordset.ZoneRecordset(**EXAMPLE)
+        sot = recordset.Recordset(**EXAMPLE)
         self.assertEqual(EXAMPLE['id'], sot.id)
         self.assertEqual(EXAMPLE['name'], sot.name)
         self.assertEqual(EXAMPLE['type'], sot.type)
@@ -72,4 +61,3 @@ class TestRecordSet(base.TestCase):
         self.assertEqual(EXAMPLE['zone_id'], sot.zone_id)
         self.assertEqual(EXAMPLE['create_at'], sot.created_at)
         self.assertEqual(EXAMPLE['update_at'], sot.updated_at)
-        # self.assertEqual(EXAMPLE['default'], sot.default)

@@ -29,13 +29,15 @@ _formatters = {
 def _get_columns(item):
     column_map = {
     }
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
+    hidden = ['location', 'links']
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
+                                                           hidden)
 
 
 class ListPTR(command.Lister):
     _description = _('List PTR records')
     columns = (
-        'id', 'name', 'type', 'status', 'description'
+        'id', 'ptrdname', 'address', 'status', 'description', 'ttl'
     )
 
     def get_parser(self, prog_name):
@@ -48,7 +50,7 @@ class ListPTR(command.Lister):
 
         query = {}
 
-        data = client.ptrs(**query)
+        data = client.floating_ips(**query)
 
         table = (self.columns,
                  (utils.get_item_properties(
@@ -64,20 +66,8 @@ class ShowPTR(command.ShowOne):
         parser = super(ShowPTR, self).get_parser(prog_name)
 
         parser.add_argument(
-            '--ptr',
-            metavar='<ID>',
-            help=_('PTR record ID.')
-        )
-        parser.add_argument(
-            '--region',
-            metavar='<region>',
-            default='en-de',
-            help=_('Region of the FloatingIP.')
-        )
-        parser.add_argument(
-            '--floating_ip',
-            metavar='<UUID>',
-            help=_('FloatingIP ID.')
+            'floatingip_id',
+            help=_('Floating IP ID in format region:floatingip_id.')
         )
 
         return parser
@@ -86,15 +76,7 @@ class ShowPTR(command.ShowOne):
 
         client = self.app.client_manager.dns
 
-        query = {}
-
-        if parsed_args.ptr:
-            query['ptr'] = parsed_args.ptr
-        else:
-            query['region'] = parsed_args.region
-            query['floating_ip_id'] = parsed_args.floating_ip
-
-        obj = client.get_ptr(**query)
+        obj = client.get_floating_ip(parsed_args.floatingip_id)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
@@ -109,19 +91,7 @@ class DeletePTR(command.Command):
         parser = super(DeletePTR, self).get_parser(prog_name)
 
         parser.add_argument(
-            '--ptr',
-            metavar='<ID>',
-            help=_('PTR record ID.')
-        )
-        parser.add_argument(
-            '--region',
-            metavar='<region>',
-            default='en-de',
-            help=_('Region of the FloatingIP.')
-        )
-        parser.add_argument(
-            '--floating_ip',
-            metavar='<UUID>',
+            'floatingip_id',
             help=_('FloatingIP ID.')
         )
 
@@ -130,15 +100,7 @@ class DeletePTR(command.Command):
     def take_action(self, parsed_args):
         client = self.app.client_manager.dns
 
-        query = {}
-
-        if parsed_args.ptr:
-            query['ptr'] = parsed_args.ptr
-        else:
-            query['region'] = parsed_args.region
-            query['floating_ip_id'] = parsed_args.floating_ip
-
-        return client.restore_ptr(**query)
+        client.unset_floating_ip(parsed_args.floatingip_id)
 
 
 class SetPTR(command.ShowOne):
@@ -147,26 +109,15 @@ class SetPTR(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(SetPTR, self).get_parser(prog_name)
 
-        fgrp = parser.add_argument_group()
-        fgrp.add_argument(
-            '--region',
-            metavar='<region>',
-            default='en-de',
-            required=True,
-            help=_('Region of the FloatingIP.')
-        )
-        fgrp.add_argument(
-            '--floating_ip',
-            metavar='<UUID>',
-            required=True,
-            help=_('FloatingIP ID.')
+        parser.add_argument(
+            'floatingip_id',
+            help=_('Floating IP ID in format region:floatingip_id.')
         )
         parser.add_argument(
-            '--ptrdname',
-            metavar='<ptrdomain>',
-            required=True,
-            help=_('Domain of the PTR record.')
+            'ptrdname',
+            help=_('PTRD Name')
         )
+
         parser.add_argument(
             '--description',
             metavar='<description>',
@@ -189,16 +140,14 @@ class SetPTR(command.ShowOne):
 
         attrs = {}
 
-        if parsed_args.ptrdname:
-            attrs['ptrdname'] = parsed_args.ptrdname
+        attrs['ptrdname'] = parsed_args.ptrdname
         if parsed_args.description:
             attrs['description'] = parsed_args.description
         if parsed_args.ttl:
             attrs['ttl'] = parsed_args.ttl
 
-        obj = client.create_ptr(
-            region=parsed_args.region,
-            floating_ip_id=parsed_args.floating_ip,
+        obj = client.set_floating_ip(
+            floating_ip=parsed_args.floatingip_id,
             **attrs
         )
 

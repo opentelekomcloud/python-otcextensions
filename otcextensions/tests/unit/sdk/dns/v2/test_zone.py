@@ -64,12 +64,14 @@ class TestZone(base.TestCase):
         sot = zone.Zone()
 
         self.assertEqual('/zones', sot.base_path)
+        self.assertEqual('zones', sot.resources_key)
+        self.assertIsNone(sot.resource_key)
 
         self.assertTrue(sot.allow_list)
-        self.assertTrue(sot.allow_get)
+        self.assertTrue(sot.allow_fetch)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_delete)
-        self.assertTrue(sot.allow_update)
+        self.assertTrue(sot.allow_commit)
 
     def test_make_it(self):
 

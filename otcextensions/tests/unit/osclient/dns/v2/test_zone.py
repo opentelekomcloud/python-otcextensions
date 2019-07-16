@@ -356,6 +356,7 @@ class TestDeleteZone(fakes.TestDNS):
 
         self.client.delete_zone = mock.Mock()
         self.client.api_mock = self.client.delete_zone
+        self.client.find_zone = mock.Mock()
 
     def test_delete_multiple(self):
         arglist = [
@@ -370,13 +371,14 @@ class TestDeleteZone(fakes.TestDNS):
 
         # Set the response
         self.client.api_mock.side_effect = [{}, {}]
+        self.client.find_zone.side_effect = ['t1', 't2']
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
         calls = [
-            mock.call(zone='t1', ignore_missing=False),
-            mock.call(zone='t2', ignore_missing=False)
+            mock.call(zone='t1'),
+            mock.call(zone='t2')
         ]
 
         self.client.api_mock.assert_has_calls(calls)
