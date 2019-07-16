@@ -9,42 +9,47 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+
 from openstack.tests.unit import base
 
-from otcextensions.sdk.dns.v2 import ptr
+from otcextensions.sdk.dns.v2 import floating_ip as fip
 
 
+IDENTIFIER = 'RegionOne:id'
 EXAMPLE = {
-    "id": "region_id:c5504932-bf23-4171-b655-b87a6bc59334",
-    "ptrdname": "www.example.com.",
-    "description": "Description for this PTR record",
-    "address": "10.154.52.138",
-    "action": "CREATE",
-    "ttl": 300,
-    "status": "ACTIVE"
+    'status': 'PENDING',
+    'ptrdname': 'smtp.example.com.',
+    'description': 'This is a floating ip for 127.0.0.1',
+    'links': {
+        'self': 'dummylink/reverse/floatingips/RegionOne:id'
+    },
+    'ttl': 600,
+    'address': '172.24.4.10',
+    'action': 'CREATE',
+    'id': IDENTIFIER
 }
 
 
-class TestPTR(base.TestCase):
+class TestFloatingIP(base.TestCase):
 
     def test_basic(self):
-        sot = ptr.PTR()
-
+        sot = fip.FloatingIP()
+        self.assertEqual('floatingips', sot.resources_key)
         self.assertEqual('/reverse/floatingips', sot.base_path)
-
         self.assertTrue(sot.allow_list)
-        self.assertTrue(sot.allow_get)
         self.assertFalse(sot.allow_create)
+        self.assertTrue(sot.allow_fetch)
+        self.assertTrue(sot.allow_commit)
         self.assertFalse(sot.allow_delete)
-        self.assertTrue(sot.allow_update)
+
+        self.assertEqual('PATCH', sot.commit_method)
 
     def test_make_it(self):
-
-        sot = ptr.PTR(**EXAMPLE)
-        self.assertEqual(EXAMPLE['id'], sot.id)
+        sot = fip.FloatingIP(**EXAMPLE)
+        self.assertEqual(IDENTIFIER, sot.id)
         self.assertEqual(EXAMPLE['ptrdname'], sot.ptrdname)
         self.assertEqual(EXAMPLE['description'], sot.description)
+        self.assertEqual(EXAMPLE['ttl'], sot.ttl)
         self.assertEqual(EXAMPLE['address'], sot.address)
         self.assertEqual(EXAMPLE['action'], sot.action)
-        self.assertEqual(EXAMPLE['ttl'], sot.ttl)
         self.assertEqual(EXAMPLE['status'], sot.status)

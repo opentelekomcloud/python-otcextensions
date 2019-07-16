@@ -35,7 +35,9 @@ _formatters = {
 def _get_columns(item):
     column_map = {
     }
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
+    hidden = ['location', 'links']
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
+                                                           hidden)
 
 
 class ListZone(command.Lister):
@@ -120,7 +122,8 @@ class DeleteZone(command.Command):
         if parsed_args.zone:
             client = self.app.client_manager.dns
             for zone in parsed_args.zone:
-                client.delete_zone(zone=zone, ignore_missing=False)
+                zn = client.find_zone(zone, ignore_missing=False)
+                client.delete_zone(zone=zn)
 
 
 class CreateZone(command.ShowOne):

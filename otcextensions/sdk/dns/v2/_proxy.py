@@ -9,14 +9,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from otcextensions.sdk import sdk_proxy
+from openstack import proxy
 from otcextensions.sdk.dns.v2 import nameserver as _ns
-from otcextensions.sdk.dns.v2 import ptr as _ptr
 from otcextensions.sdk.dns.v2 import recordset as _rs
 from otcextensions.sdk.dns.v2 import zone as _zone
+from otcextensions.sdk.dns.v2 import floating_ip as _fip
 
 
-class Proxy(sdk_proxy.Proxy):
+class Proxy(proxy.Proxy):
 
     # ======== Zones ========
     def zones(self, **query):
@@ -137,7 +137,7 @@ class Proxy(sdk_proxy.Proxy):
                           zone_id=instance.id)
 
     # ======== Recordsets ========
-    def recordsets(self, zone, **query):
+    def recordsets(self, zone=None, **query):
         """Retrieve a generator of recordsets which belongs to `zone`
 
         :param zone: The optional value can be the ID of a zone
@@ -150,13 +150,13 @@ class Proxy(sdk_proxy.Proxy):
         :returns: A generator of zone
             (:class:`~otcextensions.sdk.dns.v2.recordset.Recordset`) instances
         """
-        if zone:
-            zone = self._get_resource(_zone.Zone, zone)
-            resource_cls = _rs.ZoneRecordset
-            query.update({'zone_id': zone.id})
+        base_path = None
+        if not zone:
+            base_path = '/recordsets'
         else:
-            resource_cls = _rs.Recordset
-        return self._list(resource_cls, **query)
+            zone = self._get_resource(_zone.Zone, zone)
+            query.update({'zone_id': zone.id})
+        return self._list(_rs.Recordset, base_path=base_path, **query)
 
     def create_recordset(self, zone, **attrs):
         """Create a new recordset in the zone
@@ -171,7 +171,7 @@ class Proxy(sdk_proxy.Proxy):
         """
         zone = self._get_resource(_zone.Zone, zone)
         attrs.update({'zone_id': zone.id})
-        return self._create(_rs.ZoneRecordset, prepend_key=False, **attrs)
+        return self._create(_rs.Recordset, prepend_key=False, **attrs)
 
     def update_recordset(self, recordset, **attrs):
         """Update Recordset attributes
@@ -182,9 +182,9 @@ class Proxy(sdk_proxy.Proxy):
         :returns: The results of zone creation
         :rtype: :class:`~otcextensions.sdk.dns.v2.recordset.Recordset`
         """
-        return self._update(_rs.ZoneRecordset, recordset, **attrs)
+        return self._update(_rs.Recordset, recordset, **attrs)
 
-    def get_recordset(self, zone, recordset):
+    def get_recordset(self, recordset, zone):
         """Get a recordset
 
         :param zone: The value can be the ID of a zone
@@ -193,7 +193,7 @@ class Proxy(sdk_proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.dns.v2.recordset.Recordset`
         """
         zone = self._get_resource(_zone.Zone, zone)
-        return self._get(_rs.ZoneRecordset, recordset, zone_id=zone.id)
+        return self._get(_rs.Recordset, recordset, zone_id=zone.id)
 
     def delete_recordset(self, recordset, zone=None, ignore_missing=True):
         """Delete a zone
@@ -214,69 +214,91 @@ class Proxy(sdk_proxy.Proxy):
         if zone:
             zone = self._get_resource(_zone.Zone, zone)
             recordset = self._get(
-                _rs.ZoneRecordset, recordset, zone_id=zone.id)
-        return self._delete(_rs.ZoneRecordset, recordset,
+                _rs.Recordset, recordset, zone_id=zone.id)
+        return self._delete(_rs.Recordset, recordset,
                             ignore_missing=ignore_missing)
 
-    # ======== PTR Records ========
-    def ptrs(self, **query):
-        """List FloatingIP PTR records
+    def find_recordset(self, zone, name_or_id, ignore_missing=True, **attrs):
+        """Find a single recordset
+
+        :param zone: The value can be the ID of a zone
+             or a :class:`~otcextensions.sdk.dns.v2.zone.Zone` instance.
+        :param name_or_id: The name or ID of a zone
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the zone does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to delete a nonexistent zone.
+
+        :returns: :class:`~otcextensions.sdk.dns.v2.recordset.Recordset`
+        """
+        zone = self._get_resource(_zone.Zone, zone)
+        return self._find(_rs.Recordset, name_or_id,
+                          ignore_missing=ignore_missing, zone_id=zone.id,
+                          **attrs)
+
+    # ======== FloatingIPs ========
+    def floating_ips(self, **query):
+        """Retrieve a generator of FloatingIP PTR records
 
         :param dict query: Optional query parameters to be sent to limit the
             resources being returned.
-            * ``marker``:  pagination marker
-            * ``limit``: pagination limit
-        :returns: A generator of PTR
-            :class:`~otcextensions.sdk.dns.v2.ptr.PTR` instances
+
+            * `name`: Recordset Name field.
+            * `type`: Type field.
+            * `status`: Status of the recordset.
+            * `ttl`: TTL field filter.
+            * `description`: Recordset description field filter.
+
+        :returns: A generator of floatingips
+            (:class:`~otcextensions.sdk.dns.v2.floating_ip.FloatingIP`)
+            instances
         """
-        return self._list(_ptr.PTR, **query)
+        return self._list(_fip.FloatingIP, **query)
 
-    def create_ptr(self, region, floating_ip_id, **attrs):
-        """Set FloatingIP PTR record
+    def get_floating_ip(self, floating_ip):
+        """Get a Floating IP
 
-        :param region: project region
-        :param floating_ip_id: floating ip id
-        :param dict attrs: Keyword arguments which will be used to create
-                           a :class:`~otcextensions.sdk.dns.v2.ptr.PTR`,
-                           comprised of the properties on the PTR class.
-        :returns: The results of zone creation
-        :rtype: :class:`~otcextensions.sdk.dns.v2.ptr.PTR`
+        :param floating_ip: The value can be the ID of a floating ip
+             or a :class:`~otcextensions.sdk.dns.v2.floating_ip.FloatingIP`
+             instance.
+             The ID is in format "region_name:floatingip_id"
+        :returns: FloatingIP instance.
+        :rtype: :class:`~otcextensions.sdk.dns.v2.floating_ip.FloatingIP`
+        """
+        return self._get(_fip.FloatingIP, floating_ip)
+
+    def set_floating_ip(self, floating_ip, **attrs):
+        """Set a Floating IP PTR record
+
+        :param floating_ip: the Floating IP ID
+
+        :returns: FloatingIP PTR record.
+        :rtype: :class:`~otcextensions.sdk.dns.v2.floating_ip.FloatingIP`
+        """
+        return self._update(_fip.FloatingIP, floating_ip, **attrs)
+
+    def update_floating_ip(self, floating_ip, **attrs):
+        """Update floating ip attributes
+
+        :param floating_ip: The id or an instance of
+            :class:`~otcextensions.sdk.dns.v2.fip.FloatingIP`.
+        :param dict attrs: attributes for update on
+            :class:`~otcextensions.sdk.dns.v2.fip.FloatingIP`.
+
+        :rtype: :class:`~otcextensions.sdk.dns.v2.fip.FloatingIP`
+        """
+        return self._update(_fip.FloatingIP, floating_ip, **attrs)
+
+    def unset_floating_ip(self, floating_ip):
+        """Unset a Floating IP PTR record
+
+        :param floating_ip: ID for the floatingip associated with the
+            project.
+
+        :returns: FloatingIP PTR record.
+        :rtype: :class:`~otcextensions.sdk.dns.v2.floating_ip.FloatipgIP`
         """
         # concat `region:floating_ip_id` as id
-        ptr_id = region + ':' + floating_ip_id
-        attrs.update({'id': ptr_id})
-        return self._update(_ptr.PTR, prepend_key=False, **attrs)
-
-    def get_ptr(self, ptr=None, region=None, floating_ip_id=None):
-        """Show FloatingIP's PTR record
-
-        :param ptr: ID or instance of
-            :class:`~otcextensions.sdk.dns.v2.ptr.PTR`
-        :param region: project region
-        :param floating_ip_id: the PTR floating ip id
-        :returns: PTR instance
-        :rtype: :class:`~otcextensions.sdk.dns.v2.ptr.PTR`
-        """
-        # concat `region:floating_ip_id` as id
-        if not ptr:
-            ptr = region + ':' + floating_ip_id
-        return self._get(_ptr.PTR, ptr)
-
-    def restore_ptr(self, ptr=None, region=None, floating_ip_id=None):
-        """Unset FloatingIP's PTR record
-
-        :param ptr: ID or instance of
-            :class:`~otcextensions.sdk.dns.v2.ptr.PTR`
-        :param region: project region
-        :param floating_ip_id: floating ip id
-        :returns: PTR instance been deleted
-        :rtype: :class:`~otcextensions.sdk.dns.v2.ptr.PTR`
-        """
-        # concat `region:floating_ip_id` as id
-        if not ptr:
-            ptr = region + ':' + floating_ip_id
-        return self._update(_ptr.PTR,
-                            ptr,
-                            prepend_key=False,
-                            has_body=False,
-                            ptrdname=None)
+        attrs = {'ptrdname': None}
+        return self._update(_fip.FloatingIP, floating_ip, **attrs)

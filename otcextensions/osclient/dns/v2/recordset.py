@@ -31,7 +31,9 @@ _formatters = {
 def _get_columns(item):
     column_map = {
     }
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
+    hidden = ['location', 'links']
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
+                                                           hidden)
 
 
 class ListRS(command.Lister):
@@ -225,7 +227,7 @@ class SetRS(command.ShowOne):
         )
         parser.add_argument(
             'recordset',
-            metavar='<UUID>',
+            metavar='<id>',
             help=_('UUID of the recordset.')
         )
         parser.add_argument(
@@ -271,7 +273,7 @@ class SetRS(command.ShowOne):
         for rec in parsed_args.record:
             attrs['records'].append(rec)
 
-        recordset = client.get_recordset(zone.id, parsed_args.recordset)
+        recordset = client.get_recordset(parsed_args.recordset, zone.id)
 
         obj = client.update_recordset(
             recordset=recordset,

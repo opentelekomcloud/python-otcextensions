@@ -43,7 +43,7 @@ PTR Records Operations
 
 .. autoclass:: otcextensions.sdk.dns.v2._proxy.Proxy
 
-  .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.ptrs
-  .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.create_ptr
-  .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.get_ptr
-  .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.restore_ptr
+  .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.floating_ips
+  .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.set_floating_ip
+  .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.get_floating_ip
+  .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.unset_floating_ip

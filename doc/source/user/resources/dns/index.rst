@@ -6,5 +6,5 @@ Anti DDoS Resources
 
    v2/zone
    v2/nameserver
-   v2/ptr
+   v2/floating_ip
    v2/recordset
