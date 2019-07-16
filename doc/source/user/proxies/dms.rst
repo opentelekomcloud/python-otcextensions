@@ -8,7 +8,8 @@ The Distributed Message Service Class
 
 The dms high-level interface is available through the ``dms``
 member of a :class:`~openstack.connection.Connection` object.  The
-``dms`` member will only be added if the ``otcextensions.sdk.register_otc_extensions(conn)`` method is called.
+``dms`` member will only be added if the
+``otcextensions.sdk.register_otc_extensions(conn)`` method is called.
 
 Queue Operations
 ^^^^^^^^^^^^^^^^

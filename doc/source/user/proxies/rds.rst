@@ -8,9 +8,10 @@ For details on how to use database, see :doc:`/user/guides/rds`
 The Database Class
 ------------------
 
-The database high-level interface is available through the ``rds``
-member of a :class:`~openstack.connection.Connection` object.  The
-``rds`` member will only be added if the ``otcextensions.sdk.register_otc_extensions(conn)`` method is called.
+The database high-level interface is available through the ``rds`` member of a
+:class:`~openstack.connection.Connection` object.  The ``rds`` member will only
+be added if the ``otcextensions.sdk.register_otc_extensions(conn)`` method is
+called.
 
 Datastore Operations
 ^^^^^^^^^^^^^^^^^^^^
