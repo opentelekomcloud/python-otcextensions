@@ -8,11 +8,13 @@ For details on how to use auto scaling, see :doc:`/user/guides/volume_backup`
 The VolumeBackup Class
 ----------------------
 
-The VBS high-level interface is available through the ``volume_backup``
-member of a :class:`~openstack.connection.Connection` object.  The
-``volume_backup`` member will only be added if the ``otcextensions.sdk.register_otc_extensions(conn)`` method is called.
+The VBS high-level interface is available through the ``volume_backup`` member
+of a :class:`~openstack.connection.Connection` object.  The ``volume_backup``
+member will only be added if the
+``otcextensions.sdk.register_otc_extensions(conn)`` method is called.
 
-The Backup itself is an OpenStack entity and supported natively as block_storage.Backup.
+The Backup itself is an OpenStack entity and supported natively as
+block_storage.Backup.
 
 
 Backup Policy Operations

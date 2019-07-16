@@ -6,9 +6,10 @@ DeH API
 The Dedicated Host Service Class
 --------------------------------
 
-The dehs high-level interface is available through the ``deh``
-member of a :class:`~openstack.connection.Connection` object.  The
-``deh`` member will only be added if the ``otcextensions.sdk.register_otc_extensions(conn)`` method is called.
+The dehs high-level interface is available through the ``deh`` member of a
+:class:`~openstack.connection.Connection` object.  The ``deh`` member will only
+be added if the ``otcextensions.sdk.register_otc_extensions(conn)`` method is
+called.
 
 Host Operations
 ^^^^^^^^^^^^^^^

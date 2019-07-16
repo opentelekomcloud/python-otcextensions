@@ -60,9 +60,9 @@ A host can be allocated with a following snip.
 .. literalinclude:: ../examples/deh/create.py
    :pyobject: create_host
 
-Allocating a DeH Host supports setting `quantity` parameter to allocate multiple
-hosts in a one call. Due to that the IDs of allocated hosts are being returned
-as part of the "virtual" resource in a `dedicated_host_ids` attribute
+Allocating a DeH Host supports setting `quantity` parameter to allocate
+multiple hosts in a one call. Due to that the IDs of allocated hosts are being
+returned as part of the "virtual" resource in a `dedicated_host_ids` attribute
 
 Full example: `deh host create`_
 

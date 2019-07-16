@@ -14,12 +14,14 @@ toolstack. Covered are currently following items:
 * `python-openstacksdk`
 * `python-openstackclient`
 
-The primary goal is to provide a possibility to use native OpenStack SDK and CLI with the OTC additional services
+The primary goal is to provide a possibility to use native OpenStack SDK and
+CLI with the OTC additional services
 
 Getting Started
 ===============
 
-The very first step to get started is to install otcextensions into your system. For this please follow installation instructions_
+The very first step to get started is to install otcextensions into your
+system. For this please follow installation instructions_
 
 .. _instructions: http://python-otcextensions.readthedocs.io/en/latest/install/index.html
 
@@ -31,7 +33,8 @@ Configuration
 openstack.config
 ================
 
-The recommended way, since it is the most efficient way to configure both SDK and the CLI in one place
+The recommended way, since it is the most efficient way to configure both SDK
+and the CLI in one place
 
 ``openstack.config`` will find cloud configuration for as few as 1 clouds and
 as many as you want to put in a config file. It will read environment variables
@@ -68,19 +71,24 @@ in the following locations:
 * ``~/.config/openstack``
 * ``/etc/openstack``
 
-AK/SK values required for access to some services (i.e. OBS) can be either configured as shown above in the clouds.yaml/secure.yaml,
-or they can be automatically retrieved from the S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY.
-Values from the clouds.yaml/secure.yaml take precedence over the ones from environment.
+AK/SK values required for access to some services (i.e. OBS) can be either
+configured as shown above in the clouds.yaml/secure.yaml, or they can be
+automatically retrieved from the S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY.
+Values from the clouds.yaml/secure.yaml take precedence over the ones from
+environment.
 
-With this configuration you can start using openstackCLI simply ``openstack --os-cloud otc``
+With this configuration you can start using openstackCLI simply ``openstack
+--os-cloud otc``
 
 More information at https://developer.openstack.org/sdks/python/openstacksdk/users/config
 
 Old style way
 =============
 
-The CLI can be configured via environment variables and command-line
-options as listed in https://docs.openstack.org/python-openstackclient/latest/cli/authentication.html or https://developer.openstack.org/sdks/python/openstacksdk/users/config.
+The CLI can be configured via environment variables and command-line options as
+listed in
+https://docs.openstack.org/python-openstackclient/latest/cli/authentication.html
+or https://developer.openstack.org/sdks/python/openstacksdk/users/config.
 
 Authentication using username/password is often used::
 
