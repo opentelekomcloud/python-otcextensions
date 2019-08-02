@@ -40,7 +40,7 @@ Now, install all libraries and programs at once with the Python package manager 
     $# pip3 install otcextensions python-openstackclient --user
 
 
-Installation under CentOS (not working)
+Installation under CentOS
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 After a new installation: a C compiler, Python3 with developer libraries, and package manager pip are required. If you want to use python3 which is recommended, you need to install the epel repository, first:
@@ -60,7 +60,7 @@ Now, install all libraries and programs at once with the Python package manager 
    $ sudo pip3 install otcextensions python-openstackclient
    $# pip3 install otcextensions python-openstackclient --user
 
-Installation under Fedora (under review)
+Installation under Fedora
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 After a new installation: a C compiler, Python3 with developer libraries, and package manager pip are required:
