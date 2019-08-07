@@ -131,9 +131,12 @@ class DeleteCCEClusterNode(command.Command):
             cluster = client.find_cluster(parsed_args.cluster,
                                           ignore_missing=False)
             for node in parsed_args.node:
+                obj = client.find_cluster_node(
+                    cluster=cluster.id,
+                    node=node)
                 client.delete_cluster_node(
                     cluster=cluster.id,
-                    node=node,
+                    node=obj.id,
                     ignore_missing=False)
 
 
