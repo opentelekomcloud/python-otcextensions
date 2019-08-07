@@ -242,17 +242,20 @@ def load(conn, **kwargs):
             else:
                 sk = config.get('secret_key', None)
 
-            # if clouds.yaml didn't fill the values, use the env and warn if deprecated values are used
+            # if clouds.yaml didn't fill the values, use the env and warn if
+            # deprecated values are used
             if not ak:
                 if os.getenv('S3_ACCESS_KEY_ID', None):
-                    _logger.warn(message % ('S3_ACCESS_KEY_ID', 'OS_ACCESS_KEY'))
+                    _logger.warn(message % ('S3_ACCESS_KEY_ID',
+                        'OS_ACCESS_KEY'))
                     ak = os.getenv('S3_ACCESS_KEY_ID', None)
                 else:
                     ak = os.getenv('OS_ACCESS_KEY', None)
 
             if not sk:
                 if os.getenv('S3_SECRET_ACCESS_KEY', None):
-                    _logger.warn(message % ('S3_SECRET_ACCESS_KEY', 'OS_SECRET_KEY'))
+                    _logger.warn(message % ('S3_SECRET_ACCESS_KEY',
+                        'OS_SECRET_KEY'))
                     sk = os.getenv('S3_SECRET_ACCESS_KEY', None)
                 else:
                     sk = os.getenv('OS_SECRET_KEY', None)
