@@ -227,13 +227,35 @@ def load(conn, **kwargs):
 
             proxy = getattr(conn, service_name)
 
-            ak = config.get('ak', None)
-            sk = config.get('sk', None)
+            # warn if deprecated values are used in clouds.yaml
+            message = """using %s is deprecated and may be removed in a future version, please use \
+%s instead"""
+            if config.get('ak', None):
+                _logger.warn(message % ('ak, access_key'))
+                ak = config.get('ak', None)
+            else:
+                ak = config.get('access_key', None)
 
+            if config.get('sk', None):
+                _logger.warn(message % ('sk', 'secret_key'))
+                sk = config.get('sk', None)
+            else:
+                sk = config.get('secret_key', None)
+
+            # if clouds.yaml didn't fill the values, use the env and warn if deprecated values are used
             if not ak:
-                ak = os.getenv('S3_ACCESS_KEY_ID', None)
+                if os.getenv('S3_ACCESS_KEY_ID', None):
+                    _logger.warn(message % ('S3_ACCESS_KEY_ID', 'OS_ACCESS_KEY'))
+                    ak = os.getenv('S3_ACCESS_KEY_ID', None)
+                else:
+                    ak = os.getenv('OS_ACCESS_KEY', None)
+
             if not sk:
-                sk = os.getenv('S3_SECRET_ACCESS_KEY', None)
+                if os.getenv('S3_SECRET_ACCESS_KEY', None):
+                    _logger.warn(message % ('S3_SECRET_ACCESS_KEY', 'OS_SECRET_KEY'))
+                    sk = os.getenv('S3_SECRET_ACCESS_KEY', None)
+                else:
+                    sk = os.getenv('OS_SECRET_KEY', None)
 
             if ak and sk:
                 proxy._set_ak(ak=ak, sk=sk)
