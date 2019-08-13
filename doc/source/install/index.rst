@@ -67,7 +67,7 @@ For the installation, following packages are required: a C compiler, Python3 wit
 .. code-block:: bash
 
    $ sudo dnf upgrade
-   $ sudo dnf install gcc python3 python3-devel python3-pip python3-virtualenv openssl-devel
+   $ sudo dnf install gcc python3 python3-devel python3-pip openssl-devel
 
 Now, install all libraries and programs at once with the Python package manager pip:
 
