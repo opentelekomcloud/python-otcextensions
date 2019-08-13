@@ -4,28 +4,28 @@ Installation
 
 There are several ways to install python-otcextensions to enhance the native ``openstack`` CLI client and to extend the OpenStack SDK to cover the additional Open Telekom Cloud services providing a larger functionality on top of OpenStack.
 
-The easiest way is to use the Python pip installer which is working distribution independent and can be used in an isolated virtual environment.
+The easiest way is to use the Python pip installer which is working distribution independent and can be used in an isolated virtual environment as described below. Ansible can be used to install python-otcextensions on various operating systems, too by using the following Ansible Role: https://github.com/OpenTelekomCloud/ansible-role-otcextensions .
 There are also ready-made installation packages for various operating systems which have their own versions, package names and sometimes bugs. A repository based on openSUSE's build services tries to cover these issues which is available under: https://build.opensuse.org/project/show/Cloud:OTC:Tools:OpenStack.
 
-Package Overview
-----------------
+Overview of Related Packages
+----------------------------
 
-**openstacksdk:** 
-  A library on the client side that translates API calls to an OpenStack cloud into Python function calls.
-**otcextensions:** 
-  An addition to openstacksdk with functionality that is specific for the Open Telekom Cloud.
-**openstackclient:** 
-  An application that turns the Python interface of openstacksdk and otcextensions into a CLI tool.
+**OpenStackSDK:** 
+  A library on the client side that translates Python function calls into API calls to an OpenStack cloud.
+**OpenStackClient:** 
+  An application that turns the Python interface of OpenStackSDK and python-otcextensions into a CLI tool.
+**python-otcextensions:** 
+  An addition to OpenStackSD with enhanced functionality that is specific for the Open Telekom Cloud.
 
 Installation with pip installer
 -------------------------------
 
-All three packages are written in Python and stored as Python libraries in the PyPi repository. The following section describes the installation of ``openstacksdk``, ``otcextensions`` and ``openstackclient``. Please remember, it is not the latest development state. For this purpose the latest sources needs to be installed.
+All three packages are written in Python and stored as Python libraries in the PyPi repository. The following section describes the installation of ``OpenStackSDK``, ``otcextensions`` and ``OpenStackClient``. Please remember, it is not the latest development state. For this purpose the latest sources needs to be installed.
 
 Installation under Ubuntu or Debian
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-After a new installation: a C compiler, Python3 with developer libraries, and package manager pip are required:
+For the installation, following packages are required: a C compiler, Python3 with developer libraries, and package manager pip are required:
 
 .. code-block:: bash
 
@@ -36,14 +36,13 @@ Now, install all libraries and programs at once with the Python package manager 
 
 .. code-block:: bash
 
-    $ sudo pip3 install otcextensions openstackclient
-    $# pip3 install otcextensions python-openstackclient --user
+    $ pip3 install otcextensions python-openstackclient --user
 
 
 Installation under CentOS
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-After a new installation: a C compiler, Python3 with developer libraries, and package manager pip are required. If you want to use python3 which is recommended, you need to install the epel repository, first:
+For the installation, following packages are required: a C compiler, Python3 with developer libraries, and package manager pip are required. If you want to use python3 which is recommended, you need to install the epel repository, first:
 
 
 .. code-block:: bash
@@ -57,13 +56,12 @@ Now, install all libraries and programs at once with the Python package manager 
 
 .. code-block:: bash
 
-   $ sudo pip3 install otcextensions python-openstackclient
-   $# pip3 install otcextensions python-openstackclient --user
+   $ pip3 install otcextensions python-openstackclient --user
 
 Installation under Fedora
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-After a new installation: a C compiler, Python3 with developer libraries, and package manager pip are required:
+For the installation, following packages are required: a C compiler, Python3 with developer libraries, and package manager pip are required:
 
 
 .. code-block:: bash
@@ -75,8 +73,7 @@ Now, install all libraries and programs at once with the Python package manager 
 
 .. code-block:: bash
 
-   $ sudo pip3 install otcextensions python-openstackclient
-   $# pip3 install otcextensions python-openstackclient --user
+   $ pip3 install otcextensions python-openstackclient --user
    
 
 Installation in a virtual environment with pip installer
@@ -87,7 +84,7 @@ A virtual environment seperates your installed packages from other libraries and
 Installation under Ubuntu or Debian
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-After a new installation: a C compiler, Python3 with developer libraries, package manager, and virtual environment are required:
+For the installation, following packages are required: a C compiler, Python3 with developer libraries, package manager, and virtual environment are required:
 
 .. code-block:: bash
 
@@ -112,7 +109,7 @@ Now, install all libraries and programs at once with the Python package manager 
 Installation under CentOS
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-After a new installation: a C compiler, Python3 with developer libraries, package manager, and virtual environment are required.
+For the installation, following packages are required: a C compiler, Python3 with developer libraries, package manager, and virtual environment are required.
 If you want to use python3 which is recommended, you need to install the epel repository, first:
 
 
@@ -144,7 +141,7 @@ Now, install all libraries and programs at once with the Python package manager 
 Installation under Fedora (under review)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-After a new installation: a C compiler, Python3 with developer libraries, package manager, and a virtual environment are required:
+For the installation, following packages are required: a C compiler, Python3 with developer libraries, package manager, and a virtual environment are required:
 
 
 .. code-block:: bash
@@ -175,7 +172,7 @@ Cloning the Github repository:
 
 .. code-block:: bash
 
-   $ git clone git@github.com:OpenTelekomCloud/python-otcextensions.git
+   $ git clone https://github.com/OpenTelekomCloud/python-otcextensions.git
 
 A virtual environment seperates your installed packages from other libraries and should be used as well. You can name the virtual environment on your own desires, in our example it is: "venv". The second command will switch on "venv":
 
@@ -189,7 +186,7 @@ Switch into the new folder which is created by cloning the repository and instal
 
 .. code-block:: bash
 
-   (venv) $ cd ./python-otcextensions.git
+   (venv) $ cd ./python-otcextensions
 
 Register the CLI plugin using:
 
