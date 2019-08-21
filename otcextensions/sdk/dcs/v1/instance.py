@@ -85,6 +85,8 @@ class Instance(resource.Resource):
     #: billing mode. In other billing modes, no value is returned
     #: for this parameter.
     order_id = resource.Body('order_id')
+    #: Password.
+    password = resource.Body('password')
     #: Port of the cache node.
     port = resource.Body('port')
     #: Product ID used to differentiate DCS instance types.
