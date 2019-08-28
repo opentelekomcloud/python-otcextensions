@@ -75,13 +75,11 @@ class VolumeBackupPolicyTests(base.TestCase):
             json_output["name"],
         )
         self.openstack(
-            'vbs policy update ' +
-            '--name ' + name + 'xx ' +
-            policy_id
+            'vbs policy update --name {name}xx {policy}'.format(
+                name=name, policy=policy_id)
         )
         json_output = json.loads(self.openstack(
-            'vbs policy show -f json ' +
-            name + 'xx'
+            'vbs policy show {name}xx -f json'.format(name=name)
         ))
         self.assertEqual(
             name + 'xx',
@@ -93,6 +91,5 @@ class VolumeBackupPolicyTests(base.TestCase):
 
     def test_policy_execute(self):
         self.openstack(
-            'vbs policy execute ' +
-            self.policy_id
+            'vbs policy execute ' + self.policy_id
         )

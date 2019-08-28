@@ -14,6 +14,7 @@
 #
 import mock
 
+from otcextensions.sdk.cce.v3 import cluster
 from otcextensions.osclient.cce.v2 import cluster_node
 from otcextensions.tests.unit.osclient.cce.v2 import fakes
 
@@ -79,6 +80,8 @@ class TestListClusterNode(fakes.TestCCE):
         self.cmd = cluster_node.ListCCEClusterNode(self.app, None)
 
         self.client.cluster_nodes = mock.Mock()
+        self.client.find_cluster = mock.Mock(
+            return_value=cluster.Cluster(id='cluster_id'))
 
     def test_list_default(self):
         arglist = ['cluster_id']
@@ -133,6 +136,9 @@ class TestShowClusterNode(fakes.TestCCE):
         self.cmd = cluster_node.ShowCCEClusterNode(self.app, None)
 
         self.client.find_cluster_node = mock.Mock()
+
+        self.client.find_cluster = mock.Mock(
+            return_value=cluster.Cluster(id='cluster_uuid'))
 
     def test_show(self):
         arglist = [
@@ -192,6 +198,9 @@ class TestCreateClusterNode(fakes.TestCCE):
 
         self.client.create_cluster_node = mock.Mock()
 
+        self.client.find_cluster = mock.Mock(
+            return_value=cluster.Cluster(id='cluster_id'))
+
     def test_create(self):
         arglist = [
             'cluster_name',
@@ -204,7 +213,7 @@ class TestCreateClusterNode(fakes.TestCCE):
             '--root_volume', 'sata,230',
             '--ssh_key', 'key',
             '--availability_zone', 'az',
-            '--count', '12',
+            '--count', '12'
         ]
 
         verifylist = [
@@ -231,8 +240,8 @@ class TestCreateClusterNode(fakes.TestCCE):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.create_cluster_node.assert_called_once_with(
+            cluster='cluster_id',
             metadata={
-                'name': 'cluster_name',
                 'annotations': {'a1': 'v1', 'a2': 'v2'},
                 'labels': {'l1': 'v1', 'l2': 'v2'}
             },
@@ -241,8 +250,8 @@ class TestCreateClusterNode(fakes.TestCCE):
                 'login': {'sshKey': 'key'},
                 'az': 'az',
                 'count': 12,
-                'rootVolume': {'volumetype': 'SATA', 'size': '230'},
-                'dataVolumes': [{'volumetype': 'SATA', 'size': '30'}]
+                'rootVolume': {'volumetype': 'SATA', 'size': 230},
+                'dataVolumes': [{'volumetype': 'SATA', 'size': 30}]
             }
         )
 
@@ -258,6 +267,9 @@ class TestDeleteClusterNode(fakes.TestCCE):
         self.cmd = cluster_node.DeleteCCEClusterNode(self.app, None)
 
         self.client.delete_cluster_node = mock.Mock()
+
+        self.client.find_cluster = mock.Mock(
+            return_value=cluster.Cluster(id='cluster_uuid'))
 
     def test_delete(self):
         arglist = [

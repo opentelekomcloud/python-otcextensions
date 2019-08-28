@@ -1,11 +1,11 @@
-#   Licensed under the Apache License, Version 2.0 (the 'License'); you may
+#   Licensed under the Apache License, Version 2.0 (the "License"); you may
 #   not use this file except in compliance with the License. You may obtain
 #   a copy of the License at
 #
 #        http://www.apache.org/licenses/LICENSE-2.0
 #
 #   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an 'AS IS' BASIS, WITHOUT
+#   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
 #   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #   License for the specific language governing permissions and limitations
 #   under the License.
@@ -57,7 +57,10 @@ class ListCCEClusterNode(command.Lister):
     def take_action(self, parsed_args):
         client = self.app.client_manager.cce
 
-        data = client.cluster_nodes(parsed_args.cluster)
+        cluster = client.find_cluster(parsed_args.cluster,
+                                      ignore_missing=False)
+
+        data = client.cluster_nodes(cluster.id)
 
         table = (self.columns,
                  (utils.get_dict_properties(
@@ -89,8 +92,11 @@ class ShowCCEClusterNode(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.cce
 
+        cluster = client.find_cluster(parsed_args.cluster,
+                                      ignore_missing=False)
+
         obj = client.find_cluster_node(
-            cluster=parsed_args.cluster,
+            cluster=cluster.id,
             node=parsed_args.node
         )
 
@@ -122,9 +128,11 @@ class DeleteCCEClusterNode(command.Command):
 
         if parsed_args.cluster and parsed_args.node:
             client = self.app.client_manager.cce
+            cluster = client.find_cluster(parsed_args.cluster,
+                                          ignore_missing=False)
             for node in parsed_args.node:
                 client.delete_cluster_node(
-                    cluster=parsed_args.cluster,
+                    cluster=cluster.id,
                     node=node,
                     ignore_missing=False)
 
@@ -185,6 +193,7 @@ class CreateCCEClusterNode(command.Command):
         parser.add_argument(
             '--availability_zone',
             metavar='<availability_zone>',
+            required=True,
             help=_('Availability zone to place server in.')
         )
         parser.add_argument(
@@ -223,7 +232,7 @@ class CreateCCEClusterNode(command.Command):
                 raise argparse.ArgumentTypeError(msg)
             # Size only relevant for data disk
             if disk_parts[1].isdigit:
-                disk_data['size'] = disk_parts[1]
+                disk_data['size'] = int(disk_parts[1])
             else:
                 msg = _('Volume SIZE is not a digit')
                 raise argparse.ArgumentTypeError(msg)
@@ -235,8 +244,6 @@ class CreateCCEClusterNode(command.Command):
     def take_action(self, parsed_args):
 
         attrs = {'metadata': {}}
-
-        attrs['metadata']['name'] = parsed_args.cluster
 
         spec = {}
         spec['flavor'] = parsed_args.flavor
@@ -263,7 +270,10 @@ class CreateCCEClusterNode(command.Command):
 
         client = self.app.client_manager.cce
 
-        obj = client.create_cluster_node(**attrs)
+        cluster = client.find_cluster(parsed_args.cluster,
+                                      ignore_missing=False)
+
+        obj = client.create_cluster_node(cluster=cluster.id, **attrs)
 
         data = utils.get_dict_properties(
             _flatten_cluster_node(obj),

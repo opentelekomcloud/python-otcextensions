@@ -151,7 +151,7 @@ class ListContainer(command.Lister):
     def take_action(self, parsed_args):
 
         # if parsed_args.long:
-            # columns = ('Name', 'Bytes', 'Count')
+        #     columns = ('Name', 'Bytes', 'Count')
         # else:
         columns = ('name', 'creation_date')
 

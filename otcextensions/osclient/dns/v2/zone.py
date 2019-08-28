@@ -1,11 +1,11 @@
-#   Licensed under the Apache License, Version 2.0 (the 'License'); you may
+#   Licensed under the Apache License, Version 2.0 (the "License"); you may
 #   not use this file except in compliance with the License. You may obtain
 #   a copy of the License at
 #
 #        http://www.apache.org/licenses/LICENSE-2.0
 #
 #   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an 'AS IS' BASIS, WITHOUT
+#   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
 #   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #   License for the specific language governing permissions and limitations
 #   under the License.
@@ -35,7 +35,9 @@ _formatters = {
 def _get_columns(item):
     column_map = {
     }
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
+    hidden = ['location', 'links']
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
+                                                           hidden)
 
 
 class ListZone(command.Lister):
@@ -92,6 +94,7 @@ class ShowZone(command.ShowOne):
 
         obj = client.find_zone(
             parsed_args.zone,
+            ignore_missing=False
         )
 
         display_columns, columns = _get_columns(obj)
@@ -119,7 +122,8 @@ class DeleteZone(command.Command):
         if parsed_args.zone:
             client = self.app.client_manager.dns
             for zone in parsed_args.zone:
-                client.delete_zone(zone=zone, ignore_missing=False)
+                zn = client.find_zone(zone, ignore_missing=False)
+                client.delete_zone(zone=zn)
 
 
 class CreateZone(command.ShowOne):
@@ -129,9 +133,8 @@ class CreateZone(command.ShowOne):
         parser = super(CreateZone, self).get_parser(prog_name)
 
         parser.add_argument(
-            '--name',
+            'name',
             metavar='<name>',
-            required=True,
             help=_('DNS Name for the zone.')
         )
         parser.add_argument(

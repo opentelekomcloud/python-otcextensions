@@ -8,9 +8,10 @@ For details on how to use database, see :doc:`/user/guides/obs`
 The OBS Class
 -------------
 
-The obs high-level interface is available through the ``obs``
-member of a :class:`~openstack.connection.Connection` object.  The
-``obs`` member will only be added if the ``otcextensions.sdk.register_otc_Extensions(conn)`` method is called.
+The obs high-level interface is available through the ``obs`` member of a
+:class:`~openstack.connection.Connection` object.  The ``obs`` member will only
+be added if the ``otcextensions.sdk.register_otc_Extensions(conn)`` method is
+called.
 
 Container Operations
 ^^^^^^^^^^^^^^^^^^^^

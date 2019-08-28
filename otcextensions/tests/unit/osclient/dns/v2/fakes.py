@@ -24,7 +24,7 @@ from otcextensions.tests.unit.osclient import test_base
 from otcextensions.sdk.dns.v2 import zone
 from otcextensions.sdk.dns.v2 import nameserver
 from otcextensions.sdk.dns.v2 import recordset
-from otcextensions.sdk.dns.v2 import ptr
+from otcextensions.sdk.dns.v2 import floating_ip
 
 
 def gen_data(data, columns):
@@ -104,7 +104,7 @@ class FakeRecordset(test_base.Fake):
         return obj
 
 
-class FakePTR(test_base.Fake):
+class FakeFloatingIP(test_base.Fake):
     """Fake one or more recordset"""
 
     @classmethod
@@ -118,5 +118,5 @@ class FakePTR(test_base.Fake):
             'description': uuid.uuid4().hex,
             'ttl': random.randint(1, 600),
         }
-        obj = ptr.PTR.existing(**object_info)
+        obj = floating_ip.FloatingIP.existing(**object_info)
         return obj

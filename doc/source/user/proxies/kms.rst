@@ -6,9 +6,10 @@ KMS API
 The KeyManagementService Class
 ------------------------------
 
-The kms high-level interface is available through the ``kms``
-member of a :class:`~openstack.connection.Connection` object.  The
-``kms`` member will only be added if the ``otcextensions.sdk.register_otc_extensions(conn)`` method is called.
+The kms high-level interface is available through the ``kms`` member of a
+:class:`~openstack.connection.Connection` object.  The ``kms`` member will only
+be added if the ``otcextensions.sdk.register_otc_extensions(conn)`` method is
+called.
 
 CMK (Customer Master Key) Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

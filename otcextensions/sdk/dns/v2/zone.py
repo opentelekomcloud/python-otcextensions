@@ -9,35 +9,31 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import _log
 from openstack import resource
 from openstack import utils
 
-from otcextensions.sdk import sdk_resource
-
-_logger = _log.setup_logging('openstack')
+from otcextensions.sdk.dns.v2 import _base
 
 
-class Router(sdk_resource.Resource):
+class Router(_base.Resource):
     """DNS Private Zone Router Resource"""
     router_id = resource.Body('router_id')
     router_region = resource.Body('router_region')
     status = resource.Body('status')
 
 
-class Zone(sdk_resource.Resource):
+class Zone(_base.Resource):
     """DNS ZONE Resource"""
-    resource_key = 'zone'
     resources_key = 'zones'
     base_path = '/zones'
 
     # capabilities
     allow_create = True
     allow_list = True
-    allow_get = True
+    allow_fetch = True
     allow_delete = True
-    allow_update = True
-    update_method = "PATCH"
+    allow_commit = True
+    commit_method = "PATCH"
 
     _query_mapping = resource.QueryParameters(
         'zone_type', 'limit', 'marker', 'offset', 'tags',

@@ -26,8 +26,8 @@ class Proxy(proxy.Proxy):
         :param dict query: Optional query parameters to be sent to limit the
             resources being returned.
 
-            * `marker`:  pagination marker
-            * `limit`: pagination limit
+            * `marker`:  pagination marker.
+            * `limit`: pagination limit.
             * `id`: Specifies DeH ID.
             * `name`: Specifies the DeH name.
             * `host_type`: Specifes the DeH type.
@@ -40,7 +40,8 @@ class Proxy(proxy.Proxy):
             * `availability_host`:  Specifies the AZ to which the DeH belongs.
             * `changes_since`: Filters the response by a date and time
                 stamp when the DeH last changed status
-                (CCYY-MM-DDThh:mm:ss+hh:mm)
+                (CCYY-MM-DDThh:mm:ss+hh:mm).
+            * `tags`: Specifies tags to use as a filter.
 
         :returns: A generator of host
             :class:`~otcextensions.sdk.deh.v1.host.Host` instances

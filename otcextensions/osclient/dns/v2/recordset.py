@@ -1,11 +1,11 @@
-#   Licensed under the Apache License, Version 2.0 (the 'License'); you may
+#   Licensed under the Apache License, Version 2.0 (the "License"); you may
 #   not use this file except in compliance with the License. You may obtain
 #   a copy of the License at
 #
 #        http://www.apache.org/licenses/LICENSE-2.0
 #
 #   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an 'AS IS' BASIS, WITHOUT
+#   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
 #   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #   License for the specific language governing permissions and limitations
 #   under the License.
@@ -31,19 +31,21 @@ _formatters = {
 def _get_columns(item):
     column_map = {
     }
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
+    hidden = ['location', 'links']
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
+                                                           hidden)
 
 
 class ListRS(command.Lister):
     _description = _('List recordsets.')
     columns = (
-        'id', 'name', 'type', 'status', 'description'
+        'id', 'name', 'type', 'status', 'description', 'records'
     )
 
     def get_parser(self, prog_name):
         parser = super(ListRS, self).get_parser(prog_name)
         parser.add_argument(
-            '--zone',
+            'zone',
             metavar='<zone>',
             help=_('UUID or name of the zone. Recordsets of all zones '
                    'will be returned if not given.')
@@ -117,10 +119,9 @@ class DeleteRS(command.Command):
         )
 
         parser.add_argument(
-            '--recordset',
+            'recordset',
             metavar='<id>',
-            required=True,
-            action='append',
+            nargs='+',
             help=_('UUID of the recordset.')
         )
 
@@ -142,9 +143,8 @@ class CreateRS(command.ShowOne):
         parser = super(CreateRS, self).get_parser(prog_name)
 
         parser.add_argument(
-            '--zone',
+            'zone',
             metavar='<zone>',
-            required=True,
             help=_('UUID or name of the zone.')
         )
         parser.add_argument(
@@ -227,7 +227,7 @@ class SetRS(command.ShowOne):
         )
         parser.add_argument(
             'recordset',
-            metavar='<UUID>',
+            metavar='<id>',
             help=_('UUID of the recordset.')
         )
         parser.add_argument(
@@ -273,7 +273,10 @@ class SetRS(command.ShowOne):
         for rec in parsed_args.record:
             attrs['records'].append(rec)
 
+        recordset = client.get_recordset(parsed_args.recordset, zone.id)
+
         obj = client.update_recordset(
+            recordset=recordset,
             **attrs
         )
 

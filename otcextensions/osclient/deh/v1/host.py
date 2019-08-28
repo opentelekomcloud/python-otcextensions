@@ -1,11 +1,11 @@
-#   Licensed under the Apache License, Version 2.0 (the 'License'); you may
+#   Licensed under the Apache License, Version 2.0 (the "License"); you may
 #   not use this file except in compliance with the License. You may obtain
 #   a copy of the License at
 #
 #        http://www.apache.org/licenses/LICENSE-2.0
 #
 #   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an 'AS IS' BASIS, WITHOUT
+#   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
 #   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #   License for the specific language governing permissions and limitations
 #   under the License.
@@ -13,6 +13,7 @@
 '''DeH Host v1 action implementations'''
 import logging
 
+from cliff import columns
 from osc_lib import utils
 from osc_lib.command import command
 
@@ -24,14 +25,35 @@ LOG = logging.getLogger(__name__)
 HOST_STATES = ['available', 'fault', 'released']
 
 
+class HostPropertiesFormatter(columns.FormattableColumn):
+
+    def human_readable(self):
+        if self._value is None:
+            return None
+        res = self._value.to_dict()
+        res.pop('available_instance_capacities', None)
+
+        return res
+
+    def machine_readable(self):
+        if self._value is None:
+            return None
+
+        return self._value.to_dict()
+
+
 _formatters = {
+    'tags': sdk_utils.ListOfDictColumn,
+    'host_properties': HostPropertiesFormatter
 }
 
 
 def _get_columns(item):
     column_map = {
     }
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
+    invisible_columns = ['location']
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
+                                                           invisible_columns)
 
 
 class ListHost(command.Lister):
@@ -164,8 +186,10 @@ class ShowHost(command.ShowOne):
             parsed_args.host,
         )
 
+        obj.fetch_tags(client)
+
         display_columns, columns = _get_columns(obj)
-        data = utils.get_item_properties(obj, columns)
+        data = utils.get_item_properties(obj, columns, formatters=_formatters)
 
         return (display_columns, data)
 
@@ -263,15 +287,9 @@ class CreateHost(command.ShowOne):
                  ) for s in obj.dedicated_host_ids))
         return table
 
-        #
-        # display_columns, columns = _get_columns(obj)
-        # data = utils.get_item_properties(obj, columns)
-        #
-        # return (display_columns, data)
-
 
 class SetHost(command.ShowOne):
-    _description = _('Update a Host')
+    _description = _('Update Host attributes')
 
     def get_parser(self, prog_name):
         parser = super(SetHost, self).get_parser(prog_name)
@@ -286,15 +304,25 @@ class SetHost(command.ShowOne):
             metavar='<name>',
             help=_('DNS Name for the host.')
         )
-        parser.add_argument('--auto_placement',
-                            action='store_const',
-                            default='on',
-                            const='on',
-                            dest='auto_placement')
-        parser.add_argument('--no-auto_placement',
-                            action='store_const',
-                            const='off',
-                            dest='auto_placement')
+        parser.add_argument(
+            '--auto_placement',
+            action='store_const',
+            const='on',
+            dest='auto_placement'
+        )
+        parser.add_argument(
+            '--no-auto_placement',
+            action='store_const',
+            const='off',
+            dest='auto_placement'
+        )
+        parser.add_argument(
+            '--tag',
+            metavar="<key=value>",
+            action="append",
+            help=_('Tag to add for this host '
+                   '(repeat option to set multiple tags)')
+        )
 
         return parser
 
@@ -312,13 +340,95 @@ class SetHost(command.ShowOne):
         host = client.find_host(parsed_args.host, ignore_missing=False)
 
         if host:
-            obj = client.update_host(
-                host=host,
-                **attrs
-            )
+            if attrs:
+                obj = client.update_host(
+                    host=host,
+                    **attrs
+                )
+
+            if parsed_args.tag:
+                tags = []
+                for tag in parsed_args.tag:
+                    (k, v) = tag.split('=')
+                    xtag = {
+                        'key': k,
+                        'value': v
+                    }
+                    tags.append(xtag)
+
+                obj = host.add_tags(client, tags)
 
             display_columns, columns = _get_columns(obj)
-            data = utils.get_item_properties(obj, columns)
+            data = utils.get_item_properties(obj, columns,
+                                             formatters=_formatters)
+
+            return (display_columns, data)
+
+
+class UnsetHost(command.ShowOne):
+    _description = _('Remove Host attributes')
+
+    def get_parser(self, prog_name):
+        parser = super(UnsetHost, self).get_parser(prog_name)
+
+        parser.add_argument(
+            'host',
+            metavar='<host>',
+            help=_('UUID or name of the host.')
+        )
+        parser.add_argument(
+            '--tag',
+            metavar="<key>",
+            action="append",
+            help=_('Tag key to remove from this host '
+                   '(repeat option to remove multiple tags)')
+        )
+
+        return parser
+
+    def take_action(self, parsed_args):
+
+        client = self.app.client_manager.deh
+
+        host = client.find_host(parsed_args.host, ignore_missing=False)
+        host.fetch_tags(client)
+
+        if host:
+            if parsed_args.tag:
+                tags = []
+                for tag in parsed_args.tag:
+                    tag_pair = tag.split('=')
+                    k = tag_pair[0]
+                    existing_tag = None
+                    for tag in host.tags:
+                        # Find whether we have such key
+                        if tag['key'] == k:
+                            existing_tag = tag
+                            break
+
+                    if existing_tag:
+                        xtag = {}
+                        if len(tag_pair) == 2:
+                            # User provided us also a value
+                            xtag = {
+                                'key': k,
+                                'value': tag_pair[1]
+                            }
+                        else:
+                            # Existing tag value will be used
+                            xtag = {
+                                'key': k,
+                                'value': existing_tag['value']
+                            }
+
+                        tags.append(xtag)
+
+                if tags:
+                    host.remove_tags(client, tags)
+
+            display_columns, columns = _get_columns(host)
+            data = utils.get_item_properties(host, columns,
+                                             formatters=_formatters)
 
             return (display_columns, data)
 

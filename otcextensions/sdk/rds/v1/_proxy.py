@@ -9,7 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import _log
 from openstack import exceptions
 
 from otcextensions.sdk import sdk_proxy
@@ -18,8 +17,6 @@ from otcextensions.sdk.rds.v1 import configuration as _configuration
 from otcextensions.sdk.rds.v1 import datastore as _datastore
 from otcextensions.sdk.rds.v1 import flavor as _flavor
 from otcextensions.sdk.rds.v1 import instance as _instance
-
-_logger = _log.setup_logging('openstack')
 
 
 class Proxy(sdk_proxy.Proxy):
@@ -388,7 +385,7 @@ class Proxy(sdk_proxy.Proxy):
     def create_configuration(self, **attrs):
         """Creating a ConfigurationGroup
 
-        :param dict \*\*attrs: Dict to overwrite ConfigurationGroup object
+        :param dict **attrs: Dict to overwrite ConfigurationGroup object
         :returns: A Parameter Group Object
         :rtype:
             :class:`~otcextensions.sdk.rds.v1.configuration.ConfigurationGroup`
