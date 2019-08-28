@@ -145,7 +145,8 @@ class TestPolicy(base.TestCase):
         self.sess.get.assert_called_once_with(
             'scaling_policy/%s' %
             EXAMPLE['scaling_policy_id'],
-            microversion=None
+            microversion=None,
+            params={}
         )
 
         self.assertEqual(sot, result)
