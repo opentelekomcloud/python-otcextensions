@@ -170,6 +170,30 @@ def _find_service_description_class(service_type):
     return service_description_class
 
 
+def get_ak_sk(conn):
+    """Fetch AK/SK from the cloud configuration or ENV
+
+      This method might be called by the proxy.
+    """
+    config = conn.config.config
+
+    ak = config.get('access_key', config.get('ak'))
+    sk = config.get('secret_key', config.get('sk'))
+
+    if not ak:
+        ak = os.getenv('OS_ACCESS_KEY', os.getenv('S3_ACCESS_KEY_ID'))
+    if not sk:
+        sk = os.getenv('OS_SECRET_KEY', os.getenv('S3_SECRET_ACCESS_KEY'))
+
+    if not (ak and sk):
+        _logger.error('AK/SK pair is not configured in the connection, '
+                      'but is requested by the service.')
+        return (None, None)
+
+    else:
+        return(ak, sk)
+
+
 def load(conn, **kwargs):
     """Register supported OTC services and make them known to the OpenStackSDK
 
@@ -220,27 +244,9 @@ def load(conn, **kwargs):
                 ])
             ] = utils.urljoin(ep)
 
-        # If service requires AK/SK - inject them
-        if service.get('require_ak', False):
-            _logger.debug('during registration found that ak is required')
-            config = conn.config.config
-
-            proxy = getattr(conn, service_name)
-
-            ak = config.get('ak', None)
-            sk = config.get('sk', None)
-
-            if not ak:
-                ak = os.getenv('S3_ACCESS_KEY_ID', None)
-            if not sk:
-                sk = os.getenv('S3_SECRET_ACCESS_KEY', None)
-
-            if ak and sk:
-                proxy._set_ak(ak=ak, sk=sk)
-            else:
-                _logger.warn('AK/SK pair is not configured in the connection. '
-                             'It is only required for CCE')
-                # return
+        # Inject get_ak_sk into the connection to give possibility
+        # for some proxies to use them
+        setattr(conn, 'get_ak_sk', get_ak_sk)
 
     return None
 

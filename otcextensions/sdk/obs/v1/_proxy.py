@@ -28,16 +28,6 @@ class Proxy(sdk_proxy.Proxy):
     CONTAINER_ENDPOINT = \
         'https://%(container)s.obs.%(region_name)s.otc.t-systems.com'
 
-    def _set_ak(self, ak, sk):
-        """Inject AK/SK into the proxy for use
-
-        """
-        self.log.debug('injecting ak/sk')
-        setattr(self, 'AK', ak)
-        setattr(self, 'SK', sk)
-
-        pass
-
     def get_container_endpoint(self, container):
         """Override to return mapped endpoint if override and region are set
 
@@ -52,9 +42,15 @@ class Proxy(sdk_proxy.Proxy):
     def _get_req_auth(self, host=None):
         auth = getattr(self, '_ak_auth', None)
         if not auth:
+            ak = None
+            sk = None
+            conn = self.session._sdk_connection
+            if hasattr(conn, 'get_ak_sk'):
+                (ak, sk) = conn.get_ak_sk(conn)
+            if not (ak and sk):
+                self.log.error('Cannot obtain AK/SK from config')
+                return None
             region = getattr(self, 'region_name', 'eu-de')
-            ak = getattr(self, 'AK', None)
-            sk = getattr(self, 'SK', None)
             if not host:
                 host = self.get_endpoint()
 
