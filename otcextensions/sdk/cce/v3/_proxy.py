@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import proxy
-
 from otcextensions.sdk.cce.v3 import cluster as _cluster
 from otcextensions.sdk.cce.v3 import cluster_node as _cluster_node
 from otcextensions.sdk.cce.v3 import cluster_cert as _cluster_cert
@@ -125,11 +124,9 @@ class Proxy(proxy.Proxy):
                  to the desired status failed to occur in specified seconds.
         :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
                  has transited to one of the failure statuses.
-        :raises: :class:`~AttributeError` if the resource does not have a
-                ``status`` attribute.
         """
         failures = ['ERROR'] if failures is None else failures
-        return resource.wait_for_status(
+        return _cluster.wait_for_status(
             self, cluster, status, failures, interval, wait)
 
 

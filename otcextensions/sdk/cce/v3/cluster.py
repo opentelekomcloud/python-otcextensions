@@ -12,7 +12,7 @@
 # import six
 from openstack import exceptions
 from openstack import resource
-
+from openstack import utils
 from otcextensions.sdk.cce.v3 import _base
 # from otcextensions.sdk.cce.v3 import cluster_node
 
@@ -76,8 +76,8 @@ class StatusSpec(resource.Resource):
     #: Access address of the kube-apiserver in the cluster.
     endpoints = resource.Body('endpoints', type=dict)
 
-    def lower(self):
-        return str(self.status).lower()
+#    def lower(self):
+#        return str(self.status).lower()
 
 
 class Cluster(_base.Resource):
@@ -215,3 +215,69 @@ class Cluster(_base.Resource):
                 yield value
 
             return
+
+    def _normalize_status(status):
+        if status is not None:
+            status = status.lower()
+        return status
+
+
+    def wait_for_status(session, resource, status, failures, interval=None,
+            wait=None):
+        """Wait for the resource to be in a particular status.
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param resource: The resource to wait on to reach the status. The resource
+                        must have a status attribute specified via ``attribute``.
+        :type resource: :class:`~openstack.resource.Resource`
+        :param status: Desired status of the resource.
+        :param list failures: Statuses that would indicate the transition
+                            failed such as 'ERROR'. Defaults to ['ERROR'].
+        :param interval: Number of seconds to wait between checks.
+                        Set to ``None`` to use the default interval.
+        :param wait: Maximum number of seconds to wait for transition.
+                    Set to ``None`` to wait forever.
+        :return: The updated resource.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` transition
+                to status failed to occur in wait seconds.
+        :raises: :class:`~openstack.exceptions.ResourceFailure` resource
+                transitioned to one of the failure states.
+        """
+        log = _log.setup_logging(__name__)
+
+        current_status = resource.status.status
+        print("The current_status is: " + current_status)
+        if _normalize_status(current_status) == status.lower():
+            return resource
+
+        if failures is None:
+            failures = ['ERROR']
+
+        failures = [f.lower() for f in failures]
+        name = "{res}:{id}".format(res=resource.__class__.__name__, id=resource.id)
+        msg = "Timeout waiting for {name} to transition to {status}".format(
+            name=name, status=status)
+
+        for count in utils.iterate_timeout(
+                timeout=wait,
+                message=msg,
+                wait=interval):
+            resource = resource.fetch(session)
+
+            if not resource:
+                raise exceptions.ResourceFailure(
+                    "{name} went away while waiting for {status}".format(
+                        name=name, status=status))
+
+            new_status = resource.status.status
+            normalized_status = _normalize_status(new_status)
+            if normalized_status == status.lower():
+                return resource
+            elif normalized_status in failures:
+                raise exceptions.ResourceFailure(
+                    "{name} transitioned to failure state {status}".format(
+                        name=name, status=new_status))
+
+            log.debug('Still waiting for resource %s to reach state %s, '
+                    'current state is %s', name, status, new_status)
+
