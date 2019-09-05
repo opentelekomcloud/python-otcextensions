@@ -15,6 +15,7 @@
 import mock
 
 from otcextensions.osclient.cce.v2 import cluster
+from otcextensions.sdk.cce.v3 import cluster as _cluster
 from otcextensions.tests.unit.osclient.cce.v2 import fakes
 
 
@@ -230,6 +231,9 @@ class TestDeleteCluster(fakes.TestCCE):
         self.cmd = cluster.DeleteCCECluster(self.app, None)
 
         self.client.delete_cluster = mock.Mock()
+
+        self.client.find_cluster = mock.Mock(
+            return_value=_cluster.Cluster(id='cluster_uuid'))
 
     def test_delete(self):
         arglist = [

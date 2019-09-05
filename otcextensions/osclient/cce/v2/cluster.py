@@ -21,7 +21,7 @@ from otcextensions.i18n import _
 LOG = logging.getLogger(__name__)
 
 
-CONTAINER_NET_MODE_CHOICES = ['overlay_l2', 'underslay_ipvlan', 'vpc-router']
+CONTAINER_NET_MODE_CHOICES = ['overlay_l2', 'underlay_ipvlan', 'vpc-router']
 CLUSTER_TYPES = ['BareMetal', 'VirtualMachine']
 
 
@@ -103,7 +103,9 @@ class DeleteCCECluster(command.Command):
 
         if parsed_args.cluster:
             client = self.app.client_manager.cce
-            client.delete_cluster(parsed_args.cluster)
+            cluster = client.find_cluster(parsed_args.cluster,
+                                          ignore_missing=False)
+            client.delete_cluster(cluster.id)
 
 
 class CreateCCECluster(command.Command):
