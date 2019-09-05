@@ -272,8 +272,7 @@ class TestDeleteClusterNode(fakes.TestCCE):
         self.client.find_cluster = mock.Mock(
             return_value=cluster.Cluster(id='cluster_uuid'))
 
-        self.client.find_cluster_node = mock.Mock(
-            return_value=clusterNode.ClusterNode(id='node'))
+        self.client.find_cluster_node = mock.Mock()
 
     def test_delete(self):
         arglist = [
@@ -293,15 +292,26 @@ class TestDeleteClusterNode(fakes.TestCCE):
         # Set the response
         self.client.delete_cluster_node.side_effect = [{}, {}]
 
+        # Set the response for find_cluster
+        self.client.find_cluster_node.side_effect = [
+            clusterNode.ClusterNode(id='node1'),
+            clusterNode.ClusterNode(id='node2')]
+
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        calls = [
-            mock.call(cluster='cluster_uuid', node='node',
+        delete_calls = [
+            mock.call(cluster='cluster_uuid', node='node1',
                       ignore_missing=False),
-            mock.call(cluster='cluster_uuid', node='node',
+            mock.call(cluster='cluster_uuid', node='node2',
                       ignore_missing=False)
         ]
 
-        self.client.delete_cluster_node.assert_has_calls(calls)
+        find_calls = [
+            mock.call(cluster='cluster_uuid', node='node1'),
+            mock.call(cluster='cluster_uuid', node='node2')
+        ]
+
+        self.client.delete_cluster_node.assert_has_calls(delete_calls)
+        self.client.find_cluster_node.assert_has_calls(find_calls)
         self.assertEqual(2, self.client.delete_cluster_node.call_count)
