@@ -104,7 +104,7 @@ class DeleteCCECluster(command.Command):
         if parsed_args.cluster:
             client = self.app.client_manager.cce
             cluster = client.find_cluster(parsed_args.cluster,
-                                                  ignore_missing=False)
+                                          ignore_missing=False)
             client.delete_cluster(cluster)
 
 
