@@ -231,6 +231,9 @@ class TestDeleteCluster(fakes.TestCCE):
 
         self.client.delete_cluster = mock.Mock()
 
+        self.client.find_cluster = mock.Mock(
+            return_value='cluster_uuid')
+
     def test_delete(self):
         arglist = [
             'cluster_uuid'
