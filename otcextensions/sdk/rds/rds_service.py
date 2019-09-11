@@ -12,12 +12,14 @@
 
 from openstack import service_description
 
-from otcextensions.sdk.rds.v1 import _proxy
+from otcextensions.sdk.rds.v1 import _proxy as _proxy_v1
+from otcextensions.sdk.rds.v3 import _proxy as _proxy_v3
 
 
 class RdsService(service_description.ServiceDescription):
     """The RDS service."""
 
     supported_versions = {
-        '1': _proxy.Proxy
+        '1': _proxy_v1.Proxy,
+        '3': _proxy_v3.Proxy
     }
