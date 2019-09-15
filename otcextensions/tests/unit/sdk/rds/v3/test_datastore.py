@@ -9,44 +9,40 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+
 from openstack.tests.unit import base
 
-from otcextensions.sdk.rds.v3 import flavor
+from otcextensions.sdk.rds.v3 import datastore
 
+
+IDENTIFIER = 'IDENTIFIER'
 EXAMPLE = {
-    "vcpus": "1",
-    "ram": 2,
-    "spec_code": "rds.mysql.c2.medium.ha",
-    "instance_mode": "ha"
+    "id": IDENTIFIER,
+    "name": "5.7"
 }
 
 
-class TestFlavor(base.TestCase):
+class TestDatastore(base.TestCase):
 
     def setUp(self):
-        super(TestFlavor, self).setUp()
+        super(TestDatastore, self).setUp()
 
     def test_basic(self):
-        sot = flavor.Flavor()
-
-        self.assertEqual('/flavors/%(datastore_name)s', sot.base_path)
-        self.assertEqual('flavors', sot.resources_key)
+        sot = datastore.Datastore()
+        self.assertEqual('dataStores', sot.resources_key)
+        self.assertEqual('/datastores/%(datastore_name)s', sot.base_path)
         self.assertIsNone(sot.resource_key)
-
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_fetch)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_delete)
         self.assertFalse(sot.allow_commit)
         self.assertDictEqual({'limit': 'limit',
-                              'marker': 'marker',
-                              'version_name': 'version_name'},
+                              'marker': 'marker'},
                              sot._query_mapping._mapping)
 
-    def test_make_it(self):
 
-        sot = flavor.Flavor(**EXAMPLE)
-        self.assertEqual(EXAMPLE['spec_code'], sot.spec_code)
-        self.assertEqual(EXAMPLE['vcpus'], sot.vcpus)
-        self.assertEqual(EXAMPLE['ram'], sot.ram)
-        self.assertEqual(EXAMPLE['instance_mode'], sot.instance_mode)
+    def test_make_it(self):
+        sot = datastore.Datastore(**EXAMPLE)
+        self.assertEqual(IDENTIFIER, sot.id)
+        self.assertEqual(EXAMPLE['name'], sot.name)

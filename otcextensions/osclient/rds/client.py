@@ -28,6 +28,7 @@ API_VERSIONS = {
     "3": "openstack.connection.Connection"
 }
 
+
 def make_client(instance):
     """Returns a rds proxy"""
 
@@ -40,6 +41,7 @@ def make_client(instance):
     LOG.debug('RDS client initialized using OpenStack OTC SDK: %s',
               conn.rds)
     return conn.rds
+
 
 def build_option_parser(parser):
     """Hook to add global options"""
