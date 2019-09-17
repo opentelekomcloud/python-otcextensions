@@ -47,19 +47,20 @@ def set_attributes_for_print(instances):
         yield instance
 
 
-def set_attributes_for_print_detail(instance):
+def set_attributes_for_print_detail(obj):
     info = {}  # instance._info.copy()
-    info['name'] = instance.name
-    info['flavor_id'] = instance['flavor_ref']
-    if getattr(instance, 'volume', None):
-        info['volume'] = instance.volume['size']
-    if getattr(instance, 'private_ips', None):
-        info['private_ips'] = ', '.join(instance.private_ips)
-    if getattr(instance, 'datastore', None):
-        info['datastore'] = instance.datastore['type']
-        info['datastore_version'] = instance.datastore['version']
-    if getattr(instance, 'configuration_id', None):
-        info['configuration_id'] = instance['configuration_id']
+    attr_list = ['id', 'name', 'datastore', 'flavor_ref', 'disk_encryption_id', 'region', 'availability_zone', 'vpc_id', 'subnet_id', 'security_group_id', 'port', 'backup_strategy', 'configuration_id', 'charge_info', 'backup_strategy']
+    for attr in dir(obj):
+        if attr == 'datastore' and getattr(obj, attr):
+            info['datastore'] = obj.datastore['type']
+            info['datastore_version'] = obj.datastore['version']
+        elif attr == 'volume' and getattr(obj, attr):
+            info['volume_type'] = obj.volume['type']
+            info['size'] = obj.volume['size']
+        elif attr == 'charge_info' and getattr(obj, attr):
+            info['charge_mode'] = obj.charge_info['charge_mode']
+        elif attr in attr_list and getattr(obj, attr):
+            info[attr] = getattr(obj, attr)
     return info
 
 
@@ -171,8 +172,7 @@ class ListDatabaseInstances(command.Lister):
 class ShowDatabaseInstance(command.ShowOne):
     _description = _("Show instance details")
 
-    columns = ['ID', 'Name', 'Datastore', 'Datastore Version', 'Status',
-               'Flavor ID', 'Size', 'Region']
+    columns = ['id', 'name', 'datastore', 'datastore_version', 'flavor Id', 'Volume Type', 'Size', 'disk_encryption_id', 'region', 'availability_zone', 'vpc_id', 'subnet_id', 'security_group_id', 'port', 'backup_strategy', 'configuration_id', 'charge mode']
 
     def get_parser(self, prog_name):
         parser = super(ShowDatabaseInstance, self).get_parser(prog_name)
@@ -206,6 +206,8 @@ class CreateDatabaseInstance(command.ShowOne):
 
     _description = _("Creates a new database instance.")
 
+    columns = ['id', 'name', 'datastore', 'datastore_version', 'flavor Id', 'Volume Type', 'Size', 'disk_encryption_id', 'region', 'availability_zone', 'vpc_id', 'subnet_id', 'security_group_id', 'port', 'backup_strategy', 'configuration_id', 'charge mode']
+
     def get_parser(self, prog_name):
         parser = super(CreateDatabaseInstance, self).get_parser(prog_name)
         parser.add_argument(
@@ -214,9 +216,9 @@ class CreateDatabaseInstance(command.ShowOne):
             help=_("Name of the instance."),
         )
         parser.add_argument(
-            'flavor',
+            'flavor_ref',
             metavar='<flavor_ref>',
-            help=_("A flavor spec_code."),
+            help=_("flavor spec_code."),
         )
         parser.add_argument(
             '--size',
@@ -236,25 +238,40 @@ class CreateDatabaseInstance(command.ShowOne):
         parser.add_argument(
             '--availability_zone',
             metavar='<availability_zone>',
-            default=None,
             help=_("The Zone hint to give to Nova."),
         )
         parser.add_argument(
             '--datastore',
             metavar='<datastore>',
-            default=None,
-            help=_("A datastore name"),
+            help=_("datastore name"),
         )
         parser.add_argument(
             '--datastore_version',
             metavar='<datastore_version>',
-            default=None,
             help=_("datastore version."),
         )
         parser.add_argument(
-            '--configuration',
+            '--configuration_id',
             metavar='<configuration_id>',
             default=None,
+            help=_("ID of the configuration group to attach to the instance."),
+        )
+        parser.add_argument(
+            '--disk_encryption_id',
+            metavar='<disk_encryption_id>',
+            default=None,
+            help=_("key ID for disk encryption."),
+        )
+        parser.add_argument(
+            '--port',
+            metavar='<port>',
+            default=None,
+            type=int,
+            help=_("Database Port"),
+        )
+        parser.add_argument(
+            '--password',
+            metavar='<password>',
             help=_("ID of the configuration group to attach to the instance."),
         )
         parser.add_argument(
@@ -267,7 +284,6 @@ class CreateDatabaseInstance(command.ShowOne):
             '--region',
             metavar='<region>',
             type=str,
-            default=None,
             help=argparse.SUPPRESS,
         )
         parser.add_argument(
@@ -297,14 +313,14 @@ class CreateDatabaseInstance(command.ShowOne):
             '--ha_replication_mode',
             metavar='<ha_replication_mode>',
             type=str,
-            # required=True,
             help=_('replication mode for the standby DB instance')
         )
         parser.add_argument(
-            '--replica_of',
-            metavar='<replica_of>',
+            '--charge_mode',
+            metavar='<charge_mode>',
             type=str,
-            help=_('ID or name of an existing instance to replicate from.')
+            default='postPaid',
+            help=_('Specifies the billing mode')
         )
         return parser
 
@@ -316,16 +332,12 @@ class CreateDatabaseInstance(command.ShowOne):
         attrs = {}
         args_list = ['name', 'availability_zone', 'configuration_id',
                       'region', 'vpc_id', 'subnet_id', 'security_group_id',
-                      'disk_encryption_id', 'port', 'password']
+                      'disk_encryption_id', 'port', 'password', 'flavor_ref']
         for arg in args_list:
             if getattr(parsed_args, arg):
                 attrs[arg] = getattr(parsed_args, arg)
-        volume = None
-        if parsed_args['size'] and parsed_args['size'] <= 0:
-            raise exceptions.ValidationError(
-                _("Volume size '%s' must be an integer and greater than 0.")
-                % parsed_args.size)
-        elif parsed_args.size:
+        volume = {}
+        if parsed_args.size:
             volume = {"size": parsed_args.size}
             if parsed_args.volume_type:
                 volume['type'] = parsed_args.volume_type
@@ -344,9 +356,15 @@ class CreateDatabaseInstance(command.ShowOne):
                 'replication_mode': parsed_args.ha_replication_mode
             }
             attrs['ha'] = ha
-        instance = client.create_instance(**attrs)
-        instance = set_attributes_for_print_detail(instance)
-        return zip(*sorted(six.iteritems(instance)))
+        if parsed_args.charge_mode:
+            attrs['charge_info'] = {
+                'charge_mode': parsed_args.charge_mode
+            }
+        obj = client.create_instance(**attrs)
+
+        display_columns, columns = _get_columns(obj)
+        data = utils.get_item_properties(obj, columns, formatters={})
+        return (display_columns, data)
 
 
 class DeleteDatabaseInstance(command.Command):

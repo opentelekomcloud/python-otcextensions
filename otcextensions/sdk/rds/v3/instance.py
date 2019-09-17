@@ -80,6 +80,9 @@ class Instance(sdk_resource.Resource):
     #: Flavor ID
     #: *Type:uuid*
     flavor_ref = resource.Body('flavor_ref')
+    #: Availability Zone
+    #: *Type:str*
+    availability_zone = resource.Body('availability_zone')
     #: Volume information
     #: *Type: dict*
     volume = resource.Body('volume', type=dict)
@@ -103,6 +106,9 @@ class Instance(sdk_resource.Resource):
     #: Disk Encryption Key Id
     #: *Type:str*
     disk_encryption_id = resource.Body('disk_encryption_id')
+    #: Database Password
+    #: *Type:str*
+    password = resource.Body('password')
     #: Time Zone
     #: *Type:str*
     time_zone = resource.Body('time_zone')
@@ -110,3 +116,6 @@ class Instance(sdk_resource.Resource):
     #:   DB instance.
     #: *Type:str*
     replication_mode = resource.Body('replication_mode')
+    #: Charge Info
+    #: *Type: dict*
+    backup_strategy = resource.Body('charge_info', type=dict)

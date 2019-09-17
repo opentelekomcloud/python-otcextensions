@@ -10,7 +10,7 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-"""Configuration v1 action implementations"""
+"""Configuration v3 action implementations"""
 import json
 import logging
 
@@ -22,7 +22,7 @@ from osc_lib.command import command
 from otcextensions.i18n import _
 
 import six
-
+import yaml
 LOG = logging.getLogger(__name__)
 
 DATASTORE_TYPE_CHOICES = ['MySQL', 'PostgreSQL', 'SQLServer']
@@ -47,7 +47,7 @@ def format_dict(data):
 class ListConfigurations(command.Lister):
     _description = _("List Parameter Groups")
     columns = ['ID', 'Name', 'Description', 'Datastore Name',
-               'Datastore Version Name']
+               'Datastore Version Name', 'User Defined']
 
     def get_parser(self, prog_name):
         parser = super(ListConfigurations, self).get_parser(prog_name)
@@ -162,18 +162,19 @@ class CreateConfiguration(command.ShowOne):
             required=True,
             help=_("Datastore version")
         )
+#        parser.add_argument(
+#            '--value',
+#            dest="ind_values",
+#            metavar="<key=value>",
+#            action=parseractions.KeyValueAction,
+#            help=_("Parameter group value"
+#                   "(repeat option to set multiple values)")
+#        )
         parser.add_argument(
-            '--value',
-            dest="ind_values",
-            metavar="<key=value>",
-            action=parseractions.KeyValueAction,
-            help=_("Parameter group value"
-                   "(repeat option to set multiple values)")
-        )
-        parser.add_argument(
-            'values',
+            '--values',
             metavar='<values>',
-            help=_('Dictionary (JSon) of the values to set.'),
+            help=_('Dictionary (JSON) of the values to set.'),
+            type=yaml.load
         )
 
         return parser
@@ -194,20 +195,19 @@ class CreateConfiguration(command.ShowOne):
             config_attrs['datastore'] = datastore
 
         # flatten values into the proper config_attrs
-        values = {}
-        try:
-            values = json.loads(parsed_args.values)
-        except Exception as e:
-            msg = (_("Failed to parse configuration values: %(e)s")
-                   % {'e': e})
-            raise exceptions.CommandError(msg)
-
-        if getattr(parsed_args, 'ind_values', None):
-            for k, v in six.iteritems(parsed_args.ind_values):
-                values[k] = str(v)
-
-        config_attrs['values'] = values
-
+#        values = {}
+#        try:
+#            values = json.loads(parsed_args.values)
+#        except Exception as e:
+#            msg = (_("Failed to parse configuration values: %(e)s")
+#                   % {'e': e})
+#            raise exceptions.CommandError(msg)
+#
+#        if getattr(parsed_args, 'ind_values', None):
+#            for k, v in six.iteritems(parsed_args.ind_values):
+#                values[k] = str(v)
+#
+        config_attrs['values'] = parsed_args.values
         config = client.create_configuration(**config_attrs)
 
         data = utils.get_item_properties(
@@ -321,23 +321,19 @@ class DeleteConfiguration(command.Command):
     def get_parser(self, prog_name):
         parser = super(DeleteConfiguration, self).get_parser(prog_name)
         parser.add_argument(
-            "configuration_group",
-            metavar="<configuration_group>",
-            help=_("ID or name of the configuration group"),
+            'configuration',
+            metavar='<configuration>',
+            nargs='+',
+            help=_('ID or name of the configuration group')
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.rds
-
-        try:
-            configuration = client.find_configuration(
-                parsed_args.configuration_group)
-            client.delete_configuration(configuration)
-        except Exception as e:
-            msg = (_("Failed to delete configuration %(c_group)s: %(e)s")
-                   % {'c_group': parsed_args.configuration_group, 'e': e})
-            raise exceptions.CommandError(msg)
+        if parsed_args.configuration:
+            for cnf in parsed_args.configuration:
+                client.delete_configuration(
+                    cnf, ignore_missing=False)
 
 
 class ListDatabaseConfigurationParameters(command.Lister):
