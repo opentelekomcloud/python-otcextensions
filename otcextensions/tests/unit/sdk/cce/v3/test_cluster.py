@@ -132,3 +132,10 @@ class TestCluster(base.TestCase):
         self.assertEqual(
             set(i.id for i in expected_list),
             set(i.id for i in result))
+
+    def test_get_status(self):
+        data = EXAMPLE_LIST['items'][0]
+        cluster = _cluster.Cluster(**data)
+
+        self.assertEqual(data['status']['phase'], getattr(cluster,
+                                                          'status.status'))
