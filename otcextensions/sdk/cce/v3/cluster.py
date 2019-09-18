@@ -134,6 +134,9 @@ class Cluster(_base.Resource):
                             return metadata.name
                 except KeyError:
                     return None
+        elif name == 'status.status':
+            status = object.__getattribute__(self, 'status')
+            return object.__getattribute__(status, 'status')
         else:
             return object.__getattribute__(self, name)
 

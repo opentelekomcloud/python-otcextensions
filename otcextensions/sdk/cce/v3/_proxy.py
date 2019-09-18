@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import proxy
+from openstack import resource
 
 from otcextensions.sdk.cce.v3 import cluster as _cluster
 from otcextensions.sdk.cce.v3 import cluster_node as _cluster_node
@@ -103,6 +104,34 @@ class Proxy(proxy.Proxy):
             _cluster_cert.ClusterCertificate, cluster_id=cluster.id,
             requires_id=False
         )
+
+    def wait_for_cluster(self, cluster, status='Available', failures=None,
+                         interval=2, wait=960):
+        """Wait for a server to be in a particular status.
+
+        :param cluster:
+            The :class:`~otcextensions.sdk.cce.v3.cluster.Cluster` to wait on
+            to reach the specified status.
+        :param status: Desired status.
+        :param failures:
+            Statuses that would be interpreted as failures.
+        :type failures: :py:class:`list`
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait before the change.
+            Default to 960.
+        :returns: The resource is returned on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` if transition
+                 to the desired status failed to occur in specified seconds.
+        :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
+                 has transited to one of the failure statuses.
+        """
+        failures = ['ERROR'] if failures is None else failures
+        return resource.wait_for_status(
+            self, cluster, status, failures, interval, wait,
+            attribute='status.status')
 
     # ======== Cluster Nodes ========
     def cluster_nodes(self, cluster):
