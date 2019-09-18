@@ -12,6 +12,7 @@
 # import six
 from openstack import exceptions
 from openstack import resource
+
 from otcextensions.sdk.cce.v3 import _base
 # from otcextensions.sdk.cce.v3 import cluster_node
 
@@ -75,10 +76,7 @@ class StatusSpec(resource.Resource):
     #: Access address of the kube-apiserver in the cluster.
     endpoints = resource.Body('endpoints', type=dict)
 
-#    def lower(self):
-#        return str(self.status).lower()
-
-
+    
 class Cluster(_base.Resource):
     base_path = '/clusters'
 
