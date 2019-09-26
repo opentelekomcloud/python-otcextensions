@@ -40,7 +40,7 @@ def set_attributes_for_print_detail(obj):
 class ListBackup(command.Lister):
 
     _description = _("List database backups/snapshots")
-    columns = ('Id', 'name', 'type', 'instance_id', 'datastore_type', 'datastore_version')
+    columns = ('ID', 'Name', 'Type', 'Instance Id', 'Datastore Type', 'Datastore Version')
 
     def get_parser(self, prog_name):
         parser = super(ListBackup, self).get_parser(prog_name)
@@ -86,14 +86,12 @@ class ListBackup(command.Lister):
     def take_action(self, parsed_args):
         client = self.app.client_manager.rds
         attrs = {}
-        args_list = ['instance', 'backup_id', 'backup_type', 'offset', 'limit', 'begin_time', 'end_time']
+        args_list = ['backup_id', 'backup_type', 'offset', 'limit', 'begin_time', 'end_time']
         for arg in args_list:
-            if arg == 'instance':
-                attrs['instance_id'] = client.find_instance(parsed_args.instance).id
-            elif getattr(parsed_args, arg):
+            if getattr(parsed_args, arg):
                 attrs[arg] = getattr(parsed_args, arg)
         
-        data = client.backups(**attrs)
+        data = client.backups(parsed_args.instance, **attrs)
 
         return (
             self.columns,
@@ -112,15 +110,14 @@ class CreateBackup(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(CreateBackup, self).get_parser(prog_name)
         parser.add_argument(
+            'name',
+            metavar='<name>',
+            help=_('Name for the backup')
+        )
+        parser.add_argument(
             'instance',
             metavar='<instance>',
             help=_('ID or Name of the instance to create backup from')
-        )
-        parser.add_argument(
-            '--name',
-            metavar='<name>',
-            required=True,
-            help=_('Name for the backup')
         )
         parser.add_argument(
             '--description',
@@ -139,10 +136,7 @@ class CreateBackup(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.rds
 
-        attrs = {}
-        attrs['instance_id'] = client.find_instance(parsed_args.instance).id
-
-        attrs['name'] = parsed_args.name
+        attrs = { 'name': parsed_args.name }
         if parsed_args.description:
             attrs['description'] = parsed_args.description
         if parsed_args.databases:
@@ -152,7 +146,7 @@ class CreateBackup(command.ShowOne):
             for db_name in databases:
                 attrs['databases'].append({'name': db_name})
 
-        data = client.create_backup(**attrs)
+        data = client.create_backup(parsed_args.instance, **attrs)
 
         return (
             self.columns,

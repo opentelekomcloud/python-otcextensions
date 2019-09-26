@@ -49,7 +49,22 @@ def set_attributes_for_print(instances):
 
 def set_attributes_for_print_detail(obj):
     info = {}  # instance._info.copy()
-    attr_list = ['id', 'name', 'datastore', 'flavor_ref', 'disk_encryption_id', 'region', 'availability_zone', 'vpc_id', 'subnet_id', 'security_group_id', 'port', 'backup_strategy', 'configuration_id', 'charge_info', 'backup_strategy']
+    attr_list = [
+        'id',
+        'name',
+        'datastore',
+        'flavor_ref',
+        'disk_encryption_id',
+        'region',
+        'availability_zone',
+        'vpc_id',
+        'subnet_id',
+        'security_group_id',
+        'port',
+        'backup_strategy',
+        'configuration_id',
+        'charge_info',
+        'backup_strategy']
     for attr in dir(obj):
         if attr == 'datastore' and getattr(obj, attr):
             info['datastore'] = obj.datastore['type']
@@ -150,12 +165,19 @@ class ListDatabaseInstances(command.Lister):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.rds
-        args_list = ['name', 'id', 'vpc_id', 'subnet_id', 'type', 'datastore_type', 'offset']
+        args_list = [
+            'name',
+            'id',
+            'vpc_id',
+            'subnet_id',
+            'type',
+            'datastore_type',
+            'offset']
         attrs = {}
         for arg in args_list:
             if getattr(parsed_args, arg):
                 attrs[arg] = getattr(parsed_args, arg)
-        
+
         data = client.instances(**attrs)
         if data:
             data = set_attributes_for_print(data)
@@ -172,7 +194,24 @@ class ListDatabaseInstances(command.Lister):
 class ShowDatabaseInstance(command.ShowOne):
     _description = _("Show instance details")
 
-    columns = ['id', 'name', 'datastore', 'datastore_version', 'flavor Id', 'Volume Type', 'Size', 'disk_encryption_id', 'region', 'availability_zone', 'vpc_id', 'subnet_id', 'security_group_id', 'port', 'backup_strategy', 'configuration_id', 'charge mode']
+    columns = [
+        'id',
+        'name',
+        'datastore',
+        'datastore_version',
+        'flavor Ref',
+        'Volume Type',
+        'Size',
+        'disk_encryption_id',
+        'region',
+        'availability_zone',
+        'vpc_id',
+        'subnet_id',
+        'security_group_id',
+        'port',
+        'backup_strategy',
+        'configuration_id',
+        'charge mode']
 
     def get_parser(self, prog_name):
         parser = super(ShowDatabaseInstance, self).get_parser(prog_name)
@@ -187,16 +226,6 @@ class ShowDatabaseInstance(command.ShowOne):
         client = self.app.client_manager.rds
         obj = client.find_instance(parsed_args.instance)
 
-        # data = set_attributes_for_print_detail(obj)
-        #
-        # return (
-        #     self.columns,
-        #     (utils.get_dict_properties(
-        #         s,
-        #         self.columns,
-        #     ) for s in data)
-        # )
-
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns, formatters={})
         return (display_columns, data)
@@ -206,7 +235,24 @@ class CreateDatabaseInstance(command.ShowOne):
 
     _description = _("Creates a new database instance.")
 
-    columns = ['id', 'name', 'datastore', 'datastore_version', 'flavor Id', 'Volume Type', 'Size', 'disk_encryption_id', 'region', 'availability_zone', 'vpc_id', 'subnet_id', 'security_group_id', 'port', 'backup_strategy', 'configuration_id', 'charge mode']
+    columns = [
+        'id',
+        'name',
+        'datastore',
+        'datastore_version',
+        'flavor Id',
+        'Volume Type',
+        'Size',
+        'disk_encryption_id',
+        'region',
+        'availability_zone',
+        'vpc_id',
+        'subnet_id',
+        'security_group_id',
+        'port',
+        'backup_strategy',
+        'configuration_id',
+        'charge mode']
 
     def get_parser(self, prog_name):
         parser = super(CreateDatabaseInstance, self).get_parser(prog_name)
@@ -216,7 +262,8 @@ class CreateDatabaseInstance(command.ShowOne):
             help=_("Name of the instance."),
         )
         parser.add_argument(
-            'flavor_ref',
+            '--flavor',
+            dest='flavor_ref',
             metavar='<flavor_ref>',
             help=_("flavor spec_code."),
         )
@@ -287,7 +334,7 @@ class CreateDatabaseInstance(command.ShowOne):
             help=argparse.SUPPRESS,
         )
         parser.add_argument(
-            '--network_id',
+            '--vpc_id',
             dest='vpc_id',
             metavar='<vpc_id>',
             type=str,
@@ -331,8 +378,8 @@ class CreateDatabaseInstance(command.ShowOne):
 
         attrs = {}
         args_list = ['name', 'availability_zone', 'configuration_id',
-                      'region', 'vpc_id', 'subnet_id', 'security_group_id',
-                      'disk_encryption_id', 'port', 'password', 'flavor_ref']
+                     'region', 'vpc_id', 'subnet_id', 'security_group_id',
+                     'disk_encryption_id', 'port', 'password', 'flavor_ref']
         for arg in args_list:
             if getattr(parsed_args, arg):
                 attrs[arg] = getattr(parsed_args, arg)
@@ -389,7 +436,6 @@ class DeleteDatabaseInstance(command.Command):
             msg = (_("Failed to delete instance %(instance)s: %(e)s")
                    % {'instance': parsed_args.instance, 'e': e})
             raise exceptions.CommandError(msg)
-
 
 
 class ForceDeleteDatabaseInstance(command.Command):

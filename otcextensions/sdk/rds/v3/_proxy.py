@@ -364,22 +364,26 @@ class Proxy(sdk_proxy.Proxy):
                           ignore_missing=ignore_missing)
 
    # ======= Backups =======
-    def backups(self, **params):
+    def backups(self, instance, **params):
         """List Backups
 
         :returns: A generator of backup
         :rtype: :class:`~otcextensions.sdk.rds.v3.backup.Backup`
         """
+        instance = self._get_resource(_instance.Instance, instance)
+        params['instance_id'] = instance.id
         return self._list(
             _backup.Backup, paginated=False, **params, headers=self.get_os_headers(True)
         )
 
-    def create_backup(self, **attrs):
+    def create_backup(self, instance, **attrs):
         """Create a backups of instance
 
         :returns: A new backup object
         :rtype: :class:`~otcextensions.sdk.rds.v3.backup.Backup`
         """
+        instance = self._get_resource(_instance.Instance, instance)
+        attrs['instance_id'] = instance.id
         return self._create(_backup.Backup,
             headers=self.get_os_headers(True),
             prepend_key=False, **attrs
