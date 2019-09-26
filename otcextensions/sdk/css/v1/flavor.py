@@ -76,7 +76,7 @@ class Flavor(resource.Resource):
         if base_path is None:
             base_path = cls.base_path
         cls._query_mapping._validate(params, base_path=base_path)
-        query_params = cls._query_mapping._transpose(params)
+        query_params = cls._query_mapping._transpose(params, cls)
         uri = base_path % params
 
         # Copy query_params due to weird mock unittest interactions

@@ -54,7 +54,7 @@ class GroupMessage(_base.Resource):
         # style, allow user to pass mulitple tags as the query parameters
         # which can not leverage method of session directlly.
 
-        query_params = cls._query_mapping._transpose(params)
+        query_params = cls._query_mapping._transpose(params, cls)
         resp = session.get(
             uri,
             headers=headers,
