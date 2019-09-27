@@ -409,41 +409,53 @@ class Proxy(sdk_proxy.Proxy):
             headers=self.get_os_headers(True),
         )
 
-#    def get_backup_policy(self, instance):
-#        """Obtaining a backup policy of the instance
-#
-#        :param instance: This parameter can be either the ID of an instance
-#            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
-#        :returns: A Backup policy
-#        :rtype: :class:`~otcextensions.sdk.rds.v3.configuration.BackupPolicy`
-#
-#        """
-#        instance = self._get_resource(_instance.Instance, instance)
-#        return self._get(
-#            _backup.BackupPolicy,
-#            requires_id=False,
-#            instance_id=instance.id,
-#            # project_id=self.session.get_project_id(),
-#            # endpoint_override=self.get_rds_endpoint(),
-#            headers=self.get_os_headers(True),
-#        )
-#
-#    def set_backup_policy(self, backup_policy, instance, **attrs):
-#        """Sets the backup policy of the instance
-#
-#        :param instance: This parameter can be either the ID of an instance
-#            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
-#        :param dict attrs: The attributes to update on the backup_policy
-#            represented by ``backup_policy``.
-#
-#        :returns: ``None``
-#        """
-#        instance = self._get_resource(_instance.Instance, instance)
-#        return self._update(
-#            _backup.BackupPolicy,
-#            backup_policy,
-#            instance_id=instance.id,
-#            # project_id=self.session.get_project_id(),
-#            # endpoint_override=self.get_rds_endpoint(),
-#            headers=self.get_os_headers(True),
-#            **attrs)
+    def get_backup_policy(self, instance):
+        """Obtaining a backup policy of the instance
+
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+        :returns: A Backup policy
+        :rtype: :class:`~otcextensions.sdk.rds.v3.backup.BackupPolicy`
+
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return self._get(
+            _backup.BackupPolicy,
+            requires_id=False,
+            instance_id=instance.id,
+            headers=self.get_os_headers(True),
+        )
+
+    def set_backup_policy(self, instance, **attrs):
+        """Sets the backup policy of the instance
+
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+        :param dict attrs: The attributes to update on the backup_policy
+            represented by ``backup_policy``.
+
+        :returns: ``None``
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return self._update(
+            _backup.BackupPolicy,
+            instance_id=instance.id,
+            headers=self.get_os_headers(True),
+            **attrs)
+
+    def get_backup_restore_time(self, instance):
+        """Obtaining a backup policy of the instance
+
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+        :returns: A Backup RestoreTime
+        :rtype: :class:`~otcextensions.sdk.rds.v3.backup.BackupRestoreTime`
+
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return self._get(
+            _backup.BackupRestoreTime,
+            requires_id=False,
+            instance_id=instance.id,
+            headers=self.get_os_headers(True),
+        )

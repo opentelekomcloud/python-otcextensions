@@ -42,7 +42,7 @@ class Backup(sdk_resource.Resource):
     #: Data backup description
     description = resource.Body('description')
     #: Create back of specific dbs
-    #: *Type:dict*
+    #: *Type:list*
     databases = resource.Body('databases', type=list)
     #: Data store information
     #: *Type: dict*
@@ -65,7 +65,7 @@ class Backup(sdk_resource.Resource):
 class BackupPolicy(sdk_resource.Resource):
 
     base_path = '/instances/%(instance_id)s/backups/policy'
-    resource_key = 'policy'
+    resource_key = 'backup_policy'
 
     # capabilities
     allow_update = True
@@ -127,3 +127,30 @@ class BackupPolicy(sdk_resource.Resource):
             headers=headers)
 
         return None
+
+
+class BackupRestoreTime(sdk_resource.Resource):
+
+    base_path = '/instances/%(instance_id)s/restore-time'
+    resource_key = 'restore_time'
+
+    # capabilities
+    allow_get = True
+
+    #: instaceId
+    instance_id = resource.URI('instance_id')
+    # project_id = resource.URI('project_id')
+
+    #: Start time
+    #:  Indicates the start time of the recovery time period in
+    #:  the UNIX timestamp format. The unit is
+    #:  millisecond and the time zone is UTC.
+    #: *Type: string*
+    start_time = resource.Body('start_time')
+
+    #: End time
+    #:  Indicates the end time of the recovery time period in
+    #:  the UNIX timestamp format. The unit is
+    #:  millisecond and the time zone is UTC.
+    #: *Type: string*
+    end_time = resource.Body('end_time')
