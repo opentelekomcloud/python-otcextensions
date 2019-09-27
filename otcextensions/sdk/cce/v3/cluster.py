@@ -134,6 +134,9 @@ class Cluster(_base.Resource):
                             return metadata.name
                 except KeyError:
                     return None
+        elif name == 'status.status':
+            status = object.__getattribute__(self, 'status')
+            return object.__getattribute__(status, 'status')
         else:
             return object.__getattribute__(self, name)
 
@@ -179,7 +182,7 @@ class Cluster(_base.Resource):
         if base_path is None:
             base_path = cls.base_path
         cls._query_mapping._validate(params, base_path=base_path)
-        query_params = cls._query_mapping._transpose(params)
+        query_params = cls._query_mapping._transpose(params, cls)
         uri = base_path % params
 
         while uri:

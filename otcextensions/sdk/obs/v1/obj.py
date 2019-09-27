@@ -90,7 +90,7 @@ class Object(_base.BaseResource):
             raise exceptions.MethodNotSupported(cls, "list")
 
         cls._query_mapping._validate(params, base_path=cls.base_path)
-        query_params = cls._query_mapping._transpose(params)
+        query_params = cls._query_mapping._transpose(params, cls)
         uri = cls.base_path % params
 
         # Build additional arguments to the GET call

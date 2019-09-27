@@ -35,7 +35,7 @@ class Resource(resource.Resource):
             params['limit'] = limit
         else:
             next_link = None
-        query_params = cls._query_mapping._transpose(params)
+        query_params = cls._query_mapping._transpose(params, cls)
         return next_link, query_params
 
     @staticmethod
@@ -136,7 +136,7 @@ class Resource(resource.Resource):
             uri_params = {'scaling_group_id': scaling_group_id}
 
         cls._query_mapping._validate(params, base_path=cls.base_path)
-        query_params = cls._query_mapping._transpose(params)
+        query_params = cls._query_mapping._transpose(params, cls)
         uri = None
         if not hasattr(cls, 'list_path'):
             uri = cls.base_path % uri_params

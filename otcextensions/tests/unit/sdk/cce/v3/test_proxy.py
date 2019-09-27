@@ -143,3 +143,11 @@ class TestCCEClusterNode(TestCCEProxy):
                 'ignore_missing': True
             }
         )
+
+    def test_server_wait_for(self):
+        value = _cluster.Cluster(id='cluster_id')
+        self.verify_wait_for_status(
+            self.proxy.wait_for_cluster,
+            method_args=[value],
+            expected_args=[value, 'Available', ['ERROR'], 2, 960],
+            expected_kwargs={'attribute': 'status.status'})

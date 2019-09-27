@@ -185,7 +185,7 @@ class CreateInstance(command.ShowOne):
         parser.add_argument(
             '--engine',
             metavar='<engine>',
-            default='redis',
+            default='Redis',
             help=_('Cache engine, which is Redis.')
         )
         parser.add_argument(
