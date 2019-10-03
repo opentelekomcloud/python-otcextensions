@@ -21,8 +21,10 @@ from otcextensions.tests.unit.osclient.rds.v3 import fakes as rds_fakes
 
 class TestListDatabaseInstances(rds_fakes.TestRds):
 
-    column_list_headers = ['ID', 'Name', 'Datastore Type', 'Datastore Version', 'Status',
-               'Flavor_ref', 'Type', 'Size', 'Region']
+    column_list_headers = [
+        'ID', 'Name', 'Datastore Type', 'Datastore Version', 'Status',
+        'Flavor_ref', 'Type', 'Size', 'Region'
+    ]
 
     def setUp(self):
         super(TestListDatabaseInstances, self).setUp()
@@ -34,32 +36,20 @@ class TestListDatabaseInstances(rds_fakes.TestRds):
         self.objects = self.instance_mock.create_multiple(3)
         self.object_data = []
         for s in self.objects:
-            self.object_data.append((
-                s.id,
-                s.name,
-                s.datastore['type'],
-                s.datastore['version'],
-                s.status,
-                s.flavor_ref,
-                s.type,
-                s.volume['size'],
-                s.region
-            ))
+            self.object_data.append(
+                (s.id, s.name, s.datastore['type'], s.datastore['version'],
+                 s.status, s.flavor_ref, s.type, s.volume['size'], s.region))
 
     def test_list(self):
-        arglist = [
-        ]
+        arglist = []
 
-        verifylist = [
-        ]
+        verifylist = []
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.rds.instances.side_effect = [
-            self.objects
-        ]
+        self.app.client_manager.rds.instances.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -74,7 +64,8 @@ class TestShowDatabaseInstance(rds_fakes.TestRds):
 
     column_list_headers = [
         'datastore', 'flavor_ref', 'id', 'name', 'region'
-        'status', 'volume']
+        'status', 'volume'
+    ]
 
     def setUp(self):
         super(TestShowDatabaseInstance, self).setUp()
@@ -108,10 +99,8 @@ class TestShowDatabaseInstance(rds_fakes.TestRds):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.rds.find_instance.side_effect = [
-            self.object
-        ]
-        
+        self.app.client_manager.rds.find_instance.side_effect = [self.object]
+
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
         self.app.client_manager.rds.find_instance.assert_called()
@@ -121,7 +110,6 @@ class TestShowDatabaseInstance(rds_fakes.TestRds):
 
 
 class TestDeleteDatabaseInstance(rds_fakes.TestRds):
-
     def setUp(self):
         super(TestDeleteDatabaseInstance, self).setUp()
 
@@ -142,9 +130,7 @@ class TestDeleteDatabaseInstance(rds_fakes.TestRds):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.rds.delete_instance.side_effect = [
-            True
-        ]
+        self.app.client_manager.rds.delete_instance.side_effect = [True]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
@@ -153,7 +139,6 @@ class TestDeleteDatabaseInstance(rds_fakes.TestRds):
 
 
 class TestCreateDatabaseInstance(rds_fakes.TestRds):
-
     def setUp(self):
         super(TestCreateDatabaseInstance, self).setUp()
 
@@ -170,25 +155,22 @@ class TestCreateDatabaseInstance(rds_fakes.TestRds):
 
     def test_action(self):
         arglist = [
-            'inst_name', '--flavor', 'test-flavor', '--availability_zone', 'test-az-01', '--datastore', 'MySQL', '--datastore_version', '5.7',
-            '--vpc_id', 'test-vpc-id', '--subnet_id', 'test-subnet-id', '--security_group', 'test-subnet-id', '--volume_type', 'ULTRAHIGH', 
-            '--size', '100', '--password', 'testtest', '--region', 'test-region'
+            'inst_name', 'test-flavor', '--availability_zone', 'test-az-01',
+            '--datastore', 'MySQL', '--datastore_version', '5.7',
+            '--network_id', 'test-vpc-id', '--subnet_id', 'test-subnet-id',
+            '--security_group', 'test-subnet-id', '--volume_type', 'ULTRAHIGH',
+            '--size', '100', '--password', 'testtest', '--region',
+            'test-region'
         ]
 
-        verifylist = [
-            ('name', 'inst_name'),
-            ('flavor_ref', 'test-flavor'),
-            ('availability_zone', 'test-az-01'),
-            ('datastore', 'MySQL'),
-            ('datastore_version', '5.7'),
-            ('vpc_id', 'test-vpc-id'), 
-            ('subnet_id', 'test-subnet-id'), 
-            ('security_group_id', 'test-subnet-id'), 
-            ('volume_type', 'ULTRAHIGH'), 
-            ('size', 100),
-            ('password', 'testtest'),
-            ('region', 'test-region')
-        ]
+        verifylist = [('name', 'inst_name'), ('flavor_ref', 'test-flavor'),
+                      ('availability_zone', 'test-az-01'),
+                      ('datastore', 'MySQL'), ('datastore_version', '5.7'),
+                      ('vpc_id', 'test-vpc-id'),
+                      ('subnet_id', 'test-subnet-id'),
+                      ('security_group_id', 'test-subnet-id'),
+                      ('volume_type', 'ULTRAHIGH'), ('size', 100),
+                      ('password', 'testtest'), ('region', 'test-region')]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)

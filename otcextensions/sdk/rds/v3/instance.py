@@ -9,11 +9,10 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import _log
 from openstack import resource
-from openstack import utils
-
+from openstack import _log
 from otcextensions.sdk import sdk_resource
+
 
 _logger = _log.setup_logging('openstack')
 
@@ -65,7 +64,7 @@ class Instance(sdk_resource.Resource):
     #: Instance created time
     #: *Type:str*
     created = resource.Body('created')
-    #datastore: Instance updated time
+    # datastore: Instance updated time
     #: *Type:str*
     updated = resource.Body('updated')
     #: DB default username
@@ -96,7 +95,7 @@ class Instance(sdk_resource.Resource):
     #: *Type:str*
     maintenance_window = resource.Body('maintenance_window')
     #: Node information
-    #:  Indicates the primary/standby DB 
+    #:  Indicates the primary/standby DB
     #:  instance information
     #: *Type:list*
     nodes = resource.Body('nodes', type=list)
@@ -119,3 +118,92 @@ class Instance(sdk_resource.Resource):
     #: Charge Info
     #: *Type: dict*
     backup_strategy = resource.Body('charge_info', type=dict)
+
+
+class InstanceRecovery(sdk_resource.Resource):
+
+    # capabilities
+    allow_create = True
+
+    #: Specifies the restoration information
+    #:  *Type: dict*
+    source = resource.Body('source', type=dict)
+    #: Specifies the restoration target
+    #:  *Type: dict*
+    target = resource.Body('target', type=dict)
+
+
+class InstanceConfiguration(sdk_resource.Resource):
+
+    base_path = '/instances/%(instance_id)s/configurations'
+
+    # capabilities
+    allow_get = True
+    allow_update = True
+
+    #: instaceId
+    instance_id = resource.URI('instance_id')
+
+    #: database version name
+    #:  *Type: string*
+    datastore_version_name = resource.Body('datastore_version_name')
+    #: database name
+    #:  *Type: string*
+    datastore_name = resource.Body('datastore_name')
+    #: Indicates the creation time in the following
+    #:  format: yyyy-MM-ddTHH:mm:ssZ.
+    #:  *Type: string*
+    created = resource.Body('created')
+    #: Indicates the update time in the following
+    #:  format: yyyy-MM-ddTHH:mm:ssZ.
+    #:  *Type: string*
+    updated = resource.Body('updated')
+    #: Indicates the parameter configuration
+    #:  defined by users based on the default
+    #:  parameter groups.
+    #:  *Type: list*
+    configuration_parameters = resource.Body('configuration_parameters')
+
+    def update(self, session, prepend_key=False):
+        """
+        Method is overriden, because PUT without ID should be used
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param prepend_key: A boolean indicating whether the resource_key
+                            should be prepended in a resource creation
+                            request. Default to True.
+
+        :return: None.
+        :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
+                 :data:`Resource.allow_create` is not set to ``True``.
+        """
+        return self.update_no_id(session, prepend_key)
+
+
+class InstanceRestoreTime(resource.Resource):
+
+    base_path = '/instances/%(instance_id)s/restore-time'
+
+    resource_key = 'restore_time'
+
+    # capabilities
+    allow_get = True
+
+    #: instaceId
+    instance_id = resource.URI('instance_id')
+    # project_id = resource.URI('project_id')
+
+    #: Start time
+    #:  Indicates the start time of the recovery time period in
+    #:  the UNIX timestamp format. The unit is
+    #:  millisecond and the time zone is UTC.
+    #: *Type: string*
+    start_time = resource.Body('start_time')
+
+    #: End time
+    #:  Indicates the end time of the recovery time period in
+    #:  the UNIX timestamp format. The unit is
+    #:  millisecond and the time zone is UTC.
+    #: *Type: string*
+    end_time = resource.Body('end_time')

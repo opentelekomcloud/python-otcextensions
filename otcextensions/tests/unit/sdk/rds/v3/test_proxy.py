@@ -24,4 +24,13 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
 
 class TestRdsFlavor(TestRdsProxy):
     def test_flavors(self):
-        self.verify_list(self.proxy.flavors, flavor.Flavor, method_kwargs={'datastore_name': 'MySQL', 'version_name': '5.7'}, expected_kwargs={'datastore_name': 'MySQL', 'version_name': '5.7'})
+        self.verify_list(self.proxy.flavors,
+                         flavor.Flavor,
+                         method_kwargs={
+                             'datastore_name': 'MySQL',
+                             'version_name': '5.7'
+                         },
+                         expected_kwargs={
+                             'datastore_name': 'MySQL',
+                             'version_name': '5.7'
+                         })

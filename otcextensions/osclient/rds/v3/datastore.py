@@ -17,7 +17,7 @@ from osc_lib import utils
 from osc_lib.command import command
 
 from otcextensions.i18n import _
-
+from otcextensions.common import sdk_utils
 
 LOG = logging.getLogger(__name__)
 
@@ -25,8 +25,7 @@ DB_TYPE_CHOICES = ['mysql', 'postgresql', 'sqlserver']
 
 
 def _get_columns(item):
-    column_map = {
-    }
+    column_map = {}
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
@@ -40,13 +39,10 @@ class ListDatastores(command.Lister):
 
         data = client.datastore_types()
 
-        return (
+        return (self.columns, (utils.get_item_properties(
+            s,
             self.columns,
-            (utils.get_item_properties(
-                s,
-                self.columns,
-            ) for s in data)
-        )
+        ) for s in data))
 
 
 class ListDatastoreVersions(command.Lister):
@@ -70,10 +66,7 @@ class ListDatastoreVersions(command.Lister):
 
         data = client.datastore_versions(datastore_name=parsed_args.db_name)
 
-        return (
+        return (self.columns, (utils.get_item_properties(
+            s,
             self.columns,
-            (utils.get_item_properties(
-                s,
-                self.columns,
-            ) for s in data)
-        )
+        ) for s in data))

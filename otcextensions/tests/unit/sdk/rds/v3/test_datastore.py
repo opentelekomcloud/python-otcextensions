@@ -14,16 +14,11 @@ from openstack.tests.unit import base
 
 from otcextensions.sdk.rds.v3 import datastore
 
-
 IDENTIFIER = 'IDENTIFIER'
-EXAMPLE = {
-    "id": IDENTIFIER,
-    "name": "5.7"
-}
+EXAMPLE = {"id": IDENTIFIER, "name": "5.7"}
 
 
 class TestDatastore(base.TestCase):
-
     def setUp(self):
         super(TestDatastore, self).setUp()
 
@@ -37,10 +32,10 @@ class TestDatastore(base.TestCase):
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_delete)
         self.assertFalse(sot.allow_commit)
-        self.assertDictEqual({'limit': 'limit',
-                              'marker': 'marker'},
-                             sot._query_mapping._mapping)
-
+        self.assertDictEqual({
+            'limit': 'limit',
+            'marker': 'marker'
+        }, sot._query_mapping._mapping)
 
     def test_make_it(self):
         sot = datastore.Datastore(**EXAMPLE)

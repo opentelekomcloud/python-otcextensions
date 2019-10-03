@@ -21,7 +21,7 @@ from openstackclient.tests.unit import utils
 
 from otcextensions.tests.unit.osclient import test_base
 
-#from otcextensions.sdk.rds.v3.configuration import ConfigurationGroup
+# from otcextensions.sdk.rds.v3.configuration import ConfigurationGroup
 from otcextensions.sdk.rds.v3.datastore import Datastore
 from otcextensions.sdk.rds.v3 import flavor
 from otcextensions.sdk.rds.v3.instance import Instance
@@ -29,7 +29,6 @@ from otcextensions.sdk.rds.v3 import backup
 
 
 class TestRds(utils.TestCommand):
-
     def setUp(self):
         super(TestRds, self).setUp()
 
@@ -40,12 +39,11 @@ class TestRds(utils.TestCommand):
         self.datastore_mock = FakeDatastore
         self.flavor_mock = FakeFlavor
         self.instance_mock = FakeInstance
-        #self.configuration_mock = FakeConfiguration
+        # self.configuration_mock = FakeConfiguration
 
 
 class FakeDatastore(object):
     """Fake one or more datastore versions."""
-
     @staticmethod
     def create_one(attrs=None, methods=None):
         """Create a fake datastore.
@@ -92,7 +90,6 @@ class FakeDatastore(object):
 
 class FakeFlavor(test_base.Fake):
     """Fake one or more VBS Policy"""
-
     @classmethod
     def generate(cls):
         object_info = {
@@ -160,7 +157,6 @@ class FakeFlavor(test_base.Fake):
 #
 class FakeInstance(object):
     """Fake one or more Instance."""
-
     @staticmethod
     def create_one(attrs=None, methods=None):
         """Create a fake Configuration.
@@ -184,7 +180,9 @@ class FakeInstance(object):
                 'type': 'datastore-' + uuid.uuid4().hex,
                 'version': 'version-' + uuid.uuid4().hex,
             },
-            'flavor_ref': {'id': uuid.uuid4().hex},
+            'flavor_ref': {
+                'id': uuid.uuid4().hex
+            },
             'volume': {
                 'type': 'type' + uuid.uuid4().hex,
                 'size': random.randint(1, 10280),
@@ -211,33 +209,38 @@ class FakeInstance(object):
         """
         objects = []
         for i in range(0, count):
-            objects.append(
-                FakeInstance.create_one(attrs, methods)
-            )
+            objects.append(FakeInstance.create_one(attrs, methods))
 
         return objects
 
 
 class FakeBackup(test_base.Fake):
     """Fake one or more VBS Policy"""
-
     @classmethod
     def generate(cls):
         object_info = {
-            'id': 'id-' + uuid.uuid4().hex,
-            'name': 'name-' + uuid.uuid4().hex,
-            'description': uuid.uuid4().hex,
+            'id':
+            'id-' + uuid.uuid4().hex,
+            'name':
+            'name-' + uuid.uuid4().hex,
+            'description':
+            uuid.uuid4().hex,
             'datastore': {
                 'type': 'datastore-' + uuid.uuid4().hex,
                 'version': 'version-' + uuid.uuid4().hex,
             },
-            'instance_id': 'instance_id-' + uuid.uuid4().hex,
-            'size': random.randint(0, 100),
-            'status': random.choice(['BUILDING', 'COMPLETED', 'FAILED',
-                                     'DELETING']),
-            'type': random.choice(['auto', 'manual']),
-            'begin_time': uuid.uuid4().hex,
-            'end_time': uuid.uuid4().hex
+            'instance_id':
+            'instance_id-' + uuid.uuid4().hex,
+            'size':
+            random.randint(0, 100),
+            'status':
+            random.choice(['BUILDING', 'COMPLETED', 'FAILED', 'DELETING']),
+            'type':
+            random.choice(['auto', 'manual']),
+            'begin_time':
+            uuid.uuid4().hex,
+            'end_time':
+            uuid.uuid4().hex
         }
         obj = backup.Backup.existing(**object_info)
         return obj

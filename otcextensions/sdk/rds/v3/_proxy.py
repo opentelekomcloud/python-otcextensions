@@ -9,9 +9,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import exceptions
 from otcextensions.sdk import sdk_proxy
-from openstack import proxy
 from otcextensions.sdk.rds.v3 import backup as _backup
 from otcextensions.sdk.rds.v3 import configuration as _configuration
 from otcextensions.sdk.rds.v3 import datastore as _datastore
@@ -22,6 +20,13 @@ from otcextensions.sdk.rds.v3 import instance as _instance
 class Proxy(sdk_proxy.Proxy):
 
     skip_discovery = True
+
+    def __init__(self, session, *args, **kwargs):
+        super(Proxy, self).__init__(session=session, *args, **kwargs)
+        self.additional_headers = {
+            'Content-Type': 'application/json',
+            'X-Language': 'en-us'
+        }
 
     def get_os_endpoint(self, **kwargs):
         """Return OpenStack compliant endpoint
@@ -56,34 +61,6 @@ class Proxy(sdk_proxy.Proxy):
         # else:
         #     return endpoint
 
-    def get_os_headers(self, language=None):
-        """Get headers for request
-
-        Unfortunatels RDS requires 'Content-Type: application/json'
-        header even for GET and LIST operations with empty body
-        We need to deel with it
-
-        :param language: whether language should be added to headers
-            can be either bool (then self.get_language is used)
-            or a language code directly (i.e. "en-us")
-        :returns dict: dictionary with headers
-        """
-        headers = {
-            'Content-Type': 'application/json',
-        }
-        if language:
-            if isinstance(language, bool):
-                headers['X-Language'] = self.get_language()
-            elif isinstance(language, str):
-                headers['X-Language'] = language
-        return headers
-
-    def get_language(self):
-        """Returns language code
-
-        """
-        return 'en-us'
-
     # ======= Datastores =======
     def datastore_types(self):
         """List supported datastore types
@@ -92,7 +69,7 @@ class Proxy(sdk_proxy.Proxy):
         :rtype object: object with name attribte
         """
         for ds in ['MySQL', 'PostgreSQL', 'SQLServer']:
-            obj = type('obj', (object,), {'name': ds})
+            obj = type('obj', (object, ), {'name': ds})
             yield obj
 
         return
@@ -109,11 +86,10 @@ class Proxy(sdk_proxy.Proxy):
         return self._list(
             _datastore.Datastore,
             datastore_name=datastore_name,
-            headers=self.get_os_headers(True)
         )
 
-
     # ======= Flavors =======
+
     def flavors(self, datastore_name, version_name):
         """List flavors of given datastore_name and datastore_version
 
@@ -123,31 +99,12 @@ class Proxy(sdk_proxy.Proxy):
         :returns: A generator of flavor
         :rtype: :class:`~otcextensions.sdk.rds.v3.flavor.Flavor`
         """
-        return self._list(
-            _flavor.Flavor,
-            headers=self.get_os_headers(True),
-            datastore_name=datastore_name,
-            version_name=version_name
-        )
-
-#    def get_flavor(self, flavor):
-#        """Get the detail of a flavor
-#
-#        :param id: Flavor id or an object of class
-#                   :class:`~otcextensions.sdk.rds_os.v1.flavor.Flavor`
-#        :returns: Detail of flavor
-#        :rtype: :class:`~otcextensions.sdk.rds_os.v1.flavor.Flavor`
-#        """
-#        return self._get(
-#            _flavor.Flavor,
-#            flavor,
-#            # project_id=self.session.get_project_id(),
-#            # endpoint_override=self.get_os_endpoint(),
-#            headers=self.get_os_headers(True),
-#        )
-#
+        return self._list(_flavor.Flavor,
+                          datastore_name=datastore_name,
+                          version_name=version_name)
 
     # ======= Instance =======
+
     def create_instance(self, **attrs):
         """Create a new instance from attributes
 
@@ -158,11 +115,12 @@ class Proxy(sdk_proxy.Proxy):
         :returns: The results of server creation
         :rtype: :class:`~otcextensions.sdk.rds.v3.instance.Instance`
         """
-        return self._create(_instance.Instance,
-                            # project_id=self.session.get_project_id(),
-                            # endpoint_override=self.get_os_endpoint(),
-                            headers=self.get_os_headers(True),
-                            prepend_key=False, **attrs)
+        return self._create(
+            _instance.Instance,
+            # project_id=self.session.get_project_id(),
+            # endpoint_override=self.get_os_endpoint(),
+            prepend_key=False,
+            **attrs)
 
     def delete_instance(self, instance, ignore_missing=True):
         """Delete an instance
@@ -178,9 +136,9 @@ class Proxy(sdk_proxy.Proxy):
         :returns: ``None``
         """
         self._delete(
-            _instance.Instance, instance,
+            _instance.Instance,
+            instance,
             ignore_missing=ignore_missing,
-            headers=self.get_os_headers(True)
         )
 
     def find_instance(self, name_or_id, ignore_missing=True):
@@ -195,8 +153,8 @@ class Proxy(sdk_proxy.Proxy):
         :returns: One :class:`~otcextensions.sdk.rds.v3.instance.Instance`
                   or None
         """
-        return self._find(_instance.Instance, name_or_id,
-                          headers=self.get_os_headers(True),
+        return self._find(_instance.Instance,
+                          name_or_id,
                           ignore_missing=ignore_missing)
 
     def instances(self, **params):
@@ -205,46 +163,15 @@ class Proxy(sdk_proxy.Proxy):
         :returns: A generator of instance objects
         :rtype: :class:`~otcextensions.sdk.rds.v3.instance.Instance`
         """
-        return self._list(
-            _instance.Instance, paginated=False,
-            headers=self.get_os_headers(True), **params
-        )
+        return self._list(_instance.Instance, paginated=False, **params)
 
-    def update_instance(self, instance, **attrs):
-        """Update a instance
-
-        :param instance: Either the id of a instance or a
-                         :class:`~otcextensions.sdk.rds.v3.instance.Instance`
-                         instance.
-        :attrs attrs: The attributes to update on the instance represented
-                       by ``value``.
-
-        :returns: The updated instance
-        :rtype: :class:`~otcextensions.sdk.rds.v3.instance.Instance`
-        """
-        return self._update(
-            _instance.Instance,
-            instance=instance,
-            # project_id=self.session.get_project_id(),
-            # endpoint_override=self.get_rds_endpoint(),
-            headers=self.get_os_headers(True),
-            **attrs
-        )
-
-    def restart_instance(self, instance):
-        """Restart instance
-
-        :param instance: Either the id of a instance or a
-                         :class:`~otcextensions.sdk.rds.v3.instance.Instance`
-                         instance.
-        :returns: The updated instance
-        :rtype: :class:`~otcextensions.sdk.rds.v3.instance.Instance`
-        """
-        instance = self._get_resource(_instance.Instance, instance)
-        return instance.restart(self)
-
-    def restore_instance(self, instance, backup):
+    def restore_instance(self,
+                         instance,
+                         backup=None,
+                         restore_time=None,
+                         target_instance=None):
         """Restore instance from backup
+           or Restore Point in Time Recovery
 
         :param instance: Either the id of a instance or a
                          :class:`~otcextensions.sdk.rds.v3.instance.Instance`
@@ -256,31 +183,98 @@ class Proxy(sdk_proxy.Proxy):
         :returns: None
         :rtype:
         """
+        attrs = {}
         instance = self._get_resource(_instance.Instance, instance)
-        backup = self._get_resource(_backup.Backup, backup)
-        return instance.restore(self, backupRef=backup.id)
-    #
-    # def create_instance_from_backup(self, backup, **attrs):
-    #     """Restore instance from backup
-    #
-    #     :param instance: Either the id of a instance or a
-    #                      :class:`~otcextensions.sdk.rds.v3.instance.Instance`
-    #                      instance.
-    #     :param backup: Either the id of a backup or a
-    #                      :class:`~otcextensions.sdk.rds.v3.backup.Backup`
-    #                      instance.
-    #     :attrs attrs: The attributes to update on the instance represented
-    #                    by ``value``.
-    #
-    #     :returns: The updated instance
-    #     :rtype: :class:`~otcextensions.sdk.rds.v3.instance.Instance`
-    #     """
-    #     # instance = self._get_resource(_instance.Instance, instance)
-    #     # backup = self._get_resource(_backup.Backup, backup)
-    #
-    #     res = _instance.Instance.new(**attrs)
-    #
-    #     return res.create(self)
+        if target_instance:
+            target_instance = self._get_resource(_instance.Instance,
+                                                 target_instance)
+        else:
+            target_instance = instance
+        if backup:
+            backup = self._get_resource(_backup.Backup, backup)
+            attrs['source'] = {'type': 'backup', 'backup_id': backup.id}
+        elif restore_time:
+            attrs['source'] = {
+                'type': 'timestamp',
+                'restore_time': restore_time
+            }
+        attrs['source']['instance_id'] = instance.id
+        attrs['target'] = {'instance_id': target_instance.id}
+        return self._create(_instance.InstanceRecovery,
+                            prepend_key=False,
+                            **attrs)
+
+    def create_instance_from_backup(self,
+                                    instance,
+                                    backup=None,
+                                    restore_time=None,
+                                    **attrs):
+        """Restore instance from backup
+
+        :param instance: Either the id of a instance or a
+                         :class:`~otcextensions.sdk.rds.v3.instance.Instance`
+                         instance.
+        :param backup: Either the id of a backup or a
+                         :class:`~otcextensions.sdk.rds.v3.backup.Backup`
+                         instance.
+        :attrs attrs: The attributes to update on the instance represented
+                       by ``value``.
+
+        :returns: The updated instance
+        :rtype: :class:`~otcextensions.sdk.rds.v3.instance.Instance`
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        if backup:
+            backup = self._get_resource(_backup.Backup, backup)
+            attrs['restore_point'] = {'type': 'backup', 'backup_id': backup.id}
+        elif restore_time:
+            attrs['restore_point'] = {
+                'type': 'timestamp',
+                'restore_time': restore_time
+            }
+        attrs['source']['instance_id'] = instance.id
+        attrs['restore_point']['instance_id'] = instance.id
+        return self._create(_instance.Instance, prepend_key=False, **attrs)
+
+    def get_instance_restore_time(self, instance):
+        """Obtaining a restore time of an instance
+
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+        :returns: Instance restore time
+        :rtype: :class:`~otcextensions.sdk.rds.v3.instance.InstanceRestoreTime`
+
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return self._get(_instance.InstanceRestoreTime,
+                         instance_id=instance.id)
+
+    def get_instance_configuration(self, instance):
+        """Obtaining a Configuration Group associated to instance
+
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+        :returns: Configuration Group details associated to instance
+        :rtype: :class:
+            `~otcextensions.sdk.rds.v3.instance.InstanceConfiguration`
+
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return self._get(_instance.InstanceConfiguration,
+                         instance_id=instance.id)
+
+    def update_instance_configuration(self, instance, **attrs):
+        """Updates the configuration params of the instance
+
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+
+        :returns: Parameter restart required as bool value
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return self._update(_instance.InstanceConfiguration,
+                            instance_id=instance.id,
+                            **attrs)
 
     # ======= Configurations =======
     def configurations(self, **attrs):
@@ -293,7 +287,6 @@ class Proxy(sdk_proxy.Proxy):
         return self._list(
             _configuration.ConfigurationGroup,
             paginated=False,
-            headers=self.get_os_headers(True),
         )
 
     def get_configuration(self, cg):
@@ -304,15 +297,9 @@ class Proxy(sdk_proxy.Proxy):
             :class:`~otcextensions.sdk.rds.v3.configuration.ConfigurationGroup`.
 
         :returns: A Parameter Group Object
-        :rtype: :class:`~otcextensions.rds.v1.configuration.ConfigurationGroup`
+        :rtype: :class:`~otcextensions.rds.v3.configuration.ConfigurationGroup`
         """
-        return self._get(
-            _configuration.ConfigurationGroup,
-            cg,
-            # project_id=self.session.get_project_id(),
-            # endpoint_override=self.get_os_endpoint(),
-            headers=self.get_os_headers(True)
-        )
+        return self._get(_configuration.ConfigurationGroup, cg)
 
     def create_configuration(self, **attrs):
         """Creating a ConfigurationGroup
@@ -323,8 +310,8 @@ class Proxy(sdk_proxy.Proxy):
             :class:`~otcextensions.sdk.rds.v3.configuration.ConfigurationGroup`
         """
         return self._create(_configuration.ConfigurationGroup,
-                            headers=self.get_os_headers(True),
-                            prepend_key=False, **attrs)
+                            prepend_key=False,
+                            **attrs)
 
     def delete_configuration(self, cg, ignore_missing=True):
         """Deleting a ConfigurationGroup
@@ -342,9 +329,9 @@ class Proxy(sdk_proxy.Proxy):
         :rtype: None
         """
         self._delete(
-            _configuration.ConfigurationGroup, cg,
+            _configuration.ConfigurationGroup,
+            cg,
             ignore_missing=ignore_missing,
-            headers=self.get_os_headers(True)
         )
 
     def find_configuration(self, name_or_id, ignore_missing=True):
@@ -355,15 +342,13 @@ class Proxy(sdk_proxy.Proxy):
             :class:`~otcextensions.sdk.rds.v3.configuration.Configurations`.
         :returns: A Parameter Group Object
         :rtype:
-            :class:`~otcextensions.rds.v1.configuration.ConfigurationGroup`.
+            :class:`~otcextensions.rds.v3.configuration.ConfigurationGroup`.
         """
-        return self._find(_configuration.ConfigurationGroup, name_or_id,
-                          # project_id=self.session.get_project_id(),
-                          # endpoint_override=self.get_os_endpoint(),
-                          # headers=self.get_os_headers(),
+        return self._find(_configuration.ConfigurationGroup,
+                          name_or_id,
                           ignore_missing=ignore_missing)
 
-   # ======= Backups =======
+    # ======= Backups =======
     def backups(self, instance, **params):
         """List Backups
 
@@ -372,9 +357,7 @@ class Proxy(sdk_proxy.Proxy):
         """
         instance = self._get_resource(_instance.Instance, instance)
         params['instance_id'] = instance.id
-        return self._list(
-            _backup.Backup, paginated=False, **params, headers=self.get_os_headers(True)
-        )
+        return self._list(_backup.Backup, paginated=False, **params)
 
     def create_backup(self, instance, **attrs):
         """Create a backups of instance
@@ -384,16 +367,13 @@ class Proxy(sdk_proxy.Proxy):
         """
         instance = self._get_resource(_instance.Instance, instance)
         attrs['instance_id'] = instance.id
-        return self._create(_backup.Backup,
-            headers=self.get_os_headers(True),
-            prepend_key=False, **attrs
-        )
+        return self._create(_backup.Backup, prepend_key=False, **attrs)
 
     def delete_backup(self, backup, ignore_missing=True):
         """Deletes given backup
 
         :param instance: The value can be either the ID of an instance or a
-            :class:`~openstack.database.v1.instance.Instance` instance.
+            :class:`~openstack.database.v3.instance.Instance` instance.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be
             raised when the instance does not exist.
@@ -402,12 +382,9 @@ class Proxy(sdk_proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._delete(
-            _backup.Backup,
-            backup,
-            ignore_missing=ignore_missing,
-            headers=self.get_os_headers(True),
-        )
+        return self._delete(_backup.Backup,
+                            backup,
+                            ignore_missing=ignore_missing)
 
     def get_backup_policy(self, instance):
         """Obtaining a backup policy of the instance
@@ -419,12 +396,9 @@ class Proxy(sdk_proxy.Proxy):
 
         """
         instance = self._get_resource(_instance.Instance, instance)
-        return self._get(
-            _backup.BackupPolicy,
-            requires_id=False,
-            instance_id=instance.id,
-            headers=self.get_os_headers(True),
-        )
+        return self._get(_backup.BackupPolicy,
+                         requires_id=False,
+                         instance_id=instance.id)
 
     def set_backup_policy(self, instance, **attrs):
         """Sets the backup policy of the instance
@@ -437,25 +411,16 @@ class Proxy(sdk_proxy.Proxy):
         :returns: ``None``
         """
         instance = self._get_resource(_instance.Instance, instance)
-        return self._update(
-            _backup.BackupPolicy,
-            instance_id=instance.id,
-            headers=self.get_os_headers(True),
-            **attrs)
+        return self._update(_backup.BackupPolicy,
+                            instance_id=instance.id,
+                            **attrs)
 
-    def get_backup_restore_time(self, instance):
-        """Obtaining a backup policy of the instance
+    def backup_file_links(self, backup_id):
+        """Obtaining a backup file download links
 
-        :param instance: This parameter can be either the ID of an instance
-            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
-        :returns: A Backup RestoreTime
-        :rtype: :class:`~otcextensions.sdk.rds.v3.backup.BackupRestoreTime`
+        :param backup_id
+        :returns: files link
+        :rtype: :class:`~otcextensions.sdk.rds.v3.backup.BackupFiles`
 
         """
-        instance = self._get_resource(_instance.Instance, instance)
-        return self._get(
-            _backup.BackupRestoreTime,
-            requires_id=False,
-            instance_id=instance.id,
-            headers=self.get_os_headers(True),
-        )
+        return self._list(_backup.BackupFiles, backup_id=backup_id)

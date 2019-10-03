@@ -12,6 +12,7 @@
 from openstack import resource
 from otcextensions.sdk import sdk_resource
 
+
 class Datastore(sdk_resource.Resource):
 
     base_path = '/datastores/%(datastore_name)s'

@@ -23,7 +23,15 @@ LOG = logging.getLogger(__name__)
 
 def set_attributes_for_print_detail(obj):
     info = {}
-    attr_list = ['id', 'name', 'type', 'size', 'status', 'begin_time', 'end_time', 'instance_id']
+    attr_list = [
+        'id',
+        'name',
+        'type',
+        'size',
+        'status',
+        'begin_time',
+        'end_time',
+        'instance_id']
     for attr in dir(obj):
         if attr == 'datastore' and getattr(obj, attr):
             info['datastore_type'] = obj.datastore['type']
@@ -40,7 +48,13 @@ def set_attributes_for_print_detail(obj):
 class ListBackup(command.Lister):
 
     _description = _("List database backups/snapshots")
-    columns = ('ID', 'Name', 'Type', 'Instance Id', 'Datastore Type', 'Datastore Version')
+    columns = (
+        'ID',
+        'Name',
+        'Type',
+        'Instance Id',
+        'Datastore Type',
+        'Datastore Version')
 
     def get_parser(self, prog_name):
         parser = super(ListBackup, self).get_parser(prog_name)
@@ -86,11 +100,17 @@ class ListBackup(command.Lister):
     def take_action(self, parsed_args):
         client = self.app.client_manager.rds
         attrs = {}
-        args_list = ['backup_id', 'backup_type', 'offset', 'limit', 'begin_time', 'end_time']
+        args_list = [
+            'backup_id',
+            'backup_type',
+            'offset',
+            'limit',
+            'begin_time',
+            'end_time']
         for arg in args_list:
             if getattr(parsed_args, arg):
                 attrs[arg] = getattr(parsed_args, arg)
-        
+
         data = client.backups(parsed_args.instance, **attrs)
 
         return (
@@ -100,6 +120,7 @@ class ListBackup(command.Lister):
                 self.columns,
             ) for s in data)
         )
+
 
 class CreateBackup(command.ShowOne):
     _description = _('Create Database backup')
@@ -136,7 +157,7 @@ class CreateBackup(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.rds
 
-        attrs = { 'name': parsed_args.name }
+        attrs = {'name': parsed_args.name}
         if parsed_args.description:
             attrs['description'] = parsed_args.description
         if parsed_args.databases:

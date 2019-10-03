@@ -9,8 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import copy
-
 from keystoneauth1 import adapter
 
 import mock
@@ -21,10 +19,7 @@ from otcextensions.sdk.rds.v3 import instance
 
 # RDS requires those headers to be present in the request, to native API
 # otherwise 404
-RDS_HEADERS = {
-    'Content-Type': 'application/json',
-    'X-Language': 'en-us'
-}
+RDS_HEADERS = {'Content-Type': 'application/json', 'X-Language': 'en-us'}
 
 # RDS requires those headers to be present in the request, to OS-compat API
 # otherwise 404
@@ -35,49 +30,66 @@ OS_HEADERS = {
 # PROJECT_ID = '123'
 IDENTIFIER = 'IDENTIFIER'
 EXAMPLE = {
-      "flavor_ref": "rds.mysql.s1.large",
-      "id": IDENTIFIER,
-      "status": "ACTIVE",
-      "name": "mysql-0820-022709-01",
-      "port": 3306,
-      "type": "Single",
-      "region": "eu-de",
-      "volume": {
-          "type": "ULTRAHIGH",
-          "size": 100
-      },
-      "datastore": {
-          "type": "mysql",
-          "version": "5.7"
-      },
-      "created": "2018-08-20T02:33:49+0800",
-      "updated": "2018-08-20T02:33:50+0800",
-      "nodes": [{
-          "id": "06f1c2ad57604ae89e153e4d27f4e4b8no01",
-          "name": "mysql-0820-022709-01_node0",
-          "role": "master",
-          "status": "ACTIVE",
-          "availability_zone": "eu-de-01"
-      }],
-      "private_ips": ["192.168.0.142"],
-      "public_ips": ["10.154.219.187", "10.154.219.186"],
-      "db_user_name": "root",
-      "vpc_id": "b21630c1-e7d3-450d-907d-39ef5f445ae7",
-      "subnet_id": "45557a98-9e17-4600-8aec-999150bc4eef",
-      "security_group_id": "38815c5c-482b-450a-80b6-0a301f2afd97",
-      "switch_strategy": "",
-      "backup_strategy": {
-          "start_time": "19:00-20:00",
-          "keep_days": 7
-      },
-      "maintenance_window": "02:00-06:00",
-      "related_instance": [],
-      "disk_encryption_id": "",
-      "time_zone": ""
+    "flavor_ref":
+    "rds.mysql.s1.large",
+    "id":
+    IDENTIFIER,
+    "status":
+    "ACTIVE",
+    "name":
+    "mysql-0820-022709-01",
+    "port":
+    3306,
+    "type":
+    "Single",
+    "region":
+    "eu-de",
+    "volume": {
+        "type": "ULTRAHIGH",
+        "size": 100
+    },
+    "datastore": {
+        "type": "mysql",
+        "version": "5.7"
+    },
+    "created":
+    "2018-08-20T02:33:49+0800",
+    "updated":
+    "2018-08-20T02:33:50+0800",
+    "nodes": [{
+        "id": "06f1c2ad57604ae89e153e4d27f4e4b8no01",
+        "name": "mysql-0820-022709-01_node0",
+        "role": "master",
+        "status": "ACTIVE",
+        "availability_zone": "eu-de-01"
+    }],
+    "private_ips": ["192.168.0.142"],
+    "public_ips": ["10.154.219.187", "10.154.219.186"],
+    "db_user_name":
+    "root",
+    "vpc_id":
+    "b21630c1-e7d3-450d-907d-39ef5f445ae7",
+    "subnet_id":
+    "45557a98-9e17-4600-8aec-999150bc4eef",
+    "security_group_id":
+    "38815c5c-482b-450a-80b6-0a301f2afd97",
+    "switch_strategy":
+    "",
+    "backup_strategy": {
+        "start_time": "19:00-20:00",
+        "keep_days": 7
+    },
+    "maintenance_window":
+    "02:00-06:00",
+    "related_instance": [],
+    "disk_encryption_id":
+    "",
+    "time_zone":
+    ""
 }
 
-class TestInstance(base.TestCase):
 
+class TestInstance(base.TestCase):
     def setUp(self):
         super(TestInstance, self).setUp()
         self.sess = mock.Mock(spec=adapter.Adapter)
@@ -125,18 +137,26 @@ class TestInstance(base.TestCase):
         mock_response.status_code = 200
         mock_response.json.return_value = {
             "instances": [{
-                "id": IDENTIFIER,
-                "status": "ACTIVE",
-                "name": "mysql-0820-022709-01",
-                "port": 3306,
-                "type": "Single",
-                "region": "eu-de",
+                "id":
+                IDENTIFIER,
+                "status":
+                "ACTIVE",
+                "name":
+                "mysql-0820-022709-01",
+                "port":
+                3306,
+                "type":
+                "Single",
+                "region":
+                "eu-de",
                 "datastore": {
                     "type": "mysql",
                     "version": "5.7"
                 },
-                "created": "2018-08-20T02:33:49+0800",
-                "updated": "2018-08-20T02:33:50+0800",
+                "created":
+                "2018-08-20T02:33:49+0800",
+                "updated":
+                "2018-08-20T02:33:50+0800",
                 "volume": {
                     "type": "ULTRAHIGH",
                     "size": 100
@@ -150,23 +170,33 @@ class TestInstance(base.TestCase):
                 }],
                 "private_ips": ["192.168.0.142"],
                 "public_ips": ["10.154.219.187", "10.154.219.186"],
-                "db_user_name": "root",
-                "vpc_id": "b21630c1-e7d3-450d-907d-39ef5f445ae7",
-                "subnet_id": "45557a98-9e17-4600-8aec-999150bc4eef",
-                "security_group_id": "38815c5c-482b-450a-80b6-0a301f2afd97",
-                "flavor_ref": "rds.mysql.s1.large",
-                "switch_strategy": "",
+                "db_user_name":
+                "root",
+                "vpc_id":
+                "b21630c1-e7d3-450d-907d-39ef5f445ae7",
+                "subnet_id":
+                "45557a98-9e17-4600-8aec-999150bc4eef",
+                "security_group_id":
+                "38815c5c-482b-450a-80b6-0a301f2afd97",
+                "flavor_ref":
+                "rds.mysql.s1.large",
+                "switch_strategy":
+                "",
                 "backup_strategy": {
                     "start_time": "19:00-20:00",
                     "keep_days": 7
                 },
-                "maintenance_window": "02:00-06:00",
+                "maintenance_window":
+                "02:00-06:00",
                 "related_instance": [],
-                "disk_encryption_id": "",
-                "time_zone": ""
-            }], 
-            "total_count": 1
-        } 
+                "disk_encryption_id":
+                "",
+                "time_zone":
+                ""
+            }],
+            "total_count":
+            1
+        }
 
         self.sess.get.return_value = mock_response
 
@@ -194,4 +224,4 @@ class TestInstance(base.TestCase):
 #            'id': IDENTIFIER,
 #        })
 #        body = {'restore': {'backupRef': backupRef}}
-#        sess.post.assert_called_with(url, json=body, headers={'X-Language': 'en-us'})
+#        sess.post.assert_called_with(url, json=body)

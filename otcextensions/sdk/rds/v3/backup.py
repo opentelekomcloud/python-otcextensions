@@ -12,17 +12,19 @@
 from openstack import resource
 from otcextensions.sdk import sdk_resource
 
+
 class Backup(sdk_resource.Resource):
 
     base_path = '/backups'
     resource_key = 'backup'
     resources_key = 'backups'
-    service_expectes_json_type = True
+    # service_expectes_json_type = True
 
     # capabilities
     allow_create = True
     allow_delete = True
     allow_list = True
+    allow_get = False
 
     _query_mapping = resource.QueryParameters(
         'offset',
@@ -98,13 +100,6 @@ class BackupPolicy(sdk_resource.Resource):
     #: *Type: string*
     period = resource.Body('period')
 
-    # @classmethod
-    # def new(cls, **attrs):
-    #     return BackupPolicy(
-    #         content_type='application/json',
-    #         x_language='en-us', **attrs)
-
-    # use put to create, but we don't require id
     def update(self, session, prepend_key=True,
                endpoint_override=None, headers=None):
         """Create a remote resource based on this instance.
@@ -129,28 +124,28 @@ class BackupPolicy(sdk_resource.Resource):
         return None
 
 
-class BackupRestoreTime(sdk_resource.Resource):
+class BackupFiles(resource.Resource):
 
-    base_path = '/instances/%(instance_id)s/restore-time'
-    resource_key = 'restore_time'
+    base_path = '/backup-files'
+    resources_key = 'files'
 
     # capabilities
-    allow_get = True
+    allow_list = True
 
-    #: instaceId
-    instance_id = resource.URI('instance_id')
-    # project_id = resource.URI('project_id')
+    _query_mapping = resource.QueryParameters(
+        'backup_id'
+    )
 
-    #: Start time
-    #:  Indicates the start time of the recovery time period in
-    #:  the UNIX timestamp format. The unit is
-    #:  millisecond and the time zone is UTC.
-    #: *Type: string*
-    start_time = resource.Body('start_time')
-
-    #: End time
-    #:  Indicates the end time of the recovery time period in
-    #:  the UNIX timestamp format. The unit is
-    #:  millisecond and the time zone is UTC.
-    #: *Type: string*
-    end_time = resource.Body('end_time')
+    #:  Indicates the file name
+    #:  *Type: string*
+    name = resource.Body('name')
+    #:  Indicates the file size in KB.
+    #:  *Type: long*
+    size = resource.Body('size', type=int)
+    #:  Indicates the link for downloading the backup file.
+    #:  *Type: string*
+    download_link = resource.Body('download_link')
+    #:  Indicates the link expiration time.
+    #:  The format is "yyyy-mmddThh:mm:ssZ".
+    #:  *Type: string*
+    link_expired_time = resource.Body('link_expired_time')

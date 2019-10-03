@@ -45,18 +45,16 @@ class TestList(fakes.TestRds):
         self.client.backups = mock.Mock()
 
     def test_list_default(self):
-        arglist = ['test-instance'
-        ]
+        arglist = ['test-instance']
 
-        verifylist = [('instance', 'test-instance'),
+        verifylist = [
+            ('instance', 'test-instance'),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.backups.side_effect = [
-            self._objects
-        ]
+        self.client.backups.side_effect = [self._objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -71,8 +69,8 @@ class TestCreate(fakes.TestRds):
 
     _obj = fakes.FakeBackup.create_one()
 
-    columns = ('ID', 'Name', 'type', 'instance_id',
-               'status', 'begin_time', 'databases')
+    columns = ('ID', 'Name', 'type', 'instance_id', 'status', 'begin_time',
+               'databases')
 
     data = (
         _obj.id,
@@ -96,7 +94,8 @@ class TestCreate(fakes.TestRds):
         arglist = [
             'test-backup',
             'test-instance',
-            '--description', 'test description',
+            '--description',
+            'test description',
         ]
         verifylist = [
             ('name', 'test-backup'),
@@ -107,9 +106,7 @@ class TestCreate(fakes.TestRds):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.create_backup.side_effect = [
-            self._obj
-        ]
+        self.client.create_backup.side_effect = [self._obj]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -123,7 +120,6 @@ class TestCreate(fakes.TestRds):
 
 
 class TestDelete(fakes.TestRds):
-
     def setUp(self):
         super(TestDelete, self).setUp()
 
@@ -144,23 +140,16 @@ class TestDelete(fakes.TestRds):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.delete_backup.side_effect = [
-            {}
-        ]
+        self.client.delete_backup.side_effect = [{}]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        self.client.delete_backup.assert_called_once_with(
-            backup='bck1',
-            ignore_missing=False
-        )
+        self.client.delete_backup.assert_called_once_with(backup='bck1',
+                                                          ignore_missing=False)
 
     def test_delete_multiple(self):
-        arglist = [
-            'bck1',
-            'bck2'
-        ]
+        arglist = ['bck1', 'bck2']
 
         verifylist = [
             ('backup', ['bck1', 'bck2']),
