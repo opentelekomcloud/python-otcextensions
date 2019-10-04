@@ -11,15 +11,22 @@
 #   under the License.
 #
 """Backup v3 action implementations"""
+import argparse
 import logging
 
+from osc_lib import exceptions
 from osc_lib import utils
 from osc_lib.command import command
 
+from otcextensions.common import sdk_utils
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
+
+def _get_columns(item):
+    column_map = {}
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 def set_attributes_for_print_detail(obj):
     info = {}
@@ -31,7 +38,10 @@ def set_attributes_for_print_detail(obj):
         'status',
         'begin_time',
         'end_time',
-        'instance_id']
+        'instance_id',
+        'start_time',
+        'period',
+        'keep_days']
     for attr in dir(obj):
         if attr == 'datastore' and getattr(obj, attr):
             info['datastore_type'] = obj.datastore['type']
@@ -199,3 +209,111 @@ class DeleteBackup(command.Command):
                 client.delete_backup(
                     backup=bck,
                     ignore_missing=False)
+
+
+class ShowBackupPolicy(command.Command):
+    _description = _('Show Database Backup Policy')
+
+    columns = ('keep days', 'period', 'start time')
+    def get_parser(self, prog_name):
+        parser = super(ShowBackupPolicy, self).get_parser(prog_name)
+        parser.add_argument(
+            'instance',
+            metavar='<instance>',
+            help=_('Instance ID or Name')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+
+        client = self.app.client_manager.rds
+        data = client.get_backup_policy(parsed_args.instance)
+
+        return (
+            self.columns,
+            utils.get_dict_properties(
+                set_attributes_for_print_detail(data),
+                self.columns,
+            )
+        )
+
+
+class UpdateBackupPolicy(command.Command):
+    _description = _('Show Database Backup Policy')
+
+    columns = ('keep days', 'period', 'start time')
+    def get_parser(self, prog_name):
+        parser = super(UpdateBackupPolicy, self).get_parser(prog_name)
+        parser.add_argument(
+            'instance',
+            metavar='<instance>',
+            help=_('Instance ID or Name')
+        )
+        parser.add_argument(
+            '--keep_days',
+            metavar='<keep_days>',
+            type=int,
+            help=_('Specifies the number of days to'
+                'retain the generated backup files.')
+        )
+        parser.add_argument(
+            '--start_time',
+            metavar='<start_time>',
+            help=_('Specifies the backup time window.'
+                'The value must be a valid value in the'
+                '"hh:mm-HH:MM" format.')
+        )
+        parser.add_argument(
+            '--period',
+            metavar='<period>',
+            help=_('Specifies the backup cycle'
+                'configuration. Data will be'
+                'automatically backed up on the'
+                'selected days every week.')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+
+        client = self.app.client_manager.rds
+        args_list = ['keep_days', 'start_time', 'period']
+        attrs = {}
+        for arg in args_list:
+            if getattr(parsed_args, arg):
+                attrs[arg] = getattr(parsed_args, arg)
+        data = client.set_backup_policy(parsed_args.instance, **attrs)
+
+        return (
+            self.columns,
+            utils.get_dict_properties(
+                set_attributes_for_print_detail(data),
+                self.columns,
+            )
+        )
+
+
+class ListBackupDownloadLinks(command.Command):
+    _description = _('List Backup Download Links')
+
+    columns = ('Name', 'Size', 'Download Link')
+
+    def get_parser(self, prog_name):
+        parser = super(ListBackupDownloadLinks, self).get_parser(prog_name)
+        parser.add_argument(
+            'backup_id',
+            metavar='<backup_id>',
+            help=_('ID of the backup')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+
+        client = self.app.client_manager.rds
+        data = client.backup_download_links(backup_id=parsed_args.backup_id)
+        return (
+            self.columns,
+            (utils.get_dict_properties(
+                set_attributes_for_print_detail(s),
+                self.columns,
+            ) for s in data)
+        )

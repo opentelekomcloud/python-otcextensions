@@ -245,8 +245,9 @@ class Proxy(sdk_proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.rds.v3.instance.InstanceRestoreTime`
 
         """
-        instance = self._get_resource(_instance.Instance, instance)
+        instance = self.find_instance(instance)
         return self._get(_instance.InstanceRestoreTime,
+                        requires_id=False,
                          instance_id=instance.id)
 
     def get_instance_configuration(self, instance):
@@ -259,8 +260,9 @@ class Proxy(sdk_proxy.Proxy):
             `~otcextensions.sdk.rds.v3.instance.InstanceConfiguration`
 
         """
-        instance = self._get_resource(_instance.Instance, instance)
+        instance = self.find_instance(instance)
         return self._get(_instance.InstanceConfiguration,
+                        requires_id=False,
                          instance_id=instance.id)
 
     def update_instance_configuration(self, instance, **attrs):
@@ -355,7 +357,7 @@ class Proxy(sdk_proxy.Proxy):
         :returns: A generator of backup
         :rtype: :class:`~otcextensions.sdk.rds.v3.backup.Backup`
         """
-        instance = self._get_resource(_instance.Instance, instance)
+        instance = self.find_instance(instance)
         params['instance_id'] = instance.id
         return self._list(_backup.Backup, paginated=False, **params)
 
@@ -365,7 +367,7 @@ class Proxy(sdk_proxy.Proxy):
         :returns: A new backup object
         :rtype: :class:`~otcextensions.sdk.rds.v3.backup.Backup`
         """
-        instance = self._get_resource(_instance.Instance, instance)
+        instance = self.find_instance(instance)
         attrs['instance_id'] = instance.id
         return self._create(_backup.Backup, prepend_key=False, **attrs)
 
@@ -386,7 +388,7 @@ class Proxy(sdk_proxy.Proxy):
                             backup,
                             ignore_missing=ignore_missing)
 
-    def get_backup_policy(self, instance):
+    def get_backup_policy(self, instance, ignore_missing=True):
         """Obtaining a backup policy of the instance
 
         :param instance: This parameter can be either the ID of an instance
@@ -395,9 +397,10 @@ class Proxy(sdk_proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.rds.v3.backup.BackupPolicy`
 
         """
-        instance = self._get_resource(_instance.Instance, instance)
+        instance = self.find_instance(instance)
         return self._get(_backup.BackupPolicy,
                          requires_id=False,
+                         ignore_missing=ignore_missing,
                          instance_id=instance.id)
 
     def set_backup_policy(self, instance, **attrs):
@@ -410,12 +413,13 @@ class Proxy(sdk_proxy.Proxy):
 
         :returns: ``None``
         """
-        instance = self._get_resource(_instance.Instance, instance)
+        instance = self.find_instance(instance)
         return self._update(_backup.BackupPolicy,
+                            requires_id=False,
                             instance_id=instance.id,
                             **attrs)
 
-    def backup_file_links(self, backup_id):
+    def backup_download_links(self, backup_id):
         """Obtaining a backup file download links
 
         :param backup_id

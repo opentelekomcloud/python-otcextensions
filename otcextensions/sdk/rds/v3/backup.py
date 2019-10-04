@@ -101,7 +101,7 @@ class BackupPolicy(sdk_resource.Resource):
     period = resource.Body('period')
 
     def update(self, session, prepend_key=True,
-               endpoint_override=None, headers=None):
+            endpoint_override=False, headers=False, requests_auth=False):
         """Create a remote resource based on this instance.
 
         Method is overriden, because PUT without ID should be used
@@ -117,14 +117,12 @@ class BackupPolicy(sdk_resource.Resource):
                  :data:`Resource.allow_create` is not set to ``True``.
         """
         self.update_no_id(
-            session, prepend_key,
-            # endpoint_override=endpoint_override,
-            headers=headers)
+            session, prepend_key)
 
         return None
 
 
-class BackupFiles(resource.Resource):
+class BackupFiles(sdk_resource.Resource):
 
     base_path = '/backup-files'
     resources_key = 'files'

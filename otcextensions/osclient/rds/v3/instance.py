@@ -402,3 +402,24 @@ class RestoreDatabaseInstance(command.Command):
                                 backup=parsed_args.backup,
                                 restore_time=parsed_args.restore_time,
                                 target_instance=parsed_args.target_instance)
+    
+class ShowDatabaseConfiguration(command.Command):
+
+    _description = _("Show Configuration details associated to instance")
+
+    def get_parser(self, prog_name):
+        parser = super(ShowDatabaseConfiguration, self).get_parser(prog_name)
+        parser.add_argument('instance',
+                            metavar='<instance>',
+                            type=str,
+                            help=_('ID or name of the instance.'))
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.rds
+
+        obj = client.get_instance_configuration(instance=parsed_args.instance)
+
+        display_columns, columns = _get_columns(obj)
+        data = utils.get_item_properties(obj, columns, formatters={})
+        return (display_columns, data)
