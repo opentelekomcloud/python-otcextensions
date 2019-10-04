@@ -402,23 +402,129 @@ class RestoreDatabaseInstance(command.Command):
                                 backup=parsed_args.backup,
                                 restore_time=parsed_args.restore_time,
                                 target_instance=parsed_args.target_instance)
-    
-class ShowDatabaseConfiguration(command.Command):
 
-    _description = _("Show Configuration details associated to instance")
+
+class CreateDatabaseFromBackup(command.ShowOne):
+
+    _description = _("Creates a new database instance from backup.")
 
     def get_parser(self, prog_name):
-        parser = super(ShowDatabaseConfiguration, self).get_parser(prog_name)
+        parser = super(CreateDatabaseFromBackup, self).get_parser(prog_name)
         parser.add_argument('instance',
                             metavar='<instance>',
                             type=str,
                             help=_('ID or name of the instance.'))
+        parser.add_argument('name',
+                            metavar='<name>',
+                            help=_("Name of the instance."))
+        parser.add_argument('flavor_ref',
+                            metavar='<flavor_ref>',
+                            help=_("Flavor spec_code"))
+        parser.add_argument('--size',
+                            metavar='<size>',
+                            type=int,
+                            required=True,
+                            help=_("Size of the instance disk volume in GB. "))
+        parser.add_argument('--volume_type',
+                            metavar='<volume_type>',
+                            type=str,
+                            default=None,
+                            choices=['COMMON', 'ULTRAHIGH'],
+                            help=_("Volume type. (COMMON, ULTRAHIGH)."))
+        parser.add_argument('--availability_zone',
+                            metavar='<availability_zone>',
+                            default=None,
+                            help=_("The Zone hint to give to Nova."))
+        parser.add_argument(
+            '--configuration',
+            dest='configuration_id',
+            metavar='<configuration_id>',
+            default=None,
+            help=_("ID of the configuration group to attach to the instance."))
+        parser.add_argument('--disk_encryption_id',
+                            metavar='<disk_encryption_id>',
+                            default=None,
+                            help=_("key ID for disk encryption."))
+        parser.add_argument('--port',
+                            metavar='<port>',
+                            default=None,
+                            type=int,
+                            help=_("Database Port"))
+        parser.add_argument(
+            '--password',
+            metavar='<password>',
+            help=_("ID of the configuration group to attach to the instance."))
+        parser.add_argument('--region',
+                            metavar='<region>',
+                            type=str,
+                            default=None,
+                            help=argparse.SUPPRESS)
+        parser.add_argument('--network_id',
+                            dest='vpc_id',
+                            metavar='<network_id>',
+                            type=str,
+                            help=_('Network (VPC) ID'))
+        parser.add_argument('--subnet_id',
+                            metavar='<subnet_id>',
+                            type=str,
+                            help=_('Network (VPC) ID'))
+        parser.add_argument('--security_group',
+                            dest='security_group_id',
+                            metavar='<security_group_id>',
+                            type=str,
+                            help=_('Security group ID'))
+        parser.add_argument(
+            '--ha_mode',
+            metavar='<ha_replication_mode>',
+            type=str,
+            default=None,
+            help=_('replication mode for the standby DB instance'))
+        parser.add_argument('--backup',
+                            metavar='<backup>',
+                            default=None,
+                            type=str,
+                            help=_('ID or name of the backup.'))
+        parser.add_argument('--restore_time',
+                            metavar='<restore_time>',
+                            default=None,
+                            type=str,
+                            help=_('Specifies the time point of data '
+                                   'restoration in the UNIX timestamp'))
+        parser.add_argument('--target_instance',
+                            metavar='<target_instance>',
+                            default=None,
+                            type=str,
+                            help=_('ID or name of the target instance.'))
         return parser
 
     def take_action(self, parsed_args):
+        # raise NotImplementedError
+        # Attention: not conform password result in BadRequest with no info
         client = self.app.client_manager.rds
 
-        obj = client.get_instance_configuration(instance=parsed_args.instance)
+        attrs = {}
+        args_list = [
+            'name', 'availability_zone', 'configuration_id', 'region',
+            'vpc_id', 'subnet_id', 'security_group_id', 'disk_encryption_id',
+            'port', 'password', 'flavor_ref'
+        ]
+        for arg in args_list:
+            if getattr(parsed_args, arg):
+                attrs[arg] = getattr(parsed_args, arg)
+        volume = {}
+        if parsed_args.size:
+            volume = {"size": parsed_args.size}
+            if parsed_args.volume_type:
+                volume['type'] = parsed_args.volume_type
+            attrs['volume'] = volume
+        if parsed_args.ha_mode:
+            ha = {'mode': 'ha', 'replication_mode': parsed_args.ha_mode}
+            attrs['ha'] = ha
+        obj = client.create_instance_from_backup(
+            instance=parsed_args.instance,
+            backup=parsed_args.backup,
+            restore_time=parsed_args.restore_time,
+            **attrs)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns, formatters={})

@@ -13,7 +13,6 @@ from openstack import resource
 from openstack import _log
 from otcextensions.sdk import sdk_resource
 
-
 _logger = _log.setup_logging('openstack')
 
 
@@ -30,10 +29,9 @@ class Instance(sdk_resource.Resource):
     allow_update = True
     allow_list = True
 
-    _query_mapping = resource.QueryParameters(
-        'id', 'name', 'type', 'datastore_type',
-        'vpc_id', 'subnet_id', 'offset', 'limit'
-    )
+    _query_mapping = resource.QueryParameters('id', 'name', 'type',
+                                              'datastore_type', 'vpc_id',
+                                              'subnet_id', 'offset', 'limit')
     #: Instance id
     id = resource.Body('id')
     #: Instance name
@@ -118,9 +116,14 @@ class Instance(sdk_resource.Resource):
     #: Charge Info
     #: *Type: dict*
     backup_strategy = resource.Body('charge_info', type=dict)
+    #: Specifies the restoration information
+    #: *Type: dict*
+    restore_point = resource.Body('restore_point', type=dict)
 
 
 class InstanceRecovery(sdk_resource.Resource):
+
+    base_path = '/instances/recovery'
 
     # capabilities
     allow_create = True

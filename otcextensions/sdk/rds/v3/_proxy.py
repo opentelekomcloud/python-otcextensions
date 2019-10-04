@@ -232,7 +232,6 @@ class Proxy(sdk_proxy.Proxy):
                 'type': 'timestamp',
                 'restore_time': restore_time
             }
-        attrs['source']['instance_id'] = instance.id
         attrs['restore_point']['instance_id'] = instance.id
         return self._create(_instance.Instance, prepend_key=False, **attrs)
 
@@ -247,7 +246,7 @@ class Proxy(sdk_proxy.Proxy):
         """
         instance = self.find_instance(instance)
         return self._get(_instance.InstanceRestoreTime,
-                        requires_id=False,
+                         requires_id=False,
                          instance_id=instance.id)
 
     def get_instance_configuration(self, instance):
@@ -262,7 +261,7 @@ class Proxy(sdk_proxy.Proxy):
         """
         instance = self.find_instance(instance)
         return self._get(_instance.InstanceConfiguration,
-                        requires_id=False,
+                         requires_id=False,
                          instance_id=instance.id)
 
     def update_instance_configuration(self, instance, **attrs):
