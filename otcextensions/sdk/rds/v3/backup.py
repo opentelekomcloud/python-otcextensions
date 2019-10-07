@@ -10,26 +10,23 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
-from otcextensions.sdk import sdk_resource
 
 
-class Backup(sdk_resource.Resource):
+class Backup(resource.Resource):
 
     base_path = '/backups'
-    resource_key = 'backup'
     resources_key = 'backups'
-    # service_expectes_json_type = True
 
     # capabilities
     allow_create = True
     allow_delete = True
     allow_list = True
-    allow_get = False
+    allow_fetch = False
 
-    _query_mapping = resource.QueryParameters('offset', 'begin_time',
-                                              'instance_id', 'backup_id',
-                                              'backup_type', 'begin_time',
-                                              'end_time')
+    _query_mapping = resource.QueryParameters(
+        'offset', 'begin_time', 'instance_id', 'id',
+        'type', 'begin_time', 'end_time',
+        id='backup_id', type='backup_type')
 
     #: Backup id
     #: Type: uuid*
@@ -59,18 +56,19 @@ class Backup(sdk_resource.Resource):
     type = resource.Body('type')
 
 
-class BackupPolicy(sdk_resource.Resource):
+class BackupPolicy(resource.Resource):
 
     base_path = '/instances/%(instance_id)s/backups/policy'
     resource_key = 'backup_policy'
 
     # capabilities
-    allow_update = True
-    allow_get = True
+    allow_commit = True
+    allow_fetch = True
+
+    requires_id = False
 
     #: instaceId
     instance_id = resource.URI('instance_id')
-    # project_id = resource.URI('project_id')
 
     # Properties
     #: Policy keep days
@@ -95,32 +93,8 @@ class BackupPolicy(sdk_resource.Resource):
     #: *Type: string*
     period = resource.Body('period')
 
-    def update(self,
-               session,
-               prepend_key=True,
-               endpoint_override=False,
-               headers=False,
-               requests_auth=False):
-        """Create a remote resource based on this instance.
 
-        Method is overriden, because PUT without ID should be used
-
-        :param session: The session to use for making this request.
-        :type session: :class:`~keystoneauth1.adapter.Adapter`
-        :param prepend_key: A boolean indicating whether the resource_key
-                            should be prepended in a resource creation
-                            request. Default to True.
-
-        :return: None.
-        :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
-                 :data:`Resource.allow_create` is not set to ``True``.
-        """
-        self.update_no_id(session, prepend_key)
-
-        return None
-
-
-class BackupFiles(sdk_resource.Resource):
+class BackupFile(resource.Resource):
 
     base_path = '/backup-files'
     resources_key = 'files'
@@ -142,4 +116,4 @@ class BackupFiles(sdk_resource.Resource):
     #:  Indicates the link expiration time.
     #:  The format is "yyyy-mmddThh:mm:ssZ".
     #:  *Type: string*
-    link_expired_time = resource.Body('link_expired_time')
+    expires_at = resource.Body('link_expired_time')

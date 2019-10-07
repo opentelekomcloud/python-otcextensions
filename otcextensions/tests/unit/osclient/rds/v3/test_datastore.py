@@ -13,7 +13,6 @@
 #   under the License.
 #
 import mock
-# from osc_lib import utils as common_utils
 
 from otcextensions.osclient.rds.v3 import datastore
 from otcextensions.tests.unit.osclient.rds.v3 import fakes as rds_fakes
@@ -65,9 +64,6 @@ class TestListDatastoreVersions(rds_fakes.TestRds):
     column_headers = [
         'ID',
         'Name',
-        # 'Datastore',
-        # 'Image',
-        # 'Packages'
     ]
 
     def setUp(self):
@@ -92,21 +88,21 @@ class TestListDatastoreVersions(rds_fakes.TestRds):
         ]
 
         verifylist = [
-            ('db_name', 'mysql')
+            ('database', 'mysql')
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.rds.datastore_versions.side_effect = [
+        self.app.client_manager.rds.datastores.side_effect = [
             self.datastores
         ]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.app.client_manager.rds.datastore_versions.assert_called()
+        self.app.client_manager.rds.datastores.assert_called()
 
         self.assertEqual(self.column_headers, columns)
         self.assertEqual(tuple(self.datastore_data), tuple(data))

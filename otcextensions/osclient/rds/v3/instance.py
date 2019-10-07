@@ -101,7 +101,7 @@ class ListDatabaseInstances(command.Lister):
             help=_(
                 'Specifies the instance type. Values cane be single/ha/replica'
             ))
-        parser.add_argument('--db_type',
+        parser.add_argument('--database',
                             dest='datastore_type',
                             metavar='<datastore_type>',
                             type=str,
@@ -109,12 +109,13 @@ class ListDatabaseInstances(command.Lister):
                             help=_(
                                 'Specifies the database type. '
                                 'value is MySQL, PostgreSQL, or SQLServer.'))
-        parser.add_argument('--vpc_id',
-                            dest='vpc_id',
-                            metavar='<vpc_id>',
+        parser.add_argument('--router_id',
+                            dest='router_id',
+                            metavar='<router_id>',
                             type=str,
                             default=None,
-                            help=_('Indicates the VPC ID. of DB Instance.'))
+                            help=_('Specifies the ID of Router to which '
+                                   'instance should be connected to.'))
         parser.add_argument('--subnet_id',
                             dest='subnet_id',
                             metavar='<subnet_id>',
@@ -124,25 +125,17 @@ class ListDatabaseInstances(command.Lister):
         parser.add_argument('--offset',
                             dest='offset',
                             metavar='<offset>',
-                            type=str,
+                            type=int,
                             default=None,
                             help=_('Specifies the index position.'))
-        parser.add_argument(
-            '--marker',
-            dest='marker',
-            metavar='<marker>',
-            help=_('Begin displaying the results for IDs greater than the '
-                   'specified marker. When used with --limit, set this to '
-                   'the last ID displayed in the previous run. '
-                   '(Not supported)'))
 
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.rds
         args_list = [
-            'name', 'id', 'vpc_id', 'subnet_id', 'type', 'datastore_type',
-            'offset'
+            'name', 'id', 'router_id', 'subnet_id', 'type', 'datastore_type',
+            'offset', 'limit'
         ]
         attrs = {}
         for arg in args_list:
@@ -160,14 +153,7 @@ class ListDatabaseInstances(command.Lister):
 
 
 class ShowDatabaseInstance(command.ShowOne):
-    _description = _("Show instance details")
-
-    columns = [
-        'id', 'name', 'datastore', 'datastore_version', 'flavor Ref',
-        'Volume Type', 'Size', 'disk_encryption_id', 'region',
-        'availability_zone', 'vpc_id', 'subnet_id', 'security_group_id',
-        'port', 'backup_strategy', 'configuration_id', 'charge mode'
-    ]
+    _description = _("Show instance details.")
 
     def get_parser(self, prog_name):
         parser = super(ShowDatabaseInstance, self).get_parser(prog_name)
@@ -183,7 +169,8 @@ class ShowDatabaseInstance(command.ShowOne):
         obj = client.find_instance(parsed_args.instance)
 
         display_columns, columns = _get_columns(obj)
-        data = utils.get_item_properties(obj, columns, formatters={})
+        data = utils.get_item_properties(obj, columns)
+
         return (display_columns, data)
 
 
@@ -211,7 +198,7 @@ class CreateDatabaseInstance(command.ShowOne):
             help=_("Size of the instance disk volume in GB. "),
         )
         parser.add_argument(
-            '--volume_type',
+            '--volume-type',
             metavar='<volume_type>',
             type=str,
             default=None,
@@ -219,7 +206,7 @@ class CreateDatabaseInstance(command.ShowOne):
             help=_("Volume type. (COMMON, ULTRAHIGH)."),
         )
         parser.add_argument(
-            '--availability_zone',
+            '--availability-zone',
             metavar='<availability_zone>',
             default=None,
             help=_("The Zone hint to give to Nova."),
@@ -231,7 +218,7 @@ class CreateDatabaseInstance(command.ShowOne):
             help=_("datastore name"),
         )
         parser.add_argument(
-            '--datastore_version',
+            '--datastore-version',
             default=None,
             metavar='<datastore_version>',
             help=_("datastore version."),
@@ -244,7 +231,7 @@ class CreateDatabaseInstance(command.ShowOne):
             help=_("ID of the configuration group to attach to the instance."),
         )
         parser.add_argument(
-            '--disk_encryption_id',
+            '--disk-encryption-id',
             metavar='<disk_encryption_id>',
             default=None,
             help=_("key ID for disk encryption."),
@@ -262,7 +249,7 @@ class CreateDatabaseInstance(command.ShowOne):
             help=_("ID of the configuration group to attach to the instance."),
         )
         parser.add_argument(
-            '--replica_of',
+            '--replica-of',
             metavar='<source_instance>',
             default=None,
             help=_("ID or name of an existing instance to replicate from."),
@@ -274,27 +261,28 @@ class CreateDatabaseInstance(command.ShowOne):
             default=None,
             help=argparse.SUPPRESS,
         )
-        parser.add_argument('--network_id',
-                            dest='vpc_id',
-                            metavar='<network_id>',
+        parser.add_argument('--router-id',
+                            metavar='<router_id>',
                             type=str,
-                            help=_('Network (VPC) ID'))
-        parser.add_argument('--subnet_id',
+                            help=_('ID of a Router the DB should be connected '
+                                   'to'))
+        parser.add_argument('--subnet-id',
                             metavar='<subnet_id>',
                             type=str,
-                            help=_('Network (VPC) ID'))
-        parser.add_argument('--security_group',
+                            help=_('ID of a subnet the DB should be connected '
+                                   'to.'))
+        parser.add_argument('--security-group-id',
                             dest='security_group_id',
                             metavar='<security_group_id>',
                             type=str,
                             help=_('Security group ID'))
         parser.add_argument(
-            '--ha_mode',
+            '--ha-mode',
             metavar='<ha_replication_mode>',
             type=str,
             default=None,
             help=_('replication mode for the standby DB instance'))
-        parser.add_argument('--charge_mode',
+        parser.add_argument('--charge-mode',
                             metavar='<charge_mode>',
                             type=str,
                             default='postPaid',
@@ -309,8 +297,8 @@ class CreateDatabaseInstance(command.ShowOne):
         attrs = {}
         args_list = [
             'name', 'availability_zone', 'configuration_id', 'region',
-            'vpc_id', 'subnet_id', 'security_group_id', 'disk_encryption_id',
-            'port', 'password', 'flavor_ref'
+            'router_id', 'subnet_id', 'security_group_id',
+            'disk_encryption_id', 'port', 'password', 'flavor_ref'
         ]
         for arg in args_list:
             if getattr(parsed_args, arg):
@@ -322,7 +310,8 @@ class CreateDatabaseInstance(command.ShowOne):
                 volume['type'] = parsed_args.volume_type
             attrs['volume'] = volume
         if parsed_args.replica_of:
-            attrs['replica_of'] = client.find_instance(parsed_args.replica_of)
+            attrs['replica_of_id'] = \
+                client.find_instance(parsed_args.replica_of).id
         if parsed_args.datastore:
             datastore = {
                 'type': parsed_args.datastore,

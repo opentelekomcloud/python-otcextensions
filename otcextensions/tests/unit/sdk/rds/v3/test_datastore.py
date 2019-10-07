@@ -25,7 +25,7 @@ class TestDatastore(base.TestCase):
     def test_basic(self):
         sot = datastore.Datastore()
         self.assertEqual('dataStores', sot.resources_key)
-        self.assertEqual('/datastores/%(datastore_name)s', sot.base_path)
+        self.assertEqual('/datastores/%(database_name)s', sot.base_path)
         self.assertIsNone(sot.resource_key)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_fetch)

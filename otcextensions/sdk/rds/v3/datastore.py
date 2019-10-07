@@ -10,18 +10,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
-from otcextensions.sdk import sdk_resource
 
 
-class Datastore(sdk_resource.Resource):
+class Datastore(resource.Resource):
 
-    base_path = '/datastores/%(datastore_name)s'
+    base_path = '/datastores/%(database_name)s'
     resources_key = 'dataStores'
 
     # capabilities
     allow_list = True
 
-    datastore_name = resource.URI('datastore_name')
+    database_name = resource.URI('database_name')
 
     # Indicates the database version ID. Its value is unique.
     # :*Type:string*

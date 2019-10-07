@@ -25,14 +25,14 @@ DB_TYPE_CHOICES = ['mysql', 'postgresql', 'sqlserver']
 
 class ListDatabaseFlavors(command.Lister):
 
-    _description = _("List database flavors")
-    columns = ['instance_mode', 'vcpus', 'ram', 'spec_code']
+    _description = _("List database flavors.")
+    columns = ['name', 'instance_mode', 'vcpus', 'ram']
 
     def get_parser(self, prog_name):
         parser = super(ListDatabaseFlavors, self).get_parser(prog_name)
 
         parser.add_argument(
-            'db_name',
+            'database',
             metavar='{' + ','.join(DB_TYPE_CHOICES) + '}',
             type=lambda s: s.lower(),
             choices=DB_TYPE_CHOICES,
@@ -51,7 +51,7 @@ class ListDatabaseFlavors(command.Lister):
         client = self.app.client_manager.rds
 
         data = client.flavors(
-            datastore_name=parsed_args.db_name,
+            datastore_name=parsed_args.database,
             version_name=parsed_args.version)
 
         return (

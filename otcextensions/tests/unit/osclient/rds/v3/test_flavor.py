@@ -22,12 +22,10 @@ from otcextensions.tests.unit.osclient.rds.v3 import fakes as rds_fakes
 class TestListDatabaseFlavors(rds_fakes.TestRds):
 
     column_list_headers = [
+        'name',
         'instance_mode',
         'vcpus',
         'ram',
-        'spec_code'
-        # 'Str_ID',
-        # 'vCPUs'
     ]
 
     def setUp(self):
@@ -41,10 +39,10 @@ class TestListDatabaseFlavors(rds_fakes.TestRds):
         self.flavor_data = []
         for s in self.flavors:
             self.flavor_data.append((
+                s.name,
                 s.instance_mode,
                 s.vcpus,
-                s.ram,
-                s.spec_code
+                s.ram
             ))
 
     def test_list_flavors(self):
@@ -54,7 +52,7 @@ class TestListDatabaseFlavors(rds_fakes.TestRds):
         ]
 
         verifylist = [
-            ('db_name', 'mysql'),
+            ('database', 'mysql'),
             ('version', '5.7')
         ]
 

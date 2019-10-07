@@ -31,7 +31,8 @@ class TestListDatabaseInstances(rds_fakes.TestRds):
 
         self.cmd = instance.ListDatabaseInstances(self.app, None)
 
-        self.app.client_manager.rds.instances = mock.Mock()
+        self.client.instances = mock.Mock()
+        self.client.api_mock = self.client.instances
 
         self.objects = self.instance_mock.create_multiple(3)
         self.object_data = []
@@ -49,15 +50,55 @@ class TestListDatabaseInstances(rds_fakes.TestRds):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.rds.instances.side_effect = [self.objects]
+        self.client.api_mock.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.app.client_manager.rds.instances.assert_called()
+        self.client.api_mock.assert_called_with()
 
         self.assertEqual(self.column_list_headers, columns)
         self.assertEqual(tuple(self.object_data), tuple(data))
+
+    def test_list_args(self):
+        arglist = [
+            '--limit', '1',
+            '--id', '2',
+            '--name', '3',
+            '--type', '4',
+            '--database', '5',
+            '--router_id', '6',
+            '--subnet_id', '7',
+            '--offset', '8',
+        ]
+
+        verifylist = [
+            ('limit', 1),
+            ('id', '2'),
+            ('name', '3'),
+            ('type', '4'),
+            ('datastore_type', '5'),
+            ('router_id', '6'),
+            ('subnet_id', '7'),
+            ('offset', 8),
+        ]
+
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.api_mock.assert_called_with(
+            datastore_type='5',
+            id='2',
+            limit=1,
+            name='3',
+            offset=8,
+            router_id='6',
+            subnet_id='7',
+            type='4'
+        )
 
 
 class TestShowDatabaseInstance(rds_fakes.TestRds):
@@ -144,43 +185,80 @@ class TestCreateDatabaseInstance(rds_fakes.TestRds):
 
         self.cmd = instance.CreateDatabaseInstance(self.app, None)
 
-        self.app.client_manager.rds.find_flavor = mock.Mock()
-        self.app.client_manager.rds.create_instance = mock.Mock()
+        self.client.find_flavor = mock.Mock()
+        self.client.create_instance = mock.Mock()
 
         self.instance = self.instance_mock.create_one()
         self.flavor = self.flavor_mock.create_one()
-        # self.instance.resize = mock.Mock()
-
-        # self.instance._update(project_id='123')
 
     def test_action(self):
         arglist = [
-            'inst_name', 'test-flavor', '--availability_zone', 'test-az-01',
-            '--datastore', 'MySQL', '--datastore_version', '5.7',
-            '--network_id', 'test-vpc-id', '--subnet_id', 'test-subnet-id',
-            '--security_group', 'test-subnet-id', '--volume_type', 'ULTRAHIGH',
-            '--size', '100', '--password', 'testtest', '--region',
-            'test-region'
+            'inst_name',
+            'test-flavor',
+            '--availability-zone', 'test-az-01',
+            '--configuration', '123',
+            '--datastore', 'MySQL',
+            '--datastore-version', '5.7',
+            '--disk-encryption-id', '234',
+            '--ha-mode', 'semisync',
+            '--router-id', 'test-vpc-id',
+            '--subnet-id', 'test-subnet-id',
+            '--security-group-id', 'test-sec_grp-id',
+            '--replica-of', 'fake_name',
+            '--volume-type', 'ULTRAHIGH',
+            '--size', '100',
+            '--password', 'testtest',
+            '--region', 'test-region',
+            '--port', '12345'
         ]
 
-        verifylist = [('name', 'inst_name'), ('flavor_ref', 'test-flavor'),
-                      ('availability_zone', 'test-az-01'),
-                      ('datastore', 'MySQL'), ('datastore_version', '5.7'),
-                      ('vpc_id', 'test-vpc-id'),
-                      ('subnet_id', 'test-subnet-id'),
-                      ('security_group_id', 'test-subnet-id'),
-                      ('volume_type', 'ULTRAHIGH'), ('size', 100),
-                      ('password', 'testtest'), ('region', 'test-region')]
+        verifylist = [
+            ('name', 'inst_name'),
+            ('configuration_id', '123'),
+            ('flavor_ref', 'test-flavor'),
+            ('availability_zone', 'test-az-01'),
+            ('datastore', 'MySQL'),
+            ('datastore_version', '5.7'),
+            ('disk_encryption_id', '234'),
+            ('ha_mode', 'semisync'),
+            ('router_id', 'test-vpc-id'),
+            ('subnet_id', 'test-subnet-id'),
+            ('security_group_id', 'test-sec_grp-id'),
+            ('port', 12345),
+            ('replica_of', 'fake_name'),
+            ('volume_type', 'ULTRAHIGH'),
+            ('size', 100),
+            ('password', 'testtest'),
+            ('region', 'test-region')]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.rds.create_instance.side_effect = [
+        self.client.create_instance.side_effect = [
             self.instance
         ]
+
+        self.client.find_instance.return_value = self.instance
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        self.app.client_manager.rds.create_instance.assert_called()
+        self.client.create_instance.assert_called_with(
+            availability_zone='test-az-01',
+            charge_info={'charge_mode': 'postPaid'},
+            configuration_id='123',
+            datastore={'type': 'MySQL', 'version': '5.7'},
+            disk_encryption_id='234',
+            flavor_ref='test-flavor',
+            ha={'mode': 'ha', 'replication_mode': 'semisync'},
+            name='inst_name',
+            password='testtest',
+            port=12345,
+            region='test-region',
+            replica_of_id=self.instance.id,
+            router_id='test-vpc-id',
+            security_group_id='test-sec_grp-id',
+            volume={'size': 100, 'type': 'ULTRAHIGH'},
+            subnet_id='test-subnet-id'
+        )

@@ -23,9 +23,6 @@ EXAMPLE = {
 
 class TestFlavor(base.TestCase):
 
-    def setUp(self):
-        super(TestFlavor, self).setUp()
-
     def test_basic(self):
         sot = flavor.Flavor()
 
@@ -47,6 +44,7 @@ class TestFlavor(base.TestCase):
 
         sot = flavor.Flavor(**EXAMPLE)
         self.assertEqual(EXAMPLE['spec_code'], sot.spec_code)
+        self.assertEqual(EXAMPLE['spec_code'], sot.name)
         self.assertEqual(EXAMPLE['vcpus'], sot.vcpus)
         self.assertEqual(EXAMPLE['ram'], sot.ram)
         self.assertEqual(EXAMPLE['instance_mode'], sot.instance_mode)

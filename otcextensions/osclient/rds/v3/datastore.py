@@ -11,15 +11,12 @@
 #   under the License.
 #
 """Datastore v3 action implementations"""
-import logging
-
 from osc_lib import utils
 from osc_lib.command import command
 
 from otcextensions.i18n import _
 from otcextensions.common import sdk_utils
 
-LOG = logging.getLogger(__name__)
 
 DB_TYPE_CHOICES = ['mysql', 'postgresql', 'sqlserver']
 
@@ -31,7 +28,7 @@ def _get_columns(item):
 
 class ListDatastores(command.Lister):
 
-    _description = _("List available datastores")
+    _description = _("List available datastores.")
     columns = ['Name']
 
     def take_action(self, parsed_args):
@@ -46,14 +43,14 @@ class ListDatastores(command.Lister):
 
 
 class ListDatastoreVersions(command.Lister):
-    _description = _("Lists available versions for a datastore")
+    _description = _("Lists available versions for a datastore.")
     columns = ['ID', 'Name']
 
     def get_parser(self, prog_name):
         parser = super(ListDatastoreVersions, self).get_parser(prog_name)
 
         parser.add_argument(
-            'db_name',
+            'database',
             metavar='{' + ','.join(DB_TYPE_CHOICES) + '}',
             type=lambda s: s.lower(),
             choices=DB_TYPE_CHOICES,
@@ -64,7 +61,7 @@ class ListDatastoreVersions(command.Lister):
     def take_action(self, parsed_args):
         client = self.app.client_manager.rds
 
-        data = client.datastore_versions(datastore_name=parsed_args.db_name)
+        data = client.datastores(database_name=parsed_args.database)
 
         return (self.columns, (utils.get_item_properties(
             s,

@@ -9,33 +9,31 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import _log
+from openstack import exceptions
 from openstack import resource
-
-from otcextensions.sdk import sdk_resource
-
-_logger = _log.setup_logging('openstack')
+from openstack import utils
 
 
-class ConfigurationGroup(sdk_resource.Resource):
+class Configuration(resource.Resource):
 
     base_path = '/configurations'
-    resource_key = 'configuration'
     resources_key = 'configurations'
 
     # capabilities
     allow_create = True
     allow_delete = True
-    allow_update = True
-    allow_get = True
+    allow_commit = True
+    allow_fetch = True
     allow_list = True
 
     #: Id of the configuration group
+    configuration_id = resource.Body('configuration_id')
+    configuration_name = resource.Body('configuration_name')
     #: *Type:str*
-    id = resource.Body('id')
+    id = resource.Body('id', alias='configuration_id')
     #: Name of the configuration group
     #: *Type:str*
-    name = resource.Body('name')
+    name = resource.Body('name', alias='configuration_name')
     #: Data store information
     #: *Type: dict*
     datastore = resource.Body('datastore', type=dict)
@@ -50,43 +48,29 @@ class ConfigurationGroup(sdk_resource.Resource):
     datastore_name = resource.Body('datastore_name')
     #: Date of created
     #: *Type:str*
-    created = resource.Body('created')
+    created_at = resource.Body('created')
     #: Date of updated
     #: *Type:str*
-    updated = resource.Body('updated')
+    updated_at = resource.Body('updated')
     #: Indicates whether the parameter group is created by users.
     #: *Type:bool*
-    user_defined = resource.Body('user_defined')
+    is_user_defined = resource.Body('user_defined', type=bool)
     #: parameter group values defined by users
     #: *Type: dict*
     values = resource.Body('values', type=dict)
 
+    #: Results of the configuration apply per instance
+    #: *Type:list*
+    apply_results = resource.Body('apply_results', type=list)
 
-class ApplyConfigurationGroup(sdk_resource.Resource):
-
-    base_path = '/configurations/%(config_id)s/apply'
-
-    # capabilities
-    allow_update = True
-
-    #: configuration Id
-    configuration_id = resource.URI('configuration_id')
-
-    #: configuration Id
-    #:  *Type: uuid*
-    configuration_id = resource.Body('configuration_id')
-    #: configuration name
-    #:  *Type: string*
-    configuration_name = resource.Body('configuration_name')
-    #: Apply Status
-    #:  Indicates the parameter
-    #:  group application result.
-    #:  *Type: list*
-    apply_status = resource.Body('apply_status', type=list)
-    #: Success
-    #:  Indicates whether all
-    #:  parameter groups are
-    #:  applied to DB instances
-    #:  successfully.
-    #:  *Type: bool*
-    success = resource.Body('success', type=bool)
+    def apply(self, session, instances):
+        """Apply configuration to the given instances
+        """
+        url = utils.urljoin(self.base_path, self.id, 'apply')
+        body = {'instance_ids': instances}
+        response = session.put(
+            url,
+            json=body)
+        exceptions.raise_from_response(response)
+        self._translate_response(response)
+        return self
