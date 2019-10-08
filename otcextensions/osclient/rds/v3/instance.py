@@ -176,121 +176,146 @@ class ShowDatabaseInstance(command.ShowOne):
 
 class CreateDatabaseInstance(command.ShowOne):
 
-    _description = _("Creates a new database instance.")
+    _description = _("Create a new database instance.")
 
     def get_parser(self, prog_name):
         parser = super(CreateDatabaseInstance, self).get_parser(prog_name)
         parser.add_argument(
             'name',
             metavar='<name>',
-            help=_("Name of the instance."),
+            help=_("Name of the instance.")
         )
         parser.add_argument(
             'flavor_ref',
             metavar='<flavor_ref>',
-            help=_("Flavor spec_code"),
+            help=_("Flavor spec_code")
         )
-        parser.add_argument(
+        disk_group = parser.add_argument_group('Disk data')
+        disk_group.add_argument(
             '--size',
             metavar='<size>',
             type=int,
             required=True,
-            help=_("Size of the instance disk volume in GB. "),
+            help=_("Size of the instance disk volume in GB. ")
         )
-        parser.add_argument(
+        disk_group.add_argument(
             '--volume-type',
             metavar='<volume_type>',
             type=str,
             default=None,
             choices=['COMMON', 'ULTRAHIGH'],
-            help=_("Volume type. (COMMON, ULTRAHIGH)."),
+            help=_("Volume type. (COMMON, ULTRAHIGH).")
         )
         parser.add_argument(
             '--availability-zone',
             metavar='<availability_zone>',
-            default=None,
-            help=_("The Zone hint to give to Nova."),
+            required=True,
+            help=_("The Zone hint to give to Nova.")
         )
         parser.add_argument(
+            '--region',
+            metavar='<region>',
+            required=True,
+            help=argparse.SUPPRESS,
+        )
+        ds_group = parser.add_argument_group('Datasoure parameters')
+        ds_group.add_argument(
             '--datastore',
             metavar='<datastore>',
-            default=None,
-            help=_("datastore name"),
+            required=True,
+            help=_("Name of the datastore.")
         )
-        parser.add_argument(
+        ds_group.add_argument(
             '--datastore-version',
-            default=None,
+            required=True,
             metavar='<datastore_version>',
-            help=_("datastore version."),
+            help=_("Datastore version.")
         )
         parser.add_argument(
             '--configuration',
             dest='configuration_id',
             metavar='<configuration_id>',
             default=None,
-            help=_("ID of the configuration group to attach to the instance."),
+            help=_("ID of the configuration group to attach to the instance.")
         )
         parser.add_argument(
             '--disk-encryption-id',
             metavar='<disk_encryption_id>',
             default=None,
-            help=_("key ID for disk encryption."),
+            help=_("key ID for disk encryption.")
         )
-        parser.add_argument(
+        new_instance_group = parser.add_argument_group(
+            'New instance parameters',
+            'Parameters to be used for the new instance creation (not when '
+            'created as replica or from backup')
+        new_instance_group.add_argument(
             '--port',
             metavar='<port>',
-            default=None,
             type=int,
-            help=_("Database Port"),
+            help=_("Database Port")
         )
-        parser.add_argument(
+        new_instance_group.add_argument(
             '--password',
             metavar='<password>',
-            help=_("ID of the configuration group to attach to the instance."),
+            help=_("ID of the configuration group to attach to the instance.")
         )
-        parser.add_argument(
-            '--replica-of',
-            metavar='<source_instance>',
-            default=None,
-            help=_("ID or name of an existing instance to replicate from."),
+        new_instance_group.add_argument(
+            '--router-id',
+            metavar='<router_id>',
+            help=_('ID of a Router the DB should be connected to')
         )
-        parser.add_argument(
-            '--region',
-            metavar='<region>',
-            type=str,
-            default=None,
-            help=argparse.SUPPRESS,
+        new_instance_group.add_argument(
+            '--subnet-id',
+            metavar='<subnet_id>',
+            help=_('ID of a subnet the DB should be connected to.')
         )
-        parser.add_argument('--router-id',
-                            metavar='<router_id>',
-                            type=str,
-                            help=_('ID of a Router the DB should be connected '
-                                   'to'))
-        parser.add_argument('--subnet-id',
-                            metavar='<subnet_id>',
-                            type=str,
-                            help=_('ID of a subnet the DB should be connected '
-                                   'to.'))
-        parser.add_argument('--security-group-id',
-                            dest='security_group_id',
-                            metavar='<security_group_id>',
-                            type=str,
-                            help=_('Security group ID'))
+        new_instance_group.add_argument(
+            '--security-group-id',
+            dest='security_group_id',
+            metavar='<security_group_id>',
+            help=_('Security group ID')
+        )
         parser.add_argument(
             '--ha-mode',
             metavar='<ha_replication_mode>',
-            type=str,
+            help=_('replication mode for the standby DB instance')
+        )
+        parser.add_argument(
+            '--charge-mode',
+            metavar='<charge_mode>',
+            default='postPaid',
+            help=_('Specifies the billing mode')
+        )
+        create_from_group = parser.add_argument_group(
+            'Create FROM group',
+            'Parameters to be used when creating new instance as a '
+            'replica or from backup')
+        create_from_group.add_argument(
+            '--replica-of',
+            metavar='<source_instance>',
             default=None,
-            help=_('replication mode for the standby DB instance'))
-        parser.add_argument('--charge-mode',
-                            metavar='<charge_mode>',
-                            type=str,
-                            default='postPaid',
-                            help=_('Specifies the billing mode'))
+            help=_("ID or name of an existing instance to replicate from.")
+        )
+        create_from_group.add_argument(
+            '--from-backup',
+            metavar='<backup>',
+            help=_('Backup ID or Name to create new instance from,')
+        )
+        create_from_group.add_argument(
+            '--from-instance',
+            metavar='<source_instance>',
+            help=_('Source instance ID or Name to create from. '
+                   'This requires setting restore_time additionally.')
+        )
+        create_from_group.add_argument(
+            '--restore-time',
+            metavar='<time>',
+            help=_('Time (UNIX timestamp in ms) to create new instance '
+                   'as a PointInTime recovery.')
+        )
         return parser
 
     def take_action(self, parsed_args):
-        # raise NotImplementedError
         # Attention: not conform password result in BadRequest with no info
         client = self.app.client_manager.rds
 
@@ -309,9 +334,6 @@ class CreateDatabaseInstance(command.ShowOne):
             if parsed_args.volume_type:
                 volume['type'] = parsed_args.volume_type
             attrs['volume'] = volume
-        if parsed_args.replica_of:
-            attrs['replica_of_id'] = \
-                client.find_instance(parsed_args.replica_of).id
         if parsed_args.datastore:
             datastore = {
                 'type': parsed_args.datastore,
@@ -323,6 +345,42 @@ class CreateDatabaseInstance(command.ShowOne):
             attrs['ha'] = ha
         if parsed_args.charge_mode:
             attrs['charge_info'] = {'charge_mode': parsed_args.charge_mode}
+
+        if parsed_args.replica_of:
+            # Create replica
+            if (parsed_args.password or parsed_args.port
+                    or parsed_args.router_id or parsed_args.subnet_id
+                    or parsed_args.subnet_id):
+                raise exceptions.CommandError(
+                    _('Setting password/port/router/subnet/sg is not '
+                      'supported when creating replica')
+                )
+            attrs['replica_of_id'] = \
+                client.find_instance(parsed_args.replica_of,
+                                     ignore_missing=False).id
+        elif parsed_args.from_backup:
+            # Create from backup
+            backup = client.find_backup(parsed_args.from_backup,
+                                        ignore_missing=False)
+            attrs['restore_point'] = {
+                'type': 'backup',
+                'backup_id': backup.id,
+                'instance_id': backup.instance_id
+            }
+        elif parsed_args.from_instance:
+            if not parsed_args.restore_time:
+                raise exceptions.CommandError(
+                    _('`--restore-time` parameter is required with '
+                      '`--from-instance`')
+                )
+            source = client.find_instance(parsed_args.from_instance,
+                                          ignore_missing=False)
+            attrs['restore_point'] = {
+                'type': 'timestamp',
+                'restore_time': parsed_args.restore_time,
+                'instance_id': source.id
+            }
+
         obj = client.create_instance(**attrs)
 
         display_columns, columns = _get_columns(obj)
@@ -365,156 +423,44 @@ class RestoreDatabaseInstance(command.Command):
         parser.add_argument('instance',
                             metavar='<instance>',
                             type=str,
-                            help=_('ID or name of the instance.'))
-        parser.add_argument('--backup',
-                            metavar='<backup>',
-                            default=None,
-                            type=str,
-                            help=_('ID or name of the backup.'))
-        parser.add_argument('--restore_time',
-                            metavar='<restore_time>',
-                            default=None,
-                            type=str,
-                            help=_('Specifies the time point of data '
-                                   'restoration in the UNIX timestamp'))
-        parser.add_argument('--target_instance',
-                            metavar='<target_instance>',
-                            default=None,
-                            type=str,
                             help=_('ID or name of the target instance.'))
+        group = parser.add_mutually_exclusive_group()
+        group.add_argument('--backup',
+                           metavar='<backup>',
+                           default=None,
+                           type=str,
+                           help=_('ID or name of the backup.'))
+        group.add_argument('--restore_time',
+                           metavar='<restore_time>',
+                           default=None,
+                           type=str,
+                           help=_('Specifies the time point of data '
+                                  'restoration in the UNIX timestamp'))
+        parser.add_argument('--source_instance',
+                            metavar='<source_instance>',
+                            default=None,
+                            type=str,
+                            help=_('ID or name of the source instance.'))
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.rds
 
-        client.restore_instance(instance=parsed_args.instance,
-                                backup=parsed_args.backup,
+        instance = client.find_instance(parsed_args.instance)
+        backup = None
+        source_instance = None
+        if parsed_args.backup:
+            backup = client.find_backup(parsed_args.backup,
+                                        ignore_missing=False)
+            # If user has not passed source_instance, but backup - find backup
+            # and get to instance_id this way
+            if not parsed_args.source_instance:
+                source_instance = backup.instance_id
+
+        if not source_instance:
+            source_instance = client.find_instance(parsed_args.source_instance)
+
+        client.restore_instance(instance=instance,
+                                backup=backup,
                                 restore_time=parsed_args.restore_time,
-                                target_instance=parsed_args.target_instance)
-
-
-class CreateDatabaseFromBackup(command.ShowOne):
-
-    _description = _("Creates a new database instance from backup.")
-
-    def get_parser(self, prog_name):
-        parser = super(CreateDatabaseFromBackup, self).get_parser(prog_name)
-        parser.add_argument('instance',
-                            metavar='<instance>',
-                            type=str,
-                            help=_('ID or name of the instance.'))
-        parser.add_argument('name',
-                            metavar='<name>',
-                            help=_("Name of the instance."))
-        parser.add_argument('flavor_ref',
-                            metavar='<flavor_ref>',
-                            help=_("Flavor spec_code"))
-        parser.add_argument('--size',
-                            metavar='<size>',
-                            type=int,
-                            required=True,
-                            help=_("Size of the instance disk volume in GB. "))
-        parser.add_argument('--volume_type',
-                            metavar='<volume_type>',
-                            type=str,
-                            default=None,
-                            choices=['COMMON', 'ULTRAHIGH'],
-                            help=_("Volume type. (COMMON, ULTRAHIGH)."))
-        parser.add_argument('--availability_zone',
-                            metavar='<availability_zone>',
-                            default=None,
-                            help=_("The Zone hint to give to Nova."))
-        parser.add_argument(
-            '--configuration',
-            dest='configuration_id',
-            metavar='<configuration_id>',
-            default=None,
-            help=_("ID of the configuration group to attach to the instance."))
-        parser.add_argument('--disk_encryption_id',
-                            metavar='<disk_encryption_id>',
-                            default=None,
-                            help=_("key ID for disk encryption."))
-        parser.add_argument('--port',
-                            metavar='<port>',
-                            default=None,
-                            type=int,
-                            help=_("Database Port"))
-        parser.add_argument(
-            '--password',
-            metavar='<password>',
-            help=_("ID of the configuration group to attach to the instance."))
-        parser.add_argument('--region',
-                            metavar='<region>',
-                            type=str,
-                            default=None,
-                            help=argparse.SUPPRESS)
-        parser.add_argument('--network_id',
-                            dest='vpc_id',
-                            metavar='<network_id>',
-                            type=str,
-                            help=_('Network (VPC) ID'))
-        parser.add_argument('--subnet_id',
-                            metavar='<subnet_id>',
-                            type=str,
-                            help=_('Network (VPC) ID'))
-        parser.add_argument('--security_group',
-                            dest='security_group_id',
-                            metavar='<security_group_id>',
-                            type=str,
-                            help=_('Security group ID'))
-        parser.add_argument(
-            '--ha_mode',
-            metavar='<ha_replication_mode>',
-            type=str,
-            default=None,
-            help=_('replication mode for the standby DB instance'))
-        parser.add_argument('--backup',
-                            metavar='<backup>',
-                            default=None,
-                            type=str,
-                            help=_('ID or name of the backup.'))
-        parser.add_argument('--restore_time',
-                            metavar='<restore_time>',
-                            default=None,
-                            type=str,
-                            help=_('Specifies the time point of data '
-                                   'restoration in the UNIX timestamp'))
-        parser.add_argument('--target_instance',
-                            metavar='<target_instance>',
-                            default=None,
-                            type=str,
-                            help=_('ID or name of the target instance.'))
-        return parser
-
-    def take_action(self, parsed_args):
-        # raise NotImplementedError
-        # Attention: not conform password result in BadRequest with no info
-        client = self.app.client_manager.rds
-
-        attrs = {}
-        args_list = [
-            'name', 'availability_zone', 'configuration_id', 'region',
-            'vpc_id', 'subnet_id', 'security_group_id', 'disk_encryption_id',
-            'port', 'password', 'flavor_ref'
-        ]
-        for arg in args_list:
-            if getattr(parsed_args, arg):
-                attrs[arg] = getattr(parsed_args, arg)
-        volume = {}
-        if parsed_args.size:
-            volume = {"size": parsed_args.size}
-            if parsed_args.volume_type:
-                volume['type'] = parsed_args.volume_type
-            attrs['volume'] = volume
-        if parsed_args.ha_mode:
-            ha = {'mode': 'ha', 'replication_mode': parsed_args.ha_mode}
-            attrs['ha'] = ha
-        obj = client.create_instance_from_backup(
-            instance=parsed_args.instance,
-            backup=parsed_args.backup,
-            restore_time=parsed_args.restore_time,
-            **attrs)
-
-        display_columns, columns = _get_columns(obj)
-        data = utils.get_item_properties(obj, columns, formatters={})
-        return (display_columns, data)
+                                source_instance=source_instance)

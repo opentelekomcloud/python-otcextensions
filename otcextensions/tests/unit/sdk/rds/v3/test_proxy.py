@@ -109,6 +109,9 @@ class TestBackup(TestRdsProxy):
         self.verify_delete(self.proxy.delete_backup,
                            backup.Backup, True)
 
+    def test_find_backup(self):
+        self.verify_find(self.proxy.find_backup, backup.Backup)
+
     def test_get_instance_backup_policy(self):
         self.verify_get(
             self.proxy.get_instance_backup_policy,
@@ -157,6 +160,19 @@ class TestInstance(TestRdsProxy):
             self.proxy.get_instance_restore_time,
             method_args=["inst"],
             expected_args=[self.proxy]
+        )
+
+    def test_restore(self):
+        self._verify2(
+            'otcextensions.sdk.rds.v3.instance.Instance.restore',
+            self.proxy.restore_instance,
+            method_args=["inst"],
+            method_kwargs={
+                'backup': backup.Backup(id='bck'),
+                'restore_time': 'rt',
+                'source_instance': instance.Instance(id='sid')},
+            expected_args=[self.proxy, instance.Instance(id='sid'),
+                           backup.Backup(id='bck'), 'rt'],
         )
 
     def test_get_instance_configuration(self):

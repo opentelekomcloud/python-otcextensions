@@ -50,7 +50,6 @@ EXAMPLE = {
     }],
     "private_ips": ["192.168.0.142"],
     "public_ips": ["10.154.219.187", "10.154.219.186"],
-    "db_user_name": "root",
     "password": "fake_pass",
     "vpc_id": "b21630c1-e7d3-450d-907d-39ef5f445ae7",
     "subnet_id": "45557a98-9e17-4600-8aec-999150bc4eef",
@@ -111,7 +110,6 @@ class TestInstance(base.TestCase):
         self.assertEqual(EXAMPLE['vpc_id'], sot.router_id)
         self.assertEqual(EXAMPLE['security_group_id'], sot.security_group_id)
         self.assertEqual(EXAMPLE['subnet_id'], sot.subnet_id)
-        self.assertEqual(EXAMPLE['db_user_name'], sot.user_name)
         self.assertEqual(EXAMPLE['switch_strategy'], sot.switch_strategy)
         self.assertEqual(EXAMPLE['maintenance_window'], sot.maintenance_window)
         self.assertEqual(EXAMPLE['time_zone'], sot.time_zone)
@@ -133,3 +131,52 @@ class TestInstance(base.TestCase):
 
         self.assertEqual(restore_times, rt)
         self.assertEqual(restore_times, sot.restore_time)
+
+    def test_restore(self):
+        sot = instance.Instance(**EXAMPLE)
+        job_id = 'fake_job'
+
+        response = mock.Mock()
+        response.status_code = 200
+        response.json.return_value = {'job_id': job_id}
+        response.headers = {}
+        self.sess.post.return_value = response
+
+        class FakeResource(object):
+            def __init__(self, id):
+                self.id = id
+
+        # Restore from backup
+        rt = sot.restore(self.sess, FakeResource('sid'), FakeResource('bid'))
+
+        self.sess.post.assert_called_with(
+            'instances/recovery',
+            json={
+                'source': {
+                    'type': 'backup', 'backup_id': 'bid',
+                    'instance_id': 'sid'},
+                'target': {'instance_id': 'IDENTIFIER'}})
+
+        # PIT
+        rt = sot.restore(self.sess, FakeResource('sid'), None, 'rit')
+
+        self.sess.post.assert_called_with(
+            'instances/recovery',
+            json={
+                'source': {
+                    'type': 'timestamp', 'restore_time': 'rit',
+                    'instance_id': 'sid'},
+                'target': {'instance_id': 'IDENTIFIER'}})
+
+        # Restore from own backup
+        rt = sot.restore(self.sess, None, FakeResource('bid'))
+
+        self.sess.post.assert_called_with(
+            'instances/recovery',
+            json={
+                'source': {
+                    'type': 'backup', 'backup_id': 'bid',
+                    'instance_id': sot.id},
+                'target': {'instance_id': 'IDENTIFIER'}})
+
+        self.assertEqual(job_id, rt)

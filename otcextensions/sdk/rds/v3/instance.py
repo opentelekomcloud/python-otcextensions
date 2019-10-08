@@ -32,7 +32,7 @@ class Instance(resource.Resource):
     #: Availability Zone.
     #: *Type:str*
     availability_zone = resource.Body('availability_zone')
-    # TODO: extract backup strategy into separate type
+    # TODO(not_gtema): extract backup strategy into separate type
     #: Backup Strategy.
     #: *Type: dict*
     backup_strategy = resource.Body('backup_strategy', type=dict)
@@ -112,15 +112,12 @@ class Instance(resource.Resource):
     # datastore: Instance updated time.
     #: *Type:str*
     updated_at = resource.Body('updated')
-    #: Username of the default DB user.
-    #: *Type:str*
-    user_name = resource.Body('db_user_name')
     #: Volume information
     #: *Type: dict*
     volume = resource.Body('volume', type=dict)
 
     def fetch_restore_times(self, session):
-        """List possible restore times for the instance
+        """List possible restore times for the instance.
         """
         url = utils.urljoin(self.base_path, self.id, 'restore-time')
         response = session.get(url)
@@ -133,21 +130,34 @@ class Instance(resource.Resource):
     def update_instance_configuration(self, session):
         pass
 
-#
-# class InstanceRecovery(sdk_resource.Resource):
-#
-#     base_path = '/instances/recovery'
-#
-#     # capabilities
-#     allow_create = True
-#
-#     #: Specifies the restoration information
-#     #:  *Type: dict*
-#     source = resource.Body('source', type=dict)
-#     #: Specifies the restoration target
-#     #:  *Type: dict*
-#     target = resource.Body('target', type=dict)
-#
+    def restore(self, session, source_instance,
+                backup=None, restore_time=None):
+        """Restore instance from the backup of PIR.
+        """
+        url = utils.urljoin(self.base_path, 'recovery')
+
+        body = {
+            'source': None,
+            'target': {'instance_id': self.id}
+        }
+
+        if backup:
+            body['source'] = {'type': 'backup', 'backup_id': backup.id}
+        elif restore_time:
+            body['source'] = {
+                'type': 'timestamp',
+                'restore_time': restore_time
+            }
+        if not source_instance:
+            source_instance = self
+        body['source']['instance_id'] = source_instance.id
+
+        response = session.post(url, json=body)
+        exceptions.raise_from_response(response)
+        job_id = response.json().get('job_id')
+
+        return job_id
+
 #
 # class InstanceConfiguration(sdk_resource.Resource):
 #

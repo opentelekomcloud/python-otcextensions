@@ -127,79 +127,37 @@ class Proxy(proxy.Proxy):
         :returns: A generator of instance objects
         :rtype: :class:`~otcextensions.sdk.rds.v3.instance.Instance`
         """
-        # TODO: check whether pagination works properly
+        # TODO(not_gtema): check whether pagination works properly
         return self._list(_instance.Instance, **params)
 
-#     def restore_instance(self,
-#                          instance,
-#                          backup=None,
-#                          restore_time=None,
-#                          target_instance=None):
-#         """Restore instance from backup
-#            or Restore Point in Time Recovery
-#
-#         :param instance: Either the id of a instance or a
-#                          :class:`~otcextensions.sdk.rds.v3.instance.Instance`
-#                          instance.
-#         :param backup: Either the id of a backup or a
-#                          :class:`~otcextensions.sdk.rds.v3.backup.Backup`
-#                          instance.
-#
-#         :returns: None
-#         :rtype:
-#         """
-#         attrs = {}
-#         instance = self._get_resource(_instance.Instance, instance)
-#         if target_instance:
-#             target_instance = self._get_resource(_instance.Instance,
-#                                                  target_instance)
-#         else:
-#             target_instance = instance
-#         if backup:
-#             backup = self._get_resource(_backup.Backup, backup)
-#             attrs['source'] = {'type': 'backup', 'backup_id': backup.id}
-#         elif restore_time:
-#             attrs['source'] = {
-#                 'type': 'timestamp',
-#                 'restore_time': restore_time
-#             }
-#         attrs['source']['instance_id'] = instance.id
-#         attrs['target'] = {'instance_id': target_instance.id}
-#         return self._create(_instance.InstanceRecovery,
-#                             prepend_key=False,
-#                             **attrs)
+    def restore_instance(self,
+                         instance,
+                         backup=None,
+                         restore_time=None,
+                         source_instance=None):
+        """Restore instance from backup
+           or Restore using Point in Time Recovery
 
-#     def create_instance_from_backup(self,
-#                                     instance,
-#                                     backup=None,
-#                                     restore_time=None,
-#                                     **attrs):
-#         """Restore instance from backup
-#
-#         :param instance: Either the id of a instance or a
-#                          :class:`~otcextensions.sdk.rds.v3.instance.Instance`
-#                          instance.
-#         :param backup: Either the id of a backup or a
-#                          :class:`~otcextensions.sdk.rds.v3.backup.Backup`
-#                          instance.
-#         :attrs attrs: The attributes to update on the instance represented
-#                        by ``value``.
-#
-#         :returns: The updated instance
-#         :rtype: :class:`~otcextensions.sdk.rds.v3.instance.Instance`
-#         """
-#         instance = self._get_resource(_instance.Instance, instance)
-#         if backup:
-#             backup = self._get_resource(_backup.Backup, backup)
-#             attrs['restore_point'] = {'type': 'backup', 'backup_id': backup.id}
-#         elif restore_time:
-#             attrs['restore_point'] = {
-#                 'type': 'timestamp',
-#                 'restore_time': restore_time
-#             }
-#         attrs['restore_point']['instance_id'] = instance.id
-#         return self._create(_instance.Instance, prepend_key=False, **attrs)
-#
+        :param instance: Either the id of a source target instance or a
+            :class:`~otcextensions.sdk.rds.v3.instance.Instance` instance.
+        :param backup: Either the id of a backup or a
+            :class:`~otcextensions.sdk.rds.v3.backup.Backup` instance.
+        :param source_instance: Either the id of the source instance or a
+            :class:`~otcextensions.sdk.rds.v3.instance.Instance` instance.
+
+        :returns: Job ID
+        :rtype:
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        if source_instance:
+            source_instance = self._get_resource(_instance.Instance,
+                                                 source_instance)
+        else:
+            source_instance = instance
+        if backup:
+            backup = self._get_resource(_backup.Backup, backup)
+        return instance.restore(self, source_instance, backup, restore_time)
+
     def get_instance_restore_time(self, instance):
         """Obtaining a restore time of an instance.
 
@@ -349,6 +307,22 @@ class Proxy(proxy.Proxy):
         return self._delete(_backup.Backup,
                             backup,
                             ignore_missing=ignore_missing)
+
+    def find_backup(self, name_or_id, ignore_missing=True):
+        """Find a single backup
+
+        :param name_or_id: The name or ID of a instance.
+        :param bool ignore_missing: When set to ``False``
+                    :class:`~openstack.exceptions.ResourceNotFound` will be
+                    raised when the resource does not exist.
+                    When set to ``True``, None will be returned when
+                    attempting to find a nonexistent resource.
+        :returns: One :class:`~otcextensions.sdk.rds.v3.backup.Backup`
+                  or None
+        """
+        return self._find(_backup.Backup,
+                          name_or_id,
+                          ignore_missing=ignore_missing)
 
     def get_instance_backup_policy(self, instance):
         """Obtaining a backup policy of the instance

@@ -39,6 +39,7 @@ class TestRds(utils.TestCommand):
         self.datastore_mock = FakeDatastore
         self.flavor_mock = FakeFlavor
         self.instance_mock = FakeInstance
+        self.backup_mock = FakeBackup
         # self.configuration_mock = FakeConfiguration
 
 
@@ -219,28 +220,20 @@ class FakeBackup(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'id':
-            'id-' + uuid.uuid4().hex,
-            'name':
-            'name-' + uuid.uuid4().hex,
-            'description':
-            uuid.uuid4().hex,
+            'id': 'id-' + uuid.uuid4().hex,
+            'name': 'name-' + uuid.uuid4().hex,
+            'description': uuid.uuid4().hex,
             'datastore': {
                 'type': 'datastore-' + uuid.uuid4().hex,
                 'version': 'version-' + uuid.uuid4().hex,
             },
-            'instance_id':
-            'instance_id-' + uuid.uuid4().hex,
-            'size':
-            random.randint(0, 100),
+            'instance_id': 'instance_id-' + uuid.uuid4().hex,
+            'size': random.randint(0, 100),
             'status':
             random.choice(['BUILDING', 'COMPLETED', 'FAILED', 'DELETING']),
-            'type':
-            random.choice(['auto', 'manual']),
-            'begin_time':
-            uuid.uuid4().hex,
-            'end_time':
-            uuid.uuid4().hex
+            'type': random.choice(['auto', 'manual']),
+            'begin_time': uuid.uuid4().hex,
+            'end_time': uuid.uuid4().hex
         }
         obj = backup.Backup.existing(**object_info)
         return obj

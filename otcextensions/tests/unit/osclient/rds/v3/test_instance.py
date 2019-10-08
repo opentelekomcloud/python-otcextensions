@@ -13,7 +13,8 @@
 #   under the License.
 #
 import mock
-# from osc_lib import utils as common_utils
+
+from osc_lib import exceptions
 
 from otcextensions.osclient.rds.v3 import instance
 from otcextensions.tests.unit.osclient.rds.v3 import fakes as rds_fakes
@@ -46,7 +47,7 @@ class TestListDatabaseInstances(rds_fakes.TestRds):
 
         verifylist = []
 
-        # Verify cm is triggereg with default parameters
+        # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
@@ -83,7 +84,7 @@ class TestListDatabaseInstances(rds_fakes.TestRds):
             ('offset', 8),
         ]
 
-        # Verify cm is triggereg with default parameters
+        # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Trigger the action
@@ -113,9 +114,9 @@ class TestShowDatabaseInstance(rds_fakes.TestRds):
 
         self.cmd = instance.ShowDatabaseInstance(self.app, None)
 
-        self.app.client_manager.rds.find_instance = mock.Mock()
-
         self.object = self.instance_mock.create_one()
+
+        self.client.find_instance = mock.Mock(return_value=self.object)
 
         self.object_data = (
             self.object.datastore,
@@ -136,27 +137,28 @@ class TestShowDatabaseInstance(rds_fakes.TestRds):
             ('instance', 'test_instance'),
         ]
 
-        # Verify cm is triggereg with default parameters
+        # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-
-        # Set the response
-        self.app.client_manager.rds.find_instance.side_effect = [self.object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.app.client_manager.rds.find_instance.assert_called()
+        self.client.find_instance.assert_called_with('test_instance')
 
         # self.assertEqual(self.column_list_headers, columns)
         self.assertEqual(self.object_data, data)
 
 
 class TestDeleteDatabaseInstance(rds_fakes.TestRds):
+
     def setUp(self):
         super(TestDeleteDatabaseInstance, self).setUp()
 
         self.cmd = instance.DeleteDatabaseInstance(self.app, None)
 
-        self.app.client_manager.rds.delete_instance = mock.Mock()
+        self.object = self.instance_mock.create_one()
+
+        self.client.delete_instance = mock.Mock()
+        self.client.find_instance = mock.Mock(return_value=self.object)
 
     def test_delete(self):
         arglist = [
@@ -167,19 +169,22 @@ class TestDeleteDatabaseInstance(rds_fakes.TestRds):
             ('instance', 'test_obj'),
         ]
 
-        # Verify cm is triggereg with default parameters
+        # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.rds.delete_instance.side_effect = [True]
+        self.client.delete_instance.side_effect = [True]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        self.app.client_manager.rds.delete_instance.assert_called()
+        self.client.find_instance.assert_called_with('test_obj')
+
+        self.client.delete_instance.assert_called_with(self.object.id)
 
 
 class TestCreateDatabaseInstance(rds_fakes.TestRds):
+
     def setUp(self):
         super(TestCreateDatabaseInstance, self).setUp()
 
@@ -191,7 +196,7 @@ class TestCreateDatabaseInstance(rds_fakes.TestRds):
         self.instance = self.instance_mock.create_one()
         self.flavor = self.flavor_mock.create_one()
 
-    def test_action(self):
+    def test_create(self):
         arglist = [
             'inst_name',
             'test-flavor',
@@ -204,7 +209,6 @@ class TestCreateDatabaseInstance(rds_fakes.TestRds):
             '--router-id', 'test-vpc-id',
             '--subnet-id', 'test-subnet-id',
             '--security-group-id', 'test-sec_grp-id',
-            '--replica-of', 'fake_name',
             '--volume-type', 'ULTRAHIGH',
             '--size', '100',
             '--password', 'testtest',
@@ -225,13 +229,12 @@ class TestCreateDatabaseInstance(rds_fakes.TestRds):
             ('subnet_id', 'test-subnet-id'),
             ('security_group_id', 'test-sec_grp-id'),
             ('port', 12345),
-            ('replica_of', 'fake_name'),
             ('volume_type', 'ULTRAHIGH'),
             ('size', 100),
             ('password', 'testtest'),
             ('region', 'test-region')]
 
-        # Verify cm is triggereg with default parameters
+        # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
@@ -256,9 +259,346 @@ class TestCreateDatabaseInstance(rds_fakes.TestRds):
             password='testtest',
             port=12345,
             region='test-region',
-            replica_of_id=self.instance.id,
             router_id='test-vpc-id',
             security_group_id='test-sec_grp-id',
             volume={'size': 100, 'type': 'ULTRAHIGH'},
             subnet_id='test-subnet-id'
+        )
+
+    def test_create_replica(self):
+        arglist = [
+            'inst_name',
+            'test-flavor',
+            '--availability-zone', 'test-az-01',
+            '--configuration', '123',
+            '--datastore', 'MySQL',
+            '--datastore-version', '5.7',
+            '--disk-encryption-id', '234',
+            '--ha-mode', 'semisync',
+            '--replica-of', 'fake_name',
+            '--volume-type', 'ULTRAHIGH',
+            '--size', '100',
+            '--region', 'test-region',
+        ]
+
+        verifylist = [
+            ('name', 'inst_name'),
+            ('configuration_id', '123'),
+            ('flavor_ref', 'test-flavor'),
+            ('availability_zone', 'test-az-01'),
+            ('datastore', 'MySQL'),
+            ('datastore_version', '5.7'),
+            ('disk_encryption_id', '234'),
+            ('ha_mode', 'semisync'),
+            ('replica_of', 'fake_name'),
+            ('volume_type', 'ULTRAHIGH'),
+            ('size', 100),
+            ('region', 'test-region')]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.create_instance.side_effect = [
+            self.instance
+        ]
+
+        self.client.find_instance.return_value = self.instance
+
+        # Trigger the action
+        self.cmd.take_action(parsed_args)
+
+        self.client.create_instance.assert_called_with(
+            availability_zone='test-az-01',
+            charge_info={'charge_mode': 'postPaid'},
+            configuration_id='123',
+            datastore={'type': 'MySQL', 'version': '5.7'},
+            disk_encryption_id='234',
+            flavor_ref='test-flavor',
+            ha={'mode': 'ha', 'replication_mode': 'semisync'},
+            name='inst_name',
+            region='test-region',
+            replica_of_id=self.instance.id,
+            volume={'size': 100, 'type': 'ULTRAHIGH'},
+        )
+
+    def test_create_replica_exception(self):
+        arglist = [
+            'inst_name',
+            'test-flavor',
+            '--availability-zone', 'test-az-01',
+            '--configuration', '123',
+            '--datastore', 'MySQL',
+            '--datastore-version', '5.7',
+            '--disk-encryption-id', '234',
+            '--ha-mode', 'semisync',
+            '--replica-of', 'fake_name',
+            '--port', '5432',
+            '--volume-type', 'ULTRAHIGH',
+            '--size', '100',
+            '--region', 'test-region',
+        ]
+
+        verifylist = [
+            ('name', 'inst_name'),
+            ('configuration_id', '123'),
+            ('flavor_ref', 'test-flavor'),
+            ('availability_zone', 'test-az-01'),
+            ('datastore', 'MySQL'),
+            ('datastore_version', '5.7'),
+            ('disk_encryption_id', '234'),
+            ('ha_mode', 'semisync'),
+            ('replica_of', 'fake_name'),
+            ('port', 5432),
+            ('volume_type', 'ULTRAHIGH'),
+            ('size', 100),
+            ('region', 'test-region')]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        self.assertRaises(exceptions.CommandError,
+                          self.cmd.take_action, parsed_args)
+
+    def test_create_from_instance_pir(self):
+        arglist = [
+            'inst_name',
+            'test-flavor',
+            '--availability-zone', 'test-az-01',
+            '--configuration', '123',
+            '--datastore', 'MySQL',
+            '--datastore-version', '5.7',
+            '--disk-encryption-id', '234',
+            '--ha-mode', 'semisync',
+            '--router-id', 'test-vpc-id',
+            '--subnet-id', 'test-subnet-id',
+            '--security-group-id', 'test-sec_grp-id',
+            '--volume-type', 'ULTRAHIGH',
+            '--size', '100',
+            '--password', 'testtest',
+            '--region', 'test-region',
+            '--port', '12345',
+            '--from-instance', 'source_instance',
+            '--restore-time', 'abcde'
+        ]
+
+        verifylist = [
+            ('name', 'inst_name'),
+            ('configuration_id', '123'),
+            ('flavor_ref', 'test-flavor'),
+            ('availability_zone', 'test-az-01'),
+            ('datastore', 'MySQL'),
+            ('datastore_version', '5.7'),
+            ('disk_encryption_id', '234'),
+            ('ha_mode', 'semisync'),
+            ('router_id', 'test-vpc-id'),
+            ('subnet_id', 'test-subnet-id'),
+            ('security_group_id', 'test-sec_grp-id'),
+            ('port', 12345),
+            ('volume_type', 'ULTRAHIGH'),
+            ('size', 100),
+            ('password', 'testtest'),
+            ('region', 'test-region'),
+            ('from_instance', 'source_instance'),
+            ('restore_time', 'abcde')
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.create_instance.side_effect = [
+            self.instance
+        ]
+
+        self.client.find_instance.return_value = self.instance
+
+        # Trigger the action
+        self.cmd.take_action(parsed_args)
+
+        self.client.create_instance.assert_called_with(
+            availability_zone='test-az-01',
+            charge_info={'charge_mode': 'postPaid'},
+            configuration_id='123',
+            datastore={'type': 'MySQL', 'version': '5.7'},
+            disk_encryption_id='234',
+            flavor_ref='test-flavor',
+            ha={'mode': 'ha', 'replication_mode': 'semisync'},
+            name='inst_name',
+            password='testtest',
+            port=12345,
+            region='test-region',
+            router_id='test-vpc-id',
+            security_group_id='test-sec_grp-id',
+            volume={'size': 100, 'type': 'ULTRAHIGH'},
+            subnet_id='test-subnet-id',
+            restore_point={
+                'type': 'timestamp',
+                'restore_time': 'abcde',
+                'instance_id': self.instance.id}
+        )
+
+        self.client.find_instance.assert_called_with('source_instance',
+                                                     ignore_missing=False)
+
+    def test_create_from_backup(self):
+        arglist = [
+            'inst_name',
+            'test-flavor',
+            '--availability-zone', 'test-az-01',
+            '--configuration', '123',
+            '--datastore', 'MySQL',
+            '--datastore-version', '5.7',
+            '--disk-encryption-id', '234',
+            '--ha-mode', 'semisync',
+            '--router-id', 'test-vpc-id',
+            '--subnet-id', 'test-subnet-id',
+            '--security-group-id', 'test-sec_grp-id',
+            '--volume-type', 'ULTRAHIGH',
+            '--size', '100',
+            '--password', 'testtest',
+            '--region', 'test-region',
+            '--port', '12345',
+            '--from-backup', 'source_backup'
+        ]
+
+        verifylist = [
+            ('name', 'inst_name'),
+            ('configuration_id', '123'),
+            ('flavor_ref', 'test-flavor'),
+            ('availability_zone', 'test-az-01'),
+            ('datastore', 'MySQL'),
+            ('datastore_version', '5.7'),
+            ('disk_encryption_id', '234'),
+            ('ha_mode', 'semisync'),
+            ('router_id', 'test-vpc-id'),
+            ('subnet_id', 'test-subnet-id'),
+            ('security_group_id', 'test-sec_grp-id'),
+            ('port', 12345),
+            ('volume_type', 'ULTRAHIGH'),
+            ('size', 100),
+            ('password', 'testtest'),
+            ('region', 'test-region'),
+            ('from_backup', 'source_backup')
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.create_instance.side_effect = [
+            self.instance
+        ]
+
+        self.client.find_instance.return_value = self.instance
+        backup = self.backup_mock.create_one()
+        self.client.find_backup = mock.Mock(return_value=backup)
+
+        # Trigger the action
+        self.cmd.take_action(parsed_args)
+
+        self.client.create_instance.assert_called_with(
+            availability_zone='test-az-01',
+            charge_info={'charge_mode': 'postPaid'},
+            configuration_id='123',
+            datastore={'type': 'MySQL', 'version': '5.7'},
+            disk_encryption_id='234',
+            flavor_ref='test-flavor',
+            ha={'mode': 'ha', 'replication_mode': 'semisync'},
+            name='inst_name',
+            password='testtest',
+            port=12345,
+            region='test-region',
+            router_id='test-vpc-id',
+            security_group_id='test-sec_grp-id',
+            volume={'size': 100, 'type': 'ULTRAHIGH'},
+            subnet_id='test-subnet-id',
+            restore_point={
+                'type': 'backup',
+                'backup_id': backup.id,
+                'instance_id': backup.instance_id}
+        )
+
+        self.client.find_backup.assert_called_with('source_backup',
+                                                   ignore_missing=False)
+
+
+class TestRestoreDatabaseInstance(rds_fakes.TestRds):
+
+    def setUp(self):
+        super(TestRestoreDatabaseInstance, self).setUp()
+
+        self.cmd = instance.RestoreDatabaseInstance(self.app, None)
+
+        self.instance = self.instance_mock.create_one()
+        self.backup = self.backup_mock.create_one()
+
+        self.client.find_instance = mock.Mock(return_value=self.instance)
+        self.client.restore_instance = mock.Mock()
+        self.client.find_backup = mock.Mock(return_value=self.backup)
+
+    def test_action_from_backup(self):
+        arglist = [
+            'inst_name',
+            '--backup', 'backup',
+        ]
+
+        verifylist = [
+            ('instance', 'inst_name'),
+            ('backup', 'backup'),
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        self.cmd.take_action(parsed_args)
+
+        find_calls = [
+            mock.call('inst_name'),
+        ]
+
+        self.client.find_instance.assert_has_calls(find_calls)
+        self.client.find_backup.assert_called_with('backup',
+                                                   ignore_missing=False)
+
+        self.client.restore_instance.assert_called_with(
+            backup=self.client.find_backup(),
+            instance=self.instance,
+            source_instance=self.backup.instance_id,
+            restore_time=None
+        )
+
+    def test_action_pit(self):
+        arglist = [
+            'inst_name',
+            '--restore_time', 'some_time',
+            '--source_instance', '12345'
+        ]
+
+        verifylist = [
+            ('instance', 'inst_name'),
+            ('restore_time', 'some_time'),
+            ('source_instance', '12345')
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        self.cmd.take_action(parsed_args)
+
+        find_calls = [
+            mock.call('inst_name'),
+            mock.call('12345')
+        ]
+
+        self.client.find_instance.assert_has_calls(find_calls)
+
+        self.client.restore_instance.assert_called_with(
+            backup=None,
+            instance=self.instance,
+            source_instance=self.instance,
+            restore_time='some_time'
         )
