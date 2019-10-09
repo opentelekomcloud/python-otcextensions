@@ -40,12 +40,16 @@ class Configuration(resource.Resource):
     #: Description of the configuration group
     #: *Type:str*
     description = resource.Body('description')
-    #: name of Datastore version
+    #: Name of Datastore version
     #: *Type:str*
     datastore_version_name = resource.Body('datastore_version_name')
-    #: name of Datastore
+    #: Name of Datastore
     #: *Type:str*
     datastore_name = resource.Body('datastore_name')
+    #: Individual Configuration values
+    #: *Type:dict*
+    configuration_parameters = resource.Body('configuration_parameters',
+                                             type=list)
     #: Date of created
     #: *Type:str*
     created_at = resource.Body('created')
@@ -62,6 +66,57 @@ class Configuration(resource.Resource):
     #: Results of the configuration apply per instance
     #: *Type:list*
     apply_results = resource.Body('apply_results', type=list)
+
+    @classmethod
+    def find(cls, session, name_or_id, ignore_missing=True, **params):
+        """Find a resource by its name or id.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param name_or_id: This resource's identifier, if needed by
+                           the request. The default is ``None``.
+        :param bool ignore_missing: When set to ``False``
+                    :class:`~openstack.exceptions.ResourceNotFound` will be
+                    raised when the resource does not exist.
+                    When set to ``True``, None will be returned when
+                    attempting to find a nonexistent resource.
+        :param dict params: Any additional parameters to be passed into
+                            underlying methods, such as to
+                            :meth:`~openstack.resource.Resource.existing`
+                            in order to pass on URI parameters.
+
+        :return: The :class:`Resource` object matching the given name or id
+                 or None if nothing matches.
+        :raises: :class:`openstack.exceptions.DuplicateResource` if more
+                 than one resource is found for this request.
+        :raises: :class:`openstack.exceptions.ResourceNotFound` if nothing
+                 is found and ignore_missing is ``False``.
+        """
+        session = cls._get_session(session)
+        # Try to short-circuit by looking directly for a matching ID.
+        try:
+            match = cls.existing(
+                id=name_or_id,
+                connection=session._get_connection(),
+                **params)
+            return match.fetch(session, **params)
+        except exceptions.SDKException:
+            pass
+
+        data = cls.list(session, **params)
+
+        result = cls._get_one_match(name_or_id, data)
+        if result is not None:
+            # Re-fetch configuration, since default list doesn't include
+            # individual values
+            result = result.fetch(session)
+            if result is not None:
+                return result
+
+        if ignore_missing:
+            return None
+        raise exceptions.ResourceNotFound(
+            "No %s found for %s" % (cls.__name__, name_or_id))
 
     def apply(self, session, instances):
         """Apply configuration to the given instances

@@ -76,6 +76,10 @@ class TestConfiguration(TestRdsProxy):
         self.verify_delete(self.proxy.delete_configuration,
                            configuration.Configuration, True)
 
+    def test_update_configuration(self):
+        self.verify_update(self.proxy.update_configuration,
+                           configuration.Configuration)
+
     def test_apply_configuration(self):
         self._verify(
             'otcextensions.sdk.rds.v3.configuration.Configuration.apply',
@@ -180,5 +184,3 @@ class TestInstance(TestRdsProxy):
 
     def test_update_instance_configuration(self):
         pass
-
-

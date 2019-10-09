@@ -21,11 +21,23 @@ from openstackclient.tests.unit import utils
 
 from otcextensions.tests.unit.osclient import test_base
 
-# from otcextensions.sdk.rds.v3.configuration import ConfigurationGroup
-from otcextensions.sdk.rds.v3.datastore import Datastore
+from otcextensions.sdk.rds.v3 import configuration
+from otcextensions.sdk.rds.v3 import datastore
 from otcextensions.sdk.rds.v3 import flavor
-from otcextensions.sdk.rds.v3.instance import Instance
+from otcextensions.sdk.rds.v3 import instance
 from otcextensions.sdk.rds.v3 import backup
+
+
+def gen_data(data, columns):
+    """Fill expected data tuple based on columns list
+    """
+    return tuple(getattr(data, attr, '') for attr in columns)
+
+
+def gen_data_dict(data, columns):
+    """Fill expected data tuple based on columns list
+    """
+    return tuple(data.get(attr, '') for attr in columns)
 
 
 class TestRds(utils.TestCommand):
@@ -40,10 +52,10 @@ class TestRds(utils.TestCommand):
         self.flavor_mock = FakeFlavor
         self.instance_mock = FakeInstance
         self.backup_mock = FakeBackup
-        # self.configuration_mock = FakeConfiguration
+        self.configuration_mock = FakeConfiguration
 
 
-class FakeDatastore(object):
+class FakeDatastore(test_base.Fake):
     """Fake one or more datastore versions."""
     @staticmethod
     def create_one(attrs=None, methods=None):
@@ -67,7 +79,7 @@ class FakeDatastore(object):
 
         # Overwrite default attributes.
         # object_info.update(attrs)
-        return Datastore(**object_info)
+        return datastore.Datastore(**object_info)
 
     @staticmethod
     def create_multiple(attrs=None, methods=None, count=2):
@@ -103,60 +115,47 @@ class FakeFlavor(test_base.Fake):
         return obj
 
 
-# class FakeConfiguration(object):
-#    """Fake one or more Configuration."""
-#
-#    @staticmethod
-#    def create_one(attrs=None, methods=None):
-#        """Create a fake Configuration.
-#
-#        :param Dictionary attrs:
-#            A dictionary with all attributes
-#        :param Dictionary methods:
-#            A dictionary with all methods
-#        :return:
-#            A FakeResource object, with id, name, metadata, and so on
-#        """
-#        attrs = attrs or {}
-#        methods = methods or {}
-#
-#        # Set default attributes.
-#        object_info = {
-#            'id': 'id-' + uuid.uuid4().hex,
-#            'name': 'name-' + uuid.uuid4().hex,
-#            'description': 'descriptions-' + uuid.uuid4().hex,
-#            'datastore_name': uuid.uuid4().hex,
-#            'datastore_version_name': uuid.uuid4().hex,
-#            'values': {},
-#        }
-#
-#        # Overwrite default attributes.
-#        # object_info.update(attrs)
-#        return ConfigurationGroup(**object_info)
-#
-#    @staticmethod
-#    def create_multiple(attrs=None, methods=None, count=2):
-#        """Create multiple fake Configuration.
-#
-#        :param Dictionary attrs:
-#            A dictionary with all attributes
-#        :param Dictionary methods:
-#            A dictionary with all methods
-#        :param int count:
-#            The number of servers to fake
-#        :return:
-#            A list of FakeResource objects faking the servers
-#        """
-#        objects = []
-#        for i in range(0, count):
-#            objects.append(
-#                FakeConfiguration.create_one(attrs, methods)
-#            )
-#
-#        return objects
-#
-#
-class FakeInstance(object):
+class FakeConfiguration(test_base.Fake):
+    """Fake one or more Configuration."""
+
+    @classmethod
+    def generate(cls):
+        """Create a fake Configuration.
+
+        :param Dictionary attrs:
+            A dictionary with all attributes
+        :param Dictionary methods:
+            A dictionary with all methods
+        :return:
+            A FakeResource object, with id, name, metadata, and so on
+        """
+        object_info = {
+            'id': 'id-' + uuid.uuid4().hex,
+            'name': 'name-' + uuid.uuid4().hex,
+            'description': 'descriptions-' + uuid.uuid4().hex,
+            'datastore_name': uuid.uuid4().hex,
+            'datastore_version_name': uuid.uuid4().hex,
+            'values': {},
+            'configuration_parameters':
+                list({
+                    'name': 'name-' + uuid.uuid4().hex,
+                    'value': 'value-' + uuid.uuid4().hex,
+                    'restart_required': bool(random.getrandbits(1)),
+                    'readonly': bool(random.getrandbits(1)),
+                    'value_range': uuid.uuid4().hex,
+                    'type': 'type-' + uuid.uuid4().hex,
+                    'description': 'descr-' + uuid.uuid4().hex
+
+                } for i in range(3)),
+            'is_user_defined': bool(random.getrandbits(1))
+
+        }
+
+        obj = configuration.Configuration.existing(**object_info)
+        return obj
+
+
+class FakeInstance(test_base.Fake):
     """Fake one or more Instance."""
     @staticmethod
     def create_one(attrs=None, methods=None):
@@ -193,7 +192,7 @@ class FakeInstance(object):
 
         # Overwrite default attributes.
         # object_info.update(attrs)
-        return Instance(**object_info)
+        return instance.Instance(**object_info)
 
     @staticmethod
     def create_multiple(attrs=None, methods=None, count=2):

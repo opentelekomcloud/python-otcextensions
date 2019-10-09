@@ -223,6 +223,23 @@ class Proxy(proxy.Proxy):
         """
         return self._get(_configuration.Configuration, cg)
 
+    def find_configuration(self, name_or_id, ignore_missing=True):
+        """Find Configuration by name or id.
+
+        :param name_or_id: The name or ID of configuration.
+        :param bool ignore_missing: When set to ``False``
+                    :class:`~openstack.exceptions.ResourceNotFound` will be
+                    raised when the resource does not exist.
+                    When set to ``True``, None will be returned when
+                    attempting to find a nonexistent resource.
+        :returns: One
+        :class:`~otcextensions.sdk.rds.v3.configuration.Configuration`
+                  or None
+        """
+        return self._find(_configuration.Configuration,
+                          name_or_id,
+                          ignore_missing=ignore_missing)
+
     def create_configuration(self, **attrs):
         """Create DB Configuration.
 
@@ -255,6 +272,20 @@ class Proxy(proxy.Proxy):
             cg,
             ignore_missing=ignore_missing,
         )
+
+    def update_configuration(self, config, **attrs):
+        """Sets the configuration properties
+
+        :param config: This parameter can be either the ID of a configuration
+            or a :class:`~openstack.sdk.rds.v3.config.Configuration`
+        :param dict attrs: The attributes to update on the configuration.
+
+        :returns: None
+        :rtype:
+            :class:`~otcextensions.rds.v3.configuration.Configuration`.
+        """
+        return self._update(_configuration.Configuration, config,
+                            **attrs)
 
     def apply_configuration(self, configuration, instances):
         """Apply configuration to instances.
