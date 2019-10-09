@@ -27,12 +27,6 @@ EXAMPLE = {
     'datastore': {}
 }
 
-EXAMPLE_POLICY = {
-    'keep_days': 7,
-    'start_time': '00:00:00',
-    'period': '1,2'
-}
-
 EXAMPLE_FILE = {
     'name': '43e4feaab48f11e89039fa163ebaa7e4br01.xxx',
     'size': 2803,
@@ -65,26 +59,6 @@ class TestBackup(base.TestCase):
         self.assertEqual(EXAMPLE['type'], sot.type)
         self.assertEqual(EXAMPLE['status'], sot.status)
         self.assertEqual(EXAMPLE['datastore'], sot.datastore)
-
-
-class TestBackupPolicy(base.TestCase):
-
-    def test_basic(self):
-        sot = backup.BackupPolicy()
-        self.assertIsNone(sot.resources_key)
-        self.assertEqual('backup_policy', sot.resource_key)
-
-        self.assertEqual('/instances/%(instance_id)s/backups/policy',
-                         sot.base_path)
-        self.assertTrue(sot.allow_commit)
-        self.assertTrue(sot.allow_fetch)
-        self.assertFalse(sot.requires_id)
-
-    def test_make_it(self):
-        sot = backup.BackupPolicy(**EXAMPLE_POLICY)
-        self.assertEqual(EXAMPLE_POLICY['keep_days'], sot.keep_days)
-        self.assertEqual(EXAMPLE_POLICY['start_time'], sot.start_time)
-        self.assertEqual(EXAMPLE_POLICY['period'], sot.period)
 
 
 class TestBackupFile(base.TestCase):

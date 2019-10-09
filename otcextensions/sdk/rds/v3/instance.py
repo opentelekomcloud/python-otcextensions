@@ -14,6 +14,32 @@ from openstack import resource
 from openstack import utils
 
 
+class BackupPolicy(resource.Resource):
+
+    # Properties
+    #: Policy keep days
+    #:  Indicates the number of days to retain the generated backup files.
+    #:  Its value range is 0 to 35. If this parameter is 0,
+    #:  the automated backup policy is not set.
+    #: *Type: int*
+    keep_days = resource.Body('keep_days', type=int)
+
+    #: Start time
+    #:  Indicates the backup start time that has been set.
+    #:  The backup task will be triggered within one hour
+    #:  after the backup start time.
+    #:  The current time is the UTC time.
+    #: *Type: string*
+    start_time = resource.Body('start_time')
+
+    #: Period
+    #:  Indicates the backup cycle configuration
+    #:  The backup task will be performed on
+    #:  selected days every week
+    #: *Type: string*
+    period = resource.Body('period')
+
+
 class Instance(resource.Resource):
 
     base_path = '/instances'
@@ -112,9 +138,56 @@ class Instance(resource.Resource):
     # datastore: Instance updated time.
     #: *Type:str*
     updated_at = resource.Body('updated')
+    #: Default user of the DB
+    user_name = resource.Body('db_user_name')
     #: Volume information
     #: *Type: dict*
     volume = resource.Body('volume', type=dict)
+
+    @classmethod
+    def find(cls, session, name_or_id, ignore_missing=True, **params):
+        """Find a resource by its name or id.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param name_or_id: This resource's identifier, if needed by
+                           the request. The default is ``None``.
+        :param bool ignore_missing: When set to ``False``
+                    :class:`~openstack.exceptions.ResourceNotFound` will be
+                    raised when the resource does not exist.
+                    When set to ``True``, None will be returned when
+                    attempting to find a nonexistent resource.
+        :param dict params: Any additional parameters to be passed into
+                            underlying methods, such as to
+                            :meth:`~openstack.resource.Resource.existing`
+                            in order to pass on URI parameters.
+
+        :return: The :class:`Resource` object matching the given name or id
+                 or None if nothing matches.
+        :raises: :class:`openstack.exceptions.DuplicateResource` if more
+                 than one resource is found for this request.
+        :raises: :class:`openstack.exceptions.ResourceNotFound` if nothing
+                 is found and ignore_missing is ``False``.
+        """
+        session = cls._get_session(session)
+
+        result = cls._find(session, name_or_id, id=name_or_id, **params)
+
+        if not result:
+            result = cls._find(session, name_or_id, name=name_or_id, **params)
+
+        if ignore_missing:
+            return None
+        raise exceptions.ResourceNotFound(
+            "No %s found for %s" % (cls.__name__, name_or_id))
+
+    @classmethod
+    def _find(cls, session, name_or_id, **params):
+        data = cls.list(session, **params)
+
+        result = cls._get_one_match(name_or_id, data)
+        if result is not None:
+            return result
 
     def fetch_restore_times(self, session):
         """List possible restore times for the instance.
@@ -130,8 +203,7 @@ class Instance(resource.Resource):
     def update_instance_configuration(self, session):
         pass
 
-    def restore(self, session, source_instance,
-                backup=None, restore_time=None):
+    def restore(self, session, backup=None, restore_time=None):
         """Restore instance from the backup of PIR.
         """
         url = utils.urljoin(self.base_path, 'recovery')
@@ -148,9 +220,8 @@ class Instance(resource.Resource):
                 'type': 'timestamp',
                 'restore_time': restore_time
             }
-        if not source_instance:
-            source_instance = self
-        body['source']['instance_id'] = source_instance.id
+
+        body['source']['instance_id'] = self.id
 
         response = session.post(url, json=body)
         exceptions.raise_from_response(response)
@@ -158,51 +229,28 @@ class Instance(resource.Resource):
 
         return job_id
 
-#
-# class InstanceConfiguration(sdk_resource.Resource):
-#
-#     base_path = '/instances/%(instance_id)s/configurations'
-#
-#     # capabilities
-#     allow_get = True
-#     allow_update = True
-#
-#     #: instaceId
-#     instance_id = resource.URI('instance_id')
-#
-#     #: Indicates the parameter configuration
-#     #:  defined by users based on the default parameter groups.
-#     #:  *Type: list*
-#     configuration_parameters = resource.Body('configuration_parameters')
-#     #: Indicates the creation time in the following
-#     #:  format: yyyy-MM-ddTHH:mm:ssZ.
-#     #:  *Type: string*
-#     created_at = resource.Body('created')
-#     #: database version name.
-#     #:  *Type: string*
-#     datastore_version_name = resource.Body('datastore_version_name')
-#     #: database name.
-#     #:  *Type: string*
-#     datastore_name = resource.Body('datastore_name')
-#     #: Indicates the update time in the following
-#     #:  format: yyyy-MM-ddTHH:mm:ssZ.
-#     #:  *Type: string*
-#     updated_at = resource.Body('updated')
-#
-#
-#     def update(self, session, prepend_key=False):
-#         """
-#         Method is overriden, because PUT without ID should be used
-#
-#         :param session: The session to use for making this request.
-#         :type session: :class:`~keystoneauth1.adapter.Adapter`
-#         :param prepend_key: A boolean indicating whether the resource_key
-#                             should be prepended in a resource creation
-#                             request. Default to True.
-#
-#         :return: None.
-#         :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
-#                  :data:`Resource.allow_create` is not set to ``True``.
-#         """
-#         return self.update_no_id(session, prepend_key)
-#
+    def get_backup_policy(self, session):
+        """Get instance backup policy
+        """
+        url = utils.urljoin(self.base_path, self.id, 'backups', 'policy')
+        response = session.get(url)
+        exceptions.raise_from_response(response)
+
+        return response.json().get('backup_policy')
+
+    def set_backup_policy(self, session, keep_days, start_time=None,
+                          period=None):
+        """Set instance backup policy
+        """
+        url = utils.urljoin(self.base_path, self.id, 'backups', 'policy')
+        body = {
+            'keep_days': keep_days
+        }
+        if start_time:
+            body['start_time'] = start_time
+        if period:
+            body['period'] = period
+            response = session.put(url, json={'backup_policy': body})
+        exceptions.raise_from_response(response)
+
+        return None

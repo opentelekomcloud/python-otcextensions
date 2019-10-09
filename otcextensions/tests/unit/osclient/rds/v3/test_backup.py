@@ -1,17 +1,14 @@
-#   Copyright 2013 Nebula Inc.
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
 #
-#   Licensed under the Apache License, Version 2.0 (the "License"); you may
-#   not use this file except in compliance with the License. You may obtain
-#   a copy of the License at
+#      http://www.apache.org/licenses/LICENSE-2.0
 #
-#        http://www.apache.org/licenses/LICENSE-2.0
-#
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-#   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-#   License for the specific language governing permissions and limitations
-#   under the License.
-#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
 import mock
 
 from otcextensions.osclient.rds.v3 import backup
@@ -20,22 +17,17 @@ from otcextensions.tests.unit.osclient.rds.v3 import fakes as fakes
 
 class TestList(fakes.TestRds):
 
+    _instance = fakes.FakeInstance.create_one()
+
     _objects = fakes.FakeBackup.create_multiple(3)
 
-    columns = ('ID', 'Name', 'Type', 'Instance Id', 'Datastore Type',
-               'Datastore Version')
+    column_headers = ('ID', 'Name', 'Type', 'Instance Id', 'Size')
+    columns = ('id', 'name', 'type', 'instance_id', 'size')
 
     data = []
 
     for s in _objects:
-        data.append((
-            s.id,
-            s.name,
-            s.type,
-            s.instance_id,
-            s.datastore['type'],
-            s.datastore['version'],
-        ))
+        data.append(fakes.gen_data(s, columns))
 
     def setUp(self):
         super(TestList, self).setUp()
@@ -43,6 +35,7 @@ class TestList(fakes.TestRds):
         self.cmd = backup.ListBackup(self.app, None)
 
         self.client.backups = mock.Mock()
+        self.client.find_instance = mock.Mock(return_value=self._instance)
 
     def test_list_default(self):
         arglist = ['test-instance']
@@ -59,36 +52,34 @@ class TestList(fakes.TestRds):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.backups.assert_called_once_with('test-instance')
+        self.client.find_instance.assert_called_with('test-instance',
+                                                     ignore_missing=False)
+        self.client.backups.assert_called_once_with(instance=self._instance)
 
-        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.column_headers, columns)
         self.assertEqual(self.data, list(data))
 
 
 class TestCreate(fakes.TestRds):
 
-    _obj = fakes.FakeBackup.create_one()
+    _data = fakes.FakeBackup.create_one()
+    _instance = fakes.FakeInstance.create_one()
 
-    columns = ('ID', 'Name', 'type', 'instance_id', 'status', 'begin_time',
-               'databases')
-
-    data = (
-        _obj.id,
-        _obj.name,
-        _obj.instance_id,
-        _obj.status,
-        _obj.begin_time,
-        _obj.type,
-        _obj.databases,
+    columns = (
+        'begin_time', 'datastore', 'description',
+        'end_time', 'id', 'instance_id', 'name',
+        'size', 'status', 'type'
     )
+
+    data = fakes.gen_data(_data, columns)
 
     def setUp(self):
         super(TestCreate, self).setUp()
 
         self.cmd = backup.CreateBackup(self.app, None)
 
-        self.client.create_backup = mock.Mock()
-        self.app.client_manager.rds.find_instance = mock.Mock()
+        self.client.create_backup = mock.Mock(return_value=self._data)
+        self.client.find_instance = mock.Mock(return_value=self._instance)
 
     def test_create(self):
         arglist = [
@@ -105,16 +96,47 @@ class TestCreate(fakes.TestRds):
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        # Set the response
-        self.client.create_backup.side_effect = [self._obj]
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.find_instance.assert_called_with('test-instance',
+                                                     ignore_missing=False)
+        self.client.create_backup.assert_called_with(
+            instance=self._instance,
+            description='test description',
+            name='test-backup'
+        )
+        self.assertEqual(self.columns, columns)
+
+    def test_create_sqlserver(self):
+        arglist = [
+            'test-backup',
+            'test-instance',
+            '--description', 'test description',
+            '--databases', 'a,b,c'
+        ]
+        verifylist = [
+            ('name', 'test-backup'),
+            ('instance', 'test-instance'),
+            ('description', 'test description'),
+            ('databases', 'a,b,c')
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        self._instance.datastore.update({'type': 'sqlserver'})
+        self.client.find_instance.return_value = self._instance
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
+        self.client.find_instance.assert_called_with('test-instance',
+                                                     ignore_missing=False)
         self.client.create_backup.assert_called_with(
-            'test-instance',
+            instance=self._instance,
             description='test description',
             name='test-backup',
+            databases=[{'name': 'a'}, {'name': 'b'}, {'name': 'c'}]
         )
         self.assertEqual(self.columns, columns)
 
@@ -171,3 +193,42 @@ class TestDelete(fakes.TestRds):
 
         self.client.delete_backup.assert_has_calls(calls)
         self.assertEqual(2, self.client.delete_backup.call_count)
+
+
+class TestListLinks(fakes.TestRds):
+
+    _objects = fakes.FakeBackupFile.create_multiple(3)
+
+    column_headers = ('Size', 'URL', 'Expires at')
+    columns = ('size', 'download_link', 'expires_at')
+
+    data = []
+
+    for s in _objects:
+        data.append(fakes.gen_data(s, columns))
+
+    def setUp(self):
+        super(TestListLinks, self).setUp()
+
+        self.cmd = backup.ListBackupDownloadLinks(self.app, None)
+
+        self.client.backup_download_links = mock.Mock(
+            return_value=self._objects)
+
+    def test_list_default(self):
+        arglist = ['test-backup']
+
+        verifylist = [
+            ('backup_id', 'test-backup'),
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.backup_download_links.assert_called_once_with(
+            backup_id='test-backup')
+
+        self.assertEqual(self.column_headers, columns)
+        self.assertEqual(self.data, list(data))

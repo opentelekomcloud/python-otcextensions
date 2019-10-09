@@ -17,7 +17,6 @@ from openstack.tests.unit import base
 
 from otcextensions.sdk.rds.v3 import instance
 
-# PROJECT_ID = '123'
 IDENTIFIER = 'IDENTIFIER'
 EXAMPLE = {
     "id": IDENTIFIER,
@@ -147,36 +146,67 @@ class TestInstance(base.TestCase):
                 self.id = id
 
         # Restore from backup
-        rt = sot.restore(self.sess, FakeResource('sid'), FakeResource('bid'))
+        rt = sot.restore(self.sess, FakeResource('bid'))
 
         self.sess.post.assert_called_with(
             'instances/recovery',
             json={
                 'source': {
                     'type': 'backup', 'backup_id': 'bid',
-                    'instance_id': 'sid'},
-                'target': {'instance_id': 'IDENTIFIER'}})
+                    'instance_id': IDENTIFIER},
+                'target': {'instance_id': IDENTIFIER}})
 
         # PIT
-        rt = sot.restore(self.sess, FakeResource('sid'), None, 'rit')
+        rt = sot.restore(self.sess, None, 'rit')
 
         self.sess.post.assert_called_with(
             'instances/recovery',
             json={
                 'source': {
                     'type': 'timestamp', 'restore_time': 'rit',
-                    'instance_id': 'sid'},
-                'target': {'instance_id': 'IDENTIFIER'}})
-
-        # Restore from own backup
-        rt = sot.restore(self.sess, None, FakeResource('bid'))
-
-        self.sess.post.assert_called_with(
-            'instances/recovery',
-            json={
-                'source': {
-                    'type': 'backup', 'backup_id': 'bid',
-                    'instance_id': sot.id},
-                'target': {'instance_id': 'IDENTIFIER'}})
+                    'instance_id': IDENTIFIER},
+                'target': {'instance_id': IDENTIFIER}})
 
         self.assertEqual(job_id, rt)
+
+    def test_get_backup_policy(self):
+        sot = instance.Instance(**EXAMPLE)
+        backup_policy = {
+            'keep_days': 7,
+            'start_time': '19:00-20:00',
+            'period': '1,2'
+        }
+        response = mock.Mock()
+        response.status_code = 200
+        response.json.return_value = {
+            'backup_policy': backup_policy}
+        response.headers = {}
+        self.sess.get.return_value = response
+
+        rt = sot.get_backup_policy(self.sess)
+
+        self.sess.get.assert_called_with('instances/IDENTIFIER/backups/policy')
+
+        self.assertEqual(backup_policy, rt)
+
+    def test_set_backup_policy(self):
+        sot = instance.Instance(**EXAMPLE)
+        backup_policy = {
+            'keep_days': 7,
+            'start_time': '19:00-20:00',
+            'period': '1,2'
+        }
+
+        response = mock.Mock()
+        response.status_code = 200
+        response.headers = {}
+        self.sess.put.return_value = response
+
+        rt = sot.set_backup_policy(self.sess, **backup_policy)
+
+        self.sess.put.assert_called_with(
+            'instances/IDENTIFIER/backups/policy',
+            json={'backup_policy': {'keep_days': 7, 'start_time':
+                                    '19:00-20:00', 'period': '1,2'}})
+
+        self.assertIsNone(rt)

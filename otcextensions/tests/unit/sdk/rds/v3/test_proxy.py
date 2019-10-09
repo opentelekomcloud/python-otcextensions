@@ -92,7 +92,8 @@ class TestConfiguration(TestRdsProxy):
 class TestBackup(TestRdsProxy):
     def test_backups(self):
         self.verify_list(self.proxy.backups,
-                         backup.Backup)
+                         backup.Backup, method_args=['inst'],
+                         expected_kwargs={'instance_id': 'inst'})
 
     def test_create_backup(self):
         self.verify_create(
@@ -114,21 +115,11 @@ class TestBackup(TestRdsProxy):
                            backup.Backup, True)
 
     def test_find_backup(self):
-        self.verify_find(self.proxy.find_backup, backup.Backup)
+        self.verify_find(self.proxy.find_backup, backup.Backup,
+                         value=['name_or_id', 'iid'],
+                         expected_kwargs={'instance_id': 'iid'})
 
-    def test_get_instance_backup_policy(self):
-        self.verify_get(
-            self.proxy.get_instance_backup_policy,
-            backup.BackupPolicy,
-            expected_args=[backup.BackupPolicy],
-            expected_kwargs={'instance_id': 'value'})
-
-    def test_update_instance_backup_policy(self):
-        self.verify_update(
-            self.proxy.update_instance_backup_policy,
-            backup.BackupPolicy)
-
-    def test_download_linkss(self):
+    def test_download_links(self):
         self.verify_list(self.proxy.backup_download_links,
                          backup.BackupFile,
                          method_args=['bck_id'],
@@ -173,10 +164,8 @@ class TestInstance(TestRdsProxy):
             method_args=["inst"],
             method_kwargs={
                 'backup': backup.Backup(id='bck'),
-                'restore_time': 'rt',
-                'source_instance': instance.Instance(id='sid')},
-            expected_args=[self.proxy, instance.Instance(id='sid'),
-                           backup.Backup(id='bck'), 'rt'],
+                'restore_time': 'rt'},
+            expected_args=[self.proxy, backup.Backup(id='bck'), 'rt'],
         )
 
     def test_get_instance_configuration(self):
@@ -184,3 +173,27 @@ class TestInstance(TestRdsProxy):
 
     def test_update_instance_configuration(self):
         pass
+
+    def test_get_instance_backup_policy(self):
+        self._verify(
+            'otcextensions.sdk.rds.v3.instance.Instance.get_backup_policy',
+            self.proxy.get_instance_backup_policy,
+            method_args=["val"],
+        )
+
+    def test_update_instance_backup_policy(self):
+        self._verify(
+            'otcextensions.sdk.rds.v3.instance.Instance.set_backup_policy',
+            self.proxy.set_instance_backup_policy,
+            method_args=["val"],
+            method_kwargs={
+                'keep_days': 1,
+                'start_time': '2',
+                'period': '3'
+            },
+            expected_kwargs={
+                'keep_days': 1,
+                'start_time': '2',
+                'period': '3'
+            }
+        )

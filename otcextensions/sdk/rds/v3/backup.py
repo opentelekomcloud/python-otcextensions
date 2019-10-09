@@ -9,6 +9,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack import exceptions
 from openstack import resource
 
 
@@ -31,67 +32,78 @@ class Backup(resource.Resource):
     #: Backup id
     #: Type: uuid*
     id = resource.Body('id')
-    #: Instance id
-    instance_id = resource.Body('instance_id')
-    #: Data backup description
-    description = resource.Body('description')
+    #: Begin time
+    begin_time = resource.Body('begin_time')
     #: Create back of specific dbs
     #: *Type:list*
     databases = resource.Body('databases', type=list)
-    #: Data store information
-    #: *Type: dict*
+    #: Datastore
+    #: *Type:dict*
     datastore = resource.Body('datastore', type=dict)
-    #: Back file name
-    name = resource.Body('name')
+    #: Data backup description
+    description = resource.Body('description')
+    #: Instance id
+    instance_id = resource.Body('instance_id')
     #: Back file size in GB
     #: *Type:int*
     size = resource.Body('size', type=int)
     #: Backup status
     status = resource.Body('status')
-    #: Begin time
-    begin_time = resource.Body('begin_time')
     #: Finished time
     end_time = resource.Body('end_time')
     #: Backup type
+    #:  `auto`: automated full backup
+    #:  `manual`: manual full backup
+    #:  `fragment`: differential full backup
+    #:  `incremental`: automated incremental backup
     type = resource.Body('type')
 
+    @classmethod
+    def find(cls, session, name_or_id, ignore_missing=True, **params):
+        """Find a resource by its name or id.
 
-class BackupPolicy(resource.Resource):
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param name_or_id: This resource's identifier, if needed by
+                           the request. The default is ``None``.
+        :param bool ignore_missing: When set to ``False``
+                    :class:`~openstack.exceptions.ResourceNotFound` will be
+                    raised when the resource does not exist.
+                    When set to ``True``, None will be returned when
+                    attempting to find a nonexistent resource.
+        :param dict params: Any additional parameters to be passed into
+                            underlying methods, such as to
+                            :meth:`~openstack.resource.Resource.existing`
+                            in order to pass on URI parameters.
 
-    base_path = '/instances/%(instance_id)s/backups/policy'
-    resource_key = 'backup_policy'
+        :return: The :class:`Resource` object matching the given name or id
+                 or None if nothing matches.
+        :raises: :class:`openstack.exceptions.DuplicateResource` if more
+                 than one resource is found for this request.
+        :raises: :class:`openstack.exceptions.ResourceNotFound` if nothing
+                 is found and ignore_missing is ``False``.
+        """
+        session = cls._get_session(session)
+        # Try to short-circuit by looking directly for a matching ID.
+        try:
+            match = cls.existing(
+                id=name_or_id,
+                connection=session._get_connection(),
+                **params)
+            return match.fetch(session, **params)
+        except exceptions.SDKException:
+            pass
 
-    # capabilities
-    allow_commit = True
-    allow_fetch = True
+        data = cls.list(session, **params)
 
-    requires_id = False
+        result = cls._get_one_match(name_or_id, data)
+        if result is not None:
+            return result
 
-    #: instaceId
-    instance_id = resource.URI('instance_id')
-
-    # Properties
-    #: Policy keep days
-    #:  Indicates the number of days to retain the generated backup files.
-    #:  Its value range is 0 to 35. If this parameter is 0,
-    #:  the automated backup policy is not set.
-    #: *Type: int*
-    keep_days = resource.Body('keep_days', type=int)
-
-    #: Start time
-    #:  Indicates the backup start time that has been set.
-    #:  The backup task will be triggered within one hour
-    #:  after the backup start time.
-    #:  The current time is the UTC time.
-    #: *Type: string*
-    start_time = resource.Body('start_time')
-
-    #: Period
-    #:  Indicates the backup cycle configuration
-    #:  The backup task will be performed on
-    #:  selected days every week
-    #: *Type: string*
-    period = resource.Body('period')
+        if ignore_missing:
+            return None
+        raise exceptions.ResourceNotFound(
+            "No %s found for %s" % (cls.__name__, name_or_id))
 
 
 class BackupFile(resource.Resource):

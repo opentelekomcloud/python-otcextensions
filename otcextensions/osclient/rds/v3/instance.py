@@ -1,18 +1,17 @@
-#   Licensed under the Apache License, Version 2.0 (the "License"); you may
-#   not use this file except in compliance with the License. You may obtain
-#   a copy of the License at
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
 #
-#        http://www.apache.org/licenses/LICENSE-2.0
+#      http://www.apache.org/licenses/LICENSE-2.0
 #
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-#   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-#   License for the specific language governing permissions and limitations
-#   under the License.
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
 #
 '''Instance v1 action implementations'''
 import argparse
-import logging
 
 from osc_lib import exceptions
 from osc_lib import utils
@@ -20,8 +19,6 @@ from osc_lib.command import command
 
 from otcextensions.common import sdk_utils
 from otcextensions.i18n import _
-
-LOG = logging.getLogger(__name__)
 
 
 def _get_columns(item):
@@ -43,34 +40,12 @@ def set_attributes_for_print(instances):
         yield instance
 
 
-def set_attributes_for_print_detail(obj):
-    info = {}  # instance._info.copy()
-    attr_list = [
-        'id', 'name', 'datastore', 'flavor_ref', 'disk_encryption_id',
-        'region', 'availability_zone', 'vpc_id', 'subnet_id',
-        'security_group_id', 'port', 'backup_strategy', 'configuration_id',
-        'charge_info', 'backup_strategy'
-    ]
-    for attr in dir(obj):
-        if attr == 'datastore' and getattr(obj, attr):
-            info['datastore'] = obj.datastore['type']
-            info['datastore_version'] = obj.datastore['version']
-        elif attr == 'volume' and getattr(obj, attr):
-            info['volume_type'] = obj.volume['type']
-            info['size'] = obj.volume['size']
-        elif attr == 'charge_info' and getattr(obj, attr):
-            info['charge_mode'] = obj.charge_info['charge_mode']
-        elif attr in attr_list and getattr(obj, attr):
-            info[attr] = getattr(obj, attr)
-    return info
-
-
 class ListDatabaseInstances(command.Lister):
     _description = _('List database instances')
-    columns = [
+    columns = (
         'ID', 'Name', 'Datastore Type', 'Datastore Version', 'Status',
         'Flavor_ref', 'Type', 'Size', 'Region'
-    ]
+    )
 
     def get_parser(self, prog_name):
         parser = super(ListDatabaseInstances, self).get_parser(prog_name)
@@ -153,7 +128,7 @@ class ListDatabaseInstances(command.Lister):
 
 
 class ShowDatabaseInstance(command.ShowOne):
-    _description = _("Show instance details.")
+    _description = _("Show instance details")
 
     def get_parser(self, prog_name):
         parser = super(ShowDatabaseInstance, self).get_parser(prog_name)
@@ -166,7 +141,7 @@ class ShowDatabaseInstance(command.ShowOne):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.rds
-        obj = client.find_instance(parsed_args.instance)
+        obj = client.find_instance(parsed_args.instance, ignore_missing=False)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
@@ -297,15 +272,15 @@ class CreateDatabaseInstance(command.ShowOne):
             help=_("ID or name of an existing instance to replicate from.")
         )
         create_from_group.add_argument(
-            '--from-backup',
-            metavar='<backup>',
-            help=_('Backup ID or Name to create new instance from,')
-        )
-        create_from_group.add_argument(
             '--from-instance',
             metavar='<source_instance>',
             help=_('Source instance ID or Name to create from. '
-                   'This requires setting restore_time additionally.')
+                   'It is required when recovering from backup or PITR.')
+        )
+        create_from_group.add_argument(
+            '--backup',
+            metavar='<backup>',
+            help=_('Backup ID or Name to create new instance from.')
         )
         create_from_group.add_argument(
             '--restore-time',
@@ -358,28 +333,31 @@ class CreateDatabaseInstance(command.ShowOne):
             attrs['replica_of_id'] = \
                 client.find_instance(parsed_args.replica_of,
                                      ignore_missing=False).id
-        elif parsed_args.from_backup:
-            # Create from backup
-            backup = client.find_backup(parsed_args.from_backup,
-                                        ignore_missing=False)
-            attrs['restore_point'] = {
-                'type': 'backup',
-                'backup_id': backup.id,
-                'instance_id': backup.instance_id
-            }
         elif parsed_args.from_instance:
-            if not parsed_args.restore_time:
-                raise exceptions.CommandError(
-                    _('`--restore-time` parameter is required with '
-                      '`--from-instance`')
-                )
             source = client.find_instance(parsed_args.from_instance,
                                           ignore_missing=False)
-            attrs['restore_point'] = {
-                'type': 'timestamp',
-                'restore_time': parsed_args.restore_time,
-                'instance_id': source.id
-            }
+            if parsed_args.backup:
+                # Create from backup
+                backup = client.find_backup(
+                    name_or_id=parsed_args.backup,
+                    instance=source,
+                    ignore_missing=False)
+                attrs['restore_point'] = {
+                    'type': 'backup',
+                    'backup_id': backup.id,
+                    'instance_id': backup.instance_id
+                }
+            elif parsed_args.restore_time:
+                attrs['restore_point'] = {
+                    'type': 'timestamp',
+                    'restore_time': parsed_args.restore_time,
+                    'instance_id': source.id
+                }
+        elif parsed_args.backup or parsed_args.restore_time:
+            raise exceptions.CommandError(
+                _('`--from-instance` is required when restoring from '
+                  'backup or using PITR.')
+            )
 
         obj = client.create_instance(**attrs)
 
@@ -420,47 +398,111 @@ class RestoreDatabaseInstance(command.Command):
 
     def get_parser(self, prog_name):
         parser = super(RestoreDatabaseInstance, self).get_parser(prog_name)
-        parser.add_argument('instance',
-                            metavar='<instance>',
-                            type=str,
-                            help=_('ID or name of the target instance.'))
+        parser.add_argument(
+            'instance',
+            metavar='<instance>',
+            type=str,
+            help=_('ID or name of the target instance.')
+        )
         group = parser.add_mutually_exclusive_group()
-        group.add_argument('--backup',
-                           metavar='<backup>',
-                           default=None,
-                           type=str,
-                           help=_('ID or name of the backup.'))
-        group.add_argument('--restore_time',
-                           metavar='<restore_time>',
-                           default=None,
-                           type=str,
-                           help=_('Specifies the time point of data '
-                                  'restoration in the UNIX timestamp'))
-        parser.add_argument('--source_instance',
-                            metavar='<source_instance>',
-                            default=None,
-                            type=str,
-                            help=_('ID or name of the source instance.'))
+        group.add_argument(
+            '--backup',
+            metavar='<backup>',
+            default=None,
+            type=str,
+            help=_('ID or name of the backup.')
+        )
+        group.add_argument(
+            '--restore_time',
+            metavar='<restore_time>',
+            default=None,
+            type=str,
+            help=_('Specifies the time point of data '
+                   'restoration in the UNIX timestamp')
+        )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.rds
 
-        instance = client.find_instance(parsed_args.instance)
-        backup = None
-        source_instance = None
-        if parsed_args.backup:
-            backup = client.find_backup(parsed_args.backup,
+        instance = client.find_instance(parsed_args.instance,
                                         ignore_missing=False)
-            # If user has not passed source_instance, but backup - find backup
-            # and get to instance_id this way
-            if not parsed_args.source_instance:
-                source_instance = backup.instance_id
-
-        if not source_instance:
-            source_instance = client.find_instance(parsed_args.source_instance)
+        backup = None
+        if parsed_args.backup:
+            backup = client.find_backup(name_or_id=parsed_args.backup,
+                                        instance=instance,
+                                        ignore_missing=False)
 
         client.restore_instance(instance=instance,
                                 backup=backup,
-                                restore_time=parsed_args.restore_time,
-                                source_instance=source_instance)
+                                restore_time=parsed_args.restore_time)
+
+
+class ShowBackupPolicy(command.ShowOne):
+    _description = _('Show Database instance Backup Policy')
+
+    def get_parser(self, prog_name):
+        parser = super(ShowBackupPolicy, self).get_parser(prog_name)
+        parser.add_argument('instance',
+                            metavar='<instance>',
+                            help=_('Instance ID or Name'))
+        return parser
+
+    def take_action(self, parsed_args):
+
+        client = self.app.client_manager.rds
+
+        instance = client.find_instance(parsed_args.instance,
+                                        ignore_missing=False)
+        obj = client.get_instance_backup_policy(instance)
+
+        display_columns, columns = _get_columns(obj)
+        data = utils.get_dict_properties(obj, columns)
+
+        return (display_columns, data)
+
+
+class SetBackupPolicy(command.Command):
+    _description = _('Set Database Backup Policy')
+
+    def get_parser(self, prog_name):
+        parser = super(SetBackupPolicy, self).get_parser(prog_name)
+        parser.add_argument(
+            'instance',
+            metavar='<instance>',
+            help=_('Instance ID or Name'))
+        parser.add_argument(
+            '--keep-days',
+            metavar='<keep_days>',
+            type=int,
+            required=True,
+            help=_('Specifies the number of days to'
+                   'retain the generated backup files.'))
+        parser.add_argument(
+            '--start-time',
+            metavar='<start_time>',
+            help=_('Specifies the backup time window.'
+                   'The value must be a valid value in the'
+                   '"hh:mm-HH:MM" format.'))
+        parser.add_argument(
+            '--period',
+            metavar='<period>',
+            help=_('Specifies the backup cycle'
+                   'configuration. Data will be'
+                   'automatically backed up on the'
+                   'selected days every week.'))
+        return parser
+
+    def take_action(self, parsed_args):
+
+        client = self.app.client_manager.rds
+        args_list = ['keep_days', 'start_time', 'period']
+        attrs = {}
+        for arg in args_list:
+            if getattr(parsed_args, arg):
+                attrs[arg] = getattr(parsed_args, arg)
+
+        instance = client.find_instance(parsed_args.instance,
+                                        ignore_missing=False)
+
+        client.set_instance_backup_policy(instance, **attrs)

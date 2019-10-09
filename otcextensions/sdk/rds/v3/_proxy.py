@@ -133,8 +133,7 @@ class Proxy(proxy.Proxy):
     def restore_instance(self,
                          instance,
                          backup=None,
-                         restore_time=None,
-                         source_instance=None):
+                         restore_time=None):
         """Restore instance from backup
            or Restore using Point in Time Recovery
 
@@ -142,21 +141,14 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.rds.v3.instance.Instance` instance.
         :param backup: Either the id of a backup or a
             :class:`~otcextensions.sdk.rds.v3.backup.Backup` instance.
-        :param source_instance: Either the id of the source instance or a
-            :class:`~otcextensions.sdk.rds.v3.instance.Instance` instance.
 
         :returns: Job ID
         :rtype:
         """
         instance = self._get_resource(_instance.Instance, instance)
-        if source_instance:
-            source_instance = self._get_resource(_instance.Instance,
-                                                 source_instance)
-        else:
-            source_instance = instance
         if backup:
             backup = self._get_resource(_backup.Backup, backup)
-        return instance.restore(self, source_instance, backup, restore_time)
+        return instance.restore(self, backup, restore_time)
 
     def get_instance_restore_time(self, instance):
         """Obtaining a restore time of an instance.
@@ -169,6 +161,34 @@ class Proxy(proxy.Proxy):
         """
         instance = self._get_resource(_instance.Instance, instance)
         return instance.fetch_restore_times(self)
+
+    def get_instance_backup_policy(self, instance):
+        """Obtaining a backup policy of the instance
+
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+        :returns: Instance Backup policy
+        :rtype: :class:`~otcextensions.sdk.rds.v3.instance.BackupPolicy`
+
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.get_backup_policy(self)
+
+    def set_instance_backup_policy(self, instance, keep_days,
+                                   start_time=None, period=None):
+        """Sets the backup policy of the instance
+
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+        :param keep_days:
+        :param start_time:
+        :param period:
+
+        :returns: ``None``
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.set_backup_policy(self, keep_days=keep_days,
+                                          start_time=start_time, period=period)
 
 #     def get_instance_configuration(self, instance):
 #         """Obtaining a Configuration associated to instance.
@@ -304,13 +324,16 @@ class Proxy(proxy.Proxy):
         return cg.apply(self, instances)
 
     # ======= Backups =======
-    def backups(self, **params):
+    def backups(self, instance, **params):
         """List Backups.
 
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
         :returns: A generator of backup
         :rtype: :class:`~otcextensions.sdk.rds.v3.backup.Backup`
         """
-        return self._list(_backup.Backup, **params)
+        instance = self._get_resource(_instance.Instance, instance)
+        return self._list(_backup.Backup, instance_id=instance.id, **params)
 
     def create_backup(self, instance, **attrs):
         """Create a backups of instance
@@ -339,11 +362,13 @@ class Proxy(proxy.Proxy):
                             backup,
                             ignore_missing=ignore_missing)
 
-    def find_backup(self, name_or_id, ignore_missing=True):
+    def find_backup(self, name_or_id, instance, ignore_missing=True):
         """Find a single backup
 
         :param name_or_id: The name or ID of a instance.
-        :param bool ignore_missing: When set to ``False``
+        :param instance: The value can be either the ID of an instance or a
+            :class:`~openstack.database.v3.instance.Instance` instance.
+         :param bool ignore_missing: When set to ``False``
                     :class:`~openstack.exceptions.ResourceNotFound` will be
                     raised when the resource does not exist.
                     When set to ``True``, None will be returned when
@@ -351,35 +376,11 @@ class Proxy(proxy.Proxy):
         :returns: One :class:`~otcextensions.sdk.rds.v3.backup.Backup`
                   or None
         """
+        instance = self._get_resource(_instance.Instance, instance)
         return self._find(_backup.Backup,
                           name_or_id,
-                          ignore_missing=ignore_missing)
-
-    def get_instance_backup_policy(self, instance):
-        """Obtaining a backup policy of the instance
-
-        :param instance: This parameter can be either the ID of an instance
-            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
-        :returns: A Backup policy
-        :rtype: :class:`~otcextensions.sdk.rds.v3.backup.BackupPolicy`
-
-        """
-        instance = self._get_resource(_instance.Instance, instance)
-        return self._get(_backup.BackupPolicy,
-                         instance_id=instance.id)
-
-    def update_instance_backup_policy(self, policy, **attrs):
-        """Sets the backup policy of the instance
-
-        :param policy: This parameter can be either the ID of a policy
-            or a :class:`~openstack.sdk.rds.v3.backup.BackupPolicy`
-        :param dict attrs: The attributes to update on the backup_policy
-            represented by ``backup_policy``.
-
-        :returns: ``None``
-        """
-        return self._update(_backup.BackupPolicy, policy,
-                            **attrs)
+                          ignore_missing=ignore_missing,
+                          instance_id=instance.id)
 
     def backup_download_links(self, backup_id):
         """Obtaining a backup file download links.
