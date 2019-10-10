@@ -381,6 +381,209 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             self.cmd.take_action,
             parsed_args)
 
+    def test_create_ha_wrong_mode_pg(self):
+        flavor = self.find_flavor('ha')
+        arglist = [
+            'inst_name',
+            flavor.name,
+            '--availability-zone', 'test-az-01,az2',
+            '--configuration', '123',
+            '--datastore-type', 'postgresql',
+            '--datastore-version', '5.7',
+            '--disk-encryption-id', '234',
+            '--ha-mode', 'semisync',
+            '--router-id', 'test-vpc-id',
+            '--subnet-id', 'test-subnet-id',
+            '--security-group-id', 'test-sec_grp-id',
+            '--volume-type', 'ULTRAHIGH',
+            '--size', '100',
+            '--password', 'testtest',
+            '--region', 'test-region',
+            '--port', '12345',
+            '--wait'
+        ]
+
+        verifylist = [
+            ('name', 'inst_name'),
+            ('configuration_id', '123'),
+            ('flavor_ref', flavor.name),
+            ('ha_mode', 'semisync'),
+            ('availability_zone', 'test-az-01,az2'),
+            ('datastore_type', 'postgresql'),
+            ('datastore_version', '5.7'),
+            ('disk_encryption_id', '234'),
+            ('router_id', 'test-vpc-id'),
+            ('subnet_id', 'test-subnet-id'),
+            ('security_group_id', 'test-sec_grp-id'),
+            ('port', 12345),
+            ('volume_type', 'ULTRAHIGH'),
+            ('size', 100),
+            ('password', 'testtest'),
+            ('region', 'test-region'),
+            ('wait', True)
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        self.assertRaises(
+            exceptions.CommandError,
+            self.cmd.take_action,
+            parsed_args)
+
+    def test_create_ha_wrong_mode_mysql(self):
+        flavor = self.find_flavor('ha')
+        arglist = [
+            'inst_name',
+            flavor.name,
+            '--availability-zone', 'test-az-01,az2',
+            '--configuration', '123',
+            '--datastore-type', 'MySQL',
+            '--datastore-version', '5.7',
+            '--disk-encryption-id', '234',
+            '--ha-mode', 'sync',
+            '--router-id', 'test-vpc-id',
+            '--subnet-id', 'test-subnet-id',
+            '--security-group-id', 'test-sec_grp-id',
+            '--volume-type', 'ULTRAHIGH',
+            '--size', '100',
+            '--password', 'testtest',
+            '--region', 'test-region',
+            '--port', '12345',
+            '--wait'
+        ]
+
+        verifylist = [
+            ('name', 'inst_name'),
+            ('configuration_id', '123'),
+            ('flavor_ref', flavor.name),
+            ('ha_mode', 'sync'),
+            ('availability_zone', 'test-az-01,az2'),
+            ('datastore_type', 'MySQL'),
+            ('datastore_version', '5.7'),
+            ('disk_encryption_id', '234'),
+            ('router_id', 'test-vpc-id'),
+            ('subnet_id', 'test-subnet-id'),
+            ('security_group_id', 'test-sec_grp-id'),
+            ('port', 12345),
+            ('volume_type', 'ULTRAHIGH'),
+            ('size', 100),
+            ('password', 'testtest'),
+            ('region', 'test-region'),
+            ('wait', True)
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        self.assertRaises(
+            exceptions.CommandError,
+            self.cmd.take_action,
+            parsed_args)
+
+    def test_create_ha_wrong_mode_mssql(self):
+        flavor = self.find_flavor('ha')
+        arglist = [
+            'inst_name',
+            flavor.name,
+            '--availability-zone', 'test-az-01,az2',
+            '--configuration', '123',
+            '--datastore-type', 'sqlserver',
+            '--datastore-version', '5.7',
+            '--disk-encryption-id', '234',
+            '--ha-mode', 'async',
+            '--router-id', 'test-vpc-id',
+            '--subnet-id', 'test-subnet-id',
+            '--security-group-id', 'test-sec_grp-id',
+            '--volume-type', 'ULTRAHIGH',
+            '--size', '100',
+            '--password', 'testtest',
+            '--region', 'test-region',
+            '--port', '12345',
+            '--wait'
+        ]
+
+        verifylist = [
+            ('name', 'inst_name'),
+            ('configuration_id', '123'),
+            ('flavor_ref', flavor.name),
+            ('ha_mode', 'async'),
+            ('availability_zone', 'test-az-01,az2'),
+            ('datastore_type', 'sqlserver'),
+            ('datastore_version', '5.7'),
+            ('disk_encryption_id', '234'),
+            ('router_id', 'test-vpc-id'),
+            ('subnet_id', 'test-subnet-id'),
+            ('security_group_id', 'test-sec_grp-id'),
+            ('port', 12345),
+            ('volume_type', 'ULTRAHIGH'),
+            ('size', 100),
+            ('password', 'testtest'),
+            ('region', 'test-region'),
+            ('wait', True)
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        self.assertRaises(
+            exceptions.CommandError,
+            self.cmd.take_action,
+            parsed_args)
+
+        arglist = [
+            'inst_name',
+            flavor.name,
+            '--availability-zone', 'test-az-01,az2',
+            '--configuration', '123',
+            '--datastore-type', 'sqlserver',
+            '--datastore-version', '5.7',
+            '--disk-encryption-id', '234',
+            '--ha-mode', 'semisync',
+            '--router-id', 'test-vpc-id',
+            '--subnet-id', 'test-subnet-id',
+            '--security-group-id', 'test-sec_grp-id',
+            '--volume-type', 'ULTRAHIGH',
+            '--size', '100',
+            '--password', 'testtest',
+            '--region', 'test-region',
+            '--port', '12345',
+            '--wait'
+        ]
+
+        verifylist = [
+            ('name', 'inst_name'),
+            ('configuration_id', '123'),
+            ('flavor_ref', flavor.name),
+            ('ha_mode', 'semisync'),
+            ('availability_zone', 'test-az-01,az2'),
+            ('datastore_type', 'sqlserver'),
+            ('datastore_version', '5.7'),
+            ('disk_encryption_id', '234'),
+            ('router_id', 'test-vpc-id'),
+            ('subnet_id', 'test-subnet-id'),
+            ('security_group_id', 'test-sec_grp-id'),
+            ('port', 12345),
+            ('volume_type', 'ULTRAHIGH'),
+            ('size', 100),
+            ('password', 'testtest'),
+            ('region', 'test-region'),
+            ('wait', True)
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        self.assertRaises(
+            exceptions.CommandError,
+            self.cmd.take_action,
+            parsed_args)
+
+
     def find_flavor(self, instance_mode):
         flavor = None
         for f in self.flavors:
