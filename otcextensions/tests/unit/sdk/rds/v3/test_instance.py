@@ -11,6 +11,7 @@
 # under the License.
 from keystoneauth1 import adapter
 
+import copy
 import mock
 
 from openstack.tests.unit import base
@@ -115,6 +116,21 @@ class TestInstance(base.TestCase):
         self.assertEqual(EXAMPLE['maintenance_window'], sot.maintenance_window)
         self.assertEqual(EXAMPLE['time_zone'], sot.time_zone)
 
+    def test_translate_response(self):
+        response = mock.Mock()
+        response.status_code = 200
+        response.json.return_value = {
+            'job_id': 'fake_job_id',
+            'instance': copy.deepcopy(EXAMPLE)
+        }
+        response.headers = {}
+        sot = instance.Instance.new()
+
+        sot._translate_response(response)
+        self.assertEqual('fake_job_id', sot.job_id)
+        self.assertEqual(IDENTIFIER, sot.id)
+        self.assertEqual(EXAMPLE['vpc_id'], sot.router_id)
+
     def test_fetch_restore_times(self):
         sot = instance.Instance(**EXAMPLE)
         restore_times = [{
@@ -147,7 +163,7 @@ class TestInstance(base.TestCase):
 
         self.sess.get.assert_called_with(
             '/instances', headers={'Accept': 'application/json'},
-            microversion=None, params={'id': 'IDENTIFIER'})
+            microversion=None, params={'id': IDENTIFIER})
         self.assertIsInstance(rt, instance.Instance)
         self.assertDictEqual(
             rt.to_dict(),

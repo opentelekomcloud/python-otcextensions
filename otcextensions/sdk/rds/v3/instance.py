@@ -121,6 +121,51 @@ class Instance(resource.Resource):
     #: *Type: dict*
     volume = resource.Body('volume', type=dict)
 
+    def _translate_response(self, response, has_body=None, error_message=None):
+        """Given a KSA response, inflate this instance with its data
+
+        DELETE operations don't return a body, so only try to work
+        with a body when has_body is True.
+
+        This method updates attributes that correspond to headers
+        and body on this instance and clears the dirty set.
+        """
+        if has_body is None:
+            has_body = self.has_body
+        exceptions.raise_from_response(response, error_message=error_message)
+        if has_body:
+            try:
+                body = response.json()
+                # Need to merge job_id on the root with other data inside of
+                # 'instance' container
+                job_id = body.get('job_id')
+                if 'instance' in body:
+                    body = body['instance']
+                    if job_id:
+                        body['job_id'] = job_id
+
+                body_attrs = self._consume_body_attrs(body)
+
+                if self._store_unknown_attrs_as_properties:
+                    body_attrs = self._pack_attrs_under_properties(
+                        body_attrs, body)
+
+                self._body.attributes.update(body_attrs)
+                self._body.clean()
+                if self.commit_jsonpatch or self.allow_patch:
+                    # We need the original body to compare against
+                    self._original_body = body_attrs.copy()
+            except ValueError:
+                # Server returned not parse-able response (202, 204, etc)
+                # Do simply nothing
+                pass
+
+        headers = self._consume_header_attrs(response.headers)
+        self._header.attributes.update(headers)
+        self._header.clean()
+        self._update_location()
+        dict.update(self, self.to_dict())
+
     @classmethod
     def find(cls, session, name_or_id, ignore_missing=True, **params):
         """Find a resource by its name or id.
