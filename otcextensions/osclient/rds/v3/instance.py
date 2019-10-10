@@ -447,6 +447,10 @@ class CreateDatabaseInstance(command.ShowOne):
                     _('Only `sync` ha_mode can be used for '
                       'SQLServer isntance')
                 )
+        if parsed_args.wait_interval and not parsed_args.wait:
+            raise exceptions.CommandError(
+                _('`--wait-interval` is only valid with `--wait`')
+            )
 
         obj = client.create_instance(**attrs)
 
