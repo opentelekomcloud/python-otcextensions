@@ -269,7 +269,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             '--datastore-type', 'MySQL',
             '--datastore-version', '5.7',
             '--disk-encryption-id', '234',
-            '--ha-mode', 'sync',
+            '--ha-mode', 'async',
             '--router-id', 'test-vpc-id',
             '--subnet-id', 'test-subnet-id',
             '--security-group-id', 'test-sec_grp-id',
@@ -285,7 +285,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             ('name', 'inst_name'),
             ('configuration_id', '123'),
             ('flavor_ref', flavor.name),
-            ('ha_mode', 'sync'),
+            ('ha_mode', 'async'),
             ('availability_zone', 'test-az-01,az2'),
             ('datastore_type', 'MySQL'),
             ('datastore_version', '5.7'),
@@ -324,7 +324,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             security_group_id='test-sec_grp-id',
             volume={'size': 100, 'type': 'ULTRAHIGH'},
             subnet_id='test-subnet-id',
-            ha={'mode': 'ha', 'replication_mode': 'sync'}
+            ha={'mode': 'ha', 'replication_mode': 'async'}
         )
 
         self.client.wait_for_job.assert_called_with(self._data.job_id)

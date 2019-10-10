@@ -422,6 +422,26 @@ class CreateDatabaseInstance(command.ShowOne):
                     _('List of availability zones must be used when '
                       'creating ha instance')
                 )
+        if parsed_args.ha_mode:
+            mode = parsed_args.ha_mode
+            if (parsed_args.datastore_type.lower() == 'postgresql'
+                    and mode not in ['async', 'sync']):
+                raise exceptions.CommandError(
+                    _('`async` or `sync` ha_mode can be used for '
+                      'PostgreSQL isntance')
+                )
+            elif (parsed_args.datastore_type.lower() == 'mysql'
+                    and mode not in ['async', 'semisync']):
+                raise exceptions.CommandError(
+                    _('`async` or `semisync` ha_mode can be used for '
+                      'MySQL isntance')
+                )
+            elif (parsed_args.datastore_type.lower() == 'sqlserver'
+                    and mode not in ['sync']):
+                raise exceptions.CommandError(
+                    _('Only `sync` ha_mode can be used for '
+                      'SQLServer isntance')
+                )
 
         obj = client.create_instance(**attrs)
 
