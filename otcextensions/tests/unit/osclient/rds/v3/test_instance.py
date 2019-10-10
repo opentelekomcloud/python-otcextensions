@@ -153,8 +153,9 @@ class TestDeleteDatabaseInstance(fakes.TestRds):
 
         self.cmd = instance.DeleteDatabaseInstance(self.app, None)
 
-        self.client.delete_instance = mock.Mock()
+        self.client.delete_instance = mock.Mock(return_value=self.data)
         self.client.find_instance = mock.Mock(return_value=self.data)
+        self.client.wait_for_job = mock.Mock()
 
     def test_delete(self):
         arglist = [
@@ -174,6 +175,30 @@ class TestDeleteDatabaseInstance(fakes.TestRds):
         self.client.find_instance.assert_called_with('test_obj')
 
         self.client.delete_instance.assert_called_with(self.data.id)
+        self.client.wait_for_job.assert_not_called()
+
+    def test_delete_wait(self):
+        arglist = [
+            'test_obj',
+            '--wait'
+        ]
+
+        verifylist = [
+            ('instance', 'test_obj'),
+            ('wait', True)
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        self.cmd.take_action(parsed_args)
+
+        self.client.find_instance.assert_called_with('test_obj')
+
+        self.client.delete_instance.assert_called_with(self.data.id)
+
+        self.client.wait_for_job.assert_called_with(self.data.job_id)
 
 
 class TestCreateDatabaseInstance(fakes.TestRds):

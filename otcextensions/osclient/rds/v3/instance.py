@@ -465,13 +465,20 @@ class DeleteDatabaseInstance(command.Command):
             metavar='<instance>',
             help=_('ID or name of the Instance'),
         )
+        parser.add_argument(
+            '--wait',
+            action='store_true',
+            help=_('Wait for the instance to be deleted')
+        )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.rds
         instance = client.find_instance(parsed_args.instance)
         try:
-            client.delete_instance(instance.id)
+            response = client.delete_instance(instance.id)
+            if parsed_args.wait and response.job_id:
+                client.wait_for_job(response.job_id)
         except Exception as e:
             msg = (_("Failed to delete instance %(instance)s: %(e)s") % {
                 'instance': parsed_args.instance,

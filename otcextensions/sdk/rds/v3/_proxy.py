@@ -98,9 +98,10 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
             When set to ``True``, no exception will be set when
             attempting to delete a nonexistent instance.
 
-        :returns: ``None``
+        :returns:
+            :class:`~otcextensions.sdk.rds.v3.instance.Instance` instance.
         """
-        self._delete(
+        return self._delete(
             _instance.Instance,
             instance,
             ignore_missing=ignore_missing,
