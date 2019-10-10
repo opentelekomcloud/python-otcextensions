@@ -189,10 +189,8 @@ class Instance(resource.Resource):
         :raises: :exc:`~openstack.exceptions.ResourceNotFound` if
                  the resource was not found.
         """
-        data = list(self.list(session, paginated=False, id=self.id))
-        result = None
-        if data:
-            result = self._get_one_match(self.id, data)
+        data = self.list(session, paginated=False, id=self.id)
+        result = self._get_one_match(self.id, data)
         if not result:
             raise exceptions.ResourceNotFound(
                 "No Instance found for %s" % (self.id))
