@@ -583,7 +583,6 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             self.cmd.take_action,
             parsed_args)
 
-
     def find_flavor(self, instance_mode):
         flavor = None
         for f in self.flavors:
