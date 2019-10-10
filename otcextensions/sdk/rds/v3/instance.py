@@ -51,9 +51,10 @@ class Instance(resource.Resource):
     allow_commit = True
     allow_list = True
 
-    _query_mapping = resource.QueryParameters('id', 'name', 'type',
-                                              'datastore_type', 'router_id',
-                                              'subnet_id', 'limit', 'offset')
+    _query_mapping = resource.QueryParameters(
+        'id', 'name', 'type', 'datastore_type', 'router_id',
+        'subnet_id', 'limit', 'offset',
+        router_id='vpc_id')
 
     #: Availability Zone.
     #: *Type:str*
@@ -177,6 +178,9 @@ class Instance(resource.Resource):
 
         if not result:
             result = cls._find(session, name_or_id, name=name_or_id, **params)
+
+        if result:
+            return result
 
         if ignore_missing:
             return None
