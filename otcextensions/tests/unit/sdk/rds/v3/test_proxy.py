@@ -136,6 +136,11 @@ class TestInstance(TestRdsProxy):
             self.proxy.create_instance,
             instance.Instance)
 
+    def test_get_instance(self):
+        self.verify_get(
+            self.proxy.get_instance,
+            instance.Instance)
+
     def test_find_instance(self):
         self.verify_find(
             self.proxy.find_instance,

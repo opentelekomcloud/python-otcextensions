@@ -107,6 +107,14 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
             ignore_missing=ignore_missing,
         )
 
+    def get_instance(self, instance):
+        """Get a single instance
+
+        :param isntance: The name or ID of a instance.
+        :returns: One :class:`~otcextensions.sdk.rds.v3.instance.Instance`
+        """
+        return self._get(_instance.Instance, instance)
+
     def find_instance(self, name_or_id, ignore_missing=True):
         """Find a single instance
 

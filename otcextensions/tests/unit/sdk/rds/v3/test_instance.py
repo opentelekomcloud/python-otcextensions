@@ -71,6 +71,8 @@ class TestInstance(base.TestCase):
         super(TestInstance, self).setUp()
         self.sess = mock.Mock(spec=adapter.Adapter)
         self.sess.get = mock.Mock()
+        self.sess.default_microversion = None
+        self.sess._get_connection = mock.Mock(return_value=self.cloud)
         # self.sess.get_project_id = mock.Mock(return_value=PROJECT_ID)
         self.sot = instance.Instance(**EXAMPLE)
 
@@ -130,6 +132,23 @@ class TestInstance(base.TestCase):
 
         self.assertEqual(restore_times, rt)
         self.assertEqual(restore_times, sot.restore_time)
+
+    def test_fetch(self):
+        sot = instance.Instance.existing(id=IDENTIFIER)
+
+        response = mock.Mock()
+        response.status_code = 200
+        response.json.return_value = {'instances': [EXAMPLE]}
+        response.headers = {}
+        self.sess.get.return_value = response
+
+        # Restore from backup
+        rt = sot.fetch(self.sess)
+        self.assertIsInstance(rt, instance.Instance)
+        self.assertDictEqual(
+            rt.to_dict(),
+            instance.Instance(**EXAMPLE)
+        )
 
     def test_restore(self):
         sot = instance.Instance(**EXAMPLE)
