@@ -55,24 +55,24 @@ class ListDatabaseInstances(command.Lister):
 
     def get_parser(self, prog_name):
         parser = super(ListDatabaseInstances, self).get_parser(prog_name)
-        parser.add_argument('--limit',
-                            dest='limit',
-                            metavar='<limit>',
-                            type=int,
-                            default=None,
-                            help=_('Limit the number of results displayed'))
-        parser.add_argument('--id',
-                            dest='id',
-                            metavar='<id>',
-                            type=str,
-                            default=None,
-                            help=_('Specifies the DB instance ID.'))
-        parser.add_argument('--name',
-                            dest='name',
-                            metavar='<name>',
-                            type=str,
-                            default=None,
-                            help=_('Specifies the DB instance Name.'))
+        parser.add_argument(
+            '--limit',
+            dest='limit',
+            metavar='<limit>',
+            type=int,
+            help=_('Limit the number of results displayed'))
+        parser.add_argument(
+            '--id',
+            dest='id',
+            metavar='<id>',
+            type=str,
+            help=_('Specifies the DB instance ID.'))
+        parser.add_argument(
+            '--name',
+            dest='name',
+            metavar='<name>',
+            type=str,
+            help=_('Specifies the DB instance Name.'))
         parser.add_argument(
             '--type',
             dest='type',
@@ -82,33 +82,34 @@ class ListDatabaseInstances(command.Lister):
             help=_(
                 'Specifies the instance type. Values cane be single/ha/replica'
             ))
-        parser.add_argument('--datastore-type',
-                            dest='datastore_type',
-                            metavar='<datastore_type>',
-                            type=str,
-                            default=None,
-                            help=_(
-                                'Specifies the database type. '
-                                'value is MySQL, PostgreSQL, or SQLServer.'))
-        parser.add_argument('--router-id',
-                            dest='router_id',
-                            metavar='<router_id>',
-                            type=str,
-                            default=None,
-                            help=_('Specifies the ID of Router to which '
-                                   'instance should be connected to.'))
-        parser.add_argument('--subnet-id',
-                            dest='subnet_id',
-                            metavar='<subnet_id>',
-                            type=str,
-                            default=None,
-                            help=_('Indicates the Subnet ID of DB Instance.'))
-        parser.add_argument('--offset',
-                            dest='offset',
-                            metavar='<offset>',
-                            type=int,
-                            default=None,
-                            help=_('Specifies the index position.'))
+        parser.add_argument(
+            '--datastore-type',
+            dest='datastore_type',
+            metavar='<datastore_type>',
+            type=str,
+            help=_(
+                'Specifies the database type. '
+                'value is MySQL, PostgreSQL, or SQLServer.'))
+        parser.add_argument(
+            '--router-id',
+            dest='router_id',
+            metavar='<router_id>',
+            type=str,
+            help=_('Specifies the ID of Router to which '
+                   'instance should be connected to.'))
+        parser.add_argument(
+            '--subnet-id',
+             dest='subnet_id',
+             metavar='<subnet_id>',
+             type=str,
+             help=_('Indicates the Subnet ID of DB Instance.'))
+        parser.add_argument(
+            '--offset',
+            dest='offset',
+            metavar='<offset>',
+            type=int,
+            default=None,
+            help=_('Specifies the index position.'))
 
         return parser
 
@@ -381,9 +382,39 @@ class CreateDatabaseInstance(command.ShowOne):
             )
         elif not all(new_instance_required):
             raise exceptions.CommandError(
-                _('`router-id`, `subnet-id`, `security-group-id`, '
-                  '`password` parameters are required when creating '
+                _('`--router-id`, `--subnet-id`, `--security-group-id`, '
+                  '`--password` parameters are required when creating '
                   'new primary instance.')
+            )
+
+        flavors = list(client.flavors(
+            datastore_name=parsed_args.datastore_type,
+            version_name=parsed_args.datastore_version)
+        )
+        flavor = None
+        for f in flavors:
+            if f.name == parsed_args.flavor_ref:
+                flavor = f
+        if not flavor:
+            raise exceptions.CommandError(
+                _(
+                    'Flavor {flavor} can not be found'.format(
+                        flavor=parsed_args.flavor_ref)
+                )
+            )
+        if flavor.instance_mode == 'ha' and not parsed_args.ha_mode:
+            raise exceptions.CommandError(
+                _('`--ha-mode` is required when using HA enabled flavor')
+            )
+        if flavor.instance_mode != 'ha' and parsed_args.ha_mode:
+            raise exceptions.CommandError(
+                _('`ha` enabled flavor must be '
+                  'chosen when setting ha_mode')
+            )
+        if flavor.instance_mode != 'replica' and parsed_args.replica_of:
+            raise exceptions.CommandError(
+                _('`replica` enabled flavor must be '
+                  'chosen when creating replica')
             )
 
         obj = client.create_instance(**attrs)

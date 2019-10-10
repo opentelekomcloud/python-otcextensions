@@ -180,7 +180,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
 
     _data = fakes.FakeInstance.create_one()
     other_instance = fakes.FakeInstance.create_one()
-    flavor = fakes.FakeFlavor.create_one()
+    flavors = fakes.FakeFlavor.create_multiple(10)
 
     columns = ()
 
@@ -191,7 +191,8 @@ class TestCreateDatabaseInstance(fakes.TestRds):
 
         self.cmd = instance.CreateDatabaseInstance(self.app, None)
 
-        self.client.find_flavor = mock.Mock(return_value=self.flavor)
+        self.client.flavors = mock.Mock(return_value=self.flavors)
+        self.flavor = self.find_flavor('single')
         self.client.find_instance = mock.Mock(return_value=self.other_instance)
         self.client.create_instance = mock.Mock(return_value=self._data)
         self.client.get_instance = mock.Mock(return_value=self._data)
@@ -200,13 +201,12 @@ class TestCreateDatabaseInstance(fakes.TestRds):
     def test_create(self):
         arglist = [
             'inst_name',
-            'test-flavor',
+            self.flavor.name,
             '--availability-zone', 'test-az-01',
             '--configuration', '123',
             '--datastore-type', 'MySQL',
             '--datastore-version', '5.7',
             '--disk-encryption-id', '234',
-            '--ha-mode', 'semisync',
             '--router-id', 'test-vpc-id',
             '--subnet-id', 'test-subnet-id',
             '--security-group-id', 'test-sec_grp-id',
@@ -220,12 +220,11 @@ class TestCreateDatabaseInstance(fakes.TestRds):
         verifylist = [
             ('name', 'inst_name'),
             ('configuration_id', '123'),
-            ('flavor_ref', 'test-flavor'),
+            ('flavor_ref', self.flavor.name),
             ('availability_zone', 'test-az-01'),
             ('datastore_type', 'MySQL'),
             ('datastore_version', '5.7'),
             ('disk_encryption_id', '234'),
-            ('ha_mode', 'semisync'),
             ('router_id', 'test-vpc-id'),
             ('subnet_id', 'test-subnet-id'),
             ('security_group_id', 'test-sec_grp-id'),
@@ -249,8 +248,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             configuration_id='123',
             datastore={'type': 'MySQL', 'version': '5.7'},
             disk_encryption_id='234',
-            flavor_ref='test-flavor',
-            ha={'mode': 'ha', 'replication_mode': 'semisync'},
+            flavor_ref=self.flavor.name,
             name='inst_name',
             password='testtest',
             port=12345,
@@ -261,16 +259,78 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             subnet_id='test-subnet-id'
         )
 
-    def test_create_wait(self):
+    def test_create(self):
         arglist = [
             'inst_name',
-            'test-flavor',
+            self.flavor.name,
             '--availability-zone', 'test-az-01',
             '--configuration', '123',
             '--datastore-type', 'MySQL',
             '--datastore-version', '5.7',
             '--disk-encryption-id', '234',
-            '--ha-mode', 'semisync',
+            '--router-id', 'test-vpc-id',
+            '--subnet-id', 'test-subnet-id',
+            '--security-group-id', 'test-sec_grp-id',
+            '--volume-type', 'ULTRAHIGH',
+            '--size', '100',
+            '--password', 'testtest',
+            '--region', 'test-region',
+            '--port', '12345'
+        ]
+
+        verifylist = [
+            ('name', 'inst_name'),
+            ('configuration_id', '123'),
+            ('flavor_ref', self.flavor.name),
+            ('availability_zone', 'test-az-01'),
+            ('datastore_type', 'MySQL'),
+            ('datastore_version', '5.7'),
+            ('disk_encryption_id', '234'),
+            ('router_id', 'test-vpc-id'),
+            ('subnet_id', 'test-subnet-id'),
+            ('security_group_id', 'test-sec_grp-id'),
+            ('port', 12345),
+            ('volume_type', 'ULTRAHIGH'),
+            ('size', 100),
+            ('password', 'testtest'),
+            ('region', 'test-region')]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        self.cmd.take_action(parsed_args)
+
+        self.client.find_instance.assert_not_called()
+
+        self.client.create_instance.assert_called_with(
+            availability_zone='test-az-01',
+            charge_info={'charge_mode': 'postPaid'},
+            configuration_id='123',
+            datastore={'type': 'MySQL', 'version': '5.7'},
+            disk_encryption_id='234',
+            flavor_ref=self.flavor.name,
+            name='inst_name',
+            password='testtest',
+            port=12345,
+            region='test-region',
+            router_id='test-vpc-id',
+            security_group_id='test-sec_grp-id',
+            volume={'size': 100, 'type': 'ULTRAHIGH'},
+            subnet_id='test-subnet-id'
+        )
+
+    def test_create_ha(self):
+        flavor = self.find_flavor('ha')
+        arglist = [
+            'inst_name',
+            flavor.name,
+            '--availability-zone', 'test-az-01',
+            '--configuration', '123',
+            '--datastore-type', 'MySQL',
+            '--datastore-version', '5.7',
+            '--disk-encryption-id', '234',
+            '--ha-mode', 'sync',
             '--router-id', 'test-vpc-id',
             '--subnet-id', 'test-subnet-id',
             '--security-group-id', 'test-sec_grp-id',
@@ -285,12 +345,12 @@ class TestCreateDatabaseInstance(fakes.TestRds):
         verifylist = [
             ('name', 'inst_name'),
             ('configuration_id', '123'),
-            ('flavor_ref', 'test-flavor'),
+            ('flavor_ref', flavor.name),
+            ('ha_mode', 'sync'),
             ('availability_zone', 'test-az-01'),
             ('datastore_type', 'MySQL'),
             ('datastore_version', '5.7'),
             ('disk_encryption_id', '234'),
-            ('ha_mode', 'semisync'),
             ('router_id', 'test-vpc-id'),
             ('subnet_id', 'test-subnet-id'),
             ('security_group_id', 'test-sec_grp-id'),
@@ -316,8 +376,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             configuration_id='123',
             datastore={'type': 'MySQL', 'version': '5.7'},
             disk_encryption_id='234',
-            flavor_ref='test-flavor',
-            ha={'mode': 'ha', 'replication_mode': 'semisync'},
+            flavor_ref=flavor.name,
             name='inst_name',
             password='testtest',
             port=12345,
@@ -325,22 +384,32 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             router_id='test-vpc-id',
             security_group_id='test-sec_grp-id',
             volume={'size': 100, 'type': 'ULTRAHIGH'},
-            subnet_id='test-subnet-id'
+            subnet_id='test-subnet-id',
+            ha={'mode': 'ha', 'replication_mode': 'sync'}
         )
 
         self.client.wait_for_job.assert_called_with(self._data.job_id)
         self.client.get_instance.assert_called_with(self._data.id)
 
+    def find_flavor(self, instance_mode):
+        flavor = None
+        for f in self.flavors:
+            if f.instance_mode == instance_mode:
+                flavor = f
+        # For the moment just ensure we have found something
+        self.assertIsNotNone(flavor)
+        return flavor
+
     def test_create_replica(self):
+        flavor = self.find_flavor('replica')
         arglist = [
             'inst_name',
-            'test-flavor',
+            flavor.name,
             '--availability-zone', 'test-az-01',
             '--configuration', '123',
             '--datastore-type', 'MySQL',
             '--datastore-version', '5.7',
             '--disk-encryption-id', '234',
-            '--ha-mode', 'semisync',
             '--replica-of', 'fake_name',
             '--volume-type', 'ULTRAHIGH',
             '--size', '100',
@@ -350,12 +419,11 @@ class TestCreateDatabaseInstance(fakes.TestRds):
         verifylist = [
             ('name', 'inst_name'),
             ('configuration_id', '123'),
-            ('flavor_ref', 'test-flavor'),
+            ('flavor_ref', flavor.name),
             ('availability_zone', 'test-az-01'),
             ('datastore_type', 'MySQL'),
             ('datastore_version', '5.7'),
             ('disk_encryption_id', '234'),
-            ('ha_mode', 'semisync'),
             ('replica_of', 'fake_name'),
             ('volume_type', 'ULTRAHIGH'),
             ('size', 100),
@@ -373,8 +441,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             configuration_id='123',
             datastore={'type': 'MySQL', 'version': '5.7'},
             disk_encryption_id='234',
-            flavor_ref='test-flavor',
-            ha={'mode': 'ha', 'replication_mode': 'semisync'},
+            flavor_ref=flavor.name,
             name='inst_name',
             region='test-region',
             replica_of_id=self.other_instance.id,
@@ -423,13 +490,12 @@ class TestCreateDatabaseInstance(fakes.TestRds):
     def test_create_from_instance_pir(self):
         arglist = [
             'inst_name',
-            'test-flavor',
+            self.flavor.name,
             '--availability-zone', 'test-az-01',
             '--configuration', '123',
             '--datastore-type', 'MySQL',
             '--datastore-version', '5.7',
             '--disk-encryption-id', '234',
-            '--ha-mode', 'semisync',
             '--router-id', 'test-vpc-id',
             '--subnet-id', 'test-subnet-id',
             '--security-group-id', 'test-sec_grp-id',
@@ -445,12 +511,11 @@ class TestCreateDatabaseInstance(fakes.TestRds):
         verifylist = [
             ('name', 'inst_name'),
             ('configuration_id', '123'),
-            ('flavor_ref', 'test-flavor'),
+            ('flavor_ref', self.flavor.name),
             ('availability_zone', 'test-az-01'),
             ('datastore_type', 'MySQL'),
             ('datastore_version', '5.7'),
             ('disk_encryption_id', '234'),
-            ('ha_mode', 'semisync'),
             ('router_id', 'test-vpc-id'),
             ('subnet_id', 'test-subnet-id'),
             ('security_group_id', 'test-sec_grp-id'),
@@ -478,8 +543,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             configuration_id='123',
             datastore={'type': 'MySQL', 'version': '5.7'},
             disk_encryption_id='234',
-            flavor_ref='test-flavor',
-            ha={'mode': 'ha', 'replication_mode': 'semisync'},
+            flavor_ref=self.flavor.name,
             name='inst_name',
             password='testtest',
             port=12345,
@@ -500,13 +564,12 @@ class TestCreateDatabaseInstance(fakes.TestRds):
     def test_create_from_backup(self):
         arglist = [
             'inst_name',
-            'test-flavor',
+            self.flavor.name,
             '--availability-zone', 'test-az-01',
             '--configuration', '123',
             '--datastore-type', 'MySQL',
             '--datastore-version', '5.7',
             '--disk-encryption-id', '234',
-            '--ha-mode', 'semisync',
             '--router-id', 'test-vpc-id',
             '--subnet-id', 'test-subnet-id',
             '--security-group-id', 'test-sec_grp-id',
@@ -522,12 +585,11 @@ class TestCreateDatabaseInstance(fakes.TestRds):
         verifylist = [
             ('name', 'inst_name'),
             ('configuration_id', '123'),
-            ('flavor_ref', 'test-flavor'),
+            ('flavor_ref', self.flavor.name),
             ('availability_zone', 'test-az-01'),
             ('datastore_type', 'MySQL'),
             ('datastore_version', '5.7'),
             ('disk_encryption_id', '234'),
-            ('ha_mode', 'semisync'),
             ('router_id', 'test-vpc-id'),
             ('subnet_id', 'test-subnet-id'),
             ('security_group_id', 'test-sec_grp-id'),
@@ -555,8 +617,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             configuration_id='123',
             datastore={'type': 'MySQL', 'version': '5.7'},
             disk_encryption_id='234',
-            flavor_ref='test-flavor',
-            ha={'mode': 'ha', 'replication_mode': 'semisync'},
+            flavor_ref=self.flavor.name,
             name='inst_name',
             password='testtest',
             port=12345,
