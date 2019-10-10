@@ -99,10 +99,10 @@ class ListDatabaseInstances(command.Lister):
                    'instance should be connected to.'))
         parser.add_argument(
             '--subnet-id',
-             dest='subnet_id',
-             metavar='<subnet_id>',
-             type=str,
-             help=_('Indicates the Subnet ID of DB Instance.'))
+            dest='subnet_id',
+            metavar='<subnet_id>',
+            type=str,
+            help=_('Indicates the Subnet ID of DB Instance.'))
         parser.add_argument(
             '--offset',
             dest='offset',
@@ -416,6 +416,12 @@ class CreateDatabaseInstance(command.ShowOne):
                 _('`replica` enabled flavor must be '
                   'chosen when creating replica')
             )
+        if parsed_args.ha_mode:
+            if ',' not in parsed_args.availability_zone:
+                raise exceptions.CommandError(
+                    _('List of availability zones must be used when '
+                      'creating ha instance')
+                )
 
         obj = client.create_instance(**attrs)
 

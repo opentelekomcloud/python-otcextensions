@@ -259,15 +259,17 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             subnet_id='test-subnet-id'
         )
 
-    def test_create(self):
+    def test_create_ha(self):
+        flavor = self.find_flavor('ha')
         arglist = [
             'inst_name',
-            self.flavor.name,
-            '--availability-zone', 'test-az-01',
+            flavor.name,
+            '--availability-zone', 'test-az-01,az2',
             '--configuration', '123',
             '--datastore-type', 'MySQL',
             '--datastore-version', '5.7',
             '--disk-encryption-id', '234',
+            '--ha-mode', 'sync',
             '--router-id', 'test-vpc-id',
             '--subnet-id', 'test-subnet-id',
             '--security-group-id', 'test-sec_grp-id',
@@ -275,14 +277,16 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             '--size', '100',
             '--password', 'testtest',
             '--region', 'test-region',
-            '--port', '12345'
+            '--port', '12345',
+            '--wait'
         ]
 
         verifylist = [
             ('name', 'inst_name'),
             ('configuration_id', '123'),
-            ('flavor_ref', self.flavor.name),
-            ('availability_zone', 'test-az-01'),
+            ('flavor_ref', flavor.name),
+            ('ha_mode', 'sync'),
+            ('availability_zone', 'test-az-01,az2'),
             ('datastore_type', 'MySQL'),
             ('datastore_version', '5.7'),
             ('disk_encryption_id', '234'),
@@ -293,7 +297,9 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             ('volume_type', 'ULTRAHIGH'),
             ('size', 100),
             ('password', 'testtest'),
-            ('region', 'test-region')]
+            ('region', 'test-region'),
+            ('wait', True)
+        ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -304,12 +310,12 @@ class TestCreateDatabaseInstance(fakes.TestRds):
         self.client.find_instance.assert_not_called()
 
         self.client.create_instance.assert_called_with(
-            availability_zone='test-az-01',
+            availability_zone='test-az-01,az2',
             charge_info={'charge_mode': 'postPaid'},
             configuration_id='123',
             datastore={'type': 'MySQL', 'version': '5.7'},
             disk_encryption_id='234',
-            flavor_ref=self.flavor.name,
+            flavor_ref=flavor.name,
             name='inst_name',
             password='testtest',
             port=12345,
@@ -317,10 +323,14 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             router_id='test-vpc-id',
             security_group_id='test-sec_grp-id',
             volume={'size': 100, 'type': 'ULTRAHIGH'},
-            subnet_id='test-subnet-id'
+            subnet_id='test-subnet-id',
+            ha={'mode': 'ha', 'replication_mode': 'sync'}
         )
 
-    def test_create_ha(self):
+        self.client.wait_for_job.assert_called_with(self._data.job_id)
+        self.client.get_instance.assert_called_with(self._data.id)
+
+    def test_create_ha_wrong_az(self):
         flavor = self.find_flavor('ha')
         arglist = [
             'inst_name',
@@ -366,30 +376,10 @@ class TestCreateDatabaseInstance(fakes.TestRds):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Trigger the action
-        self.cmd.take_action(parsed_args)
-
-        self.client.find_instance.assert_not_called()
-
-        self.client.create_instance.assert_called_with(
-            availability_zone='test-az-01',
-            charge_info={'charge_mode': 'postPaid'},
-            configuration_id='123',
-            datastore={'type': 'MySQL', 'version': '5.7'},
-            disk_encryption_id='234',
-            flavor_ref=flavor.name,
-            name='inst_name',
-            password='testtest',
-            port=12345,
-            region='test-region',
-            router_id='test-vpc-id',
-            security_group_id='test-sec_grp-id',
-            volume={'size': 100, 'type': 'ULTRAHIGH'},
-            subnet_id='test-subnet-id',
-            ha={'mode': 'ha', 'replication_mode': 'sync'}
-        )
-
-        self.client.wait_for_job.assert_called_with(self._data.job_id)
-        self.client.get_instance.assert_called_with(self._data.id)
+        self.assertRaises(
+            exceptions.CommandError,
+            self.cmd.take_action,
+            parsed_args)
 
     def find_flavor(self, instance_mode):
         flavor = None
