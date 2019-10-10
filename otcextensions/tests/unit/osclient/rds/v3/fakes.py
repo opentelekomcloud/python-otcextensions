@@ -151,7 +151,8 @@ class FakeInstance(test_base.Fake):
                 'type': 'type' + uuid.uuid4().hex,
                 'size': random.randint(1, 10280),
             },
-            'region': 'region' + uuid.uuid4().hex
+            'region': 'region' + uuid.uuid4().hex,
+            'job_id': 'jobid' + uuid.uuid4().hex
         }
 
         return instance.Instance(**object_info)

@@ -23,7 +23,9 @@ from otcextensions.i18n import _
 
 def _get_columns(item):
     column_map = {}
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
+    hidden = ['job_id']
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
+                                                           hidden)
 
 
 def set_attributes_for_print(instances):
@@ -76,7 +78,7 @@ class ListDatabaseInstances(command.Lister):
             help=_(
                 'Specifies the instance type. Values cane be single/ha/replica'
             ))
-        parser.add_argument('--database',
+        parser.add_argument('--datastore-type',
                             dest='datastore_type',
                             metavar='<datastore_type>',
                             type=str,
@@ -84,14 +86,14 @@ class ListDatabaseInstances(command.Lister):
                             help=_(
                                 'Specifies the database type. '
                                 'value is MySQL, PostgreSQL, or SQLServer.'))
-        parser.add_argument('--router_id',
+        parser.add_argument('--router-id',
                             dest='router_id',
                             metavar='<router_id>',
                             type=str,
                             default=None,
                             help=_('Specifies the ID of Router to which '
                                    'instance should be connected to.'))
-        parser.add_argument('--subnet_id',
+        parser.add_argument('--subnet-id',
                             dest='subnet_id',
                             metavar='<subnet_id>',
                             type=str,
@@ -195,10 +197,10 @@ class CreateDatabaseInstance(command.ShowOne):
         )
         ds_group = parser.add_argument_group('Datasoure parameters')
         ds_group.add_argument(
-            '--datastore',
+            '--datastore-type',
             metavar='<datastore>',
             required=True,
-            help=_("Name of the datastore.")
+            help=_("Name of the datastore (type).")
         )
         ds_group.add_argument(
             '--datastore-version',
@@ -288,6 +290,11 @@ class CreateDatabaseInstance(command.ShowOne):
             help=_('Time (UNIX timestamp in ms) to create new instance '
                    'as a PointInTime recovery.')
         )
+        parser.add_argument(
+            '--wait',
+            action='store_true',
+            help=('Wait for the instance to become active')
+        )
         return parser
 
     def take_action(self, parsed_args):
@@ -309,9 +316,9 @@ class CreateDatabaseInstance(command.ShowOne):
             if parsed_args.volume_type:
                 volume['type'] = parsed_args.volume_type
             attrs['volume'] = volume
-        if parsed_args.datastore:
+        if parsed_args.datastore_type:
             datastore = {
-                'type': parsed_args.datastore,
+                'type': parsed_args.datastore_type,
                 'version': parsed_args.datastore_version
             }
             attrs['datastore'] = datastore
@@ -373,6 +380,10 @@ class CreateDatabaseInstance(command.ShowOne):
             )
 
         obj = client.create_instance(**attrs)
+
+        if obj.job_id and parsed_args.wait:
+            client.wait_for_job(obj.job_id)
+            obj = client.get_instance(obj.id)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns, formatters={})

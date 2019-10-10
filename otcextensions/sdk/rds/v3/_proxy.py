@@ -12,6 +12,7 @@
 
 from openstack import proxy
 
+from otcextensions.sdk import job
 from otcextensions.sdk.rds.v3 import backup as _backup
 from otcextensions.sdk.rds.v3 import configuration as _configuration
 from otcextensions.sdk.rds.v3 import datastore as _datastore
@@ -19,7 +20,7 @@ from otcextensions.sdk.rds.v3 import flavor as _flavor
 from otcextensions.sdk.rds.v3 import instance as _instance
 
 
-class Proxy(proxy.Proxy):
+class Proxy(proxy.Proxy, job.JobProxyMixin):
 
     skip_discovery = True
 

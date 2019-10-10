@@ -133,14 +133,14 @@ class CreateConfiguration(command.ShowOne):
             metavar="<description>",
             help=_("Parameter group description"))
         parser.add_argument(
-            '--datastore_type',
+            '--datastore-type',
             metavar='{' + ','.join(DATASTORE_TYPE_CHOICES) + '}',
             choices=DATASTORE_TYPE_CHOICES,
             type=lambda s: s.lower(),
             required=True,
             help=_("Datastore type"))
         parser.add_argument(
-            '--datastore_version',
+            '--datastore-version',
             metavar="<datastore_version>",
             required=True,
             help=_("Datastore version"))

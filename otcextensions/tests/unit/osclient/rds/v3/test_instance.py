@@ -71,9 +71,9 @@ class TestListDatabaseInstances(fakes.TestRds):
             '--id', '2',
             '--name', '3',
             '--type', '4',
-            '--database', '5',
-            '--router_id', '6',
-            '--subnet_id', '7',
+            '--datastore-type', '5',
+            '--router-id', '6',
+            '--subnet-id', '7',
             '--offset', '8',
         ]
 
@@ -194,6 +194,8 @@ class TestCreateDatabaseInstance(fakes.TestRds):
         self.client.find_flavor = mock.Mock(return_value=self.flavor)
         self.client.find_instance = mock.Mock(return_value=self.other_instance)
         self.client.create_instance = mock.Mock(return_value=self._data)
+        self.client.get_instance = mock.Mock(return_value=self._data)
+        self.client.wait_for_job = mock.Mock()
 
     def test_create(self):
         arglist = [
@@ -201,7 +203,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             'test-flavor',
             '--availability-zone', 'test-az-01',
             '--configuration', '123',
-            '--datastore', 'MySQL',
+            '--datastore-type', 'MySQL',
             '--datastore-version', '5.7',
             '--disk-encryption-id', '234',
             '--ha-mode', 'semisync',
@@ -220,7 +222,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             ('configuration_id', '123'),
             ('flavor_ref', 'test-flavor'),
             ('availability_zone', 'test-az-01'),
-            ('datastore', 'MySQL'),
+            ('datastore_type', 'MySQL'),
             ('datastore_version', '5.7'),
             ('disk_encryption_id', '234'),
             ('ha_mode', 'semisync'),
@@ -259,13 +261,83 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             subnet_id='test-subnet-id'
         )
 
+    def test_create_wait(self):
+        arglist = [
+            'inst_name',
+            'test-flavor',
+            '--availability-zone', 'test-az-01',
+            '--configuration', '123',
+            '--datastore-type', 'MySQL',
+            '--datastore-version', '5.7',
+            '--disk-encryption-id', '234',
+            '--ha-mode', 'semisync',
+            '--router-id', 'test-vpc-id',
+            '--subnet-id', 'test-subnet-id',
+            '--security-group-id', 'test-sec_grp-id',
+            '--volume-type', 'ULTRAHIGH',
+            '--size', '100',
+            '--password', 'testtest',
+            '--region', 'test-region',
+            '--port', '12345',
+            '--wait'
+        ]
+
+        verifylist = [
+            ('name', 'inst_name'),
+            ('configuration_id', '123'),
+            ('flavor_ref', 'test-flavor'),
+            ('availability_zone', 'test-az-01'),
+            ('datastore_type', 'MySQL'),
+            ('datastore_version', '5.7'),
+            ('disk_encryption_id', '234'),
+            ('ha_mode', 'semisync'),
+            ('router_id', 'test-vpc-id'),
+            ('subnet_id', 'test-subnet-id'),
+            ('security_group_id', 'test-sec_grp-id'),
+            ('port', 12345),
+            ('volume_type', 'ULTRAHIGH'),
+            ('size', 100),
+            ('password', 'testtest'),
+            ('region', 'test-region'),
+            ('wait', True)
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        self.cmd.take_action(parsed_args)
+
+        self.client.find_instance.assert_not_called()
+
+        self.client.create_instance.assert_called_with(
+            availability_zone='test-az-01',
+            charge_info={'charge_mode': 'postPaid'},
+            configuration_id='123',
+            datastore={'type': 'MySQL', 'version': '5.7'},
+            disk_encryption_id='234',
+            flavor_ref='test-flavor',
+            ha={'mode': 'ha', 'replication_mode': 'semisync'},
+            name='inst_name',
+            password='testtest',
+            port=12345,
+            region='test-region',
+            router_id='test-vpc-id',
+            security_group_id='test-sec_grp-id',
+            volume={'size': 100, 'type': 'ULTRAHIGH'},
+            subnet_id='test-subnet-id'
+        )
+
+        self.client.wait_for_job.assert_called_with(self._data.job_id)
+        self.client.get_instance.assert_called_with(self._data.id)
+
     def test_create_replica(self):
         arglist = [
             'inst_name',
             'test-flavor',
             '--availability-zone', 'test-az-01',
             '--configuration', '123',
-            '--datastore', 'MySQL',
+            '--datastore-type', 'MySQL',
             '--datastore-version', '5.7',
             '--disk-encryption-id', '234',
             '--ha-mode', 'semisync',
@@ -280,7 +352,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             ('configuration_id', '123'),
             ('flavor_ref', 'test-flavor'),
             ('availability_zone', 'test-az-01'),
-            ('datastore', 'MySQL'),
+            ('datastore_type', 'MySQL'),
             ('datastore_version', '5.7'),
             ('disk_encryption_id', '234'),
             ('ha_mode', 'semisync'),
@@ -315,7 +387,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             'test-flavor',
             '--availability-zone', 'test-az-01',
             '--configuration', '123',
-            '--datastore', 'MySQL',
+            '--datastore-type', 'MySQL',
             '--datastore-version', '5.7',
             '--disk-encryption-id', '234',
             '--ha-mode', 'semisync',
@@ -331,7 +403,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             ('configuration_id', '123'),
             ('flavor_ref', 'test-flavor'),
             ('availability_zone', 'test-az-01'),
-            ('datastore', 'MySQL'),
+            ('datastore_type', 'MySQL'),
             ('datastore_version', '5.7'),
             ('disk_encryption_id', '234'),
             ('ha_mode', 'semisync'),
@@ -354,7 +426,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             'test-flavor',
             '--availability-zone', 'test-az-01',
             '--configuration', '123',
-            '--datastore', 'MySQL',
+            '--datastore-type', 'MySQL',
             '--datastore-version', '5.7',
             '--disk-encryption-id', '234',
             '--ha-mode', 'semisync',
@@ -375,7 +447,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             ('configuration_id', '123'),
             ('flavor_ref', 'test-flavor'),
             ('availability_zone', 'test-az-01'),
-            ('datastore', 'MySQL'),
+            ('datastore_type', 'MySQL'),
             ('datastore_version', '5.7'),
             ('disk_encryption_id', '234'),
             ('ha_mode', 'semisync'),
@@ -431,7 +503,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             'test-flavor',
             '--availability-zone', 'test-az-01',
             '--configuration', '123',
-            '--datastore', 'MySQL',
+            '--datastore-type', 'MySQL',
             '--datastore-version', '5.7',
             '--disk-encryption-id', '234',
             '--ha-mode', 'semisync',
@@ -452,7 +524,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             ('configuration_id', '123'),
             ('flavor_ref', 'test-flavor'),
             ('availability_zone', 'test-az-01'),
-            ('datastore', 'MySQL'),
+            ('datastore_type', 'MySQL'),
             ('datastore_version', '5.7'),
             ('disk_encryption_id', '234'),
             ('ha_mode', 'semisync'),
@@ -512,7 +584,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             'test-flavor',
             '--availability-zone', 'test-az-01',
             '--configuration', '123',
-            '--datastore', 'MySQL',
+            '--datastore-type', 'MySQL',
             '--datastore-version', '5.7',
             '--disk-encryption-id', '234',
             '--ha-mode', 'semisync',
@@ -532,7 +604,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             ('configuration_id', '123'),
             ('flavor_ref', 'test-flavor'),
             ('availability_zone', 'test-az-01'),
-            ('datastore', 'MySQL'),
+            ('datastore_type', 'MySQL'),
             ('datastore_version', '5.7'),
             ('disk_encryption_id', '234'),
             ('ha_mode', 'semisync'),
@@ -563,7 +635,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             'test-flavor',
             '--availability-zone', 'test-az-01',
             '--configuration', '123',
-            '--datastore', 'MySQL',
+            '--datastore-type', 'MySQL',
             '--datastore-version', '5.7',
             '--disk-encryption-id', '234',
             '--ha-mode', 'semisync',
@@ -580,7 +652,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             ('configuration_id', '123'),
             ('flavor_ref', 'test-flavor'),
             ('availability_zone', 'test-az-01'),
-            ('datastore', 'MySQL'),
+            ('datastore_type', 'MySQL'),
             ('datastore_version', '5.7'),
             ('disk_encryption_id', '234'),
             ('ha_mode', 'semisync'),

@@ -82,6 +82,8 @@ class Instance(resource.Resource):
     #: Flavor ID
     #: *Type:uuid*
     flavor_ref = resource.Body('flavor_ref')
+    #: Async job id
+    job_id = resource.Body('job_id')
     #: HighAvailability configuration parameters.
     #: *Type: dict*
     ha = resource.Body('ha', type=dict)

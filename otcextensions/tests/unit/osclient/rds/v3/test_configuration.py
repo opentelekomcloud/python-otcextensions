@@ -180,8 +180,8 @@ class TestCreateConfiguration(fakes.TestRds):
     def test_create(self):
         arglist = [
             'cfg',
-            '--datastore_type', 'postgresql',
-            '--datastore_version', '-9.6',
+            '--datastore-type', 'postgresql',
+            '--datastore-version', '-9.6',
             '--description', 'descr',
             '--value', 'a=b',
             '--value', 'c=d'
@@ -219,8 +219,8 @@ class TestCreateConfiguration(fakes.TestRds):
     def test_create2(self):
         arglist = [
             'cfg',
-            '--datastore_type', 'MySQL',
-            '--datastore_version', '-9.6',
+            '--datastore-type', 'MySQL',
+            '--datastore-version', '-9.6',
         ]
 
         verifylist = [
