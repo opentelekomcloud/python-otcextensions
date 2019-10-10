@@ -68,6 +68,7 @@ class Job(resource.Resource):
                                         base_path=base_path)
         if session.service_type == 'rdsv3':
             request.url = self.base_path + '?id=' + self.id
+            self.resource_key = 'job'
         session = self._get_session(session)
         microversion = self._get_microversion_for(session, 'fetch')
         response = session.get(request.url, microversion=microversion,
