@@ -261,7 +261,8 @@ class CreateDatabaseInstance(command.ShowOne):
             metavar='{' + ','.join(HA_MODE_CHOICES) + '}',
             type=lambda s: s.lower(),
             choices=HA_MODE_CHOICES,
-            help=_('replication mode for the standby DB instance')
+            help=_('replication mode for the standby DB instance. '
+                   'This parameter is required when using `ha`flavors')
         )
         parser.add_argument(
             '--charge-mode',
@@ -380,7 +381,7 @@ class CreateDatabaseInstance(command.ShowOne):
             )
         elif not all(new_instance_required):
             raise exceptions.CommandError(
-                _('`router_id`, `subnet_id`, `security_group_id`, '
+                _('`router-id`, `subnet-id`, `security-group-id`, '
                   '`password` parameters are required when creating '
                   'new primary instance.')
             )
