@@ -303,6 +303,11 @@ class CreateDatabaseInstance(command.ShowOne):
             action='store_true',
             help=('Wait for the instance to become active')
         )
+        parser.add_argument(
+            '--wait-interval',
+            type=int,
+            help=_('Interval for checking status')
+        )
         return parser
 
     def take_action(self, parsed_args):
@@ -446,7 +451,11 @@ class CreateDatabaseInstance(command.ShowOne):
         obj = client.create_instance(**attrs)
 
         if obj.job_id and parsed_args.wait:
-            client.wait_for_job(obj.job_id)
+            wait_args = {}
+            if parsed_args.wait_interval:
+                wait_args['interval'] = parsed_args.wait_interval
+
+            client.wait_for_job(obj.job_id, **wait_args)
             obj = client.get_instance(obj.id)
 
         display_columns, columns = _get_columns(obj)
@@ -470,6 +479,11 @@ class DeleteDatabaseInstance(command.Command):
             action='store_true',
             help=_('Wait for the instance to be deleted')
         )
+        parser.add_argument(
+            '--wait-interval',
+            type=int,
+            help=_('Interval for checking status')
+        )
         return parser
 
     def take_action(self, parsed_args):
@@ -478,7 +492,11 @@ class DeleteDatabaseInstance(command.Command):
         try:
             response = client.delete_instance(instance.id)
             if parsed_args.wait and response.job_id:
-                client.wait_for_job(response.job_id)
+                wait_args = {}
+                if parsed_args.wait_interval:
+                    wait_args['interval'] = parsed_args.wait_interval
+
+                client.wait_for_job(response.job_id, **wait_args)
         except Exception as e:
             msg = (_("Failed to delete instance %(instance)s: %(e)s") % {
                 'instance': parsed_args.instance,

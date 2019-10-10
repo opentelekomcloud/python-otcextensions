@@ -14,32 +14,6 @@ from openstack import resource
 from openstack import utils
 
 
-class BackupPolicy(resource.Resource):
-
-    # Properties
-    #: Policy keep days
-    #:  Indicates the number of days to retain the generated backup files.
-    #:  Its value range is 0 to 35. If this parameter is 0,
-    #:  the automated backup policy is not set.
-    #: *Type: int*
-    keep_days = resource.Body('keep_days', type=int)
-
-    #: Start time
-    #:  Indicates the backup start time that has been set.
-    #:  The backup task will be triggered within one hour
-    #:  after the backup start time.
-    #:  The current time is the UTC time.
-    #: *Type: string*
-    start_time = resource.Body('start_time')
-
-    #: Period
-    #:  Indicates the backup cycle configuration
-    #:  The backup task will be performed on
-    #:  selected days every week
-    #: *Type: string*
-    period = resource.Body('period')
-
-
 class Instance(resource.Resource):
 
     base_path = '/instances'
