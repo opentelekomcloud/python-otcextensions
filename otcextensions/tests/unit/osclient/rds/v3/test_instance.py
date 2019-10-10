@@ -386,6 +386,9 @@ class TestCreateDatabaseInstance(fakes.TestRds):
         for f in self.flavors:
             if f.instance_mode == instance_mode:
                 flavor = f
+        if not flavor:
+            self.flavors[0].instance_mode = instance_mode
+            flavor = self.flavors[0]
         # For the moment just ensure we have found something
         self.assertIsNotNone(flavor)
         return flavor
