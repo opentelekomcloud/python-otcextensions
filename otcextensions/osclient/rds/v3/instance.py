@@ -42,6 +42,10 @@ def set_attributes_for_print(instances):
         yield instance
 
 
+HA_MODE_CHOICES = ['sync', 'semisync', 'async']
+DISK_TYPE_CHOICES = ['common', 'ultrahigh']
+
+
 class ListDatabaseInstances(command.Lister):
     _description = _('List database instances')
     columns = (
@@ -177,10 +181,10 @@ class CreateDatabaseInstance(command.ShowOne):
         )
         disk_group.add_argument(
             '--volume-type',
-            metavar='<volume_type>',
+            metavar='{' + ','.join(DISK_TYPE_CHOICES) + '}',
             type=lambda s: s.upper(),
             required=True,
-            choices=['COMMON', 'ULTRAHIGH'],
+            choices=[s.upper() for s in DISK_TYPE_CHOICES],
             help=_("Volume type. (COMMON, ULTRAHIGH).")
         )
         parser.add_argument(
@@ -254,7 +258,9 @@ class CreateDatabaseInstance(command.ShowOne):
         )
         parser.add_argument(
             '--ha-mode',
-            metavar='<ha_replication_mode>',
+            metavar='{' + ','.join(HA_MODE_CHOICES) + '}',
+            type=lambda s: s.lower(),
+            choices=HA_MODE_CHOICES,
             help=_('replication mode for the standby DB instance')
         )
         parser.add_argument(
