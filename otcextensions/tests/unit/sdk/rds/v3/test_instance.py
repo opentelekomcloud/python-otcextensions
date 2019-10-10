@@ -144,6 +144,10 @@ class TestInstance(base.TestCase):
 
         # Restore from backup
         rt = sot.fetch(self.sess)
+
+        self.sess.get.assert_called_with(
+            '/instances', headers={'Accept': 'application/json'},
+            microversion=None, params={'id': 'IDENTIFIER'})
         self.assertIsInstance(rt, instance.Instance)
         self.assertDictEqual(
             rt.to_dict(),
