@@ -195,7 +195,7 @@ class Instance(resource.Resource):
             result = self._get_one_match(self.id, data)
         if not result:
             raise exceptions.ResourceNotFound(
-                "No Instance found for %s" % (id))
+                "No Instance found for %s" % (self.id))
 
         self._body.attributes.update(result._body.attributes)
         self._body.clean()
