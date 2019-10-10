@@ -20,11 +20,11 @@ class TestRdsDatastore(base.TestCase):
 
     def test_datastore_list(self):
         json_output = json.loads(self.openstack(
-            'rds datastore list -f json '
+            'rds datastore type list -f json '
         ))
         self.assertIn(
             'PostgreSQL',
-            [ds.Name for ds in json_output]
+            [ds['Name'] for ds in json_output]
         )
 
     def test_datastore_version_list(self):

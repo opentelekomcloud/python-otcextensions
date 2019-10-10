@@ -12,17 +12,17 @@
 import mock
 
 from otcextensions.osclient.rds.v3 import datastore
-from otcextensions.tests.unit.osclient.rds.v3 import fakes as rds_fakes
+from otcextensions.tests.unit.osclient.rds.v3 import fakes
 
 
-class TestListDatastores(rds_fakes.TestRds):
+class TestListDatastores(fakes.TestRds):
 
-    columns_datastore_type = ['Name', ]
+    columns_datastore_type = ('Name', )
 
     def setUp(self):
         super(TestListDatastores, self).setUp()
 
-        self.cmd = datastore.ListDatastores(self.app, None)
+        self.cmd = datastore.ListDatastoreTypes(self.app, None)
 
         self.app.client_manager.rds.datastore_types = mock.Mock()
 
@@ -54,30 +54,26 @@ class TestListDatastores(rds_fakes.TestRds):
         self.app.client_manager.rds.datastore_types.assert_called()
 
         self.assertEqual(self.columns_datastore_type, columns)
-        self.assertEqual(tuple(self.datastore_type_data), tuple(data))
+        self.assertEqual(self.datastore_type_data, list(data))
 
 
-class TestListDatastoreVersions(rds_fakes.TestRds):
-    column_headers = [
-        'ID',
-        'Name',
-    ]
+class TestListDatastoreVersions(fakes.TestRds):
+    objects = fakes.FakeDatastore.create_multiple(3)
+
+    column_headers = ('ID', 'Name')
+    columns = ('id', 'name')
+
+    data = []
+
+    for s in objects:
+        data.append(fakes.gen_data(s, columns))
 
     def setUp(self):
         super(TestListDatastoreVersions, self).setUp()
 
         self.cmd = datastore.ListDatastoreVersions(self.app, None)
 
-        self.app.client_manager.rds.datastores = mock.Mock()
-
-        self.datastores = self.datastore_mock.create_multiple(3)
-        self.datastore_data = []
-
-        for s in self.datastores:
-            self.datastore_data.append((
-                s.id,
-                s.name,
-            ))
+        self.client.datastores = mock.Mock(return_value=self.objects)
 
     def test_list_datastore_versions(self):
         arglist = [
@@ -91,15 +87,10 @@ class TestListDatastoreVersions(rds_fakes.TestRds):
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        # Set the response
-        self.app.client_manager.rds.datastores.side_effect = [
-            self.datastores
-        ]
-
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.app.client_manager.rds.datastores.assert_called()
+        self.client.datastores.assert_called()
 
         self.assertEqual(self.column_headers, columns)
-        self.assertEqual(tuple(self.datastore_data), tuple(data))
+        self.assertEqual(self.data, list(data))

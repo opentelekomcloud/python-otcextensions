@@ -26,7 +26,7 @@ DB_TYPE_CHOICES = ['mysql', 'postgresql', 'sqlserver']
 class ListDatabaseFlavors(command.Lister):
 
     _description = _("List database flavors.")
-    columns = ['name', 'instance_mode', 'vcpus', 'ram']
+    columns = ('name', 'instance_mode', 'vcpus', 'ram')
 
     def get_parser(self, prog_name):
         parser = super(ListDatabaseFlavors, self).get_parser(prog_name)

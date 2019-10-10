@@ -12,34 +12,28 @@
 import mock
 
 from otcextensions.osclient.rds.v3 import flavor
-from otcextensions.tests.unit.osclient.rds.v3 import fakes as rds_fakes
+from otcextensions.tests.unit.osclient.rds.v3 import fakes
 
 
-class TestListDatabaseFlavors(rds_fakes.TestRds):
+class TestListDatabaseFlavors(fakes.TestRds):
 
-    column_list_headers = [
-        'name',
-        'instance_mode',
-        'vcpus',
-        'ram',
-    ]
+    objects = fakes.FakeFlavor.create_multiple(3)
+
+    columns = (
+        'name', 'instance_mode', 'vcpus', 'ram',
+    )
+
+    data = []
+
+    for s in objects:
+        data.append(fakes.gen_data(s, columns))
 
     def setUp(self):
         super(TestListDatabaseFlavors, self).setUp()
 
         self.cmd = flavor.ListDatabaseFlavors(self.app, None)
 
-        self.app.client_manager.rds.flavors = mock.Mock()
-
-        self.flavors = self.flavor_mock.create_multiple(3)
-        self.flavor_data = []
-        for s in self.flavors:
-            self.flavor_data.append((
-                s.name,
-                s.instance_mode,
-                s.vcpus,
-                s.ram
-            ))
+        self.client.flavors = mock.Mock(return_value=self.objects)
 
     def test_list_flavors(self):
         arglist = [
@@ -55,15 +49,13 @@ class TestListDatabaseFlavors(rds_fakes.TestRds):
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        # Set the response
-        self.app.client_manager.rds.flavors.side_effect = [
-            self.flavors
-        ]
-
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.app.client_manager.rds.flavors.assert_called()
+        self.client.flavors.assert_called_with(
+            datastore_name='mysql',
+            version_name='5.7'
+        )
 
-        self.assertEqual(self.column_list_headers, columns)
-        self.assertEqual(tuple(self.flavor_data), tuple(data))
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, list(data))

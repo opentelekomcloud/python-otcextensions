@@ -506,3 +506,30 @@ class SetBackupPolicy(command.Command):
                                         ignore_missing=False)
 
         client.set_instance_backup_policy(instance, **attrs)
+
+
+class ShowAvailableRestoreTime(command.Lister):
+    _description = _('Show Database instance recovery timeframe')
+
+    columns = ('start_time', 'end_time')
+    column_headers = ('Start time', 'End time')
+
+    def get_parser(self, prog_name):
+        parser = super(ShowAvailableRestoreTime, self).get_parser(prog_name)
+        parser.add_argument('instance',
+                            metavar='<instance>',
+                            help=_('Instance ID or Name'))
+        return parser
+
+    def take_action(self, parsed_args):
+
+        client = self.app.client_manager.rds
+
+        instance = client.find_instance(parsed_args.instance,
+                                        ignore_missing=False)
+        data = client.get_instance_restore_time(instance)
+
+        return (self.column_headers, (utils.get_dict_properties(
+            s,
+            self.columns,
+        ) for s in data))

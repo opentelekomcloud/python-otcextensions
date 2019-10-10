@@ -26,10 +26,10 @@ def _get_columns(item):
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
-class ListDatastores(command.Lister):
+class ListDatastoreTypes(command.Lister):
 
     _description = _("List available datastores.")
-    columns = ['Name']
+    columns = ('Name', )
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.rds
@@ -44,7 +44,7 @@ class ListDatastores(command.Lister):
 
 class ListDatastoreVersions(command.Lister):
     _description = _("Lists available versions for a datastore.")
-    columns = ['ID', 'Name']
+    columns = ('ID', 'Name')
 
     def get_parser(self, prog_name):
         parser = super(ListDatastoreVersions, self).get_parser(prog_name)

@@ -721,3 +721,59 @@ class TestSetBackupPolicy(fakes.TestRds):
             self._instance,
             keep_days=1, period='2', start_time='3'
         )
+
+
+class TestShowAvailableRestoreTime(fakes.TestRds):
+
+    instance = fakes.FakeInstance.create_one()
+
+    objects = [
+        {
+            'start_time': 'some_fake_start',
+            'end_time': 'some_fake_end'
+        }
+    ]
+
+    column_list_headers = (
+        'Start time', 'End time'
+    )
+
+    columns = (
+        'start_time', 'end_time'
+    )
+
+    data = []
+
+    for s in objects:
+        data.append((s['start_time'], s['end_time']))
+
+    def setUp(self):
+        super(TestShowAvailableRestoreTime, self).setUp()
+
+        self.cmd = instance.ShowAvailableRestoreTime(self.app, None)
+
+        self.client.find_instance = mock.Mock(return_value=self.instance)
+        self.client.get_instance_restore_time = mock.Mock(
+            return_value=self.objects)
+
+    def test_action(self):
+        arglist = [
+            'test_inst'
+        ]
+
+        verifylist = [
+            ('instance', 'test_inst')
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.find_instance.assert_called_with('test_inst',
+                                                     ignore_missing=False)
+        self.client.get_instance_restore_time.assert_called_with(self.instance)
+
+        self.assertEqual(self.column_list_headers, columns)
+        self.assertEqual(self.data, list(data))
