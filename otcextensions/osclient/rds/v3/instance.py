@@ -176,8 +176,8 @@ class CreateDatabaseInstance(command.ShowOne):
         disk_group.add_argument(
             '--volume-type',
             metavar='<volume_type>',
-            type=str,
-            default=None,
+            type=lambda s: s.upper(),
+            required=True,
             choices=['COMMON', 'ULTRAHIGH'],
             help=_("Volume type. (COMMON, ULTRAHIGH).")
         )
@@ -321,6 +321,13 @@ class CreateDatabaseInstance(command.ShowOne):
         if parsed_args.charge_mode:
             attrs['charge_info'] = {'charge_mode': parsed_args.charge_mode}
 
+        new_instance_required = [
+            parsed_args.router_id,
+            parsed_args.subnet_id,
+            parsed_args.security_group_id,
+            parsed_args.password
+        ]
+
         if parsed_args.replica_of:
             # Create replica
             if (parsed_args.password or parsed_args.port
@@ -357,6 +364,12 @@ class CreateDatabaseInstance(command.ShowOne):
             raise exceptions.CommandError(
                 _('`--from-instance` is required when restoring from '
                   'backup or using PITR.')
+            )
+        elif not all(new_instance_required):
+            raise exceptions.CommandError(
+                _('`router_id`, `subnet_id`, `security_group_id`, '
+                  '`password` parameters are required when creating '
+                  'new primary instance.')
             )
 
         obj = client.create_instance(**attrs)

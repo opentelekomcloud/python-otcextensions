@@ -557,6 +557,48 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             parsed_args
         )
 
+    def test_create_primary_missing_params(self):
+        arglist = [
+            'inst_name',
+            'test-flavor',
+            '--availability-zone', 'test-az-01',
+            '--configuration', '123',
+            '--datastore', 'MySQL',
+            '--datastore-version', '5.7',
+            '--disk-encryption-id', '234',
+            '--ha-mode', 'semisync',
+            '--router-id', 'test-vpc-id',
+            '--volume-type', 'ULTRAHIGH',
+            '--size', '100',
+            '--password', 'testtest',
+            '--region', 'test-region',
+            '--port', '12345'
+        ]
+
+        verifylist = [
+            ('name', 'inst_name'),
+            ('configuration_id', '123'),
+            ('flavor_ref', 'test-flavor'),
+            ('availability_zone', 'test-az-01'),
+            ('datastore', 'MySQL'),
+            ('datastore_version', '5.7'),
+            ('disk_encryption_id', '234'),
+            ('ha_mode', 'semisync'),
+            ('router_id', 'test-vpc-id'),
+            ('port', 12345),
+            ('volume_type', 'ULTRAHIGH'),
+            ('size', 100),
+            ('password', 'testtest'),
+            ('region', 'test-region')]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        self.assertRaises(exceptions.CommandError,
+                          self.cmd.take_action,
+                          parsed_args)
+
 
 class TestRestoreDatabaseInstance(fakes.TestRds):
 
