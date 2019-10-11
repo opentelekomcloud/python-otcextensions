@@ -60,6 +60,17 @@ class Backup(_base.Resource):
     #:  `incremental`: automated incremental backup
     type = resource.Body('type')
 
+    def create(self, session, prepend_key=False, base_path=None):
+        return super(Backup, self).create(session,
+                                          prepend_key=prepend_key,
+                                          base_path=base_path)
+
+    def commit(self, session, prepend_key=False, **further_attrs):
+        return super(Backup, self).commit(
+            session,
+            prepend_key=prepend_key,
+            **further_attrs)
+
 
 class BackupFile(resource.Resource):
 
