@@ -102,7 +102,45 @@ class TestListDatabaseInstances(fakes.TestRds):
             offset=8,
             router_id='6',
             subnet_id='7',
-            type='Ha'
+            type='Ha',
+            paginated=False
+        )
+
+    def test_list_args_paginated(self):
+        arglist = [
+            '--id', '2',
+            '--name', '3',
+            '--type', 'ha',
+            '--datastore-type', 'postgreSqL',
+            '--router-id', '6',
+            '--subnet-id', '7',
+            '--offset', '8',
+        ]
+
+        verifylist = [
+            ('id', '2'),
+            ('name', '3'),
+            ('type', 'ha'),
+            ('datastore_type', 'postgresql'),
+            ('router_id', '6'),
+            ('subnet_id', '7'),
+            ('offset', 8),
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.api_mock.assert_called_with(
+            datastore_type='PostgreSQL',
+            id='2',
+            name='3',
+            offset=8,
+            router_id='6',
+            subnet_id='7',
+            type='Ha',
         )
 
 

@@ -132,6 +132,8 @@ class ListDatabaseInstances(command.Lister):
             attrs['datastore_type'] = 'PostgreSQL'
         elif parsed_args.datastore_type == 'sqlserver':
             attrs['datastore_type'] = 'SQLServer'
+        if parsed_args.limit:
+            attrs['paginated'] = False
 
         data = client.instances(**attrs)
         if data:
