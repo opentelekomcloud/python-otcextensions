@@ -89,6 +89,8 @@ class ListBackup(command.Lister):
         for arg in args_list:
             if getattr(parsed_args, arg):
                 attrs[arg] = getattr(parsed_args, arg)
+        if parsed_args.limit:
+            attrs['paginated'] = False
 
         instance = client.find_instance(parsed_args.instance,
                                         ignore_missing=False)
