@@ -31,89 +31,118 @@ class TestRdsConfiguration(base.TestCase):
             self.openstack('rds configuration list -f json'))
 
         json_output = json.loads(
-            self.openstack('rds configuration show {cfg} -f json'.format(
-                cfg=json_output[0]['ID'])))
+            self.openstack(
+                'rds configuration show {cfg} '
+                '-f json'.format(
+                    cfg=json_output[0]['ID']
+                )
+            )
+        )
 
         self.assertIsNotNone(json_output['id'])
 
     def test_long(self):
         json_output = json.loads(
             self.openstack(
-                'rds configuration create --datastore-type postgresql '
+                'rds configuration create '
+                '--datastore-type postgresql '
                 '--datastore-version 9.6 '
                 '--value max_connections=10 '
-                '{name} -f json'.format(name=self.NAME)))
+                '{name} -f json'.format(name=self.NAME)
+            )
+        )
         id = json_output['id']
         self.addCleanup(self.openstack, 'rds configuration delete ' + id)
 
         json_output = json.loads(
             self.openstack(
-                'rds configuration show {id} -f json'.format(id=id)))
+                'rds configuration show {id} '
+                '-f json'.format(id=id)
+            )
+        )
         self.assertTrue(self.NAME, json_output['name'])
 
         json_output = json.loads(
             self.openstack(
-                'rds configuration show {id} -f json'.format(id=self.NAME)))
+                'rds configuration show {id} '
+                '-f json'.format(id=self.NAME)
+            )
+        )
         self.assertTrue(id, json_output['id'])
 
-        self.openstack('rds configuration set '
-                       '--value max_connections=15 '
-                       '{name}'.format(name=self.NAME))
+        self.openstack(
+            'rds configuration set '
+            '--value max_connections=15 '
+            '{name}'.format(name=self.NAME)
+        )
 
     def test_create(self):
         name = uuid.uuid4().hex
         json_output = json.loads(
-            self.openstack('rds configuration create '
-                           '{name} '
-                           '--datastore-type MySQL '
-                           '--datastore-version 5.7 '
-                           '-f json'.format(name=name)))
+            self.openstack(
+                'rds configuration create '
+                '{name} '
+                '--datastore-type MySQL '
+                '--datastore-version 5.7 '
+                '-f json'.format(name=name)
+            )
+        )
         self.assertIsNotNone(json_output)
-
-        self.openstack('rds configuration delete ' '{name} '.format(name=name))
-        self.assertTrue(True)
+        id = json_output['id']
+        self.addCleanup(self.openstack, 'rds configuration delete ' + id)
 
     def test_create_with_value(self):
         name = uuid.uuid4().hex
         json_output = json.loads(
-            self.openstack('rds configuration create '
-                           '{name} '
-                           '--datastore-type MySQL '
-                           '--datastore-version 5.7 '
-                           '--value max_connections=10 '
-                           '--value autocommit=OFF '
-                           '-f json'.format(name=name)))
+            self.openstack(
+                'rds configuration create '
+                '{name} '
+                '--datastore-type MySQL '
+                '--datastore-version 5.7 '
+                '--value max_connections=10 '
+                '--value autocommit=OFF '
+                '-f json'.format(name=name)
+            )
+        )
         self.assertIsNotNone(json_output)
         self.assertEqual(name, json_output['name'])
-
-        self.openstack('rds configuration delete ' '{name} '.format(name=name))
-        self.assertTrue(True)
+        id = json_output['id']
+        self.addCleanup(self.openstack, 'rds configuration delete ' + id)
 
     def test_config_param_list(self):
         json_output = json.loads(
-            self.openstack('rds configuration list -f json'))
-
+            self.openstack(
+                'rds configuration list -f json'
+            )
+        )
         json_output = json.loads(
-            self.openstack('rds configuration parameter list '
-                           '{cfg} '
-                           '-f json'.format(cfg=json_output[0]['ID'])))
+            self.openstack(
+                'rds configuration parameter list '
+                '{cfg} '
+                '-f json'.format(cfg=json_output[0]['ID'])
+            )
+        )
         self.assertIsNotNone(json_output)
 
     def test_config_set(self):
         name = uuid.uuid4().hex
         json_output = json.loads(
-            self.openstack('rds configuration create '
-                           '{name} '
-                           '--datastore-type MySQL '
-                           '--datastore-version 5.7 '
-                           '-f json'.format(name=name)))
+            self.openstack(
+                'rds configuration create '
+                '{name} '
+                '--datastore-type MySQL '
+                '--datastore-version 5.7 '
+                '-f json'.format(name=name)
+            )
+        )
         self.assertIsNotNone(json_output)
+        id = json_output['id']
+        self.addCleanup(self.openstack, 'rds configuration delete ' + id)
 
-        self.openstack('rds configuration set '
-                       '{name} '
-                       '--value max_connections=10 '
-                       '--value autocommit=OFF'.format(name=name))
-        self.assertTrue(True)
-
-        self.openstack('rds configuration delete ' '{name} '.format(name=name))
+        self.openstack(
+            'rds configuration set '
+            '{name} '
+            '--value max_connections=10 '
+            '--value autocommit=OFF'.format(name=name)
+        )
         self.assertTrue(True)
