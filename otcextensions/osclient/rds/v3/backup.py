@@ -196,7 +196,7 @@ class ListBackupDownloadLinks(command.Command):
 
         client = self.app.client_manager.rds
         data = client.backup_download_links(backup_id=parsed_args.backup_id)
-        return (self.column_headers, (utils.get_dict_properties(
+        return (self.column_headers, (utils.get_item_properties(
             s,
             self.columns,
         ) for s in data))
