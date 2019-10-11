@@ -308,7 +308,7 @@ class Instance(_base.Resource):
             body['start_time'] = start_time
         if period:
             body['period'] = period
-            response = session.put(url, json={'backup_policy': body})
+        response = session.put(url, json={'backup_policy': body})
         exceptions.raise_from_response(response)
 
         return None
