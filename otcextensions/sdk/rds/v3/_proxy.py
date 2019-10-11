@@ -137,7 +137,6 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         :returns: A generator of instance objects
         :rtype: :class:`~otcextensions.sdk.rds.v3.instance.Instance`
         """
-        # TODO(not_gtema): check whether pagination works properly
         return self._list(_instance.Instance, **params)
 
     def restore_instance(self,

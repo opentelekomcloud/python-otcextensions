@@ -179,7 +179,7 @@ class DeleteBackup(command.Command):
                 client.delete_backup(backup=bck, ignore_missing=False)
 
 
-class ListBackupDownloadLinks(command.Command):
+class ListBackupDownloadLinks(command.Lister):
     _description = _('List Backup Download Links')
 
     column_headers = ('Size', 'URL', 'Expires at')
@@ -199,4 +199,5 @@ class ListBackupDownloadLinks(command.Command):
         return (self.column_headers, (utils.get_item_properties(
             s,
             self.columns,
+            formatters={}
         ) for s in data))
