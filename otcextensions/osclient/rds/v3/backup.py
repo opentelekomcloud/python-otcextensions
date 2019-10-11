@@ -49,12 +49,12 @@ class ListBackup(command.Lister):
             help=_('Specify instance ID or Name to get backup list'),
         )
         parser.add_argument(
-            '--backup_id',
+            '--backup-id',
             metavar='<backup_id>',
             help=_('Specify the backup ID.'),
         )
         parser.add_argument(
-            '--backup_type',
+            '--backup-type',
             metavar='{' + ','.join(BACKUP_TYPE_CHOICES) + '}',
             choices=BACKUP_TYPE_CHOICES,
             type=lambda s: s.lower(),
@@ -73,12 +73,12 @@ class ListBackup(command.Lister):
             help=_('Specify the limit of resources to be queried.'),
         )
         parser.add_argument(
-            '--begin_time',
+            '--begin-time',
             metavar='<begin_time>',
             help=_('Specify the start time for obtaining the backup list.'),
         )
         parser.add_argument(
-            '--end_time',
+            '--end-time',
             metavar='<end_time>',
             help=_('Specify the end time for obtaining the backup list.'),
         )

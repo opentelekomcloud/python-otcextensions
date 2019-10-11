@@ -59,6 +59,52 @@ class TestList(fakes.TestRds):
         self.assertEqual(self.column_headers, columns)
         self.assertEqual(self.data, list(data))
 
+    def test_list_params(self):
+        arglist = [
+            'test-instance',
+            '--backup-id', 'bid',
+            '--backup-type', 'manual',
+            '--offset', '1',
+            '--limit', '2',
+            '--begin-time', '3',
+            '--end-time', '4'
+        ]
+
+        verifylist = [
+            ('instance', 'test-instance'),
+            ('backup_id', 'bid'),
+            ('backup_type', 'manual'),
+            ('offset', 1),
+            ('limit', 2),
+            ('begin_time', '3'),
+            ('end_time', '4')
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.backups.side_effect = [self._objects]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.find_instance.assert_called_with(
+            'test-instance',
+            ignore_missing=False)
+        self.client.backups.assert_called_once_with(
+            instance=self._instance,
+            backup_id='bid',
+            backup_type='manual',
+            offset=1,
+            limit=2,
+            paginated=False,
+            begin_time='3',
+            end_time='4'
+        )
+
+        self.assertEqual(self.column_headers, columns)
+        self.assertEqual(self.data, list(data))
+
 
 class TestCreate(fakes.TestRds):
 
