@@ -532,7 +532,7 @@ class RestoreDatabaseInstance(command.Command):
             type=str,
             help=_('ID or name of the target instance.')
         )
-        group = parser.add_mutually_exclusive_group()
+        group = parser.add_mutually_exclusive_group(required=True)
         group.add_argument(
             '--backup',
             metavar='<backup>',
