@@ -70,7 +70,7 @@ class TestListDatabaseInstances(fakes.TestRds):
             '--limit', '1',
             '--id', '2',
             '--name', '3',
-            '--type', '4',
+            '--type', 'ha',
             '--datastore-type', '5',
             '--router-id', '6',
             '--subnet-id', '7',
@@ -81,7 +81,7 @@ class TestListDatabaseInstances(fakes.TestRds):
             ('limit', 1),
             ('id', '2'),
             ('name', '3'),
-            ('type', '4'),
+            ('type', 'ha'),
             ('datastore_type', '5'),
             ('router_id', '6'),
             ('subnet_id', '7'),
@@ -102,7 +102,7 @@ class TestListDatabaseInstances(fakes.TestRds):
             offset=8,
             router_id='6',
             subnet_id='7',
-            type='4'
+            type='Ha'
         )
 
 

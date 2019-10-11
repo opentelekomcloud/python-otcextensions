@@ -44,6 +44,7 @@ def set_attributes_for_print(instances):
 
 HA_MODE_CHOICES = ['sync', 'semisync', 'async']
 DISK_TYPE_CHOICES = ['common', 'ultrahigh']
+HA_TYPE_CHOICES = ['ha', 'replica', 'single']
 
 
 class ListDatabaseInstances(command.Lister):
@@ -76,9 +77,9 @@ class ListDatabaseInstances(command.Lister):
         parser.add_argument(
             '--type',
             dest='type',
-            metavar='<type>',
-            type=str,
-            default=None,
+            metavar='{' + ','.join(HA_TYPE_CHOICES) + '}',
+            type=lambda s: s.lower(),
+            choices=HA_TYPE_CHOICES,
             help=_(
                 'Specifies the instance type. Values cane be single/ha/replica'
             ))
@@ -123,6 +124,8 @@ class ListDatabaseInstances(command.Lister):
         for arg in args_list:
             if getattr(parsed_args, arg):
                 attrs[arg] = getattr(parsed_args, arg)
+        if parsed_args.type:
+            attrs['type'] = parsed_args.type.title()
 
         data = client.instances(**attrs)
         if data:
