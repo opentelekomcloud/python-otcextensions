@@ -66,8 +66,8 @@ class TestList(fakes.TestRds):
             '--backup-type', 'manual',
             '--offset', '1',
             '--limit', '2',
-            '--begin-time', '3',
-            '--end-time', '4'
+            # '--begin-time', '3',
+            # '--end-time', '4'
         ]
 
         verifylist = [
@@ -76,8 +76,8 @@ class TestList(fakes.TestRds):
             ('backup_type', 'manual'),
             ('offset', 1),
             ('limit', 2),
-            ('begin_time', '3'),
-            ('end_time', '4')
+            # ('begin_time', '3'),
+            # ('end_time', '4')
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -98,8 +98,8 @@ class TestList(fakes.TestRds):
             offset=1,
             limit=2,
             paginated=False,
-            begin_time='3',
-            end_time='4'
+            # begin_time='3',
+            # end_time='4'
         )
 
         self.assertEqual(self.column_headers, columns)

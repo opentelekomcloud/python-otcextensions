@@ -72,16 +72,16 @@ class ListBackup(command.Lister):
             type=int,
             help=_('Specify the limit of resources to be queried.'),
         )
-        parser.add_argument(
-            '--begin-time',
-            metavar='<begin_time>',
-            help=_('Specify the start time for obtaining the backup list.'),
-        )
-        parser.add_argument(
-            '--end-time',
-            metavar='<end_time>',
-            help=_('Specify the end time for obtaining the backup list.'),
-        )
+#         parser.add_argument(
+#             '--begin-time',
+#             metavar='<begin_time>',
+#             help=_('Specify the start time for obtaining the backup list.'),
+#         )
+#         parser.add_argument(
+#             '--end-time',
+#             metavar='<end_time>',
+#             help=_('Specify the end time for obtaining the backup list.'),
+#         )
 
         return parser
 
@@ -89,8 +89,8 @@ class ListBackup(command.Lister):
         client = self.app.client_manager.rds
         attrs = {}
         args_list = [
-            'backup_id', 'backup_type', 'offset', 'limit', 'begin_time',
-            'end_time'
+            'backup_id', 'backup_type', 'offset', 'limit'
+            # , 'begin_time', 'end_time'
         ]
         for arg in args_list:
             if getattr(parsed_args, arg):
