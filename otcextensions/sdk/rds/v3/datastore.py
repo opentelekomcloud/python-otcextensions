@@ -9,17 +9,22 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
-from openstack import service_description
-
-from otcextensions.sdk.rds.v1 import _proxy as _proxy_v1
-from otcextensions.sdk.rds.v3 import _proxy as _proxy_v3
+from openstack import resource
 
 
-class RdsService(service_description.ServiceDescription):
-    """The RDS service."""
+class Datastore(resource.Resource):
 
-    supported_versions = {
-        '1': _proxy_v1.Proxy,
-        '3': _proxy_v3.Proxy
-    }
+    base_path = '/datastores/%(database_name)s'
+    resources_key = 'dataStores'
+
+    # capabilities
+    allow_list = True
+
+    database_name = resource.URI('database_name')
+
+    # Indicates the database version ID. Its value is unique.
+    # :*Type:string*
+    id = resource.Body('id')
+    # Indicates the database version.
+    # :*Type:string*
+    name = resource.Body('name')
