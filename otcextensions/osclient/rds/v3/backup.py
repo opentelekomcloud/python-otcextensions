@@ -19,6 +19,9 @@ from otcextensions.common import sdk_utils
 from otcextensions.i18n import _
 
 
+BACKUP_TYPE_CHOICES = ['auto', 'manual', 'fragment', 'incremental']
+
+
 _formatters = {
 }
 
@@ -52,18 +55,21 @@ class ListBackup(command.Lister):
         )
         parser.add_argument(
             '--backup_type',
-            metavar='<backup_type>',
-            choices=['auto', 'manual', 'fragment', 'incremental'],
+            metavar='{' + ','.join(BACKUP_TYPE_CHOICES) + '}',
+            choices=BACKUP_TYPE_CHOICES,
+            type=lambda s: s.lower(),
             help=_('Specify the backup type.'),
         )
         parser.add_argument(
             '--offset',
             metavar='<offset>',
+            type=int,
             help=_('Specify the index position.'),
         )
         parser.add_argument(
             '--limit',
             metavar='<limit>',
+            type=int,
             help=_('Specify the limit of resources to be queried.'),
         )
         parser.add_argument(
