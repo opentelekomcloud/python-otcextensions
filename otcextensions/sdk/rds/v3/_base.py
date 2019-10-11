@@ -11,7 +11,6 @@
 # under the License.
 from openstack import exceptions
 from openstack import resource
-from openstack import utils
 
 
 class Resource(resource.Resource):
@@ -19,48 +18,14 @@ class Resource(resource.Resource):
     query_marker_key = 'offset'
 
     _query_mapping = resource.QueryParameters(
-        'offset', 'limit',
-        limit='limit'
+        'marker', 'limit',
+        marker='offset'
     )
 
     @classmethod
     def list(cls, session, paginated=True, base_path=None,
              allow_unknown_params=False, **params):
-        """This method is a generator which yields resource objects.
 
-        This resource object list generator handles pagination and takes query
-        params for response filtering.
-
-        :param session: The session to use for making this request.
-        :type session: :class:`~keystoneauth1.adapter.Adapter`
-        :param bool paginated: ``True`` if a GET to this resource returns
-            a paginated series of responses, or ``False``
-            if a GET returns only one page of data.
-            **When paginated is False only one
-            page of data will be returned regardless
-            of the API's support of pagination.**
-        :param str base_path: Base part of the URI for listing resources, if
-            different from :data:`~openstack.resource.Resource.base_path`.
-        :param bool allow_unknown_params: ``True`` to accept, but discard
-            unknown query parameters. This allows getting list of 'filters' and
-            passing everything known to the server. ``False`` will result in
-            validation exception when unknown query parameters are passed.
-        :param dict params: These keyword arguments are passed through the
-            :meth:`~openstack.resource.QueryParamter._transpose` method
-            to find if any of them match expected query parameters to be
-            sent in the *params* argument to
-            :meth:`~keystoneauth1.adapter.Adapter.get`. They are additionally
-            checked against the
-            :data:`~openstack.resource.Resource.base_path` format string
-            to see if any path fragments need to be filled in by the contents
-            of this argument.
-
-        :return: A generator of :class:`Resource` objects.
-        :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
-                 :data:`Resource.allow_list` is not set to ``True``.
-        :raises: :exc:`~openstack.exceptions.InvalidResourceQuery` if query
-                 contains invalid params.
-        """
         if not cls.allow_list:
             raise exceptions.MethodNotSupported(cls, "list")
         session = cls._get_session(session)
@@ -71,7 +36,8 @@ class Resource(resource.Resource):
         params = cls._query_mapping._validate(
             params, base_path=base_path,
             allow_unknown_params=allow_unknown_params)
-        query_params = cls._query_mapping._transpose(params)
+
+        query_params = cls._query_mapping._transpose(params, cls)
         uri = base_path % params
 
         limit = query_params.get('limit')
@@ -131,16 +97,3 @@ class Resource(resource.Resource):
             next_link = None
         query_params = cls._query_mapping._transpose(params, cls)
         return next_link, query_params
-
-    def _action(self, session, body):
-        """Preform alarm actions given the message body.
-
-        """
-        # if getattr(self, 'endpoint_override', None):
-        #     # If we have internal endpoint_override - use it
-        #     endpoint_override = self.endpoint_override
-        url = utils.urljoin(self.base_path, self.id, 'action')
-        return session.post(
-            url,
-            # endpoint_override=endpoint_override,
-            json=body)
