@@ -45,6 +45,7 @@ def set_attributes_for_print(instances):
 HA_MODE_CHOICES = ['sync', 'semisync', 'async']
 DISK_TYPE_CHOICES = ['common', 'ultrahigh']
 HA_TYPE_CHOICES = ['ha', 'replica', 'single']
+DATASTORE_TYPE_CHOICES = ['mysql', 'postgresql', 'sqlserver']
 
 
 class ListDatabaseInstances(command.Lister):
@@ -85,9 +86,9 @@ class ListDatabaseInstances(command.Lister):
             ))
         parser.add_argument(
             '--datastore-type',
-            dest='datastore_type',
-            metavar='<datastore_type>',
-            type=str,
+            metavar='{' + ','.join(DATASTORE_TYPE_CHOICES) + '}',
+            type=lambda s: s.lower(),
+            choices=DATASTORE_TYPE_CHOICES,
             help=_(
                 'Specifies the database type. '
                 'value is MySQL, PostgreSQL, or SQLServer.'))
@@ -117,8 +118,7 @@ class ListDatabaseInstances(command.Lister):
     def take_action(self, parsed_args):
         client = self.app.client_manager.rds
         args_list = [
-            'name', 'id', 'router_id', 'subnet_id', 'type', 'datastore_type',
-            'offset', 'limit'
+            'name', 'id', 'router_id', 'subnet_id', 'offset', 'limit'
         ]
         attrs = {}
         for arg in args_list:
@@ -126,6 +126,12 @@ class ListDatabaseInstances(command.Lister):
                 attrs[arg] = getattr(parsed_args, arg)
         if parsed_args.type:
             attrs['type'] = parsed_args.type.title()
+        if parsed_args.datastore_type == 'mysql':
+            attrs['datastore_type'] = 'MySQL'
+        elif parsed_args.datastore_type == 'postgresql':
+            attrs['datastore_type'] = 'PostgreSQL'
+        elif parsed_args.datastore_type == 'sqlserver':
+            attrs['datastore_type'] = 'SQLServer'
 
         data = client.instances(**attrs)
         if data:

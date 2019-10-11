@@ -13,8 +13,10 @@ from openstack import exceptions
 from openstack import resource
 from openstack import utils
 
+from otcextensions.sdk.rds.v3 import _base
 
-class Instance(resource.Resource):
+
+class Instance(_base.Resource):
 
     base_path = '/instances'
     resources_key = 'instances'

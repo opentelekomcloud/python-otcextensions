@@ -71,7 +71,7 @@ class TestListDatabaseInstances(fakes.TestRds):
             '--id', '2',
             '--name', '3',
             '--type', 'ha',
-            '--datastore-type', '5',
+            '--datastore-type', 'postgreSqL',
             '--router-id', '6',
             '--subnet-id', '7',
             '--offset', '8',
@@ -82,7 +82,7 @@ class TestListDatabaseInstances(fakes.TestRds):
             ('id', '2'),
             ('name', '3'),
             ('type', 'ha'),
-            ('datastore_type', '5'),
+            ('datastore_type', 'postgresql'),
             ('router_id', '6'),
             ('subnet_id', '7'),
             ('offset', 8),
@@ -95,7 +95,7 @@ class TestListDatabaseInstances(fakes.TestRds):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_with(
-            datastore_type='5',
+            datastore_type='PostgreSQL',
             id='2',
             limit=1,
             name='3',

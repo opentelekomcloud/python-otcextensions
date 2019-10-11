@@ -238,7 +238,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         """
         return self._list(
             _configuration.Configuration,
-            paginated=False,
+            paginated=False
         )
 
     def get_configuration(self, cg):
