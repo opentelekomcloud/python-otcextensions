@@ -186,7 +186,7 @@ class ApplyConfiguration(command.Lister):
     _description = _("Apply Configuration to the instance(s)")
 
     columns = (
-        'configuration_id', 'configuration_name',
+        'instance_id', 'instance_name',
         'restart_required', 'success'
     )
 

@@ -342,7 +342,7 @@ class TestApplyConfiguration(fakes.TestRds):
     _data = fakes.FakeConfiguration.create_one()
 
     columns = (
-        'configuration_id', 'configuration_name',
+        'instance_id', 'instance_name',
         'restart_required', 'success'
     )
 
