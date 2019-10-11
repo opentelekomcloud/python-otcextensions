@@ -70,6 +70,16 @@ class Configuration(_base.Resource):
     #: *Type:list*
     apply_results = resource.Body('apply_results', type=list)
 
+    @classmethod
+    def find(cls, session, name_or_id, ignore_missing=True, **params):
+        instance = super(Configuration, cls).find(
+            session, name_or_id,
+            ignore_missing=ignore_missing,
+            **params)
+        if instance:
+            return instance.fetch(session)
+        return
+
     def create(self, session, prepend_key=False, base_path=None):
         return super(Configuration, self).create(session,
                                                  prepend_key=prepend_key,
