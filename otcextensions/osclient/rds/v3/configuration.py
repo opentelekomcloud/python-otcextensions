@@ -31,8 +31,10 @@ def _get_columns(item, skip_values=True):
     column_map = {}
     hidden = ['location', 'links']
     if skip_values:
-        hidden.append('configuration_parameters')
-        hidden.append('values')
+        if 'configuration_parameters' in item:
+            hidden.append('configuration_parameters')
+        if 'values' in item:
+            hidden.append('values')
 
     return sdk_utils.get_osc_show_columns_for_sdk_resource(
         item, column_map, hidden)

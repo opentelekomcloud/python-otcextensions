@@ -18,6 +18,7 @@ class Configuration(resource.Resource):
 
     base_path = '/configurations'
     resources_key = 'configurations'
+    resource_key = 'configuration'
 
     # capabilities
     allow_create = True
@@ -117,6 +118,17 @@ class Configuration(resource.Resource):
             return None
         raise exceptions.ResourceNotFound(
             "No %s found for %s" % (cls.__name__, name_or_id))
+
+    def create(self, session, prepend_key=False, base_path=None):
+        return super(Configuration, self).create(session,
+                                                 prepend_key=prepend_key,
+                                                 base_path=base_path)
+
+    def commit(self, session, prepend_key=False, **further_attrs):
+        return super(Configuration, self).commit(
+            session,
+            prepend_key=prepend_key,
+            **further_attrs)
 
     def apply(self, session, instances):
         """Apply configuration to the given instances

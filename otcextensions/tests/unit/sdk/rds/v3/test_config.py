@@ -14,6 +14,8 @@ from keystoneauth1 import adapter
 import copy
 import mock
 
+from openstack import resource
+
 from openstack.tests.unit import base
 
 from otcextensions.sdk.rds.v3 import configuration
@@ -53,7 +55,7 @@ class TestConfiguration(base.TestCase):
 
         self.assertEqual('/configurations', sot.base_path)
         self.assertEqual('configurations', sot.resources_key)
-        self.assertIsNone(sot.resource_key)
+        self.assertEqual('configuration', sot.resource_key)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_fetch)
         self.assertTrue(sot.allow_create)
@@ -110,3 +112,20 @@ class TestConfiguration(base.TestCase):
         self.assertEqual(resp.body['configuration_name'], updated.name)
         self.assertEqual(resp.body['apply_results'],
                          sot.apply_results)
+
+    def test_create(self):
+        sot = configuration.Configuration(id=IDENTIFIER)
+
+        with mock.patch.object(resource.Resource, 'create') as res_mock:
+            sot.create(self.sess)
+            res_mock.assert_called_with(self.sess,
+                                        prepend_key=False,
+                                        base_path=None)
+
+    def test_commit(self):
+        sot = configuration.Configuration(id=IDENTIFIER)
+
+        with mock.patch.object(resource.Resource, 'commit') as res_mock:
+            sot.commit(self.sess)
+            res_mock.assert_called_with(self.sess,
+                                        prepend_key=False)
