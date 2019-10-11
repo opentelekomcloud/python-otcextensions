@@ -191,7 +191,7 @@ class ApplyConfiguration(command.Lister):
     )
 
     column_headers = (
-        'ID', 'Name', 'Restart requires', 'success'
+        'ID', 'Name', 'Restart required', 'success'
     )
 
     def get_parser(self, prog_name):
@@ -206,6 +206,7 @@ class ApplyConfiguration(command.Lister):
             metavar="<instance_id>",
             dest='instances',
             action='append',
+            required=True,
             help=_('ID of the instance the configuration '
                    'should be applied to. '
                    '(repeat option to apply to multiple instances).')
@@ -227,7 +228,7 @@ class ApplyConfiguration(command.Lister):
 
         obj = client.apply_configuration(config.id, instances=inst_ids)
 
-        return (self.column_headers, (utils.get_item_properties(
+        return (self.column_headers, (utils.get_dict_properties(
             s,
             self.columns,
         ) for s in obj.apply_results))

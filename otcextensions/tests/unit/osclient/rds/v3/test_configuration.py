@@ -70,7 +70,7 @@ class TestShowConfiguration(fakes.TestRds):
     _data = fakes.FakeConfiguration.create_one()
 
     columns = (
-        'datastore_name', 'datastore_version_name',
+        'apply_results', 'datastore_name', 'datastore_version_name',
         'description', 'id', 'is_user_defined', 'name'
     )
 
@@ -163,7 +163,7 @@ class TestCreateConfiguration(fakes.TestRds):
     _data = fakes.FakeConfiguration.create_one()
 
     columns = (
-        'datastore_name', 'datastore_version_name',
+        'apply_results', 'datastore_name', 'datastore_version_name',
         'description', 'id', 'is_user_defined', 'name'
     )
 
@@ -342,11 +342,20 @@ class TestApplyConfiguration(fakes.TestRds):
     _data = fakes.FakeConfiguration.create_one()
 
     columns = (
-        'datastore_name', 'datastore_version_name',
-        'description', 'id', 'is_user_defined', 'name'
+        'configuration_id', 'configuration_name',
+        'restart_required', 'success'
     )
 
-    data = fakes.gen_data(_data, columns)
+    column_headers = (
+        'ID', 'Name', 'Restart required', 'success'
+    )
+
+    data = []
+    for s in _data.apply_results:
+        values = []
+        for attr in columns:
+            values.append(s.get(attr, ''))
+        data.append(tuple(values))
 
     def setUp(self):
         super(TestApplyConfiguration, self).setUp()
@@ -354,7 +363,7 @@ class TestApplyConfiguration(fakes.TestRds):
         self.cmd = configuration.ApplyConfiguration(self.app, None)
 
         self.client.find_configuration = mock.Mock()
-        self.client.apply_configuration = mock.Mock()
+        self.client.apply_configuration = mock.Mock(return_value=self._data)
         self.client.get_instance = mock.Mock()
 
     def test_apply(self):
@@ -399,5 +408,5 @@ class TestApplyConfiguration(fakes.TestRds):
             instances=['i1', 'i2']
         )
 
-        self.assertEqual(self.columns, columns)
-        self.assertEqual(self.data, data)
+        self.assertEqual(self.column_headers, columns)
+        self.assertEqual(self.data, list(data))

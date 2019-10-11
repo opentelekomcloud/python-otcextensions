@@ -117,7 +117,15 @@ class FakeConfiguration(test_base.Fake):
                     'description': 'descr-' + uuid.uuid4().hex
 
                 } for i in range(3)),
-            'is_user_defined': bool(random.getrandbits(1))
+            'is_user_defined': bool(random.getrandbits(1)),
+            'apply_results': [
+                {
+                    "instance_id": uuid.uuid4().hex,
+                    "instance_name": uuid.uuid4().hex,
+                    "restart_required": bool(random.getrandbits(1)),
+                    "success": bool(random.getrandbits(1))
+                }
+            ]
 
         }
 
