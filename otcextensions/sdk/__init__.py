@@ -91,6 +91,7 @@ OTC_SERVICES = {
     'rds': {
         'service_type': 'rds',
         # 'additional_headers': {'content-type': 'application/json'},
+        'endpoint_service_type': 'rdsv3',
         'append_project_id': True,
     },
     'volume_backup': {
