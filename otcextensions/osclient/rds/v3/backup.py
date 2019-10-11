@@ -188,7 +188,7 @@ class DeleteBackup(command.Command):
 class ListBackupDownloadLinks(command.Lister):
     _description = _('List Backup Download Links')
 
-    column_headers = ('Size', 'URL', 'Expires at')
+    column_headers = ('Size (KB)', 'URL', 'Expires at')
     columns = ('size', 'download_link', 'expires_at')
 
     def get_parser(self, prog_name):

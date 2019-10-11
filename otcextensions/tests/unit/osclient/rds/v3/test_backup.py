@@ -245,7 +245,7 @@ class TestListLinks(fakes.TestRds):
 
     _objects = fakes.FakeBackupFile.create_multiple(3)
 
-    column_headers = ('Size', 'URL', 'Expires at')
+    column_headers = ('Size (KB)', 'URL', 'Expires at')
     columns = ('size', 'download_link', 'expires_at')
 
     data = []
