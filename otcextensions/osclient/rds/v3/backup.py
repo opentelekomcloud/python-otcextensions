@@ -166,7 +166,7 @@ class DeleteBackup(command.Command):
     def get_parser(self, prog_name):
         parser = super(DeleteBackup, self).get_parser(prog_name)
         parser.add_argument('backup',
-                            metavar='<backup>',
+                            metavar='<backup_id>',
                             nargs='+',
                             help=_('ID of the backup'))
         return parser
