@@ -182,12 +182,17 @@ class CreateConfiguration(command.ShowOne):
         return (display_columns, data)
 
 
-class ApplyConfiguration(command.Command):
+class ApplyConfiguration(command.Lister):
     _description = _("Apply Configuration to the instance(s)")
 
-    columns = ('id', 'name', 'description', 'datastore_version_id',
-               'datastore_version_name', 'datastore_name', 'created',
-               'updated', 'allowed_updated', 'instance_count', 'values')
+    columns = (
+        'configuration_id', 'configuration_name',
+        'restart_required', 'success'
+    )
+
+    column_headers = (
+        'ID', 'Name', 'Restart requires', 'success'
+    )
 
     def get_parser(self, prog_name):
         parser = super(ApplyConfiguration, self).get_parser(prog_name)
@@ -222,10 +227,10 @@ class ApplyConfiguration(command.Command):
 
         obj = client.apply_configuration(config.id, instances=inst_ids)
 
-        display_columns, columns = _get_columns(obj)
-        data = utils.get_item_properties(obj, columns)
-
-        return (display_columns, data)
+        return (self.column_headers, (utils.get_item_properties(
+            s,
+            self.columns,
+        ) for s in obj.apply_results))
 
 
 class SetConfiguration(command.Command):
