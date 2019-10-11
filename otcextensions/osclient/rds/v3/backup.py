@@ -34,7 +34,7 @@ def _get_columns(item):
 class ListBackup(command.Lister):
     _description = _("List database backups")
     column_headers = (
-        'ID', 'Name', 'Type', 'Instance Id', 'Size'
+        'ID', 'Name', 'Type', 'Instance Id', 'Size (KB)'
     )
 
     columns = (

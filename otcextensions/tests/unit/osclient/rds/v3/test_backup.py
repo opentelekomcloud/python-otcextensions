@@ -21,7 +21,7 @@ class TestList(fakes.TestRds):
 
     _objects = fakes.FakeBackup.create_multiple(3)
 
-    column_headers = ('ID', 'Name', 'Type', 'Instance Id', 'Size')
+    column_headers = ('ID', 'Name', 'Type', 'Instance Id', 'Size (KB)')
     columns = ('id', 'name', 'type', 'instance_id', 'size')
 
     data = []

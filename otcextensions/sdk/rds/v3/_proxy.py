@@ -352,7 +352,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         """
         instance = self._get_resource(_instance.Instance, instance)
         attrs.update({'instance_id': instance.id})
-        return self._create(_backup.Backup, **attrs)
+        return self._create(_backup.Backup, prepend_key=False, **attrs)
 
     def delete_backup(self, backup, ignore_missing=True):
         """Deletes given backup

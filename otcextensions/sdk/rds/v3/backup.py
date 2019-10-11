@@ -18,6 +18,7 @@ class Backup(_base.Resource):
 
     base_path = '/backups'
     resources_key = 'backups'
+    resource_key = 'backup'
 
     # capabilities
     allow_create = True

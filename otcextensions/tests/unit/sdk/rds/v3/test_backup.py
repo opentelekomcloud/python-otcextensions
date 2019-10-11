@@ -39,7 +39,7 @@ class TestBackup(base.TestCase):
 
     def test_basic(self):
         sot = backup.Backup()
-        self.assertIsNone(sot.resource_key)
+        self.assertEqual('backup', sot.resource_key)
         self.assertEqual('backups', sot.resources_key)
         self.assertEqual('/backups', sot.base_path)
         self.assertTrue(sot.allow_list)

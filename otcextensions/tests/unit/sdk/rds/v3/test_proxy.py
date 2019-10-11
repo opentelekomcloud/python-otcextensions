@@ -103,7 +103,8 @@ class TestBackup(TestRdsProxy):
             method_kwargs={'x': 1, 'y': 2, 'z': 3},
             expected_kwargs={
                 'instance_id': 'inst',
-                'x': 1, 'y': 2, 'z': 3
+                'x': 1, 'y': 2, 'z': 3,
+                'prepend_key': False
             })
 
     def test_delete_backup(self):
