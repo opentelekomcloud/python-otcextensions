@@ -627,7 +627,7 @@ class SetBackupPolicy(command.Command):
         args_list = ['keep_days', 'start_time', 'period']
         attrs = {}
         for arg in args_list:
-            if getattr(parsed_args, arg):
+            if getattr(parsed_args, arg) is not None:
                 attrs[arg] = getattr(parsed_args, arg)
 
         instance = client.find_instance(parsed_args.instance,

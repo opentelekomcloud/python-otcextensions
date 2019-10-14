@@ -1155,6 +1155,33 @@ class TestSetBackupPolicy(fakes.TestRds):
             keep_days=1, period='2', start_time='3'
         )
 
+    def test_action_set_0(self):
+        arglist = [
+            'inst',
+            '--keep-days', '0'
+        ]
+
+        verifylist = [
+            ('instance', 'inst'),
+            ('keep_days', 0),
+        ]
+
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.find_instance.return_value = self._instance
+
+        # Trigger the action
+        self.assertIsNone(self.cmd.take_action(parsed_args))
+
+        self.client.find_instance.assert_called_with('inst',
+                                                     ignore_missing=False)
+
+        self.client.set_instance_backup_policy.assert_called_once_with(
+            self._instance,
+            keep_days=0
+        )
 
 class TestShowAvailableRestoreTime(fakes.TestRds):
 
