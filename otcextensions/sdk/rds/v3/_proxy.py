@@ -11,6 +11,7 @@
 # under the License.
 
 from openstack import proxy
+from openstack import resource
 
 from otcextensions.sdk import job
 from otcextensions.sdk.rds.v3 import backup as _backup
@@ -400,3 +401,9 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
 
         """
         return self._list(_backup.BackupFile, backup_id=backup_id)
+
+    def wait_for_backup(self, backup, status='COMPLETED', failures=None,
+                        interval=2, wait=300, attribute='status'):
+        failures = ['FAILED'] if failures is None else failures
+        return resource.wait_for_status(
+            self, backup, status, failures, interval, wait)

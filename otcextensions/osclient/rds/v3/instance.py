@@ -100,11 +100,11 @@ class ListDatabaseInstances(command.Lister):
             help=_('Specifies the ID of Router to which '
                    'instance should be connected to.'))
         parser.add_argument(
-            '--subnet-id',
-            dest='subnet_id',
-            metavar='<subnet_id>',
+            '--network-id',
+            dest='network_id',
+            metavar='<net_id>',
             type=str,
-            help=_('Indicates the Subnet ID of DB Instance.'))
+            help=_('Indicates the Neutron network ID of DB Instance.'))
         parser.add_argument(
             '--offset',
             dest='offset',
@@ -118,7 +118,7 @@ class ListDatabaseInstances(command.Lister):
     def take_action(self, parsed_args):
         client = self.app.client_manager.rds
         args_list = [
-            'name', 'id', 'router_id', 'subnet_id', 'offset', 'limit'
+            'name', 'id', 'router_id', 'network_id', 'offset', 'limit'
         ]
         attrs = {}
         for arg in args_list:
@@ -258,9 +258,9 @@ class CreateDatabaseInstance(command.ShowOne):
             help=_('ID of a Router the DB should be connected to')
         )
         new_instance_group.add_argument(
-            '--subnet-id',
-            metavar='<subnet_id>',
-            help=_('ID of a subnet the DB should be connected to.')
+            '--network-id',
+            metavar='<net_id>',
+            help=_('ID of a Neutron network the DB should be connected to.')
         )
         new_instance_group.add_argument(
             '--security-group-id',
@@ -328,7 +328,7 @@ class CreateDatabaseInstance(command.ShowOne):
         attrs = {}
         args_list = [
             'name', 'availability_zone', 'configuration_id', 'region',
-            'router_id', 'subnet_id', 'security_group_id',
+            'router_id', 'network_id', 'security_group_id',
             'disk_encryption_id', 'port', 'password', 'flavor_ref'
         ]
         for arg in args_list:
@@ -354,7 +354,7 @@ class CreateDatabaseInstance(command.ShowOne):
 
         new_instance_required = [
             parsed_args.router_id,
-            parsed_args.subnet_id,
+            parsed_args.network_id,
             parsed_args.security_group_id,
             parsed_args.password
         ]
@@ -362,10 +362,10 @@ class CreateDatabaseInstance(command.ShowOne):
         if parsed_args.replica_of:
             # Create replica
             if (parsed_args.password or parsed_args.port
-                    or parsed_args.router_id or parsed_args.subnet_id
-                    or parsed_args.subnet_id):
+                    or parsed_args.router_id or parsed_args.security_group_id
+                    or parsed_args.network_id):
                 raise exceptions.CommandError(
-                    _('Setting password/port/router/subnet/sg is not '
+                    _('Setting password/port/router/network/sg is not '
                       'supported when creating replica')
                 )
             attrs['replica_of_id'] = \
@@ -541,13 +541,24 @@ class RestoreDatabaseInstance(command.Command):
             help=_('ID or name of the backup.')
         )
         group.add_argument(
-            '--restore_time',
+            '--restore-time',
             metavar='<restore_time>',
             default=None,
             type=str,
             help=_('Specifies the time point of data '
                    'restoration in the UNIX timestamp')
         )
+        parser.add_argument(
+            '--wait',
+            action='store_true',
+            help=('Wait for the instance to become active')
+        )
+        parser.add_argument(
+            '--wait-interval',
+            type=int,
+            help=_('Interval for checking status')
+        )
+
         return parser
 
     def take_action(self, parsed_args):
@@ -561,9 +572,16 @@ class RestoreDatabaseInstance(command.Command):
                                         instance=instance,
                                         ignore_missing=False)
 
-        client.restore_instance(instance=instance,
-                                backup=backup,
-                                restore_time=parsed_args.restore_time)
+        obj = client.restore_instance(instance=instance,
+                                      backup=backup,
+                                      restore_time=parsed_args.restore_time)
+
+        if obj.job_id and parsed_args.wait:
+            wait_args = {}
+            if parsed_args.wait_interval:
+                wait_args['interval'] = parsed_args.wait_interval
+
+            client.wait_for_job(obj.job_id, **wait_args)
 
 
 class ShowBackupPolicy(command.ShowOne):

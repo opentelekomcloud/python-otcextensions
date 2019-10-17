@@ -9,6 +9,9 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import mock
+
+from keystoneauth1 import adapter
 
 from openstack.tests.unit import base
 
@@ -37,6 +40,13 @@ EXAMPLE_FILE = {
 
 class TestBackup(base.TestCase):
 
+    def setUp(self):
+        super(TestBackup, self).setUp()
+        self.sess = mock.Mock(spec=adapter.Adapter)
+        self.sess.get = mock.Mock()
+        self.sess.default_microversion = None
+        self.sess._get_connection = mock.Mock(return_value=self.cloud)
+
     def test_basic(self):
         sot = backup.Backup()
         self.assertEqual('backup', sot.resource_key)
@@ -44,7 +54,7 @@ class TestBackup(base.TestCase):
         self.assertEqual('/backups', sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
-        self.assertFalse(sot.allow_fetch)
+        self.assertTrue(sot.allow_fetch)
         self.assertFalse(sot.allow_commit)
         self.assertTrue(sot.allow_delete)
 
@@ -59,6 +69,28 @@ class TestBackup(base.TestCase):
         self.assertEqual(EXAMPLE['type'], sot.type)
         self.assertEqual(EXAMPLE['status'], sot.status)
         self.assertEqual(EXAMPLE['datastore'], sot.datastore)
+
+    def test_fetch(self):
+        sot = backup.Backup(**EXAMPLE)
+
+        response = mock.Mock()
+        response.json.return_value = {
+            'backups': [EXAMPLE.copy()]
+        }
+        response.headers = {}
+        response.status_code = 200
+
+        self.sess.get.return_value = response
+
+        rt = sot.fetch(self.sess)
+
+        self.sess.get.assert_called_with(
+            'backups/' + sot.id,
+            headers={'Accept': 'application/json'},
+            microversion=None,
+            params={'instance_id': sot.instance_id})
+
+        self.assertDictEqual(sot.to_dict(), rt.to_dict())
 
 
 class TestBackupFile(base.TestCase):
