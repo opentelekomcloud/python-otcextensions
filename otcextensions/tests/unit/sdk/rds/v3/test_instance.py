@@ -111,10 +111,22 @@ class TestInstance(base.TestCase):
         self.assertEqual(EXAMPLE['replica_of_id'], sot.replica_of_id)
         self.assertEqual(EXAMPLE['vpc_id'], sot.router_id)
         self.assertEqual(EXAMPLE['security_group_id'], sot.security_group_id)
-        self.assertEqual(EXAMPLE['subnet_id'], sot.subnet_id)
+        self.assertEqual(EXAMPLE['subnet_id'], sot.network_id)
         self.assertEqual(EXAMPLE['switch_strategy'], sot.switch_strategy)
         self.assertEqual(EXAMPLE['maintenance_window'], sot.maintenance_window)
         self.assertEqual(EXAMPLE['time_zone'], sot.time_zone)
+
+        self.assertEqual({
+            'datastore_type': 'datastore_type',
+            'id': 'id',
+            'limit': 'limit',
+            'marker': 'marker',
+            'name': 'name',
+            'network_id': 'subnet_id',
+            'offset': 'offset',
+            'router_id': 'vpc_id',
+            'type': 'type'
+        }, sot._query_mapping._mapping)
 
     def test_translate_response(self):
         response = mock.Mock()

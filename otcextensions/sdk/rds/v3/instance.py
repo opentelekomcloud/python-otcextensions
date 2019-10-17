@@ -29,7 +29,8 @@ class Instance(_base.Resource):
 
     _query_mapping = resource.QueryParameters(
         'id', 'name', 'type', 'datastore_type', 'router_id',
-        'subnet_id', 'limit', 'offset',
+        'network_id', 'limit', 'offset',
+        network_id='subnet_id',
         router_id='vpc_id')
 
     #: Availability Zone.
@@ -100,8 +101,8 @@ class Instance(_base.Resource):
     router_id = resource.Body('vpc_id')
     #: Security Group Id.
     security_group_id = resource.Body('security_group_id')
-    #: Id of subnet.
-    subnet_id = resource.Body('subnet_id')
+    #: Id of net.
+    network_id = resource.Body('subnet_id')
     #: Instance status.
     status = resource.Body('status')
     #: Switch Strategy. The value can be reliability or availability,

@@ -126,6 +126,7 @@ class TestCreate(fakes.TestRds):
 
         self.client.create_backup = mock.Mock(return_value=self._data)
         self.client.find_instance = mock.Mock(return_value=self._instance)
+        self.client.wait_for_backup = mock.Mock(return_value=self._data)
 
     def test_create(self):
         arglist = [
@@ -151,6 +152,40 @@ class TestCreate(fakes.TestRds):
             instance=self._instance,
             description='test description',
             name='test-backup'
+        )
+        self.assertEqual(self.columns, columns)
+
+    def test_create_wait(self):
+        arglist = [
+            'test-backup',
+            'test-instance',
+            '--description',
+            'test description',
+            '--wait', '--wait-interval', '5'
+        ]
+        verifylist = [
+            ('name', 'test-backup'),
+            ('instance', 'test-instance'),
+            ('description', 'test description'),
+            ('wait', True),
+            ('wait_interval', 5)
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.find_instance.assert_called_with('test-instance',
+                                                     ignore_missing=False)
+        self.client.create_backup.assert_called_with(
+            instance=self._instance,
+            description='test description',
+            name='test-backup'
+        )
+        self.client.wait_for_backup.assert_called_with(
+            self._data,
+            interval=5
         )
         self.assertEqual(self.columns, columns)
 
