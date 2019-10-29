@@ -73,7 +73,7 @@ class TestListDatabaseInstances(fakes.TestRds):
             '--type', 'ha',
             '--datastore-type', 'postgreSqL',
             '--router-id', '6',
-            '--subnet-id', '7',
+            '--network-id', '7',
             '--offset', '8',
         ]
 
@@ -84,7 +84,7 @@ class TestListDatabaseInstances(fakes.TestRds):
             ('type', 'ha'),
             ('datastore_type', 'postgresql'),
             ('router_id', '6'),
-            ('subnet_id', '7'),
+            ('network_id', '7'),
             ('offset', 8),
         ]
 
@@ -101,7 +101,7 @@ class TestListDatabaseInstances(fakes.TestRds):
             name='3',
             offset=8,
             router_id='6',
-            subnet_id='7',
+            network_id='7',
             type='Ha',
             paginated=False
         )
@@ -113,7 +113,7 @@ class TestListDatabaseInstances(fakes.TestRds):
             '--type', 'ha',
             '--datastore-type', 'postgreSqL',
             '--router-id', '6',
-            '--subnet-id', '7',
+            '--network-id', '7',
             '--offset', '8',
         ]
 
@@ -123,7 +123,7 @@ class TestListDatabaseInstances(fakes.TestRds):
             ('type', 'ha'),
             ('datastore_type', 'postgresql'),
             ('router_id', '6'),
-            ('subnet_id', '7'),
+            ('network_id', '7'),
             ('offset', 8),
         ]
 
@@ -139,7 +139,7 @@ class TestListDatabaseInstances(fakes.TestRds):
             name='3',
             offset=8,
             router_id='6',
-            subnet_id='7',
+            network_id='7',
             type='Ha',
         )
 
@@ -271,7 +271,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             '--datastore-version', '5.7',
             '--disk-encryption-id', '234',
             '--router-id', 'test-vpc-id',
-            '--subnet-id', 'test-subnet-id',
+            '--network-id', 'test-network-id',
             '--security-group-id', 'test-sec_grp-id',
             '--volume-type', 'ULTRAHIGH',
             '--size', '100',
@@ -289,7 +289,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             ('datastore_version', '5.7'),
             ('disk_encryption_id', '234'),
             ('router_id', 'test-vpc-id'),
-            ('subnet_id', 'test-subnet-id'),
+            ('network_id', 'test-network-id'),
             ('security_group_id', 'test-sec_grp-id'),
             ('port', 12345),
             ('volume_type', 'ULTRAHIGH'),
@@ -319,7 +319,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             router_id='test-vpc-id',
             security_group_id='test-sec_grp-id',
             volume={'size': 100, 'type': 'ULTRAHIGH'},
-            subnet_id='test-subnet-id'
+            network_id='test-network-id'
         )
 
     def test_create_ha(self):
@@ -334,7 +334,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             '--disk-encryption-id', '234',
             '--ha-mode', 'async',
             '--router-id', 'test-vpc-id',
-            '--subnet-id', 'test-subnet-id',
+            '--network-id', 'test-network-id',
             '--security-group-id', 'test-sec_grp-id',
             '--volume-type', 'ULTRAHIGH',
             '--size', '100',
@@ -354,7 +354,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             ('datastore_version', '5.7'),
             ('disk_encryption_id', '234'),
             ('router_id', 'test-vpc-id'),
-            ('subnet_id', 'test-subnet-id'),
+            ('network_id', 'test-network-id'),
             ('security_group_id', 'test-sec_grp-id'),
             ('port', 12345),
             ('volume_type', 'ULTRAHIGH'),
@@ -386,7 +386,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             router_id='test-vpc-id',
             security_group_id='test-sec_grp-id',
             volume={'size': 100, 'type': 'ULTRAHIGH'},
-            subnet_id='test-subnet-id',
+            network_id='test-network-id',
             ha={'mode': 'ha', 'replication_mode': 'async'}
         )
 
@@ -405,7 +405,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             '--disk-encryption-id', '234',
             '--ha-mode', 'sync',
             '--router-id', 'test-vpc-id',
-            '--subnet-id', 'test-subnet-id',
+            '--network-id', 'test-network-id',
             '--security-group-id', 'test-sec_grp-id',
             '--volume-type', 'ULTRAHIGH',
             '--size', '100',
@@ -425,7 +425,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             ('datastore_version', '5.7'),
             ('disk_encryption_id', '234'),
             ('router_id', 'test-vpc-id'),
-            ('subnet_id', 'test-subnet-id'),
+            ('network_id', 'test-network-id'),
             ('security_group_id', 'test-sec_grp-id'),
             ('port', 12345),
             ('volume_type', 'ULTRAHIGH'),
@@ -456,7 +456,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             '--disk-encryption-id', '234',
             '--ha-mode', 'semisync',
             '--router-id', 'test-vpc-id',
-            '--subnet-id', 'test-subnet-id',
+            '--network-id', 'test-network-id',
             '--security-group-id', 'test-sec_grp-id',
             '--volume-type', 'ULTRAHIGH',
             '--size', '100',
@@ -476,7 +476,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             ('datastore_version', '5.7'),
             ('disk_encryption_id', '234'),
             ('router_id', 'test-vpc-id'),
-            ('subnet_id', 'test-subnet-id'),
+            ('network_id', 'test-network-id'),
             ('security_group_id', 'test-sec_grp-id'),
             ('port', 12345),
             ('volume_type', 'ULTRAHIGH'),
@@ -507,7 +507,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             '--disk-encryption-id', '234',
             '--ha-mode', 'sync',
             '--router-id', 'test-vpc-id',
-            '--subnet-id', 'test-subnet-id',
+            '--network-id', 'test-network-id',
             '--security-group-id', 'test-sec_grp-id',
             '--volume-type', 'ULTRAHIGH',
             '--size', '100',
@@ -527,7 +527,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             ('datastore_version', '5.7'),
             ('disk_encryption_id', '234'),
             ('router_id', 'test-vpc-id'),
-            ('subnet_id', 'test-subnet-id'),
+            ('network_id', 'test-network-id'),
             ('security_group_id', 'test-sec_grp-id'),
             ('port', 12345),
             ('volume_type', 'ULTRAHIGH'),
@@ -558,7 +558,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             '--disk-encryption-id', '234',
             '--ha-mode', 'async',
             '--router-id', 'test-vpc-id',
-            '--subnet-id', 'test-subnet-id',
+            '--network-id', 'test-network-id',
             '--security-group-id', 'test-sec_grp-id',
             '--volume-type', 'ULTRAHIGH',
             '--size', '100',
@@ -578,7 +578,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             ('datastore_version', '5.7'),
             ('disk_encryption_id', '234'),
             ('router_id', 'test-vpc-id'),
-            ('subnet_id', 'test-subnet-id'),
+            ('network_id', 'test-network-id'),
             ('security_group_id', 'test-sec_grp-id'),
             ('port', 12345),
             ('volume_type', 'ULTRAHIGH'),
@@ -607,7 +607,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             '--disk-encryption-id', '234',
             '--ha-mode', 'semisync',
             '--router-id', 'test-vpc-id',
-            '--subnet-id', 'test-subnet-id',
+            '--network-id', 'test-network-id',
             '--security-group-id', 'test-sec_grp-id',
             '--volume-type', 'ULTRAHIGH',
             '--size', '100',
@@ -627,7 +627,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             ('datastore_version', '5.7'),
             ('disk_encryption_id', '234'),
             ('router_id', 'test-vpc-id'),
-            ('subnet_id', 'test-subnet-id'),
+            ('network_id', 'test-network-id'),
             ('security_group_id', 'test-sec_grp-id'),
             ('port', 12345),
             ('volume_type', 'ULTRAHIGH'),
@@ -755,7 +755,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             '--datastore-version', '5.7',
             '--disk-encryption-id', '234',
             '--router-id', 'test-vpc-id',
-            '--subnet-id', 'test-subnet-id',
+            '--network-id', 'test-network-id',
             '--security-group-id', 'test-sec_grp-id',
             '--volume-type', 'ULTRAHIGH',
             '--size', '100',
@@ -775,7 +775,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             ('datastore_version', '5.7'),
             ('disk_encryption_id', '234'),
             ('router_id', 'test-vpc-id'),
-            ('subnet_id', 'test-subnet-id'),
+            ('network_id', 'test-network-id'),
             ('security_group_id', 'test-sec_grp-id'),
             ('port', 12345),
             ('volume_type', 'ULTRAHIGH'),
@@ -809,7 +809,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             router_id='test-vpc-id',
             security_group_id='test-sec_grp-id',
             volume={'size': 100, 'type': 'ULTRAHIGH'},
-            subnet_id='test-subnet-id',
+            network_id='test-network-id',
             restore_point={
                 'type': 'timestamp',
                 'restore_time': 'abcde',
@@ -829,7 +829,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             '--datastore-version', '5.7',
             '--disk-encryption-id', '234',
             '--router-id', 'test-vpc-id',
-            '--subnet-id', 'test-subnet-id',
+            '--network-id', 'test-network-id',
             '--security-group-id', 'test-sec_grp-id',
             '--volume-type', 'ULTRAHIGH',
             '--size', '100',
@@ -849,7 +849,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             ('datastore_version', '5.7'),
             ('disk_encryption_id', '234'),
             ('router_id', 'test-vpc-id'),
-            ('subnet_id', 'test-subnet-id'),
+            ('network_id', 'test-network-id'),
             ('security_group_id', 'test-sec_grp-id'),
             ('port', 12345),
             ('volume_type', 'ULTRAHIGH'),
@@ -883,7 +883,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             router_id='test-vpc-id',
             security_group_id='test-sec_grp-id',
             volume={'size': 100, 'type': 'ULTRAHIGH'},
-            subnet_id='test-subnet-id',
+            network_id='test-network-id',
             restore_point={
                 'type': 'backup',
                 'backup_id': backup.id,
@@ -908,7 +908,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             '--disk-encryption-id', '234',
             '--ha-mode', 'semisync',
             '--router-id', 'test-vpc-id',
-            '--subnet-id', 'test-subnet-id',
+            '--network-id', 'test-network-id',
             '--security-group-id', 'test-sec_grp-id',
             '--volume-type', 'ULTRAHIGH',
             '--size', '100',
@@ -928,7 +928,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             ('disk_encryption_id', '234'),
             ('ha_mode', 'semisync'),
             ('router_id', 'test-vpc-id'),
-            ('subnet_id', 'test-subnet-id'),
+            ('network_id', 'test-network-id'),
             ('security_group_id', 'test-sec_grp-id'),
             ('port', 12345),
             ('volume_type', 'ULTRAHIGH'),
@@ -1002,8 +1002,12 @@ class TestRestoreDatabaseInstance(fakes.TestRds):
         self.backup = self.backup_mock.create_one()
 
         self.client.find_instance = mock.Mock(return_value=self.instance)
-        self.client.restore_instance = mock.Mock()
+        self.restore_result = mock.Mock()
+        self.restore_result.job_id = 'some_job_id'
+        self.client.restore_instance = mock.Mock(
+            return_value=self.restore_result)
         self.client.find_backup = mock.Mock(return_value=self.backup)
+        self.client.wait_for_job = mock.Mock()
 
     def test_action_from_backup(self):
         arglist = [
@@ -1038,7 +1042,7 @@ class TestRestoreDatabaseInstance(fakes.TestRds):
     def test_action_pit(self):
         arglist = [
             'inst_name',
-            '--restore_time', 'some_time',
+            '--restore-time', 'some_time',
         ]
 
         verifylist = [
@@ -1059,6 +1063,41 @@ class TestRestoreDatabaseInstance(fakes.TestRds):
             backup=None,
             instance=self.instance,
             restore_time='some_time'
+        )
+
+    def test_action_wait(self):
+        arglist = [
+            'inst_name',
+            '--restore-time', 'some_time',
+            '--wait',
+            '--wait-interval', '5'
+        ]
+
+        verifylist = [
+            ('instance', 'inst_name'),
+            ('restore_time', 'some_time'),
+            ('wait', True),
+            ('wait_interval', 5)
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        self.cmd.take_action(parsed_args)
+
+        self.client.find_instance.assert_called_with('inst_name',
+                                                     ignore_missing=False)
+
+        self.client.restore_instance.assert_called_with(
+            backup=None,
+            instance=self.instance,
+            restore_time='some_time'
+        )
+
+        self.client.wait_for_job.assert_called_with(
+            self.restore_result.job_id,
+            interval=5
         )
 
 
@@ -1182,6 +1221,7 @@ class TestSetBackupPolicy(fakes.TestRds):
             self._instance,
             keep_days=0
         )
+
 
 class TestShowAvailableRestoreTime(fakes.TestRds):
 

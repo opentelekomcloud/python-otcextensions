@@ -119,6 +119,18 @@ class TestBackup(TestRdsProxy):
                          value=['name_or_id', 'iid'],
                          expected_kwargs={'instance_id': 'iid'})
 
+    def test_wait_for_backup(self):
+        value = backup.Backup(id='fake')
+        self.verify_wait_for_status(
+            self.proxy.wait_for_backup,
+            method_args=[value],
+            expected_args=[
+                value,
+                'COMPLETED',
+                ['FAILED'],
+                2, 300
+            ])
+
     def test_download_links(self):
         self.verify_list(self.proxy.backup_download_links,
                          backup.BackupFile,

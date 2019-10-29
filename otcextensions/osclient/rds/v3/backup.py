@@ -135,6 +135,17 @@ class CreateBackup(command.ShowOne):
                 'Specifies a CSV list of self-built SQL Server'
                 'databases that are partially backed up'
                 '(Only SQL Server support partial backups.)'))
+        parser.add_argument(
+            '--wait',
+            action='store_true',
+            help=('Wait for the instance to become active')
+        )
+        parser.add_argument(
+            '--wait-interval',
+            type=int,
+            help=_('Interval for checking status')
+        )
+
         return parser
 
     def take_action(self, parsed_args):
@@ -160,6 +171,12 @@ class CreateBackup(command.ShowOne):
 
         obj = client.create_backup(instance=instance,
                                    **attrs)
+
+        if parsed_args.wait:
+            wait_args = {}
+            if parsed_args.wait_interval:
+                wait_args['interval'] = parsed_args.wait_interval
+            obj = client.wait_for_backup(obj, **wait_args)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns,
