@@ -97,10 +97,11 @@ class Backup(_base.Resource):
             raise exceptions.MethodNotSupported(self, "fetch")
 
         params = {
-            'instance_id': self.instance_id
+            'instance_id': self.instance_id,
+            'backup_id': self.id
         }
         query_params = self._query_mapping._transpose(params, self)
-        url = utils.urljoin(self.base_path, self.id) % params
+        url = utils.urljoin(self.base_path) % params
 
         session = self._get_session(session)
         microversion = self._get_microversion_for(session, 'fetch')
