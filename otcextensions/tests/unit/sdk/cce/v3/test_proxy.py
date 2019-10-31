@@ -9,13 +9,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
+import mock
 from openstack.tests.unit import test_proxy_base
 
 from otcextensions.sdk.cce.v3 import _proxy
 from otcextensions.sdk.cce.v3 import cluster as _cluster
 from otcextensions.sdk.cce.v3 import cluster_node as _cluster_node
 from otcextensions.sdk.cce.v3 import cluster_cert as _cluster_cert
+from otcextensions.sdk.cce.v3 import job as _job
 
 
 class TestCCEProxy(test_proxy_base.TestProxyBase):
@@ -151,3 +152,22 @@ class TestCCEClusterNode(TestCCEProxy):
             method_args=[value],
             expected_args=[value, 'Available', ['ERROR'], 2, 960],
             expected_kwargs={'attribute': 'status.status'})
+
+
+class TestCCEJob(TestCCEProxy):
+    def test_get(self):
+        self.verify_get(
+            self.proxy.get_job,
+            _job.Job,
+            expected_kwargs={}
+        )
+
+    def test_wait_for_job(self):
+        self.proxy.get_job = mock.Mock(return_value='some_fake')
+        self.verify_wait_for_status(
+            self.proxy.wait_for_job,
+            method_args=['fake_job_id'],
+            expected_args=['some_fake', 'success', ['FAILED'], 5, 3600],
+            expected_kwargs={'attribute': 'status.status'}
+        )
+        self.proxy.get_job.assert_called_with('fake_job_id')
