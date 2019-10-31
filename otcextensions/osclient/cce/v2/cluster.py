@@ -33,8 +33,8 @@ def _flatten_cluster(obj):
         'type': obj.spec.type,
         'flavor': obj.spec.flavor,
         'endpoint': obj.status.endpoints.get('external_otc'),
-        'vpc': obj.spec.host_network.vpc,
-        'subnet': obj.spec.host_network.subnet,
+        'router_id': obj.spec.host_network.router_id,
+        'network_id': obj.spec.host_network.network_id,
         'version': obj.spec.version
     }
 
@@ -65,7 +65,7 @@ class ListCCECluster(command.Lister):
 class ShowCCECluster(command.ShowOne):
     _description = _('Show single Cluster details')
     columns = ('ID', 'name', 'type', 'status', 'version', 'endpoint',
-               'flavor', 'vpc', 'subnet')
+               'flavor', 'router_id', 'network_id')
 
     def get_parser(self, prog_name):
         parser = super(ShowCCECluster, self).get_parser(prog_name)
@@ -120,14 +120,14 @@ class CreateCCECluster(command.Command):
             help=_('Name of the cluster.')
         )
         parser.add_argument(
-            'vpc',
-            metavar='<vpc>',
-            help=_('The VPC ID of the container cluster.')
+            'router_id',
+            metavar='<router>',
+            help=_('ID of the Neutron Router.')
         )
         parser.add_argument(
-            'subnet',
-            metavar='<subnet>',
-            help=_('The Subnet ID of the container cluster.')
+            'network_id',
+            metavar='<network>',
+            help=_('ID of the Neutron network.')
         )
         parser.add_argument(
             '--description',
@@ -153,13 +153,13 @@ class CreateCCECluster(command.Command):
             help=_('Cluster type.')
         )
         parser.add_argument(
-            '--highway_subnet',
+            '--highway-subnet',
             metavar='<subnet_id>',
             help=_('ID of the high-speed network that is used to create '
                    'a bare metal node.')
         )
         parser.add_argument(
-            '--container_net_mode',
+            '--container-net-mode',
             metavar='{' + ','.join(CONTAINER_NET_MODE_CHOICES) + '}',
             type=lambda s: s.lower(),
             choices=CONTAINER_NET_MODE_CHOICES,
@@ -167,9 +167,19 @@ class CreateCCECluster(command.Command):
             help=_('Container network mode.')
         )
         parser.add_argument(
-            '--container_net_cidr',
+            '--container-net-cidr',
             metavar='<CIDR>',
             help=_('Network segment of the container network.')
+        )
+        parser.add_argument(
+            '--wait',
+            action='store_true',
+            help=('Wait for the instance to become active')
+        )
+        parser.add_argument(
+            '--wait-interval',
+            type=int,
+            help=_('Interval for checking status')
         )
         return parser
 
@@ -186,8 +196,8 @@ class CreateCCECluster(command.Command):
         if parsed_args.description:
             spec['description'] = parsed_args.description
         host_net = {
-            'vpc': parsed_args.vpc,
-            'subnet': parsed_args.subnet
+            'router_id': parsed_args.router_id,
+            'network_id': parsed_args.network_id
         }
         if spec['type'] == 'BareMetal':
             host_net['highwaySubnet'] = parsed_args.highway_subnet
@@ -204,6 +214,14 @@ class CreateCCECluster(command.Command):
         client = self.app.client_manager.cce
 
         obj = client.create_cluster(**attrs)
+
+        if obj.job_id and parsed_args.wait:
+            wait_args = {}
+            if parsed_args.wait_interval:
+                wait_args['interval'] = parsed_args.wait_interval
+
+            client.wait_for_job(obj.job_id, **wait_args)
+            obj = client.get_cluster(obj.id)
 
         data = utils.get_dict_properties(_flatten_cluster(obj), self.columns)
 

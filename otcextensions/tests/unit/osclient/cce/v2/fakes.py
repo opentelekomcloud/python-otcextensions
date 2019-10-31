@@ -58,7 +58,8 @@ class FakeCluster(test_base.Fake):
                 'endpoints': {
                     'internal': uuid.uuid4().hex,
                     'external_otc': uuid.uuid4().hex,
-                }
+                },
+                'jobID': uuid.uuid4().hex
             }
         }
         obj = cluster.Cluster.existing(**object_info)

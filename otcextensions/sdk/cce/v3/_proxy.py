@@ -15,6 +15,7 @@ from openstack import resource
 from otcextensions.sdk.cce.v3 import cluster as _cluster
 from otcextensions.sdk.cce.v3 import cluster_node as _cluster_node
 from otcextensions.sdk.cce.v3 import cluster_cert as _cluster_cert
+from otcextensions.sdk.cce.v3 import job as _job
 
 
 class Proxy(proxy.Proxy):
@@ -226,3 +227,25 @@ class Proxy(proxy.Proxy):
             cluster_id=cluster.id,
             **attrs
         )
+
+    def get_job(self, job):
+        """Get the job by UUID.
+
+        :param job: key id or an instance of
+            :class:`~otcextensions.sdk.cce.v3.job.Job`
+
+        :returns: instance of
+            :class:`~otcextensions.sdk.cce.v3.job.Job`
+        """
+        return self._get(
+            _job.Job, job,
+        )
+
+    def wait_for_job(self, job_id, status='success',
+                     failures=None, interval=5, wait=3600,
+                     attribute='status.status'):
+        failures = ['FAILED'] if failures is None else failures
+        job = self.get_job(job_id)
+        return resource.wait_for_status(
+            self, job, status, failures, interval, wait,
+            attribute='status.status')
