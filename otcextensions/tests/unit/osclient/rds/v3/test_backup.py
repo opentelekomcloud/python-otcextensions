@@ -23,8 +23,10 @@ class TestList(fakes.TestRds):
 
     _objects = fakes.FakeBackup.create_multiple(3)
 
-    column_headers = ('ID', 'Name', 'Type', 'Instance Id', 'Size (KB)')
-    columns = ('id', 'name', 'type', 'instance_id', 'size')
+    column_headers = ('ID', 'Name', 'Type', 'Instance Id', 'Size (KB)',
+                      'Begin time', 'End time')
+    columns = ('id', 'name', 'type', 'instance_id', 'size',
+               'begin_time', 'end_time')
 
     data = []
 

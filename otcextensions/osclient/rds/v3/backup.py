@@ -37,11 +37,13 @@ def _get_columns(item):
 class ListBackup(command.Lister):
     _description = _("List database backups")
     column_headers = (
-        'ID', 'Name', 'Type', 'Instance Id', 'Size (KB)'
+        'ID', 'Name', 'Type', 'Instance Id', 'Size (KB)',
+        'Begin time', 'End time'
     )
 
     columns = (
-        'id', 'name', 'type', 'instance_id', 'size'
+        'id', 'name', 'type', 'instance_id', 'size',
+        'begin_time', 'end_time'
     )
 
     def get_parser(self, prog_name):
