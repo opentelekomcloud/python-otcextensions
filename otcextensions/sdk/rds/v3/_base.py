@@ -86,7 +86,7 @@ class Resource(resource.Resource):
 
     @classmethod
     def _get_next_link(cls, uri, response, data, marker, limit, total_yielded):
-        # AS service pagination. Returns query for the next page
+        # RDS service pagination. Returns query for the next page
         next_link = None
         params = {}
         if 'total_count' in data and total_yielded <= data['total_count']:
@@ -144,3 +144,13 @@ class Resource(resource.Resource):
             return None
         raise exceptions.ResourceNotFound(
             "No %s found for %s" % (cls.__name__, name_or_id))
+
+    def delete(self, session, error_message=None):
+
+        response = self._raw_delete(session)
+        kwargs = {}
+        if error_message:
+            kwargs['error_message'] = error_message
+
+        self._translate_response(response, has_body=True, **kwargs)
+        return self
