@@ -16,6 +16,7 @@ import uuid
 from openstackclient.tests.functional import base
 from tempest.lib import exceptions
 
+
 class TestRdsFlavor(base.TestCase):
     """Functional tests for RDS Flavor. """
 
@@ -23,7 +24,11 @@ class TestRdsFlavor(base.TestCase):
     OTHER_NAME = uuid.uuid4().hex
 
     def test_flavor_list(self):
-        for datastore in ['mysql', 'postgresql', 'sqlserver']:
+        datastores = json.loads(self.openstack(
+            'rds datastore type list -f json'
+        ))
+        for datastore in datastores:
+            datastore = datastore['Name']
             json_output = json.loads(self.openstack(
                 'rds datastore version list ' + datastore + ' -f json '
             ))
@@ -54,7 +59,11 @@ class TestRdsFlavor(base.TestCase):
             'rds flavor list invalid_ds 5.6'
         )
 
-        for datastore in ['mysql', 'postgresql', 'sqlserver']:
+        datastores = json.loads(self.openstack(
+            'rds datastore type list -f json'
+        ))
+        for datastore in datastores:
+            datastore = datastore['Name']
             self.assertRaises(
                 exceptions.CommandFailed,
                 self.openstack,
