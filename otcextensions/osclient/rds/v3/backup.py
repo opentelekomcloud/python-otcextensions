@@ -12,6 +12,7 @@
 #
 """Backup v3 action implementations"""
 
+from osc_lib import exceptions
 from osc_lib import utils
 from osc_lib.command import command
 
@@ -36,11 +37,13 @@ def _get_columns(item):
 class ListBackup(command.Lister):
     _description = _("List database backups")
     column_headers = (
-        'ID', 'Name', 'Type', 'Instance Id', 'Size (KB)'
+        'ID', 'Name', 'Type', 'Instance Id', 'Size (KB)',
+        'Begin time', 'End time'
     )
 
     columns = (
-        'id', 'name', 'type', 'instance_id', 'size'
+        'id', 'name', 'type', 'instance_id', 'size',
+        'begin_time', 'end_time'
     )
 
     def get_parser(self, prog_name):
@@ -74,16 +77,16 @@ class ListBackup(command.Lister):
             type=int,
             help=_('Specify the limit of resources to be queried.'),
         )
-#         parser.add_argument(
-#             '--begin-time',
-#             metavar='<begin_time>',
-#             help=_('Specify the start time for obtaining the backup list.'),
-#         )
-#         parser.add_argument(
-#             '--end-time',
-#             metavar='<end_time>',
-#             help=_('Specify the end time for obtaining the backup list.'),
-#         )
+        parser.add_argument(
+            '--begin-time',
+            metavar='<begin_time>',
+            help=_('Specify the start time for obtaining the backup list.'),
+        )
+        parser.add_argument(
+            '--end-time',
+            metavar='<end_time>',
+            help=_('Specify the end time for obtaining the backup list.'),
+        )
 
         return parser
 
@@ -91,9 +94,15 @@ class ListBackup(command.Lister):
         client = self.app.client_manager.rds
         attrs = {}
         args_list = [
-            'backup_id', 'backup_type', 'offset', 'limit'
-            # , 'begin_time', 'end_time'
+            'backup_id', 'backup_type', 'offset', 'limit',
+            'begin_time', 'end_time'
         ]
+        must_be_together_group = [parsed_args.begin_time, parsed_args.end_time]
+
+        if any(must_be_together_group) and not all(must_be_together_group):
+            raise exceptions.CommandError(
+                _('`--begin-time` and `--end-time` must be given together')
+            )
         for arg in args_list:
             if getattr(parsed_args, arg):
                 attrs[arg] = getattr(parsed_args, arg)
