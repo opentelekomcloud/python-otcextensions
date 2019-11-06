@@ -215,12 +215,10 @@ class CreateDatabaseInstance(command.ShowOne):
         ds_group.add_argument(
             '--datastore-type',
             metavar='<datastore>',
-            required=True,
             help=_("Name of the datastore (type).")
         )
         ds_group.add_argument(
             '--datastore-version',
-            required=True,
             metavar='<datastore_version>',
             help=_("Datastore version.")
         )
@@ -358,6 +356,14 @@ class CreateDatabaseInstance(command.ShowOne):
             parsed_args.security_group_id,
             parsed_args.password
         ]
+
+        if (not parsed_args.replica_of
+                and not (parsed_args.datastore_type
+                         and parsed_args.datastore_version)):
+            raise exceptions.CommandError(
+                _('`--datastore-type` and `--datastore-version` are '
+                  'required')
+            )
 
         if parsed_args.replica_of:
             # Create replica
