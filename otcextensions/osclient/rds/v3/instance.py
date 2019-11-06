@@ -374,9 +374,12 @@ class CreateDatabaseInstance(command.ShowOne):
                     _('Setting password/port/router/network/sg is not '
                       'supported when creating replica')
                 )
-            attrs['replica_of_id'] = \
-                client.find_instance(parsed_args.replica_of,
-                                     ignore_missing=False).id
+            src = client.find_instance(parsed_args.replica_of,
+                                       ignore_missing=False)
+            parsed_args.datastore_type = src['datastore']['type']
+            parsed_args.datastore_version = src['datastore']['version']
+            attrs['replica_of_id'] = src.id
+            attrs.pop('datastore', None)
         elif parsed_args.from_instance:
             source = client.find_instance(parsed_args.from_instance,
                                           ignore_missing=False)
