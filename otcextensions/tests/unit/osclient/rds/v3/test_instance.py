@@ -689,6 +689,13 @@ class TestCreateDatabaseInstance(fakes.TestRds):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
+        self.client.flavors.assert_called_with(
+            datastore_name=self.other_instance.datastore['type'],
+            version_name=self.other_instance.datastore['version'])
+
+        self.client.find_instance.assert_called_with('fake_name',
+                                                     ignore_missing=False)
+
         self.client.create_instance.assert_called_with(
             availability_zone='test-az-01',
             charge_info={'charge_mode': 'postPaid'},
