@@ -228,12 +228,13 @@ def load(conn, **kwargs):
             if ep and not ep.rstrip('/').endswith('\\%(project_id)s') \
                     and not ep.rstrip('/').endswith('$(tenant_id)s') \
                     and not ep.rstrip('/').endswith(project_id):
-                conn.config.config[
-                    '_'.join([
-                        sd.service_type.lower().replace('-', '_'),
-                        'endpoint_override'
-                    ])
-                ] = utils.urljoin(ep, '%(project_id)s')
+                key = '_'.join([
+                    sd.service_type.lower().replace('-', '_'),
+                    'endpoint_override'])
+                if key not in conn.config.config:
+                    conn.config.config[key] = utils.urljoin(ep,
+                                                            '%(project_id)s')
+
         elif service.get('set_endpoint_override', False):
             # We need to set endpoint_override for OBS, since otherwise it
             # fails dramatically
