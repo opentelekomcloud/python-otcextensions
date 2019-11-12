@@ -12,12 +12,8 @@
 import importlib
 import os
 
-import openstack
 from openstack import _log
 from openstack import utils
-
-from otcextensions.sdk.compute.v2 import server
-from otcextensions.common import exc
 
 
 _logger = _log.setup_logging('openstack')
@@ -114,7 +110,8 @@ OTC_SERVICES = {
         'service_type': 'mrs'
     },
     'nat': {
-        'service_type': 'nat'
+        'service_type': 'nat',
+        'append_project_id': True,
     },
     'obs': {
         'service_type': 'obs',
@@ -243,15 +240,6 @@ def get_ak_sk(conn):
         return(ak, sk)
 
 
-def patch_openstack_resources():
-    openstack.compute.v2.server.Server._get_tag_struct = \
-        server.Server._get_tag_struct
-    openstack.compute.v2.server.Server.add_tag = server.Server.add_tag
-    openstack.compute.v2.server.Server.remove_tag = server.Server.remove_tag
-    openstack.exceptions.raise_from_response = \
-        exc.raise_from_response
-
-
 def load(conn, **kwargs):
     """Register supported OTC services and make them known to the OpenStackSDK
 
@@ -271,6 +259,7 @@ def load(conn, **kwargs):
             if service['service_type'] in conn._proxies:
                 del conn._proxies[service['service_type']]
             # attr = getattr(conn, service_name)
+            # print(hasattr(conn, service_name))
             # delattr(conn, service['service_type'])
 
         sd = _get_descriptor(service_name)
@@ -284,18 +273,15 @@ def load(conn, **kwargs):
             if ep and not ep.rstrip('/').endswith('\\%(project_id)s') \
                     and not ep.rstrip('/').endswith('$(tenant_id)s') \
                     and not ep.rstrip('/').endswith(project_id):
-                key = '_'.join([
-                    sd.service_type.lower().replace('-', '_'),
-                    'endpoint_override'])
-                if key not in conn.config.config:
-                    conn.config.config[key] = utils.urljoin(ep,
-                                                            '%(project_id)s')
-
+                conn.config.config[
+                    '_'.join([
+                        sd.service_type.lower().replace('-', '_'),
+                        'endpoint_override'
+                    ])
+                ] = utils.urljoin(ep, '%(project_id)s')
         elif service.get('set_endpoint_override', False):
-            # SDK respects skip_discovery only if endpoint_override is set.
-            # In case, when append_project_id is skipped for the service,
-            # but the discovery on the service is not working - we might be
-            # failing dramatically.
+            # We need to set endpoint_override for OBS, since otherwise it
+            # fails dramatically
             ep = conn.endpoint_for(sd.service_type)
             conn.config.config[
                 '_'.join([
@@ -307,8 +293,6 @@ def load(conn, **kwargs):
         # Inject get_ak_sk into the connection to give possibility
         # for some proxies to use them
         setattr(conn, 'get_ak_sk', get_ak_sk)
-
-    patch_openstack_resources()
 
     return None
 
