@@ -17,10 +17,11 @@ class NatGateway(resource.Resource):
 
     # capabilities
     allow_create = True
+    allow_fetch = True
+    allow_commit = True
     allow_delete = True
     allow_list = True
-    #allow_get = True
-
+    
     # Properties
     #: Specifies the ID of the NAT gateway.
     id = resource.Body('id')
