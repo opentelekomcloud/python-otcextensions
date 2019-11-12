@@ -10,6 +10,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from otcextensions.sdk.nat.v2 import nat_gateway as _nat_gateway
+from otcextensions.sdk.nat.v2 import snat as _snat
+from otcextensions.sdk.nat.v2 import dnat as _dnat
 
 from openstack import proxy
 
@@ -26,7 +28,7 @@ class Proxy(proxy.Proxy):
         return self._create(_nat_gateway.NatGateway, **attrs)
 
     def delete_gateway(self, id):
-        """Create a new gateway from attributes
+        """Delete a NAT gateway
 
         :param dict attrs: Keyword arguments which will be used to create
             a :class:`~otcextensions.sdk.nat.v2.nat_gateway.NatGateway`
@@ -61,10 +63,92 @@ class Proxy(proxy.Proxy):
 
         :param nat_gateway: Either the ID of a NAT Gateway or a
                        :class:`~otcextensions.sdk.nat.v2.nat_gateway.NatGateway` instance.
-        :attrs kwargs: The attributes to update on the server represented
+        :attrs attrs: The attributes to update on the server represented
                        by ``server``.
 
         :returns: The updated NAT Gateway
         :rtype: :class:`~otcextensions.sdk.nat.v2.nat_gateway.NatGateway`
         """
-        return self._update(_server.Server, server, **attrs)
+        return self._update(_nat_gateway, nat_gateway, **attrs)
+
+# SNAT rules
+
+    def create_snat_rule(self, **attrs):
+        """Create a new SNAT rule from attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.nat.v2.snat.Snat`
+        """
+        return self._create(_snat.Snat, **attrs)
+
+    def delete_snat_rule(self, id):
+        """Delete a SNAT rule
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.nat.v2.snat.Snat`
+        """
+        return self._delete(_snat.Snat, id=id)
+
+    def get_snat_rule(self, snat_rule):
+        """Get a single SNAT rule
+
+        :param snat_rule: The value can be the ID of a SNAT rule or a
+                        :class:`~otcextensions.sdk.nat.v2.snat.Snat`
+                        instance.
+
+        :returns: One :class:`~otcextensions.sdk.nat.v2.snat.Snat`
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+                 when no resource can be found.
+        """
+        return self._get(_snat.Snat, snat_rule)
+
+    def snat_rules(self, **attrs):
+        """Return a generator of SNAT rules
+
+        :param attrs query: Optional query parameters to be sent to limit
+            the resources being returned.
+        :returns: A generator of NAT Gateway objects
+        :rtype: :class:`~otcextensions.sdk.nat.v2.snat.SNAT`
+        """
+        return self._list(_snat.Snat, **attrs)
+
+# DNAT rules
+
+    def create_dnat_rule(self, **attrs):
+        """Create a new DNAT rule from attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.nat.v2.dnat.Dnat`
+        """
+        return self._create(_dnat.Dnat, **attrs)
+
+    def delete_dnat_rule(self, id):
+        """Delete a DNAT rule
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.nat.v2.dnat.Dnat`
+        """
+        return self._delete(_dnat.Dnat, id=id)
+
+    def get_dnat_rule(self, dnat_rule):
+        """Get a single DNAT rule
+
+        :param dnat_rule: The value can be the ID of a DNAT rule or a
+                        :class:`~otcextensions.sdk.nat.v2.dnat.Dnat`
+                        instance.
+
+        :returns: One :class:`~otcextensions.sdk.nat.v2.dnat.Dnat`
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+                 when no resource can be found.
+        """
+        return self._get(_dnat.Dnat, dnat_rule)
+
+    def dnat_rules(self, **attrs):
+        """Return a generator of DNAT rules
+
+        :param attrs query: Optional query parameters to be sent to limit
+            the resources being returned.
+        :returns: A generator of DNAT rules objects
+        :rtype: :class:`~otcextensions.sdk.nat.v2.dnat.Dnat`
+        """
+        return self._list(_dnat.Dnat, **attrs)
