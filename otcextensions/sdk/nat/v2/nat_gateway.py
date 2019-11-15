@@ -13,6 +13,7 @@ from openstack import resource
 
 class NatGateway(resource.Resource):
     resources_key = 'nat_gateways'
+    resource_key = 'nat_gateway'
     base_path = '/nat_gateways'
 
     # capabilities
@@ -37,7 +38,7 @@ class NatGateway(resource.Resource):
     #: *2:* medium type, supports up to 50,000 SNAT connections
     #: *3:* large type, supports up to 200,000 SNAT connections
     #: *4:* extra-large type, supports up to 1,000,000 SNAT connections
-    spec = resource.Body('spec', type=int)
+    spec = resource.Body('spec')
     #: Specifies the router ID
     router_id = resource.Body('router_id')
     #: Specifies the network ID of the downstream interface

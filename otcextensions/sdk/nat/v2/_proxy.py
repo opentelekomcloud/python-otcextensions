@@ -17,6 +17,8 @@ from openstack import proxy
 
 class Proxy(proxy.Proxy):
 
+    skip_discovery = True
+
 # NAT Gateway
 
     def create_gateway(self, **attrs):
