@@ -83,8 +83,7 @@ OTC_SERVICES = {
         'append_project_id': True,
     },
     'nat': {
-        'service_type': 'nat',
-        'append_project_id': True,
+        'service_type': 'nat'
     },   
     'obs': {
         'service_type': 'obs',
