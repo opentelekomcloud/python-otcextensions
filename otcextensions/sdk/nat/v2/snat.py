@@ -11,6 +11,7 @@
 # under the License.
 from openstack import resource
 
+
 class Snat(resource.Resource):
     resources_key = 'snat_rules'
     base_path = '/snat_rules'
@@ -20,16 +21,16 @@ class Snat(resource.Resource):
     allow_fetch = True
     allow_delete = True
     allow_list = True
-    
+
     # Properties
     #: Specifies the status of the SNAT rule
     admin_state_up = resource.Body('admin_state_up', type=bool)
-    #: Specifies a subset of the VPC subnet CIDR block or a 
+    #: Specifies a subset of the VPC subnet CIDR block or a
     #: CIDR block of Direct Connect connection.
     cidr = resource.Body('cidr')
     #: Specifies when the rule is created.
     #: The format is yyyy-mm-dd hh:mm:ss.
-    created_at = resource.Body('created_at')    
+    created_at = resource.Body('created_at')
     #: Specifies the EIP
     #: Multiple EIPs are separated using commas
     floating_ip_address = resource.Body('floating_ip_address')

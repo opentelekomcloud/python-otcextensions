@@ -15,6 +15,7 @@ from otcextensions.sdk.nat.v2 import dnat as _dnat
 
 from openstack import proxy
 
+
 class Proxy(proxy.Proxy):
 
     skip_discovery = True
@@ -64,7 +65,8 @@ class Proxy(proxy.Proxy):
         """Update a gateway
 
         :param gateway: Either the ID of a gateway or a
-                       :class:`~otcextensions.sdk.nat.v2.gateway.Gateway` instance.
+                       :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
+                       instance.
         :attrs attrs: The attributes to update on the server represented
                        by ``server``.
 
