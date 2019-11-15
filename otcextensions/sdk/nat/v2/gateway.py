@@ -11,7 +11,7 @@
 # under the License.
 from openstack import resource
 
-class NatGateway(resource.Resource):
+class Gateway(resource.Resource):
     resources_key = 'nat_gateways'
     resource_key = 'nat_gateway'
     base_path = '/nat_gateways'
@@ -24,27 +24,6 @@ class NatGateway(resource.Resource):
     allow_list = True
     
     # Properties
-    #: Specifies the ID of the NAT gateway.
-    id = resource.Body('id')
-    #: Specifies the project ID
-    tenant_id = resource.Body('tenant_id')
-    #: Specifies the name of the NAT gateway.
-    #: Contains only digits, letters, underscores and hyphens
-    name = resource.Body('name')
-    #: Provides description of NAT Gateway
-    description = resource.Body('description')
-    #: Specifies the type of the NAT gateway.
-    #: *1:* small type, supports up to 10,000 SNAT connections
-    #: *2:* medium type, supports up to 50,000 SNAT connections
-    #: *3:* large type, supports up to 200,000 SNAT connections
-    #: *4:* extra-large type, supports up to 1,000,000 SNAT connections
-    spec = resource.Body('spec')
-    #: Specifies the router ID
-    router_id = resource.Body('router_id')
-    #: Specifies the network ID of the downstream interface
-    internal_network_id = resource.Body('internal_network_id')
-    #: Specifies the status
-    status = resource.Body('status')
     #: Specifies whether GW is up or down
     #: *true:* Gw is up
     #: *false:* GW is down
@@ -52,5 +31,24 @@ class NatGateway(resource.Resource):
     #: Specifies when GW was is created
     #: format is *yyyy-mm-dd hh:mm:ss*
     created_at = resource.Body('created_at')
-
-    
+    #: Provides description of gateway
+    description = resource.Body('description')
+    #: Specifies the ID of the gateway.
+    id = resource.Body('id')
+    #: Specifies the network ID of the downstream interface
+    internal_network_id = resource.Body('internal_network_id')
+    #: Specifies the name of the gateway.
+    #: Contains only digits, letters, underscores and hyphens
+    name = resource.Body('name')
+    #: Specifies the router ID
+    router_id = resource.Body('router_id')
+    #: Specifies the type of the gateway.
+    #: *1:* small type, supports up to 10,000 SNAT connections
+    #: *2:* medium type, supports up to 50,000 SNAT connections
+    #: *3:* large type, supports up to 200,000 SNAT connections
+    #: *4:* extra-large type, supports up to 1,000,000 SNAT connections
+    spec = resource.Body('spec')
+    #: Specifies the status
+    status = resource.Body('status')
+    #: Specifies the project ID
+    tenant_id = resource.Body('tenant_id')
