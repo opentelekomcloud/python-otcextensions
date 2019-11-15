@@ -9,7 +9,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from otcextensions.sdk.nat.v2 import nat_gateway as _nat_gateway
+from otcextensions.sdk.nat.v2 import gateway as _gateway
 from otcextensions.sdk.nat.v2 import snat as _snat
 from otcextensions.sdk.nat.v2 import dnat as _dnat
 
@@ -19,59 +19,59 @@ class Proxy(proxy.Proxy):
 
     skip_discovery = True
 
-# NAT Gateway
+# Gateway
 
     def create_gateway(self, **attrs):
         """Create a new gateway from attributes
 
         :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.nat.v2.nat_gateway.NatGateway`
+            a :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
         """
-        return self._create(_nat_gateway.NatGateway, **attrs)
+        return self._create(_gateway.Gateway, **attrs)
 
     def delete_gateway(self, id):
-        """Delete a NAT gateway
+        """Delete a gateway
 
         :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.nat.v2.nat_gateway.NatGateway`
+            a :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
         """
-        return self._delete(_nat_gateway.NatGateway, id=id)
+        return self._delete(_gateway.Gateway, id=id)
 
     def gateways(self, **attrs):
-        """Return a generator of NAT Gateways
+        """Return a generator of gateways
 
         :param kwargs query: Optional query parameters to be sent to limit
             the resources being returned.
-        :returns: A generator of NAT Gateway objects
-        :rtype: :class:`~otcextensions.sdk.nat.v2.nat_gateway.NatGateway`
+        :returns: A generator of gateway objects
+        :rtype: :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
         """
-        return self._list(_nat_gateway.NatGateway, **attrs)
+        return self._list(_gateway.Gateway, **attrs)
 
-    def get_nat_gateway(self, nat_gateway):
-        """Get a single Nat Gateway
+    def get_gateway(self, gateway):
+        """Get a single gateway
 
-        :param nat_gateway: The value can be the ID of a NAT Gatway or a
-                        :class:`~otcextensions.sdk.nat.v2.nat_gateway.NatGateway`
+        :param gateway: The value can be the ID of a NAT Gatway or a
+                        :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
                         instance.
 
-        :returns: One :class:`~otcextensions.sdk.nat.v2.nat_gateway.NatGateway`
+        :returns: One :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                  when no resource can be found.
         """
-        return self._get(_nat_gateway.NatGateway, nat_gateway)
+        return self._get(_gateway.Gateway, gateway)
 
-    def update_nat_gateway(self, nat_gateway, **attrs):
-        """Update a NAT Gateway
+    def update_gateway(self, gateway, **attrs):
+        """Update a gateway
 
-        :param nat_gateway: Either the ID of a NAT Gateway or a
-                       :class:`~otcextensions.sdk.nat.v2.nat_gateway.NatGateway` instance.
+        :param gateway: Either the ID of a gateway or a
+                       :class:`~otcextensions.sdk.nat.v2.gateway.Gateway` instance.
         :attrs attrs: The attributes to update on the server represented
                        by ``server``.
 
-        :returns: The updated NAT Gateway
-        :rtype: :class:`~otcextensions.sdk.nat.v2.nat_gateway.NatGateway`
+        :returns: The updated gateway
+        :rtype: :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
         """
-        return self._update(_nat_gateway, nat_gateway, **attrs)
+        return self._update(_gateway.Gateway, gateway, **attrs)
 
 # SNAT rules
 
@@ -109,7 +109,7 @@ class Proxy(proxy.Proxy):
 
         :param attrs query: Optional query parameters to be sent to limit
             the resources being returned.
-        :returns: A generator of NAT Gateway objects
+        :returns: A generator of gateway objects
         :rtype: :class:`~otcextensions.sdk.nat.v2.snat.SNAT`
         """
         return self._list(_snat.Snat, **attrs)

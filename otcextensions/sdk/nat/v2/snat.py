@@ -22,33 +22,33 @@ class Snat(resource.Resource):
     allow_list = True
     
     # Properties
-    id = resource.Body('id')
-    #: Specifies the ID of the SNAT rule.
-    tenant_id = resource.Body('tenant_id')
-    #: Specifies the project ID.
-    nat_gateway_id = resource.Body('nat_gateway_id')
-    #: Specifies the NAT Gateway ID.
-    network_id = resource.Body('network_id')
-    #: Specifies the network ID
-    cidr = resource.Body('cidr')
+    #: Specifies the status of the SNAT rule
+    admin_state_up = resource.Body('admin_state_up', type=bool)
     #: Specifies a subset of the VPC subnet CIDR block or a 
     #: CIDR block of Direct Connect connection.
-    source_type = resource.Body('source_type', type=int)
+    cidr = resource.Body('cidr')
+    #: Specifies when the rule is created.
+    #: The format is yyyy-mm-dd hh:mm:ss.
+    created_at = resource.Body('created_at')    
+    #: Specifies the EIP
+    #: Multiple EIPs are separated using commas
+    floating_ip_address = resource.Body('floating_ip_address')
+    #: Specifies the EIP ID
+    #: Multiple EIPs are separated using commas
+    floating_ip_id = resource.Body('floating_ip_id')
+    #: Specifies the gateway ID.
+    gateway_id = resource.Body('gateway_id')
+    #: Specifies the ID of the SNAT rule.
+    id = resource.Body('id')
+    #: Specifies the network ID
+    network_id = resource.Body('network_id')
     #: *0:* Either network_id or cidr can be specified in VPC
     #: *1:* only cidr can be specified over a Direct Connect connection
     #: Default: 0
-    floating_ip_id = resource.Body('floating_ip_id')
-    #: Specifies the EIP ID
-    #: Multiple EIPs are separated using commas
-    floating_ip_address = resource.Body('floating_ip_address')
-    #: Specifies the EIP
-    #: Multiple EIPs are separated using commas
-    status = resource.Body('status')
-    #: Specifies the status of the SNAT rule
-    admin_state_up = resource.Body('admin_state_up', type=bool)
+    source_type = resource.Body('source_type', type=int)
     #: Specifies whether SNAT rule is enabled / disabled
     #: *true:* SNAT rule is enabled
     #: *false:* SNAT rule is disabled
-    created_at = resource.Body('created_at')
-    #: Specifies when the rule is created.
-    #: The format is yyyy-mm-dd hh:mm:ss.
+    status = resource.Body('status')
+    #: Specifies the project ID.
+    tenant_id = resource.Body('tenant_id')
