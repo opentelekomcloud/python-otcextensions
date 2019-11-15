@@ -11,7 +11,6 @@
 # under the License.
 from openstack import resource
 
-
 class Gateway(resource.Resource):
     resources_key = 'nat_gateways'
     resource_key = 'nat_gateway'
@@ -23,13 +22,7 @@ class Gateway(resource.Resource):
     allow_commit = True
     allow_delete = True
     allow_list = True
-
-    _query_mapping = resource.QueryParameters(
-        'admin_state_up', 'created_at', 'description', 'id',
-        'internal_network_id', 'limit', 'name', 'router_id',
-        'spec', 'status', 'project_id', project_id='tenant_id'
-    )
-
+    
     # Properties
     #: Specifies whether GW is up or down
     #: *true:* Gw is up
@@ -47,8 +40,6 @@ class Gateway(resource.Resource):
     #: Specifies the name of the gateway.
     #: Contains only digits, letters, underscores and hyphens
     name = resource.Body('name')
-    #: Specifies the project ID
-    project_id = resource.Body('tenant_id')
     #: Specifies the router ID
     router_id = resource.Body('router_id')
     #: Specifies the type of the gateway.
@@ -59,3 +50,5 @@ class Gateway(resource.Resource):
     spec = resource.Body('spec')
     #: Specifies the status
     status = resource.Body('status')
+    #: Specifies the project ID
+    tenant_id = resource.Body('tenant_id')
