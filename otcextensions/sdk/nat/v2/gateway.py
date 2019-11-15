@@ -11,6 +11,7 @@
 # under the License.
 from openstack import resource
 
+
 class Gateway(resource.Resource):
     resources_key = 'nat_gateways'
     resource_key = 'nat_gateway'
@@ -22,7 +23,7 @@ class Gateway(resource.Resource):
     allow_commit = True
     allow_delete = True
     allow_list = True
-    
+
     # Properties
     #: Specifies whether GW is up or down
     #: *true:* Gw is up
