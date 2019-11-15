@@ -84,7 +84,7 @@ OTC_SERVICES = {
     },
     'nat': {
         'service_type': 'nat'
-    },   
+    },
     'obs': {
         'service_type': 'obs',
         'require_ak': True,

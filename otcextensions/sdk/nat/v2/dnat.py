@@ -11,6 +11,7 @@
 # under the License.
 from openstack import resource
 
+
 class Dnat(resource.Resource):
     resources_key = 'dnat_rules'
     base_path = '/dnat_rules'
@@ -20,7 +21,7 @@ class Dnat(resource.Resource):
     allow_fetch = True
     allow_delete = True
     allow_list = True
-    
+
     # Properties
     #: Specifies whether DNAT rule is enabled / disabled
     #: *true:* DNAT rule is enabled
