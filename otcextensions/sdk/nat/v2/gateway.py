@@ -24,6 +24,12 @@ class Gateway(resource.Resource):
     allow_delete = True
     allow_list = True
 
+    _query_mapping = resource.QueryParameters(
+        'admin_state_up', 'created_at', 'description', 'id',
+        'internal_network_id', 'limit', 'name', 'router_id',
+        'spec', 'status', 'tenant_id'
+    )
+
     # Properties
     #: Specifies whether GW is up or down
     #: *true:* Gw is up
