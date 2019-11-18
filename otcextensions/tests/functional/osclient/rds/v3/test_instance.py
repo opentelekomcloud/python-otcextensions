@@ -24,7 +24,6 @@ class TestRdsInstance(base.TestCase):
     """Functional tests for RDS Instance. """
 
     UUID = uuid.uuid4().hex[:8]
-    OTHER_NAME = uuid.uuid4().hex
     ROUTER_NAME = 'sdk-test-router-' + UUID
     NET_NAME = 'sdk-test-net-' + UUID
     SUBNET_NAME = 'sdk-test-subnet-' + UUID
@@ -37,18 +36,22 @@ class TestRdsInstance(base.TestCase):
     RDS_HA_NAME = 'sdk-test-rds-ha-' + UUID
     RDS_RR_NAME = 'sdk-test-rds-rr-' + UUID
     INSTANCE_LIST = [RDS_NAME, RDS_HA_NAME]
-    BACKUP_NAME = 'sdk-test-rds-backup-' + UUID
-    BACKUP_ID = None
-    DATASTORE = 'MySQL'
-    VERSION = '5.7'
-    REGION = 'eu-de'
-    AZ = 'eu-de-01'
-    HA_AZ = 'eu-de-01,eu-de-02'
-    FLAVOR = 'rds.mysql.c2.medium'
-    HA_FLAVOR = 'rds.mysql.c2.medium.ha'
-    RR_FLAVOR = 'rds.mysql.c2.medium.rr'
+
     VOL_TYPE = 'ULTRAHIGH'
     VOL_SIZE = 100
+    DATASTORE = 'MySQL'
+    VERSION = None
+
+    AZ = 'eu-de-01'
+    HA_AZ = 'eu-de-01,eu-de-02'
+
+    FLAVOR = None
+    HA_FLAVOR = None
+    RR_FLAVOR = None
+    REGION = None
+
+    BACKUP_NAME = 'sdk-test-rds-backup-' + UUID
+    BACKUP_ID = None
 
     def test_01_instance_list(self):
         self.openstack(
@@ -70,6 +73,11 @@ class TestRdsInstance(base.TestCase):
 
     def test_03_create_instance(self):
         self._initialize_network()
+        TestRdsInstance.REGION = self._get_region()
+        TestRdsInstance.VERSION = self._get_latest_version()
+        TestRdsInstance.FLAVOR = self._get_default_flavor()
+        TestRdsInstance.HA_FLAVOR = self._get_default_flavor('ha')
+        TestRdsInstance.RR_FLAVOR = self._get_default_flavor('replica')
         with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
             executor.submit(self._create_instance, self.RDS_NAME)
             # Create HA Instance
@@ -136,20 +144,20 @@ class TestRdsInstance(base.TestCase):
             ))
             self.assertIsNotNone(json_output)
 
-    def test_08_create_instance_from_backup(self):
-        json_output = json.loads(self.openstack(
-            'rds instance show -f json ' + self.INSTANCE_LIST[1]))
-        from_instance = json_output['id']
+    #def test_08_create_instance_from_backup(self):
+    #    json_output = json.loads(self.openstack(
+    #        'rds instance show -f json ' + self.INSTANCE_LIST[1]))
+    #    from_instance = json_output['id']
 
-        restore_instance = self.RDS_NAME + '-restore'
-        json_output = self._create_instance(
-            instance_name=restore_instance,
-            backup=self.BACKUP_ID,
-            from_instance=from_instance)
-        self.addCleanup(
-            self.openstack,
-            'rds instance delete ' + restore_instance)
-        self.assertEqual(json_output['status'], 'ACTIVE')
+    #    restore_instance = self.RDS_NAME + '-restore'
+    #    json_output = self._create_instance(
+    #        instance_name=restore_instance,
+    #        backup=self.BACKUP_ID,
+    #        from_instance=from_instance)
+    #    self.addCleanup(
+    #        self.openstack,
+    #        'rds instance delete ' + restore_instance)
+    #    self.assertEqual(json_output['status'], 'ACTIVE')
 
     def test_09_backup_delete(self):
         self.openstack('rds backup delete ' + self.BACKUP_ID)
@@ -197,8 +205,9 @@ class TestRdsInstance(base.TestCase):
 
     def test_12_delete_instance(self):
         self.addCleanup(self._denitialize_network)
-        with concurrent.futures.ProcessPoolExecutor() as executor:
-            executor.map(self._delete_instance, self.INSTANCE_LIST)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+            executor.submit(self._delete_instance, self.RDS_NAME)
+            executor.submit(self._delete_instance, self.RDS_HA_NAME)
 
         for instance in self.INSTANCE_LIST:
             self.assertRaises(
@@ -206,7 +215,7 @@ class TestRdsInstance(base.TestCase):
                 self.openstack,
                 'rds instance show ' + instance
             )
-        time.sleep(50)
+        time.sleep(60)
 
     def _create_instance(
             self,
@@ -257,6 +266,32 @@ class TestRdsInstance(base.TestCase):
 
         return json_output
 
+    def _get_region(self):
+        json_output = json.loads(self.openstack(
+            'region list -f json'))
+        return json_output[0]['Region']
+
+
+    def _get_latest_version(self):
+        json_output = json.loads(self.openstack(
+            'rds datastore version list -f json ' + self.DATASTORE))
+        versions = [data['Name'] for data in json_output]
+        return sorted(versions)[-1]
+
+    def _get_default_flavor(self, flavor_type=None):
+        if not self.VERSION:
+            TestRdsInstance.VERSION = self._get_latest_datastore_version(self.DATASTORE)
+        json_output = json.loads(self.openstack(
+            'rds flavor list -f json {} {}'.format(
+                self.DATASTORE, self.VERSION)
+        ))
+        if flavor_type:
+            flavor_list  = [[data['vcpus'], data['name']] for data in json_output if data['instance_mode'] == flavor_type.lower()]
+        else:
+            flavor_list = [[data['vcpus'], data['name']] for data in json_output if data['instance_mode'] == 'single']
+        flavors_list = flavor_list.sort(key=lambda x: int(x[0]))
+        return flavor_list[0][1]
+
     def _delete_instance(self, instance_name):
         self.openstack(
             'rds instance delete --wait ' + instance_name
@@ -289,9 +324,9 @@ class TestRdsInstance(base.TestCase):
             )
         )
 
-        self.ROUTER_ID = router['id']
-        self.NET_ID = net['id']
-        self.SG_ID = sg['id']
+        TestRdsInstance.ROUTER_ID = router['id']
+        TestRdsInstance.NET_ID = net['id']
+        TestRdsInstance.SG_ID = sg['id']
 
     def _denitialize_network(self):
         self.openstack(
