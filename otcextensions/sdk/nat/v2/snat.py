@@ -14,6 +14,7 @@ from openstack import resource
 
 class Snat(resource.Resource):
     resources_key = 'snat_rules'
+    resource_key = 'snat_rule'
     base_path = '/snat_rules'
 
     # capabilities
@@ -21,6 +22,12 @@ class Snat(resource.Resource):
     allow_fetch = True
     allow_delete = True
     allow_list = True
+
+    _query_mapping = resource.QueryParameters(
+        'admin_state_up', 'cidr', 'created_at', 'floating_ip_address',
+        'floating_ip_id', 'id', 'limit', 'nat_gateway_id', 'network_id',
+        'source_type', 'status', 'tenant_id'
+    )
 
     # Properties
     #: Specifies the status of the SNAT rule
@@ -37,12 +44,14 @@ class Snat(resource.Resource):
     #: Specifies the EIP ID
     #: Multiple EIPs are separated using commas
     floating_ip_id = resource.Body('floating_ip_id')
-    #: Specifies the gateway ID.
-    gateway_id = resource.Body('gateway_id')
     #: Specifies the ID of the SNAT rule.
     id = resource.Body('id')
+    #: Specifies the gateway ID.
+    nat_gateway_id = resource.Body('nat_gateway_id')
     #: Specifies the network ID
     network_id = resource.Body('network_id')
+    #: Specifies the project ID.
+    tenant_id = resource.Body('tenant_id')
     #: *0:* Either network_id or cidr can be specified in VPC
     #: *1:* only cidr can be specified over a Direct Connect connection
     #: Default: 0
@@ -51,5 +60,3 @@ class Snat(resource.Resource):
     #: *true:* SNAT rule is enabled
     #: *false:* SNAT rule is disabled
     status = resource.Body('status')
-    #: Specifies the project ID.
-    tenant_id = resource.Body('tenant_id')
