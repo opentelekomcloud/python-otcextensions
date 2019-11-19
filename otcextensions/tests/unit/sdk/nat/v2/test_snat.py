@@ -24,7 +24,7 @@ EXAMPLE = {
     'network_id': 'eaad9cd6-2372-4be1-9535-9bd37210ae7b',
     'cidr': None,
     'source_type': 0,
-    'project_id': '27e25061336f4af590faeabeb7fcd9a3',
+    'tenant_id': '27e25061336f4af590faeabeb7fcd9a3',
     'created_at': '2017-11-18 07:54:21.665430',
     'id': INSTANCE_ID,
     'floating_ip_address': '5.21.11.226'
@@ -54,7 +54,7 @@ class TestSnat(base.TestCase):
         self.assertEqual(EXAMPLE['network_id'], sot.network_id)
         self.assertIsNone(sot.cidr)
         self.assertEqual(EXAMPLE['source_type'], sot.source_type)
-        self.assertEqual(EXAMPLE['project_id'], sot.project_id)
+        self.assertEqual(EXAMPLE['tenant_id'], sot.tenant_id)
         self.assertEqual(EXAMPLE['created_at'], sot.created_at)
         self.assertEqual(EXAMPLE['id'], sot.id)
         self.assertEqual(EXAMPLE['floating_ip_address'],
