@@ -30,13 +30,13 @@ class Proxy(proxy.Proxy):
         """
         return self._create(_gateway.Gateway, **attrs)
 
-    def delete_gateway(self, id):
+    def delete_gateway(self, id, ignore_missing=True):
         """Delete a gateway
 
         :param dict attrs: Keyword arguments which will be used to create
             a :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
         """
-        return self._delete(_gateway.Gateway, id=id)
+        return self._delete(_gateway.Gateway, id=id, ignore_missing=ignore_missing)
 
     def gateways(self, **attrs):
         """Return a generator of gateways
@@ -85,13 +85,13 @@ class Proxy(proxy.Proxy):
         """
         return self._create(_snat.Snat, **attrs)
 
-    def delete_snat_rule(self, id):
+    def delete_snat_rule(self, id, ignore_missing=True):
         """Delete a SNAT rule
 
         :param dict attrs: Keyword arguments which will be used to create
             a :class:`~otcextensions.sdk.nat.v2.snat.Snat`
         """
-        return self._delete(_snat.Snat, id=id)
+        return self._delete(_snat.Snat, id=id, ignore_missing=ignore_missing)
 
     def get_snat_rule(self, snat_rule):
         """Get a single SNAT rule
@@ -126,13 +126,13 @@ class Proxy(proxy.Proxy):
         """
         return self._create(_dnat.Dnat, **attrs)
 
-    def delete_dnat_rule(self, id):
+    def delete_dnat_rule(self, id, ignore_missing=True):
         """Delete a DNAT rule
 
         :param dict attrs: Keyword arguments which will be used to create
             a :class:`~otcextensions.sdk.nat.v2.dnat.Dnat`
         """
-        return self._delete(_dnat.Dnat, id=id)
+        return self._delete(_dnat.Dnat, id=id, ignore_missing=ignore_missing)
 
     def get_dnat_rule(self, dnat_rule):
         """Get a single DNAT rule
