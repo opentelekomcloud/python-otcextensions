@@ -11,13 +11,13 @@
 # under the License.
 from openstack import service_description
 
-from otcextensions.sdk.ces.v2 import _proxy
+from otcextensions.sdk.ces.v1 import _proxy
 
 
 class CesService(service_description.ServiceDescription):
     """The Cloud Eye service."""
 
     supported_versions = {
-        '2': _proxy.Proxy
+        '1': _proxy.Proxy
     }
 

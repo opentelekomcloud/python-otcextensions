@@ -54,8 +54,9 @@ OTC_SERVICES = {
     },
     'ces': {
         'service_type': 'ces',
-        'append_project_id': True
-    }
+        'endpoint_service_type': 'cesv1',
+        'append_project_id': False,
+    },
     'cts': {
         'service_type': 'cts',
         # 'append_project_id': True,

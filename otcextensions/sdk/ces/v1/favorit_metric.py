@@ -11,24 +11,28 @@
 # under the License.
 from openstack import resource
 
+class DimensionsSpec(resource.Resource):
 
-class Metric(resource.Resource):
-    resource_key = 'metric'
+    # Properties
+    #: dimension.name: object type e.g. ECS (instance_id)
+    name = resource.Body('name')
+    #: dimension.value: object id e.g. ECS ID
+    value = resource.Body('value')
+
+
+class FavoriteMetric(resource.Resource):
     resources_key = 'metrics'
-    base_path = '/metrics'
+    base_path = '/favorite-metrics'
 
     # capabilities
     allow_list = True
 
-    _query_mapping = resource.QueryParameters(
-        'dim', 'limit', 'metric_name', 'namespace', 'order', 'start'
-    )
 
     # Properties
     #: List of metric dimensions
     #: dimension.name: object type e.g. ECS (instance_id)
     #: dimension.value: object id e.g. ECS ID
-    dimensions = resource.Body('dimensions')
+    dimensions = resource.Body('dimensions', type=DimensionsSpec)
     #: Shows the metric name
     metric_name = resource.Body('metric_name')
     #: Indicates the metric namespaces
