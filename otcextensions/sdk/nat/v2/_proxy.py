@@ -36,7 +36,8 @@ class Proxy(proxy.Proxy):
         :param dict attrs: Keyword arguments which will be used to create
             a :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
         """
-        return self._delete(_gateway.Gateway, id=id, ignore_missing=ignore_missing)
+        return self._delete(_gateway.Gateway, id=id,
+                            ignore_missing=ignore_missing)
 
     def gateways(self, **attrs):
         """Return a generator of gateways
