@@ -11,6 +11,7 @@
 # under the License.
 from openstack import resource
 
+
 class DimensionsSpec(resource.Resource):
 
     # Properties
@@ -26,7 +27,6 @@ class FavoriteMetric(resource.Resource):
 
     # capabilities
     allow_list = True
-
 
     # Properties
     #: List of metric dimensions

@@ -12,15 +12,15 @@
 from openstack import resource
 
 
-#class MetaDataSpec(resource.Resource):
+# class MetaDataSpec(resource.Resource):
 
-    # Properties
-    # Number of returned results / alarms
-#    count = resource.Body('count')
-    # Indicates pagination marker
-#    marker = resource.Body('marker')
-    # Number of total queried results / alarms
-#    total = resource.Body('total')
+# Properties
+# Number of returned results / alarms
+# count = resource.Body('count')
+# Indicates pagination marker
+# marker = resource.Body('marker')
+# Number of total queried results / alarms
+# total = resource.Body('total')
 
 class AlarmActionsSpec(resource.Resource):
 
@@ -42,7 +42,7 @@ class ConditionSpec(resource.Resource):
     # been generated
     count = resource.Body('unit', type=int)
     # indicates the data rollup method
-    # values: Max., Min., average, Sum. or Variance
+    # values: max, min, average, sum, variance
     filterstring = resource.Body('filter')
     # Indicates the interval (in seconds) for checking
     # whether the configured alarm rules are met
@@ -66,7 +66,8 @@ class MetricSpec(resource.Resource):
 
     # Properties
     # List of metric dimensions
-    dimensions = resource.Body('dimensions', type=list, list_type=DimensionsSpec)
+    dimensions = resource.Body('dimensions', type=list,
+                               list_type=DimensionsSpec)
     # Metric name, such as cpu_util in ECS metrics
     metric_name = resource.Body('metric_name')
     # Metric Namespace
@@ -109,13 +110,8 @@ class Alarm(resource.Resource):
     alarm_state = resource.Body('alarm_state')
     # Describes alarm triggering condititon
     condititon = resource.Body('condition', type=ConditionSpec)
-    # Metadata of query results and paging information
-    #meta_data = resource.Body('meta_data', type=MetaDataSpec)
-    # List of alarm objects
-    #metric_alarms = resource.Body('metric_alarms', type=list, list_type=MetricAlarmsSpec)
     # Specification of specific alarm
     metric = resource.Body('metric', type=MetricSpec)
     # Time when alarm status changed
     # UNIX timestamp in ms
     update_time = resource.Body('update_time')
-

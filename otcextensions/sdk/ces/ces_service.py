@@ -20,4 +20,3 @@ class CesService(service_description.ServiceDescription):
     supported_versions = {
         '1': _proxy.Proxy
     }
-

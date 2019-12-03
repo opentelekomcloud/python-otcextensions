@@ -10,8 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from otcextensions.sdk.ces.v1 import metric as _metric
+from otcextensions.sdk.ces.v1 import quota as _quota
 
 from openstack import proxy
+
 
 class Proxy(proxy.Proxy):
 
@@ -25,4 +27,12 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~openstack.database.v1.metric.Metric`
         """
         return self._list(_metric.Metric, **query)
- 
+
+    # Quotas
+    def quotas(self):
+        """Return a generator of quotas
+
+        :returns: A generator of metric objects
+        :rtype: :class:`~openstack.database.v1.quotas.Quotas`
+        """
+        return self._list(_quota.Quota)

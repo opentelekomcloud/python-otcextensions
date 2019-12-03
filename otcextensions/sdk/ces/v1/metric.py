@@ -37,12 +37,11 @@ class Metric(resource.Resource):
     #: List of metric dimensions
     #: dimension.name: object type e.g. ECS (instance_id)
     #: dimension.value: object id e.g. ECS ID
-    dimensions = resource.Body('dimensions', type=list, list_type=DimensionsSpec)
+    dimensions = resource.Body('dimensions', type=list,
+                               list_type=DimensionsSpec)
     #: Shows the metric name
     metric_name = resource.Body('metric_name')
     #: Indicates the metric namespaces
     namespace = resource.Body('namespace')
     #: Indicates the metric unit
     unit = resource.Body('unit')
-
-
