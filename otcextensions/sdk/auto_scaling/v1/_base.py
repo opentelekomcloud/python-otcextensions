@@ -49,40 +49,40 @@ class Resource(resource.Resource):
                 return None
         return current_data
 
-    @classmethod
-    def _prepare_override_args(cls,
-                               endpoint_override=None,
-                               request_headers=None,
-                               additional_headers=None,
-                               requests_auth=None):
-        """Prepare additional (override) arguments for the REST call
-
-        :param endpoint_override: optional endpoint_override argument
-        :param request_headers: original calculated request headers
-        :param additional_headers: additional headers to be set into request
-
-        :returns arguments dict
-        """
-        req_args = {}
-
-        if additional_headers and request_headers:
-            req_args['headers'] = utils.merge_two_dicts(
-                additional_headers,
-                request_headers)
-        else:
-            if additional_headers:
-                req_args['headers'] = additional_headers
-            if request_headers:
-                req_args['headers'] = request_headers
-
-        if endpoint_override:
-            req_args['endpoint_override'] = endpoint_override
-
-        if requests_auth:
-            req_args['requests_auth'] = requests_auth
-
-        return req_args
-
+#    @classmethod
+#    def _prepare_override_args(cls,
+#                               endpoint_override=None,
+#                               request_headers=None,
+#                               additional_headers=None,
+#                               requests_auth=None):
+#        """Prepare additional (override) arguments for the REST call
+#
+#        :param endpoint_override: optional endpoint_override argument
+#        :param request_headers: original calculated request headers
+#        :param additional_headers: additional headers to be set into request
+#
+#        :returns arguments dict
+#        """
+#        req_args = {}
+#
+#        if additional_headers and request_headers:
+#            req_args['headers'] = utils.merge_two_dicts(
+#                additional_headers,
+#                request_headers)
+#        else:
+#            if additional_headers:
+#                req_args['headers'] = additional_headers
+#            if request_headers:
+#                req_args['headers'] = request_headers
+#
+#        if endpoint_override:
+#            req_args['endpoint_override'] = endpoint_override
+#
+#        if requests_auth:
+#            req_args['requests_auth'] = requests_auth
+#
+#        return req_args
+#
     # Due to the other LIST url need to override
     # It is not efficient (as of implementation) to extend general list
     # with support of other url just for one service

@@ -211,7 +211,9 @@ def raise_from_response(response, error_message=None):
     if response.status_code < 400:
         return
 
-    if response.status_code == 404:
+    if response.status_code == 409:
+        cls = exceptions.ConflictException
+    elif response.status_code == 404:
         cls = exceptions.NotFoundException
     elif response.status_code == 400:
         cls = exceptions.BadRequestException
@@ -222,8 +224,6 @@ def raise_from_response(response, error_message=None):
     content_type = response.headers.get('content-type', '')
     if response.content and 'application/json' in content_type:
         # Iterate over the nested objects to retrieve "message" attribute.
-        # TODO(shade) Add exception handling for times when the content type
-        # is lying.
 
         try:
             content = response.json()
@@ -231,6 +231,11 @@ def raise_from_response(response, error_message=None):
             messages = []
             if error:
                 messages = [error.get('message', None)]
+            elif isinstance(content, dict):
+                if 'message' in content:
+                    messages = [content['message'], ]
+                if 'error_code' in content:
+                    details = content['error_code']
             else:
                 messages = [obj.get('message') for obj in content.values()
                             if isinstance(obj, dict)]
@@ -246,10 +251,8 @@ def raise_from_response(response, error_message=None):
         details = list(set([msg for msg in details if msg]))
         # Return joined string separated by colons.
         details = ': '.join(details)
-    if not details and response.reason:
-        details = response.reason
-    elif not details and response.text:
-        details = response.text
+    if not details:
+        details = response.reason if response.reason else response.text
 
     http_status = response.status_code
     request_id = response.headers.get('x-openstack-request-id')
