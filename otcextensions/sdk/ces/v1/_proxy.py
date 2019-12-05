@@ -17,6 +17,8 @@ from openstack import proxy
 
 class Proxy(proxy.Proxy):
 
+    skip_discovery = True
+
     # Metrics
     def metric(self, **query):
         """Return a generator of metrics
