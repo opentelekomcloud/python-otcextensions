@@ -12,7 +12,7 @@
 from openstack import resource
 
 
-class ResourcesSpec(resource.Body):
+class ResourcesSpec(resource.Resource):
 
     # Properties
     # quota type
