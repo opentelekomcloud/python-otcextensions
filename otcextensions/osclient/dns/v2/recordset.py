@@ -84,8 +84,8 @@ class ShowRS(command.ShowOne):
 
         parser.add_argument(
             'recordset',
-            metavar='<id>',
-            help=_('UUID of the recordset.')
+            metavar='<rs>',
+            help=_('UUID or name of the recordset.')
         )
 
         return parser
@@ -98,7 +98,7 @@ class ShowRS(command.ShowOne):
             parsed_args.zone,
         )
 
-        obj = client.get_recordset(zone=zone, recordset=parsed_args.recordset)
+        obj = client.find_recordset(zone=zone, recordset=parsed_args.recordset)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
@@ -227,8 +227,8 @@ class SetRS(command.ShowOne):
         )
         parser.add_argument(
             'recordset',
-            metavar='<id>',
-            help=_('UUID of the recordset.')
+            metavar='<rs>',
+            help=_('UUID or name of the recordset.')
         )
         parser.add_argument(
             '--description',
@@ -273,7 +273,7 @@ class SetRS(command.ShowOne):
         for rec in parsed_args.record:
             attrs['records'].append(rec)
 
-        recordset = client.get_recordset(parsed_args.recordset, zone.id)
+        recordset = client.find_recordset(zone, parsed_args.recordset)
 
         obj = client.update_recordset(
             recordset=recordset,

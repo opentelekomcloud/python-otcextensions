@@ -92,8 +92,8 @@ class TestShowRS(fakes.TestDNS):
         self.cmd = recordset.ShowRS(self.app, None)
 
         self.client.find_zone = mock.Mock()
-        self.client.get_recordset = mock.Mock()
-        self.client.api_mock = self.client.get_recordset
+        self.client.find_recordset = mock.Mock()
+        self.client.api_mock = self.client.find_recordset
 
     def test_default(self):
         arglist = [
@@ -214,10 +214,10 @@ class TestSetRS(fakes.TestDNS):
 
         self.client.update_recordset = mock.Mock()
         self.client.find_zone = mock.Mock()
-        self.client.get_recordset = mock.Mock()
+        self.client.find_recordset = mock.Mock()
         self.client.api_mock = self.client.update_recordset
 
-    def test_create(self):
+    def test_set(self):
         arglist = [
             'zn',
             'rs',
@@ -245,12 +245,15 @@ class TestSetRS(fakes.TestDNS):
         self.client.api_mock.side_effect = [
             self._data
         ]
-        self.client.get_recordset.side_effect = [
+        self.client.find_recordset.side_effect = [
             self._data
         ]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.find_recordset.assert_called_with(self._zone,
+                                                      'rs')
 
         self.client.api_mock.assert_called_once_with(
             recordset=self._data,
