@@ -28,7 +28,7 @@ class Dnat(resource.Resource):
         'floating_ip_address', 'floating_ip_id', 'id',
         'internal_service_port', 'limit', 'nat_gateway_id', 'network_id',
         'port_id', 'private_id', 'protocol', 'source_type', 'status',
-        'tenant_id'
+        'project_id'
     )
 
     # Properties
@@ -61,9 +61,9 @@ class Dnat(resource.Resource):
     #: Parameter is used in the Direct Connect scenario.
     #: This parameter is an alternative to port_id.
     private_ip = resource.Body('private_ip')
+    #: Specifies the project ID.
+    project_id = resource.Body('tenant_id')
     #: Specifies the protocol type. Currently TCP(6), UDP(17) and ANY(0)
     protocol = resource.Body('protocol')
     #: Specifies the status of the DNAT rule
     status = resource.Body('status')
-    #: Specifies the project ID.
-    tenant_id = resource.Body('tenant_id')
