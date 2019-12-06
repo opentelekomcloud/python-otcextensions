@@ -145,18 +145,11 @@ class Resource(resource.Resource):
 
         limit = query_params.get('limit')
 
-        # Build additional arguments to the GET call
-        get_args = cls._prepare_override_args(
-            endpoint_override=endpoint_override,
-            # request_headers=request.headers,
-            additional_headers=headers)
-
         total_yielded = 0
         while uri:
             response = session.get(
                 uri,
-                params=query_params.copy(),
-                **get_args
+                params=query_params.copy()
             )
             exceptions.raise_from_response(response)
             data = response.json()
