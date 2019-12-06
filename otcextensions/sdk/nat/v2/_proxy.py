@@ -20,8 +20,7 @@ class Proxy(proxy.Proxy):
 
     skip_discovery = True
 
-# Gateway
-
+    # ======== Gateway ========
     def create_gateway(self, **attrs):
         """Create a new gateway from attributes
 
@@ -30,23 +29,40 @@ class Proxy(proxy.Proxy):
         """
         return self._create(_gateway.Gateway, **attrs)
 
+<<<<<<< Updated upstream
     def delete_gateway(self, id):
+=======
+    def delete_gateway(self, gateway, ignore_missing=True):
+>>>>>>> Stashed changes
         """Delete a gateway
 
-        :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
-        """
-        return self._delete(_gateway.Gateway, id=id)
+        :param gateway: key id or an instance of
+            :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the gateway does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent gateway.
 
-    def gateways(self, **attrs):
+        :returns: Gateway been deleted
+        :rtype: :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
+        """
+<<<<<<< Updated upstream
+        return self._delete(_gateway.Gateway, id=id)
+=======
+        return self._delete(_gateway.Gateway, gateway,
+                            ignore_missing=ignore_missing)
+>>>>>>> Stashed changes
+
+    def gateways(self, **query):
         """Return a generator of gateways
 
-        :param kwargs query: Optional query parameters to be sent to limit
+        :param dict query: Optional query parameters to be sent to limit
             the resources being returned.
         :returns: A generator of gateway objects
         :rtype: :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
         """
-        return self._list(_gateway.Gateway, **attrs)
+        return self._list(_gateway.Gateway, **query)
 
     def get_gateway(self, gateway):
         """Get a single gateway
@@ -67,16 +83,15 @@ class Proxy(proxy.Proxy):
         :param gateway: Either the ID of a gateway or a
                        :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
                        instance.
-        :attrs attrs: The attributes to update on the server represented
-                       by ``server``.
+        :param dict attrs: The attributes to update on the gateway represented
+                       by ``gateway``.
 
         :returns: The updated gateway
         :rtype: :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
         """
         return self._update(_gateway.Gateway, gateway, **attrs)
 
-# SNAT rules
-
+    # ======== SNAT rules ========
     def create_snat_rule(self, **attrs):
         """Create a new SNAT rule from attributes
 
@@ -85,13 +100,27 @@ class Proxy(proxy.Proxy):
         """
         return self._create(_snat.Snat, **attrs)
 
+<<<<<<< Updated upstream
     def delete_snat_rule(self, id):
+=======
+    def delete_snat_rule(self, snat, ignore_missing=True):
+>>>>>>> Stashed changes
         """Delete a SNAT rule
 
-        :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.nat.v2.snat.Snat`
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the SNAT rule does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent SNAT rule.
+
+        :returns: SNAT rule been deleted
+        :rtype: :class:`~otcextensions.sdk.nat.v2.snat.Snat`
         """
+<<<<<<< Updated upstream
         return self._delete(_snat.Snat, id=id)
+=======
+        return self._delete(_snat.Snat, snat, ignore_missing=ignore_missing)
+>>>>>>> Stashed changes
 
     def get_snat_rule(self, snat_rule):
         """Get a single SNAT rule
@@ -106,18 +135,17 @@ class Proxy(proxy.Proxy):
         """
         return self._get(_snat.Snat, snat_rule)
 
-    def snat_rules(self, **attrs):
+    def snat_rules(self, **query):
         """Return a generator of SNAT rules
 
-        :param attrs query: Optional query parameters to be sent to limit
+        :param dict query: Optional query parameters to be sent to limit
             the resources being returned.
-        :returns: A generator of gateway objects
-        :rtype: :class:`~otcextensions.sdk.nat.v2.snat.SNAT`
+        :returns: A generator of Snat rule objects
+        :rtype: :class:`~otcextensions.sdk.nat.v2.snat.Snat`
         """
-        return self._list(_snat.Snat, **attrs)
+        return self._list(_snat.Snat, **query)
 
-# DNAT rules
-
+    # ======== DNAT rules ========
     def create_dnat_rule(self, **attrs):
         """Create a new DNAT rule from attributes
 
@@ -126,13 +154,29 @@ class Proxy(proxy.Proxy):
         """
         return self._create(_dnat.Dnat, **attrs)
 
+<<<<<<< Updated upstream
     def delete_dnat_rule(self, id):
+=======
+    def delete_dnat_rule(self, dnat, ignore_missing=True):
+>>>>>>> Stashed changes
         """Delete a DNAT rule
 
-        :param dict attrs: Keyword arguments which will be used to create
+        :param dict attrs: Keyword arguments which will be used to delete
             a :class:`~otcextensions.sdk.nat.v2.dnat.Dnat`
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the DNAT rule does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent DNAT rule.
+
+        :returns: DNAT rule been deleted
+        :rtype: :class:`~otcextensions.sdk.nat.v2.dnat.Dnat`
         """
+<<<<<<< Updated upstream
         return self._delete(_dnat.Dnat, id=id)
+=======
+        return self._delete(_dnat.Dnat, dnat, ignore_missing=ignore_missing)
+>>>>>>> Stashed changes
 
     def get_dnat_rule(self, dnat_rule):
         """Get a single DNAT rule
@@ -147,12 +191,12 @@ class Proxy(proxy.Proxy):
         """
         return self._get(_dnat.Dnat, dnat_rule)
 
-    def dnat_rules(self, **attrs):
+    def dnat_rules(self, **query):
         """Return a generator of DNAT rules
 
-        :param attrs query: Optional query parameters to be sent to limit
+        :param dict query: Optional query parameters to be sent to limit
             the resources being returned.
         :returns: A generator of DNAT rules objects
         :rtype: :class:`~otcextensions.sdk.nat.v2.dnat.Dnat`
         """
-        return self._list(_dnat.Dnat, **attrs)
+        return self._list(_dnat.Dnat, **query)
