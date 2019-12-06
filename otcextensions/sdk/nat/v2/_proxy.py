@@ -29,11 +29,7 @@ class Proxy(proxy.Proxy):
         """
         return self._create(_gateway.Gateway, **attrs)
 
-<<<<<<< Updated upstream
-    def delete_gateway(self, id):
-=======
     def delete_gateway(self, gateway, ignore_missing=True):
->>>>>>> Stashed changes
         """Delete a gateway
 
         :param gateway: key id or an instance of
@@ -47,12 +43,8 @@ class Proxy(proxy.Proxy):
         :returns: Gateway been deleted
         :rtype: :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
         """
-<<<<<<< Updated upstream
-        return self._delete(_gateway.Gateway, id=id)
-=======
         return self._delete(_gateway.Gateway, gateway,
                             ignore_missing=ignore_missing)
->>>>>>> Stashed changes
 
     def gateways(self, **query):
         """Return a generator of gateways
@@ -100,11 +92,7 @@ class Proxy(proxy.Proxy):
         """
         return self._create(_snat.Snat, **attrs)
 
-<<<<<<< Updated upstream
-    def delete_snat_rule(self, id):
-=======
     def delete_snat_rule(self, snat, ignore_missing=True):
->>>>>>> Stashed changes
         """Delete a SNAT rule
 
         :param bool ignore_missing: When set to ``False``
@@ -116,11 +104,7 @@ class Proxy(proxy.Proxy):
         :returns: SNAT rule been deleted
         :rtype: :class:`~otcextensions.sdk.nat.v2.snat.Snat`
         """
-<<<<<<< Updated upstream
-        return self._delete(_snat.Snat, id=id)
-=======
         return self._delete(_snat.Snat, snat, ignore_missing=ignore_missing)
->>>>>>> Stashed changes
 
     def get_snat_rule(self, snat_rule):
         """Get a single SNAT rule
@@ -154,11 +138,7 @@ class Proxy(proxy.Proxy):
         """
         return self._create(_dnat.Dnat, **attrs)
 
-<<<<<<< Updated upstream
-    def delete_dnat_rule(self, id):
-=======
     def delete_dnat_rule(self, dnat, ignore_missing=True):
->>>>>>> Stashed changes
         """Delete a DNAT rule
 
         :param dict attrs: Keyword arguments which will be used to delete
@@ -172,11 +152,7 @@ class Proxy(proxy.Proxy):
         :returns: DNAT rule been deleted
         :rtype: :class:`~otcextensions.sdk.nat.v2.dnat.Dnat`
         """
-<<<<<<< Updated upstream
-        return self._delete(_dnat.Dnat, id=id)
-=======
         return self._delete(_dnat.Dnat, dnat, ignore_missing=ignore_missing)
->>>>>>> Stashed changes
 
     def get_dnat_rule(self, dnat_rule):
         """Get a single DNAT rule
