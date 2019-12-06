@@ -1,3 +1,5 @@
+<<<<<<< Updated upstream
+=======
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -85,6 +87,7 @@ class TestNatDnatRule(TestNatProxy):
 
     def test_dnat_rule_get(self):
         self.verify_get(self.proxy.get_dnat_rule, dnat.Dnat)
-
+# move
     def test_dnat_rules(self):
         self.verify_list(self.proxy.dnat_rules, dnat.Dnat)
+>>>>>>> Stashed changes
