@@ -40,7 +40,7 @@ class ConditionSpec(resource.Resource):
     comparison_operator = resource.Body('comparison_operator')
     # Indicates how many consecutive times an alarm has
     # been generated
-    count = resource.Body('unit', type=int)
+    count = resource.Body('count', type=int)
     # indicates the data rollup method
     # values: max, min, average, sum, variance
     filterstring = resource.Body('filter')
@@ -48,7 +48,7 @@ class ConditionSpec(resource.Resource):
     # whether the configured alarm rules are met
     period = resource.Body('period', type=int)
     # Data unit
-    unit = resource.Body('unit', type=str)
+    unit = resource.Body('unit')
     # Alarm threshold
     value = resource.Body('value')
 
