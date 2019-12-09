@@ -48,9 +48,9 @@ class ConditionSpec(resource.Resource):
     # whether the configured alarm rules are met
     period = resource.Body('period', type=int)
     # Data unit
-    unit = resource.Body('unit')
+    xunit = resource.Body('unit', type=str)
     # Alarm threshold
-    value = resource.Body('value', type=int)
+    value = resource.Body('value')
 
 
 class DimensionsSpec(resource.Resource):
