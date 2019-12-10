@@ -144,7 +144,7 @@ class TestRdsInstance(base.TestCase):
             ))
             self.assertIsNotNone(json_output)
 
-    #def test_08_create_instance_from_backup(self):
+    # def test_08_create_instance_from_backup(self):
     #    json_output = json.loads(self.openstack(
     #        'rds instance show -f json ' + self.INSTANCE_LIST[1]))
     #    from_instance = json_output['id']
@@ -271,7 +271,6 @@ class TestRdsInstance(base.TestCase):
             'region list -f json'))
         return json_output[0]['Region']
 
-
     def _get_latest_version(self):
         json_output = json.loads(self.openstack(
             'rds datastore version list -f json ' + self.DATASTORE))
@@ -280,16 +279,22 @@ class TestRdsInstance(base.TestCase):
 
     def _get_default_flavor(self, flavor_type=None):
         if not self.VERSION:
-            TestRdsInstance.VERSION = self._get_latest_datastore_version(self.DATASTORE)
+            TestRdsInstance.VERSION = self._get_latest_datastore_version(
+                self.DATASTORE)
         json_output = json.loads(self.openstack(
             'rds flavor list -f json {} {}'.format(
                 self.DATASTORE, self.VERSION)
         ))
         if flavor_type:
-            flavor_list  = [[data['vcpus'], data['name']] for data in json_output if data['instance_mode'] == flavor_type.lower()]
+            flavor_list = [[data['vcpus'], data['name']]
+                           for data in json_output if
+                           data['instance_mode'] == flavor_type.lower()]
         else:
-            flavor_list = [[data['vcpus'], data['name']] for data in json_output if data['instance_mode'] == 'single']
-        flavors_list = flavor_list.sort(key=lambda x: int(x[0]))
+            flavor_list = [[data['vcpus'], data['name']]
+                           for data in json_output if
+                           data['instance_mode'] == 'single']
+        flavor_list = sorted(flavor_list, key=lambda x: int(x[0]))
+        print(flavor_list)
         return flavor_list[0][1]
 
     def _delete_instance(self, instance_name):
