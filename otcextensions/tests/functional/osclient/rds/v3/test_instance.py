@@ -294,7 +294,6 @@ class TestRdsInstance(base.TestCase):
                            for data in json_output if
                            data['instance_mode'] == 'single']
         flavor_list = sorted(flavor_list, key=lambda x: int(x[0]))
-        print(flavor_list)
         return flavor_list[0][1]
 
     def _delete_instance(self, instance_name):
