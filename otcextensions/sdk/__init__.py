@@ -108,13 +108,6 @@ OTC_SERVICES = {
 }
 
 
-# OPENSTACK_CLASS_PATCH = {
-#     openstack.compute.v2.server.Server: {
-#         'add_tag': server.Server.add_tag
-#     }
-# }
-
-
 def _get_descriptor(service_name):
     """Find ServiceDescriptor class by the service name
     and instanciate it
@@ -213,9 +206,6 @@ def patch_openstack_resources():
         server.Server._get_tag_struct
     openstack.compute.v2.server.Server.add_tag = server.Server.add_tag
     openstack.compute.v2.server.Server.remove_tag = server.Server.remove_tag
-#    for (pkg, mapping) in OPENSTACK_CLASS_PATCH.items():
-#        for (func, replacement) in mapping.items():
-#            setattr(pkg, func, replacement)
 
 
 def load(conn, **kwargs):
