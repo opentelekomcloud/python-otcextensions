@@ -9,9 +9,12 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from otcextensions.sdk.ces.v1 import metric as _metric
-from otcextensions.sdk.ces.v1 import quota as _quota
 from otcextensions.sdk.ces.v1 import alarm as _alarm
+from otcextensions.sdk.ces.v1 import event_data as _event_data
+from otcextensions.sdk.ces.v1 import metric as _metric
+from otcextensions.sdk.ces.v1 import metric_data as _metric_data
+from otcextensions.sdk.ces.v1 import quota as _quota
+
 
 from openstack import proxy
 
@@ -19,6 +22,72 @@ from openstack import proxy
 class Proxy(proxy.Proxy):
 
     skip_discovery = True
+
+    # ======== Alarms ========
+    def alarms(self):
+        """Return a generator of alarms
+
+        :returns: A generator of alarm objects
+        :rtype: :class:`~otcextensions.sdk.ces.v1.alarm.Alarm`
+        """
+        return self._list(_alarm.Alarm)
+
+    def get_alarm(self, alarm):
+        """Return a single alarm
+
+        :param alarm: The value can be the ID of a alarm or a
+                       :class:`~otcextensions.sdk.ces.v1.alarm.Alarm`
+                        instance.
+        :returns: A generator of alarm objects
+        :rtype: :class:`~otcextensions.sdk.ces.v1.alarm.Alarm`
+        """
+        return self._get(_alarm.Alarm)
+
+    def create_alarm(self, **attrs):
+        """Create a new Alarm from attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`otcextensions.sdk.ces.v1.alarm.Alarm`
+        """
+        return self._create(_alarm.Alarm, **attrs)
+
+    def delete_alarm(self, alarm, ignore_missing=True):
+        """Delete a Alarm
+
+        :param alarm: key id or an instance of
+            :class:`otcextensions.sdk.ces.v1.alarm.Alarm`
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the alarm does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent alarm.
+        :returns: Alarm been deleted
+        :rtype: :class:`otcextensions.sdk.ces.v1.alarm.Alarm`
+        """
+        return self._delete(_alarm.Alarm, alarm=alarm,
+                            ignore_missing=ignore_missing)
+
+    def update_alarm(self, alarm, **attrs):
+        """Update an Alarm from attributes
+
+        : param alarm: An id or an instance of
+            :class:`otcextensions.sdk.ces.v1.alarm.Alarm`
+        :param dict attrs: Keyword arguments which will be used to update
+            a :class:`otcextensions.sdk.ces.v1.alarm.Alarm`
+        """
+        return self._update(_alarm.Alarm, alarm, **attrs)
+
+    # ======== Event-Data ========
+    def event_data(self, **query):
+        """Return a generator of host configurations for a specified
+           event type in a specified period of time.
+
+        :param kwargs query: Optional query parameters to be sent to limit
+                              the resources being returned.
+        :returns: A generator of event data objects
+        :rtype: :class:`~otcextensions.sdk.ces.v1.event_data.EventData`
+        """
+        return self._list(_event_data.EventData, **query)
 
     # ======== Metrics ========
     def metrics(self, **query):
@@ -31,6 +100,25 @@ class Proxy(proxy.Proxy):
         """
         return self._list(_metric.Metric, **query)
 
+    # ======== Metric-Data ========
+    def metric_data(self, **query):
+        """Return a generator of Metric Data
+
+        :param kwargs query: Optional query parameters to be sent to limit
+                              the resources being returned.
+        :returns: A generator of metric data objects
+        :rtype: :class:`~otcextensions.sdk.ces.v1.metric_data.MetricData`
+        """
+        return self._list(_metric_data.MetricData, **query)
+
+    # def create_metric_data(self, **attrs):
+    #    """Create a new Alarm from attributes
+
+    #    :param dict attrs: Keyword arguments which will be used to create
+    #        a :class:`~otcextensions.sdk.ces.v1.metric_data.MetricData`
+    #    """
+    #    return self._create(_metric_data.MetricData, **attrs)
+
     # ======== Quotas ========
     def quotas(self):
         """Return a generator of quotas
@@ -39,12 +127,3 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.ces.v1.quota.Quota`
         """
         return self._list(_quota.Quota)
-
-    # ======== Alarms ========
-    def alarms(self):
-        """Return a generator of alarms
-
-        :returns: A generator of alarm objects
-        :rtype: :class:`~otcextensions.sdk.ces.v1.alarm.Alarm`
-        """
-        return self._list(_alarm.Alarm)

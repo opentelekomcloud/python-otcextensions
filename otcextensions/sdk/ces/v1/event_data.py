@@ -15,32 +15,27 @@ from openstack import resource
 class DatapointsSpec(resource.Resource):
 
     # Properties
-    # Metric Value, the value is the same as that of
-    # parameter filter
-    average = resource.Body('average')
-    maximum = resource.Body('max')
-    minimum = resource.Body('min')
-    sumspec = resource.Body('sum')
-    variance = resource.Body('variance')
     # time of the metric collection
     timestamp = resource.Body('timestamp')
-    # indicates the metric unit
-    unit = resource.Body('unit')
+    # Indicates the event type e.g. instance_host_info
+    typespec = resource.Body('type')
+    # host configuration information
+    value = resource.Body('value')
 
 
-class MetricData(resource.Resource):
+class EventData(resource.Resource):
 
-    resource_key = ''
-    resources_key = ''
-    base_path = '/metric-data'
+    base_path = '/event-data'
 
     # capabilities
     allow_list = True
     # allow_create = True
 
+    _query_mapping = resource.QueryParameters(
+        'dim', 'from', 'to', 'namespace', 'type'
+    )
+
     # Properties
     # Datapoints retrieve the metrics data list
     datapoints = resource.Body('datapoints', type=list,
                                list_type=DatapointsSpec)
-    # Metric Name like 'cpu_util'
-    metric_name = resource.Body('metric_name')

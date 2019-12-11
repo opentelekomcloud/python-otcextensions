@@ -75,10 +75,15 @@ class MetricSpec(resource.Resource):
 
 
 class Alarm(resource.Resource):
+
     resources_key = 'metric_alarms'
     base_path = '/alarms'
 
     # capabilities
+    allow_commit = True
+    allow_create = True
+    allow_fetch = True
+    allow_delete = True
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
