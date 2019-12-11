@@ -121,9 +121,9 @@ class DeleteRS(command.Command):
 
         parser.add_argument(
             'recordset',
-            metavar='<id>',
+            metavar='<rs>',
             nargs='+',
-            help=_('UUID of the recordset.')
+            help=_('UUID or Name of the recordset.')
         )
 
         return parser
@@ -133,6 +133,8 @@ class DeleteRS(command.Command):
             client = self.app.client_manager.dns
             zone = client.find_zone(parsed_args.zone, ignore_missing=False)
             for rs in parsed_args.recordset:
+                rs = client.find_recordset(zone=zone, name_or_id=rs,
+                                           ignore_missing=False)
                 client.delete_recordset(
                     recordset=rs, zone=zone, ignore_missing=False)
 
