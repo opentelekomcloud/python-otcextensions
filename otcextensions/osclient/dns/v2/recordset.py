@@ -98,7 +98,8 @@ class ShowRS(command.ShowOne):
             parsed_args.zone,
         )
 
-        obj = client.find_recordset(zone=zone, recordset=parsed_args.recordset)
+        obj = client.find_recordset(zone=zone,
+                                    name_or_id=parsed_args.recordset)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
@@ -273,7 +274,8 @@ class SetRS(command.ShowOne):
         for rec in parsed_args.record:
             attrs['records'].append(rec)
 
-        recordset = client.find_recordset(zone, parsed_args.recordset)
+        recordset = client.find_recordset(zone=zone,
+                                          name_or_id=parsed_args.recordset)
 
         obj = client.update_recordset(
             recordset=recordset,
