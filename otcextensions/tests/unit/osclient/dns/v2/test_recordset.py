@@ -122,7 +122,7 @@ class TestShowRS(fakes.TestDNS):
 
         self.client.api_mock.assert_called_once_with(
             zone=self._zone,
-            recordset='rs'
+            name_or_id='rs'
         )
 
         self.assertEqual(self.columns, columns)
@@ -252,8 +252,8 @@ class TestSetRS(fakes.TestDNS):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_recordset.assert_called_with(self._zone,
-                                                      'rs')
+        self.client.find_recordset.assert_called_with(zone=self._zone,
+                                                      name_or_id='rs')
 
         self.client.api_mock.assert_called_once_with(
             recordset=self._data,
