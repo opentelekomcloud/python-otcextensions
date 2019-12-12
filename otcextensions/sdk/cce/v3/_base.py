@@ -127,6 +127,27 @@ class Resource(resource.Resource):
         # Overriden here to override prepend_key default value
         return super(Resource, self).create(session, prepend_key, base_path)
 
+    def delete(self, session, error_message=None):
+        """Delete the remote resource based on this instance.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+
+        :return: This :class:`Resource` instance.
+        :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
+                 :data:`Resource.allow_commit` is not set to ``True``.
+        :raises: :exc:`~openstack.exceptions.ResourceNotFound` if
+                 the resource was not found.
+        """
+
+        response = self._raw_delete(session)
+        kwargs = {}
+        if error_message:
+            kwargs['error_message'] = error_message
+
+        self._translate_response(response, has_body=True, **kwargs)
+        return self
+
     @classmethod
     def list(cls, session, paginated=True, base_path=None, **params):
         """This method is a generator which yields resource objects.
