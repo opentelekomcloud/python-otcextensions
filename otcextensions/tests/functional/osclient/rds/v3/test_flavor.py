@@ -14,6 +14,7 @@ import json
 import uuid
 
 from openstackclient.tests.functional import base
+from tempest.lib import exceptions
 
 
 class TestRdsFlavor(base.TestCase):
@@ -23,14 +24,50 @@ class TestRdsFlavor(base.TestCase):
     OTHER_NAME = uuid.uuid4().hex
 
     def test_flavor_list(self):
-        json_output = json.loads(self.openstack(
-            'rds datastore version list postgresql -f json '
+        datastores = json.loads(self.openstack(
+            'rds datastore type list -f json'
         ))
-        ver = json_output[0]['Name']
+        for datastore in datastores:
+            datastore = datastore['Name']
+            json_output = json.loads(self.openstack(
+                'rds datastore version list ' + datastore + ' -f json '
+            ))
 
-        json_output = json.loads(self.openstack(
-            'rds flavor list postgresql {ver} -f json '.format(
-                ver=ver)
+            for ds_ver in json_output:
+                json_output = json.loads(self.openstack(
+                    'rds flavor list {ds} {ver} -f json'.format(
+                        ds=datastore,
+                        ver=ds_ver['Name'])
+                ))
+
+                self.assertIsNotNone(json_output)
+                self.assertEqual(
+                    ['name', 'instance_mode', 'vcpus', 'ram'],
+                    list(json_output[0].keys())
+                )
+
+    def test_invalid_datastore_flavor_list(self):
+        self.assertRaises(
+            exceptions.CommandFailed,
+            self.openstack,
+            'rds flavor list'
+        )
+
+        self.assertRaises(
+            exceptions.CommandFailed,
+            self.openstack,
+            'rds flavor list invalid_ds 5.6'
+        )
+
+        datastores = json.loads(self.openstack(
+            'rds datastore type list -f json'
         ))
-
-        self.assertIsNotNone(json_output)
+        for datastore in datastores:
+            datastore = datastore['Name']
+            self.assertRaises(
+                exceptions.CommandFailed,
+                self.openstack,
+                'rds flavor list {ds} {ver}'.format(
+                    ds=datastore,
+                    ver=0.0)
+            )
