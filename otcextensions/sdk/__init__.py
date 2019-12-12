@@ -88,6 +88,9 @@ OTC_SERVICES = {
         'service_type': 'kms',
         'append_project_id': True,
     },
+    'nat': {
+        'service_type': 'nat'
+    },
     'obs': {
         'service_type': 'obs',
         'require_ak': True,
