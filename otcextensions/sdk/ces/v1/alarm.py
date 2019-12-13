@@ -9,6 +9,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack import exceptions
 from openstack import resource
 
 
@@ -102,7 +103,7 @@ class Alarm(resource.Resource):
     # Alarm is enabled (True) or disabled (False)
     alarm_enabled = resource.Body('alarm_enabled', type=bool)
     # alarm rule ID
-    alarm_id = resource.Body('alarm_id')
+    alarm_id = resource.Body('alarm_id', alternate_id=True)
     # alarm severity
     # values: 1: critical, 2: major, 3: minor, 4: informational alarm
     alarm_level = resource.Body('alarm_level', type=int)
@@ -120,3 +121,35 @@ class Alarm(resource.Resource):
     # Time when alarm status changed
     # UNIX timestamp in ms
     update_time = resource.Body('update_time')
+
+    def _translate_response(self, response, has_body=None, error_message=None):
+        """Given a KSA response, inflate this instance with its data
+
+        DELETE operations don't return a body, so only try to work
+        with a body when has_body is True.
+
+        This method updates attributes that correspond to headers
+        and body on this instance and clears the dirty set.
+        """
+        if has_body is None:
+            has_body = self.has_body
+        exceptions.raise_from_response(response, error_message=error_message)
+        if has_body:
+            try:
+                body = response.json()
+                if self.resources_key and self.resources_key in body:
+                    body = body[self.resources_key][0]
+                body_attrs = self._consume_body_attrs(body)
+                self._body.attributes.update(body_attrs)
+                self._body.clean()
+
+            except ValueError:
+                # Server returned not parse-able response (202, 204, etc)
+                # Do simply nothing
+                pass
+
+        headers = self._consume_header_attrs(response.headers)
+        self._header.attributes.update(headers)
+        self._header.clean()
+        self._update_location()
+        dict.update(self, self.to_dict())

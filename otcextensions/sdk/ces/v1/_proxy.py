@@ -41,7 +41,7 @@ class Proxy(proxy.Proxy):
         :returns: A generator of alarm objects
         :rtype: :class:`~otcextensions.sdk.ces.v1.alarm.Alarm`
         """
-        return self._get(_alarm.Alarm)
+        return self._get(_alarm.Alarm, alarm)
 
     def create_alarm(self, **attrs):
         """Create a new Alarm from attributes
@@ -64,7 +64,7 @@ class Proxy(proxy.Proxy):
         :returns: Alarm been deleted
         :rtype: :class:`otcextensions.sdk.ces.v1.alarm.Alarm`
         """
-        return self._delete(_alarm.Alarm, alarm=alarm,
+        return self._delete(_alarm.Alarm, alarm,
                             ignore_missing=ignore_missing)
 
     def update_alarm(self, alarm, **attrs):
