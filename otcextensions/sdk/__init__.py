@@ -105,6 +105,11 @@ OTC_SERVICES = {
         'append_project_id': True,
         'endpoint_service_type': 'vbs',
     },
+    'mrs': {
+        'service_type': 'mrs',
+        'additional_headers': {'content-type': 'application/json'},
+        'append_project_id': True,
+    },
 }
 
 
