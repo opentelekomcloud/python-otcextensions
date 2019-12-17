@@ -88,6 +88,10 @@ OTC_SERVICES = {
         'service_type': 'kms',
         'append_project_id': True,
     },
+    'mrs': {
+        'service_type': 'mrs',
+        'append_project_id': True,
+    },
     'obs': {
         'service_type': 'obs',
         'require_ak': True,
@@ -104,11 +108,6 @@ OTC_SERVICES = {
         'service_type': 'volume_backup',
         'append_project_id': True,
         'endpoint_service_type': 'vbs',
-    },
-    'mrs': {
-        'service_type': 'mrs',
-        'additional_headers': {'content-type': 'application/json'},
-        'append_project_id': True,
     },
 }
 

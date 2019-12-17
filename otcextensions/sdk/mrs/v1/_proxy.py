@@ -20,6 +20,12 @@ class Proxy(sdk_proxy.Proxy):
 
     skip_discovery = True
 
+    def __init__(self, session, *args, **kwargs):
+        super(Proxy, self).__init__(session=session, *args, **kwargs)
+        self.additional_headers = {
+            'Content-Type': 'application/json',
+        }
+
     # ======== clusters ========
     def clusters(self, **query):
         """Retrieve a generator of hosts
