@@ -11,6 +11,7 @@
 # under the License.
 from openstack import exceptions
 from openstack import resource
+from openstack import utils
 
 
 # class MetaDataSpec(resource.Resource):
@@ -30,7 +31,7 @@ class AlarmActionsSpec(resource.Resource):
     notificationList = resource.Body('notificationList')
     # Indicates the type of action triggered by an alarm.
     # Value can be notication or autoscaling
-    typestring = resource.Body('type')
+    type = resource.Body('type')
 
 
 class ConditionSpec(resource.Resource):
@@ -44,7 +45,7 @@ class ConditionSpec(resource.Resource):
     count = resource.Body('count', type=int)
     # indicates the data rollup method
     # values: max, min, average, sum, variance
-    filterstring = resource.Body('filter')
+    filter = resource.Body('filter')
     # Indicates the interval (in seconds) for checking
     # whether the configured alarm rules are met
     period = resource.Body('period', type=int)
@@ -108,7 +109,7 @@ class Alarm(resource.Resource):
     # values: 1: critical, 2: major, 3: minor, 4: informational alarm
     alarm_level = resource.Body('alarm_level', type=int)
     # Name of the alarm
-    alarm_name = resource.Body('alarm_name')
+    name = resource.Body('alarm_name')
     # Alarm status
     # ok: alarm status is normal
     # alarm: an alarm is generated
@@ -153,3 +154,68 @@ class Alarm(resource.Resource):
         self._header.clean()
         self._update_location()
         dict.update(self, self.to_dict())
+
+    def _action(self, session, body):
+        """Perform actions given the message body.
+
+        """
+        url = utils.urljoin(self.base_path, self.id, "action")
+        return session.put(
+            url,
+            json=body)
+
+    def change_alarm_status(self, session, alarm):
+        body = {
+            "alarm_enabled": True
+        }
+        current_status = alarm.get('alarm_enabled')
+        if current_status is True:
+            body.update({'alarm_enabled': False})
+        return self._action(session, body)
+
+    @classmethod
+    def find(cls, session, name_or_id, ignore_missing=True, **params):
+        """Find a resource by its name or id.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param name_or_id: This resource's identifier, if needed by
+                           the request. The default is ``None``.
+        :param bool ignore_missing: When set to ``False``
+                    :class:`~openstack.exceptions.ResourceNotFound` will be
+                    raised when the resource does not exist.
+                    When set to ``True``, None will be returned when
+                    attempting to find a nonexistent resource.
+        :param dict params: Any additional parameters to be passed into
+                            underlying methods, such as to
+                            :meth:`~openstack.resource.Resource.existing`
+                            in order to pass on URI parameters.
+
+        :return: The :class:`Resource` object matching the given name or id
+                 or None if nothing matches.
+        :raises: :class:`openstack.exceptions.DuplicateResource` if more
+                 than one resource is found for this request.
+        :raises: :class:`openstack.exceptions.ResourceNotFound` if nothing
+                 is found and ignore_missing is ``False``.
+        """
+        session = cls._get_session(session)
+        # Try to short-circuit by looking directly for a matching ID.
+        try:
+            match = cls.existing(
+                id=name_or_id,
+                connection=session._get_connection(),
+                **params)
+            return match.fetch(session, **params)
+        except exceptions.SDKException:
+            pass
+
+        data = cls.list(session, **params)
+
+        result = cls._get_one_match(name_or_id, data)
+        if result is not None:
+            return result
+
+        if ignore_missing:
+            return None
+        raise exceptions.ResourceNotFound(
+            "No %s found for %s" % (cls.__name__, name_or_id))
