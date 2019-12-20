@@ -24,7 +24,7 @@ EXAMPLE = {
     'port_id': '9a469561-daac-4c94-88f5-39366e5ea193',
     'internal_service_port': 993,
     'protocol': 'TCP',
-    'tenant_id': '27e25061336f4af590faeabeb7fcd9a3',
+    'project_id': '27e25061336f4af590faeabeb7fcd9a3',
     'created_at': '2017-11-18 07:54:21.665430',
     'id': INSTANCE_ID,
     'floating_ip_address': '5.21.11.226',
@@ -57,7 +57,7 @@ class TestDnat(base.TestCase):
         self.assertEqual(EXAMPLE['internal_service_port'],
                          sot.internal_service_port)
         self.assertEqual(EXAMPLE['protocol'], sot.protocol)
-        self.assertEqual(EXAMPLE['tenant_id'], sot.tenant_id)
+        self.assertEqual(EXAMPLE['project_id'], sot.project_id)
         self.assertEqual(EXAMPLE['created_at'], sot.created_at)
         self.assertEqual(EXAMPLE['id'], sot.id)
         self.assertEqual(EXAMPLE['floating_ip_address'],

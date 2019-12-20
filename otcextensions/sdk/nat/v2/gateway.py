@@ -27,7 +27,7 @@ class Gateway(resource.Resource):
     _query_mapping = resource.QueryParameters(
         'admin_state_up', 'created_at', 'description', 'id',
         'internal_network_id', 'limit', 'name', 'router_id',
-        'spec', 'status', 'tenant_id'
+        'spec', 'status', 'project_id'
     )
 
     # Properties
@@ -47,6 +47,8 @@ class Gateway(resource.Resource):
     #: Specifies the name of the gateway.
     #: Contains only digits, letters, underscores and hyphens
     name = resource.Body('name')
+    #: Specifies the project ID
+    project_id = resource.Body('tenant_id')
     #: Specifies the router ID
     router_id = resource.Body('router_id')
     #: Specifies the type of the gateway.
@@ -57,5 +59,3 @@ class Gateway(resource.Resource):
     spec = resource.Body('spec')
     #: Specifies the status
     status = resource.Body('status')
-    #: Specifies the project ID
-    tenant_id = resource.Body('tenant_id')

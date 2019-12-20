@@ -215,12 +215,10 @@ class CreateDatabaseInstance(command.ShowOne):
         ds_group.add_argument(
             '--datastore-type',
             metavar='<datastore>',
-            required=True,
             help=_("Name of the datastore (type).")
         )
         ds_group.add_argument(
             '--datastore-version',
-            required=True,
             metavar='<datastore_version>',
             help=_("Datastore version.")
         )
@@ -359,6 +357,14 @@ class CreateDatabaseInstance(command.ShowOne):
             parsed_args.password
         ]
 
+        if (not parsed_args.replica_of
+                and not (parsed_args.datastore_type
+                         and parsed_args.datastore_version)):
+            raise exceptions.CommandError(
+                _('`--datastore-type` and `--datastore-version` are '
+                  'required')
+            )
+
         if parsed_args.replica_of:
             # Create replica
             if (parsed_args.password or parsed_args.port
@@ -368,9 +374,12 @@ class CreateDatabaseInstance(command.ShowOne):
                     _('Setting password/port/router/network/sg is not '
                       'supported when creating replica')
                 )
-            attrs['replica_of_id'] = \
-                client.find_instance(parsed_args.replica_of,
-                                     ignore_missing=False).id
+            src = client.find_instance(parsed_args.replica_of,
+                                       ignore_missing=False)
+            parsed_args.datastore_type = src['datastore']['type']
+            parsed_args.datastore_version = src['datastore']['version']
+            attrs['replica_of_id'] = src.id
+            attrs.pop('datastore', None)
         elif parsed_args.from_instance:
             source = client.find_instance(parsed_args.from_instance,
                                           ignore_missing=False)

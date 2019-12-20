@@ -26,7 +26,7 @@ class Snat(resource.Resource):
     _query_mapping = resource.QueryParameters(
         'admin_state_up', 'cidr', 'created_at', 'floating_ip_address',
         'floating_ip_id', 'id', 'limit', 'nat_gateway_id', 'network_id',
-        'source_type', 'status', 'tenant_id'
+        'source_type', 'status', 'project_id'
     )
 
     # Properties
@@ -51,7 +51,7 @@ class Snat(resource.Resource):
     #: Specifies the network ID
     network_id = resource.Body('network_id')
     #: Specifies the project ID.
-    tenant_id = resource.Body('tenant_id')
+    project_id = resource.Body('tenant_id')
     #: *0:* Either network_id or cidr can be specified in VPC
     #: *1:* only cidr can be specified over a Direct Connect connection
     #: Default: 0

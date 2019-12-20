@@ -85,10 +85,10 @@ class TestBackup(base.TestCase):
         rt = sot.fetch(self.sess)
 
         self.sess.get.assert_called_with(
-            'backups/' + sot.id,
+            'backups',
             headers={'Accept': 'application/json'},
             microversion=None,
-            params={'instance_id': sot.instance_id})
+            params={'instance_id': sot.instance_id, 'backup_id': sot.id})
 
         self.assertDictEqual(sot.to_dict(), rt.to_dict())
 

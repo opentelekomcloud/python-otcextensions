@@ -103,7 +103,7 @@ class TestShowCluster(fakes.TestCCE):
     _obj = fakes.FakeCluster.create_one()
 
     columns = ('ID', 'name', 'type', 'status', 'version', 'endpoint',
-               'flavor', 'vpc', 'subnet')
+               'flavor', 'router_id', 'network_id')
     flat_data = cluster._flatten_cluster(_obj)
     data = (
         flat_data['id'],
@@ -113,8 +113,8 @@ class TestShowCluster(fakes.TestCCE):
         flat_data['version'],
         flat_data['endpoint'],
         flat_data['flavor'],
-        flat_data['vpc'],
-        flat_data['subnet'],
+        flat_data['router_id'],
+        flat_data['network_id'],
     )
 
     def setUp(self):
@@ -170,22 +170,24 @@ class TestCreateCluster(fakes.TestCCE):
         self.cmd = cluster.CreateCCECluster(self.app, None)
 
         self.client.create_cluster = mock.Mock()
+        self.client.get_cluster = mock.Mock()
+        self.client.wait_for_job = mock.Mock()
 
     def test_create(self):
         arglist = [
             'cluster_name',
             'vpc_id',
-            'subnet_id',
+            'net_id',
             '--description', 'descr',
             '--type', 'VirtualMachine',
             '--flavor', 'flavor',
-            '--container_net_mode', 'overlay_l2'
+            '--container-net-mode', 'overlay_l2'
         ]
 
         verifylist = [
             ('name', 'cluster_name'),
-            ('vpc', 'vpc_id'),
-            ('subnet', 'subnet_id'),
+            ('router_id', 'vpc_id'),
+            ('network_id', 'net_id'),
             ('description', 'descr'),
             ('type', 'VirtualMachine'),
             ('flavor', 'flavor'),
@@ -210,14 +212,75 @@ class TestCreateCluster(fakes.TestCCE):
                 'flavor': 'flavor',
                 'description': 'descr',
                 'hostNetwork': {
-                    'vpc': 'vpc_id',
-                    'subnet': 'subnet_id'
+                    'router_id': 'vpc_id',
+                    'network_id': 'net_id'
                 },
                 'containerNetwork': {
                     'mode': 'overlay_l2'
                 }
             }
         )
+
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
+
+    def test_wait(self):
+        arglist = [
+            'cluster_name',
+            'vpc_id',
+            'net_id',
+            '--description', 'descr',
+            '--type', 'VirtualMachine',
+            '--flavor', 'flavor',
+            '--container-net-mode', 'overlay_l2',
+            '--wait',
+            '--wait-interval', '13'
+        ]
+
+        verifylist = [
+            ('name', 'cluster_name'),
+            ('router_id', 'vpc_id'),
+            ('network_id', 'net_id'),
+            ('description', 'descr'),
+            ('type', 'VirtualMachine'),
+            ('flavor', 'flavor'),
+            ('container_net_mode', 'overlay_l2'),
+            ('wait', True),
+            ('wait_interval', 13)
+        ]
+
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.create_cluster.side_effect = [
+            self._obj
+        ]
+
+        self.client.get_cluster.side_effect = [self._obj]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.create_cluster.assert_called_once_with(
+            name='cluster_name',
+            spec={
+                'type': 'VirtualMachine',
+                'flavor': 'flavor',
+                'description': 'descr',
+                'hostNetwork': {
+                    'router_id': 'vpc_id',
+                    'network_id': 'net_id'
+                },
+                'containerNetwork': {
+                    'mode': 'overlay_l2'
+                }
+            }
+        )
+
+        self.client.wait_for_job.assert_called_with(
+            self._obj.job_id,
+            interval=13)
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)

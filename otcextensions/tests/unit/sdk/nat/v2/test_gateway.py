@@ -22,7 +22,7 @@ EXAMPLE = {
     'status': 'PENDING_CREATE',
     'description': 'Test Gateway Response',
     'admin_state_up': True,
-    'tenant_id': '27e25061336f4af590faeabeb7fcd9a3',
+    'project_id': '27e25061336f4af590faeabeb7fcd9a3',
     'created_at': '2017-11-18 07:34:32.203044',
     'spec': '2',
     'internal_network_id': '89d66639-aacb-4929-969d-07080b0f9fd9',
@@ -51,7 +51,7 @@ class TestGateway(base.TestCase):
         self.assertEqual(EXAMPLE['status'], sot.status)
         self.assertEqual(EXAMPLE['description'], sot.description)
         self.assertEqual(EXAMPLE['admin_state_up'], sot.admin_state_up)
-        self.assertEqual(EXAMPLE['tenant_id'], sot.tenant_id)
+        self.assertEqual(EXAMPLE['project_id'], sot.project_id)
         self.assertEqual(EXAMPLE['created_at'], sot.created_at)
         self.assertEqual(EXAMPLE['spec'], sot.spec)
         self.assertEqual(EXAMPLE['internal_network_id'],

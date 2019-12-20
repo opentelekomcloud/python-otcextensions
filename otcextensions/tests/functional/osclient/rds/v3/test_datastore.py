@@ -13,6 +13,7 @@
 import json
 
 from openstackclient.tests.functional import base
+from tempest.lib import exceptions
 
 
 class TestRdsDatastore(base.TestCase):
@@ -22,14 +23,30 @@ class TestRdsDatastore(base.TestCase):
         json_output = json.loads(self.openstack(
             'rds datastore type list -f json '
         ))
-        self.assertIn(
-            'PostgreSQL',
-            [ds['Name'] for ds in json_output]
+
+        self.assertItemsEqual(
+            ['postgresql', 'mysql', 'sqlserver'],
+            [ds.get('Name', None).lower() for ds in json_output]
         )
 
     def test_datastore_version_list(self):
-        json_output = json.loads(self.openstack(
-            'rds datastore version list PostgreSQL -f json'
+        datastores = json.loads(self.openstack(
+            'rds datastore type list -f json'
         ))
+        for datastore in datastores:
+            json_output = json.loads(self.openstack(
+                'rds datastore version list {ds} '
+                '-f json'.format(ds=datastore['Name'])
+            ))
+            self.assertIsNotNone(json_output)
+            self.assertEqual(
+                ['ID', 'Name'],
+                list(json_output[0].keys())
+            )
 
-        self.assertIsNotNone(json_output)
+    def test_invalid_datastore_version_list(self):
+        self.assertRaises(
+            exceptions.CommandFailed,
+            self.openstack,
+            'rds datastore version list invalid_ds'
+        )

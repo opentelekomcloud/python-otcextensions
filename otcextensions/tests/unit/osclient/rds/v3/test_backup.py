@@ -11,6 +11,8 @@
 # under the License.
 import mock
 
+from osc_lib import exceptions
+
 from otcextensions.osclient.rds.v3 import backup
 from otcextensions.tests.unit.osclient.rds.v3 import fakes as fakes
 
@@ -21,8 +23,10 @@ class TestList(fakes.TestRds):
 
     _objects = fakes.FakeBackup.create_multiple(3)
 
-    column_headers = ('ID', 'Name', 'Type', 'Instance Id', 'Size (KB)')
-    columns = ('id', 'name', 'type', 'instance_id', 'size')
+    column_headers = ('ID', 'Name', 'Type', 'Instance Id', 'Size (KB)',
+                      'Begin time', 'End time')
+    columns = ('id', 'name', 'type', 'instance_id', 'size',
+               'begin_time', 'end_time')
 
     data = []
 
@@ -66,8 +70,8 @@ class TestList(fakes.TestRds):
             '--backup-type', 'manual',
             '--offset', '1',
             '--limit', '2',
-            # '--begin-time', '3',
-            # '--end-time', '4'
+            '--begin-time', '3',
+            '--end-time', '4'
         ]
 
         verifylist = [
@@ -76,8 +80,8 @@ class TestList(fakes.TestRds):
             ('backup_type', 'manual'),
             ('offset', 1),
             ('limit', 2),
-            # ('begin_time', '3'),
-            # ('end_time', '4')
+            ('begin_time', '3'),
+            ('end_time', '4')
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -98,12 +102,31 @@ class TestList(fakes.TestRds):
             offset=1,
             limit=2,
             paginated=False,
-            # begin_time='3',
-            # end_time='4'
+            begin_time='3',
+            end_time='4'
         )
 
         self.assertEqual(self.column_headers, columns)
         self.assertEqual(self.data, list(data))
+
+    def test_list_wrong_filter(self):
+        arglist = [
+            'test-instance',
+            '--begin-time', 'asd'
+        ]
+
+        verifylist = [
+            ('instance', 'test-instance'),
+            ('begin_time', 'asd')
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        self.assertRaises(
+            exceptions.CommandError,
+            self.cmd.take_action,
+            parsed_args
+        )
 
 
 class TestCreate(fakes.TestRds):

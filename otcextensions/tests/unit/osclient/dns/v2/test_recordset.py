@@ -92,8 +92,8 @@ class TestShowRS(fakes.TestDNS):
         self.cmd = recordset.ShowRS(self.app, None)
 
         self.client.find_zone = mock.Mock()
-        self.client.get_recordset = mock.Mock()
-        self.client.api_mock = self.client.get_recordset
+        self.client.find_recordset = mock.Mock()
+        self.client.api_mock = self.client.find_recordset
 
     def test_default(self):
         arglist = [
@@ -122,7 +122,7 @@ class TestShowRS(fakes.TestDNS):
 
         self.client.api_mock.assert_called_once_with(
             zone=self._zone,
-            recordset='rs'
+            name_or_id='rs'
         )
 
         self.assertEqual(self.columns, columns)
@@ -214,10 +214,10 @@ class TestSetRS(fakes.TestDNS):
 
         self.client.update_recordset = mock.Mock()
         self.client.find_zone = mock.Mock()
-        self.client.get_recordset = mock.Mock()
+        self.client.find_recordset = mock.Mock()
         self.client.api_mock = self.client.update_recordset
 
-    def test_create(self):
+    def test_set(self):
         arglist = [
             'zn',
             'rs',
@@ -245,12 +245,15 @@ class TestSetRS(fakes.TestDNS):
         self.client.api_mock.side_effect = [
             self._data
         ]
-        self.client.get_recordset.side_effect = [
+        self.client.find_recordset.side_effect = [
             self._data
         ]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.find_recordset.assert_called_with(zone=self._zone,
+                                                      name_or_id='rs')
 
         self.client.api_mock.assert_called_once_with(
             recordset=self._data,
@@ -266,6 +269,7 @@ class TestSetRS(fakes.TestDNS):
 
 class TestDeleteRS(fakes.TestDNS):
     _zone = fakes.FakeZone.create_one()
+    _rs = fakes.FakeRecordset.create_one()
 
     def setUp(self):
         super(TestDeleteRS, self).setUp()
@@ -274,6 +278,7 @@ class TestDeleteRS(fakes.TestDNS):
 
         self.client.delete_recordset = mock.Mock()
         self.client.find_zone = mock.Mock()
+        self.client.find_recordset = mock.Mock()
         self.client.api_mock = self.client.delete_recordset
 
     def test_delete_multiple(self):
@@ -293,14 +298,25 @@ class TestDeleteRS(fakes.TestDNS):
         self.client.find_zone.side_effect = [
             self._zone
         ]
+
+        self.client.find_recordset.side_effect = [self._rs, self._rs]
         self.client.api_mock.side_effect = [{}, {}]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
+        find_calls = [
+            mock.call(zone=self._zone, name_or_id='t1', ignore_missing=False),
+            mock.call(zone=self._zone, name_or_id='t2', ignore_missing=False)
+        ]
+
+        self.client.find_recordset.assert_has_calls(find_calls)
+
         calls = [
-            mock.call(zone=self._zone, recordset='t1', ignore_missing=False),
-            mock.call(zone=self._zone, recordset='t2', ignore_missing=False)
+            mock.call(zone=self._zone, recordset=self._rs,
+                      ignore_missing=False),
+            mock.call(zone=self._zone, recordset=self._rs,
+                      ignore_missing=False)
         ]
 
         self.client.api_mock.assert_has_calls(calls)

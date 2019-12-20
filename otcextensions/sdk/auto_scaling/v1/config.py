@@ -48,10 +48,13 @@ class InstanceConfig(resource.Resource):
     user_data = resource.Body('user_data')
     #: Metadata(key-pair) for creating new instance
     metadata = resource.Body('metadata', type=dict)
+    #: Security groups
+    security_groups = resource.Body('security_groups', type=list,
+                                    list_type=dict)
 
 
 class Config(_base.Resource):
-    resource_key = 'scaling_configuration'
+    # resource_key = 'scaling_configuration'
     resources_key = 'scaling_configurations'
     base_path = '/scaling_configuration'
     # query_marker_key = 'start_number'

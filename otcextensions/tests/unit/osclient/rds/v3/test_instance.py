@@ -665,8 +665,6 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             flavor.name,
             '--availability-zone', 'test-az-01',
             '--configuration', '123',
-            '--datastore-type', 'MySQL',
-            '--datastore-version', '5.7',
             '--disk-encryption-id', '234',
             '--replica-of', 'fake_name',
             '--volume-type', 'ULTRAHIGH',
@@ -679,8 +677,6 @@ class TestCreateDatabaseInstance(fakes.TestRds):
             ('configuration_id', '123'),
             ('flavor_ref', flavor.name),
             ('availability_zone', 'test-az-01'),
-            ('datastore_type', 'MySQL'),
-            ('datastore_version', '5.7'),
             ('disk_encryption_id', '234'),
             ('replica_of', 'fake_name'),
             ('volume_type', 'ULTRAHIGH'),
@@ -693,11 +689,17 @@ class TestCreateDatabaseInstance(fakes.TestRds):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
+        self.client.flavors.assert_called_with(
+            datastore_name=self.other_instance.datastore['type'],
+            version_name=self.other_instance.datastore['version'])
+
+        self.client.find_instance.assert_called_with('fake_name',
+                                                     ignore_missing=False)
+
         self.client.create_instance.assert_called_with(
             availability_zone='test-az-01',
             charge_info={'charge_mode': 'postPaid'},
             configuration_id='123',
-            datastore={'type': 'MySQL', 'version': '5.7'},
             disk_encryption_id='234',
             flavor_ref=flavor.name,
             name='inst_name',
@@ -986,6 +988,45 @@ class TestCreateDatabaseInstance(fakes.TestRds):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Trigger the action
+        self.assertRaises(exceptions.CommandError,
+                          self.cmd.take_action,
+                          parsed_args)
+
+    def test_create_missing_datastore(self):
+        arglist = [
+            'inst_name',
+            self.flavor.name,
+            '--availability-zone', 'test-az-01',
+            '--configuration', '123',
+            '--disk-encryption-id', '234',
+            '--router-id', 'test-vpc-id',
+            '--network-id', 'test-network-id',
+            '--security-group-id', 'test-sec_grp-id',
+            '--volume-type', 'ULTRAHIGH',
+            '--size', '100',
+            '--password', 'testtest',
+            '--region', 'test-region',
+            '--port', '12345'
+        ]
+
+        verifylist = [
+            ('name', 'inst_name'),
+            ('configuration_id', '123'),
+            ('flavor_ref', self.flavor.name),
+            ('availability_zone', 'test-az-01'),
+            ('disk_encryption_id', '234'),
+            ('router_id', 'test-vpc-id'),
+            ('network_id', 'test-network-id'),
+            ('security_group_id', 'test-sec_grp-id'),
+            ('port', 12345),
+            ('volume_type', 'ULTRAHIGH'),
+            ('size', 100),
+            ('password', 'testtest'),
+            ('region', 'test-region')]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
         self.assertRaises(exceptions.CommandError,
                           self.cmd.take_action,
                           parsed_args)
