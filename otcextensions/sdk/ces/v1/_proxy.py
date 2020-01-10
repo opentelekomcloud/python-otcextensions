@@ -86,12 +86,10 @@ class Proxy(proxy.Proxy):
 
         :param alarm: The value can be the ID of an alarm
              or a :class:`~otcextensions.sdk.ces.v1.alarm.Alarm` instance.
-        :returns: updater instance of
-            :class:`~otcextensions.sdk.ces.v1.alarm.Alarm`
-        :rtype: :class:`~otcextensions.sdk.ces.v1.alarm.Alarm`
+        :returns: None
         """
         alarm = self._get_resource(_alarm.Alarm, alarm)
-        return alarm.change_alarm_status(self, alarm)
+        alarm.change_alarm_status(self)
 
     # ======== Event-Data ========
     def event_data(self, **query):

@@ -116,7 +116,7 @@ class Alarm(resource.Resource):
     # insufficient_data: required data is insufficient
     alarm_state = resource.Body('alarm_state')
     # Describes alarm triggering condititon
-    condititon = resource.Body('condition', type=ConditionSpec)
+    condition = resource.Body('condition', type=ConditionSpec)
     # Specification of specific alarm
     metric = resource.Body('metric', type=MetricSpec)
     # Time when alarm status changed
@@ -160,18 +160,20 @@ class Alarm(resource.Resource):
 
         """
         url = utils.urljoin(self.base_path, self.id, "action")
-        return session.put(
+        response = session.put(
             url,
             json=body)
+        exceptions.raise_from_response(response)
+        return response
 
-    def change_alarm_status(self, session, alarm):
+    def change_alarm_status(self, session):
         body = {
             "alarm_enabled": True
         }
-        current_status = alarm.get('alarm_enabled')
+        current_status = self.get('alarm_enabled')
         if current_status is True:
             body.update({'alarm_enabled': False})
-        return self._action(session, body)
+        self._action(session, body)
 
     @classmethod
     def find(cls, session, name_or_id, ignore_missing=True, **params):
