@@ -127,7 +127,8 @@ control which services can be used.
    Key Management Service <proxies/kms>
    Object Block Storage <proxies/obs>
    Volume Backup Service <proxies/volume_backup>
-   RDS <proxies/rds>
+   Relational Database Service RDS V1 <proxies/rds_v1>
+   Relational Database Service RDS V3 <proxies/rds_v3>
 
 Resource Interface
 ~~~~~~~~~~~~~~~~~~

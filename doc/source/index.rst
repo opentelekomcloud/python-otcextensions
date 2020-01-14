@@ -47,8 +47,6 @@ For Contributors
 
    contributor/index
 
-.. include:: ../../README.rst
-
 General Information
 -------------------
 
