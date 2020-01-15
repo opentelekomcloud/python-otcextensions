@@ -102,3 +102,14 @@ Glossary
     volume
         OpenStack Volume (Cinder). Also the attribute name of the virtual
         disks managed by the OpenStack Volume service.
+
+
+Naming conventions
+------------------
+
+OTC Extensions        <- präferierte Schreibweise des Projekts
+OTCE                  <- informelle Abkürzung, nicht in der offiziellen Dokumentation verwenden 
+otcextensions         <- Name des Python-Package
+python-otcextensions  <- GitHub-Projektname
+golang-otcextensions  <- potenzielle anderes Projekt (= golang-gophercloud)
+haskell-otcextensions
