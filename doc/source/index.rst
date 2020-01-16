@@ -12,6 +12,8 @@ Welcome to the OTC Extensions of the OpenStack SDK and CLI!
    History <history>
    Glossary of Terms <glossary>
    Release Notes <releasenotes>
+   Service Coverage <coverage>
+   Potential Issues <issues>
 
 Accessing the `OpenStack API`_ directly can be tedious. The `OpenStack
 SDK`_ is a Python based client library that simplifies building
@@ -54,6 +56,10 @@ architecture.
 
 There is a `release history`_ available.
 
+A list of `potential issues`_ is maintained.
+
+Currently 13 services are `covered` by the OTC extensions.
+
 .. _OpenStack SDK: https://docs.openstack.org/openstacksdk/
 .. _OpenStack API: https://openstack.org/api-ref/
 .. _Open Telekom Cloud: https://open-telekom-cloud.com/
@@ -62,3 +68,5 @@ There is a `release history`_ available.
 .. _glossary: <glossary>
 .. _history: <history>
 .. _release history: <releasenotes>
+.. _potential issues: <issues>
+.. _covered: <coverage>

@@ -107,9 +107,28 @@ Glossary
 Naming conventions
 ------------------
 
-OTC Extensions        <- präferierte Schreibweise des Projekts
-OTCE                  <- informelle Abkürzung, nicht in der offiziellen Dokumentation verwenden 
-otcextensions         <- Name des Python-Package
-python-otcextensions  <- GitHub-Projektname
-golang-otcextensions  <- potenzielle anderes Projekt (= golang-gophercloud)
-haskell-otcextensions
+For consistency, a few naming conventions are defined for the name of
+this project and adjacent identifiers. Let's start with the project
+itself:
+
+`OTC Extensions`_ in exactly this spelling is the **name** of the
+project. This term is used when the documentation references the
+project as such. The three letters ``OTC`` are all uppercase. There is
+a space and not dash between the two words. The second word is part of
+the name and is thus capitalized.
+
+`otcextensions`_ is the name of the Python package hosted at
+PyPI. Complying to the naming conventions of PyPI, the package name is
+concatenated and consists only of lowercase letters.
+
+`python-otcextensions`_ is the name of the GitHub project where the
+source code is hosted. It is the same name as the Python package, but
+for compliance with many other OpenStack repositories, it is prepended
+with ``python-`` as at least in theory there could also be a
+``golang-otcextensions`` or even ``haskell-otcextensions`` project.
+
+.. _OTC Extensions: https://python-otcextensions.readthedocs.io/
+
+.. _otcextensions: https://pypi.org/project/otcextensions/
+
+.. _python-otcextensions: https://github.com/OpenTelekomCloud/python-otcextensions
