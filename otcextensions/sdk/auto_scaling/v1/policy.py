@@ -50,7 +50,6 @@ class Policy(_base.Resource):
     resource_key = 'scaling_policy'
     resources_key = 'scaling_policies'
     base_path = '/scaling_policy'
-    list_path = '/scaling_policy/%(scaling_group_id)s/list'
     query_marker_key = 'start_number'
 
     # capabilities
@@ -87,14 +86,6 @@ class Policy(_base.Resource):
     create_time = resource.Body('create_time')
     #: valid values include: ``INSERVICE``, ``PAUSED``
     status = resource.Body('policy_status')
-
-    @classmethod
-    def list(cls, session, paginated=False,
-             endpoint_override=None, headers=None, **params):
-        return super(Policy, cls).list_ext(
-            session, paginated,
-            endpoint_override, headers,
-            **params)
 
     def execute(self, session):
         """execute policy"""

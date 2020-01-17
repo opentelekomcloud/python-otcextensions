@@ -249,7 +249,9 @@ class Proxy(proxy.Proxy):
             instances
         """
         group = self._get_resource(_group.Group, group)
-        return self._list(_policy.Policy, scaling_group_id=group.id, **query)
+        return self._list(
+            _policy.Policy,
+            base_path='/scaling_policy/{id}/list'.format(id=group.id), **query)
 
     def create_policy(self, **attrs):
         """Create a new policy from attributes
@@ -369,8 +371,10 @@ class Proxy(proxy.Proxy):
             (:class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`)
         """
         group = self._get_resource(_group.Group, group)
-        return self._list(_instance.Instance,
-                          scaling_group_id=group.id, **query)
+        return self._list(
+            _instance.Instance,
+            base_path='/scaling_group_instance/{id}/list'.format(id=group.id),
+            **query)
 
     def remove_instance(self, instance, delete_instance=False,
                         ignore_missing=True):
