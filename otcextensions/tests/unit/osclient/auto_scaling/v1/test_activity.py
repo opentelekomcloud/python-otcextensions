@@ -61,7 +61,7 @@ class TestListAutoScalingActivity(TestAutoScalingActivity):
             '--start_time', '2200-01-01T00:00:00Z',
             '--end_time', '2200-01-02T00:00:00Z',
             '--limit', '14',
-            'group1'
+            '--group', 'group1'
         ]
 
         verifylist = [

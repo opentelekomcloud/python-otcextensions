@@ -31,8 +31,9 @@ class ListAutoScalingActivityLogs(command.Lister):
     def get_parser(self, prog_name):
         parser = super(ListAutoScalingActivityLogs, self).get_parser(prog_name)
         parser.add_argument(
-            'group',
+            '--group',
             metavar='<group>',
+            required=True,
             help=_('AS Group ID or name')
         )
         parser.add_argument(

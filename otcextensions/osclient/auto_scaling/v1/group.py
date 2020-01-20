@@ -63,6 +63,11 @@ class ListAutoScalingGroup(command.Lister):
     def get_parser(self, prog_name):
         parser = super(ListAutoScalingGroup, self).get_parser(prog_name)
         parser.add_argument(
+            '--name',
+            metavar='<name>',
+            help=_('Name or ID of the AS group')
+        )
+        parser.add_argument(
             '--limit',
             dest='limit',
             metavar='<limit>',
@@ -78,13 +83,39 @@ class ListAutoScalingGroup(command.Lister):
                    'specified marker. When used with --limit, set this to '
                    'the last ID displayed in the previous run')
         )
+        parser.add_argument(
+            '--scaling_configuration_id',
+            metavar='<scaling_configuration_id>',
+            help=_('ID of the AS configuration')
+        )
+        parser.add_argument(
+            '--status',
+            metavar='<status>',
+            help=_('Shows AS groups with specific status:\n'
+                   '<INSERVICE>: AS group is working\n'
+                   '<PAUSED>: AS group is paused\n'
+                   '<ERROR>: AS group has malfunctions\n'
+                   '<DELETING>: AS group is being deleted')
+        )
 
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.auto_scaling
 
-        data = client.groups()
+        args = {}
+        if parsed_args.limit:
+            args['limit'] = parsed_args.limit
+        if parsed_args.marker:
+            args['marker'] = parsed_args.marker
+        if parsed_args.name:
+            args['name'] = parsed_args.name
+        if parsed_args.scaling_configuration_id:
+            args['scaling_configuration_id'] = parsed_args.scaling_configuration_id
+        if parsed_args.status:
+            args['status'] = parsed_args.status
+
+        data = client.groups(**args)
 
         return (
             self.columns,

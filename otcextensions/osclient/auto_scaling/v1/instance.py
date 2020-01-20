@@ -31,8 +31,9 @@ class ListAutoScalingInstance(command.Lister):
     def get_parser(self, prog_name):
         parser = super(ListAutoScalingInstance, self).get_parser(prog_name)
         parser.add_argument(
-            'group',
+            '--group',
             metavar='<group>',
+            required=True,
             help=_('AS Group ID or Name for the instances query')
         )
         parser.add_argument(
@@ -117,8 +118,9 @@ class BatchActionAutoScalingInstance(command.Command):
         parser = super(BatchActionAutoScalingInstance, self).\
             get_parser(prog_name)
         parser.add_argument(
-            'group',
+            '--group',
             metavar='<group>',
+            required=True,
             help=_('AS Group ID or Name')
         )
         parser.add_argument(
