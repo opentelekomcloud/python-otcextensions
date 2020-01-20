@@ -1,6 +1,20 @@
 Getting started with the OTCExtensions SDK
 ==========================================
 
+The SDK/OTCE contain an abstraction interface layer. Clouds can do many
+things, but there are probably only about 10 of them that most people
+care about with any regularity.
+
+If you want to do complicated things, the per-service oriented
+portions of the SDK are for you.
+
+However, if what you want is to be able to write an application that
+talks to clouds no matter what crazy choices the deployer has made in
+an attempt to be more hipster than their self-entitled narcissist
+peers, then the Cloud Abstraction layer is for you.
+
+
+
 Please note that OTCExtensions provides an extension to the OpenStackSDK.
 Please refer to it's documentation for the details <https://docs.openstack.org/openstacksdk/latest/>
 
@@ -127,7 +141,8 @@ control which services can be used.
    Key Management Service <proxies/kms>
    Object Block Storage <proxies/obs>
    Volume Backup Service <proxies/volume_backup>
-   RDS <proxies/rds>
+   Relational Database Service RDS V1 <proxies/rds_v1>
+   Relational Database Service RDS V3 <proxies/rds_v3>
 
 Resource Interface
 ~~~~~~~~~~~~~~~~~~

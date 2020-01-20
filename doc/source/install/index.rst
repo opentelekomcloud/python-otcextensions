@@ -1,11 +1,10 @@
-============
 Installation
 ============
 
-There are several ways to install python-otcextensions to enhance the native
-``openstack`` CLI client and to extend the OpenStack SDK to cover the
-additional Open Telekom Cloud services providing a larger functionality
-on top of OpenStack.
+There are several ways to install OTC Extensions to enhance the native
+OpenStack Client and to extend the OpenStack SDK to cover the
+additional Open Telekom Cloud services providing a larger
+functionality on top of OpenStack.
 
 The easiest way is to use the Python pip installer which is working
 distribution independent and can be used in an isolated virtual environment
@@ -21,22 +20,22 @@ https://build.opensuse.org/project/show/Cloud:OTC:Tools:OpenStack.
 Overview of Related Packages
 ----------------------------
 
-**OpenStackSDK:**
+**OpenStack SDK:**
 A library on the client side that translates Python function calls into
 API calls to an OpenStack cloud.
 
-**OpenStackClient:**
-An application that turns the Python interface of OpenStackSDK and
-python-otcextensions into a CLI tool.
+**OpenStack Client:**
+An application that turns the Python interface of OpenStack SDK and
+OTC Extensions into a CLI tool.
 
-**python-otcextensions:**
-An addition to OpenStackSD with enhanced functionality that is specific for the
-Open Telekom Cloud.
+**OTC Extensions:**
+An addition to OpenStack SDK with enhanced functionality that is specific for the
+Open Telekom Cloud. This is the package you are currently looking at.
 
 Installation with pip installer
 -------------------------------
 
-All three packages are written in Python and stored as Python libraries in the
+All three packages are written in Python and stored as Python packages in the
 PyPi repository. The following section describes the installation of
 ``OpenStackSDK``, ``otcextensions`` and ``OpenStackClient``. Please remember,
 it is not the latest development state. For this purpose the latest sources
@@ -50,8 +49,8 @@ with developer libraries, and package manager pip are required:
 
 .. code-block:: bash
 
-   $ sudo apt update
-   $ sudo apt install gcc python3 python3-dev python3-pip libssl-dev
+    $ sudo apt update
+    $ sudo apt install gcc python3 python3-dev python3-pip libssl-dev
 
 Now, install all libraries and programs at once with the Python package
 manager pip. The --user flag provides user wide installation instead of a
@@ -63,30 +62,28 @@ global installation.
 
 
 Installation under CentOS
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For the installation, following packages are required: a C compiler, Python3
 with developer libraries, and package manager pip are required. If you want to
 use python3 which is recommended, you need to install the epel
 repository, first:
 
-
 .. code-block:: bash
 
-   $ sudo yum update
-   $ sudo yum install epel-release
-   $ sudo yum install gcc python36 python36-devel python36-pip openssl-devel
-
+    $ sudo yum update
+    $ sudo yum install epel-release
+    $ sudo yum install gcc python36 python36-devel python36-pip openssl-devel
 
 Now, install all libraries and programs at once with the Python package
 manager pip:
 
 .. code-block:: bash
 
-   $ pip3 install otcextensions python-openstackclient --user
+    $ pip3 install otcextensions python-openstackclient --user
 
 Installation under Fedora
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For the installation, following packages are required: a C compiler, Python3
 with developer libraries, and package manager pip are required:
@@ -94,19 +91,19 @@ with developer libraries, and package manager pip are required:
 
 .. code-block:: bash
 
-   $ sudo dnf upgrade
-   $ sudo dnf install gcc python3 python3-devel python3-pip openssl-devel
+    $ sudo dnf upgrade
+    $ sudo dnf install gcc python3 python3-devel python3-pip openssl-devel
 
 Now, install all libraries and programs at once with the Python package
 manager pip:
 
 .. code-block:: bash
 
-   $ pip3 install otcextensions python-openstackclient --user
+    $ pip3 install otcextensions python-openstackclient --user
 
 
-Installation in a virtual environment with pip installer
---------------------------------------------------------------
+Installation in a virtual environment with the pip installer
+------------------------------------------------------------
 
 A virtual environment seperates your installed packages from other
 libraries and should be used as well.
@@ -120,8 +117,8 @@ are required:
 
 .. code-block:: bash
 
-   $ sudo apt update
-   $ sudo apt install gcc python3 python3-dev python3-pip python3-venv libssl-dev
+    $ sudo apt update
+    $ sudo apt install gcc python3 python3-dev python3-pip python3-venv libssl-dev
 
 A virtual environment seperates your installed packages from other libraries
 and should be used as well. You can name the virtual environment on your own
@@ -153,16 +150,16 @@ install the epel repository, first:
 
 .. code-block:: bash
 
-   $ sudo yum update
-   $ sudo yum install epel-release
+    $ sudo yum update
+    $ sudo yum install epel-release
 
-No the python packages are needed:
+No the Python packages are needed:
 
 .. code-block:: bash
 
-   $ sudo yum update
-   $ sudo yum install gcc python36 python36-devel python-pip \
-   python-virtualenv openssl-devel
+    $ sudo yum update
+    $ sudo yum install gcc python36 python36-devel python-pip \
+      python-virtualenv openssl-devel
 
 A virtual environment seperates your installed packages from other libraries
 and should be used as well. You can name the virtual environment on your own
@@ -171,47 +168,46 @@ on "venv":
 
 .. code-block:: bash
 
-   $ python3 -m venv venv
-   $ source venv/bin/activate
+    $ python3 -m venv venv
+    $ source venv/bin/activate
 
 Now, install all libraries and programs at once with the Python package
 manager pip:
 
 .. code-block:: bash
 
-   $ pip install otcextensions openstackclient
+    $ pip install otcextensions openstackclient
 
 Installation under Fedora (under review)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For the installation, following packages are required: a C compiler,
 Python3 with developer libraries, package manager, and a virtual
 environment are required:
 
-
 .. code-block:: bash
 
-   $ sudo dnf upgrade
-   $ sudo dnf install gcc python3 python3-devel python3-pip \
-   python3-virtualenv openssl-devel
+    $ sudo dnf upgrade
+    $ sudo dnf install gcc python3 python3-devel python3-pip \
+      python3-virtualenv openssl-devel
 
 The virtual environment will be created and activated. You can name the
 virtual environment on your own desires, in our example it is "venv":
 
 .. code-block:: bash
 
-   $ python3 -m venv venv
-   $ source venv/bin/activate
+    $ python3 -m venv venv
+    $ source venv/bin/activate
 
 Now, install all libraries and programs at once with the Python package
 manager pip:
 
 .. code-block:: bash
 
-   (venv) $ pip install otcextensions openstackclient
+    (venv) $ pip install otcextensions openstackclient
 
 
-Installation from Github sources
+Installation from GitHub sources
 --------------------------------
 
 The latest state of the packages can be installed with the following approach.
@@ -220,7 +216,7 @@ Cloning the Github repository:
 
 .. code-block:: bash
 
-   $ git clone https://github.com/OpenTelekomCloud/python-otcextensions.git
+    $ git clone https://github.com/OpenTelekomCloud/python-otcextensions.git
 
 A virtual environment seperates your installed packages from other libraries
 and should be used as well. You can name the virtual environment on your own
@@ -229,28 +225,28 @@ on "venv":
 
 .. code-block:: bash
 
-   $ python3 -m venv venv
-   $ source venv/bin/activate
-   (venv) $
+    $ python3 -m venv venv
+    $ source venv/bin/activate
+    (venv) $
 
 Switch into the new folder which is created by cloning the repository and
 install install the project dependencies into the virtual environment:
 
 .. code-block:: bash
 
-   (venv) $ cd ./python-otcextensions
+    (venv) $ cd ./python-otcextensions
 
 Register the CLI plugin using:
 
 .. code-block:: bash
 
-   (venv) ~/python-otcextensions$ python setup.py install
+    (venv) ~/python-otcextensions$ python setup.py install
 
 Install Openstack-Client binary from pip-Repository:
 
 .. code-block:: bash
 
-   (venv) ~/python-otcextensions$ pip install openstackclient
+    (venv) ~/python-otcextensions$ pip install openstackclient
 
 Configuration for the Cloud Connection
 --------------------------------------
@@ -328,7 +324,7 @@ Use the following command to test the basic functionality.
 
 .. code-block:: bash
 
-   $ openstack --os-cloud otc flavor list
+    $ openstack --os-cloud otc flavor list
 
 Splitting the credentials in clouds.yaml and secure.yaml
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -373,15 +369,15 @@ according to your credentials.
 
 .. code-block:: bash
 
-  export OS_AUTH_URL=<url-to-openstack-identity>
-  export OS_IDENTITY_API_VERSION=3
-  export OS_PROJECT_NAME=<project-name>
-  export OS_PROJECT_DOMAIN_NAME=<project-domain-name>
-  export OS_USERNAME=<username>
-  export OS_USER_DOMAIN_NAME=<user-domain-name>
-  export OS_PASSWORD=<password>  # (optional)
-  export S3_ACCESS_KEY_ID=<access_key>
-  export S3_SECRET_ACCESS_KEY=<secret_access_key>
+    $ export OS_AUTH_URL=<url-to-openstack-identity>
+    $ export OS_IDENTITY_API_VERSION=3
+    $ export OS_PROJECT_NAME=<project-name>
+    $ export OS_PROJECT_DOMAIN_NAME=<project-domain-name>
+    $ export OS_USERNAME=<username>
+    $ export OS_USER_DOMAIN_NAME=<user-domain-name>
+    $ export OS_PASSWORD=<password>  # (optional)
+    $ export S3_ACCESS_KEY_ID=<access_key>
+    $ export S3_SECRET_ACCESS_KEY=<secret_access_key>
 
 Test your connection
 ^^^^^^^^^^^^^^^^^^^^
@@ -390,4 +386,4 @@ Use the following command to test the basic functionality.
 
 .. code-block:: bash
 
-   $ openstack flavor list
+    $ openstack flavor list
