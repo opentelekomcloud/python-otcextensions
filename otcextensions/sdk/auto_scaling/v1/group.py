@@ -29,7 +29,7 @@ class Group(_base.Resource):
     allow_update = True
 
     _query_mapping = resource.QueryParameters(
-        'id', 'name', 'status', 'limit', 'marker',
+        'id', 'name', 'limit', 'marker',
         'scaling_configuration_id',
         name='scaling_group_name',
         status='scaling_group_status',

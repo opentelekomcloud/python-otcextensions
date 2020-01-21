@@ -50,10 +50,19 @@ class TestListAutoScalingGroup(TestAutoScalingGroup):
 
     def test_list_default(self):
         arglist = [
+            '--name', 'grp',
+            '--status', 'PAUSED',
+            '--scaling_configuration_id', '2',
+            '--limit', '12'
         ]
 
         verifylist = [
+            ('name', 'grp'),
+            ('status', 'PAUSED'),
+            ('scaling_configuration_id', '2'),
+            ('limit', 12)
         ]
+
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -65,7 +74,11 @@ class TestListAutoScalingGroup(TestAutoScalingGroup):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.groups.assert_called_once_with()
+        self.client.groups.assert_called_once_with(
+            name='grp',
+            status='PAUSED',
+            scaling_configuration_id='2',
+            limit=12)
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
