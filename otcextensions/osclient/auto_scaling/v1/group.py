@@ -111,7 +111,8 @@ class ListAutoScalingGroup(command.Lister):
         if parsed_args.name:
             args['name'] = parsed_args.name
         if parsed_args.scaling_configuration_id:
-            args['scaling_configuration_id'] = parsed_args.scaling_configuration_id
+            args['scaling_configuration_id'] = \
+                parsed_args.scaling_configuration_id
         if parsed_args.status:
             args['status'] = parsed_args.status
 
