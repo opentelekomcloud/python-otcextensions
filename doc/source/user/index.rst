@@ -1,9 +1,9 @@
-Getting started with the OTCExtensions SDK
-==========================================
+Getting started with the OTC Extensions
+=======================================
 
-The SDK/OTCE contain an abstraction interface layer. Clouds can do many
-things, but there are probably only about 10 of them that most people
-care about with any regularity.
+The OTC Extensions contain an abstraction interface layer. Clouds can
+do many things, but there are probably only about 10 of them that most
+people care about with any regularity.
 
 If you want to do complicated things, the per-service oriented
 portions of the SDK are for you.
@@ -13,20 +13,38 @@ talks to clouds no matter what crazy choices the deployer has made in
 an attempt to be more hipster than their self-entitled narcissist
 peers, then the Cloud Abstraction layer is for you.
 
+Please note that OTC Extensions provides an extension to the
+OpenStackSDK.  Please refer to it's documentation for the details
+<https://docs.openstack.org/openstacksdk/latest/>
 
 
-Please note that OTCExtensions provides an extension to the OpenStackSDK.
-Please refer to it's documentation for the details <https://docs.openstack.org/openstacksdk/latest/>
+Verify Installation
+-------------------
 
+You need to have the OpenStack SDK in package `openstacksdk` installed
+to work with the OTC Extensions, which are packaged in
+`otcextensions`. Thanks to a plugin mechanism, no additional
+configuration is needed to use the extension. To verify you are up and
+running write a file `demo.py`:
 
-Installation
-------------
+.. code-block: python
 
-The OTCExtensions SDK is available on
-`GitHub <https://github.com/OpenTelekomCloud/python-otcextensions.git>`_.
-To install it, use ``pip``::
+    import openstack as mycloud
 
-   $ pip install otcextensions
+    conn = mycloud.connect("otc")
+    conn.jjjjj.flavors()
+    
+Make sure that you configured your credentials as describe in the
+`configuration` section. Run this script with
+
+.. code-block: bash
+    $ python demo.py
+
+It should XXXXXXXX list your XXXXXXXX.
+
+    
+with this Python script and run it with
+`python demo.py`.
 
 .. _user_guides:
 
