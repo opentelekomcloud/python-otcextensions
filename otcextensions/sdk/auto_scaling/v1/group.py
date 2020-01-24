@@ -26,7 +26,7 @@ class Group(_base.Resource):
     allow_list = True
     allow_fetch = True
     allow_delete = True
-    allow_update = True
+    allow_commit = True
 
     _query_mapping = resource.QueryParameters(
         'id', 'name', 'limit', 'marker',

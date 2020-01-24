@@ -414,24 +414,23 @@ class UpdateAutoScalingGroup(command.ShowOne):
         )
         parser.add_argument(
             '--subnetwork',
-            metavar='<subnetwork_id>',
+            metavar='<subnetwork>',
+            default=[],
             action='append',
-            required=True,
             help=_('Network ID of the subnet'
                    '(Repeat multiple times, up to 5 times)')
         )
         parser.add_argument(
             '--security_group',
             metavar='<security_group>',
+            default=[],
             action='append',
-            required=True,
             help=_('Security Group ID'
                    '(Repeat multiple times)')
         )
         parser.add_argument(
             '--network_id',
             metavar='<network_id>',
-            required=True,
             help=_('Network (VPC) ID')
         )
         parser.add_argument(
@@ -472,17 +471,20 @@ class UpdateAutoScalingGroup(command.ShowOne):
     def take_action(self, parsed_args):
 
         args = {}
-        args['vpc_id'] = parsed_args.network_id
+        if parsed_args.network_id:
+            args['vpc_id'] = parsed_args.network_id
 
         subnets = []
         for subnet in parsed_args.subnetwork:
             subnets.append({'id': subnet})
-        args['networks'] = subnets
+        if subnets:
+            args['networks'] = subnets
 
         sgs = []
         for sg in parsed_args.security_group:
             sgs.append({'id': sg})
-        args['security_groups'] = sgs
+        if sgs:
+            args['security_groups'] = sgs
 
         if parsed_args.desire_instance_number:
             args['desire_instance_number'] = parsed_args.desire_instance_number
@@ -527,7 +529,8 @@ class UpdateAutoScalingGroup(command.ShowOne):
             args['notifications'] = lst
 
         client = self.app.client_manager.auto_scaling
-        group = client.update_group(group=parsed_args.group, **args)
+        group = client.find_group(parsed_args.group, ignore_missing=False)
+        group = client.update_group(group, **args)
         display_columns, columns = _get_columns(group)
         data = utils.get_item_properties(group, columns, formatters={})
 

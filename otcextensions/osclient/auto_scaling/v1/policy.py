@@ -111,6 +111,8 @@ class ShowAutoScalingPolicy(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.auto_scaling
 
+        #obj = client.find_policy(parsed_args.policy, ignore_missing=False)
+
         obj = client.get_policy(parsed_args.policy)
 
         # display_columns, columns = _get_columns(obj)
@@ -320,13 +322,13 @@ class UpdateAutoScalingPolicy(command.ShowOne):
         parser.add_argument(
             '--group',
             metavar='<group>',
-            required=True,
+            #required=True,
             help=_('AS Group ID or Name for the AS Policy')
         )
         parser.add_argument(
             '--type',
             metavar='<type>',
-            required=True,
+            #required=True,
             # choices=['ALARM', 'SCHEDULED', 'RECURRENCE'],
             help=_('AS Policy type [`ALARM`, `SCHEDULED`, `RECURRENCE`]')
         )
@@ -401,13 +403,14 @@ class UpdateAutoScalingPolicy(command.ShowOne):
         policy_attrs = {}
         # policy_attrs['name'] = parsed_args.name
         policy_attrs['scaling_group_id'] = parsed_args.group
-        policy_type = parsed_args.type.upper()
-        if policy_type not in self.POLICY_TYPES:
-            msg = (_('Unsupported policy type. Should be one of %s')
-                   % self.POLICY_TYPES)
-            raise argparse.ArgumentTypeError(msg)
-        else:
-            policy_attrs['type'] = policy_type
+        if parsed_args.type:
+            policy_type = parsed_args.type.upper()
+            if policy_type not in self.POLICY_TYPES:
+                msg = (_('Unsupported policy type. Should be one of %s')
+                % self.POLICY_TYPES)
+                raise argparse.ArgumentTypeError(msg)
+            else:
+                policy_attrs['type'] = policy_type
         if parsed_args.alarm_id:
             policy_attrs['alarm_id'] = parsed_args.alarm_id
         if parsed_args.cool_down_time:
