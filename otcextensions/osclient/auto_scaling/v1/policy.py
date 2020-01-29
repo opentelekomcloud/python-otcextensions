@@ -16,6 +16,7 @@ import logging
 
 from osc_lib import utils
 from osc_lib.command import command
+from openstack import exceptions
 
 from otcextensions.i18n import _
 
@@ -104,16 +105,36 @@ class ShowAutoScalingPolicy(command.ShowOne):
         parser.add_argument(
             'policy',
             metavar='<policy>',
-            help=_('ID of the configuration policy')
+            help=_('ID of the configuration policy\n'
+                    'For Policy Name search --group param is needed')
+        )
+        parser.add_argument(
+            '--group',
+            metavar='<group>',
+            help=_('ScalingGroup ID or Name if Name searched is used')
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.auto_scaling
 
-        #obj = client.find_policy(parsed_args.policy, ignore_missing=False)
-
-        obj = client.get_policy(parsed_args.policy)
+        if parsed_args.group:
+            group = client.find_group(parsed_args.group, ignore_missing=False)
+            obj = client.find_policy(parsed_args.policy,
+                                     group=group,
+                                     ignore_missing=False)
+        else:
+            obj = client.get_policy(parsed_args.policy)
+        '''if parsed_args.group:
+            group = client.find_group(parsed_args.group)
+            try:
+                obj = client.find_policy(parsed_args.policy,
+                                         group=group,
+                                         ignore_missing=False)
+            except exceptions.ResourceNotFound:
+                obj = client.get_policy(parsed_args.policy)
+        else:
+            obj = client.get_policy(parsed_args.policy)'''
 
         # display_columns, columns = _get_columns(obj)
         # data = utils.get_item_properties(
@@ -317,7 +338,7 @@ class UpdateAutoScalingPolicy(command.ShowOne):
         parser.add_argument(
             'policy',
             metavar='<policy>',
-            help=_('AS Policy name or ID')
+            help=_('AS Policy ID')
         )
         parser.add_argument(
             '--group',
@@ -440,8 +461,9 @@ class UpdateAutoScalingPolicy(command.ShowOne):
 
         client = self.app.client_manager.auto_scaling
 
+        policy = client.get_policy(parsed_args.policy)
         policy = client.update_policy(
-            policy=parsed_args.policy, **policy_attrs)
+            policy, **policy_attrs)
 
         fmt = set_attributes_for_print_detail(policy)
         # display_columns, columns = _get_columns(obj)

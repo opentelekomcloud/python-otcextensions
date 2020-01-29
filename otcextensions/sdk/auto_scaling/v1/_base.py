@@ -62,7 +62,7 @@ class Resource(resource.Resource):
             json=body)
 
     def commit(self, session, prepend_key=False, has_body=True,
-        retry_on_conflict=None, base_path=None):
+               retry_on_conflict=None, base_path=None):
         return super(Resource, self).commit(session, prepend_key=prepend_key, has_body=has_body,
                                             retry_on_conflict=retry_on_conflict,
                                             base_path=base_path)
