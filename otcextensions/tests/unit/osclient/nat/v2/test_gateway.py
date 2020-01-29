@@ -12,6 +12,8 @@
 #
 import mock
 
+from osc_lib import exceptions
+
 from otcextensions.osclient.nat.v2 import gateway
 from otcextensions.tests.unit.osclient.nat.v2 import fakes
 
@@ -20,15 +22,19 @@ class TestListNatGateways(fakes.TestNat):
 
     objects = fakes.FakeNatGateway.create_multiple(3)
 
-    column_list_headers = ('Id', 'Name', 'Spec', 'Router Id', 'Status')
+    column_list_headers = (
+        'Id', 'Name', 'Router Id', 'Status', 'description', 'admin state up', 'Tenant Id', 'Spec', 'Created at'
+    )
 
-    columns = ('id', 'name', 'spec', 'router_id', 'status')
+    columns = (
+        'Id', 'Name', 'Spec', 'Router Id', 'Status'
+    )
 
     data = []
 
     for s in objects:
         data.append(
-            (s.id, s.name, s.spec, s.router_id, s.status))
+            (s.id, s.name, s.souter_id, s.status, s.description, s.admin_state_up, s.tenant_id, s.spec, s.created_at))
 
     def setUp(self):
         super(TestListNatGateways, self).setUp()
@@ -62,159 +68,46 @@ class TestListNatGateways(fakes.TestNat):
             '--limit', '1',
             '--id', '2',
             '--name', '3',
-            '--project-id', '4',
-            '--spec', '5',
+            '--tenant-id', 'abc',
+            '--description', 'test',
+            '--spec', '1',
             '--router-id', '6',
             '--internal-network-id', '7',
-            '--admin-state-up', '8',
-            '--created-at', '9',
-            '--status', '10'
+            '--admin-state-up', 'true',
+            '--created-at', '20',
         ]
 
         verifylist = [
             ('limit', 1),
             ('id', '2'),
             ('name', '3'),
-            ('project_id', '4'),
-            ('spec', '5'),
+            ('project_id', 'abc'),
+            ('description', 'test'),
+            ('spec', '1'),
             ('router_id', '6'),
             ('internal_network_id', '7'),
-            ('admin_state_up', '8'),
-            ('created_at', '9'),
-            ('status', '10'),
+            ('admin_state_up', 'true'),
+            ('created_at', '20'),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        # Set the response
-        self.client.api_mock.side_effect = [self.objects]
-
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_with(
-            limit=1,
+            limit='1',
             id='2',
             name='3',
-            project_id='4',
-            spec='5',
+            project_id='abc',
+            description=test,
+            spec='1',
             router_id='6',
             internal_network_id='7',
-            admin_state_up='8',
-            created_at='9',
-            status='10',
+            admin_state_up='true',
+            created_at='20'
         )
-
-
-class TestCreateNatGateway(fakes.TestNat):
-
-    _data = fakes.FakeNatGateway.create_one()
-
-    columns = (
-        'admin_state_up',
-        'created_at',
-        'description',
-        'id',
-        'internal_network_id',
-        'name',
-        'project_id',
-        'router_id',
-        'spec',
-        'status'
-    )
-
-    data = fakes.gen_data(_data, columns)
-
-    def setUp(self):
-        super(TestCreateNatGateway, self).setUp()
-
-        self.cmd = gateway.CreateNatGateway(self.app, None)
-
-        self.client.create_gateway = mock.Mock(return_value=self._data)
-
-    def test_create(self):
-        arglist = [
-            'test-gateway',
-            '--router-id', 'test-router-uuid',
-            '--internal-network-id', 'test-network-uuid',
-            '--spec', '1',
-        ]
-        verifylist = [
-            ('name', 'test-gateway'),
-            ('router_id', 'test-router-uuid'),
-            ('internal_network_id', 'test-network-uuid'),
-            ('spec', '1'),
-        ]
-        # Verify cm is triggereg with default parameters
-        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-
-        # Trigger the action
-        columns, data = self.cmd.take_action(parsed_args)
-
-        self.client.create_gateway.assert_called_with(
-            name='test-gateway',
-            router_id='test-router-uuid',
-            internal_network_id='test-network-uuid',
-            spec='1'
-        )
-        self.assertEqual(self.columns, columns)
-
-
-class TestUpdateNatGateway(fakes.TestNat):
-
-    _data = fakes.FakeNatGateway.create_one()
-
-    columns = (
-        'admin_state_up',
-        'created_at',
-        'description',
-        'id',
-        'internal_network_id',
-        'name',
-        'project_id',
-        'router_id',
-        'spec',
-        'status'
-    )
-
-    data = fakes.gen_data(_data, columns)
-
-    def setUp(self):
-        super(TestUpdateNatGateway, self).setUp()
-
-        self.cmd = gateway.UpdateNatGateway(self.app, None)
-
-        self.client.find_gateway = mock.Mock(return_value=self._data)
-        self.client.update_gateway = mock.Mock(return_value=self._data)
-
-    def test_update(self):
-        arglist = [
-            'test-gateway',
-            '--name', 'test-gateway-updated',
-            '--description', 'nat gateway updated',
-            '--spec', '2',
-        ]
-        verifylist = [
-            ('gateway', 'test-gateway'),
-            ('name', 'test-gateway-updated'),
-            ('description', 'nat gateway updated'),
-            ('spec', '2'),
-        ]
-        # Verify cm is triggereg with default parameters
-        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-
-        # Trigger the action
-        columns, data = self.cmd.take_action(parsed_args)
-
-        self.client.find_gateway.assert_called_with('test-gateway')
-        self.client.update_gateway.assert_called_with(
-            self._data.id,
-            name='test-gateway-updated',
-            description='nat gateway updated',
-            spec='2'
-        )
-        self.assertEqual(self.columns, columns)
 
 
 class TestShowNatGateway(fakes.TestNat):
@@ -222,16 +115,7 @@ class TestShowNatGateway(fakes.TestNat):
     _data = fakes.FakeNatGateway.create_one()
 
     columns = (
-        'admin_state_up',
-        'created_at',
-        'description',
-        'id',
-        'internal_network_id',
-        'name',
-        'project_id',
-        'router_id',
-        'spec',
-        'status'
+        'id', 'name', 'internal network id', 'spec', 'router id', 'tenant id', 'status', 'description', 'admin state up'
     )
 
     data = fakes.gen_data(_data, columns)
@@ -241,7 +125,7 @@ class TestShowNatGateway(fakes.TestNat):
 
         self.cmd = gateway.ShowNatGateway(self.app, None)
 
-        self.client.find_gateway = mock.Mock(return_value=self._data)
+        self.client.get_gateway = mock.Mock(return_value=self._data)
 
     def test_show(self):
         arglist = [
@@ -257,7 +141,8 @@ class TestShowNatGateway(fakes.TestNat):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.find_gateway.assert_called_with('test_gateway')
+        self.client.get_gateway.assert_called_with('test_gateway',
+                                                     ignore_missing=False)
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -272,7 +157,7 @@ class TestDeleteNatGateway(fakes.TestNat):
 
         self.cmd = gateway.DeleteNatGateway(self.app, None)
 
-        self.client.find_gateway = mock.Mock(return_value=self.data)
+        self.client.get_gateway = mock.Mock(return_value=self.data)
         self.client.delete_gateway = mock.Mock(return_value=self.data)
 
     def test_delete(self):
@@ -281,7 +166,7 @@ class TestDeleteNatGateway(fakes.TestNat):
         ]
 
         verifylist = [
-            ('gateway', 'test_gateway'),
+            ('nat_gateway', 'test_gateway'),
         ]
 
         # Verify cm is triggered with default parameters
@@ -290,6 +175,6 @@ class TestDeleteNatGateway(fakes.TestNat):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        self.client.find_gateway.assert_called_with('test_gateway')
+        self.client.get_gateway.assert_called_with('nat_gateway_id_or_name')
 
         self.client.delete_gateway.assert_called_with(self.data.id)

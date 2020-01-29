@@ -17,28 +17,14 @@ from osc_lib import utils
 from osc_lib.command import command
 
 from otcextensions.i18n import _
-from otcextensions.common import sdk_utils
 
 LOG = logging.getLogger(__name__)
-
-
-def _get_columns(item):
-    column_map = {
-    }
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
 class ListSnatRules(command.Lister):
 
     _description = _("List SNAT Rules.")
-    columns = (
-        'Id',
-        'Nat Gateway Id',
-        'Network Id',
-        'Cidr',
-        'Floating Ip Address',
-        'Status'
-    )
+    columns = ('Id', 'Nat Gateway Id', 'Network Id', 'Cidr', 'Floating Ip Address', 'Status')
 
     def get_parser(self, prog_name):
         parser = super(ListSnatRules, self).get_parser(prog_name)
@@ -50,25 +36,23 @@ class ListSnatRules(command.Lister):
         parser.add_argument(
             '--limit',
             metavar='<limit>',
-            type=int,
             help=_('Limit to fetch number of records.'))
         parser.add_argument(
             '--project-id',
-            metavar='<project_id>',
+            metavar='<tenant_id>',
             help=_('Specifies the project ID.'))
         parser.add_argument(
             '--nat-gateway-id',
             metavar='<nat_gateway_id>',
             help=_('Specifies the NAT gateway ID.'))
         parser.add_argument(
-            '--network-id',
+            '--net-id',
             metavar='<network_id>',
             help=_('Specifies the network ID used by theSNAT rule.'))
         parser.add_argument(
             '--cidr',
             metavar='<cidr>',
-            help=_('Specifies a subset of the VPC subnetCIDR block or '
-                   'a CIDR block of DirectConnect connection.'))
+            help=_('Specifies a subset of the VPC subnetCIDR block or a CIDR block of DirectConnect connection.'))
         parser.add_argument(
             '--source-type',
             metavar='<source_type>',
@@ -101,25 +85,14 @@ class ListSnatRules(command.Lister):
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
         args_list = [
-            'id',
-            'limit',
-            'network_id',
-            'project_id',
-            'nat_gateway_id',
-            'network_id',
-            'cidr',
-            'source_type',
-            'floating_ip_id',
-            'floating_ip_address',
-            'status',
-            'admin_state_up',
-            'created_at']
+            'id', 'limit', 'network_id', 'tenant_id', 'nat_gateway_id', 'network_id', 'cidr', 'source_type', 'floating_ip_id', 'floating_ip_address', 'status', 'admin_state_up', 'created_at'
+        ]
         attrs = {}
         for arg in args_list:
             if getattr(parsed_args, arg):
                 attrs[arg] = getattr(parsed_args, arg)
 
-        data = client.snat_rules(**attrs)
+        data = client.snat_rules(**args)
 
         return (
             self.columns,
@@ -136,15 +109,15 @@ class ShowSnatRule(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(ShowSnatRule, self).get_parser(prog_name)
         parser.add_argument(
-            'snat',
-            metavar='<snat_id>',
+            'snat_rule_id',
+            metavar='<snat_rule_id>',
             help=_('Specifies the ID of the SNAT Rule'),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
-        obj = client.get_snat_rule(parsed_args.snat)
+        obj = client.get_snat_rule(parsed_args.snat_rule_id)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
@@ -158,48 +131,32 @@ class CreateSnatRule(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(CreateSnatRule, self).get_parser(prog_name)
         parser.add_argument(
-            '--nat-gateway-id',
-            required=True,
-            metavar='<nat_gateway_id>',
-            help=_('Specifies the ID of the NAT gateway'))
+            'nat_gateway_id',
+            metavar="<nat_gateway_id>",
+            help=_("Specifies the ID of the NAT gateway"))
         parser.add_argument(
-            '--floating-ip-id',
-            metavar='<floating_ip_id>',
-            required=True,
-            help=_('Specifies the EIP ID. Multiple EIPs '
-                   'are separated using commas'))
+            'floating_ip_id',
+            metavar="<floating_ip_id>",
+            help=_("Specifies the EIP ID. Multiple EIPs are separated using commas"))
         parser.add_argument(
-            '--network-id',
-            metavar='<network_id>',
-            help=_('Specifies the network ID used by the SNAT rule. '
-                   'This parameter and cidr arealternative.'))
+            '--net-id',
+            metavar="<network_id>",
+            help=_("Specifies the network ID used by the SNATrule. This parameter and cidr arealternative."))
         parser.add_argument(
             '--cidr',
-            metavar='<cidr>',
-            help=_('Specifies CIDR, which can be in the formatof a '
-                   'network segment or a host IP address'))
+            metavar="<cidr>",
+            help=_("Specifies CIDR, which can be in the formatof a network segment or a host IP address"))
         parser.add_argument(
             '--source-type',
-            metavar='<source_type>',
-            help=_(
-                'Specifies the source type.\n0: Either network_id '
-                'or cidr can be specified in a VPC.\n1: Only cidr '
-                'can be specified over a Direct Connect connection.'
-                '\nIf no value is entered, the default value 0 (VPC) '
-                'is used.'))
+            metavar="<source_type>",
+            help=_("Specifies the source type."))
 
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
 
-        args_list = [
-            'nat_gateway_id',
-            'floating_ip_id',
-            'network_id',
-            'cidr',
-            'source_type'
-        ]
+        args_list = ['nat_gateway_id', 'floating_ip_id', 'network_id', 'cidr', 'source_type']
         attrs = {}
         for arg in args_list:
             if getattr(parsed_args, arg):
@@ -220,8 +177,8 @@ class DeleteSnatRule(command.Command):
     def get_parser(self, prog_name):
         parser = super(DeleteSnatRule, self).get_parser(prog_name)
         parser.add_argument(
-            'snat',
-            metavar='<snat_id>',
+            'snat_rule_id',
+            metavar='<snat_rule_id>',
             help=_('Specifies the ID of the SNAT Rule'),
         )
 
@@ -229,5 +186,6 @@ class DeleteSnatRule(command.Command):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
-        snat_rule = client.get_snat_rule(parsed_args.snat)
-        client.delete_snat_rule(snat_rule.id)
+        snat_rule = client.get_snat_rule(parsed_args.snat_rule_id)
+        return client.delete_snat_rule(snat_rule.id)
+
