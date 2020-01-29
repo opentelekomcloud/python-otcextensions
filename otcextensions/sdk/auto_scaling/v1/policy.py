@@ -42,8 +42,19 @@ class Action(resource.Resource):
     #: Scaling trigger action type
     #: valid values include: ``ADD``, ``REMOVE``, ``SET``
     operation = resource.Body('operation')
-    #: The instance number action for
-    instance_number = resource.Body('instance_number')
+    #: Number of instances which will be operated by the action
+    #: Values from 0 to 200 are possible.
+    #: Note: Use either instance_number or instance_percentage
+    #: If nothing of instance_number or instance_percentage is set, the default
+    #: value is 1.
+    instance_number = resource.Body('instance_number', type=int)
+    #: Percentage of instances which are currently there to be operated by the action
+    #: Values from 0 to 20000 are possible.
+    #: Note: Use either instance_number or instance_percentage
+    #: If nothing of instance_number or instance_percentage is set, the default
+    #: value is 1.
+    instance_percentage = resource.Body('instance_percentage', type=int)
+
 
 
 class Policy(_base.Resource):
@@ -83,7 +94,7 @@ class Policy(_base.Resource):
                                      type=ScheduledPolicy)
     scaling_policy_action = resource.Body('scaling_policy_action',
                                           type=Action)
-    cool_down_time = resource.Body('cool_down_time')
+    cool_down_time = resource.Body('cool_down_time', type=int)
     create_time = resource.Body('create_time')
     #: valid values include: ``INSERVICE``, ``PAUSED``
     status = resource.Body('policy_status')

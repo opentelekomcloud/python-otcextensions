@@ -125,20 +125,6 @@ class ShowAutoScalingPolicy(command.ShowOne):
                                      ignore_missing=False)
         else:
             obj = client.get_policy(parsed_args.policy)
-        '''if parsed_args.group:
-            group = client.find_group(parsed_args.group)
-            try:
-                obj = client.find_policy(parsed_args.policy,
-                                         group=group,
-                                         ignore_missing=False)
-            except exceptions.ResourceNotFound:
-                obj = client.get_policy(parsed_args.policy)
-        else:
-            obj = client.get_policy(parsed_args.policy)'''
-
-        # display_columns, columns = _get_columns(obj)
-        # data = utils.get_item_properties(
-        #     obj, columns, formatters={'instance_config': _format_instance})
 
         fmt = set_attributes_for_print_detail(obj)
         # display_columns, columns = _get_columns(obj)
