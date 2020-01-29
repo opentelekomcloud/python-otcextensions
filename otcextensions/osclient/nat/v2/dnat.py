@@ -55,8 +55,7 @@ class ListDnatRules(command.Lister):
             help=_('Limit to fetch number of records.'))
         parser.add_argument(
             '--project-id',
-            metavar='<tenant_id>',
-            dest='tenant_id',
+            metavar='<project_id>',
             help=_('Specifies the project ID.'))
         parser.add_argument(
             '--nat-gateway-id',
@@ -114,7 +113,7 @@ class ListDnatRules(command.Lister):
         args_list = [
             'id',
             'limit',
-            'tenant_id',
+            'project_id',
             'nat_gateway_id',
             'port_id',
             'private_ip',
@@ -131,7 +130,6 @@ class ListDnatRules(command.Lister):
         for arg in args_list:
             if getattr(parsed_args, arg):
                 attrs[arg] = getattr(parsed_args, arg)
-
         data = client.dnat_rules(**attrs)
 
         return (
@@ -149,15 +147,15 @@ class ShowDnatRule(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(ShowDnatRule, self).get_parser(prog_name)
         parser.add_argument(
-            'dnat_rule_id',
-            metavar='<dnat_rule_id>',
+            'dnat',
+            metavar='<dnat_id>',
             help=_('Specifies the ID of the SNAT Rule'),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
-        obj = client.get_dnat_rule(parsed_args.dnat_rule_id)
+        obj = client.get_dnat_rule(parsed_args.dnat)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
@@ -171,7 +169,8 @@ class CreateDnatRule(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(CreateDnatRule, self).get_parser(prog_name)
         parser.add_argument(
-            'nat_gateway_id',
+            '--nat-gateway-id',
+            required=True,
             metavar="<nat_gateway_id>",
             help=_("Specifies the ID of the NAT gateway"))
         parser.add_argument(
@@ -186,20 +185,24 @@ class CreateDnatRule(command.ShowOne):
         parser.add_argument(
             '--internal-service-port',
             metavar='<internal_service_port>',
+            required=True,
             help=_('Specifies port used by ECSs or BMSs toprovide '
                    'services for external systems.'))
         parser.add_argument(
-            'floating_ip_id',
+            '--floating-ip-id',
             metavar="<floating_ip_id>",
+            required=True,
             help=_('Specifies the EIP ID. Multiple EIPs are '
                    'separated using commas'))
         parser.add_argument(
             '--external-service-port',
             metavar='<external_service_port>',
+            required=True,
             help=_('Specifies the port for providing external services.'))
         parser.add_argument(
             '--protocol',
             metavar='<protocol>',
+            required=True,
             help=_('Specifies the protocol type.'))
 
         return parser
@@ -236,8 +239,8 @@ class DeleteDnatRule(command.Command):
     def get_parser(self, prog_name):
         parser = super(DeleteDnatRule, self).get_parser(prog_name)
         parser.add_argument(
-            'dnat_rule_id',
-            metavar='<dnat_rule_id>',
+            'dnat',
+            metavar='<dnat_id>',
             help=_('Specifies the ID of the DNAT Rule'),
         )
 
@@ -245,5 +248,5 @@ class DeleteDnatRule(command.Command):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
-        dnat_rule = client.get_dnat_rule(parsed_args.dnat_rule_id)
-        return client.delete_dnat_rule(dnat_rule.id)
+        dnat_rule = client.get_dnat_rule(parsed_args.dnat)
+        client.delete_dnat_rule(dnat_rule.id)

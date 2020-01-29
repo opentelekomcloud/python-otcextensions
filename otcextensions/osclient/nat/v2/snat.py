@@ -54,8 +54,7 @@ class ListSnatRules(command.Lister):
             help=_('Limit to fetch number of records.'))
         parser.add_argument(
             '--project-id',
-            metavar='<tenant_id>',
-            dest='tenant_id',
+            metavar='<project_id>',
             help=_('Specifies the project ID.'))
         parser.add_argument(
             '--nat-gateway-id',
@@ -105,7 +104,7 @@ class ListSnatRules(command.Lister):
             'id',
             'limit',
             'network_id',
-            'tenant_id',
+            'project_id',
             'nat_gateway_id',
             'network_id',
             'cidr',
@@ -137,15 +136,15 @@ class ShowSnatRule(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(ShowSnatRule, self).get_parser(prog_name)
         parser.add_argument(
-            'snat_rule_id',
-            metavar='<snat_rule_id>',
+            'snat',
+            metavar='<snat_id>',
             help=_('Specifies the ID of the SNAT Rule'),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
-        obj = client.get_snat_rule(parsed_args.snat_rule_id)
+        obj = client.get_snat_rule(parsed_args.snat)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
@@ -159,16 +158,18 @@ class CreateSnatRule(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(CreateSnatRule, self).get_parser(prog_name)
         parser.add_argument(
-            'nat_gateway_id',
+            '--nat-gateway-id',
+            required=True,
             metavar='<nat_gateway_id>',
             help=_('Specifies the ID of the NAT gateway'))
         parser.add_argument(
-            'floating_ip_id',
+            '--floating-ip-id',
             metavar='<floating_ip_id>',
+            required=True,
             help=_('Specifies the EIP ID. Multiple EIPs '
                    'are separated using commas'))
         parser.add_argument(
-            '--net-id',
+            '--network-id',
             metavar='<network_id>',
             help=_('Specifies the network ID used by the SNAT rule. '
                    'This parameter and cidr arealternative.'))
@@ -180,7 +181,12 @@ class CreateSnatRule(command.ShowOne):
         parser.add_argument(
             '--source-type',
             metavar='<source_type>',
-            help=_('Specifies the source type.'))
+            help=_(
+                'Specifies the source type.\n0: Either network_id '
+                'or cidr can be specified in a VPC.\n1: Only cidr '
+                'can be specified over a Direct Connect connection.'
+                '\nIf no value is entered, the default value 0 (VPC) '
+                'is used.'))
 
         return parser
 
@@ -214,8 +220,8 @@ class DeleteSnatRule(command.Command):
     def get_parser(self, prog_name):
         parser = super(DeleteSnatRule, self).get_parser(prog_name)
         parser.add_argument(
-            'snat_rule_id',
-            metavar='<snat_rule_id>',
+            'snat',
+            metavar='<snat_id>',
             help=_('Specifies the ID of the SNAT Rule'),
         )
 
@@ -223,5 +229,5 @@ class DeleteSnatRule(command.Command):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
-        snat_rule = client.get_snat_rule(parsed_args.snat_rule_id)
-        return client.delete_snat_rule(snat_rule.id)
+        snat_rule = client.get_snat_rule(parsed_args.snat)
+        client.delete_snat_rule(snat_rule.id)
