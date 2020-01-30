@@ -329,7 +329,7 @@ class UpdateAutoScalingPolicy(command.ShowOne):
         parser.add_argument(
             '--group',
             metavar='<group>',
-            #required=True,
+            required=True,
             help=_('AS Group ID or Name for the AS Policy')
         )
         parser.add_argument(
