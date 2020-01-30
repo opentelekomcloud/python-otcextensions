@@ -87,7 +87,7 @@ class Policy(_base.Resource):
     #: valid values include: ``ALARM``, ``SCHEDULED``, ``RECURRENCE``
     type = resource.Body('scaling_policy_type')
     #: AutoScaling group reference the policy apply to
-    scaling_group_id = resource.URI('scaling_group_id')
+    scaling_group_id = resource.Body('scaling_group_id')
 
     alarm_id = resource.Body('alarm_id')
     scheduled_policy = resource.Body('scheduled_policy',

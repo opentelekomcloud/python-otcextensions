@@ -486,7 +486,7 @@ class EnableAutoScalingPolicy(command.Command):
         parser.add_argument(
             'policy',
             metavar='<policy>',
-            help=_('AS Policy ID or name')
+            help=_('AS Policy ID')
         )
         return parser
 
@@ -505,7 +505,7 @@ class DisableAutoScalingPolicy(command.Command):
         parser.add_argument(
             'policy',
             metavar='<policy>',
-            help=_('AS Policy ID or name')
+            help=_('AS Policy ID')
         )
         return parser
 
