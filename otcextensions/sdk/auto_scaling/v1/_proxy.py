@@ -311,6 +311,7 @@ class Proxy(proxy.Proxy):
         """Find a single policy
 
         :param name_or_id: The name or ID of a policy
+        :param group: ID of a group
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
             when the policy does not exist.

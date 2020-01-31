@@ -45,16 +45,16 @@ class Action(resource.Resource):
     #: Number of instances which will be operated by the action
     #: Values from 0 to 200 are possible.
     #: Note: Use either instance_number or instance_percentage
-    #: If nothing of instance_number or instance_percentage is set, the default
-    #: value is 1.
+    #: If nothing of instance_number or instance_percentage is set, the
+    #: default value is 1.
     instance_number = resource.Body('instance_number', type=int)
-    #: Percentage of instances which are currently there to be operated by the action
+    #: Percentage of instances which are currently there to be operated
+    #: by the action
     #: Values from 0 to 20000 are possible.
     #: Note: Use either instance_number or instance_percentage
     #: If nothing of instance_number or instance_percentage is set, the default
     #: value is 1.
     instance_percentage = resource.Body('instance_percentage', type=int)
-
 
 
 class Policy(_base.Resource):
@@ -155,7 +155,10 @@ class Policy(_base.Resource):
         #       and 'name' not in params):
         params['name'] = name_or_id
 
-        data = cls.list(session, base_path='/scaling_policy/{id}/list'.format(id=group_id), **params)
+        base_path = '/scaling_policy/{id}/list'.format(id=group_id)
+        data = cls.list(session,
+                        base_path=base_path,
+                        **params)
 
         result = cls._get_one_match(name_or_id, data)
         if result is not None:

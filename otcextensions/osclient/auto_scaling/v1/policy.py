@@ -16,7 +16,6 @@ import logging
 
 from osc_lib import utils
 from osc_lib.command import command
-from openstack import exceptions
 
 from otcextensions.i18n import _
 
@@ -335,8 +334,6 @@ class UpdateAutoScalingPolicy(command.ShowOne):
         parser.add_argument(
             '--type',
             metavar='<type>',
-            #required=True,
-            # choices=['ALARM', 'SCHEDULED', 'RECURRENCE'],
             help=_('AS Policy type [`ALARM`, `SCHEDULED`, `RECURRENCE`]')
         )
         parser.add_argument(
@@ -414,7 +411,7 @@ class UpdateAutoScalingPolicy(command.ShowOne):
             policy_type = parsed_args.type.upper()
             if policy_type not in self.POLICY_TYPES:
                 msg = (_('Unsupported policy type. Should be one of %s')
-                % self.POLICY_TYPES)
+                       % self.POLICY_TYPES)
                 raise argparse.ArgumentTypeError(msg)
             else:
                 policy_attrs['type'] = policy_type

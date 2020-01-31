@@ -327,10 +327,15 @@ class TestUpdateAutoScalingGroup(TestAutoScalingGroup):
             self._group
         ]
 
+        self.client.find_group.side_effect = [
+            self._group
+        ]
+
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.update_group.assert_called_with(
+            self._group,
             available_zones=['eu-1', 'eu-2'],
             cool_down_time=1,
             desire_instance_number=10,
@@ -343,7 +348,6 @@ class TestUpdateAutoScalingGroup(TestAutoScalingGroup):
                 {'id': 'lbas2', 'protocol_port': '15', 'weight': '10'}],
             max_instance_number=15,
             min_instance_number=1,
-            group='test_name',
             networks=[{'id': 'sub1'}, {'id': 'sub2'}],
             notifications=['EMAIL', 'SMS'],
             security_groups=[{'id': 'sg1'}, {'id': 'sg2'}],

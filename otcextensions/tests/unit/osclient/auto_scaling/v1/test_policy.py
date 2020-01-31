@@ -326,13 +326,17 @@ class TestUpdateAutoScalingPolicy(TestAutoScalingPolicy):
             self._obj
         ]
 
+        self.client.get_policy.side_effect = [
+            self._obj
+        ]
+
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.update_policy.assert_called_with(
+            self._obj,
             alarm_id='alarm1',
             cool_down_time=1,
-            policy='policy1',
             scaling_group_id='group1',
             scaling_policy_action={'operation': 'ADD', 'instance_number': 7},
             scheduled_policy={

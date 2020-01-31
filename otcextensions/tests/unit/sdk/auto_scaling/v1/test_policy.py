@@ -137,7 +137,7 @@ class TestPolicy(base.TestCase):
         call_args = self.sess.post.call_args_list[0]
 
         expected_json = copy.deepcopy(EXAMPLE)
-        expected_json.pop('scaling_group_id')
+        # expected_json.pop('scaling_group_id')
 
         self.assertEqual('/scaling_policy', call_args[0][0])
         self.assertDictEqual(expected_json, call_args[1]['json'])
@@ -184,7 +184,7 @@ class TestPolicy(base.TestCase):
 
         expected_json = copy.deepcopy(EXAMPLE)
         expected_json.pop('scaling_policy_id')
-        expected_json.pop('scaling_group_id')
+        # expected_json.pop('scaling_group_id')
 
         self.assertEqual(
             'scaling_policy/%s' % EXAMPLE['scaling_policy_id'],
