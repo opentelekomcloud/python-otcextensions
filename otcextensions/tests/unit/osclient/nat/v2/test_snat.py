@@ -40,14 +40,14 @@ class TestListSnatRules(fakes.TestNat):
     data = []
 
     for s in objects:
-        data.append((
+        data.append(
             s.id,
             s.nat_gateway_id,
             s.network_id,
             s.cidr,
             s.floating_ip_address,
             s.status
-        ))
+        )
 
     def setUp(self):
         super(TestListSnatRules, self).setUp()

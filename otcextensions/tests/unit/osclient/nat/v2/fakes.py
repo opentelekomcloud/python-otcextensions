@@ -10,8 +10,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-import random
 import uuid
+import time
 
 import mock
 
@@ -38,7 +38,7 @@ def gen_data_dict(data, columns):
 
 class TestNat(utils.TestCommand):
     def setUp(self):
-        super(TestRds, self).setUp()
+        super(TestNat, self).setUp()
 
         self.app.client_manager.nat = mock.Mock()
 
@@ -60,21 +60,19 @@ class FakeNatGateway(test_base.Fake):
         """
         # Set default attributes.
         object_info = {
-            "nat_gateway": {
-                "id": "id-" + uuid.uuid4().hex,
-                "name": "name-" + uuid.uuid4().hex,
-                "router_id": "router-" + uuid.uuid4().hex,
-                "status": "PENDING_CREATE",
-                "description": "my nat gateway",
-                "admin_state_up": true,
-                "tenant_id": "tenant-id-" + uuid.uuid4().hex,
-                "created_at": time.clock() * 1000,
-                "spec": "1",
-                "internal_network_id": "net-id-" + uuid.uuid4().hex
-            }
+            "id": "id-" + uuid.uuid4().hex,
+            "name": "name-" + uuid.uuid4().hex,
+            "router_id": "router-" + uuid.uuid4().hex,
+            "status": "PENDING_CREATE",
+            "description": "my nat gateway",
+            "admin_state_up": 'true',
+            "tenant_id": "tenant-id-" + uuid.uuid4().hex,
+            "created_at": time.clock() * 1000,
+            "spec": "1",
+            "internal_network_id": "net-id-" + uuid.uuid4().hex
         }
 
-        return datastore.Datastore(**object_info)
+        return gateway.Gateway(**object_info)
 
 
 class FakeSnatRule(test_base.Fake):
@@ -89,20 +87,18 @@ class FakeSnatRule(test_base.Fake):
 
         # Set default attributes.
         object_info = {
-            "snat_rule": {
-                "id": "id-",
-                "floating_ip_id": "eip-id-" + uuid.uuid4().hex,
-                "status": "PENDING_CREATE",
-                "nat_gateway_id": "gw-id-" + uuid.uuid4().hex,
-                "admin_state_up": true,
-                "network_id": "net-id-" + uuid.uuid4().hex,
-                "cidr": null,
-                "source_type":0,
-                "tenant_id": "tenant-id-" + uuid.uuid4().hex,
-                "created_at": time.clock() * 1000,
-                "floating_ip_address": uuid.uuid4().hex
-            }
-        } 
+            "id": "id-" + uuid.uuid4().hex,
+            "floating_ip_id": "eip-id-" + uuid.uuid4().hex,
+            "status": "PENDING_CREATE",
+            "nat_gateway_id": "gw-id-" + uuid.uuid4().hex,
+            "admin_state_up": True,
+            "network_id": "net-id-" + uuid.uuid4().hex,
+            "cidr": uuid.uuid4().hex,
+            "source_type": 0,
+            "tenant_id": "tenant-id-" + uuid.uuid4().hex,
+            "created_at": time.clock() * 1000,
+            "floating_ip_address": uuid.uuid4().hex
+        }
 
         return snat.Snat.existing(**object_info)
 
@@ -112,20 +108,19 @@ class FakeDnatRule(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            "dnat_rule": {
-                "id": "id-",
-                "floating_ip_id": "eip-id-" + uuid.uuid4().hex,
-                "status": "ACTIVE",
-                "nat_gateway_id": "gw-id-" + uuid.uuid4().hex,
-                "admin_state_up": true,
-                "private_ip": uuid.uuid4().hex,
-                "internal_service_port": 0,
-                "protocol": "any",
-                "tenant_id": "abc",
-                "created_at": time.clock() * 1000,
-                "floating_ip_address": uuid.uuid4().hex,
-                "external_service_port": 0
-            }
+            "id": "id-" + uuid.uuid4().hex,
+            "floating_ip_id": "eip-id-" + uuid.uuid4().hex,
+            "status": "ACTIVE",
+            "nat_gateway_id": "gw-id-" + uuid.uuid4().hex,
+            "admin_state_up": True,
+            "private_ip": uuid.uuid4().hex,
+            "internal_service_port": 0,
+            "protocol": "any",
+            "tenant_id": "abc",
+            "port_id": "",
+            "created_at": time.clock() * 1000,
+            "floating_ip_address": uuid.uuid4().hex,
+            "external_service_port": 0
         }
 
         obj = dnat.Dnat.existing(**object_info)

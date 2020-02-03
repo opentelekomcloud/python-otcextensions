@@ -17,17 +17,24 @@ from osc_lib import utils
 from osc_lib.command import command
 
 from otcextensions.i18n import _
+from otcextensions.common import sdk_utils
 
 LOG = logging.getLogger(__name__)
 
 
-class ListNatGateway(command.Lister):
+def _get_columns(item):
+    column_map = {
+    }
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
+
+
+class ListNatGateways(command.Lister):
 
     _description = _("List Nat Gateway.")
     columns = ('Id', 'Name', 'Spec', 'Router Id', 'Status')
 
     def get_parser(self, prog_name):
-        parser = super(ListNatGateway, self).get_parser(prog_name)
+        parser = super(ListNatGateways, self).get_parser(prog_name)
 
         parser.add_argument(
             '--id',
@@ -36,10 +43,12 @@ class ListNatGateway(command.Lister):
         parser.add_argument(
             '--limit',
             metavar='<limit>',
+            type=int,
             help=_('Limit to fetch number of records.'))
         parser.add_argument(
             '--project-id',
             metavar='<tenant_id>',
+            dest='tenant_id',
             help=_('Specifies the project ID.'))
         parser.add_argument(
             '--name',
@@ -64,7 +73,8 @@ class ListNatGateway(command.Lister):
         parser.add_argument(
             '--admin-state-up',
             metavar='<admin_state_up>',
-            help=_('Specifies whether the NAT Gateway is enabled or disabled.'))
+            help=_('Specifies whether the NAT Gateway is enabled '
+                   'or disabled.'))
         parser.add_argument(
             '--created-at',
             metavar='<created_at>',
@@ -77,22 +87,25 @@ class ListNatGateway(command.Lister):
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
         args_list = [
-            'id', 'limit', 'tenant_id', 'name', 'description', 'spec', 'router_id', 'internal_network_id', 'status', 'admin_state_up', 'created_at'
-        ]
+            'id',
+            'limit',
+            'tenant_id',
+            'name',
+            'spec',
+            'router_id',
+            'internal_network_id',
+            'status',
+            'admin_state_up',
+            'created_at']
         attrs = {}
         for arg in args_list:
             if getattr(parsed_args, arg):
                 attrs[arg] = getattr(parsed_args, arg)
 
-        data = client.gateways(**args)
+        data = client.gateways(**attrs)
 
-        return (
-            self.columns,
-            (utils.get_item_properties(
-                s,
-                self.columns,
-            ) for s in data)
-        )
+        return (self.columns, (utils.get_item_properties(s, self.columns)
+                               for s in data))
 
 
 class ShowNatGateway(command.ShowOne):
@@ -101,15 +114,15 @@ class ShowNatGateway(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(ShowNatGateway, self).get_parser(prog_name)
         parser.add_argument(
-            'nat_gateway_id',
-            metavar='<nat_gateway_id>',
+            'nat_gateway',
+            metavar='<nat_gateway>',
             help=_('Specifies the ID of the NAT Gateway.'),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
-        obj = client.get_gateway(parsed_args.nat_gateway_id)
+        obj = client.get_gateway(parsed_args.nat_gateway)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
@@ -149,7 +162,12 @@ class CreateNatGateway(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
 
-        args_list = ['name', 'description', 'spec', 'router_id', 'internal_network_id']
+        args_list = [
+            'name',
+            'description',
+            'spec',
+            'router_id',
+            'internal_network_id']
         attrs = {}
         for arg in args_list:
             if getattr(parsed_args, arg):
