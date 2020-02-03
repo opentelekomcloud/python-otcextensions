@@ -97,7 +97,7 @@ class TestListSnatRules(fakes.TestNat):
             ('id', '2'),
             ('nat_gateway_id', '3'),
             ('network_id', '4'),
-            ('tenant_id', '5'),
+            ('project_id', '5'),
             ('cidr', '6'),
             ('source_type', '7'),
             ('floating_ip_id', '8'),
@@ -121,7 +121,7 @@ class TestListSnatRules(fakes.TestNat):
             id='2',
             nat_gateway_id='3',
             network_id='4',
-            tenant_id='5',
+            project_id='5',
             cidr='6',
             source_type='7',
             floating_ip_id='8',
@@ -130,6 +130,60 @@ class TestListSnatRules(fakes.TestNat):
             created_at='11',
             status='12',
         )
+
+
+class TestCreateSnatRule(fakes.TestNat):
+
+    _data = fakes.FakeSnatRule.create_one()
+
+    columns = (
+        'admin_state_up',
+        'cidr',
+        'created_at',
+        'floating_ip_address',
+        'floating_ip_id',
+        'id',
+        'nat_gateway_id',
+        'network_id',
+        'project_id',
+        'source_type',
+        'status'
+    )
+
+    data = fakes.gen_data(_data, columns)
+
+    def setUp(self):
+        super(TestCreateSnatRule, self).setUp()
+
+        self.cmd = snat.CreateSnatRule(self.app, None)
+
+        self.client.create_snat_rule = mock.Mock(return_value=self._data)
+
+    def test_create(self):
+        arglist = [
+            '--nat-gateway-id', 'test-nat-uuid',
+            '--floating-ip-id', 'test-floating-ip-uuid',
+            '--network-id', 'test-network-uuid',
+        ]
+
+        verifylist = [
+            ('nat_gateway_id', 'test-nat-uuid'),
+            ('floating_ip_id', 'test-floating-ip-uuid'),
+            ('network_id', 'test-network-uuid'),
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+        self.client.create_snat_rule.assert_called_with(
+            nat_gateway_id='test-nat-uuid',
+            floating_ip_id='test-floating-ip-uuid',
+            network_id='test-network-uuid')
+
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
 
 
 class TestShowSnatRule(fakes.TestNat):
@@ -165,7 +219,7 @@ class TestShowSnatRule(fakes.TestNat):
         ]
 
         verifylist = [
-            ('snat_rule_id', 'test_snat_rule_id'),
+            ('snat', 'test_snat_rule_id'),
         ]
 
         # Verify cm is triggered with default parameters
@@ -197,7 +251,7 @@ class TestDeleteSnatRule(fakes.TestNat):
         ]
 
         verifylist = [
-            ('snat_rule_id', 'test_snat_rule_id'),
+            ('snat', 'test_snat_rule_id'),
         ]
 
         # Verify cm is triggered with default parameters
