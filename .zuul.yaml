@@ -1,35 +1,11 @@
-- job:
-    name: openstacksdk-functional
-    parent: otc-tox-functional
-    description: |
-      Run openstacksdk functional tests against a OTC
-
-- job:
-    name: openstacksdk-functional-otc
-    parent: openstacksdk-functional
-    description: |
-      Run openstacksdk functional tests using default python against OTC
-
-- job:
-    name: openstacksdk-functional-otc-python3
-    parent: openstacksdk-functional
-    description: |
-      Run openstacksdk functional tests using python3 against OTC
-    vars:
-      tox_environment:
-        OPENSTACKSDK_TOX_PYTHON: python3
-        OS_CLOUD: otc
-
 - project:
     check:
       jobs:
         - tox-py36
         - tox-py27
         - tox-pep8
-        - openstacksdk-functional-otc-python3
     gate:
       jobs:
         - tox-py36
         - tox-py27
         - tox-pep8
-        - openstacksdk-functional-otc-python3
