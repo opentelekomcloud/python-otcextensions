@@ -10,4 +10,3 @@
         - tox-py37
         - tox-pep8
         - tox-functional
-
