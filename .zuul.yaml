@@ -1,6 +1,7 @@
 - project:
     check:
       jobs:
+        - tox-py37
 
     gate:
       jobs:
