@@ -38,7 +38,13 @@ class ListAutoScalingQuota(command.Lister):
     def take_action(self, parsed_args):
         client = self.app.client_manager.auto_scaling
 
-        data = client.quotas(group=parsed_args.group)
+        data = []
+
+        if parsed_args.group:
+            group = client.find_group(parsed_args.group, ignore_missing=False)
+            data = client.quotas(group=group.id)
+        else:
+            data = client.quotas()
 
         return (
             self.columns,

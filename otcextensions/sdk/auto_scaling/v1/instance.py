@@ -25,7 +25,6 @@ class Instance(_base.Resource):
     # ok, we just fix the base path to list because there are no common rules
     # for the operations for instance
     base_path = '/scaling_group_instance'
-    list_path = '/scaling_group_instance/%(scaling_group_id)s/list'
     query_marker_key = 'start_number'
 
     # capabilities
@@ -59,14 +58,6 @@ class Instance(_base.Resource):
     health_status = resource.Body('health_status')
     #: AutoScaling instance create time
     create_time = resource.Body('create_time')
-
-    @classmethod
-    def list(cls, session, paginated=False,
-             endpoint_override=None, headers=None, **params):
-        return super(Instance, cls).list_ext(
-            session, paginated,
-            endpoint_override, headers,
-            **params)
 
     def remove(self, session, delete_instance=False, ignore_missing=True):
         """Remove an instance of auto scaling group

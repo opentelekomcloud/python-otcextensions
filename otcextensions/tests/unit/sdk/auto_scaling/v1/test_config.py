@@ -128,7 +128,6 @@ class TestConfig(base.TestCase):
 
     def test_basic(self):
         sot = config.Config()
-        self.assertEqual('scaling_configuration', sot.resource_key)
         self.assertEqual('scaling_configurations', sot.resources_key)
         self.assertEqual('/scaling_configuration', sot.base_path)
         self.assertTrue(sot.allow_list)

@@ -154,9 +154,9 @@ class TestAutoScalingPolicy(TestAutoScalingProxy):
                 'some_arg': 'arg_value',
                 'group': 'group_id'
             },
+            base_path='/scaling_policy/group_id/list',
             expected_kwargs={
                 'some_arg': 'arg_value',
-                'scaling_group_id': 'group_id',
             }
         )
 
@@ -270,9 +270,7 @@ class TestAutoScalingInstance(TestAutoScalingProxy):
         self.verify_list(
             self.proxy.instances, _instance.Instance,
             method_args=['group'],
-            expected_kwargs={
-                'scaling_group_id': 'group'
-            },
+            base_path='/scaling_group_instance/group/list'
         )
 
     def test_batch_action_remove(self):

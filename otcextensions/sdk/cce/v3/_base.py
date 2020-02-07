@@ -12,6 +12,8 @@
 from openstack import exceptions
 from openstack import resource
 
+from otcextensions.common import exc
+
 
 class Metadata(resource.Resource):
 
@@ -88,9 +90,63 @@ class Resource(resource.Resource):
         else:
             return object.__getattribute__(self, name)
 
+    def _translate_response(self, response, has_body=None, error_message=None):
+        if has_body is None:
+            has_body = self.has_body
+        # NOTE: we only use our own exception parser
+        exc.raise_from_response(response, error_message=error_message)
+        if has_body:
+            try:
+                body = response.json()
+                if self.resource_key and self.resource_key in body:
+                    body = body[self.resource_key]
+
+                body_attrs = self._consume_body_attrs(body)
+
+                if self._store_unknown_attrs_as_properties:
+                    body_attrs = self._pack_attrs_under_properties(
+                        body_attrs, body)
+
+                self._body.attributes.update(body_attrs)
+                self._body.clean()
+                if self.commit_jsonpatch or self.allow_patch:
+                    # We need the original body to compare against
+                    self._original_body = body_attrs.copy()
+            except ValueError:
+                # Server returned not parse-able response (202, 204, etc)
+                # Do simply nothing
+                pass
+
+        headers = self._consume_header_attrs(response.headers)
+        self._header.attributes.update(headers)
+        self._header.clean()
+        self._update_location()
+        dict.update(self, self.to_dict())
+
     def create(self, session, prepend_key=False, base_path=None):
         # Overriden here to override prepend_key default value
         return super(Resource, self).create(session, prepend_key, base_path)
+
+    def delete(self, session, error_message=None):
+        """Delete the remote resource based on this instance.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+
+        :return: This :class:`Resource` instance.
+        :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
+                 :data:`Resource.allow_commit` is not set to ``True``.
+        :raises: :exc:`~openstack.exceptions.ResourceNotFound` if
+                 the resource was not found.
+        """
+
+        response = self._raw_delete(session)
+        kwargs = {}
+        if error_message:
+            kwargs['error_message'] = error_message
+
+        self._translate_response(response, has_body=True, **kwargs)
+        return self
 
     @classmethod
     def list(cls, session, paginated=True, base_path=None, **params):

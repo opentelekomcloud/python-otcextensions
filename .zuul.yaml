@@ -3,6 +3,3 @@
       jobs:
         - tox-py37
 
-    gate:
-      jobs:
-

@@ -12,8 +12,11 @@
 import importlib
 import os
 
+import openstack
 from openstack import _log
 from openstack import utils
+
+from otcextensions.sdk.compute.v2 import server
 
 
 _logger = _log.setup_logging('openstack')
@@ -78,9 +81,15 @@ OTC_SERVICES = {
         'service_type': 'dns',
         'replace_system': True,
     },
+    'ecs': {
+        'service_type': 'ecs',
+    },
     'kms': {
         'service_type': 'kms',
         'append_project_id': True,
+    },
+    'nat': {
+        'service_type': 'nat'
     },
     'obs': {
         'service_type': 'obs',
@@ -195,6 +204,13 @@ def get_ak_sk(conn):
         return(ak, sk)
 
 
+def patch_openstack_resources():
+    openstack.compute.v2.server.Server._get_tag_struct = \
+        server.Server._get_tag_struct
+    openstack.compute.v2.server.Server.add_tag = server.Server.add_tag
+    openstack.compute.v2.server.Server.remove_tag = server.Server.remove_tag
+
+
 def load(conn, **kwargs):
     """Register supported OTC services and make them known to the OpenStackSDK
 
@@ -214,7 +230,6 @@ def load(conn, **kwargs):
             if service['service_type'] in conn._proxies:
                 del conn._proxies[service['service_type']]
             # attr = getattr(conn, service_name)
-            # print(hasattr(conn, service_name))
             # delattr(conn, service['service_type'])
 
         sd = _get_descriptor(service_name)
@@ -236,8 +251,10 @@ def load(conn, **kwargs):
                                                             '%(project_id)s')
 
         elif service.get('set_endpoint_override', False):
-            # We need to set endpoint_override for OBS, since otherwise it
-            # fails dramatically
+            # SDK respects skip_discovery only if endpoint_override is set.
+            # In case, when append_project_id is skipped for the service,
+            # but the discovery on the service is not working - we might be
+            # failing dramatically.
             ep = conn.endpoint_for(sd.service_type)
             conn.config.config[
                 '_'.join([
@@ -249,6 +266,8 @@ def load(conn, **kwargs):
         # Inject get_ak_sk into the connection to give possibility
         # for some proxies to use them
         setattr(conn, 'get_ak_sk', get_ak_sk)
+
+    patch_openstack_resources()
 
     return None
 
