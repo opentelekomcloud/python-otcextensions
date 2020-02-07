@@ -1,11 +1,7 @@
 - project:
     check:
       jobs:
-        - tox-py36
-        - tox-py27
-        - tox-pep8
+
     gate:
       jobs:
-        - tox-py36
-        - tox-py27
-        - tox-pep8
+
