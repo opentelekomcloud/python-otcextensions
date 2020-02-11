@@ -50,16 +50,24 @@ class ListRS(command.Lister):
             help=_('UUID or name of the zone. Recordsets of all zones '
                    'will be returned if not given.')
         )
+        parser.add_argument(
+            '--zone-type',
+            help=_('DNS Zone type (private/public)')
+        )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.dns
 
         zone = None
+        attrs = {}
+        if parsed_args.zone_type:
+            attrs['zone_type'] = parsed_args.zone_type
 
         if parsed_args.zone:
 
-            zone = client.find_zone(parsed_args.zone, ignore_missing=False)
+            zone = client.find_zone(parsed_args.zone, ignore_missing=False,
+                                    **attrs)
 
         data = client.recordsets(zone=zone)
 
@@ -81,6 +89,10 @@ class ShowRS(command.ShowOne):
             metavar='<zone>',
             help=_('UUID or name of the zone.')
         )
+        parser.add_argument(
+            '--zone-type',
+            help=_('DNS Zone type (private/public)')
+        )
 
         parser.add_argument(
             'recordset',
@@ -96,6 +108,8 @@ class ShowRS(command.ShowOne):
 
         zone = client.find_zone(
             parsed_args.zone,
+            ignore_missing=False,
+            zone_type=parsed_args.zone_type
         )
 
         obj = client.find_recordset(zone=zone,
@@ -118,6 +132,10 @@ class DeleteRS(command.Command):
             metavar='<zone>',
             help=_('UUID or name of the zone.')
         )
+        parser.add_argument(
+            '--zone-type',
+            help=_('DNS Zone type (private/public)')
+        )
 
         parser.add_argument(
             'recordset',
@@ -131,7 +149,8 @@ class DeleteRS(command.Command):
     def take_action(self, parsed_args):
         if parsed_args.zone:
             client = self.app.client_manager.dns
-            zone = client.find_zone(parsed_args.zone, ignore_missing=False)
+            zone = client.find_zone(parsed_args.zone, ignore_missing=False,
+                                    zone_type=parsed_args.zone_type)
             for rs in parsed_args.recordset:
                 rs = client.find_recordset(zone=zone, name_or_id=rs,
                                            ignore_missing=False)
@@ -149,6 +168,10 @@ class CreateRS(command.ShowOne):
             'zone',
             metavar='<zone>',
             help=_('UUID or name of the zone.')
+        )
+        parser.add_argument(
+            '--zone-type',
+            help=_('DNS Zone type (private/public)')
         )
         parser.add_argument(
             '--name',
@@ -193,7 +216,8 @@ class CreateRS(command.ShowOne):
 
         attrs = {'records': []}
 
-        zone = client.find_zone(parsed_args.zone, ignore_missing=False)
+        zone = client.find_zone(parsed_args.zone, ignore_missing=False,
+                                zone_type=parsed_args.zone_type)
 
         if parsed_args.name:
             attrs['name'] = parsed_args.name
@@ -227,6 +251,10 @@ class SetRS(command.ShowOne):
             'zone',
             metavar='<zone>',
             help=_('UUID or name of the zone.')
+        )
+        parser.add_argument(
+            '--zone-type',
+            help=_('DNS Zone type (private/public)')
         )
         parser.add_argument(
             'recordset',
@@ -268,7 +296,8 @@ class SetRS(command.ShowOne):
         if parsed_args.ttl:
             attrs['ttl'] = parsed_args.ttl
 
-        zone = client.find_zone(parsed_args.zone, ignore_missing=False)
+        zone = client.find_zone(parsed_args.zone, ignore_missing=False,
+                                zone_type=parsed_args.zone_type)
 
         if parsed_args.ttl:
             attrs['zone_id'] = zone.id
