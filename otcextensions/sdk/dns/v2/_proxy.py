@@ -83,7 +83,7 @@ class Proxy(proxy.Proxy):
         """
         return self._update(_zone.Zone, zone, **attrs)
 
-    def find_zone(self, name_or_id, ignore_missing=True):
+    def find_zone(self, name_or_id, ignore_missing=True, **attrs):
         """Find a single zone
 
         :param name_or_id: The name or ID of a zone
@@ -96,7 +96,8 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         return self._find(_zone.Zone, name_or_id,
-                          ignore_missing=ignore_missing)
+                          ignore_missing=ignore_missing,
+                          **attrs)
 
     def add_router_to_zone(self, zone, **router):
         """Add router(VPC) to private zone
