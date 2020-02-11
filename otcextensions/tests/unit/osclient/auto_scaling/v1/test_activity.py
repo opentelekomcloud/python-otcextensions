@@ -58,8 +58,8 @@ class TestListAutoScalingActivity(TestAutoScalingActivity):
 
     def test_list_default(self):
         arglist = [
-            '--start_time', '2200-01-01T00:00:00Z',
-            '--end_time', '2200-01-02T00:00:00Z',
+            '--start-time', '2200-01-01T00:00:00Z',
+            '--end-time', '2200-01-02T00:00:00Z',
             '--limit', '14',
             '--group', 'group1'
         ]

@@ -171,15 +171,15 @@ class TestCreateAutoScalingPolicy(TestAutoScalingPolicy):
         arglist = [
             '--group', 'group1',
             '--type', 'ALARM',
-            '--cool_down_time', '1',
-            '--alarm_id', 'alarm1',
-            '--action_operation', 'ADD',
-            '--action_instance_number', '7',
-            '--launch_time', 'launch_time1',
-            '--recurrence_type', 'recurrence_type1',
-            '--recurrence_value', 'recurrence_value1',
-            '--start_time', 'st1',
-            '--end_time', 'et1',
+            '--cool-down-time', '1',
+            '--alarm-id', 'alarm1',
+            '--action-operation', 'ADD',
+            '--action-instance-number', '7',
+            '--launch-time', 'launch_time1',
+            '--recurrence-type', 'recurrence_type1',
+            '--recurrence-value', 'recurrence_value1',
+            '--start-time', 'st1',
+            '--end-time', 'et1',
 
             'test_name'
         ]
@@ -292,15 +292,15 @@ class TestUpdateAutoScalingPolicy(TestAutoScalingPolicy):
         arglist = [
             '--group', 'group1',
             '--type', 'ALARM',
-            '--cool_down_time', '1',
-            '--alarm_id', 'alarm1',
-            '--action_operation', 'ADD',
-            '--action_instance_number', '7',
-            '--launch_time', 'launch_time1',
-            '--recurrence_type', 'recurrence_type1',
-            '--recurrence_value', 'recurrence_value1',
-            '--start_time', 'st1',
-            '--end_time', 'et1',
+            '--cool-down-time', '1',
+            '--alarm-id', 'alarm1',
+            '--action-operation', 'ADD',
+            '--action-instance-number', '7',
+            '--launch-time', 'launch_time1',
+            '--recurrence-type', 'recurrence_type1',
+            '--recurrence-value', 'recurrence_value1',
+            '--start-time', 'st1',
+            '--end-time', 'et1',
 
             'policy1'
         ]

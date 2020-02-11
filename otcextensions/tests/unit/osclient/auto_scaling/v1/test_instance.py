@@ -58,8 +58,8 @@ class TestListAutoScalingInstance(TestAutoScalingInstance):
     def test_list(self):
         arglist = [
             '--group', 'grp',
-            '--life_cycle_state', 'lc',
-            '--health_status', 'hs',
+            '--life-cycle-state', 'lc',
+            '--health-status', 'hs',
             '--limit', '12'
         ]
 
@@ -111,7 +111,7 @@ class TestDeleteAutoScalingInstance(TestAutoScalingInstance):
     def test_remove(self):
         arglist = [
             'Instance1',
-            '--delete_instance'
+            '--delete-instance'
         ]
         verifylist = [
             ('instance', 'Instance1'),
@@ -143,7 +143,7 @@ class TestBatchAutoScalingInstanceAction(TestAutoScalingInstance):
             '--group', 'grp1',
             'ADD1',
             'Instance1',
-            '--delete_instance',
+            '--delete-instance',
         ]
         verifylist = [
             ('instance', ['Instance1']),
@@ -189,7 +189,7 @@ class TestBatchAutoScalingInstanceAction(TestAutoScalingInstance):
             'REMOVE',
             'Instance1',
             'Instance2',
-            '--delete_instance',
+            '--delete-instance',
         ]
         verifylist = [
             ('instance', ['Instance1', 'Instance2']),

@@ -37,13 +37,13 @@ class ListAutoScalingInstance(command.Lister):
             help=_('AS Group ID or Name for the instances query')
         )
         parser.add_argument(
-            '--life_cycle_state',
+            '--life-cycle-state',
             metavar='<life_cycle_state>',
             help=_('Life cycle state of the instances to query\n'
                    'Could be in [`INSERVICE`, `PENDING`, `REMOVING`]')
         )
         parser.add_argument(
-            '--health_status',
+            '--health-status',
             metavar='<health_status>',
             help=_('Health status of the instances to query\n'
                    'Could be in [`INITIALIZING`, `NORMAL`, `ERROR`]')
@@ -92,7 +92,7 @@ class RemoveAutoScalingInstance(command.Command):
             help=_('AS Instance ID to be deleted')
         )
         parser.add_argument(
-            '--delete_instance',
+            '--delete-instance',
             action='store_true',
             default=False,
             help=_('Specifies, whether instance should be completely deleted')
@@ -136,7 +136,7 @@ class BatchActionAutoScalingInstance(command.Command):
             help=_('AS Instance ID to be deleted')
         )
         parser.add_argument(
-            '--delete_instance',
+            '--delete-instance',
             action='store_true',
             default=False,
             help=_('Specifies, whether instance should be completely deleted'
