@@ -1,2 +1,8 @@
 otcextensions.tests.functional.osclient.obs*
-otcextensions.tests.functional.rds.v3.test_instance*
+otcextensions.tests.functional.osclient.rds.v3.test_instance*
+otcextensions.tests.functional.osclient.volume_backup*
+otcextensions.tests.functional.sdk.cce.v1*
+otcextensions.tests.functional.sdk.kms*
+otcextensions.tests.functional.sdk.volume_backup*
+otcextensions.tests.functional.sdk.volume_backup*
+otcextensions.tests.functional.sdk.deh*
