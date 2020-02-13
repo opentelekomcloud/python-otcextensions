@@ -22,27 +22,6 @@ from otcextensions.common import sdk_utils
 
 LOG = logging.getLogger(__name__)
 
-"""
-ZONE_TYPES = ['private', 'public']
-
-
-_formatters = {
-    # 'traffic_limited_list': sdk_utils.ListOfDictColumn,
-    # 'http_limited_list': sdk_utils.ListOfDictColumn,
-    # 'connection_limited_list': sdk_utils.ListOfDictColumn,
-}
-
-
-
-"""
-
-def _get_columns(item):
-    column_map = {
-    }
-    hidden = ['location', 'links']
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
-                                                           hidden)
-
 
 class ListAlarm(command.Lister):
     _description = _('List CES alarms')
@@ -148,6 +127,93 @@ class SetAlarm(command.ShowOne):
             data = utils.get_item_properties(obj, columns)
 
             return (display_columns, data)
+
+
+class CreateAlarm(command.ShowOne):
+    _description  = _('Create Alarm')
+
+    def get_parser(self, prog_name):
+        parser = super(CreateAlarm, self).get_parser(prog_name)
+
+        parser.add_argument(
+            'name',
+            metavar='<name>',
+            help=_('Alarm name')
+        )
+        parser.add_argument(
+            '--enabled',
+            metavar='<enabled>',
+            default=True,
+            help=_('State of the alarm.\n'
+                   'True: enable alarm (default)\n'
+                   'False: disable alarm\n')
+        )
+        parser.add_argument(
+            '--description',
+            metavar='<description>',
+            help=_('Description of the alarm')
+        )
+        parser.add_argument(
+            '--action-enabled',
+            default=True,
+            required=True,
+            help=_('Specifies whether the alarm action is triggered')
+        )
+        parser.add_argument(
+            '--level',
+            metavar='<level>',
+            type=int,
+            help=_('Indicates the alarm level\n'
+                   '1: critical\n'
+                   '2: major\n'
+                   '3: minor\n'
+                   '4: informational')
+        )
+        parser.add_argument(
+            '--alarm-action-type',
+            metavar='<alarm_action_type>',
+            help=_('Specifies the alarms action type'
+                   'notification: notification will be sent to user'
+                   'autoscaling: scaling action will be triggered')
+        )
+        parser.add_argument(
+            '--alarm-action-notification-list',
+            metavar='<alarm_action_notification_list>',
+            action='append',
+            help=_('Specifies the list of objects being notified when\n'
+                   'alarm status changes.'
+                   'URN example structure:\n'
+                   'urn:smn:region:68438a86d98e427e907e0097b7e35d48:sd\n'
+                   'The parameter can be given multiple times to\n'
+                   'notify multiple targets')
+        )
+        parser.add_argument(
+            '--comparison-operator',
+            metavar='<comparison_operator>',
+            help=_('Specifies the conditions comparison operator\n'
+                   'Values: >, =, <, ≥, or ≤')
+        )
+        parser.add_argument(
+            '--count',
+            metavar='<count>',
+            type=int,
+            help=_('Specifies how many times the alarm condition has to\n'
+                   'triggered until Alarm raises\n'
+                   'Value range: 1 to 5')
+        )
+        parser.add_argument(
+            '--filter',
+            metavar='<filter>',
+            help=_('Specifies the data rollup method.\n'
+                   'Values: max, min, average, sum, variance')
+        )
+        parser.add_argument(
+            '--period',
+            metavar='<period>',
+            help=_('Specifies the data rollup method.\n'
+                   'Values: max, min, average, sum, variance')
+        )
+        
 
 """
 
