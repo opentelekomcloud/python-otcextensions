@@ -236,6 +236,8 @@ def raise_from_response(response, error_message=None):
                     messages = [content['message'], ]
                 if 'error_code' in content:
                     details = content['error_code']
+                if 'error_msg' in content:
+                    messages = [content['error_msg'], ]
             else:
                 messages = [obj.get('message') for obj in content.values()
                             if isinstance(obj, dict)]
