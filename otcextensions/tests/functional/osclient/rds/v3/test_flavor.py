@@ -41,10 +41,11 @@ class TestRdsFlavor(base.TestCase):
                 ))
 
                 self.assertIsNotNone(json_output)
-                self.assertEqual(
-                    ['name', 'instance_mode', 'vcpus', 'ram'],
-                    list(json_output[0].keys())
-                )
+                if len(json_output) > 0:
+                    self.assertEqual(
+                        ['name', 'instance_mode', 'vcpus', 'ram'],
+                        list(json_output[0].keys())
+                    )
 
     def test_invalid_datastore_flavor_list(self):
         self.assertRaises(
