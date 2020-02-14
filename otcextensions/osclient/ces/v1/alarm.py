@@ -169,6 +169,7 @@ class CreateAlarm(command.ShowOne):
                    '3: minor\n'
                    '4: informational')
         )
+        # AlarmActions
         parser.add_argument(
             '--alarm-action-type',
             metavar='<alarm_action_type>',
@@ -187,6 +188,26 @@ class CreateAlarm(command.ShowOne):
                    'The parameter can be given multiple times to\n'
                    'notify multiple targets')
         )
+        # OkActions
+        parser.add_argument(
+            '--ok-action-type',
+            metavar='<ok_action_type>',
+            help=_('Specifies the alarms action type'
+                   'notification: notification will be sent to user'
+                   'autoscaling: scaling action will be triggered')
+        )
+        parser.add_argument(
+            '--ok-action-notification-list',
+            metavar='<ok_action_notification_list>',
+            action='append',
+            help=_('Specifies the list of objects being notified when\n'
+                   'alarm status changes.'
+                   'URN example structure:\n'
+                   'urn:smn:region:68438a86d98e427e907e0097b7e35d48:sd\n'
+                   'The parameter can be given multiple times to\n'
+                   'notify multiple targets')
+        )
+        # ConditionSpec
         parser.add_argument(
             '--comparison-operator',
             metavar='<comparison_operator>',
@@ -210,9 +231,84 @@ class CreateAlarm(command.ShowOne):
         parser.add_argument(
             '--period',
             metavar='<period>',
-            help=_('Specifies the data rollup method.\n'
-                   'Values: max, min, average, sum, variance')
+            help=_('Indicates the interval (in seconds) for checking\n'
+                   'whether the configured alarm rules are met')
         )
+        parser.add_argument(
+            '--unit',
+            metavar='<unit>',
+            help=_('Specifies data unit\n'
+                   'Values: B/s')
+        )
+        parser.add_argument(
+            '--value',
+            metavar='<value>',
+            help=_('Specifies the alarm threshold\n'
+                   'Values: 0 to max(int)')
+        )
+        # MetricSpec
+        parser.add_argument(
+            '--metric-name',
+            metavar='<metric_name>',
+            help=_('Specifies the metric name')
+        )
+        parser.add_argument(
+            '--namespace',
+            metavar='<namespace>',
+            help=_('Specifies the namespace of the metric such as SYS.ECS')
+        )
+        # DimensionsSpec for Metrics
+        # This is a list of dictionaries
+        # IMPROVEMENT NEEDED
+        parser.add_argument(
+            '--dimension-name',
+            action='append',
+            metavar='<dimension_name>',
+            help=_('dimension.name: object type e.g. ECS')
+        )
+        parser.add_argument(
+            '--dimension-value',
+            action='append',
+            metavar='<dimension_value>',
+            help=_('dimension.value: object id e.g. ECS ID')
+        )
+    
+    def take_action(self, parsed_args):
+
+        client = self.app.client_manager.ces
+
+        attrs = {}
+
+        if parsed_args.name:
+            attrs['name'] = parsed_args.name
+        if parsed_args.email:
+            attrs['email'] = parsed_args.email
+        if parsed_args.description:
+            attrs['description'] = parsed_args.description
+        if parsed_args.type:
+            attrs['zone_type'] = parsed_args.type
+        if parsed_args.ttl:
+            attrs['ttl'] = parsed_args.ttl
+        if parsed_args.type and parsed_args.type == 'private':
+            if not parsed_args.router_id:
+                msg = _('router_id is required for a private zone')
+                raise argparse.ArgumentTypeError(msg)
+            router = {
+                'router_id': parsed_args.router_id
+            }
+            if parsed_args.router_region:
+                router['router_region'] = parsed_args.router_region
+            attrs['router'] = router
+
+        obj = client.create_zone(
+            **attrs
+        )
+
+        display_columns, columns = _get_columns(obj)
+        data = utils.get_item_properties(obj, columns)
+
+        return (display_columns, data)
+
         
 
 """
@@ -302,135 +398,4 @@ class CreateZone(command.ShowOne):
         data = utils.get_item_properties(obj, columns)
 
         return (display_columns, data)
-
-
-
-
-
-class AssociateRouterToZone(command.ShowOne):
-    _description = _('Associate router with a private zone')
-
-    def get_parser(self, prog_name):
-        parser = super(AssociateRouterToZone, self).get_parser(prog_name)
-
-        parser.add_argument(
-            'zone',
-            metavar='<zone>',
-            help=_('UUID or name of the zone.')
-        )
-        parser.add_argument(
-            '--router_id',
-            metavar='<router_id>',
-            help=_('Router ID (VPC ID) for the private zone.')
-        )
-        parser.add_argument(
-            '--router_region',
-            metavar='<router_region>',
-            help=_('Router region for the private zone.')
-        )
-
-        return parser
-
-    def take_action(self, parsed_args):
-
-        client = self.app.client_manager.dns
-
-        router = {
-            'router_id': parsed_args.router_id
-        }
-        if parsed_args.router_region:
-            router['router_region'] = parsed_args.router_region
-
-        zone = client.find_zone(parsed_args.zone, ignore_missing=False)
-
-        if zone:
-            obj = client.add_router_to_zone(
-                zone=zone,
-                **router
-            )
-
-            display_columns, columns = _get_columns(obj)
-            data = utils.get_item_properties(obj, columns)
-
-            return (display_columns, data)
-
-
-class DisassociateRouterToZone(command.ShowOne):
-    _description = _('Disassociate router with a private zone')
-
-    def get_parser(self, prog_name):
-        parser = super(DisassociateRouterToZone, self).get_parser(prog_name)
-
-        parser.add_argument(
-            'zone',
-            metavar='<zone>',
-            help=_('UUID or name of the zone.')
-        )
-        parser.add_argument(
-            '--router_id',
-            metavar='<router_id>',
-            help=_('Router ID (VPC ID) for the private zone.')
-        )
-        parser.add_argument(
-            '--router_region',
-            metavar='<router_region>',
-            help=_('Router region for the private zone.')
-        )
-
-        return parser
-
-    def take_action(self, parsed_args):
-
-        client = self.app.client_manager.dns
-
-        router = {
-            'router_id': parsed_args.router_id
-        }
-        if parsed_args.router_region:
-            router['router_region'] = parsed_args.router_region
-
-        zone = client.find_zone(parsed_args.zone, ignore_missing=False)
-
-        if zone:
-            obj = client.remove_router_from_zone(
-                zone=zone,
-                **router
-            )
-
-            display_columns, columns = _get_columns(obj)
-            data = utils.get_item_properties(obj, columns)
-
-            return (display_columns, data)
-
-
-class ListNameserver(command.Lister):
-    _description = _('List DNS zone nameservers')
-    columns = (
-        'address', 'hostname', 'priority'
-    )
-
-    def get_parser(self, prog_name):
-        parser = super(ListNameserver, self).get_parser(prog_name)
-
-        parser.add_argument(
-            'zone',
-            metavar='<zone>',
-            help=_('UUID or name of the zone.')
-        )
-
-        return parser
-
-    def take_action(self, parsed_args):
-        client = self.app.client_manager.dns
-
-        zone = client.find_zone(parsed_args.zone, ignore_missing=False)
-
-        if zone:
-            data = client.nameservers(zone=zone)
-
-            table = (self.columns,
-                     (utils.get_item_properties(
-                         s, self.columns, formatters=_formatters
-                     ) for s in data))
-            return table
 """

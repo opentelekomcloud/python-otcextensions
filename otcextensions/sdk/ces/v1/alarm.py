@@ -24,7 +24,7 @@ from openstack import utils
 # Number of total queried results / alarms
 # total = resource.Body('total')
 
-class AlarmActionsSpec(resource.Resource):
+class ActionsSpec(resource.Resource):
 
     # Properties
     # notification list ID
@@ -70,7 +70,7 @@ class MetricSpec(resource.Resource):
     # List of metric dimensions
     dimensions = resource.Body('dimensions', type=list,
                                list_type=DimensionsSpec)
-    # Metric name, such as cpu_util in ECS metrics
+    # Specifies the metric name
     metric_name = resource.Body('metric_name')
     # Metric Namespace
     namespace = resource.Body('namespace')
@@ -93,8 +93,8 @@ class Alarm(resource.Resource):
     )
 
     # Properties
-    # Indicates the action triggered by clearing an alarm
-    alarm_actions = resource.Body('alarm_actions', type=AlarmActionsSpec)
+    # Specifies the action triggered by an alarm.
+    alarm_actions = resource.Body('alarm_actions', type=ActionsSpec)
     # Indicates whether an action will be triggered by an alarm
     # True: action will be triggered
     # False: action will not be triggered
@@ -108,13 +108,15 @@ class Alarm(resource.Resource):
     # alarm severity
     # values: 1: critical, 2: major, 3: minor, 4: informational alarm
     alarm_level = resource.Body('alarm_level', type=int)
-    # Name of the alarm
-    name = resource.Body('alarm_name')
     # Alarm status
     # ok: alarm status is normal
     # alarm: an alarm is generated
     # insufficient_data: required data is insufficient
     alarm_state = resource.Body('alarm_state')
+    # Name of the alarm
+    name = resource.Body('alarm_name')
+    # Indicates the action triggered by clearing an alarm
+    ok_actions = resource.Body('ok_actions', type=ActionsSpec)
     # Describes alarm triggering condititon
     condition = resource.Body('condition', type=ConditionSpec)
     # Specification of specific alarm
