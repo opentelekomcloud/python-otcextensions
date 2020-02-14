@@ -41,7 +41,7 @@ class TestRdsFlavor(base.TestCase):
                 ))
 
                 self.assertIsNotNone(json_output)
-                if len(json_output) >0 :
+                if len(json_output) > 0:
                     self.assertEqual(
                         ['name', 'instance_mode', 'vcpus', 'ram'],
                         list(json_output[0].keys())
