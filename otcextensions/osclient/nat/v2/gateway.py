@@ -122,7 +122,7 @@ class ShowNatGateway(command.ShowOne):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
-        obj = client.get_gateway(parsed_args.nat_gateway)
+        obj = client.find_gateway(parsed_args.nat_gateway)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
@@ -214,7 +214,7 @@ class UpdateNatGateway(command.ShowOne):
         for arg in args_list:
             if getattr(parsed_args, arg):
                 attrs[arg] = getattr(parsed_args, arg)
-        nat_gateway = client.get_gateway(parsed_args.nat_gateway)
+        nat_gateway = client.find_gateway(parsed_args.nat_gateway)
 
         obj = client.update_gateway(nat_gateway.id, **attrs)
 
@@ -240,5 +240,5 @@ class DeleteNatGateway(command.Command):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
-        nat_gateway = client.get_gateway(parsed_args.nat_gateway)
-        return client.delete_gateway(nat_gateway.id)
+        nat_gateway = client.find_gateway(parsed_args.nat_gateway)
+        client.delete_gateway(nat_gateway.id)
