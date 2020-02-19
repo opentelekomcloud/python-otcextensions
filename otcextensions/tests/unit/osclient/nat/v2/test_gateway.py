@@ -131,7 +131,7 @@ class TestShowNatGateway(fakes.TestNat):
 
         self.cmd = gateway.ShowNatGateway(self.app, None)
 
-        self.client.get_gateway = mock.Mock(return_value=self._data)
+        self.client.find_gateway = mock.Mock(return_value=self._data)
 
     def test_show(self):
         arglist = [
@@ -147,7 +147,7 @@ class TestShowNatGateway(fakes.TestNat):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.get_gateway.assert_called_with('test_gateway')
+        self.client.find_gateway.assert_called_with('test_gateway')
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -162,7 +162,7 @@ class TestDeleteNatGateway(fakes.TestNat):
 
         self.cmd = gateway.DeleteNatGateway(self.app, None)
 
-        self.client.get_gateway = mock.Mock(return_value=self.data)
+        self.client.find_gateway = mock.Mock(return_value=self.data)
         self.client.delete_gateway = mock.Mock(return_value=self.data)
 
     def test_delete(self):
@@ -180,6 +180,6 @@ class TestDeleteNatGateway(fakes.TestNat):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        self.client.get_gateway.assert_called_with('test_gateway')
+        self.client.find_gateway.assert_called_with('test_gateway')
 
         self.client.delete_gateway.assert_called_with(self.data.id)

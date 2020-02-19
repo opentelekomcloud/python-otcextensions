@@ -21,10 +21,10 @@ class TestNatGateway(base.TestCase):
 
     UUID = uuid.uuid4().hex[:8]
     ROUTER_NAME = 'sdk-test-router-' + UUID
-    NETWORK_NAME = 'sdk-test-net-' + UUID
+    NET_NAME = 'sdk-test-net-' + UUID
     SUBNET_NAME = 'sdk-test-subnet-' + UUID
     ROUTER_ID = None
-    NETWORK_ID = None
+    NET_ID = None
 
     NAT_NAME = 'os-cli-test-' + UUID
     NAT_ID = None
@@ -38,11 +38,10 @@ class TestNatGateway(base.TestCase):
         self.openstack(
             'nat gateway list '
             '--limit 1 --id 2 '
-            '--name 3 --spec 4 '
-            '--router-id 5 '
-            '--internal-network-id 6 '
-            '--project-id 7 '
-            '--status active '
+            '--name 3 --spec 1 '
+            '--router-id 123asd '
+            '--internal-network-id 123qwe '
+            '--status Active '
             '--admin-state-up True '
         )
 
@@ -55,7 +54,7 @@ class TestNatGateway(base.TestCase):
             ' --spec {spec} -f json'.format(
                 name=self.NAT_NAME,
                 router_id=self.ROUTER_ID,
-                net_id=self.NETWORK_ID,
+                net_id=self.NET_ID,
                 description='OTCE Lib Test',
                 spec=1)
         ))
@@ -119,7 +118,6 @@ class TestNatGateway(base.TestCase):
     def test_10_nat_gateway_update_by_name(self):
         name = 'os-cli-test-' + self.UUID
         description = "otce cli test nat"
-        spec = '2'
         json_output = json.loads(self.openstack(
             'nat gateway update {nat_name} '
             '--name {name} '
@@ -128,12 +126,11 @@ class TestNatGateway(base.TestCase):
             '-f json'.format(
                 nat_name=self.NAT_NAME,
                 name=name,
-                spec=spec,
+                spec=2,
                 desc=description)
         ))
         self.assertEqual(json_output['name'], name)
         self.assertEqual(json_output['description'], description)
-        self.assertEqual(json_output['spec'], spec)
         TestNatGateway.NAT_NAME = json_output['name']
 
     def test_11_nat_gateway_delete(self):
@@ -144,15 +141,15 @@ class TestNatGateway(base.TestCase):
         router = json.loads(self.openstack(
             'router create -f json ' + self.ROUTER_NAME
         ))
-        network = json.loads(self.openstack(
-            'network create -f json ' + self.NETWORK_NAME
+        net = json.loads(self.openstack(
+            'network create -f json ' + self.NET_NAME
         ))
         self.openstack(
             'subnet create {subnet} -f json '
             '--network {net} '
             '--subnet-range 192.168.0.0/24 '.format(
                 subnet=self.SUBNET_NAME,
-                net=self.NETWORK_NAME
+                net=self.NET_NAME
             ))
 
         self.openstack(
@@ -164,7 +161,7 @@ class TestNatGateway(base.TestCase):
         )
 
         TestNatGateway.ROUTER_ID = router['id']
-        TestNatGateway.NETWORK_ID = network['id']
+        TestNatGateway.NET_ID = net['id']
 
     def _denitialize_network(self):
         self.openstack(
@@ -178,7 +175,7 @@ class TestNatGateway(base.TestCase):
             'subnet delete ' + self.SUBNET_NAME
         )
         self.openstack(
-            'network delete ' + self.NETWORK_NAME
+            'network delete ' + self.NET_NAME
         )
         self.openstack(
             'router delete ' + self.ROUTER_NAME
