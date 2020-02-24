@@ -307,10 +307,11 @@ class Proxy(proxy.Proxy):
         return self._delete(_policy.Policy, policy,
                             ignore_missing=ignore_missing)
 
-    def find_policy(self, name_or_id, ignore_missing=True):
+    def find_policy(self, name_or_id, group, ignore_missing=True):
         """Find a single policy
 
         :param name_or_id: The name or ID of a policy
+        :param group: ID of a group
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
             when the policy does not exist.
@@ -319,8 +320,10 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
+        group = self._get_resource(_group.Group, group)
         return self._find(_policy.Policy, name_or_id,
-                          ignore_missing=ignore_missing)
+                          ignore_missing=ignore_missing,
+                          group_id=group.id)
 
     def execute_policy(self, policy):
         """execute policy
