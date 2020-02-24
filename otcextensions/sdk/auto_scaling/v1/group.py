@@ -49,9 +49,9 @@ class Group(_base.Resource):
     #: AutoScaling group detail
     detail = resource.Body('detail')
     #: VPC id - (Router Id)
-    network_id = resource.Body('vpc_id')
+    router_id = resource.Body('vpc_id')
     #: network id list - (Subnet)
-    subnetworks = resource.Body('networks', type=list)
+    networks = resource.Body('networks', type=list)
     #: security group id list
     security_groups = resource.Body('security_groups', type=list)
     #: Auto Scaling Config ID reference, used for creating instance
