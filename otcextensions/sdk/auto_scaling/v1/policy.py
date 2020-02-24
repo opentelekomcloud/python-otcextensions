@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
+from openstack import exceptions
 
 
 from otcextensions.sdk.auto_scaling.v1 import _base
@@ -41,8 +42,19 @@ class Action(resource.Resource):
     #: Scaling trigger action type
     #: valid values include: ``ADD``, ``REMOVE``, ``SET``
     operation = resource.Body('operation')
-    #: The instance number action for
-    instance_number = resource.Body('instance_number')
+    #: Number of instances which will be operated by the action
+    #: Values from 0 to 200 are possible.
+    #: Note: Use either instance_number or instance_percentage
+    #: If nothing of instance_number or instance_percentage is set, the
+    #: default value is 1.
+    instance_number = resource.Body('instance_number', type=int)
+    #: Percentage of instances which are currently there to be operated
+    #: by the action
+    #: Values from 0 to 20000 are possible.
+    #: Note: Use either instance_number or instance_percentage
+    #: If nothing of instance_number or instance_percentage is set, the default
+    #: value is 1.
+    instance_percentage = resource.Body('instance_percentage', type=int)
 
 
 class Policy(_base.Resource):
@@ -75,14 +87,14 @@ class Policy(_base.Resource):
     #: valid values include: ``ALARM``, ``SCHEDULED``, ``RECURRENCE``
     type = resource.Body('scaling_policy_type')
     #: AutoScaling group reference the policy apply to
-    scaling_group_id = resource.URI('scaling_group_id')
+    scaling_group_id = resource.Body('scaling_group_id')
 
     alarm_id = resource.Body('alarm_id')
     scheduled_policy = resource.Body('scheduled_policy',
                                      type=ScheduledPolicy)
     scaling_policy_action = resource.Body('scaling_policy_action',
                                           type=Action)
-    cool_down_time = resource.Body('cool_down_time')
+    cool_down_time = resource.Body('cool_down_time', type=int)
     create_time = resource.Body('create_time')
     #: valid values include: ``INSERVICE``, ``PAUSED``
     status = resource.Body('policy_status')
@@ -101,3 +113,58 @@ class Policy(_base.Resource):
         """resume policy"""
         body = {"action": "resume"}
         self._action(session, body)
+
+    @classmethod
+    def find(cls, session, name_or_id, ignore_missing=True, **params):
+        """Find a resource by its name or id.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param name_or_id: This resource's identifier, if needed by
+                           the request. The default is ``None``.
+        :param bool ignore_missing: When set to ``False``
+                    :class:`~openstack.exceptions.ResourceNotFound` will be
+                    raised when the resource does not exist.
+                    When set to ``True``, None will be returned when
+                    attempting to find a nonexistent resource.
+        :param dict params: Any additional parameters to be passed into
+                            underlying methods, such as to
+                            :meth:`~openstack.resource.Resource.existing`
+                            in order to pass on URI parameters.
+
+        :return: The :class:`Resource` object matching the given name or id
+                 or None if nothing matches.
+        :raises: :class:`openstack.exceptions.DuplicateResource` if more
+                 than one resource is found for this request.
+        :raises: :class:`openstack.exceptions.ResourceNotFound` if nothing
+                 is found and ignore_missing is ``False``.
+        """
+        session = cls._get_session(session)
+        # Try to short-circuit by looking directly for a matching ID.
+        group_id = params.pop('group_id', None)
+        try:
+            match = cls.existing(
+                id=name_or_id,
+                connection=session._get_connection(),
+                **params)
+            return match.fetch(session, **params)
+        except exceptions.NotFoundException:
+            pass
+
+        # if ('name' in cls._query_mapping._mapping.keys()
+        #       and 'name' not in params):
+        params['name'] = name_or_id
+
+        base_path = '/scaling_policy/{id}/list'.format(id=group_id)
+        data = cls.list(session,
+                        base_path=base_path,
+                        **params)
+
+        result = cls._get_one_match(name_or_id, data)
+        if result is not None:
+            return result
+
+        if ignore_missing:
+            return None
+        raise exceptions.ResourceNotFound(
+            "No %s found for %s" % (cls.__name__, name_or_id))
