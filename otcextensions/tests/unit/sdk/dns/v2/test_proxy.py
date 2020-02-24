@@ -39,6 +39,13 @@ class TestDnsZone(TestDnsProxy):
     def test_zone_find(self):
         self.verify_find(self.proxy.find_zone, zone.Zone)
 
+    def test_zone_find_private(self):
+        self.verify_find(self.proxy.find_zone, zone.Zone,
+                         method_kwargs={
+                             'p1': 'v1'
+                         },
+                         expected_kwargs={'p1': 'v1'})
+
     def test_zone_get(self):
         self.verify_get(self.proxy.get_zone, zone.Zone)
 
