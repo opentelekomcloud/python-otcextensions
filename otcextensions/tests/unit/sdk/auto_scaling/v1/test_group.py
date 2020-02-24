@@ -73,7 +73,7 @@ class TestGroup(base.TestCase):
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_get)
-        self.assertTrue(sot.allow_update)
+        self.assertTrue(sot.allow_commit)
         self.assertTrue(sot.allow_delete)
 
     def test_make_it(self):

@@ -184,10 +184,14 @@ class TestAutoScalingPolicy(TestAutoScalingProxy):
         self._verify2(
             'openstack.proxy.Proxy._find',
             self.proxy.find_policy,
-            method_args=['pol'],
+            method_args=['pol', 'group'],
+            method_kwargs={},
             expected_args=[_policy.Policy, 'pol'],
             expected_kwargs={
-                'ignore_missing': True})
+                'ignore_missing': True,
+                'group_id': 'group'
+            }
+        )
 
     def test_update(self):
         self._verify2(

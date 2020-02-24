@@ -63,6 +63,11 @@ class ListAutoScalingGroup(command.Lister):
     def get_parser(self, prog_name):
         parser = super(ListAutoScalingGroup, self).get_parser(prog_name)
         parser.add_argument(
+            '--name',
+            metavar='<name>',
+            help=_('Name or ID of the AS group')
+        )
+        parser.add_argument(
             '--limit',
             dest='limit',
             metavar='<limit>',
@@ -78,13 +83,40 @@ class ListAutoScalingGroup(command.Lister):
                    'specified marker. When used with --limit, set this to '
                    'the last ID displayed in the previous run')
         )
+        parser.add_argument(
+            '--scaling-configuration-id',
+            metavar='<scaling_configuration_id>',
+            help=_('ID of the AS configuration')
+        )
+        parser.add_argument(
+            '--status',
+            metavar='<status>',
+            help=_('Shows AS groups with specific status:\n'
+                   '<INSERVICE>: AS group is working\n'
+                   '<PAUSED>: AS group is paused\n'
+                   '<ERROR>: AS group has malfunctions\n'
+                   '<DELETING>: AS group is being deleted')
+        )
 
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.auto_scaling
 
-        data = client.groups()
+        args = {}
+        if parsed_args.limit:
+            args['limit'] = parsed_args.limit
+        if parsed_args.marker:
+            args['marker'] = parsed_args.marker
+        if parsed_args.name:
+            args['name'] = parsed_args.name
+        if parsed_args.scaling_configuration_id:
+            args['scaling_configuration_id'] = \
+                parsed_args.scaling_configuration_id
+        if parsed_args.status:
+            args['status'] = parsed_args.status
+
+        data = client.groups(**args)
 
         return (
             self.columns,
@@ -137,36 +169,36 @@ class CreateAutoScalingGroup(command.ShowOne):
             help=_('Name of the new configuration group')
         )
         parser.add_argument(
-            '--desire_instance_number',
+            '--desire-instance-number',
             metavar='<desire_instance_number>',
             type=int,
             help=_('Desired number of instances')
         )
         parser.add_argument(
-            '--min_instance_number',
+            '--min-instance-number',
             metavar='<min_instance_number>',
             type=int,
             help=_('Minimal number of instances')
         )
         parser.add_argument(
-            '--max_instance_number',
+            '--max-instance-number',
             metavar='<max_instance_number>',
             type=int,
             help=_('Maximal number of instances')
         )
         parser.add_argument(
-            '--cool_down_time',
+            '--cool-down-time',
             metavar='<cool_down_time>',
             type=int,
             help=_('Specifies cooling duration in seconds')
         )
         parser.add_argument(
-            '--lb_listener_id',
+            '--lb-listener-id',
             metavar='<lb_listener_id>',
             help=_('Specifies ELB Listener ID')
         )
         parser.add_argument(
-            '--lbaas_listener',
+            '--lbaas-listener',
             metavar='<lbaas_listener>',
             action='append',
             help=_('Specifies ULB Listener Information in format: '
@@ -174,47 +206,47 @@ class CreateAutoScalingGroup(command.ShowOne):
                    '(Repeat multiple times, up to 3 times)')
         )
         parser.add_argument(
-            '--availability_zone',
+            '--availability-zone',
             metavar='<availability_zone>',
             action='append',
             help=_('Specifies the availability zones information '
                    '(Repeat multiple times)')
         )
         parser.add_argument(
-            '--subnet',
-            metavar='<subnet_id>',
+            '--network-id',
+            metavar='<network_id>',
             action='append',
             required=True,
             help=_('Network ID of the subnet'
                    '(Repeat multiple times, up to 5 times)')
         )
         parser.add_argument(
-            '--security_group',
+            '--security-group',
             metavar='<security_group>',
             action='append',
-            required=True,
+            # required=True,
             help=_('Security Group ID'
                    '(Repeat multiple times)')
         )
         parser.add_argument(
-            '--router',
-            metavar='<router>',
+            '--router-id',
+            metavar='<router_id>',
             required=True,
             help=_('Router (VPC) ID')
         )
         parser.add_argument(
-            '--audit_method',
+            '--audit-method',
             metavar='<audit_method>',
             help=_('Specifies the audit method [`NOVA_AUDIT`, `ELB_AUDIT`]')
         )
         parser.add_argument(
-            '--audit_time',
+            '--audit-time',
             metavar='<audit_time>',
             type=int,
             help=_('Specifies the audit time in minutes')
         )
         parser.add_argument(
-            '--terminate_policy',
+            '--terminate-policy',
             metavar='<terminate_policy>',
             help=_('Specifies the termination policy'
                    ' [`OLD_CONFIG_OLD_INSTANCE` (default), '
@@ -230,7 +262,7 @@ class CreateAutoScalingGroup(command.ShowOne):
                    '(Repeat multiple times)')
         )
         parser.add_argument(
-            '--delete_public_ip',
+            '--delete-public-ip',
             default=False,
             action='store_true',
             help=_('Specifies whether to delete EIP when deleting the ECS')
@@ -241,17 +273,18 @@ class CreateAutoScalingGroup(command.ShowOne):
 
         args = {}
         args['name'] = parsed_args.name
-        args['vpc_id'] = parsed_args.router
+        args['router_id'] = parsed_args.router_id
 
-        subnets = []
-        for subnet in parsed_args.subnet:
-            subnets.append({'id': subnet})
-        args['networks'] = subnets
+        networks = []
+        for network in parsed_args.network_id:
+            networks.append({'id': network})
+        args['networks'] = networks
 
-        sgs = []
-        for sg in parsed_args.security_group:
-            sgs.append({'id': sg})
-        args['security_groups'] = sgs
+        if parsed_args.security_group:
+            sgs = []
+            for sg in parsed_args.security_group:
+                sgs.append({'id': sg})
+            args['security_groups'] = sgs
 
         if parsed_args.desire_instance_number:
             args['desire_instance_number'] = parsed_args.desire_instance_number
@@ -337,36 +370,36 @@ class UpdateAutoScalingGroup(command.ShowOne):
             help=_('AS Group name or ID')
         )
         parser.add_argument(
-            '--desire_instance_number',
+            '--desire-instance-number',
             metavar='<desire_instance_number>',
             type=int,
             help=_('Desired number of instances')
         )
         parser.add_argument(
-            '--min_instance_number',
+            '--min-instance-number',
             metavar='<min_instance_number>',
             type=int,
             help=_('Minimal number of instances')
         )
         parser.add_argument(
-            '--max_instance_number',
+            '--max-instance-number',
             metavar='<max_instance_number>',
             type=int,
             help=_('Maximal number of instances')
         )
         parser.add_argument(
-            '--cool_down_time',
+            '--cool-down-time',
             metavar='<cool_down_time>',
             type=int,
             help=_('Specifies cooling duration in seconds')
         )
         parser.add_argument(
-            '--lb_listener_id',
+            '--lb-listener-id',
             metavar='<lb_listener_id>',
             help=_('Specifies ELB Listener ID')
         )
         parser.add_argument(
-            '--lbaas_listener',
+            '--lbaas-listener',
             metavar='<lbaas_listener>',
             action='append',
             help=_('Specifies ULB Listener Information in format: '
@@ -374,47 +407,46 @@ class UpdateAutoScalingGroup(command.ShowOne):
                    '(Repeat multiple times, up to 3 times)')
         )
         parser.add_argument(
-            '--availability_zone',
+            '--availability-zone',
             metavar='<availability_zone>',
             action='append',
             help=_('Specifies the availability zones information '
                    '(Repeat multiple times)')
         )
         parser.add_argument(
-            '--subnetwork',
-            metavar='<subnetwork_id>',
+            '--network-id',
+            metavar='<network_id>',
+            default=[],
             action='append',
-            required=True,
             help=_('Network ID of the subnet'
                    '(Repeat multiple times, up to 5 times)')
         )
         parser.add_argument(
-            '--security_group',
+            '--security-group',
             metavar='<security_group>',
+            default=[],
             action='append',
-            required=True,
             help=_('Security Group ID'
                    '(Repeat multiple times)')
         )
         parser.add_argument(
-            '--network_id',
-            metavar='<network_id>',
-            required=True,
-            help=_('Network (VPC) ID')
+            '--router-id',
+            metavar='<router_id>',
+            help=_('Router (VPC) ID')
         )
         parser.add_argument(
-            '--audit_method',
+            '--audit-method',
             metavar='<audit_method>',
             help=_('Specifies the audit method [`NOVA_AUDIT`, `ELB_AUDIT`]')
         )
         parser.add_argument(
-            '--audit_time',
+            '--audit-time',
             metavar='<audit_time>',
             type=int,
             help=_('Specifies the audit time in minutes')
         )
         parser.add_argument(
-            '--terminate_policy',
+            '--terminate-policy',
             metavar='<terminate_policy>',
             help=_('Specifies the termination policy'
                    ' [`OLD_CONFIG_OLD_INSTANCE` (default), '
@@ -430,7 +462,7 @@ class UpdateAutoScalingGroup(command.ShowOne):
                    '(Repeat multiple times)')
         )
         parser.add_argument(
-            '--delete_public_ip',
+            '--delete-public-ip',
             default=False,
             action='store_true',
             help=_('Specifies whether to delete EIP when deleting the ECS')
@@ -440,17 +472,20 @@ class UpdateAutoScalingGroup(command.ShowOne):
     def take_action(self, parsed_args):
 
         args = {}
-        args['vpc_id'] = parsed_args.network_id
+        if parsed_args.router_id:
+            args['router_id'] = parsed_args.router_id
 
-        subnets = []
-        for subnet in parsed_args.subnetwork:
-            subnets.append({'id': subnet})
-        args['networks'] = subnets
+        networks = []
+        for network in parsed_args.network_id:
+            networks.append({'id': network})
+        if networks:
+            args['networks'] = networks
 
         sgs = []
         for sg in parsed_args.security_group:
             sgs.append({'id': sg})
-        args['security_groups'] = sgs
+        if sgs:
+            args['security_groups'] = sgs
 
         if parsed_args.desire_instance_number:
             args['desire_instance_number'] = parsed_args.desire_instance_number
@@ -495,7 +530,8 @@ class UpdateAutoScalingGroup(command.ShowOne):
             args['notifications'] = lst
 
         client = self.app.client_manager.auto_scaling
-        group = client.update_group(group=parsed_args.group, **args)
+        group = client.find_group(parsed_args.group, ignore_missing=False)
+        group = client.update_group(group, **args)
         display_columns, columns = _get_columns(group)
         data = utils.get_item_properties(group, columns, formatters={})
 

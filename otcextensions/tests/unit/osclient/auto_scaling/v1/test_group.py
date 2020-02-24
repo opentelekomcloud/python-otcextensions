@@ -50,10 +50,19 @@ class TestListAutoScalingGroup(TestAutoScalingGroup):
 
     def test_list_default(self):
         arglist = [
+            '--name', 'grp',
+            '--status', 'PAUSED',
+            '--scaling-configuration-id', '2',
+            '--limit', '12'
         ]
 
         verifylist = [
+            ('name', 'grp'),
+            ('status', 'PAUSED'),
+            ('scaling_configuration_id', '2'),
+            ('limit', 12)
         ]
+
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -65,7 +74,11 @@ class TestListAutoScalingGroup(TestAutoScalingGroup):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.groups.assert_called_once_with()
+        self.client.groups.assert_called_once_with(
+            name='grp',
+            status='PAUSED',
+            scaling_configuration_id='2',
+            limit=12)
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
@@ -73,7 +86,7 @@ class TestListAutoScalingGroup(TestAutoScalingGroup):
 
 class TestShowAutoScalingGroup(TestAutoScalingGroup):
 
-    columns = ('create_time', 'detail', 'id', 'name', 'network_id', 'status')
+    columns = ('create_time', 'detail', 'id', 'name', 'router_id', 'status')
 
     _group = fakes.FakeGroup.create_one()
 
@@ -82,7 +95,7 @@ class TestShowAutoScalingGroup(TestAutoScalingGroup):
         _group.detail,
         _group.id,
         _group.name,
-        _group.network_id,
+        _group.router_id,
         _group.status,
     )
 
@@ -119,7 +132,7 @@ class TestShowAutoScalingGroup(TestAutoScalingGroup):
 
 class TestCreateAutoScalingGroup(TestAutoScalingGroup):
 
-    columns = ('create_time', 'detail', 'id', 'name', 'network_id', 'status')
+    columns = ('create_time', 'detail', 'id', 'name', 'router_id', 'status')
 
     _group = fakes.FakeGroup.create_one()
 
@@ -128,7 +141,7 @@ class TestCreateAutoScalingGroup(TestAutoScalingGroup):
         _group.detail,
         _group.id,
         _group.name,
-        _group.network_id,
+        _group.router_id,
         _group.status,
     )
 
@@ -141,23 +154,23 @@ class TestCreateAutoScalingGroup(TestAutoScalingGroup):
 
     def test_create(self):
         arglist = [
-            '--desire_instance_number', '10',
-            '--min_instance_number', '1',
-            '--max_instance_number', '15',
-            '--cool_down_time', '1',
-            '--availability_zone', 'eu-1',
-            '--availability_zone', 'eu-2',
-            '--subnet', 'sub1',
-            '--subnet', 'sub2',
-            '--router', 'vpc-1',
-            '--security_group', 'sg1',
-            '--security_group', 'sg2',
-            '--lb_listener_id', 'lb1',
-            '--lbaas_listener', 'lbas1:14',
-            '--lbaas_listener', 'lbas2:15:10',
-            '--audit_method', 'some_method',
-            '--audit_time', '15',
-            '--terminate_policy', 'pol',
+            '--desire-instance-number', '10',
+            '--min-instance-number', '1',
+            '--max-instance-number', '15',
+            '--cool-down-time', '1',
+            '--availability-zone', 'eu-1',
+            '--availability-zone', 'eu-2',
+            '--network-id', 'sub1',
+            '--network-id', 'sub2',
+            '--router-id', 'vpc-1',
+            '--security-group', 'sg1',
+            '--security-group', 'sg2',
+            '--lb-listener-id', 'lb1',
+            '--lbaas-listener', 'lbas1:14',
+            '--lbaas-listener', 'lbas2:15:10',
+            '--audit-method', 'some_method',
+            '--audit-time', '15',
+            '--terminate-policy', 'pol',
             '--notification', 'EMAIL',
             '--notification', 'SMS',
 
@@ -169,9 +182,9 @@ class TestCreateAutoScalingGroup(TestAutoScalingGroup):
             ('max_instance_number', 15),
             ('cool_down_time', 1),
             ('availability_zone', ['eu-1', 'eu-2']),
-            ('subnet', ['sub1', 'sub2']),
+            ('network_id', ['sub1', 'sub2']),
             ('security_group', ['sg1', 'sg2']),
-            ('router', 'vpc-1'),
+            ('router_id', 'vpc-1'),
             ('lb_listener_id', 'lb1'),
             ('lbaas_listener', ['lbas1:14', 'lbas2:15:10']),
             ('audit_method', 'some_method'),
@@ -208,7 +221,7 @@ class TestCreateAutoScalingGroup(TestAutoScalingGroup):
             networks=[{'id': 'sub1'}, {'id': 'sub2'}],
             notifications=['EMAIL', 'SMS'],
             security_groups=[{'id': 'sg1'}, {'id': 'sg2'}],
-            vpc_id='vpc-1'
+            router_id='vpc-1'
         )
 
         self.assertEqual(self.columns, columns)
@@ -245,7 +258,7 @@ class TestDeleteAutoScalingGroup(TestAutoScalingGroup):
 
 class TestUpdateAutoScalingGroup(TestAutoScalingGroup):
 
-    columns = ('create_time', 'detail', 'id', 'name', 'network_id', 'status')
+    columns = ('create_time', 'detail', 'id', 'name', 'router_id', 'status')
 
     _group = fakes.FakeGroup.create_one()
 
@@ -254,7 +267,7 @@ class TestUpdateAutoScalingGroup(TestAutoScalingGroup):
         _group.detail,
         _group.id,
         _group.name,
-        _group.network_id,
+        _group.router_id,
         _group.status,
     )
 
@@ -267,23 +280,23 @@ class TestUpdateAutoScalingGroup(TestAutoScalingGroup):
 
     def test_create(self):
         arglist = [
-            '--desire_instance_number', '10',
-            '--min_instance_number', '1',
-            '--max_instance_number', '15',
-            '--cool_down_time', '1',
-            '--availability_zone', 'eu-1',
-            '--availability_zone', 'eu-2',
-            '--subnetwork', 'sub1',
-            '--subnetwork', 'sub2',
-            '--network_id', 'vpc-1',
-            '--security_group', 'sg1',
-            '--security_group', 'sg2',
-            '--lb_listener_id', 'lb1',
-            '--lbaas_listener', 'lbas1:14',
-            '--lbaas_listener', 'lbas2:15:10',
-            '--audit_method', 'some_method',
-            '--audit_time', '15',
-            '--terminate_policy', 'pol',
+            '--desire-instance-number', '10',
+            '--min-instance-number', '1',
+            '--max-instance-number', '15',
+            '--cool-down-time', '1',
+            '--availability-zone', 'eu-1',
+            '--availability-zone', 'eu-2',
+            '--network-id', 'sub1',
+            '--network-id', 'sub2',
+            '--router-id', 'vpc-1',
+            '--security-group', 'sg1',
+            '--security-group', 'sg2',
+            '--lb-listener-id', 'lb1',
+            '--lbaas-listener', 'lbas1:14',
+            '--lbaas-listener', 'lbas2:15:10',
+            '--audit-method', 'some_method',
+            '--audit-time', '15',
+            '--terminate-policy', 'pol',
             '--notification', 'EMAIL',
             '--notification', 'SMS',
 
@@ -295,9 +308,9 @@ class TestUpdateAutoScalingGroup(TestAutoScalingGroup):
             ('max_instance_number', 15),
             ('cool_down_time', 1),
             ('availability_zone', ['eu-1', 'eu-2']),
-            ('subnetwork', ['sub1', 'sub2']),
+            ('network_id', ['sub1', 'sub2']),
             ('security_group', ['sg1', 'sg2']),
-            ('network_id', 'vpc-1'),
+            ('router_id', 'vpc-1'),
             ('lb_listener_id', 'lb1'),
             ('lbaas_listener', ['lbas1:14', 'lbas2:15:10']),
             ('audit_method', 'some_method'),
@@ -314,10 +327,15 @@ class TestUpdateAutoScalingGroup(TestAutoScalingGroup):
             self._group
         ]
 
+        self.client.find_group.side_effect = [
+            self._group
+        ]
+
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.update_group.assert_called_with(
+            self._group,
             available_zones=['eu-1', 'eu-2'],
             cool_down_time=1,
             desire_instance_number=10,
@@ -330,11 +348,10 @@ class TestUpdateAutoScalingGroup(TestAutoScalingGroup):
                 {'id': 'lbas2', 'protocol_port': '15', 'weight': '10'}],
             max_instance_number=15,
             min_instance_number=1,
-            group='test_name',
             networks=[{'id': 'sub1'}, {'id': 'sub2'}],
             notifications=['EMAIL', 'SMS'],
             security_groups=[{'id': 'sg1'}, {'id': 'sg2'}],
-            vpc_id='vpc-1'
+            router_id='vpc-1'
         )
 
         self.assertEqual(self.columns, columns)
