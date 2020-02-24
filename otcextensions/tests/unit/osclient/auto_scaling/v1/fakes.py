@@ -52,7 +52,7 @@ class FakeGroup(test_base.Fake):
             'id': 'id-' + uuid.uuid4().hex,
             'status': 'SOME STATUS',
             'detail': 'detail-' + uuid.uuid4().hex,
-            'network_id': 'id-vpc-' + uuid.uuid4().hex,
+            'router_id': 'id-vpc-' + uuid.uuid4().hex,
         }
         obj = group.Group.existing(**object_info)
         return obj

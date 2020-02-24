@@ -172,7 +172,7 @@ class TestCreateAutoScalingGroup(TestAutoScalingConfig):
         arglist = [
             'config_name',
             '--flavor', 'some_flavor',
-            '--image_id', 'some_image',
+            '--image-id', 'some_image',
             '--disk', 'SYS,SSD,10',
             '--disk', 'DATA,SSD,5',
         ]

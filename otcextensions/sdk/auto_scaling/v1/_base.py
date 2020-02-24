@@ -60,3 +60,15 @@ class Resource(resource.Resource):
             url,
             # endpoint_override=endpoint_override,
             json=body)
+
+    def commit(self, session, prepend_key=False, has_body=True,
+               retry_on_conflict=None, base_path=None):
+        return \
+            super(Resource, self).commit(session, prepend_key=prepend_key,
+                                         has_body=has_body,
+                                         retry_on_conflict=retry_on_conflict,
+                                         base_path=base_path)
+
+    def create(self, session, prepend_key=False, base_path=None, **params):
+        return super(Resource, self).create(session, prepend_key=prepend_key,
+                                            base_path=base_path, **params)

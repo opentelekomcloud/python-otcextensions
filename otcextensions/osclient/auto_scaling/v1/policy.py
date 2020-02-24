@@ -104,18 +104,26 @@ class ShowAutoScalingPolicy(command.ShowOne):
         parser.add_argument(
             'policy',
             metavar='<policy>',
-            help=_('ID of the configuration policy')
+            help=_('ID of the configuration policy\n'
+                    'For Policy Name search --group param is needed')
+        )
+        parser.add_argument(
+            '--group',
+            metavar='<group>',
+            help=_('ScalingGroup ID or Name if Name searched is used')
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.auto_scaling
 
-        obj = client.get_policy(parsed_args.policy)
-
-        # display_columns, columns = _get_columns(obj)
-        # data = utils.get_item_properties(
-        #     obj, columns, formatters={'instance_config': _format_instance})
+        if parsed_args.group:
+            group = client.find_group(parsed_args.group, ignore_missing=False)
+            obj = client.find_policy(parsed_args.policy,
+                                     group=group,
+                                     ignore_missing=False)
+        else:
+            obj = client.get_policy(parsed_args.policy)
 
         fmt = set_attributes_for_print_detail(obj)
         # display_columns, columns = _get_columns(obj)
@@ -159,30 +167,30 @@ class CreateAutoScalingPolicy(command.ShowOne):
             help=_('AS Policy type [`ALARM`, `SCHEDULED`, `RECURRENCE`]')
         )
         parser.add_argument(
-            '--cool_down_time',
+            '--cool-down-time',
             metavar='<cool_down_time>',
             type=int,
             help=_('Specifies the cooling time in seconds for the policy')
         )
         parser.add_argument(
-            '--alarm_id',
+            '--alarm-id',
             metavar='<alarm_id>',
             help=_('Specifies the alarm_id for the policy')
         )
         parser.add_argument(
-            '--action_operation',
+            '--action-operation',
             metavar='<action_operation>',
             help=_('Specifies the policy operation '
                    'Can be [`ADD`, `REMOVE`, `SET`]')
         )
         parser.add_argument(
-            '--action_instance_number',
+            '--action-instance-number',
             metavar='<action_instance_number>',
             type=int,
             help=_('Specifies number of instances to be operated')
         )
         parser.add_argument(
-            '--launch_time',
+            '--launch-time',
             metavar='<launch_time>',
             help=_('Specifies the time when the scaling action is triggered. '
                    'The time format must comply with UTC.\n'
@@ -190,7 +198,7 @@ class CreateAutoScalingPolicy(command.ShowOne):
                    '* when type=`RECURRENCE`, then `hh:mm`\n')
         )
         parser.add_argument(
-            '--recurrence_type',
+            '--recurrence-type',
             metavar='<recurrence_type>',
             help=_(
                 'Specifies the periodic triggering type\n'
@@ -199,7 +207,7 @@ class CreateAutoScalingPolicy(command.ShowOne):
             )
         )
         parser.add_argument(
-            '--recurrence_value',
+            '--recurrence-value',
             metavar='<recurrence_value>',
             help=_(
                 'Specifies the frequency, at which actions are triggered\n'
@@ -210,13 +218,13 @@ class CreateAutoScalingPolicy(command.ShowOne):
             )
         )
         parser.add_argument(
-            '--start_time',
+            '--start-time',
             metavar='<start_time>',
             help=_('Specifies the start time in of the action in the '
                    '`YYYY-MM-DDThh:mmZ` format')
         )
         parser.add_argument(
-            '--end_time',
+            '--end-time',
             metavar='<end_time>',
             help=_('Specifies the end time in of the action in the '
                    '`YYYY-MM-DDThh:mmZ` format\n'
@@ -315,7 +323,7 @@ class UpdateAutoScalingPolicy(command.ShowOne):
         parser.add_argument(
             'policy',
             metavar='<policy>',
-            help=_('AS Policy name or ID')
+            help=_('AS Policy ID')
         )
         parser.add_argument(
             '--group',
@@ -326,35 +334,33 @@ class UpdateAutoScalingPolicy(command.ShowOne):
         parser.add_argument(
             '--type',
             metavar='<type>',
-            required=True,
-            # choices=['ALARM', 'SCHEDULED', 'RECURRENCE'],
             help=_('AS Policy type [`ALARM`, `SCHEDULED`, `RECURRENCE`]')
         )
         parser.add_argument(
-            '--cool_down_time',
+            '--cool-down-time',
             metavar='<cool_down_time>',
             type=int,
             help=_('Specifies the cooling time in seconds for the policy')
         )
         parser.add_argument(
-            '--alarm_id',
+            '--alarm-id',
             metavar='<alarm_id>',
             help=_('Specifies the alarm_id for the policy')
         )
         parser.add_argument(
-            '--action_operation',
+            '--action-operation',
             metavar='<action_operation>',
             help=_('Specifies the policy operation '
                    'Can be [`ADD`, `REMOVE`, `SET`]')
         )
         parser.add_argument(
-            '--action_instance_number',
+            '--action-instance-number',
             metavar='<action_instance_number>',
             type=int,
             help=_('Specifies number of instances to be operated')
         )
         parser.add_argument(
-            '--launch_time',
+            '--launch-time',
             metavar='<launch_time>',
             help=_('Specifies the time when the scaling action is triggered. '
                    'The time format must comply with UTC.\n'
@@ -362,7 +368,7 @@ class UpdateAutoScalingPolicy(command.ShowOne):
                    '* when type=`RECURRENCE`, then `hh:mm`\n')
         )
         parser.add_argument(
-            '--recurrence_type',
+            '--recurrence-type',
             metavar='<recurrence_type>',
             help=_(
                 'Specifies the periodic triggering type\n'
@@ -371,7 +377,7 @@ class UpdateAutoScalingPolicy(command.ShowOne):
             )
         )
         parser.add_argument(
-            '--recurrence_value',
+            '--recurrence-value',
             metavar='<recurrence_value>',
             help=_(
                 'Specifies the frequency, at which actions are triggered\n'
@@ -382,13 +388,13 @@ class UpdateAutoScalingPolicy(command.ShowOne):
             )
         )
         parser.add_argument(
-            '--start_time',
+            '--start-time',
             metavar='<start_time>',
             help=_('Specifies the start time in of the action in the '
                    '`YYYY-MM-DDThh:mmZ` format')
         )
         parser.add_argument(
-            '--end_time',
+            '--end-time',
             metavar='<end_time>',
             help=_('Specifies the end time in of the action in the '
                    '`YYYY-MM-DDThh:mmZ` format\n'
@@ -401,13 +407,14 @@ class UpdateAutoScalingPolicy(command.ShowOne):
         policy_attrs = {}
         # policy_attrs['name'] = parsed_args.name
         policy_attrs['scaling_group_id'] = parsed_args.group
-        policy_type = parsed_args.type.upper()
-        if policy_type not in self.POLICY_TYPES:
-            msg = (_('Unsupported policy type. Should be one of %s')
-                   % self.POLICY_TYPES)
-            raise argparse.ArgumentTypeError(msg)
-        else:
-            policy_attrs['type'] = policy_type
+        if parsed_args.type:
+            policy_type = parsed_args.type.upper()
+            if policy_type not in self.POLICY_TYPES:
+                msg = (_('Unsupported policy type. Should be one of %s')
+                       % self.POLICY_TYPES)
+                raise argparse.ArgumentTypeError(msg)
+            else:
+                policy_attrs['type'] = policy_type
         if parsed_args.alarm_id:
             policy_attrs['alarm_id'] = parsed_args.alarm_id
         if parsed_args.cool_down_time:
@@ -437,8 +444,9 @@ class UpdateAutoScalingPolicy(command.ShowOne):
 
         client = self.app.client_manager.auto_scaling
 
+        policy = client.get_policy(parsed_args.policy)
         policy = client.update_policy(
-            policy=parsed_args.policy, **policy_attrs)
+            policy, **policy_attrs)
 
         fmt = set_attributes_for_print_detail(policy)
         # display_columns, columns = _get_columns(obj)
@@ -475,7 +483,7 @@ class EnableAutoScalingPolicy(command.Command):
         parser.add_argument(
             'policy',
             metavar='<policy>',
-            help=_('AS Policy ID or name')
+            help=_('AS Policy ID')
         )
         return parser
 
@@ -494,7 +502,7 @@ class DisableAutoScalingPolicy(command.Command):
         parser.add_argument(
             'policy',
             metavar='<policy>',
-            help=_('AS Policy ID or name')
+            help=_('AS Policy ID')
         )
         return parser
 

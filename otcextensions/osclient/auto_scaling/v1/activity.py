@@ -31,18 +31,19 @@ class ListAutoScalingActivityLogs(command.Lister):
     def get_parser(self, prog_name):
         parser = super(ListAutoScalingActivityLogs, self).get_parser(prog_name)
         parser.add_argument(
-            'group',
+            '--group',
             metavar='<group>',
+            required=True,
             help=_('AS Group ID or name')
         )
         parser.add_argument(
-            '--start_time',
+            '--start-time',
             metavar='<start_time>',
             help=_('Specifies the start time for querying scaling '
                    'action logs. Format: `YYYY-MM-DDThh:mm:ssZ`')
         )
         parser.add_argument(
-            '--end_time',
+            '--end-time',
             metavar='<end_time>',
             help=_('Specifies the end time for querying scaling '
                    'action logs. Format: `YYYY-MM-DDThh:mm:ssZ`')
