@@ -53,7 +53,7 @@ class ListZone(command.Lister):
             metavar='{' + ','.join(ZONE_TYPES) + '}',
             type=lambda s: s.lower(),
             choices=ZONE_TYPES,
-            help=_('Zone type.')
+            help=_('Zone type. Default lists only public zones.')
         )
         return parser
 
