@@ -17,6 +17,7 @@ from openstack import _log
 from openstack import utils
 
 from otcextensions.sdk.compute.v2 import server
+from otcextensions.common import exc
 
 
 _logger = _log.setup_logging('openstack')
@@ -215,6 +216,8 @@ def patch_openstack_resources():
         server.Server._get_tag_struct
     openstack.compute.v2.server.Server.add_tag = server.Server.add_tag
     openstack.compute.v2.server.Server.remove_tag = server.Server.remove_tag
+    openstack.exceptions.raise_from_response = \
+        exc.raise_from_response
 
 
 def load(conn, **kwargs):

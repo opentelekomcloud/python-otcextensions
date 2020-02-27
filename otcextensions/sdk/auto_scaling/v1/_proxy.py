@@ -249,7 +249,9 @@ class Proxy(proxy.Proxy):
             instances
         """
         group = self._get_resource(_group.Group, group)
-        return self._list(_policy.Policy, scaling_group_id=group.id, **query)
+        return self._list(
+            _policy.Policy,
+            base_path='/scaling_policy/{id}/list'.format(id=group.id), **query)
 
     def create_policy(self, **attrs):
         """Create a new policy from attributes
@@ -305,10 +307,11 @@ class Proxy(proxy.Proxy):
         return self._delete(_policy.Policy, policy,
                             ignore_missing=ignore_missing)
 
-    def find_policy(self, name_or_id, ignore_missing=True):
+    def find_policy(self, name_or_id, group, ignore_missing=True):
         """Find a single policy
 
         :param name_or_id: The name or ID of a policy
+        :param group: ID of a group
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
             when the policy does not exist.
@@ -317,8 +320,10 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
+        group = self._get_resource(_group.Group, group)
         return self._find(_policy.Policy, name_or_id,
-                          ignore_missing=ignore_missing)
+                          ignore_missing=ignore_missing,
+                          group_id=group.id)
 
     def execute_policy(self, policy):
         """execute policy
@@ -369,8 +374,10 @@ class Proxy(proxy.Proxy):
             (:class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`)
         """
         group = self._get_resource(_group.Group, group)
-        return self._list(_instance.Instance,
-                          scaling_group_id=group.id, **query)
+        return self._list(
+            _instance.Instance,
+            base_path='/scaling_group_instance/{id}/list'.format(id=group.id),
+            **query)
 
     def remove_instance(self, instance, delete_instance=False,
                         ignore_missing=True):

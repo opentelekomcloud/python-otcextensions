@@ -80,8 +80,6 @@ class TestPolicy(base.TestCase):
         self.assertEqual('scaling_policy', sot.resource_key)
         self.assertEqual('scaling_policies', sot.resources_key)
         self.assertEqual('/scaling_policy', sot.base_path)
-        self.assertEqual(
-            '/scaling_policy/%(scaling_group_id)s/list', sot.list_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_fetch)
@@ -97,37 +95,6 @@ class TestPolicy(base.TestCase):
         self.assertEqual(EXAMPLE['cool_down_time'], sot.cool_down_time)
         self.assertEqual(EXAMPLE['policy_status'], sot.status)
         self.assertEqual(EXAMPLE['create_time'], sot.create_time)
-
-    def test_list(self):
-        mock_response = mock.Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = copy.deepcopy(EXAMPLE_LIST)
-
-        self.sess.get.return_value = mock_response
-
-        result = list(
-            self.sot.list(
-                self.sess,
-                scaling_group_id='grp_id',
-                limit=3,
-                marker=4
-            )
-        )
-
-        self.sess.get.assert_called_once_with(
-            '/scaling_policy/grp_id/list',
-            params={
-                'limit': 3,
-                'start_number': 4,
-            },
-        )
-
-        expected_list = [
-            policy.Policy.existing(
-                **EXAMPLE_LIST['scaling_policies'][0]),
-        ]
-
-        self.assertEqual(expected_list, result)
 
     def test_get(self):
         sot = policy.Policy.existing(
@@ -170,7 +137,6 @@ class TestPolicy(base.TestCase):
         call_args = self.sess.post.call_args_list[0]
 
         expected_json = copy.deepcopy(EXAMPLE)
-        expected_json.pop('scaling_group_id')
 
         self.assertEqual('/scaling_policy', call_args[0][0])
         self.assertDictEqual(expected_json, call_args[1]['json'])
@@ -217,7 +183,6 @@ class TestPolicy(base.TestCase):
 
         expected_json = copy.deepcopy(EXAMPLE)
         expected_json.pop('scaling_policy_id')
-        expected_json.pop('scaling_group_id')
 
         self.assertEqual(
             'scaling_policy/%s' % EXAMPLE['scaling_policy_id'],

@@ -152,13 +152,13 @@ class CreateAutoScalingConfig(command.ShowOne):
             help=_('Flavor ID or Name for the ECS instance')
         )
         group1.add_argument(
-            '--image_id',
+            '--image-id',
             metavar='<image_id>',
             help=_('Image ID for the ECS instance to be created')
         )
         group = parser.add_mutually_exclusive_group()
         group.add_argument(
-            '--instance_id',
+            '--instance-id',
             metavar='<instance_id>',
             help=_('AS Configuration name\n'
                    'Is mutually exclusive with ECS group')
@@ -187,14 +187,14 @@ class CreateAutoScalingConfig(command.ShowOne):
             help=_('Key name for the new ECS instance')
         )
         parser.add_argument(
-            '--public_ip_bandwith',
+            '--public-ip-bandwith',
             metavar='<public_ip_bandwith>',
             type=int,
             help=_('Defines EIP Bandwith (Mbit/s) to be attached '
                    'to the new ECS instance')
         )
         parser.add_argument(
-            '--user_data',
+            '--user-data',
             metavar='<user_data>',
             help=_('Path to the cloud-init user_data file')
         )

@@ -9,7 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import copy
 
 from keystoneauth1 import adapter
 
@@ -19,23 +18,6 @@ from openstack import exceptions
 from openstack.tests.unit import base
 
 from otcextensions.sdk.auto_scaling.v1 import instance
-
-# EXAMPLE = {
-#     'scaling_instance_id': 'fd7d63ce-8f5c-443e-b9a0-bef9386b23b3',
-#     'scaling_group_id': 'e5d27f5c-dd76-4a61-b4bc-a67c5686719a',
-#     'scaling_instance_name': 'schedule1',
-#     'scaling_instance_type': 'SCHEDULED',
-#     'scheduled_instance': {
-#         'launch_time': '2015-07-24T01:21Z'
-#     },
-#     'cool_down_time': 300,
-#     'scaling_instance_action': {
-#         'operation': 'REMOVE',
-#         'instance_number': 1
-#     },
-#     'instance_status': 'INSERVICE',
-#     'create_time': '2015-07-24T01:09:30Z'
-# }
 
 EXAMPLE_LIST = {
     'limit': 10,
@@ -73,8 +55,6 @@ class TestInstance(base.TestCase):
         self.assertEqual('scaling_group_instance', sot.resource_key)
         self.assertEqual('scaling_group_instances', sot.resources_key)
         self.assertEqual('/scaling_group_instance', sot.base_path)
-        self.assertEqual(
-            '/scaling_group_instance/%(scaling_group_id)s/list', sot.list_path)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_fetch)
@@ -94,41 +74,6 @@ class TestInstance(base.TestCase):
         self.assertEqual(obj['scaling_configuration_id'],
                          sot.scaling_configuration_id)
         self.assertEqual(obj['create_time'], sot.create_time)
-
-    def test_list(self):
-        mock_response = mock.Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = copy.deepcopy(EXAMPLE_LIST)
-
-        self.sess.get.return_value = mock_response
-
-        result = list(
-            self.sot.list(
-                self.sess,
-                scaling_group_id='grp_id',
-                limit=3,
-                marker=4,
-                life_cycle_state='t1',
-                health_status='t2',
-            )
-        )
-
-        self.sess.get.assert_called_once_with(
-            '/scaling_group_instance/grp_id/list',
-            params={
-                'limit': 3,
-                'start_number': 4,
-                'life_cycle_state': 't1',
-                'health_status': 't2',
-            },
-        )
-
-        expected_list = [
-            instance.Instance.existing(
-                **EXAMPLE_LIST['scaling_group_instances'][0]),
-        ]
-
-        self.assertEqual(expected_list, result)
 
     def test_batch_action_act_check(self):
         mock_response = mock.Mock()

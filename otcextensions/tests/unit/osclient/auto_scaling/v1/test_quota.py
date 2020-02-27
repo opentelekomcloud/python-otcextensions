@@ -66,7 +66,7 @@ class TestListAutoScalingQuota(TestAutoScalingQuota):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.quotas.assert_called_once_with(group=None)
+        self.client.quotas.assert_called_once_with()
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
@@ -88,10 +88,15 @@ class TestListAutoScalingQuota(TestAutoScalingQuota):
             self.quotas
         ]
 
+        grp_mock = mock.Mock()
+        grp_mock.id = 2
+
+        self.client.find_group = mock.Mock(return_value=grp_mock)
+
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.quotas.assert_called_once_with(group='grp')
+        self.client.quotas.assert_called_once_with(group=2)
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
