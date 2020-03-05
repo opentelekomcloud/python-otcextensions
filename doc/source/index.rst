@@ -23,6 +23,7 @@ cases. Additionally some auxiliary documentation is available:
    :maxdepth: 1
 
    install/index
+   install/configuration
    cli/index
    user/index
    contributor/index
