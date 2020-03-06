@@ -2,7 +2,7 @@ Getting Started
 ===============
 
 Connect to the cloud
-====================
+--------------------
 
 In order to work with an OpenStack cloud you first need to create a
 :class:`~openstack.connection.Connection` using your credentials. A
@@ -16,7 +16,7 @@ library. Please be also aware that environment variables carrying
 credentials can be a security risk.
 
 Create Connection
------------------
+^^^^^^^^^^^^^^^^^
 
 To create a :class:`~openstack.connection.Connection` instance, use the
 :func:`~openstack.connect` factory function.
@@ -36,7 +36,7 @@ See a full example at `connect_otc.py <examples/connect_otc.py>`_
 .. note:: To enable logging, see the `<guides/logging.rst>`_ user guide.
 
 Verify Installation
--------------------
+^^^^^^^^^^^^^^^^^^^
 
 You need to have the OpenStack SDK in package `openstacksdk` installed
 to work with the OTC Extensions, which are packaged in

@@ -17,6 +17,8 @@ For consumers who just want to get a basic logging setup without thinking
 about it too deeply, there is a helper method. If used, it should be called
 before any other openstacksdk functionality.
 
+.. autofunction:: openstack.enable_logging
+
 .. code-block:: python
 
   import openstack

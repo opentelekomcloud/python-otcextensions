@@ -1,5 +1,17 @@
-Getting started with the OTC Extensions
-=======================================
+Getting started with the OTCExtensions SDK
+==========================================
+
+Please note that OTCExtensions provides an extension to the OpenStackSDK.
+Please refer to it's documentation for the details <https://docs.openstack.org/openstacksdk/latest/>
+
+
+
+User Guides
+-----------
+
+These guides walk you through how to make use of the libraries we provide
+to work with each OpenStack service. If you're looking for a cookbook
+approach, this is where you'll want to begin.
 
 .. toctree::
    :maxdepth: 1
@@ -25,62 +37,6 @@ Getting started with the OTC Extensions
    Volume Backup <guides/volume_backup>
    Dedicated Host <guides/deh>
 
-The OTC Extensions contain an abstraction interface layer. Clouds can
-do many things, but there are probably only about 10 of them that most
-people care about with any regularity.
-
-If you want to do complicated things, the per-service oriented
-portions of the SDK are for you.
-
-However, if what you want is to be able to write an application that
-talks to clouds no matter what crazy choices the deployer has made in
-an attempt to be more hipster than their self-entitled narcissist
-peers, then the Cloud Abstraction layer is for you.
-
-Please note that OTC Extensions provides an extension to the
-OpenStackSDK.  Please refer to it's documentation for the details
-<https://docs.openstack.org/openstacksdk/latest/>
-
-
-Verify Installation
--------------------
-
-You need to have the OpenStack SDK in package `openstacksdk` installed
-to work with the OTC Extensions, which are packaged in
-`otcextensions`. Thanks to a plugin mechanism, no additional
-configuration is needed to use the extension. To verify you are up and
-running write a file `demo.py`:
-
-.. code-block: python
-
-    import openstack as mycloud
-
-    conn = mycloud.connect("otc")
-    conn.jjjjj.flavors()
-    
-Make sure that you configured your credentials as describe in the
-`configuration` section. Run this script with
-
-.. code-block: bash
-    $ python demo.py
-
-It should XXXXXXXX list your XXXXXXXX.
-
-    
-with this Python script and run it with
-`python demo.py`.
-
-.. _user_guides:
-
-User Guides
------------
-
-These guides walk you through how to make use of the libraries we provide
-to work with each OpenStack service. If you're looking for a cookbook
-approach, this is where you'll want to begin.
-
-
-
 API Documentation
 -----------------
 
@@ -91,7 +47,7 @@ Service APIs are exposed through a two-layered approach. The classes
 exposed through our `Connection Interface`_ are
 the place to start if you're an application developer consuming an OpenStack
 cloud. The `Resource Interface`_ is the layer upon which the
-`Connection Interface`_ is built, with methods on `Service Proxies`_ accepting
+`Connection Interface`_ is built, with methods on Service Proxies accepting
 and returning :class:`~openstack.resource.Resource` objects.
 
 The Cloud Abstraction layer has a data model.
@@ -121,59 +77,16 @@ subclasses of it that exist as attributes on the
 .. autoclass:: openstack.proxy.Proxy
    :members:
 
-.. _service-proxies:
-
-Service Proxies
-~~~~~~~~~~~~~~~
-
-The following service proxies exist on the
-:class:`~openstack.connection.Connection`. The service proxies are all always
-present on the :class:`~openstack.connection.Connection` object, but the
-combination of your ``CloudRegion`` and the catalog of the cloud in question
-control which services can be used.
-
-.. toctree::
-   :maxdepth: 1
-
-   Block Storage <https://docs.openstack.org/openstacksdk/latest/user/proxies/block_storage>
-   Compute <https://docs.openstack.org/openstacksdk/latest/user/proxies/compute>
-   Database <https://docs.openstack.org/openstacksdk/latest/user/proxies/database>
-   Identity v2 <https://docs.openstack.org/openstacksdk/latest/user/proxies/identity_v2>
-   Identity v3 <https://docs.openstack.org/openstacksdk/latest/user/proxies/identity_v3>
-   Image v1 <https://docs.openstack.org/openstacksdk/latest/user/proxies/image_v1>
-   Image v2 <https://docs.openstack.org/openstacksdk/latest/user/proxies/image_v2>
-   Key Manager <https://docs.openstack.org/openstacksdk/latest/user/proxies/key_manager>
-   Load Balancer <https://docs.openstack.org/openstacksdk/latest/user/proxies/load_balancer_v2>
-   Message v2 <https://docs.openstack.org/openstacksdk/latest/user/proxies/message_v2>
-   Network <https://docs.openstack.org/openstacksdk/latest/user/proxies/network>
-   Object Store <https://docs.openstack.org/openstacksdk/latest/user/proxies/object_store>
-   Orchestration <https://docs.openstack.org/openstacksdk/latest/user/proxies/orchestration>
-   Workflow <https://docs.openstack.org/openstacksdk/latest/user/proxies/workflow>
-   Anti DDoS Service <proxies/anti_ddos>
-   AutoScaling Service <proxies/auto_scaling>
-   Cloud Container Engine v1<proxies/cce_v1>
-   Cloud Container Engine v2<proxies/cce_v3>
-   Cloud Trace Service <proxies/cts>
-   Distributed Cache Service <proxies/dcs>
-   Dedicated Host Service <proxies/deh>
-   Distributed Message Service <proxies/dms>
-   DNS Service <proxies/dns>
-   Key Management Service <proxies/kms>
-   Object Block Storage <proxies/obs>
-   Volume Backup Service <proxies/volume_backup>
-   Relational Database Service RDS V1 <proxies/rds_v1>
-   Relational Database Service RDS V3 <proxies/rds_v3>
-
 Resource Interface
 ~~~~~~~~~~~~~~~~~~
 
 The *Resource* layer is a lower-level interface to
 communicate with OpenStack services. While the classes exposed by the
-`Service Proxies`_ build a convenience layer on top of
+Service Proxies build a convenience layer on top of
 this, :class:`~openstack.resource.Resource` objects can be
 used directly. However, the most common usage of this layer is in receiving
 an object from a class in the `Connection Interface_`, modifying it, and
-sending it back to the `Service Proxies`_ layer, such as to update a resource
+sending it back to the Service Proxies layer, such as to update a resource
 on the server.
 
 The following services have exposed :class:`~openstack.resource.Resource`
