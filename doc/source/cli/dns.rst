@@ -1,6 +1,5 @@
-=============================================
-Domain Name Service (DNS) command-line client
-=============================================
+Domain Name Service (DNS)
+=========================
 
 The DNS client is the command-line interface (CLI) for
 the Domain Name Service (DNS) API and its extensions.

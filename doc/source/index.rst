@@ -19,29 +19,20 @@ cases. Additionally some auxiliary documentation is available:
 
 .. toctree::
    :includehidden:
-   :numbered:
+   :numbered: 1
    :maxdepth: 1
 
    install/index
    install/configuration
    cli/index
-   user/index
+   sdk/index
    contributor/index
    history
    glossary
    releasenotes
    coverage
    issues
-
-1 Installation <install/index>
-2 CLI Usage <cli/index>
-3 Package Reference <user/index>
-4 Contributing <contributor/index>
-5 History <history>
-6 Glossary of Terms <glossary>
-7 Release Notes <releasenotes>
-8 Service Coverage <coverage>
-9 Potential Issues <issues>
+   user/index
 
 
 Installation and Configuration

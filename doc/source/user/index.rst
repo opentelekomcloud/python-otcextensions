@@ -1,6 +1,30 @@
 Getting started with the OTC Extensions
 =======================================
 
+.. toctree::
+   :maxdepth: 1
+
+   Plain-simple connect to OTC <guides/connect_otc>
+   Configuration <config/index>
+   Connect to an OpenStack Cloud Using a Config File <https://docs.openstack.org/openstacksdk/latest/user/guides/connect_from_config>
+   Using Cloud Abstration Layer <https://docs.openstack.org/openstacksdk/latest/user/usage>
+   Logging <guides/logging>
+   Microversions <https://docs.openstack.org/openstacksdk/latest/user/microversions>
+   Block Storage <https://docs.openstack.org/openstacksdk/latest/user/guides/block_storage>
+   Compute <https://docs.openstack.org/openstacksdk/latest/user/guides/compute>
+   Identity <https://docs.openstack.org/openstacksdk/latest/user/guides/identity>
+   Image <https://docs.openstack.org/openstacksdk/latest/user/guides/image>
+   Key Manager <https://docs.openstack.org/openstacksdk/latest/user/guides/key_manager>
+   Message <https://docs.openstack.org/openstacksdk/latest/user/guides/message>
+   Network <https://docs.openstack.org/openstacksdk/latest/user/guides/network>
+   Object Store <https://docs.openstack.org/openstacksdk/latest/user/guides/object_store>
+   Orchestration <https://docs.openstack.org/openstacksdk/latest/user/guides/orchestration>
+   RDS <guides/rds>
+   OBS <guides/obs>
+   AutoScaling <guides/auto_scaling>
+   Volume Backup <guides/volume_backup>
+   Dedicated Host <guides/deh>
+
 The OTC Extensions contain an abstraction interface layer. Clouds can
 do many things, but there are probably only about 10 of them that most
 people care about with any regularity.
@@ -55,29 +79,7 @@ These guides walk you through how to make use of the libraries we provide
 to work with each OpenStack service. If you're looking for a cookbook
 approach, this is where you'll want to begin.
 
-.. toctree::
-   :maxdepth: 1
 
-   Plain-simple connect to OTC <guides/connect_otc>
-   Configuration <config/index>
-   Connect to an OpenStack Cloud Using a Config File <https://docs.openstack.org/openstacksdk/latest/user/guides/connect_from_config>
-   Using Cloud Abstration Layer <https://docs.openstack.org/openstacksdk/latest/user/usage>
-   Logging <guides/logging>
-   Microversions <https://docs.openstack.org/openstacksdk/latest/user/microversions>
-   Block Storage <https://docs.openstack.org/openstacksdk/latest/user/guides/block_storage>
-   Compute <https://docs.openstack.org/openstacksdk/latest/user/guides/compute>
-   Identity <https://docs.openstack.org/openstacksdk/latest/user/guides/identity>
-   Image <https://docs.openstack.org/openstacksdk/latest/user/guides/image>
-   Key Manager <https://docs.openstack.org/openstacksdk/latest/user/guides/key_manager>
-   Message <https://docs.openstack.org/openstacksdk/latest/user/guides/message>
-   Network <https://docs.openstack.org/openstacksdk/latest/user/guides/network>
-   Object Store <https://docs.openstack.org/openstacksdk/latest/user/guides/object_store>
-   Orchestration <https://docs.openstack.org/openstacksdk/latest/user/guides/orchestration>
-   RDS <guides/rds>
-   OBS <guides/obs>
-   AutoScaling <guides/auto_scaling>
-   Volume Backup <guides/volume_backup>
-   Dedicated Host <guides/deh>
 
 API Documentation
 -----------------

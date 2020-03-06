@@ -1,6 +1,5 @@
-=====================================================
-Distributed Message Service (DMS) command-line client
-=====================================================
+Distributed Message Service (DMS)
+=================================
 
 The DMS client is the command-line interface (CLI) for
 the Distributed Message Service (DMS) API and its extensions.

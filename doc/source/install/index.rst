@@ -1,6 +1,12 @@
 Installation
 ============
 
+.. toctree::
+   :maxdepth: 3
+
+   pip_install.rst
+   source_install.rst
+
 There are several ways to install OTC Extensions to enhance the native
 OpenStack Client and to extend the OpenStack SDK to cover the
 additional Open Telekom Cloud services providing a larger
@@ -31,12 +37,3 @@ OTC Extensions into a CLI tool.
 **OTC Extensions:**
 An addition to OpenStack SDK with enhanced functionality that is specific for the
 Open Telekom Cloud. This is the package you are currently looking at.
-
-Content
--------
-
-.. toctree::
-   :maxdepth: 3
-
-   pip_install.rst
-   source_install.rst

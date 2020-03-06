@@ -1,6 +1,5 @@
-================================================
-Key Management Service (KMS) command-line client
-================================================
+Key Management Service (KMS)
+============================
 
 The KMS client is the command-line interface (CLI) for
 the Key Management service (KMS) API and its extensions.
