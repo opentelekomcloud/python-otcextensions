@@ -3,12 +3,12 @@ Configuration
 
 You can connect to the Open Telekom Cloud and OpenStack clouds in general
 using two approaches. The first one uses a credential file called
-``clouds.yaml`` and the other one is to use environment variables.
+``clouds.yaml`` and the other one is to use ``environment variables``.
 
 Configuring a clouds.yaml file
 ------------------------------
 
-The credential file clouds.yaml will be queried automatically in different
+The credential file ``clouds.yaml`` will be queried automatically in different
 locations with increasing precedence:
 
 1. system-wide (/etc/openstack/{clouds,secure}.yaml)
@@ -23,21 +23,42 @@ A sample clouds.yaml file is listed below to connect with Open Telekom Cloud:
 
   clouds:
     otc:
+      profile: otc
       auth:
-        username: 'USER_NAME'
-        password: 'PASS'
-        project_name: 'eu-de'
-        auth_url: 'https://iam.eu-de.otc.t-systems.com:443/v3'
+       username: '<USER_NAME>'
+        password: '<PASSWORD>'
+        project_name: '<eu-de_project>'
+        # or project_id: '<123456_PROJECT_ID>'
         user_domain_name: 'OTC00000000001000000xxx'
+        # or user_domain_id: '<123456_DOMAIN_ID>'
+        auth_url: 'https://iam.eu-de.otc.t-systems.com:443/v3'
       interface: 'public'
       identity_api_version: 3 # !Important
-      ak: 'AK_VALUE' # AK/SK pair for access to OBS
-      sk: 'SK_VALUE'
+      ak: '<AK_VALUE>' # AK/SK pair for access to OBS
+      sk: '<SK_VALUE>'
 
-The name otc is self-defined and can be changed. AK/SK values required for
-access to some services (i.e. OBS) can be either configured as shown above
-in the clouds.yaml/secure.yaml, or they can be automatically retrieved from
-the S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY.
+.. note::
+   The name ``otc`` is self-defined and can be changed to any value.
+
+AK/SK values required for access to some services (i.e. OBS) can
+be either configured as shown above in the clouds.yaml/secure.yaml, or
+they can be automatically retrieved from the S3_ACCESS_KEY_ID and
+S3_SECRET_ACCESS_KEY.
+
+Test your connection
+^^^^^^^^^^^^^^^^^^^^
+
+If you followed the `installation advices <index>`_ for your specific
+operating system, you can use the following command to test the basic
+functionality.
+
+.. code-block:: bash
+
+    $ openstack --os-cloud otc flavor list
+
+
+Configuration of a Second Project
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Additional connections to other Openstack-clouds or -projects can be added
 to the file as shown below:
@@ -47,34 +68,34 @@ to the file as shown below:
 .. code-block:: yaml
 
   clouds:
-    otc:
+    otcfirstproject:
+      profile: otc
       auth:
-        username: 'USER_NAME'
-        password: 'PASS'
-        project_name: 'eu-de'
-        auth_url: 'https://iam.eu-de.otc.t-systems.com:443/v3'
+       username: '<USER_NAME>'
+        password: '<PASSWORD>'
+        project_name: '<eu-de_project>'
+        # or project_id: '<123456_PROJECT_ID>'
         user_domain_name: 'OTC00000000001000000xxx'
+        # or user_domain_id: '<123456_DOMAIN_ID>'
+        auth_url: 'https://iam.eu-de.otc.t-systems.com:443/v3'
       interface: 'public'
       identity_api_version: 3 # !Important
-      ak: 'AK_VALUE' # AK/SK pair for access to OBS
-      sk: 'SK_VALUE'
+      ak: '<AK_VALUE>' # AK/SK pair for access to OBS
+      sk: '<SK_VALUE>'
     otcsecondproject:
-      region_name: eu-de
+      profile: otc
       auth:
-        username: '<USERNAME2>'
-        password: '<PASSWORD2>'
-        project_id: '<PROJECT-ID2>'
-        user_domain_id: '<DOMAIN-ID2>'
+       username: '<USER_NAME>'
+        password: '<PASSWORD>'
+        project_name: '<eu-de_project2>'
+        # or project_id: '<123456_PROJECT_ID2>'
+        user_domain_name: 'OTC00000000001000000xxx'
+        # or user_domain_id: '<123456_DOMAIN_ID2>'
         auth_url: 'https://iam.eu-de.otc.t-systems.com:443/v3'
-
-Test your connection
-^^^^^^^^^^^^^^^^^^^^
-
-Use the following command to test the basic functionality.
-
-.. code-block:: bash
-
-    $ openstack --os-cloud otc flavor list
+      interface: 'public'
+      identity_api_version: 3 # !Important
+      ak: '<AK_VALUE>' # AK/SK pair for access to OBS
+      sk: '<SK_VALUE>'
 
 Splitting the credentials in clouds.yaml and secure.yaml
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -89,15 +110,18 @@ secret which is left out from ``clouds.yaml``:
 
   clouds:
     otc:
+      profile: otc
       auth:
-        username: 'USER_NAME'
-        project_name: 'eu-de'
-        auth_url: 'https://iam.eu-de.otc.t-systems.com:443/v3'
+       username: '<USER_NAME>'
+        project_name: '<eu-de_project>'
+        # or project_id: '<123456_PROJECT_ID>'
         user_domain_name: 'OTC00000000001000000xxx'
+        # or user_domain_id: '<123456_DOMAIN_ID>'
+        auth_url: 'https://iam.eu-de.otc.t-systems.com:443/v3'
       interface: 'public'
       identity_api_version: 3 # !Important
-      ak: 'AK_VALUE' # AK/SK pair for access to OBS
-      sk: 'SK_VALUE'
+      ak: '<AK_VALUE>' # AK/SK pair for access to OBS
+      sk: '<SK_VALUE>'
 
 **secure.yaml**
 
@@ -118,22 +142,37 @@ Open Telekom Cloud servers this file exists on bootup and needs to be changed
 according to your credentials.
 
 .. code-block:: bash
+    
+    # .ostackrc file
+    export OS_USERNAME="<USER_NAME>"
+    export OS_USER_DOMAIN_NAME=<OTC00000000001000000XYZ>
+    export OS_PASSWORD=<PASSWORD> # optional
+    export OS_TENANT_NAME=eu-de
+    export OS_PROJECT_NAME=<eu-de_PROJECT_NAME>
+    export OS_AUTH_URL=https://iam.eu-de.otc.t-systems.com:443/v3
+    export NOVA_ENDPOINT_TYPE=publicURL
+    export OS_ENDPOINT_TYPE=publicURL
+    export CINDER_ENDPOINT_TYPE=publicURL
+    export OS_VOLUME_API_VERSION=2
+    export OS_IDENTITY_API_VERSION=3
+    export OS_IMAGE_API_VERSION=2
 
-    $ export OS_AUTH_URL=<url-to-openstack-identity>
-    $ export OS_IDENTITY_API_VERSION=3
-    $ export OS_PROJECT_NAME=<project-name>
-    $ export OS_PROJECT_DOMAIN_NAME=<project-domain-name>
-    $ export OS_USERNAME=<username>
-    $ export OS_USER_DOMAIN_NAME=<user-domain-name>
-    $ export OS_PASSWORD=<password>  # (optional)
-    $ export S3_ACCESS_KEY_ID=<access_key>
-    $ export S3_SECRET_ACCESS_KEY=<secret_access_key>
+Run the source command to make the ``environment variables`` available.
+
+.. code-block:: bash
+
+   $ source .ostackrc
+
+The ``environment variables`` are now available for usage. For testing your
+connection run the following command.
 
 Test your connection
 ^^^^^^^^^^^^^^^^^^^^
 
-Use the following command to test the basic functionality.
+If you followed the `installation advices <index>`_ for your specific
+operating system, you can use the following command to test the basic
+functionality.
 
 .. code-block:: bash
 
-    $ openstack flavor list
+    $ openstack --os-cloud otc flavor list
