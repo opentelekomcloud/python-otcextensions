@@ -1,4 +1,4 @@
-OpenStackClient CLI Usage
+OpenStack CLI Usage
 =========================
 
 .. toctree::
