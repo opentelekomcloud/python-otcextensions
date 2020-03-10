@@ -17,6 +17,9 @@ SOME TEXT
 OpenStack native User Guides
 ----------------------------
 
+.. toctree::
+   :maxdepth: 1
+
    Block Storage <https://docs.openstack.org/openstacksdk/latest/user/guides/block_storage>
    Compute <https://docs.openstack.org/openstacksdk/latest/user/guides/compute>
    Identity <https://docs.openstack.org/openstacksdk/latest/user/guides/identity>
