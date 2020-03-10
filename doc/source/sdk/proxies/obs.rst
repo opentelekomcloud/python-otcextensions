@@ -1,7 +1,7 @@
 ObjectBlockStorage OBS API
 ==========================
 
-For details on how to use database, see :doc:`/user/guides/obs`
+For details on how to use database, see /user/guides/obs (NEEDS TO BE DONE)
 
 .. automodule:: otcextensions.sdk.obs.v1._proxy
 

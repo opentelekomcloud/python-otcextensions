@@ -1,7 +1,7 @@
 VolumeBackup API
 ================
 
-For details on how to use auto scaling, see :doc:`/user/guides/volume_backup`
+For details on how to use auto scaling, see /sdk/guides/volume_backup (NEEDS TO BE DONE)
 
 .. automodule:: otcextensions.sdk.volume_backup.v2._proxy
 

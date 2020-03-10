@@ -27,12 +27,8 @@ cases. Additionally some auxiliary documentation is available:
    cli/index
    sdk/index
    contributor/index
-   history
-   glossary
-   releasenotes
    coverage
-   issues
-   user/index
+   appendices/index
 
 
 Installation and Configuration
@@ -50,7 +46,7 @@ Working with the CLI tool
 
 Users who want to access Open Telekom Cloud specific services with
 :doc:`command line tools <cli/index>` for a shell like Bash find
-documentation of all of their opetions and properties in this section.
+documentation of all of their operations and properties in this section.
 
 
 Writing your own Scripts for the Cloud
@@ -58,7 +54,7 @@ Writing your own Scripts for the Cloud
 
 Developers, who plan to write own Python code, may access the API more
 easily by using the OTC Extensions' classes and methods. The
-:doc:`architecture and interfaces <user/index>` are documented in this
+:doc:`SDK interfaces <sdk/index>` are documented in this
 section.
 
 
@@ -76,26 +72,21 @@ General Information
 Adding to that, there is some general background information
 available:
 
-* In a `glossary`_ important terms and their naming conventions are
+* In a :doc:`glossary <appendices/glossary>` important terms and their naming conventions are
   described.
 
-* There is a `history`_ explaing the ancestry of this project. This
+* There is a :doc:`history <appendices/history>` explaing the ancestry of this project. This
   may or may not be insightful if you want to understand the projects
   architecture.
 
-* There is a `release history`_ available.
+* There is a :doc:`release history <appendices/releasenotes>` available.
 
-* A list of `potential issues`_ is maintained.
+* A list of :doc:`issues <appendices/issues>` is maintained.
 
-* Currently 13 services are `covered`_ by the OTC extensions.
+* Currently 13 services are :doc:`covered <coverage>` by the OTC extensions.
 
 .. _OpenStack SDK: https://docs.openstack.org/openstacksdk/
 .. _OpenStack API: https://docs.openstack.org/api-quick-start/
 .. _Open Telekom Cloud: https://open-telekom-cloud.com/
 .. _Ansible modules: https://github.com/OpenTelekomCloud/ansible-collections/
 .. _OpenStack Client: https://docs.openstack.org/python-openstackclient/
-.. _glossary: <glossary>
-.. _history: <history>
-.. _release history: <releasenotes>
-.. _potential issues: <issues>
-.. _covered: <coverage>

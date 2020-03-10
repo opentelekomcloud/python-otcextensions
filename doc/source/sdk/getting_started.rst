@@ -7,9 +7,9 @@ Connect to the cloud
 In order to work with an OpenStack cloud you first need to create a
 :class:`~openstack.connection.Connection` using your credentials. A
 :class:`~openstack.connection.Connection` can be created in three
-ways, using the class itself, :ref:`config-clouds-yaml`, or
-:ref:`config-environment-variables`. It is recommended use
-:ref:`config-clouds-yaml` as the same config can be used across tools
+ways, using the class itself, config-clouds-yaml (LABEL), or
+config-environment-variables (LABEL). It is recommended use
+config-clouds-yaml (LABEL) as the same config can be used across tools
 and languages. Examples are the OpenStack Client, the Gophercloud
 library for golang, and Terraform that is based on that
 library. Please be also aware that environment variables carrying

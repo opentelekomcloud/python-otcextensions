@@ -3,29 +3,36 @@ Contributing to the OTC Extensions
 
 This section of documentation pertains to those who wish to contribute to the
 development of this project. If you're looking for documentation on how to use
-the SDK to build applications, please see the `user <../user>`_ section.
+the SDK to build applications, please see the `sdk <../sdk>`_ section.
 
 
-Contribution Mechanics
-----------------------
+Setting up Development Environment
+----------------------------------
+
+The first step towards contributing code and documentation is to setup your
+development environment. We use a pretty standard setup, but it is fully
+documented in our :doc:`setup <setup>` section.
 
 .. toctree::
    :maxdepth: 2
 
-   contributing
+   setup
 
-Contacting the Developers
--------------------------
 
-GitHub
-******
+Project Layout
+--------------
 
-Currently no official communication other than GitHub is available
+The project contains a top-level ``otcextensions`` package, which houses
+several modules that form the foundation upon which each service's API is
+built on. Under the ``otcextensions`` package are packages for the
+``sdk``, the ``osclient`` (OpenStackClient / CLI) and the related ``tests``
+of each service implementation. Inside of those directories, the custom
+created services such as ``Cloud Container Engine (CCE)`` are hosted.
 
-Email
-*****
+.. toctree::
 
-???
+   layout
+
 
 Coding Standards
 ----------------
@@ -38,17 +45,6 @@ good idea to read through the :doc:`coding <coding>` section.
 
    coding
 
-Development Environment
------------------------
-
-The first step towards contributing code and documentation is to setup your
-development environment. We use a pretty standard setup, but it is fully
-documented in our :doc:`setup <setup>` section.
-
-.. toctree::
-   :maxdepth: 2
-
-   setup
 
 Testing
 -------
@@ -63,20 +59,10 @@ the SDK's features and examples against an OpenStack cloud.
 
    testing
 
-Project Layout
---------------
 
-The project contains a top-level ``openstack`` package, which houses several
-modules that form the foundation upon which each service's API is built on.
-Under the ``openstack`` package are packages for each of those services,
-such as ``openstack.compute``.
 
-.. toctree::
-
-   layout
-
-Adding Features
----------------
+Example SDK Service and Resource Implementation
+-----------------------------------------------
 
 Does this SDK not do what you need it to do? Is it missing a service? Are you
 a developer on another project who wants to add their service? You're in the
@@ -88,5 +74,11 @@ OpenStack SDK.
 
    create/resource
 
-.. TODO(briancurtin): document how to create a proxy
-.. TODO(briancurtin): document how to create auth plugins
+
+Contacting the OTC Extensions Developers
+----------------------------------------
+
+Currently no official communication other than `GitHub
+<https://github.com/opentelekomcloud/python-otcextensions>`_ is available.
+Feel free to open new issues if you want to contact us directly or have
+questions related to the existent packages.

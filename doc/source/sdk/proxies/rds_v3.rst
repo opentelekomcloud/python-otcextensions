@@ -1,7 +1,7 @@
 Database RDS API
 ================
 
-For details on how to use database, see :doc:`/user/guides/rds`
+For details on how to use database, see /sdk/guides/rds (NEEDS TO BE DONE)
 
 .. automodule:: otcextensions.sdk.rds.v3._proxy
 
