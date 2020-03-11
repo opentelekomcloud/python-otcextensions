@@ -27,8 +27,8 @@ class Dnat(resource.Resource):
         'admin_state_up', 'cidr', 'created_at', 'external_service_port',
         'floating_ip_address', 'floating_ip_id', 'id',
         'internal_service_port', 'limit', 'nat_gateway_id', 'network_id',
-        'port_id', 'private_id', 'protocol', 'source_type', 'status',
-        'project_id'
+        'port_id', 'private_ip', 'protocol', 'source_type', 'status',
+        'tenant_id'
     )
 
     # Properties

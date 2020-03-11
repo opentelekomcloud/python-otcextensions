@@ -170,6 +170,7 @@ class CreateSnatRule(command.ShowOne):
         parser.add_argument(
             '--net-id',
             metavar='<network_id>',
+            dest='network_id',
             help=_('Specifies the network ID used by the SNAT rule. '
                    'This parameter and cidr arealternative.'))
         parser.add_argument(
@@ -224,4 +225,4 @@ class DeleteSnatRule(command.Command):
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
         snat_rule = client.get_snat_rule(parsed_args.snat_rule_id)
-        return client.delete_snat_rule(snat_rule.id)
+        client.delete_snat_rule(snat_rule.id)

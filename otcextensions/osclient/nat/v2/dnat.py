@@ -131,7 +131,6 @@ class ListDnatRules(command.Lister):
         for arg in args_list:
             if getattr(parsed_args, arg):
                 attrs[arg] = getattr(parsed_args, arg)
-
         data = client.dnat_rules(**attrs)
 
         return (
@@ -246,4 +245,4 @@ class DeleteDnatRule(command.Command):
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
         dnat_rule = client.get_dnat_rule(parsed_args.dnat_rule_id)
-        return client.delete_dnat_rule(dnat_rule.id)
+        client.delete_dnat_rule(dnat_rule.id)
