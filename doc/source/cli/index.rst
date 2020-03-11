@@ -13,10 +13,10 @@ automatically. If you have installed OTC Extensions and OpenStack
 Client, the latter understands many extra commands:
 
 .. code-block:: bash
-		
+
    openstack --help | grep -c otcextensions
    164
-		
+
 For details of the available commands, check the detailed CLI
 documentation of these services:
 

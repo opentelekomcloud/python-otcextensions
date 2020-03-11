@@ -72,18 +72,20 @@ General Information
 Adding to that, there is some general background information
 available:
 
-* In a :doc:`glossary <appendices/glossary>` important terms and their naming conventions are
-  described.
+* In a :doc:`glossary <appendices/glossary>` important terms and their
+  naming conventions are described.
 
-* There is a :doc:`history <appendices/history>` explaing the ancestry of this project. This
-  may or may not be insightful if you want to understand the projects
-  architecture.
+* There is a :doc:`history <appendices/history>` explaing the ancestry
+  of this project. This may or may not be insightful if you want to
+  understand the projects architecture.
 
-* There is a :doc:`release history <appendices/releasenotes>` available.
+* There is a :doc:`release history <appendices/releasenotes>`
+  available.
 
 * A list of :doc:`issues <appendices/issues>` is maintained.
 
-* Currently 13 services are :doc:`covered <coverage>` by the OTC extensions.
+* Currently 13 services are :doc:`covered <coverage>` by the OTC
+  extensions.
 
 .. _OpenStack SDK: https://docs.openstack.org/openstacksdk/
 .. _OpenStack API: https://docs.openstack.org/api-quick-start/

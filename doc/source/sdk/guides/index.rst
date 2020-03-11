@@ -4,15 +4,15 @@ Guides for SDK
 .. toctree::
    :maxdepth: 1
 
-   deh.rst
-   logging.rst
+   deh
+   logging
 
 .. _user_guides:
 
 User Guides
 -----------
 
-SOME TEXT
+SOME TEXT XXX.
 
 OpenStack native User Guides
 ----------------------------

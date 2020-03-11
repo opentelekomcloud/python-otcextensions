@@ -142,7 +142,7 @@ Open Telekom Cloud servers this file exists on bootup and needs to be changed
 according to your credentials.
 
 .. code-block:: bash
-    
+
     # .ostackrc file
     export OS_USERNAME="<USER_NAME>"
     export OS_USER_DOMAIN_NAME=<OTC00000000001000000XYZ>

@@ -1,7 +1,8 @@
 Installation from GitHub sources
 ================================
 
-The latest state of the packages can be installed with the following source installation approach.
+The latest state of the packages can be installed with the following
+source installation approach.
 
 Cloning the Github repository:
 

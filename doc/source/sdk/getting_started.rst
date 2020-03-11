@@ -18,8 +18,8 @@ credentials can be a security risk.
 Create Connection
 ^^^^^^^^^^^^^^^^^
 
-To create a :class:`~openstack.connection.Connection` instance, use the
-:func:`~openstack.connect` factory function.
+To create a :class:`~openstack.connection.Connection` instance, use
+the :func:`~openstack.connect` factory function.
 
 As a next step inject the OTC Extensions into the retrieved connection
 
@@ -50,7 +50,7 @@ running write a file `demo.py`:
 
     conn = mycloud.connect("otc")
     conn.jjjjj.flavors()
-    
+
 Make sure that you configured your credentials as describe in the
 `configuration` section. Run this script with
 
@@ -59,6 +59,5 @@ Make sure that you configured your credentials as describe in the
 
 It should XXXXXXXX list your XXXXXXXX.
 
-    
 with this Python script and run it with
 `python demo.py`.

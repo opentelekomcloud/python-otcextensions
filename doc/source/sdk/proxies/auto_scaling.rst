@@ -1,16 +1,17 @@
 AutoScaling API
 ===============
 
-For details on how to use auto scaling, see /sdk/guides/auto_scaling (NEEDS TO BE DONE)
+For details on how to use auto scaling, see /sdk/guides/auto_scaling
+(NEEDS TO BE DONE).
 
 .. automodule:: otcextensions.sdk.auto_scaling.v1._proxy
 
 The AutoScaling Class
 ---------------------
 
-The AS high-level interface is available through the ``auto_scaling`` member of
-a :class:`~openstack.connection.Connection` object.  The ``auto_scaling``
-member will only be added if the
+The AS high-level interface is available through the ``auto_scaling``
+member of a :class:`~openstack.connection.Connection` object.  The
+``auto_scaling`` member will only be added if the
 ``otcextensions.sdk.register_otc_extensions(conn)`` method is called.
 
 Group Operations

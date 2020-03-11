@@ -1,5 +1,5 @@
-OpenStack SDK Usage
-===================
+Using the OpenStack SDK
+=======================
 
 .. toctree::
    :maxdepth: 1
@@ -8,7 +8,7 @@ OpenStack SDK Usage
    getting_started
    guides/index
    proxies/index
-   
+
 The OTC Extensions contain an abstraction interface layer. Clouds can
 do many things, but there are probably only about 10 of them that most
 people care about with any regularity.
@@ -21,6 +21,6 @@ talks to clouds no matter what crazy choices the deployer has made in
 an attempt to be more hipster than their self-entitled narcissist
 peers, then the Cloud Abstraction layer is for you.
 
-Please note that OTC Extensions provides an extension to the
-OpenStackSDK.  Please refer to it's documentation for the details
-<https://docs.openstack.org/openstacksdk/latest/>
+OTC Extensions provide an extension to the OpenStackSDK. Refer to its
+documentation for the details:
+<https://docs.openstack.org/openstacksdk/latest/>.

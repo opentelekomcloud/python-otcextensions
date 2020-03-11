@@ -35,5 +35,6 @@ An application that turns the Python interface of OpenStack SDK and
 OTC Extensions into a CLI tool.
 
 **OTC Extensions:**
-An addition to OpenStack SDK with enhanced functionality that is specific for the
-Open Telekom Cloud. This is the package you are currently looking at.
+An addition to OpenStack SDK with enhanced functionality that is
+specific for the Open Telekom Cloud. This is the package you are
+currently looking at.
