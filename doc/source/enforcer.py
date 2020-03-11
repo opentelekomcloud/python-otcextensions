@@ -50,6 +50,7 @@ def get_proxy_methods():
              "otcextensions.sdk.obs.v1._proxy",
              "otcextensions.sdk.rds.v1._proxy",
              "otcextensions.sdk.rds.v3._proxy",
+             "otcextensions.sdk.nat.v2._proxy",
              "otcextensions.sdk.volume_backup.v2._proxy"
              ]
 
