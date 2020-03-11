@@ -1,9 +1,9 @@
-==========================================
-Database service (rds) command-line client
-==========================================
+=====================================================
+Network Address Translation (nat) command-line client
+=====================================================
 
-The RDS client is the command-line interface (CLI) for
-the Database service (RDS) API and its extensions.
+The NAT client is the command-line interface (CLI) for
+the Database service (NAT) API and its extensions.
 
 For help on a specific `nat` command, enter:
 
@@ -14,7 +14,7 @@ For help on a specific `nat` command, enter:
 .. _gateway:
 
 NAT Gateway operations
---------------------
+----------------------
 
 .. autoprogram-cliff:: openstack.nat.v2
    :command: nat gateway *
@@ -22,7 +22,7 @@ NAT Gateway operations
 .. _snat:
 
 SNAT Rule operations
------------------
+--------------------
 
 .. autoprogram-cliff:: openstack.nat.v2
    :command: nat snat *
@@ -30,7 +30,7 @@ SNAT Rule operations
 .. _dnat:
 
 DNAT Rule operations
--------------------
+--------------------
 
 .. autoprogram-cliff:: openstack.nat.v2
    :command: nat dnat *
