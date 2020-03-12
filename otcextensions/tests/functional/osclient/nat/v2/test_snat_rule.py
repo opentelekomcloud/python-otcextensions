@@ -64,6 +64,7 @@ class TestSnatRule(base.TestCase):
                 floating_ip_id=self.FLOATING_IP_ID,
                 net_id=self.NET_ID)
         ))
+        self.assertIsNotNone(json_output)
         TestSnatRule.SNAT_RULE_ID = json_output['id']
 
     def test_04_nat_snat_rule_list_by_id(self):
@@ -73,16 +74,30 @@ class TestSnatRule(base.TestCase):
             '--id ' + self.SNAT_RULE_ID
         ))
         self.assertIsNotNone(json_output)
+        self.assertEqual(next(iter(json_output))['Id'], self.SNAT_RULE_ID)
+        self.assertEqual(
+            next(iter(json_output))['Nat Gateway Id'], self.NAT_ID)
 
-    def test_05_nat_snat_rule_show(self):
+    def test_05_nat_snat_rule_list_by_nat_id(self):
+        self.assertIsNotNone(self.SNAT_RULE_ID)
+        json_output = json.loads(self.openstack(
+            'nat snat rule list -f json '
+            '--nat-gateway-id ' + self.NAT_ID
+        ))
+        self.assertIsNotNone(json_output)
+        self.assertEqual(
+            next(iter(json_output))['Nat Gateway Id'], self.NAT_ID)
+
+    def test_06_nat_snat_rule_show(self):
         self.assertIsNotNone(self.SNAT_RULE_ID)
         json_output = json.loads(self.openstack(
             'nat snat rule show '
             ' -f json ' + self.SNAT_RULE_ID
         ))
         self.assertIsNotNone(json_output)
+        self.assertEqual(json_output['id'], self.SNAT_RULE_ID)
 
-    def test_06_nat_snat_rule_create_for_existing_network(self):
+    def test_07_nat_snat_rule_create_for_existing_network(self):
         self.assertIsNotNone(self.NAT_ID)
         self.assertIsNotNone(self.FLOATING_IP_ID)
         self.assertRaises(
@@ -96,11 +111,24 @@ class TestSnatRule(base.TestCase):
                 net_id=self.NET_ID)
         )
 
-    def test_07_nat_snat_rule_create_cidr_source_type(self):
+    def test_08_nat_snat_rule_create_cidr_source_type(self):
         self.assertIsNotNone(self.NAT_ID)
         self.assertIsNotNone(self.FLOATING_IP_ID)
+        json_output = json.loads(self.openstack(
+            'nat snat rule create '
+            '{nat_id} {floating_ip_id} '
+            '--source-type {source_type} '
+            '--cidr {cidr} -f json'.format(
+                nat_id=self.NAT_ID,
+                floating_ip_id=self.FLOATING_IP_ID,
+                source_type=1,
+                cidr='192.168.5.0/24')
+        ))
+        self.assertEqual(json_output['source_type'], 1)
+        self.openstack(
+            'nat snat rule delete ' + json_output['id'])
 
-    def test_11_nat_snat_rule_delete(self):
+    def test_09_nat_snat_rule_delete(self):
         self.addCleanup(self._delete_nat_gateway)
         self.assertIsNotNone(self.NAT_ID)
         self.assertIsNotNone(self.SNAT_RULE_ID)

@@ -50,6 +50,7 @@ class TestDnatRule(base.TestCase):
             '--floating-ip-address 8 '
             '--external-service-port 9 '
             '--status 10 '
+            '--nat-gateway-id 11 '
             '--protocol tcp '
             '--admin-state-up true '
         )
@@ -70,6 +71,7 @@ class TestDnatRule(base.TestCase):
                 private_ip='192.168.0.3',
                 floating_ip_id=self.FLOATING_IP_ID)
         ))
+        self.assertIsNotNone(json_output)
         TestDnatRule.DNAT_RULE_ID = json_output['id']
 
     def test_04_nat_dnat_rule_list_by_id(self):
@@ -79,16 +81,30 @@ class TestDnatRule(base.TestCase):
             '--id ' + self.DNAT_RULE_ID
         ))
         self.assertIsNotNone(json_output)
+        self.assertEqual(next(iter(json_output))['Id'], self.DNAT_RULE_ID)
+        self.assertEqual(
+            next(iter(json_output))['Nat Gateway Id'], self.NAT_ID)
 
-    def test_05_nat_dnat_rule_show(self):
+    def test_05_nat_dnat_rule_list_by_nat_id(self):
+        self.assertIsNotNone(self.DNAT_RULE_ID)
+        json_output = json.loads(self.openstack(
+            'nat dnat rule list -f json '
+            '--nat-gateway-id ' + self.NAT_ID
+        ))
+        self.assertIsNotNone(json_output)
+        self.assertEqual(
+            next(iter(json_output))['Nat Gateway Id'], self.NAT_ID)
+
+    def test_06_nat_dnat_rule_show(self):
         self.assertIsNotNone(self.DNAT_RULE_ID)
         json_output = json.loads(self.openstack(
             'nat dnat rule show '
             ' -f json ' + self.DNAT_RULE_ID
         ))
         self.assertIsNotNone(json_output)
+        self.assertEqual(json_output['id'], self.DNAT_RULE_ID)
 
-    def test_11_nat_dnat_rule_delete(self):
+    def test_07_nat_dnat_rule_delete(self):
         self.addCleanup(self._delete_nat_gateway)
         self.assertIsNotNone(self.NAT_ID)
         self.assertIsNotNone(self.DNAT_RULE_ID)
