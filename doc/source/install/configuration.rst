@@ -5,6 +5,8 @@ You can connect to the Open Telekom Cloud and OpenStack clouds in general
 using two approaches. The first one uses a credential file called
 ``clouds.yaml`` and the other one is to use ``environment variables``.
 
+.. _clouds-yaml:
+
 Configuring a clouds.yaml file
 ------------------------------
 
@@ -131,6 +133,8 @@ secret which is left out from ``clouds.yaml``:
     otc:
       auth:
         password: '<PASSWORD>'
+
+.. _environment-variables:
 
 Configuration of Environment Variables
 --------------------------------------
