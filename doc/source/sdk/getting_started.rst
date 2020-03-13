@@ -6,8 +6,8 @@ Verify Installation
 
 ``OTC Extensions`` needs to be installed correctly. Please check
 :doc:`../install/index` for further instructions. The
-``otcextensions`` Python package pulls the ``openstacksdk`` package automatically
-as dependency which is needed to create own OpenStack scripts.
+``otcextensions`` Python package pulls the ``openstacksdk`` package
+automatically as dependency which is needed to create own OpenStack scripts.
 
 Configure Connection Credentials
 --------------------------------
@@ -91,8 +91,8 @@ in your account.
    # openstack.enable_logging(True)
    conn = openstack.connect()
 
-   for cce in conn.cce.clusters():
-       print(cce)
+   for cluster in conn.cce.clusters():
+       print(cluster)
 
 Save the file as `list_cce_clusters.py` and run it with:
 

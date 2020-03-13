@@ -179,4 +179,8 @@ functionality.
 
 .. code-block:: bash
 
-    $ openstack --os-cloud otc flavor list
+    $ openstack flavor list
+
+.. note::
+   You don't need to specify the `--os-cloud` parameter when environment
+   variables are used.

@@ -37,8 +37,9 @@ Installation and Configuration
 The :doc:`installation <install/index>` guide explains system
 administrators and developers how to setup the project from operation
 system packages, from pip, directly from sources and other
-installation forms. OTC Extensions are very easy to configure: All
-credentials can be configured in one or two files.
+installation forms. OTC Extensions are very easy to
+:doc:`configure <install/configuration>`. All credentials can be configured
+in one or two files.
 
 
 Working with the CLI tool
