@@ -272,7 +272,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
     def create_configuration(self, **attrs):
         """Create DB Configuration.
 
-        :param dict \*\*attrs: Dict to overwrite Configuration object
+        :param dict attrs: Dict to overwrite Configuration object
         :returns: A Configuration Object
         :rtype:
             :class:`~otcextensions.sdk.rds.v3.configuration.Configuration`
