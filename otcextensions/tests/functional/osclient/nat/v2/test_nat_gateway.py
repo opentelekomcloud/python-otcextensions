@@ -38,10 +38,11 @@ class TestNatGateway(base.TestCase):
         self.openstack(
             'nat gateway list '
             '--limit 1 --id 2 '
-            '--name 3 --spec 1 '
-            '--router-id 123asd '
-            '--internal-network-id 123qwe '
-            '--status Active '
+            '--name 3 --spec 4 '
+            '--router-id 5 '
+            '--internal-network-id 6 '
+            '--project-id 7 '
+            '--status active '
             '--admin-state-up True '
         )
 

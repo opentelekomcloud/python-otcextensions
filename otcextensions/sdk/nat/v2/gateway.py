@@ -27,7 +27,7 @@ class Gateway(resource.Resource):
     _query_mapping = resource.QueryParameters(
         'admin_state_up', 'created_at', 'description', 'id',
         'internal_network_id', 'limit', 'name', 'router_id',
-        'spec', 'status', 'project_id'
+        'spec', 'status', 'project_id', project_id='tenant_id'
     )
 
     # Properties

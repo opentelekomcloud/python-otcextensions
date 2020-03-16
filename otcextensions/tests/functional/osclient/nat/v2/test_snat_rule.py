@@ -57,10 +57,10 @@ class TestSnatRule(base.TestCase):
         self.assertIsNotNone(self.NAT_ID)
         self.assertIsNotNone(self.FLOATING_IP_ID)
         json_output = json.loads(self.openstack(
-            'nat snat rule create '
-            '{nat_id} {floating_ip_id} '
+            'nat snat rule create {nat_gateway_id} '
+            '--floating-ip-id {floating_ip_id} '
             '--net-id {net_id} -f json'.format(
-                nat_id=self.NAT_ID,
+                nat_gateway_id=self.NAT_ID,
                 floating_ip_id=self.FLOATING_IP_ID,
                 net_id=self.NET_ID)
         ))
@@ -115,11 +115,11 @@ class TestSnatRule(base.TestCase):
         self.assertIsNotNone(self.NAT_ID)
         self.assertIsNotNone(self.FLOATING_IP_ID)
         json_output = json.loads(self.openstack(
-            'nat snat rule create '
-            '{nat_id} {floating_ip_id} '
+            'nat snat rule create {nat_gateway_id} '
+            '--floating-ip-id {floating_ip_id} '
             '--source-type {source_type} '
             '--cidr {cidr} -f json'.format(
-                nat_id=self.NAT_ID,
+                nat_gateway_id=self.NAT_ID,
                 floating_ip_id=self.FLOATING_IP_ID,
                 source_type=1,
                 cidr='192.168.5.0/24')

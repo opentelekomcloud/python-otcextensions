@@ -47,8 +47,7 @@ class ListNatGateways(command.Lister):
             help=_('Limit to fetch number of records.'))
         parser.add_argument(
             '--project-id',
-            metavar='<tenant_id>',
-            dest='tenant_id',
+            metavar='<project_id>',
             help=_('Specifies the project ID.'))
         parser.add_argument(
             '--name',
@@ -89,7 +88,7 @@ class ListNatGateways(command.Lister):
         args_list = [
             'id',
             'limit',
-            'tenant_id',
+            'project_id',
             'name',
             'spec',
             'router_id',
@@ -146,14 +145,23 @@ class CreateNatGateway(command.ShowOne):
         parser.add_argument(
             '--spec',
             metavar="<spec>",
-            help=_("Specifies the type of the NAT gateway."))
+            required=True,
+            help=_(
+                "Specifies the type of the NAT gateway."
+                "\n1: small type, which supports up to 10,000 "
+                "SNAT connections.\n2: medium type, which supports "
+                "up to 50,000 SNAT connections.\n3: large type, which "
+                "supports up to 200,000 SNAT connections.\n4: extra-large "
+                "type, which supports up to 1,000,000 SNAT connections."))
         parser.add_argument(
             '--router-id',
             metavar="<router_id>",
+            required=True,
             help=_("Specifies the VPC ID"))
         parser.add_argument(
             '--internal-network-id',
             metavar="<internal_network_id>",
+            required=True,
             help=_("Specifies the network ID of thedownstream interface "
                    "(the next hop ofthe DVR) of the NAT gateway."))
 

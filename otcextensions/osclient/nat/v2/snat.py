@@ -54,8 +54,7 @@ class ListSnatRules(command.Lister):
             help=_('Limit to fetch number of records.'))
         parser.add_argument(
             '--project-id',
-            metavar='<tenant_id>',
-            dest='tenant_id',
+            metavar='<project_id>',
             help=_('Specifies the project ID.'))
         parser.add_argument(
             '--nat-gateway-id',
@@ -105,7 +104,7 @@ class ListSnatRules(command.Lister):
             'id',
             'limit',
             'network_id',
-            'tenant_id',
+            'project_id',
             'nat_gateway_id',
             'network_id',
             'cidr',
@@ -163,8 +162,9 @@ class CreateSnatRule(command.ShowOne):
             metavar='<nat_gateway_id>',
             help=_('Specifies the ID of the NAT gateway'))
         parser.add_argument(
-            'floating_ip_id',
+            '--floating-ip-id',
             metavar='<floating_ip_id>',
+            required=True,
             help=_('Specifies the EIP ID. Multiple EIPs '
                    'are separated using commas'))
         parser.add_argument(
@@ -181,7 +181,12 @@ class CreateSnatRule(command.ShowOne):
         parser.add_argument(
             '--source-type',
             metavar='<source_type>',
-            help=_('Specifies the source type.'))
+            help=_(
+                'Specifies the source type.\n0: Either network_id '
+                'or cidr can be specified in a VPC.\n1: Only cidr '
+                'can be specified over a Direct Connect connection.'
+                '\nIf no value is entered, the default value 0 (VPC) '
+                'is used.'))
 
         return parser
 

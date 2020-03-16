@@ -55,8 +55,7 @@ class ListDnatRules(command.Lister):
             help=_('Limit to fetch number of records.'))
         parser.add_argument(
             '--project-id',
-            metavar='<tenant_id>',
-            dest='tenant_id',
+            metavar='<project_id>',
             help=_('Specifies the project ID.'))
         parser.add_argument(
             '--nat-gateway-id',
@@ -114,7 +113,7 @@ class ListDnatRules(command.Lister):
         args_list = [
             'id',
             'limit',
-            'tenant_id',
+            'project_id',
             'nat_gateway_id',
             'port_id',
             'private_ip',
@@ -185,20 +184,24 @@ class CreateDnatRule(command.ShowOne):
         parser.add_argument(
             '--internal-service-port',
             metavar='<internal_service_port>',
+            required=True,
             help=_('Specifies port used by ECSs or BMSs toprovide '
                    'services for external systems.'))
         parser.add_argument(
-            'floating_ip_id',
+            '--floating-ip-id',
             metavar="<floating_ip_id>",
+            required=True,
             help=_('Specifies the EIP ID. Multiple EIPs are '
                    'separated using commas'))
         parser.add_argument(
             '--external-service-port',
             metavar='<external_service_port>',
+            required=True,
             help=_('Specifies the port for providing external services.'))
         parser.add_argument(
             '--protocol',
             metavar='<protocol>',
+            required=True,
             help=_('Specifies the protocol type.'))
 
         return parser
