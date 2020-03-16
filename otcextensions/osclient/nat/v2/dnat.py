@@ -169,7 +169,8 @@ class CreateDnatRule(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(CreateDnatRule, self).get_parser(prog_name)
         parser.add_argument(
-            'nat_gateway_id',
+            '--nat-gateway-id',
+            required=True,
             metavar="<nat_gateway_id>",
             help=_("Specifies the ID of the NAT gateway"))
         parser.add_argument(
