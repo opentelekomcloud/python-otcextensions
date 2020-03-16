@@ -60,7 +60,8 @@ class TestDnatRule(base.TestCase):
         self.assertIsNotNone(self.PORT_ID)
         self.assertIsNotNone(self.FLOATING_IP_ID)
         json_output = json.loads(self.openstack(
-            'nat dnat rule create {nat_gateway_id} '
+            'nat dnat rule create '
+            '--nat-gateway-id {nat_gateway_id} '
             '--floating-ip-id {floating_ip_id} '
             '--protocol {protocol} '
             '--internal-service-port 80 '
