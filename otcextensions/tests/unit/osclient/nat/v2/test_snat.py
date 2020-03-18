@@ -165,7 +165,7 @@ class TestShowSnatRule(fakes.TestNat):
         ]
 
         verifylist = [
-            ('snat_rule_id', 'test_snat_rule_id'),
+            ('snat', 'test_snat_rule_id'),
         ]
 
         # Verify cm is triggered with default parameters
@@ -197,7 +197,7 @@ class TestDeleteSnatRule(fakes.TestNat):
         ]
 
         verifylist = [
-            ('snat_rule_id', 'test_snat_rule_id'),
+            ('snat', 'test_snat_rule_id'),
         ]
 
         # Verify cm is triggered with default parameters

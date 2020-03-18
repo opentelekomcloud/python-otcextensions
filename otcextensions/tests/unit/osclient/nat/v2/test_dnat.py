@@ -170,7 +170,7 @@ class TestShowDnatRule(fakes.TestNat):
         ]
 
         verifylist = [
-            ('dnat_rule_id', 'test_dnat_rule_id'),
+            ('dnat', 'test_dnat_rule_id'),
         ]
 
         # Verify cm is triggered with default parameters
@@ -202,7 +202,7 @@ class TestDeleteDnatRule(fakes.TestNat):
         ]
 
         verifylist = [
-            ('dnat_rule_id', 'test_dnat_rule_id'),
+            ('dnat', 'test_dnat_rule_id'),
         ]
 
         # Verify cm is triggered with default parameters

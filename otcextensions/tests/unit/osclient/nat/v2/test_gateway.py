@@ -139,7 +139,7 @@ class TestShowNatGateway(fakes.TestNat):
         ]
 
         verifylist = [
-            ('nat_gateway', 'test_gateway'),
+            ('gateway', 'test_gateway'),
         ]
 
         # Verify cm is triggered with default parameters
@@ -171,7 +171,7 @@ class TestDeleteNatGateway(fakes.TestNat):
         ]
 
         verifylist = [
-            ('nat_gateway', 'test_gateway'),
+            ('gateway', 'test_gateway'),
         ]
 
         # Verify cm is triggered with default parameters
