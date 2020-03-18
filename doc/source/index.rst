@@ -36,12 +36,11 @@ cases. Additionally some auxiliary documentation is available:
 Installation and Configuration
 ------------------------------
 
-The :doc:`installation <install/index>` guide explains system
-administrators and developers how to setup the project from operation
-system packages, from pip, directly from sources and other
-installation forms. OTC Extensions are very easy to :doc:`configure
-<install/configuration>`. All credentials can be configured in one or
-two files.
+The :doc:`installation guide <install/index>` explains to system
+administrators and developers how to setup the project from system
+packages, from pip, and directly from sources. OTC Extensions are easy
+to :doc:`configure <install/configuration>`. All credentials can be
+configured conveniently in a few files.
 
 
 Working with the CLI tool
@@ -56,31 +55,31 @@ section.
 Writing your own Scripts for the Cloud
 --------------------------------------
 
-Developers, who plan to write own Python code, may access the API more
-easily by using the OTC Extensions' classes and methods. The :doc:`SDK
-interfaces <sdk/index>` are documented in this section.
+Developers writing own Python code may access the API easily by using
+the OTC Extensions' classes and methods. The :doc:`SDK interfaces
+<sdk/index>` are documented in this section.
 
 
 Contribute to the Project
 -------------------------
 
-Developers, who want to :doc:`contribute <contributor/index>` to the
-project, find helpful background information and architecture
-specification of OTC Extensions here.
+To :doc:`contribute <contributor/index>` to the project itself,
+developers find helpful background information and architecture
+specification of OTC Extensions it this section.
 
 
 General Information
 -------------------
 
-Adding to that, there is some general background information
+There is general background information about the OTC Extensions
 available:
 
-* In a :doc:`glossary <appendices/glossary>` important terms and their
-  naming conventions are described.
+* A :doc:`glossary <appendices/glossary>` describes important terms
+  and their naming conventions.
 
 * The :doc:`history <appendices/history>` explains the ancestry of
   this project. This may or may not be insightful if you want to
-  understand the projects architecture.
+  understand the project's architecture.
 
 * The project keeps a :doc:`release history
   <appendices/releasenotes>`.
