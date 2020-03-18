@@ -136,15 +136,15 @@ class ShowSnatRule(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(ShowSnatRule, self).get_parser(prog_name)
         parser.add_argument(
-            'snat_rule_id',
-            metavar='<snat_rule_id>',
+            'snat',
+            metavar='<snat_id>',
             help=_('Specifies the ID of the SNAT Rule'),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
-        obj = client.get_snat_rule(parsed_args.snat_rule_id)
+        obj = client.get_snat_rule(parsed_args.snat)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
@@ -221,8 +221,8 @@ class DeleteSnatRule(command.Command):
     def get_parser(self, prog_name):
         parser = super(DeleteSnatRule, self).get_parser(prog_name)
         parser.add_argument(
-            'snat_rule_id',
-            metavar='<snat_rule_id>',
+            'snat',
+            metavar='<snat_id>',
             help=_('Specifies the ID of the SNAT Rule'),
         )
 
@@ -230,5 +230,5 @@ class DeleteSnatRule(command.Command):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
-        snat_rule = client.get_snat_rule(parsed_args.snat_rule_id)
+        snat_rule = client.get_snat_rule(parsed_args.snat)
         client.delete_snat_rule(snat_rule.id)

@@ -147,15 +147,15 @@ class ShowDnatRule(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(ShowDnatRule, self).get_parser(prog_name)
         parser.add_argument(
-            'dnat_rule_id',
-            metavar='<dnat_rule_id>',
+            'dnat',
+            metavar='<dnat_id>',
             help=_('Specifies the ID of the SNAT Rule'),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
-        obj = client.get_dnat_rule(parsed_args.dnat_rule_id)
+        obj = client.get_dnat_rule(parsed_args.dnat)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
@@ -239,8 +239,8 @@ class DeleteDnatRule(command.Command):
     def get_parser(self, prog_name):
         parser = super(DeleteDnatRule, self).get_parser(prog_name)
         parser.add_argument(
-            'dnat_rule_id',
-            metavar='<dnat_rule_id>',
+            'dnat',
+            metavar='<dnat_id>',
             help=_('Specifies the ID of the DNAT Rule'),
         )
 
@@ -248,5 +248,5 @@ class DeleteDnatRule(command.Command):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
-        dnat_rule = client.get_dnat_rule(parsed_args.dnat_rule_id)
+        dnat_rule = client.get_dnat_rule(parsed_args.dnat)
         client.delete_dnat_rule(dnat_rule.id)

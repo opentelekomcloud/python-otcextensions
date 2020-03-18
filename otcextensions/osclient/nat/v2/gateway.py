@@ -113,15 +113,15 @@ class ShowNatGateway(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(ShowNatGateway, self).get_parser(prog_name)
         parser.add_argument(
-            'nat_gateway',
-            metavar='<nat_gateway>',
+            'gateway',
+            metavar='<gateway>',
             help=_('Specifies the ID of the NAT Gateway.'),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
-        obj = client.find_gateway(parsed_args.nat_gateway)
+        obj = client.find_gateway(parsed_args.gateway)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
@@ -195,8 +195,8 @@ class UpdateNatGateway(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(UpdateNatGateway, self).get_parser(prog_name)
         parser.add_argument(
-            'nat_gateway',
-            metavar='<nat_gateway>',
+            'gateway',
+            metavar='<gateway>',
             help=_('Specifies the Name or ID of the NAT Gateway.'),
         )
         parser.add_argument(
@@ -222,7 +222,7 @@ class UpdateNatGateway(command.ShowOne):
         for arg in args_list:
             if getattr(parsed_args, arg):
                 attrs[arg] = getattr(parsed_args, arg)
-        nat_gateway = client.find_gateway(parsed_args.nat_gateway)
+        nat_gateway = client.find_gateway(parsed_args.gateway)
 
         obj = client.update_gateway(nat_gateway.id, **attrs)
 
@@ -239,8 +239,8 @@ class DeleteNatGateway(command.Command):
     def get_parser(self, prog_name):
         parser = super(DeleteNatGateway, self).get_parser(prog_name)
         parser.add_argument(
-            'nat_gateway',
-            metavar='<nat_gateway>',
+            'gateway',
+            metavar='<gateway>',
             help=_('Specifies the Name or ID of the NAT gateway.'),
         )
 
@@ -248,5 +248,5 @@ class DeleteNatGateway(command.Command):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
-        nat_gateway = client.find_gateway(parsed_args.nat_gateway)
+        nat_gateway = client.find_gateway(parsed_args.gateway)
         client.delete_gateway(nat_gateway.id)
