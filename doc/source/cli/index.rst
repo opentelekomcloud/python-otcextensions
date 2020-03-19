@@ -14,7 +14,6 @@ OpenStackClient CLI Usage
    dns.rst
    rds.rst
    kms.rst
-   nat.rst
    load_balancer.rst
    obs.rst
    volume_backup.rst

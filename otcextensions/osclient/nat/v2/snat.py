@@ -169,9 +169,8 @@ class CreateSnatRule(command.ShowOne):
             help=_('Specifies the EIP ID. Multiple EIPs '
                    'are separated using commas'))
         parser.add_argument(
-            '--net-id',
+            '--network-id',
             metavar='<network_id>',
-            dest='network_id',
             help=_('Specifies the network ID used by the SNAT rule. '
                    'This parameter and cidr arealternative.'))
         parser.add_argument(

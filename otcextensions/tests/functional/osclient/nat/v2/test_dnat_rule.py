@@ -21,11 +21,11 @@ class TestDnatRule(base.TestCase):
 
     UUID = uuid.uuid4().hex[:8]
     ROUTER_NAME = 'sdk-test-router-' + UUID
-    NET_NAME = 'sdk-test-net-' + UUID
+    NETWORK_NAME = 'sdk-test-net-' + UUID
     SUBNET_NAME = 'sdk-test-subnet-' + UUID
     PORT_NAME = 'sdk-test-port-' + UUID
     ROUTER_ID = None
-    NET_ID = None
+    NETWORK_ID = None
     FLOATING_IP_ID = None
     PORT_ID = None
 
@@ -122,7 +122,7 @@ class TestDnatRule(base.TestCase):
             ' --spec {spec} -f json'.format(
                 name=self.NAT_NAME,
                 router_id=self.ROUTER_ID,
-                net_id=self.NET_ID,
+                net_id=self.NETWORK_ID,
                 description='OTCE Lib Test',
                 spec=1)
         ))
@@ -136,15 +136,15 @@ class TestDnatRule(base.TestCase):
         router = json.loads(self.openstack(
             'router create -f json ' + self.ROUTER_NAME
         ))
-        net = json.loads(self.openstack(
-            'network create -f json ' + self.NET_NAME
+        network = json.loads(self.openstack(
+            'network create -f json ' + self.NETWORK_NAME
         ))
         self.openstack(
             'subnet create {subnet} -f json '
             '--network {net} '
             '--subnet-range 192.168.0.0/24 '.format(
                 subnet=self.SUBNET_NAME,
-                net=self.NET_NAME
+                net=self.NETWORK_NAME
             ))
 
         self.openstack(
@@ -162,7 +162,7 @@ class TestDnatRule(base.TestCase):
         ))
 
         TestDnatRule.ROUTER_ID = router['id']
-        TestDnatRule.NET_ID = net['id']
+        TestDnatRule.NETWORK_ID = network['id']
         TestDnatRule.FLOATING_IP_ID = floating_ip['id']
 
         port = json.loads(self.openstack(
@@ -170,7 +170,7 @@ class TestDnatRule(base.TestCase):
             '--network {net_id} '
             '-f json'.format(
                 name=self.PORT_NAME,
-                net_id=self.NET_ID)
+                net_id=self.NETWORK_ID)
         ))
         TestDnatRule.PORT_ID = port['id']
 
@@ -189,7 +189,7 @@ class TestDnatRule(base.TestCase):
             'subnet delete ' + self.SUBNET_NAME
         )
         self.openstack(
-            'network delete ' + self.NET_NAME
+            'network delete ' + self.NETWORK_NAME
         )
         self.openstack(
             'router delete ' + self.ROUTER_NAME

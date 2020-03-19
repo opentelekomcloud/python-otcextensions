@@ -107,6 +107,116 @@ class TestListNatGateways(fakes.TestNat):
         )
 
 
+class TestCreateNatGateway(fakes.TestNat):
+
+    _data = fakes.FakeNatGateway.create_one()
+
+    columns = (
+        'admin_state_up',
+        'created_at',
+        'description',
+        'id',
+        'internal_network_id',
+        'name',
+        'project_id',
+        'router_id',
+        'spec',
+        'status'
+    )
+
+    data = fakes.gen_data(_data, columns)
+
+    def setUp(self):
+        super(TestCreateNatGateway, self).setUp()
+
+        self.cmd = gateway.CreateNatGateway(self.app, None)
+
+        self.client.create_gateway = mock.Mock(return_value=self._data)
+
+    def test_create(self):
+        arglist = [
+            'test-gateway',
+            '--router-id', 'test-router-uuid',
+            '--internal-network-id', 'test-network-uuid',
+            '--spec', '1',
+        ]
+        verifylist = [
+            ('name', 'test-gateway'),
+            ('router_id', 'test-router-uuid'),
+            ('internal_network_id', 'test-network-uuid'),
+            ('spec', '1'),
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.create_gateway.assert_called_with(
+            name='test-gateway',
+            router_id='test-router-uuid',
+            internal_network_id='test-network-uuid',
+            spec='1'
+        )
+        self.assertEqual(self.columns, columns)
+
+
+class TestUpdateNatGateway(fakes.TestNat):
+
+    _data = fakes.FakeNatGateway.create_one()
+
+    columns = (
+        'admin_state_up',
+        'created_at',
+        'description',
+        'id',
+        'internal_network_id',
+        'name',
+        'project_id',
+        'router_id',
+        'spec',
+        'status'
+    )
+
+    data = fakes.gen_data(_data, columns)
+
+    def setUp(self):
+        super(TestUpdateNatGateway, self).setUp()
+
+        self.cmd = gateway.UpdateNatGateway(self.app, None)
+
+        self.client.find_gateway = mock.Mock(return_value=self._data)
+        self.client.update_gateway = mock.Mock(return_value=self._data)
+
+    def test_update(self):
+        arglist = [
+            'test-gateway',
+            '--name', 'test-gateway-updated',
+            '--description', 'nat gateway updated',
+            '--spec', '2',
+        ]
+        verifylist = [
+            ('gateway', 'test-gateway'),
+            ('name', 'test-gateway-updated'),
+            ('description', 'nat gateway updated'),
+            ('spec', '2'),
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.find_gateway.assert_called_with('test-gateway')
+        self.client.update_gateway.assert_called_with(
+            self._data.id,
+            name='test-gateway-updated',
+            description='nat gateway updated',
+            spec='2'
+        )
+        self.assertEqual(self.columns, columns)
+
+
 class TestShowNatGateway(fakes.TestNat):
 
     _data = fakes.FakeNatGateway.create_one()
