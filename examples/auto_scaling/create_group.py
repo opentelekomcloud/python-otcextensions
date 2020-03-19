@@ -11,12 +11,27 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-List all Auto-Scaling Configurations
+Create Auto-Scaling Group.
 """
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-for config in conn.auto_scaling.configs():
-    print(config)
+attrs = {
+    "scaling_group_name": "TestGroup",
+    "scaling_configuration_id": "0d138717-e79d-4fa7-b8aa-37ddec1b3ce7",
+    "desire_instance_number": 0,
+    "min_instance_number": 0,
+    "max_instance_number": 10,
+    "vpc_id": "26ca2783-dc40-4e3a-95b1-5a0756441e12",
+    "available_zones": ["eu-de-01", "eu-de-03"],
+    "networks": [
+        {
+            "id": "25d24fc8-d019-4a34-9fff-0a09fde6a9cb"
+        }
+    ]
+}
+
+group = conn.auto_scaling.create_group(**attrs)
+print(group)

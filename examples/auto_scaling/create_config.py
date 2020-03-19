@@ -20,14 +20,14 @@ conn = openstack.connect(cloud='otc')
 
 attrs = {
     'name': 'test-config',
-    'instance_config':  {
+    'instance_config': {
         'flavorRef': 's2.medium.1',
         'imageRef': '1616e0b6-503a-4698-946f-cf9942c4c73b',
         'disk': [{
             'size': 20,
             'volume_type': 'SATA',
             'disk_type': 'SYS'
-        }], 
+        }],
         'key_name': 'test-key',
     }
 }

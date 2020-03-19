@@ -11,12 +11,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-List all Auto-Scaling Configurations
+List all Auto-Scaling Groups
 """
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-for config in conn.auto_scaling.configs():
-    print(config)
+for group in conn.auto_scaling.groups():
+    print(group)
