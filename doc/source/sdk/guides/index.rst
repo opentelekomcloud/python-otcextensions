@@ -1,9 +1,13 @@
 Guides for SDK
 ==============
 
+Open Telekom Cloud related User Guides
+--------------------------------------
+
 .. toctree::
    :maxdepth: 1
 
+   auto_scaling
    deh
    logging
 
