@@ -184,6 +184,71 @@ class TestShowDnatRule(fakes.TestNat):
         self.assertEqual(self.data, data)
 
 
+class TestCreateDnatRule(fakes.TestNat):
+
+    _data = fakes.FakeDnatRule.create_one()
+
+    columns = (
+        'admin_state_up',
+        'created_at',
+        'external_service_port',
+        'floating_ip_address',
+        'floating_ip_id',
+        'id',
+        'internal_service_port',
+        'nat_gateway_id',
+        'port_id',
+        'private_ip',
+        'project_id',
+        'protocol',
+        'status'
+    )
+
+    data = fakes.gen_data(_data, columns)
+
+    def setUp(self):
+        super(TestCreateDnatRule, self).setUp()
+
+        self.cmd = dnat.CreateDnatRule(self.app, None)
+
+        self.client.create_dnat_rule = mock.Mock(return_value=self._data)
+
+    def test_create(self):
+        arglist = [
+            '--nat-gateway-id', 'test-nat-uuid',
+            '--floating-ip-id', 'test-floating-ip-uuid',
+            '--protocol', 'tcp',
+            '--internal-service-port', '80',
+            '--external-service-port', '80',
+            '--private-ip', '192.168.0.99',
+        ]
+
+        verifylist = [
+            ('nat_gateway_id', 'test-nat-uuid'),
+            ('floating_ip_id', 'test-floating-ip-uuid'),
+            ('protocol', 'tcp'),
+            ('internal_service_port', '80'),
+            ('external_service_port', '80'),
+            ('private_ip', '192.168.0.99'),
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+        self.client.create_dnat_rule.assert_called_with(
+            nat_gateway_id='test-nat-uuid',
+            floating_ip_id='test-floating-ip-uuid',
+            protocol='tcp',
+            internal_service_port='80',
+            external_service_port='80',
+            private_ip='192.168.0.99')
+
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
+
+
 class TestDeleteDnatRule(fakes.TestNat):
 
     data = fakes.FakeDnatRule.create_one()

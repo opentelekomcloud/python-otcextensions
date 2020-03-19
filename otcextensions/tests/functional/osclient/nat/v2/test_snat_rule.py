@@ -22,10 +22,10 @@ class TestSnatRule(base.TestCase):
 
     UUID = uuid.uuid4().hex[:8]
     ROUTER_NAME = 'sdk-test-router-' + UUID
-    NET_NAME = 'sdk-test-net-' + UUID
+    NETWORK_NAME = 'sdk-test-net-' + UUID
     SUBNET_NAME = 'sdk-test-subnet-' + UUID
     ROUTER_ID = None
-    NET_ID = None
+    NETWORK_ID = None
     FLOATING_IP_ID = None
 
     NAT_NAME = 'os-cli-test-' + UUID
@@ -60,10 +60,10 @@ class TestSnatRule(base.TestCase):
             'nat snat rule create '
             '--nat-gateway-id {nat_gateway_id} '
             '--floating-ip-id {floating_ip_id} '
-            '--net-id {net_id} -f json'.format(
+            '--network-id {net_id} -f json'.format(
                 nat_gateway_id=self.NAT_ID,
                 floating_ip_id=self.FLOATING_IP_ID,
-                net_id=self.NET_ID)
+                net_id=self.NETWORK_ID)
         ))
         self.assertIsNotNone(json_output)
         TestSnatRule.SNAT_RULE_ID = json_output['id']
@@ -106,15 +106,17 @@ class TestSnatRule(base.TestCase):
             self.openstack,
             'nat snat rule create '
             '{nat_id} {floating_ip_id} '
-            '--net-id {net_id} -f json'.format(
+            '--network-id {net_id} -f json'.format(
                 nat_id=self.NAT_ID,
                 floating_ip_id=self.FLOATING_IP_ID,
-                net_id=self.NET_ID)
+                net_id=self.NETWORK_ID)
         )
 
     def test_08_nat_snat_rule_create_cidr_source_type(self):
         self.assertIsNotNone(self.NAT_ID)
         self.assertIsNotNone(self.FLOATING_IP_ID)
+        cidr = '192.168.5.0/24'
+        source_type = 1
         json_output = json.loads(self.openstack(
             'nat snat rule create '
             '--nat-gateway-id {nat_gateway_id} '
@@ -123,10 +125,11 @@ class TestSnatRule(base.TestCase):
             '--cidr {cidr} -f json'.format(
                 nat_gateway_id=self.NAT_ID,
                 floating_ip_id=self.FLOATING_IP_ID,
-                source_type=1,
-                cidr='192.168.5.0/24')
+                source_type=source_type,
+                cidr=cidr)
         ))
-        self.assertEqual(json_output['source_type'], 1)
+        self.assertEqual(json_output['source_type'], source_type)
+        self.assertEqual(json_output['cidr'], cidr)
         self.openstack(
             'nat snat rule delete ' + json_output['id'])
 
@@ -146,7 +149,7 @@ class TestSnatRule(base.TestCase):
             ' --spec {spec} -f json'.format(
                 name=self.NAT_NAME,
                 router_id=self.ROUTER_ID,
-                net_id=self.NET_ID,
+                net_id=self.NETWORK_ID,
                 description='OTCE Lib Test',
                 spec=1)
         ))
@@ -161,14 +164,14 @@ class TestSnatRule(base.TestCase):
             'router create -f json ' + self.ROUTER_NAME
         ))
         net = json.loads(self.openstack(
-            'network create -f json ' + self.NET_NAME
+            'network create -f json ' + self.NETWORK_NAME
         ))
         self.openstack(
             'subnet create {subnet} -f json '
             '--network {net} '
             '--subnet-range 192.168.0.0/24 '.format(
                 subnet=self.SUBNET_NAME,
-                net=self.NET_NAME
+                net=self.NETWORK_NAME
             ))
 
         self.openstack(
@@ -186,7 +189,7 @@ class TestSnatRule(base.TestCase):
         ))
 
         TestSnatRule.ROUTER_ID = router['id']
-        TestSnatRule.NET_ID = net['id']
+        TestSnatRule.NETWORK_ID = net['id']
         TestSnatRule.FLOATING_IP_ID = floating_ip['id']
 
     def _denitialize_network(self):
@@ -201,7 +204,7 @@ class TestSnatRule(base.TestCase):
             'subnet delete ' + self.SUBNET_NAME
         )
         self.openstack(
-            'network delete ' + self.NET_NAME
+            'network delete ' + self.NETWORK_NAME
         )
         self.openstack(
             'router delete ' + self.ROUTER_NAME
