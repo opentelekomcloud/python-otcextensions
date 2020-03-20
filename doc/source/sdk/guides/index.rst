@@ -7,6 +7,7 @@ Open Telekom Cloud related User Guides
 .. toctree::
    :maxdepth: 1
 
+   anti_ddos
    auto_scaling
    deh
    logging
