@@ -39,7 +39,7 @@ exception.  This removes important debug information from the
 user. All of the exceptions should be raised correctly the first time.
 
 
-API Methods  of ``openstack.cloud`` 
+API Methods  of ``openstack.cloud``
 -----------------------------------
 
 The `openstack.cloud` layer has some specific rules:

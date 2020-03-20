@@ -11,14 +11,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Find Auto-Scaling Configuration by name or id.
+List all Auto-Scaling scaling action logs of a specific AS Group.
 """
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-config = "config_name_or_id"
+group = "group_name_or_id"
+group = conn.auto_scaling.find_group(group)
 
-config = conn.auto_scaling.find_config(config)
-print(config)
+for activity in conn.auto_scaling.activities(group):
+    print(activity)

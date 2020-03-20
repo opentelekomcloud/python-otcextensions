@@ -71,7 +71,8 @@ authorization. For both there are several options available:
   --os-cloud otc *command*`` or by ``export OS_CLOUD=otc; openstack
   *command*``.
 
-* **Environment variables:** Authentication using username/password is often used:
+* **Environment variables:** Authentication using username/password is often
+  used:
 
     export OS_AUTH_URL=<url-to-openstack-identity>
     export OS_IDENTITY_API_VERSION=3
@@ -83,8 +84,9 @@ authorization. For both there are several options available:
     export S3_ACCESS_KEY_ID=<access_key>
     export S3_SECRET_ACCESS_KEY=<secret_access_key>
 
-  
-* **Command-Line Options:** The corresponding command-line options look very similar::
+
+* **Command-Line Options:** The corresponding command-line options look
+  very similar::
 
     --os-auth-url <url>
     --os-identity-api-version 3

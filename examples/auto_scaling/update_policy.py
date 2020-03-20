@@ -11,14 +11,29 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Find Auto-Scaling Configuration by name or id.
+Update Auto-Scaling Policy by using id or an instance of class Policy.
 """
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-config = "config_name_or_id"
 
-config = conn.auto_scaling.find_config(config)
-print(config)
+policy = "policy_name_or_id"
+attrs = {
+    "scaling_policy_type": "RECURRENCE",
+    "scaling_policy_name": "policy_01",
+    "scheduled_policy": {
+        "launch_time": "16:00",
+        "recurrence_type": "Daily",
+        "end_time": "2016-02-08T17:31Z",
+        "start_time": "2016-01-08T17:31Z"
+    },
+    "scaling_policy_action": {
+        "operation": "SET",
+        "instance_number": 2
+    }
+}
+
+policy = conn.auto_scaling.find_policy(policy)
+conn.auto_scaling.update_policy(policy, **attrs)

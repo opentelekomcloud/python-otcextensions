@@ -11,14 +11,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Find Auto-Scaling Configuration by name or id.
+Remove an Auto-Scaling Instances of a specific AS Group.
 """
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-config = "config_name_or_id"
+instance = "instance_id"
 
-config = conn.auto_scaling.find_config(config)
-print(config)
+conn.auto_scaling.remove_instance(
+    instance,
+    delete=False  # If True, instance will be deleted after remove
+)

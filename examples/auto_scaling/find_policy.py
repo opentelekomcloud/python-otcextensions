@@ -11,14 +11,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Find Auto-Scaling Configuration by name or id.
+Find Auto-Scaling Policy by name or id.
 """
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-config = "config_name_or_id"
+policy = "policy_name_or_id"
 
-config = conn.auto_scaling.find_config(config)
-print(config)
+policy = conn.auto_scaling.find_policy(policy)
+print(policy)
