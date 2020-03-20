@@ -259,7 +259,6 @@ def load(conn, **kwargs):
             if service['service_type'] in conn._proxies:
                 del conn._proxies[service['service_type']]
             # attr = getattr(conn, service_name)
-            # print(hasattr(conn, service_name))
             # delattr(conn, service['service_type'])
 
         sd = _get_descriptor(service_name)
