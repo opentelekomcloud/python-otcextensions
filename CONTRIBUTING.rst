@@ -1,45 +1,30 @@
-.. _contributing:
+Contributing to OTC Extensions
+==============================
 
-===================================
-Contributing to python-openstacksdk
-===================================
+OTC Extension are developed as a community effort initiated by
+T-Systems International GmbH for the Open Telekom Cloud under an Open
+Source license. All code is licensed under the Apache 2.0 license.
 
-If you're interested in contributing to the python-openstacksdk project,
-the following will help get you started.
+We are happily accepting pull requests. Please reach out to the
+project to sort out legal code contribution. If you're interested in
+contributing to the project, have a look in the `contributors
+section`_ of our documentation.
 
-Contributor License Agreement
------------------------------
+We follow the recommendation of the `OpenStack's workflow`_ for open
+source contributions and value the four opens.
 
-.. index::
-   single: license; agreement
-
-In order to contribute to the python-openstacksdk project, you need to have
-signed OpenStack's contributor's agreement.
-
-Please read `DeveloperWorkflow`_ before sending your first patch for review.
-Pull requests submitted through GitHub will be ignored.
-
-.. seealso::
-
-   * http://wiki.openstack.org/HowToContribute
-   * http://wiki.openstack.org/CLA
-
-.. _DeveloperWorkflow: http://docs.openstack.org/infra/manual/developers.html#development-workflow
 
 Project Hosting Details
--------------------------
+-----------------------
 
 Project Documentation
-    http://docs.openstack.org/sdks/python/openstacksdk/
+    https://python-otcextensions.readthedocs.io/
 
 Bug tracker
-    https://bugs.launchpad.net/python-openstacksdk
-
-Mailing list (prefix subjects with ``[sdk]`` for faster responses)
-    http://lists.openstack.org/cgi-bin/mailman/listinfo/openstack-dev
+    https://github.com/opentelekomcloud/python-otcextensions/issues
 
 Code Hosting
-    https://git.openstack.org/cgit/openstack/python-openstacksdk
+    https://github.com/opentelekomcloud/python-otcextensions/
 
-Code Review
-    https://review.openstack.org/#/q/status:open+project:openstack/python-openstacksdk,n,z
+.. _contributors section: https://python-otcextensions.readthedocs.io/en/latest/contributor/
+.. _OpenStack's workflow: http://docs.openstack.org/infra/manual/developers.html#development-workflow
