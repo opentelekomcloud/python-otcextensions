@@ -8,7 +8,7 @@ under several service tags. This may change in future.
 
 .. list-table::
     :name: service-coverage
-    :widths: 80 120 30 30 30 30
+    :widths: 50 120 30 30 30 30
     :header-rows: 1
 
     * - Endpoint
@@ -40,6 +40,12 @@ under several service tags. This may change in future.
       - X
       - X
       - X
+      -
+    * - ces
+      - Cloudeye
+      - X
+      -
+      -
       -
     * - cts
       - Clout Trace Service
@@ -81,6 +87,12 @@ under several service tags. This may change in future.
       - Load Balancer
       - X
       - X
+      -
+      -
+    * - nat
+      - Network Address Translation
+      - X
+      -
       -
       -
     * - obs
