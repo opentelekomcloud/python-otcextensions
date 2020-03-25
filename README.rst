@@ -18,6 +18,10 @@ the project interacts closely with the
 
 packages.
 
+Documentation
+-------------
+
+* `Documentation <http://python-otcextensions.readthedocs.io/en/latest/>`
 
 Installation
 ------------
@@ -28,10 +32,10 @@ and can be installed by pip as
 .. code-block: console
    $ pip install otcextensions
 
-There are several options to do that including but not limited to pip
-userland installation, system wide installation as well as
-installation from operating system packets or directly from
-source. Refer to the installation instructions_ in the projects
+There are several options
+to do that including but not limited to pip userland installation, system wide
+installation as well as installation from operating system packets or directly
+from source. Refer to the installation instructions_ in the projects
 documentation.
 
 
@@ -56,6 +60,7 @@ authorization. For both there are several options available:
 
       clouds:
           otc:
+          profile: otc
               auth:
                   username: "*username*"
                   password: "*password*"
@@ -129,11 +134,10 @@ Contributing
 
 See CONTRIBUTING.rst
 
-Links
-=====
+Further Links
+-------------
 
 * `Issue Tracker <https://github.com/OpenTelekomCloud/python-otcextensions/issues>`_
-* `Documentation <http://python-otcextensions.readthedocs.io/en/latest/>`_
 
 .. _instructions: http://python-otcextensions.readthedocs.io/en/latest/install/
 
