@@ -39,48 +39,76 @@ class ListNatGateways(command.Lister):
         parser.add_argument(
             '--id',
             metavar='<id>',
-            help=_('Specifies the ID of the NAT Gateway.'))
+            help=_("Specifies the ID of the NAT Gateway."),
+        )
         parser.add_argument(
             '--limit',
             metavar='<limit>',
             type=int,
-            help=_('Limit to fetch number of records.'))
+            help=_("Limit to fetch number of records."),
+        )
         parser.add_argument(
             '--project-id',
             metavar='<project_id>',
-            help=_('Specifies the project ID.'))
+            help=_("Specifies the project ID."),
+        )
         parser.add_argument(
             '--name',
             metavar='<name>',
-            help=_('Specifies the Name of the NAT Gateway.'))
+            help=_("Specifies the Name of the NAT Gateway."),
+        )
         parser.add_argument(
             '--spec',
             metavar='<spec>',
-            help=_('Specifies the type of the NAT Gateway.'))
+            help=_("Specifies the type of the NAT Gateway. "
+                   "The value of spec can be:"
+                   "\n1: small type, which supports up to 10,000 "
+                   "SNAT connections."
+                   "\n2: medium type, which supports up to 50,000 "
+                   "SNAT connections."
+                   "\n3: large type, which supports up to 200,000 "
+                   "SNAT connections."
+                   "\n4: extra-large type, which supports up to "
+                   "1,000,000 SNAT connections."),
+        )
         parser.add_argument(
             '--router-id',
             metavar='<router_id>',
-            help=_('Specifies the router ID.'))
+            help=_("Specifies the router ID."),
+        )
         parser.add_argument(
             '--internal-network-id',
             metavar='<internal_network_id>',
-            help=_('Specifies the network ID.'))
+            help=_("Specifies the network ID of the downstream "
+                   "interface (the next hop of the DVR) of the "
+                   "NAT Gateway."),
+        )
         parser.add_argument(
             '--status',
             metavar='<status>',
-            help=_('Specifies the status of the NAT Gateway.'))
+            help=_("Specifies the status of the NAT Gateway."
+                   "\nACTIVE: The resource status is normal."
+                   "\nPENDING_CREATE: The resource is being created."
+                   "\nPENDING_UPDATE: The resource is being updated."
+                   "\nPENDING_DELETE: The resource is being deleted."
+                   "\nEIP_FREEZED: The EIP of the resource is frozen."
+                   "\nINACTIVE: The resource status is abnormal."),
+        )
         parser.add_argument(
             '--admin-state-up',
             metavar='<admin_state_up>',
-            help=_('Specifies whether the NAT Gateway is enabled '
-                   'or disabled.'))
+            help=_("Specifies whether the NAT Gateway is enabled "
+                   "or disabled. The value can be:"
+                   "\ntrue: The NAT gateway is up."
+                   "\nfalse: The NAT gateway is down."),
+        )
         parser.add_argument(
             '--created-at',
             metavar='<created_at>',
-            help=_('Specifies when the NAT Gateway is created (UTC time). '
-                   'Its valuerounds to 6 decimal places forseconds. '
-                   'The format is yyyy-mm-ddhh:mm:ss.'))
-
+            help=_("Specifies when the NAT Gateway is created (UTC time). "
+                   "Its valuerounds to 6 decimal places forseconds. "
+                   "The format is yyyy-mm-ddhh:mm:ss."),
+        )
         return parser
 
     def take_action(self, parsed_args):
@@ -98,8 +126,9 @@ class ListNatGateways(command.Lister):
             'created_at']
         attrs = {}
         for arg in args_list:
-            if getattr(parsed_args, arg):
-                attrs[arg] = getattr(parsed_args, arg)
+            val = getattr(parsed_args, arg)
+            if val:
+                attrs[arg] = val
 
         data = client.gateways(**attrs)
 
@@ -115,14 +144,13 @@ class ShowNatGateway(command.ShowOne):
         parser.add_argument(
             'gateway',
             metavar='<gateway>',
-            help=_('Specifies the ID of the NAT Gateway.'),
+            help=_("Specifies the Name or ID of the NAT Gateway."),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
         obj = client.find_gateway(parsed_args.gateway)
-
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
 
@@ -136,35 +164,44 @@ class CreateNatGateway(command.ShowOne):
         parser = super(CreateNatGateway, self).get_parser(prog_name)
         parser.add_argument(
             'name',
-            metavar="<name>",
-            help=_("Specifies the name of the NAT Gateway."))
+            metavar='<name>',
+            help=_("Specifies the name of the NAT Gateway."),
+        )
         parser.add_argument(
             '--description',
-            metavar="<description>",
-            help=_("Provides supplementary informationabout the NAT gateway."))
+            metavar='<description>',
+            help=_("Provides supplementary information about "
+                   "the NAT Gateway."),
+        )
         parser.add_argument(
             '--spec',
-            metavar="<spec>",
+            metavar='<spec>',
             required=True,
             help=_(
-                "Specifies the type of the NAT gateway."
+                "Specifies the type of the NAT Gateway. "
+                "The value can be:"
                 "\n1: small type, which supports up to 10,000 "
-                "SNAT connections.\n2: medium type, which supports "
-                "up to 50,000 SNAT connections.\n3: large type, which "
-                "supports up to 200,000 SNAT connections.\n4: extra-large "
-                "type, which supports up to 1,000,000 SNAT connections."))
+                "SNAT connections."
+                "\n2: medium type, which supports up to 50,000 "
+                "SNAT connections."
+                "\n3: large type, which supports up to 200,000 "
+                "SNAT connections."
+                "\n4: extra-large type, which supports up to "
+                "1,000,000 SNAT connections."),
+        )
         parser.add_argument(
             '--router-id',
-            metavar="<router_id>",
+            metavar='<router_id>',
             required=True,
-            help=_("Specifies the VPC ID"))
+            help=_("Specifies the VPC ID."),
+        )
         parser.add_argument(
             '--internal-network-id',
-            metavar="<internal_network_id>",
+            metavar='<internal_network_id>',
             required=True,
-            help=_("Specifies the network ID of thedownstream interface "
-                   "(the next hop ofthe DVR) of the NAT gateway."))
-
+            help=_("Specifies the network ID of the downstream interface "
+                   "(the next hop of the DVR) of the NAT Gateway."),
+        )
         return parser
 
     def take_action(self, parsed_args):
@@ -178,8 +215,9 @@ class CreateNatGateway(command.ShowOne):
             'internal_network_id']
         attrs = {}
         for arg in args_list:
-            if getattr(parsed_args, arg):
-                attrs[arg] = getattr(parsed_args, arg)
+            val = getattr(parsed_args, arg)
+            if val:
+                attrs[arg] = val
 
         obj = client.create_gateway(**attrs)
 
@@ -197,20 +235,23 @@ class UpdateNatGateway(command.ShowOne):
         parser.add_argument(
             'gateway',
             metavar='<gateway>',
-            help=_('Specifies the Name or ID of the NAT Gateway.'),
+            help=_("Specifies the Name or ID of the NAT Gateway."),
         )
         parser.add_argument(
             '--name',
-            metavar="<name>",
-            help=_("Specifies the name of the NAT Gateway."))
+            metavar='<name>',
+            help=_("Specifies the name of the NAT Gateway."),
+        )
         parser.add_argument(
             '--description',
-            metavar="<description>",
-            help=_("Provides supplementary informationabout the NAT gateway."))
+            metavar='<description>',
+            help=_("Provides supplementary informationabout the NAT gateway."),
+        )
         parser.add_argument(
             '--spec',
-            metavar="<spec>",
-            help=_("Specifies the type of the NAT gateway."))
+            metavar='<spec>',
+            help=_("Specifies the type of the NAT Gateway."),
+        )
         return parser
 
     def take_action(self, parsed_args):
@@ -241,9 +282,8 @@ class DeleteNatGateway(command.Command):
         parser.add_argument(
             'gateway',
             metavar='<gateway>',
-            help=_('Specifies the Name or ID of the NAT gateway.'),
+            help=_("Specifies the Name or ID of the NAT Gateway."),
         )
-
         return parser
 
     def take_action(self, parsed_args):

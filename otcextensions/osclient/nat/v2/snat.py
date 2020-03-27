@@ -46,56 +46,76 @@ class ListSnatRules(command.Lister):
         parser.add_argument(
             '--id',
             metavar='<id>',
-            help=_('Specifies the ID of the SNAT rule.'))
+            help=_("Specifies the ID of the SNAT rule."),
+        )
         parser.add_argument(
             '--limit',
             metavar='<limit>',
             type=int,
-            help=_('Limit to fetch number of records.'))
+            help=_("Limit to fetch number of records."),
+        )
         parser.add_argument(
             '--project-id',
             metavar='<project_id>',
-            help=_('Specifies the project ID.'))
+            help=_("Specifies the project ID."),
+        )
         parser.add_argument(
             '--nat-gateway-id',
             metavar='<nat_gateway_id>',
-            help=_('Specifies the NAT gateway ID.'))
+            help=_("Specifies the NAT gateway ID."),
+        )
         parser.add_argument(
             '--network-id',
             metavar='<network_id>',
-            help=_('Specifies the network ID used by theSNAT rule.'))
+            help=_("Specifies the network ID used by the SNAT rule."),
+        )
         parser.add_argument(
             '--cidr',
             metavar='<cidr>',
-            help=_('Specifies a subset of the VPC subnetCIDR block or '
-                   'a CIDR block of DirectConnect connection.'))
+            help=_("Specifies a subset of the VPC subnet CIDR block or "
+                   "a CIDR block of Direct Connect connection."),
+        )
         parser.add_argument(
             '--source-type',
             metavar='<source_type>',
-            help=_('Specifies Source Type.'))
+            help=_("Specifies Source Type."),
+        )
         parser.add_argument(
             '--floating-ip-id',
             metavar='<floating_ip_id>',
-            help=_('Specifies the EIP ID.'))
+            help=_("Specifies the Floating IP ID."),
+        )
         parser.add_argument(
             '--floating-ip-address',
             metavar='<floating_ip_address>',
-            help=_('Specifies the EIP.'))
+            help=_("Specifies the Floating IP."),
+        )
         parser.add_argument(
             '--status',
             metavar='<status>',
-            help=_('Specifies the status of the SNATrule.'))
+            help=_("Specifies the status of the SNAT rule."
+                   "\nACTIVE: The resource status is normal."
+                   "\nPENDING_CREATE: The resource is being created."
+                   "\nPENDING_UPDATE: The resource is being updated."
+                   "\nPENDING_DELETE: The resource is being deleted."
+                   "\nEIP_FREEZED: The EIP of the resource is frozen."
+                   "\nINACTIVE: The resource status is abnormal."),
+        )
         parser.add_argument(
             '--admin-state-up',
             metavar='<admin_state_up>',
-            help=_('Specifies whether the SNAT rule isenabled or disabled.'))
+            help=_("Specifies whether the SNAT rule is enabled or "
+                   "disabled. The value can be:"
+                   "\ntrue: The SNAT rule is enabled."
+                   "\nfalse: The SNAT rule is disabled."),
+        )
         parser.add_argument(
             '--created-at',
             metavar='<created_at>',
-            help=_('Specifies when the SNAT rule iscreated (UTC time). '
-                   'Its valuerounds to 6 decimal places forseconds. '
-                   'The format is yyyy-mm-ddhh:mm:ss.'))
-
+            help=_("Specifies when the SNAT rule is created (UTC time). "
+                   "Its value rounds to 6 decimal places for seconds. "
+                   "The format is yyyy-mm-ddhh:mm:ss."),
+        )
         return parser
 
     def take_action(self, parsed_args):
@@ -116,8 +136,9 @@ class ListSnatRules(command.Lister):
             'created_at']
         attrs = {}
         for arg in args_list:
-            if getattr(parsed_args, arg):
-                attrs[arg] = getattr(parsed_args, arg)
+            val = getattr(parsed_args, arg)
+            if val:
+                attrs[arg] = val
 
         data = client.snat_rules(**attrs)
 
@@ -138,7 +159,7 @@ class ShowSnatRule(command.ShowOne):
         parser.add_argument(
             'snat',
             metavar='<snat_id>',
-            help=_('Specifies the ID of the SNAT Rule'),
+            help=_("Specifies the ID of the SNAT Rule."),
         )
         return parser
 
@@ -161,33 +182,39 @@ class CreateSnatRule(command.ShowOne):
             '--nat-gateway-id',
             required=True,
             metavar='<nat_gateway_id>',
-            help=_('Specifies the ID of the NAT gateway'))
+            help=_("Specifies the ID of the NAT gateway."),
+        )
         parser.add_argument(
             '--floating-ip-id',
             metavar='<floating_ip_id>',
             required=True,
-            help=_('Specifies the EIP ID. Multiple EIPs '
-                   'are separated using commas'))
+            help=_("Specifies the Floating IP ID. Multiple "
+                   "Floating IPs are separated using commas."),
+        )
         parser.add_argument(
             '--network-id',
             metavar='<network_id>',
-            help=_('Specifies the network ID used by the SNAT rule. '
-                   'This parameter and cidr arealternative.'))
+            help=_("Specifies the network ID used by the SNAT rule. "
+                   "This parameter and cidr are alternative."),
+        )
         parser.add_argument(
             '--cidr',
             metavar='<cidr>',
-            help=_('Specifies CIDR, which can be in the formatof a '
-                   'network segment or a host IP address'))
+            help=_("Specifies CIDR, which can be in the format of a "
+                   "network segment or a host IP address."),
+        )
         parser.add_argument(
             '--source-type',
             metavar='<source_type>',
             help=_(
-                'Specifies the source type.\n0: Either network_id '
-                'or cidr can be specified in a VPC.\n1: Only cidr '
-                'can be specified over a Direct Connect connection.'
-                '\nIf no value is entered, the default value 0 (VPC) '
-                'is used.'))
-
+                "Specifies the source type."
+                "\n0: Either network_id or cidr can be "
+                "specified in a VPC."
+                "\n1: Only cidr can be specified over a "
+                "Direct Connect connection."
+                "\nIf no value is entered, the default "
+                "value 0 (VPC) is used."),
+        )
         return parser
 
     def take_action(self, parsed_args):
@@ -202,8 +229,9 @@ class CreateSnatRule(command.ShowOne):
         ]
         attrs = {}
         for arg in args_list:
-            if getattr(parsed_args, arg):
-                attrs[arg] = getattr(parsed_args, arg)
+            val = getattr(parsed_args, arg)
+            if val:
+                attrs[arg] = val
 
         obj = client.create_snat_rule(**attrs)
 
@@ -222,7 +250,7 @@ class DeleteSnatRule(command.Command):
         parser.add_argument(
             'snat',
             metavar='<snat_id>',
-            help=_('Specifies the ID of the SNAT Rule'),
+            help=_("Specifies the ID of the SNAT Rule."),
         )
 
         return parser

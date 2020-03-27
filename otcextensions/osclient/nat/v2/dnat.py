@@ -47,65 +47,88 @@ class ListDnatRules(command.Lister):
         parser.add_argument(
             '--id',
             metavar='<id>',
-            help=_('Specifies the ID of the SNAT rule.'))
+            help=_("Specifies the ID of the SNAT rule."),
+        )
         parser.add_argument(
             '--limit',
             metavar='<limit>',
             type=int,
-            help=_('Limit to fetch number of records.'))
+            help=_("Limit to fetch number of records."),
+        )
         parser.add_argument(
             '--project-id',
             metavar='<project_id>',
-            help=_('Specifies the project ID.'))
+            help=_("Specifies the project ID."),
+        )
         parser.add_argument(
             '--nat-gateway-id',
             metavar='<nat_gateway_id>',
-            help=_('Specifies the NAT gateway ID.'))
+            help=_("Specifies the NAT gateway ID."),
+        )
         parser.add_argument(
             '--port-id',
             metavar='<port_id>',
-            help=_('Specifies the port ID of an ECS or a BMS.'))
+            help=_("Specifies the port ID of an ECS or a BMS."),
+        )
         parser.add_argument(
             '--private-ip',
             metavar='<private_ip>',
-            help=_('Specifies the private IP address, for example, '
-                   'the IP address of a Direct Connect connection.'))
+            help=_("Specifies the private IP address, for example, "
+                   "the IP address of a Direct Connect connection."),
+        )
         parser.add_argument(
             '--internal-service-port',
             metavar='<internal_service_port>',
-            help=_('Specifies port used by ECSs or BMSs toprovide '
-                   'services for external systems.'))
+            help=_("Specifies port used by ECSs or BMSs to provide "
+                   "services for external systems."),
+        )
         parser.add_argument(
             '--floating-ip-id',
             metavar='<floating_ip_id>',
-            help=_('Specifies the EIP ID.'))
+            help=_("Specifies the Floating IP ID."),
+        )
         parser.add_argument(
             '--floating-ip-address',
             metavar='<floating_ip_address>',
-            help=_('Specifies the EIP.'))
+            help=_("Specifies the Floating IP."),
+        )
         parser.add_argument(
             '--external-service-port',
             metavar='<external_service_port>',
-            help=_('Specifies the port for providing external services.'))
+            help=_("Specifies the port for providing external services."),
+        )
         parser.add_argument(
             '--protocol',
             metavar='<protocol>',
-            help=_('Specifies the protocol type.'))
+            help=_("Specifies the protocol type."
+                   "Currently, TCP, UDP, and ANY are supported."),
+        )
         parser.add_argument(
             '--status',
             metavar='<status>',
-            help=_('Specifies the status of the DNAT rule.'))
+            help=_("Specifies the status of the DNAT rule."
+                   "\nACTIVE: The resource status is normal."
+                   "\nPENDING_CREATE: The resource is being created."
+                   "\nPENDING_UPDATE: The resource is being updated."
+                   "\nPENDING_DELETE: The resource is being deleted."
+                   "\nEIP_FREEZED: The EIP of the resource is frozen."
+                   "\nINACTIVE: The resource status is abnormal."),
+        )
         parser.add_argument(
             '--admin-state-up',
             metavar='<admin_state_up>',
-            help=_('Specifies whether the DNAT rule is enabled or disabled.'))
+            help=_("Specifies whether the DNAT rule is enabled or "
+                   "disabled. The value can be:"
+                   "\ntrue: The DNAT rule is enabled."
+                   "\nfalse: The DNAT rule is disabled."),
+        )
         parser.add_argument(
             '--created-at',
             metavar='<created_at>',
-            help=_('Specifies when the DNAT rule is created (UTC time). '
-                   'Its valuerounds to 6 decimal places forseconds. '
-                   'The format is yyyy-mm-ddhh:mm:ss.'))
-
+            help=_("Specifies when the DNAT rule is created (UTC time). "
+                   "Its value rounds to 6 decimal places forseconds. "
+                   "The format is yyyy-mm-ddhh:mm:ss."),
+        )
         return parser
 
     def take_action(self, parsed_args):
@@ -128,8 +151,9 @@ class ListDnatRules(command.Lister):
         ]
         attrs = {}
         for arg in args_list:
-            if getattr(parsed_args, arg):
-                attrs[arg] = getattr(parsed_args, arg)
+            val = getattr(parsed_args, arg)
+            if val:
+                attrs[arg] = val
         data = client.dnat_rules(**attrs)
 
         return (
@@ -149,7 +173,7 @@ class ShowDnatRule(command.ShowOne):
         parser.add_argument(
             'dnat',
             metavar='<dnat_id>',
-            help=_('Specifies the ID of the SNAT Rule'),
+            help=_("Specifies the ID of the SNAT Rule"),
         )
         return parser
 
@@ -170,41 +194,47 @@ class CreateDnatRule(command.ShowOne):
         parser = super(CreateDnatRule, self).get_parser(prog_name)
         parser.add_argument(
             '--nat-gateway-id',
+            metavar='<nat_gateway_id>',
             required=True,
-            metavar="<nat_gateway_id>",
-            help=_("Specifies the ID of the NAT gateway"))
+            help=_("Specifies the ID of the NAT Gateway."),
+        )
         parser.add_argument(
             '--port-id',
             metavar='<port_id>',
-            help=_('Specifies the port ID of an ECS or a BMS.'))
+            help=_("Specifies the port ID of an ECS or a BMS."),
+        )
         parser.add_argument(
             '--private-ip',
             metavar='<private_ip>',
-            help=_('Specifies the private IP address, for example, '
-                   'the IP address of a Direct Connect connection.'))
+            help=_("Specifies the private IP address, for example, "
+                   "the IP address of a Direct Connect connection."),
+        )
         parser.add_argument(
             '--internal-service-port',
             metavar='<internal_service_port>',
             required=True,
-            help=_('Specifies port used by ECSs or BMSs toprovide '
-                   'services for external systems.'))
+            help=_("Specifies port used by ECSs or BMSs to provide "
+                   "services for external systems."),
+        )
         parser.add_argument(
             '--floating-ip-id',
             metavar="<floating_ip_id>",
             required=True,
-            help=_('Specifies the EIP ID. Multiple EIPs are '
-                   'separated using commas'))
+            help=_("Specifies the Floating IP ID. Multiple "
+                   "Floating IPs are separated using commas."),
+        )
         parser.add_argument(
             '--external-service-port',
             metavar='<external_service_port>',
             required=True,
-            help=_('Specifies the port for providing external services.'))
+            help=_("Specifies the port for providing external services."),
+        )
         parser.add_argument(
             '--protocol',
             metavar='<protocol>',
             required=True,
-            help=_('Specifies the protocol type.'))
-
+            help=_("Specifies the protocol type."),
+        )
         return parser
 
     def take_action(self, parsed_args):
@@ -221,8 +251,9 @@ class CreateDnatRule(command.ShowOne):
         ]
         attrs = {}
         for arg in args_list:
-            if getattr(parsed_args, arg):
-                attrs[arg] = getattr(parsed_args, arg)
+            val = getattr(parsed_args, arg)
+            if val:
+                attrs[arg] = val
 
         obj = client.create_dnat_rule(**attrs)
 
@@ -241,9 +272,8 @@ class DeleteDnatRule(command.Command):
         parser.add_argument(
             'dnat',
             metavar='<dnat_id>',
-            help=_('Specifies the ID of the DNAT Rule'),
+            help=_("Specifies the ID of the DNAT Rule."),
         )
-
         return parser
 
     def take_action(self, parsed_args):

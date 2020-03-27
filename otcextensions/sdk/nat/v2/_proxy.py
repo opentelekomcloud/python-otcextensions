@@ -95,8 +95,12 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._find(_gateway.Gateway, name_or_id,
-                          ignore_missing=ignore_missing)
+        obj = self._find(_gateway.Gateway, name_or_id)
+        if obj is None:
+            raise RuntimeError(
+                'The provide NAT Gateway id/name={} '
+                'could not be found'.format(name_or_id))
+        return obj
 
     # ======== SNAT rules ========
     def create_snat_rule(self, **attrs):
