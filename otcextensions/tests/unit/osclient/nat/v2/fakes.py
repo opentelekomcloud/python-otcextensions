@@ -72,12 +72,15 @@ class FakeNatGateway(test_base.Fake):
 
     @staticmethod
     def find_gateway(nat_gateway, name_or_id):
-        """Get a Mock object with faked dnat_rule.
-        :param dnat_rule:
-            A FakeResource objects faking dnat_rule
+        """Get a Mock object with faked nat_gateway.
+        :param nat_gateway:
+            A FakeResource objects faking nat_gateway
+        :param name_or_id:
+            name or id of nat_gateway
         :return:
-            A Mock object with side_effect set to a faked
-            dnat_rule
+            A Mock object with faked nat_gateway or
+            side_effect=RuntimeError if name or id
+              doesnt matches in faked nat_gateway
         """
         if name_or_id in [nat_gateway.id, nat_gateway.name]:
             return mock.Mock(return_value=nat_gateway)
@@ -114,12 +117,15 @@ class FakeSnatRule(test_base.Fake):
 
     @staticmethod
     def get_snat_rule(snat_rule, snat_rule_id):
-        """Get a Mock object with faked dnat_rule.
-        :param dnat_rule:
-            A FakeResource objects faking dnat_rule
+        """Get a Mock object with faked snat_rule.
+        :param snat_rule:
+            A FakeResource objects faking snat_rule
+        :param snat_rule_id:
+            Id of snat_rule
         :return:
-            A Mock object with side_effect set to a faked
-            dnat_rule
+            A Mock object with faked snat_rule or
+            side_effect=RuntimeError if snat_rule_id
+              doesnt matches in faked snat_rule Id
         """
         if snat_rule.id == snat_rule_id:
             return mock.Mock(return_value=snat_rule)
@@ -155,9 +161,12 @@ class FakeDnatRule(test_base.Fake):
         """Get a Mock object with faked dnat_rule.
         :param dnat_rule:
             A FakeResource objects faking dnat_rule
+        :param dnat_rule_id:
+            Id of dnat_rule
         :return:
-            A Mock object with side_effect set to a faked
-            dnat_rule
+            A Mock object with faked snat_rule or
+            side_effect=RuntimeError if dnat_rule_id
+              doesnt matches in faked dnat_rule Id
         """
         if dnat_rule.id == dnat_rule_id:
             return mock.Mock(return_value=dnat_rule)
