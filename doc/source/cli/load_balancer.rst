@@ -1,6 +1,5 @@
-========================================
-LoadBalancer service command-line client
-========================================
+Elastic LoadBalancer (ELB)
+==========================
 
 The load_balancer client is the command-line interface (CLI) for
 the native Neutron/Octavia LoadBalancer service (load_balancer) API.

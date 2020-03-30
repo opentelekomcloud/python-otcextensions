@@ -1,6 +1,5 @@
-===============================================
-Volume Backup Service (VBS) command-line client
-===============================================
+Volume Backup Service (VBS)
+===========================
 
 The VBS client is the command-line interface (CLI) for
 the Volume Backup service (vbs) API and its extensions.

@@ -1,6 +1,5 @@
-=================================================
-Anti DDoS Service (Anti_DDoS) command-line client
-=================================================
+Anti DDoS Service (Anti_DDoS)
+=============================
 
 The Anti_DDoS client is the command-line interface (CLI) for
 the Anti DDoS Service (Anti_DDoS) API and its extensions.

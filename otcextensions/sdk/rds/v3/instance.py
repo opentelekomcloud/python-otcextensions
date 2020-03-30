@@ -69,7 +69,7 @@ class Instance(_base.Resource):
     #: *Type:str*
     maintenance_window = resource.Body('maintenance_window')
     #: Node information
-    #:  Indicates the primary/standby DB instance information.
+    #: Indicates the primary/standby DB instance information.
     #: *Type:list*
     nodes = resource.Body('nodes', type=list)
     #: Password of the default user.
@@ -174,25 +174,25 @@ class Instance(_base.Resource):
         """Find a resource by its name or id.
 
         :param session: The session to use for making this request.
-        :type session: :class:`~keystoneauth1.adapter.Adapter`
+            :type session: :class:`~keystoneauth1.adapter.Adapter`
         :param name_or_id: This resource's identifier, if needed by
-                           the request. The default is ``None``.
+            the request. The default is ``None``.
         :param bool ignore_missing: When set to ``False``
-                    :class:`~openstack.exceptions.ResourceNotFound` will be
-                    raised when the resource does not exist.
-                    When set to ``True``, None will be returned when
-                    attempting to find a nonexistent resource.
+            :class:`~openstack.exceptions.ResourceNotFound` will be
+            raised when the resource does not exist.
+            When set to ``True``, None will be returned when
+            attempting to find a nonexistent resource.
         :param dict params: Any additional parameters to be passed into
-                            underlying methods, such as to
-                            :meth:`~openstack.resource.Resource.existing`
-                            in order to pass on URI parameters.
+            underlying methods, such as to
+            :meth:`~openstack.resource.Resource.existing`
+            in order to pass on URI parameters.
 
         :return: The :class:`Resource` object matching the given name or id
-                 or None if nothing matches.
+            or None if nothing matches.
         :raises: :class:`openstack.exceptions.DuplicateResource` if more
-                 than one resource is found for this request.
+            than one resource is found for this request.
         :raises: :class:`openstack.exceptions.ResourceNotFound` if nothing
-                 is found and ignore_missing is ``False``.
+            is found and ignore_missing is ``False``.
         """
         session = cls._get_session(session)
 
@@ -222,20 +222,20 @@ class Instance(_base.Resource):
         """Get a remote resource based on this instance.
 
         :param session: The session to use for making this request.
-        :type session: :class:`~keystoneauth1.adapter.Adapter`
+            :type session: :class:`~keystoneauth1.adapter.Adapter`
         :param boolean requires_id: A boolean indicating whether resource ID
-                                    should be part of the requested URI.
+            should be part of the requested URI.
         :param str base_path: Base part of the URI for fetching resources, if
-                              different from
-                              :data:`~openstack.resource.Resource.base_path`.
+            different from :data:`~openstack.resource.Resource.base_path`.
         :param str error_message: An Error message to be returned if
-                                  requested object does not exist.
+            requested object does not exist.
         :param dict params: Additional parameters that can be consumed.
+
         :return: This :class:`Resource` instance.
         :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
-                 :data:`Resource.allow_fetch` is not set to ``True``.
+            :data:`Resource.allow_fetch` is not set to ``True``.
         :raises: :exc:`~openstack.exceptions.ResourceNotFound` if
-                 the resource was not found.
+            the resource was not found.
         """
         data = self.list(session, paginated=False, id=self.id)
         result = self._get_one_match(self.id, data)
