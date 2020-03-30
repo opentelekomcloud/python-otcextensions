@@ -162,15 +162,16 @@ class TestShowDnatRule(fakes.TestNat):
 
         self.cmd = dnat.ShowDnatRule(self.app, None)
 
-        self.client.get_dnat_rule = mock.Mock(return_value=self._data)
+        self.client.get_dnat_rule = (
+            fakes.FakeDnatRule.get_dnat_rule(self._data, self._data.id))
 
     def test_show(self):
         arglist = [
-            'test_dnat_rule_id',
+            self._data.id,
         ]
 
         verifylist = [
-            ('dnat', 'test_dnat_rule_id'),
+            ('dnat', self._data.id),
         ]
 
         # Verify cm is triggered with default parameters
@@ -178,10 +179,34 @@ class TestShowDnatRule(fakes.TestNat):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.get_dnat_rule.assert_called_with('test_dnat_rule_id')
+        self.client.get_dnat_rule.assert_called_with(self._data.id)
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
+
+    def test_show_non_existent(self):
+        arglist = [
+            'unexist_dnat_rule_id',
+        ]
+
+        verifylist = [
+            ('dnat', 'unexist_dnat_rule_id'),
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        self.client.get_dnat_rule = (
+            fakes.FakeDnatRule.get_dnat_rule(
+                self._data, 'unexist_dnat_rule_id'))
+
+        # Trigger the action
+        try:
+            self.cmd.take_action(parsed_args)
+            self.fail('CommandError should be raised.')
+        except Exception as e:
+            self.assertEqual('404 Not Found', str(e))
+        self.client.get_dnat_rule.assert_called_with('unexist_dnat_rule_id')
 
 
 class TestCreateDnatRule(fakes.TestNat):
@@ -251,23 +276,24 @@ class TestCreateDnatRule(fakes.TestNat):
 
 class TestDeleteDnatRule(fakes.TestNat):
 
-    data = fakes.FakeDnatRule.create_one()
+    _data = fakes.FakeDnatRule.create_one()
 
     def setUp(self):
         super(TestDeleteDnatRule, self).setUp()
 
-        self.cmd = dnat.DeleteDnatRule(self.app, None)
+        self.client.get_dnat_rule = (
+            fakes.FakeDnatRule.get_dnat_rule(self._data, self._data.id))
+        self.client.delete_dnat_rule = mock.Mock(return_value=None)
 
-        self.client.get_dnat_rule = mock.Mock(return_value=self.data)
-        self.client.delete_dnat_rule = mock.Mock(return_value=self.data)
+        self.cmd = dnat.DeleteDnatRule(self.app, None)
 
     def test_delete(self):
         arglist = [
-            'test_dnat_rule_id',
+            self._data.id,
         ]
 
         verifylist = [
-            ('dnat', 'test_dnat_rule_id'),
+            ('dnat', self._data.id),
         ]
 
         # Verify cm is triggered with default parameters
@@ -276,6 +302,30 @@ class TestDeleteDnatRule(fakes.TestNat):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        self.client.get_dnat_rule.assert_called_with('test_dnat_rule_id')
+        self.client.get_dnat_rule.assert_called_with(self._data.id)
 
-        self.client.delete_dnat_rule.assert_called_with(self.data.id)
+        self.client.delete_dnat_rule.assert_called_with(self._data.id)
+
+    def test_delete_non_existent(self):
+        arglist = [
+            'unexist_dnat_rule_id',
+        ]
+
+        verifylist = [
+            ('dnat', 'unexist_dnat_rule_id'),
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        self.client.get_dnat_rule = (
+            fakes.FakeDnatRule.get_dnat_rule(
+                self._data, 'unexist_dnat_rule_id'))
+
+        # Trigger the action
+        try:
+            self.cmd.take_action(parsed_args)
+            self.fail('CommandError should be raised.')
+        except Exception as e:
+            self.assertEqual('404 Not Found', str(e))
+        self.client.get_dnat_rule.assert_called_with('unexist_dnat_rule_id')

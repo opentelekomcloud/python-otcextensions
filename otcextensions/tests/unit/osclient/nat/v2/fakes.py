@@ -11,7 +11,7 @@
 # under the License.
 #
 import uuid
-import time
+from datetime import datetime
 
 import mock
 
@@ -44,10 +44,6 @@ class TestNat(utils.TestCommand):
 
         self.client = self.app.client_manager.nat
 
-        self.nat_gateway_mock = FakeNatGateway
-        self.snat_rule_mock = FakeSnatRule
-        self.dnat_rule_mock = FakeDnatRule
-
 
 class FakeNatGateway(test_base.Fake):
     """Fake one or more datastore versions."""
@@ -67,12 +63,26 @@ class FakeNatGateway(test_base.Fake):
             "description": "my nat gateway",
             "admin_state_up": 'true',
             "tenant_id": "tenant-id-" + uuid.uuid4().hex,
-            "created_at": time.clock() * 1000,
+            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%s")[:-4],
             "spec": "1",
             "internal_network_id": "net-id-" + uuid.uuid4().hex
         }
 
         return gateway.Gateway(**object_info)
+
+    @staticmethod
+    def find_gateway(nat_gateway, name_or_id):
+        """Get a Mock object with faked dnat_rule.
+        :param dnat_rule:
+            A FakeResource objects faking dnat_rule
+        :return:
+            A Mock object with side_effect set to a faked
+            dnat_rule
+        """
+        if name_or_id in [nat_gateway.id, nat_gateway.name]:
+            return mock.Mock(return_value=nat_gateway)
+        else:
+            return mock.Mock(side_effect=RuntimeError('404 Not Found'))
 
 
 class FakeSnatRule(test_base.Fake):
@@ -96,11 +106,25 @@ class FakeSnatRule(test_base.Fake):
             "cidr": uuid.uuid4().hex,
             "source_type": 0,
             "tenant_id": "tenant-id-" + uuid.uuid4().hex,
-            "created_at": time.clock() * 1000,
+            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%s")[:-4],
             "floating_ip_address": uuid.uuid4().hex
         }
 
         return snat.Snat.existing(**object_info)
+
+    @staticmethod
+    def get_snat_rule(snat_rule, snat_rule_id):
+        """Get a Mock object with faked dnat_rule.
+        :param dnat_rule:
+            A FakeResource objects faking dnat_rule
+        :return:
+            A Mock object with side_effect set to a faked
+            dnat_rule
+        """
+        if snat_rule.id == snat_rule_id:
+            return mock.Mock(return_value=snat_rule)
+        else:
+            return mock.Mock(side_effect=RuntimeError('404 Not Found'))
 
 
 class FakeDnatRule(test_base.Fake):
@@ -118,10 +142,24 @@ class FakeDnatRule(test_base.Fake):
             "protocol": "any",
             "tenant_id": "abc",
             "port_id": "",
-            "created_at": time.clock() * 1000,
+            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%s")[:-4],
             "floating_ip_address": uuid.uuid4().hex,
             "external_service_port": 0
         }
 
         obj = dnat.Dnat.existing(**object_info)
         return obj
+
+    @staticmethod
+    def get_dnat_rule(dnat_rule, dnat_rule_id):
+        """Get a Mock object with faked dnat_rule.
+        :param dnat_rule:
+            A FakeResource objects faking dnat_rule
+        :return:
+            A Mock object with side_effect set to a faked
+            dnat_rule
+        """
+        if dnat_rule.id == dnat_rule_id:
+            return mock.Mock(return_value=dnat_rule)
+        else:
+            return mock.Mock(side_effect=RuntimeError('404 Not Found'))
