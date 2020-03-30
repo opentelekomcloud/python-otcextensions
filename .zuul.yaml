@@ -3,7 +3,7 @@
       jobs:
         - tox-py37
         - tox-pep8
-          #        - tox-docs
+        - tox-docs
         - tox-functional
     gate:
       jobs:

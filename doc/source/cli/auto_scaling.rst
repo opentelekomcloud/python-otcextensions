@@ -1,6 +1,5 @@
-============================================
-AutoScaling service (AS) command-line client
-============================================
+AutoScaling service (AS)
+========================
 
 The AS client is the command-line interface (CLI) for
 the AutoScaling service (AS) API and its extensions.

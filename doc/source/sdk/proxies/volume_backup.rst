@@ -1,0 +1,36 @@
+VolumeBackup API
+================
+
+For details on how to use auto scaling, see /sdk/guides/volume_backup
+(NEEDS TO BE DONE).
+
+.. automodule:: otcextensions.sdk.volume_backup.v2._proxy
+
+The VolumeBackup Class
+----------------------
+
+The VBS high-level interface is available through the
+``volume_backup`` member of a
+:class:`~openstack.connection.Connection` object.  The
+``volume_backup`` member will only be added if the
+``otcextensions.sdk.register_otc_extensions(conn)`` method is called.
+
+The Backup itself is an OpenStack entity and supported natively as
+block_storage.Backup.
+
+
+Backup Policy Operations
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.volume_backup.v2._proxy.Proxy
+
+  .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.backup_policies
+  .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.create_backup_policy
+  .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.update_backup_policy
+  .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.delete_backup_policy
+  .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.find_backup_policy
+  .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.execute_policy
+  .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.enable_policy
+  .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.disable_policy
+  .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.link_resources_to_policy
+  .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.unlink_resources_of_policy

@@ -248,7 +248,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
             or a object of
             :class:`~otcextensions.sdk.rds.v3.configuration.Configuration`.
 
-        :returns: A Configuration Object
+        :returns: A Configuration object
         :rtype: :class:`~otcextensions.rds.v3.configuration.Configuration`
         """
         return self._get(_configuration.Configuration, cg)
@@ -258,13 +258,12 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
 
         :param name_or_id: The name or ID of configuration.
         :param bool ignore_missing: When set to ``False``
-                    :class:`~openstack.exceptions.ResourceNotFound` will be
-                    raised when the resource does not exist.
-                    When set to ``True``, None will be returned when
-                    attempting to find a nonexistent resource.
-        :returns: One
-        :class:`~otcextensions.sdk.rds.v3.configuration.Configuration`
-                  or None
+            :class:`~openstack.exceptions.ResourceNotFound` will be
+            raised when the resource does not exist.
+            When set to ``True``, None will be returned when
+            attempting to find a nonexistent resource.
+        :returns: A configuration object
+        :rtype: :class:`~otcextensions.sdk.rds.v3.configuration.Configuration`
         """
         return self._find(_configuration.Configuration,
                           name_or_id,
@@ -273,7 +272,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
     def create_configuration(self, **attrs):
         """Create DB Configuration.
 
-        :param dict **attrs: Dict to overwrite Configuration object
+        :param dict attrs: Dict to overwrite Configuration object
         :returns: A Configuration Object
         :rtype:
             :class:`~otcextensions.sdk.rds.v3.configuration.Configuration`
@@ -359,7 +358,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         """Deletes given backup
 
         :param instance: The value can be either the ID of an instance or a
-            :class:`~openstack.database.v3.instance.Instance` instance.
+            :class:`~otcextension.sdk.rds.v3.instance.Instance` instance.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be
             raised when the instance does not exist.
@@ -377,14 +376,14 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
 
         :param name_or_id: The name or ID of a instance.
         :param instance: The value can be either the ID of an instance or a
-            :class:`~openstack.database.v3.instance.Instance` instance.
-         :param bool ignore_missing: When set to ``False``
-                    :class:`~openstack.exceptions.ResourceNotFound` will be
-                    raised when the resource does not exist.
-                    When set to ``True``, None will be returned when
-                    attempting to find a nonexistent resource.
+            :class:`~otcextension.sdk.rds.v3.instance.Instance` instance.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be
+            raised when the resource does not exist.
+            When set to ``True``, None will be returned when
+            attempting to find a nonexistent resource.
         :returns: One :class:`~otcextensions.sdk.rds.v3.backup.Backup`
-                  or None
+            or None
         """
         instance = self._get_resource(_instance.Instance, instance)
         return self._find(_backup.Backup,

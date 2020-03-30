@@ -1,6 +1,5 @@
-==========================================
-Database service (rds) command-line client
-==========================================
+Database service (rds)
+======================
 
 The RDS client is the command-line interface (CLI) for
 the Database service (RDS) API and its extensions.
