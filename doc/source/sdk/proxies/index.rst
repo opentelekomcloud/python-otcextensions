@@ -39,11 +39,6 @@ Links to Native OpenStack Service Proxies
    Block Storage <https://docs.openstack.org/openstacksdk/latest/user/proxies/block_storage>
    Compute <https://docs.openstack.org/openstacksdk/latest/user/proxies/compute>
    Database <https://docs.openstack.org/openstacksdk/latest/user/proxies/database>
-   Identity v3 <https://docs.openstack.org/openstacksdk/latest/user/proxies/identity_v3>
-   Image v2 <https://docs.openstack.org/openstacksdk/latest/user/proxies/image_v2>
-   Key Manager <https://docs.openstack.org/openstacksdk/latest/user/proxies/key_manager>
-   Load Balancer <https://docs.openstack.org/openstacksdk/latest/user/proxies/load_balancer_v2>
-   Message v2 <https://docs.openstack.org/openstacksdk/latest/user/proxies/message_v2>
    Network <https://docs.openstack.org/openstacksdk/latest/user/proxies/network>
    Object Store <https://docs.openstack.org/openstacksdk/latest/user/proxies/object_store>
    Orchestration <https://docs.openstack.org/openstacksdk/latest/user/proxies/orchestration>
