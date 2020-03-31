@@ -32,23 +32,3 @@ such as to update a resource on the server.
 
 The following services have exposed :class:`~openstack.resource.Resource`
 classes.
-
-OpenStack native Resources
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. toctree::
-   :maxdepth: 1
-
-   Baremetal <https://docs.openstack.org/openstacksdk/latest/user/resources/baremetal/index>
-   Block Storage <https://docs.openstack.org/openstacksdk/latest/user/resources/block_storage/index>
-   Clustering <https://docs.openstack.org/openstacksdk/latest/user/resources/clustering/index>
-   Compute <https://docs.openstack.org/openstacksdk/latest/user/resources/compute/index>
-   Database <https://docs.openstack.org/openstacksdk/latest/user/resources/database/index>
-   Identity <https://docs.openstack.org/openstacksdk/latest/user/resources/identity/index>
-   Image <https://docs.openstack.org/openstacksdk/latest/user/resources/image/index>
-   Key Management <https://docs.openstack.org/openstacksdk/latest/user/resources/key_manager/index>
-   Load Balancer <https://docs.openstack.org/openstacksdk/latest/user/resources/load_balancer/index>
-   Network <https://docs.openstack.org/openstacksdk/latest/user/resources/network/index>
-   Orchestration <https://docs.openstack.org/openstacksdk/latest/user/resources/orchestration/index>
-   Object Store <https://docs.openstack.org/openstacksdk/latest/user/resources/object_store/index>
-   Workflow <https://docs.openstack.org/openstacksdk/latest/user/resources/workflow/index>
