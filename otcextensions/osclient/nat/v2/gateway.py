@@ -61,14 +61,14 @@ class ListNatGateways(command.Lister):
             '--spec',
             metavar='<spec>',
             help=_("Specifies the type of the NAT Gateway. "
-                   "The value of spec can be:"
-                   "\n1: small type, which supports up to 10,000 "
-                   "SNAT connections."
-                   "\n2: medium type, which supports up to 50,000 "
-                   "SNAT connections."
-                   "\n3: large type, which supports up to 200,000 "
-                   "SNAT connections."
-                   "\n4: extra-large type, which supports up to "
+                   "The value of spec can be:\n"
+                   "1: small type, which supports up to 10,000 "
+                   "SNAT connections.\n"
+                   "2: medium type, which supports up to 50,000 "
+                   "SNAT connections.\n"
+                   "3: large type, which supports up to 200,000 "
+                   "SNAT connections.\n"
+                   "4: extra-large type, which supports up to "
                    "1,000,000 SNAT connections."),
         )
         parser.add_argument(
@@ -86,21 +86,21 @@ class ListNatGateways(command.Lister):
         parser.add_argument(
             '--status',
             metavar='<status>',
-            help=_("Specifies the status of the NAT Gateway."
-                   "\nACTIVE: The resource status is normal."
-                   "\nPENDING_CREATE: The resource is being created."
-                   "\nPENDING_UPDATE: The resource is being updated."
-                   "\nPENDING_DELETE: The resource is being deleted."
-                   "\nEIP_FREEZED: The EIP of the resource is frozen."
-                   "\nINACTIVE: The resource status is abnormal."),
+            help=_("Specifies the status of the NAT Gateway.\n"
+                   "ACTIVE: The resource status is normal.\n"
+                   "PENDING_CREATE: The resource is being created.\n"
+                   "PENDING_UPDATE: The resource is being updated.\n"
+                   "PENDING_DELETE: The resource is being deleted.\n"
+                   "EIP_FREEZED: The EIP of the resource is frozen.\n"
+                   "INACTIVE: The resource status is abnormal."),
         )
         parser.add_argument(
             '--admin-state-up',
             metavar='<admin_state_up>',
             help=_("Specifies whether the NAT Gateway is enabled "
-                   "or disabled. The value can be:"
-                   "\ntrue: The NAT gateway is up."
-                   "\nfalse: The NAT gateway is down."),
+                   "or disabled. The value can be:\n"
+                   "true: The NAT gateway is up.\n"
+                   "false: The NAT gateway is down."),
         )
         parser.add_argument(
             '--created-at',
@@ -179,14 +179,14 @@ class CreateNatGateway(command.ShowOne):
             required=True,
             help=_(
                 "Specifies the type of the NAT Gateway. "
-                "The value can be:"
-                "\n1: small type, which supports up to 10,000 "
-                "SNAT connections."
-                "\n2: medium type, which supports up to 50,000 "
-                "SNAT connections."
-                "\n3: large type, which supports up to 200,000 "
-                "SNAT connections."
-                "\n4: extra-large type, which supports up to "
+                "The value can be:\n"
+                "1: small type, which supports up to 10,000 "
+                "SNAT connections.\n"
+                "2: medium type, which supports up to 50,000 "
+                "SNAT connections.\n"
+                "3: large type, which supports up to 200,000 "
+                "SNAT connections.\n"
+                "4: extra-large type, which supports up to "
                 "1,000,000 SNAT connections."),
         )
         parser.add_argument(

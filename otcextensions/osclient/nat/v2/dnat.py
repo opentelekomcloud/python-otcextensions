@@ -106,21 +106,21 @@ class ListDnatRules(command.Lister):
         parser.add_argument(
             '--status',
             metavar='<status>',
-            help=_("Specifies the status of the DNAT rule."
-                   "\nACTIVE: The resource status is normal."
-                   "\nPENDING_CREATE: The resource is being created."
-                   "\nPENDING_UPDATE: The resource is being updated."
-                   "\nPENDING_DELETE: The resource is being deleted."
-                   "\nEIP_FREEZED: The EIP of the resource is frozen."
-                   "\nINACTIVE: The resource status is abnormal."),
+            help=_("Specifies the status of the DNAT rule.\n"
+                   "ACTIVE: The resource status is normal.\n"
+                   "PENDING_CREATE: The resource is being created.\n"
+                   "PENDING_UPDATE: The resource is being updated.\n"
+                   "PENDING_DELETE: The resource is being deleted.\n"
+                   "EIP_FREEZED: The EIP of the resource is frozen.\n"
+                   "INACTIVE: The resource status is abnormal."),
         )
         parser.add_argument(
             '--admin-state-up',
             metavar='<admin_state_up>',
             help=_("Specifies whether the DNAT rule is enabled or "
-                   "disabled. The value can be:"
-                   "\ntrue: The DNAT rule is enabled."
-                   "\nfalse: The DNAT rule is disabled."),
+                   "disabled. The value can be:\n"
+                   "true: The DNAT rule is enabled.\n"
+                   "false: The DNAT rule is disabled."),
         )
         parser.add_argument(
             '--created-at',
