@@ -9,4 +9,8 @@
       jobs:
         - tox-py37
         - tox-pep8
+        - tox-docs
+        - tox-functional
+    periodic:
+      jobs:
         - tox-functional
