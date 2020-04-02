@@ -11,32 +11,26 @@
 #    under the License.
 
 import json
-import uuid
 
-from openstackclient.tests.functional import base
+from otcextensions.tests.functional.osclient.nat.v2 import common
 
 
-class TestNatGateway(base.TestCase):
+class TestNatGateway(common.NatTestCase):
     """Functional Tests for NAT Gateway"""
 
-    UUID = uuid.uuid4().hex[:8]
-    ROUTER_NAME = 'sdk-test-router-' + UUID
-    NETWORK_NAME = 'sdk-test-net-' + UUID
-    SUBNET_NAME = 'sdk-test-subnet-' + UUID
-    ROUTER_ID = None
-    NETWORK_ID = None
+    @classmethod
+    def setUpClass(cls):
+        super(TestNatGateway, cls).setUpClass()
 
-    NAT_NAME = 'os-cli-test-' + UUID
-    NAT_ID = None
-
-    def test_01_nat_gateway_list(self):
-        self.openstack(
+    def test_nat_gateway_list(self):
+        json_output = json.loads(self.openstack(
             'nat gateway list -f json '
-        )
+        ))
+        self.assertIsNotNone(json_output)
 
-    def test_02_gat_gateway_list_filters(self):
-        self.openstack(
-            'nat gateway list '
+    def test_nat_gateway_list_filters(self):
+        json_output = json.loads(self.openstack(
+            'nat gateway list -f json '
             '--limit 1 --id 2 '
             '--name 3 --spec 4 '
             '--router-id 5 '
@@ -44,142 +38,66 @@ class TestNatGateway(base.TestCase):
             '--project-id 7 '
             '--status active '
             '--admin-state-up True '
-        )
-
-    def test_03_nat_gateway_create(self):
-        self._initialize_network()
-        json_output = json.loads(self.openstack(
-            'nat gateway create {name}'
-            ' --router-id {router_id}'
-            ' --internal-network-id {net_id}'
-            ' --spec {spec} -f json'.format(
-                name=self.NAT_NAME,
-                router_id=self.ROUTER_ID,
-                net_id=self.NETWORK_ID,
-                description='OTCE Lib Test',
-                spec=1)
         ))
         self.assertIsNotNone(json_output)
-        TestNatGateway.NAT_ID = json_output['id']
 
-    def test_04_nat_gateway_list_by_id(self):
+    def test_nat_gateway(self):
+        nat_gateway = self.create_nat_gateway()
+        nat_id = nat_gateway['id']
+        nat_name = nat_gateway['name']
+        router_id = nat_gateway['router_id']
+
+        self.addCleanup(self.delete_nat_gateway)
+
+        # List Nat Gateway By Id
         json_output = json.loads(self.openstack(
             'nat gateway list -f json'
-            ' --id {}'.format(self.NAT_ID)
+            ' --id {}'.format(nat_id)
         ))
-        self.assertEqual(json_output[0]['Name'], self.NAT_NAME)
-        self.assertEqual(json_output[0]['Id'], self.NAT_ID)
+        self.assertEqual(json_output[0]['Name'], nat_name)
+        self.assertEqual(json_output[0]['Id'], nat_id)
 
-    def test_05_nat_gateway_list_by_name(self):
+        # List Nat Gateway By Name
         json_output = json.loads(self.openstack(
             'nat gateway list -f json'
-            ' --name {}'.format(self.NAT_NAME)
+            ' --name {}'.format(nat_name)
         ))
-        self.assertEqual(json_output[0]['Name'], self.NAT_NAME)
-        self.assertEqual(json_output[0]['Id'], self.NAT_ID)
+        self.assertEqual(json_output[0]['Name'], nat_name)
+        self.assertEqual(json_output[0]['Id'], nat_id)
 
-    def test_06_nat_gateway_list_by_router_id(self):
+        # List Nat Gateway by Router ID
         json_output = json.loads(self.openstack(
             'nat gateway list -f json'
-            ' --router-id {}'.format(self.ROUTER_ID)
+            ' --router-id {}'.format(router_id)
         ))
         for nat_gw in json_output:
-            self.assertEqual(nat_gw['Router Id'], self.ROUTER_ID)
+            self.assertEqual(nat_gw['Router Id'], router_id)
 
-    def test_07_nat_gateway_show_by_name(self):
+        # Show Nat Gateway by Name
         json_output = json.loads(self.openstack(
-            'nat gateway show -f json ' + self.NAT_NAME
+            'nat gateway show -f json ' + nat_name
         ))
-        self.assertEqual(json_output['name'], self.NAT_NAME)
-        self.assertEqual(json_output['id'], self.NAT_ID)
+        self.assertEqual(json_output['name'], nat_name)
+        self.assertEqual(json_output['id'], nat_id)
 
-    def test_08_nat_gateway_show_by_id(self):
+        # Show Nat Gateway by Id
         json_output = json.loads(self.openstack(
-            'nat gateway show -f json ' + self.NAT_ID
+            'nat gateway show -f json ' + nat_id
         ))
-        self.assertEqual(json_output['name'], self.NAT_NAME)
-        self.assertEqual(json_output['id'], self.NAT_ID)
+        self.assertEqual(json_output['name'], nat_name)
+        self.assertEqual(json_output['id'], nat_id)
 
-    def test_09_nat_gateway_update_by_id(self):
-        name = self.NAT_NAME + "-updated"
+        # Update Nat Gateway
+        nat_name = nat_name + "-updated"
         description = "otce cli test nat updated"
         json_output = json.loads(self.openstack(
             'nat gateway update {nat_id} '
             '--name {name} '
             '--description "{desc}" '
             '-f json'.format(
-                nat_id=self.NAT_ID,
-                name=name,
+                nat_id=nat_id,
+                name=nat_name,
                 desc=description)
         ))
-        self.assertEqual(json_output['name'], name)
+        self.assertEqual(json_output['name'], nat_name)
         self.assertEqual(json_output['description'], description)
-        TestNatGateway.NAT_NAME = json_output['name']
-
-    def test_10_nat_gateway_update_by_name(self):
-        name = 'os-cli-test-' + self.UUID
-        description = "otce cli test nat"
-        spec = '2'
-        json_output = json.loads(self.openstack(
-            'nat gateway update {nat_name} '
-            '--name {name} '
-            '--description "{desc}" '
-            '--spec {spec} '
-            '-f json'.format(
-                nat_name=self.NAT_NAME,
-                name=name,
-                spec=spec,
-                desc=description)
-        ))
-        self.assertEqual(json_output['name'], name)
-        self.assertEqual(json_output['description'], description)
-        self.assertEqual(json_output['spec'], spec)
-        TestNatGateway.NAT_NAME = json_output['name']
-
-    def test_11_nat_gateway_delete(self):
-        self.addCleanup(self._denitialize_network)
-        self.openstack('nat gateway delete ' + self.NAT_ID)
-
-    def _initialize_network(self):
-        router = json.loads(self.openstack(
-            'router create -f json ' + self.ROUTER_NAME
-        ))
-        network = json.loads(self.openstack(
-            'network create -f json ' + self.NETWORK_NAME
-        ))
-        self.openstack(
-            'subnet create {subnet} -f json '
-            '--network {net} '
-            '--subnet-range 192.168.0.0/24 '.format(
-                subnet=self.SUBNET_NAME,
-                net=self.NETWORK_NAME
-            ))
-
-        self.openstack(
-            'router add subnet {router} '
-            '{subnet} '.format(
-                router=self.ROUTER_NAME,
-                subnet=self.SUBNET_NAME
-            )
-        )
-
-        TestNatGateway.ROUTER_ID = router['id']
-        TestNatGateway.NETWORK_ID = network['id']
-
-    def _denitialize_network(self):
-        self.openstack(
-            'router remove subnet {router} '
-            '{subnet} '.format(
-                router=self.ROUTER_NAME,
-                subnet=self.SUBNET_NAME
-            )
-        )
-        self.openstack(
-            'subnet delete ' + self.SUBNET_NAME
-        )
-        self.openstack(
-            'network delete ' + self.NETWORK_NAME
-        )
-        self.openstack(
-            'router delete ' + self.ROUTER_NAME
-        )
