@@ -41,6 +41,7 @@ class TestSnatRule(common.NatTestCase):
             '--floating-ip-address 9 '
             '--status 10 '
             '--admin-state-up true '
+            '--created-at "{}"'.format(self.CURR_TIME)
         ))
         self.assertIsNotNone(json_output)
 

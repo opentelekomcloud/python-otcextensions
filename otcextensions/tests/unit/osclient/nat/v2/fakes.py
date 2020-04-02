@@ -63,7 +63,7 @@ class FakeNatGateway(test_base.Fake):
             "description": "my nat gateway",
             "admin_state_up": 'true',
             "tenant_id": "tenant-id-" + uuid.uuid4().hex,
-            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%s")[:-4],
+            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),
             "spec": "1",
             "internal_network_id": "net-id-" + uuid.uuid4().hex
         }
@@ -109,7 +109,7 @@ class FakeSnatRule(test_base.Fake):
             "cidr": uuid.uuid4().hex,
             "source_type": 0,
             "tenant_id": "tenant-id-" + uuid.uuid4().hex,
-            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%s")[:-4],
+            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),
             "floating_ip_address": uuid.uuid4().hex
         }
 
@@ -148,7 +148,7 @@ class FakeDnatRule(test_base.Fake):
             "protocol": "any",
             "tenant_id": "abc",
             "port_id": "",
-            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%s")[:-4],
+            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),
             "floating_ip_address": uuid.uuid4().hex,
             "external_service_port": 0
         }

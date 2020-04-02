@@ -43,6 +43,7 @@ class TestDnatRule(common.NatTestCase):
             '--nat-gateway-id 11 '
             '--protocol tcp '
             '--admin-state-up true '
+            '--created-at "{}"'.format(self.CURR_TIME)
         ))
         self.assertIsNotNone(json_output)
 

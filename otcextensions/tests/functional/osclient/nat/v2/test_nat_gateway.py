@@ -38,6 +38,7 @@ class TestNatGateway(common.NatTestCase):
             '--project-id 7 '
             '--status active '
             '--admin-state-up True '
+            '--created-at "{}"'.format(self.CURR_TIME)
         ))
         self.assertIsNotNone(json_output)
 

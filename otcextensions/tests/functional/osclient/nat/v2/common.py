@@ -14,19 +14,23 @@
 import json
 import uuid
 
+from datetime import datetime
+
 from openstackclient.tests.functional import base
 
 
 class NatTestCase(base.TestCase):
     """Common functional test bits for NAT commands"""
 
-    UUID = uuid.uuid4().hex[:8]
-    ROUTER_NAME = 'sdk-test-router-' + UUID
-    NETWORK_NAME = 'sdk-test-net-' + UUID
-    SUBNET_NAME = 'sdk-test-subnet-' + UUID
+    CURR_TIME = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
 
     def setUp(self):
         super(NatTestCase, self).setUp()
+        UUID = uuid.uuid4().hex[:8]
+        self.ROUTER_NAME = 'sdk-test-router-' + UUID
+        self.NETWORK_NAME = 'sdk-test-net-' + UUID
+        self.SUBNET_NAME = 'sdk-test-subnet-' + UUID
+
         self.ROUTER_ID = None
         self.NETWORK_ID = None
         self.FLOATING_IP_ID = None
