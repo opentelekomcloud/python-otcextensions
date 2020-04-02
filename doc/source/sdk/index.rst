@@ -8,6 +8,7 @@ Using the OpenStack SDK
    getting_started
    guides/index
    proxies/index
+   resources/index
 
 The OTC Extensions contain an abstraction interface layer. Clouds can
 do many things, but there are probably only about 10 of them that most

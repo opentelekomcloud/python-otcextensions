@@ -4,20 +4,20 @@ Service Proxies
 .. toctree::
    :maxdepth: 1
 
-   Anti DDoS Service <anti_ddos>
-   AutoScaling Service <auto_scaling>
-   Cloud Container Engine v1<cce_v1>
-   Cloud Container Engine v2<cce_v3>
-   Cloud Trace Service <cts>
-   Distributed Cache Service <dcs>
-   Dedicated Host Service <deh>
-   Distributed Message Service <dms>
-   DNS Service <dns>
-   Key Management Service <kms>
-   Object Block Storage <obs>
-   Volume Backup Service <volume_backup>
-   Relational Database Service RDS V1 <rds_v1>
-   Relational Database Service RDS V3 <rds_v3>
+   Anti DDoS Service (Anti-DDoS) <anti_ddos>
+   AutoScaling Service (AS) <auto_scaling>
+   Cloud Container Engine v1 (CCEv1) <cce_v1>
+   Cloud Container Engine v2 (CCE) <cce_v3>
+   Cloud Trace Service (CTS) <cts>
+   Distributed Cache Service (DCS) <dcs>
+   Dedicated Host Service (DeH) <deh>
+   Distributed Message Service (DMS) <dms>
+   Domain Name Server Service (DNS) <dns>
+   Key Management Service (KMS) <kms>
+   Object Block Storage (OBS) <obs>
+   Volume Backup Service (VBS) <volume_backup>
+   Relational Database Service RDS V1 (RDSv1) <rds_v1>
+   Relational Database Service RDS V3 (RDS) <rds_v3>
 
 .. _service-proxies:
 
@@ -39,15 +39,8 @@ Links to Native OpenStack Service Proxies
    Block Storage <https://docs.openstack.org/openstacksdk/latest/user/proxies/block_storage>
    Compute <https://docs.openstack.org/openstacksdk/latest/user/proxies/compute>
    Database <https://docs.openstack.org/openstacksdk/latest/user/proxies/database>
-   Identity v2 <https://docs.openstack.org/openstacksdk/latest/user/proxies/identity_v2>
    Identity v3 <https://docs.openstack.org/openstacksdk/latest/user/proxies/identity_v3>
-   Image v1 <https://docs.openstack.org/openstacksdk/latest/user/proxies/image_v1>
    Image v2 <https://docs.openstack.org/openstacksdk/latest/user/proxies/image_v2>
-   Key Manager <https://docs.openstack.org/openstacksdk/latest/user/proxies/key_manager>
-   Load Balancer <https://docs.openstack.org/openstacksdk/latest/user/proxies/load_balancer_v2>
-   Message v2 <https://docs.openstack.org/openstacksdk/latest/user/proxies/message_v2>
    Network <https://docs.openstack.org/openstacksdk/latest/user/proxies/network>
    Object Store <https://docs.openstack.org/openstacksdk/latest/user/proxies/object_store>
    Orchestration <https://docs.openstack.org/openstacksdk/latest/user/proxies/orchestration>
-   Workflow <https://docs.openstack.org/openstacksdk/latest/user/proxies/workflow>
-
