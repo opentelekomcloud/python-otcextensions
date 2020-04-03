@@ -14,6 +14,7 @@
 import logging
 
 from osc_lib import utils
+from osc_lib import exceptions
 from osc_lib.command import command
 
 from otcextensions.i18n import _
@@ -151,6 +152,7 @@ class ShowNatGateway(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
         obj = client.find_gateway(parsed_args.gateway)
+
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
 
@@ -282,11 +284,25 @@ class DeleteNatGateway(command.Command):
         parser.add_argument(
             'gateway',
             metavar='<gateway>',
-            help=_("Specifies the Name or ID of the NAT Gateway."),
+            nargs='+',
+            help=_("Nat Gateway(s) to delete (Name or ID)"),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
-        nat_gateway = client.find_gateway(parsed_args.gateway)
-        client.delete_gateway(nat_gateway.id)
+        result = 0
+        for gateway in parsed_args.gateway:
+            try:
+                obj = client.find_gateway(gateway)
+                client.delete_gateway(obj.id)
+            except Exception as e:
+                result += 1
+                LOG.error(_("Failed to delete Nat Gateway with "
+                          "name or ID '%(gateway)s': %(e)s"),
+                          {'gateway': gateway, 'e': e})
+        if result > 0:
+            total = len(parsed_args.gateway)
+            msg = (_("%(result)s of %(total)s NAT Gateway(s) failed "
+                   "to delete.") % {'result': result, 'total': total})
+            raise exceptions.CommandError(msg)

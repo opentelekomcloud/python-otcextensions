@@ -11,9 +11,14 @@
 # under the License.
 #
 import mock
+from unittest.mock import call
+
+from osc_lib import exceptions
 
 from otcextensions.osclient.nat.v2 import dnat
 from otcextensions.tests.unit.osclient.nat.v2 import fakes
+
+from openstackclient.tests.unit import utils as tests_utils
 
 
 class TestListDnatRules(fakes.TestNat):
@@ -162,8 +167,16 @@ class TestShowDnatRule(fakes.TestNat):
 
         self.cmd = dnat.ShowDnatRule(self.app, None)
 
-        self.client.get_dnat_rule = (
-            fakes.FakeDnatRule.get_dnat_rule(self._data, self._data.id))
+        self.client.get_dnat_rule = mock.Mock(return_value=self._data)
+
+    def test_show_no_options(self):
+        arglist = []
+        verifylist = []
+
+        # Testing that a call without the required argument will fail and
+        # throw a "ParserExecption"
+        self.assertRaises(tests_utils.ParserException,
+                          self.check_parser, self.cmd, arglist, verifylist)
 
     def test_show(self):
         arglist = [
@@ -190,23 +203,23 @@ class TestShowDnatRule(fakes.TestNat):
         ]
 
         verifylist = [
-            ('dnat', 'unexist_dnat_rule_id'),
+            ('dnat', arglist[0]),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
+        find_mock_result = exceptions.CommandError('Resource Not Found')
         self.client.get_dnat_rule = (
-            fakes.FakeDnatRule.get_dnat_rule(
-                self._data, 'unexist_dnat_rule_id'))
+            mock.Mock(side_effect=find_mock_result)
+        )
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
-            self.fail('CommandError should be raised.')
         except Exception as e:
-            self.assertEqual('404 Not Found', str(e))
-        self.client.get_dnat_rule.assert_called_with('unexist_dnat_rule_id')
+            self.assertEqual('Resource Not Found', str(e))
+        self.client.get_dnat_rule.assert_called_with(arglist[0])
 
 
 class TestCreateDnatRule(fakes.TestNat):
@@ -276,56 +289,87 @@ class TestCreateDnatRule(fakes.TestNat):
 
 class TestDeleteDnatRule(fakes.TestNat):
 
-    _data = fakes.FakeDnatRule.create_one()
+    _data = fakes.FakeDnatRule.create_multiple(2)
 
     def setUp(self):
         super(TestDeleteDnatRule, self).setUp()
 
-        self.client.get_dnat_rule = (
-            fakes.FakeDnatRule.get_dnat_rule(self._data, self._data.id))
         self.client.delete_dnat_rule = mock.Mock(return_value=None)
 
         self.cmd = dnat.DeleteDnatRule(self.app, None)
 
     def test_delete(self):
         arglist = [
-            self._data.id,
+            self._data[0].id,
         ]
 
         verifylist = [
-            ('dnat', self._data.id),
-        ]
-
-        # Verify cm is triggered with default parameters
-        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-
-        # Trigger the action
-        self.cmd.take_action(parsed_args)
-
-        self.client.get_dnat_rule.assert_called_with(self._data.id)
-
-        self.client.delete_dnat_rule.assert_called_with(self._data.id)
-
-    def test_delete_non_existent(self):
-        arglist = [
-            'unexist_dnat_rule_id',
-        ]
-
-        verifylist = [
-            ('dnat', 'unexist_dnat_rule_id'),
+            ('dnat', arglist),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         self.client.get_dnat_rule = (
-            fakes.FakeDnatRule.get_dnat_rule(
-                self._data, 'unexist_dnat_rule_id'))
+            mock.Mock(return_value=self._data[0])
+        )
+
+        # Trigger the action
+        result = self.cmd.take_action(parsed_args)
+        self.client.get_dnat_rule.assert_called_with(self._data[0].id)
+        self.client.delete_dnat_rule.assert_called_with(self._data[0].id)
+        self.assertIsNone(result)
+
+    def test_multiple_delete(self):
+        arglist = []
+
+        for dnat_rule in self._data:
+            arglist.append(dnat_rule.id)
+
+        verifylist = [
+            ('dnat', arglist),
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        find_mock_result = self._data
+        self.client.get_dnat_rule = (
+            mock.Mock(side_effect=find_mock_result)
+        )
+
+        # Trigger the action
+        result = self.cmd.take_action(parsed_args)
+
+        calls = []
+        for dnat_rule in self._data:
+            calls.append(call(dnat_rule.id))
+        self.client.delete_dnat_rule.assert_has_calls(calls)
+        self.assertIsNone(result)
+
+    def test_multiple_delete_with_exception(self):
+        arglist = [
+            self._data[0].id,
+            'unexist_dnat_rule_id',
+        ]
+        verifylist = [
+            ('dnat', arglist),
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        find_mock_result = [self._data[0], exceptions.CommandError]
+        self.client.get_dnat_rule = (
+            mock.Mock(side_effect=find_mock_result)
+        )
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
-            self.fail('CommandError should be raised.')
         except Exception as e:
-            self.assertEqual('404 Not Found', str(e))
-        self.client.get_dnat_rule.assert_called_with('unexist_dnat_rule_id')
+            self.assertEqual('1 of 2 DNAT Rule(s) failed to delete.', str(e))
+
+        self.client.get_dnat_rule.assert_any_call(arglist[0])
+        self.client.get_dnat_rule.assert_any_call(arglist[1])
+        self.client.delete_dnat_rule.assert_called_once_with(arglist[0])

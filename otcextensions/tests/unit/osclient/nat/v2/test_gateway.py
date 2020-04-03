@@ -11,9 +11,14 @@
 # under the License.
 #
 import mock
+from unittest.mock import call
+
+from osc_lib import exceptions
 
 from otcextensions.osclient.nat.v2 import gateway
 from otcextensions.tests.unit.osclient.nat.v2 import fakes
+
+from openstackclient.tests.unit import utils as tests_utils
 
 
 class TestListNatGateways(fakes.TestNat):
@@ -185,6 +190,7 @@ class TestUpdateNatGateway(fakes.TestNat):
 
         self.cmd = gateway.UpdateNatGateway(self.app, None)
 
+        self.client.find_gateway = mock.Mock(return_value=self._data)
         self.client.update_gateway = mock.Mock(return_value=self._data)
 
     def test_update(self):
@@ -202,9 +208,6 @@ class TestUpdateNatGateway(fakes.TestNat):
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-
-        self.client.find_gateway = (
-            fakes.FakeNatGateway.find_gateway(self._data, self._data.name))
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -243,6 +246,17 @@ class TestShowNatGateway(fakes.TestNat):
 
         self.cmd = gateway.ShowNatGateway(self.app, None)
 
+        self.client.find_gateway = mock.Mock(return_value=self._data)
+
+    def test_show_no_options(self):
+        arglist = []
+        verifylist = []
+
+        # Testing that a call without the required argument will fail and
+        # throw a "ParserExecption"
+        self.assertRaises(tests_utils.ParserException,
+                          self.check_parser, self.cmd, arglist, verifylist)
+
     def test_show(self):
         arglist = [
             self._data.id,
@@ -254,9 +268,6 @@ class TestShowNatGateway(fakes.TestNat):
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-
-        self.client.find_gateway = (
-            fakes.FakeNatGateway.find_gateway(self._data, self._data.id))
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -277,93 +288,102 @@ class TestShowNatGateway(fakes.TestNat):
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
+        find_mock_result = exceptions.CommandError('Resource Not Found')
         self.client.find_gateway = (
-            fakes.FakeNatGateway.find_gateway(
-                self._data, 'unexist_nat_gateway'))
+            mock.Mock(side_effect=find_mock_result)
+        )
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
-            self.fail('CommandError should be raised.')
         except Exception as e:
-            self.assertEqual('404 Not Found', str(e))
+            self.assertEqual('Resource Not Found', str(e))
         self.client.find_gateway.assert_called_with('unexist_nat_gateway')
 
 
 class TestDeleteNatGateway(fakes.TestNat):
 
-    _data = fakes.FakeNatGateway.create_one()
+    _data = fakes.FakeNatGateway.create_multiple(2)
 
     def setUp(self):
         super(TestDeleteNatGateway, self).setUp()
 
-        self.cmd = gateway.DeleteNatGateway(self.app, None)
-
-        self.client.find_gateway = (
-            fakes.FakeNatGateway.find_gateway(self._data, self._data.id))
         self.client.delete_gateway = mock.Mock(return_value=None)
 
-    def test_delete_by_id(self):
+        # Get the command object to test
+        self.cmd = gateway.DeleteNatGateway(self.app, None)
+
+    def test_delete(self):
         arglist = [
-            self._data.id,
+            self._data[0].name,
         ]
 
         verifylist = [
-            ('gateway', self._data.id),
-        ]
-
-        # Verify cm is triggered with default parameters
-        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-
-        # Trigger the action
-        self.cmd.take_action(parsed_args)
-
-        self.client.find_gateway.assert_called_with(self._data.id)
-
-        self.client.delete_gateway.assert_called_with(self._data.id)
-
-    def test_delete_by_name(self):
-        arglist = [
-            self._data.name,
-        ]
-
-        verifylist = [
-            ('gateway', self._data.name),
+            ('gateway', [self._data[0].name]),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         self.client.find_gateway = (
-            fakes.FakeNatGateway.find_gateway(self._data, self._data.name))
+            mock.Mock(return_value=self._data[0])
+        )
 
         # Trigger the action
-        self.cmd.take_action(parsed_args)
+        result = self.cmd.take_action(parsed_args)
+        self.client.delete_gateway.assert_called_with(self._data[0].id)
+        self.assertIsNone(result)
 
-        self.client.find_gateway.assert_called_with(self._data.name)
+    def test_multiple_delete(self):
+        arglist = []
 
-        self.client.delete_gateway.assert_called_with(self._data.id)
+        for nat_gw in self._data:
+            arglist.append(nat_gw.name)
 
-    def test_delete_non_existent(self):
+        verifylist = [
+            ('gateway', arglist),
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        find_mock_result = self._data
+        self.client.find_gateway = (
+            mock.Mock(side_effect=find_mock_result)
+        )
+
+        # Trigger the action
+        result = self.cmd.take_action(parsed_args)
+
+        calls = []
+        for nat_gw in self._data:
+            calls.append(call(nat_gw.id))
+        self.client.delete_gateway.assert_has_calls(calls)
+        self.assertIsNone(result)
+
+    def test_multiple_delete_with_exception(self):
         arglist = [
+            self._data[0].name,
             'unexist_nat_gateway',
         ]
-
         verifylist = [
-            ('gateway', 'unexist_nat_gateway'),
+            ('gateway', arglist),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
+        find_mock_result = [self._data[0], exceptions.CommandError]
         self.client.find_gateway = (
-            fakes.FakeNatGateway.find_gateway(
-                self._data, 'unexist_nat_gateway'))
+            mock.Mock(side_effect=find_mock_result)
+        )
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
-            self.fail('CommandError should be raised.')
         except Exception as e:
-            self.assertEqual('404 Not Found', str(e))
-        self.client.find_gateway.assert_called_with('unexist_nat_gateway')
+            self.assertEqual('1 of 2 NAT Gateway(s) failed to delete.', str(e))
+
+        self.client.find_gateway.assert_any_call(self._data[0].name)
+        self.client.find_gateway.assert_any_call('unexist_nat_gateway')
+        self.client.delete_gateway.assert_called_once_with(self._data[0].id)

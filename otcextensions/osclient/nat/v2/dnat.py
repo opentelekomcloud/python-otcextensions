@@ -14,6 +14,7 @@
 import logging
 
 from osc_lib import utils
+from osc_lib import exceptions
 from osc_lib.command import command
 
 from otcextensions.i18n import _
@@ -272,11 +273,25 @@ class DeleteDnatRule(command.Command):
         parser.add_argument(
             'dnat',
             metavar='<dnat_id>',
-            help=_("Specifies the ID of the DNAT Rule."),
+            nargs='+',
+            help=_("Specifies the DNAT Rule(s) ID(s) to delete."),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
-        dnat_rule = client.get_dnat_rule(parsed_args.dnat)
-        client.delete_dnat_rule(dnat_rule.id)
+        result = 0
+        for dnat in parsed_args.dnat:
+            try:
+                obj = client.get_dnat_rule(dnat)
+                client.delete_dnat_rule(obj.id)
+            except Exception as e:
+                result += 1
+                LOG.error(_("Failed to delete DNAT rule with "
+                          "ID '%(dnat)s': %(e)s"),
+                          {'dnat': dnat, 'e': e})
+        if result > 0:
+            total = len(parsed_args.dnat)
+            msg = (_("%(result)s of %(total)s DNAT Rule(s) failed "
+                   "to delete.") % {'result': result, 'total': total})
+            raise exceptions.CommandError(msg)

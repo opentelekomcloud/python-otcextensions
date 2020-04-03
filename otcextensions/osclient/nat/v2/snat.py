@@ -14,6 +14,7 @@
 import logging
 
 from osc_lib import utils
+from osc_lib import exceptions
 from osc_lib.command import command
 
 from otcextensions.i18n import _
@@ -250,12 +251,26 @@ class DeleteSnatRule(command.Command):
         parser.add_argument(
             'snat',
             metavar='<snat_id>',
-            help=_("Specifies the ID of the SNAT Rule."),
+            nargs='+',
+            help=_("Specifies the SNAT rule(s) ID(s) to delete."),
         )
 
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.nat
-        snat_rule = client.get_snat_rule(parsed_args.snat)
-        client.delete_snat_rule(snat_rule.id)
+        result = 0
+        for snat in parsed_args.snat:
+            try:
+                obj = client.get_snat_rule(snat)
+                client.delete_snat_rule(obj.id)
+            except Exception as e:
+                result += 1
+                LOG.error(_("Failed to delete SNAT rule with "
+                          "ID '%(snat)s': %(e)s"),
+                          {'snat': snat, 'e': e})
+        if result > 0:
+            total = len(parsed_args.snat)
+            msg = (_("%(result)s of %(total)s SNAT Rule(s) failed "
+                   "to delete.") % {'result': result, 'total': total})
+            raise exceptions.CommandError(msg)

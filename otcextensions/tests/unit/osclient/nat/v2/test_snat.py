@@ -11,9 +11,14 @@
 # under the License.
 #
 import mock
+from unittest.mock import call
+
+from osc_lib import exceptions
 
 from otcextensions.osclient.nat.v2 import snat
 from otcextensions.tests.unit.osclient.nat.v2 import fakes
+
+from openstackclient.tests.unit import utils as tests_utils
 
 
 class TestListSnatRules(fakes.TestNat):
@@ -213,64 +218,16 @@ class TestShowSnatRule(fakes.TestNat):
 
         self.client.get_snat_rule = mock.Mock(return_value=self._data)
 
+    def test_show_no_options(self):
+        arglist = []
+        verifylist = []
+
+        # Testing that a call without the required argument will fail and
+        # throw a "ParserExecption"
+        self.assertRaises(tests_utils.ParserException,
+                          self.check_parser, self.cmd, arglist, verifylist)
+
     def test_show(self):
-        arglist = [
-            'test_snat_rule_id',
-        ]
-
-        verifylist = [
-            ('snat', 'test_snat_rule_id'),
-        ]
-
-        # Verify cm is triggered with default parameters
-        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-
-        # Trigger the action
-        columns, data = self.cmd.take_action(parsed_args)
-        self.client.get_snat_rule.assert_called_with('test_snat_rule_id')
-
-        self.assertEqual(self.columns, columns)
-        self.assertEqual(self.data, data)
-
-    def test_show_non_existent(self):
-        arglist = [
-            'unexist_snat_rule_id',
-        ]
-
-        verifylist = [
-            ('snat', 'unexist_snat_rule_id'),
-        ]
-
-        # Verify cm is triggered with default parameters
-        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-
-        self.client.get_snat_rule = (
-            fakes.FakeSnatRule.get_snat_rule(
-                self._data, 'unexist_snat_rule_id'))
-
-        # Trigger the action
-        try:
-            self.cmd.take_action(parsed_args)
-            self.fail('CommandError should be raised.')
-        except Exception as e:
-            self.assertEqual('404 Not Found', str(e))
-        self.client.get_snat_rule.assert_called_with('unexist_snat_rule_id')
-
-
-class TestDeleteSnatRule(fakes.TestNat):
-
-    _data = fakes.FakeSnatRule.create_one()
-
-    def setUp(self):
-        super(TestDeleteSnatRule, self).setUp()
-
-        self.client.get_snat_rule = (
-            fakes.FakeSnatRule.get_snat_rule(self._data, self._data.id))
-        self.client.delete_snat_rule = mock.Mock(return_value=None)
-
-        self.cmd = snat.DeleteSnatRule(self.app, None)
-
-    def test_delete(self):
         arglist = [
             self._data.id,
         ]
@@ -283,32 +240,120 @@ class TestDeleteSnatRule(fakes.TestNat):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Trigger the action
-        self.cmd.take_action(parsed_args)
-
+        columns, data = self.cmd.take_action(parsed_args)
         self.client.get_snat_rule.assert_called_with(self._data.id)
 
-        self.client.delete_snat_rule.assert_called_with(self._data.id)
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
 
-    def test_delete_non_existent(self):
+    def test_show_non_existent(self):
         arglist = [
             'unexist_snat_rule_id',
         ]
 
         verifylist = [
-            ('snat', 'unexist_snat_rule_id'),
+            ('snat', arglist[0]),
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        find_mock_result = exceptions.CommandError('Resource Not Found')
+        self.client.get_snat_rule = (
+            mock.Mock(side_effect=find_mock_result)
+        )
+
+        # Trigger the action
+        try:
+            self.cmd.take_action(parsed_args)
+        except Exception as e:
+            self.assertEqual('Resource Not Found', str(e))
+        self.client.get_snat_rule.assert_called_with(arglist[0])
+
+
+class TestDeleteSnatRule(fakes.TestNat):
+
+    _data = fakes.FakeSnatRule.create_multiple(2)
+
+    def setUp(self):
+        super(TestDeleteSnatRule, self).setUp()
+
+        self.client.delete_snat_rule = mock.Mock(return_value=None)
+
+        self.cmd = snat.DeleteSnatRule(self.app, None)
+
+    def test_delete(self):
+        arglist = [
+            self._data[0].id,
+        ]
+
+        verifylist = [
+            ('snat', arglist),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         self.client.get_snat_rule = (
-            fakes.FakeSnatRule.get_snat_rule(
-                self._data, 'unexist_snat_rule_id'))
+            mock.Mock(return_value=self._data[0])
+        )
+
+        # Trigger the action
+        result = self.cmd.take_action(parsed_args)
+        self.client.get_snat_rule.assert_called_with(self._data[0].id)
+        self.client.delete_snat_rule.assert_called_with(self._data[0].id)
+        self.assertIsNone(result)
+
+    def test_multiple_delete(self):
+        arglist = []
+
+        for snat_rule in self._data:
+            arglist.append(snat_rule.id)
+
+        verifylist = [
+            ('snat', arglist),
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        find_mock_result = self._data
+        self.client.get_snat_rule = (
+            mock.Mock(side_effect=find_mock_result)
+        )
+
+        # Trigger the action
+        result = self.cmd.take_action(parsed_args)
+
+        calls = []
+        for snat_rule in self._data:
+            calls.append(call(snat_rule.id))
+        self.client.delete_snat_rule.assert_has_calls(calls)
+        self.assertIsNone(result)
+
+    def test_multiple_delete_with_exception(self):
+        arglist = [
+            self._data[0].id,
+            'unexist_snat_rule_id',
+        ]
+        verifylist = [
+            ('snat', arglist),
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        find_mock_result = [self._data[0], exceptions.CommandError]
+        self.client.get_snat_rule = (
+            mock.Mock(side_effect=find_mock_result)
+        )
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
-            self.fail('CommandError should be raised.')
         except Exception as e:
-            self.assertEqual('404 Not Found', str(e))
-        self.client.get_snat_rule.assert_called_with('unexist_snat_rule_id')
+            self.assertEqual('1 of 2 SNAT Rule(s) failed to delete.', str(e))
+
+        self.client.get_snat_rule.assert_any_call(arglist[0])
+        self.client.get_snat_rule.assert_any_call(arglist[1])
+        self.client.delete_snat_rule.assert_called_once_with(arglist[0])

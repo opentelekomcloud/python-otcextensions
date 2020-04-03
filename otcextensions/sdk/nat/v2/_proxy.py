@@ -83,7 +83,7 @@ class Proxy(proxy.Proxy):
         """
         return self._update(_gateway.Gateway, gateway, **attrs)
 
-    def find_gateway(self, name_or_id, ignore_missing=True):
+    def find_gateway(self, name_or_id, ignore_missing=False):
         """Find a single Nat Gateway
 
         :param name_or_id: The name or ID of a zone
@@ -95,12 +95,8 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        obj = self._find(_gateway.Gateway, name_or_id)
-        if obj is None:
-            raise RuntimeError(
-                'The provide NAT Gateway id/name={} '
-                'could not be found'.format(name_or_id))
-        return obj
+        return self._find(_gateway.Gateway, name_or_id,
+                          ignore_missing=ignore_missing)
 
     # ======== SNAT rules ========
     def create_snat_rule(self, **attrs):

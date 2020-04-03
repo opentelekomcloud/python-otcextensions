@@ -27,9 +27,10 @@ class NatTestCase(base.TestCase):
     def setUp(self):
         super(NatTestCase, self).setUp()
         UUID = uuid.uuid4().hex[:8]
-        self.ROUTER_NAME = 'sdk-test-router-' + UUID
-        self.NETWORK_NAME = 'sdk-test-net-' + UUID
-        self.SUBNET_NAME = 'sdk-test-subnet-' + UUID
+        self.ROUTER_NAME = 'otce-nat-test-router-' + UUID
+        self.NETWORK_NAME = 'otce-nat-test-net-' + UUID
+        self.SUBNET_NAME = 'otce-nat-test-subnet-' + UUID
+        self.NAT_NAME = 'otce-nat-test-' + UUID
 
         self.ROUTER_ID = None
         self.NETWORK_ID = None
@@ -40,7 +41,7 @@ class NatTestCase(base.TestCase):
 
     def create_nat_gateway(self, name=None):
         self._initialize_network()
-        name = name or uuid.uuid4().hex
+        name = name or self.SUBNET_NAME
         json_output = json.loads(self.openstack(
             'nat gateway create {name}'
             ' --router-id {router_id}'
