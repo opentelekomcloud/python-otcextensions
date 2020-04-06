@@ -41,7 +41,7 @@ class NatTestCase(base.TestCase):
 
     def create_nat_gateway(self, name=None):
         self._initialize_network()
-        name = name or self.SUBNET_NAME
+        name = name or self.NAT_NAME
         json_output = json.loads(self.openstack(
             'nat gateway create {name}'
             ' --router-id {router_id}'
@@ -145,6 +145,9 @@ class NatTestCase(base.TestCase):
 
     def _denitialize_network(self):
         self.openstack(
+            'floating ip delete ' + self.FLOATING_IP_ID
+        )
+        self.openstack(
             'router remove subnet {router} '
             '{subnet} '.format(
                 router=self.ROUTER_NAME,
@@ -159,7 +162,4 @@ class NatTestCase(base.TestCase):
         )
         self.openstack(
             'router delete ' + self.ROUTER_NAME
-        )
-        self.openstack(
-            'floating ip delete ' + self.FLOATING_IP_ID
         )
