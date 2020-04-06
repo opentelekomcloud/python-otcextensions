@@ -32,6 +32,9 @@ class ClusterSpec(resource.Resource):
 
     #: Authentication
     authentication = resource.Body('authentication', type=dict)
+    #: Single Master Cluster in one Availability Zone: ['eu-de-01']
+    #: Three Master Cluster in multiple Availability Zones: ['multi-az']
+    az = resource.Body('az')
     #: Billing mode of the cluster. Currently, only pay-per-use is supported.
     billing = resource.Body('billing_mode', type=int)
     #: Container network parameters.
@@ -44,9 +47,11 @@ class ClusterSpec(resource.Resource):
     flavor = resource.Body('flavor')
     #: Node network parameters.
     host_network = resource.Body('hostNetwork', type=HostNetworkSpec)
+    #: Enable Istio Support default: True
+    support_istio = resource.Body('supportIstio', type=bool)
     #: Cluster type.
     type = resource.Body('type')
-    #: Cluster version ['v1.9.2-r2', 'v1.11.3-r1'].
+    #: Cluster version ['v1.11.7-r2', 'v1.13.10-r0'].
     version = resource.Body('version')
 
 
