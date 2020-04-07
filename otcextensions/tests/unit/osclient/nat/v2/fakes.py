@@ -46,13 +46,13 @@ class TestNat(utils.TestCommand):
 
 
 class FakeNatGateway(test_base.Fake):
-    """Fake one or more datastore versions."""
+    """Fake one or more Nat Gateways."""
     @classmethod
     def generate(cls):
-        """Create a fake datastore.
+        """Create a fake NAT Gateway.
 
         :return:
-            A FakeResource object, with id, name, metadata, and so on
+            A FakeResource object, with id, name and so on
         """
         # Set default attributes.
         object_info = {
@@ -72,15 +72,14 @@ class FakeNatGateway(test_base.Fake):
 
 
 class FakeSnatRule(test_base.Fake):
-    """Fake one or more Instance."""
+    """Fake one or more SNAT Rule."""
     @classmethod
     def generate(cls):
-        """Create a fake Configuration.
+        """Create a fake SNAT Rule.
 
         :return:
-            A FakeResource object, with id, name, metadata, and so on
+            A FakeResource object, with id, status and so on
         """
-
         # Set default attributes.
         object_info = {
             "id": "id-" + uuid.uuid4().hex,
@@ -100,9 +99,15 @@ class FakeSnatRule(test_base.Fake):
 
 
 class FakeDnatRule(test_base.Fake):
-    """Fake one or more Backup"""
+    """Fake one or more DNAT Rule"""
     @classmethod
     def generate(cls):
+        """Create a fake DNAT Rule.
+
+        :return:
+            A FakeResource object, with id, status and so on
+        """
+        # Set default attributes.
         object_info = {
             "id": "id-" + uuid.uuid4().hex,
             "floating_ip_id": "eip-id-" + uuid.uuid4().hex,
