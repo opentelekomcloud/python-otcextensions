@@ -1,4 +1,4 @@
-DMS Resources
+NAT Resources
 =============
 
 .. toctree::
