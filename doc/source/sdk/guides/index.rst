@@ -10,6 +10,7 @@ Open Telekom Cloud related User Guides
    anti_ddos
    auto_scaling
    cce
+   cts
    deh
    logging
 
