@@ -10,7 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from otcextensions.sdk.smn.v1 import _proxy
+from otcextensions.sdk.smn.v2 import _proxy
 
 from openstack.tests.unit import test_proxy_base
 
