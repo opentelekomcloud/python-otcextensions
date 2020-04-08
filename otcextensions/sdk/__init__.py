@@ -131,6 +131,9 @@ OTC_SERVICES = {
         'endpoint_service_type': 'rdsv3',
         'append_project_id': True,
     },
+    'sdrs': {
+        'service_type': 'sdrs'
+    },
     'smn': {
         'service_type': 'smn',
         'append_project_id': True

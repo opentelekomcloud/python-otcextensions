@@ -4,7 +4,6 @@ otcextensions.tests.functional.osclient.volume_backup*
 otcextensions.tests.functional.sdk.cce.v1*
 otcextensions.tests.functional.sdk.kms*
 otcextensions.tests.functional.sdk.volume_backup*
-otcextensions.tests.functional.sdk.volume_backup*
 otcextensions.tests.functional.sdk.deh*
 otcextensions.tests.functional.sdk.dds*
 otcextensions.tests.functional.sdk.plas*
