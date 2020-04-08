@@ -11,12 +11,12 @@
 # under the License.
 from openstack import service_description
 
-from otcextensions.sdk.smn.v1 import _proxy
+from otcextensions.sdk.smn.v2 import _proxy
 
 
 class SmnService(service_description.ServiceDescription):
     """The SMN service."""
 
     supported_versions = {
-        '1': _proxy.Proxy
+        '2': _proxy.Proxy
     }
