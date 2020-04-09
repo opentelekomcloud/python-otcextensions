@@ -66,11 +66,7 @@ attributes.
 CTS Traces
 ----------
 
-An Auto-Scaling (AS) group consists of a collection of instances that apply
-to the same scaling scenario. An AS group specifies parameters, such as the
-maximum number of instances, expected number of instances, minimum number
-of instances, VPC, subnet, and load balancing. Each user can create a maximum
-of 25 AS groups by default.
+Traces are the messuremant values of a CTS Tracker.
 
 List Traces
 ^^^^^^^^^^^
