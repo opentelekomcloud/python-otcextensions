@@ -65,7 +65,7 @@ class Proxy(proxy.Proxy):
         """
         return self._update(_tracker.Tracker, tracker, **attrs)
 
-    def delete_tracker(self, tracker, ignore_missing=True):
+    def delete_tracker(self, tracker='system'):
         """Delete a tracker
 
         :param tracker: The value can be the ID of a tracker or a
@@ -81,6 +81,5 @@ class Proxy(proxy.Proxy):
         :rtype:
             :class:`~otcextensions.sdk.cts.v2.tracker.Tracker`
         """
-        return self._delete(_tracker.Tracker,
-                            tracker,
-                            ignore_missing=ignore_missing)
+        tracker = self._get_resource(_tracker.Tracker, tracker)
+        return tracker._delete_tracker(self, tracker.id)
