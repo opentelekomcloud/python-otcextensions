@@ -34,23 +34,18 @@ class TestBackupPolicy(TestVbs):
     policy = None
     volume = None
 
-    def setUp(cls):
-        super(TestBackupPolicy, cls).setUp()
-        # for volume in cls.conn.block_store.volumes(limit=1):
-        #     cls.volume = volume
-        #     break
-        # if not cls.volume:
-        #     raise Exception("no exists volume for test")
-        # create backup policy
-        cls.policy = create_backup_policy(cls.client, cls.BACKUP_POLICY_NAME)
+    def setUp(self):
+        super(TestBackupPolicy, self).setUp()
+        self.policy = create_backup_policy(self.client,
+                                           self.BACKUP_POLICY_NAME)
 
-    def tearDown(cls):
+    def tearDown(self):
         #: delete backup policy
-        if cls.policy and cls.volume:
-            cls.conn.volume_backup.unlink_resources_of_policy(cls.policy,
-                                                              [cls.volume.id])
-        if cls.policy:
-            cls.conn.volume_backup.delete_backup_policy(cls.policy)
+        if self.policy and self.volume:
+            self.conn.volume_backup.unlink_resources_of_policy(
+                self.policy, [self.volume.id])
+        if self.policy:
+            self.conn.volume_backup.delete_backup_policy(self.policy)
 
     def test_list_policies(self):
         policies = list(self.client.backup_policies())
