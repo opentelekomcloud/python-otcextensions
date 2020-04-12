@@ -21,24 +21,22 @@ class TestKey(base.BaseFunctionalTest):
     KEY_ALIAS = 'sdk_test_key'
     cmks = []
 
-    @classmethod
-    def setUpClass(cls):
-        super(TestKey, cls).setUpClass()
+    def setUp(self):
+        super(TestKey, self).setUp()
         try:
-            cls.cmk = cls.conn.kms.create_key(
+            self.cmk = self.conn.kms.create_key(
                 key_alias=TestKey.KEY_ALIAS
             )
         except exceptions.DuplicateResource:
-            cls.cmk = cls.conn.kms.find_key(alias=TestKey.KEY_ALIAS)
+            self.cmk = self.conn.kms.find_key(alias=TestKey.KEY_ALIAS)
 
-        cls.cmks.append(cls.cmk)
+        self.cmks.append(self.cmk)
 
-    @classmethod
-    def tearDownClass(cls):
+    def tearDown(self):
         try:
-            for key in cls.cmks:
+            for key in self.cmks:
                 if key.id:
-                    cls.conn.kms.schedule_key_deletion(key, 7)
+                    self.conn.kms.schedule_key_deletion(key, 7)
         except exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
