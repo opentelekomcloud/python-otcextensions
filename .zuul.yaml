@@ -1,3 +1,8 @@
+- job:
+  name: tox-functional-master
+  parent: tox-functional
+  branches: master
+
 - project:
     merge-mode: squash-merge
     check:
@@ -14,4 +19,4 @@
         - tox-functional
     periodic:
       jobs:
-        - tox-functional
+        - tox-functional-master
