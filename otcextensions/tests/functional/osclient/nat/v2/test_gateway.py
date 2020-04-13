@@ -15,12 +15,11 @@ import json
 from otcextensions.tests.functional.osclient.nat.v2 import common
 
 
-class TestNatGateway(common.NatTestCase):
+class TestGateway(common.NatTestCase):
     """Functional Tests for NAT Gateway"""
 
-    @classmethod
-    def setUpClass(cls):
-        super(TestNatGateway, cls).setUpClass()
+    def setUp(self):
+        super(TestGateway, self).setUp()
 
     def test_nat_gateway_list(self):
         json_output = json.loads(self.openstack(

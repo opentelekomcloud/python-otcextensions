@@ -15,12 +15,11 @@ import json
 from otcextensions.tests.functional.osclient.nat.v2 import common
 
 
-class TestSnatRule(common.NatTestCase):
+class TestSnat(common.NatTestCase):
     """Functional Tests for NAT Gateway"""
 
-    @classmethod
-    def setUpClass(cls):
-        super(TestSnatRule, cls).setUpClass()
+    def setUp(self):
+        super(TestSnat, self).setUp()
 
     def test_snat_rule_list(self):
         json_output = json.loads(self.openstack(
@@ -45,7 +44,7 @@ class TestSnatRule(common.NatTestCase):
         ))
         self.assertIsNotNone(json_output)
 
-    def test_nat_snat_rule_create(self):
+    def test_nat_snat_rule(self):
         json_output = self.create_snat_rule()
         self.addCleanup(self.delete_snat_rule)
         snat_rule_id = json_output['id']
