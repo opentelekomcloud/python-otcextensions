@@ -16,6 +16,7 @@ Open Telekom Cloud Resources
    Distributed Message Service (DMS) <dms/index>
    Domain Name Service (DNS) <dns/index>
    Key Management Service (KMS) <kms/index>
+   Network Address Translation (NAT) <nat/index>
    Object Block Storage (OBS) <obs/index>
    Relational Database Service (RDS) <rds/index>
 
