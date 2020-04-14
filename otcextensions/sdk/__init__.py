@@ -114,7 +114,7 @@ OTC_SERVICES = {
         'service_type': 'mrs'
     },
     'nat': {
-        'service_type': 'nat'
+        'service_type': 'nat',
     },
     'obs': {
         'service_type': 'obs',

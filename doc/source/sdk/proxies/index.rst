@@ -14,10 +14,11 @@ Service Proxies
    Distributed Message Service (DMS) <dms>
    Domain Name Server Service (DNS) <dns>
    Key Management Service (KMS) <kms>
+   Network Address Translation (NAT) <nat>
    Object Block Storage (OBS) <obs>
-   Volume Backup Service (VBS) <volume_backup>
    Relational Database Service RDS V1 (RDSv1) <rds_v1>
    Relational Database Service RDS V3 (RDS) <rds_v3>
+   Volume Backup Service (VBS) <volume_backup>
 
 .. _service-proxies:
 

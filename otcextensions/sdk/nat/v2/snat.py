@@ -26,7 +26,7 @@ class Snat(resource.Resource):
     _query_mapping = resource.QueryParameters(
         'admin_state_up', 'cidr', 'created_at', 'floating_ip_address',
         'floating_ip_id', 'id', 'limit', 'nat_gateway_id', 'network_id',
-        'source_type', 'status', 'project_id'
+        'source_type', 'status', 'project_id', project_id='tenant_id'
     )
 
     # Properties

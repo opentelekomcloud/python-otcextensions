@@ -24,11 +24,10 @@ class Dnat(resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'admin_state_up', 'cidr', 'created_at', 'external_service_port',
-        'floating_ip_address', 'floating_ip_id', 'id',
-        'internal_service_port', 'limit', 'nat_gateway_id', 'network_id',
-        'port_id', 'private_id', 'protocol', 'source_type', 'status',
-        'project_id'
+        'admin_state_up', 'created_at', 'external_service_port', 'id',
+        'floating_ip_address', 'floating_ip_id', 'internal_service_port',
+        'limit', 'nat_gateway_id', 'port_id', 'private_ip', 'protocol',
+        'status', 'project_id', project_id='tenant_id'
     )
 
     # Properties
