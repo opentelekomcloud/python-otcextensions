@@ -115,7 +115,6 @@ OTC_SERVICES = {
     },
     'nat': {
         'service_type': 'nat',
-        'append_project_id': True,
     },
     'obs': {
         'service_type': 'obs',
