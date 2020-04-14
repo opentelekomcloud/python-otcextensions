@@ -15,32 +15,21 @@ CMK (Customer Master Key) Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.kms.v1._proxy.Proxy
-
-   .. automethod:: otcextensions.sdk.kms.v1._proxy.Proxy.keys
-   .. automethod:: otcextensions.sdk.kms.v1._proxy.Proxy.create_key
-   .. automethod:: otcextensions.sdk.kms.v1._proxy.Proxy.get_key
-   .. automethod:: otcextensions.sdk.kms.v1._proxy.Proxy.find_key
-   .. automethod:: otcextensions.sdk.kms.v1._proxy.Proxy.enable_key
-   .. automethod:: otcextensions.sdk.kms.v1._proxy.Proxy.disable_key
-   .. automethod:: otcextensions.sdk.kms.v1._proxy.Proxy.schedule_key_deletion
-   .. automethod:: otcextensions.sdk.kms.v1._proxy.Proxy.cancel_key_deletion
-
+  :noindex:
+  :members: keys, get_key, find_key, create_key, enable_key, disable_key,
+            schedule_key_deletion, cancel_key_deletion
 
 DEK (Data Encryption Key) Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.kms.v1._proxy.Proxy
-
-  .. automethod:: otcextensions.sdk.kms.v1._proxy.Proxy.create_datakey
-  .. automethod:: otcextensions.sdk.kms.v1._proxy.Proxy.create_datakey_wo_plain
-  .. automethod:: otcextensions.sdk.kms.v1._proxy.Proxy.encrypt_datakey
-  .. automethod:: otcextensions.sdk.kms.v1._proxy.Proxy.decrypt_datakey
+  :noindex:
+  :members: create_datakey, create_datakey_wo_plain, encrypt_datakey,
+            decrypt_datakey
 
 Other Operations
 ^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.kms.v1._proxy.Proxy
-
-  .. automethod:: otcextensions.sdk.kms.v1._proxy.Proxy.generate_random
-  .. automethod:: otcextensions.sdk.kms.v1._proxy.Proxy.get_instance_number
-  .. automethod:: otcextensions.sdk.kms.v1._proxy.Proxy.quotas
+  :noindex:
+  :members: generate_random, get_instance_number, quotas

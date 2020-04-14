@@ -23,14 +23,8 @@ Backup Policy Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.volume_backup.v2._proxy.Proxy
-
-  .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.backup_policies
-  .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.create_backup_policy
-  .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.update_backup_policy
-  .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.delete_backup_policy
-  .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.find_backup_policy
-  .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.execute_policy
-  .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.enable_policy
-  .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.disable_policy
-  .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.link_resources_to_policy
-  .. automethod:: otcextensions.sdk.volume_backup.v2._proxy.Proxy.unlink_resources_of_policy
+  :noindex:
+  :members: backup_policies, find_backup_policy, create_backup_policy,
+            update_backup_policy, delete_backup_policy, execute_policy,
+            enable_policy, disable_policy, link_resources_to_policy,
+            unlink_resources_of_policy

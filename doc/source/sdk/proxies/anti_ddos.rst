@@ -15,21 +15,15 @@ Floating IP Operations
 ^^^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.anti_ddos.v1._proxy.Proxy
-
-   .. automethod:: otcextensions.sdk.anti_ddos.v1._proxy.Proxy.floating_ips
-   .. automethod:: otcextensions.sdk.anti_ddos.v1._proxy.Proxy.protect_floating_ip
-   .. automethod:: otcextensions.sdk.anti_ddos.v1._proxy.Proxy.unprotect_floating_ip
-   .. automethod:: otcextensions.sdk.anti_ddos.v1._proxy.Proxy.get_floating_ip_policies
-   .. automethod:: otcextensions.sdk.anti_ddos.v1._proxy.Proxy.update_floating_ip_policies
-   .. automethod:: otcextensions.sdk.anti_ddos.v1._proxy.Proxy.get_floating_ip_status
-   .. automethod:: otcextensions.sdk.anti_ddos.v1._proxy.Proxy.floating_ip_events
-   .. automethod:: otcextensions.sdk.anti_ddos.v1._proxy.Proxy.floating_ip_stat_day
-   .. automethod:: otcextensions.sdk.anti_ddos.v1._proxy.Proxy.floating_ip_stat_week
-   .. automethod:: otcextensions.sdk.anti_ddos.v1._proxy.Proxy.update_floating_ip_policies
+  :noindex:
+  :members: floating_ips, protect_floating_ip, unprotect_floating_ip,
+            get_floating_ip_policies, update_floating_ip_policies,
+            get_floating_ip_status, floating_ip_events, floating_ip_stat_day,
+            floating_ip_stat_week
 
 Misc Operations
 ^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.anti_ddos.v1._proxy.Proxy
-
-  .. automethod:: otcextensions.sdk.anti_ddos.v1._proxy.Proxy.configs
+  :noindex:
+  :members: configs

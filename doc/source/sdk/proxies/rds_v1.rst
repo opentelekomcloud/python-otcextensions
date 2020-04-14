@@ -17,39 +17,28 @@ Datastore Operations
 ^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.rds.v1._proxy.Proxy
-
-   .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.datastore_versions
-   .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.get_datastore_version
-   .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.datastore_types
+  :noindex:
+  :members: datastore_versions, get_datastore_version, datastore_types
 
 Flavor Operations
 ^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.rds.v1._proxy.Proxy
-
-   .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.get_flavor
-   .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.flavors
+  :noindex:
+  :members: flavors, get_flavor
 
 Instance Operations
 ^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.rds.v1._proxy.Proxy
-
-   .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.create_instance
-   .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.update_instance
-   .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.delete_instance
-   .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.get_instance
-   .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.find_instance
-   .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.instances
-
+  :noindex:
+  :members: instances, get_instance, find_instance,
+            create_instance, delete_instance, update_instance
 
 Backup Operations
 ^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.rds.v1._proxy.Proxy
-
-  .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.backups
-  .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.create_backup
-  .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.delete_backup
-  .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.get_backup_policy
-  .. automethod:: otcextensions.sdk.rds.v1._proxy.Proxy.set_backup_policy
+  :noindex:
+  :members: backups, create_backup, delete_backup,
+            get_backup_policy, set_backup_policy

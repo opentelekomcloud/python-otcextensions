@@ -15,26 +15,20 @@ Cluster Operations
 ^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.cce.v3._proxy.Proxy
-
-   .. automethod:: otcextensions.sdk.cce.v3._proxy.Proxy.clusters
-   .. automethod:: otcextensions.sdk.cce.v3._proxy.Proxy.get_cluster
-   .. automethod:: otcextensions.sdk.cce.v3._proxy.Proxy.find_cluster
-   .. automethod:: otcextensions.sdk.cce.v3._proxy.Proxy.delete_cluster
+  :members: clusters, get_cluster, find_cluster, delete_cluster
 
 
 Cluster Nodes Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.cce.v3._proxy.Proxy
-
-  .. automethod:: otcextensions.sdk.cce.v3._proxy.Proxy.cluster_nodes
-  .. automethod:: otcextensions.sdk.cce.v3._proxy.Proxy.get_cluster_node
-  .. automethod:: otcextensions.sdk.cce.v3._proxy.Proxy.find_cluster_node
-  .. automethod:: otcextensions.sdk.cce.v3._proxy.Proxy.delete_cluster_node
-  .. automethod:: otcextensions.sdk.cce.v3._proxy.Proxy.create_cluster_node
+  :noindex:
+  :members: cluster_nodes, get_cluster_node, find_cluster_node,
+           delete_cluster_node, create_cluster_node
 
 Job Operations
 ^^^^^^^^^^^^^^
 
-  .. automethod:: otcextensions.sdk.cce.v3._proxy.Proxy.get_job
-  .. automethod:: otcextensions.sdk.cce.v3._proxy.Proxy.wait_for_job
+.. autoclass:: otcextensions.sdk.cce.v3._proxy.Proxy
+  :noindex:
+  :members: get_job, wait_for_job
