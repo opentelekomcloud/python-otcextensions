@@ -17,53 +17,39 @@ Datastore Operations
 ^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.rds.v3._proxy.Proxy
-
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.datastore_types
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.datastores
+  :noindex:
+  :members: datastores, datastore_types
 
 Flavor Operations
 ^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.rds.v3._proxy.Proxy
-
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.flavors
+  :noindex:
+  :members: flavors
 
 Instance Operations
 ^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.rds.v3._proxy.Proxy
-
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.create_instance
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.delete_instance
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.get_instance
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.find_instance
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.instances
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.restore_instance
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.get_instance_restore_time
+  :noindex:
+  :members: instances, get_instance, find_instance,
+            create_instance, delete_instance, restore_instance,
+            get_instance_restore_time
 
 Backup Operations
 ^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.rds.v3._proxy.Proxy
-
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.backups
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.create_backup
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.delete_backup
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.find_backup
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.backup_download_links
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.get_instance_backup_policy
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.set_instance_backup_policy
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.wait_for_backup
+  :noindex:
+  :members: backups, find_backup, create_backup, delete_backup,
+            backup_download_links, get_instance_backup_policy,
+            set_instance_backup_policy, wait_for_backup
 
 Configuration Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.rds.v3._proxy.Proxy
-
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.configurations
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.get_configuration
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.find_configuration
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.create_configuration
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.delete_configuration
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.update_configuration
-   .. automethod:: otcextensions.sdk.rds.v3._proxy.Proxy.apply_configuration
+  :noindex:
+  :members: configurations, get_configuration, find_configuration,
+            create_configuration, delete_configuration, update_configuration,
+            apply_configuration

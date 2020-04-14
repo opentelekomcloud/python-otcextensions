@@ -15,25 +15,19 @@ Queue Operations
 ^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.dms.v1._proxy.Proxy
-
-   .. automethod:: otcextensions.sdk.dms.v1._proxy.Proxy.queues
-   .. automethod:: otcextensions.sdk.dms.v1._proxy.Proxy.create_queue
-   .. automethod:: otcextensions.sdk.dms.v1._proxy.Proxy.get_queue
-   .. automethod:: otcextensions.sdk.dms.v1._proxy.Proxy.delete_queue
-
+  :noindex:
+  :members: queues, create_queue, get_queue, delete_queue
 
 Message Group Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.dms.v1._proxy.Proxy
-
-  .. automethod:: otcextensions.sdk.dms.v1._proxy.Proxy.groups
-  .. automethod:: otcextensions.sdk.dms.v1._proxy.Proxy.create_group
-  .. automethod:: otcextensions.sdk.dms.v1._proxy.Proxy.delete_group
+  :noindex:
+  :members: groups, create_group, delete_group
 
 DMS Quota Operations
 ^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.dms.v1._proxy.Proxy
-
-  .. automethod:: otcextensions.sdk.dms.v1._proxy.Proxy.quotas
+  :noindex:
+  :members: quotas

@@ -15,20 +15,13 @@ Cluster Operations
 ^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.cce.v1._proxy.Proxy
-
-   .. automethod:: otcextensions.sdk.cce.v1._proxy.Proxy.clusters
-   .. automethod:: otcextensions.sdk.cce.v1._proxy.Proxy.get_cluster
-   .. automethod:: otcextensions.sdk.cce.v1._proxy.Proxy.find_cluster
-   .. automethod:: otcextensions.sdk.cce.v1._proxy.Proxy.delete_cluster
-
+  :noindex:
+  :members: clusters, get_cluster, find_cluster, delete_cluster
 
 Cluster Nodes Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.cce.v1._proxy.Proxy
-
-  .. automethod:: otcextensions.sdk.cce.v1._proxy.Proxy.cluster_nodes
-  .. automethod:: otcextensions.sdk.cce.v1._proxy.Proxy.get_cluster_node
-  .. automethod:: otcextensions.sdk.cce.v1._proxy.Proxy.find_cluster_node
-  .. automethod:: otcextensions.sdk.cce.v1._proxy.Proxy.delete_cluster_nodes
-  .. automethod:: otcextensions.sdk.cce.v1._proxy.Proxy.add_node
+  :noindex:
+  :members: cluster_nodes, get_cluster_node, find_cluster_node,
+             delete_cluster_nodes, add_node
