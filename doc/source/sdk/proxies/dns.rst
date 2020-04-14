@@ -25,7 +25,7 @@ Recordset Operations
 
 .. autoclass:: otcextensions.sdk.dns.v2._proxy.Proxy
   :noindex:
-  :members: recordsets, create_recordset, get_recordset, update_recordset, 
+  :members: recordsets, create_recordset, get_recordset, update_recordset,
             delete_recordset
 
 
