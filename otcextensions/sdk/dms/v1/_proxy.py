@@ -10,17 +10,22 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from otcextensions.sdk import sdk_proxy
+from openstack import proxy
 from otcextensions.sdk.dms.v1 import queue as _queue
 from otcextensions.sdk.dms.v1 import quota as _quota
 from otcextensions.sdk.dms.v1 import group as _group
 from otcextensions.sdk.dms.v1 import message as _message
-from otcextensions.sdk.dms.v1 import group_message as _group_message
 
 
-class Proxy(sdk_proxy.Proxy):
+class Proxy(proxy.Proxy):
 
     skip_discovery = True
+
+    def __init__(self, session, *args, **kwargs):
+        super(Proxy, self).__init__(session=session, *args, **kwargs)
+        self.additional_headers = {
+            'Content-Type': 'application/json',
+        }
 
     # ======== Queues ========
     def create_queue(self, **kwargs):
@@ -31,13 +36,15 @@ class Proxy(sdk_proxy.Proxy):
         """
         return self._create(_queue.Queue, **kwargs)
 
-    def queues(self):
+    def queues(self, **kwargs):
         """List all queues
+
+        :param dict kwargs: List of query parameters
 
         :returns: A generator of Queue object of
             :class:`~otcextensions.sdk.dms.v1.queue.Queue`
         """
-        return self._list(_queue.Queue, paginated=False)
+        return self._list(_queue.Queue, paginated=False, **kwargs)
 
     def find_queue(self, name_or_id):
         """Find queue by name or id
@@ -72,44 +79,51 @@ class Proxy(sdk_proxy.Proxy):
         self._delete(_queue.Queue, queue, ignore_missing=ignore_missing)
 
     # ======== Groups ========
-    def create_group(self, queue, group):
+    def create_group(self, queue, name):
         """Create a list consume groups for a queue
 
         :param queue: The queue id or an instance of
             :class:`~otcextensions.sdk.dms.v1.queue.Queue`
-        :param dict kwargs: Keyword arguments which will be used to overwrite a
-            :class:`~otcextensions.sdk.dms.v1.queue.Group`
+        :param str name: Group name to create
         :returns: A list of object
             :class:`~otcextensions.sdk.dms.v1.queue.Group`
         """
+        queue_obj = self._get_resource(_queue.Queue, queue)
 
-        queue_id = queue
-        if isinstance(queue, _queue.Queue):
-            queue_id = queue.id
+        return self._create(_group.Group, queue_id=queue_obj.id, name=name)
 
-        # Use a dummy group first to have control over create request
-        res = _group.Group.new(queue_id=queue_id)
-
-        return res.create(self, group=group)
-
-    def groups(self, queue, include_deadletter=False):
+    def groups(self, queue, **kwargs):
         """List all groups for a given queue
 
         :param queue: The queue id or an instance of
             :class:`~otcextensions.sdk.dms.v1.queue.Queue`
+        :param dict kwargs: Query parameters
+
         :returns: A generator of Group object
         :rtype: :class:`~otcextensions.sdk.dms.v1.queue.Group`
         """
-        queue_id = queue
-        if isinstance(queue, _queue.Queue):
-            queue_id = queue.id
+        queue_obj = self._get_resource(_queue.Queue, queue)
 
         return self._list(_group.Group,
-                          queue_id=queue_id,
-                          include_deadletter=include_deadletter,
-                          paginated=False)
+                          queue_id=queue_obj.id,
+                          paginated=False,
+                          **kwargs)
 
-    def delete_group(self, queue, group):
+    def find_group(self, queue, name_or_id, ignore_missing=False):
+        """Find group by name or id
+
+        :param queue: Queue name or object
+        :param name_or_id: Name or ID
+        :param ignore_missing:
+        :returns: one object of class
+            :class:`~otcextensions.sdk.dms.v1.queue.Queue`
+        """
+        queue_obj = self._get_resource(_queue.Queue, queue)
+        return self._find(_group.Group, name_or_id,
+                          ignore_missing=ignore_missing,
+                          queue_id=queue_obj.id)
+
+    def delete_group(self, queue, group, ignore_missing=True):
         """Delete a consume on the queue
 
         :param queue: The queue id or an instance of
@@ -118,28 +132,58 @@ class Proxy(sdk_proxy.Proxy):
             :class:`~otcextensions.sdk.dms.v1.group.Group`
         :returns: ``None``
         """
-        queue_id = queue
-        if isinstance(queue, _queue.Queue):
-            queue_id = queue.id
+        queue_obj = self._get_resource(_queue.Queue, queue)
 
-        self._delete(_group.Group, group, queue_id=queue_id)
+        self._delete(_group.Group, group, queue_id=queue_obj.id,
+                     ignore_missing=ignore_missing)
 
     # ======== Messages ========
-    def send_messages(self, queue, **kwargs):
+    def send_messages(self, queue, messages, return_id=False, **kwargs):
         """Send messages for a given queue
 
         :param queue: The queue id or an instance of
             :class:`~otcextensions.sdk.dms.v1.queue.Queue`
-        :param dict kwargs: Keyword to create messages
-        :returns: dict
+        :param list messages: A list of message dictionaries
+        :returns: Messages holder instance
+            :class:`otcextensions.sdk.dms.v1.message.Messages`
         """
-        queue_id = queue
-        if isinstance(queue, _queue.Queue):
-            queue_id = queue.id
+        queue_obj = self._get_resource(_queue.Queue, queue)
+        messages_list = list()
+        for msg in messages:
+            if not isinstance(msg, _message.Message):
+                obj = _message.Message(**msg)
+            else:
+                obj = msg
+            messages_list.append(obj.to_dict(computed=False, ignore_none=True))
 
-        return self._create(_message.Message, queue_id=queue_id, **kwargs)
+        return self._create(_message.Messages,
+                            base_path='/queues/%(queue_id)s/messages',
+                            queue_id=queue_obj.id,
+                            messages=messages_list,
+                            return_id=return_id)
 
-    def consume_message(self, queue, consume_group, **query):
+    def send_message(self, queue, return_id=True, body=None, **attrs):
+        """Send single message into a given queue
+
+        :param queue: The queue id or an instance of
+            :class:`~otcextensions.sdk.dms.v1.queue.Queue`
+        :param bool return_id: Whether response should contain message id
+        :param body: A str/json object representing message body
+        :param dict attr: Additional message attributes
+        :returns: Messages holder instance
+            :class:`otcextensions.sdk.dms.v1.message.Message`
+        """
+        queue_obj = self._get_resource(_queue.Queue, queue)
+        msg = _message.Message(body=body, **attrs)
+
+        return self._create(_message.Messages,
+                            base_path='/queues/%(queue_id)s/messages',
+                            queue_id=queue_obj.id,
+                            messages=[msg.to_dict(computed=False,
+                                                  ignore_none=True)],
+                            return_id=return_id).messages[0]
+
+    def consume_message(self, queue, group, **query):
         """Consume queue's message
 
         :param queue: The queue id or an instance of
@@ -151,20 +195,17 @@ class Proxy(sdk_proxy.Proxy):
         :returns: A list of object
           :class:`~otcextensions.sdk.dms.v1.group_message.GroupMessage`
         """
-        queue_id = queue
-        if isinstance(queue, _queue.Queue):
-            queue_id = queue.id
-        consumer_group_id = consume_group
-        if isinstance(consume_group, _group.Group):
-            consumer_group_id = consume_group.id
+        queue_obj = self._get_resource(_queue.Queue, queue)
+        group_obj = self._get_resource(_group.Group, group)
 
         return self._list(
-            _group_message.GroupMessage,
-            queue_id=queue_id,
-            consumer_group_id=consumer_group_id,
+            _message.Message,
+            base_path='/queues/%(queue_id)s/groups/%(group_id)s/messages',
+            queue_id=queue_obj.id,
+            group_id=group_obj.id,
             **query)
 
-    def ack_consumed_message(self, consumed_message, status='success'):
+    def ack_message(self, queue, group, messages, status='success'):
         """Confirm consumed message
 
         :param consumed_message: An object of an instance of
@@ -173,7 +214,10 @@ class Proxy(sdk_proxy.Proxy):
         :returns: An object of an instance of
           :class:`~otcextensions.sdk.dms.v1.group_message.GroupMessage`
         """
-        return consumed_message.ack(self.session, status=status)
+        queue_obj = self._get_resource(_queue.Queue, queue)
+        group_obj = self._get_resource(_group.Group, group)
+
+        return group_obj.ack(self, queue_obj, messages, status=status)
 
     def quotas(self):
         """List quota
