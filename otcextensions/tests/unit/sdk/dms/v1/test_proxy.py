@@ -10,9 +10,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import mock
-
 from otcextensions.sdk.dms.v1 import _proxy
+from otcextensions.sdk.dms.v1 import group as _group
+from otcextensions.sdk.dms.v1 import message as _message
 from otcextensions.sdk.dms.v1 import queue as _queue
 
 from openstack.tests.unit import test_proxy_base
@@ -29,21 +29,26 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
         self.verify_create(
             self.proxy.create_queue,
             _queue.Queue,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
-            method_kwargs={
-                'name': 'queue_001'
-            },
-            expected_kwargs={
-                'name': 'queue_001'
-            }
         )
 
     def test_queues(self):
         self.verify_list(
             self.proxy.queues,
             _queue.Queue,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             expected_kwargs={
+                'paginated': False
+            }
+        )
+
+    def test_queues_qp(self):
+        self.verify_list(
+            self.proxy.queues,
+            _queue.Queue,
+            method_kwargs={
+                'include_deadletter': True,
+            },
+            expected_kwargs={
+                'include_deadletter': True,
                 'paginated': False
             }
         )
@@ -51,68 +56,130 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
     def test_get_queue(self):
         self.verify_get(
             self.proxy.get_queue,
-            _queue.Queue,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
-            expected_kwargs={}
+            _queue.Queue
         )
 
     def test_delete_queue(self):
         self.verify_delete(
             self.proxy.delete_queue,
             _queue.Queue,
-            True,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
-            expected_kwargs={}
+            False
+        )
+
+    def test_delete_queue_ignore(self):
+        self.verify_delete(
+            self.proxy.delete_queue,
+            _queue.Queue,
+            True
         )
 
     def test_create_group(self):
-        self._verify2(
-            'otcextensions.sdk.dms.v1.group.Group.create',
+        self.verify_create(
             self.proxy.create_group,
-            method_args=['queue', 'name'],
-            expected_args=[mock.ANY],
-            expected_kwargs={'group': 'name'})
+            _group.Group,
+            method_kwargs={'queue': 'qip', 'name': 'grp'},
+            expected_kwargs={'queue_id': 'qip', 'name': 'grp'})
 
     def test_groups(self):
-        self._verify2(
-            'otcextensions.sdk.sdk_proxy.Proxy._list',
+        self.verify_list(
             self.proxy.groups,
-            method_args=['queue'],
-            expected_args=[mock.ANY],
+            _group.Group,
+            method_kwargs={'queue': 'qid'},
             expected_kwargs={
-                'queue_id': 'queue',
-                'paginated': False,
-                'include_deadletter': False})
+                'queue_id': 'qid',
+                'paginated': False}
+        )
 
     def test_delete_group(self):
-        self._verify2(
-            'otcextensions.sdk.sdk_proxy.Proxy._delete',
+        self.verify_delete(
             self.proxy.delete_group,
-            method_args=['queue', 'group'],
-            expected_args=[mock.ANY, 'group'],
-            expected_kwargs={'queue_id': 'queue'})
+            _group.Group,
+            False,
+            input_path_args=['QID', "resource_or_id"],
+            expected_path_args={'queue_id': 'QID'}
+        )
 
-    def test_send_messages(self):
-        self._verify2(
-            'otcextensions.sdk.sdk_proxy.Proxy._create',
+    def test_delete_group_ignore(self):
+        self.verify_delete(
+            self.proxy.delete_group,
+            _group.Group,
+            True,
+            input_path_args=['QID', "resource_or_id"],
+            expected_path_args={'queue_id': 'QID'}
+        )
+
+    ######
+    # Messages
+
+    def test_send_messages_dict(self):
+        self.verify_create(
             self.proxy.send_messages,
-            method_args=['queue'],
-            expected_args=[mock.ANY],
-            expected_kwargs={'queue_id': 'queue'})
+            _message.Messages,
+            method_kwargs={
+                'queue': 'qid',
+                'messages': [{'body': 'b1'}]
+            },
+            expected_kwargs={
+                'queue_id': 'qid',
+                'messages': [
+                    {'attributes': {}, 'body': 'b1'}
+                ],
+                'return_id': False
+            }
+        )
+
+    def test_send_messages_msg(self):
+        self.verify_create(
+            self.proxy.send_messages,
+            _message.Messages,
+            method_kwargs={
+                'queue': 'qid',
+                'messages': [_message.Message(body='b1')]
+            },
+            expected_kwargs={
+                'queue_id': 'qid',
+                'messages': [
+                    {'attributes': {}, 'body': 'b1'}
+                ],
+                'return_id': False
+            }
+        )
+
+    def test_send_message(self):
+        self.verify_create(
+            self.proxy.send_message,
+            _message.Messages,
+            method_kwargs={
+                'queue': 'qid',
+                'body': 'b1',
+                'p1': 'v1'
+            },
+            expected_kwargs={
+                'queue_id': 'qid',
+                'messages': [
+                    {'attributes': {'p1': 'v1'}, 'body': 'b1'}
+                ],
+                'return_id': True
+            },
+            method_result=_message.Message(id='1'),
+            expected_result=_message.Messages(
+                messages=[_message.Message(id='1')])
+        )
 
     def test_consume_message(self):
-        self._verify2(
-            'otcextensions.sdk.dms.v1.group_message.GroupMessage.list',
+        self.verify_list(
             self.proxy.consume_message,
-            method_args=['queue', 'group'],
-            expected_args=[mock.ANY],
+            _message.Message,
+            method_kwargs={
+                'queue': 'qid',
+                'group': 'gid'
+            },
             expected_kwargs={
-                'queue_id': 'queue',
-                'consumer_group_id': 'group',
-                'endpoint_override': None,
-                'headers': None,
-                'paginated': False,
-                'requests_auth': None})
+                'queue_id': 'qid',
+                'group_id': 'gid'
+            },
+            base_path='/queues/%(queue_id)s/groups/%(group_id)s/messages'
+        )
 
     def test_ack_consumed_message(self):
         pass
