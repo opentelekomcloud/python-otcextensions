@@ -59,7 +59,7 @@ class Queue(_base.Resource):
     #: flushed to a disk asynchronously, ensuring high performance.
     queue_mode = resource.Body('queue_mode')
     #: Redrive policy.
-    #: Supported values: `enable`, `disable`. Default: `disable
+    #: Supported values: `enable`, `disable`. Default: `disable`
     redrive_policy = resource.Body('redrive_policy')
     #: Indicates the hours of storing messages in the Kafka queue.
     #: This parameter is valid only when queue_mode is set to KAFKA_HA or

@@ -16,7 +16,6 @@ from otcextensions.sdk.dms.v1 import group as _group
 from otcextensions.sdk.dms.v1 import instance as _instance
 from otcextensions.sdk.dms.v1 import message as _message
 from otcextensions.sdk.dms.v1 import queue as _queue
-from otcextensions.sdk.dms.v1 import quota as _quota
 
 
 class Proxy(proxy.Proxy):
