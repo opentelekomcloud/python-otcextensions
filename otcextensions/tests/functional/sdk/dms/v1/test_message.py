@@ -35,13 +35,13 @@ class TestMessage(base.BaseFunctionalTest):
             )
 
         except openstack.exceptions.BadRequestException:
-            self.queue = self.conn.dms.get_queue(TestMessage.QUEUE_ALIAS)
+            self.queue = self.conn.dms.find_queue(TestMessage.QUEUE_ALIAS)
 
         self.queues.append(self.queue)
 
         try:
             self.group = self.conn.dms.create_group(
-                self.queue, {"name": "test_group"}
+                self.queue, "test_group"
             )
 
         except openstack.exceptions.DuplicateResource:
@@ -50,6 +50,7 @@ class TestMessage(base.BaseFunctionalTest):
         self.groups.append(self.group)
 
     def tearDown(self):
+        super(TestMessage, self).tearDown()
         try:
             for queue in self.queues:
                 if queue.id:
@@ -75,7 +76,7 @@ class TestMessage(base.BaseFunctionalTest):
             # self.assertIsNotNone(q)
             try:
                 self.group = self.conn.dms.create_group(
-                    self.queue, {"name": "test_group"}
+                    self.queue, "test_group2"
                 )
 
             except openstack.exceptions.BadRequestException:
@@ -84,7 +85,6 @@ class TestMessage(base.BaseFunctionalTest):
             self.groups.append(self.group)
 
     # OS_TEST_TIMEOUT=60 is needed due to testbed slowness
-    @classmethod
     def test_message(self):
         self.queues = list(self.conn.dms.queues())
         # self.assertGreaterEqual(len(self.queues), 0)
@@ -112,7 +112,7 @@ class TestMessage(base.BaseFunctionalTest):
             self.messages.append(self.message)
             try:
                 self.group = self.conn.dms.create_group(
-                    self.queue, {"name": "test_group2"}
+                    self.queue, "test_group3"
                 )
 
             except openstack.exceptions.BadRequestException:
@@ -120,8 +120,8 @@ class TestMessage(base.BaseFunctionalTest):
 
             self.groups.append(self.group)
 
-            self.received_messages = self.dms.consume_message(
+            self.received_messages = self.conn.dms.consume_message(
                 self.queue,
                 self.group
             )
-            self.assertGreaterEqual(len(self.received_messages), 0)
+            self.assertGreaterEqual(len(list(self.received_messages)), 0)
