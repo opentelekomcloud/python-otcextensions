@@ -24,10 +24,3 @@ Message Group Operations
 .. autoclass:: otcextensions.sdk.dms.v1._proxy.Proxy
   :noindex:
   :members: groups, create_group, delete_group
-
-DMS Quota Operations
-^^^^^^^^^^^^^^^^^^^^
-
-.. autoclass:: otcextensions.sdk.dms.v1._proxy.Proxy
-  :noindex:
-  :members: quotas
