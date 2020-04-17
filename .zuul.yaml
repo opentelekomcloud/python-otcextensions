@@ -19,4 +19,4 @@
         - tox-functional
     periodic:
       jobs:
-        - tox-functional-master
+        - tox-functional
