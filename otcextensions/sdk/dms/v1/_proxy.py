@@ -11,10 +11,12 @@
 # under the License.
 
 from openstack import proxy
+
+from otcextensions.sdk.dms.v1 import group as _group
+from otcextensions.sdk.dms.v1 import instance as _instance
+from otcextensions.sdk.dms.v1 import message as _message
 from otcextensions.sdk.dms.v1 import queue as _queue
 from otcextensions.sdk.dms.v1 import quota as _quota
-from otcextensions.sdk.dms.v1 import group as _group
-from otcextensions.sdk.dms.v1 import message as _message
 
 
 class Proxy(proxy.Proxy):
@@ -218,6 +220,78 @@ class Proxy(proxy.Proxy):
         group_obj = self._get_resource(_group.Group, group)
 
         return group_obj.ack(self, queue_obj, messages, status=status)
+
+    # ======== Instances =======
+    def instances(self, **kwargs):
+        """List all DMS Instances
+
+        :param dict kwargs: List of query parameters
+
+        :returns: A generator of Instance object of
+            :class:`~otcextensions.sdk.dms.v1.instance.Instance`
+        """
+        return self._list(_instance.Instance, paginated=False, **kwargs)
+
+    def create_instance(self, **attrs):
+        """Create an DMS instance
+
+        :param dict attrs: instance attributes
+            :class:`~otcextensions.sdk.dms.v1.instance.Instance`
+        :returns: An instance class object
+            :class:`~otcextensions.sdk.dms.v1.instance.Instance`
+        """
+        return self._create(_instance.Instance, **attrs)
+
+    def delete_instance(self, instance, ignore_missing=True):
+        """Delete DMS Instance
+
+        :param instance: The instance id or an object instance of
+            :class:`~otcextensions.sdk.dms.v1.instance.Instance`
+        :param bool ignore_missing: When set to ``False``
+            :class:`~otcextensions.sdk.exceptions.ResourceNotFound` will be
+            raised when the queue does not exist.
+        :returns: `None`
+        """
+        self._delete(_instance.Instance, instance,
+                     ignore_missing=ignore_missing)
+
+    def find_instance(self, name_or_id, ignore_missing=False):
+        """Find DMS Instance by name or id
+
+        :param name_or_id: Name or ID
+        :param bool ignore_missing: When set to ``False``
+            :class:`~otcextensions.sdk.exceptions.ResourceNotFound` will be
+            raised when the instance does not exist.
+
+        :returns: one object of class
+            :class:`~otcextensions.sdk.dms.v1.instance.Instance`
+        """
+        return self._find(_instance.Instance, name_or_id,
+                          ignore_missing=ignore_missing)
+
+    def get_instance(self, instance):
+        """Get detail about a given instance id
+
+        :param instance: The instance id or an instance of
+            :class:`~otcextensions.sdk.dms.v1.instance.Instance`
+        :returns: one object of class
+            :class:`~otcextensions.sdk.dms.v1.instance.Instance`
+        """
+        return self._get(_instance.Instance, instance)
+
+    def update_instance(self, instance, **attrs):
+        """Update an Instance
+
+        :param instance: Either the ID of an instance or a
+            :class:`~otcextensions.sdk.dms.v1.instance.Instance` instance.
+        :param dict attrs: The attributes to update on the instance
+            represented by ``value``.
+
+        :returns: The updated instance
+        :rtype: :class:`~otcextensions.sdk.dms.v1.instance.Instance`
+        """
+        return self._update(_instance.Instance, instance,
+                            **attrs)
 
     def quotas(self):
         """List quota

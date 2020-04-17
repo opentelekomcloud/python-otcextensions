@@ -12,6 +12,7 @@
 
 from otcextensions.sdk.dms.v1 import _proxy
 from otcextensions.sdk.dms.v1 import group as _group
+from otcextensions.sdk.dms.v1 import instance as _instance
 from otcextensions.sdk.dms.v1 import message as _message
 from otcextensions.sdk.dms.v1 import queue as _queue
 
@@ -186,3 +187,52 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
 
     def test_quotas(self):
         pass
+
+    ######
+    # Instances
+    def test_instances(self):
+        self.verify_list(
+            self.proxy.instances,
+            _instance.Instance,
+            expected_kwargs={
+                'paginated': False
+            }
+        )
+
+    def test_create_instance(self):
+        self.verify_create(
+            self.proxy.create_instance,
+            _instance.Instance
+        )
+
+    def test_delete_instance(self):
+        self.verify_delete(
+            self.proxy.delete_instance,
+            _instance.Instance,
+            False,
+        )
+
+    def test_delete_instance_ignore(self):
+        self.verify_delete(
+            self.proxy.delete_instance,
+            _instance.Instance,
+            True,
+        )
+
+    def test_find_instance(self):
+        self.verify_find(
+            self.proxy.find_instance,
+            _instance.Instance
+        )
+
+    def test_get_instance(self):
+        self.verify_get(
+            self.proxy.get_instance,
+            _instance.Instance
+        )
+
+    def test_update_instance(self):
+        self.verify_update(
+            self.proxy.update_instance,
+            _instance.Instance
+        )
