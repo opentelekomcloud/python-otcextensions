@@ -293,10 +293,10 @@ class Proxy(proxy.Proxy):
         return self._update(_instance.Instance, instance,
                             **attrs)
 
-    def quotas(self):
-        """List quota
-
-        :returns: A generator of Quota object
-        :rtype: :class:`~otcextensions.sdk.dms.v1.quota.Quota`
-        """
-        return self._list(_quota.Quota)
+#    def quotas(self):
+#        """List quota
+#
+#        :returns: A generator of Quota object
+#        :rtype: :class:`~otcextensions.sdk.dms.v1.quota.Quota`
+#        """
+#        return self._list(_quota.Quota)
