@@ -10,12 +10,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from openstack import exceptions
 from openstack import proxy
 
 from otcextensions.sdk.dms.v1 import group as _group
 from otcextensions.sdk.dms.v1 import instance as _instance
 from otcextensions.sdk.dms.v1 import message as _message
 from otcextensions.sdk.dms.v1 import queue as _queue
+from otcextensions.sdk.dms.v1 import topic as _topic
 
 
 class Proxy(proxy.Proxy):
@@ -209,8 +211,10 @@ class Proxy(proxy.Proxy):
     def ack_message(self, queue, group, messages, status='success'):
         """Confirm consumed message
 
-        :param consumed_message: An object of an instance of
-          :class:`~otcextensions.sdk.dms.v1.group_message.GroupMessage
+        :param queue: An queue object
+        :param group: A Queue group object
+        :param messages: List of messages to be ACKed of
+          :class:`~otcextensions.sdk.dms.v1.message.Messages
         :param status: The expeced status of the consumed message
         :returns: An object of an instance of
           :class:`~otcextensions.sdk.dms.v1.group_message.GroupMessage`
@@ -319,10 +323,61 @@ class Proxy(proxy.Proxy):
         dummy_instance = _instance.Instance()
         return dummy_instance.delete_failed(self)
 
-#    def quotas(self):
-#        """List quota
-#
-#        :returns: A generator of Quota object
-#        :rtype: :class:`~otcextensions.sdk.dms.v1.quota.Quota`
-#        """
-#        return self._list(_quota.Quota)
+    # ======== Topics =======
+    def topics(self, instance, **kwargs):
+        """List all DMS Instance topics
+
+        :param instance: Either the ID of an instance or a
+            :class:`~otcextensions.sdk.dms.v1.instance.Instance` instance.
+        :param dict kwargs: List of query parameters
+
+        :returns: A generator of Instance object of
+            :class:`~otcextensions.sdk.dms.v1.topic.Topic`
+        """
+        instance_obj = self._get_resource(_instance.Instance, instance)
+        return self._list(_instance.Instance, paginated=False,
+                          instance_id=instance_obj.id, **kwargs)
+
+    def create_topic(self, instance, **attrs):
+        """Create a topic on DMS Instance
+
+        :param instance: instance id or
+            :class:`~otcextensions.sdk.dms.v1.instance.Instance`
+        :param dict attrs: Attributes of the topic
+            :class:`otcextensions.sdk.dms.v1.topic.Topic`
+        :returns: An topic class object
+            :class:`~otcextensions.sdk.dms.v1.topic.Topic`
+        """
+        instance_obj = self._get_resource(_instance.Instance, instance)
+        return self._create(_topic.Topic,
+                            instance_id=instance_obj.id,
+                            **attrs)
+
+    def delete_topic(self, instance, topics, ignore_missing=True):
+        """Delete topic on DMS instance
+
+        :param instance: The instance id or an object instance of
+            :class:`~otcextensions.sdk.dms.v1.instance.Instance`
+        :param list topics: List of topic IDs
+        :param bool ignore_missing: When set to ``False``
+            :class:`~otcextensions.sdk.exceptions.ResourceNotFound` will be
+            raised when the instance does not exist.
+        :returns: `None`
+        """
+        instance_obj = self._get_resource(_instance.Instance, instance)
+
+        topics_list = []
+        if isinstance(topics, str):
+            topics_list.append(topics)
+        elif isinstance(topics, list):
+            for i in topics:
+                if isinstance(i, str):
+                    topics_list.append(i)
+                elif isinstance(i, _topic.Topic):
+                    topics_list.append(i.id)
+
+        response = self.post(
+            '/instances/%s/topics/delete' % (instance_obj.id),
+            {'topics': topics_list}
+        )
+        exceptions.raise_from_response(response)

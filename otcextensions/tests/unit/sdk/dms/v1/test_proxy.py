@@ -9,12 +9,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from unittest import mock
 
 from otcextensions.sdk.dms.v1 import _proxy
 from otcextensions.sdk.dms.v1 import group as _group
 from otcextensions.sdk.dms.v1 import instance as _instance
 from otcextensions.sdk.dms.v1 import message as _message
 from otcextensions.sdk.dms.v1 import queue as _queue
+from otcextensions.sdk.dms.v1 import topic as _topic
 
 from openstack.tests.unit import test_proxy_base
 
@@ -267,3 +269,28 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
             method_args=[['1', '2']],
             expected_args=['delete', ['1', '2']]
         )
+
+    def test_create_topic(self):
+        self.verify_create(
+            self.proxy.create_topic,
+            _topic.Topic,
+            method_args=['iid'],
+            expected_kwargs={'instance_id': 'iid', 'x': 1, 'y': 2, 'z': 3}
+        )
+
+    @mock.patch('otcextensions.sdk.dms.v1._proxy.Proxy.post')
+    def test_delete_topics(self, post_mock):
+        response = mock.Mock()
+        response.status_code = 200
+        post_mock.return_value = response
+        self.proxy.delete_topic('instance', ['t1', 't2'])
+
+        post_mock.assert_called_with(
+            '/instances/instance/topics/delete',
+            {'topics': ['t1', 't2']})
+
+        self.proxy.delete_topic('instance', 't1')
+
+        post_mock.assert_called_with(
+            '/instances/instance/topics/delete',
+            {'topics': ['t1']})
