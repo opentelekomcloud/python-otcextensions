@@ -19,8 +19,21 @@ from openstackclient.tests.unit import utils
 from otcextensions.tests.unit.osclient import test_base
 
 from otcextensions.sdk.dms.v1 import group
+from otcextensions.sdk.dms.v1 import instance
 from otcextensions.sdk.dms.v1 import queue
 from otcextensions.sdk.dms.v1 import quota
+
+
+def gen_data(data, columns):
+    """Fill expected data tuple based on columns list
+    """
+    return tuple(getattr(data, attr, '') for attr in columns)
+
+
+def gen_data_dict(data, columns):
+    """Fill expected data tuple based on columns list
+    """
+    return tuple(data.get(attr, '') for attr in columns)
 
 
 class TestDMS(utils.TestCommand):
@@ -81,4 +94,38 @@ class FakeQuota(test_base.Fake):
             'used': random.randint(1, 100),
         }
         obj = quota.Quota.existing(**object_info)
+        return obj
+
+
+class FakeInstance(test_base.Fake):
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'name': 'name-' + uuid.uuid4().hex,
+            'description': 'name-' + uuid.uuid4().hex,
+            'engine_name': 'engine-' + uuid.uuid4().hex,
+            'engine_version': 'ver-' + uuid.uuid4().hex,
+            'storage': random.randint(1, 100),
+            'access_user': 'user-' + uuid.uuid4().hex,
+            'password': uuid.uuid4().hex,
+            'router_id': 'router_id-' + uuid.uuid4().hex,
+            'router_name': 'router_name-' + uuid.uuid4().hex,
+            'subnet_id': 'subnet_id-' + uuid.uuid4().hex,
+            'subnet_name': 'subnet_name-' + uuid.uuid4().hex,
+            'security_group_id': 'security_group_id-' + uuid.uuid4().hex,
+            'security_group_name': 'security_group_name-' + uuid.uuid4().hex,
+            'availability_zones': ['az' + uuid.uuid4().hex],
+            'product_id': 'product-' + uuid.uuid4().hex,
+            'maintenance_begin': 'mb-' + uuid.uuid4().hex,
+            'maintenance_end': 'me-' + uuid.uuid4().hex,
+            'is_public': random.choice([True, False]),
+            'is_ssl': random.choice([True, False]),
+            'kafka_public_status': 'kps-' + uuid.uuid4().hex,
+            'public_bandwidth': random.randint(1, 100),
+            'retention_policy': random.choice(['produce_reject', 'time_base']),
+            'storage_spec_code': random.choice(['dms.physical.storage.high',
+                                                'dms.physical.storage.ultra'])
+        }
+
+        obj = instance.Instance.existing(**object_info)
         return obj

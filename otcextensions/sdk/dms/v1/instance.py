@@ -21,8 +21,9 @@ class Instance(_base.Resource):
     base_path = '/instances'
 
     _query_mapping = resource.QueryParameters(
-        'engine', 'name', 'status', 'include_failure',
+        'engine_name', 'name', 'status', 'include_failure',
         'exact_match_name',
+        engine_name='engine',
         include_failure='includeFailure',
         exact_match_name='exactMatchName'
     )
@@ -48,7 +49,7 @@ class Instance(_base.Resource):
     #: Instance description
     description = resource.Body('description')
     #: Message engine.
-    engine = resource.Body('engine')
+    engine_name = resource.Body('engine')
     #: Engine version
     engine_version = resource.Body('engine_version')
     #: Instance id
