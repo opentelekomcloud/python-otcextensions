@@ -9,6 +9,9 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from keystoneauth1 import adapter
+
+from unittest import mock
 
 from openstack.tests.unit import base
 
@@ -43,6 +46,11 @@ JSON_DATA = {
 
 
 class TestInstance(base.TestCase):
+
+    def setUp(self):
+        super(TestInstance, self).setUp()
+        self.sess = mock.Mock(spec=adapter.Adapter)
+        self.sess.post = mock.Mock()
 
     def test_basic(self):
         sot = instance.Instance()
@@ -145,3 +153,45 @@ class TestInstance(base.TestCase):
                          sot.user_id)
         self.assertEqual(JSON_DATA.get('user_name', None),
                          sot.user_name)
+
+    def test_restart(self):
+        sot = instance.Instance(id='1')
+        response = mock.Mock()
+        response.status_code = 200
+
+        self.sess.post.return_value = response
+
+        sot.restart(self.sess)
+
+        self.sess.post.assert_called_with(
+            '/instances/action',
+            {'action': 'restart', 'instances': ['1']}
+        )
+
+        sot.restart_batch(self.sess, ['1', '2'])
+
+        self.sess.post.assert_called_with(
+            '/instances/action',
+            {'action': 'restart', 'instances': ['1', '2']}
+        )
+
+    def test_delete(self):
+        sot = instance.Instance()
+        response = mock.Mock()
+        response.status_code = 200
+
+        self.sess.post.return_value = response
+
+        sot.delete_batch(self.sess, ['1', '2'])
+
+        self.sess.post.assert_called_with(
+            '/instances/action',
+            {'action': 'delete', 'instances': ['1', '2']}
+        )
+
+        sot.delete_failed(self.sess)
+
+        self.sess.post.assert_called_with(
+            '/instances/action',
+            {'action': 'delete', 'allFailure': 'kafka'}
+        )
