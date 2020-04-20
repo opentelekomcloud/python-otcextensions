@@ -65,7 +65,7 @@ class TestInstance(base.TestCase):
         self.assertTrue(sot.allow_delete)
 
         self.assertDictEqual({
-            'engine': 'engine',
+            'engine_name': 'engine',
             'exact_match_name': 'exactMatchName',
             'include_failure': 'includeFailure',
             'limit': 'limit',
