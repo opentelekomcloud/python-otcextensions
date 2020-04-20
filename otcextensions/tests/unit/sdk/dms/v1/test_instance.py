@@ -76,7 +76,6 @@ class TestInstance(base.TestCase):
         )
 
     def test_make_it(self):
-
         sot = instance.Instance(**JSON_DATA)
         self.assertEqual(JSON_DATA['name'], sot.name)
         self.assertEqual(JSON_DATA['access_user'], sot.access_user)
@@ -90,7 +89,7 @@ class TestInstance(base.TestCase):
         self.assertEqual(JSON_DATA.get('description', None),
                          sot.description)
         self.assertEqual(JSON_DATA.get('engine', None),
-                         sot.engine)
+                         sot.engine_name)
         self.assertEqual(JSON_DATA.get('engine_version', None),
                          sot.engine_version)
         self.assertEqual(JSON_DATA.get('instance_id', None),
