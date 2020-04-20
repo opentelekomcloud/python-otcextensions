@@ -15,7 +15,9 @@ from otcextensions.sdk.dms.v1 import _proxy
 from otcextensions.sdk.dms.v1 import az as _az
 from otcextensions.sdk.dms.v1 import group as _group
 from otcextensions.sdk.dms.v1 import instance as _instance
+from otcextensions.sdk.dms.v1 import maintenance_window as _mw
 from otcextensions.sdk.dms.v1 import message as _message
+from otcextensions.sdk.dms.v1 import product as _product
 from otcextensions.sdk.dms.v1 import queue as _queue
 from otcextensions.sdk.dms.v1 import topic as _topic
 
@@ -301,4 +303,16 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
         self.verify_list(
             self.proxy.availability_zones,
             _az.AvailabilityZone,
+        )
+
+    def test_products(self):
+        self.verify_list(
+            self.proxy.products,
+            _product.Product
+        )
+
+    def test_mws(self):
+        self.verify_list(
+            self.proxy.maintenance_windows,
+            _mw.MaintenanceWindow
         )

@@ -16,7 +16,9 @@ from openstack import proxy
 from otcextensions.sdk.dms.v1 import az as _az
 from otcextensions.sdk.dms.v1 import group as _group
 from otcextensions.sdk.dms.v1 import instance as _instance
+from otcextensions.sdk.dms.v1 import maintenance_window as _mw
 from otcextensions.sdk.dms.v1 import message as _message
+from otcextensions.sdk.dms.v1 import product as _product
 from otcextensions.sdk.dms.v1 import queue as _queue
 from otcextensions.sdk.dms.v1 import topic as _topic
 
@@ -391,3 +393,19 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.dms.v1.az.AvailabilityZone`
         """
         return self._list(_az.AvailabilityZone, **kwargs)
+
+    def products(self, **kwargs):
+        """List all supported DMS products
+
+        :returns: A generator of Product object
+            :class:`~otcextensions.sdk.dms.v1.product.Product`
+        """
+        return self._list(_product.Product, **kwargs)
+
+    def maintenance_windows(self, **kwargs):
+        """List all DMS maintenance windows
+
+        :returns: A generator of MaintenanceWindow object
+            :class:`~otcextensions.sdk.dms.v1.maintenance_window.MaintenanceWindow`
+        """
+        return self._list(_mw.MaintenanceWindow, **kwargs)
