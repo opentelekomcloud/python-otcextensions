@@ -13,6 +13,7 @@
 from openstack import exceptions
 from openstack import proxy
 
+from otcextensions.sdk.dms.v1 import az as _az
 from otcextensions.sdk.dms.v1 import group as _group
 from otcextensions.sdk.dms.v1 import instance as _instance
 from otcextensions.sdk.dms.v1 import message as _message
@@ -381,3 +382,12 @@ class Proxy(proxy.Proxy):
             {'topics': topics_list}
         )
         exceptions.raise_from_response(response)
+
+    # ======== Misc =======
+    def availability_zones(self, **kwargs):
+        """List all supported DMS Instance availability zones
+
+        :returns: A generator of Instance object of AvailabilityZone
+            :class:`~otcextensions.sdk.dms.v1.az.AvailabilityZone`
+        """
+        return self._list(_az.AvailabilityZone, **kwargs)

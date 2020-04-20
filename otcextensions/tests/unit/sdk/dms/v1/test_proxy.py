@@ -12,6 +12,7 @@
 from unittest import mock
 
 from otcextensions.sdk.dms.v1 import _proxy
+from otcextensions.sdk.dms.v1 import az as _az
 from otcextensions.sdk.dms.v1 import group as _group
 from otcextensions.sdk.dms.v1 import instance as _instance
 from otcextensions.sdk.dms.v1 import message as _message
@@ -294,3 +295,10 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
         post_mock.assert_called_with(
             '/instances/instance/topics/delete',
             {'topics': ['t1']})
+
+    # Misc
+    def test_az(self):
+        self.verify_list(
+            self.proxy.availability_zones,
+            _az.AvailabilityZone,
+        )

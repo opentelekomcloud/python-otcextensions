@@ -61,3 +61,48 @@ class Resource(resource.Resource):
             return None
         raise exceptions.ResourceNotFound(
             "No %s found for %s" % (cls.__name__, name_or_id))
+
+    @classmethod
+    def list_override(cls, session, **params):
+        # Some really stupid APIs are not following any guidelines
+        # and are under other endpoint (without project id),
+        # so we need to hack on the endpoint_override yet again
+        session = cls._get_session(session)
+
+        base_path = cls.base_path
+        params.pop('paginated', None)
+        params.pop('base_path', None)
+        params = cls._query_mapping._validate(
+            params, base_path=base_path,
+            allow_unknown_params=False)
+        query_params = cls._query_mapping._transpose(params, cls)
+        uri = base_path % params
+        region_id = None
+
+        # Copy query_params due to weird mock unittest interactions
+        response = session.get(
+            uri,
+            endpoint_override=session.endpoint_override.replace(
+                '%(project_id)s', ''),
+            headers={"Accept": "application/json"},
+            params=query_params.copy())
+        exceptions.raise_from_response(response)
+        data = response.json()
+        if 'regionId' in data:
+            region_id = data['regionId']
+
+        if cls.resources_key:
+            resources = data[cls.resources_key]
+        else:
+            resources = data
+
+        if not isinstance(resources, list):
+            resources = [resources]
+
+        for raw_resource in resources:
+            if region_id:
+                raw_resource['region_id'] = region_id
+            value = cls.existing(
+                connection=session._get_connection(),
+                **raw_resource)
+            yield value
