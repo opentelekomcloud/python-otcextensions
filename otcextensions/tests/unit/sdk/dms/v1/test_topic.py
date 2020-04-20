@@ -19,12 +19,12 @@ from otcextensions.sdk.dms.v1 import topic
 
 
 JSON_DATA = {
-    "id": "haha",
-    "partition": 3,
-    "replication": 3,
-    "sync_replication": True,
-    "retention_time": 10,
-    "sync_message_flush": True
+    'id': 'haha',
+    'partition': 3,
+    'replication': 3,
+    'sync_replication': True,
+    'retention_time': 10,
+    'sync_message_flush': True
 }
 
 
