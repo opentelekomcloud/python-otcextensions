@@ -248,7 +248,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.dms.v1.instance.Instance`
         :param bool ignore_missing: When set to ``False``
             :class:`~otcextensions.sdk.exceptions.ResourceNotFound` will be
-            raised when the queue does not exist.
+            raised when the instance does not exist.
         :returns: `None`
         """
         self._delete(_instance.Instance, instance,
@@ -291,6 +291,33 @@ class Proxy(proxy.Proxy):
         """
         return self._update(_instance.Instance, instance,
                             **attrs)
+
+    def restart_instance(self, instance):
+        """Restart instance
+
+        :param instance: Either the ID of an instance or a
+            :class:`~otcextensions.sdk.dms.v1.instance.Instance` instance.
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.restart(self)
+
+    def restart_instances(self, instances_list):
+        """Restart multiple instances
+        """
+        dummy_instance = _instance.Instance()
+        return dummy_instance.restart_batch(self, instances_list)
+
+    def delete_batch(self, instances_list):
+        """Delete multiple instances
+        """
+        dummy_instance = _instance.Instance()
+        return dummy_instance.delete_batch(self, instances_list)
+
+    def delete_failed(self):
+        """Delete failed Kafka instances
+        """
+        dummy_instance = _instance.Instance()
+        return dummy_instance.delete_failed(self)
 
 #    def quotas(self):
 #        """List quota

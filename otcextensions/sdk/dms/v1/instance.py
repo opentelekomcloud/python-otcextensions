@@ -9,6 +9,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack import exceptions
 from openstack import resource
 
 from otcextensions.sdk.dms.v1 import _base
@@ -116,3 +117,44 @@ class Instance(_base.Resource):
     user_id = resource.Body('user_id')
     #: User name
     user_name = resource.Body('user_name')
+
+    def _action(self, session, action, id_list):
+        body = {
+            'action': action,
+            'instances': id_list
+        }
+
+        response = session.post(
+            '/instances/action',
+            body
+        )
+
+        exceptions.raise_from_response(response)
+
+        return
+
+    def restart(self, session):
+        """Restart specified instances
+        """
+        return self._action(session, 'restart', [self.id])
+
+    def restart_batch(self, session, id_list):
+        return self._action(session, 'restart', id_list)
+
+    def delete_batch(self, session, id_list):
+        """Delete batch of instances
+        """
+        return self._action(session, 'delete', id_list)
+
+    def delete_failed(self, session):
+        body = {
+            'action': 'delete',
+            'allFailure': 'kafka'
+        }
+
+        response = session.post(
+            '/instances/action',
+            body
+        )
+        exceptions.raise_from_response(response)
+        return
