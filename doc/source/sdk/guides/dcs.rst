@@ -1,5 +1,5 @@
-Distributed Cache Service
-=========================
+Distributed Cache Service (DCS)
+===============================
 
 .. contents:: Table of Contents
    :local:
@@ -149,8 +149,8 @@ This interface is used to update config parameters of a DCS instance.
 .. literalinclude:: ../examples/dcs/update_instance_params.py
    :lines: 16-27
 
-DCS Instance Backups
---------------------
+Backup DCS Instance
+-------------------
 
 This API is used to backup a Distributed Cache Service instance.
 
