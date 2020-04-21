@@ -290,13 +290,23 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
 
         post_mock.assert_called_with(
             '/instances/instance/topics/delete',
-            {'topics': ['t1', 't2']})
+            json={'topics': ['t1', 't2']})
 
         self.proxy.delete_topic('instance', 't1')
 
         post_mock.assert_called_with(
             '/instances/instance/topics/delete',
-            {'topics': ['t1']})
+            json={'topics': ['t1']})
+
+    def test_topics(self):
+        self.verify_list(
+            self.proxy.topics,
+            _topic.Topic,
+            method_args=['iid'],
+            expected_kwargs={
+                'instance_id': 'iid'
+            }
+        )
 
     # Misc
     def test_az(self):

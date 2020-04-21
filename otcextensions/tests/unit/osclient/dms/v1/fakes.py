@@ -22,6 +22,7 @@ from otcextensions.sdk.dms.v1 import group
 from otcextensions.sdk.dms.v1 import instance
 from otcextensions.sdk.dms.v1 import queue
 from otcextensions.sdk.dms.v1 import quota
+from otcextensions.sdk.dms.v1 import topic
 
 
 def gen_data(data, columns):
@@ -128,4 +129,21 @@ class FakeInstance(test_base.Fake):
         }
 
         obj = instance.Instance.existing(**object_info)
+        return obj
+
+
+class FakeTopic(test_base.Fake):
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'id': 'id-' + uuid.uuid4().hex,
+            'replication': random.randint(1, 3),
+            'partition': random.randint(1, 21),
+            'retention_time': random.randint(1, 169),
+            'is_sync_replication': random.choice([True, False]),
+            'is_sync_flush': random.choice([True, False]),
+            'instance_id': 'iid-' + uuid.uuid4().hex
+        }
+
+        obj = topic.Topic.existing(**object_info)
         return obj

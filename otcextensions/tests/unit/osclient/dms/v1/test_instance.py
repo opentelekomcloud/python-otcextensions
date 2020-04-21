@@ -58,7 +58,7 @@ class TestListDMSInstance(TestDMSInstance):
 
         self.client.instances = mock.Mock()
 
-    def test_list_queue(self):
+    def test_list(self):
         arglist = [
         ]
 
@@ -81,7 +81,7 @@ class TestListDMSInstance(TestDMSInstance):
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
 
-    def test_list_queue_args(self):
+    def test_list_args(self):
         arglist = [
             '--engine-name', 'engine',
             '--status', 'Creating',

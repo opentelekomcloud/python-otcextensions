@@ -24,6 +24,8 @@ class Topic(_base.Resource):
     allow_create = True
     allow_delete = True
 
+#    _query_mapping = resource.QueryParameters('instance_id')
+
     instance_id = resource.URI('instance_id')
 
     #: Properties
