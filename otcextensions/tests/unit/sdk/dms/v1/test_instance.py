@@ -164,14 +164,14 @@ class TestInstance(base.TestCase):
 
         self.sess.post.assert_called_with(
             '/instances/action',
-            {'action': 'restart', 'instances': ['1']}
+            json={'action': 'restart', 'instances': ['1']}
         )
 
         sot.restart_batch(self.sess, ['1', '2'])
 
         self.sess.post.assert_called_with(
             '/instances/action',
-            {'action': 'restart', 'instances': ['1', '2']}
+            json={'action': 'restart', 'instances': ['1', '2']}
         )
 
     def test_delete(self):
@@ -185,12 +185,12 @@ class TestInstance(base.TestCase):
 
         self.sess.post.assert_called_with(
             '/instances/action',
-            {'action': 'delete', 'instances': ['1', '2']}
+            json={'action': 'delete', 'instances': ['1', '2']}
         )
 
         sot.delete_failed(self.sess)
 
         self.sess.post.assert_called_with(
             '/instances/action',
-            {'action': 'delete', 'allFailure': 'kafka'}
+            json={'action': 'delete', 'allFailure': 'kafka'}
         )
