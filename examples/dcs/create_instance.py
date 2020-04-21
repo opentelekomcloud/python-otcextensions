@@ -18,6 +18,25 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
+
+instance = conn.dcs.create_instance(
+    name="dcs-test",
+    available_zones=["eu-de-03"],
+    capacity=2,
+    engine="Redis",
+    engine_version="3.0.7",
+    maintain_begin="02:00:00",
+    maintain_end="06:00:00",
+    password="Password.123",
+    product_id="OTC_DCS_SINGLE",
+    resource_spec_code="dcs.single_node",
+    security_group_id="bb0e60ab-b6e0-4c61-a503-63213c18effa",
+    subnet_id="25d24fc8-d019-4a34-9fff-0a09fde6a9cb",
+    vpc_id="26ca2783-dc40-4e3a-95b1-5a0756441e12",
+)
+print(instance)
+
+'''
 attrs = {
     "name": "dcs-test",
     "engine": "Redis",
@@ -25,9 +44,8 @@ attrs = {
     "resource_spec_code": "dcs.single_node",
     "engine_version": "3.0.7",
     "vpc_id": "26ca2783-dc40-4e3a-95b1-5a0756441e12",
-    "vpc_name": "vpc-test",
     "product_id": "OTC_DCS_SINGLE",
-    "password": "PASSWORD",
+    "password": "Password.123",
     "user_id": "18569c6d589c4be3a300b6401c74d936",
     "user_name": "iam_user",
     "maintain_begin": "02:00:00",
@@ -45,3 +63,4 @@ attrs = {
 
 instance = conn.dcs.create_instance(**attrs)
 print(instance)
+'''

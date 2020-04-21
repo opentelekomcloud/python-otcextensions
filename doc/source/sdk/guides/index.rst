@@ -11,6 +11,7 @@ Open Telekom Cloud related User Guides
    auto_scaling
    cce
    cts
+   dcs
    deh
    logging
 

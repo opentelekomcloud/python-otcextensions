@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Update CTS Tracker by using id or an instance of class Tracker
+Update Distributed Cache Service Instance
 """
 import openstack
 
@@ -19,21 +19,9 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
 
-tracker = "system"
-attrs = {
-    "bucket_name": "cloudtraceservice",
-    "file_prefix_name": "newPrefix-",
-    "lts": {
-        "is_lts_enabled": True,
-        "log_group_name": "CTS",
-        "log_topic_name": "system-trace",
-        "log_group_id": "1186622b-78ec-11ea-997c-286ed488c87f",
-        "log_topic_id": "751f0409-78ec-11ea-90c7-286ed488c880"
-    },
-    "status": "enabled",
-    "tracker_name": "system",
-    "detail": ""
-}
-
-tracker = conn.cts.get_tracker(tracker)
-conn.cts.update_tracker(tracker, **attrs)
+instance = 'instance_id'
+params = None
+conn.dcs.update_instance_params(
+    instance=instance,
+    params=params
+)

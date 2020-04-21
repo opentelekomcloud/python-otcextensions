@@ -34,7 +34,7 @@ class Instance(resource.Resource):
     # Properties
     #: AZ where a cache node resides.
     #: The value of this parameter in the response contains an AZ ID.
-    available_zones = resource.Body('available_zones')
+    available_zones = resource.Body('available_zones', type=list)
     #: Backup policy.
     backup_policy = resource.Body('instance_backup_policy', type=dict)
     #:  Cache capacity in GB
