@@ -24,7 +24,8 @@ the chosen RAM size and type (master/standby or single-node database).
 Instances
 ---------
 
-A Distributed Cache Service Instance is a Redis instance on top of Open Telekom Cloud.
+A Distributed Cache Service Instance is a Redis instance on top of
+Open Telekom Cloud.
 
 List Instances
 ^^^^^^^^^^^^^^
@@ -42,272 +43,159 @@ This interface is used to create a DCS instance with
 parameters.
 
 .. literalinclude:: ../examples/dcs/create_instance.py
-   :lines: 16-47
+   :lines: 16-66
 
-Get Configuration
-^^^^^^^^^^^^^^^^^
+Get Instance
+^^^^^^^^^^^^
 
-This interface is used to get an Auto-Scaling Configuration by ID
+This interface is used to get a DCS instance by ID
 or an instance of class
-:class:`~otcextensions.sdk.auto_scaling.v1.config.Config`.
+:class:`~otcextensions.sdk.dcs.v1.instance.Instance`.
 
-.. literalinclude:: ../examples/auto_scaling/get_config.py
+.. literalinclude:: ../examples/dcs/get_instance.py
    :lines: 16-24
 
-Find Configuration
-^^^^^^^^^^^^^^^^^^
+Find Instance
+^^^^^^^^^^^^^
 
-This interface is used to find an Auto-Scaling Configuration instance by
+This interface is used to find a DCS instance by
 name or id.
 
-.. literalinclude:: ../examples/auto_scaling/find_config.py
+.. literalinclude:: ../examples/dcs/find_instance.py
    :lines: 16-24
 
-Delete Configuration
-^^^^^^^^^^^^^^^^^^^^
-
-This interface is used to delete an Auto-Scaling Configuration instance by id
-or an instance of class
-:class:`~otcextensions.sdk.auto_scaling.v1.config.Config`.
-
-.. literalinclude:: ../examples/auto_scaling/delete_config.py
-   :lines: 16-23
-
-Batch Delete Configurations
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-This interface is used to delete multiple Auto-Scaling Configuration instances
-by id or an instance of
-class :class:`~otcextensions.sdk.auto_scaling.v1.config.Config`.
-
-.. literalinclude:: ../examples/auto_scaling/batch_delete_config.py
-   :lines: 16-26
-
-
-Auto-Scaling Group
-------------------
-
-An Auto-Scaling (AS) group consists of a collection of instances that apply
-to the same scaling scenario. An AS group specifies parameters, such as the
-maximum number of instances, expected number of instances, minimum number
-of instances, VPC, subnet, and load balancing. Each user can create a maximum
-of 25 AS groups by default.
-
-List Groups
-^^^^^^^^^^^
-
-This interface is used to query all Auto-Scaling Groups and to filter
-the output with query parameters.
-
-.. literalinclude:: ../examples/auto_scaling/list_groups.py
-   :lines: 16-22
-
-Create Group
-^^^^^^^^^^^^
-
-This interface is used to create an Auto-Scaling Group with parameters.
-
-.. literalinclude:: ../examples/auto_scaling/create_group.py
-   :lines: 16-37
-
-Get Group
-^^^^^^^^^
-
-This interface is used to get an Auto-Scaling Group by ID
-or an instance of class
-:class:`~otcextensions.sdk.auto_scaling.v1.group.Group`.
-
-.. literalinclude:: ../examples/auto_scaling/get_group.py
-   :lines: 16-24
-
-Find Group
-^^^^^^^^^^
-
-This interface is used to find an Auto-Scaling Group instance by
-name or id.
-
-.. literalinclude:: ../examples/auto_scaling/find_group.py
-   :lines: 16-24
-
-Delete Group
-^^^^^^^^^^^^
-
-This interface is used to delete an Auto-Scaling Group instance by id or
-an instance of class :class:`~otcextensions.sdk.auto_scaling.v1.group.Group`.
-
-.. literalinclude:: ../examples/auto_scaling/delete_group.py
-   :lines: 16-23
-
-Pause Group
-^^^^^^^^^^^
-
-This interface is used to pause an Auto-Scaling Group instance in
-passive state by using id or an instance of
-class :class:`~otcextensions.sdk.auto_scaling.v1.group.Group`.
-
-.. literalinclude:: ../examples/auto_scaling/pause_group.py
-   :lines: 16-25
-
-Resume Group
-^^^^^^^^^^^^
-
-This interface is used to resume an Auto-Scaling Group instance in
-active state by using id or an instance of
-class :class:`~otcextensions.sdk.auto_scaling.v1.group.Group`.
-
-.. literalinclude:: ../examples/auto_scaling/resume_group.py
-   :lines: 16-24
-
-Auto-Scaling Policy
--------------------
-
-An Auto-Scaling (AS) policy defines whether to increase or decrease the number
-of instances in an AS group. If the number and the expected number of
-instances in an AS group are different due to the execution of the AS policy,
-AS automatically adjusts the number of instances to the expected. AS supports
-the following policy variants:
-
-* alarm-triggered policy
-* periodic policy
-* scheduled policy
-
-List Policy
-^^^^^^^^^^^
-
-This interface is used to query all Auto-Scaling Policies of an AS group
-and to filter the output with query parameters.
-
-.. literalinclude:: ../examples/auto_scaling/list_policies.py
-   :lines: 16-25
-
-Create Policy
-^^^^^^^^^^^^^
-
-This interface is used to create an Auto-Scaling Policy with parameters.
-
-.. literalinclude:: ../examples/auto_scaling/create_policy.py
-   :lines: 16-35
-
-
-Get Policy
-^^^^^^^^^^
-
-This interface is used to get an Auto-Scaling Policy by ID
-or an instance of class
-:class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`.
-
-.. literalinclude:: ../examples/auto_scaling/get_policy.py
-   :lines: 16-24
-
-Find Policy
-^^^^^^^^^^^
-
-This interface is used to find an Auto-Scaling Policy instance by
-name or id.
-
-.. literalinclude:: ../examples/auto_scaling/find_policy.py
-   :lines: 16-24
-
-Delete Policy
-^^^^^^^^^^^^^
-
-This interface is used to delete an Auto-Scaling Policy instance by id
-or an instance of class
-:class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`.
-
-.. literalinclude:: ../examples/auto_scaling/delete_policy.py
-   :lines: 16-23
-
-Update Policy
-^^^^^^^^^^^^^
-
-This interface is used to update an Auto-Scaling Policy instance by
-using policy's id or an instance of class
-:class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy` and provide new
-attributes.
-
-.. literalinclude:: ../examples/auto_scaling/update_policy.py
-   :lines: 16-39
-
-Pause Policy
-^^^^^^^^^^^^
-
-This interface is used to pause an Auto-Scaling Policy instance in
-passive state by using id or an instance of
-class :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`.
-
-.. literalinclude:: ../examples/auto_scaling/pause_policy.py
-   :lines: 16-25
-
-Resume Policy
-^^^^^^^^^^^^^
-
-This interface is used to resume an Auto-Scaling Policy instance in
-active state by using id or an instance of
-class :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`.
-
-.. literalinclude:: ../examples/auto_scaling/resume_policy.py
-   :lines: 16-25
-
-Execute Policy
-^^^^^^^^^^^^^^
-
-This interface is used to execute an Auto-Scaling Policy instance and
-run the defined actions.
-
-.. literalinclude:: ../examples/auto_scaling/execute_policy.py
-   :lines: 16-25
-
-Auto-Scaling Instance
----------------------
-
-An Auto-Scaling (AS) Instance is the executive unit of an Auto-Scaling group.
-
-List Instances
-^^^^^^^^^^^^^^
-
-This interface is used to query all Auto-Scaling Instances of an AS group
-and to filter the output with query parameters.
-
-.. literalinclude:: ../examples/auto_scaling/list_instances.py
-   :lines: 16-25
-
-Remove Instance
+Update Instance
 ^^^^^^^^^^^^^^^
 
-This interface is used to remove an Auto-Scaling Instances of an AS group.
+This interface is used to update a DCS instance by
+name or id.
 
-.. literalinclude:: ../examples/auto_scaling/remove_instance.py
-   :lines: 16-26
-
-Batch Action Instance
-^^^^^^^^^^^^^^^^^^^^^
-
-This interface is used to run actions on an Auto-Scaling group by adding
-or deleting instance.
-
-.. literalinclude:: ../examples/auto_scaling/batch_instance_action.py
-   :lines: 16-37
-
-Auto-Scaling Actions and Quotas
--------------------------------
-
-Auto-Scaling quotas and query scaling action logs can be querried.
-
-List Scaling Actions
-^^^^^^^^^^^^^^^^^^^^
-
-This interface is used to query all Auto-Scaling scaling action logs
-of an AS group and to filter the output with query parameters.
-
-.. literalinclude:: ../examples/auto_scaling/list_activities.py
+.. literalinclude:: ../examples/dcs/update_instance.py
    :lines: 16-27
 
-List User or Group Quota for Auto-Scaling
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Delete Instance
+^^^^^^^^^^^^^^^
 
-This interface is used to query all Auto-Scaling quotas of an AS group
-or a user and to filter the output with query parameters.
+This interface is used to delete a DCS instance by
+id or an instance of class
+:class:`~otcextensions.sdk.dcs.v1.instance.Instance`.
 
-.. literalinclude:: ../examples/auto_scaling/list_quotas.py
+.. literalinclude:: ../examples/dcs/delete_instance.py
+   :lines: 16-23
+
+Extend Instance
+^^^^^^^^^^^^^^^
+
+This interface is used to extend a DCS instance with additional RAM.
+
+.. literalinclude:: ../examples/dcs/extend_instance.py
+   :lines: 16-23
+
+Stop Instance
+^^^^^^^^^^^^^
+
+This interface is used to stop a DCS instance.
+
+.. literalinclude:: ../examples/dcs/stop_instance.py
+   :lines: 16-23
+
+Start Instance
+^^^^^^^^^^^^^^
+
+This interface is used to start a DCS instance.
+
+.. literalinclude:: ../examples/dcs/start_instance.py
+   :lines: 16-23
+
+Restart Instance
+^^^^^^^^^^^^^^^^
+
+This interface is used to restart a DCS instance.
+
+.. literalinclude:: ../examples/dcs/restart_instance.py
+   :lines: 16-23
+
+Change Instance Password
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to change the login password of a DCS instance.
+
+.. literalinclude:: ../examples/dcs/change_instance_password.py
+   :lines: 16-25
+
+List Statistics of all Instances
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to query all Statistics of all DCS Instances and
+to filter the output with query parameters.
+
+.. literalinclude:: ../examples/dcs/list_statistics.py
+   :lines: 16-23
+
+List Config Parameters
+^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to query all Config Parameters of a DCS Instance
+and to filter the output with query parameters.
+
+.. literalinclude:: ../examples/dcs/list_instance_params.py
+   :lines: 16-24
+
+Update Instance Config Parameters
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to update config parameters of a DCS instance.
+
+.. literalinclude:: ../examples/dcs/update_instance_params.py
+   :lines: 16-27
+
+DCS Instance Backups
+--------------------
+
+This API is used to backup a Distributed Cache Service instance.
+
+List Backups
+^^^^^^^^^^^^
+
+This interface is used to query all Backups of a DCS Instance and to filter
+the output with query parameters.
+
+.. literalinclude:: ../examples/dcs/list_backups.py
+   :lines: 16-24
+
+Create Instance Backup
+^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to backup a DCS Instance.
+
+.. literalinclude:: ../examples/dcs/create_backup.py
+   :lines: 16-27
+
+Delete Instance Backup
+^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to backup a DCS Instance.
+
+.. literalinclude:: ../examples/dcs/delete_backup.py
+   :lines: 16-28
+
+Restore DCS Instances
+---------------------
+
+This API is used to restore a Distributed Cache Service instance.
+
+List Restore Records
+^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to query all Restore Records.
+
+.. literalinclude:: ../examples/dcs/list_restore_records.py
+   :lines: 16-24
+
+Restore Instance
+^^^^^^^^^^^^^^^^
+
+This interface is used to restore a DCS Instance.
+
+.. literalinclude:: ../examples/dcs/restore_instance.py
    :lines: 16-27
