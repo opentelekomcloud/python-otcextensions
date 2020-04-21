@@ -28,8 +28,8 @@ Group operations
 
 .. _dms_quota:
 
-Quota operations
-----------------
+Instance operations
+-------------------
 
 .. autoprogram-cliff:: openstack.dms.v1
-   :command: dms quota *
+   :command: dms instance *
