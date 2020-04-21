@@ -321,3 +321,38 @@ class TestCreateDMSInstance(TestDMSInstance):
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
+
+
+class TestRestartDMSInstance(TestDMSInstance):
+
+    _data = fakes.FakeInstance.create_one()
+
+    def setUp(self):
+        super(TestRestartDMSInstance, self).setUp()
+
+        self.cmd = instance.RestartDMSInstance(self.app, None)
+
+        self.client.find_instance = mock.Mock()
+        self.client.restart_instance = mock.Mock()
+
+    def test_show_default(self):
+        arglist = [
+            'test_instance'
+        ]
+        verifylist = [
+            ('instance', 'test_instance')
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.find_instance.side_effect = [
+            self._data
+        ]
+
+        # Trigger the action
+        self.cmd.take_action(parsed_args)
+
+        self.client.find_instance.assert_called_with('test_instance',
+                                                     ignore_missing=False)
+        self.client.restart_instance.assert_called_with(self._data)
