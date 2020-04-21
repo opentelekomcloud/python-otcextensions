@@ -41,7 +41,7 @@ class Instance(_base.Resource):
     #: List of availability zones the instance belongs to
     availability_zones = resource.Body('available_zones', type=list)
     #: Billing mode
-    charging_mode = resource.Body('charging_mode')
+    charging_mode = resource.Body('charging_mode', type=int)
     #: IP address of the instance
     connect_address = resource.Body('connect_address')
     #: Instance creation time

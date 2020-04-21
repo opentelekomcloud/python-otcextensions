@@ -47,8 +47,8 @@ class Message(resource.Resource):
         """ Save remaining attributes under "attributes" attribute
         """
         body = self._consume_body_attrs(attrs)
-        header = self._consume_body_attrs(attrs)
-        uri = self._consume_body_attrs(attrs)
+        header = self._consume_header_attrs(attrs)
+        uri = self._consume_uri_attrs(attrs)
         body['attributes'] = attrs
         computed = self._consume_attrs(self._computed_mapping(), attrs)
 
