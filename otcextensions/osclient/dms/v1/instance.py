@@ -184,13 +184,13 @@ class CreateDMSInstance(command.ShowOne):
                 'ssl_enable is set to false.\n'
                 'An instance password must meet the following complexity '
                 'requirements: \n'
-                ' - Must be a string consisting of 8 to 32 characters.\n'
-                ' - Must contain at least two of the following character '
+                '- Must be a string consisting of 8 to 32 characters.\n'
+                '- Must contain at least two of the following character '
                 'types: \n'
-                '  - Lowercase letters\n'
-                '  - Uppercase letters\n'
-                '  - Digits\n'
-                '  - Special characters'
+                '-- Lowercase letters\n'
+                '-- Uppercase letters\n'
+                '-- Digits\n'
+                '-- Special characters'
             )
         )
         parser.add_argument(

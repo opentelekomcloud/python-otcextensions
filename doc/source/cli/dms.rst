@@ -26,10 +26,24 @@ Group operations
 .. autoprogram-cliff:: openstack.dms.v1
    :command: dms group *
 
-.. _dms_quota:
+.. _dms_instance:
 
 Instance operations
 -------------------
 
 .. autoprogram-cliff:: openstack.dms.v1
    :command: dms instance *
+
+.. _dms_misq:
+
+Misc operations
+---------------
+
+.. autoprogram-cliff:: openstack.dms.v1
+  :command: dms az list
+
+.. autoprogram-cliff:: openstack.dms.v1
+  :command: dms maintenance window list
+
+.. autoprogram-cliff:: openstack.dms.v1
+  :command: dms product list

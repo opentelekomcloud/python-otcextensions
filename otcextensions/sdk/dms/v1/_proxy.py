@@ -327,7 +327,7 @@ class Proxy(proxy.Proxy):
         return dummy_instance.delete_failed(self)
 
     # ======== Topics =======
-    def topics(self, instance, **kwargs):
+    def topics(self, instance):
         """List all DMS Instance topics
 
         :param instance: Either the ID of an instance or a
@@ -338,8 +338,9 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.dms.v1.topic.Topic`
         """
         instance_obj = self._get_resource(_instance.Instance, instance)
-        return self._list(_instance.Instance, paginated=False,
-                          instance_id=instance_obj.id, **kwargs)
+        return self._list(_topic.Topic,
+                          instance_id=instance_obj.id
+                          )
 
     def create_topic(self, instance, **attrs):
         """Create a topic on DMS Instance
@@ -381,7 +382,7 @@ class Proxy(proxy.Proxy):
 
         response = self.post(
             '/instances/%s/topics/delete' % (instance_obj.id),
-            {'topics': topics_list}
+            json={'topics': topics_list}
         )
         exceptions.raise_from_response(response)
 
