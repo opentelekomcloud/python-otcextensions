@@ -28,7 +28,7 @@ STORAGE_SPEC_CHOICES = ['dms.physical.storage.high',
 
 def _get_columns(item):
     column_map = {}
-    hidden = []
+    hidden = ['location']
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
                                                            hidden)
 
@@ -333,3 +333,25 @@ class CreateDMSInstance(command.ShowOne):
         data = utils.get_item_properties(obj, columns)
 
         return (display_columns, data)
+
+
+class RestartDMSInstance(command.Command):
+    _description = _('Restart single Instance')
+
+    def get_parser(self, prog_name):
+        parser = super(RestartDMSInstance, self).get_parser(prog_name)
+        parser.add_argument(
+            'instance',
+            metavar='<instance>',
+            help=_('ID of the instance')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.dms
+
+        obj = client.find_instance(parsed_args.instance, ignore_missing=False)
+
+        client.restart_instance(obj)
+
+        return

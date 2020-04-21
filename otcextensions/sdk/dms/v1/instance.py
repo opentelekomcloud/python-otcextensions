@@ -127,7 +127,7 @@ class Instance(_base.Resource):
 
         response = session.post(
             '/instances/action',
-            body
+            json=body
         )
 
         exceptions.raise_from_response(response)
@@ -155,7 +155,7 @@ class Instance(_base.Resource):
 
         response = session.post(
             '/instances/action',
-            body
+            json=body
         )
         exceptions.raise_from_response(response)
         return
