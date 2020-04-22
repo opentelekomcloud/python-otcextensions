@@ -335,6 +335,79 @@ class CreateDMSInstance(command.ShowOne):
         return (display_columns, data)
 
 
+class UpdateDMSInstance(command.ShowOne):
+    _description = _('Update DMS Instance')
+
+    def get_parser(self, prog_name):
+        parser = super(UpdateDMSInstance, self).get_parser(prog_name)
+        parser.add_argument(
+            'instance',
+            metavar='<inst>',
+            help=_('Name or ID of the DMS instance')
+        )
+        parser.add_argument(
+            '--name',
+            metavar='<name>',
+            help=_('New name of the instance.')
+        )
+        parser.add_argument(
+            '--description',
+            metavar='<description>',
+            help=_('New description of the instance.')
+        )
+        parser.add_argument(
+            '--security-group',
+            metavar='<sg>',
+            required=True,
+            help=_('Security group ID or Name')
+        )
+        parser.add_argument(
+            '--maintenance-begin',
+            metavar='<HH24:MM>',
+            help=_('Start of the instance maintenance window')
+        )
+        parser.add_argument(
+            '--maintenance-end',
+            metavar='<HH24:MM>',
+            help=_('End of the instance maintenance window')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+
+        attrs = {}
+
+        attrs['name'] = parsed_args.name
+        for attr in ['description', 'maintenance_begin', 'maintenance_end']:
+            val = getattr(parsed_args, attr)
+            if val is not None:
+                attrs[attr] = val
+
+        sg_obj = self.app.client_manager.compute.find_security_group(
+            parsed_args.security_group, ignore_missing=False)
+        attrs['security_group_id'] = sg_obj.id
+
+        if parsed_args.maintenance_begin and parsed_args.maintenance_end:
+            attrs['maintenance_begin'] = parsed_args.maintenance_begin
+            attrs['maintenance_end'] = parsed_args.maintenance_end
+        elif parsed_args.maintenance_begin or parsed_args.maintenance_end:
+            raise exceptions.CommandException(_(
+                '`maintenance_start` and `maintenance_end` can be set only'
+                'together'))
+
+        client = self.app.client_manager.dms
+
+        instance = client.find_instance(parsed_args.instance,
+                                        ignore_missing=False)
+
+        obj = client.update_instance(instance, **attrs)
+
+        display_columns, columns = _get_columns(obj)
+        data = utils.get_item_properties(obj, columns)
+
+        return (display_columns, data)
+
+
 class RestartDMSInstance(command.Command):
     _description = _('Restart single Instance')
 

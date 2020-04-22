@@ -323,6 +323,75 @@ class TestCreateDMSInstance(TestDMSInstance):
         self.assertEqual(self.data, data)
 
 
+class TestUpdateDMSInstance(TestDMSInstance):
+
+    _data = fakes.FakeInstance.create_one()
+
+    columns = ('access_user', 'availability_zones', 'description',
+               'engine_name', 'engine_version', 'is_public', 'is_ssl',
+               'kafka_public_status', 'maintenance_end', 'name', 'password',
+               'product_id', 'public_bandwidth', 'retention_policy',
+               'router_id', 'router_name', 'security_group_id',
+               'security_group_name', 'storage', 'storage_spec_code',
+               'subnet_id')
+
+    data = fakes.gen_data(_data, columns)
+
+    def setUp(self):
+        super(TestUpdateDMSInstance, self).setUp()
+
+        self.cmd = instance.UpdateDMSInstance(self.app, None)
+
+        self.client.update_instance = mock.Mock()
+        self.client.find_instance = mock.Mock(return_value=self._data)
+        self.app.client_manager.compute = mock.Mock()
+
+    def test_update_default(self):
+        arglist = [
+            'inst',
+            '--name', 'new_name',
+            '--description', 'descr',
+            '--security-group', 'sg_id',
+            '--maintenance-begin', 'mwb',
+            '--maintenance-end', 'mwe'
+        ]
+        verifylist = [
+            ('instance', 'inst'),
+            ('name', 'new_name'),
+            ('description', 'descr'),
+            ('security_group', 'sg_id'),
+            ('maintenance_begin', 'mwb'),
+            ('maintenance_end', 'mwe'),
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.update_instance.side_effect = [
+            self._data
+        ]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.find_instance.assert_called_with(
+            'inst', ignore_missing=False)
+        self.app.client_manager.compute.find_security_group.assert_called_with(
+            'sg_id', ignore_missing=False)
+
+        self.client.update_instance.assert_called_with(
+            self._data,
+            description='descr',
+            maintenance_begin='mwb',
+            maintenance_end='mwe',
+            name='new_name',
+            security_group_id=mock.ANY
+        )
+
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
+
+
 class TestRestartDMSInstance(TestDMSInstance):
 
     _data = fakes.FakeInstance.create_one()
