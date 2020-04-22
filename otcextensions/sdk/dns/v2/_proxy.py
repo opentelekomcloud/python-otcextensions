@@ -103,7 +103,9 @@ class Proxy(proxy.Proxy):
         """Add router(VPC) to private zone
 
         :param zone: The value can be the ID of a zone
-             or a :class:`~otcextensions.sdk.dns.v2.zone.Zone` instance.
+            or a :class:`~otcextensions.sdk.dns.v2.zone.Zone` instance.
+        : param router: The parameters router_id and router_regions should
+            be provided. router_id is mandatory.
         :returns: updater instance of
             :class:`~otcextensions.sdk.dns.v2.zone.Router`
         :rtype: :class:`~otcextensions.sdk.dns.v2.zone.Router`
@@ -116,6 +118,7 @@ class Proxy(proxy.Proxy):
 
         :param zone: The value can be the ID of a zone
              or a :class:`~otcextensions.sdk.dns.v2.zone.Zone` instance.
+        :param router: The parameter router_id is mandatory
         :returns: updater instance of
             :class:`~otcextensions.sdk.dns.v2.zone.Router`
         :rtype: :class:`~otcextensions.sdk.dns.v2.zone.Router`

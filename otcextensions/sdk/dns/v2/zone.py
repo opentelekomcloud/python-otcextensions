@@ -99,11 +99,11 @@ class Zone(_base.Resource):
         body['router']['router_id'] = router.get('router_id')
         if 'router_region' in router:
             body['router']['router_region'] = router.get('router_region')
-        return self._action(session, 'accosiaterouter', body)
+        return self._action(session, 'associaterouter', body)
 
     def disassociate_router(self, session, **router):
         body = {'router': {}}
         body['router']['router_id'] = router.get('router_id')
         if 'router_region' in router:
             body['router']['router_region'] = router.get('router_region')
-        return self._action(session, 'disaccosiaterouter', body)
+        return self._action(session, 'disassociaterouter', body)
