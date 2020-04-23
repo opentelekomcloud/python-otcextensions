@@ -32,7 +32,7 @@ _formatters = {
 
 
 LB_ALGORITHM_VALUES = ['LEAST_CONNECTIONS', 'ROUND_ROBIN', 'SOURCE_IP']
-PROTOCOL_VALUES = ['HTTP', 'HTTPS', 'PROXY', 'TCP']
+PROTOCOL_VALUES = ['HTTP', 'HTTPS', 'PROXY', 'TCP', 'UDP']
 
 
 def _get_columns(item):
@@ -84,7 +84,7 @@ class ListPool(command.Lister):
             type=lambda s: s.upper(),
             choices=PROTOCOL_VALUES,
             help=_('Load balancer pool protocol to query'
-                   'one of [`HTTP`, `HTTPS`, `PROXY`, `TCP`]')
+                   'one of [`HTTP`, `HTTPS`, `PROXY`, `TCP`, `UDP`]')
         )
         parser.add_argument(
             '--load_balancer',
@@ -182,7 +182,7 @@ class CreatePool(command.ShowOne):
             choices=PROTOCOL_VALUES,
             required=True,
             help=_('The protocol for the pool. '
-                   'One of [`HTTP`, `HTTPS`, `PROXY`, `TCP`].')
+                   'One of [`HTTP`, `HTTPS`, `PROXY`, `TCP`, `UDP`].')
         )
         parser.add_argument(
             '--lb_algorithm',
