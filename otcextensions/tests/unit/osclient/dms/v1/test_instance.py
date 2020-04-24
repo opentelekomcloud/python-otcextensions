@@ -27,9 +27,9 @@ class TestListDMSInstance(TestDMSInstance):
     instances = fakes.FakeInstance.create_multiple(3)
 
     columns = ('ID', 'name', 'engine_name', 'engine_version',
-               'storage_spec_code', 'status', 'connect_address', 'router_id',
-               'security_group_id', 'subnet_id', 'user_name', 'storage',
-               'total_storage', 'used_storage')
+               'storage_spec_code', 'status', 'connect_address',
+               'router_id', 'network_id', 'security_group_id',
+               'user_name', 'storage', 'total_storage', 'used_storage')
 
     data = []
 
@@ -43,8 +43,8 @@ class TestListDMSInstance(TestDMSInstance):
             s.status,
             s.connect_address,
             s.router_id,
+            s.network_id,
             s.security_group_id,
-            s.subnet_id,
             s.user_name,
             s.storage,
             s.total_storage,
@@ -120,11 +120,11 @@ class TestShowDMSInstance(TestDMSInstance):
 
     columns = ('access_user', 'availability_zones', 'description',
                'engine_name', 'engine_version', 'is_public', 'is_ssl',
-               'kafka_public_status', 'maintenance_end', 'name', 'password',
-               'product_id', 'public_bandwidth', 'retention_policy',
-               'router_id', 'router_name', 'security_group_id',
-               'security_group_name', 'storage', 'storage_spec_code',
-               'subnet_id')
+               'kafka_public_status', 'maintenance_end', 'name', 'network_id',
+               'password', 'product_id', 'public_bandwidth',
+               'retention_policy', 'router_id', 'router_name',
+               'security_group_id',
+               'security_group_name', 'storage', 'storage_spec_code')
 
     data = fakes.gen_data(_data, columns)
 
@@ -216,11 +216,11 @@ class TestCreateDMSInstance(TestDMSInstance):
 
     columns = ('access_user', 'availability_zones', 'description',
                'engine_name', 'engine_version', 'is_public', 'is_ssl',
-               'kafka_public_status', 'maintenance_end', 'name', 'password',
+               'kafka_public_status', 'maintenance_end', 'name', 'network_id',
+               'password',
                'product_id', 'public_bandwidth', 'retention_policy',
                'router_id', 'router_name', 'security_group_id',
-               'security_group_name', 'storage', 'storage_spec_code',
-               'subnet_id')
+               'security_group_name', 'storage', 'storage_spec_code')
 
     data = fakes.gen_data(_data, columns)
 
@@ -232,7 +232,7 @@ class TestCreateDMSInstance(TestDMSInstance):
         self.client.create_instance = mock.Mock()
         self.app.client_manager.network = mock.Mock()
         self.app.client_manager.network.find_router = mock.Mock()
-        self.app.client_manager.network.find_subnet = mock.Mock()
+        self.app.client_manager.network.find_network = mock.Mock()
         self.app.client_manager.compute = mock.Mock()
 
     def test_create_default(self):
@@ -246,7 +246,7 @@ class TestCreateDMSInstance(TestDMSInstance):
             '--password', 'pwd',
             '--router', 'router_id',
             '--security-group', 'sg_id',
-            '--subnet', 'subnet_id',
+            '--network', 'net_id',
             '--availability-zone', 'az1',
             '--availability-zone', 'az2',
             '--product-id', 'pid',
@@ -268,7 +268,7 @@ class TestCreateDMSInstance(TestDMSInstance):
             ('password', 'pwd'),
             ('router', 'router_id'),
             ('security_group', 'sg_id'),
-            ('subnet', 'subnet_id'),
+            ('network', 'net_id'),
             ('availability_zone', ['az1', 'az2']),
             ('product_id', 'pid'),
             ('maintenance_begin', 'mwb'),
@@ -292,8 +292,8 @@ class TestCreateDMSInstance(TestDMSInstance):
 
         self.app.client_manager.network.find_router.assert_called_with(
             'router_id', ignore_missing=False)
-        self.app.client_manager.network.find_subnet.assert_called_with(
-            'subnet_id', ignore_missing=False)
+        self.app.client_manager.network.find_network.assert_called_with(
+            'net_id', ignore_missing=False)
         self.app.client_manager.compute.find_security_group.assert_called_with(
             'sg_id', ignore_missing=False)
 
@@ -316,7 +316,7 @@ class TestCreateDMSInstance(TestDMSInstance):
             security_group_id=mock.ANY,
             storage=15,
             storage_spec_code='dms.physical.storage.high',
-            subnet_id=mock.ANY
+            network_id=mock.ANY
         )
 
         self.assertEqual(self.columns, columns)
@@ -329,11 +329,11 @@ class TestUpdateDMSInstance(TestDMSInstance):
 
     columns = ('access_user', 'availability_zones', 'description',
                'engine_name', 'engine_version', 'is_public', 'is_ssl',
-               'kafka_public_status', 'maintenance_end', 'name', 'password',
+               'kafka_public_status', 'maintenance_end', 'name', 'network_id',
+               'password',
                'product_id', 'public_bandwidth', 'retention_policy',
                'router_id', 'router_name', 'security_group_id',
-               'security_group_name', 'storage', 'storage_spec_code',
-               'subnet_id')
+               'security_group_name', 'storage', 'storage_spec_code')
 
     data = fakes.gen_data(_data, columns)
 
