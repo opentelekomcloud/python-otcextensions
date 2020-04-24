@@ -109,12 +109,12 @@ class TestListListener(fakes.TestLoadBalancer):
 
     def test_list_filters_exceptions_proto(self):
         arglist = [
-            '--protocol', 'UDP',
+            '--protocol', 'SMTP',
             '--protocol_port', '12'
         ]
 
         verifylist = [
-            ('protocol', 'UDP'),
+            ('protocol', 'SMTP'),
             ('protocol_port', 12)
         ]
 
