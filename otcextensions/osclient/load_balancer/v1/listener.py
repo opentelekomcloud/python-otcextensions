@@ -22,7 +22,7 @@ from otcextensions.i18n import _
 LOG = logging.getLogger(__name__)
 
 
-SUPPORTED_PROTOCOLS = ['TCP', 'HTTP', 'HTTPS']
+SUPPORTED_PROTOCOLS = ['TCP', 'HTTP', 'HTTPS', 'UDP']
 
 _formatters = {
     'load_balancer_ids': sdk_utils.ListOfIdsColumnBR,
@@ -66,7 +66,7 @@ class ListListener(command.Lister):
             type=lambda s: s.upper(),
             choices=SUPPORTED_PROTOCOLS,
             help=_('Load balancer listener protocol to query\n'
-                   'One of [`TCP`, `HTTP`, `HTTPS`]')
+                   'One of [`TCP`, `HTTP`, `HTTPS`, `UDP`]')
         )
         parser.add_argument(
             '--protocol_port',
@@ -158,7 +158,7 @@ class CreateListener(command.ShowOne):
             choices=SUPPORTED_PROTOCOLS,
             required=True,
             help=_('The protocol for the listener. '
-                   'One of [`TCP`, `HTTP`, `HTTPS`]')
+                   'One of [`TCP`, `HTTP`, `HTTPS`, `UDP`]')
         )
         parser.add_argument(
             '--protocol_port',
