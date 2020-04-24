@@ -111,7 +111,7 @@ class FakeInstance(test_base.Fake):
             'password': uuid.uuid4().hex,
             'router_id': 'router_id-' + uuid.uuid4().hex,
             'router_name': 'router_name-' + uuid.uuid4().hex,
-            'subnet_id': 'subnet_id-' + uuid.uuid4().hex,
+            'network_id': 'net_id-' + uuid.uuid4().hex,
             'subnet_name': 'subnet_name-' + uuid.uuid4().hex,
             'security_group_id': 'security_group_id-' + uuid.uuid4().hex,
             'security_group_name': 'security_group_name-' + uuid.uuid4().hex,

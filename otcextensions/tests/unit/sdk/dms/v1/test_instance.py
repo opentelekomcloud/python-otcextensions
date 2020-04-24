@@ -141,7 +141,7 @@ class TestInstance(base.TestCase):
         self.assertEqual(JSON_DATA.get('storage_space', None),
                          sot.storage)
         self.assertEqual(JSON_DATA.get('subnet_id', None),
-                         sot.subnet_id)
+                         sot.network_id)
         self.assertEqual(JSON_DATA.get('total_storage_space', None),
                          sot.total_storage)
         self.assertEqual(JSON_DATA.get('type', None),

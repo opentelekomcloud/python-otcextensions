@@ -37,7 +37,7 @@ class ListDMSInstance(command.Lister):
     _description = _('List DMS Instances')
     columns = ('ID', 'name', 'engine_name', 'engine_version',
                'storage_spec_code', 'status', 'connect_address', 'router_id',
-               'security_group_id', 'subnet_id', 'user_name', 'storage',
+               'network_id', 'security_group_id', 'user_name', 'storage',
                'total_storage', 'used_storage')
 
     def get_parser(self, prog_name):
@@ -206,10 +206,10 @@ class CreateDMSInstance(command.ShowOne):
             help=_('Security group ID or Name')
         )
         parser.add_argument(
-            '--subnet',
-            metavar='<subnet>',
+            '--network',
+            metavar='<net>',
             required=True,
-            help=_('Subnet ID or Name')
+            help=_('Neutron network ID or Name')
         )
         parser.add_argument(
             '--availability-zone',
@@ -303,9 +303,9 @@ class CreateDMSInstance(command.ShowOne):
         router_obj = network_client.find_router(parsed_args.router,
                                                 ignore_missing=False)
         attrs['router_id'] = router_obj.id
-        subnet_obj = network_client.find_subnet(parsed_args.subnet,
-                                                ignore_missing=False)
-        attrs['subnet_id'] = subnet_obj.id
+        net_obj = network_client.find_network(parsed_args.network,
+                                              ignore_missing=False)
+        attrs['network_id'] = net_obj.id
         sg_obj = self.app.client_manager.compute.find_security_group(
             parsed_args.security_group, ignore_missing=False)
         attrs['security_group_id'] = sg_obj.id

@@ -66,6 +66,8 @@ class Instance(_base.Resource):
     maintenance_start = resource.Body('maintain_begin')
     #: Maximum number of partitions
     max_partitions = resource.Body('partition_num', type=int)
+    #: Neutron network ID
+    network_id = resource.Body('subnet_id')
     #: User password
     password = resource.Body('password')
     #: Port number of the instance
@@ -106,8 +108,6 @@ class Instance(_base.Resource):
     storage_type = resource.Body('storage_type')
     #: Storage space GB
     storage = resource.Body('storage_space', type=int)
-    #: Subnet ID
-    subnet_id = resource.Body('subnet_id')
     #: Total storage space GB
     total_storage = resource.Body('total_storage_space', type=int)
     #: Instance type
