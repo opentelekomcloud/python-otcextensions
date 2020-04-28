@@ -18,57 +18,38 @@ Group Operations
 ^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy
-
-   .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.groups
-   .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.get_group
-   .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.find_group
-   .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.create_group
-   .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.delete_group
-   .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.resume_group
-   .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.pause_group
-
+  :noindex:
+  :members: groups, get_group, find_group, create_group, delete_group,
+            resume_group, pause_group
 
 Config Operations
 ^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy
-
-  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.configs
-  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.get_config
-  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.find_config
-  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.create_config
-  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.delete_config
-  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.batch_delete_configs
+  :noindex:
+  :members: configs, get_config, find_config, create_config, delete_config,
+            batch_delete_configs
 
 
 Policy Operations
 ^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy
-
-  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.policies
-  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.get_policy
-  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.find_policy
-  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.create_policy
-  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.delete_policy
-  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.update_policy
-  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.resume_policy
-  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.pause_policy
-  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.execute_policy
+  :noindex:
+  :members: policies, get_policy, find_policy, create_policy,
+            delete_policy, update_policy, resume_policy,
+            pause_policy, execute_policy
 
 Instance Operations
 ^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy
-
-  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.instances
-  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.remove_instance
-  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.batch_instance_action
+  :noindex:
+  :members: instances, remove_instance, batch_instance_action
 
 Actions and Quotas
 ^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy
-
-  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.activities
-  .. automethod:: otcextensions.sdk.auto_scaling.v1._proxy.Proxy.quotas
+  :noindex:
+  :members: activities, quotas

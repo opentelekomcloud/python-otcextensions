@@ -15,12 +15,6 @@ Host Operations
 ^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.deh.v1._proxy.Proxy
-
-   .. automethod:: otcextensions.sdk.deh.v1._proxy.Proxy.hosts
-   .. automethod:: otcextensions.sdk.deh.v1._proxy.Proxy.create_host
-   .. automethod:: otcextensions.sdk.deh.v1._proxy.Proxy.get_host
-   .. automethod:: otcextensions.sdk.deh.v1._proxy.Proxy.find_host
-   .. automethod:: otcextensions.sdk.deh.v1._proxy.Proxy.delete_host
-   .. automethod:: otcextensions.sdk.deh.v1._proxy.Proxy.update_host
-   .. automethod:: otcextensions.sdk.deh.v1._proxy.Proxy.servers
-   .. automethod:: otcextensions.sdk.deh.v1._proxy.Proxy.host_types
+  :noindex:
+  :members: hosts, get_host, find_host, create_host,
+            update_host, delete_host, servers, host_types

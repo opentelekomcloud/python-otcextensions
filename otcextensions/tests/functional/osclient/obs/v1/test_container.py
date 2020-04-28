@@ -29,26 +29,22 @@ class ObsContainerTests(base.TestCase):
     NAME = uuid.uuid4().hex
     OTHER_NAME = uuid.uuid4().hex
 
-    @classmethod
-    def setUpClass(cls):
-        super(ObsContainerTests, cls).setUpClass()
-        json_output = json.loads(cls.openstack(
-            CREATE_COMMAND % {'name': cls.NAME}
-        ))
-        cls.container_id = json_output["id"]
-        cls.assertOutput(cls.NAME, json_output['name'])
-
-    @classmethod
-    def tearDownClass(cls):
+    def tearDown(self):
         try:
-            cls.openstack(
-                DELETE_COMMAND % {'name': cls.NAME}
+            self.openstack(
+                DELETE_COMMAND % {'name': self.NAME}
             )
         finally:
-            super(ObsContainerTests, cls).tearDownClass()
+            super(ObsContainerTests, self).tearDown()
 
     def setUp(self):
         super(ObsContainerTests, self).setUp()
+        json_output = json.loads(self.openstack(
+            CREATE_COMMAND % {'name': self.NAME}
+        ))
+        self.container_id = json_output["id"]
+        self.assertOutput(self.NAME, json_output['name'])
+
         ver_fixture = fixtures.EnvironmentVariable(
             'OS_OBS_API_VERSION', '1'
         )

@@ -15,35 +15,23 @@ Zone Operations
 ^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.dns.v2._proxy.Proxy
-
-   .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.zones
-   .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.create_zone
-   .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.get_zone
-   .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.delete_zone
-   .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.update_zone
-   .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.find_zone
-   .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.add_router_to_zone
-   .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.remove_router_from_zone
-   .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.nameservers
+  :noindex:
+  :members: zones, create_zone, get_zone, delete_zone,
+            update_zone, find_zone, add_router_to_zone,
+            remove_router_from_zone, nameservers
 
 Recordset Operations
 ^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.dns.v2._proxy.Proxy
-
-  .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.recordsets
-  .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.create_recordset
-  .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.get_recordset
-  .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.update_recordset
-  .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.delete_recordset
+  :noindex:
+  :members: recordsets, create_recordset, get_recordset, update_recordset,
+            delete_recordset
 
 
 PTR Records Operations
 ^^^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.dns.v2._proxy.Proxy
-
-  .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.floating_ips
-  .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.set_floating_ip
-  .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.get_floating_ip
-  .. automethod:: otcextensions.sdk.dns.v2._proxy.Proxy.unset_floating_ip
+  :noindex:
+  :members: floating_ips, set_floating_ip, get_floating_ip, unset_floating_ip

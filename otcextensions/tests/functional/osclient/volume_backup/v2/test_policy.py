@@ -30,26 +30,21 @@ class VolumeBackupPolicyTests(base.TestCase):
     NAME = uuid.uuid4().hex
     OTHER_NAME = uuid.uuid4().hex
 
-    @classmethod
-    def setUpClass(cls):
-        super(VolumeBackupPolicyTests, cls).setUpClass()
-        json_output = json.loads(cls.openstack(
-            CREATE_COMMAND % {'name': cls.NAME}
-        ))
-        cls.policy_id = json_output["id"]
-        cls.assertOutput(cls.NAME, json_output['name'])
-
-    @classmethod
-    def tearDownClass(cls):
+    def tearDown(self):
         try:
-            cls.openstack(
-                DELETE_COMMAND % {'id': cls.policy_id}
+            self.openstack(
+                DELETE_COMMAND % {'id': self.policy_id}
             )
         finally:
-            super(VolumeBackupPolicyTests, cls).tearDownClass()
+            super(VolumeBackupPolicyTests, self).tearDown()
 
     def setUp(self):
         super(VolumeBackupPolicyTests, self).setUp()
+        json_output = json.loads(self.openstack(
+            CREATE_COMMAND % {'name': self.NAME}
+        ))
+        self.policy_id = json_output["id"]
+        self.assertOutput(self.NAME, json_output['name'])
         ver_fixture = fixtures.EnvironmentVariable(
             'OS_VBS_API_VERSION', '2'
         )

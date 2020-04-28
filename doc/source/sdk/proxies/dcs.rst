@@ -15,42 +15,29 @@ Instance Operations
 ^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.dcs.v1._proxy.Proxy
-
-   .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.instances
-   .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.create_instance
-   .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.get_instance
-   .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.find_instance
-   .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.delete_instance
-   .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.update_instance
-   .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.extend_instance
-   .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.start_instance
-   .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.restart_instance
-   .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.stop_instance
-   .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.stop_instance
-   .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.stop_instance
+  :noindex:
+  :members: instances, get_instance, find_instance, create_instance,
+            delete_instance, update_instance, extend_instance,
+            start_instance, restart_instance, stop_instance
 
 Statistics Operations
 ^^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.dcs.v1._proxy.Proxy
-
-  .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.statistics
+  :noindex:
+  :members: statistics
 
 Backup Operations
 ^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.dcs.v1._proxy.Proxy
-
-  .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.backup_instance
-  .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.backups
-  .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.delete_instance_backup
-  .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.restore_instance
-  .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.restore_records
+  :noindex:
+  :members: backups, backup_instance, delete_instance_backup,
+            restore_instance, restore_records
 
 Instance Configuration Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.dcs.v1._proxy.Proxy
-
-  .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.instance_params
-  .. automethod:: otcextensions.sdk.dcs.v1._proxy.Proxy.update_instance_params
+  :noindex:
+  :members: instance_params, update_instance_params

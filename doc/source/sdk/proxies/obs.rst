@@ -17,19 +17,12 @@ Container Operations
 ^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.obs.v1._proxy.Proxy
-
-   .. automethod:: otcextensions.sdk.obs.v1._proxy.Proxy.containers
-   .. automethod:: otcextensions.sdk.obs.v1._proxy.Proxy.get_container
-   .. automethod:: otcextensions.sdk.obs.v1._proxy.Proxy.create_container
-   .. automethod:: otcextensions.sdk.obs.v1._proxy.Proxy.delete_container
+  :noindex:
+  :members: containers, get_container, create_container, delete_container
 
 Object Operations
 ^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.obs.v1._proxy.Proxy
-
-   .. automethod:: otcextensions.sdk.obs.v1._proxy.Proxy.objects
-   .. automethod:: otcextensions.sdk.obs.v1._proxy.Proxy.get_object
-   .. automethod:: otcextensions.sdk.obs.v1._proxy.Proxy.create_object
-   .. automethod:: otcextensions.sdk.obs.v1._proxy.Proxy.delete_object
-   .. automethod:: otcextensions.sdk.obs.v1._proxy.Proxy.download_object
+  :noindex:
+  :members: objects, get_object, create_object, delete_object, download_object

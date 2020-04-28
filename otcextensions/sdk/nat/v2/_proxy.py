@@ -83,6 +83,21 @@ class Proxy(proxy.Proxy):
         """
         return self._update(_gateway.Gateway, gateway, **attrs)
 
+    def find_gateway(self, name_or_id, ignore_missing=False):
+        """Find a single Nat Gateway
+
+        :param name_or_id: The name or ID of a zone
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the gateway does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to delete a nonexistent gateway.
+
+        :returns: ``None``
+        """
+        return self._find(_gateway.Gateway, name_or_id,
+                          ignore_missing=ignore_missing)
+
     # ======== SNAT rules ========
     def create_snat_rule(self, **attrs):
         """Create a new SNAT rule from attributes

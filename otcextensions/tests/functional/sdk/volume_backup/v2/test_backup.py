@@ -22,14 +22,6 @@ class TestBackup(TestVbs):
     volume = None
     job = None
 
-    @classmethod
-    def setUpClass(cls):
-        super(TestBackup, cls).setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        pass
-
     def prepare_volume(self):
 
         self.SNAPSHOT_NAME = self.getUniqueString()
@@ -115,20 +107,3 @@ class TestBackup(TestVbs):
         if len(backups) > 0:
             backup = self.client.get_backup(backups[0])
             self.assertIsNotNone(backup)
-
-    # TODO(AGoncharov) backup creation takes too long.
-    # 1Gb empty volume backup takes more than 4 min
-    # The functional test for create/delete can not be scheduled with such
-    # timing
-    # def test_create_delete_backup(self):
-    #     self.prepare_volume()
-    #
-    #     backup = self.client.create_backup(
-    #         volume_id=self.VOLUME_ID,
-    #         snapshot_id=self.SNAPSHOT_ID,
-    #         name='sdk_test_backup')
-    #     assert isinstance(backup, _backup.Backup)
-    #     self.client.wait_for_backup(backup)
-    #     self.client.delete_backup(backup)
-    #     self.client.wait_for_backup_delete(backup)
-    #     self.cleanup_volume()

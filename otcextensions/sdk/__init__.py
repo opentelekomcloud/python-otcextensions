@@ -54,24 +54,34 @@ OTC_SERVICES = {
     'cce': {
         'service_type': 'cce',
         'endpoint_service_type': 'ccev2.0',
-        # 'append_project_id': False,
+    },
+    'ces': {
+        'service_type': 'ces',
+        'append_project_id': True,
     },
     'cts': {
         'service_type': 'cts',
-        # 'append_project_id': True,
     },
     'css': {
         'service_type': 'css',
-        # 'append_project_id': True,
+    },
+    'dcaas': {
+        'service_type': 'dcaas',
     },
     'dcs': {
         'service_type': 'dcs',
-        # 'endpoint_service_type': 'dms',
         'append_project_id': True,
+    },
+    'dds': {
+        'service_type': 'dds',
     },
     'deh': {
         'service_type': 'deh',
         'append_project_id': True,
+    },
+    'dis': {
+        'service_type': 'dis',
+        'endpoint_service_type': 'disv2'
     },
     'dms': {
         'service_type': 'dms',
@@ -82,6 +92,10 @@ OTC_SERVICES = {
         'service_type': 'dns',
         'replace_system': True,
     },
+    'dws': {
+        'service_type': 'dws',
+        'endpoint_service_type': 'dwsv1'
+    },
     'ecs': {
         'service_type': 'ecs',
     },
@@ -89,8 +103,18 @@ OTC_SERVICES = {
         'service_type': 'kms',
         'append_project_id': True,
     },
+    'lts': {
+        'service_type': 'lts'
+    },
+    'maas': {
+        'service_type': 'maas',
+        'append_project_id': True,
+    },
+    'mrs': {
+        'service_type': 'mrs'
+    },
     'nat': {
-        'service_type': 'nat'
+        'service_type': 'nat',
     },
     'obs': {
         'service_type': 'obs',
@@ -98,17 +122,31 @@ OTC_SERVICES = {
         'endpoint_service_type': 'object',
         'set_endpoint_override': True
     },
+    'plas': {
+        'service_type': 'plas'
+    },
     'rds': {
         'service_type': 'rds',
         # 'additional_headers': {'content-type': 'application/json'},
         'endpoint_service_type': 'rdsv3',
         'append_project_id': True,
     },
+    'sdrs': {
+        'service_type': 'sdrs'
+    },
+    'smn': {
+        'service_type': 'smn',
+        'append_project_id': True
+    },
     'volume_backup': {
         'service_type': 'volume_backup',
         'append_project_id': True,
         'endpoint_service_type': 'vbs',
     },
+    'waf': {
+        'service_type': 'waf',
+        'append_project_id': True,
+    }
 }
 
 

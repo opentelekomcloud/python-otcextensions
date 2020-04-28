@@ -15,15 +15,12 @@ Trace Operations
 ^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.cts.v1._proxy.Proxy
-
-   .. automethod:: otcextensions.sdk.cts.v1._proxy.Proxy.traces
+  :noindex:
+  :members: traces
 
 Trackers Operations
 ^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.cts.v1._proxy.Proxy
-
-  .. automethod:: otcextensions.sdk.cts.v1._proxy.Proxy.get_tracker
-  .. automethod:: otcextensions.sdk.cts.v1._proxy.Proxy.create_tracker
-  .. automethod:: otcextensions.sdk.cts.v1._proxy.Proxy.update_tracker
-  .. automethod:: otcextensions.sdk.cts.v1._proxy.Proxy.delete_tracker
+  :noindex:
+  :members: get_tracker, create_tracker, update_tracker, delete_tracker
