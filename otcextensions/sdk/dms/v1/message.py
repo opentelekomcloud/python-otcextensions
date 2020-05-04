@@ -68,12 +68,6 @@ class Message(resource.Resource):
         query_params = cls._query_mapping._transpose(params, cls)
         uri = base_path % params
 
-        params = cls._query_mapping._validate(
-            params, base_path=base_path,
-            allow_unknown_params=allow_unknown_params)
-        query_params = cls._query_mapping._transpose(params, cls)
-        uri = base_path % params
-
         while uri:
             # Copy query_params due to weird mock unittest interactions
             response = session.get(

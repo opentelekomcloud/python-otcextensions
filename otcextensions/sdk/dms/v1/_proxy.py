@@ -194,7 +194,7 @@ class Proxy(proxy.Proxy):
 
         :param queue: The queue id or an instance of
           :class:`~otcextensions.sdk.dms.v1.queue.Queue`
-        :param consume_group: The consume group id or an instance of
+        :param group: The consume group id or an instance of
           :class:`~otcextensions.sdk.dms.v1.group.Group`
         :param kwargs query: Optional query parameters to be sent to limit
           the resources being returned.
