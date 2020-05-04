@@ -25,9 +25,13 @@ Message Group Operations
   :noindex:
   :members: groups, create_group, delete_group
 
-DMS Quota Operations
-^^^^^^^^^^^^^^^^^^^^
+Instance Operations
+^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.dms.v1._proxy.Proxy
   :noindex:
-  :members: quotas
+  :members: instances, find_instance, get_instance,
+            create_instance, update_instance, delete_instance,
+            delete_batch, restart_instance, delete_failed,
+            topics, create_topic, delete_topic,
+            availability_zones, products, maintenance_windows

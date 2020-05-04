@@ -33,6 +33,7 @@ class TestQueue(base.BaseFunctionalTest):
         self.queues.append(self.queue)
 
     def tearDown(self):
+        super(TestQueue, self).tearDown()
         try:
             for queue in self.queues:
                 if queue.id:
