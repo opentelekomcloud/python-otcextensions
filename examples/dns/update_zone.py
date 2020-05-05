@@ -14,7 +14,6 @@
 Update a DNS zone with new parameters
 """
 import openstack
-from otcextensions.sdk.dns.v2.zone import Router
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
