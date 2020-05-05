@@ -82,7 +82,7 @@ id or an instance of class
 :class:`~otcextensions.sdk.dns.v2.zone.Zone`.
 
 .. literalinclude:: ../examples/dns/update_zone.py
-   :lines: 16-28
+   :lines: 16-27
 
 Delete Zone
 ^^^^^^^^^^^
