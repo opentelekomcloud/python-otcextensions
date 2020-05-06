@@ -230,7 +230,7 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
             instance_id='1',
             remark='rem'
         )
-    
+
     def test_delete_backup(self):
         instance = _instance.Instance(id='instance_id')
         self._verify2(

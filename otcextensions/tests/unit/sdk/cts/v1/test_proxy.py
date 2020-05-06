@@ -84,7 +84,7 @@ class TestCTSProxy(test_proxy_base.TestProxyBase):
         self.verify_update(
             self.proxy.update_tracker, _tracker.Tracker,
         )
-    
+
     '''
     def test_delete_tracker(self):
         self.verify_delete(
