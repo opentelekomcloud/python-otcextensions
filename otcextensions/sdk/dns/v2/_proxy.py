@@ -226,12 +226,12 @@ class Proxy(proxy.Proxy):
 
         :param zone: The value can be the ID of a zone
              or a :class:`~otcextensions.sdk.dns.v2.zone.Zone` instance.
-        :param name_or_id: The name or ID of a zone
+        :param name_or_id: The name or ID of a recordset
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
-            when the zone does not exist.
+            when the recordset does not exist.
             When set to ``True``, no exception will be set when attempting
-            to delete a nonexistent zone.
+            to delete a nonexistent recordset.
 
         :returns: :class:`~otcextensions.sdk.dns.v2.recordset.Recordset`
         """

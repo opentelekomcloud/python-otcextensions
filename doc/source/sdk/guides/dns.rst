@@ -106,14 +106,93 @@ the output with query parameters.
 .. literalinclude:: ../examples/dns/list_nameservers.py
    :lines: 16-23
 
-Nameserver
+Recordsets
 ----------
 
-List Nameservers
-^^^^^^^^^^^^^^^^
+List Recordsets
+^^^^^^^^^^^^^^^
 
-This interface is used to query all DNS Nameservers of a zone and to filter
+This interface is used to query all Recordsets of a zone and to filter
 the output with query parameters.
 
 .. literalinclude:: ../examples/dns/list_nameservers.py
    :lines: 16-23
+
+Create Recordsets
+^^^^^^^^^^^^^^^^^
+
+This interface is used to create a DNS Recordset with
+parameters.
+
+.. literalinclude:: ../examples/dns/create_recordset.py
+   :lines: 16-33
+
+Get Recordset
+^^^^^^^^^^^^^
+
+This interface is used to get a DNS recordset by ID
+or an instance of class
+:class:`~otcextensions.sdk.dns.v2.recordset.Recordset`.
+
+.. literalinclude:: ../examples/dns/get_recordset.py
+   :lines: 16-25
+
+Find Recordset
+^^^^^^^^^^^^^^
+
+This interface is used to find a DNS recordset by id or name.
+
+.. literalinclude:: ../examples/dns/find_recordset.py
+   :lines: 16-25
+
+Update Recordset
+^^^^^^^^^^^^^^^^
+
+This interface is used to update DNS recordset parameters by
+id or an instance of class
+:class:`~otcextensions.sdk.dns.v2.recordset.Recordset`.
+
+.. literalinclude:: ../examples/dns/update_recordset.py
+   :lines: 16-32
+
+Delete Recordset
+^^^^^^^^^^^^^^^^
+
+This interface is used to delete a DNS recordset by
+id or an instance of class
+:class:`~otcextensions.sdk.dns.v2.recordset.Recordset`.
+
+.. literalinclude:: ../examples/dns/delete_recordset.py
+   :lines: 16-24
+
+Floating IP PTR Records
+-----------------------
+
+List Floating IP PTR Record
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to query all Floating IP PTR records to filter
+the output with query parameters.
+
+.. literalinclude:: ../examples/dns/list_floating_ips.py
+   :lines: 16-23
+
+Create Floating IP PTR Records
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to create a DNS floating IP PTR record with
+parameters.
+
+.. literalinclude:: ../examples/dns/create_recordset.py
+   :lines: 16-33
+
+Get Floating IP PTR Records
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to get a DNS floating IP PTR record by ID
+or an instance of class
+:class:`~otcextensions.sdk.dns.v2.floating_ip.FloatingIP`.
+
+.. literalinclude:: ../examples/dns/get_floating_ip.py
+   :lines: 16-24
+
