@@ -26,6 +26,7 @@ class NameServer(resource.Resource):
     allow_list = True
     allow_get = False
     allow_delete = False
+    allow_update = False
 
     #: Properties
     #: The ID of zone using this name-server

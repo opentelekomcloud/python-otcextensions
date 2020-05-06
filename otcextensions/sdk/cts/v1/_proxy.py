@@ -65,7 +65,7 @@ class Proxy(proxy.Proxy):
         """
         return self._update(_tracker.Tracker, tracker, **attrs)
 
-    def delete_tracker(self, tracker='system'):
+    def delete_tracker(self, tracker='system', ignore_missing=True):
         """Delete a tracker
 
         :param tracker: The value can be the ID of a tracker or a
