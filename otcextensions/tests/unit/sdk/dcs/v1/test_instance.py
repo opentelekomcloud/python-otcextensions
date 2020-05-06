@@ -40,7 +40,7 @@ EXAMPLE = {
     "security_group_name": "sg_6379_4944a40e-ac57-4f08-9d38-9786e2759458",
     "subnet_id": "ec2f34b9-20eb-4872-85bd-bea9fc943128",
     "subnet_name": "subnet_az_7f336767-10ec-48a5-9ae8-9cacde119318",
-    "available_zones": "XXXXXX",
+    "available_zones": ["XXXXXX"],
     "max_memory": 460,
     "used_memory": 56,
     "user_id": "6d0977e4c9b74ae7b5a083a8d0d8fafa",

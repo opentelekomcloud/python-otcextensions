@@ -230,10 +230,18 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
             instance_id='1',
             remark='rem'
         )
-
+    
     def test_delete_backup(self):
-        self.verify_delete(
-            self.proxy.delete_instance_backup, _backup.Backup, True,
+        instance = _instance.Instance(id='instance_id')
+        self._verify2(
+            'openstack.proxy.Proxy._delete',
+            self.proxy.delete_instance_backup,
+            method_args=[instance, 'backup_1'],
+            expected_args=[_backup.Backup, 'backup_1'],
+            expected_kwargs={
+                'instance_id': instance.id,
+                'ignore_missing': True
+            }
         )
 
     def test_restores_query(self):
