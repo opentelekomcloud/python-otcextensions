@@ -11,19 +11,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Create a DNS Floating IP PTR record
+Unset a DNS Floating IP PTR record
 """
 import openstack
-from otcextensions.sdk.dns.v2.zone import Router
+
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-
-fip = conn.dns.set_floating_ip(
-    floating_ip='b700387d-5209-45b3-ac45-313ded1077cc',
-    ptrdname='tino.test.',
-    description='My Floating IP PTR record',
-    ttl=300
-)
-print(fip)
+floating_ip = 'floating_ip_id'
+conn.dns.unset_floating_ip(floating_ip=floating_ip)

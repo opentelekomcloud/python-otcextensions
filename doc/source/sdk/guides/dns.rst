@@ -177,22 +177,40 @@ the output with query parameters.
 .. literalinclude:: ../examples/dns/list_floating_ips.py
    :lines: 16-23
 
-Create Floating IP PTR Records
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Set Floating IP PTR Record
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This interface is used to create a DNS floating IP PTR record with
+This interface is used to set a DNS floating IP PTR record with
 parameters.
 
-.. literalinclude:: ../examples/dns/create_recordset.py
-   :lines: 16-33
+.. literalinclude:: ../examples/dns/set_floating_ip.py
+   :lines: 16-29
 
-Get Floating IP PTR Records
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Get Floating IP PTR Record
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This interface is used to get a DNS floating IP PTR record by ID
 or an instance of class
 :class:`~otcextensions.sdk.dns.v2.floating_ip.FloatingIP`.
 
 .. literalinclude:: ../examples/dns/get_floating_ip.py
-   :lines: 16-24
+   :lines: 16-25
 
+Update Floating IP PTR Record
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to update DNS floating IP PTR record parameters by
+id or an instance of class
+:class:`~otcextensions.sdk.dns.v2.floating_ip.FloatingIP`.
+
+.. literalinclude:: ../examples/dns/update_floating_ip.py
+   :lines: 16-28
+
+Unset Floating IP PTR Record
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to unset a DNS floating IP PTR record with
+parameters.
+
+.. literalinclude:: ../examples/dns/unset_floating_ip.py
+   :lines: 16-23
