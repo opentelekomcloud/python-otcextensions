@@ -19,6 +19,7 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
 
-fip = 'eu-de:b700387d-5209-45b3-ac45-313ded1077cc'
+fip = '<region>:<floating_ip_id>'
+# example: fip = 'eu-de:b700387d-5209-45b3-ac45-313ded1077cc'
 fip = conn.dns.get_floating_ip(fip)
 print(fip)

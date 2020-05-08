@@ -11,22 +11,19 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Update a DNS recordset with new parameters
+Set a DNS Floating IP PTR record
 """
 import openstack
+
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
 
-recordset = conn.dns.update_recordset(
-    zone_id='zone_id',
-    recordset='recordset_id',
-    description='This is another description',
-    ttl=3600,
-    records=[
-        '192.168.2.4',
-        '192.168.2.5'
-    ]
+fip = conn.dns.set_floating_ip(
+    floating_ip='floating_ip_id',
+    ptrdname='test.domain.',
+    description='My Floating IP PTR record',
+    ttl=300
 )
-print(recordset)
+print(fip)

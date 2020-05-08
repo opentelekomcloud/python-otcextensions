@@ -19,7 +19,7 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
 
-zone = 'ff8080826ec87fdb0171a1b6e977666a'
-name_or_id = 'ff8080826ec87fdb0171eaa952333c1a'
+zone = 'zone_id'
+name_or_id = 'recordset_name_or_id'
 recordset = conn.dns.find_recordset(zone=zone, name_or_id=name_or_id)
 print(recordset)

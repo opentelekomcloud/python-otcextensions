@@ -19,6 +19,6 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
 
-zone = 'ff8080826ec87fdb0171a1b6e977666a'
-recordset = 'ff8080826ec87fdb0171eaa952333c1a'
+zone = 'zone_id'
+recordset = 'recordset_id'
 conn.dns.delete_recordset(zone=zone, recordset=recordset, ignore_missing=True)
