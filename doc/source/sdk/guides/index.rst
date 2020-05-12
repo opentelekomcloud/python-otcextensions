@@ -14,6 +14,7 @@ Open Telekom Cloud related User Guides
    dcs
    deh
    dns
+   kms
    logging
 
 .. _user_guides:
