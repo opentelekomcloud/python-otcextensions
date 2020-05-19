@@ -15,6 +15,7 @@ Open Telekom Cloud related User Guides
    deh
    dns
    kms
+   rds
    logging
 
 .. _user_guides:
