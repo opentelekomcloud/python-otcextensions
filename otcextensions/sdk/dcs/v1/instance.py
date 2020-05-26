@@ -121,22 +121,53 @@ class Instance(resource.Resource):
 
     @classmethod
     def find(cls, session, name_or_id, ignore_missing=True, **params):
+        """Find a resource by its name or id.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param name_or_id: This resource's identifier, if needed by
+                           the request. The default is ``None``.
+        :param bool ignore_missing: When set to ``False``
+                    :class:`~openstack.exceptions.ResourceNotFound` will be
+                    raised when the resource does not exist.
+                    When set to ``True``, None will be returned when
+                    attempting to find a nonexistent resource.
+        :param dict params: Any additional parameters to be passed into
+                            underlying methods, such as to
+                            :meth:`~openstack.resource.Resource.existing`
+                            in order to pass on URI parameters.
+
+        :return: The :class:`Resource` object matching the given name or id
+                 or None if nothing matches.
+        :raises: :class:`openstack.exceptions.DuplicateResource` if more
+                 than one resource is found for this request.
+        :raises: :class:`openstack.exceptions.ResourceNotFound` if nothing
+                 is found and ignore_missing is ``False``.
+        """
+        session = cls._get_session(session)
+        # Try to short-circuit by looking directly for a matching ID.
         try:
             match = cls.existing(
                 id=name_or_id,
+                connection=session._get_connection(),
                 **params)
-            return match.get(session)
+            return match.fetch(session, **params)
+        
+        # Ecosystems:
+        # Add additional Exceptions to avoid abort of find method
         except (exceptions.NotFoundException, exceptions.HttpException,
                 exceptions.MethodNotSupported, exceptions.BadRequestException):
             session.log.warn('Please specify instance ID if known for '
                              'better performance')
 
+        if ('name' in cls._query_mapping._mapping.keys()
+                and 'name' not in params):
+            params['name'] = name_or_id
+
         data = cls.list(session, **params)
 
         result = cls._get_one_match(name_or_id, data)
-        # Update result with URL parameters
         if result is not None:
-            result._update(**params)
             return result
 
         if ignore_missing:
