@@ -72,6 +72,8 @@ class Proxy(proxy.Proxy):
         :returns: The updated instance
         :rtype: :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
         """
+        # Update method does not return the instance object which needs to be
+        # fetched additionally in return statement.
         self._update(_instance.Instance, instance, **attrs)
         return self._get(_instance.Instance, instance)
 
