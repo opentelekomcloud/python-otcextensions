@@ -152,7 +152,7 @@ class Instance(resource.Resource):
                 connection=session._get_connection(),
                 **params)
             return match.fetch(session, **params)
-        
+
         # Ecosystems:
         # Add additional Exceptions to avoid abort of find method
         except (exceptions.NotFoundException, exceptions.HttpException,
