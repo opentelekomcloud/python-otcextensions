@@ -20,5 +20,5 @@ conn = openstack.connect(cloud='otc')
 
 
 instance = 'instance_id'
-for restore_records in conn.dcs.restore_records(instance):
-    print(instance)
+for rr in conn.dcs.restore_records(instance):
+    print(rr)
