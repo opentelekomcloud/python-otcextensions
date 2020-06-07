@@ -33,6 +33,7 @@ documentation of these services:
    dns
    kms
    load_balancer
+   nat
    obs
-   rds
+   rds_v3
    volume_backup

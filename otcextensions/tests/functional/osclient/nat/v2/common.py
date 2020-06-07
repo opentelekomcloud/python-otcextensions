@@ -46,6 +46,7 @@ class NatTestCase(base.TestCase):
             'nat gateway create {name}'
             ' --router-id {router_id}'
             ' --internal-network-id {net_id}'
+            ' --description {description}'
             ' --spec {spec} -f json'.format(
                 name=name,
                 router_id=self.ROUTER_ID,
