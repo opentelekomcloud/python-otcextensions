@@ -254,7 +254,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
             a :class:`~otcextensions.sdk.rds.v3.configuration.Configuration`
             instance.
 
-        :returns: 
+        :returns:
             One :class:`~otcextensions.rds.v3.configuration.Configuration`
         """
         return self._get(_configuration.Configuration, cg)
