@@ -144,6 +144,9 @@ OTC_SERVICES = {
         'append_project_id': True,
         'endpoint_service_type': 'vbs',
     },
+    'vpc': {
+        'service_type': 'vpc',
+    },
     'waf': {
         'service_type': 'waf',
         'append_project_id': True,
