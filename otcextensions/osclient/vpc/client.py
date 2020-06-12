@@ -28,7 +28,7 @@ API_VERSIONS = {
 
 
 def make_client(instance):
-    """Returns a rds proxy"""
+    """Returns a vpc proxy"""
 
     conn = instance.sdk_connection
 
@@ -45,8 +45,8 @@ def build_option_parser(parser):
     """Hook to add global options"""
     parser.add_argument(
         '--os-vpc-api-version',
-        metavar='<nat-api-version>',
-        default=utils.env('OS_NAT_API_VERSION'),
+        metavar='<vpc-api-version>',
+        default=utils.env('OS_VPC_API_VERSION'),
         help=_("VPC API version, default=%s "
                "(Env: OS_VPC_API_VERSION)") % DEFAULT_API_VERSION
     )
