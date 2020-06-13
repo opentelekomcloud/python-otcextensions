@@ -100,30 +100,21 @@ class Proxy(proxy.Proxy):
         """
         return self._update(_peering.Peering, peering, **attrs)
 
-    def accept_peering(self, peering):
-        """Accept a vpc peering
+    def set_peering(self, peering, set_status):
+        """Accept/Reject a vpc peering connection request
 
         :param peering: Either the ID of a vpc peering or a
                        :class:`~otcextensions.sdk.vpc.v2.peering.Peering`
                        instance.
+        :param set_status: The value can been ``accept`` or ``reject``
 
         :returns: The updated peering
 
         :rtype: :class:`~otcextensions.sdk.vpc.v2.peering.Peering`
         """
+        valid_status = ['accept', 'reject']
+        if set_status.lower() not in valid_status:
+            raise ValueError(
+                "results: status must be one of %r." % valid_status)
         peering = self._get_resource(_peering.Peering, peering)
-        return peering.approval(self, 'accept')
-
-    def reject_peering(self, peering):
-        """Accept a vpc peering
-
-        :param peering: Either the ID of a vpc peering or a
-                       :class:`~otcextensions.sdk.vpc.v2.peering.Peering`
-                       instance.
-
-        :returns: The updated peering
-
-        :rtype: :class:`~otcextensions.sdk.vpc.v2.peering.Peering`
-        """
-        peering = self._get_resource(_peering.Peering, peering)
-        return peering.approval(self, 'reject')
+        return peering._set_peering(self, set_status.lower())

@@ -64,9 +64,9 @@ class Peering(_base.Resource):
     #:  first page are queried.
     marker = resource.Body('marker')
 
-    def approval(self, session, request_type):
+    def _set_peering(self, session, set_status):
         """Accept/Reject Peering Request"""
-        url = utils.urljoin(self.base_path, self.id, request_type)
+        url = utils.urljoin(self.base_path, self.id, set_status)
         response = session.put(url)
         exceptions.raise_from_response(response)
         self._translate_response(response)

@@ -128,27 +128,24 @@ class TestCreateVpcPeering(fakes.TestVpc):
         super(TestCreateVpcPeering, self).setUp()
 
         self.cmd = peering.CreateVpcPeering(self.app, None)
-
         self.client.create_peering = mock.Mock(
             return_value=fakes.FakeVpcPeering.create_one())
+        self.client.get_project_id = mock.Mock(
+            return_value='test-local-project-uuid')
 
     def test_create_different_project(self):
         arglist = [
             'test-peering',
-            '--request-vpc-info',
-            'router_id=test-router1-uuid,project_id=test-project1-uuid',
-            '--accept-vpc-info',
-            'router_id=test-router2-uuid,project_id=test-project2-uuid',
+            '--local-router-id', 'test-local-router-uuid',
+            '--peer-router-id', 'test-peer-router-uuid',
+            '--peer-project-id', 'test-peer-project-uuid',
             '--description', 'test-peering',
         ]
         verifylist = [
             ('name', 'test-peering'),
-            ('request_vpc_info',
-                [{'router_id': 'test-router1-uuid',
-                  'project_id': 'test-project1-uuid'}]),
-            ('accept_vpc_info',
-                [{'router_id': 'test-router2-uuid',
-                  'project_id': 'test-project2-uuid'}]),
+            ('local_router_id', 'test-local-router-uuid'),
+            ('peer_router_id', 'test-peer-router-uuid'),
+            ('peer_project_id', 'test-peer-project-uuid'),
             ('description', 'test-peering'),
         ]
         # Verify cm is triggereg with default parameters
@@ -159,12 +156,12 @@ class TestCreateVpcPeering(fakes.TestVpc):
         attrs = {
             'name': 'test-peering',
             'request_vpc_info': {
-                'vpc_id': 'test-router1-uuid',
-                'tenant_id': 'test-project1-uuid'
+                'vpc_id': 'test-local-router-uuid',
+                'tenant_id': 'test-local-project-uuid'
             },
             'accept_vpc_info': {
-                'vpc_id': 'test-router2-uuid',
-                'tenant_id': 'test-project2-uuid'
+                'vpc_id': 'test-peer-router-uuid',
+                'tenant_id': 'test-peer-project-uuid'
             },
             'description': 'test-peering'
         }
@@ -175,14 +172,14 @@ class TestCreateVpcPeering(fakes.TestVpc):
     def test_create_same_project(self):
         arglist = [
             'test-peering',
-            '--request-vpc-info', 'router_id=test-router1-uuid',
-            '--accept-vpc-info', 'router_id=test-router2-uuid',
+            '--local-router-id', 'test-local-router-uuid',
+            '--peer-router-id', 'test-peer-router-uuid',
             '--description', 'test-peering',
         ]
         verifylist = [
             ('name', 'test-peering'),
-            ('request_vpc_info', [{'router_id': 'test-router1-uuid'}]),
-            ('accept_vpc_info', [{'router_id': 'test-router2-uuid'}]),
+            ('local_router_id', 'test-local-router-uuid'),
+            ('peer_router_id', 'test-peer-router-uuid'),
             ('description', 'test-peering'),
         ]
         # Verify cm is triggereg with default parameters
@@ -193,10 +190,10 @@ class TestCreateVpcPeering(fakes.TestVpc):
         attrs = {
             'name': 'test-peering',
             'request_vpc_info': {
-                'vpc_id': 'test-router1-uuid'
+                'vpc_id': 'test-local-router-uuid'
             },
             'accept_vpc_info': {
-                'vpc_id': 'test-router2-uuid'
+                'vpc_id': 'test-peer-router-uuid'
             },
             'description': 'test-peering'
         }
@@ -329,7 +326,7 @@ class TestShowVpcPeering(fakes.TestVpc):
         self.client.find_peering.assert_called_with('unexist_vpc_peering')
 
 
-class TestAcceptVpcPeering(fakes.TestVpc):
+class TestSetVpcPeering(fakes.TestVpc):
 
     _data = fakes.FakeVpcPeering.create_one()
 
@@ -342,21 +339,25 @@ class TestAcceptVpcPeering(fakes.TestVpc):
         'status'
     )
 
-    def setUp(self):
-        super(TestAcceptVpcPeering, self).setUp()
+    data = fakes.gen_data(_data, columns)
 
-        self.cmd = peering.AcceptVpcPeering(self.app, None)
+    def setUp(self):
+        super(TestSetVpcPeering, self).setUp()
+
+        self.cmd = peering.SetVpcPeering(self.app, None)
 
         self.client.find_peering = mock.Mock(return_value=self._data)
-        self.client.accept_peering = mock.Mock(return_value=self._data)
+        self.client.set_peering = mock.Mock(return_value=self._data)
 
-    def test_accept(self):
+    def test_set(self):
         arglist = [
             self._data.name,
+            '--accept'
         ]
 
         verifylist = [
             ('peering', self._data.name),
+            ('accept', True),
         ]
 
         # Verify cm is triggered with default parameters
@@ -365,50 +366,10 @@ class TestAcceptVpcPeering(fakes.TestVpc):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
         self.client.find_peering.assert_called_with(self._data.name)
-        self.client.accept_peering.assert_called_with(self._data.id)
+        self.client.set_peering.assert_called_with(self._data.id, 'accept')
 
         self.assertEqual(self.columns, columns)
-
-
-class TestRejectVpcPeering(fakes.TestVpc):
-
-    _data = fakes.FakeVpcPeering.create_one()
-
-    columns = (
-        'accept_vpc_info',
-        'description',
-        'id',
-        'name',
-        'request_vpc_info',
-        'status'
-    )
-
-    def setUp(self):
-        super(TestRejectVpcPeering, self).setUp()
-
-        self.cmd = peering.RejectVpcPeering(self.app, None)
-
-        self.client.find_peering = mock.Mock(return_value=self._data)
-        self.client.reject_peering = mock.Mock(return_value=self._data)
-
-    def test_reject(self):
-        arglist = [
-            self._data.name,
-        ]
-
-        verifylist = [
-            ('peering', self._data.name),
-        ]
-
-        # Verify cm is triggered with default parameters
-        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-
-        # Trigger the action
-        columns, data = self.cmd.take_action(parsed_args)
-        self.client.find_peering.assert_called_with(self._data.name)
-        self.client.reject_peering.assert_called_with(self._data.id)
-
-        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
 
 
 class TestDeleteVpcPeering(fakes.TestVpc):

@@ -53,18 +53,11 @@ class TestVpcPeering(TestVpcProxy):
     def test_peering_update(self):
         self.verify_update(self.proxy.update_peering, peering.Peering)
 
-    def test_peering_accept(self):
+    def test_set_peering(self):
         self._verify(
-            'otcextensions.sdk.vpc.v2.peering.Peering.approval',
-            self.proxy.accept_peering,
-            method_args=["accept"],
-            expected_args=["accept"]
-        )
-
-    def test_peering_reject(self):
-        self._verify(
-            'otcextensions.sdk.vpc.v2.peering.Peering.approval',
-            self.proxy.reject_peering,
-            method_args=["reject"],
-            expected_args=["reject"]
+            'otcextensions.sdk.vpc.v2.peering.Peering._set_peering',
+            self.proxy.set_peering,
+            method_args=[peering.Peering],
+            method_kwargs={'set_status': 'accept'},
+            expected_args=['accept']
         )

@@ -61,7 +61,7 @@ class TestPeering(base.TestCase):
         self.assertEqual(EXAMPLE['id'], sot.id)
         self.assertEqual(EXAMPLE['name'], sot.name)
 
-    def test_approval(self):
+    def test_set_peering(self):
         sot = peering.Peering(id=IDENTIFIER)
 
         resp = mock.Mock()
@@ -83,9 +83,9 @@ class TestPeering(base.TestCase):
         resp.status_code = 200
         self.sess.put.return_value = resp
 
-        approval_resp = sot.approval(self.sess, 'reject')
+        response = sot._set_peering(self.sess, 'reject')
         self.sess.put.assert_called_with(
             'vpc/peerings/ID/reject'
         )
-        self.assertEqual(resp.body['name'], approval_resp.name)
-        self.assertEqual(resp.body['id'], approval_resp.id)
+        self.assertEqual(resp.body['name'], response.name)
+        self.assertEqual(resp.body['id'], response.id)
