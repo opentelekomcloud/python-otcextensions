@@ -54,11 +54,7 @@ class Peering(_base.Resource):
     created_at = resource.Body('created_at')
     #: Specifies the time (UTC) when the VPC peering connection is updated.
     #:  Format is *yyyy-mm-dd hh:mm:ss*.
-    created_at = resource.Body('updated_at')
-    #: Specifies the start resource ID of pagination query.
-    #:  If the parameter is left blank, only resources on the
-    #:  first page are queried.
-    marker = resource.Body('marker')
+    updated_at = resource.Body('updated_at')
 
     def _set_peering(self, session, set_status):
         """Accept/Reject Peering Request"""

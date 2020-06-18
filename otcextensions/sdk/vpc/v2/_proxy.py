@@ -38,8 +38,7 @@ class Proxy(proxy.Proxy):
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent peering.
 
-        :returns: Gateway been deleted
-        :rtype: :class:`~otcextensions.sdk.vpc.v2.peering.Peering`
+        :returns: ``None``
        """
         return self._delete(_peering.Peering, peering,
                             ignore_missing=ignore_missing)
