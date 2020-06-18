@@ -12,6 +12,7 @@
 #
 import uuid
 import mock
+from datetime import datetime
 
 from openstackclient.tests.unit import utils
 from otcextensions.tests.unit.osclient import test_base
@@ -63,6 +64,8 @@ class FakeVpcPeering(test_base.Fake):
             },
             "status": "ACTIVE",
             "description": "my vpc peering",
+            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),
+            "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         }
 
         return peering.Peering(**object_info)

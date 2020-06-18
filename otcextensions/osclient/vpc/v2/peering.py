@@ -18,23 +18,58 @@ from osc_lib import exceptions
 from osc_lib.command import command
 
 from otcextensions.i18n import _
-from otcextensions.common import sdk_utils
 
 LOG = logging.getLogger(__name__)
 
+STATUS_CHOICES = [
+    'PENDING_ACCEPTANCE',
+    'REJECTED',
+    'EXPIRED',
+    'DELETED',
+    'ACTIVE'
+]
 
-def _get_columns(item):
-    column_map = {
-    }
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
+
+def _update_vpc_info(vpcinfo):
+    if 'vpc_id' in vpcinfo:
+        vpcinfo['router_id'] = vpcinfo.pop('vpc_id')
+    if 'tenant_id' in vpcinfo:
+        vpcinfo['project_id'] = vpcinfo.pop('tenant_id')
+    return vpcinfo
+
+
+def set_attributes_for_print(peerings):
+    for peering in peerings:
+        setattr(peering,
+                'request_vpc_info',
+                _update_vpc_info(peering.request_vpc_info))
+        setattr(peering,
+                'accept_vpc_info',
+                _update_vpc_info(peering.accept_vpc_info))
+        yield peering
 
 
 def translate_response(func):
     def new(self, *args, **kwargs):
         response = func(self, *args, **kwargs)
-        display_columns, columns = _get_columns(response)
+        setattr(response,
+                'request_vpc_info',
+                _update_vpc_info(response.request_vpc_info))
+        setattr(response,
+                'accept_vpc_info',
+                _update_vpc_info(response.accept_vpc_info))
+        columns = (
+            'id',
+            'name',
+            'request_vpc_info',
+            'accept_vpc_info',
+            'description',
+            'created_at',
+            'updated_at',
+            'status'
+        )
         data = utils.get_item_properties(response, columns)
-        return (display_columns, data)
+        return (columns, data)
     new.__name__ = func.__name__
     new.__doc__ = func.__doc__
     return new
@@ -82,14 +117,10 @@ class ListVpcPeerings(command.Lister):
         )
         parser.add_argument(
             '--status',
-            metavar='<status>',
-            help=_("Specifies the status of the VPC peering connection.\n"
-                   "Possible values are as follows:\n"
-                   "PENDING_ACCEPTANCE\n"
-                   "REJECTED\n"
-                   "EXPIRED\n"
-                   "DELETED\n"
-                   "ACTIVE"),
+            metavar='{' + ','.join(STATUS_CHOICES) + '}',
+            type=lambda s: s.upper(),
+            choices=STATUS_CHOICES,
+            help=_("Specifies the status of the VPC peering connection."),
         )
         return parser
 
@@ -110,6 +141,8 @@ class ListVpcPeerings(command.Lister):
                 attrs[arg] = val
 
         data = client.peerings(**attrs)
+        if data:
+            data = set_attributes_for_print(data)
 
         return (self.columns, (utils.get_item_properties(s, self.columns)
                                for s in data))
@@ -182,22 +215,22 @@ class CreateVpcPeering(command.ShowOne):
             help=_("Specifies the description of the VPC peering connection."),
         )
         parser.add_argument(
-            '--local-router-id',
-            metavar='<local_router_id>',
+            '--requester-router-id',
+            metavar='<requester_router_id>',
             required=True,
             help=_("Specifies information about the local router_id "
                    "involved in a VPC peering connection."),
         )
         parser.add_argument(
-            '--peer-router-id',
-            metavar='<peer_router_id>',
+            '--accepter-router-id',
+            metavar='<accepter_router_id>',
             required=True,
             help=_("Specifies information about the peer router_id "
                    "involved in a VPC peering connection."),
         )
         parser.add_argument(
-            '--peer-project-id',
-            metavar='<peer_project_id>',
+            '--accepter-project-id',
+            metavar='<accepter_project_id>',
             help=_("Specifies the ID of the project to which a "
                    "peer router belongs. It is required if the peer "
                    "router is from different project."),
@@ -210,13 +243,13 @@ class CreateVpcPeering(command.ShowOne):
         attrs = {
             'name': parsed_args.name,
             'request_vpc_info': {
-                'vpc_id': parsed_args.local_router_id
+                'vpc_id': parsed_args.requester_router_id
             },
             'accept_vpc_info': {
-                'vpc_id': parsed_args.peer_router_id
+                'vpc_id': parsed_args.accepter_router_id
             }
         }
-        val = getattr(parsed_args, 'peer_project_id')
+        val = getattr(parsed_args, 'accepter_project_id')
         if val:
             attrs['accept_vpc_info']['tenant_id'] = val
             attrs['request_vpc_info']['tenant_id'] = client.get_project_id()
@@ -224,8 +257,6 @@ class CreateVpcPeering(command.ShowOne):
         val = getattr(parsed_args, 'description')
         if val:
             attrs['description'] = val
-
-        print(attrs)
 
         return client.create_peering(**attrs)
 

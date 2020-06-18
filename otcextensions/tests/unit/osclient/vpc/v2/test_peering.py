@@ -76,7 +76,7 @@ class TestListVpcPeerings(fakes.TestVpc):
             '--name', '4',
             '--project-id', '5',
             '--router-id', '6',
-            '--status', '7'
+            '--status', 'ACTIVE'
         ]
 
         verifylist = [
@@ -86,7 +86,7 @@ class TestListVpcPeerings(fakes.TestVpc):
             ('name', '4'),
             ('project_id', '5'),
             ('router_id', '6'),
-            ('status', '7'),
+            ('status', 'ACTIVE'),
         ]
 
         # Verify cm is triggered with default parameters
@@ -105,7 +105,7 @@ class TestListVpcPeerings(fakes.TestVpc):
             name='4',
             project_id='5',
             router_id='6',
-            status='7',
+            status='ACTIVE',
         )
 
 
@@ -114,11 +114,13 @@ class TestCreateVpcPeering(fakes.TestVpc):
     _data = fakes.FakeVpcPeering.create_one()
 
     columns = (
-        'accept_vpc_info',
-        'description',
         'id',
         'name',
         'request_vpc_info',
+        'accept_vpc_info',
+        'description',
+        'created_at',
+        'updated_at',
         'status'
     )
 
@@ -136,16 +138,16 @@ class TestCreateVpcPeering(fakes.TestVpc):
     def test_create_different_project(self):
         arglist = [
             'test-peering',
-            '--local-router-id', 'test-local-router-uuid',
-            '--peer-router-id', 'test-peer-router-uuid',
-            '--peer-project-id', 'test-peer-project-uuid',
+            '--requester-router-id', 'test-local-router-uuid',
+            '--accepter-router-id', 'test-peer-router-uuid',
+            '--accepter-project-id', 'test-peer-project-uuid',
             '--description', 'test-peering',
         ]
         verifylist = [
             ('name', 'test-peering'),
-            ('local_router_id', 'test-local-router-uuid'),
-            ('peer_router_id', 'test-peer-router-uuid'),
-            ('peer_project_id', 'test-peer-project-uuid'),
+            ('requester_router_id', 'test-local-router-uuid'),
+            ('accepter_router_id', 'test-peer-router-uuid'),
+            ('accepter_project_id', 'test-peer-project-uuid'),
             ('description', 'test-peering'),
         ]
         # Verify cm is triggereg with default parameters
@@ -172,14 +174,14 @@ class TestCreateVpcPeering(fakes.TestVpc):
     def test_create_same_project(self):
         arglist = [
             'test-peering',
-            '--local-router-id', 'test-local-router-uuid',
-            '--peer-router-id', 'test-peer-router-uuid',
+            '--requester-router-id', 'test-local-router-uuid',
+            '--accepter-router-id', 'test-peer-router-uuid',
             '--description', 'test-peering',
         ]
         verifylist = [
             ('name', 'test-peering'),
-            ('local_router_id', 'test-local-router-uuid'),
-            ('peer_router_id', 'test-peer-router-uuid'),
+            ('requester_router_id', 'test-local-router-uuid'),
+            ('accepter_router_id', 'test-peer-router-uuid'),
             ('description', 'test-peering'),
         ]
         # Verify cm is triggereg with default parameters
@@ -207,11 +209,13 @@ class TestUpdateVpcPeering(fakes.TestVpc):
     _data = fakes.FakeVpcPeering.create_one()
 
     columns = (
-        'accept_vpc_info',
-        'description',
         'id',
         'name',
         'request_vpc_info',
+        'accept_vpc_info',
+        'description',
+        'created_at',
+        'updated_at',
         'status'
     )
 
@@ -256,11 +260,13 @@ class TestShowVpcPeering(fakes.TestVpc):
     _data = fakes.FakeVpcPeering.create_one()
 
     columns = (
-        'accept_vpc_info',
-        'description',
         'id',
         'name',
         'request_vpc_info',
+        'accept_vpc_info',
+        'description',
+        'created_at',
+        'updated_at',
         'status'
     )
 
@@ -331,11 +337,13 @@ class TestSetVpcPeering(fakes.TestVpc):
     _data = fakes.FakeVpcPeering.create_one()
 
     columns = (
-        'accept_vpc_info',
-        'description',
         'id',
         'name',
         'request_vpc_info',
+        'accept_vpc_info',
+        'description',
+        'created_at',
+        'updated_at',
         'status'
     )
 

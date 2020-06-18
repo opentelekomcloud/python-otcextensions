@@ -55,10 +55,6 @@ class Peering(_base.Resource):
     #: Specifies the time (UTC) when the VPC peering connection is updated.
     #:  Format is *yyyy-mm-dd hh:mm:ss*.
     created_at = resource.Body('updated_at')
-    #: Specifies the project ID
-    project_id = resource.Body('tenant_id')
-    #: Specifies that the router ID is used as the filtering condition.
-    router_id = resource.Body('vpc_id')
     #: Specifies the start resource ID of pagination query.
     #:  If the parameter is left blank, only resources on the
     #:  first page are queried.
