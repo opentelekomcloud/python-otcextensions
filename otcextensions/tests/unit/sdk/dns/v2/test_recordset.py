@@ -11,9 +11,6 @@
 # under the License.
 from openstack.tests.unit import base
 
-import copy
-import mock
-
 from otcextensions.sdk.dns.v2 import recordset
 
 
@@ -41,68 +38,20 @@ EXAMPLE = {
 
 DATA = {
     "links": {
-        "self": "https://dns.eu-de.otc.t-systems.com/v2/zones/ff80808261418b240161d163e39e11a0/recordsets"
+        "self": "https://example.com/v2/zones/2/recordsets"
     },
     "recordsets": [
         {
-            "id": "ff80808261418b240161d163e39e11a1",
-            "name": "prod.otc.appagile.",
-            "description": None,
-            "type": "SOA",
-            "ttl": 300,
-            "records": [
-                "ns1.open-telekom-cloud.com. dl-otc-domains.telekom.de. (1 7200 900 1209600 300)"
-            ],
-            "status": "ACTIVE",
-            "zone_id": "ff80808261418b240161d163e39e11a0",
-            "zone_name": "prod.otc.appagile.",
-            "create_at": "2018-02-26T09:13:59.954",
-            "update_at": None,
-            "default": True,
-            "project_id": "09781c0169b34685ba2c2f38f45e96e1",
-            "links": {
-                "self": "https://dns.eu-de.otc.t-systems.com/v2/zones/ff80808261418b240161d163e39e11a0/recordsets/ff80808261418b240161d163e39e11a1"
-            }
+            "id": "1",
+            "name": "prod.otc.1."
         },
         {
-            "id": "ff80808261418b240161d163e39e11a3",
-            "name": "prod.otc.appagile.",
-            "description": None,
-            "type": "NS",
-            "ttl": 172800,
-            "records": [
-                "ns1.open-telekom-cloud.com."
-            ],
-            "status": "ACTIVE",
-            "zone_id": "ff80808261418b240161d163e39e11a0",
-            "zone_name": "prod.otc.appagile.",
-            "create_at": "2018-02-26T09:13:59.954",
-            "update_at": None,
-            "default": True,
-            "project_id": "09781c0169b34685ba2c2f38f45e96e1",
-            "links": {
-                "self": "https://dns.eu-de.otc.t-systems.com/v2/zones/ff80808261418b240161d163e39e11a0/recordsets/ff80808261418b240161d163e39e11a3"
-            }
+            "id": "a3",
+            "name": "prod.otc.2."
         },
         {
-            "id": "ff80808261418b240161d164409a11a7",
-            "name": "satellite.central.prod.otc.appagile.",
-            "description": None,
-            "type": "A",
-            "ttl": 300,
-            "records": [
-                "192.168.255.140"
-            ],
-            "status": "ACTIVE",
-            "zone_id": "ff80808261418b240161d163e39e11a0",
-            "zone_name": "prod.otc.appagile.",
-            "create_at": "2018-02-26T09:14:23.766",
-            "update_at": "2018-02-26T09:14:23.779",
-            "default": False,
-            "project_id": "09781c0169b34685ba2c2f38f45e96e1",
-            "links": {
-                "self": "https://dns.eu-de.otc.t-systems.com/v2/zones/ff80808261418b240161d163e39e11a0/recordsets/ff80808261418b240161d164409a11a7"
-            }
+            "id": "a7",
+            "name": "prod.otc.3."
         }
     ],
     "metadata": {
@@ -137,22 +86,47 @@ class TestRecordSet(base.TestCase):
         self.assertEqual(EXAMPLE['update_at'], sot.updated_at)
 
     def test_get_next_link(self):
-        sot = recordset.Recordset.new()
-        response = mock.Mock()
-        response.status_code = 200
-        uri = '/zones/ff80808272701cbe0172cbca17f91882/recordsets'
-        data = copy.deepcopy(DATA)
-        dict_marker = {'marker': 'ff80808261418b240161d164409a11a7'}
-        marker = dict_marker.get("marker")
-        limit = None
-        total_yielded = 3
-        result = sot._get_next_link(
+        uri = '/zones/2/recordsets'
+        marker = 'a7'
+
+        result = recordset.Recordset._get_next_link(
             uri=uri,
-            response=response,
-            data=data,
+            response=None,
+            data=DATA,
             marker=marker,
-            limit=limit,
-            total_yielded=total_yielded
+            limit=None,
+            total_yielded=3
         )
         self.assertEqual(uri, result[0])
-        self.assertEqual(dict_marker, result[1])
+        self.assertEqual({'marker': marker}, result[1])
+
+    def test_get_next_link2(self):
+        uri = '/zones/2/recordsets'
+        marker = 'a7'
+
+        result = recordset.Recordset._get_next_link(
+            uri=uri,
+            response=None,
+            data=DATA,
+            marker=marker,
+            limit=None,
+            total_yielded=7
+        )
+        self.assertEqual(None, result[0])
+        self.assertEqual({}, result[1])
+
+    def test_get_next_link3(self):
+        uri = '/zones/2/recordsets'
+        marker = 'a7'
+        limit = 3
+
+        result = recordset.Recordset._get_next_link(
+            uri=uri,
+            response=None,
+            data=DATA,
+            marker=marker,
+            limit=3,
+            total_yielded=3
+        )
+        self.assertEqual(uri, result[0])
+        self.assertEqual({'marker': marker, 'limit': limit}, result[1])
