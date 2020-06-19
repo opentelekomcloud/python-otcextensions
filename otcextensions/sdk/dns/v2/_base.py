@@ -77,8 +77,11 @@ class Resource(resource.Resource):
             links = data.get('links')
             if links:
                 next_link = links.get('next')
-
             total = data.get('metadata', {}).get('total_count')
+            if not next_link and total_yielded < total:
+                next_link = uri
+                params['marker'] = marker
+                return next_link, params
             if total:
                 # We have a kill switch
                 total_count = int(total)
