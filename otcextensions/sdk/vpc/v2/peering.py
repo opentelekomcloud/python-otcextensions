@@ -13,10 +13,8 @@ from openstack import exceptions
 from openstack import resource
 from openstack import utils
 
-from otcextensions.sdk.vpc.v2 import _base
 
-
-class Peering(_base.Resource):
+class Peering(resource.Resource):
     resources_key = 'peerings'
     resource_key = 'peering'
     base_path = '/vpc/peerings'
