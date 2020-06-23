@@ -26,6 +26,9 @@ class Topic(resource.Resource):
     _query_mapping = resource.QueryParameters(
         'offset', 'limit')
 
+    #: Resource identifier of a topic, which is unique
+    id = resource.Body('id', alias='topic_urn')
+    topic_urn = resource.Body('topic_urn')
     #: Unique Request ID
     request_id = resource.Body('request_id')
     #: Specifies the Topic Name.
@@ -35,8 +38,6 @@ class Topic(resource.Resource):
     #:  the email sender in email messages
     #: Contains only digits, letters, underscores and hyphens
     display_name = resource.Body('display_name')
-    #: Resource identifier of a topic, which is unique
-    topic_urn = resource.Body('topic_urn')
     #: Message push policy
     #:  0: Failed messages will be saved in message queues.
     #:  1: Failed messages will be discarded.

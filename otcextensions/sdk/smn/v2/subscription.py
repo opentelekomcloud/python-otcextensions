@@ -26,6 +26,11 @@ class Subscription(resource.Resource):
     _query_mapping = resource.QueryParameters(
         'offset', 'limit')
 
+    #: Resource identifier of a subscription, which is unique
+    id = resource.Body('id', alias='subscription_urn')
+    subscription_urn = resource.Body('subscription_urn')
+    #: Resource identifier of a topic, which is unique
+    topic_urn = resource.Body('topic_urn')
     #: Unique Request ID
     request_id = resource.Body('request_id')
     #: Specifies the Topic Name.
@@ -35,14 +40,10 @@ class Subscription(resource.Resource):
     #:  of the email sender in email messages
     #: Contains only digits, letters, underscores and hyphens
     display_name = resource.Body('display_name')
-    #: Resource identifier of a topic, which is unique
-    topic_urn = resource.Body('topic_urn')
     #: Subscription protocol
     #: Following protocols are supported:
     #:  email, sms, http and https
     protocol = resource.Body('protocol')
-    #: Resource identifier of a subscription, which is unique
-    subscription_urn = resource.Body('subscription_urn')
     #: Project ID of the topic creator
     owner = resource.Body('owner')
     #: Message receiving endpoint

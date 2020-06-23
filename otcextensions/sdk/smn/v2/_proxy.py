@@ -11,6 +11,8 @@
 # under the License.
 from otcextensions.sdk.smn.v2 import topic as _topic
 from otcextensions.sdk.smn.v2 import subscription as _subscription
+from otcextensions.sdk.smn.v2 import template as _template
+from otcextensions.sdk.smn.v2 import message as _message
 
 from openstack import proxy
 
@@ -156,3 +158,99 @@ class Proxy(proxy.Proxy):
             return self._list(_subscription.Subscription,
                               base_path=base_path, **query)
         return self._list(_subscription.Subscription, **query)
+
+    # ======== Template ========
+    def create_template(self, **attrs):
+        """Create a new message template from attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.smn.v2.template.Template`
+
+        :returns: :class:`~otcextensions.sdk.smn.v2.template.Template
+        """
+        return self._create(_template.Template, **attrs)
+
+    def delete_template(self, template, ignore_missing=True):
+        """Delete a message template
+
+        :param template: message template ID or an instance of
+            :class:`~otcextensions.sdk.smn.v2.template.Template`
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the template does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent template.
+
+        :returns: ``None``
+        """
+        return self._delete(_template.Template, template,
+                            ignore_missing=ignore_missing)
+
+    def templates(self, **query):
+        """Return a generator of message templates
+
+        :param dict query: Optional query parameters to be sent to limit
+            the resources being returned.
+
+        :returns: A generator of template objects.
+
+        :rtype: :class:`~otcextensions.sdk.smn.v2.template.Template`
+        """
+        return self._list(_template.Template, **query)
+
+    def get_template(self, template):
+        """Get details a message templates
+
+        :param template: The value can be the ID of a message template or a
+            :class:`~otcextensions.sdk.smn.v2.template.Template `instance.
+
+        :returns: One :class:`~otcextensions.sdk.smn.v2.template.Template`
+
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+            when no resource can be found.
+        """
+        return self._get(_template.Template, template)
+
+    def update_template(self, template, **attrs):
+        """Update a message template
+
+        :param topic: Either the ID of a message template or a
+            :class:`~otcextensions.sdk.smn.v2.template.Template` instance.
+        :param dict attrs: The attributes to update on the template represented
+            by :class:`~otcextensions.sdk.smn.v2.template.Template`
+
+        :returns: The updated template.
+
+        :rtype: :class:`~otcextensions.sdk.smn.v2.template.Template`
+        """
+        return self._update(_topic.Template, template, **attrs)
+
+    def find_template(self, name_or_id, ignore_missing=False):
+        """Find a single message template.
+
+        :param name_or_id: The name or ID of a template.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the template does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to delete a nonexistent template.
+
+        :returns: One :class:`~otcextensions.sdk.smn.v2.template.Template`
+        """
+        return self._find(_template.Template, name_or_id,
+                          ignore_missing=ignore_missing)
+
+
+    # ======== Message Publish ========
+    def publish_message(self, topic, **attrs):
+        """Publish messages in the text format or
+            using message structure or using a message template
+            to a topic.
+
+        :param dict attrs: Keyword arguments which will be used to Publish
+            a Message.
+
+        :returns: :class:`~otcextensions.sdk.smn.v2.message.Message
+        """
+        topic = self._find(_topic.Topic, topic, ignore_missing=False)
+        return self._create(_message.Message, topic_urn=topic.urn, **attrs)
