@@ -13,6 +13,7 @@ from otcextensions.sdk.smn.v2 import topic as _topic
 from otcextensions.sdk.smn.v2 import subscription as _subscription
 from otcextensions.sdk.smn.v2 import template as _template
 from otcextensions.sdk.smn.v2 import message as _message
+from otcextensions.sdk.smn.v2 import sms as _sms
 
 from openstack import proxy
 
@@ -104,8 +105,69 @@ class Proxy(proxy.Proxy):
         return self._find(_topic.Topic, name_or_id,
                           ignore_missing=ignore_missing)
 
-    # ======== Subscription ========
+    # ======== Topic Attributes (Access Policy)========
+    def get_topic_attributes(self, topic, name=None):
+        """Get SMN topic attributes
 
+        :param topic: The value can be the ID of a topic or a
+            :class:`~otcextensions.sdk.smn.v2.topic.Topic`
+            instance.
+        :param name: Attribute Name.
+
+        :returns: One :class:`~otcextensions.sdk.smn.v2.topic.TopicAttributes`
+
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+            when no resource can be found.
+        """
+        attrs = {'name': name} if name else {}
+        topic = self._get_resource(_topic.Topic, topic)
+        return self._get(_topic.TopicAttributes, topic_urn=topic.id,
+                         resource_key='attributes', **attrs)
+
+    def update_topic_attribute(self, topic, name='access_policy', **attrs):
+        """Update SMN topic attributes
+
+        :param topic: Either the ID of a topic or a
+            :class:`~otcextensions.sdk.smn.v2.topic.Topic`
+            instance.
+        :param name: Attribute Name.
+        :param dict attrs: The attributes to update on the topic represented
+            by :class:`~otcextensions.sdk.smn.v2.topic.TopicAttributes`
+
+        :returns: request_id.
+
+        :rtype: :class:`~otcextensions.sdk.smn.v2.topic.TopicAttributes`
+
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+            when no resource can be found.
+        """
+        topic = self._get_resource(_topic.Topic, topic)
+        return self._update(_topic.TopicAttributes, id=name,
+                            topic_urn=topic.id, **attrs)
+
+    def delete_topic_attributes(self, topic, name=None):
+        """Delete all attributes of a topic
+
+        :param topic: Either the ID of a topic or a
+            :class:`~otcextensions.sdk.smn.v2.topic.Topic`
+            instance.
+        :param name: Attribute Name.
+
+        :returns: request_id.
+
+        :rtype: :class:`~otcextensions.sdk.smn.v2.topic.TopicAttributes`
+
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+            when no resource can be found.
+        """
+        topic = self._get_resource(_topic.Topic, topic)
+        if name:
+            return self._delete(_topic.TopicAttributes,
+                                id=name, topic_urn=topic.id)
+        return self._delete(_topic.TopicAttributes,
+                            topic_urn=topic.id, requires_id=False)
+
+    # ======== Subscription ========
     def create_subscription(self, topic, **attrs):
         """Create a new Subscription from attributes
 
@@ -117,10 +179,9 @@ class Proxy(proxy.Proxy):
 
         :returns: :class:`~otcextensions.sdk.smn.v2.subscription.Subscription`
         """
-        topic_urn = self._find(_topic.Topic, topic).topic_urn
-        base_path = '/notifications/topics/' + topic_urn + '/subscriptions'
+        topic = self._get_resource(_topic.Topic, topic)
         return self._create(_subscription.Subscription,
-                            base_path=base_path, **attrs)
+                            topic_urn=topic.id, **attrs)
 
     def delete_subscription(self, subscription, ignore_missing=True):
         """Delete a subscription
@@ -136,14 +197,16 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
+        base_path = '/notifications/subscriptions'
         return self._delete(_subscription.Subscription, subscription,
-                            ignore_missing=ignore_missing)
+                            ignore_missing=ignore_missing,
+                            base_path=base_path)
 
     def subscriptions(self, topic=None, **query):
         """Return a generator of Subscriptions
 
-        :param topic: Either the ID of a subscription or a
-            :class: `~otcextensions.sdk.smn.v2.subscription.Subscription`
+        :param topic: Either the ID of a topic or a
+            :class: `~otcextensions.sdk.smn.v2.topic.Topic`
             instance.
         :param dict query: Optional query parameters to be sent to limit
             the resources being returned.
@@ -153,11 +216,12 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.smn.v2.subscription.Subscription`
         """
         if topic:
-            topic_urn = self._find(_topic.Topic, topic).topic_urn
-            base_path = '/notifications/topics/' + topic_urn + '/subscriptions'
+            topic = self._get_resource(_topic.Topic, topic)
             return self._list(_subscription.Subscription,
-                              base_path=base_path, **query)
-        return self._list(_subscription.Subscription, **query)
+                              topic_urn=topic.id, **query)
+        base_path = '/notifications/subscriptions'
+        return self._list(_subscription.Subscription,
+                          base_path=base_path, **query)
 
     # ======== Template ========
     def create_template(self, **attrs):
@@ -223,7 +287,7 @@ class Proxy(proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.smn.v2.template.Template`
         """
-        return self._update(_topic.Template, template, **attrs)
+        return self._update(_template.Template, template, **attrs)
 
     def find_template(self, name_or_id, ignore_missing=False):
         """Find a single message template.
@@ -240,17 +304,38 @@ class Proxy(proxy.Proxy):
         return self._find(_template.Template, name_or_id,
                           ignore_missing=ignore_missing)
 
-
     # ======== Message Publish ========
     def publish_message(self, topic, **attrs):
+
         """Publish messages in the text format or
             using message structure or using a message template
             to a topic.
 
+        :param topic: Either the ID of a topic or a
+            :class: `~otcextensions.sdk.smn.v2.topic.Topic`
+            instance.
         :param dict attrs: Keyword arguments which will be used to Publish
             a Message.
 
         :returns: :class:`~otcextensions.sdk.smn.v2.message.Message
         """
-        topic = self._find(_topic.Topic, topic, ignore_missing=False)
-        return self._create(_message.Message, topic_urn=topic.urn, **attrs)
+        topic = self._get_resource(_topic.Topic, topic)
+        return self._create(_message.Message,
+                            topic_urn=topic.id, **attrs)
+
+    # ======== SMS Publish ========
+    def send_sms(self, endpoint, message):
+
+        """Send a transactional SMS message to a specified phone number,
+            usually used for verification code or notification.
+
+        :param endpoint: Phone number.
+        :param message: SMS message content.
+
+        :returns: :class:`~otcextensions.sdk.smn.v2.message.Message
+        """
+        attrs = {
+            'endpoint': endpoint,
+            'message': message
+        }
+        return self._create(_sms.Sms, **attrs)

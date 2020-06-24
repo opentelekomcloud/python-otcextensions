@@ -27,8 +27,8 @@ class Topic(resource.Resource):
         'offset', 'limit')
 
     #: Resource identifier of a topic, which is unique
-    id = resource.Body('id', alias='topic_urn')
     topic_urn = resource.Body('topic_urn')
+    id = resource.Body('id', alias='topic_urn')
     #: Unique Request ID
     request_id = resource.Body('request_id')
     #: Specifies the Topic Name.
@@ -48,3 +48,18 @@ class Topic(resource.Resource):
     #: Time when the topic was updated
     #:  The UTC time is in YYYY-MM-DDTHH:MM:SSZ format.
     update_time = resource.Body('update_time')
+
+
+class TopicAttributes(resource.Resource):
+    base_path = '/notifications/topics/{topic_urn}s/attributes'
+
+    allow_fetch = True
+    allow_commit = True
+    allow_delete = True
+
+    #: Unique Request ID
+    request_id = resource.Body('request_id')
+    #: topic access policy
+    access_policy = resource.Body('access_policy', type=dict)
+    #: description of a topic
+    introduction = resource.Body('introduction')

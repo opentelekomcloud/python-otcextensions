@@ -15,7 +15,6 @@
 import logging
 
 from osc_lib import utils
-from osc_lib import exceptions
 from osc_lib.command import command
 
 from otcextensions.i18n import _
@@ -35,12 +34,12 @@ class PublishMessage(command.ShowOne):
                      " - message\n"
                      " - message_structure\n"
                      " - message_template_name\n"
-                     "If the three formats are specified at the same time, they "
-                     "take effect in the following sequence: "
+                     "If the three formats are specified at the same time, "
+                     "they take effect in the following sequence: \n"
                      "message_structure > message_template_name > message.")
 
     def get_parser(self, prog_name):
-        parser = super(CreateSubscription, self).get_parser(prog_name)
+        parser = super(PublishMessage, self).get_parser(prog_name)
         parser.add_argument(
             'topic',
             metavar='<topic>',

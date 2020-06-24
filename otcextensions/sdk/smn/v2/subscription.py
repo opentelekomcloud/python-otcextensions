@@ -14,12 +14,10 @@ from openstack import resource
 
 class Subscription(resource.Resource):
     resources_key = 'subscriptions'
-    base_path = '/notifications/subscriptions'
+    base_path = '/notifications/topics/{topic_urn}s/subscriptions'
 
     # capabilities
     allow_create = True
-    allow_fetch = True
-    allow_commit = True
     allow_delete = True
     allow_list = True
 
