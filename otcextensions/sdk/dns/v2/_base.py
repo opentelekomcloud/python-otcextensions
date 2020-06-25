@@ -77,7 +77,6 @@ class Resource(resource.Resource):
             links = data.get('links')
             if links:
                 next_link = links.get('next')
-
             total = data.get('metadata', {}).get('total_count')
             if total:
                 # We have a kill switch
@@ -98,8 +97,9 @@ class Resource(resource.Resource):
         # If we still have no link, and limit was given and is non-zero,
         # and the number of records yielded equals the limit, then the user
         # is playing pagination ball so we should go ahead and try once more.
-        if not next_link and limit:
+        if not next_link:
             next_link = uri
             params['marker'] = marker
-            params['limit'] = limit
+            if limit:
+                params['limit'] = limit
         return next_link, params
