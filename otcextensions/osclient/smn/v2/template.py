@@ -35,7 +35,7 @@ PROTOCOL_CHOICES = ['email', 'default', 'sms', 'dms', 'http', 'https']
 class ListTemplate(command.Lister):
 
     _description = _("List message templates.")
-    columns = ('Template Urn', 'Name', 'Display Name', 'Push Policy')
+    columns = ('Message Template Id', 'Message Template Name', 'Protocol')
 
     def get_parser(self, prog_name):
         parser = super(ListTemplate, self).get_parser(prog_name)
@@ -208,7 +208,7 @@ class DeleteTemplate(command.Command):
         for template in parsed_args.template:
             try:
                 obj = client.find_template(template)
-                client.delete_template(obj.id)
+                client.delete_template(obj)
             except Exception as e:
                 result += 1
                 LOG.error(_("Failed to delete message template with "

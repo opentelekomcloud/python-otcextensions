@@ -122,10 +122,10 @@ class CreateTopic(command.ShowOne):
 
         obj = client.create_topic(**attrs)
 
-        display_columns, columns = _get_columns(obj)
+        columns = ('request_id', 'topic_urn')
         data = utils.get_item_properties(obj, columns)
 
-        return (display_columns, data)
+        return (columns, data)
 
 
 class UpdateTopic(command.ShowOne):
@@ -182,7 +182,7 @@ class DeleteTopic(command.Command):
         for topic in parsed_args.topic:
             try:
                 obj = client.find_topic(topic)
-                client.delete_topic(obj.id)
+                client.delete_topic(obj)
             except Exception as e:
                 result += 1
                 LOG.error(_("Failed to delete Smn Topic with "
