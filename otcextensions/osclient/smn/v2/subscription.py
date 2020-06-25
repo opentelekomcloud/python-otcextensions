@@ -76,6 +76,8 @@ class ListSubscription(command.Lister):
             if val:
                 attrs[arg] = val
         topic = getattr(parsed_args, 'topic') or None
+        if topic:
+            topic = client.find_topic(topic, ignore_missing=False)
 
         data = client.subscriptions(topic, **attrs)
 
@@ -129,7 +131,9 @@ class CreateSubscription(command.ShowOne):
             if val:
                 attrs[arg] = val
 
-        obj = client.create_subscription(parsed_args.topic, **attrs)
+        topic = client.find_topic(parsed_args.topic,
+                                  ignore_missing=False)
+        obj = client.create_subscription(topic, **attrs)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
@@ -156,7 +160,7 @@ class DeleteSubscription(command.Command):
         result = 0
         for subscription in parsed_args.subscription:
             try:
-                client.delete_subscription(subscription)
+                client.delete_subscription(subscription, ignore_missing=False)
             except Exception as e:
                 result += 1
                 LOG.error(_("Failed to delete SMN Subscription with "
