@@ -19,6 +19,8 @@ from openstack import utils
 from otcextensions.sdk.compute.v2 import server
 from otcextensions.common import exc
 
+from otcextensions.sdk.cloud import rds as _rds
+
 
 _logger = _log.setup_logging('openstack')
 
@@ -127,9 +129,8 @@ OTC_SERVICES = {
     },
     'rds': {
         'service_type': 'rds',
-        # 'additional_headers': {'content-type': 'application/json'},
         'endpoint_service_type': 'rdsv3',
-        'append_project_id': True,
+        'append_project_id': True
     },
     'sdrs': {
         'service_type': 'sdrs'
@@ -243,6 +244,13 @@ def get_ak_sk(conn):
         return(ak, sk)
 
 
+def extend_instance(obj, cls):
+    """Apply mixins to a class instance after creation"""
+    base_cls = obj.__class__
+    base_cls_name = obj.__class__.__name__
+    obj.__class__ = type(base_cls_name, (base_cls, cls), {})
+
+
 def patch_openstack_resources():
     openstack.compute.v2.server.Server._get_tag_struct = \
         server.Server._get_tag_struct
@@ -309,6 +317,8 @@ def load(conn, **kwargs):
         setattr(conn, 'get_ak_sk', get_ak_sk)
 
     patch_openstack_resources()
+
+    extend_instance(conn, _rds.RdsMixin)
 
     return None
 
