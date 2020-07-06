@@ -36,6 +36,29 @@ EXAMPLE = {
 
 }
 
+DATA = {
+    "links": {
+        "self": "https://example.com/v2/zones/2/recordsets"
+    },
+    "recordsets": [
+        {
+            "id": "1",
+            "name": "prod.otc.1."
+        },
+        {
+            "id": "a3",
+            "name": "prod.otc.2."
+        },
+        {
+            "id": "a7",
+            "name": "prod.otc.3."
+        }
+    ],
+    "metadata": {
+        "total_count": 7
+    }
+}
+
 
 class TestRecordSet(base.TestCase):
 
@@ -61,3 +84,49 @@ class TestRecordSet(base.TestCase):
         self.assertEqual(EXAMPLE['zone_id'], sot.zone_id)
         self.assertEqual(EXAMPLE['create_at'], sot.created_at)
         self.assertEqual(EXAMPLE['update_at'], sot.updated_at)
+
+    def test_get_next_link(self):
+        uri = '/zones/2/recordsets'
+        marker = 'a7'
+
+        result = recordset.Recordset._get_next_link(
+            uri=uri,
+            response=None,
+            data=DATA,
+            marker=marker,
+            limit=None,
+            total_yielded=3
+        )
+        self.assertEqual(uri, result[0])
+        self.assertEqual({'marker': marker}, result[1])
+
+    def test_get_next_link2(self):
+        uri = '/zones/2/recordsets'
+        marker = 'a7'
+
+        result = recordset.Recordset._get_next_link(
+            uri=uri,
+            response=None,
+            data=DATA,
+            marker=marker,
+            limit=None,
+            total_yielded=7
+        )
+        self.assertEqual(None, result[0])
+        self.assertEqual({}, result[1])
+
+    def test_get_next_link3(self):
+        uri = '/zones/2/recordsets'
+        marker = 'a7'
+        limit = 3
+
+        result = recordset.Recordset._get_next_link(
+            uri=uri,
+            response=None,
+            data=DATA,
+            marker=marker,
+            limit=3,
+            total_yielded=3
+        )
+        self.assertEqual(uri, result[0])
+        self.assertEqual({'marker': marker, 'limit': limit}, result[1])
