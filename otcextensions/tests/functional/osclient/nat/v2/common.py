@@ -51,7 +51,7 @@ class NatTestCase(base.TestCase):
                 name=name,
                 router_id=self.ROUTER_ID,
                 net_id=self.NETWORK_ID,
-                description='OTCE func test',
+                description='OTCE_func_test',
                 spec=1)
         ))
         self.assertIsNotNone(json_output)
