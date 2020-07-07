@@ -3,11 +3,17 @@
     parent: tox-functional
     branches: master
 
+- job:
+    name: tox-py37-centos8
+    parent: tox-py37
+    nodeset: centos-8
+
 - project:
     merge-mode: squash-merge
     check:
       jobs:
         - tox-py37
+        - tox-py37-centos8
         - tox-pep8
         - tox-docs
         - tox-functional
