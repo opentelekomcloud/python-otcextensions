@@ -42,7 +42,7 @@ repository, first:
 
     $ sudo yum update
     $ sudo yum install epel-release
-    $ sudo yum install gcc python36 python36-devel python36-pip openssl-devel
+    $ sudo yum install gcc python3 python3-devel openssl-devel wheel
 
 Now, install all libraries and programs at once with the Python package
 manager pip:
@@ -112,22 +112,12 @@ CentOS
 
 For the installation, following packages are required: a C compiler, Python3
 with developer libraries, package manager, and virtual environment are
-required. If you want to use python3 which is recommended, you need to
-install the epel repository, first:
-
+required:
 
 .. code-block:: bash
 
     $ sudo yum update
-    $ sudo yum install epel-release
-
-No the Python packages are needed:
-
-.. code-block:: bash
-
-    $ sudo yum update
-    $ sudo yum install gcc python36 python36-devel python-pip \
-      python-virtualenv openssl-devel
+    $ sudo yum install gcc python3 python3-devel openssl-devel wheel
 
 A virtual environment seperates your installed packages from other libraries
 and should be used as well. You can name the virtual environment on your own
@@ -146,8 +136,8 @@ manager pip:
 
     $ pip install otcextensions openstackclient
 
-Fedora (under review)
-^^^^^^^^^^^^^^^^^^^^^
+Fedora
+^^^^^^
 
 For the installation, following packages are required: a C compiler,
 Python3 with developer libraries, package manager, and a virtual

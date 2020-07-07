@@ -1,4 +1,4 @@
-Object Storage service (obs)
+Object Storage service (OBS)
 ============================
 
 The OBS client is the command-line interface (CLI) for

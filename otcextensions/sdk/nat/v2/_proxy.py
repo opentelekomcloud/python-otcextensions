@@ -25,23 +25,27 @@ class Proxy(proxy.Proxy):
         """Create a new gateway from attributes
 
         :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
+            a :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`,
+            comprised of the properties on the Gateway class.
+
+        :returns: The results of the Gateway Creation
+
+        :rtype: :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
         """
         return self._create(_gateway.Gateway, **attrs)
 
     def delete_gateway(self, gateway, ignore_missing=True):
         """Delete a gateway
 
-        :param gateway: key id or an instance of
-            :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
+        :param gateway: The value can be the ID of a NAT Gatway or a
+            :class:`~otcextensions.sdk.nat.v2.gateway.Gateway` instance.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
             the gateway does not exist.
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent gateway.
 
-        :returns: Gateway been deleted
-        :rtype: :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
+        :returns: ``None``
         """
         return self._delete(_gateway.Gateway, gateway,
                             ignore_missing=ignore_missing)
@@ -51,8 +55,8 @@ class Proxy(proxy.Proxy):
 
         :param dict query: Optional query parameters to be sent to limit
             the resources being returned.
-        :returns: A generator of gateway objects
-        :rtype: :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
+
+        :returns: A generator of gateway objects.
         """
         return self._list(_gateway.Gateway, **query)
 
@@ -60,40 +64,42 @@ class Proxy(proxy.Proxy):
         """Get a single gateway
 
         :param gateway: The value can be the ID of a NAT Gatway or a
-                        :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
-                        instance.
+            :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
+            instance.
 
         :returns: One :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
+
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
-                 when no resource can be found.
+            when no resource can be found.
         """
         return self._get(_gateway.Gateway, gateway)
 
     def update_gateway(self, gateway, **attrs):
         """Update a gateway
 
-        :param gateway: Either the ID of a gateway or a
-                       :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
-                       instance.
+        :param gateway: The value can be either the ID of a gateway or a
+            :class:`~otcextensions.sdk.nat.v2.gateway.Gateway` instance.
         :param dict attrs: The attributes to update on the gateway represented
-                       by ``gateway``.
+            by ``gateway``.
 
-        :returns: The updated gateway
+        :returns: The updated gateway.
+
         :rtype: :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
         """
         return self._update(_gateway.Gateway, gateway, **attrs)
 
     def find_gateway(self, name_or_id, ignore_missing=False):
-        """Find a single Nat Gateway
+        """Find a single gateway
 
-        :param name_or_id: The name or ID of a zone
+        :param name_or_id: The name or ID of a gateway
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
             when the gateway does not exist.
             When set to ``True``, no exception will be set when attempting
-            to delete a nonexistent gateway.
+            to find a nonexistent gateway.
 
-        :returns: ``None``
+        :returns:
+            One :class:`~otcextensions.sdk.nat.v2.gateway.Gateway` or ``None``
         """
         return self._find(_gateway.Gateway, name_or_id,
                           ignore_missing=ignore_missing)
@@ -103,34 +109,40 @@ class Proxy(proxy.Proxy):
         """Create a new SNAT rule from attributes
 
         :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.nat.v2.snat.Snat`
+            a :class:`~otcextensions.sdk.nat.v2.snat.Snat`, comprised of the
+            properties on the Snat class.
+
+        :returns: The result of Snat rule creation
+
+        :rtype: :class:`~otcextensions.sdk.nat.v2.snat.Snat`
         """
         return self._create(_snat.Snat, **attrs)
 
     def delete_snat_rule(self, snat, ignore_missing=True):
         """Delete a SNAT rule
 
+        :param gateway: The value can be the ID of a snat rule or a
+            :class:`~otcextensions.sdk.nat.v2.snat.Snat` instance.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
-            the SNAT rule does not exist.
+            the snat rule does not exist.
             When set to ``True``, no exception will be set when attempting to
-            delete a nonexistent SNAT rule.
+            delete a nonexistent snat rule.
 
-        :returns: SNAT rule been deleted
-        :rtype: :class:`~otcextensions.sdk.nat.v2.snat.Snat`
+        :returns: ``None``
         """
         return self._delete(_snat.Snat, snat, ignore_missing=ignore_missing)
 
     def get_snat_rule(self, snat_rule):
         """Get a single SNAT rule
 
-        :param snat_rule: The value can be the ID of a SNAT rule or a
-                        :class:`~otcextensions.sdk.nat.v2.snat.Snat`
-                        instance.
+        :param snat_rule: The value can be the ID of a snat rule or a
+            :class:`~otcextensions.sdk.nat.v2.snat.Snat` instance.
 
         :returns: One :class:`~otcextensions.sdk.nat.v2.snat.Snat`
+
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
-                 when no resource can be found.
+            when no resource can be found.
         """
         return self._get(_snat.Snat, snat_rule)
 
@@ -138,9 +150,9 @@ class Proxy(proxy.Proxy):
         """Return a generator of SNAT rules
 
         :param dict query: Optional query parameters to be sent to limit
-            the resources being returned.
-        :returns: A generator of Snat rule objects
-        :rtype: :class:`~otcextensions.sdk.nat.v2.snat.Snat`
+            the snat rules being returned.
+
+        :returns: A generator of Snat objects.
         """
         return self._list(_snat.Snat, **query)
 
@@ -149,36 +161,40 @@ class Proxy(proxy.Proxy):
         """Create a new DNAT rule from attributes
 
         :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.nat.v2.dnat.Dnat`
+            a :class:`~otcextensions.sdk.nat.v2.dnat.Dnat`, comprised of the
+            properties on the Dnat class.
+
+        :returns: The result of Dnat rule creation.
+
+        :rtype: :class:`~otcextensions.sdk.nat.v2.dnat.Dnat`
         """
         return self._create(_dnat.Dnat, **attrs)
 
     def delete_dnat_rule(self, dnat, ignore_missing=True):
         """Delete a DNAT rule
 
-        :param dict attrs: Keyword arguments which will be used to delete
-            a :class:`~otcextensions.sdk.nat.v2.dnat.Dnat`
+        :param gateway: The value can be the ID of a dnat rule or a
+            :class:`~otcextensions.sdk.nat.v2.dnat.Dnat` instance.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
-            the DNAT rule does not exist.
+            the dnat rule does not exist.
             When set to ``True``, no exception will be set when attempting to
-            delete a nonexistent DNAT rule.
+            delete a nonexistent dnat rule.
 
-        :returns: DNAT rule been deleted
-        :rtype: :class:`~otcextensions.sdk.nat.v2.dnat.Dnat`
+        :returns: ``None``
         """
         return self._delete(_dnat.Dnat, dnat, ignore_missing=ignore_missing)
 
     def get_dnat_rule(self, dnat_rule):
         """Get a single DNAT rule
 
-        :param dnat_rule: The value can be the ID of a DNAT rule or a
-                        :class:`~otcextensions.sdk.nat.v2.dnat.Dnat`
-                        instance.
+        :param snat_rule: The value can be the ID of a dnat rule or a
+            :class:`~otcextensions.sdk.nat.v2.dnat.Dnat` instance.
 
         :returns: One :class:`~otcextensions.sdk.nat.v2.dnat.Dnat`
+
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
-                 when no resource can be found.
+            when no resource can be found.
         """
         return self._get(_dnat.Dnat, dnat_rule)
 
@@ -187,7 +203,7 @@ class Proxy(proxy.Proxy):
 
         :param dict query: Optional query parameters to be sent to limit
             the resources being returned.
-        :returns: A generator of DNAT rules objects
-        :rtype: :class:`~otcextensions.sdk.nat.v2.dnat.Dnat`
+
+        :returns: A generator of Dnat objects.
         """
         return self._list(_dnat.Dnat, **query)

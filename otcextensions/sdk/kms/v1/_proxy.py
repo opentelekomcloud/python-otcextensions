@@ -194,6 +194,8 @@ class Proxy(sdk_proxy.Proxy):
     def decrypt_datakey(self, cmk, cipher_text, datakey_cipher_length):
         """Decrypt a data key
 
+        :param cmk: key id or an instance of
+            :class:`~otcextensions.sdk.kms.v1.key.Key`
         :param cipher_text: encrypted value retrieved from
             :func:`~otcextensions.sdk.kms.v1.data_key.DataKey.encrypt` call.
         :param datakey_cipher_length: datakey_cipher_length (expected value 64)

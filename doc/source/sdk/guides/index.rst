@@ -10,7 +10,13 @@ Open Telekom Cloud related User Guides
    anti_ddos
    auto_scaling
    cce
+   cts
+   dcs
    deh
+   dns
+   kms
+   nat
+   rds
    logging
 
 .. _user_guides:
@@ -18,7 +24,10 @@ Open Telekom Cloud related User Guides
 User Guides
 -----------
 
-SOME TEXT XXX.
+The Open Telekom Cloud services are covering OpenStack native services and
+enhanced ones covering additional functionalities. All user guides related
+to Open Telekom Cloud are listed above. The links links to the most important
+OpenStack native services are listed below.
 
 OpenStack native User Guides
 ----------------------------

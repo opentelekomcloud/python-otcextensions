@@ -82,8 +82,8 @@ class ListDatabaseInstances(command.Lister):
             type=lambda s: s.lower(),
             choices=HA_TYPE_CHOICES,
             help=_(
-                'Specifies the instance type. Values cane be single/ha/replica'
-            ))
+                'Specifies the instance type. '
+                'Values cane be single/ha/replica.'))
         parser.add_argument(
             '--datastore-type',
             metavar='{' + ','.join(DATASTORE_TYPE_CHOICES) + '}',
@@ -168,7 +168,6 @@ class ShowDatabaseInstance(command.ShowOne):
 
 
 class CreateDatabaseInstance(command.ShowOne):
-
     _description = _("Create a new database instance.")
 
     def get_parser(self, prog_name):
@@ -268,7 +267,7 @@ class CreateDatabaseInstance(command.ShowOne):
             '--security-group-id',
             dest='security_group',
             metavar='<security_group_id>',
-            help=_('Security group ID')
+            help=_('Security group ID.')
         )
         parser.add_argument(
             '--ha-mode',
@@ -276,13 +275,13 @@ class CreateDatabaseInstance(command.ShowOne):
             type=lambda s: s.lower(),
             choices=HA_MODE_CHOICES,
             help=_('replication mode for the standby DB instance. '
-                   'This parameter is required when using `ha`flavors')
+                   'This parameter is required when using `ha` flavors.')
         )
         parser.add_argument(
             '--charge-mode',
             metavar='<charge_mode>',
             default='postPaid',
-            help=_('Specifies the billing mode')
+            help=_('Specifies the billing mode.')
         )
         create_from_group = parser.add_argument_group(
             'Create FROM group',
