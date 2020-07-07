@@ -1,5 +1,5 @@
-Database service (rds)
-======================
+Relational Database Service (RDS)
+=================================
 
 The RDS client is the command-line interface (CLI) for
 the Database service (RDS) API and its extensions.
@@ -12,32 +12,40 @@ For help on a specific `rds` command, enter:
 
 .. _datastore:
 
-Datastore operations
+Datastore Operations
 --------------------
 
-.. autoprogram-cliff:: openstack.rds.v1
+.. autoprogram-cliff:: openstack.rds.v3
    :command: rds datastore *
 
 .. _flavor:
 
-Flavor operations
+Flavor Operations
 -----------------
 
-.. autoprogram-cliff:: openstack.rds.v1
+.. autoprogram-cliff:: openstack.rds.v3
    :command: rds flavor *
 
 .. _instance:
 
-Instance operations
+Instance Operations
 -------------------
 
-.. autoprogram-cliff:: openstack.rds.v1
+.. autoprogram-cliff:: openstack.rds.v3
    :command: rds instance *
 
 .. _backup:
 
-Backup operations
+Backup Operations
 -----------------
 
-.. autoprogram-cliff:: openstack.rds.v1
+.. autoprogram-cliff:: openstack.rds.v3
    :command: rds backup *
+
+.. _configuration:
+
+Configuration Operations
+------------------------
+
+.. autoprogram-cliff:: openstack.rds.v3
+   :command: rds configuration *
