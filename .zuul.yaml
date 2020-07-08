@@ -6,7 +6,7 @@
 - job:
     name: tox-py37-deb
     parent: tox-py37
-    nodeset: debian-buster
+    nodeset: ubuntu-focal
 
 - project:
     merge-mode: squash-merge
