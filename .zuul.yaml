@@ -3,11 +3,6 @@
     parent: tox-functional
     branches: master
 
-- job:
-    name: tox-py37-deb
-    parent: tox-py37
-    nodeset: ubuntu-bionic
-
 - project:
     merge-mode: squash-merge
     templates:
@@ -15,13 +10,14 @@
     check:
       jobs:
         - tox-py37
-        - tox-py37-deb
+        - tox-py38
         - tox-pep8
         - tox-docs
         - tox-functional
     gate:
       jobs:
         - tox-py37
+        - tox-py38
         - tox-pep8
         - tox-docs
         - tox-functional
