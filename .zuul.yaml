@@ -10,6 +10,8 @@
 
 - project:
     merge-mode: squash-merge
+    templates:
+      - publish-to-pypi
     check:
       jobs:
         - tox-py37
