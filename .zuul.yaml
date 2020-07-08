@@ -4,16 +4,16 @@
     branches: master
 
 - job:
-    name: tox-py37-centos8
+    name: tox-py37-deb
     parent: tox-py37
-    nodeset: centos-8
+    nodeset: debian-buster
 
 - project:
     merge-mode: squash-merge
     check:
       jobs:
         - tox-py37
-        - tox-py37-centos8
+        - tox-py37-deb
         - tox-pep8
         - tox-docs
         - tox-functional
