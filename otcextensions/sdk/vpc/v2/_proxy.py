@@ -27,6 +27,7 @@ class Proxy(proxy.Proxy):
         :param dict attrs: Keyword arguments which will be used to create
             a :class:`~otcextensions.sdk.vpc.v2.peering.Peering`
         """
+        self._override_endpoint()
         return self._create(_peering.Peering, **attrs)
 
     def delete_peering(self, peering, ignore_missing=True):
