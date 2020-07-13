@@ -16,7 +16,9 @@ from openstack import proxy
 
 class Proxy(proxy.Proxy):
 
-    skip_discovery = True
+    def _override_endpoint(self):
+        endpoint = self.get_endpoint(service_type='network')
+        setattr(self, 'endpoint_override', endpoint)
 
     # ======== Peering ========
     def create_peering(self, **attrs):
@@ -39,7 +41,8 @@ class Proxy(proxy.Proxy):
             delete a nonexistent peering.
 
         :returns: ``None``
-       """
+        """
+        self._override_endpoint()
         return self._delete(_peering.Peering, peering,
                             ignore_missing=ignore_missing)
 
@@ -53,6 +56,7 @@ class Proxy(proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.vpc.v2.peering.Peering`
         """
+        self._override_endpoint()
         return self._list(_peering.Peering, **query)
 
     def get_peering(self, peering):
@@ -67,6 +71,7 @@ class Proxy(proxy.Proxy):
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                  when no resource can be found.
         """
+        self._override_endpoint()
         return self._get(_peering.Peering, peering)
 
     def find_peering(self, name_or_id, ignore_missing=False):
@@ -81,6 +86,7 @@ class Proxy(proxy.Proxy):
 
         :returns: One :class:`~otcextensions.sdk.vpc.v2.peering.Peering`
         """
+        self._override_endpoint()
         return self._find(_peering.Peering, name_or_id,
                           ignore_missing=ignore_missing)
 
@@ -97,6 +103,7 @@ class Proxy(proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.vpc.v2.peering.Peering`
         """
+        self._override_endpoint()
         return self._update(_peering.Peering, peering, **attrs)
 
     def set_peering(self, peering, set_status):
@@ -116,4 +123,5 @@ class Proxy(proxy.Proxy):
             raise ValueError(
                 "results: status must be one of %r." % valid_status)
         peering = self._get_resource(_peering.Peering, peering)
+        self._override_endpoint()
         return peering._set_peering(self, set_status.lower())
