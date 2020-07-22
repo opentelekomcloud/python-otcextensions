@@ -28,18 +28,18 @@ class TestListVpcPeerings(fakes.TestVpc):
     column_list_headers = (
         'Id',
         'Name',
-        'Request Vpc Info',
-        'Accept Vpc Info',
+        'Local Vpc Info',
+        'Peer Vpc Info',
         'Status'
     )
 
-    columns = ('id', 'name', 'request_vpc_info', 'accept_vpc_info', 'status')
+    columns = ('id', 'name', 'local_vpc_info', 'peer_vpc_info', 'status')
 
     data = []
 
     for s in objects:
         data.append(
-            (s.id, s.name, s.request_vpc_info, s.accept_vpc_info, s.status))
+            (s.id, s.name, s.local_vpc_info, s.peer_vpc_info, s.status))
 
     def setUp(self):
         super(TestListVpcPeerings, self).setUp()
@@ -116,8 +116,8 @@ class TestCreateVpcPeering(fakes.TestVpc):
     columns = (
         'id',
         'name',
-        'request_vpc_info',
-        'accept_vpc_info',
+        'local_vpc_info',
+        'peer_vpc_info',
         'description',
         'created_at',
         'updated_at',
@@ -138,16 +138,16 @@ class TestCreateVpcPeering(fakes.TestVpc):
     def test_create_different_project(self):
         arglist = [
             'test-peering',
-            '--requester-router-id', 'test-local-router-uuid',
-            '--accepter-router-id', 'test-peer-router-uuid',
-            '--accepter-project-id', 'test-peer-project-uuid',
+            '--local-router-id', 'test-local-router-uuid',
+            '--peer-router-id', 'test-peer-router-uuid',
+            '--peer-project-id', 'test-peer-project-uuid',
             '--description', 'test-peering',
         ]
         verifylist = [
             ('name', 'test-peering'),
-            ('requester_router_id', 'test-local-router-uuid'),
-            ('accepter_router_id', 'test-peer-router-uuid'),
-            ('accepter_project_id', 'test-peer-project-uuid'),
+            ('local_router_id', 'test-local-router-uuid'),
+            ('peer_router_id', 'test-peer-router-uuid'),
+            ('peer_project_id', 'test-peer-project-uuid'),
             ('description', 'test-peering'),
         ]
         # Verify cm is triggereg with default parameters
@@ -174,14 +174,14 @@ class TestCreateVpcPeering(fakes.TestVpc):
     def test_create_same_project(self):
         arglist = [
             'test-peering',
-            '--requester-router-id', 'test-local-router-uuid',
-            '--accepter-router-id', 'test-peer-router-uuid',
+            '--local-router-id', 'test-local-router-uuid',
+            '--peer-router-id', 'test-peer-router-uuid',
             '--description', 'test-peering',
         ]
         verifylist = [
             ('name', 'test-peering'),
-            ('requester_router_id', 'test-local-router-uuid'),
-            ('accepter_router_id', 'test-peer-router-uuid'),
+            ('local_router_id', 'test-local-router-uuid'),
+            ('peer_router_id', 'test-peer-router-uuid'),
             ('description', 'test-peering'),
         ]
         # Verify cm is triggereg with default parameters
@@ -211,8 +211,8 @@ class TestUpdateVpcPeering(fakes.TestVpc):
     columns = (
         'id',
         'name',
-        'request_vpc_info',
-        'accept_vpc_info',
+        'local_vpc_info',
+        'peer_vpc_info',
         'description',
         'created_at',
         'updated_at',
@@ -262,8 +262,8 @@ class TestShowVpcPeering(fakes.TestVpc):
     columns = (
         'id',
         'name',
-        'request_vpc_info',
-        'accept_vpc_info',
+        'local_vpc_info',
+        'peer_vpc_info',
         'description',
         'created_at',
         'updated_at',
@@ -339,8 +339,8 @@ class TestSetVpcPeering(fakes.TestVpc):
     columns = (
         'id',
         'name',
-        'request_vpc_info',
-        'accept_vpc_info',
+        'local_vpc_info',
+        'peer_vpc_info',
         'description',
         'created_at',
         'updated_at',

@@ -44,8 +44,8 @@ class TestPeering(common.VpcTestCase):
         peering = self.create_vpc_peering()
         peering_id = peering['id']
         peering_name = peering['name']
-        requester_router_id = peering['request_vpc_info']['router_id']
-        accepter_router_id = peering['accept_vpc_info']['router_id']
+        local_router_id = peering['local_vpc_info']['router_id']
+        peer_router_id = peering['peer_vpc_info']['router_id']
 
         # List Vpc Peering By Id
         json_output = json.loads(self.openstack(
@@ -66,23 +66,23 @@ class TestPeering(common.VpcTestCase):
         # List Vpc Peering by Requester Router ID
         json_output = json.loads(self.openstack(
             'vpc peering list -f json '
-            '--router-id {}'.format(requester_router_id)
+            '--router-id {}'.format(local_router_id)
         ))
         for peering in json_output:
             self.assertEqual(
-                peering['Request Vpc Info']['router_id'],
-                requester_router_id
+                peering['Local Vpc Info']['router_id'],
+                local_router_id
             )
 
         # List Vpc Peering by Accepter Router ID
         json_output = json.loads(self.openstack(
             'vpc peering list -f json '
-            '--router-id {}'.format(accepter_router_id)
+            '--router-id {}'.format(peer_router_id)
         ))
         for peering in json_output:
             self.assertEqual(
-                peering['Accept Vpc Info']['router_id'],
-                accepter_router_id
+                peering['Peer Vpc Info']['router_id'],
+                peer_router_id
             )
 
         # Show Vpc Peering by Name

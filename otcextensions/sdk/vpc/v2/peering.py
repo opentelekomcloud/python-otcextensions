@@ -37,10 +37,10 @@ class Peering(resource.Resource):
     id = resource.Body('id')
     #: Specifies information about the local VPC.
     #: *Type: dict*
-    accept_vpc_info = resource.Body('accept_vpc_info', type=dict)
+    peer_vpc_info = resource.Body('accept_vpc_info', type=dict)
     #: Specifies information about the local VPC.
     #: *Type: dict*
-    request_vpc_info = resource.Body('request_vpc_info', type=dict)
+    local_vpc_info = resource.Body('request_vpc_info', type=dict)
     #: Specifies the name of the VPC peering connection.
     name = resource.Body('name')
     #: Specifies the status.

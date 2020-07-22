@@ -56,8 +56,8 @@ class TestPeering(base.TestCase):
     def test_make_it(self):
         sot = peering.Peering(**EXAMPLE)
         self.assertEqual(EXAMPLE['status'], sot.status)
-        self.assertEqual(EXAMPLE['request_vpc_info'], sot.request_vpc_info)
-        self.assertEqual(EXAMPLE['accept_vpc_info'], sot.accept_vpc_info)
+        self.assertEqual(EXAMPLE['request_vpc_info'], sot.local_vpc_info)
+        self.assertEqual(EXAMPLE['accept_vpc_info'], sot.peer_vpc_info)
         self.assertEqual(EXAMPLE['id'], sot.id)
         self.assertEqual(EXAMPLE['name'], sot.name)
 

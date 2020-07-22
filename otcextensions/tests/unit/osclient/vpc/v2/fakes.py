@@ -55,12 +55,12 @@ class FakeVpcPeering(test_base.Fake):
             "id": "id-" + uuid.uuid4().hex,
             "name": "name-" + uuid.uuid4().hex,
             "request_vpc_info": {
-                "router_id": uuid.uuid4().hex,
-                "project_id": uuid.uuid4().hex
+                "vpc_id": uuid.uuid4().hex,
+                "tenant_id": uuid.uuid4().hex
             },
             "accept_vpc_info": {
-                "router_id": uuid.uuid4().hex,
-                "project_id": uuid.uuid4().hex
+                "vpc_id": uuid.uuid4().hex,
+                "tenant_id": uuid.uuid4().hex
             },
             "status": "ACTIVE",
             "description": "my vpc peering",

@@ -27,12 +27,12 @@ class VpcTestCase(base.TestCase):
     def setUp(self):
         super(VpcTestCase, self).setUp()
         UUID = uuid.uuid4().hex[:8]
-        self.REQUESTER_ROUTER_NAME = 'test-local-router-otce-cli' + UUID
-        self.ACCEPTER_ROUTER_NAME = 'test-peer-router-otce-cli' + UUID
+        self.LOCAL_ROUTER_NAME = 'test-local-router-otce-cli' + UUID
+        self.PEER_ROUTER_NAME = 'test-peer-router-otce-cli' + UUID
         self.PEERING_NAME = 'test-peering-otce-cli-' + UUID
 
-        self.REQUESTER_ROUTER_ID = None
-        self.ACCEPTER_ROUTER_ID = None
+        self.LOCAL_ROUTER_ID = None
+        self.PEER_ROUTER_ID = None
         self.PEERING_ID = None
 
     def create_vpc_peering(self, name=None):
@@ -41,12 +41,12 @@ class VpcTestCase(base.TestCase):
         json_output = json.loads(self.openstack(
             'vpc peering create '
             '{name} '
-            '--requester-router-id "{requester_router_id}" '
-            '--accepter-router-id "{accepter_router_id}" '
+            '--local-router-id "{local_router_id}" '
+            '--peer-router-id "{peer_router_id}" '
             '-f json'.format(
                 name=name,
-                requester_router_id=self.REQUESTER_ROUTER_ID,
-                accepter_router_id=self.ACCEPTER_ROUTER_ID)
+                local_router_id=self.LOCAL_ROUTER_ID,
+                peer_router_id=self.PEER_ROUTER_ID)
         ))
         self.assertIsNotNone(json_output)
         self.PEERING_ID = json_output['id']
@@ -57,18 +57,18 @@ class VpcTestCase(base.TestCase):
         self.openstack('vpc peering delete {}'.format(self.PEERING_ID))
 
     def _create_routers(self):
-        requester_router = json.loads(self.openstack(
-            'router create -f json ' + self.REQUESTER_ROUTER_NAME
+        local_router = json.loads(self.openstack(
+            'router create -f json ' + self.LOCAL_ROUTER_NAME
         ))
-        self.REQUESTER_ROUTER_ID = requester_router['id']
+        self.LOCAL_ROUTER_ID = local_router['id']
 
-        accepter_router = json.loads(self.openstack(
-            'router create -f json ' + self.ACCEPTER_ROUTER_NAME
+        peer_router = json.loads(self.openstack(
+            'router create -f json ' + self.PEER_ROUTER_NAME
         ))
-        self.ACCEPTER_ROUTER_ID = accepter_router['id']
+        self.PEER_ROUTER_ID = peer_router['id']
 
     def _delete_routers(self):
         self.openstack(
             'router delete {} {}'.format(
-                self.REQUESTER_ROUTER_ID, self.ACCEPTER_ROUTER_ID
+                self.LOCAL_ROUTER_ID, self.PEER_ROUTER_ID
             ))

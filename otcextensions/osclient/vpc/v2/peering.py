@@ -41,11 +41,11 @@ def _update_vpc_info(vpcinfo):
 def set_attributes_for_print(peerings):
     for peering in peerings:
         setattr(peering,
-                'request_vpc_info',
-                _update_vpc_info(peering.request_vpc_info))
+                'local_vpc_info',
+                _update_vpc_info(peering.local_vpc_info))
         setattr(peering,
-                'accept_vpc_info',
-                _update_vpc_info(peering.accept_vpc_info))
+                'peer_vpc_info',
+                _update_vpc_info(peering.peer_vpc_info))
         yield peering
 
 
@@ -53,16 +53,16 @@ def translate_response(func):
     def new(self, *args, **kwargs):
         response = func(self, *args, **kwargs)
         setattr(response,
-                'request_vpc_info',
-                _update_vpc_info(response.request_vpc_info))
+                'local_vpc_info',
+                _update_vpc_info(response.local_vpc_info))
         setattr(response,
-                'accept_vpc_info',
-                _update_vpc_info(response.accept_vpc_info))
+                'peer_vpc_info',
+                _update_vpc_info(response.peer_vpc_info))
         columns = (
             'id',
             'name',
-            'request_vpc_info',
-            'accept_vpc_info',
+            'local_vpc_info',
+            'peer_vpc_info',
             'description',
             'created_at',
             'updated_at',
@@ -78,7 +78,7 @@ def translate_response(func):
 class ListVpcPeerings(command.Lister):
 
     _description = _("List Vpc Peerings.")
-    columns = ('Id', 'Name', 'Request Vpc Info', 'Accept Vpc Info', 'Status')
+    columns = ('Id', 'Name', 'Local Vpc Info', 'Peer Vpc Info', 'Status')
 
     def get_parser(self, prog_name):
         parser = super(ListVpcPeerings, self).get_parser(prog_name)
@@ -215,22 +215,22 @@ class CreateVpcPeering(command.ShowOne):
             help=_("Specifies the description of the VPC peering connection."),
         )
         parser.add_argument(
-            '--requester-router-id',
-            metavar='<requester_router_id>',
+            '--local-router-id',
+            metavar='<local_router_id>',
             required=True,
             help=_("Specifies information about the local router_id "
                    "involved in a VPC peering connection."),
         )
         parser.add_argument(
-            '--accepter-router-id',
-            metavar='<accepter_router_id>',
+            '--peer-router-id',
+            metavar='<peer_router_id>',
             required=True,
             help=_("Specifies information about the peer router_id "
                    "involved in a VPC peering connection."),
         )
         parser.add_argument(
-            '--accepter-project-id',
-            metavar='<accepter_project_id>',
+            '--peer-project-id',
+            metavar='<peer_project_id>',
             help=_("Specifies the ID of the project to which a "
                    "peer router belongs. It is required if the peer "
                    "router is from different project."),
@@ -243,13 +243,13 @@ class CreateVpcPeering(command.ShowOne):
         attrs = {
             'name': parsed_args.name,
             'request_vpc_info': {
-                'vpc_id': parsed_args.requester_router_id
+                'vpc_id': parsed_args.local_router_id
             },
             'accept_vpc_info': {
-                'vpc_id': parsed_args.accepter_router_id
+                'vpc_id': parsed_args.peer_router_id
             }
         }
-        val = getattr(parsed_args, 'accepter_project_id')
+        val = getattr(parsed_args, 'peer_project_id')
         if val:
             attrs['accept_vpc_info']['tenant_id'] = val
             attrs['request_vpc_info']['tenant_id'] = client.get_project_id()
