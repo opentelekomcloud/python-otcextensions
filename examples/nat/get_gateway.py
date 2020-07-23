@@ -11,14 +11,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-List all Restore Records of a Distributed Message Service instance
+Get details of NAT Gateway by gateway_id or instance of Gateway class
 """
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-
-instance = 'instance_id'
-for rr in conn.dcs.restore_records(instance):
-    print(rr)
+gateway = 'gateway_id'
+gateway = conn.nat.get_gateway(gateway)
+print(gateway)

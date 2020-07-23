@@ -11,14 +11,23 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-List all Restore Records of a Distributed Message Service instance
+Create a SNAT Rule
 """
 import openstack
+
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
+nat_gateway_id = 'nat_gateway_id'
+network_id = 'network_id'
+floating_ip_id = 'floating_ip_id'
 
-instance = 'instance_id'
-for rr in conn.dcs.restore_records(instance):
-    print(rr)
+attrs = {
+    "nat_gateway_id": nat_gateway_id,
+    "network_id": network_id,
+    "floating_ip_id": floating_ip_id
+}
+
+snat_rule = conn.nat.create_snat_rule(**attrs)
+print(snat_rule)

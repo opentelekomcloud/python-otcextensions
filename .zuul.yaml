@@ -5,15 +5,19 @@
 
 - project:
     merge-mode: squash-merge
+    templates:
+      - publish-to-pypi
     check:
       jobs:
         - tox-py37
+        - tox-py38
         - tox-pep8
         - tox-docs
         - tox-functional
     gate:
       jobs:
         - tox-py37
+        - tox-py38
         - tox-pep8
         - tox-docs
         - tox-functional

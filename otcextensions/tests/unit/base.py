@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -10,15 +9,15 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-"""
-List all Restore Records of a Distributed Message Service instance
-"""
-import openstack
+#
 
-openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+from openstack.tests.unit import base
+
+from otcextensions import sdk
 
 
-instance = 'instance_id'
-for rr in conn.dcs.restore_records(instance):
-    print(rr)
+class TestCase(base.TestCase):
+
+    def setUp(self):
+        super(TestCase, self).setUp()
+        sdk.load(self.cloud)

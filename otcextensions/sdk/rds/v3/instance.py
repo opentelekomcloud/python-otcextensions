@@ -34,46 +34,48 @@ class Instance(_base.Resource):
         router_id='vpc_id')
 
     #: Availability Zone.
-    #: *Type:str*
+    #: *Type:string*
     availability_zone = resource.Body('availability_zone')
     # TODO(not_gtema): extract backup strategy into separate type
     #: Backup Strategy.
     #: *Type: dict*
     backup_strategy = resource.Body('backup_strategy', type=dict)
     #: Specifies the billing information, which is pay-per-use.
-    #: *Type: dict*
+    #: *Type:dict*
     charge_info = resource.Body('charge_info', type=dict)
     #: Parameter configuration ID.
     #: *Type:uuid*
     configuration_id = resource.Body('configuration_id')
     #: Instance created time.
-    #: *Type:str*
+    #: *Type:string*
     created_at = resource.Body('created')
     #: Data store information.
-    #: *Type: dict*
+    #: *Type:dict*
     datastore = resource.Body('datastore', type=dict)
     #: Datastore type information (for querying).
+    #: *Type:string*
     datastore_type = resource.Body('datastore_type')
     #: Disk Encryption Key Id.
-    #: *Type:str*
+    #: *Type:uuid*
     disk_encryption_id = resource.Body('disk_encryption_id')
     #: Flavor ID
     #: *Type:uuid*
     flavor_ref = resource.Body('flavor_ref')
     #: Async job id
+    #: *Type:uuid*
     job_id = resource.Body('job_id')
     #: HighAvailability configuration parameters.
-    #: *Type: dict*
+    #: *Type:dict*
     ha = resource.Body('ha', type=dict)
     #: Maintenance time window.
-    #: *Type:str*
+    #: *Type:string*
     maintenance_window = resource.Body('maintenance_window')
     #: Node information
     #: Indicates the primary/standby DB instance information.
     #: *Type:list*
     nodes = resource.Body('nodes', type=list)
     #: Password of the default user.
-    #: *Type:str*
+    #: *Type:string*
     password = resource.Body('password')
     #: Database listen port number.
     #: *Type:int*
@@ -85,43 +87,50 @@ class Instance(_base.Resource):
     #: *Type:list*
     public_ips = resource.Body('public_ips', type=list)
     #: Region where DB is deployed.
-    #: *Type:str*
+    #: *Type:string*
     region = resource.Body('region')
     #: list of associated DB instances.
     #: *Type:list*
     related_instances = resource.Body('related_instance', type=list)
     #: Specifies the DB instance ID, which is used to create a read replica.
+    #: *Type:uuid*
     replica_of_id = resource.Body('replica_of_id')
     #: Specifies the restoration point for instance recovery.
-    #: *Type: dict*
+    #: *Type:dict*
     restore_point = resource.Body('restore_point', type=dict)
     #: Recovery time period for instance.
-    restore_time = resource.Body('restore_time', type=list)
+    #: *Type:string*
+    restore_time = resource.Body('restore_time')
     #: Neutron router ID.
+    #: *Type:uuid*
     router_id = resource.Body('vpc_id')
     #: Security Group Id.
+    #: *Type:uuid*
     security_group_id = resource.Body('security_group_id')
-    #: Id of net.
+    #: Id of network.
+    #: *Type:uuid*
     network_id = resource.Body('subnet_id')
     #: Instance status.
+    #: *Type:string*
     status = resource.Body('status')
     #: Switch Strategy. The value can be reliability or availability,
     #: indicating the reliability first and availability first, respectively.
-    #: *Type:str*
+    #: *Type:string*
     switch_strategy = resource.Body('switch_strategy')
     #: Time Zone.
-    #: *Type:str*
+    #: *Type:string*
     time_zone = resource.Body('time_zone')
     #: Instance type Single/Ha/Replica.,
-    #: *Type:str*
+    #: *Type:string*
     type = resource.Body('type')
     # datastore: Instance updated time.
-    #: *Type:str*
+    #: *Type:string*
     updated_at = resource.Body('updated')
     #: Default user of the DB
+    #: *Type:string*
     user_name = resource.Body('db_user_name')
     #: Volume information
-    #: *Type: dict*
+    #: *Type:dict*
     volume = resource.Body('volume', type=dict)
 
     def _translate_response(self, response, has_body=None, error_message=None):

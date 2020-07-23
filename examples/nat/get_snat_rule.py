@@ -11,14 +11,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-List all Restore Records of a Distributed Message Service instance
+Get a SNAT Rule Details by SNAT-Rule-ID
 """
 import openstack
+
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-
-instance = 'instance_id'
-for rr in conn.dcs.restore_records(instance):
-    print(rr)
+snat_rule_id = 'snat_rule_id'
+snat_rule = conn.nat.get_snat_rule(snat_rule_id)
+print(snat_rule)

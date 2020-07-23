@@ -11,14 +11,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-List all Restore Records of a Distributed Message Service instance
+Get a DNAT Rule Details by DNAT-Rule-ID or instance of Dnat Class
 """
 import openstack
+
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-
-instance = 'instance_id'
-for rr in conn.dcs.restore_records(instance):
-    print(rr)
+dnat_rule_id = 'dnat_rule_id'
+dnat_rule = conn.nat.get_dnat_rule(dnat_rule_id)
+print(dnat_rule)

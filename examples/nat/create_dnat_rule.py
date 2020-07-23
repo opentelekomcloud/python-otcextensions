@@ -11,14 +11,32 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-List all Restore Records of a Distributed Message Service instance
+Create a DNAT Rule
 """
 import openstack
+
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
+nat_gateway_id = 'nat_gateway_id'
+port_id = 'network_id'
+private_ip = '192.168.199.3'
+floating_ip_id = 'floating_ip_id'
+protocol = 'TCP'
+internal_service_port = 80
+external_service_port = 80
 
-instance = 'instance_id'
-for rr in conn.dcs.restore_records(instance):
-    print(rr)
+
+attrs = {
+    "nat_gateway_id": nat_gateway_id,
+    "private_ip": private_ip,
+    "port_id": port_id,
+    "protocol": protocol,
+    "internal_service_port": internal_service_port,
+    "external_service_port": external_service_port,
+    "floating_ip_id": floating_ip_id
+}
+
+dnat_rule = conn.nat.create_dnat_rule(**attrs)
+print(dnat_rule)

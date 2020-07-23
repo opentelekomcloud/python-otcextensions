@@ -11,14 +11,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-List all Restore Records of a Distributed Message Service instance
+Delete a NAT Gateway by gateway_id or instance of Gateway class
 """
 import openstack
+
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-
-instance = 'instance_id'
-for rr in conn.dcs.restore_records(instance):
-    print(rr)
+name_or_id = 'gateway_name_or_id'
+gateway = conn.nat.find_gateway(name_or_id=name_or_id, ignore_missing=False)
+conn.nat.delete_gateway(gateway)

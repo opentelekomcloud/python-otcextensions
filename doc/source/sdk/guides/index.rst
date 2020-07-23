@@ -15,6 +15,7 @@ Open Telekom Cloud related User Guides
    deh
    dns
    kms
+   nat
    rds
    logging
 
