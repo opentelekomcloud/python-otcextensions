@@ -18,6 +18,7 @@ from openstackclient.tests.unit import utils
 from otcextensions.tests.unit.osclient import test_base
 
 from otcextensions.sdk.vpc.v2 import peering
+from otcextensions.sdk.vpc.v2 import route
 
 
 def gen_data(data, columns):
@@ -69,3 +70,25 @@ class FakeVpcPeering(test_base.Fake):
         }
 
         return peering.Peering(**object_info)
+
+
+class FakeVpcRoute(test_base.Fake):
+    """Fake one or more VPC routes."""
+    @classmethod
+    def generate(cls):
+        """Create a fake VPC route.
+
+        :return:
+            A FakeResource object, with id, name and so on
+        """
+        # Set default attributes.
+        object_info = {
+            "id": "id-" + uuid.uuid4().hex,
+            "type": "peering",
+            "nexthop": uuid.uuid4().hex,
+            "router_id": uuid.uuid4().hex,
+            "project_id": uuid.uuid4().hex,
+            "destination": "192.168.200.0/24",
+        }
+
+        return route.Route(**object_info)

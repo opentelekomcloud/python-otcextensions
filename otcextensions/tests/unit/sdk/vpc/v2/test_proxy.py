@@ -24,6 +24,7 @@
 
 from otcextensions.sdk.vpc.v2 import _proxy
 from otcextensions.sdk.vpc.v2 import peering
+from otcextensions.sdk.vpc.v2 import route
 
 from openstack.tests.unit import test_proxy_base
 
@@ -61,3 +62,20 @@ class TestVpcPeering(TestVpcProxy):
             method_kwargs={'set_status': 'accept'},
             expected_args=['accept']
         )
+
+
+class TestVpcRoute(TestVpcProxy):
+    def test_route_add(self):
+        self.verify_create(self.proxy.add_route, route.Route,
+                           method_kwargs={'name': 'id'},
+                           expected_kwargs={'name': 'id'})
+
+    def test_route_delete(self):
+        self.verify_delete(self.proxy.delete_route,
+                           route.Route, True)
+
+    def test_route_get(self):
+        self.verify_get(self.proxy.get_route, route.Route)
+
+    def test_routes(self):
+        self.verify_list(self.proxy.routes, route.Route)

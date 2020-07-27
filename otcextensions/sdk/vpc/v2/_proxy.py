@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from otcextensions.sdk.vpc.v2 import peering as _peering
+from otcextensions.sdk.vpc.v2 import route as _route
 
 from openstack import proxy
 
@@ -126,3 +127,59 @@ class Proxy(proxy.Proxy):
         peering = self._get_resource(_peering.Peering, peering)
         self._override_endpoint()
         return peering._set_peering(self, set_status.lower())
+
+    # ======== Route ========
+
+    def add_route(self, **attrs):
+        """Add vpc route
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.vpc.v2.route.Route`
+        """
+        self._override_endpoint()
+        return self._create(_route.Route, **attrs)
+
+    def delete_route(self, route, ignore_missing=True):
+        """Delete a vpc route
+
+        :param route: route id or an instance of
+            :class:`~otcextensions.sdk.vpc.v2.route.Route`
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the vpc route does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent route.
+
+        :returns: ``None``
+        """
+        self._override_endpoint()
+        return self._delete(_route.Route, route,
+                            ignore_missing=ignore_missing)
+
+    def routes(self, **query):
+        """Return a generator of vpc routes
+
+        :param dict query: Optional query parameters to be sent to limit
+            the resources being returned.
+
+        :returns: A generator of vpc route objects
+
+        :rtype: :class:`~otcextensions.sdk.vpc.v2.route.Route`
+        """
+        self._override_endpoint()
+        return self._list(_route.Route, **query)
+
+    def get_route(self, route):
+        """Get details of a single vpc route
+
+        :param route: The value can be the ID of a vpc route or a
+                        :class:`~otcextensions.sdk.vpc.v2.route.Route`
+                        instance.
+
+        :returns: One :class:`~otcextensions.sdk.vpc.v2.route.Route`
+
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+                 when no resource can be found.
+        """
+        self._override_endpoint()
+        return self._get(_route.Route, route)

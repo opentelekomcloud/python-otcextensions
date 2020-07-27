@@ -11,22 +11,21 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Accept or Reject VPC Peering request
+Add Route to VPC Peering Connection
 """
 import openstack
-
+from otcextensions import sdk
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
+sdk.register_otc_extensions(conn)
 
-peering = conn.vpc.get_peering("peering_id")
+attrs = {
+    "type": "peering",
+    "nexthop": "peering-uuid",
+    "destination": "192.168.100.0/24",
+    "vpc_id": "local-router-uuid"
+}
 
-# accept VPC peering request
-set_status = 'accept'
-peering = conn.vpc.set_peering(peering=peering, set_status=set_status)
-print(peering)
-
-# Reject VPC peering request
-set_status = 'reject'
-peering = conn.vpc.set_peering(peering=peering, set_status=set_status)
-print(peering)
+route = conn.vpc.add_route(**attrs)
+print(route)

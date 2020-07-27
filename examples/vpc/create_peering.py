@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Get VPC Peering by id or peering Instance
+Create VPC Peering Connection
 """
 import openstack
 from otcextensions import sdk

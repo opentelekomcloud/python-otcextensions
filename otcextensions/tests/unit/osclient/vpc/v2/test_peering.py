@@ -28,18 +28,27 @@ class TestListVpcPeerings(fakes.TestVpc):
     column_list_headers = (
         'Id',
         'Name',
-        'Local Vpc Info',
-        'Peer Vpc Info',
-        'Status'
+        'Status',
+        'Local Router Id',
+        'Peer Router Id',
+        'Peer Project Id',
     )
 
-    columns = ('id', 'name', 'local_vpc_info', 'peer_vpc_info', 'status')
+    columns = (
+        'id',
+        'name',
+        'status',
+        'local_router_id',
+        'peer_router_id',
+        'peer_project_id'
+    )
 
     data = []
 
     for s in objects:
         data.append(
-            (s.id, s.name, s.local_vpc_info, s.peer_vpc_info, s.status))
+            (s.id, s.name, s.status, s.local_vpc_info['vpc_id'],
+                s.peer_vpc_info['vpc_id'], s.peer_vpc_info['tenant_id']))
 
     def setUp(self):
         super(TestListVpcPeerings, self).setUp()

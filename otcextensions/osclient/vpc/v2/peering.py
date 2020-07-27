@@ -40,12 +40,12 @@ def _update_vpc_info(vpcinfo):
 
 def set_attributes_for_print(peerings):
     for peering in peerings:
-        setattr(peering,
-                'local_vpc_info',
-                _update_vpc_info(peering.local_vpc_info))
-        setattr(peering,
-                'peer_vpc_info',
-                _update_vpc_info(peering.peer_vpc_info))
+        setattr(peering, 'local_router_id',
+                peering.local_vpc_info['vpc_id'])
+        setattr(peering, 'peer_router_id',
+                peering.peer_vpc_info['vpc_id'])
+        setattr(peering, 'peer_project_id',
+                peering.peer_vpc_info['tenant_id'])
         yield peering
 
 
@@ -78,7 +78,13 @@ def translate_response(func):
 class ListVpcPeerings(command.Lister):
 
     _description = _("List Vpc Peerings.")
-    columns = ('Id', 'Name', 'Local Vpc Info', 'Peer Vpc Info', 'Status')
+    columns = (
+        'Id',
+        'Name',
+        'Status',
+        'Local Router Id',
+        'Peer Router Id',
+        'Peer Project Id')
 
     def get_parser(self, prog_name):
         parser = super(ListVpcPeerings, self).get_parser(prog_name)
