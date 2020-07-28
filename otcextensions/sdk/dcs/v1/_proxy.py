@@ -42,7 +42,7 @@ class Proxy(proxy.Proxy):
     def get_instance(self, instance):
         """Get detail about a given instance
 
-        :param instance: The instance id, name or an instance of
+        :param instance: The instance id or an instance of
             :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
         :returns: one object of class
             :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
@@ -183,7 +183,8 @@ class Proxy(proxy.Proxy):
             _backup.Backup, paginated=False,
             instance_id=inst.id, **query)
 
-    def delete_instance_backup(self, backup, ignore_missing=True, **attrs):
+    def delete_instance_backup(self, instance, backup, ignore_missing=True,
+                               **attrs):
         """Delete an instance backup
 
         :param backup: The instance id, an instance of
@@ -193,7 +194,8 @@ class Proxy(proxy.Proxy):
             raised when the queue does not exist.
         :returns: `None`
         """
-        self._delete(_backup.Backup, backup,
+        inst = self._get_resource(_instance.Instance, instance)
+        self._delete(_backup.Backup, backup, instance_id=inst.id,
                      ignore_missing=ignore_missing,
                      **attrs)
 
@@ -251,7 +253,7 @@ class Proxy(proxy.Proxy):
         :param instance: The value can be the ID of an instance
             or a :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
             instance.
-        :param paramss: List of parameters of
+        :param params: List of parameters of
             a :class:`~otcextensions.sdk.dcs.v1.config.Config`.
         :returns: None
         """

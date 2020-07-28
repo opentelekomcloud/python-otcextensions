@@ -1,6 +1,5 @@
-=============================================
-Cloud Trace Service (CTS) command-line client
-=============================================
+Cloud Trace Service (CTS)
+=========================
 
 The CTS client is the command-line interface (CLI) for
 the Cloud Trace Service (CTS) API and its extensions.

@@ -1,6 +1,5 @@
-================================================
-Cloud Container Engine (CCE) command-line client
-================================================
+Cloud Container Engine (CCE)
+============================
 
 The CCE client is the command-line interface (CLI) for
 the Cloud Container Engine (CCE) API and its extensions for the CCE v2.

@@ -19,6 +19,8 @@ from openstack import utils
 from otcextensions.sdk.compute.v2 import server
 from otcextensions.common import exc
 
+from otcextensions.sdk.cloud import rds as _rds
+
 
 _logger = _log.setup_logging('openstack')
 
@@ -54,7 +56,10 @@ OTC_SERVICES = {
     'cce': {
         'service_type': 'cce',
         'endpoint_service_type': 'ccev2.0',
-        # 'append_project_id': False,
+    },
+    'ces': {
+        'service_type': 'ces',
+        'append_project_id': True,
     },
     'ces': {
         'service_type': 'ces',
@@ -64,20 +69,27 @@ OTC_SERVICES = {
     },
     'cts': {
         'service_type': 'cts',
-        # 'append_project_id': True,
     },
     'css': {
         'service_type': 'css',
-        # 'append_project_id': True,
+    },
+    'dcaas': {
+        'service_type': 'dcaas',
     },
     'dcs': {
         'service_type': 'dcs',
-        # 'endpoint_service_type': 'dms',
         'append_project_id': True,
+    },
+    'dds': {
+        'service_type': 'dds',
     },
     'deh': {
         'service_type': 'deh',
         'append_project_id': True,
+    },
+    'dis': {
+        'service_type': 'dis',
+        'endpoint_service_type': 'disv2'
     },
     'dms': {
         'service_type': 'dms',
@@ -88,6 +100,10 @@ OTC_SERVICES = {
         'service_type': 'dns',
         'replace_system': True,
     },
+    'dws': {
+        'service_type': 'dws',
+        'endpoint_service_type': 'dwsv1'
+    },
     'ecs': {
         'service_type': 'ecs',
     },
@@ -95,8 +111,18 @@ OTC_SERVICES = {
         'service_type': 'kms',
         'append_project_id': True,
     },
+    'lts': {
+        'service_type': 'lts'
+    },
+    'maas': {
+        'service_type': 'maas',
+        'append_project_id': True,
+    },
+    'mrs': {
+        'service_type': 'mrs'
+    },
     'nat': {
-        'service_type': 'nat'
+        'service_type': 'nat',
     },
     'obs': {
         'service_type': 'obs',
@@ -104,17 +130,30 @@ OTC_SERVICES = {
         'endpoint_service_type': 'object',
         'set_endpoint_override': True
     },
+    'plas': {
+        'service_type': 'plas'
+    },
     'rds': {
         'service_type': 'rds',
-        # 'additional_headers': {'content-type': 'application/json'},
         'endpoint_service_type': 'rdsv3',
-        'append_project_id': True,
+        'append_project_id': True
+    },
+    'sdrs': {
+        'service_type': 'sdrs'
+    },
+    'smn': {
+        'service_type': 'smn',
+        'append_project_id': True
     },
     'volume_backup': {
         'service_type': 'volume_backup',
         'append_project_id': True,
         'endpoint_service_type': 'vbs',
     },
+    'waf': {
+        'service_type': 'waf',
+        'append_project_id': True,
+    }
 }
 
 
@@ -211,6 +250,13 @@ def get_ak_sk(conn):
         return(ak, sk)
 
 
+def extend_instance(obj, cls):
+    """Apply mixins to a class instance after creation"""
+    base_cls = obj.__class__
+    base_cls_name = obj.__class__.__name__
+    obj.__class__ = type(base_cls_name, (base_cls, cls), {})
+
+
 def patch_openstack_resources():
     openstack.compute.v2.server.Server._get_tag_struct = \
         server.Server._get_tag_struct
@@ -277,6 +323,8 @@ def load(conn, **kwargs):
         setattr(conn, 'get_ak_sk', get_ak_sk)
 
     patch_openstack_resources()
+
+    extend_instance(conn, _rds.RdsMixin)
 
     return None
 

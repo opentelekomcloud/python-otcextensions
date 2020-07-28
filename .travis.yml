@@ -3,10 +3,10 @@ language: python
 cache: pip
 matrix:
   include:
-  - python: 2.7
-    env: TOXENV=py27
   - python: 3.6
     env: TOXENV=py36
+  - python: 3.7
+    env: TOXENV=py37
   - python: 3.6
     env: TOXENV=pep8
 install: pip install tox
@@ -19,5 +19,5 @@ deploy:
   on:
     tags: true
     distributions: sdist bdist_wheel
-    repo: OpenTelekomCloud/python-otcextensions
+    repo: opentelekomcloud/python-otcextensions
     condition: "$TOXENV = py36"

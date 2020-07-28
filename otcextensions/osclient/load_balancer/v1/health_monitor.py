@@ -36,7 +36,7 @@ def _get_columns(item):
 
 HTTP_METHODS = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE',
                 'TRACE', 'OPTIONS', 'CONNECT', 'PATCH']
-TYPE_VALUES = ['HTTP', 'HTTPS', 'PING', 'TCP', 'TLS-HELLO']
+TYPE_VALUES = ['HTTP', 'HTTPS', 'PING', 'TCP', 'TLS-HELLO', 'UDP_CONNECT']
 
 
 class ListHealthMonitor(command.Lister):
@@ -53,7 +53,8 @@ class ListHealthMonitor(command.Lister):
             type=lambda s: s.upper(),
             choices=TYPE_VALUES,
             help=_('Health monitor type to use as a filter\n'
-                   'one of [`HTTP`, `HTTPS`, `PING`, `TCP`, `TLS-HELLO`]')
+                   'one of [`HTTP`, `HTTPS`, `PING`, `TCP`, `TLS-HELLO`, '
+                   '`UDP_CONNECT`]')
         )
 
         return parser
@@ -184,7 +185,8 @@ class CreateHealthMonitor(command.ShowOne):
             type=lambda s: s.upper(),  # case insensitive
             required=True,
             help=_('The type of health monitor.\n'
-                   'one of [`HTTP`, `HTTPS`, `PING`, `TCP`, `TLS-HELLO`]')
+                   'one of [`HTTP`, `HTTPS`, `PING`, `TCP`, `TLS-HELLO`, '
+                   '`UDP_CONNECT`]')
         )
         admin_group = parser.add_mutually_exclusive_group()
         admin_group.add_argument(

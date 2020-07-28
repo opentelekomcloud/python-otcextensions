@@ -1,6 +1,5 @@
-================================================
-Dedicated Host Service (DeH) command-line client
-================================================
+Dedicated Host Service (DeH)
+============================
 
 The DeH client is the command-line interface (CLI) for
 the Dedicated Host Service (DeH) API and its extensions.

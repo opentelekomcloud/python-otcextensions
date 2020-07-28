@@ -1,5 +1,3 @@
-#   Copyright 2013 Nebula Inc.
-#
 #   Licensed under the Apache License, Version 2.0 (the "License"); you may
 #   not use this file except in compliance with the License. You may obtain
 #   a copy of the License at
@@ -46,7 +44,7 @@ class FakeTrace(test_base.Fake):
             'name': uuid.uuid4().hex,
             'level': uuid.uuid4().hex,
             'type': uuid.uuid4().hex,
-            'time': time.clock() * 1000,
+            'time': time.time() * 1000,
             'user': uuid.uuid4().hex,
             'code': random.randint(1, 600),
             'service_type': uuid.uuid4().hex,
@@ -54,7 +52,7 @@ class FakeTrace(test_base.Fake):
             'resource_name': uuid.uuid4().hex,
             'resource_id': uuid.uuid4().hex,
             'source_ip': uuid.uuid4().hex,
-            'record_time': time.clock() * 1000,
+            'record_time': time.time() * 1000,
             'request': uuid.uuid4().hex,
             'response': uuid.uuid4().hex,
         }

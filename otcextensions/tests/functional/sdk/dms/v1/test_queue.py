@@ -21,24 +21,23 @@ class TestQueue(base.BaseFunctionalTest):
     QUEUE_ALIAS = 'sdk_test_queue'
     queues = []
 
-    @classmethod
-    def setUpClass(cls):
-        super(TestQueue, cls).setUpClass()
+    def setUp(self):
+        super(TestQueue, self).setUp()
         try:
-            cls.queue = cls.conn.dms.create_queue(
+            self.queue = self.conn.dms.create_queue(
                 name=TestQueue.QUEUE_ALIAS
             )
         except exceptions.DuplicateResource:
-            cls.queue = cls.conn.dms.find_queue(alias=TestQueue.QUEUE_ALIAS)
+            self.queue = self.conn.dms.find_queue(alias=TestQueue.QUEUE_ALIAS)
 
-        cls.queues.append(cls.queue)
+        self.queues.append(self.queue)
 
-    @classmethod
-    def tearDownClass(cls):
+    def tearDown(self):
+        super(TestQueue, self).tearDown()
         try:
-            for queue in cls.queues:
+            for queue in self.queues:
                 if queue.id:
-                    cls.conn.dms.delete_queue(queue)
+                    self.conn.dms.delete_queue(queue)
         except exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)

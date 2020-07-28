@@ -20,8 +20,14 @@ from sphinx.util import logging
 LOG = logging.getLogger(__name__)
 
 # NOTE: We do this because I can't find any way to pass "-v"
-# into sphinx-build through pbr...
-DEBUG = True if os.getenv("ENFORCER_DEBUG") else False
+# into sphinx-build through pbr ...
+
+if os.getenv("ENFORCER_DEBUG"):
+    DEBUG = True
+    LOG.info("ENFORCER: Debugging is on.")
+else:
+    DEBUG = False
+
 
 WRITTEN_METHODS = set()
 
@@ -116,7 +122,8 @@ def build_finished(app, exception):
     # We also need to deal with Proxy subclassing keystoneauth.adapter.Adapter
     # now - some of the warnings come from Adapter elements.
     for name in sorted(missing):
-        LOG.info("ENFORCER: %s was not included in the output" % name)
+        if DEBUG:
+            LOG.info("ENFORCER: %s was not included in the output" % name)
 
     if app.config.enforcer_warnings_as_errors and missing_count > 0:
         raise EnforcementError(

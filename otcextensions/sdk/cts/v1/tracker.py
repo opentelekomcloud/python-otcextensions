@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
+from openstack import exceptions
 
 from otcextensions.common import exc
 
@@ -68,6 +69,14 @@ class Tracker(resource.Resource):
     detail = resource.Body('detail')
     #: SMN
     smn = resource.Body('smn', type=Smn)
+
+    def _delete_tracker(self, session, tracker):
+        """Delete Tracker
+        """
+        url = self.base_path + '?tracker_name={}'.format(tracker)
+        response = session.delete(url)
+        exceptions.raise_from_response(response)
+        return None
 
     def _translate_response(self, response, has_body=None, error_message=None):
         """Given a KSA response, inflate this instance with its data

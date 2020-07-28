@@ -6,12 +6,12 @@
 *.swo
 *.swp
 *~
+otcextensions-*/
 .coverage
 .idea
 .stestr/
 .testrepository
 .tox
-AUTHORS
 build
 ChangeLog
 dist

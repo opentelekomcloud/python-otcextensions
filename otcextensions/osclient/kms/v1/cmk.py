@@ -235,7 +235,6 @@ class CreateCMK(command.ShowOne):
     columns = ['ID', 'key_alias', 'domain_id', 'realm',
                'key_description', 'creation_date', 'scheduled_deletion_date',
                'key_state', 'key_type']
-#
     POLICY_TYPES = ['ALARM', 'SCHEDULED', 'RECURRENCE']
 
     def get_parser(self, prog_name):

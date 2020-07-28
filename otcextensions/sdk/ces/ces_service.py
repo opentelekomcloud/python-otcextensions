@@ -15,7 +15,7 @@ from otcextensions.sdk.ces.v1 import _proxy
 
 
 class CesService(service_description.ServiceDescription):
-    """The Cloud Eye service."""
+    """The CES service."""
 
     supported_versions = {
         '1': _proxy.Proxy
