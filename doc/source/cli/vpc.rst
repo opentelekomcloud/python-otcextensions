@@ -1,5 +1,5 @@
-Network Address Translation (NAT)
-=================================
+Virtual Private Cloud (VPC)
+===========================
 
 The VPC client is the command-line interface (CLI) for
 the Virtual Private Cloud (VPC) API and its extensions.

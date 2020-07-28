@@ -1,4 +1,4 @@
-NAT Resources
+VPC Resources
 =============
 
 .. toctree::

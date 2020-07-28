@@ -1,4 +1,4 @@
-NAT API
+VPC API
 =======
 
 .. automodule:: otcextensions.sdk.vpc.v2._proxy
