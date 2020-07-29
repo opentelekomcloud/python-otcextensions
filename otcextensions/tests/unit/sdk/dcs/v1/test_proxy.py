@@ -80,14 +80,6 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
             'VALUE',
             a='b'
         )
-        self.sot.update.assert_called_with(
-            self.proxy,
-            has_body=False
-        )
-        self.proxy._get.assert_called_with(
-            _instance.Instance,
-            self.sot
-        )
 
     def test_extend_instance(self):
         self.sot = _instance.Instance()

@@ -72,14 +72,10 @@ class Proxy(proxy.Proxy):
         :returns: The updated instance
         :rtype: :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
         """
-        res = self._get_resource(_instance.Instance, instance, **attrs)
-        res = res.update(
-            self,
-            has_body=False
-        )
-        # NOTE: unfortunately we need to refetch object, since update
-        # does not return it
-        return self._get(_instance.Instance, res)
+        # Update method does not return the instance object which needs to be
+        # fetched additionally in return statement.
+        self._update(_instance.Instance, instance, **attrs)
+        return self._get(_instance.Instance, instance)
 
     def delete_instance(self, instance, ignore_missing=True):
         """Delete an instance
