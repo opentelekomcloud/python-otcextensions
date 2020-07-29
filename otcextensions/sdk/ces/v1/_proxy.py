@@ -23,13 +23,13 @@ class Proxy(proxy.Proxy):
     skip_discovery = True
 
     # ======== Alarms ========
-    def alarms(self):
+    def alarms(self, **query):
         """Return a generator of alarms
 
         :returns: A generator of alarm objects
         :rtype: :class:`~otcextensions.sdk.ces.v1.alarm.Alarm`
         """
-        return self._list(_alarm.Alarm)
+        return self._list(_alarm.Alarm, **query)
 
     def get_alarm(self, alarm):
         """Return a single alarm
