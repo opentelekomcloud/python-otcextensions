@@ -46,6 +46,14 @@ def _flatten_output(obj):
     }
     return data
 
+def _get_columns(item):
+    column_map = {
+    }
+    inv_columns = ['']
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
+                                                           inv_columns)
+
+# TODO: Implement query arguments -> SDK not working
 class ListAlarms(command.Lister):
     _description = _('List CES alarms')
     columns = (
@@ -76,7 +84,7 @@ class ListAlarms(command.Lister):
 
 
 class ShowAlarm(command.ShowOne):
-    _description = _('Show the alarm details')
+    _description = _('Show CloudEye alarm rule details')
 
     def get_parser(self, prog_name):
         parser = super(ShowAlarm, self).get_parser(prog_name)
@@ -84,9 +92,8 @@ class ShowAlarm(command.ShowOne):
         parser.add_argument(
             'alarm',
             metavar='<alarm>',
-            help=_('UUID or name of the alarm.')
+            help=_('UUID or name of the alarm rule.')
         )
-
         return parser
 
     def take_action(self, parsed_args):
@@ -131,7 +138,7 @@ class SetAlarm(command.ShowOne):
     _description = _('Change alarm_status_enabled to the opposite value of true / false.')
 
     def get_parser(self, prog_name):
-        parser = super(ShowAlarm, self).get_parser(prog_name)
+        parser = super(SetAlarm, self).get_parser(prog_name)
 
         parser.add_argument(
             'alarm',
@@ -148,13 +155,18 @@ class SetAlarm(command.ShowOne):
         alarm = client.find_alarm(parsed_args.alarm, ignore_missing=False)
 
         if alarm:
-            obj = client.update_alarm_enabled(
+            client.update_alarm_enabled(
                 alarm=alarm
             )
-
+            
+            # instance of alarm needs to be found again due to missing
+            # return body of alarm rule update function
+            obj = client.find_alarm(
+                parsed_args.alarm,
+                ignore_missing=False
+            )
             display_columns, columns = _get_columns(obj)
             data = utils.get_item_properties(obj, columns)
-
             return (display_columns, data)
 
 
@@ -315,12 +327,12 @@ class CreateAlarm(command.ShowOne):
         if parsed_args.description:
             attrs['description'] = parsed_args.description
         if parsed_args.type:
-            attrs['zone_type'] = parsed_args.type
+            attrs['alarm_type'] = parsed_args.type
         if parsed_args.ttl:
             attrs['ttl'] = parsed_args.ttl
         if parsed_args.type and parsed_args.type == 'private':
             if not parsed_args.router_id:
-                msg = _('router_id is required for a private zone')
+                msg = _('router_id is required for a private alarm')
                 raise argparse.ArgumentTypeError(msg)
             router = {
                 'router_id': parsed_args.router_id
@@ -329,7 +341,7 @@ class CreateAlarm(command.ShowOne):
                 router['router_region'] = parsed_args.router_region
             attrs['router'] = router
 
-        obj = client.create_zone(
+        obj = client.create_alarm(
             **attrs
         )
 
