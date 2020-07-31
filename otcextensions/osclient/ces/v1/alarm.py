@@ -11,7 +11,6 @@
 #   under the License.
 #
 '''CES Alarm v1 action implementations'''
-import argparse
 import logging
 
 from osc_lib import utils
@@ -22,6 +21,7 @@ from otcextensions.common import sdk_utils
 
 LOG = logging.getLogger(__name__)
 
+
 def _translate_alarm_level(level):
     case = {
         1: '1: Critical',
@@ -30,6 +30,7 @@ def _translate_alarm_level(level):
         4: '4: Informational'
     }
     return case.get(level)
+
 
 def _flatten_output(obj):
     data = {
@@ -46,6 +47,7 @@ def _flatten_output(obj):
     }
     return data
 
+
 def _get_columns(item):
     column_map = {
     }
@@ -53,7 +55,8 @@ def _get_columns(item):
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
                                                            inv_columns)
 
-# TODO: Implement query arguments -> SDK not working
+
+# TODO(undefined): Implement query arguments -> SDK not working
 class ListAlarms(command.Lister):
     _description = _('List CES alarms')
     columns = (
@@ -68,7 +71,7 @@ class ListAlarms(command.Lister):
     )
 
     def get_parser(self, prog_name):
-        parser = super(ListAlarms, self).get_parser(prog_name)      
+        parser = super(ListAlarms, self).get_parser(prog_name)
         return parser
 
     def take_action(self, parsed_args):
@@ -135,7 +138,7 @@ class DeleteAlarm(command.Command):
 
 
 class SetAlarm(command.ShowOne):
-    _description = _('Change alarm_status_enabled to the opposite value of true / false.')
+    _description = _('Switch Alarm status.')
 
     def get_parser(self, prog_name):
         parser = super(SetAlarm, self).get_parser(prog_name)
@@ -158,7 +161,7 @@ class SetAlarm(command.ShowOne):
             client.update_alarm_enabled(
                 alarm=alarm
             )
-            
+
             # instance of alarm needs to be found again due to missing
             # return body of alarm rule update function
             obj = client.find_alarm(
@@ -171,7 +174,7 @@ class SetAlarm(command.ShowOne):
 
 
 class CreateAlarm(command.ShowOne):
-    _description  = _('Create Alarm')
+    _description = _('Create CloudEye alarm rule')
 
     def get_parser(self, prog_name):
         parser = super(CreateAlarm, self).get_parser(prog_name)
@@ -184,7 +187,6 @@ class CreateAlarm(command.ShowOne):
         parser.add_argument(
             '--enabled',
             metavar='<enabled>',
-            default=True,
             help=_('State of the alarm.\n'
                    'True: enable alarm (default)\n'
                    'False: disable alarm\n')
@@ -196,7 +198,7 @@ class CreateAlarm(command.ShowOne):
         )
         parser.add_argument(
             '--action-enabled',
-            default=True,
+            default=False,
             required=True,
             help=_('Specifies whether the alarm action is triggered')
         )
@@ -210,6 +212,7 @@ class CreateAlarm(command.ShowOne):
                    '3: minor\n'
                    '4: informational')
         )
+
         # AlarmActions
         parser.add_argument(
             '--alarm-action-type',
@@ -229,6 +232,7 @@ class CreateAlarm(command.ShowOne):
                    'The parameter can be given multiple times to\n'
                    'notify multiple targets')
         )
+
         # OkActions
         parser.add_argument(
             '--ok-action-type',
@@ -248,10 +252,12 @@ class CreateAlarm(command.ShowOne):
                    'The parameter can be given multiple times to\n'
                    'notify multiple targets')
         )
+
         # ConditionSpec
         parser.add_argument(
             '--comparison-operator',
             metavar='<comparison_operator>',
+            required=True,
             help=_('Specifies the conditions comparison operator\n'
                    'Values: >, =, <, ≥, or ≤')
         )
@@ -259,6 +265,7 @@ class CreateAlarm(command.ShowOne):
             '--count',
             metavar='<count>',
             type=int,
+            required=True,
             help=_('Specifies how many times the alarm condition has to\n'
                    'triggered until Alarm raises\n'
                    'Value range: 1 to 5')
@@ -266,12 +273,14 @@ class CreateAlarm(command.ShowOne):
         parser.add_argument(
             '--filter',
             metavar='<filter>',
+            required=True,
             help=_('Specifies the data rollup method.\n'
                    'Values: max, min, average, sum, variance')
         )
         parser.add_argument(
             '--period',
             metavar='<period>',
+            required=True,
             help=_('Indicates the interval (in seconds) for checking\n'
                    'whether the configured alarm rules are met')
         )
@@ -279,25 +288,16 @@ class CreateAlarm(command.ShowOne):
             '--unit',
             metavar='<unit>',
             help=_('Specifies data unit\n'
-                   'Values: B/s')
+                   'Values: B/s, %')
         )
         parser.add_argument(
             '--value',
             metavar='<value>',
+            required=True,
             help=_('Specifies the alarm threshold\n'
                    'Values: 0 to max(int)')
         )
-        # MetricSpec
-        parser.add_argument(
-            '--metric-name',
-            metavar='<metric_name>',
-            help=_('Specifies the metric name')
-        )
-        parser.add_argument(
-            '--namespace',
-            metavar='<namespace>',
-            help=_('Specifies the namespace of the metric such as SYS.ECS')
-        )
+
         # DimensionsSpec for Metrics
         # This is a list of dictionaries
         # IMPROVEMENT NEEDED
@@ -305,41 +305,90 @@ class CreateAlarm(command.ShowOne):
             '--dimension-name',
             action='append',
             metavar='<dimension_name>',
+            required=True,
             help=_('dimension.name: object type e.g. ECS')
         )
         parser.add_argument(
             '--dimension-value',
             action='append',
+            required=True,
             metavar='<dimension_value>',
             help=_('dimension.value: object id e.g. ECS ID')
         )
-    
+
+        # MetricSpec
+        parser.add_argument(
+            '--metric-name',
+            metavar='<metric_name>',
+            required=True,
+            help=_('Specifies the metric name')
+        )
+        parser.add_argument(
+            '--namespace',
+            metavar='<namespace>',
+            required=True,
+            help=_('Specifies the namespace of the metric such as SYS.ECS')
+        )
+
     def take_action(self, parsed_args):
 
         client = self.app.client_manager.ces
 
         attrs = {}
 
-        if parsed_args.name:
-            attrs['name'] = parsed_args.name
-        if parsed_args.email:
-            attrs['email'] = parsed_args.email
+        attrs['name'] = parsed_args.name
+        if parsed_args.enabled:
+            attrs['alarm_enabled'] = parsed_args.enabled
         if parsed_args.description:
-            attrs['description'] = parsed_args.description
-        if parsed_args.type:
-            attrs['alarm_type'] = parsed_args.type
-        if parsed_args.ttl:
-            attrs['ttl'] = parsed_args.ttl
-        if parsed_args.type and parsed_args.type == 'private':
-            if not parsed_args.router_id:
-                msg = _('router_id is required for a private alarm')
-                raise argparse.ArgumentTypeError(msg)
-            router = {
-                'router_id': parsed_args.router_id
+            attrs['alarm_description'] = parsed_args.description
+        attrs['alarm_action_enabled'] = parsed_args.action_enabled
+        if parsed_args.level:
+            attrs['alarm_level'] = parsed_args.level
+
+        if parsed_args.action_enabled is True:
+            if (parsed_args.ok_action_type
+                    and parsed_args.ok_action_notification_list):
+
+                nl = parsed_args.ok_action_notification_list
+                ok_actions = {
+                    'type': parsed_args.ok_action_type,
+                    'notificationList': nl
+                }
+                attrs['ok_actions'] = ok_actions
+
+            if (parsed_args.alarm_action_type
+                    and parsed_args.alarm_action_notification_list):
+
+                nl = parsed_args.alarm_action_notification_list
+                alarm_actions = {
+                    'type': parsed_args.alarm_action_type,
+                    'notificationList': nl
+                }
+                attrs['alarm_actions'] = alarm_actions
+
+        condition = {
+            'comparison_operatur': parsed_args.comparison_operator,
+            'count': parsed_args.count,
+            'filter': parsed_args.filter,
+            'period': parsed_args.period,
+            'value': parsed_args.value
+        }
+        if parsed_args.unit:
+            condition = {
+                'unit': parsed_args.unit
             }
-            if parsed_args.router_region:
-                router['router_region'] = parsed_args.router_region
-            attrs['router'] = router
+        attrs['condition'] = condition
+
+        dimensions = {
+            'name': parsed_args.dimension_name,
+            'value': parsed_args.dimension_value
+        }
+        metric = {
+            'dimensions': dimensions,
+            'metric_name': parsed_args.metric_name,
+            'namespace': parsed_args.namespace
+        }
+        attrs['metric'] = metric
 
         obj = client.create_alarm(
             **attrs

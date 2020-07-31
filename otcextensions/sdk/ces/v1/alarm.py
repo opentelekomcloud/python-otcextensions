@@ -24,7 +24,18 @@ from openstack import utils
 # Number of total queried results / alarms
 # total = resource.Body('total')
 
-class ActionsSpec(resource.Resource):
+
+class AlarmActionsSpec(resource.Resource):
+
+    # Properties
+    # notification list ID
+    notificationList = resource.Body('notificationList')
+    # Indicates the type of action triggered by an alarm.
+    # Value can be notication or autoscaling
+    type = resource.Body('type')
+
+
+class OkActionsSpec(resource.Resource):
 
     # Properties
     # notification list ID
@@ -94,7 +105,7 @@ class Alarm(resource.Resource):
 
     # Properties
     # Specifies the action triggered by an alarm.
-    alarm_actions = resource.Body('alarm_actions', type=ActionsSpec)
+    alarm_actions = resource.Body('alarm_actions', type=AlarmActionsSpec)
     # Indicates whether an action will be triggered by an alarm
     # True: action will be triggered
     # False: action will not be triggered
@@ -116,7 +127,7 @@ class Alarm(resource.Resource):
     # Name of the alarm
     name = resource.Body('alarm_name')
     # Indicates the action triggered by clearing an alarm
-    ok_actions = resource.Body('ok_actions', type=ActionsSpec)
+    ok_actions = resource.Body('ok_actions', type=OkActionsSpec)
     # Describes alarm triggering condititon
     condition = resource.Body('condition', type=ConditionSpec)
     # Specification of specific alarm
