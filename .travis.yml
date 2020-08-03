@@ -11,13 +11,13 @@ matrix:
     env: TOXENV=pep8
 install: pip install tox
 script: tox
-deploy:
-  provider: pypi
-  user: __token__
-  password:
-    secure: c/0z6avOAPLHWs0LBX9HJCfHexlHe/LDQU6ZQ4NBf9YpLLZON5CSchxU1LiLJMAB98NOpK48wewiC5jlWm8zXIV7t1wnOtKkR4X+HfRO4Lgii8ARlhTPyzF5I3fmgMa/WKyThZeiBl6xPA6G/slLGVDeCczUasUEZWS/jUAVEg0Ht81fDyu1SauRxyj5fXYbpjFFQ+jYyyHTm7FiroG0ylt0XOztpvd/5z7IvRvQ7f+OKg9BES+HHDbOmulY6wSnQrG5o+s3DPOkixiC0Hyh+bFuPfTidUDavKlkQFc4rv87WM+CnBGLoYztx31RFf4azv1SOn6yxsBfxA3zB82cjsWOQh7AWHLfQ19J2aZy5kysaBXnMs7FEo+8g1CdiUApLOqQ7b27B//ZifoKT7aRlwjkcX9g6lajy48MoQWy04xFV0z0/S2yxUrTGr4PcZucLO21YkcGP6Q/Pc4A/4qhz/p1Z1IrDVE8utvrD5jNraLtQzcRvbIqNKNOzpdSkiqsCjf+fzOH4bL0ej33BsVNWHSMn8ZK49d8ykhAsDNoLc7zXo4rJ0+49rRtAd5iDAZDOqBLexDG9x5EM6OMnSApv4km2Pk5Pt1PGFfMiTIuIiBtm8Xz0X7Aa98xiSlJ16IisA1PsXEVvh/QlPiGg1A0CTzzjMIjlpg5EJm55MFEcKc=
-  on:
-    tags: true
-    distributions: sdist bdist_wheel
-    repo: opentelekomcloud/python-otcextensions
-    condition: "$TOXENV = py36"
+# deploy:
+#   provider: pypi
+#   user: __token__
+#   password:
+#     secure: c/0z6avOAPLHWs0LBX9HJCfHexlHe/LDQU6ZQ4NBf9YpLLZON5CSchxU1LiLJMAB98NOpK48wewiC5jlWm8zXIV7t1wnOtKkR4X+HfRO4Lgii8ARlhTPyzF5I3fmgMa/WKyThZeiBl6xPA6G/slLGVDeCczUasUEZWS/jUAVEg0Ht81fDyu1SauRxyj5fXYbpjFFQ+jYyyHTm7FiroG0ylt0XOztpvd/5z7IvRvQ7f+OKg9BES+HHDbOmulY6wSnQrG5o+s3DPOkixiC0Hyh+bFuPfTidUDavKlkQFc4rv87WM+CnBGLoYztx31RFf4azv1SOn6yxsBfxA3zB82cjsWOQh7AWHLfQ19J2aZy5kysaBXnMs7FEo+8g1CdiUApLOqQ7b27B//ZifoKT7aRlwjkcX9g6lajy48MoQWy04xFV0z0/S2yxUrTGr4PcZucLO21YkcGP6Q/Pc4A/4qhz/p1Z1IrDVE8utvrD5jNraLtQzcRvbIqNKNOzpdSkiqsCjf+fzOH4bL0ej33BsVNWHSMn8ZK49d8ykhAsDNoLc7zXo4rJ0+49rRtAd5iDAZDOqBLexDG9x5EM6OMnSApv4km2Pk5Pt1PGFfMiTIuIiBtm8Xz0X7Aa98xiSlJ16IisA1PsXEVvh/QlPiGg1A0CTzzjMIjlpg5EJm55MFEcKc=
+#   on:
+#     tags: true
+#     distributions: sdist bdist_wheel
+#     repo: opentelekomcloud/python-otcextensions
+#     condition: "$TOXENV = py36"
