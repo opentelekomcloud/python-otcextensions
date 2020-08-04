@@ -57,7 +57,7 @@ class TestCesAlarm(TestCesProxy):
     def test_update_alarm_enabled(self):
         self._verify(
             'otcextensions.sdk.ces.v1.alarm.Alarm.change_alarm_status',
-            self.proxy.update_alarm_enabled,
+            self.proxy.switch_alarm_state,
             method_args=["alarm"],
             expected_args=[]
         )

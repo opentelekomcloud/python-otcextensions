@@ -81,7 +81,7 @@ class Proxy(proxy.Proxy):
         return self._find(_alarm.Alarm, name_or_id,
                           ignore_missing=ignore_missing)
 
-    def update_alarm_enabled(self, alarm):
+    def switch_alarm_state(self, alarm):
         """Enables or disables Alarm
 
         :param alarm: The value can be the ID of an alarm

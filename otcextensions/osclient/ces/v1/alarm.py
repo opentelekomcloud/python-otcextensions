@@ -158,7 +158,7 @@ class SetAlarm(command.ShowOne):
         alarm = client.find_alarm(parsed_args.alarm, ignore_missing=False)
 
         if alarm:
-            client.update_alarm_enabled(
+            client.switch_alarm_state(
                 alarm=alarm
             )
 
@@ -187,9 +187,9 @@ class CreateAlarm(command.ShowOne):
         parser.add_argument(
             '--enabled',
             metavar='<enabled>',
-            help=_('State of the alarm.'
-                   'True: enable alarm (default)'
-                   'False: disable alarm')
+            help=_('State of the alarm.\n'
+                   'True: enable alarm (default)\n'
+                   'False: disable alarm\n')
         )
         parser.add_argument(
             '--description',
@@ -206,10 +206,10 @@ class CreateAlarm(command.ShowOne):
             '--level',
             metavar='<level>',
             type=int,
-            help=_('Indicates the alarm level'
-                   '1: critical'
-                   '2: major'
-                   '3: minor'
+            help=_('Indicates the alarm level\n'
+                   '1: critical\n'
+                   '2: major\n'
+                   '3: minor\n'
                    '4: informational')
         )
 
@@ -217,40 +217,40 @@ class CreateAlarm(command.ShowOne):
         parser.add_argument(
             '--alarm-action-type',
             metavar='<alarm_action_type>',
-            help=_('Specifies the alarms action type'
-                   'notification: notification will be sent to user'
+            help=_('Specifies the alarms action type.\n'
+                   'notification: notification will be sent to user\n'
                    'autoscaling: scaling action will be triggered')
         )
         parser.add_argument(
             '--alarm-action-notification-list',
             metavar='<alarm_action_notification_list>',
             action='append',
-            help=_('Specifies the list of objects being notified when'
-                   'alarm status changes.'
-                   'URN example structure:'
-                   'urn:smn:region:68438a86d98e427e907e0097b7e35d48:sd'
-                   'The parameter can be given multiple times to'
-                   'notify multiple targets')
+            help=_('Specifies the list of objects being notified when '
+                   'alarm status changes.\n'
+                   'URN example structure:\n'
+                   'urn:smn:region:68438a86d98e427e907e0097b7e35d48:sd\n'
+                   'The parameter can be given multiple times to '
+                   'notify multiple targets.')
         )
 
         # OkActions
         parser.add_argument(
             '--ok-action-type',
             metavar='<ok_action_type>',
-            help=_('Specifies the alarms action type'
-                   'notification: notification will be sent to user'
+            help=_('Specifies the alarms action type.\n'
+                   'notification: notification will be sent to user\n'
                    'autoscaling: scaling action will be triggered')
         )
         parser.add_argument(
             '--ok-action-notification-list',
             metavar='<ok_action_notification_list>',
             action='append',
-            help=_('Specifies the list of objects being notified when'
-                   'alarm status changes.'
-                   'URN example structure:'
-                   'urn:smn:region:68438a86d98e427e907e0097b7e35d48:sd'
-                   'The parameter can be given multiple times to'
-                   'notify multiple targets')
+            help=_('Specifies the list of objects being notified when '
+                   'alarm status changes.\n'
+                   'URN example structure:\n'
+                   'urn:smn:region:68438a86d98e427e907e0097b7e35d48:sd\n'
+                   'The parameter can be given multiple times to '
+                   'notify multiple targets.')
         )
 
         # ConditionSpec
@@ -258,43 +258,41 @@ class CreateAlarm(command.ShowOne):
             '--comparison-operator',
             metavar='<comparison_operator>',
             required=True,
-            help=_('Specifies the conditions comparison operator'
-                   'Values: >, =, <, ≥, or ≤')
+            help=_('Specifies the conditions comparison operator')
         )
         parser.add_argument(
             '--count',
             metavar='<count>',
             type=int,
             required=True,
-            help=_('Specifies how many times the alarm condition has to'
-                   'triggered until Alarm raises'
+            help=_('Specifies how many times the alarm condition has to '
+                   'triggered until Alarm raises.\n'
                    'Value range: 1 to 5')
         )
         parser.add_argument(
             '--filter',
             metavar='<filter>',
             required=True,
-            help=_('Specifies the data rollup method.'
+            help=_('Specifies the data rollup method.\n'
                    'Values: max, min, average, sum, variance')
         )
         parser.add_argument(
             '--period',
             metavar='<period>',
             required=True,
-            help=_('Indicates the interval (in seconds) for checking'
-                   'whether the configured alarm rules are met')
+            help=_('Indicates the interval (in seconds) for checking '
+                   'whether the configured alarm rules are met.')
         )
         parser.add_argument(
             '--unit',
             metavar='<unit>',
-            help=_('Specifies data unit'
-                   'Values: B/s, %')
+            help=_('Specifies data unit.')
         )
         parser.add_argument(
             '--value',
             metavar='<value>',
             required=True,
-            help=_('Specifies the alarm threshold'
+            help=_('Specifies the alarm threshold.\n'
                    'Values: 0 to max(int)')
         )
 
@@ -327,7 +325,8 @@ class CreateAlarm(command.ShowOne):
             '--namespace',
             metavar='<namespace>',
             required=True,
-            help=_('Specifies the namespace of the metric such as SYS.ECS')
+            help=_('Specifies the namespace of the metric such as:\n'
+                   'SYS.ECS, SYS.AS')
         )
 
         return parser
