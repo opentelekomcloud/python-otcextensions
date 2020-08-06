@@ -19,5 +19,5 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-for alarm in conn.ces.alarms(limit=1):
+for alarm in conn.ces.alarms():
     print(alarm)

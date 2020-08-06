@@ -63,7 +63,7 @@ class ConditionSpec(resource.Resource):
     # Data unit
     unit = resource.Body('unit')
     # Alarm threshold
-    value = resource.Body('value')
+    value = resource.Body('value', type=int)
 
 
 class DimensionsSpec(resource.Resource):
@@ -79,8 +79,7 @@ class MetricSpec(resource.Resource):
 
     # Properties
     # List of metric dimensions
-    dimensions = resource.Body('dimensions', type=list,
-                               list_type=DimensionsSpec)
+    dimensions = resource.Body('dimensions', type=DimensionsSpec)
     # Specifies the metric name
     metric_name = resource.Body('metric_name')
     # Metric Namespace

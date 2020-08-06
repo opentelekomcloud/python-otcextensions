@@ -187,6 +187,8 @@ class CreateAlarm(command.ShowOne):
         parser.add_argument(
             '--enabled',
             metavar='<enabled>',
+            default=True,
+            type=bool,
             help=_('State of the alarm.\n'
                    'True: enable alarm (default)\n'
                    'False: disable alarm\n')
@@ -199,6 +201,7 @@ class CreateAlarm(command.ShowOne):
         parser.add_argument(
             '--action-enabled',
             default=False,
+            type=bool,
             required=True,
             help=_('Specifies whether the alarm action is triggered')
         )
@@ -279,6 +282,7 @@ class CreateAlarm(command.ShowOne):
         parser.add_argument(
             '--period',
             metavar='<period>',
+            type=int,
             required=True,
             help=_('Indicates the interval (in seconds) for checking '
                    'whether the configured alarm rules are met.')
@@ -291,6 +295,7 @@ class CreateAlarm(command.ShowOne):
         parser.add_argument(
             '--value',
             metavar='<value>',
+            type=int,
             required=True,
             help=_('Specifies the alarm threshold.\n'
                    'Values: 0 to max(int)')
@@ -301,14 +306,12 @@ class CreateAlarm(command.ShowOne):
         # IMPROVEMENT NEEDED
         parser.add_argument(
             '--dimension-name',
-            action='append',
             metavar='<dimension_name>',
             required=True,
             help=_('dimension.name: object type e.g. ECS')
         )
         parser.add_argument(
             '--dimension-value',
-            action='append',
             required=True,
             metavar='<dimension_value>',
             help=_('dimension.value: object id e.g. ECS ID')
@@ -345,45 +348,45 @@ class CreateAlarm(command.ShowOne):
         attrs['alarm_action_enabled'] = parsed_args.action_enabled
         if parsed_args.level:
             attrs['alarm_level'] = parsed_args.level
+        
+        ok_actions = []
+        alarm_actions = []
 
-        if parsed_args.action_enabled is True:
+        if parsed_args.action_enabled:
             if (parsed_args.ok_action_type
                     and parsed_args.ok_action_notification_list):
 
                 nl = parsed_args.ok_action_notification_list
-                ok_actions = {
+                ok_actions.append({
                     'type': parsed_args.ok_action_type,
                     'notificationList': nl
-                }
+                })
                 attrs['ok_actions'] = ok_actions
 
             if (parsed_args.alarm_action_type
                     and parsed_args.alarm_action_notification_list):
 
                 nl = parsed_args.alarm_action_notification_list
-                alarm_actions = {
+                alarm_actions.append({
                     'type': parsed_args.alarm_action_type,
                     'notificationList': nl
-                }
+                })
                 attrs['alarm_actions'] = alarm_actions
 
         condition = {
-            'comparison_operatur': parsed_args.comparison_operator,
+            'comparison_operator': parsed_args.comparison_operator,
             'count': parsed_args.count,
             'filter': parsed_args.filter,
             'period': parsed_args.period,
             'value': parsed_args.value
         }
         if parsed_args.unit:
-            condition = {
-                'unit': parsed_args.unit
-            }
+            condition['unit'] = parsed_args.unit
         attrs['condition'] = condition
 
-        dimensions = {
-            'name': parsed_args.dimension_name,
-            'value': parsed_args.dimension_value
-        }
+        dimensions = []
+        dimensions.append({'name': parsed_args.dimension_name, 
+                           'value': parsed_args.dimension_value})
         metric = {
             'dimensions': dimensions,
             'metric_name': parsed_args.metric_name,
