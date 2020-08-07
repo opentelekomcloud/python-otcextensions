@@ -21,13 +21,17 @@ conn = openstack.connect(cloud='otc')
 
 attrs = {
     "alarm_name": "alarm-test", 
-    "alarm_description": "Test Alarm", 
+    "alarm_description": "Test Alarm description", 
     "metric": {
         "namespace": "SYS.ECS", 
         "dimensions": [
             {
                 "name": "instance_id", 
                 "value": "33328f02-3814-422e-b688-bfdba93d4051"
+            },
+            {
+                "name": "instance_id", 
+                "value": "04ab9572-8c9c-41b6-bcc8-51068463b123"
             }
         ], 
         "metric_name": "network_outgoing"
@@ -46,13 +50,41 @@ attrs = {
     "ok_actions": [
         {
             "type": "notification", 
-            "notificationList": ["urn:smn:region:68438a86d98e427e907e0097b7e35d48:sd"]
+            "notificationList": [
+                "urn:smn:region:68438a86d98e427e907e0097b7e35d48:sd",
+                "urn:smn:eu-de:16d53a84a13b49529d2e2c3646691222:Error"]
+        }
+    ],
+    "alarm_actions": [
+        {
+            "type": "notification", 
+            "notificationList": [
+                "urn:smn:region:68438a86d98e427e907e0097b7e35d48:sd",
+                "urn:smn:eu-de:16d53a84a13b49529d2e2c3646691222:Error"]
         }
     ]
 }
 
 
-
-
 alarm = conn.ces.create_alarm(**attrs)
 print(alarm)
+
+# OSC command
+'''
+openstack --os-cloud otc ces alarm create --description "Test Alarm" \
+--namespace SYS.ECS --dimension-name instance_id --dimension-value \
+33328f02-3814-422e-b688-bfdba93d4123 --dimension-name instance_id \
+--dimension-value 33328f02-3814-422e-b688-bfdba93d4052 --metric-name \
+"network_outgoing" --period '300' --filter average \
+--comparison-operator '>=' --value '6' --unit 'B/s' --count '1' \
+--enabled True --action-enabled True --level 2 --ok-action-type notification \
+--ok-action-notification-list \
+'urn:smn:region:68438a86d98e427e907e0097b7e35d48:sd' \
+--ok-action-notification-list \
+'urn:smn:eu-de:16d53a84a13b49529d2e2c3646691222:Error' \
+--alarm-action-type notification --alarm-action-notification-list \
+'urn:smn:region:68438a86d98e427e907e0097b7e35d48:sd' \
+--alarm-action-notification-list \
+'urn:smn:eu-de:16d53a84a13b49529d2e2c3646691222:Error' alarm-test
+
+'''

@@ -13,8 +13,10 @@
 '''CES Alarm v1 action implementations'''
 import logging
 
+from osc_lib import exceptions
 from osc_lib import utils
 from osc_lib.command import command
+
 
 from otcextensions.i18n import _
 from otcextensions.common import sdk_utils
@@ -308,13 +310,23 @@ class CreateAlarm(command.ShowOne):
             '--dimension-name',
             metavar='<dimension_name>',
             required=True,
-            help=_('dimension.name: object type e.g. ECS')
+            action='append',
+            help=_('dimension.name: object type e.g. instance_id\n'
+                   'Provide --dimension-name <name> always in pair with'
+                   '--dimension-value <value>.\n'
+                   'Both values can be provided multiple times (equal number)'
+                   'to generate a list of monitored objects.')
         )
         parser.add_argument(
             '--dimension-value',
-            required=True,
             metavar='<dimension_value>',
-            help=_('dimension.value: object id e.g. ECS ID')
+            required=True,
+            action='append',            
+            help=_('dimension.value: object id e.g. ECS ID\n'
+                   'Provide --dimension-name <name> always in pair with'
+                   '--dimension-value <value>.\n'
+                   'Both values can be provided multiple times (equal number)'
+                   'to generate a list of monitored objects.')
         )
 
         # MetricSpec
@@ -355,7 +367,6 @@ class CreateAlarm(command.ShowOne):
         if parsed_args.action_enabled:
             if (parsed_args.ok_action_type
                     and parsed_args.ok_action_notification_list):
-
                 nl = parsed_args.ok_action_notification_list
                 ok_actions.append({
                     'type': parsed_args.ok_action_type,
@@ -385,8 +396,14 @@ class CreateAlarm(command.ShowOne):
         attrs['condition'] = condition
 
         dimensions = []
-        dimensions.append({'name': parsed_args.dimension_name, 
-                           'value': parsed_args.dimension_value})
+        if len(parsed_args.dimension_name) == len(parsed_args.dimension_value):
+            for i in range(len(parsed_args.dimension_name)):
+                dimensions.append({'name': parsed_args.dimension_name[i-1], 
+                                   'value': parsed_args.dimension_value[i-1]})
+        else:
+            msg = _('--dimension-name not in pair with --dimension-value')
+            raise exceptions.Conflict(msg)
+        
         metric = {
             'dimensions': dimensions,
             'metric_name': parsed_args.metric_name,
