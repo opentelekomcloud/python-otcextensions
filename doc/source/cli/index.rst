@@ -37,3 +37,4 @@ documentation of these services:
    obs
    rds_v3
    volume_backup
+   vpc

@@ -17,6 +17,7 @@ Open Telekom Cloud related User Guides
    kms
    nat
    rds
+   vpc
    logging
 
 .. _user_guides:

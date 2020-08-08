@@ -108,7 +108,13 @@ under several service tags. This may change in future.
       - X
       -
     * - vbs
-      - Volume Backup
+      - Volume Backup Service
+      - X
+      - X
+      - X
+      -
+    * - vpc_v2
+      - Virtual Private Cloud
       - X
       - X
       - X
