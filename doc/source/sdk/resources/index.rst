@@ -19,6 +19,7 @@ Open Telekom Cloud Resources
    Network Address Translation (NAT) <nat/index>
    Object Block Storage (OBS) <obs/index>
    Relational Database Service (RDS) <rds/index>
+   Virtual Private Cloud (VPC) <vpc/index>
 
 Every resource which is used within the proxy methods have own attributes.
 Those attributes define the behavior of the resource which can be a cluster
