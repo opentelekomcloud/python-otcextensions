@@ -2,16 +2,16 @@
     name: test_secret
     data:
       password: !encrypted/pkcs1-oaep
-        - Rkt6jAb9CFJkLYUYOw0z+0XGT5ip6N4C2x+okpe5T7FBRnAtRlg+I3rSVftua1JFVZgJ+
-          9qSESSWSZeWmDGD9T/m//d0qSRAZHndK97u/AR4w2R3qiTWbE8ZeTdceq5YcHe3gwqq/0
-          Mnkb0ImOztQV8xv+SpO4cK4kXDhHks9/S59DhFpwYjznevFR8/znpEUvb/kBI7bMayn1M
-          2EB3PF8+cv0s4NB/7r9NjPM4NizwvcLk0CEkCcJIKdkPLZpjkosBpH9BLVxSx3c8yeCoG
-          wszKHgMtC7tAV9YsrGRRrGrQNFdGWq6TaQFF3259YGb3r7eA3E/zbBcz8+NFCjE+ET2ld
-          9WjhYZbGPERjbpA0hCLX9wK87wU2z2CX/tQIo5o2+l4cEQpwNJCcMdCcozS59AXh7G3VJ
-          1s5A25fZzF3eqYmOXo4035QZhvw+XR9cwFR4okJm61KDI4ch4WWt5jbyJU8EwkONhg/hD
-          VTO9zMs/D4Nk/XYzeVqa5XMysNvmroE/duj5RdKBGFK+8rEj2fZpWn2Vkyf0yNvD02cz1
-          sDfmefy0k2+zqaUUF/EHl8pSG4sbd6Dnr6Vhq/dyFSUivO7vX2uyJd0vFLGq7TAKw8i3A
-          dzJ0QL5oapT4pf0ur7tB23qcnAGs14uAAclyeTyGqNm6GwMR9nHzyhw5MBsZug=
+        - GUOFaqG8d7OZlrlnbdI6ODfU2AnYWlrJ5tsPNxPz+qPyb6eOFvZs4CoUfjcEojRUSCXva
+          N1FBRxQJ6syMkXGrVUGFQwUQ+OJimZIJW5zzmhRWnbrCohHQ5qpL9Xhx2BB7DUcctb27A
+          c7JmoY7e62/HWPTCizNZZjWP85DqM9i42LYJKBgPrGRBi5v+ZMgH4qwawgt7f9etVWxXV
+          uC0fWUJ6S2snUVdarW/5drw7ThL+KLEl1cKBWFDznWyI9PhNWL9tM91dcJ1xBsHmSA3h9
+          Y+iboSC5HleMcP+qS8Z0ErSWZVwH4jhnh0VqcC5tzlkGdneNOQPAr5Qu13FVhblzybJkt
+          eX0y1WbmMYXkJVx3j5Wxhrzr46URU82fCYZlsGU+w56+fDRb5iLw9VV+QfAKuRcXqf4tk
+          jVOisVTx721AbQ83+K9JhFYfXuTrXiv1OKLxWrjBlPTlQTGsqstSATIukOi6ILWu/b/Pj
+          LaoccvH9Pz7VVVJiINdwnvsCKbgL/88B9Qlh7u8Yghmvt/aUTCZlHBcr1cTV1HshZKm7i
+          4lk6+6VWZeyX30vQqQGfJUNg6A5QeOeMlg3pQjduyAcFdnkbEd2f2t2QLsou+BrB612R4
+          VfYul+X37yPB3eQZt5htH9IvXeU+sy3x3q0ZcMVJaZkf0fIqfrWdvpUGkfXg0Q=
 
 - job:
     name: tox-functional-secrets
