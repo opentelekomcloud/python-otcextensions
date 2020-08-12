@@ -17,7 +17,9 @@
     name: tox-functional-secrets
     parent: tox-functional
     secrets:
-      - test_secret
+      - name: test
+        secret: test_secret
+        pass-to-parent: true
 
 - project:
     merge-mode: squash-merge
