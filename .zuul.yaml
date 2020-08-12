@@ -1,7 +1,23 @@
+- secret:
+    name: test_secret
+    data:
+      password: !encrypted/pkcs1-oaep
+        - Rkt6jAb9CFJkLYUYOw0z+0XGT5ip6N4C2x+okpe5T7FBRnAtRlg+I3rSVftua1JFVZgJ+
+          9qSESSWSZeWmDGD9T/m//d0qSRAZHndK97u/AR4w2R3qiTWbE8ZeTdceq5YcHe3gwqq/0
+          Mnkb0ImOztQV8xv+SpO4cK4kXDhHks9/S59DhFpwYjznevFR8/znpEUvb/kBI7bMayn1M
+          2EB3PF8+cv0s4NB/7r9NjPM4NizwvcLk0CEkCcJIKdkPLZpjkosBpH9BLVxSx3c8yeCoG
+          wszKHgMtC7tAV9YsrGRRrGrQNFdGWq6TaQFF3259YGb3r7eA3E/zbBcz8+NFCjE+ET2ld
+          9WjhYZbGPERjbpA0hCLX9wK87wU2z2CX/tQIo5o2+l4cEQpwNJCcMdCcozS59AXh7G3VJ
+          1s5A25fZzF3eqYmOXo4035QZhvw+XR9cwFR4okJm61KDI4ch4WWt5jbyJU8EwkONhg/hD
+          VTO9zMs/D4Nk/XYzeVqa5XMysNvmroE/duj5RdKBGFK+8rEj2fZpWn2Vkyf0yNvD02cz1
+          sDfmefy0k2+zqaUUF/EHl8pSG4sbd6Dnr6Vhq/dyFSUivO7vX2uyJd0vFLGq7TAKw8i3A
+          dzJ0QL5oapT4pf0ur7tB23qcnAGs14uAAclyeTyGqNm6GwMR9nHzyhw5MBsZug=
+
 - job:
-    name: tox-functional-master
+    name: tox-functional-secrets
     parent: tox-functional
-    branches: master
+    secrets:
+      - test_secret
 
 - project:
     merge-mode: squash-merge
@@ -13,14 +29,14 @@
         - tox-py38
         - tox-pep8
         - tox-docs
-        - tox-functional
+        - tox-functional-secrets
     gate:
       jobs:
         - tox-py37
         - tox-py38
         - tox-pep8
         - tox-docs
-        - tox-functional
+        - tox-functional-secrets
     periodic:
       jobs:
-        - tox-functional-master
+        - tox-functional-secrets
