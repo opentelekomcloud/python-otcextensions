@@ -73,7 +73,7 @@ class ListMetrics(command.Lister):
         client = self.app.client_manager.ces
 
         query = {}
-        
+
         if parsed_args.namespace:
             query['namespace'] = parsed_args.namespace
         if parsed_args.metric_name:
@@ -82,42 +82,22 @@ class ListMetrics(command.Lister):
             query['unit'] = parsed_args.unit
 
         data = client.metrics(**query)
-        '''
-        table = (self.table_columns,
-                 (utils.get_dict_properties(
-                     s, self.columns
-                 ) for s in data))
 
-        new_table = []
-        for s in data:
-            d = utils.get_dict_properties(s, self.columns)
-            print(d[1][0].name)
-            new_table.append(d[0])
-            new_table.append(d[1][0].name)
-        for t in new_table:
-            print(t)
-        '''
-        table = (self.table_columns,)
+        # Modify table output to provide a better metric overview.
+        # Given data set is taken, splitted and flattened to build the table.
+        table = ()
         temp_list = []
         big_list = []
         for s in data:
             for item in utils.get_dict_properties(s, self.columns):
-                print(item)
-                temp_list.append(item)
-                print(temp_list)                
+                if isinstance(item, (list)):
+                    temp_list.append(item[0].name)
+                    temp_list.append(item[0].value)
+                else:
+                    temp_list.append(item)
             big_list.append(tuple(temp_list))
             temp_list = []
-        
-        print('Big List Entries: ')
-        print(big_list[0])
-        print(big_list[1])
-        print(big_list[2])
 
-
-
-
-        table = (self.columns, big_list)
-            
+        table = (self.table_columns, big_list)
 
         return table
-
