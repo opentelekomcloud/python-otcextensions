@@ -137,7 +137,7 @@ class Proxy(proxy.Proxy):
     def quotas(self):
         """Return a generator of quotas
 
-        :returns: A generator of metric objects
+        :returns: A generator of quota objects
         :rtype: :class:`~otcextensions.sdk.ces.v1.quota.Quota`
         """
         return self._list(_quota.Quota)
