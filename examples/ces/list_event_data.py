@@ -19,5 +19,15 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-for data in conn.ces.event_data():
+
+query = {
+    'namespace': 'SYS.ECS',
+    'type': 'instance_host_info',
+    'dim.0': 'instance_id,6e83e6e7-3bf4-4b5b-b390-e80447ef1234',
+    'from': '1596067200',
+    'to': '1597929178'
+}
+
+
+for data in conn.ces.event_data(**query):
     print(data)

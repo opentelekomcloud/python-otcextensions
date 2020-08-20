@@ -32,7 +32,7 @@ class EventData(resource.Resource):
     # allow_create = True
 
     _query_mapping = resource.QueryParameters(
-        'dim', 'from', 'to', 'namespace', 'type'
+        'dim.0', 'from', 'to', 'namespace', 'type'
     )
 
     # Properties
