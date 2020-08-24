@@ -38,10 +38,11 @@ def _flatten_output(obj):
     data = {
         'id': obj.id,
         'name': obj.name,
-        'metric.resource_type': obj.metric.namespace,
+        'namespace': obj.metric.namespace,
         # The return value of obj.metric.dimensions is a list. The list has
         # only one value. It is not possible to have several items inside.
-        'metric.monitored_obj': obj.metric.dimensions[0].value,
+        'dimensions.name': obj.metric.dimensions[0].name,
+        'dimensions.value': obj.metric.dimensions[0].value,
         'alarm_level': _translate_alarm_level(obj.alarm_level),
         'enabled': obj.alarm_enabled,
         'action_enabled': obj.alarm_action_enabled,
@@ -64,8 +65,9 @@ class ListAlarms(command.Lister):
     columns = (
         'id',
         'name',
-        'metric.resource_type',
-        'metric.monitored_obj',
+        'namespace',
+        'dimensions.name',
+        'dimensions.value',
         'alarm_level',
         'enabled',
         'action_enabled',

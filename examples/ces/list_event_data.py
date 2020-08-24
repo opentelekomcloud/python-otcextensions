@@ -23,9 +23,9 @@ conn = openstack.connect(cloud='otc')
 query = {
     'namespace': 'SYS.ECS',
     'type': 'instance_host_info',
-    'dim.0': 'instance_id,6e83e6e7-3bf4-4b5b-b390-e80447ef1234',
-    'from': '1596067200',
-    'to': '1597929178'
+    'dim.0': 'instance_id,6e83e6e7-3bf4-4b5b-b390-e80447ef1234', # key, value
+    'from': '1596067200', # unix timestamp in ms
+    'to': '1597929178' # unix timestamp in ms
 }
 
 

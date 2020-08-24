@@ -79,7 +79,8 @@ class MetricSpec(resource.Resource):
 
     # Properties
     # List of metric dimensions
-    dimensions = resource.Body('dimensions', type=DimensionsSpec)
+    dimensions = resource.Body('dimensions', type=list,
+                               list_type=DimensionsSpec)
     # Specifies the metric name
     metric_name = resource.Body('metric_name')
     # Metric Namespace
