@@ -28,6 +28,5 @@ query = {
     'to': '1597929178' # unix timestamp in ms
 }
 
-
 for data in conn.ces.event_data(**query):
     print(data)

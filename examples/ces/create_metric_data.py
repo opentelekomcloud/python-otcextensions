@@ -18,7 +18,7 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-
+# not working due to lag of compatible API: list instead of proper JSON
 attrs = [
 	{
 		"metric": {
