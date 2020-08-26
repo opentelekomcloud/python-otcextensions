@@ -40,14 +40,6 @@ def _flatten_output(obj):
     return data
 
 
-def _get_columns(item):
-    column_map = {
-    }
-    inv_columns = ['']
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
-                                                           inv_columns)
-
-
 class ListQuotas(command.Lister):
     _description = _('List CES alarm quota')
     columns = (

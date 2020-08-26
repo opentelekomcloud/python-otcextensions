@@ -36,7 +36,7 @@ class MetricData(resource.Resource):
 
     # capabilities
     allow_list = True
-    
+
     _query_mapping = resource.QueryParameters(
         'namespace', 'period', 'filter', 'metric_name', 'dim.0', 'from',
         'to')

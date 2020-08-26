@@ -323,7 +323,7 @@ class CreateAlarm(command.ShowOne):
             '--dimension-value',
             metavar='<dimension_value>',
             required=True,
-            action='append',            
+            action='append',
             help=_('dimension.value: object id e.g. ECS ID\n'
                    'Provide --dimension-name <name> always in pair with'
                    '--dimension-value <value>.\n'
@@ -362,7 +362,7 @@ class CreateAlarm(command.ShowOne):
         attrs['alarm_action_enabled'] = parsed_args.action_enabled
         if parsed_args.level:
             attrs['alarm_level'] = parsed_args.level
-        
+
         ok_actions = []
         alarm_actions = []
 
@@ -400,12 +400,13 @@ class CreateAlarm(command.ShowOne):
         dimensions = []
         if len(parsed_args.dimension_name) == len(parsed_args.dimension_value):
             for i in range(len(parsed_args.dimension_name)):
-                dimensions.append({'name': parsed_args.dimension_name[i-1], 
-                                   'value': parsed_args.dimension_value[i-1]})
+                dimensions.append(
+                    {'name': parsed_args.dimension_name[i - 1],
+                     'value': parsed_args.dimension_value[i - 1]})
         else:
             msg = _('--dimension-name not in pair with --dimension-value')
             raise exceptions.Conflict(msg)
-        
+
         metric = {
             'dimensions': dimensions,
             'metric_name': parsed_args.metric_name,

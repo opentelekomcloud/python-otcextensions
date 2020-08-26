@@ -50,7 +50,7 @@ class ListMetrics(command.Lister):
 
     def get_parser(self, prog_name):
         parser = super(ListMetrics, self).get_parser(prog_name)
-        
+
         parser.add_argument(
             '--namespace',
             metavar='<namespace>',

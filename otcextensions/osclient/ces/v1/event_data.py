@@ -30,6 +30,7 @@ def _get_columns(item):
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
                                                            inv_columns)
 
+
 class ListEventData(command.Lister):
     _description = _('List CES event data')
     columns = (

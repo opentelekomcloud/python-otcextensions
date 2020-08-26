@@ -124,7 +124,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.ces.v1.metric_data.MetricData`
         """
         return self._list(_metric_data.MetricData, **query)
-    
+
     # skipped due to lag of compliant API (resource is list not JSON)
     '''
     def create_metric_data(self, **attrs):

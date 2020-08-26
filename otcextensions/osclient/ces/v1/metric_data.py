@@ -30,6 +30,7 @@ def _get_columns(item):
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
                                                            inv_columns)
 
+
 class ListMetricData(command.Lister):
     _description = _('List CES event data')
     columns = (
@@ -39,7 +40,7 @@ class ListMetricData(command.Lister):
     )
 
     def get_parser(self, prog_name):
-        parser = super(ListEventData, self).get_parser(prog_name)
+        parser = super(ListMetricData, self).get_parser(prog_name)
         parser.add_argument(
             '--namespace',
             metavar='<namespace>',
