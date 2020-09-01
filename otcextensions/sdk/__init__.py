@@ -149,7 +149,7 @@ OTC_SERVICES = {
     },
     'waf': {
         'service_type': 'waf',
-        'append_project_id': True,
+        'set_endpoint_override': True
     }
 }
 
