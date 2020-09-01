@@ -54,7 +54,6 @@ class Proxy(proxy.Proxy):
         :returns: The results of certificate creation
         :rtype: :class:`~otcextensions.sdk.waf.v1.certificate.Certificate`
         """
-        print(attrs)
         return self._create(_cert.Certificate, prepend_key=False, **attrs)
 
     def get_certificate(self, certificate):
