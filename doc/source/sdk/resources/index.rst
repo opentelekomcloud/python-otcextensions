@@ -20,6 +20,7 @@ Open Telekom Cloud Resources
    Object Block Storage (OBS) <obs/index>
    Relational Database Service (RDS) <rds/index>
    Virtual Private Cloud (VPC) <vpc/index>
+   Web Application Firewall (WAF) <waf/index>
 
 Every resource which is used within the proxy methods have own attributes.
 Those attributes define the behavior of the resource which can be a cluster
