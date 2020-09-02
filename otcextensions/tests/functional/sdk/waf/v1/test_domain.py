@@ -98,9 +98,30 @@ rNcviQ==
         self.addCleanup(self.conn.waf.delete_domain, self.domain)
 
     def test_list_domains(self):
-        query = {}
-        certs = list(self.client.domains(**query))
-        self.assertGreaterEqual(len(certs), 1)
+        cnt = 15
+        # Pagination is so broken in WAF, that it makes sense to test it in
+        # real, and not in units
+        for i in range(0, cnt):
+            domain = self.client.create_domain(
+                name='%s.%s' % (i, self.domain_name),
+                server=[dict(
+                    client_protocol="HTTP",
+                    server_protocol="HTTP",
+                    address="1.2.3.4",
+                    port="80")],
+                proxy=False,
+            )
+
+            self.addCleanup(self.conn.waf.delete_domain, domain)
+
+        query = {'limit': 3}
+        domains = list(self.client.domains(**query))
+        self.assertEqual(len(domains), cnt + 1)
+
+        query = {'limit': 1}
+        domains = list(self.client.domains(**query))
+        self.assertEqual(len(domains), cnt + 1)
+
 
     def test_get_domain(self):
         domain = self.client.get_domain(self.domain.id)
