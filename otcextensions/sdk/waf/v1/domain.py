@@ -55,6 +55,8 @@ class Domain(_base.Resource):
     name = resource.Body('hostname', aka='hostname')
     #: Specifies the policy ID.
     policy_id = resource.Body('policy_id')
+    #: protocol type of the client. The options are HTTP, HTTPS, and HTTP,HTTPS.
+    protocol = resource.Body('protocol')
     #: WAF mode.
     protect_status = resource.Body('protect_status', type=int)
     #: Specifies whether a proxy is configured.
@@ -77,7 +79,7 @@ class Domain(_base.Resource):
     #: subdomain name.
     #: This parameter is returned only when proxy is set to true.
     subdomain = resource.Body('sub_domain')
-    #: Certificat uploading timestamp
+    #: Certificate uploading timestamp
     timestamp = resource.Body('timestamp')
     #: TXT record. This parameter is returned only when proxy is set to true.
     txt_record = resource.Body('txt_code')
