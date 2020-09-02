@@ -108,10 +108,6 @@ OTC_SERVICES = {
     'lts': {
         'service_type': 'lts'
     },
-    'maas': {
-        'service_type': 'maas',
-        'append_project_id': True,
-    },
     'mrs': {
         'service_type': 'mrs'
     },
