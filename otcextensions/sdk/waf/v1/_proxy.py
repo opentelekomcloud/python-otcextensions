@@ -12,6 +12,7 @@
 from openstack import proxy
 
 from otcextensions.sdk.waf.v1 import certificate as _cert
+from otcextensions.sdk.waf.v1 import domain as _domain
 
 
 class Proxy(proxy.Proxy):
@@ -110,5 +111,90 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         return self._find(_cert.Certificate, name_or_id,
+                          ignore_missing=ignore_missing,
+                          **attrs)
+
+    # ======== Domains ========
+    def domains(self, **query):
+        """Retrieve a generator of domains
+
+        :param dict query: Optional query parameters to be sent to limit the
+            resources being returned.
+            * `limit`: pagination limit
+            * `offset`: pagination offset
+            * `name`: domain name (hostname)
+            * `policy_name`: policy name
+
+        :returns: A generator of domain
+            :class:`~otcextensions.sdk.waf.v1.domain.Domain`
+            instances
+        """
+        return self._list(_domain.Domain, **query)
+
+    def create_domain(self, **attrs):
+        """Upload domain from attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.waf.v1.domain.Domain`,
+            comprised of the properties on the Domain class.
+        :returns: The results of domain creation
+        :rtype: :class:`~otcextensions.sdk.waf.v1.domain.Domain`
+        """
+        return self._create(_domain.Domain, prepend_key=False, **attrs)
+
+    def get_domain(self, domain):
+        """Get a domain
+
+        :param domain: The value can be the ID of a domain
+             or a :class:`~otcextensions.sdk.waf.v1.domain.Domain`
+             instance.
+        :returns: Domain instance
+        :rtype: :class:`~otcextensions.sdk.waf.v1.domain.Domain`
+        """
+        return self._get(_domain.Domain, domain)
+
+    def delete_domain(self, domain, ignore_missing=True):
+        """Delete a domain
+
+        :param domain: The value can be the ID of a domain
+             or a :class:`~otcextensions.sdk.waf.v1.domain.Domain`
+             instance.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the domain does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent domain.
+
+        :returns: Domain been deleted
+        :rtype: :class:`~otcextensions.sdk.waf.v1.domain.Domain`
+        """
+        return self._delete(_domain.Domain, domain,
+                            ignore_missing=ignore_missing)
+
+    def update_domain(self, domain, **attrs):
+        """Update domain attributes
+
+        :param domain: The id or an instance of
+            :class:`~otcextensions.sdk.waf.v1.domain.Domain`
+        :param dict attrs: attributes for update on
+            :class:`~otcextensions.sdk.waf.v1.domain.Domain`
+
+        :rtype: :class:`~otcextensions.sdk.waf.v1.domain.Domain`
+        """
+        return self._update(_domain.Domain, domain, **attrs)
+
+    def find_domain(self, name_or_id, ignore_missing=True, **attrs):
+        """Find a single domain
+
+        :param name_or_id: The name or ID of a domain
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the domain does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to delete a nonexistent domain.
+
+        :returns: ``None``
+        """
+        return self._find(_domain.Domain, name_or_id,
                           ignore_missing=ignore_missing,
                           **attrs)
