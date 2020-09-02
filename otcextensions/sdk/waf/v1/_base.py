@@ -74,7 +74,7 @@ class Resource(resource.Resource):
         params = {}
         if total_yielded < data['total']:
             next_link = uri
-            params['offset'] = total_yielded
+            params['offset'] = total_yielded // limit
             params['limit'] = limit
         else:
             next_link = None
