@@ -9,6 +9,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import random
 import uuid
 
 # from openstack import resource
@@ -16,7 +17,7 @@ import uuid
 from otcextensions.tests.functional.sdk.waf import TestWaf
 
 
-class TestCertificate(TestWaf):
+class TestDomain(TestWaf):
 
     _PRIVATE_KEY = """-----BEGIN PRIVATE KEY-----
 MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDrvw+CfkRMtN6I
@@ -68,48 +69,66 @@ rNcviQ==
 -----END CERTIFICATE-----"""
 
     def setUp(self):
-        super(TestCertificate, self).setUp()
+        super(TestDomain, self).setUp()
 
-        self.cert_name = "SDK-" + uuid.uuid4().hex
+        self.cert_name = "SDK-D" + uuid.uuid4().hex
+        self.domain_name = 'example-{0}.org'.format(random.randint(1, 10000))
+
         self.cert = self.client.create_certificate(
             key=self._PRIVATE_KEY,
             content=self._CERTIFICATE,
             name=self.cert_name
         )
 
+        self.domain = self.client.create_domain(
+            name=self.domain_name,
+            certificate_id=self.cert.id,
+            server=[dict(
+                client_protocol="HTTPS",
+                server_protocol="HTTP",
+                address="1.2.3.4",
+                port="80")],
+            proxy=True,
+            sip_header_name="default",
+            sip_header_list=['X-Forwarded-For']
+        )
+
+        # reverse order is super important
         self.addCleanup(self.conn.waf.delete_certificate, self.cert)
+        self.addCleanup(self.conn.waf.delete_domain, self.domain)
 
-    def test_list_certificates(self):
+    def test_list_domains(self):
         query = {}
-        certs = list(self.client.certificates(**query))
-        self.assertGreaterEqual(len(certs), 0)
+        certs = list(self.client.domains(**query))
+        self.assertGreaterEqual(len(certs), 1)
 
-    def test_get_certificate(self):
-        cert = self.client.get_certificate(self.cert.id)
-        self.assertEqual(self.cert.name, cert.name)
-        self.assertEqual(self.cert.timestamp, cert.timestamp)
-        self.assertEqual(self.cert.expire_time, cert.expire_time)
+    def test_get_domain(self):
+        domain = self.client.get_domain(self.domain.id)
+        self.assertEqual(self.domain.name, domain.name)
+        self.assertEqual(self.domain.id, domain.id)
 
-    def test_find_certificate(self):
-        cert = self.client.find_certificate(self.cert.name)
-        self.assertEqual(self.cert.name, cert.name)
-        self.assertEqual(self.cert.timestamp, cert.timestamp)
-        self.assertEqual(self.cert.expire_time, cert.expire_time)
+    def test_find_domain(self):
+        domain = self.client.find_domain(self.domain.name)
+        self.assertEqual(self.domain.name, domain.name)
+        self.assertEqual(self.domain.id, domain.id)
 
-    def test_update_certificate(self):
+    def test_update_domain(self):
         cert2 = self.client.create_certificate(
             key=self._PRIVATE_KEY,
             content=self._CERTIFICATE,
             name=self.cert_name + "_2"
         )
 
-        self.addCleanup(self.conn.waf.delete_certificate, cert2)
-        cert2_cmp = self.client.update_certificate(
-            cert2,
-            name=self.cert_name + "_2_cp"
+        domain = self.client.update_domain(
+            domain=self.domain,
+            certificate_id=cert2.id,
         )
-        self.assertEqual(cert2.name, cert2_cmp.name)
+        self.assertEqual(domain.id, self.domain.id)
+        self.addCleanup(self.conn.waf.delete_certificate, cert2)
 
-        cert2_cmp = self.client.get_certificate(cert2_cmp.id)
-        self.assertEqual(cert2.name, cert2_cmp.name)
-        self.assertEqual(cert2.id, cert2_cmp.id)
+        # We need to turn cert ref back, since otherwise cleanup can't drop
+        # what is being used
+        self.client.update_domain(
+            domain=self.domain,
+            certificate_id=self.cert.id,
+        )

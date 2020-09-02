@@ -66,3 +66,17 @@ class Resource(resource.Resource):
             return None
         raise exceptions.ResourceNotFound(
             "No %s found for %s" % (cls.__name__, name_or_id))
+
+    @classmethod
+    def _get_next_link(cls, uri, response, data, marker, limit, total_yielded):
+        # AS service pagination. Returns query for the next page
+        next_link = None
+        params = {}
+        if total_yielded < data['total']:
+            next_link = uri
+            params['offset'] = total_yielded
+            params['limit'] = limit
+        else:
+            next_link = None
+        query_params = cls._query_mapping._transpose(params, cls)
+        return next_link, query_params
