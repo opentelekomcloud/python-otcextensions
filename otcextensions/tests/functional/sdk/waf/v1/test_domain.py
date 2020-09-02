@@ -122,7 +122,6 @@ rNcviQ==
         domains = list(self.client.domains(**query))
         self.assertEqual(len(domains), cnt + 1)
 
-
     def test_get_domain(self):
         domain = self.client.get_domain(self.domain.id)
         self.assertEqual(self.domain.name, domain.name)

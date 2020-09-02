@@ -55,7 +55,8 @@ class Domain(_base.Resource):
     name = resource.Body('hostname', aka='hostname')
     #: Specifies the policy ID.
     policy_id = resource.Body('policy_id')
-    #: protocol type of the client. The options are HTTP, HTTPS, and HTTP,HTTPS.
+    #: protocol type of the client.
+    #: The options are HTTP, HTTPS, and HTTP,HTTPS.
     protocol = resource.Body('protocol')
     #: WAF mode.
     protect_status = resource.Body('protect_status', type=int)
