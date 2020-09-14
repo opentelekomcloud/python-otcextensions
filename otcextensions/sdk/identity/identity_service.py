@@ -9,8 +9,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import proxy
+
+from otcextensions.sdk.identity.v3 import _proxy as _proxy_v3
+from openstack import service_description
 
 
-class Proxy(proxy.Proxy):
-    pass
+class IdentityService(service_description.ServiceDescription):
+    """The identity service."""
+
+    supported_versions = {
+        '3': _proxy_v3.Proxy,
+    }
