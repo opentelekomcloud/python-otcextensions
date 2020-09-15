@@ -19,6 +19,6 @@ _logger = _log.setup_logging('openstack')
 class TestService(base.BaseFunctionalTest):
 
     def test_initialize(self):
-        client = self.conn.nat
+        client = self.conn.vpcep
 
         self.assertIsNotNone(client)
