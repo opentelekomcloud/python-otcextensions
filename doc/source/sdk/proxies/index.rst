@@ -13,6 +13,7 @@ Service Proxies
    Dedicated Host Service (DeH) <deh>
    Distributed Message Service (DMS) <dms>
    Domain Name Server Service (DNS) <dns>
+   Identity Service (IAM) <identity_v3>
    Key Management Service (KMS) <kms>
    Network Address Translation (NAT) <nat>
    Object Block Storage (OBS) <obs>

@@ -101,6 +101,9 @@ OTC_SERVICES = {
     'ecs': {
         'service_type': 'ecs',
     },
+    'identity': {
+        'service_type': 'identity'
+    },
     'kms': {
         'service_type': 'kms',
         'append_project_id': True,
