@@ -15,6 +15,7 @@ Open Telekom Cloud Resources
    Dedicated Host Service (DeH) <deh/index>
    Distributed Message Service (DMS) <dms/index>
    Domain Name Service (DNS) <dns/index>
+   Identity Service (IAM) <identity/index>
    Key Management Service (KMS) <kms/index>
    Network Address Translation (NAT) <nat/index>
    Object Block Storage (OBS) <obs/index>
