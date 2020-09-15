@@ -207,3 +207,27 @@ class Proxy(proxy.Proxy):
         :returns: A generator of Dnat objects.
         """
         return self._list(_dnat.Dnat, **query)
+
+    # ======== Project cleanup ========
+    def _get_cleanup_dependencies(self):
+        return {
+            'nat': {
+                'before': ['network']
+            }
+        }
+
+    def _service_cleanup(self, dry_run=True, client_status_queue=None,
+                         identified_resources=None,
+                         filters=None, resource_evaluation_fn=None):
+        for obj in self.gateways():
+            need_delete = self._service_cleanup_del_res(
+                self.delete_gateway,
+                obj,
+                dry_run=dry_run,
+                client_status_queue=client_status_queue,
+                identified_resources=identified_resources,
+                filters=filters,
+                resource_evaluation_fn=resource_evaluation_fn)
+            if dry_run and need_delete:
+                for port in self._connection.network.ports(device_id=obj.id):
+                    identified_resources[port.id] = port
