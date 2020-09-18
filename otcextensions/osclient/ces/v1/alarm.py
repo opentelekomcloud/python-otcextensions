@@ -311,11 +311,9 @@ class CreateAlarm(command.ShowOne):
             dest='dimensions',
             required=True,
             required_keys=['name', 'value'],
-            help=_('dimension.name: object type e.g. instance_id\n'
-                   'Provide --dimension-name <name> always in pair with'
-                   '--dimension-value <value>.\n'
-                   'Both values can be provided multiple times (equal number)'
-                   'to generate a list of monitored objects.')
+            help=_('Example: \n'
+                   '--dimension name=instance_id,value=123456-bfdba93d4123\n'
+                   'Repeat option to provide multiple dimensions.')
         )
 
         # MetricSpec
