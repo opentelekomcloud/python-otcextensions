@@ -72,10 +72,10 @@ print(alarm)
 # OSC command
 '''
 openstack --os-cloud otc ces alarm create --description "Test Alarm" \
---namespace SYS.ECS --dimension-name instance_id --dimension-value \
-33328f02-3814-422e-b688-bfdba93d4123 --dimension-name instance_id \
---dimension-value 33328f02-3814-422e-b688-bfdba93d4052 --metric-name \
-"network_outgoing" --period '300' --filter average \
+--namespace SYS.ECS \
+--dimension name=instance_id,value=33328f02-3814-422e-b688-bfdba93d4123 \
+--dimension name=instance_id,value=33328f02-3814-422e-b688-bfdba93d4052 \
+--metric-name "network_outgoing" --period '300' --filter average \
 --comparison-operator '>=' --value '6' --unit 'B/s' --count '1' \
 --enabled True --action-enabled True --level 2 --ok-action-type notification \
 --ok-action-notification-list \

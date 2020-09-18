@@ -16,19 +16,9 @@ import logging
 from osc_lib import utils
 from osc_lib.command import command
 
-
 from otcextensions.i18n import _
-from otcextensions.common import sdk_utils
 
 LOG = logging.getLogger(__name__)
-
-
-def _get_columns(item):
-    column_map = {
-    }
-    inv_columns = ['']
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
-                                                           inv_columns)
 
 
 class ListMetricData(command.Lister):

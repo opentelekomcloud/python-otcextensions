@@ -26,6 +26,8 @@ class Proxy(proxy.Proxy):
     def alarms(self, **query):
         """Return a generator of alarms
 
+        :param dict query: Optional query parameters to be sent to limit the
+            resources being returned.
         :returns: A generator of alarm objects
         :rtype: :class:`~otcextensions.sdk.ces.v1.alarm.Alarm`
         """

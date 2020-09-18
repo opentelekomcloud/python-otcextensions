@@ -13,10 +13,9 @@
 '''CES Alarm v1 action implementations'''
 import logging
 
-from osc_lib import exceptions
 from osc_lib import utils
+from osc_lib.cli import parseractions
 from osc_lib.command import command
-
 
 from otcextensions.i18n import _
 from otcextensions.common import sdk_utils
@@ -206,7 +205,6 @@ class CreateAlarm(command.ShowOne):
             '--action-enabled',
             default=False,
             type=bool,
-            required=True,
             help=_('Specifies whether the alarm action is triggered')
         )
         parser.add_argument(
@@ -306,25 +304,14 @@ class CreateAlarm(command.ShowOne):
         )
 
         # DimensionsSpec for Metrics
-        # This is a list of dictionaries
-        # IMPROVEMENT NEEDED
         parser.add_argument(
-            '--dimension-name',
-            metavar='<dimension_name>',
+            '--dimension',
+            metavar='name=<dimension-name>,value=<dimensions-value>',
+            action=parseractions.MultiKeyValueAction,
+            dest='dimensions',
             required=True,
-            action='append',
+            required_keys=['name', 'value'],
             help=_('dimension.name: object type e.g. instance_id\n'
-                   'Provide --dimension-name <name> always in pair with'
-                   '--dimension-value <value>.\n'
-                   'Both values can be provided multiple times (equal number)'
-                   'to generate a list of monitored objects.')
-        )
-        parser.add_argument(
-            '--dimension-value',
-            metavar='<dimension_value>',
-            required=True,
-            action='append',
-            help=_('dimension.value: object id e.g. ECS ID\n'
                    'Provide --dimension-name <name> always in pair with'
                    '--dimension-value <value>.\n'
                    'Both values can be provided multiple times (equal number)'
@@ -397,18 +384,8 @@ class CreateAlarm(command.ShowOne):
             condition['unit'] = parsed_args.unit
         attrs['condition'] = condition
 
-        dimensions = []
-        if len(parsed_args.dimension_name) == len(parsed_args.dimension_value):
-            for i in range(len(parsed_args.dimension_name)):
-                dimensions.append(
-                    {'name': parsed_args.dimension_name[i - 1],
-                     'value': parsed_args.dimension_value[i - 1]})
-        else:
-            msg = _('--dimension-name not in pair with --dimension-value')
-            raise exceptions.Conflict(msg)
-
         metric = {
-            'dimensions': dimensions,
+            'dimensions': parsed_args.dimensions,
             'metric_name': parsed_args.metric_name,
             'namespace': parsed_args.namespace
         }
