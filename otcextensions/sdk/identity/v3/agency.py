@@ -15,10 +15,10 @@ from openstack import resource
 from otcextensions.sdk.identity.v3 import _bad_base as _base
 
 
-class Credential(_base.BadBaseResource):
-    resource_key = 'credential'
-    resources_key = 'credentials'
-    base_path = '/v3.0/OS-CREDENTIAL/credentials'
+class Agency(_base.BadBaseResource):
+    resource_key = 'agency'
+    resources_key = 'agencies'
+    base_path = '/v3.0/OS-AGENCY/agencies'
 
     # capabilities
     allow_create = True
@@ -29,19 +29,22 @@ class Credential(_base.BadBaseResource):
     commit_method = 'PUT'
 
     _query_mapping = resource.QueryParameters(
-        'user_id',
+        'domain_id', 'name', 'trust_domain_id'
     )
 
     # Properties
-    #: Access key
-    access = resource.Body('access', alternate_id=True)
-    #: Creation time
+    #: Time when an agency is created.
     created_at = resource.Body('create_time')
-    #: Description
+    #: Description of an agency.
     description = resource.Body('description')
-    #: Secret key
-    secret = resource.Body('secret')
-    #: Status
-    status = resource.Body('status')
-    #: References the user ID which owns the credential. *Type: string*
-    user_id = resource.Body('user_id')
+    #: ID of the current domain.
+    domain_id = resource.Body('domain_id')
+    #: Validity period of an agency. The default value is null, indicating that
+    #: the agency is permanently valid.
+    duration = resource.Body('duration')
+    #: Expiration time of an agency.
+    expire_at = resource.Body('expire_time')
+    #: ID of the delegated domain.
+    trust_domain_id = resource.Body('trust_domain_id')
+    #: Name of the delegated domain.
+    trust_domain_name = resource.Body('trust_domain_name')

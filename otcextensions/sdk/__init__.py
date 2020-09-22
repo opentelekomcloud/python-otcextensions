@@ -108,7 +108,8 @@ OTC_SERVICES = {
         'service_type': 'ecs',
     },
     'identity': {
-        'service_type': 'identity'
+        'service_type': 'identity',
+        'replace_system': True
     },
     'kms': {
         'service_type': 'kms',

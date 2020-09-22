@@ -10,6 +10,18 @@ The identity high-level interface is available through the ``identity``
 member of a :class:`~openstack.connection.Connection` object.  The
 ``identity`` member will only be added if the service is detected.
 
+Agency Operations
+^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.identity.v3._proxy.Proxy
+  :noindex:
+  :members: create_agency, update_agency, delete_agency,
+            get_agency, find_agency, agencies,
+            agency_project_roles, check_agency_project_role,
+            grant_agency_project_role, revoke_agency_project_role,
+            agency_domain_roles, check_agency_domain_role,
+            grant_agency_domain_role, revoke_agency_domain_role,
+
 Credential Operations
 ^^^^^^^^^^^^^^^^^^^^^
 
