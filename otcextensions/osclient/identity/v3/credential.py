@@ -25,13 +25,11 @@ LOG = logging.getLogger(__name__)
 def _get_columns(item):
     column_map = {
     }
-    inv_columns = ['']
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
-                                                           inv_columns)
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
 class ListCredentials(command.Lister):
-    _description = _('List identity credentials')
+    _description = _('List Identity Credentials')
     columns = (
         'access',
         'description',
@@ -42,14 +40,33 @@ class ListCredentials(command.Lister):
 
     def get_parser(self, prog_name):
         parser = super(ListCredentials, self).get_parser(prog_name)
+
+        parser.add_argument(
+            '--user-id',
+            metavar='<user-id>',
+            help=_('User ID of the user using the credential')
+        )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.identity
 
-        data = client.credentials()
+        table_columns = (
+            'Access Key',
+            'Description',
+            'User ID',
+            'Status',
+            'Created At',
+        )
 
-        table = (self.columns,
+        attrs = {}
+
+        if parsed_args.user_id:
+            attrs['user_id'] = parsed_args.user_id
+
+        data = client.credentials(**attrs)
+
+        table = (table_columns,
                  (utils.get_dict_properties(
                      s, self.columns
                  ) for s in data))
