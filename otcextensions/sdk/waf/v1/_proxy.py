@@ -198,3 +198,34 @@ class Proxy(proxy.Proxy):
         return self._find(_domain.Domain, name_or_id,
                           ignore_missing=ignore_missing,
                           **attrs)
+
+    # ======== Project cleanup ========
+    def _get_cleanup_dependencies(self):
+        return {
+            'waf': {
+                'before': []
+            }
+        }
+
+    def _service_cleanup(self, dry_run=True, client_status_queue=None,
+                         identified_resources=None,
+                         filters=None, resource_evaluation_fn=None):
+        for obj in self.domains():
+            self._service_cleanup_del_res(
+                self.delete_domain,
+                obj,
+                dry_run=dry_run,
+                client_status_queue=client_status_queue,
+                identified_resources=identified_resources,
+                filters=filters,
+                resource_evaluation_fn=resource_evaluation_fn)
+
+        for obj in self.certificates():
+            self._service_cleanup_del_res(
+                self.delete_certificate,
+                obj,
+                dry_run=dry_run,
+                client_status_queue=client_status_queue,
+                identified_resources=identified_resources,
+                filters=filters,
+                resource_evaluation_fn=resource_evaluation_fn)

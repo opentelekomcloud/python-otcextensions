@@ -468,3 +468,16 @@ class Proxy(proxy.Proxy):
                               scaling_group_id=group.id)
         else:
             return self._list(_quota.Quota, paginated=False)
+
+    # ======== Project cleanup ========
+    def _get_cleanup_dependencies(self):
+        return {
+            'auto_scaling': {
+                'before': ['compute', 'block_storage']
+            }
+        }
+
+    def _service_cleanup(self, dry_run=True, client_status_queue=None,
+                         identified_resources=None,
+                         filters=None, resource_evaluation_fn=None):
+        pass
