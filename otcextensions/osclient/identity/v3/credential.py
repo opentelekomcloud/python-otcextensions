@@ -91,8 +91,7 @@ class ShowCredential(command.ShowOne):
         client = self.app.client_manager.identity
 
         obj = client.find_credential(
-            parsed_args.credential,
-            ignore_missing=False
+            parsed_args.credential
         )
 
         display_columns, columns = _get_columns(obj)
@@ -123,7 +122,7 @@ class DeleteCredential(command.Command):
                 credential = client.find_credential(
                     credential,
                     ignore_missing=False)
-                client.delete_credential(credential=credential)
+                client.delete_credential(credential.id)
 
 
 class UpdateCredential(command.ShowOne):
