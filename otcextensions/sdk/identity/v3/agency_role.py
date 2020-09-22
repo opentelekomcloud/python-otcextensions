@@ -15,33 +15,31 @@ from openstack import resource
 from otcextensions.sdk.identity.v3 import _bad_base as _base
 
 
-class Credential(_base.BadBaseResource):
-    resource_key = 'credential'
-    resources_key = 'credentials'
-    base_path = '/v3.0/OS-CREDENTIAL/credentials'
+class AgencyRole(_base.BadBaseResource):
+    resources_key = 'roles'
+    base_path = ('/v3.0/OS-AGENCY/%(role_ref_type)ss/%(role_ref_id)s'
+                 '/agencies/%(agency_id)s/roles')
 
     # capabilities
-    allow_create = True
-    allow_fetch = True
     allow_commit = True
+    allow_head = True
     allow_delete = True
     allow_list = True
-    commit_method = 'PUT'
-
-    _query_mapping = resource.QueryParameters(
-        'user_id',
-    )
 
     # Properties
-    #: Access key
-    access = resource.Body('access', alternate_id=True)
-    #: Creation time
-    created_at = resource.Body('create_time')
-    #: Description
+    role_ref_type = resource.URI('role_ref_type')
+    role_ref_id = resource.URI('role_ref_id')
+    agency_id = resource.URI('agency_id')
+
+    #: Directory where a role locates.
+    catalog = resource.Body('catalog')
+    #: Description of the role.
     description = resource.Body('description')
-    #: Secret key
-    secret = resource.Body('secret')
-    #: Status
-    status = resource.Body('status')
-    #: References the user ID which owns the credential. *Type: string*
-    user_id = resource.Body('user_id')
+    #: ID of the domain to which a role belongs.
+    domain_id = resource.Body('domain_id')
+    #: Name of a role.
+    name = resource.Body('display_name')
+    #: Policy of a role.
+    policy = resource.Body('policy', type=dict)
+    #: Display mode of a role.
+    type = resource.Body('type')
