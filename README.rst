@@ -21,7 +21,7 @@ packages.
 Documentation
 -------------
 
-* `Documentation Overview <http://python-otcextensions.readthedocs.io/en/latest/>`_
+`Documentation Overview <http://python-otcextensions.readthedocs.io/en/latest/>`_
 
 Installation
 ------------
@@ -32,6 +32,7 @@ The OTC Extensions are hosted as the package `otcextensions` on PyPI
 and can be installed by pip as
 
 .. code-block: console
+
    $ pip install otcextensions
 
 There are several options
@@ -86,6 +87,7 @@ authorization. For both there are several options available:
   used:
 
 .. code-block: console
+
    export OS_AUTH_URL=<url-to-openstack-identity>
    export OS_IDENTITY_API_VERSION=3
    export OS_PROJECT_NAME=<project-name>
@@ -101,6 +103,7 @@ authorization. For both there are several options available:
   very similar::
 
 .. code-block: console
+
    --os-auth-url <url>
    --os-identity-api-version 3
    --os-project-name <project-name>
@@ -117,12 +120,14 @@ authorization. For both there are several options available:
   API that presumably was acquired from the Service Catalog::
 
 .. code-block: console
+
    export OS_TOKEN=<token>
    export OS_URL=<url-to-openstack-service>
 
 The corresponding command-line options look very similar::
 
 .. code-block: console
+
    --os-token <token>
    --os-url <url-to-openstack-service>
 
