@@ -21,10 +21,12 @@ packages.
 Documentation
 -------------
 
-* `Documentation <http://python-otcextensions.readthedocs.io/en/latest/>`
+* `Documentation Overview <http://python-otcextensions.readthedocs.io/en/latest/>`_
 
 Installation
 ------------
+
+`Installation Page <https://python-otcextensions.readthedocs.io/en/latest/install/index.html>`_
 
 The OTC Extensions are hosted as the package `otcextensions` on PyPI
 and can be installed by pip as
@@ -42,6 +44,8 @@ documentation.
 Configuration
 -------------
 
+`Configuration Page <https://python-otcextensions.readthedocs.io/en/latest/install/configuration.html>`_
+
 Acessing the Open Telekom Cloud APIs requires authentication and
 authorization. For both there are several options available:
 
@@ -58,19 +62,21 @@ authorization. For both there are several options available:
 
   .. code-block:: yaml
 
-      clouds:
-          otc:
-          profile: otc
-              auth:
-                  username: "*username*"
-                  password: "*password*"
-                  project_name: "eu-de"
-                  auth_url: "https://iam.eu-de.otc.t-systems.com:443/v3"
-                  user_domain_name: "*OTC00000000001000000xxx*"
-             interface: "public"
-             identity_api_version: 3
-             ak: "*40 digit access key*"
-             sk: "*20 digit secure key*"
+    clouds:
+      otc:
+        profile: otc
+        auth:
+          username: '<USER_NAME>'
+          password: '<PASSWORD>'
+          project_name: '<eu-de_project>'
+          # or project_id: '<123456_PROJECT_ID>'
+          user_domain_name: 'OTC00000000001000000xxx'
+          # or user_domain_id: '<123456_DOMAIN_ID>'
+          auth_url: 'https://iam.eu-de.otc.t-systems.com:443/v3'
+        interface: 'public'
+        identity_api_version: 3 # !Important
+        ak: '<AK_VALUE>' # AK/SK pair for access to OBS
+        sk: '<SK_VALUE>'
 
   With this configuration you can start using the CLI with ``openstack
   --os-cloud otc *command*`` or by ``export OS_CLOUD=otc; openstack
@@ -79,27 +85,29 @@ authorization. For both there are several options available:
 * **Environment variables:** Authentication using username/password is often
   used:
 
-    export OS_AUTH_URL=<url-to-openstack-identity>
-    export OS_IDENTITY_API_VERSION=3
-    export OS_PROJECT_NAME=<project-name>
-    export OS_PROJECT_DOMAIN_NAME=<project-domain-name>
-    export OS_USERNAME=<username>
-    export OS_USER_DOMAIN_NAME=<user-domain-name>
-    export OS_PASSWORD=<password>  # (optional)
-    export S3_ACCESS_KEY_ID=<access_key>
-    export S3_SECRET_ACCESS_KEY=<secret_access_key>
-
+.. code-block: console
+   export OS_AUTH_URL=<url-to-openstack-identity>
+   export OS_IDENTITY_API_VERSION=3
+   export OS_PROJECT_NAME=<project-name>
+   export OS_PROJECT_DOMAIN_NAME=<project-domain-name>
+   export OS_USERNAME=<username>
+   export OS_USER_DOMAIN_NAME=<user-domain-name>
+   export OS_PASSWORD=<password>  # (optional)
+   export S3_ACCESS_KEY_ID=<access_key>
+   export S3_SECRET_ACCESS_KEY=<secret_access_key>
+ 
 
 * **Command-Line Options:** The corresponding command-line options look
   very similar::
 
-    --os-auth-url <url>
-    --os-identity-api-version 3
-    --os-project-name <project-name>
-    --os-project-domain-name <project-domain-name>
-    --os-username <username>
-    --os-user-domain-name <user-domain-name>
-    [--os-password <password>]
+.. code-block: console
+   --os-auth-url <url>
+   --os-identity-api-version 3
+   --os-project-name <project-name>
+   --os-project-domain-name <project-domain-name>
+   --os-username <username>
+   --os-user-domain-name <user-domain-name>
+   [--os-password <password>]
 
     If a password is not provided above (in plaintext), you will be
     interactively prompted to provide one securely.
@@ -108,13 +116,15 @@ authorization. For both there are several options available:
   already-acquired token and a URL pointing directly to the service
   API that presumably was acquired from the Service Catalog::
 
-    export OS_TOKEN=<token>
-    export OS_URL=<url-to-openstack-service>
+.. code-block: console
+   export OS_TOKEN=<token>
+   export OS_URL=<url-to-openstack-service>
 
 The corresponding command-line options look very similar::
 
-    --os-token <token>
-    --os-url <url-to-openstack-service>
+.. code-block: console
+   --os-token <token>
+   --os-url <url-to-openstack-service>
 
 In addition to that a regular `clouds.yaml` configuration file can be used
 
@@ -124,15 +134,10 @@ or
 https://developer.openstack.org/sdks/python/openstacksdk/users/config
 
 
-Writing Own Code
-----------------
-
-XXX Example XXXX
-
 Contributing
 ------------
 
-See CONTRIBUTING.rst
+* `Contribution Page <https://python-otcextensions.readthedocs.io/en/latest/contributor/index.html>`_
 
 Further Links
 -------------
