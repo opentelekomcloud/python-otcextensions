@@ -84,7 +84,7 @@ authorization. For both there are several options available:
   *command*``.
 
 * **Environment variables:** Authentication using username/password is often
-  used:
+  used::
 
     export OS_AUTH_URL=<url-to-openstack-identity>
     export OS_IDENTITY_API_VERSION=3
@@ -118,7 +118,7 @@ authorization. For both there are several options available:
     export OS_TOKEN=<token>
     export OS_URL=<url-to-openstack-service>
 
-The corresponding command-line options look very similar::
+* The corresponding command-line options look very similar::
 
     --os-token <token>
     --os-url <url-to-openstack-service>
