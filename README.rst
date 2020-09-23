@@ -128,6 +128,16 @@ https://docs.openstack.org/python-openstackclient/latest/cli/authentication.html
 or
 https://developer.openstack.org/sdks/python/openstacksdk/users/config
 
+OTC Extensions CLI Usage
+------------------------
+
+`OTCE CLI Command Overview <https://python-otcextensions.readthedocs.io/en/latest/cli/index.html>`_
+
+OTC Extensions SDK Guides
+-------------------------
+
+`OTCE SDK Guides <https://python-otcextensions.readthedocs.io/en/latest/sdk/guides/index.html>`_
+
 Contributing
 ------------
 
