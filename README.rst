@@ -41,7 +41,6 @@ installation as well as installation from operating system packets or directly
 from source. Refer to the installation instructions_ in the projects
 documentation.
 
-
 Configuration
 -------------
 
@@ -95,7 +94,6 @@ authorization. For both there are several options available:
     export OS_PASSWORD=<password>  # (optional)
     export S3_ACCESS_KEY_ID=<access_key>
     export S3_SECRET_ACCESS_KEY=<secret_access_key>
- 
 
 * **Command-Line Options:** The corresponding command-line options look
   very similar::
@@ -130,7 +128,6 @@ https://docs.openstack.org/python-openstackclient/latest/cli/authentication.html
 or
 https://developer.openstack.org/sdks/python/openstacksdk/users/config
 
-
 Contributing
 ------------
 
@@ -142,4 +139,3 @@ Further Links
 * `Issue Tracker <https://github.com/OpenTelekomCloud/python-otcextensions/issues>`_
 
 .. _instructions: http://python-otcextensions.readthedocs.io/en/latest/install/
-
