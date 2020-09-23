@@ -44,8 +44,8 @@ under several service tags. This may change in future.
     * - ces
       - Cloudeye
       - X
-      -
-      -
+      - X
+      - X
       -
     * - cts
       - Clout Trace Service

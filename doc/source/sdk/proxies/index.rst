@@ -8,6 +8,7 @@ Service Proxies
    AutoScaling Service (AS) <auto_scaling>
    Cloud Container Engine v1 (CCEv1) <cce_v1>
    Cloud Container Engine v2 (CCE) <cce_v3>
+   Cloud Eye Service (CES) <ces>
    Cloud Trace Service (CTS) <cts>
    Distributed Cache Service (DCS) <dcs>
    Dedicated Host Service (DeH) <deh>
