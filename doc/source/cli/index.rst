@@ -32,6 +32,7 @@ documentation of these services:
    deh
    dms
    dns
+   identity
    kms
    load_balancer
    nat
