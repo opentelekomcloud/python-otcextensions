@@ -37,8 +37,7 @@ class Proxy(proxy.Proxy):
         """Return a single alarm
 
         :param alarm: The value can be the ID of a alarm or a
-                       :class:`~otcextensions.sdk.ces.v1.alarm.Alarm`
-                        instance.
+            :class:`~otcextensions.sdk.ces.v1.alarm.Alarm` instance.
         :returns: A generator of alarm objects
         :rtype: :class:`~otcextensions.sdk.ces.v1.alarm.Alarm`
         """

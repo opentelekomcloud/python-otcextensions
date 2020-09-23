@@ -3,8 +3,8 @@ CTS API
 
 .. automodule:: otcextensions.sdk.cts.v1._proxy
 
-The Distributed Message Service Class
--------------------------------------
+The Cloud Trace Service Class
+-----------------------------
 
 The CTS high-level interface is available through the ``cts``
 member of a :class:`~openstack.connection.Connection` object.  The
