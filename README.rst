@@ -86,31 +86,27 @@ authorization. For both there are several options available:
 * **Environment variables:** Authentication using username/password is often
   used:
 
-.. code-block: console
-
-   export OS_AUTH_URL=<url-to-openstack-identity>
-   export OS_IDENTITY_API_VERSION=3
-   export OS_PROJECT_NAME=<project-name>
-   export OS_PROJECT_DOMAIN_NAME=<project-domain-name>
-   export OS_USERNAME=<username>
-   export OS_USER_DOMAIN_NAME=<user-domain-name>
-   export OS_PASSWORD=<password>  # (optional)
-   export S3_ACCESS_KEY_ID=<access_key>
-   export S3_SECRET_ACCESS_KEY=<secret_access_key>
+    export OS_AUTH_URL=<url-to-openstack-identity>
+    export OS_IDENTITY_API_VERSION=3
+    export OS_PROJECT_NAME=<project-name>
+    export OS_PROJECT_DOMAIN_NAME=<project-domain-name>
+    export OS_USERNAME=<username>
+    export OS_USER_DOMAIN_NAME=<user-domain-name>
+    export OS_PASSWORD=<password>  # (optional)
+    export S3_ACCESS_KEY_ID=<access_key>
+    export S3_SECRET_ACCESS_KEY=<secret_access_key>
  
 
 * **Command-Line Options:** The corresponding command-line options look
   very similar::
 
-.. code-block: console
-
-   --os-auth-url <url>
-   --os-identity-api-version 3
-   --os-project-name <project-name>
-   --os-project-domain-name <project-domain-name>
-   --os-username <username>
-   --os-user-domain-name <user-domain-name>
-   [--os-password <password>]
+    --os-auth-url <url>
+    --os-identity-api-version 3
+    --os-project-name <project-name>
+    --os-project-domain-name <project-domain-name>
+    --os-username <username>
+    --os-user-domain-name <user-domain-name>
+    [--os-password <password>]
 
     If a password is not provided above (in plaintext), you will be
     interactively prompted to provide one securely.
@@ -119,17 +115,13 @@ authorization. For both there are several options available:
   already-acquired token and a URL pointing directly to the service
   API that presumably was acquired from the Service Catalog::
 
-.. code-block: console
-
-   export OS_TOKEN=<token>
-   export OS_URL=<url-to-openstack-service>
+    export OS_TOKEN=<token>
+    export OS_URL=<url-to-openstack-service>
 
 The corresponding command-line options look very similar::
 
-.. code-block: console
-
-   --os-token <token>
-   --os-url <url-to-openstack-service>
+    --os-token <token>
+    --os-url <url-to-openstack-service>
 
 In addition to that a regular `clouds.yaml` configuration file can be used
 
