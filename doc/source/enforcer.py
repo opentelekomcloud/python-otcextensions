@@ -42,6 +42,7 @@ def get_proxy_methods():
     names = ["otcextensions.sdk.anti_ddos.v1._proxy",
              "otcextensions.sdk.auto_scaling.v1._proxy",
              "otcextensions.sdk.cce.v1._proxy",
+             "otcextensions.sdk.ces.v1._proxy",
              "otcextensions.sdk.cts.v1._proxy",
              "otcextensions.sdk.dcs.v1._proxy",
              "otcextensions.sdk.dms.v1._proxy",

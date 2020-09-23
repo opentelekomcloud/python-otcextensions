@@ -26,6 +26,7 @@ documentation of these services:
    anti_ddos
    auto_scaling
    cce_v2
+   ces
    cts
    dcs
    deh
