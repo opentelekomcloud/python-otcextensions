@@ -10,10 +10,3 @@ For help on a specific `identity` command, enter:
 
    $ openstack identity help SUBCOMMAND
 
-.. _identity_credential:
-
-Identity Credential Operations
-------------------------------
-
-.. autoprogram-cliff:: openstack.identity.v3
-   :command: identity credential *
