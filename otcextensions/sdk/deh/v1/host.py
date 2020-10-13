@@ -53,7 +53,7 @@ class Host(resource.Resource):
 
     _query_mapping = resource.QueryParameters(
         'id', 'name', 'host_type', 'host_type_name',
-        'flavor', 'state', 'tenant', 'availability_zone',
+        'flavor', 'status', 'tenant', 'availability_zone',
         'changes_since', 'tags', 'instance_uuid', 'released_at',
         changes_since='changes-since')
 
@@ -91,7 +91,7 @@ class Host(resource.Resource):
     released_at = resource.Body('released_at')
     #: Specifies the DeH status.
     #: The value can be available, fault or released
-    state = resource.Body('state')
+    status = resource.Body('state')
     #: Tag.
     tags = resource.Body('tags', type=list)
 
