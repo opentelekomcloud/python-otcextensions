@@ -138,3 +138,11 @@ class Host(resource.Resource):
         exceptions.raise_from_response(response)
         self.fetch_tags(session)
         return self
+
+    # Create method for host does not accept resource key while creation
+    def create(self, session, prepend_key=False, base_path=None, **params):
+        return super(Host, self).create(
+            session,
+            prepend_key=prepend_key,
+            base_path=base_path,
+            **params)
