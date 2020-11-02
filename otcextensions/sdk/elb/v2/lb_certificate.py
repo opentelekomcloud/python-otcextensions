@@ -26,7 +26,9 @@ class Certificate(resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'marker', 'limit',
+        'id', 'name', 'description',
+        'type', 'domain', 'certificate',
+        'private_key', 'marker', 'limit',
     )
 
     # Properties
