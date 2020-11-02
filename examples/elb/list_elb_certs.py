@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-List all ELB certs 
+List all ELB certs
 """
 import openstack
 
