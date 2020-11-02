@@ -14,7 +14,6 @@ from openstack import resource
 
 
 class Certificate(resource.Resource):
-    resource_key = 'certificate'
     resources_key = 'certificates'
     base_path = ('/lbaas/certificates')
 

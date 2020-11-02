@@ -18,5 +18,5 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-for cert in conn.elb.certificates():
+for cert in conn.elb.certificates(**{}):
     print(cert)

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -9,16 +10,12 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import uuid
+"""
+Create new ELB server cert
+"""
+import openstack
 
-# from openstack import resource
-
-from otcextensions.tests.functional.sdk.elb import TestElbCertificate
-
-
-class TestCertificate(TestElbCertificate):
-
-    _PRIVATE_KEY = """-----BEGIN PRIVATE KEY-----
+_PRIVATE_KEY = """-----BEGIN PRIVATE KEY-----
 MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDrvw+CfkRMtN6I
 KQK+YNKhjdWqUCnTI7YqZLDhZkoIqcvK1F2mjkcoGXOAjCjvGXf/xX35j0dGLgHK
 e3AwNaQDPRWec6DuTqh9kBq9Qy7rUs6Na85wwSN8FG7z9XRuWR9NhEg24nrATUr/
@@ -47,7 +44,7 @@ WAFcxEzr5moG4nJzz/5sGqN5IRy1zDd/QkV2KEhjzWFbpGMgbgNTiLmz0BT6hUXl
 Ltxv392mcEGwmbfc1YJJfN2B
 -----END PRIVATE KEY-----"""
 
-    _CERTIFICATE = """-----BEGIN CERTIFICATE-----
+_CERTIFICATE = """-----BEGIN CERTIFICATE-----
 MIIDADCCAegCCQCUu4mu6VfH/zANBgkqhkiG9w0BAQsFADBCMQswCQYDVQQGEwJE
 RTELMAkGA1UEBwwCUEIxDDAKBgNVBAoMA1RTSTEYMBYGA1UEAwwPbXlmYWtlLnRl
 c3QuY29tMB4XDTIwMDkwMTA5Mjc1M1oXDTIxMDkwMTA5Mjc1M1owQjELMAkGA1UE
@@ -67,49 +64,12 @@ uslYHnizLvYY6FaAdExE1TpM6YrM3b7aYMgv700CDsBCpFncQUx9tujpQxCmMoHZ
 rNcviQ==
 -----END CERTIFICATE-----"""
 
-    def setUp(self):
-        super(TestCertificate, self).setUp()
+openstack.enable_logging(True)
+conn = openstack.connect(cloud='otc')
 
-        self.cert_name = "SDK-" + uuid.uuid4().hex
-        self.cert = self.client.create_certificate(
-            private_key=self._PRIVATE_KEY,
-            certificate=self._CERTIFICATE,
-            name=self.cert_name
-        )
-
-        self.addCleanup(self.conn.elb.delete_certificate, self.cert)
-
-    def test_list_certificates(self):
-        query = {}
-        certs = list(self.client.certificates(**query))
-        self.assertGreaterEqual(len(certs), 0)
-
-    def test_get_certificate(self):
-        cert = self.client.get_certificate(self.cert.id)
-        self.assertEqual(self.cert.name, cert.name)
-        self.assertEqual(self.cert.create_time, cert.create_time)
-        self.assertEqual(self.cert.expire_time, cert.expire_time)
-
-    def test_find_certificate(self):
-        cert = self.client.find_certificate(self.cert.name)
-        self.assertEqual(self.cert.name, cert.name)
-        self.assertEqual(self.cert.create_time, cert.create_time)
-        self.assertEqual(self.cert.expire_time, cert.expire_time)
-
-    def test_update_certificate(self):
-        cert2 = self.client.create_certificate(
-            private_key=self._PRIVATE_KEY,
-            certificate=self._CERTIFICATE,
-            name=self.cert_name + "_2"
-        )
-
-        self.addCleanup(self.conn.elb.delete_certificate, cert2)
-        cert2_cmp = self.client.update_certificate(
-            cert2,
-            name=self.cert_name + "_2_cp"
-        )
-        self.assertEqual(cert2.name, cert2_cmp.name)
-
-        cert2_cmp = self.client.get_certificate(cert2_cmp.id)
-        self.assertEqual(cert2.name, cert2_cmp.name)
-        self.assertEqual(cert2.id, cert2_cmp.id)
+cert = conn.elb.create_certificate(
+    private_key=_PRIVATE_KEY,
+    certificate=_CERTIFICATE,
+    name="test_certificate"
+)
+print(cert)
