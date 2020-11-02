@@ -12,7 +12,7 @@
 
 from openstack.load_balancer.v2 import _proxy
 
-from otcextensions.sdk.elb.v2 import lb_certificate as _certificate
+from otcextensions.sdk.elb.v2 import elb_certificate as _certificate
 
 
 class Proxy(_proxy.Proxy):
@@ -23,12 +23,12 @@ class Proxy(_proxy.Proxy):
         """Create a new certificate from attributes
 
         :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.elb.v2.lb_certificate.Certificate`,
+            a :class:`~otcextensions.sdk.elb.v2.elb_certificate.Certificate`,
             comprised of the properties on the Certificate class.
 
         :returns: The results of the Certificate Creation
 
-        :rtype: :class:`~otcextensions.sdk.elb.v2.lb_certificate.Certificate`
+        :rtype: :class:`~otcextensions.sdk.elb.v2.elb_certificate.Certificate`
         """
         return self._create(_certificate.Certificate, **attrs)
 
@@ -46,7 +46,7 @@ class Proxy(_proxy.Proxy):
         """Delete a certificate
 
         :param certificate: The value can be the ID of a ELB certificate or a
-            :class:`~otcextensions.sdk.elb.v2.lb_certificate.Certificate`
+            :class:`~otcextensions.sdk.elb.v2.elb_certificate.Certificate`
              instance.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
@@ -63,11 +63,11 @@ class Proxy(_proxy.Proxy):
         """Get a single certificate
 
         :param certificate: The value can be the ID of a ELB certificate or a
-            :class:`~otcextensions.sdk.elb.v2.lb_certificate.Certificate`
+            :class:`~otcextensions.sdk.elb.v2.elb_certificate.Certificate`
             instance.
 
         :returns: One :class:
-        `~otcextensions.sdk.elb.v2.lb_certificate.Certificate`
+        `~otcextensions.sdk.elb.v2.elb_certificate.Certificate`
 
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
             when no resource can be found.
@@ -78,14 +78,14 @@ class Proxy(_proxy.Proxy):
         """Update a certificate
 
         :param certificate: The value can be either the ID of a ELB certificate
-         or a :class:`~otcextensions.sdk.elb.v2.lb_certificate.Certificate`
+         or a :class:`~otcextensions.sdk.elb.v2.elb_certificate.Certificate`
           instance.
         :param dict attrs: The attributes to update on the certificate
          represented by ``certificate``.
 
         :returns: The updated certificate.
 
-        :rtype: :class:`~otcextensions.elb.v2.lb_certificate.Certificate`
+        :rtype: :class:`~otcextensions.elb.v2.elb_certificate.Certificate`
         """
         return self._update(_certificate.Certificate, certificate, **attrs)
 
@@ -100,7 +100,7 @@ class Proxy(_proxy.Proxy):
             to find a nonexistent certificate.
 
         :returns:
-            One :class:`~otcextensions.sdk.elb.v2.lb_certificate.Certificate`
+            One :class:`~otcextensions.sdk.elb.v2.elb_certificate.Certificate`
              or ``None``
         """
         return self._find(_certificate.Certificate, name_or_id,

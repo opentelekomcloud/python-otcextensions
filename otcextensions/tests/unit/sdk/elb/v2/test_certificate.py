@@ -13,7 +13,7 @@ import mock
 from keystoneauth1 import adapter
 from openstack.tests.unit import base
 
-from otcextensions.sdk.elb.v2 import lb_certificate
+from otcextensions.sdk.elb.v2 import elb_certificate
 
 FAKE_ID = "68d5745e-6af2-40e4-945d-fe449be00148"
 EXAMPLE = {
@@ -34,7 +34,7 @@ class TestElbCertificate(base.TestCase):
         self.sess.post = mock.Mock()
 
     def test_basic(self):
-        sot = lb_certificate.Certificate()
+        sot = elb_certificate.Certificate()
 
         self.assertEqual('/lbaas/certificates', sot.base_path)
         self.assertEqual('certificates', sot.resources_key)
@@ -47,7 +47,7 @@ class TestElbCertificate(base.TestCase):
         self.assertTrue(sot.allow_commit)
 
     def test_make(self):
-        sot = lb_certificate.Certificate(**EXAMPLE)
+        sot = elb_certificate.Certificate(**EXAMPLE)
         self.assertEqual(EXAMPLE['id'], sot.id)
         self.assertEqual(EXAMPLE['name'], sot.name)
         self.assertEqual(EXAMPLE['update_time'], sot.update_time)
