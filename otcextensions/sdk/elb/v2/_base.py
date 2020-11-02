@@ -49,7 +49,7 @@ class Resource(resource.Resource):
                 **params)
             return match.fetch(session, **params)
         except exceptions.SDKException:
-            # WAF will return 400 when we try to do GET with name
+            # ELB will return 400 when we try to do GET with name
             pass
 
         if ('name' in cls._query_mapping._mapping.keys()
