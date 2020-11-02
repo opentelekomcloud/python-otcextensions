@@ -46,10 +46,11 @@ class Proxy(_proxy.Proxy):
         """Delete a certificate
 
         :param certificate: The value can be the ID of a ELB certificate or a
-            :class:`~otcextensions.sdk.elb.v2.lb_certificate.Certificate` instance.
+            :class:`~otcextensions.sdk.elb.v2.lb_certificate.Certificate`
+             instance.
         :param bool ignore_missing: When set to ``False``
-            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
-            the certificate does not exist.
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+             when the certificate does not exist.
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent certificate.
 
@@ -65,7 +66,8 @@ class Proxy(_proxy.Proxy):
             :class:`~otcextensions.sdk.elb.v2.lb_certificate.Certificate`
             instance.
 
-        :returns: One :class:`~otcextensions.sdk.elb.v2.lb_certificate.Certificate`
+        :returns: One :class:
+        `~otcextensions.sdk.elb.v2.lb_certificate.Certificate`
 
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
             when no resource can be found.
@@ -75,10 +77,11 @@ class Proxy(_proxy.Proxy):
     def update_certificate(self, certificate, **attrs):
         """Update a certificate
 
-        :param certificate: The value can be either the ID of a ELB certificate or a
-            :class:`~otcextensions.sdk.elb.v2.lb_certificate.Certificate` instance.
-        :param dict attrs: The attributes to update on the certificate represented
-            by ``certificate``.
+        :param certificate: The value can be either the ID of a ELB certificate
+         or a :class:`~otcextensions.sdk.elb.v2.lb_certificate.Certificate`
+          instance.
+        :param dict attrs: The attributes to update on the certificate
+         represented by ``certificate``.
 
         :returns: The updated certificate.
 
@@ -97,7 +100,8 @@ class Proxy(_proxy.Proxy):
             to find a nonexistent certificate.
 
         :returns:
-            One :class:`~otcextensions.sdk.elb.v2.lb_certificate.Certificate` or ``None``
+            One :class:`~otcextensions.sdk.elb.v2.lb_certificate.Certificate`
+             or ``None``
         """
         return self._find(_certificate.Certificate, name_or_id,
                           ignore_missing=ignore_missing)
