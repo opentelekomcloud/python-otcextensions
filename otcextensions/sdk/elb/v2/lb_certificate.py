@@ -12,8 +12,10 @@
 
 from openstack import resource
 
+from otcextensions.sdk.elb.v2 import _base
 
-class Certificate(resource.Resource):
+
+class Certificate(_base.Resource):
     resources_key = 'certificates'
     base_path = ('/lbaas/certificates')
 

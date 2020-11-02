@@ -67,7 +67,7 @@ rNcviQ==
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-cert = conn.elb.create_certificate(
+cert = conn.elb.find_certificate(
     private_key=_PRIVATE_KEY,
     certificate=_CERTIFICATE,
     name="test_certificate"
