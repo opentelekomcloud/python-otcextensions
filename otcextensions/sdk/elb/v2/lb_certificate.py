@@ -45,3 +45,11 @@ class Certificate(resource.Resource):
     certificate = resource.Body('certificate')
     #: Administrative status of the certificate.
     admin_state_up = resource.Body('admin_state_up')
+    #: Creation time
+    create_time = resource.Body('create_time')
+    #: Specifies the project ID.
+    project_id = resource.Body('tenant_id')
+    #: Time when the certificate expires.
+    expire_time = resource.Body('update_time')
+    #: Time when the certificate was updated.
+    update_time = resource.Body('update_time')
