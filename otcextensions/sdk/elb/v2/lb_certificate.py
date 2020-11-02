@@ -23,7 +23,6 @@ class Certificate(resource.Resource):
     allow_commit = True
     allow_delete = True
     allow_list = True
-    commit_method = 'PUT'
 
     _query_mapping = resource.QueryParameters(
         'certificate',
