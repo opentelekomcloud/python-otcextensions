@@ -41,3 +41,63 @@ class Proxy(_proxy.Proxy):
         :returns: A generator of certificates objects.
         """
         return self._list(_certificate.Certificate, **query)
+
+    def delete_certificate(self, certificate, ignore_missing=True):
+        """Delete a certificate
+
+        :param certificate: The value can be the ID of a ELB certificate or a
+            :class:`~otcextensions.sdk.elb.v2.lb_certificate.Certificate` instance.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the certificate does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent certificate.
+
+        :returns: ``None``
+        """
+        return self._delete(_certificate.Certificate, certificate,
+                            ignore_missing=ignore_missing)
+
+    def get_certificate(self, certificate):
+        """Get a single certificate
+
+        :param certificate: The value can be the ID of a ELB certificate or a
+            :class:`~otcextensions.sdk.elb.v2.lb_certificate.Certificate`
+            instance.
+
+        :returns: One :class:`~otcextensions.sdk.elb.v2.lb_certificate.Certificate`
+
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+            when no resource can be found.
+        """
+        return self._get(_certificate.Certificate, certificate)
+
+    def update_certificate(self, certificate, **attrs):
+        """Update a certificate
+
+        :param certificate: The value can be either the ID of a ELB certificate or a
+            :class:`~otcextensions.sdk.elb.v2.lb_certificate.Certificate` instance.
+        :param dict attrs: The attributes to update on the certificate represented
+            by ``certificate``.
+
+        :returns: The updated certificate.
+
+        :rtype: :class:`~otcextensions.elb.v2.lb_certificate.Certificate`
+        """
+        return self._update(_certificate.Certificate, certificate, **attrs)
+
+    def find_certificate(self, name_or_id, ignore_missing=False):
+        """Find a single certificate
+
+        :param name_or_id: The name or ID of a ELB certificate
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the certificate does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to find a nonexistent certificate.
+
+        :returns:
+            One :class:`~otcextensions.sdk.elb.v2.lb_certificate.Certificate` or ``None``
+        """
+        return self._find(_certificate.Certificate, name_or_id,
+                          ignore_missing=ignore_missing)

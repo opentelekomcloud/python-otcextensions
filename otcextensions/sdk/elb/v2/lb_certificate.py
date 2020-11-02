@@ -25,7 +25,7 @@ class Certificate(resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'certificate',
+        'marker', 'limit',
     )
 
     # Properties
@@ -50,6 +50,6 @@ class Certificate(resource.Resource):
     #: Specifies the project ID.
     project_id = resource.Body('tenant_id')
     #: Time when the certificate expires.
-    expire_time = resource.Body('update_time')
+    expire_time = resource.Body('expire_time')
     #: Time when the certificate was updated.
     update_time = resource.Body('update_time')
