@@ -107,6 +107,10 @@ OTC_SERVICES = {
     'ecs': {
         'service_type': 'ecs',
     },
+    'elb': {
+        'service_type': 'elb',
+        'replace_system': True
+    },
     'identity': {
         'service_type': 'identity',
         'replace_system': True
