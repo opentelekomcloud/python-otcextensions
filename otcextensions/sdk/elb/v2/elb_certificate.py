@@ -28,7 +28,7 @@ class Certificate(_base.Resource):
 
     _query_mapping = resource.QueryParameters(
         'id', 'name', 'description',
-        'type', 'domain', 'certificate',
+        'type', 'domain', 'content',
         'private_key', 'marker', 'limit',
     )
 
@@ -46,7 +46,7 @@ class Certificate(_base.Resource):
     #: Private key of the server certificate. *Type: string*
     private_key = resource.Body('private_key')
     #: Public key of the server certificate or CA certificate. *Type: string*
-    certificate = resource.Body('certificate')
+    content = resource.Body('certificate')
     #: Administrative status of the certificate.
     admin_state_up = resource.Body('admin_state_up')
     #: Creation time

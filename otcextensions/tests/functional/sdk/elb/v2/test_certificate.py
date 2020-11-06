@@ -166,15 +166,14 @@ rNcviNEW
     def test_update_certificate_content(self):
         cert2 = self.client.create_certificate(
             private_key=self._PRIVATE_KEY,
-            certificate=self._CERTIFICATE,
+            content=self._CERTIFICATE,
             name=self.cert_name + "_2"
         )
-
         self.addCleanup(self.conn.elb.delete_certificate, cert2)
         cert2_cmp = self.client.update_certificate(
             cert2,
             private_key=self._PRIVATE_KEY_UP,
-            certificate=self._CERTIFICATE_UP,
+            content=self._CERTIFICATE_UP,
             name=self.cert_name + "_2_cp"
         )
         self.assertEqual(cert2.name, cert2_cmp.name)
