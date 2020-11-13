@@ -89,8 +89,8 @@ class FakeFloatingIPEvent(test_base.Fake):
     def generate(cls):
         object_info = {
             'floating_ip_id': uuid.uuid4().hex,
-            'start_time': time.clock() * 1000,
-            'end_time': time.clock() * 1000,
+            'start_time': time.time() * 1000,
+            'end_time': time.time() * 1000,
             'trigger_bps': random.randint(1, 5),
             'trigger_pps': random.randint(1, 5),
             'trigger_http_pps': random.randint(1, 5),
@@ -107,7 +107,7 @@ class FakeFloatingIPStatDay(test_base.Fake):
     def generate(cls):
         object_info = {
             'floating_ip_id': uuid.uuid4().hex,
-            'period_start': time.clock() * 1000,
+            'period_start': time.time() * 1000,
             'bps_in': random.randint(1, 5),
             'bps_attack': random.randint(1, 5),
             'total_bps': random.randint(1, 5),
@@ -126,7 +126,7 @@ class FakeFloatingIPStatWeek(test_base.Fake):
     def generate(cls):
         object_info = {
             'weekdata': [({
-                'period_start': time.clock() * 1000,
+                'period_start': time.time() * 1000,
                 'ddos_intercept_times': random.randint(1, 5),
                 'ddos_blackhole_times': random.randint(1, 5),
                 'max_attack_bps': random.randint(1, 5),

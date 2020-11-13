@@ -26,13 +26,17 @@ documentation of these services:
    anti_ddos
    auto_scaling
    cce_v2
+   ces
    cts
    dcs
    deh
    dms
    dns
+   identity
    kms
    load_balancer
+   nat
    obs
-   rds
+   rds_v3
    volume_backup
+   vpc

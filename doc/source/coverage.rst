@@ -44,8 +44,8 @@ under several service tags. This may change in future.
     * - ces
       - Cloudeye
       - X
-      -
-      -
+      - X
+      - X
       -
     * - cts
       - Clout Trace Service
@@ -92,8 +92,8 @@ under several service tags. This may change in future.
     * - nat
       - Network Address Translation
       - X
-      -
-      -
+      - X
+      - X
       -
     * - obs
       - Object Storage Service
@@ -101,26 +101,20 @@ under several service tags. This may change in future.
       - X
       - X
       -
-    * - rds
+    * - rds_v3
       - Relational Database Service
       - X
       - X
       - X
-      -
-    * - rds_v1
-      - Relational Database Service
-      -
-      -
-      -
-      -
-    * - rds_v2
-      - Relational Database Service
-      -
-      -
-      -
       -
     * - vbs
-      - Volume Backup
+      - Volume Backup Service
+      - X
+      - X
+      - X
+      -
+    * - vpc_v2
+      - Virtual Private Cloud
       - X
       - X
       - X

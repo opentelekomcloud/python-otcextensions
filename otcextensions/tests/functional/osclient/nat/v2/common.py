@@ -46,11 +46,12 @@ class NatTestCase(base.TestCase):
             'nat gateway create {name}'
             ' --router-id {router_id}'
             ' --internal-network-id {net_id}'
+            ' --description {description}'
             ' --spec {spec} -f json'.format(
                 name=name,
                 router_id=self.ROUTER_ID,
                 net_id=self.NETWORK_ID,
-                description='OTCE Lib Test',
+                description='OTCE_func_test',
                 spec=1)
         ))
         self.assertIsNotNone(json_output)

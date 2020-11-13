@@ -27,7 +27,7 @@ A sample clouds.yaml file is listed below to connect with Open Telekom Cloud:
     otc:
       profile: otc
       auth:
-       username: '<USER_NAME>'
+        username: '<USER_NAME>'
         password: '<PASSWORD>'
         project_name: '<eu-de_project>'
         # or project_id: '<123456_PROJECT_ID>'
@@ -73,7 +73,7 @@ to the file as shown below:
     otcfirstproject:
       profile: otc
       auth:
-       username: '<USER_NAME>'
+        username: '<USER_NAME>'
         password: '<PASSWORD>'
         project_name: '<eu-de_project>'
         # or project_id: '<123456_PROJECT_ID>'
@@ -114,7 +114,7 @@ secret which is left out from ``clouds.yaml``:
     otc:
       profile: otc
       auth:
-       username: '<USER_NAME>'
+        username: '<USER_NAME>'
         project_name: '<eu-de_project>'
         # or project_id: '<123456_PROJECT_ID>'
         user_domain_name: 'OTC00000000001000000xxx'
@@ -135,6 +135,33 @@ secret which is left out from ``clouds.yaml``:
         password: '<PASSWORD>'
 
 .. _environment-variables:
+
+Agency based authorization
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Open Telekom Cloud supports a concept of agencies. One domain delegates access
+to resources to another domain. After trust relationship is established the
+following configuration can be used in ``clouds.yaml``:
+
+.. code-block:: yaml
+
+  clouds:
+    otc:
+      profile: otc
+      auth_type: agency
+      auth:
+        username: '<USER_NAME>'
+        project_name: '<eu-de_project>'
+        # or project_id: '<123456_PROJECT_ID>'
+        user_domain_name: 'OTC00000000001000000xxx'
+        # or user_domain_id: '<123456_DOMAIN_ID>'
+        auth_url: 'https://iam.eu-de.otc.t-systems.com:443/v3'
+        target_domain_id: '<123456_DOMAIN_ID>' # Domain where agency is created
+        # or target_domain_name: '<123456_DOMAIN_NAME'
+        target_agency_name: 'test_agency' # name of the agency
+        target_project_name: '<123456_PROJECT_NAME>' # project scoped operations
+        # or target_project_id: '<123456_PROJECT_ID>'
+        # When target_project_xx is not set - domain scope is selected
 
 Configuration of Environment Variables
 --------------------------------------

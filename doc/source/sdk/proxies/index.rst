@@ -8,17 +8,21 @@ Service Proxies
    AutoScaling Service (AS) <auto_scaling>
    Cloud Container Engine v1 (CCEv1) <cce_v1>
    Cloud Container Engine v2 (CCE) <cce_v3>
+   Cloud Eye Service (CES) <ces>
    Cloud Trace Service (CTS) <cts>
    Distributed Cache Service (DCS) <dcs>
    Dedicated Host Service (DeH) <deh>
    Distributed Message Service (DMS) <dms>
    Domain Name Server Service (DNS) <dns>
+   Identity Service (IAM) <identity_v3>
    Key Management Service (KMS) <kms>
    Network Address Translation (NAT) <nat>
    Object Block Storage (OBS) <obs>
    Relational Database Service RDS V1 (RDSv1) <rds_v1>
    Relational Database Service RDS V3 (RDS) <rds_v3>
    Volume Backup Service (VBS) <volume_backup>
+   Virtual Private Cloud (VPC) <vpc>
+   Web Application Firewall (WAF) <waf>
 
 .. _service-proxies:
 

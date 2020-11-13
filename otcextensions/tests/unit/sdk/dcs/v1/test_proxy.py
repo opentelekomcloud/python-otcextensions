@@ -80,14 +80,6 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
             'VALUE',
             a='b'
         )
-        self.sot.update.assert_called_with(
-            self.proxy,
-            has_body=False
-        )
-        self.proxy._get.assert_called_with(
-            _instance.Instance,
-            self.sot
-        )
 
     def test_extend_instance(self):
         self.sot = _instance.Instance()
@@ -232,8 +224,16 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
         )
 
     def test_delete_backup(self):
-        self.verify_delete(
-            self.proxy.delete_instance_backup, _backup.Backup, True,
+        instance = _instance.Instance(id='instance_id')
+        self._verify2(
+            'openstack.proxy.Proxy._delete',
+            self.proxy.delete_instance_backup,
+            method_args=[instance, 'backup_1'],
+            expected_args=[_backup.Backup, 'backup_1'],
+            expected_kwargs={
+                'instance_id': instance.id,
+                'ignore_missing': True
+            }
         )
 
     def test_restores_query(self):
