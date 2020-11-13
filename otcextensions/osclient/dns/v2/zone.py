@@ -86,15 +86,28 @@ class ShowZone(command.ShowOne):
             help=_('UUID or name of the zone.')
         )
 
+        parser.add_argument(
+            '--type',
+            metavar='<type>',
+            choices=['private'],
+            help=_('Provide type if zone is a private Zone.')
+        )
+
         return parser
 
     def take_action(self, parsed_args):
 
         client = self.app.client_manager.dns
 
+        query = {}
+
+        if parsed_args.type:
+            query['type'] = parsed_args.type
+
         obj = client.find_zone(
             parsed_args.zone,
-            ignore_missing=False
+            ignore_missing=False,
+            **query
         )
 
         display_columns, columns = _get_columns(obj)
