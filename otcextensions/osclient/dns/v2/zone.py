@@ -89,8 +89,11 @@ class ShowZone(command.ShowOne):
         parser.add_argument(
             '--type',
             metavar='<type>',
-            choices=['private'],
-            help=_('Provide type if zone is a private Zone.')
+            choices=['private', 'public'],
+            default='public',
+            help=_('Mandatory for private Zone findings.\n'
+                   'Choices: public, private\n'
+                   'Default: public\n')
         )
 
         return parser
@@ -101,7 +104,7 @@ class ShowZone(command.ShowOne):
 
         query = {}
 
-        if parsed_args.type:
+        if parsed_args.type and (parsed_args.type == 'private'):
             query['type'] = parsed_args.type
 
         obj = client.find_zone(
