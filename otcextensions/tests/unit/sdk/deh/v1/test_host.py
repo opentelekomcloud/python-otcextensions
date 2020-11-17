@@ -97,7 +97,7 @@ class TestHost(base.TestCase):
                               'marker': 'marker',
                               'name': 'name',
                               'released_at': 'released_at',
-                              'state': 'state',
+                              'status': 'status',
                               'tags': 'tags',
                               'tenant': 'tenant'},
                              sot._query_mapping._mapping)
@@ -115,7 +115,7 @@ class TestHost(base.TestCase):
         self.assertEqual(EXAMPLE['name'], sot.name)
         self.assertEqual(EXAMPLE['auto_placement'], sot.auto_placement)
         self.assertEqual(EXAMPLE['availability_zone'], sot.availability_zone)
-        self.assertEqual(EXAMPLE['state'], sot.state)
+        self.assertEqual(EXAMPLE['state'], sot.status)
         self.assertEqual(EXAMPLE['project_id'], sot.project_id)
         self.assertEqual(EXAMPLE['available_vcpus'], sot.available_vcpus)
         self.assertEqual(EXAMPLE['available_memory'], sot.available_memory)
