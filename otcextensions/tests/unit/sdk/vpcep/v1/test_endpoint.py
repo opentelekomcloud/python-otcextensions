@@ -55,12 +55,11 @@ class TestEndpoint(base.TestCase):
 
     def test_make_it(self):
         sot = endpoint.Endpoint(**EXAMPLE)
-        for key in EXAMPLE.keys():
+        for key, value in EXAMPLE.items():
             if key == 'tags':
-                tags_list = EXAMPLE[key]
-                for i in range(len(tags_list)):
-                    for sub_key in tags_list[i].keys():
-                        self.assertEqual(tags_list[i][sub_key],
-                                         getattr(sot.tags[i], sub_key))
+                for i in range(len(value)):
+                    for sub_key, sub_value in value[i].items():
+                        self.assertEqual(getattr(sot.tags[i], sub_key),
+                                         sub_value)
             else:
-                self.assertEqual(EXAMPLE[key], getattr(sot, key))
+                self.assertEqual(getattr(sot, key), value)

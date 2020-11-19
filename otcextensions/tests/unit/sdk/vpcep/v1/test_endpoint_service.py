@@ -64,12 +64,11 @@ class TestEndpointService(base.TestCase):
 
     def test_make_it(self):
         sot = endpoint_service.EndpointService(**EXAMPLE)
-        for key in EXAMPLE.keys():
+        for key, value in EXAMPLE.items():
             if key == 'ports':
-                ports_list = EXAMPLE[key]
-                for i in range(len(ports_list)):
-                    for sub_key in ports_list[i].keys():
-                        self.assertEqual(ports_list[i][sub_key],
-                                         getattr(sot.ports[i], sub_key))
+                for i in range(len(value)):
+                    for sub_key, sub_value in value[i].items():
+                        self.assertEqual(getattr(sot.ports[i], sub_key),
+                                         sub_value)
             else:
-                self.assertEqual(EXAMPLE[key], getattr(sot, key))
+                self.assertEqual(getattr(sot, key), value)

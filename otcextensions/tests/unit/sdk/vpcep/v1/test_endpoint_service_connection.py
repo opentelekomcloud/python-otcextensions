@@ -66,8 +66,8 @@ class TestEndpointConnection(base.TestCase):
 
     def test_make_it(self):
         sot = endpoint_service.Connection(**EXAMPLE)
-        for key in EXAMPLE.keys():
-            self.assertEqual(EXAMPLE[key], getattr(sot, key))
+        for key, value in EXAMPLE.items():
+            self.assertEqual(getattr(sot, key), value)
 
 
 class TestEndpointManageConnection(base.TestCase):
@@ -87,6 +87,5 @@ class TestEndpointManageConnection(base.TestCase):
         sot = endpoint_service.ManageConnection(**EXAMPLE_CONNECTIONS)
         connections_list = EXAMPLE_CONNECTIONS['connections']
         for i in range(len(connections_list)):
-            for key in connections_list[i].keys():
-                self.assertEqual(connections_list[i][key],
-                                 getattr(sot.connections[i], key))
+            for key, value in connections_list[i].items():
+                self.assertEqual(getattr(sot.connections[i], key), value)

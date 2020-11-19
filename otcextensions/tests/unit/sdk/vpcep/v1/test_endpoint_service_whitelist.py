@@ -50,8 +50,8 @@ class TestEndpointWhitelist(base.TestCase):
 
     def test_make_it(self):
         sot = endpoint_service.Whitelist(**EXAMPLE)
-        for key in EXAMPLE.keys():
-            self.assertEqual(EXAMPLE[key], getattr(sot, key))
+        for key, value in EXAMPLE.items():
+            self.assertEqual(getattr(sot, key), value)
 
 
 class TestEndpointManageWhitelist(base.TestCase):
