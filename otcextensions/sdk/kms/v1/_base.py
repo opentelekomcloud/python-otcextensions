@@ -29,7 +29,7 @@ class Resource(sdk_resource.Resource):
     error_msg = resource.Body('error_msg')
 
     def create(self, session, prepend_key=True, requires_id=True,
-               endpoint_override=None, headers=None, uri=None):
+               endpoint_override=None, headers=None, uri=None, requests_auth=None):
         if not self.allow_create:
             raise exceptions.MethodNotSupported(self, "create")
 
