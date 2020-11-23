@@ -9,12 +9,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import time
+
 from openstack import exceptions
 
 
 class RdsMixin:
     def create_rds_instance(self, name,
-                            wait=True, timeout=180, wait_interval=5,
+                            wait=True, wait_timeout=600, wait_interval=5,
                             **kwargs):
         """Create RDS instance with all the checks
 
@@ -44,7 +46,7 @@ class RdsMixin:
         :param str volume_type: dict(required=True, type=str),
         :param int volume_size: dict(required=True, type=int),
         :param bool wait: dict(type=bool, default=True),
-        :param int timeout: dict(type=int, default=180)
+        :param int wait_timeout: dict(type=int, default=180)
         :param int wait_interval: Check interval.
 
         :returns: The results of server creation
@@ -259,8 +261,42 @@ class RdsMixin:
             wait_args = {}
             if wait_interval:
                 wait_args['interval'] = wait_interval
+            if wait_timeout:
+                wait_args['wait'] = wait_timeout
+
+            # RDS is so bad, that job_id appears only some time after it is
+            # returned
+            time.sleep(10)
 
             self.rds.wait_for_job(obj.job_id, **wait_args)
             obj = self.rds.get_instance(obj.id)
 
         return obj
+
+    def delete_rds_instance(
+        self, instance, wait=True, wait_timeout=180, wait_interval=5
+    ):
+        """Delete RDS instance
+
+        :param str instance: Name, ID or instance
+        :param bool wait: dict(type=bool, default=True),
+        :param int wait_timeout: dict(type=int, default=180)
+        :param int wait_interval: Check interval.
+        """
+
+        inst = self.rds.find_instance(instance, ignore_missing=False)
+
+        obj = self.rds.delete_instance(inst.id)
+
+        if obj.job_id and wait:
+            wait_args = {}
+            if wait_interval:
+                wait_args['interval'] = wait_interval
+            if wait_timeout:
+                wait_args['wait'] = wait_timeout
+
+            # RDS is so bad, that job_id appears only some time after it is
+            # returned
+            time.sleep(10)
+
+            self.rds.wait_for_job(obj.job_id, **wait_args)

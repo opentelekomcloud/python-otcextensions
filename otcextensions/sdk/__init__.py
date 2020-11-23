@@ -20,6 +20,7 @@ from otcextensions.sdk.compute.v2 import server
 from otcextensions.common import exc
 
 from otcextensions.sdk.cloud import rds as _rds
+from otcextensions.sdk.cloud import cce as _cce
 
 
 _logger = _log.setup_logging('openstack')
@@ -332,6 +333,7 @@ def load(conn, **kwargs):
     patch_openstack_resources()
 
     extend_instance(conn, _rds.RdsMixin)
+    extend_instance(conn, _cce.CceMixin)
 
     return None
 

@@ -27,9 +27,9 @@ class TestCase(base.TestCase):
             self,
             project_name='admin',
     ):
-        ets = self.os_fixture._get_endpoint_templates('rdsv3')
-        svc = self.os_fixture.v3_token.add_service('rdsv3', name='rdsv3')
-        svc.add_standard_endpoints(region='RegionOne', **ets)
+        ets_rds = self.os_fixture._get_endpoint_templates('rdsv3')
+        svc_rds = self.os_fixture.v3_token.add_service('rdsv3', name='rdsv3')
+        svc_rds.add_standard_endpoints(region='RegionOne', **ets_rds)
 
         return super(TestCase, self).get_keystone_v3_token()
 
@@ -44,3 +44,24 @@ class TestCase(base.TestCase):
         url = url % {'project_id': self.cloud.current_project_id}
 
         return url
+
+    def get_cce_url(self, resource=None,
+                    append=None, base_url_append=None,
+                    qs_elements=None):
+        endpoint_url = (
+            'https://cce.eu-de.otc.t-systems.com/'
+            'api/v3/projects/%(project_id)s'
+        ) % {'project_id': self.cloud.current_project_id}
+        # Strip trailing slashes, so as not to produce double-slashes below
+        if endpoint_url.endswith('/'):
+            endpoint_url = endpoint_url[:-1]
+        to_join = [endpoint_url]
+        qs = ''
+        if base_url_append:
+            to_join.append(base_url_append)
+        if resource:
+            to_join.append(resource)
+        to_join.extend(append or [])
+        if qs_elements is not None:
+            qs = '?%s' % '&'.join(qs_elements)
+        return '%(uri)s%(qs)s' % {'uri': '/'.join(to_join), 'qs': qs}

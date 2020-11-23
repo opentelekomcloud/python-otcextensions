@@ -12,6 +12,8 @@
 #
 import mock
 
+from osc_lib.cli import format_columns
+
 from otcextensions.osclient.rds.v3 import instance
 from otcextensions.tests.unit.osclient.rds.v3 import fakes
 
@@ -150,7 +152,15 @@ class TestShowDatabaseInstance(fakes.TestRds):
         'datastore', 'flavor_ref', 'id', 'name', 'region', 'status', 'volume'
     )
 
-    data = fakes.gen_data(_data, columns)
+    data = (
+        format_columns.DictColumn(_data.datastore),
+        _data.flavor_ref,
+        _data.id,
+        _data.name,
+        _data.region,
+        _data.status,
+        format_columns.DictColumn(_data.volume)
+    )
 
     def setUp(self):
         super(TestShowDatabaseInstance, self).setUp()
@@ -177,21 +187,17 @@ class TestShowDatabaseInstance(fakes.TestRds):
                                                      ignore_missing=False)
 
         self.assertEqual(self.columns, columns)
-        self.assertEqual(self.data, data)
+        self.assertItemEqual(self.data, data)
 
 
 class TestDeleteDatabaseInstance(fakes.TestRds):
-
-    data = fakes.FakeInstance.create_one()
 
     def setUp(self):
         super(TestDeleteDatabaseInstance, self).setUp()
 
         self.cmd = instance.DeleteDatabaseInstance(self.app, None)
 
-        self.client.delete_instance = mock.Mock(return_value=self.data)
-        self.client.find_instance = mock.Mock(return_value=self.data)
-        self.client.wait_for_job = mock.Mock()
+        self.sdk_client.delete_instance = mock.Mock()
 
     def test_delete(self):
         arglist = [
@@ -208,10 +214,8 @@ class TestDeleteDatabaseInstance(fakes.TestRds):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        self.client.find_instance.assert_called_with('test_obj')
-
-        self.client.delete_instance.assert_called_with(self.data.id)
-        self.client.wait_for_job.assert_not_called()
+        self.sdk_client.delete_rds_instance.assert_called_with(
+            instance='test_obj', wait=False)
 
     def test_delete_wait(self):
         arglist = [
@@ -230,11 +234,8 @@ class TestDeleteDatabaseInstance(fakes.TestRds):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        self.client.find_instance.assert_called_with('test_obj')
-
-        self.client.delete_instance.assert_called_with(self.data.id)
-
-        self.client.wait_for_job.assert_called_with(self.data.job_id)
+        self.sdk_client.delete_rds_instance.assert_called_with(
+            instance='test_obj', wait=True)
 
 
 class TestCreateDatabaseInstance(fakes.TestRds):
@@ -250,9 +251,8 @@ class TestCreateDatabaseInstance(fakes.TestRds):
 
         self.cmd = instance.CreateDatabaseInstance(self.app, None)
 
-        self.client = self.app.client_manager
-
-        self.client.create_rds_instance = mock.Mock(return_value=self._data)
+        self.sdk_client.create_rds_instance = mock.Mock(
+            return_value=self._data)
 
     def test_create(self):
         arglist = [
@@ -304,7 +304,7 @@ class TestCreateDatabaseInstance(fakes.TestRds):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        self.client.create_rds_instance.assert_called_with(
+        self.sdk_client.create_rds_instance.assert_called_with(
             availability_zone='test-az-01', backup='source_backup',
             backup_keepdays='bkd', backup_timeframe='xxx',
             charge_mode='postpaid', configuration='123',

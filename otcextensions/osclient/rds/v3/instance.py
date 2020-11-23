@@ -10,9 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-'''Instance v1 action implementations'''
+'''Instance v3 action implementations'''
 import argparse
 
+from osc_lib.cli import format_columns
 from osc_lib import exceptions
 from osc_lib import utils
 from osc_lib.command import command
@@ -21,9 +22,19 @@ from otcextensions.common import sdk_utils
 from otcextensions.i18n import _
 
 
+_formatters = {
+    'backup_strategy': format_columns.DictColumn,
+    'charge_info': format_columns.DictColumn,
+    'datastore': format_columns.DictColumn,
+    'ha': format_columns.DictColumn,
+    'nodes': format_columns.ListDictColumn,
+    'volume': format_columns.DictColumn,
+}
+
+
 def _get_columns(item):
     column_map = {}
-    hidden = ['job_id']
+    hidden = ['job_id', 'location']
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
                                                            hidden)
 
@@ -162,7 +173,7 @@ class ShowDatabaseInstance(command.ShowOne):
         obj = client.find_instance(parsed_args.instance, ignore_missing=False)
 
         display_columns, columns = _get_columns(obj)
-        data = utils.get_item_properties(obj, columns)
+        data = utils.get_item_properties(obj, columns, formatters=_formatters)
 
         return (display_columns, data)
 
@@ -331,11 +342,17 @@ class CreateDatabaseInstance(command.ShowOne):
             type=int,
             help=_('Interval for checking status')
         )
+        parser.add_argument(
+            '--wait-timeout',
+            type=int,
+            help=_('Timeout')
+        )
+
         return parser
 
     def take_action(self, parsed_args):
         # Attention: not conform password result in BadRequest with no info
-        client = self.app.client_manager
+        client = self.app.client_manager.sdk_connection
         attrs = {}
         for attr in [
             'availability_zone', 'backup', 'backup_keepdays',
@@ -344,7 +361,7 @@ class CreateDatabaseInstance(command.ShowOne):
             'flavor', 'from_instance', 'ha_mode', 'name', 'network',
             'password', 'port', 'region', 'replica_of', 'restore_time',
             'router', 'security_group', 'volume_size', 'volume_type', 'wait',
-            'wait_interval'
+            'wait_timeout', 'wait_interval'
         ]:
             if getattr(parsed_args, attr):
                 attrs[attr] = getattr(parsed_args, attr)
@@ -357,7 +374,7 @@ class CreateDatabaseInstance(command.ShowOne):
         )
 
         display_columns, columns = _get_columns(obj)
-        data = utils.get_item_properties(obj, columns, formatters={})
+        data = utils.get_item_properties(obj, columns, formatters=_formatters)
         return (display_columns, data)
 
 
@@ -382,22 +399,30 @@ class DeleteDatabaseInstance(command.Command):
             type=int,
             help=_('Interval for checking status')
         )
+        parser.add_argument(
+            '--wait-timeout',
+            type=int,
+            help=_('Timeout')
+        )
         return parser
 
     def take_action(self, parsed_args):
-        client = self.app.client_manager.rds
-        instance = client.find_instance(parsed_args.instance)
-        try:
-            response = client.delete_instance(instance.id)
-            if parsed_args.wait and response.job_id:
-                wait_args = {}
-                if parsed_args.wait_interval:
-                    wait_args['interval'] = parsed_args.wait_interval
+        client = self.app.client_manager.sdk_connection
+        attrs = {}
+        for attr in [
+            'instance', 'wait', 'wait_timeout', 'wait_interval'
+        ]:
+            if getattr(parsed_args, attr):
+                attrs[attr] = getattr(parsed_args, attr)
 
-                client.wait_for_job(response.job_id, **wait_args)
+        if not parsed_args.wait:
+            attrs['wait'] = False
+
+        try:
+            client.delete_rds_instance(**attrs)
         except Exception as e:
             msg = (_("Failed to delete instance %(instance)s: %(e)s") % {
-                'instance': parsed_args.instance,
+                'instance': parsed_args.name,
                 'e': e
             })
             raise exceptions.CommandError(msg)
