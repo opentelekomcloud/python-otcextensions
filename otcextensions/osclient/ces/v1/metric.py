@@ -22,7 +22,7 @@ LOG = logging.getLogger(__name__)
 
 
 class ListMetrics(command.Lister):
-    _description = _('List CES alarms')
+    _description = _('List CES Metrics')
     columns = (
         'namespace',
         'dimensions',
@@ -50,7 +50,7 @@ class ListMetrics(command.Lister):
         parser.add_argument(
             '--metric-name',
             metavar='<metric_name>',
-            help=_('Name of the alarm rule object.')
+            help=_('Name of the metrics object.')
         )
         parser.add_argument(
             '--unit',
