@@ -199,3 +199,114 @@ class CceMixin:
             self.cce.wait_for_job(obj.job_id, **wait_args)
 
         return None
+
+    def create_cce_cluster_node(
+        self,
+        count=1,
+        root_volume_size=40,
+        root_volume_type='SATA',
+        data_volumes=[{'SATA': 100}],
+        wait=True, wait_timeout=180, wait_interval=5,
+        **kwargs
+    ):
+        """Create CCE cluster node
+
+        :param dict annotations: Annotations.
+        :param str availability_zone: Availability zone of the cluster_node .
+        :param int count: Count of the cluster nodes to be created.
+        :param str cluster: CCE cluster attached to.
+        :param list data_volumes: Data volumes attached to the cluster_node.
+        :param str flavor: Flavor.
+        :param str keypair: Keypair to login into the node.
+        :param dict labels: Option labels.
+        :param str name: Cluster node name.
+        :param int root_volume_size: Size of the root volume.
+        :param str root_volume_type: Type of the root volume.
+        :param bool wait: dict(type=bool, default=True),
+        :param int wait_timeout: dict(type=int, default=180)
+        :param int wait_interval: Check interval.
+
+        :returns: The results of cluster node creation
+        :rtype: :class:`~otcextensions.sdk.cce.v3.cluster_node.ClusterNode`
+        """
+        annotations = kwargs.get('annotations')
+        availability_zone = kwargs.get('availability_zone')
+        cluster = kwargs.get('cluster')
+        flavor = kwargs.get('flavor')
+        keypair = kwargs.get('keypair')
+        labels = kwargs.get('labels')
+        name = kwargs.get('name')
+
+        volume_types = ['SAS', 'SATA', 'SSD']
+
+        metadata = {
+            'name': name,
+        }
+
+        if annotations and isinstance(annotations, dict):
+            metadata['annotations'] = annotations
+        if labels and isinstance(labels, dict):
+            metadata['labels'] = labels
+
+        if root_volume_type.upper() not in volume_types:
+            raise ValueError('Root volume type %s is not supported, use: %s'
+                             % root_volume_type, volume_types)
+
+        spec = {
+            'rootVolume': {},
+            'dataVolumes': [],
+            'login': {}
+        }
+        if count < 0:
+            raise ValueError('count is lower 0 or lower')
+        spec['count'] = count
+        spec['flavor'] = flavor
+        spec['login']['sshKey'] = keypair
+        spec['rootVolume']['volumetype'] = root_volume_type.upper()
+        if root_volume_size < 40:
+            raise ValueError('Root volume size %s is lower than 40 GB.'
+                             % root_volume_size)
+        spec['rootVolume']['size'] = root_volume_size
+
+        for item in data_volumes:
+            for key in item:
+                if key.upper() not in volume_types:
+                    raise ValueError('data volume type %s must be one of '
+                                     'the following choices: %s'
+                                     % key, volume_types)
+                if not (100 <= item[key] <= 32768):
+                    raise ValueError('The data volume size must be specified '
+                            'between 100 and 32768 GB.')
+                spec['dataVolumes'].append({
+                    'volumetype': key.upper(),
+                    'size': item[key]
+                })
+
+        if availability_zone:
+            spec['az'] = availability_zone
+        if count:
+            spec['count'] = count
+
+        cluster = self.cce.find_cluster(
+            name_or_id=cluster,
+            ignore_missing=True)
+        if not cluster.id:
+            raise ReferenceError('Cluster not found %s'
+                                 % cluster)
+        obj = self.cce.create_cluster_node(
+            cluster=cluster.id,
+            metadata=metadata,
+            spec=spec
+        )
+
+        if obj.job_id and wait:
+            wait_args = {}
+            if wait_interval:
+                wait_args['interval'] = wait_interval
+            if wait_timeout:
+                wait_args['wait'] = wait_timeout
+
+            self.cce.wait_for_job(obj.job_id, **wait_args)
+            obj = self.cce.get_cluster(obj.id)
+
+        return obj
