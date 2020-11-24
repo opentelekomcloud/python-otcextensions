@@ -204,7 +204,7 @@ class TestRdsInstance(base.TestCase):
         self.assertEqual(json_output['keep_days'], 0)
 
     def test_12_delete_instance(self):
-        self.addCleanup(self._denitialize_network)
+        self.addCleanup(self._deinitialize_network)
         with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
             executor.submit(self._delete_instance, self.RDS_NAME)
             executor.submit(self._delete_instance, self.RDS_HA_NAME)
@@ -332,7 +332,7 @@ class TestRdsInstance(base.TestCase):
         TestRdsInstance.NET_ID = net['id']
         TestRdsInstance.SG_ID = sg['id']
 
-    def _denitialize_network(self):
+    def _deinitialize_network(self):
         self.openstack(
             'router remove subnet {router} '
             '{subnet} '.format(

@@ -25,7 +25,9 @@ class TestCCE(test_base.TestCommand):
         super(TestCCE, self).setUp()
 
         self.app.client_manager.cce = mock.Mock()
+        self.app.client_manager.sdk_connection = mock.Mock()
         self.client = self.app.client_manager.cce
+        self.sdk_client = self.app.client_manager.sdk_connection
 
 
 class FakeCluster(test_base.Fake):

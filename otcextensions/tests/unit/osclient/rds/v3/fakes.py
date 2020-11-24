@@ -43,8 +43,10 @@ class TestRds(utils.TestCommand):
         super(TestRds, self).setUp()
 
         self.app.client_manager.rds = mock.Mock()
+        self.app.client_manager.sdk_connection = mock.Mock()
 
         self.client = self.app.client_manager.rds
+        self.sdk_client = self.app.client_manager.sdk_connection
 
         self.datastore_mock = FakeDatastore
         self.flavor_mock = FakeFlavor
