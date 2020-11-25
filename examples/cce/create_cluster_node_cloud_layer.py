@@ -25,9 +25,8 @@ node = conn.create_cce_cluster_node(
     cluster='7ca53d10-2a70-11eb-9ade-0255ac101123',
     count=1,
     flavor='s2.large.2',
-    k8s_tags= {
-        "muh": "kuh",
-	},
+    k8s_tags={
+        "muh": "kuh"},
     keypair='keypair-pub',
     labels={'foo': 'bar'},
     max_pods=16,
@@ -40,7 +39,7 @@ node = conn.create_cce_cluster_node(
         {
             'key': 'hellokey1',
             'value': 'hellovalue1'
-        },{
+        }, {
             'key': 'hellokey2',
             'value': 'hellovalue2'
         }],
