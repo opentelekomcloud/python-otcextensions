@@ -20,13 +20,29 @@ conn = openstack.connect(cloud='otc')
 
 
 node = conn.create_cce_cluster_node(
+    annotations={'annotation1': 'abc'},
     availability_zone='eu-de-02',
-    cluster='7ca53d10-2a70-11eb-9ade-0255ac1017a0',
+    cluster='7ca53d10-2a70-11eb-9ade-0255ac101123',
     count=1,
     flavor='s2.large.2',
-    keypair='tischrei-pub',
-    name='tinosnode',
+    k8s_tags= {
+        "muh": "kuh",
+	},
+    keypair='keypair-pub',
+    labels={'foo': 'bar'},
+    max_pods=16,
+    name='node1',
+    offload_node=False,
+    os='CentOS 7.7',
     root_volume_size=40,
     root_volume_type='SATA',
+    tags=[
+        {
+            'key': 'hellokey1',
+            'value': 'hellovalue1'
+        },{
+            'key': 'hellokey2',
+            'value': 'hellovalue2'
+        }],
     wait=False)
 print(node)

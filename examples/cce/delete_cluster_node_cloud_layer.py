@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Find a CCE cluster node by name or id
+Delete CCE Cluster node in cloud layer
 """
 import openstack
 
@@ -20,7 +20,7 @@ conn = openstack.connect(cloud='otc')
 
 
 cluster = 'name_or_id'
-cluster = conn.cce.find_cluster(cluster)
 node = 'name_or_id'
-node = conn.cce.find_cluster_node(cluster, node)
-print(node)
+conn.delete_cce_cluster_node(
+    cluster=cluster,
+    node=node)
