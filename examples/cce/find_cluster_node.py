@@ -19,8 +19,6 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
 
-cluster = 'name_or_id'
-cluster = conn.cce.find_cluster(cluster)
-node = 'name_or_id'
-node = conn.cce.find_cluster_node(cluster, node)
+cluster = conn.cce.find_cluster(cluster='name_or_id')
+node = conn.cce.find_cluster_node(cluster=cluster, node='name_or_id')
 print(node)

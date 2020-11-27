@@ -206,7 +206,7 @@ class CceMixin:
         root_volume_size=40,
         root_volume_type='SATA',
         data_volumes=[{'SATA': 100}],
-        wait=True, wait_timeout=180, wait_interval=5,
+        wait=True, wait_timeout=300, wait_interval=5,
         **kwargs
     ):
         """Create CCE cluster node
@@ -223,7 +223,7 @@ class CceMixin:
             belong to.
         :param str fault_domain: The node is created in the specified fault
             domain.
-        :param str flavor: Flavor.
+        :param str flavor: Flavor ID of the CCE node.
         :param str floating_ip: Floating IP used by the node to access public
             networks.
         :param dict k8s_tags: Dictionary of Kubernetes tags.
@@ -325,8 +325,6 @@ class CceMixin:
 
         if availability_zone:
             spec['az'] = availability_zone
-        if count:
-            spec['count'] = count
         if dedicated_host:
             spec['dedicatedHostId'] = dedicated_host
         if ecs_group:
