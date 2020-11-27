@@ -309,7 +309,7 @@ class CceMixin:
         if root_volume_size and isinstance(root_volume_size, int):
             if root_volume_size < 40:
                 raise ValueError('Root volume size %s is lower than 40 GB.'
-                                % root_volume_size)
+                                 % root_volume_size)
             spec['rootVolume']['size'] = root_volume_size
 
         for item in data_volumes:
