@@ -230,7 +230,7 @@ class CceMixin:
         :param str keypair: Keypair to login into the node.
         :param dict labels: Option labels.
         :param str lvm_config: ConfigMap of the Docker data disk.
-        :param str max_pods: Maximum number of pods on the node.
+        :param int max_pods: Maximum number of pods on the node.
         :param str name: Cluster node name.
         :param str node_image_id: ID of a custom image used in a baremetall
             scenario.
@@ -298,16 +298,19 @@ class CceMixin:
             'dataVolumes': [],
             'login': {}
         }
-        if count < 0:
-            raise ValueError('count is 0 or lower')
-        spec['count'] = count
+
+        if count and isinstance(count, int):
+            if count < 0:
+                raise ValueError('count is 0 or lower')
+            spec['count'] = count
         spec['flavor'] = flavor
         spec['login']['sshKey'] = keypair
         spec['rootVolume']['volumetype'] = root_volume_type.upper()
-        if root_volume_size < 40:
-            raise ValueError('Root volume size %s is lower than 40 GB.'
-                             % root_volume_size)
-        spec['rootVolume']['size'] = root_volume_size
+        if root_volume_size and isinstance(root_volume_size, int):
+            if root_volume_size < 40:
+                raise ValueError('Root volume size %s is lower than 40 GB.'
+                                % root_volume_size)
+            spec['rootVolume']['size'] = root_volume_size
 
         for item in data_volumes:
             for key in item:
@@ -333,15 +336,15 @@ class CceMixin:
             spec['faultDomain'] = fault_domain
         if floating_ip:
             spec['publicIP'] = floating_ip
-        if k8s_tags:
+        if k8s_tags and isinstance(k8s_tags, dict):
             spec['k8sTags'] = k8s_tags
         if lvm_config:
             spec['extendParam']['DockerLVMConfigOverride'] = lvm_config
-        if max_pods:
+        if max_pods and isinstance(max_pods, int):
             spec['extendParam']['maxPods'] = max_pods
         if node_image_id:
             spec['extendParam']['alpha.cce/NodeImageID'] = node_image_id
-        if offload_node:
+        if offload_node and isinstance(offload_node, bool):
             spec['offloadNode'] = offload_node
         if os:
             spec['os'] = os
