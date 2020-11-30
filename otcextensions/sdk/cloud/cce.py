@@ -374,7 +374,10 @@ class CceMixin:
                 wait_args['wait'] = wait_timeout
 
             self.cce.wait_for_job(obj.job_id, **wait_args)
-            obj = self.cce.get_cluster(obj.id)
+            obj = self.cce.get_cluster_node(
+                cluster=cluster.id,
+                node_id=obj.id
+            )
 
         return obj
 
