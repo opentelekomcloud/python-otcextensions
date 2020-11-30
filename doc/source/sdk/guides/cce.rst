@@ -104,7 +104,7 @@ This interface is used to find a node of a CCE cluster by ID
 or name.
 
 .. literalinclude:: ../examples/cce/find_cluster_node.py
-   :lines: 16-26
+   :lines: 16-24
 
 Delete CCE Cluster Node
 ^^^^^^^^^^^^^^^^^^^^^^^
