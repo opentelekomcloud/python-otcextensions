@@ -199,3 +199,217 @@ class CceMixin:
             self.cce.wait_for_job(obj.job_id, **wait_args)
 
         return None
+
+    def create_cce_cluster_node(
+        self,
+        count=1,
+        root_volume_size=40,
+        root_volume_type='SATA',
+        data_volumes=[{'SATA': 100}],
+        wait=True, wait_timeout=300, wait_interval=5,
+        **kwargs
+    ):
+        """Create CCE cluster node
+
+        :param dict annotations: Annotations.
+        :param str availability_zone: Availability zone of the cluster_node.
+        :param int count: Count of the cluster nodes to be created.
+        :param str cluster: CCE cluster attached to.
+        :param list data_volumes: List of Data volumes attached to the
+            cluster node.
+        :param str dedicated_host: ID of the Dedicated Host to which
+            nodes will be scheduled.
+        :param str ecs_group: ID of the ECS group where the CCE node can
+            belong to.
+        :param str fault_domain: The node is created in the specified fault
+            domain.
+        :param str flavor: Flavor ID of the CCE node.
+        :param str floating_ip: Floating IP used by the node to access public
+            networks.
+        :param dict k8s_tags: Dictionary of Kubernetes tags.
+        :param str keypair: Keypair to login into the node.
+        :param dict labels: Option labels.
+        :param str lvm_config: ConfigMap of the Docker data disk.
+        :param int max_pods: Maximum number of pods on the node.
+        :param str name: Cluster node name.
+        :param str node_image_id: ID of a custom image used in a baremetall
+            scenario.
+        :param bool offload_node: If node is offloading its components.
+        :param str os: Operating system of the cluster node.
+        :param str postinstall_script: Base64 encoded post installation
+            script.
+        :param str preinstall_script: Base64 encoded pre installation script.
+        :param int root_volume_size: Size of the root volume.
+        :param str root_volume_type: Type of the root volume.
+        :param list tags: List of tags used to build UI labels in format
+            [{
+                'key': 'key1',
+                'value': 'value1
+            },{
+                'key': 'key2',
+                'value': 'value2
+            }]
+        :param bool wait: dict(type=bool, default=True),
+        :param int wait_timeout: dict(type=int, default=180)
+        :param int wait_interval: Check interval.
+
+        :returns: The results of cluster node creation
+        :rtype: :class:`~otcextensions.sdk.cce.v3.cluster_node.ClusterNode`
+        """
+        annotations = kwargs.get('annotations')
+        availability_zone = kwargs.get('availability_zone')
+        cce_cluster = kwargs.get('cluster')
+        dedicated_host = kwargs.get('dedicated_host')
+        ecs_group = kwargs.get('ecs_group')
+        fault_domain = kwargs.get('fault_domain')
+        flavor = kwargs.get('flavor')
+        floating_ip = kwargs.get('floating_ip')
+        k8s_tags = kwargs.get('k8s_tags')
+        keypair = kwargs.get('keypair')
+        labels = kwargs.get('labels')
+        lvm_config = kwargs.get('lvm_override_config')
+        max_pods = kwargs.get('max_pods')
+        name = kwargs.get('name')
+        node_image_id = kwargs.get('node_image_id')
+        preinstall_script = kwargs.get('preinstall_script')
+        postinstall_script = kwargs.get('postinstall_script')
+        offload_node = kwargs.get('offload_node')
+        os = kwargs.get('os')
+        tags = kwargs.get('tags')
+
+        volume_types = ['SAS', 'SATA', 'SSD']
+
+        metadata = {
+            'name': name,
+        }
+
+        if annotations and isinstance(annotations, dict):
+            metadata['annotations'] = annotations
+        if labels and isinstance(labels, dict):
+            metadata['labels'] = labels
+
+        if root_volume_type.upper() not in volume_types:
+            raise ValueError('Root volume type %s is not supported, use: %s'
+                             % root_volume_type, volume_types)
+
+        spec = {
+            'extendParam': {},
+            'rootVolume': {},
+            'dataVolumes': [],
+            'login': {}
+        }
+
+        if count and isinstance(count, int):
+            if count < 0:
+                raise ValueError('count is 0 or lower')
+            spec['count'] = count
+        spec['flavor'] = flavor
+        spec['login']['sshKey'] = keypair
+        spec['rootVolume']['volumetype'] = root_volume_type.upper()
+        if root_volume_size and isinstance(root_volume_size, int):
+            if root_volume_size < 40:
+                raise ValueError('Root volume size %s is lower than 40 GB.'
+                                 % root_volume_size)
+            spec['rootVolume']['size'] = root_volume_size
+
+        for item in data_volumes:
+            for key in item:
+                if key.upper() not in volume_types:
+                    raise ValueError('data volume type %s must be one of '
+                                     'the following choices: %s'
+                                     % key, volume_types)
+                if not (100 <= item[key] <= 32768):
+                    raise ValueError('The data volume size must be specified '
+                                     'between 100 and 32768 GB.')
+                spec['dataVolumes'].append({
+                    'volumetype': key.upper(),
+                    'size': item[key]
+                })
+
+        if availability_zone:
+            spec['az'] = availability_zone
+        if dedicated_host:
+            spec['dedicatedHostId'] = dedicated_host
+        if ecs_group:
+            spec['ecs_group'] = ecs_group
+        if fault_domain:
+            spec['faultDomain'] = fault_domain
+        if floating_ip:
+            spec['publicIP'] = floating_ip
+        if k8s_tags and isinstance(k8s_tags, dict):
+            spec['k8sTags'] = k8s_tags
+        if lvm_config:
+            spec['extendParam']['DockerLVMConfigOverride'] = lvm_config
+        if max_pods and isinstance(max_pods, int):
+            spec['extendParam']['maxPods'] = max_pods
+        if node_image_id:
+            spec['extendParam']['alpha.cce/NodeImageID'] = node_image_id
+        if offload_node and isinstance(offload_node, bool):
+            spec['offloadNode'] = offload_node
+        if os:
+            spec['os'] = os
+        if postinstall_script:
+            spec['extendParam']['alpha.cce/preInstall'] = postinstall_script
+        if preinstall_script:
+            spec['extendParam']['alpha.cce/preInstall'] = preinstall_script
+        if tags:
+            spec['userTags'] = tags
+
+        cluster = self.cce.find_cluster(
+            name_or_id=cce_cluster,
+            ignore_missing=True)
+        if not cluster:
+            raise ReferenceError('Cluster %s not found.' % cce_cluster)
+        obj = self.cce.create_cluster_node(
+            cluster=cluster.id,
+            metadata=metadata,
+            spec=spec
+        )
+
+        if obj.job_id and wait:
+            wait_args = {}
+            if wait_interval:
+                wait_args['interval'] = wait_interval
+            if wait_timeout:
+                wait_args['wait'] = wait_timeout
+
+            self.cce.wait_for_job(obj.job_id, **wait_args)
+            obj = self.cce.get_cluster(obj.id)
+
+        return obj
+
+    def delete_cce_cluster_node(
+        self,
+        wait=True, wait_timeout=180, wait_interval=5,
+        **kwargs
+    ):
+        """Delete CCE cluster node
+
+        :param str cluster: Name or ID of the CCE cluster
+        :param str node: Name or ID of the CCE cluster node
+        """
+        cluster = kwargs.get('cluster')
+        node = kwargs.get('node')
+
+        cluster = self.cce.find_cluster(
+            name_or_id=cluster,
+            ignore_missing=False)
+        node = self.cce.find_cluster_node(
+            cluster=cluster,
+            node=node)
+
+        obj = self.cce.delete_cluster_node(
+            cluster=cluster,
+            node=node
+        )
+
+        if obj.job_id and wait:
+            wait_args = {}
+            if wait_interval:
+                wait_args['interval'] = wait_interval
+            if wait_timeout:
+                wait_args['wait'] = wait_timeout
+
+            self.cce.wait_for_job(obj.job_id, **wait_args)
+
+        return None

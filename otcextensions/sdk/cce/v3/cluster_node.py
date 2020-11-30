@@ -47,6 +47,43 @@ class PublicIPSpec(resource.Resource):
     floating_ip = resource.Body('eip', type=dict)
 
 
+class TagSpec(resource.Resource):
+    # Properties:
+    #: Key of the tag
+    key = resource.Body('key')
+    #: Value of the tag
+    value = resource.Body('value')
+
+
+class TaintSpec(resource.Resource):
+    # Properties:
+    #: A key can contain letters, digits, hyphens, underscores and periods
+    #: up to 63 characters starting with letter or digit.
+    key = resource.Body('key')
+    #: A value can contain letters, digits, hyphens, underscores and periods
+    #: up to 63 characters starting with letter or digit.
+    value = resource.Body('value')
+    #: Effect available options: NoSchedule, PreferNoSchedule, NoExecute
+    effect = resource.Body('effect')
+
+
+class ExtendParamSpec(resource.Resource):
+    # Properties:
+    #: Script required before the installation
+    #: Input must be Base64 encoded
+    preinstall_script = resource.Body('alpha.cce/preInstall')
+    #: Script required after the installation
+    #: Input must be Base64 encoded
+    postinstall_script = resource.Body('alpha.cce/postInstall')
+    #: ConfigMap of the Docker data disk
+    lvm_config = resource.Body('DockerLVMConfigOverride')
+    #: Maximum number of pods on the node
+    max_pods = resource.Body('maxPods', type=int)
+    #: ID of a custom node image
+    #: Mandatory if custom image is used on a bare metall node
+    node_image_id = resource.Body('alpha.cce/NodeImageID')
+
+
 class NodeSpec(resource.Resource):
     # Properties
     #: Name of the AZ where the node resides.
@@ -59,16 +96,32 @@ class NodeSpec(resource.Resource):
     #: disk can be configured
     data_volumes = resource.Body('dataVolumes', type=list,
                                  list_type=VolumeSpec)
+    #: ID of the Dedicated Host to which nodes will be scheduled
+    dedicated_host = resource.Body('dedicatedHostId')
+    #: ID of the ECS group where the CCE node can belong to
+    ecs_group = resource.Body('ecsGroupId')
+    # Extended parameters in key-value format
+    extend_params = resource.Body('extendParam', type=ExtendParamSpec)
+    #: The node is created in the specified fault domain.
+    fault_domain = resource.Body('faultDomain')
     #: Flavor (mandatory)
     flavor = resource.Body('flavor')
     #: Elastic IP address parameters of a node.
     floating_ip = resource.Body('publicIP', type=PublicIPSpec)
+    #: Kubernetes tags
+    k8s_tags = resource.Body('k8sTags', type=dict)
     #: Parameters for logging in to the node.
     login = resource.Body('login')
-    #: Operating System of the node. Currently only EulerOS is supported.
+    #: Boolean: if node is offloading all its components
+    offload_node = resource.Body('offloadNode', type=bool)
+    #: Operating System of the node. EulerOS and CentOS are supported.
     os = resource.Body('os')
     #: System disk parameters of the node.
     root_volume = resource.Body('rootVolume', type=VolumeSpec)
+    #: Tags of a Node
+    tags = resource.Body('userTags', type=list, list_type=TagSpec)
+    #: Taints are used to configure anti-affinity
+    taints = resource.Body('taints', type=list, list_type=TaintSpec)
 
 
 class ClusterNode(_base.Resource):

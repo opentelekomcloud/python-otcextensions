@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Find a CCE cluster node by name or id
+Create CCE Cluster node
 """
 import openstack
 
@@ -19,6 +19,29 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
 
-cluster = conn.cce.find_cluster(cluster='name_or_id')
-node = conn.cce.find_cluster_node(cluster=cluster, node='name_or_id')
+node = conn.create_cce_cluster_node(
+    annotations={'annotation1': 'abc'},
+    availability_zone='eu-de-02',
+    cluster='7ca53d10-2a70-11eb-9ade-0255ac101123',
+    count=1,
+    flavor='s2.large.2',
+    k8s_tags={
+        "muh": "kuh"},
+    keypair='keypair-pub',
+    labels={'foo': 'bar'},
+    max_pods=16,
+    name='node1',
+    offload_node=False,
+    os='CentOS 7.7',
+    root_volume_size=40,
+    root_volume_type='SATA',
+    tags=[
+        {
+            'key': 'hellokey1',
+            'value': 'hellovalue1'
+        }, {
+            'key': 'hellokey2',
+            'value': 'hellovalue2'
+        }],
+    wait=False)
 print(node)
