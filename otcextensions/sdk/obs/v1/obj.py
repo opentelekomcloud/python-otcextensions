@@ -136,8 +136,7 @@ class Object(_base.BaseResource):
 
         return
 
-    def create(self, session, prepend_key=True,
-               endpoint_override=None, headers=None, requests_auth=None):
+    def create(self, session, prepend_key=True, *params):
 
         if not self.allow_create:
             raise exceptions.MethodNotSupported(self, 'create')
@@ -153,34 +152,24 @@ class Object(_base.BaseResource):
             requires_id=True,
             prepend_key=prepend_key)
 
-        req_args = self._prepare_override_args(
-            endpoint_override=endpoint_override,
-            request_headers=request.headers,
-            additional_headers=headers,
-            requests_auth=requests_auth)
-
         response = session.put(
             request.url,
             data=self.data,
-            **req_args)
+            request_headers=request.headers,
+            **params)
         self._translate_response(response)
         return self
 
-    def download(self, session, filename=None,
-                 endpoint_override=None, requests_auth=None):
+    def download(self, session, filename=None, **params):
 
         session = self._get_session(session)
 
         request = self._prepare_request(requires_id=True)
 
-        req_args = self._prepare_override_args(
-            endpoint_override=endpoint_override,
-            request_headers=request.headers,
-            requests_auth=requests_auth)
-
         response = session.get(
             request.url,
-            **req_args)
+            request_headers=request.headers,
+            **params)
         self._translate_response(response)
 
         _logger.debug(response.content)

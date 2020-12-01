@@ -15,12 +15,11 @@ from openstack import resource
 from openstack import utils
 
 from otcextensions.i18n import _
-from otcextensions.sdk import sdk_resource
 
 _logger = _log.setup_logging('openstack')
 
 
-class Resource(sdk_resource.Resource):
+class Resource(resource.Resource):
     base_path = '/kms'
 
     #: Error code when create a secret key
@@ -28,29 +27,25 @@ class Resource(sdk_resource.Resource):
     #: Error message when create a secret key
     error_msg = resource.Body('error_msg')
 
-    def create(self, session, prepend_key=True, requires_id=True,
-               endpoint_override=None, headers=None,
-               uri=None, requests_auth=None):
+    def create(self, session, prepend_key=True, uri=None,
+               requires_id=True, **params):
         if not self.allow_create:
             raise exceptions.MethodNotSupported(self, "create")
 
         session = self._get_session(session)
 
         request = self._prepare_request(requires_id=False,
-                                        prepend_key=prepend_key)
+                                        prepend_key=prepend_key
+                                        )
         # PATH is different
         if uri:
             request.url = uri
         elif self.create_path:
             request.url = self.create_path
 
-        req_args = self._prepare_override_args(
-            endpoint_override=endpoint_override,
-            request_headers=request.headers,
-            additional_headers=headers)
-
         response = session.post(request.url,
-                                json=request.body, **req_args)
+                                json=request.body, headers=request.headers,
+                                params=params)
 
         if response.status_code == 400:
             body = response.json()
@@ -70,7 +65,7 @@ class Resource(sdk_resource.Resource):
         return self
 
     def _action(self, session, url_part, body):
-        """Preform actions given the message body.
+        """Perform actions given the message body.
         """
         url = utils.urljoin(self.base_path, url_part)
         response = session.post(

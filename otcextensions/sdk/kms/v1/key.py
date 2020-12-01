@@ -55,8 +55,7 @@ class Key(_base.Resource):
     #: Error message when create a secret key
     error_msg = resource.Body('error_msg')
 
-    def get(self, session, error_message=None, requires_id=True,
-            endpoint_override=None, headers=None, requests_auth=None):
+    def get(self, session):
         if not self.allow_get:
             raise exceptions.MethodNotSupported(self, "get")
         url = self.get_path

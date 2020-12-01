@@ -33,13 +33,14 @@ class InstanceNumber(_base.Resource):
 
     base_path = 'kms/user-instances'
     allow_get = True
+    allow_fetch = True
     # Properties
     #: Instance number
     #: *Type: int*
     instance_num = resource.Body('instance_num', type=int)
 
     def get(self, session):
-        return super(InstanceNumber, self).get(session, requires_id=False)
+        return super(InstanceNumber, self).fetch(session, requires_id=False)
 
 
 class Quota(_base.Resource):

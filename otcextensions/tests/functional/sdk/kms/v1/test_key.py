@@ -40,6 +40,7 @@ class TestKey(base.BaseFunctionalTest):
         except exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
+        super(TestKey, self).tearDown()
 
     def test_list(self):
         self.keys = list(self.conn.kms.keys())

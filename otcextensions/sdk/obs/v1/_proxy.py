@@ -11,7 +11,7 @@
 # under the License.
 
 from otcextensions.sdk import ak_auth
-from otcextensions.sdk import sdk_proxy
+from openstack import proxy
 
 from otcextensions.sdk.obs.v1 import container as _container
 from otcextensions.sdk.obs.v1 import obj as _obj
@@ -21,7 +21,7 @@ def _normalize_obs_keys(obj):
     return {k.lower(): v for k, v in obj.items()}
 
 
-class Proxy(sdk_proxy.Proxy):
+class Proxy(proxy.Proxy):
 
     skip_discovery = True
 
@@ -44,7 +44,7 @@ class Proxy(sdk_proxy.Proxy):
         if not auth:
             ak = None
             sk = None
-            conn = self.session._sdk_connection
+            conn = self._get_connection()
             if hasattr(conn, 'get_ak_sk'):
                 (ak, sk) = conn.get_ak_sk(conn)
             if not (ak and sk):

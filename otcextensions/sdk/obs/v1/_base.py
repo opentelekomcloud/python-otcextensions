@@ -14,13 +14,13 @@ from openstack import _log
 
 from collections import defaultdict
 
-from otcextensions.sdk import sdk_resource
+from openstack import resource
 
 
 _logger = _log.setup_logging('openstack')
 
 
-class BaseResource(sdk_resource.Resource):
+class BaseResource(resource.Resource):
     OBS_NS = "http://obs.otc.t-systems.com/doc/2016-01-01/"
 
     @classmethod
