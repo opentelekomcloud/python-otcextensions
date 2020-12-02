@@ -83,9 +83,7 @@ class Object(_base.BaseResource):
                 pass
 
     @classmethod
-    def list(cls, session, paginated=False,
-             endpoint_override=None, headers=None, requests_auth=None,
-             **params):
+    def list(cls, session, paginated=False, **params):
         if not cls.allow_list:
             raise exceptions.MethodNotSupported(cls, "list")
 
@@ -94,17 +92,12 @@ class Object(_base.BaseResource):
         uri = cls.base_path % params
 
         # Build additional arguments to the GET call
-        get_args = cls._prepare_override_args(
-            endpoint_override=endpoint_override,
-            additional_headers=headers)
 
         while uri:
 
             response = session.get(
                 uri,
-                params=query_params.copy(),
-                requests_auth=requests_auth,
-                **get_args
+                params=query_params.copy()
             )
 
             uri = None

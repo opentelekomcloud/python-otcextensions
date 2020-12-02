@@ -26,6 +26,7 @@ class Key(_base.Resource):
     allow_list = True
     allow_get = True
     allow_create = True
+    allow_update = False
 
     # Properties
     #: Secret key ID
@@ -92,8 +93,7 @@ class Key(_base.Resource):
         )
 
     @classmethod
-    def list(cls, session, paginated=True,
-             endpoint_override=None, headers=None, **kwargs):
+    def list(cls, session, paginated=True, **kwargs):
 
         if not cls.allow_list:
             raise exceptions.MethodNotSupported(cls, "list")
@@ -107,25 +107,21 @@ class Key(_base.Resource):
         body = {}
         limit = None
         if 'limit' in kwargs:
-            limit = kwargs['limit']
+            limit = kwargs.pop('limit')
             body['limit'] = limit
         if 'marker' in kwargs:
-            body['marker'] = kwargs['marker']
+            body['marker'] = kwargs.pop('marker')
         if 'key_state' in kwargs:
-            body['key_state'] = kwargs['key_state']
+            body['key_state'] = kwargs.pop('key_state')
         if 'sequence' in kwargs:
-            body['sequence'] = kwargs['sequence']
+            body['sequence'] = kwargs.pop('sequence')
 
         total_yielded = 0
         while uri:
 
             session = cls._get_session(session)
 
-            args = cls._prepare_override_args(
-                endpoint_override=endpoint_override,
-                additional_headers=headers)
-
-            response = session.post(uri, json=body, **args)
+            response = session.post(uri, json=body, **kwargs)
 
             data = response.json()
 

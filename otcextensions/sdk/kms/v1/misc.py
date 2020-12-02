@@ -19,12 +19,14 @@ class Random(_base.Resource):
     create_path = '/kms/gen-random'
 
     allow_create = True
+    allow_get = False
 
     # Properties
     #: Random data length
     #: *Type:str*
     random_data_length = resource.Body('random_data_length', type=int)
     #: Random data content
+
     #: *Type:str*
     random_data = resource.Body('random_data')
 

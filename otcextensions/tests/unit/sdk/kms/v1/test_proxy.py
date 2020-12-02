@@ -11,7 +11,7 @@
 # under the License.
 from openstack.tests.unit import test_proxy_base
 
-from otcextensions.sdk.kms.v1 import _proxy
+from openstack import proxy as _proxy
 from otcextensions.sdk.kms.v1 import data_key as _data_key
 from otcextensions.sdk.kms.v1 import key as _key
 from otcextensions.sdk.kms.v1 import misc as _misc
@@ -28,7 +28,7 @@ class TestKmsKeys(TestKmsProxy):
     def test_list(self):
         self.verify_list(
             self.proxy.keys, _key.Key,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
+            mock_method='opensta.sdk.sdk_proxy.Proxy._list',
             method_kwargs={
                 'some_arg': 'arg_value',
             },

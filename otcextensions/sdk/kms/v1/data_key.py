@@ -32,6 +32,7 @@ class DataKey(_base.Resource):
 
     allow_create = True
     allow_update = True
+    allow_get = False
 
     # Properties
     #: Secret key (CMK) ID

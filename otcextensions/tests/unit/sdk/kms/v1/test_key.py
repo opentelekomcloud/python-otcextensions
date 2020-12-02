@@ -95,7 +95,7 @@ class TestKey(base.TestCase):
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_get)
-        self.assertFalse(sot.allow_update)
+        self.assertFalse(sot.allow_commit)
         self.assertFalse(sot.allow_delete)
 
     def test_make_it(self):
