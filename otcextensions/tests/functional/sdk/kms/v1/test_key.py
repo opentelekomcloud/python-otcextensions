@@ -18,7 +18,7 @@ _logger = _log.setup_logging('openstack')
 
 
 class TestKey(base.BaseFunctionalTest):
-    KEY_ALIAS = 'sdk_test_key'
+    KEY_ALIAS = 'sdkk_test_key'
     cmks = []
 
     def setUp(self):

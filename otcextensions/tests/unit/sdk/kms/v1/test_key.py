@@ -94,7 +94,7 @@ class TestKey(base.TestCase):
         self.assertEqual('/kms/list-keys', sot.list_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
-        self.assertTrue(sot.allow_get)
+        self.assertTrue(sot.allow_fetch)
         self.assertFalse(sot.allow_commit)
         self.assertFalse(sot.allow_delete)
 

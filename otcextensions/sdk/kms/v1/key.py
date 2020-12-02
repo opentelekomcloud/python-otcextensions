@@ -24,9 +24,9 @@ class Key(_base.Resource):
     resource_key = 'key_info'
 
     allow_list = True
-    allow_get = True
     allow_create = True
     allow_update = False
+    allow_fetch = True
 
     # Properties
     #: Secret key ID
@@ -56,7 +56,7 @@ class Key(_base.Resource):
     #: Error message when create a secret key
     error_msg = resource.Body('error_msg')
 
-    def get(self, session):
+    def fetch(self, session,  requires_id=None, base_path=None, error_message=None):
         if not self.allow_get:
             raise exceptions.MethodNotSupported(self, "get")
         url = self.get_path
@@ -93,7 +93,7 @@ class Key(_base.Resource):
         )
 
     @classmethod
-    def list(cls, session, paginated=True, **kwargs):
+    def list(cls, session, paginated=True, base_path=None, **kwargs):
 
         if not cls.allow_list:
             raise exceptions.MethodNotSupported(cls, "list")

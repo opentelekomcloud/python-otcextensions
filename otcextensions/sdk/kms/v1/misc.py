@@ -34,7 +34,6 @@ class Random(_base.Resource):
 class InstanceNumber(_base.Resource):
 
     base_path = 'kms/user-instances'
-    allow_get = True
     allow_fetch = True
     # Properties
     #: Instance number
