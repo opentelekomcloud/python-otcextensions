@@ -27,7 +27,7 @@ class Resource(resource.Resource):
     #: Error message when create a secret key
     error_msg = resource.Body('error_msg')
 
-    def create(self, session, prepend_key=True, uri=None,
+    def create(self, session, prepend_key=False, uri=None,
                requires_id=True, **params):
         if not self.allow_create:
             raise exceptions.MethodNotSupported(self, "create")
