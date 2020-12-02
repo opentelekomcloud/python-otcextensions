@@ -17,14 +17,15 @@ from osc_lib import utils
 from osc_lib import exceptions
 from osc_lib.cli import parseractions
 from osc_lib.command import command
+from distutils.util import strtobool
 
 from otcextensions.i18n import _
 from otcextensions.common import sdk_utils
 
 LOG = logging.getLogger(__name__)
 
-SERVER_TYPE_CHOICES = ['VM', 'VIP', 'LB']
-SERVICE_TYPE_CHOICES = ['Gateway', 'Interface']
+SERVER_TYPE_CHOICES = ['vm', 'vip', 'lb']
+SERVICE_TYPE_CHOICES = ['gateway', 'interface']
 
 
 def _get_columns(item):
@@ -36,7 +37,7 @@ def _get_columns(item):
 class ListEndpointServices(command.Lister):
 
     _description = _("List VPC Endpoint Services.")
-    columns = ('Id', 'Name', 'Spec', 'Router Id', 'Status')
+    columns = ('Id', 'Service Name', 'Service Type', 'Server Type', 'Connection Count', 'Status')
 
     def get_parser(self, prog_name):
         parser = super(ListEndpointServices, self).get_parser(prog_name)
@@ -113,14 +114,14 @@ class ShowEndpointService(command.ShowOne):
         parser = super(ShowEndpointService, self).get_parser(prog_name)
         parser.add_argument(
             'endpointservice',
-            metavar='<endpoint_service>',
+            metavar='<endpointservice>',
             help=_("Specifies the Name or ID of the VPC Endpoint Service."),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.vpcep
-        obj = client.find_endpoint_service(parsed_args.endpoint_service)
+        obj = client.get_endpoint_service(parsed_args.endpointservice)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
@@ -167,7 +168,10 @@ class CreateEndpointService(command.ShowOne):
         parser.add_argument(
             '--approval-enabled',
             metavar='<approval_enabled>',
-            type=bool,
+            type=lambda x: bool(strtobool(str(x))),
+            const=True,
+            default=True,
+            nargs='?',
             help=_("Specifies whether connection approval is required."),
         )
         parser.add_argument(
@@ -191,7 +195,7 @@ class CreateEndpointService(command.ShowOne):
                     'server_port=<server-port>,'
                     'protocol=<protocol>',
             action=parseractions.MultiKeyValueAction,
-            dest='tags',
+            dest='ports',
             required=True,
             required_keys=['client_port', 'server_port', 'protocol'],
             help=_("Example: \n"
@@ -226,9 +230,7 @@ class CreateEndpointService(command.ShowOne):
             'vip_port_id',
             'router_id',
             'service_type',
-            'approval_enabled',
             'server_type',
-            'ports',
             'tags',
             'tcp_proxy']
         attrs = {}
@@ -236,6 +238,15 @@ class CreateEndpointService(command.ShowOne):
             val = getattr(parsed_args, arg)
             if val:
                 attrs[arg] = val
+        ports = []
+        for port in parsed_args.ports:
+            ports.append({'client_port': int(port['client_port']),
+                          'server_port': int(port['server_port']),
+                          'protocol': port['protocol']})
+        attrs['ports'] = ports
+
+        if not parsed_args.approval_enabled:
+            attrs['approval_enabled'] = False
 
         obj = client.create_endpoint_service(**attrs)
 
@@ -252,7 +263,7 @@ class UpdateEndpointService(command.ShowOne):
         parser = super(UpdateEndpointService, self).get_parser(prog_name)
         parser.add_argument(
             'endpointservice',
-            metavar='<endpoint_service>',
+            metavar='<endpointservice>',
             help=_("Specifies the Name or ID of the Vpc endpoint service."),
         )
         parser.add_argument(
@@ -305,8 +316,8 @@ class UpdateEndpointService(command.ShowOne):
         for arg in args_list:
             if getattr(parsed_args, arg):
                 attrs[arg] = getattr(parsed_args, arg)
-        endpoint_service = client.find_endpoint_service(
-            parsed_args.endpoint_service)
+        endpoint_service = client.get_endpoint_service(
+            parsed_args.endpointservice)
 
         obj = client.update_endpoint_service(endpoint_service.id, **attrs)
 
@@ -324,7 +335,7 @@ class DeleteEndpointService(command.Command):
         parser = super(DeleteEndpointService, self).get_parser(prog_name)
         parser.add_argument(
             'endpointservice',
-            metavar='<endpoint_service>',
+            metavar='<endpointservice>',
             nargs='+',
             help=_("Vpc Endpoint Services(s) to delete (Name or ID)"),
         )
@@ -333,17 +344,17 @@ class DeleteEndpointService(command.Command):
     def take_action(self, parsed_args):
         client = self.app.client_manager.vpcep
         result = 0
-        for endpoint_service in parsed_args.endpoint_service:
+        for endpointservice in parsed_args.endpointservice:
             try:
-                obj = client.find_endpoint_service(endpoint_service)
+                obj = client.get_endpoint_service(endpointservice)
                 client.delete_endpoint_service(obj.id)
             except Exception as e:
                 result += 1
                 LOG.error(_("Failed to delete Vpc Endpoint Service with "
-                            "name or ID '%(endpoint_service)s': %(e)s"),
-                          {'endpoint_service': endpoint_service, 'e': e})
+                            "name or ID '%(endpointservice)s': %(e)s"),
+                          {'endpointservice': endpointservice, 'e': e})
         if result > 0:
-            total = len(parsed_args.gateway)
+            total = len(parsed_args.endpointservice)
             msg = (_("%(result)s of %(total)s Vpc Endpoint Services(s) failed "
                      "to delete.") % {'result': result, 'total': total})
             raise exceptions.CommandError(msg)

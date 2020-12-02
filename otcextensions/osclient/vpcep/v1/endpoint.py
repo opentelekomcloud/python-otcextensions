@@ -97,7 +97,7 @@ class ListEndpoints(command.Lister):
             if val:
                 attrs[arg] = val
 
-        data = client.endpoint_services(**attrs)
+        data = client.endpoints(**attrs)
 
         return (self.columns, (utils.get_item_properties(s, self.columns)
                                for s in data))
