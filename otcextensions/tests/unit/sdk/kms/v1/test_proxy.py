@@ -11,7 +11,7 @@
 # under the License.
 from openstack.tests.unit import test_proxy_base
 
-from openstack import proxy as _proxy
+from otcextensions.sdk.kms.v1 import _proxy
 from otcextensions.sdk.kms.v1 import data_key as _data_key
 from otcextensions.sdk.kms.v1 import key as _key
 from otcextensions.sdk.kms.v1 import misc as _misc
@@ -28,7 +28,7 @@ class TestKmsKeys(TestKmsProxy):
     def test_list(self):
         self.verify_list(
             self.proxy.keys, _key.Key,
-            mock_method='opensta.sdk.sdk_proxy.Proxy._list',
+            # mock_method='openstack.proxy.Proxy._list',
             method_kwargs={
                 'some_arg': 'arg_value',
             },
@@ -41,7 +41,7 @@ class TestKmsKeys(TestKmsProxy):
         self.verify_get(
             self.proxy.get_key,
             _key.Key,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
+            # mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
             expected_kwargs={
             }
         )
@@ -49,7 +49,7 @@ class TestKmsKeys(TestKmsProxy):
     def test_create(self):
         self.verify_create(
             self.proxy.create_key, _key.Key,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
+            mock_method='openstack.proxy.Proxy._create',
             method_kwargs={
                 'instance': 'test',
                 'name': 'some_name'
@@ -99,7 +99,7 @@ class TestKmsDataKeys(TestKmsProxy):
     def test_create(self):
         self.verify_create(
             self.proxy.create_datakey, _data_key.DataKey,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
+            mock_method='openstack.proxy.Proxy._create',
             method_args=['CMK'],
             method_kwargs={
                 'name': 'some_name'
@@ -144,7 +144,7 @@ class TestKmsRandom(TestKmsProxy):
     def test_create(self):
         self.verify_create(
             self.proxy.generate_random, _misc.Random,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
+            mock_method='openstack.proxy.Proxy._create',
             method_kwargs={
                 'random_data_length': 100
             },
