@@ -30,6 +30,10 @@ class TestCase(base.TestCase):
         ets_rds = self.os_fixture._get_endpoint_templates('rdsv3')
         svc_rds = self.os_fixture.v3_token.add_service('rdsv3', name='rdsv3')
         svc_rds.add_standard_endpoints(region='RegionOne', **ets_rds)
+        ets_cce = self.os_fixture._get_endpoint_templates('ccev2.0')
+        svc_cce = self.os_fixture.v3_token.add_service('ccev2.0',
+                                                       name='ccev2.0')
+        svc_cce.add_standard_endpoints(region='RegionOne', **ets_cce)
 
         return super(TestCase, self).get_keystone_v3_token()
 
@@ -49,7 +53,7 @@ class TestCase(base.TestCase):
                     append=None, base_url_append=None,
                     qs_elements=None):
         endpoint_url = (
-            'https://cce.eu-de.otc.t-systems.com/'
+            'https://ccev2.0.example.com/'
             'api/v3/projects/%(project_id)s'
         ) % {'project_id': self.cloud.current_project_id}
         # Strip trailing slashes, so as not to produce double-slashes below

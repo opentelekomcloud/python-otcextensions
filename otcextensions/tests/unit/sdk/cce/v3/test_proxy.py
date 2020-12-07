@@ -171,3 +171,39 @@ class TestCCEJob(TestCCEProxy):
             expected_kwargs={'attribute': 'status.status'}
         )
         self.proxy.get_job.assert_called_with('fake_job_id')
+
+
+class TestExtractName(TestCCEProxy):
+
+    def test_extract_name(self):
+
+        self.assertEqual(
+            ['discovery'],
+            self.proxy._extract_name('/api/v3/projects/123', project_id='123')
+        )
+        self.assertEqual(
+            ['clusters'],
+            self.proxy._extract_name(
+                '/api/v3/projects/123/clusters', project_id='123')
+        )
+        self.assertEqual(
+            ['cluster'],
+            self.proxy._extract_name(
+                '/api/v3/projects/123/clusters/c1', project_id='123')
+        )
+        self.assertEqual(
+            ['cluster', 'clustercert'],
+            self.proxy._extract_name(
+                '/api/v3/projects/123/clusters/c1/clustercert',
+                project_id='123')
+        )
+        self.assertEqual(
+            ['cluster', 'nodes'],
+            self.proxy._extract_name(
+                '/api/v3/projects/123/clusters/c1/nodes', project_id='123')
+        )
+        self.assertEqual(
+            ['cluster', 'node'],
+            self.proxy._extract_name(
+                '/api/v3/projects/123/clusters/c1/nodes/n1', project_id='123')
+        )
