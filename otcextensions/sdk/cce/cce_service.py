@@ -26,12 +26,6 @@ class CceService(service_description.ServiceDescription):
         '3': _proxy_v3.Proxy
     }
 
-    endpoint_override = {
-        '1': 'https://cce.eu-de.otc.t-systems.com/api/v1',
-        '3': 'https://cce.eu-de.otc.t-systems.com/api/v3/'
-             'projects/%(project_id)s',
-    }
-
     def _make_proxy(self, instance):
         """Create a Proxy for the service in question.
 
@@ -44,8 +38,16 @@ class CceService(service_description.ServiceDescription):
         # understand in the SDK.
         version_string = config.get_api_version('cce') or '3'
         endpoint_override = config.get_endpoint(self.service_type)
+        ep = config.get_service_catalog().url_for(
+            service_type=self.service_type,
+            region_name=config.region_name)
 
-        epo = self.endpoint_override.get(version_string, None)
+        epo = '%(base)s/api/v%(ver)s' % {
+            'base': ep,
+            'ver': version_string}
+        if version_string == '3':
+            epo += '/projects/%(project_id)s'
+
         if epo and not endpoint_override:
             endpoint_override = epo
 

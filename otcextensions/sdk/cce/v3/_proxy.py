@@ -9,6 +9,9 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from urllib import parse
+
+
 from openstack import proxy
 from openstack import resource
 
@@ -21,6 +24,39 @@ from otcextensions.sdk.cce.v3 import job as _job
 class Proxy(proxy.Proxy):
 
     skip_discovery = True
+
+    def _extract_name(self, url, service_type=None, project_id=None):
+        url_path = parse.urlparse(url).path.strip()
+        # Remove / from the beginning to keep the list indexes of interesting
+        # things consistent
+        if url_path.startswith('/'):
+            url_path = url_path[1:]
+
+        # Split url into parts and exclude potential project_id in some urls
+        url_parts = [
+            x for x in url_path.split('/') if (
+                x != project_id
+                and (
+                    not project_id
+                    or (project_id and x != project_id)
+                ))
+        ]
+        # Strip leading version piece so that
+        # GET /api/v3/projects/xxx
+        # returns []
+        if (
+            len(url_parts) >= 3
+            and url_parts[0] == 'api' and url_parts[2] == 'projects'
+        ):
+            url_parts = url_parts[3:]
+
+        name_parts = self._extract_name_consume_url_parts(url_parts)
+
+        if not name_parts:
+            name_parts = ['discovery']
+
+        # Strip out anything that's empty or None
+        return [part for part in name_parts if part]
 
     # ======== Cluster ========
     def clusters(self):
