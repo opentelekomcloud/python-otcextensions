@@ -99,18 +99,11 @@ class TestObject(base.TestCase):
 
         self.sess.put.return_value = mock_response
 
-        sot.create(
-            self.sess,
-            endpoint_override='epo',
-            requests_auth=2)
+        sot.create(self.sess)
 
         self.sess.put.assert_called_once_with(
             '/test-v1',
             data=data,
-            endpoint_override='epo',
-            requests_auth=2,
-            headers={
-                'Content-MD5': data_md5
-            }
+            request_headers={'Content-MD5': data_md5}
         )
     #

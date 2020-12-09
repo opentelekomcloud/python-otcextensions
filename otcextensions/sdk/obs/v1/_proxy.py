@@ -84,7 +84,7 @@ class Proxy(proxy.Proxy):
         :param id: Container id or an object of class
                    :class:`~otcextensions.sdk.obs.v1.container.Container`
         :returns: Detail of container
-        :rtype: :class:`~otcextensions.sdk.obs.v1.container.Container`
+        :rtype: :class:`~otcextensions.sdk.obs.v3.container.Container`
         """
         return self._head(_container.Container, container)
 
@@ -97,7 +97,7 @@ class Proxy(proxy.Proxy):
                comprised of the properties on the Container class.
 
         :returns: The results of container creation
-        :rtype: :class:`~otcextensions.sdk.obs.v1.container.Container`
+        :rtype: :class:`~otcextensions.sdk.obs.v3.container.Container`
         """
         container = attrs.get('name', None)
         endpoint = self.get_container_endpoint(container)
@@ -297,7 +297,7 @@ class Proxy(proxy.Proxy):
                comprised of the properties on the Object class.
 
         :returns: The results of object creation
-        :rtype: :class:`~otcextensions.sdk.obs.v1.container.Container`
+        :rtype: :class:`~otcextensions.sdk.obs.v3.container.Container`
         """
         # TODO(mordred) Add ability to stream data from a file
         # TODO(mordred) Use create_object from OpenStackCloud

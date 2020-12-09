@@ -40,7 +40,7 @@ class InstanceNumber(_base.Resource):
     #: *Type: int*
     instance_num = resource.Body('instance_num', type=int)
 
-    def get(self, session):
+    def fetch(self, session):
         return super(InstanceNumber, self).fetch(session, requires_id=False)
 
 

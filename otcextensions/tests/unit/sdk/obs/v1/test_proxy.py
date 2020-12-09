@@ -38,7 +38,7 @@ class TestObsProxy(test_proxy_base.TestProxyBase):
     def test_containers(self):
         self.verify_list(
             self.proxy.containers, _container.Container,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
+            # mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             expected_kwargs={
                 'requests_auth': self._ak_auth
             }
@@ -47,7 +47,7 @@ class TestObsProxy(test_proxy_base.TestProxyBase):
     def test_create_container(self):
         self.verify_create(
             self.proxy.create_container, _container.Container,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
+            # mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
             method_kwargs={
                 'name': 'nm'
             },
@@ -61,7 +61,7 @@ class TestObsProxy(test_proxy_base.TestProxyBase):
     def test_delete_container(self):
         self.verify_delete(
             self.proxy.delete_container, _container.Container, ignore=True,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
+            # mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
             expected_kwargs={
                 'endpoint_override': 'https://resource_or_id.obs.regio.'
                                      'otc.t-systems.com',
@@ -96,7 +96,7 @@ class TestObsProxy(test_proxy_base.TestProxyBase):
     def test_objects(self):
         self.verify_list(
             self.proxy.objects, _obj.Object,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
+            # mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
             method_args={
                 'container': 'container'
             },
@@ -110,7 +110,7 @@ class TestObsProxy(test_proxy_base.TestProxyBase):
     def test_create_object(self):
         self.verify_create(
             self.proxy.create_object, _obj.Object,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
+            # mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
             method_kwargs={
                 'name': 'nm',
                 'container': 'container'
@@ -126,7 +126,7 @@ class TestObsProxy(test_proxy_base.TestProxyBase):
     def test_delete_object(self):
         self.verify_delete(
             self.proxy.delete_object, _obj.Object, ignore=True,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
+            # mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
             expected_kwargs={
                 'endpoint_override': 'https://None.obs.regio.'
                                      'otc.t-systems.com',

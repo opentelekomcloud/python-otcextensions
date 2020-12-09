@@ -41,7 +41,7 @@ class TestRandom(base.TestCase):
         self.assertFalse(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertFalse(sot.allow_fetch)
-        self.assertFalse(sot.allow_update)
+        self.assertFalse(sot.allow_commit)
         self.assertFalse(sot.allow_delete)
 
     def test_make_it(self):
@@ -80,7 +80,7 @@ class TestInstanceNum(base.TestCase):
     def setUp(self):
         super(TestInstanceNum, self).setUp()
         self.sess = mock.Mock(spec=adapter.Adapter)
-        # self.sess.get = mock.Mock()
+        self.sess.default_microversion = None
         self.sess.get = mock.Mock()
         self.sot = misc.InstanceNumber()
 
@@ -95,10 +95,12 @@ class TestInstanceNum(base.TestCase):
         self.sess.get.return_value = mock_response
 
         sot = misc.InstanceNumber()
-        result = sot.get(self.sess)
+        result = sot.fetch(self.sess)
 
         self.sess.get.assert_called_once_with(
-            'kms/user-instances'
+            'kms/user-instances',
+            microversion=None,
+            params={}
         )
 
         self.assertEqual(sot, result)

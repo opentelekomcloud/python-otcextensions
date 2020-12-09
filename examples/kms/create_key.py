@@ -21,7 +21,7 @@ conn = openstack.connect(cloud='otc')
 
 
 key = conn.kms.create_key(
-    key_alias='cmkk_name',
+    key_alias='cmkkk_name',
     description='My KMS cmk'
 )
 print(key)

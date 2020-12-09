@@ -240,7 +240,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.kms.v1.key.InstanceNumber`
         """
         instance_num_obj = _misc.InstanceNumber()
-        return instance_num_obj.get(self)
+        return instance_num_obj.fetch(self)
 
     def quotas(self):
         """List quota resources for KMS service
