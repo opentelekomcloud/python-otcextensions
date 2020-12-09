@@ -97,7 +97,8 @@ class Container(_base.BaseResource):
         return resource._Request(uri, body, headers)
 
     @classmethod
-    def list(cls, session, paginated=False, **params):
+    def list(cls, session, paginated=False, base_path=None,
+             requests_auth=None, **params):
         if not cls.allow_list:
             raise exceptions.MethodNotSupported(cls, "list")
 
@@ -106,6 +107,7 @@ class Container(_base.BaseResource):
 
         response = session.get(
             session.get_endpoint(),
+            requests_auth=requests_auth,
             params=query_params.copy(),
         )
 
