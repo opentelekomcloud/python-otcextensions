@@ -159,7 +159,7 @@ class TestKmsInstanceNum(TestKmsProxy):
 
     def test_get(self):
         self._verify2(
-            'otcextensions.sdk.kms.v1.misc.InstanceNumber.get',
+            'otcextensions.sdk.kms.v1.misc.InstanceNumber.fetch',
             self.proxy.get_instance_number,
             method_args=[],
             expected_args=[self.proxy],
