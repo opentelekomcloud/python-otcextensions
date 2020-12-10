@@ -104,6 +104,7 @@ class TestObject(base.TestCase):
         self.sess.put.assert_called_once_with(
             '/test-v1',
             data=data,
+            requests_auth=None,
             request_headers={'Content-MD5': data_md5}
         )
     #

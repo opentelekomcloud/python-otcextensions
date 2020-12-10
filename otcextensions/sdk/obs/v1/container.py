@@ -107,8 +107,8 @@ class Container(_base.BaseResource):
 
         response = session.get(
             session.get_endpoint(),
-            requests_auth=requests_auth,
             params=query_params.copy(),
+            requests_auth=requests_auth
         )
 
         root = ET.fromstring(response.content)
@@ -142,7 +142,8 @@ class Container(_base.BaseResource):
         request = self._prepare_request()
 
         response = session.put(request.url,
-                               data=request.body, **params)
+                               data=request.body,
+                               headers=request.headers, **params)
 
         self._translate_response(response)
         return self

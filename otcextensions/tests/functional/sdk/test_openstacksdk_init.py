@@ -19,8 +19,7 @@ class TestOtcextensionsInitialization(base.BaseFunctionalTest):
 
     def test_basic(self):
         conn = openstack.connect(
-            vendor_hook='otcextensions.sdk:load',
-            cloud='otc'
+            vendor_hook='otcextensions.sdk:load'
         )
 
         self.assertTrue(hasattr(conn.dns, 'add_router_to_zone'))

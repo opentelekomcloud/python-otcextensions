@@ -83,7 +83,7 @@ class Object(_base.BaseResource):
                 pass
 
     @classmethod
-    def list(cls, session, paginated=False, **params):
+    def list(cls, session, paginated=False, requests_auth=None, **params):
         if not cls.allow_list:
             raise exceptions.MethodNotSupported(cls, "list")
 
@@ -97,6 +97,7 @@ class Object(_base.BaseResource):
 
             response = session.get(
                 uri,
+                requests_auth=requests_auth,
                 params=query_params.copy()
             )
 
@@ -129,7 +130,8 @@ class Object(_base.BaseResource):
 
         return
 
-    def create(self, session, prepend_key=True, **params):
+    def create(self, session, prepend_key=True,
+               requests_auth=None, **params):
 
         if not self.allow_create:
             raise exceptions.MethodNotSupported(self, 'create')
@@ -148,6 +150,7 @@ class Object(_base.BaseResource):
         response = session.put(
             request.url,
             data=self.data,
+            requests_auth=requests_auth,
             request_headers=request.headers,
             **params)
         self._translate_response(response)
