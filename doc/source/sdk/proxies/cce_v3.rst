@@ -26,6 +26,14 @@ Cluster Nodes Operations
   :members: cluster_nodes, get_cluster_node, find_cluster_node,
            delete_cluster_node, create_cluster_node
 
+Node Pool Operations
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.cce.v3._proxy.Proxy
+  :noindex:
+  :members: node_pools, get_node_pool, find_node_pool,
+           delete_node_pool, create_node_pool
+
 Job Operations
 ^^^^^^^^^^^^^^
 

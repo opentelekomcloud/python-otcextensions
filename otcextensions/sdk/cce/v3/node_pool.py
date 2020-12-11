@@ -185,12 +185,15 @@ class NodePoolSpec(resource.Resource):
     # Value: vm
     node_pool_type = resource.Body('type')
     # Template of the node specification.
-    node_template_spec = resource.body('nodeTemplate', type=NodeTemplateSpec)
+    node_template_spec = resource.Body('nodeTemplate', type=NodeTemplateSpec)
 
 
 class MetaDataSpec(resource.Body):
     # Name of the node pool
     name = resource.Body('name')
+    #: UUID
+    #: *Type:str
+    id = resource.Body('uid', alternate_id=True)
 
 
 class NodePool(_base.Resource):

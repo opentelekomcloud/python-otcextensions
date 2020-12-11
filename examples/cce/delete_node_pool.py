@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-List all node pools of a CCE cluster
+Find CCE Node Pool by name or ID
 """
 import openstack
 
@@ -20,6 +20,7 @@ conn = openstack.connect(cloud='otc')
 
 
 cluster = 'name_or_id'
+node_pool = 'name_or_id'
 cluster = conn.cce.find_cluster(cluster)
-for pool in conn.cce.node_pools(cluster):
-    print(pool)
+node_pool = conn.cce.find_node_pool(cluster=cluster, node_pool=node_pool)
+conn.cce.delete_node_pool(cluster=cluster, node_pool=node_pool)
