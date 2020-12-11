@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Find CCE Node Pool by name or ID
+Delete CCE Node Pool by name or ID
 """
 import openstack
 

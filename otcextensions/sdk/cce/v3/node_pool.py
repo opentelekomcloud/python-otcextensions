@@ -129,7 +129,7 @@ class SubnetIdSpec(resource.Resource):
 
 
 class NodeNicSpec(resource.Resource):
-    # Description about the primary Nic
+    # Description about the primary NIC
     primary_nic = resource.Body('primaryNic', type=SubnetIdSpec)
 
 
@@ -165,7 +165,8 @@ class NodeTemplateSpec(resource.Resource):
     node_nic_spec = resource.Body('nodeNicSpec', type=NodeNicSpec)
     # Boolean: if node is offloading all its components
     offload_node = resource.Body('offloadNode', type=bool)
-    # Operating System of the node. EulerOS and CentOS are supported.
+    # Operating System of the node. EulerOS and CentOS (K8s version >= 1.17)
+    # are supported.
     os = resource.Body('os')
     # System disk parameters of the node.
     root_volume = resource.Body('rootVolume', type=VolumeSpec)
