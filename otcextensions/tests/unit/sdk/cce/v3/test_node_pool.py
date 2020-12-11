@@ -61,7 +61,7 @@ EXAMPLE_LIST = {
                     },
                     "nodeNicSpec": {
                         "primaryNic": {
-                            "subnetId": "31be174a-0c7f-4b71-bb0d-d325fecb90ef"
+                            "subnetId": "31be174a-0c7f-4b71-bb0d"
                         }
                     },
                     "billingMode": 0,
@@ -78,7 +78,7 @@ EXAMPLE_LIST = {
                         }
                     ],
                     "k8sTags": {
-                        "cce.cloud.com/cce-nodepool": "wyr-17-nodepool-53042",
+                        "cce.cloud.com/cce-nodepool": "wyr-17-nodepool",
                         "tag1": "value1",
                         "tag2": "value2"
                     },
@@ -93,12 +93,12 @@ EXAMPLE_LIST = {
                         }
                     ],
                     "extendParam": {
-                        "DockerLVMConfigOverride": "dockerThinpool=vgpaas/90%VG;kubernetesLV=vgpaas/10%VG;diskType=evs;lvType=linear",
-                        "alpha.cce/NodeImageID": "85bd7ec5-bca4-4f5f-947b-6c1bf02599d3",
+                        "DockerLVMConfigOverride": "dockerThinpool",
+                        "alpha.cce/NodeImageID": "85bd7ec5",
                         "alpha.cce/postInstall": "bHMgLWwK",
                         "alpha.cce/preInstall": "bHMgLWw=",
                         "maxPods": 110,
-                        "publicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQA***d-by-Nova\n"
+                        "publicKey": "ssh-key"
                     }
                 },
                 "autoscaling": {
@@ -109,7 +109,7 @@ EXAMPLE_LIST = {
                     "priority": 1
                 },
                 "nodeManagement": {
-                    "serverGroupReference": "2129f95a-f233-4cd8-a1b2-9c0acdf918d3"
+                    "serverGroupReference": "grpref"
                 }
             },
             "status": {
@@ -137,7 +137,7 @@ EXAMPLE_CREATE = {
             "priority": 1
         },
         "nodeManagement": {
-            "serverGroupReference": "2129f95a-f233-4cd8-a1b2-9c0acdf918d3"
+            "serverGroupReference": "grpref"
         },
         "nodeTemplate": {
             "flavor": "s6.large.2",
@@ -163,9 +163,9 @@ EXAMPLE_CREATE = {
             "extendParam": {
                 "alpha.cce/preInstall": "bHMgLWw=",
                 "alpha.cce/postInstall": "bHMgLWwK",
-                "alpha.cce/NodeImageID": "85bd7ec5-bca4-4f5f-947b-6c1bf02599d3",
+                "alpha.cce/NodeImageID": "85bd7ec5",
                 "maxPods": 110,
-                "DockerLVMConfigOverride": "dockerThinpool=vgpaas/90%VG;kubernetesLV=vgpaas/10%VG;diskType=evs;lvType=linear"
+                "DockerLVMConfigOverride": "dockerThinpool"
             },
             "k8sTags": {
                 "tag1": "value1",
@@ -195,7 +195,7 @@ EXAMPLE_CREATE = {
             ],
             "nodeNicSpec": {
                 "primaryNic": {
-                    "subnetId": "31be174a-0c7f-4b71-bb0d-d325fecb90ef"
+                    "subnetId": "31be174a-0c7f-4b71-bb0d"
                 }
             }
         }

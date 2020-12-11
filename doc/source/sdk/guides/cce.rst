@@ -146,7 +146,7 @@ This interface is used to create a CCE node pool instance with
 parameters.
 
 .. literalinclude:: ../examples/cce/create_node_pool.py
-   :lines: 16-97
+   :lines: 16-99
 
 Get CCE Node Pool
 ^^^^^^^^^^^^^^^^^
