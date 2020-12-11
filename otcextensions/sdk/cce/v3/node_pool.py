@@ -99,11 +99,12 @@ class ExtendParamSpec(resource.Resource):
     # Public key of the node.
     public_key = resource.Body('publicKey')
 
+
 class AutoScalingSpec(resource.Resource):
     # Enable or disable auto scaling
     enable = resource.Body('enable', type=bool)
     # Minimum number of nodes after a scale-up if auto-scaling is enabled.
-    min_node_count = resourcde.Body('minNodeCount', type=int)
+    min_node_count = resource.Body('minNodeCount', type=int)
     # Maximum number of nodes after scale-up, if auto-scaling is enabled.
     # The value must be equal or greater than min_node_count and cannot
     # exceed the maximum number of nodes of the cluster.
@@ -115,18 +116,22 @@ class AutoScalingSpec(resource.Resource):
     # will not be deleted.
     scale_down_cooldown_time = resource.Body('scaleDownCooldownTime', type=int)
 
+
 class NodeManagementSpec(resource.Resource):
     # ECS groupt id of the ECS group to which those nodes belong
     # after creation.
     ecs_group_id = resource.Body('serverGroupReference')
 
+
 class SubnetIdSpec(resource.Resource):
     # ID of the subnet to which the NIC belongs
     subnet_id = resource.Body('subnetId')
 
+
 class NodeNicSpec(resource.Resource):
     # Description about the primary Nic
     primary_nic = resource.Body('primaryNic', type=SubnetIdSpec)
+
 
 class NodeTemplateSpec(resource.Resource):
     # Properties
@@ -169,6 +174,7 @@ class NodeTemplateSpec(resource.Resource):
     # Taints are used to configure anti-affinity
     taints = resource.Body('taints', type=list, list_type=TaintSpec)
 
+
 class NodePoolSpec(resource.Resource):
     # Autoscaling parameters
     autoscaling = resource.Body('autoscaling', type=AutoScalingSpec)
@@ -180,10 +186,12 @@ class NodePoolSpec(resource.Resource):
     node_pool_type = resource.Body('type')
     # Template of the node specification.
     node_template_spec = resource.body('nodeTemplate', type=NodeTemplateSpec)
-    
+
+
 class MetaDataSpec(resource.Body):
     # Name of the node pool
     name = resource.Body('name')
+
 
 class NodePool(_base.Resource):
 
@@ -199,7 +207,7 @@ class NodePool(_base.Resource):
     # Cluster id.
     cluster_id = resource.URI('cluster_id')
     # Spec
-    spec = resource.Body('spec', type=NodeSpec)
+    spec = resource.Body('spec', type=NodePoolSpec)
     # other metadata
     metadata = resource.Body('metadata', type=MetaDataSpec)
 
