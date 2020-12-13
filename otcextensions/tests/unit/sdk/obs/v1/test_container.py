@@ -91,7 +91,7 @@ class TestContainer(base.TestCase):
         self.sess.put.return_value = mock_response
 
         sot.create(
-            self.sess, requests_auth=2)
+            self.sess, requests_auth=2, endpoint_override='epo')
 
         self.sess.put.assert_called_once_with(
             '/',

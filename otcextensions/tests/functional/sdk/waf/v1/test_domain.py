@@ -116,11 +116,11 @@ rNcviQ==
 
         query = {'limit': 3}
         domains = list(self.client.domains(**query))
-        self.assertEqual(len(domains), cnt + 1)
+        self.assertEqual(len(domains), cnt + 2)
 
         query = {'limit': 1}
         domains = list(self.client.domains(**query))
-        self.assertEqual(len(domains), cnt + 1)
+        self.assertEqual(len(domains), cnt + 2)
 
     def test_get_domain(self):
         domain = self.client.get_domain(self.domain.id)

@@ -132,7 +132,7 @@ class Container(_base.BaseResource):
 
         return
 
-    def create(self, session, prepend_key=True, base_path=None, **params):
+    def create(self, session, prepend_key=True, **params):
 
         if not self.allow_create:
             raise exceptions.MethodNotSupported(self, "create")
