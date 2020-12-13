@@ -97,5 +97,6 @@ class TestContainer(base.TestCase):
             '/',
             data=None,
             requests_auth=2,
+            endpoint_override='epo',
             headers={}
         )
