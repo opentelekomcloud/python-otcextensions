@@ -116,6 +116,67 @@ or an instance of class
 .. literalinclude:: ../examples/cce/delete_cluster_node.py
    :lines: 16-25
 
+CCE Node Pool
+-------------
+
+A node pool is a group of one or more nodes with identical configuration
+in a cluster. In CCE, the nodes configured during cluster creation are
+grouped into the default node pool. The default node pool is named
+DefaultPool and cannot be edited, deleted, or migrated. In CCE SDK,
+you can create custom node pools in a cluster to organize cluster nodes
+into different pools so that you can edit or delete a node pool
+individually without affecting the entire cluster. All nodes in a custom
+node pool have identical parameters and node type. You cannot configure
+a single node in a node pool; any configuration changes affect all nodes
+in the node pool.
+
+List CCE Node Pools
+^^^^^^^^^^^^^^^^^^^
+
+This interface is used to query all node pools of a CCE cluster
+and to filter the output with query parameters.
+
+.. literalinclude:: ../examples/cce/list_node_pools.py
+   :lines: 16-25
+
+Create CCE Node Pool
+^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to create a CCE node pool instance with
+parameters.
+
+.. literalinclude:: ../examples/cce/create_node_pool.py
+   :lines: 16-99
+
+Get CCE Node Pool
+^^^^^^^^^^^^^^^^^
+
+This interface is used to get a CCE node pool by ID
+or an instance of class
+:class:`~otcextensions.sdk.cce.v3.node_pool.NodePool`.
+
+.. literalinclude:: ../examples/cce/get_node_pool.py
+   :lines: 16-26
+
+Find CCE Node Pool
+^^^^^^^^^^^^^^^^^^
+
+This interface is used to find a node pool of a CCE cluster by ID
+or name.
+
+.. literalinclude:: ../examples/cce/find_node_pool.py
+   :lines: 16-26
+
+Delete CCE Node Pool
+^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to delete a CCE node pool by ID
+or an instance of class
+:class:`~otcextensions.sdk.cce.v3.node_pool.NodePool`.
+
+.. literalinclude:: ../examples/cce/delete_node_pool.py
+   :lines: 16-26
+
 Job Operations
 --------------
 

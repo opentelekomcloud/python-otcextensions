@@ -8,3 +8,4 @@ AutoScaling Resources
    v1/cluster_node
    v3/cluster
    v3/cluster_node
+   v3/node_pool
