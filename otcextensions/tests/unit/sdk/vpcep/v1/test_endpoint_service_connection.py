@@ -56,7 +56,7 @@ class TestEndpointConnection(base.TestCase):
     def test_basic(self):
         sot = endpoint_service.Connection()
         self.assertEqual('connections', sot.resources_key)
-        path = '/vpc-endpoint-services/%{endpoint_service_id}s/connections'
+        path = '/vpc-endpoint-services/%(endpoint_service_id)s/connections'
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
@@ -74,7 +74,7 @@ class TestEndpointManageConnection(base.TestCase):
 
     def test_basic(self):
         sot = endpoint_service.ManageConnection()
-        path = ('/vpc-endpoint-services/%{endpoint_service_id}s'
+        path = ('/vpc-endpoint-services/%(endpoint_service_id)s'
                 '/connections/action')
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_create)

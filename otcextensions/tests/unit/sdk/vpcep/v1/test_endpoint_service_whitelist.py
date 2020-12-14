@@ -40,7 +40,7 @@ class TestEndpointWhitelist(base.TestCase):
     def test_basic(self):
         sot = endpoint_service.Whitelist()
         self.assertEqual('permissions', sot.resources_key)
-        path = '/vpc-endpoint-services/%{endpoint_service_id}s/permissions'
+        path = '/vpc-endpoint-services/%(endpoint_service_id)s/permissions'
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
@@ -58,7 +58,7 @@ class TestEndpointManageWhitelist(base.TestCase):
 
     def test_basic(self):
         sot = endpoint_service.ManageWhitelist()
-        path = ('/vpc-endpoint-services/%{endpoint_service_id}s'
+        path = ('/vpc-endpoint-services/%(endpoint_service_id)s'
                 '/permissions/action')
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_create)

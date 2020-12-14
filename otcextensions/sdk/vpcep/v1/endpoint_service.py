@@ -49,8 +49,8 @@ class EndpointService(resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'endpoint_service_name', 'id', 'sort_key',
-        'sort_dir', 'limit', 'offset', 'status'
+        'id', 'name', 'sort_key', 'sort_dir', 'limit',
+        'offset', 'status', name='endpoint_service_name'
     )
 
     # Properties
@@ -87,7 +87,7 @@ class EndpointService(resource.Resource):
     server_type = resource.Body('server_type')
     #: Specifies the ID of the VPC to which the backend resource of
     #:  the VPC endpoint service belongs.
-    vpc_id = resource.Body('vpc_id')
+    router_id = resource.Body('vpc_id')
     #: Specifies whether connection approval is required.
     approval_enabled = resource.Body('approval_enabled', type=bool)
     #: Specifies the type of the VPC endpoint service.
@@ -118,7 +118,7 @@ class EndpointService(resource.Resource):
 
 class Connection(resource.Resource):
     resources_key = 'connections'
-    base_path = '/vpc-endpoint-services/%{endpoint_service_id}s/connections'
+    base_path = '/vpc-endpoint-services/%(endpoint_service_id)s/connections'
 
     # capabilities
     allow_list = True
@@ -145,7 +145,7 @@ class Connection(resource.Resource):
 
 
 class ManageConnection(resource.Resource):
-    base_path = ('/vpc-endpoint-services/%{endpoint_service_id}s'
+    base_path = ('/vpc-endpoint-services/%(endpoint_service_id)s'
                  '/connections/action')
 
     # capabilities
@@ -153,19 +153,22 @@ class ManageConnection(resource.Resource):
 
     endpoint_service_id = resource.URI('endpoint_service_id')
 
+    #: Lists the VPC endpoints.
+    endpoints = resource.Body('endpoints', type=list)
     #: List the connections.
-    connections = resource.Body('connections', type=list,
-                                list_type=Connection)
+    connections = resource.Body('connections', type=list, list_type=Connection)
+    #: Specifies the operation to be performed.
+    action = resource.Body('action')
 
 
 class Whitelist(resource.Resource):
     resources_key = 'permissions'
-    base_path = '/vpc-endpoint-services/%{endpoint_service_id}s/permissions'
+    base_path = '/vpc-endpoint-services/%(endpoint_service_id)s/permissions'
+
+    endpoint_service_id = resource.URI('endpoint_service_id')
 
     # capabilities
     allow_list = True
-
-    endpoint_service_id = resource.URI('endpoint_service_id')
 
     _query_mapping = resource.QueryParameters(
         'sort_key', 'sort_dir', 'limit', 'offset'
@@ -181,7 +184,7 @@ class Whitelist(resource.Resource):
 
 
 class ManageWhitelist(resource.Resource):
-    base_path = ('/vpc-endpoint-services/%{endpoint_service_id}s'
+    base_path = ('/vpc-endpoint-services/%(endpoint_service_id)s'
                  '/permissions/action')
 
     # capabilities
@@ -191,4 +194,6 @@ class ManageWhitelist(resource.Resource):
 
     # Properties
     #: Lists the whitelist records.
-    permissions = resource.Body('permissions')
+    permissions = resource.Body('permissions', type=list)
+    #: Specifies the operation to be performed.
+    action = resource.Body('action')

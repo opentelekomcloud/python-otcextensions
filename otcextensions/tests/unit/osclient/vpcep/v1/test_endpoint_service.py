@@ -25,15 +25,35 @@ class TestListEndpointServices(fakes.TestVpcep):
 
     objects = fakes.FakeEndpointService.create_multiple(3)
 
-    column_list_headers = ('Id', 'Service Name', 'Service Type', 'Server Type', 'Connection Count', 'Status')
+    column_list_headers = (
+        'Id',
+        'Service Name',
+        'Service Type',
+        'Server Type',
+        'Connection Count',
+        'Status'
+    )
 
-    columns = ('id', 'service_name', 'service_type', 'server_type', 'connection_count', 'status')
+    columns = (
+        'id',
+        'service_name',
+        'service_type',
+        'server_type',
+        'connection_count',
+        'status'
+    )
 
     data = []
 
     for s in objects:
-        data.append(
-            (s.id, s.service_name, s.service_type, s.server_type, s.connection_count, s.status))
+        data.append((
+            s.id,
+            s.service_name,
+            s.service_type,
+            s.server_type,
+            s.connection_count,
+            s.status
+        ))
 
     def setUp(self):
         super(TestListEndpointServices, self).setUp()
@@ -69,8 +89,8 @@ class TestListEndpointServices(fakes.TestVpcep):
             '--status', '3',
             '--sort-key', '4',
             '--sort-dir', '5',
-            '--limit', 6,
-            '--offset', '7'
+            '--limit', '6',
+            '--offset', '7',
         ]
 
         verifylist = [
@@ -80,7 +100,7 @@ class TestListEndpointServices(fakes.TestVpcep):
             ('sort_key', '4'),
             ('sort_dir', '5'),
             ('limit', 6),
-            ('offset', 7),
+            ('offset', 7)
         ]
 
         # Verify cm is triggered with default parameters
@@ -115,11 +135,11 @@ class TestCreateEndpointService(fakes.TestVpcep):
         'port_id',
         'ports',
         'project_id',
+        'router_id',
         'server_type',
         'service_name',
         'service_type',
-        'status',
-        'vpc_id'
+        'status'
     )
 
     data = fakes.gen_data(_data, columns)
@@ -154,7 +174,9 @@ class TestCreateEndpointService(fakes.TestVpcep):
             ('approval_enabled', False),
             ('server_type', 'vm'),
             ('service_type', 'interface'),
-            ('ports', [{'client_port': '80', 'server_port': '80',  'protocol': 'TCP'}]),
+            ('ports', [{'client_port': '80',
+                        'server_port': '80',
+                        'protocol': 'TCP'}]),
             ('tags', [{'key': 'tag-key', 'value': 'tag-value'}]),
             ('tcp_proxy', '127.0.0.1:8080'),
         ]
@@ -192,132 +214,86 @@ class TestCreateEndpointService(fakes.TestVpcep):
         self.assertEqual(self.columns, columns)
 
 
-#class TestUpdateEndpointService(fakes.TestVpcep):
-#
-#    _data = fakes.FakeEndpointService.create_one()
-#
-#    columns = (
-#        'id',
-#        'name',
-#        'local_vpc_info',
-#        'peer_vpc_info',
-#        'description',
-#        'created_at',
-#        'updated_at',
-#        'status'
-#    )
-#
-#    data = fakes.gen_data(_data, columns)
-#
-#    def setUp(self):
-#        super(TestUpdateEndpointService, self).setUp()
-#
-#        self.cmd = endpoint_service.UpdateEndpointService(self.app, None)
-#
-#        self.client.find_endpoint_service = mock.Mock(return_value=self._data)
-#        self.client.update_endpoint_service = mock.Mock(return_value=self._data)
-#
-#    def test_update(self):
-#        arglist = [
-#            self._data.name,
-#            '--name', 'test-endpoint_service-updated',
-#            '--description', 'vpc endpoint_service updated',
-#        ]
-#        verifylist = [
-#            ('endpoint_service', self._data.name),
-#            ('name', 'test-endpoint_service-updated'),
-#            ('description', 'vpc endpoint_service updated'),
-#        ]
-#        # Verify cm is triggereg with default parameters
-#        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-#
-#        # Trigger the action
-#        columns, data = self.cmd.take_action(parsed_args)
-#
-#        self.client.find_endpoint_service.assert_called_with(self._data.name)
-#        self.client.update_endpoint_service.assert_called_with(
-#            self._data.id,
-#            name='test-endpoint_service-updated',
-#            description='vpc endpoint_service updated'
-#        )
-#        self.assertEqual(self.columns, columns)
-#
-#
-#class TestShowEndpointService(fakes.TestVpcep):
-#
-#    _data = fakes.FakeEndpointService.create_one()
-#
-#    columns = (
-#        'id',
-#        'name',
-#        'local_vpc_info',
-#        'peer_vpc_info',
-#        'description',
-#        'created_at',
-#        'updated_at',
-#        'status'
-#    )
-#
-#    data = fakes.gen_data(_data, columns)
-#
-#    def setUp(self):
-#        super(TestShowEndpointService, self).setUp()
-#
-#        self.cmd = endpoint_service.ShowEndpointService(self.app, None)
-#
-#        self.client.find_endpoint_service = mock.Mock(return_value=self._data)
-#
-#    def test_show_no_options(self):
-#        arglist = []
-#        verifylist = []
-#
-#        # Testing that a call without the required argument will fail and
-#        # throw a "ParserExecption"
-#        self.assertRaises(tests_utils.ParserException,
-#                          self.check_parser, self.cmd, arglist, verifylist)
-#
-#    def test_show(self):
-#        arglist = [
-#            self._data.id,
-#        ]
-#
-#        verifylist = [
-#            ('endpointservice', self._data.id),
-#        ]
-#
-#        # Verify cm is triggered with default parameters
-#        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-#
-#        # Trigger the action
-#        columns, data = self.cmd.take_action(parsed_args)
-#        self.client.get_endpoint_service.assert_called_with(self._data.id)
-#
-#        self.assertEqual(self.columns, columns)
-#        self.assertEqual(self.data, data)
-#
-#    def test_show_non_existent(self):
-#        arglist = [
-#            'unexist_vpc_endpoint_service',
-#        ]
-#
-#        verifylist = [
-#            ('endpointservice', 'unexist_vpc_endpoint_service'),
-#        ]
-#
-#        # Verify cm is triggered with default parameters
-#        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-#
-#        find_mock_result = exceptions.CommandError('Resource Not Found')
-#        self.client.get_endpoint_service = (
-#            mock.Mock(side_effect=find_mock_result)
-#        )
-#
-#        # Trigger the action
-#        try:
-#            self.cmd.take_action(parsed_args)
-#        except Exception as e:
-#            self.assertEqual('Resource Not Found', str(e))
-#        self.client.find_endpoint_service.assert_called_with('unexist_vpc_endpoint_service')
+class TestShowEndpointService(fakes.TestVpcep):
+
+    _data = fakes.FakeEndpointService.create_one()
+
+    columns = (
+        'approval_enabled',
+        'created_at',
+        'id',
+        'pool_id',
+        'port_id',
+        'ports',
+        'project_id',
+        'router_id',
+        'server_type',
+        'service_name',
+        'service_type',
+        'status'
+    )
+
+    data = fakes.gen_data(_data, columns)
+
+    def setUp(self):
+        super(TestShowEndpointService, self).setUp()
+
+        self.cmd = endpoint_service.ShowEndpointService(self.app, None)
+
+        self.client.get_endpoint_service = mock.Mock(return_value=self._data)
+
+    def test_show_no_options(self):
+        arglist = []
+        verifylist = []
+
+        # Testing that a call without the required argument will fail and
+        # throw a "ParserExecption"
+        self.assertRaises(tests_utils.ParserException,
+                          self.check_parser, self.cmd, arglist, verifylist)
+
+    def test_show(self):
+        arglist = [
+            self._data.id,
+        ]
+
+        verifylist = [
+            ('endpointservice', self._data.id),
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+        self.client.get_endpoint_service.assert_called_with(self._data.id)
+
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
+
+    def test_show_non_existent(self):
+        arglist = [
+            'unexist_vpc_endpoint_service',
+        ]
+
+        verifylist = [
+            ('endpointservice', 'unexist_vpc_endpoint_service'),
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        find_mock_result = exceptions.CommandError('Resource Not Found')
+        self.client.get_endpoint_service = (
+            mock.Mock(side_effect=find_mock_result)
+        )
+
+        # Trigger the action
+        try:
+            self.cmd.take_action(parsed_args)
+        except Exception as e:
+            self.assertEqual('Resource Not Found', str(e))
+        self.client.get_endpoint_service.assert_called_with(
+            'unexist_vpc_endpoint_service')
 
 
 class TestDeleteEndpointService(fakes.TestVpcep):
@@ -350,7 +326,8 @@ class TestDeleteEndpointService(fakes.TestVpcep):
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
-        self.client.delete_endpoint_service.assert_called_with(self._data[0].id)
+        self.client.delete_endpoint_service.assert_called_with(
+            self._data[0].id)
         self.assertIsNone(result)
 
     def test_multiple_delete(self):
@@ -404,6 +381,134 @@ class TestDeleteEndpointService(fakes.TestVpcep):
             self.assertEqual(
                 '1 of 2 Vpc Endpoint Services(s) failed to delete.', str(e))
 
-        self.client.get_endpoint_service.assert_any_call(self._data[0].name)
-        self.client.get_endpoint_service.assert_any_call('unexist_vpc_endpoint_service')
-        self.client.delete_endpoint_service.assert_called_once_with(self._data[0].id)
+        self.client.get_endpoint_service.assert_any_call(
+            self._data[0].name)
+        self.client.get_endpoint_service.assert_any_call(
+            'unexist_vpc_endpoint_service')
+        self.client.delete_endpoint_service.assert_called_once_with(
+            self._data[0].id)
+
+
+class TestListWhitelist(fakes.TestVpcep):
+
+    objects = fakes.FakeWhitelist.create_multiple(3)
+
+    column_list_headers = ('Id', 'Permission', 'Created At')
+
+    columns = ('id', 'permission', 'created_at')
+
+    data = []
+
+    for s in objects:
+        data.append(
+            (s.id, s.permission, s.created_at))
+
+    def setUp(self):
+        super(TestListWhitelist, self).setUp()
+
+        self.cmd = endpoint_service.ListWhitelist(self.app, None)
+
+        self.client.whitelist = mock.Mock()
+        self.client.api_mock = self.client.whitelist
+
+    def test_list(self):
+        arglist = [
+            'test-endpoint-service'
+        ]
+
+        verifylist = (
+            ('endpointservice', 'test-endpoint-service'),
+        )
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.api_mock.side_effect = [self.objects]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.api_mock.assert_called_with('test-endpoint-service')
+
+        self.assertEqual(self.column_list_headers, columns)
+        self.assertEqual(self.data, list(data))
+
+    def test_list_args(self):
+        arglist = [
+            'test-endpoint-service',
+            '--sort-key', '1',
+            '--sort-dir', '2',
+            '--limit', '3',
+            '--offset', '4',
+        ]
+
+        verifylist = [
+            ('endpointservice', 'test-endpoint-service'),
+            ('sort_key', '1'),
+            ('sort_dir', '2'),
+            ('limit', 3),
+            ('offset', 4)
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.api_mock.side_effect = [self.objects]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.api_mock.assert_called_with(
+            'test-endpoint-service',
+            sort_key='1',
+            sort_dir='2',
+            limit=3,
+            offset=4,
+        )
+
+
+class TestManageWhitelist(fakes.TestVpcep):
+
+    objects = fakes.FakeManageWhitelist.create_one()
+
+    column_list_headers = ('Domain Id', 'Status')
+    columns = ('domain_id', 'status')
+
+    data = objects.permissions
+
+    def setUp(self):
+        super(TestManageWhitelist, self).setUp()
+
+        self.cmd = endpoint_service.ManageWhitelist(self.app, None)
+
+        self.client.manage_whitelist = mock.Mock()
+        self.client.api_mock = self.client.manage_whitelist
+
+    def test_create(self):
+        arglist = [
+            'test-endpoint-service',
+            'domain1-id',
+            'domain2-id',
+            '--add'
+        ]
+        verifylist = [
+            ('endpointservice', 'test-endpoint-service'),
+            ('domain', ['domain1-id', 'domain2-id']),
+            ('add', True),
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.api_mock.side_effect = [self.objects]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.manage_whitelist.assert_called_with(
+            'test-endpoint-service',
+            domains=['domain1-id', 'domain2-id'],
+            action='add')
+        self.assertEqual(self.column_list_headers, columns)

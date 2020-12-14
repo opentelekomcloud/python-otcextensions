@@ -15,7 +15,7 @@ from openstack.tests.unit import base
 from otcextensions.sdk.vpcep.v1 import endpoint
 
 
-EXAMPLE = {
+RESP_BODY = {
     "id": "4189d3c2-8882-4871-a3c2-d380272eed83",
     "service_type": "interface",
     "marker_id": 322312312312,
@@ -54,12 +54,14 @@ class TestEndpoint(base.TestCase):
         self.assertTrue(sot.allow_delete)
 
     def test_make_it(self):
-        sot = endpoint.Endpoint(**EXAMPLE)
-        for key, value in EXAMPLE.items():
+        sot = endpoint.Endpoint(**RESP_BODY)
+        for key, value in RESP_BODY.items():
             if key == 'tags':
                 for i in range(len(value)):
                     for sub_key, sub_value in value[i].items():
                         self.assertEqual(getattr(sot.tags[i], sub_key),
                                          sub_value)
+            elif key == 'vpc_id':
+                self.assertEqual(sot.router_id, value)
             else:
                 self.assertEqual(getattr(sot, key), value)

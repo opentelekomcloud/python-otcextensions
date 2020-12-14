@@ -96,7 +96,7 @@ class Proxy(proxy.Proxy):
         return self._update(_endpoint_service.EndpointService,
                             endpoint_service, **attrs)
 
-    def list_endpoint_service_connection(self, endpoint_service, **params):
+    def connections(self, endpoint_service, **params):
         """Return a generator of endpoint_service connections
 
         :param endpoint_service:
@@ -115,10 +115,10 @@ class Proxy(proxy.Proxy):
                           endpoint_service_id=endpoint_service.id,
                           **params)
 
-    def manage_endpoint_service_connection(self,
-                                           endpoint_service,
-                                           endpoints,
-                                           action):
+    def manage_connections(self,
+                           endpoint_service,
+                           endpoints,
+                           action):
         """Return a generator of endpoint_service_connections
 
         :param endpoint_service:
@@ -129,11 +129,11 @@ class Proxy(proxy.Proxy):
         :param action: Specifies whether to receive or reject a VPC endpoint
           connection for a VPC endpoint service.
 
-        :returns: A generator of endpoint_service ManageConnection objects.
+        :returns: A generator of endpoint_service Connection objects.
         """
-        endpoint_service = \
-            self._get_resource(_endpoint_service.EndpointService,
-                               endpoint_service)
+        endpoint_service = self._get_resource(
+            _endpoint_service.EndpointService, endpoint_service)
+
         assert(action.lower() in ['receive', 'reject'])
 
         if not isinstance(type(endpoints), list):
@@ -146,8 +146,8 @@ class Proxy(proxy.Proxy):
                             endpoint_service_id=endpoint_service.id,
                             **attr)
 
-    def list_endpoint_service_whitelist(self, endpoint_service, **params):
-        """Return a generator of endpoint_service_connections
+    def whitelist(self, endpoint_service, **params):
+        """Return a generator of vpc endpoint service whitelist
 
         :param endpoint_service:
           The value can be the ID of a Endpoint Service or a
@@ -161,14 +161,15 @@ class Proxy(proxy.Proxy):
         endpoint_service = self._get_resource(
             _endpoint_service.EndpointService,
             endpoint_service)
+
         return self._list(_endpoint_service.Whitelist,
                           endpoint_service_id=endpoint_service.id,
                           **params)
 
-    def manage_endpoint_service_whitelist(self,
-                                          endpoint_service,
-                                          domains,
-                                          action):
+    def manage_whitelist(self,
+                         endpoint_service,
+                         domains,
+                         action):
         """Return a generator of endpoint_service_connections
 
         :param endpoint_service:
@@ -180,7 +181,7 @@ class Proxy(proxy.Proxy):
         :param action: Specifies whether to add or remove the domains
           from whitelist for a VPC endpoint service.
 
-        :returns: A generator of endpoint_service ManageWhitelist objects.
+        :returns: List of Domain IDs Added or Removed from Whitelist.
         """
         endpoint_service = self._get_resource(
             _endpoint_service.EndpointService,

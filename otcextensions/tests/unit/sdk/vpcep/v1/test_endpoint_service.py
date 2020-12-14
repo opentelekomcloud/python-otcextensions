@@ -21,7 +21,7 @@ VPC_ID = uuid.uuid4().hex
 POOL_ID = uuid.uuid4().hex
 PROJECT_ID = uuid.uuid4().hex
 
-EXAMPLE = {
+RESP_BODY = {
     "id": ID,
     "port_id": PORT_ID,
     "vpc_id": VPC_ID,
@@ -63,9 +63,11 @@ class TestEndpointService(base.TestCase):
         self.assertTrue(sot.allow_delete)
 
     def test_make_it(self):
-        sot = endpoint_service.EndpointService(**EXAMPLE)
-        for key, value in EXAMPLE.items():
-            if key == 'ports':
+        sot = endpoint_service.EndpointService(**RESP_BODY)
+        for key, value in RESP_BODY.items():
+            if key == 'vpc_id':
+                self.assertEqual(sot.router_id, value)
+            elif key == 'ports':
                 for i in range(len(value)):
                     for sub_key, sub_value in value[i].items():
                         self.assertEqual(getattr(sot.ports[i], sub_key),

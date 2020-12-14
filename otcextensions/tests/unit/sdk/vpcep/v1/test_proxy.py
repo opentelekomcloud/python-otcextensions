@@ -58,15 +58,15 @@ class TestEndpointService(TestVpcepProxy):
         self.verify_update(self.proxy.update_endpoint_service,
                            endpoint_service.EndpointService)
 
-    def test_endpoint_service_whitelists(self):
-        self.verify_list(self.proxy.list_endpoint_service_whitelist,
+    def test_whitelist_list(self):
+        self.verify_list(self.proxy.whitelist,
                          endpoint_service.Whitelist,
                          method_kwargs={'endpoint_service': 'uuid'},
                          expected_kwargs={'endpoint_service_id': 'uuid'}
                          )
 
-    def test_endpoint_service_whitelists_manage(self):
-        self.verify_create(self.proxy.manage_endpoint_service_whitelist,
+    def test_whitelist_manage(self):
+        self.verify_create(self.proxy.manage_whitelist,
                            endpoint_service.ManageWhitelist,
                            method_kwargs={
                                'endpoint_service': 'uuid',
@@ -78,15 +78,15 @@ class TestEndpointService(TestVpcepProxy):
                                'action': 'add'}
                            )
 
-    def test_endpoint_service_connections(self):
-        self.verify_list(self.proxy.list_endpoint_service_connection,
+    def test_connections_list(self):
+        self.verify_list(self.proxy.connections,
                          endpoint_service.Connection,
                          method_kwargs={'endpoint_service': 'uuid'},
                          expected_kwargs={'endpoint_service_id': 'uuid'}
                          )
 
-    def test_endpoint_service_connections_manage(self):
-        self.verify_create(self.proxy.manage_endpoint_service_connection,
+    def test_connections_manage(self):
+        self.verify_create(self.proxy.manage_connections,
                            endpoint_service.ManageConnection,
                            method_kwargs={
                                'endpoint_service': 'uuid',

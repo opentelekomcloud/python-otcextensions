@@ -37,7 +37,14 @@ def _get_columns(item):
 class ListEndpointServices(command.Lister):
 
     _description = _("List VPC Endpoint Services.")
-    columns = ('Id', 'Service Name', 'Service Type', 'Server Type', 'Connection Count', 'Status')
+    columns = (
+        'Id',
+        'Service Name',
+        'Service Type',
+        'Server Type',
+        'Connection Count',
+        'Status'
+    )
 
     def get_parser(self, prog_name):
         parser = super(ListEndpointServices, self).get_parser(prog_name)
@@ -363,14 +370,14 @@ class DeleteEndpointService(command.Command):
 class ListWhitelist(command.Lister):
 
     _description = _("List whitelist records of a VPC endpoint service.")
-    columns = ('Connection Id', 'Permission', 'Created At')
+    columns = ('Id', 'Permission', 'Created At')
 
     def get_parser(self, prog_name):
         parser = super(ListWhitelist, self).get_parser(prog_name)
 
         parser.add_argument(
-            'endpoint_service',
-            metavar='<endpoint_service>',
+            'endpointservice',
+            metavar='<endpointservice>',
             help=_("Specifies the ID or name of the VPC Endpoint Service."),
         )
         parser.add_argument(
@@ -411,8 +418,7 @@ class ListWhitelist(command.Lister):
             val = getattr(parsed_args, arg)
             if val:
                 attrs[arg] = val
-        data = client.endpoint_service_whitelists(
-            parsed_args.endpoint_service, **attrs)
+        data = client.whitelist(parsed_args.endpointservice, **attrs)
 
         return (self.columns, (utils.get_item_properties(s, self.columns)
                                for s in data))
@@ -421,14 +427,14 @@ class ListWhitelist(command.Lister):
 class ManageWhitelist(command.Lister):
     _description = _("Manage whitelist records of a VPC endpoint service.")
 
-    columns = ('Endpoint Id', 'Permission', 'Created At')
+    columns = ('Domain Id', 'Status')
 
     def get_parser(self, prog_name):
         parser = super(ManageWhitelist, self).get_parser(prog_name)
 
         parser.add_argument(
             'endpointservice',
-            metavar='<endpoint_service>',
+            metavar='<endpointservice>',
             help=_("Specifies the ID or name of the VPC Endpoint Service."),
         )
         parser.add_argument(
@@ -455,22 +461,21 @@ class ManageWhitelist(command.Lister):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.vpcep
-        domains = []
-        for domain in parsed_args.domain:
-            domains.append('iam:domain::' + domain)
         set_args = ('add', 'remove')
         request_status = [request for request in set_args if
                           getattr(parsed_args, request)]
-        args = {
-            'permissions': domains,
-            'action': request_status[0]
-        }
 
-        data = client.manage_endpoint_service_whitelist(
-            parsed_args.endpoint_service, **args)
+        data = client.manage_whitelist(parsed_args.endpointservice,
+                                       domains=parsed_args.domain,
+                                       action=request_status[0])
+        if request_status[0] == 'add':
+            status = 'Added'
+        elif request_status[0] == 'remove':
+            status = 'Removed'
 
-        return (self.columns, (utils.get_item_properties(s, self.columns)
-                               for s in data))
+        return (self.columns, (utils.get_item_properties(
+            type('obj', (object, ), {'domain_id': value, 'status': status}),
+            self.columns,) for value in data.permissions))
 
 
 class ListConnections(command.Lister):
@@ -482,8 +487,8 @@ class ListConnections(command.Lister):
         parser = super(ListConnections, self).get_parser(prog_name)
 
         parser.add_argument(
-            'endpoint_service',
-            metavar='<endpoint_service>',
+            'endpointservice',
+            metavar='<endpointservice>',
             help=_("Specifies the ID or name of the VPC Endpoint Service."),
         )
         parser.add_argument(
@@ -531,8 +536,7 @@ class ListConnections(command.Lister):
             if val:
                 attrs[arg] = val
 
-        data = client.endpoint_service_connections(
-            parsed_args.endpoint_service, **attrs)
+        data = client.connections(parsed_args.endpointservice, **attrs)
 
         return (self.columns, (utils.get_item_properties(s, self.columns)
                                for s in data))
@@ -579,13 +583,10 @@ class ManageConnections(command.Lister):
         set_args = ('receive', 'reject')
         request_status = [request for request in set_args if
                           getattr(parsed_args, request)]
-        args = {
-            'endpoints': endpoints,
-            'action': request_status[0]
-        }
 
-        data = client.manage_endpoint_service_connections(
-            parsed_args.endpoint_service, **args)
+        data = client.manage_connections(parsed_args.endpointservice,
+                                         endpoints=endpoints,
+                                         action=request_status[0])
 
         return (self.columns, (utils.get_item_properties(s, self.columns)
-                               for s in data))
+                               for s in data.connections))

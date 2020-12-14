@@ -38,8 +38,9 @@ class Endpoint(resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'endpoint_service_name', 'vpc_id', 'id',
-        'limit', 'offset', 'sort_key', 'sort_dir'
+        'endpoint_service_name', 'router_id', 'id',
+        'limit', 'offset', 'sort_key', 'sort_dir',
+        router_id='vpc_id'
     )
 
     # Properties
@@ -50,20 +51,10 @@ class Endpoint(resource.Resource):
     #: Specifies the unique ID of the VPC endpoint.
     id = resource.Body('id')
     #: Specifies the ID of the VPC where the VPC endpoint is to be created.
-    vpc_id = resource.Body('vpc_id')
+    router_id = resource.Body('vpc_id')
     #: Specifies the ID of the subnet created in the VPC specified
     #:  by vpc_id. The value is in the UUID format.
-    subnet_id = resource.Body('subnet_id')
-    #: Specifies the status of the VPC endpoint service.
-    status = resource.Body('status')
-    #: Specifies the sorting field of the VPC endpoint list.
-    sort_key = resource.Body('sort_key')
-    #: Specifies the sorting method of the VPC endpoint list.
-    sort_dir = resource.Body('sort_dir')
-    #: Specifies the maximum number of VPC endpoints displayed on each page.
-    limit = resource.Body('limit', type=int)
-    #: Specifies the offset.
-    offset = resource.Body('offset', type=int)
+    network_id = resource.Body('subnet_id')
 
     #: Specifies the type of the VPC endpoint service that is
     #:  associated with the VPC endpoint.
