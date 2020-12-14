@@ -18,6 +18,7 @@ from openstack import resource
 from otcextensions.sdk.cce.v3 import cluster as _cluster
 from otcextensions.sdk.cce.v3 import cluster_node as _cluster_node
 from otcextensions.sdk.cce.v3 import cluster_cert as _cluster_cert
+from otcextensions.sdk.cce.v3 import node_pool as _node_pool
 from otcextensions.sdk.cce.v3 import job as _job
 
 
@@ -264,6 +265,101 @@ class Proxy(proxy.Proxy):
             **attrs
         )
 
+    # ======== Node Pools ========
+    def node_pools(self, cluster):
+        """List all CCE node pools.
+
+        :param cluster: The value can be the ID of a cluster
+             or a :class:`~otcextensions.sdk.cce.v3.cluster.Cluster`
+             instance.
+
+        :returns: a generator of
+            (:class:`~otcextensions.sdk.cce.v3.node_pool.NodePool`)
+            instances
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return self._list(
+            _node_pool.NodePool, cluster_id=cluster.id,
+            paginated=False
+        )
+
+    def get_node_pool(self, cluster, node_pool_id):
+        """Get the CCE node pool by it's UUID.
+
+        :param cluster: key id or an instance of
+            :class:`~otcextensions.sdk.cce.v3.cluster.Cluster`
+        :param node_pool_id: Node pool id to be fetched
+
+        :returns: instance of
+            :class:`~otcextensions.sdk.cce.v3.node_pool.NodePool`
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return self._get(
+            _node_pool.NodePool,
+            node_pool_id,
+            cluster_id=cluster.id,
+        )
+
+    def find_node_pool(self, cluster, node_pool):
+        """Find the cluster node by it's UUID or name.
+
+        :param cluster: key id or an instance of
+            :class:`~otcextensions.sdk.cce.v3.cluster.Cluster`
+        :param node_pool: Node pool id or name to be fetched
+
+        :returns: instance of
+            :class:`~otcextensions.sdk.cce.v3.node_pool.NodePool`
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return self._find(
+            _node_pool.NodePool,
+            node_pool,
+            cluster_id=cluster.id,
+        )
+
+    def delete_node_pool(self, cluster, node_pool, ignore_missing=True):
+        """Delete node pool from the cluster.
+
+        :param cluster: The value can be the ID of a cluster
+             or a :class:`~otcextensions.sdk.cce.v3.cluster.Cluster`
+             instance.
+        :param node_pool: The value can be the ID of a CCE node pool
+             or a :class:`~otcextensions.sdk.cce.v3.node_pool.NodePool`
+             instance.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the node does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent cluster node pool.
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return self._delete(
+            _node_pool.NodePool,
+            node_pool,
+            ignore_missing=ignore_missing,
+            cluster_id=cluster.id,
+        )
+
+    def create_node_pool(self, cluster, **attrs):
+        """Add a new node pool to the cluster.
+
+        :param cluster: The value can be the ID of a cluster
+             or a :class:`~otcextensions.sdk.cce.v3.cluster.Cluster`
+             instance.
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.cce.v3.node_pool.NodePool`,
+            comprised of the properties on the NodePool class.
+        :returns: The results of config creation
+        :rtype: :class:`~otcextensions.sdk.cce.v3.node_pool.NodePool`
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return self._create(
+            _node_pool.NodePool,
+            cluster_id=cluster.id,
+            **attrs
+        )
+
+    # ======== Job Operations ========
     def get_job(self, job):
         """Get the job by UUID.
 
