@@ -13,6 +13,8 @@
 
 class CceMixin:
 
+    # ===== CCE Cluster Operations =====
+
     def create_cce_cluster(
         self,
         wait=True, wait_timeout=1800, wait_interval=5,
@@ -199,6 +201,8 @@ class CceMixin:
             self.cce.wait_for_job(obj.job_id, **wait_args)
 
         return None
+
+    # ===== CCE Cluster Node Operations =====
 
     def create_cce_cluster_node(
         self,
@@ -404,6 +408,331 @@ class CceMixin:
         obj = self.cce.delete_cluster_node(
             cluster=cluster,
             node=node
+        )
+
+        if obj.job_id and wait:
+            wait_args = {}
+            if wait_interval:
+                wait_args['interval'] = wait_interval
+            if wait_timeout:
+                wait_args['wait'] = wait_timeout
+
+            self.cce.wait_for_job(obj.job_id, **wait_args)
+
+        return None
+
+    # ===== CCE Node Pool =====
+
+    def create_cce_node_pool(
+        self,
+        autoscaling_enabled=False,
+        availability_zone='random',
+        billing_mode=0,
+        data_volumes=[{
+            'volumetype': 'SATA',
+            'size': 100,
+            'encrypted': False,
+            'cmk_id': ''
+        }],
+        initial_node_count=0,
+        node_pool_type='vm',
+        root_volume_size=40,
+        root_volume_type='SATA',
+        wait=True, wait_timeout=300, wait_interval=5,
+        **kwargs
+    ):
+        """Create CCE node pool
+
+        :param str availability_zone: Name of the AZ where the node resides.
+            If availability_zone is set to: random (default), nodes can be
+            created in any AZ.
+        :param str autoscaling_enabled: Enable or disable auto-scaling
+        :param str billing_mode: Only pay per use is supported. Default: 0
+        :param int count: Count of the cluster nodes to be created in Batch.
+            Can be 0 for a CCE node pool.
+        :param str cluster: Name or ID of the CCE to which the node pool
+            belongs to.
+        :param list data_volumes: Data disk parameters of a node. At
+            present, only one data disk can be configured. The list must have
+            the following structure while parameter encrypted and cmk_id are
+            optional:
+            [{
+                'volumetype': 'SATA',
+                'size': 100,
+                'encrypted': False,
+                'cmk_id': ''
+            },]
+        :param str ecs_group: ECS group id of the ECS group to which nodes
+            belong after creation
+        :param str flavor: Flavor ID of the CCE node.
+        :param int initial_node_count: Expected number of nodes in this
+            node pool
+        :param dict k8s_tags: Dictionary of Kubernetes tags.
+        :param str lvm_config: Config Map of the Docker data disk
+        :param int min_node_count: Minimum number of nodes after scale-up
+        :param int max_node_count: Maximum number of nodes after scale-up
+        :param int max_pods: Maximum number of pods on the node
+        :param str name: Name of the node pool.
+        :param str node_image_id: Mandatory if custom image is used on a
+            bare metall node
+        :param str node_pool_type: Type of the node pool. Currently, only
+            'vm' is supported.
+        :param str os: Operating system of the cluster node.
+        :param str preinstall_script: Script required before installation.
+            Input must be Base64 encoded.
+        :param str postinstall_script: Script required after installation.
+            Input must be Base64 encoded.
+        :param int priority: Node pool weight for scale-up operations.
+        :param str public_key: Additional public key to be added for login.
+        :param int scale_down_cooldown_time: Interval in minutes during
+            which nodes added after a scale-up will not be deleted.
+        :param str ssh_key: SSH public key name for login in the created
+            nodes
+        :param int root_volume_size: Root volume size in GB
+        :param str root_volume_type: Volume type; available option: SATA,
+            SAS, SSD.
+        :param str subnet_id: ID of the subnet to which the CCE node belongs
+        :param list tags: List of tags used to build UI labels in format
+            [{
+                'key': 'key1',
+                'value': 'value1
+            },{
+                'key': 'key2',
+                'value': 'value2
+            }]
+        :param list taints: List of taints
+            [{
+                'key': 'key1',
+                'value': 'value1,
+                'effect': 'NoSchedule
+            },{
+                'key': 'key2',
+                'value': 'value2,
+                'effect': 'NoSchedule
+            }]
+            Effect available options: NoSchedule,
+            PreferNoSchedule, NoExecute.
+
+        :param bool wait: dict(type=bool, default=True),
+        :param int wait_timeout: dict(type=int, default=180)
+        :param int wait_interval: Check interval.
+
+        :returns: The results of CCE node pool creation
+        :rtype: :class:`~otcextensions.sdk.cce.v3.node_pool.NodePool`
+        """
+        count = kwargs.get('count')
+        cce_cluster = kwargs.get('cluster')
+        ecs_group = kwargs.get('ecs_group')
+        flavor = kwargs.get('flavor')
+        k8s_tags = kwargs.get('k8s_tags')
+        lvm_config = kwargs.get('lvm_override_config')
+        min_node_count = kwargs.get('min_node_count')
+        max_node_count = kwargs.get('max_node_count')
+        max_pods = kwargs.get('max_pods')
+        name = kwargs.get('name')
+        node_image_id = kwargs.get('node_image_id')
+        os = kwargs.get('os')
+        preinstall_script = kwargs.get('preinstall_script')
+        postinstall_script = kwargs.get('postinstall_script')
+        priority = kwargs.get('priority')
+        public_key = kwargs.get('public_key')
+        scale_down_cooldown_time = kwargs.get('scale_down_cooldown_time')
+        ssh_key = kwargs.get('ssh_key')
+        tags = kwargs.get('tags')
+        taints = kwargs.get('taints')
+
+        volume_types = ['SAS', 'SATA', 'SSD']
+        effects = ['NoSchedule', 'PrefereNoSchedule', 'NoExecute']
+
+        metadata = {
+            'name': name,
+        }
+
+        # Node template specs
+        node_template = {
+            'dataVolumes': {},
+            'extendParam': {},
+            'k8sTags': {},
+            'login': {},
+            'rootVolume': {},
+            'userTags': [],
+            'taints': [],
+        }
+
+        if not (flavor or os or ssh_key):
+            raise ValueError('One or more of the following arguments are '
+                             'missing: flavor, os, ssh_key')
+        node_template['flavor'] = flavor
+        node_template['az'] = availability_zone
+        if count and isinstance(count, int):
+            if count < 0:
+                raise ValueError('count is 0 or lower')
+            node_template['count'] = count
+        node_template['login']['sshKey'] = ssh_key
+        node_template['os'] = os
+        if billing_mode and (billing_mode != 0):
+            raise ValueError('billing_mode must be 0.')
+        node_template['billingMode'] = billing_mode
+
+        # Root volume specs
+        if root_volume_size and isinstance(root_volume_size, int):
+            if root_volume_size < 40:
+                raise ValueError('Root volume size %s is lower than 40 GB.'
+                                 % root_volume_size)
+            node_template['rootVolume']['size'] = root_volume_size
+        if root_volume_type.upper() not in volume_types:
+            raise ValueError('Root volume type %s is not supported, use: %s'
+                             % root_volume_type, volume_types)
+        node_template['rootVolume']['volumetype'] = root_volume_type.upper()
+
+        # Data volume specs
+        for item in data_volumes:
+            if not (item['volumetype'] and item['size']):
+                raise ValueError('One or both data volume keys: volumetype '
+                                 'or size are missing.')
+            if item['volumetype'] not in volume_types:
+                raise ValueError('The data volumes volumetype %s must be '
+                                 'one of the following choices: %s'
+                                 % item['volumetype'], volume_types)
+            if not (100 <= item['size'] <= 32768):
+                raise ValueError('The data volume size must be specified '
+                                 'between 100 and 32768 GB.')
+            if item['encrypted']:
+                if not item['cmk_id']:
+                    raise ValueError('Parameter cmk_id is missing to use '
+                                     'data volume encryption.')
+                node_template['dataVolumes'].append({
+                    'volumetype': item['volumetype'].upper(),
+                    'size': item['size'],
+                    'metadata': {
+                        '__system__encrypted': 1,
+                        '__system__cmkid': item['cmk_id']
+                    }
+                })
+            else:
+                node_template['dataVolumes'].append({
+                    'volumetype': item['volumetype'].upper(),
+                    'size': item['size']
+                })
+
+        # extended parameter specs
+        if lvm_config:
+            lvm = lvm_config
+            node_template['extendParam']['DockerLVMConfigOverride'] = lvm
+        if max_pods and isinstance(max_pods, int):
+            node_template['extendParam']['maxPods'] = max_pods
+        if node_image_id:
+            image = node_image_id
+            node_template['extendParam']['alpha.cce/NodeImageID'] = image
+        if postinstall_script:
+            post = postinstall_script
+            node_template['extendParam']['alpha.cce/postInstall'] = post
+        if preinstall_script:
+            pre = preinstall_script
+            node_template['extendParam']['alpha.cce/preInstall'] = pre
+        if public_key:
+            node_template['extendParam']['publicKey'] = public_key
+
+        # Tags
+        if k8s_tags and isinstance(k8s_tags, dict):
+            node_template['k8sTags'] = k8s_tags
+        if tags and isinstance(tags, list):
+            node_template['userTags'] = tags
+
+        # Taints
+        if taints and isinstance(taints, list):
+            for item in taints:
+                # Test taints list for conformity
+                if not (item['key'] or item['value'] or item['effect']):
+                    raise ValueError('Each taint must provide the following '
+                                     'keys: key, value, effect and related '
+                                     'values.')
+                if item['effect'] not in effects:
+                    raise ValueError('Effect value %s is different from the '
+                                     'possible options: NoSchedule, '
+                                     'PrefereNoSchedule, NoExecute.'
+                                     % item['effect'])
+            node_template['taints'] = taints
+
+        # Node pool specs
+        spec = {
+            'autoscaling': {},
+            'nodeManagement': {},
+            'nodeTemplate': node_template
+        }
+
+        # Autoscaling specs
+        if autoscaling_enabled:
+            if min_node_count and isinstance(min_node_count, int):
+                spec['autoscaling']['minNodeCount'] = min_node_count
+            if max_node_count and isinstance(max_node_count, int):
+                spec['autoscaling']['maxNodeCount'] = max_node_count
+            if (priority > 1) and isinstance(priority, int):
+                spec['autoscaling']['priority'] = priority
+            else:
+                spec['autoscaling']['priority'] = 1
+            if scale_down_cooldown_time and \
+                    isinstance(scale_down_cooldown_time, int):
+                sdct = scale_down_cooldown_time
+                spec['autoscaling']['scaleCooldownTime'] = sdct
+
+        # Node management specs
+        if ecs_group:
+            spec['nodeManagement']['serverGroupReference'] = ecs_group
+
+        # Node pool specs
+        if initial_node_count:
+            spec['initialNodeCount'] = initial_node_count
+
+        cluster = self.cce.find_cluster(
+            name_or_id=cce_cluster,
+            ignore_missing=True)
+        if not cluster:
+            raise ReferenceError('Cluster %s not found.' % cce_cluster)
+        obj = self.cce.create_cluster_node(
+            cluster=cluster.id,
+            metadata=metadata,
+            spec=spec
+        )
+
+        if obj.job_id and wait:
+            wait_args = {}
+            if wait_interval:
+                wait_args['interval'] = wait_interval
+            if wait_timeout:
+                wait_args['wait'] = wait_timeout
+
+            self.cce.wait_for_job(obj.job_id, **wait_args)
+            obj = self.cce.get_cluster_node(
+                cluster=cluster.id,
+                node_id=obj.id
+            )
+
+        return obj
+
+    def delete_cce_node_pool(
+        self,
+        wait=True, wait_timeout=180, wait_interval=5,
+        **kwargs
+    ):
+        """Delete CCE node pool
+
+        :param str cluster: Name or ID of the CCE cluster
+        :param str node_pool: Name or ID of the CCE node_pool
+        """
+        cluster = kwargs.get('cluster')
+        node_pool = kwargs.get('node_pool')
+
+        cluster = self.cce.find_cluster(
+            name_or_id=cluster,
+            ignore_missing=False)
+        node_pool = self.cce.find_node_pool(
+            cluster=cluster,
+            node_pool=node_pool)
+
+        obj = self.cce.delete_node_pool(
+            cluster=cluster,
+            node_pool=node_pool
         )
 
         if obj.job_id and wait:

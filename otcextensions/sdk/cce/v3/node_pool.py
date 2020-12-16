@@ -59,7 +59,7 @@ class PublicIPSpec(resource.Resource):
     #        chargemode, size, sharetype
     #     }
     # }.
-    floating_ip = resource.Body('eip', type=dict)
+    floating_ip_spec = resource.Body('eip', type=dict)
 
 
 class TagSpec(resource.Resource):
@@ -113,15 +113,15 @@ class AutoScalingSpec(resource.Resource):
     # Node pool weight. A higher weight indicates a higher priority
     # in scale-up.
     priority = resource.Body('priority', type=int)
-    # Interval in minutes during which nodes added aafter a scale-up
+    # Interval in minutes during which nodes added after a scale-up
     # will not be deleted.
     scale_down_cooldown_time = resource.Body('scaleDownCooldownTime', type=int)
 
 
 class NodeManagementSpec(resource.Resource):
-    # ECS groupt id of the ECS group to which those nodes belong
+    # ECS group id of the ECS group to which those nodes belong
     # after creation.
-    ecs_group_id = resource.Body('serverGroupReference')
+    ecs_group = resource.Body('serverGroupReference')
 
 
 class SubnetIdSpec(resource.Resource):
@@ -132,6 +132,11 @@ class SubnetIdSpec(resource.Resource):
 class NodeNicSpec(resource.Resource):
     # Description about the primary NIC
     primary_nic = resource.Body('primaryNic', type=SubnetIdSpec)
+
+
+class LoginSpec(resource.Resource):
+    # SSH public key for login purposes
+    ssh_key = resource.Body('sshKey')
 
 
 class NodeTemplateSpec(resource.Resource):
@@ -147,14 +152,10 @@ class NodeTemplateSpec(resource.Resource):
     # disk can be configured
     data_volumes = resource.Body('dataVolumes', type=list,
                                  list_type=DataVolumeSpec)
-    # ID of the Dedicated Host to which nodes will be scheduled
-    dedicated_host = resource.Body('dedicatedHostId')
     # ID of the ECS group where the CCE node can belong to
     ecs_group = resource.Body('ecsGroupId')
     # Extended parameters in key-value format
     extend_params = resource.Body('extendParam', type=ExtendParamSpec)
-    # The node is created in the specified fault domain.
-    fault_domain = resource.Body('faultDomain')
     # Flavor (mandatory)
     flavor = resource.Body('flavor')
     # Elastic IP address parameters of a node.
@@ -162,10 +163,8 @@ class NodeTemplateSpec(resource.Resource):
     # Kubernetes tags
     k8s_tags = resource.Body('k8sTags', type=dict)
     # Parameters for logging in to the node.
-    login = resource.Body('login')
+    login = resource.Body('login', type=LoginSpec)
     node_nic_spec = resource.Body('nodeNicSpec', type=NodeNicSpec)
-    # Boolean: if node is offloading all its components
-    offload_node = resource.Body('offloadNode', type=bool)
     # Operating System of the node. EulerOS and CentOS (K8s version >= 1.17)
     # are supported.
     os = resource.Body('os')
