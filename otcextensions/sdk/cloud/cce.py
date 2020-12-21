@@ -562,8 +562,12 @@ class CceMixin:
             }
         }
 
-        if not (cce_cluster and flavor and os and name and
-                network_id and ssh_key):
+        if not (cce_cluster
+                and flavor
+                and os
+                and name
+                and network_id
+                and ssh_key):
             raise ValueError('One or more of the following required '
                              'arguments are missing: cce_cluster, '
                              'flavor, name, network_id, os, ssh_key')
@@ -603,11 +607,17 @@ class CceMixin:
                 raise ValueError('The data volumes volumetype %s must be '
                                  'one of the following choices: %s'
                                  % item['volumetype'], volume_types)
+            if not isinstance(item['size'], int):
+                try:
+                    item['size'] = int(item['size'])
+                except ValueError:
+                    print('data_volume size %s cannot be converted into '
+                          'integer value.' % item['size'])
             if not (100 <= item['size'] <= 32768):
                 raise ValueError('The data volume size must be specified '
                                  'between 100 and 32768 GB.')
-            if item['encrypted']:
-                if not item['cmk_id']:
+            if hasattr(item, 'encrypted'):
+                if not hasattr(item, 'cmk_id'):
                     raise ValueError('Parameter cmk_id is missing to use '
                                      'data volume encryption.')
                 cmk = self.kms.get_key(item['cmk_id'])

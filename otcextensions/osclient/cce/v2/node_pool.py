@@ -11,10 +11,10 @@
 #   under the License.
 #
 '''CCE Cluster Nodes v2 action implementations'''
-import argparse
 import logging
 
 from osc_lib import utils
+from osc_lib.cli import parseractions
 from osc_lib.command import command
 
 from otcextensions.i18n import _
@@ -83,6 +83,32 @@ class CreateCCENodePool(command.ShowOne):
             help=_('ID or name of the CCE cluster.')
         )
         parser.add_argument(
+            '--autoscaling-enabled',
+            metavar='<autoscaling_enabled>',
+            default=False,
+            help=_('Enables or disables Autoscaling for cluster nodes.')
+        )
+        parser.add_argument(
+            '--az',
+            metavar='<availability_zone>',
+            default='random',
+            help=_('Availability zone for cluster nodes.\n'
+                   'Default: random')
+        )
+        parser.add_argument(
+            '--data-volume',
+            metavar='volumetype=<volumetype>,size=<disksize>,'
+                    'encrypted=<True|False>,cmk_id=<cmk_id>',
+            action=parseractions.MultiKeyValueAction,
+            dest='data_volumes',
+            required_keys=['volumetype', 'size'],
+            help=_('Example: \n'
+                   '--data-volume volumetype=SATA,size=100,encrypted=True,'
+                   'cmk_id=12345qwertz \n'
+                   'Multiple data volumes are not supported via Node Pools.\n'
+                   'Default: --data-volume volumetype=SATA,size=100')
+        )
+        parser.add_argument(
             '--flavor',
             metavar='<flavor>',
             required=True,
@@ -107,19 +133,26 @@ class CreateCCENodePool(command.ShowOne):
             required=True,
             help=_('Name of the SSH public key.')
         )
-
         return parser
 
     def take_action(self, parsed_args):
 
         attrs = {}
-
+        # mandatory
         attrs['cluster'] = parsed_args.cluster
         attrs['flavor'] = parsed_args.flavor
         attrs['os'] = parsed_args.operating_system
         attrs['name'] = parsed_args.name
         attrs['network_id'] = parsed_args.network_id
         attrs['ssh_key'] = parsed_args.ssh_key
+
+        # optional
+        if parsed_args.az:
+            attrs['availability_zone'] = parsed_args.az
+        if parsed_args.autoscaling_enabled:
+            attrs['autoscaling_enabled'] = parsed_args.autoscaling_enabled
+        if parsed_args.data_volumes:
+            attrs['data_volumes'] = parsed_args.data_volumes
 
         obj = self.app.client_manager.sdk_connection.create_cce_node_pool(
             **attrs)
