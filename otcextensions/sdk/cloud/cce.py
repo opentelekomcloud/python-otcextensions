@@ -491,7 +491,8 @@ class CceMixin:
         :param int root_volume_size: Root volume size in GB
         :param str root_volume_type: Volume type; available option: SATA,
             SAS, SSD.
-        :param str subnet_id: ID of the subnet to which the CCE node belongs
+        :param str subnet_id: ID of the network to which the CCE node pool
+            belongs
         :param list tags: List of tags used to build UI labels in format
             [{
                 'key': 'key1',
@@ -512,7 +513,6 @@ class CceMixin:
             }]
             Effect available options: NoSchedule,
             PreferNoSchedule, NoExecute.
-
         :param bool wait: dict(type=bool, default=True),
         :param int wait_timeout: dict(type=int, default=180)
         :param int wait_interval: Check interval.
@@ -538,6 +538,7 @@ class CceMixin:
         public_key = kwargs.get('public_key')
         scale_down_cooldown_time = kwargs.get('scale_down_cooldown_time')
         ssh_key = kwargs.get('ssh_key')
+        subnet_id = kwargs.get('subnet_id')
         tags = kwargs.get('tags')
         taints = kwargs.get('taints')
 
@@ -557,14 +558,19 @@ class CceMixin:
             'rootVolume': {},
             'userTags': [],
             'taints': [],
+            'nodeNicSpec': {
+                'primaryNic': {}
+            }
         }
 
-        if not (flavor or os or ssh_key):
+        if not (flavor and os and ssh_key):
             raise ValueError('One or more of the following arguments are '
                              'missing: flavor, os, ssh_key')
         node_template['flavor'] = flavor
         node_template['az'] = availability_zone
-        if count and isinstance(count, int):
+        if count:
+            if not isinstance(count, int):
+                raise ValueError('count is not an integer value')
             if count < 0:
                 raise ValueError('count is 0 or lower')
             node_template['count'] = count
@@ -575,7 +581,9 @@ class CceMixin:
         node_template['billingMode'] = billing_mode
 
         # Root volume specs
-        if root_volume_size and isinstance(root_volume_size, int):
+        if root_volume_size:
+            if not isinstance(root_volume_size, int):
+                raise ValueError('root_volume_size is not an integer value')
             if root_volume_size < 40:
                 raise ValueError('Root volume size %s is lower than 40 GB.'
                                  % root_volume_size)
@@ -601,25 +609,31 @@ class CceMixin:
                 if not item['cmk_id']:
                     raise ValueError('Parameter cmk_id is missing to use '
                                      'data volume encryption.')
-                node_template['dataVolumes'].append({
+                cmk = self.kms.get_key(item['cmk_id'])
+                if not cmk:
+                    raise ReferenceError('cmk_id %s is not available as KMS '
+                                         'CMK.' % item['cmk_id'])
+                node_template['dataVolumes'] = {
                     'volumetype': item['volumetype'].upper(),
                     'size': item['size'],
                     'metadata': {
                         '__system__encrypted': 1,
                         '__system__cmkid': item['cmk_id']
                     }
-                })
+                }
             else:
-                node_template['dataVolumes'].append({
+                node_template['dataVolumes'] = [{
                     'volumetype': item['volumetype'].upper(),
                     'size': item['size']
-                })
+                }]
 
         # extended parameter specs
         if lvm_config:
             lvm = lvm_config
             node_template['extendParam']['DockerLVMConfigOverride'] = lvm
-        if max_pods and isinstance(max_pods, int):
+        if max_pods:
+            if not isinstance(max_pods, int):
+                raise ValueError('max_pods is not an integer value')
             node_template['extendParam']['maxPods'] = max_pods
         if node_image_id:
             image = node_image_id
@@ -632,27 +646,62 @@ class CceMixin:
             node_template['extendParam']['alpha.cce/preInstall'] = pre
         if public_key:
             node_template['extendParam']['publicKey'] = public_key
+        if not node_template['extendParam']:
+            del node_template['extendParam']
 
         # Tags
-        if k8s_tags and isinstance(k8s_tags, dict):
+        if k8s_tags:
+            if not isinstance(k8s_tags, dict):
+                raise ValueError('k8s_tags is not a dict.')
             node_template['k8sTags'] = k8s_tags
-        if tags and isinstance(tags, list):
+        if tags:
+            if not isinstance(tags, list):
+                raise ValueError('tags parameter is not formatted as list.')
+            if len(tags) > 20:
+                ValueError('Parameter tags exceeds 20 list items.')
+            for item in tags:
+                # check for dict validity
+                if not isinstance(item, dict):
+                    raise ValueError('One or more tags items %s are not '
+                                     'formatted as dicts.'
+                                     % item)
+                if not (set(['key', 'value']) <= item.keys()):
+                    raise ValueError('The current tags list item %s has '
+                                     'wrong format. Each dict item has to '
+                                     'provide the keys: key and value.'
+                                     % item)
             node_template['userTags'] = tags
 
         # Taints
-        if taints and isinstance(taints, list):
+        if taints:
+            if not isinstance(taints, list):
+                raise ValueError('taints parameter is not formatted as list')
             for item in taints:
                 # Test taints list for conformity
-                if not (item['key'] or item['value'] or item['effect']):
-                    raise ValueError('Each taint must provide the following '
-                                     'keys: key, value, effect and related '
-                                     'values.')
+                if not isinstance(item, dict):
+                    raise ValueError('Each list item of taints parameter has '
+                                     'to be a dict.')
+                if not (set(['key', 'value', 'effect']) <= item.keys()):
+                    raise ValueError('Each taints list item must provide '
+                                     'the following keys: key, value, '
+                                     'effect.')
+                if not (1 <= item['key'] <= 63):
+                    raise ValueError('taints key %s exceeds character '
+                                     'range.'
+                                     % item['key'])
+                if not (1 <= item['value'] <= 63):
+                    raise ValueError('taints value %s exceeds character '
+                                     'range.'
+                                     % item['value'])
                 if item['effect'] not in effects:
-                    raise ValueError('Effect value %s is different from the '
+                    raise ValueError('taints effect %s is different from the '
                                      'possible options: NoSchedule, '
                                      'PrefereNoSchedule, NoExecute.'
                                      % item['effect'])
             node_template['taints'] = taints
+
+        # NIC specifications
+        node_template['nodeNicSpec']['primaryNic']['subnet_id'] = subnet_id
 
         # Node pool specs
         spec = {
@@ -663,25 +712,43 @@ class CceMixin:
 
         # Autoscaling specs
         if autoscaling_enabled:
-            if min_node_count and isinstance(min_node_count, int):
+            if min_node_count:
+                if not isinstance(min_node_count, int):
+                    raise ValueError('min_node_count is not an integer '
+                                     'value.')
                 spec['autoscaling']['minNodeCount'] = min_node_count
-            if max_node_count and isinstance(max_node_count, int):
+            if max_node_count:
+                if not isinstance(max_node_count, int):
+                    raise ValueError('max_node_count is not an integer '
+                                     'value.')
                 spec['autoscaling']['maxNodeCount'] = max_node_count
-            if (priority > 1) and isinstance(priority, int):
+            if not isinstance(priority, int):
+                raise ValueError('priority is not an integer '
+                                 'value.')
+            if (priority > 1):
                 spec['autoscaling']['priority'] = priority
             else:
                 spec['autoscaling']['priority'] = 1
-            if scale_down_cooldown_time and \
-                    isinstance(scale_down_cooldown_time, int):
+            if scale_down_cooldown_time:
+                if not isinstance(scale_down_cooldown_time, int):
+                    raise ValueError('scale_down_cooldown_time is not an '
+                                     'integer value.')
                 sdct = scale_down_cooldown_time
                 spec['autoscaling']['scaleCooldownTime'] = sdct
+        else:
+            del spec['autoscaling']
 
         # Node management specs
         if ecs_group:
             spec['nodeManagement']['serverGroupReference'] = ecs_group
+        else:
+            del spec['nodeManagement']
 
         # Node pool specs
         if initial_node_count:
+            if not isinstance(initial_node_count, int):
+                raise ValueError('initial_node_count is not an integer '
+                                 'value.')
             spec['initialNodeCount'] = initial_node_count
 
         cluster = self.cce.find_cluster(
@@ -689,30 +756,16 @@ class CceMixin:
             ignore_missing=True)
         if not cluster:
             raise ReferenceError('Cluster %s not found.' % cce_cluster)
-        obj = self.cce.create_cluster_node(
+        obj = self.cce.create_node_pool(
             cluster=cluster.id,
             metadata=metadata,
             spec=spec
         )
 
-        if obj.job_id and wait:
-            wait_args = {}
-            if wait_interval:
-                wait_args['interval'] = wait_interval
-            if wait_timeout:
-                wait_args['wait'] = wait_timeout
-
-            self.cce.wait_for_job(obj.job_id, **wait_args)
-            obj = self.cce.get_cluster_node(
-                cluster=cluster.id,
-                node_id=obj.id
-            )
-
         return obj
 
     def delete_cce_node_pool(
         self,
-        wait=True, wait_timeout=180, wait_interval=5,
         **kwargs
     ):
         """Delete CCE node pool
@@ -730,18 +783,9 @@ class CceMixin:
             cluster=cluster,
             node_pool=node_pool)
 
-        obj = self.cce.delete_node_pool(
+        self.cce.delete_node_pool(
             cluster=cluster,
             node_pool=node_pool
         )
-
-        if obj.job_id and wait:
-            wait_args = {}
-            if wait_interval:
-                wait_args['interval'] = wait_interval
-            if wait_timeout:
-                wait_args['wait'] = wait_timeout
-
-            self.cce.wait_for_job(obj.job_id, **wait_args)
 
         return None
