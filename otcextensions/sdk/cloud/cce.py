@@ -438,7 +438,6 @@ class CceMixin:
         node_pool_type='vm',
         root_volume_size=40,
         root_volume_type='SATA',
-        wait=True, wait_timeout=300, wait_interval=5,
         **kwargs
     ):
         """Create CCE node pool
@@ -491,7 +490,7 @@ class CceMixin:
         :param int root_volume_size: Root volume size in GB
         :param str root_volume_type: Volume type; available option: SATA,
             SAS, SSD.
-        :param str subnet_id: ID of the network to which the CCE node pool
+        :param str network_id: ID of the network to which the CCE node pool
             belongs
         :param list tags: List of tags used to build UI labels in format
             [{
@@ -538,7 +537,7 @@ class CceMixin:
         public_key = kwargs.get('public_key')
         scale_down_cooldown_time = kwargs.get('scale_down_cooldown_time')
         ssh_key = kwargs.get('ssh_key')
-        subnet_id = kwargs.get('subnet_id')
+        network_id = kwargs.get('network_id')
         tags = kwargs.get('tags')
         taints = kwargs.get('taints')
 
@@ -563,9 +562,11 @@ class CceMixin:
             }
         }
 
-        if not (flavor and os and ssh_key):
-            raise ValueError('One or more of the following arguments are '
-                             'missing: flavor, os, ssh_key')
+        if not (cce_cluster and flavor and os and name and
+                network_id and ssh_key):
+            raise ValueError('One or more of the following required '
+                             'arguments are missing: cce_cluster, '
+                             'flavor, name, network_id, os, ssh_key')
         node_template['flavor'] = flavor
         node_template['az'] = availability_zone
         if count:
@@ -701,7 +702,7 @@ class CceMixin:
             node_template['taints'] = taints
 
         # NIC specifications
-        node_template['nodeNicSpec']['primaryNic']['subnet_id'] = subnet_id
+        node_template['nodeNicSpec']['primaryNic']['subnet_id'] = network_id
 
         # Node pool specs
         spec = {

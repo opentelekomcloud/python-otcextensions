@@ -15,6 +15,14 @@ from openstack import resource
 from otcextensions.sdk.cce.v3 import _base
 
 
+class StatusSpec(resource.Resource):
+    # Properties
+    #: Cluster status.
+    status = resource.Body('phase')
+    #: Current node count.
+    current_node = resource.Body('currentNode')
+
+
 class VolumeExtendParams(resource.Resource):
     # Properties
     # Usage mode of data disk e.g. docker
@@ -124,14 +132,14 @@ class NodeManagementSpec(resource.Resource):
     ecs_group = resource.Body('serverGroupReference')
 
 
-class SubnetIdSpec(resource.Resource):
-    # ID of the subnet to which the NIC belongs
-    subnet_id = resource.Body('subnetId')
+class NetworkIdSpec(resource.Resource):
+    # ID of the network to which the NIC belongs
+    network_id = resource.Body('subnetId')
 
 
 class NodeNicSpec(resource.Resource):
     # Description about the primary NIC
-    primary_nic = resource.Body('primaryNic', type=SubnetIdSpec)
+    primary_nic = resource.Body('primaryNic', type=NetworkIdSpec)
 
 
 class LoginSpec(resource.Resource):
@@ -214,6 +222,8 @@ class NodePool(_base.Resource):
     spec = resource.Body('spec', type=NodePoolSpec)
     # other metadata
     metadata = resource.Body('metadata', type=MetaDataSpec)
+    #: Cluster status
+    status = resource.Body('status', type=StatusSpec)
 
     @classmethod
     def new(cls, **kwargs):

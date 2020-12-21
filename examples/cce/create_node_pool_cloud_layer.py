@@ -30,11 +30,11 @@ pool = conn.create_cce_node_pool(
     k8s_tags={
         "muh": "kuh"},
     ssh_key='tischrei-pub',
-    name='test-node-pool3',
+    name='test-node-pool4',
     os='CentOS 7.7',
     root_volume_size=40,
     root_volume_type='SATA',
-    subnet_id='25d24fc8-d019-4a34-9fff-0a09fde6a9cb',
+    network_id='25d24fc8-d019-4a34-9fff-0a09fde6a9cb',
     tags=[
         {
             'key': 'hellokey1',
