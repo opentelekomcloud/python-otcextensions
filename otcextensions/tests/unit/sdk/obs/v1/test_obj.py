@@ -107,10 +107,10 @@ class TestObject(base.TestCase):
         self.sess.put.assert_called_once_with(
             '/test-v1',
             data=data,
+            endpoint_override='epo',
             requests_auth=2,
-            request_headers={
+            headers={
                 'Content-MD5': data_md5
-            },
-            endpoint_override='epo'
+            }
         )
     #

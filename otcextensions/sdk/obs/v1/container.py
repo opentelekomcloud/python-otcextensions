@@ -97,8 +97,9 @@ class Container(_base.BaseResource):
         return resource._Request(uri, body, headers)
 
     @classmethod
-    def list(cls, session, paginated=False, base_path=None,
-             requests_auth=None, **params):
+    def list(cls, session, paginated=False,
+             endpoint_override=None, headers=None, requests_auth=None,
+             **params):
         if not cls.allow_list:
             raise exceptions.MethodNotSupported(cls, "list")
 
@@ -132,7 +133,8 @@ class Container(_base.BaseResource):
 
         return
 
-    def create(self, session, prepend_key=True, **params):
+    def create(self, session, prepend_key=True,
+               endpoint_override=None, headers=None, requests_auth=None):
 
         if not self.allow_create:
             raise exceptions.MethodNotSupported(self, "create")
@@ -141,9 +143,14 @@ class Container(_base.BaseResource):
 
         request = self._prepare_request()
 
+        req_args = self._prepare_override_args(
+            endpoint_override=endpoint_override,
+            request_headers=request.headers,
+            additional_headers=headers,
+            requests_auth=requests_auth)
+
         response = session.put(request.url,
-                               data=request.body,
-                               headers=request.headers, **params)
+                               data=request.body, **req_args)
 
         self._translate_response(response)
         return self

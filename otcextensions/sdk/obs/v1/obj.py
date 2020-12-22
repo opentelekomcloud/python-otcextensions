@@ -83,7 +83,9 @@ class Object(_base.BaseResource):
                 pass
 
     @classmethod
-    def list(cls, session, paginated=False, requests_auth=None, **params):
+    def list(cls, session, paginated=False,
+             endpoint_override=None, headers=None, requests_auth=None,
+             **params):
         if not cls.allow_list:
             raise exceptions.MethodNotSupported(cls, "list")
 
@@ -92,13 +94,17 @@ class Object(_base.BaseResource):
         uri = cls.base_path % params
 
         # Build additional arguments to the GET call
+        get_args = cls._prepare_override_args(
+            endpoint_override=endpoint_override,
+            additional_headers=headers)
 
         while uri:
 
             response = session.get(
                 uri,
+                params=query_params.copy(),
                 requests_auth=requests_auth,
-                params=query_params.copy()
+                **get_args
             )
 
             uri = None
@@ -131,7 +137,7 @@ class Object(_base.BaseResource):
         return
 
     def create(self, session, prepend_key=True,
-               requests_auth=None, **params):
+               endpoint_override=None, headers=None, requests_auth=None):
 
         if not self.allow_create:
             raise exceptions.MethodNotSupported(self, 'create')
@@ -147,25 +153,34 @@ class Object(_base.BaseResource):
             requires_id=True,
             prepend_key=prepend_key)
 
+        req_args = self._prepare_override_args(
+            endpoint_override=endpoint_override,
+            request_headers=request.headers,
+            additional_headers=headers,
+            requests_auth=requests_auth)
+
         response = session.put(
             request.url,
             data=self.data,
-            requests_auth=requests_auth,
-            request_headers=request.headers,
-            **params)
+            **req_args)
         self._translate_response(response)
         return self
 
-    def download(self, session, filename=None, **params):
+    def download(self, session, filename=None,
+                 endpoint_override=None, requests_auth=None):
 
         session = self._get_session(session)
 
         request = self._prepare_request(requires_id=True)
 
+        req_args = self._prepare_override_args(
+            endpoint_override=endpoint_override,
+            request_headers=request.headers,
+            requests_auth=requests_auth)
+
         response = session.get(
             request.url,
-            request_headers=request.headers,
-            **params)
+            **req_args)
         self._translate_response(response)
 
         _logger.debug(response.content)

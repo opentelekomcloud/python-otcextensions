@@ -11,7 +11,7 @@
 # under the License.
 
 from otcextensions.sdk import ak_auth
-from openstack import proxy
+from otcextensions.sdk import sdk_proxy
 
 from otcextensions.sdk.obs.v1 import container as _container
 from otcextensions.sdk.obs.v1 import obj as _obj
@@ -21,7 +21,7 @@ def _normalize_obs_keys(obj):
     return {k.lower(): v for k, v in obj.items()}
 
 
-class Proxy(proxy.Proxy):
+class Proxy(sdk_proxy.Proxy):
 
     skip_discovery = True
 
@@ -44,7 +44,7 @@ class Proxy(proxy.Proxy):
         if not auth:
             ak = None
             sk = None
-            conn = self._get_connection()
+            conn = self.session._sdk_connection
             if hasattr(conn, 'get_ak_sk'):
                 (ak, sk) = conn.get_ak_sk(conn)
             if not (ak and sk):
@@ -84,7 +84,7 @@ class Proxy(proxy.Proxy):
         :param id: Container id or an object of class
                    :class:`~otcextensions.sdk.obs.v1.container.Container`
         :returns: Detail of container
-        :rtype: :class:`~otcextensions.sdk.obs.v3.container.Container`
+        :rtype: :class:`~otcextensions.sdk.obs.v1.container.Container`
         """
         return self._head(_container.Container, container)
 
@@ -97,7 +97,7 @@ class Proxy(proxy.Proxy):
                comprised of the properties on the Container class.
 
         :returns: The results of container creation
-        :rtype: :class:`~otcextensions.sdk.obs.v3.container.Container`
+        :rtype: :class:`~otcextensions.sdk.obs.v1.container.Container`
         """
         container = attrs.get('name', None)
         endpoint = self.get_container_endpoint(container)
@@ -297,7 +297,7 @@ class Proxy(proxy.Proxy):
                comprised of the properties on the Object class.
 
         :returns: The results of object creation
-        :rtype: :class:`~otcextensions.sdk.obs.v3.container.Container`
+        :rtype: :class:`~otcextensions.sdk.obs.v1.container.Container`
         """
         # TODO(mordred) Add ability to stream data from a file
         # TODO(mordred) Use create_object from OpenStackCloud

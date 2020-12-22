@@ -91,12 +91,13 @@ class TestContainer(base.TestCase):
         self.sess.put.return_value = mock_response
 
         sot.create(
-            self.sess, requests_auth=2, endpoint_override='epo')
+            self.sess,
+            endpoint_override='epo',
+            requests_auth=2)
 
         self.sess.put.assert_called_once_with(
             '/',
             data=None,
-            requests_auth=2,
             endpoint_override='epo',
-            headers={}
+            requests_auth=2
         )
