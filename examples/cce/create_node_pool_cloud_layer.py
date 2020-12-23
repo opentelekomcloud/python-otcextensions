@@ -23,18 +23,18 @@ pool = conn.create_cce_node_pool(
     autoscaling_enabled=False,
     availability_zone='random',
     billing_mode=0,
-    cluster='bca73490-394c-11eb-8fe2-0255ac101695',
+    cluster='bca73490-394c-11eb-8fe2-0255ac101123',
     count=0,
     flavor='s2.large.2',
     initial_node_count=0,
     k8s_tags={
         "muh": "kuh"},
-    ssh_key='tischrei-pub',
+    ssh_key='sshkey-pub',
     name='test',
     os='CentOS 7.7',
     root_volume_size=40,
     root_volume_type='SATA',
-    network_id='25d24fc8-d019-4a34-9fff-0a09fde6a9cb',
+    network_id='25d24fc8-d019-4a34-9fff-0a09fde6a123',
     tags=[
         {
             'key': 'hellokey1',
@@ -51,7 +51,7 @@ pool = conn.create_cce_node_pool(
             'volumetype': 'SATA',
             'size': 100,
             'encrypted': True,
-            'cmk_id': '5b16304e-aa0f-488e-9c9e-7d2402def006'
+            'cmk_id': '5b16304e-aa0f-488e-9c9e-7d2402def123'
         }]
 )
 print(pool)
