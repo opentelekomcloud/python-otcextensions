@@ -16,6 +16,7 @@ import openstack
 from openstack import _log
 from openstack import utils
 
+from otcextensions.sdk import proxy
 from otcextensions.sdk.compute.v2 import server
 from otcextensions.common import exc
 
@@ -266,6 +267,10 @@ def extend_instance(obj, cls):
 
 
 def patch_openstack_resources():
+    openstack.proxy.Proxy._report_stats_statsd = \
+        proxy.Proxy._report_stats_statsd
+    openstack.proxy.Proxy._report_stats_influxdb = \
+        proxy.Proxy._report_stats_influxdb
     openstack.compute.v2.server.Server._get_tag_struct = \
         server.Server._get_tag_struct
     openstack.compute.v2.server.Server.add_tag = server.Server.add_tag
