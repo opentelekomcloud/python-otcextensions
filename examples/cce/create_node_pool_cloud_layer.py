@@ -30,7 +30,7 @@ pool = conn.create_cce_node_pool(
     k8s_tags={
         "muh": "kuh"},
     ssh_key='tischrei-pub',
-    name='test-node-pool4',
+    name='test',
     os='CentOS 7.7',
     root_volume_size=40,
     root_volume_type='SATA',
@@ -43,5 +43,15 @@ pool = conn.create_cce_node_pool(
             'key': 'hellokey2',
             'value': 'hellovalue2'
         }],
-    wait=False)
+    data_volumes=[
+        {
+            'volumetype': 'SATA',
+            'size': 120,
+        }, {
+            'volumetype': 'SATA',
+            'size': 100,
+            'encrypted': True,
+            'cmk_id': '5b16304e-aa0f-488e-9c9e-7d2402def006'
+        }]
+)
 print(pool)

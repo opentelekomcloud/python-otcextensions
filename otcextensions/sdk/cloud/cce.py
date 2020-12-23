@@ -463,7 +463,7 @@ class CceMixin:
             },]
         :param str ecs_group: ECS group id of the ECS group to which nodes
             belong after creation
-        :param str flavor: Flavor ID of the CCE node.
+        :param str flavor: Flavor ID of the CCE node. Mandatory Parameter.
         :param int initial_node_count: Expected number of nodes in this
             node pool
         :param dict k8s_tags: Dictionary of Kubernetes tags.
@@ -483,13 +483,13 @@ class CceMixin:
             Input must be Base64 encoded.
         :param int priority: Node pool weight for scale-up operations.
         :param str public_key: Additional public key to be added for login.
+        :param int root_volume_size: Root volume size in GB
+        :param str root_volume_type: Volume type; available option: SATA,
+            SAS, SSD.
         :param int scale_down_cooldown_time: Interval in minutes during
             which nodes added after a scale-up will not be deleted.
         :param str ssh_key: SSH public key name for login in the created
             nodes
-        :param int root_volume_size: Root volume size in GB
-        :param str root_volume_type: Volume type; available option: SATA,
-            SAS, SSD.
         :param str network_id: ID of the network to which the CCE node pool
             belongs
         :param list tags: List of tags used to build UI labels in format
@@ -512,9 +512,6 @@ class CceMixin:
             }]
             Effect available options: NoSchedule,
             PreferNoSchedule, NoExecute.
-        :param bool wait: dict(type=bool, default=True),
-        :param int wait_timeout: dict(type=int, default=180)
-        :param int wait_interval: Check interval.
 
         :returns: The results of CCE node pool creation
         :rtype: :class:`~otcextensions.sdk.cce.v3.node_pool.NodePool`
@@ -599,6 +596,7 @@ class CceMixin:
         node_template['rootVolume']['volumetype'] = root_volume_type.upper()
 
         # Data volume specs
+        volumes = []
         for item in data_volumes:
             if not (item['volumetype'] and item['size']):
                 raise ValueError('One or both data volume keys: volumetype '
@@ -616,27 +614,25 @@ class CceMixin:
             if not (100 <= item['size'] <= 32768):
                 raise ValueError('The data volume size must be specified '
                                  'between 100 and 32768 GB.')
-            if hasattr(item, 'encrypted'):
-                if not hasattr(item, 'cmk_id'):
+            if ('encrypted' in item) and item['encrypted']:
+                if not item['cmk_id']:
                     raise ValueError('Parameter cmk_id is missing to use '
                                      'data volume encryption.')
-                cmk = self.kms.get_key(item['cmk_id'])
-                if not cmk:
-                    raise ReferenceError('cmk_id %s is not available as KMS '
-                                         'CMK.' % item['cmk_id'])
-                node_template['dataVolumes'] = {
+                volumes.append({
                     'volumetype': item['volumetype'].upper(),
                     'size': item['size'],
                     'metadata': {
-                        '__system__encrypted': 1,
+                        '__system__encrypted': "1",
                         '__system__cmkid': item['cmk_id']
                     }
-                }
+                })
             else:
-                node_template['dataVolumes'] = [{
+                volumes.append({
                     'volumetype': item['volumetype'].upper(),
                     'size': item['size']
-                }]
+                })
+        if volumes:
+            node_template['dataVolumes'] = volumes
 
         # extended parameter specs
         if lvm_config:
@@ -696,11 +692,11 @@ class CceMixin:
                     raise ValueError('Each taints list item must provide '
                                      'the following keys: key, value, '
                                      'effect.')
-                if not (1 <= item['key'] <= 63):
+                if not (1 <= len(item['key']) <= 63):
                     raise ValueError('taints key %s exceeds character '
                                      'range.'
                                      % item['key'])
-                if not (1 <= item['value'] <= 63):
+                if not (1 <= len(item['value']) <= 63):
                     raise ValueError('taints value %s exceeds character '
                                      'range.'
                                      % item['value'])
@@ -723,6 +719,7 @@ class CceMixin:
 
         # Autoscaling specs
         if autoscaling_enabled:
+            spec['autoscaling']['enable'] = autoscaling_enabled
             if min_node_count:
                 if not isinstance(min_node_count, int):
                     raise ValueError('min_node_count is not an integer '
@@ -733,19 +730,20 @@ class CceMixin:
                     raise ValueError('max_node_count is not an integer '
                                      'value.')
                 spec['autoscaling']['maxNodeCount'] = max_node_count
-            if not isinstance(priority, int):
-                raise ValueError('priority is not an integer '
-                                 'value.')
-            if (priority > 1):
-                spec['autoscaling']['priority'] = priority
-            else:
-                spec['autoscaling']['priority'] = 1
-            if scale_down_cooldown_time:
-                if not isinstance(scale_down_cooldown_time, int):
-                    raise ValueError('scale_down_cooldown_time is not an '
-                                     'integer value.')
-                sdct = scale_down_cooldown_time
-                spec['autoscaling']['scaleCooldownTime'] = sdct
+            if priority:
+                if not isinstance(priority, int):
+                    raise ValueError('priority is not an integer '
+                                     'value.')
+                if (priority > 1):
+                    spec['autoscaling']['priority'] = priority
+                else:
+                    spec['autoscaling']['priority'] = 1
+                if scale_down_cooldown_time:
+                    if not isinstance(scale_down_cooldown_time, int):
+                        raise ValueError('scale_down_cooldown_time is not an '
+                                         'integer value.')
+                    sdct = scale_down_cooldown_time
+                    spec['autoscaling']['scaleDownCooldownTime'] = sdct
         else:
             del spec['autoscaling']
 
