@@ -84,6 +84,7 @@ OTC_SERVICES = {
     },
     'dds': {
         'service_type': 'dds',
+        'endpoint_service_type': 'ddsv3',
     },
     'deh': {
         'service_type': 'deh',
@@ -147,6 +148,11 @@ OTC_SERVICES = {
     'sdrs': {
         'service_type': 'sdrs'
     },
+    'sfsturbo': {
+        'service_type': 'sfsturbo',
+        'endpoint_service_type': 'sfsturbo',
+        #'append_project_id': True,
+    },
     'smn': {
         'service_type': 'smn',
         'append_project_id': True
@@ -161,7 +167,7 @@ OTC_SERVICES = {
     },
     'waf': {
         'service_type': 'waf',
-        'set_endpoint_override': True
+        #'set_endpoint_override': True
     }
 }
 
