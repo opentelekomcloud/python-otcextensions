@@ -46,7 +46,7 @@ class Proxy(proxy.Proxy):
                 self._statsd_client.incr('%s.passed' % key)
             elif exc is not None:
                 self._statsd_client.incr('%s.failed' % key)
-            self._statsd_client.incr('%s.total' % key)
+            self._statsd_client.incr('%s.attempted' % key)
         except Exception:
             self.log.exception("Exception reporting metrics")
 
