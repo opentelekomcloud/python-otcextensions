@@ -35,8 +35,9 @@ class Proxy(proxy.Proxy):
 
             key = '.'.join(
                 [self._statsd_prefix,
-                 normalize_metric_name(self.service_type), method]
-                + name_parts)
+                 normalize_metric_name(self.service_type), method,
+                 '_'.join(name_parts)
+                 ])
             if response is not None:
                 duration = int(response.elapsed.microseconds / 1000)
                 self._statsd_client.timing(
