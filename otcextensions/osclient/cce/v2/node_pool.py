@@ -25,13 +25,24 @@ LOG = logging.getLogger(__name__)
 def _flatten_node_pool(obj):
     """Flatten the structure of the node pool into a single dict
     """
+    sdct = obj.spec.autoscaling.scale_down_cooldown_time
+    nw = obj.spec.node_template_spec.node_nic_spec.primary_nic.network_id
     data = {
         'id': obj.id,
         'name': obj.name,
         'flavor': obj.spec.node_template_spec.flavor,
         'os': obj.spec.node_template_spec.os,
+        'current_node': obj.status.current_node,
+        'network_id': nw,
+        'root_volume_type': obj.spec.node_template_spec.root_volume.type,
+        'root_volume_size': obj.spec.node_template_spec.root_volume.size,
+        'data_volume_type': obj.spec.node_template_spec.data_volumes[0].type,
+        'data_volume_size': obj.spec.node_template_spec.data_volumes[0].size,
         'autoscaling': obj.spec.autoscaling.enable,
-        'current_node': obj.status.current_node
+        'min_node_count': obj.spec.autoscaling.min_node_count,
+        'max_node_count': obj.spec.autoscaling.max_node_count,
+        'scale_down_cooldown_time': sdct,
+        'priority': obj.spec.autoscaling.priority,
     }
 
     return data
@@ -68,7 +79,22 @@ class ListCCENodePools(command.Lister):
 
 class ShowCCENodePool(command.ShowOne):
     _description = _('Show single Cluster node details')
-    columns = ('ID', 'name', 'flavor', 'os', 'autoscaling',)
+    columns = (
+        'ID',
+        'name',
+        'flavor',
+        'os',
+        'current_node',
+        'network_id',
+        'root_volume_type',
+        'root_volume_size',
+        'data_volume_type',
+        'data_volume_size',
+        'autoscaling',
+        'min_node_count',
+        'max_node_count',
+        'scale_down_cooldown_time',
+        'priority',)
 
     def get_parser(self, prog_name):
         parser = super(ShowCCENodePool, self).get_parser(prog_name)
@@ -103,7 +129,22 @@ class ShowCCENodePool(command.ShowOne):
 
 class CreateCCENodePool(command.ShowOne):
     _description = _('Create CCE Node Pool')
-    columns = ('ID', 'name')
+    columns = (
+        'ID',
+        'name',
+        'flavor',
+        'os',
+        'current_node',
+        'network_id',
+        'root_volume_type',
+        'root_volume_size',
+        'data_volume_type',
+        'data_volume_size',
+        'autoscaling',
+        'min_node_count',
+        'max_node_count',
+        'scale_down_cooldown_time',
+        'priority',)
 
     def get_parser(self, prog_name):
         parser = super(CreateCCENodePool, self).get_parser(prog_name)
