@@ -254,8 +254,8 @@ class CreateCCENodePool(command.ShowOne):
             help=_('Node pool type, currently only vm is supported.')
         )
         parser.add_argument(
-            '--operating-system',
-            metavar='<os>',
+            '--os',
+            metavar='<operating_system>',
             required=True,
             help=_('CCE cluster node operating system.')
         )
@@ -348,7 +348,7 @@ class CreateCCENodePool(command.ShowOne):
         # mandatory
         attrs['cluster'] = parsed_args.cluster
         attrs['flavor'] = parsed_args.flavor
-        attrs['os'] = parsed_args.operating_system
+        attrs['os'] = parsed_args.os
         attrs['name'] = parsed_args.name
         attrs['network_id'] = parsed_args.network_id
         attrs['ssh_key'] = parsed_args.ssh_key

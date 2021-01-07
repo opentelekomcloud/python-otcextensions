@@ -317,17 +317,22 @@ class TestCreateNodePool(fakes.TestCCE):
             'cluster_name',
             'pool_name',
             '--flavor', 'flav',
-            '--os', 'CentOS',
             '--network-id', 'nw',
+            '--os', 'CentOS',
             '--ssh-key', 'sshkey'
         ]
 
         verifylist = [
             ('cluster', 'cluster_name'),
             ('name', 'pool_name'),
+            ('autoscaling_enabled', False),
+            ('az', 'random'),
             ('flavor', 'flav'),
-            ('os', 'CentOS'),
+            ('initial_node_count', 0),
             ('network_id', 'nw'),
+            ('os', 'CentOS'),
+            ('root_volume_size', 40),
+            ('root_volume_type', 'SATA'),   
             ('ssh_key', 'sshkey'),
         ]
 
