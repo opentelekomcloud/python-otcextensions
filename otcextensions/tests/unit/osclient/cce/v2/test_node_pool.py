@@ -307,7 +307,11 @@ class TestCreateNodePool(fakes.TestCCE):
 
         self.cmd = node_pool.CreateCCENodePool(self.app, None)
 
-        self.client.create_node_pool = mock.Mock()
+        self.app.client_manager.sdk_connection = mock.Mock()
+
+        self.cloud_client = self.app.client_manager.sdk_connection
+
+        self.cloud_client.create_cce_node_pool = mock.Mock()
 
         self.client.find_cluster = mock.Mock(
             return_value=cluster.Cluster(id='cluster_id'))
@@ -332,7 +336,7 @@ class TestCreateNodePool(fakes.TestCCE):
             ('network_id', 'nw'),
             ('os', 'CentOS'),
             ('root_volume_size', 40),
-            ('root_volume_type', 'SATA'),   
+            ('root_volume_type', 'SATA'),
             ('ssh_key', 'sshkey'),
         ]
 
@@ -340,32 +344,23 @@ class TestCreateNodePool(fakes.TestCCE):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.create_node_pool.side_effect = [
+        self.cloud_client.create_cce_node_pool.side_effect = [
             self._obj
         ]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.create_node_pool.assert_called_once_with(
-            cluster='cluster_id',
-            metadata={
-                'name': 'pool_name',
-            },
-            spec={
-                'nodeTemplate': {
-                    'flavor': 'flav',
-                    'os': 'CentOS',
-                    'nodeNicSpec': {
-                        'primaryNic': {
-                            'subnetId': 'nw'
-                        }
-                    },
-                    'login': {
-                        'sshKey': 'sshkey'
-                    }
-                }
-            }
+        self.cloud_client.create_cce_node_pool.assert_called_once_with(
+            availability_zone='random',
+            cluster='cluster_name',
+            flavor='flav',
+            name='pool_name',
+            network_id='nw',
+            os='CentOS',
+            root_volume_size=40,
+            root_volume_type='SATA',
+            ssh_key='sshkey'
         )
 
         self.assertEqual(self.columns, columns)
