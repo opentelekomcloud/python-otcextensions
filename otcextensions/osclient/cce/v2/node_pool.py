@@ -10,7 +10,7 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-'''CCE Cluster Nodes v2 action implementations'''
+'''CCE Node Pool CLI implementation'''
 import logging
 
 from osc_lib import utils
