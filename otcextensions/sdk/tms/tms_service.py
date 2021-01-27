@@ -11,12 +11,12 @@
 # under the License.
 from openstack import service_description
 
-from otcextensions.sdk.vpc.v2 import _proxy
+from otcextensions.sdk.tms.v1 import _proxy
 
 
-class VpcService(service_description.ServiceDescription):
-    """The VPC service."""
+class TmsService(service_description.ServiceDescription):
+    """The TMS service."""
 
     supported_versions = {
-        '2': _proxy.Proxy
+        '1.0': _proxy.Proxy
     }

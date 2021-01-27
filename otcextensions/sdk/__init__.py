@@ -150,6 +150,9 @@ OTC_SERVICES = {
         'service_type': 'smn',
         'append_project_id': True
     },
+    'tms': {
+        'service_type': 'tms',
+    },
     'volume_backup': {
         'service_type': 'volume_backup',
         'append_project_id': True,
