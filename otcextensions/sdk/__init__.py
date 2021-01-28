@@ -151,7 +151,7 @@ OTC_SERVICES = {
     'sfsturbo': {
         'service_type': 'sfsturbo',
         'endpoint_service_type': 'sfsturbo',
-        #'append_project_id': True,
+        # 'append_project_id': True,
     },
     'smn': {
         'service_type': 'smn',
@@ -167,7 +167,7 @@ OTC_SERVICES = {
     },
     'waf': {
         'service_type': 'waf',
-        #'set_endpoint_override': True
+        # 'set_endpoint_override': True
     }
 }
 
