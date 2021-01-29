@@ -20,4 +20,4 @@ conn = openstack.connect(cloud='otc')
 
 name_or_id = 'name_or_id'
 backup = conn.cbr.find_backup(name_or_id)
-conn.cbr.delete_backup(backup)
+conn.cbr.delete_backup(backup=backup)
