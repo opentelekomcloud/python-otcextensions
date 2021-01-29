@@ -44,6 +44,8 @@ class Proxy(proxy.Proxy):
                     '%s.%s' % (key, str(response.status_code)),
                     duration)
                 self._statsd_client.incr('%s.passed' % key)
+                self._statsd_client.incr('%s.%s' % (
+                    key, str(response.status_code)))
             elif exc is not None:
                 self._statsd_client.incr('%s.failed' % key)
             self._statsd_client.incr('%s.attempted' % key)
