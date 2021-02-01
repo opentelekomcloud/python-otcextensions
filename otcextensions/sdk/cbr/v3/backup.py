@@ -95,7 +95,7 @@ class Backup(resource.Resource):
     #: Backup time
     protected_at = resource.Body('protected_at')
     provider_id = resource.Body('provider_id')
-    replication_recourds = resource.Body('replication_records', type=list)
+    replication_records = resource.Body('replication_records', type=list)
     #: Resource availability zone
     resource_az = resource.Body('resource_az')
     #: Resource ID

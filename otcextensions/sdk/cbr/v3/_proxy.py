@@ -12,6 +12,7 @@
 from openstack import proxy
 
 from otcextensions.sdk.cbr.v3 import backup as _backup
+from otcextensions.sdk.cbr.v3 import restore as _restore
 
 
 class Proxy(proxy.Proxy):
@@ -61,7 +62,7 @@ class Proxy(proxy.Proxy):
         return self._get(
             _backup.Backup, backup
         )
-    
+
     def find_backup(self, name_or_id, ignore_missing=True):
         """Find a single CBR backup by name or id
 
@@ -93,4 +94,24 @@ class Proxy(proxy.Proxy):
         """
         return self._delete(
             _backup.Backup, backup, ignore_missing=ignore_missing,
+        )
+
+    # ======== Restore ========
+    def restore_data(self, backup, **attrs):
+        """Restore data using a backup
+
+        :param backup: The value can be the ID of a backup
+             or a :class:`~otcextensions.sdk.cbr.v3.backup.Backup`
+             instance.
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.cce.v3.restore.Restore`,
+            comprised of the properties on the Restore class.
+        :returns: The results of config creation
+        :rtype: :class:`~otcextensions.sdk.cce.v3.restore.Restore`
+        """
+        backup = self._get_resource(_backup.Backup, backup)
+        return self._create(
+            _restore.Restore,
+            backup=backup.id,
+            **attrs
         )
