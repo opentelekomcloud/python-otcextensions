@@ -6,6 +6,7 @@ Service Proxies
 
    Anti DDoS Service (Anti-DDoS) <anti_ddos>
    AutoScaling Service (AS) <auto_scaling>
+   Cloud Backup and Recovery Service (CBR) <cbr>
    Cloud Container Engine v1 (CCEv1) <cce_v1>
    Cloud Container Engine v2 (CCE) <cce_v3>
    Cloud Eye Service (CES) <ces>
