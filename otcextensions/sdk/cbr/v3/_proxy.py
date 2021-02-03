@@ -104,10 +104,10 @@ class Proxy(proxy.Proxy):
              or a :class:`~otcextensions.sdk.cbr.v3.backup.Backup`
              instance.
         :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.cce.v3.restore.Restore`,
+            a :class:`~otcextensions.sdk.cbr.v3.restore.Restore`,
             comprised of the properties on the Restore class.
         :returns: The results of config creation
-        :rtype: :class:`~otcextensions.sdk.cce.v3.restore.Restore`
+        :rtype: :class:`~otcextensions.sdk.cbr.v3.restore.Restore`
         """
         backup = self._get_resource(_backup.Backup, backup)
         return self._create(
