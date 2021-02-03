@@ -39,13 +39,12 @@ class Proxy(proxy.Proxy):
                  '_'.join(name_parts)
                  ])
             if response is not None:
-                duration = int(response.elapsed.total_seconds * 1000)
-                self._statsd_client.timing(
-                    '%s.%s' % (key, str(response.status_code)),
-                    duration)
-                self._statsd_client.incr('%s.passed' % key)
-                self._statsd_client.incr('%s.%s' % (
-                    key, str(response.status_code)))
+                duration = int(response.elapsed.total_seconds() * 1000)
+                metric_name = '%s.%s' % (key, str(response.status_code)),
+                self._statsd_client.timing(metric_name, duration)
+                self._statsd_client.incr(metric_name)
+                if duration > 1000:
+                    self._statsd_client.incr('%s.over_1000' % key)
             elif exc is not None:
                 self._statsd_client.incr('%s.failed' % key)
             self._statsd_client.incr('%s.attempted' % key)
