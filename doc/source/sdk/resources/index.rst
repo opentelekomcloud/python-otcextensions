@@ -9,6 +9,7 @@ Open Telekom Cloud Resources
 
    Anti DDoS Service (Anti-DDoS) <anti_ddos/index>
    AutoScaling Service (AS) <auto_scaling/index>
+   Cloud Backup and Recovery Service (CBR) <cbr/index>
    Cloud Container Engine (CCE) <cce/index>
    Cloud Eye Service (CES) <ces/index>
    Cloud Trace Service (CTS) <cts/index>

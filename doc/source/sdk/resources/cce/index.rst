@@ -1,5 +1,5 @@
-AutoScaling Resources
-=====================
+Cloud Container Engine Resources
+================================
 
 .. toctree::
    :maxdepth: 1
