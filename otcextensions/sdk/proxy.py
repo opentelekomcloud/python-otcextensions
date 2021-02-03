@@ -39,7 +39,7 @@ class Proxy(proxy.Proxy):
                  '_'.join(name_parts)
                  ])
             if response is not None:
-                duration = int(response.elapsed.microseconds / 1000)
+                duration = int(response.elapsed.total_seconds * 1000)
                 self._statsd_client.timing(
                     '%s.%s' % (key, str(response.status_code)),
                     duration)
@@ -75,7 +75,7 @@ class Proxy(proxy.Proxy):
             attempted=1
         )
         if response is not None:
-            fields['duration'] = int(response.elapsed.microseconds / 1000)
+            fields['duration'] = int(response.elapsed.total_seconds() * 1000)
             tags['status_code'] = str(response.status_code)
             # Note(gtema): emit also status_code as a value (counter)
             fields[str(response.status_code)] = 1
