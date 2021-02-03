@@ -9,6 +9,7 @@ Open Telekom Cloud related User Guides
 
    anti_ddos
    auto_scaling
+   cbr
    cce
    ces
    cts
