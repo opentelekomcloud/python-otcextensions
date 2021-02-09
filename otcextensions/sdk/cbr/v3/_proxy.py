@@ -12,6 +12,7 @@
 from openstack import proxy
 
 from otcextensions.sdk.cbr.v3 import backup as _backup
+from otcextensions.sdk.cbr.v3 import checkpoint as _checkpoint
 from otcextensions.sdk.cbr.v3 import restore as _restore
 
 
@@ -94,6 +95,37 @@ class Proxy(proxy.Proxy):
         """
         return self._delete(
             _backup.Backup, backup, ignore_missing=ignore_missing,
+        )
+
+    # ======== Checkpoint / Restore Point ========
+    def get_checkpoint(self, checkpoint):
+        """Get the checkpoint by UUID.
+
+        :param checkpoint: key id or an instance of
+            :class:`~otcextensions.sdk.cbr.v3.checkpoint.Checkpoint`
+
+        :returns: instance of
+            :class:`~otcextensions.sdk.cbr.v3.checkpoint.Checkpoint`
+        """
+        return self._get(
+            _checkpoint.Checkpoint, checkpoint
+        )
+
+    def create_checkpoint(self, **attrs):
+        """Creating a restore point / checkpoint using attributes
+
+        :param backup: The value can be the ID of a backup
+             or a :class:`~otcextensions.sdk.cbr.v3.backup.Backup`
+             instance.
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.cbr.v3.restore.Restore`,
+            comprised of the properties on the Restore class.
+        :returns: The results of config creation
+        :rtype: :class:`~otcextensions.sdk.cbr.v3.restore.Restore`
+        """
+        return self._create(
+            _checkpoint.Checkpoint,
+            **attrs
         )
 
     # ======== Restore ========

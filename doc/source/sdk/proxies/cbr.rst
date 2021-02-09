@@ -18,6 +18,13 @@ Backup Operations
   :noindex:
   :members: backups, get_backup, delete_backup, find_backup
 
+Restore Point (Checkpoint) Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.cbr.v3._proxy.Proxy
+  :noindex:
+  :members: get_checkpoint, create_checkpoint
+
 Restore Operations
 ^^^^^^^^^^^^^^^^^^
 
