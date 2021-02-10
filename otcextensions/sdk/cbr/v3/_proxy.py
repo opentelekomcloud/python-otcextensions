@@ -13,6 +13,7 @@ from openstack import proxy
 
 from otcextensions.sdk.cbr.v3 import backup as _backup
 from otcextensions.sdk.cbr.v3 import checkpoint as _checkpoint
+from otcextensions.sdk.cbr.v3 import policy as _policy
 from otcextensions.sdk.cbr.v3 import restore as _restore
 
 
@@ -55,10 +56,10 @@ class Proxy(proxy.Proxy):
         """Get the backup by UUID.
 
         :param backup: key id or an instance of
-            :class:`~otcextensions.sdk.cbr.v3.backup.backup`
+            :class:`~otcextensions.sdk.cbr.v3.backup.Backup`
 
         :returns: instance of
-            :class:`~otcextensions.sdk.cbr.v3.backup.backup`
+            :class:`~otcextensions.sdk.cbr.v3.backup.Backup`
         """
         return self._get(
             _backup.Backup, backup
@@ -85,7 +86,7 @@ class Proxy(proxy.Proxy):
         """Delete a single CBR backup.
 
         :param backup: The value can be the ID of a backup
-             or a :class:`~otcextensions.sdk.cbr.v3.backup.backup`
+             or a :class:`~otcextensions.sdk.cbr.v3.backup.Backup`
              instance.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
@@ -98,6 +99,7 @@ class Proxy(proxy.Proxy):
         )
 
     # ======== Checkpoint / Restore Point ========
+
     def get_checkpoint(self, checkpoint):
         """Get the checkpoint by UUID.
 
@@ -123,6 +125,91 @@ class Proxy(proxy.Proxy):
         return self._create(
             _checkpoint.Checkpoint,
             **attrs
+        )
+
+    # ======== Policy ========
+
+    def policies(self, **query):
+        """Retrieve a generator of CBR policies
+
+        :param dict query: Optional query parameters to be sent to limit the
+            resources being returned.
+            * `operation_type`: Policy type: backup or replication
+            * `vault_id`: Vault ID
+
+        :returns: A generator of policies
+            :class:`~otcextensions.sdk.cbr.v3.policy.Policy` instances
+        """
+        return self._list(_policy.Policy, **query)
+
+    def get_policy(self, policy):
+        """Get the CBR policy by UUID.
+
+        :param policy: key id or an instance of
+            :class:`~otcextensions.sdk.cbr.v3.policy.Policy`
+
+        :returns: instance of
+            :class:`~otcextensions.sdk.cbr.v3.policy.Policy`
+        """
+        return self._get(
+            _policy.Policy, policy
+        )
+
+    def find_policy(self, name_or_id, ignore_missing=True):
+        """Find a single CBR policy by name or ID
+
+        :param name_or_id: The name or ID of a policy
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the policy does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to delete a nonexistent policy.
+
+        :returns: a :class:`~otcextensions.sdk.cbr.v3.policy.Policy` instance
+        """
+        return self._find(_policy.policy, name_or_id,
+                          ignore_missing=ignore_missing)
+
+    def create_policy(self, **attrs):
+        """Creating a CBR policy using attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.cbr.v3.policy.Policy`,
+            comprised of the properties on the Policy class.
+        :returns: The results of config creation
+        :rtype: :class:`~otcextensions.sdk.cbr.v3.policy.Policy`
+        """
+        return self._create(
+            _policy.Policy,
+            **attrs
+        )
+
+    def update_policy(self, policy, **attrs):
+        """Update CBR policy attributes
+
+        :param policy: The id or an instance of
+            :class:`~otcextensions.sdk.cbr.v3.policy.Policy`
+        :param dict attrs: attributes for update on
+            :class:`~otcextensions.sdk.cbr.v3.policy.Policy`
+
+        :rtype: :class:`~otcextensions.sdk.cbr.v3.policy.Policy`
+        """
+        return self._update(_policy.Policy, policy, **attrs)
+
+    def delete_policy(self, policy, ignore_missing=True):
+        """Delete a single CBR policy.
+
+        :param policy: The value can be the ID of a policy
+             or a :class:`~otcextensions.sdk.cbr.v3.policy.Policy`
+             instance.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the group does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent policy.
+        """
+        return self._delete(
+            _policy.Policy, policy, ignore_missing=ignore_missing,
         )
 
     # ======== Restore ========
