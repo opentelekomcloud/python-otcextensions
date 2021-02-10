@@ -41,7 +41,7 @@ class CheckpointResource(resource.Resource):
     #: Allocated capacity for the associated resource in GB
     resource_size = resource.Body('resource_size')
     #: type of the resource to be backed up.
-    resource_type = resource.Body('type')
+    type = resource.Body('type')
 
 
 class SkippedResource(resource.Resource):
@@ -55,7 +55,7 @@ class SkippedResource(resource.Resource):
     #: Reason for skipping
     reason = resource.Body('reason')
     #: type of the resource to be backed up.
-    resource_type = resource.Body('type')
+    type = resource.Body('type')
 
 
 class Vault(resource.Resource):
@@ -68,8 +68,8 @@ class Vault(resource.Resource):
     resources = resource.Body('resource', type=list,
                               list_type=CheckpointResource)
     #: Resources skipped during backup
-    skipped_resource = resource.Body('skipped_resources', type=list,
-                                     list_type=SkippedResource)
+    skipped_resources = resource.Body('skipped_resources', type=list,
+                                      list_type=SkippedResource)
 
 
 class IncludeVolumes(resource.Resource):

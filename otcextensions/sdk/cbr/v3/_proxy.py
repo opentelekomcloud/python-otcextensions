@@ -114,14 +114,11 @@ class Proxy(proxy.Proxy):
     def create_checkpoint(self, **attrs):
         """Creating a restore point / checkpoint using attributes
 
-        :param backup: The value can be the ID of a backup
-             or a :class:`~otcextensions.sdk.cbr.v3.backup.Backup`
-             instance.
         :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.cbr.v3.restore.Restore`,
-            comprised of the properties on the Restore class.
+            a :class:`~otcextensions.sdk.cbr.v3.checkpoint.Checkpoint`,
+            comprised of the properties on the Checkpoint class.
         :returns: The results of config creation
-        :rtype: :class:`~otcextensions.sdk.cbr.v3.restore.Restore`
+        :rtype: :class:`~otcextensions.sdk.cbr.v3.checkpoint.Checkpoint`
         """
         return self._create(
             _checkpoint.Checkpoint,
