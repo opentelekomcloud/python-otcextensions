@@ -55,6 +55,55 @@ or an instance of class
 .. literalinclude:: ../examples/cbr/delete_backup.py
    :lines: 16-23
 
+Backup
+------
+
+List CBR Policies
+^^^^^^^^^^^^^^^^^
+
+This interface is used to query CBR policies and to filter
+the output with query parameters.
+
+.. literalinclude:: ../examples/cbr/list_policies.py
+   :lines: 16-22
+
+Get CBR Policies
+^^^^^^^^^^^^^^^^
+
+This interface is used to get a CBR policy by ID or an instance of
+class :class:`~otcextensions.sdk.cbr.v3.policy.Policy`.
+
+.. literalinclude:: ../examples/cbr/get_policy.py
+   :lines: 16-24
+
+Create CBR Policy
+^^^^^^^^^^^^^^^^^
+
+This interface is used to create a CBR policy instance with
+parameters.
+
+.. literalinclude:: ../examples/cbr/create_policy.py
+   :lines: 16-44
+
+Update CBR Policy
+^^^^^^^^^^^^^^^^^
+
+This interface is used to update a CBR policy instance with
+parameters.
+
+.. literalinclude:: ../examples/cbr/update_policy.py
+   :lines: 16-45
+
+Delete CBR Policy
+^^^^^^^^^^^^^^^^^
+
+This interface is used to delete a CBR policy instance by id
+or an instance of class
+:class:`~otcextensions.sdk.cbr.v3.policy.Policy`.
+
+.. literalinclude:: ../examples/cbr/delete_policy.py
+   :lines: 16-24
+
 Restore Point (Checkpoint)
 --------------------------
 

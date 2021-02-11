@@ -89,6 +89,14 @@ class Trigger(resource.Resource):
     properties = resource.Body('properties', type=Properties)
 
 
+class Vault(resource.Resource):
+    #: Properties
+    #: ID of the associated remote vault
+    destination_vault_id = resource.Body('destination_vault_id')
+    #: Vault ID
+    vault_id = resource.Body('vault_id')
+
+
 class Policy(resource.Resource):
     """CBR Policy Resource"""
     resource_key = 'policy'
@@ -106,8 +114,13 @@ class Policy(resource.Resource):
         'operation_type', 'vault_id')
 
     #: Properties
+    #: associated vault
+    associated_vaults = resource.Body('associated_vaults', type=list,
+                                      list_type=Vault)
     #: Whether to enable the policy
     enabled = resource.Body('enabled', type=bool)
+    #: Policy ID
+    id = resource.Body('id')
     #: Policy Name
     #: Max: 64 chars
     name = resource.Body('name')

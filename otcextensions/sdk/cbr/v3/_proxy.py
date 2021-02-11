@@ -167,7 +167,7 @@ class Proxy(proxy.Proxy):
 
         :returns: a :class:`~otcextensions.sdk.cbr.v3.policy.Policy` instance
         """
-        return self._find(_policy.policy, name_or_id,
+        return self._find(_policy.Policy, name_or_id,
                           ignore_missing=ignore_missing)
 
     def create_policy(self, **attrs):

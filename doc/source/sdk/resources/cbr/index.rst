@@ -6,4 +6,5 @@ Cloud Backup and Recovery Resources
 
    v3/backup
    v3/checkpoint
+   v3/policy
    v3/restore
