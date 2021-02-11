@@ -34,7 +34,7 @@ class OperationDefinition(resource.Resource):
     #: backups specified by 'max_backups'.
     #: value: ranges from 0 to 100
     #: If this parameter is configured 'timezone' is mandatory.
-    month_backups = resource.Body('month_backups', tpye=int)
+    month_backups = resource.Body('month_backups', type=int)
     #: Duration of retaining a backup in days
     #: value: -1 or ranges from 0 to 99999
     #: -1 indicates that the backups will not be cleared bassed on the
@@ -52,14 +52,14 @@ class OperationDefinition(resource.Resource):
     #: backups specified by 'max_backups'. If this param is configured,
     #: 'timezone' is mandatory.
     #: value: ranges from 0 to 100
-    week_backups = resource.Body('week_backups')
+    week_backups = resource.Body('week_backups', type=int)
     #: Specifies the number or retained yearly backups.
     #: The latest backup of each year is saved in the long term. This
     #: param can be effective together with the max number of retained
     #: backups specified by 'max_backups'. If this param is configured,
     #: 'timezone' is mandatory.
     #: value: ranges from 0 to 100
-    year_backups = resource.Body('year_backups')
+    year_backups = resource.Body('year_backups', type=int)
 
 
 class Properties(resource.Resource):
