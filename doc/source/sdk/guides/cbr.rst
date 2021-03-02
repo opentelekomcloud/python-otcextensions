@@ -67,8 +67,8 @@ the output with query parameters.
 .. literalinclude:: ../examples/cbr/list_policies.py
    :lines: 16-22
 
-Get CBR Policies
-^^^^^^^^^^^^^^^^
+Get CBR Policy
+^^^^^^^^^^^^^^
 
 This interface is used to get a CBR policy by ID or an instance of
 class :class:`~otcextensions.sdk.cbr.v3.policy.Policy`.

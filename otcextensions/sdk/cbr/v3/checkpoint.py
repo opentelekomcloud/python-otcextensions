@@ -113,6 +113,7 @@ class Parameters(resource.Resource):
     name = resource.Body('name')
     #: UUID list of resources to be backed up
     resources = resource.Body('resources', type=list)
+    # Resource details
     resource_details = resource.Body('resource_details',
                                      type=ResourceDetails)
 
