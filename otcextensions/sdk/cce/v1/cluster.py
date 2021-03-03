@@ -144,7 +144,6 @@ class Cluster(_base.Resource):
         If `value` is anything other than a Resource, likely to
         be a string already representing an ID, it is returned.
         """
-        print('in the _get_id')
         if isinstance(value, resource.Resource):
             return value.metadata.id
         else:
