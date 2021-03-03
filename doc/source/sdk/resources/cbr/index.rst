@@ -5,4 +5,6 @@ Cloud Backup and Recovery Resources
    :maxdepth: 1
 
    v3/backup
+   v3/checkpoint
+   v3/policy
    v3/restore

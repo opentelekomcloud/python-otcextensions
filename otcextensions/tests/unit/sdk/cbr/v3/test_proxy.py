@@ -14,6 +14,8 @@ from openstack.tests.unit import test_proxy_base
 
 from otcextensions.sdk.cbr.v3 import _proxy
 from otcextensions.sdk.cbr.v3 import backup as _backup
+from otcextensions.sdk.cbr.v3 import policy as _policy
+from otcextensions.sdk.cbr.v3 import checkpoint as _checkpoint
 from otcextensions.sdk.cbr.v3 import restore as _restore
 
 
@@ -38,6 +40,40 @@ class TestCBRBackup(TestCBRProxy):
 
     def test_backup_get(self):
         self.verify_get(self.proxy.get_backup, _backup.Backup)
+
+
+class TestCBRPolicy(TestCBRProxy):
+
+    def test_policies(self):
+        self.verify_list(self.proxy.policies, _policy.Policy)
+
+    def test_policy_find(self):
+        self.verify_find(self.proxy.find_policy, _policy.Policy)
+
+    def test_policy_get(self):
+        self.verify_get(self.proxy.get_policy, _policy.Policy)
+
+    def test_policy_create(self):
+        self.verify_create(self.proxy.create_policy,
+                           _policy.Policy,
+                           method_kwargs={'name': 'id'},
+                           expected_kwargs={'name': 'id'})
+
+    def test_policy_delete(self):
+        self.verify_delete(self.proxy.delete_policy,
+                           _policy.Policy, True)
+
+
+class TestCBRCheckpoint(TestCBRProxy):
+
+    def test_checkpoint_get(self):
+        self.verify_get(self.proxy.get_checkpoint, _checkpoint.Checkpoint)
+
+    def test_checkpoint_create(self):
+        self.verify_create(self.proxy.create_checkpoint,
+                           _checkpoint.Checkpoint,
+                           method_kwargs={'name': 'id'},
+                           expected_kwargs={'name': 'id'})
 
 
 class TestCBRRestore(TestCBRProxy):
