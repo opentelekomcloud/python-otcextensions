@@ -9,7 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import openstack
 from otcextensions.tests.functional import base
 
 
@@ -17,5 +16,4 @@ class TestWaf(base.BaseFunctionalTest):
 
     def setUp(self):
         super(TestWaf, self).setUp()
-        openstack.enable_logging(debug=True)
         self.client = self.conn.waf

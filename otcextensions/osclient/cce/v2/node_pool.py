@@ -400,7 +400,6 @@ class CreateCCENodePool(command.ShowOne):
 
         obj = self.app.client_manager.sdk_connection.create_cce_node_pool(
             **attrs)
-        print(obj)
 
         data = utils.get_dict_properties(
             _flatten_node_pool(obj),

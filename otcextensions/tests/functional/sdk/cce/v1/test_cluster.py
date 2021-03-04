@@ -36,8 +36,4 @@ class TestCluster(base.BaseFunctionalTest):
         obj = self.cce.get_cluster(self.TEST_CLUSTER)
 
         self.assertIsNotNone(obj.id)
-
-        print(obj.to_dict())
-        print('id=%s' % obj.id)
-        print('name=%s' % obj.metadata.name)
         self.assertIsNotNone(obj)
