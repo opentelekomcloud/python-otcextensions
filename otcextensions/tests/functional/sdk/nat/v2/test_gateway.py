@@ -21,7 +21,6 @@ class TestGateway(base.BaseFunctionalTest):
 
     def setUp(self):
         super(TestGateway, self).setUp()
-        openstack.enable_logging(debug=True, http_debug=True)
 
     def test_list(self):
         gateways = list(self.conn.nat.gateways())

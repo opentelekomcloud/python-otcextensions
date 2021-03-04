@@ -22,7 +22,6 @@ class DcsBool(object):
             self.val = False
 
     def __get__(self):
-        print('get invoked')
         return self.val
 
     def __set__(self, value):
