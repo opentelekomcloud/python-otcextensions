@@ -15,11 +15,11 @@ import warnings
 from openstack import exceptions
 from openstack import service_description
 
-from otcextensions.sdk.waf.v1 import _proxy
+from otcextensions.sdk.sfsturbo.v1 import _proxy
 
 
-class WafService(service_description.ServiceDescription):
-    """The WAF service."""
+class SfsturboService(service_description.ServiceDescription):
+    """The SFS Turbo service."""
 
     supported_versions = {
         '1': _proxy.Proxy
@@ -30,7 +30,7 @@ class WafService(service_description.ServiceDescription):
 
         # First, check to see if we've got config that matches what we
         # understand in the SDK.
-        version_string = config.get_api_version('waf') or '1'
+        version_string = config.get_api_version('sfsturbo') or '1'
         endpoint_override = config.get_endpoint(self.service_type)
         ep = config.get_service_catalog().url_for(
             service_type=self.service_type,
