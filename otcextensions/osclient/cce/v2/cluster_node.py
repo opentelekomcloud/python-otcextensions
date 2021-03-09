@@ -11,7 +11,6 @@
 #   under the License.
 #
 '''CCE Cluster Nodes v2 action implementations'''
-import argparse
 import logging
 
 from osc_lib import utils
@@ -243,8 +242,15 @@ class CreateCCEClusterNode(command.Command):
             help=_('Address or ID of the existing floating IP to be '
                    'attached to the new node.\n'
                    'Repeat option for multiple IPs to be attached to '
-                   'multiple nodes. The node count and the floating IP count '
-                   'must be identical.')
+                   'multiple nodes.')
+        )
+        parser.add_argument(
+            '--fip-count',
+            metavar='<fip_count>',
+            type=int,
+            help=_('Count of floating IP addresses being attached to one '
+                   'or more nodes.\nThe parameter must be used together with'
+                   'bandwidth.')
         )
         parser.add_argument(
             '--k8s-tag',
@@ -278,6 +284,12 @@ class CreateCCEClusterNode(command.Command):
             metavar='<max_pods>',
             type=int,
             help=_('Maximum number of pods on the node')
+        )
+        parser.add_argument(
+            '--network-id',
+            metavar='<network_id>',
+            required=True,
+            help=_('ID of the network where the node will be created.')
         )
         parser.add_argument(
             '--node-image-id',
@@ -340,7 +352,7 @@ class CreateCCEClusterNode(command.Command):
         )
         parser.add_argument(
             '--wait-interval',
-            metavar='<timeout>',
+            metavar='<interval>',
             type=int,
             default=5,
             help=_('Check interval in seconds for successful creation check.')
@@ -367,14 +379,54 @@ class CreateCCEClusterNode(command.Command):
         attrs['ssh_key'] = parsed_args.ssh_key
 
         # optional
+        if parsed_args.annotations:
+            attrs['annotations'] = parsed_args.annotations
+        if parsed_args.bandwidth:
+            attrs['bandwidth'] = parsed_args.bandwidth
+        if parsed_args.count:
+            attrs['count'] = parsed_args.count
+        if parsed_args.data_volumes:
+            attrs['data_volumes'] = parsed_args.data_volumes
+        if parsed_args.dedicated_host:
+            attrs['dedicated_host'] = parsed_args.dedicated_host
+        if parsed_args.ecs_group:
+            attrs['ecs_group'] = parsed_args.ecs_group
+        if parsed_args.fault_domain:
+            attrs['fault_domain'] = parsed_args.fault_domain
+        if parsed_args.floating_ip:
+            attrs['floating_ips'] = parsed_args.floating_ip
+        if parsed_args.fip_count:
+            attrs['fip_count'] = parsed_args.fip_count
+        if parsed_args.k8s_tags:
+            attrs['k8s_tags'] = parsed_args.k8s_tags
+        if parsed_args.label:
+            attrs['label'] = parsed_args.label
+        if parsed_args.max_pods:
+            attrs['max_pods'] = parsed_args.max_pods
         if parsed_args.name:
             attrs['name'] = parsed_args.name
+        if parsed_args.network_id:
+            attrs['network_id'] = parsed_args.network_id
+        if parsed_args.node_image_id:
+            attrs['node_image_id'] = parsed_args.node_image_id
+        if parsed_args.os:
+            attrs['os'] = parsed_args.os
+        if parsed_args.postinstall_script:
+            attrs['postinstall_script'] = parsed_args.postinstall_script
+        if parsed_args.preinstall_script:
+            attrs['preinstall_script'] = parsed_args.preinstall_script
         if parsed_args.root_volume_size:
             attrs['root_volume_size'] = parsed_args.root_volume_size
         if parsed_args.root_volume_type:
             attrs['root_volume_type'] = parsed_args.root_volume_type
-        
-
+        if parsed_args.tags:
+            attrs['tags'] = parsed_args.tags
+        if parsed_args.wait:
+            attrs['wait'] = parsed_args.wait
+        if parsed_args.wait_interval:
+            attrs['wait_interval'] = parsed_args.wait_interval
+        if parsed_args.wait_timeout:
+            attrs['wait_timeout'] = parsed_args.wait_timeout
 
         obj = self.app.client_manager.sdk_connection.create_cce_node(
             **attrs)

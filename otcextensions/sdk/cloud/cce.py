@@ -1,11 +1,12 @@
-# Licensed under the Apache License, Version 2.0 (the 'License'); you may
+#!/usr/bin/env python3
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
 #
 #      http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an 'AS IS' BASIS, WITHOUT
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
@@ -20,7 +21,7 @@ class CceMixin:
         wait=True, wait_timeout=1800, wait_interval=5,
         **kwargs
     ):
-        '''Create CCE cluster
+        """Create CCE cluster
 
         :param str name: Cluster name.
         :param str type: Cluster type.
@@ -51,7 +52,7 @@ class CceMixin:
 
         :returns: The results of cluster creation
         :rtype: :class:`~otcextensions.sdk.cce.v3.cluster.Cluster`
-        '''
+        """
         name = kwargs.get('name')
         cluster_type = kwargs.get('type')
         flavor = kwargs.get('flavor')
@@ -183,10 +184,10 @@ class CceMixin:
         wait=True, wait_timeout=1800, wait_interval=5,
         **kwargs
     ):
-        '''Delete CCE cluster
+        """Delete CCE cluster
 
         :param str cluster: Name or ID of the cluster
-        '''
+        """
         cluster = kwargs.get('cluster')
         obj = self.cce.find_cluster(name_or_id=cluster, ignore_missing=False)
         obj = self.cce.delete_cluster(obj.id)
@@ -218,12 +219,12 @@ class CceMixin:
         wait=True, wait_timeout=300, wait_interval=5,
         **kwargs
     ):
-        '''Create CCE cluster node
+        """Create CCE cluster node
 
         :param dict annotations: Annotations.
         :param str availability_zone: Availability zone of the cluster_node.
         :param int bandwidth: Bandwidth size for the floating IPs being
-            created.
+            created. Must be used together with fip_count.
         :param int count: Count of the cluster nodes to be created.
         :param str cluster: CCE cluster attached to.
         :param list data_volumes: Data disk parameters of a node. At
@@ -242,6 +243,7 @@ class CceMixin:
             belong to.
         :param str fault_domain: The node is created in the specified fault
             domain.
+        :param int fip_count: Count of floating ip addresses to be attached.
         :param str flavor: Flavor ID of the CCE node.
         :param list floating_ips: List of Floating IP addresses or IDs to
             be attached to the nodes. The count of the CCE nodes and the
@@ -251,9 +253,9 @@ class CceMixin:
         :param str lvm_config: ConfigMap of the Docker data disk.
         :param int max_pods: Maximum number of pods on the node.
         :param str name: Cluster node name.
+        :param str network_id: ID of the network of the node.
         :param str node_image_id: ID of a custom image used in a bare metal
             scenario.
-        :param bool offload_node: If node is offloading its components.
         :param str os: Operating system of the cluster node.
         :param str postinstall_script: Base64 encoded post installation
             script.
@@ -276,7 +278,7 @@ class CceMixin:
 
         :returns: The results of cluster node creation
         :rtype: :class:`~otcextensions.sdk.cce.v3.cluster_node.ClusterNode`
-        '''
+        """
         annotations = kwargs.get('annotations')
         availability_zone = kwargs.get('availability_zone')
         bandwidth = kwargs.get('bandwidth')
@@ -292,11 +294,11 @@ class CceMixin:
         lvm_config = kwargs.get('lvm_override_config')
         max_pods = kwargs.get('max_pods')
         name = kwargs.get('name')
+        network_id = kwargs.get('network_id')
         node_image_id = kwargs.get('node_image_id')
-        preinstall_script = kwargs.get('preinstall_script')
-        postinstall_script = kwargs.get('postinstall_script')
-        offload_node = kwargs.get('offload_node')
         os = kwargs.get('os')
+        postinstall_script = kwargs.get('postinstall_script')
+        preinstall_script = kwargs.get('preinstall_script')
         ssh_key = kwargs.get('ssh_key')
         tags = kwargs.get('tags')
 
@@ -311,10 +313,6 @@ class CceMixin:
         if labels and isinstance(labels, dict):
             metadata['labels'] = labels
 
-        if root_volume_type.upper() not in volume_types:
-            raise ValueError('Root volume type %s is not supported, use: %s'
-                             % root_volume_type, volume_types)
-
         spec = {
             'dataVolumes': {},
             'extendParam': {},
@@ -323,10 +321,9 @@ class CceMixin:
             'nodeNicSpec': {
                 'primaryNic': {}
             },
-            'publicIP': {}
+            'publicIP': {},
             'rootVolume': {},
-            'taints': [],
-            'userTags': []            
+            'userTags': []
         }
 
         if count and isinstance(count, int):
@@ -335,26 +332,58 @@ class CceMixin:
             spec['count'] = count
         spec['flavor'] = flavor
         spec['login']['sshKey'] = ssh_key
-        spec['rootVolume']['volumetype'] = root_volume_type.upper()
-        if root_volume_size and isinstance(root_volume_size, int):
+
+        # Root volume specs
+        if root_volume_size:
+            if not isinstance(root_volume_size, int):
+                raise ValueError('root_volume_size is not an integer value')
             if root_volume_size < 40:
                 raise ValueError('Root volume size %s is lower than 40 GB.'
                                  % root_volume_size)
             spec['rootVolume']['size'] = root_volume_size
+        if root_volume_type.upper() not in volume_types:
+            raise ValueError('Root volume type %s is not supported, use: %s'
+                             % root_volume_type, volume_types)
+        spec['rootVolume']['volumetype'] = root_volume_type.upper()
 
+        # Data volume specs
+        volumes = []
         for item in data_volumes:
-            for key in item:
-                if key.upper() not in volume_types:
-                    raise ValueError('data volume type %s must be one of '
-                                     'the following choices: %s'
-                                     % key, volume_types)
-                if not (100 <= item[key] <= 32768):
-                    raise ValueError('The data volume size must be specified '
-                                     'between 100 and 32768 GB.')
-                spec['dataVolumes'].append({
-                    'volumetype': key.upper(),
-                    'size': item[key]
+            if not (item['volumetype'] and item['size']):
+                raise ValueError('One or both data volume keys: volumetype '
+                                 'or size are missing.')
+            if item['volumetype'] not in volume_types:
+                raise ValueError('The data volumes volumetype %s must be '
+                                 'one of the following choices: %s'
+                                 % item['volumetype'], volume_types)
+            if not isinstance(item['size'], int):
+                try:
+                    item['size'] = int(item['size'])
+                except ValueError:
+                    print('data_volume size %s cannot be converted into '
+                          'integer value.' % item['size'])
+            if not (100 <= item['size'] <= 32768):
+                raise ValueError('The data volume size must be specified '
+                                 'between 100 and 32768 GB.')
+            if ('encrypted' in item) and item['encrypted']:
+                if not item['cmk_id']:
+                    raise ValueError('Parameter cmk_id is missing to use '
+                                     'data volume encryption.')
+                volumes.append({
+                    'volumetype': item['volumetype'].upper(),
+                    'size': item['size'],
+                    'metadata': {
+                        '__system__encrypted': '1',
+                        '__system__cmkid': item['cmk_id']
+                    }
                 })
+            else:
+                volumes.append({
+                    'volumetype': item['volumetype'].upper(),
+                    'size': item['size']
+                })
+        if volumes:
+            spec['dataVolumes'] = volumes
 
         if availability_zone:
             spec['az'] = availability_zone
@@ -364,15 +393,15 @@ class CceMixin:
                 ignore_missing=False)
             spec['dedicatedHostId'] = deh.id
         if ecs_group:
-            spec['ecs_group'] = ecs_group
+            spec['ecsGroupId'] = ecs_group
         if fault_domain:
             spec['faultDomain'] = fault_domain
-        if floating_ip_ids and isinstance(floating_ip_ids, list):
+        if floating_ips and isinstance(floating_ips, list):
             ids = []
-            if not (count == len(floating_ip_ids)):
+            if not (count == len(floating_ips)):
                 raise ValueError('The length of the list floating_ip_ids is'
                                  'different from CCE node count.')
-            for ip in floating_ip_ids:
+            for ip in floating_ips:
                 ip = self.network.find_ip(name_or_id=ip, ignore_missing=False)
                 ids.append(ip.id)
             if ids:
@@ -382,8 +411,8 @@ class CceMixin:
                 raise ValueError('bandwidth must be an integer value.')
             if not isinstance(fip_count, int):
                 raise ValueError('fip_count must be an integer value.')
-            if floating_ip_ids:
-                raise ValueError('floating_ip_ids is used together with'
+            if floating_ips:
+                raise ValueError('floating_ips is used together with'
                                  'fip_count. These values are exclusive.')
             spec['publicIP'] = {
                 'count': fip_count,
@@ -404,14 +433,15 @@ class CceMixin:
             spec['extendParam']['maxPods'] = max_pods
         if node_image_id:
             spec['extendParam']['alpha.cce/NodeImageID'] = node_image_id
-        if offload_node and isinstance(offload_node, bool):
-            spec['offloadNode'] = offload_node
         if os:
             spec['os'] = os
         if postinstall_script:
             spec['extendParam']['alpha.cce/preInstall'] = postinstall_script
         if preinstall_script:
             spec['extendParam']['alpha.cce/preInstall'] = preinstall_script
+        if not network_id:
+            raise ValueError('network_id missing.')
+        spec['nodeNicSpec']['primaryNic'] = network_id
         if tags:
             spec['userTags'] = tags
 
@@ -446,11 +476,11 @@ class CceMixin:
         wait=True, wait_timeout=180, wait_interval=5,
         **kwargs
     ):
-        '''Delete CCE cluster node
+        """Delete CCE cluster node
 
         :param str cluster: Name or ID of the CCE cluster
         :param str node: Name or ID of the CCE cluster node
-        '''
+        """
         cluster = kwargs.get('cluster')
         node = kwargs.get('node')
 
@@ -496,7 +526,7 @@ class CceMixin:
         root_volume_type='SATA',
         **kwargs
     ):
-        '''Create CCE node pool
+        """Create CCE node pool
 
         :param str availability_zone: Name of the AZ where the node resides.
             If availability_zone is set to: random (default), nodes can be
@@ -571,7 +601,7 @@ class CceMixin:
 
         :returns: The results of CCE node pool creation
         :rtype: :class:`~otcextensions.sdk.cce.v3.node_pool.NodePool`
-        '''
+        """
         count = kwargs.get('count')
         cce_cluster = kwargs.get('cluster')
         ecs_group = kwargs.get('ecs_group')
@@ -833,11 +863,11 @@ class CceMixin:
         self,
         **kwargs
     ):
-        '''Delete CCE node pool
+        """Delete CCE node pool
 
         :param str cluster: Name or ID of the CCE cluster
         :param str node_pool: Name or ID of the CCE node_pool
-        '''
+        """
         cluster = kwargs.get('cluster')
         node_pool = kwargs.get('node_pool')
 
