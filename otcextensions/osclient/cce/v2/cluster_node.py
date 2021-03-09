@@ -165,7 +165,8 @@ class CreateCCEClusterNode(command.Command):
         parser.add_argument(
             '--name',
             metavar='<name>',
-            help=_('Name of the CCE Node Pool.')
+            help=_('Name of the CCE node.\nThe clustername and a random '
+                   'number is used to create a node name by default.')
         )
         parser.add_argument(
             '--annotation',
@@ -235,7 +236,6 @@ class CreateCCEClusterNode(command.Command):
             required=True,
             help=_('The flavor for the node.')
         )
-        # MUST BE REWORKED
         parser.add_argument(
             '--floating-ip',
             metavar='<floating-ip>',
@@ -247,17 +247,57 @@ class CreateCCEClusterNode(command.Command):
                    'must be identical.')
         )
         parser.add_argument(
-            '--volume',
-            metavar='<volume>',
-            required=True,
-            help=_(
-                'Disk information to attach to the instance.\n'
-                'format = `VOLUME_TYPE`,`SIZE`\n'
-                '`VOLUME_TYPE` can be in: \n'
-                '* `SATA` = Common I/O \n'
-                '* `SAS` = High I/O \n'
-                '* `SSD` = Ultra-High I/O \n'
-                '`SIZE` is size in Gb.')
+            '--k8s-tag',
+            metavar='<key_name>=<value_name>',
+            action=parseractions.KeyValueAction,
+            dest='k8s_tags',
+            help=_('Kubernetes tags in form of key, value pairs. Repeat '
+                   'option for multiple tags.\n'
+                   'Example:\n'
+                   '--k8s-tag keyname1=valuename1 '
+                   '--k8s-tag keyname2=valuename2')
+        )
+        parser.add_argument(
+            '--label',
+            metavar='<key_name>=<value_name>',
+            action=parseractions.KeyValueAction,
+            dest='labels',
+            help=_('Option labels in form of key, value pairs. Repeat '
+                   'option for multiple labels.\n'
+                   'Example:\n'
+                   '--label keyname1=valuename1 '
+                   '--label keyname2=valuename2')
+        )
+        parser.add_argument(
+            '--lvm-config',
+            metavar='<lvm_config>',
+            help=_('ConfigMap of the Docker data disk.')
+        )
+        parser.add_argument(
+            '--max-pods',
+            metavar='<max_pods>',
+            type=int,
+            help=_('Maximum number of pods on the node')
+        )
+        parser.add_argument(
+            '--node-image-id',
+            metavar='<node_image_id>',
+            help=_('ID of a custom image used in a bare metal scenario.')
+        )
+        parser.add_argument(
+            '--os',
+            metavar='<operating_system>',
+            help=_('Operating system of the cluster node.')
+        )
+        parser.add_argument(
+            '--postinstall-script',
+            metavar='<postinstall_script>',
+            help=_('Base64 encoded post installation script.')
+        )
+        parser.add_argument(
+            '--preinstall-script',
+            metavar='<preinstall_script>',
+            help=_('Base64 encoded pre installation script.')
         )
         parser.add_argument(
             '--root-volume-size',
@@ -281,26 +321,36 @@ class CreateCCEClusterNode(command.Command):
             help=_('SSH Key used to create the node.')
         )
         parser.add_argument(
-            '--annotation',
-            metavar='<annotation>',
-            action='append',
-            help=_('Annotation to assign to the server in KEY=VALUE format. '
-                   'Repeat for multiple values.')
+            '--tag',
+            metavar='key=<keyname1>,value=<value1>',
+            action=parseractions.MultiKeyValueAction,
+            dest='tags',
+            required_keys=['key', 'value'],
+            help=_('List of tags used to build UI labels. Repeat option for '
+                   'multiple tags.\n'
+                   'Example:\n'
+                   '--tag key=mykey1,value=myvalue1')
         )
         parser.add_argument(
-            '--label',
-            metavar='<label>',
-            action='append',
-            help=_('Label to assign to the server in KEY=VALUE format. '
-                   'Repeat for multiple values.')
+            '--wait',
+            metavar='<wait>',
+            type=bool,
+            default=True,
+            help=_('Wait until CCE node is created.')
         )
         parser.add_argument(
-            '--count',
-            metavar='[1..]',
+            '--wait-interval',
+            metavar='<timeout>',
             type=int,
-            default=1,
-            help=_('Number of node instances to create '
-                   '(max 15 in the cluster).')
+            default=5,
+            help=_('Check interval in seconds for successful creation check.')
+        )
+        parser.add_argument(
+            '--wait-timeout',
+            metavar='<timeout>',
+            type=int,
+            default=3600,
+            help=_('Maximum time in seconds to wait for successful creation.')
         )
         return parser
 
@@ -309,9 +359,24 @@ class CreateCCEClusterNode(command.Command):
         attrs = {}
 
         # mandatory
+        attrs['availability_zone'] = parsed_args.availability_zone
+        attrs['cluster'] = parsed_args.cluster
+        attrs['count'] = parsed_args.count
+        attrs['flavor'] = parsed_args.flavor
+        attrs['network_id'] = parsed_args.network_id
+        attrs['ssh_key'] = parsed_args.ssh_key
+
+        # optional
+        if parsed_args.name:
+            attrs['name'] = parsed_args.name
+        if parsed_args.root_volume_size:
+            attrs['root_volume_size'] = parsed_args.root_volume_size
+        if parsed_args.root_volume_type:
+            attrs['root_volume_type'] = parsed_args.root_volume_type
+        
 
 
-        obj = self.app.client_manager.sdk_connection.create_cce_node_pool(
+        obj = self.app.client_manager.sdk_connection.create_cce_node(
             **attrs)
 
         data = utils.get_dict_properties(

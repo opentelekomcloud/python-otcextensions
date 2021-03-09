@@ -209,7 +209,12 @@ class CceMixin:
         count=1,
         root_volume_size=40,
         root_volume_type='SATA',
-        data_volumes=[{'SATA': 100}],
+        data_volumes=[{
+            'volumetype': 'SATA',
+            'size': 100,
+            'encrypted': False,
+            'cmk_id': ''
+        }],
         wait=True, wait_timeout=300, wait_interval=5,
         **kwargs
     ):
@@ -221,8 +226,16 @@ class CceMixin:
             created.
         :param int count: Count of the cluster nodes to be created.
         :param str cluster: CCE cluster attached to.
-        :param list data_volumes: List of Data volumes attached to the
-            cluster node.
+        :param list data_volumes: Data disk parameters of a node. At
+            present, only one data disk can be configured. The list must have
+            the following structure while parameter encrypted and cmk_id are
+            optional:
+            [{
+                'volumetype': 'SATA',
+                'size': 100,
+                'encrypted': False,
+                'cmk_id': ''
+            },]
         :param str dedicated_host: Name or ID of the Dedicated Host to which
             nodes will be scheduled.
         :param str ecs_group: ID of the ECS group where the CCE node can
@@ -234,12 +247,11 @@ class CceMixin:
             be attached to the nodes. The count of the CCE nodes and the
             Floating IP count must be equal.
         :param dict k8s_tags: Dictionary of Kubernetes tags.
-        :param str keypair: Keypair to login into the node.
         :param dict labels: Option labels.
         :param str lvm_config: ConfigMap of the Docker data disk.
         :param int max_pods: Maximum number of pods on the node.
         :param str name: Cluster node name.
-        :param str node_image_id: ID of a custom image used in a baremetall
+        :param str node_image_id: ID of a custom image used in a bare metal
             scenario.
         :param bool offload_node: If node is offloading its components.
         :param str os: Operating system of the cluster node.
@@ -248,6 +260,7 @@ class CceMixin:
         :param str preinstall_script: Base64 encoded pre installation script.
         :param int root_volume_size: Size of the root volume.
         :param str root_volume_type: Type of the root volume.
+        :param str ssh_key: Keypair to login into the node.
         :param list tags: List of tags used to build UI labels in format
             [{
                 'key': 'key1',
@@ -256,9 +269,10 @@ class CceMixin:
                 'key': 'key2',
                 'value': 'value2
             }]
-        :param bool wait: dict(type=bool, default=True),
-        :param int wait_timeout: dict(type=int, default=180)
-        :param int wait_interval: Check interval.
+        :param bool wait: Wait for node creation.
+        :param int wait_timeout: Timeout for node creation. Wait must be True.
+        :param int wait_interval: Check interval for node creation status.
+            Wait must be True.
 
         :returns: The results of cluster node creation
         :rtype: :class:`~otcextensions.sdk.cce.v3.cluster_node.ClusterNode`
@@ -274,7 +288,6 @@ class CceMixin:
         flavor = kwargs.get('flavor')
         floating_ips = kwargs.get('floating_ips')
         k8s_tags = kwargs.get('k8s_tags')
-        keypair = kwargs.get('keypair')
         labels = kwargs.get('labels')
         lvm_config = kwargs.get('lvm_override_config')
         max_pods = kwargs.get('max_pods')
@@ -284,6 +297,7 @@ class CceMixin:
         postinstall_script = kwargs.get('postinstall_script')
         offload_node = kwargs.get('offload_node')
         os = kwargs.get('os')
+        ssh_key = kwargs.get('ssh_key')
         tags = kwargs.get('tags')
 
         volume_types = ['SAS', 'SATA', 'SSD']
@@ -320,7 +334,7 @@ class CceMixin:
                 raise ValueError('count is 0 or lower')
             spec['count'] = count
         spec['flavor'] = flavor
-        spec['login']['sshKey'] = keypair
+        spec['login']['sshKey'] = ssh_key
         spec['rootVolume']['volumetype'] = root_volume_type.upper()
         if root_volume_size and isinstance(root_volume_size, int):
             if root_volume_size < 40:
