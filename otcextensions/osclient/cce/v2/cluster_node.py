@@ -15,6 +15,7 @@ import argparse
 import logging
 
 from osc_lib import utils
+from osc_lib.cli import parseractions
 from osc_lib.command import command
 
 from otcextensions.i18n import _
@@ -143,9 +144,15 @@ class DeleteCCEClusterNode(command.Command):
 class CreateCCEClusterNode(command.Command):
     _description = _('Create CCE Cluster Node')
 
-    columns = ('ID', 'name', 'flavor',
-               'private_ip', 'public_ip', 'availability_zone', 'ssh_key',
-               'status')
+    columns = (
+        'ID',
+        'name',
+        'flavor',
+        'private_ip',
+        'public_ip',
+        'availability_zone',
+        'ssh_key',
+        'status')
 
     def get_parser(self, prog_name):
         parser = super(CreateCCEClusterNode, self).get_parser(prog_name)
@@ -153,13 +160,91 @@ class CreateCCEClusterNode(command.Command):
         parser.add_argument(
             'cluster',
             metavar='<cluster>',
-            help=_('Name of the cluster.')
+            help=_('ID or name of the CCE cluster.')
+        )
+        parser.add_argument(
+            '--name',
+            metavar='<name>',
+            help=_('Name of the CCE Node Pool.')
+        )
+        parser.add_argument(
+            '--annotation',
+            metavar='<key_name>=<value=name>',
+            action=parseractions.KeyValueAction,
+            dest='annotations',
+            help=_('Annotations in form of key, value pairs.'
+                   'Repeat option for multiple tags.\n'
+                   'Example: '
+                   '--annotation keyname1=valuename1 '
+                   '--annotation keyname2=valuename2')
+        )
+        parser.add_argument(
+            '--availability-zone',
+            metavar='<availability_zone>',
+            required=True,
+            help=_('Availability zone to place server in.')
+        )
+        parser.add_argument(
+            '--bandwidth',
+            metavar='<bandwidth>',
+            type=int,
+            help=_('Bandwidth of the floating ip being created. fip_count'
+                   'must be specified if bandwidth is used.')
+        )
+        parser.add_argument(
+            '--count',
+            metavar='<count>',
+            default=1,
+            type=int,
+            help=_('Count of the cluster nodes to be created.\n'
+                   'Default: 1.')
+        )
+        parser.add_argument(
+            '--data-volume',
+            metavar='volumetype=<volumetype>,size=<disksize>,'
+                    'encrypted=<True|False>,cmk_id=<cmk_id>',
+            action=parseractions.MultiKeyValueAction,
+            dest='data_volumes',
+            required_keys=['volumetype', 'size'],
+            optional_keys=['encrypted', 'cmk_id'],
+            help=_('Example: '
+                   '--data-volume volumetype=SATA,size=100,encrypted=True,'
+                   'cmk_id=12345qwertz \n'
+                   'Repeat option for multiple data volumes.\n'
+                   'Default: --data-volume volumetype=SATA,size=100')
+        )
+        parser.add_argument(
+            '--dedicated-host',
+            metavar='<dedicated-host>',
+            help=_('Name or ID of the Dedicated Host to which nodes will.'
+                   'be scheduled.')
+        )
+        parser.add_argument(
+            '--ecs-group',
+            metavar='<group-id>',
+            help=_('ID of the ECS group where the CCE node can belong to.')
+        )
+        parser.add_argument(
+            '--fault-domain',
+            metavar='<fault-domain>',
+            help=_('The node is created in the specified fault domain.')
         )
         parser.add_argument(
             '--flavor',
             metavar='<flavor>',
             required=True,
-            help=_('The flavor for the server.')
+            help=_('The flavor for the node.')
+        )
+        # MUST BE REWORKED
+        parser.add_argument(
+            '--floating-ip',
+            metavar='<floating-ip>',
+            action='append',
+            help=_('Address or ID of the existing floating IP to be '
+                   'attached to the new node.\n'
+                   'Repeat option for multiple IPs to be attached to '
+                   'multiple nodes. The node count and the floating IP count '
+                   'must be identical.')
         )
         parser.add_argument(
             '--volume',
@@ -175,29 +260,25 @@ class CreateCCEClusterNode(command.Command):
                 '`SIZE` is size in Gb.')
         )
         parser.add_argument(
-            '--root_volume',
-            metavar='<root_volume>',
-            required=True,
-            help=_(
-                'Root disk information to attach to the instance.\n'
-                'format = `VOLUME_TYPE`,`SIZE`\n'
-                '`VOLUME_TYPE` can be in: \n'
-                '* `SATA` = Common I/O \n'
-                '* `SAS` = High I/O \n'
-                '* `SSD` = Ultra-High I/O \n'
-                '`SIZE` is size in Gb.')
+            '--root-volume-size',
+            metavar='<root_volume_size>',
+            type=int,
+            default=40,
+            help=_('Root volume size in GB.')
         )
         parser.add_argument(
-            '--ssh_key',
+            '--root-volume-type',
+            metavar='<root_volume_type>',
+            choices=['SAS', 'SATA', 'SSD'],
+            default='SATA',
+            help=_('Root volume type.\n'
+                   'Options: SAS, SATA, SSD.')
+        )
+        parser.add_argument(
+            '--ssh-key',
             metavar='<ssh_key>',
             required=True,
             help=_('SSH Key used to create the node.')
-        )
-        parser.add_argument(
-            '--availability_zone',
-            metavar='<availability_zone>',
-            required=True,
-            help=_('Availability zone to place server in.')
         )
         parser.add_argument(
             '--annotation',
@@ -223,60 +304,15 @@ class CreateCCEClusterNode(command.Command):
         )
         return parser
 
-    def parse_disk(self, disk):
-        disk_parts = disk.split(',')
-        disk_data = {}
-        if 2 == len(disk_parts):
-            vt = disk_parts[0].upper()
-            if vt in ('SATA', 'SAS', 'SSD'):
-                disk_data['volumetype'] = vt
-            else:
-                msg = _('Volume Type is not in (SATA, SAS, SSD)')
-                raise argparse.ArgumentTypeError(msg)
-            # Size only relevant for data disk
-            if disk_parts[1].isdigit:
-                disk_data['size'] = int(disk_parts[1])
-            else:
-                msg = _('Volume SIZE is not a digit')
-                raise argparse.ArgumentTypeError(msg)
-        else:
-            msg = _('Cannot parse disk information')
-            raise argparse.ArgumentTypeError(msg)
-        return disk_data
-
     def take_action(self, parsed_args):
 
-        attrs = {'metadata': {}}
+        attrs = {}
 
-        spec = {}
-        spec['flavor'] = parsed_args.flavor
-        spec['login'] = {'sshKey': parsed_args.ssh_key}
-        spec['az'] = parsed_args.availability_zone
-        spec['count'] = parsed_args.count
-        spec['rootVolume'] = self.parse_disk(parsed_args.root_volume)
-        spec['dataVolumes'] = [self.parse_disk(parsed_args.volume)]
+        # mandatory
 
-        if parsed_args.annotation:
-            annotations = {}
-            for annotation in parsed_args.annotation:
-                (k, v) = annotation.split('=')
-                annotations[k] = v
-            attrs['metadata']['annotations'] = annotations
-        if parsed_args.label:
-            labels = {}
-            for label in parsed_args.label:
-                (k, v) = label.split('=')
-                labels[k] = v
-            attrs['metadata']['labels'] = labels
 
-        attrs['spec'] = spec
-
-        client = self.app.client_manager.cce
-
-        cluster = client.find_cluster(parsed_args.cluster,
-                                      ignore_missing=False)
-
-        obj = client.create_cluster_node(cluster=cluster.id, **attrs)
+        obj = self.app.client_manager.sdk_connection.create_cce_node_pool(
+            **attrs)
 
         data = utils.get_dict_properties(
             _flatten_cluster_node(obj),

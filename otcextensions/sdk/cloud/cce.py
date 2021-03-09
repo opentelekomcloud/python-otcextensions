@@ -1,11 +1,11 @@
-# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# Licensed under the Apache License, Version 2.0 (the 'License'); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
 #
 #      http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# distributed under the License is distributed on an 'AS IS' BASIS, WITHOUT
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
@@ -20,7 +20,7 @@ class CceMixin:
         wait=True, wait_timeout=1800, wait_interval=5,
         **kwargs
     ):
-        """Create CCE cluster
+        '''Create CCE cluster
 
         :param str name: Cluster name.
         :param str type: Cluster type.
@@ -51,7 +51,7 @@ class CceMixin:
 
         :returns: The results of cluster creation
         :rtype: :class:`~otcextensions.sdk.cce.v3.cluster.Cluster`
-        """
+        '''
         name = kwargs.get('name')
         cluster_type = kwargs.get('type')
         flavor = kwargs.get('flavor')
@@ -183,10 +183,10 @@ class CceMixin:
         wait=True, wait_timeout=1800, wait_interval=5,
         **kwargs
     ):
-        """Delete CCE cluster
+        '''Delete CCE cluster
 
         :param str cluster: Name or ID of the cluster
-        """
+        '''
         cluster = kwargs.get('cluster')
         obj = self.cce.find_cluster(name_or_id=cluster, ignore_missing=False)
         obj = self.cce.delete_cluster(obj.id)
@@ -213,23 +213,26 @@ class CceMixin:
         wait=True, wait_timeout=300, wait_interval=5,
         **kwargs
     ):
-        """Create CCE cluster node
+        '''Create CCE cluster node
 
         :param dict annotations: Annotations.
         :param str availability_zone: Availability zone of the cluster_node.
+        :param int bandwidth: Bandwidth size for the floating IPs being
+            created.
         :param int count: Count of the cluster nodes to be created.
         :param str cluster: CCE cluster attached to.
         :param list data_volumes: List of Data volumes attached to the
             cluster node.
-        :param str dedicated_host: ID of the Dedicated Host to which
+        :param str dedicated_host: Name or ID of the Dedicated Host to which
             nodes will be scheduled.
         :param str ecs_group: ID of the ECS group where the CCE node can
             belong to.
         :param str fault_domain: The node is created in the specified fault
             domain.
         :param str flavor: Flavor ID of the CCE node.
-        :param str floating_ip: Floating IP used by the node to access public
-            networks.
+        :param list floating_ips: List of Floating IP addresses or IDs to
+            be attached to the nodes. The count of the CCE nodes and the
+            Floating IP count must be equal.
         :param dict k8s_tags: Dictionary of Kubernetes tags.
         :param str keypair: Keypair to login into the node.
         :param dict labels: Option labels.
@@ -259,15 +262,17 @@ class CceMixin:
 
         :returns: The results of cluster node creation
         :rtype: :class:`~otcextensions.sdk.cce.v3.cluster_node.ClusterNode`
-        """
+        '''
         annotations = kwargs.get('annotations')
         availability_zone = kwargs.get('availability_zone')
+        bandwidth = kwargs.get('bandwidth')
         cce_cluster = kwargs.get('cluster')
         dedicated_host = kwargs.get('dedicated_host')
         ecs_group = kwargs.get('ecs_group')
         fault_domain = kwargs.get('fault_domain')
+        fip_count = kwargs.get('fip_count')
         flavor = kwargs.get('flavor')
-        floating_ip = kwargs.get('floating_ip')
+        floating_ips = kwargs.get('floating_ips')
         k8s_tags = kwargs.get('k8s_tags')
         keypair = kwargs.get('keypair')
         labels = kwargs.get('labels')
@@ -297,10 +302,17 @@ class CceMixin:
                              % root_volume_type, volume_types)
 
         spec = {
+            'dataVolumes': {},
             'extendParam': {},
+            'k8sTags': {},
+            'login': {},
+            'nodeNicSpec': {
+                'primaryNic': {}
+            },
+            'publicIP': {}
             'rootVolume': {},
-            'dataVolumes': [],
-            'login': {}
+            'taints': [],
+            'userTags': []            
         }
 
         if count and isinstance(count, int):
@@ -333,13 +345,43 @@ class CceMixin:
         if availability_zone:
             spec['az'] = availability_zone
         if dedicated_host:
-            spec['dedicatedHostId'] = dedicated_host
+            deh = self.deh.find_host(
+                name_or_id=dedicated_host,
+                ignore_missing=False)
+            spec['dedicatedHostId'] = deh.id
         if ecs_group:
             spec['ecs_group'] = ecs_group
         if fault_domain:
             spec['faultDomain'] = fault_domain
-        if floating_ip:
-            spec['publicIP'] = floating_ip
+        if floating_ip_ids and isinstance(floating_ip_ids, list):
+            ids = []
+            if not (count == len(floating_ip_ids)):
+                raise ValueError('The length of the list floating_ip_ids is'
+                                 'different from CCE node count.')
+            for ip in floating_ip_ids:
+                ip = self.network.find_ip(name_or_id=ip, ignore_missing=False)
+                ids.append(ip.id)
+            if ids:
+                spec['publicIP']['ids'] = ids
+        if fip_count and bandwidth:
+            if not isinstance(bandwidth, int):
+                raise ValueError('bandwidth must be an integer value.')
+            if not isinstance(fip_count, int):
+                raise ValueError('fip_count must be an integer value.')
+            if floating_ip_ids:
+                raise ValueError('floating_ip_ids is used together with'
+                                 'fip_count. These values are exclusive.')
+            spec['publicIP'] = {
+                'count': fip_count,
+                'eip': {
+                    'iptype': '5_bgp',
+                    'bandwidth': {
+                        'chargemode': 'traffic',
+                        'size': bandwidth,
+                        'sharetype': 'PER'
+                    }
+                }
+            }
         if k8s_tags and isinstance(k8s_tags, dict):
             spec['k8sTags'] = k8s_tags
         if lvm_config:
@@ -390,11 +432,11 @@ class CceMixin:
         wait=True, wait_timeout=180, wait_interval=5,
         **kwargs
     ):
-        """Delete CCE cluster node
+        '''Delete CCE cluster node
 
         :param str cluster: Name or ID of the CCE cluster
         :param str node: Name or ID of the CCE cluster node
-        """
+        '''
         cluster = kwargs.get('cluster')
         node = kwargs.get('node')
 
@@ -440,7 +482,7 @@ class CceMixin:
         root_volume_type='SATA',
         **kwargs
     ):
-        """Create CCE node pool
+        '''Create CCE node pool
 
         :param str availability_zone: Name of the AZ where the node resides.
             If availability_zone is set to: random (default), nodes can be
@@ -515,7 +557,7 @@ class CceMixin:
 
         :returns: The results of CCE node pool creation
         :rtype: :class:`~otcextensions.sdk.cce.v3.node_pool.NodePool`
-        """
+        '''
         count = kwargs.get('count')
         cce_cluster = kwargs.get('cluster')
         ecs_group = kwargs.get('ecs_group')
@@ -622,7 +664,7 @@ class CceMixin:
                     'volumetype': item['volumetype'].upper(),
                     'size': item['size'],
                     'metadata': {
-                        '__system__encrypted': "1",
+                        '__system__encrypted': '1',
                         '__system__cmkid': item['cmk_id']
                     }
                 })
@@ -777,11 +819,11 @@ class CceMixin:
         self,
         **kwargs
     ):
-        """Delete CCE node pool
+        '''Delete CCE node pool
 
         :param str cluster: Name or ID of the CCE cluster
         :param str node_pool: Name or ID of the CCE node_pool
-        """
+        '''
         cluster = kwargs.get('cluster')
         node_pool = kwargs.get('node_pool')
 
