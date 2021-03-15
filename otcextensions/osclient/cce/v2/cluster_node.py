@@ -188,7 +188,7 @@ class CreateCCEClusterNode(command.Command):
             '--bandwidth',
             metavar='<bandwidth>',
             type=int,
-            help=_('Bandwidth of the floating ip being created. fip_count'
+            help=_('Bandwidth of the floating ip being created. fip-count'
                    'must be specified if bandwidth is used.')
         )
         parser.add_argument(
@@ -347,7 +347,7 @@ class CreateCCEClusterNode(command.Command):
             '--wait',
             metavar='<wait>',
             type=bool,
-            default=True,
+            default=False,
             help=_('Wait until CCE node is created.')
         )
         parser.add_argument(
@@ -355,14 +355,16 @@ class CreateCCEClusterNode(command.Command):
             metavar='<interval>',
             type=int,
             default=5,
-            help=_('Check interval in seconds for successful creation check.')
+            help=_('Check interval in seconds for successful creation check'
+                   'when param wait is True.')
         )
         parser.add_argument(
             '--wait-timeout',
             metavar='<timeout>',
             type=int,
             default=3600,
-            help=_('Maximum time in seconds to wait for successful creation.')
+            help=_('Maximum time in seconds to wait for successful creation'
+                   'when param wait is True.')
         )
         return parser
 
@@ -399,8 +401,8 @@ class CreateCCEClusterNode(command.Command):
             attrs['fip_count'] = parsed_args.fip_count
         if parsed_args.k8s_tags:
             attrs['k8s_tags'] = parsed_args.k8s_tags
-        if parsed_args.label:
-            attrs['label'] = parsed_args.label
+        if parsed_args.labels:
+            attrs['labels'] = parsed_args.labels
         if parsed_args.max_pods:
             attrs['max_pods'] = parsed_args.max_pods
         if parsed_args.name:
@@ -423,12 +425,12 @@ class CreateCCEClusterNode(command.Command):
             attrs['tags'] = parsed_args.tags
         if parsed_args.wait:
             attrs['wait'] = parsed_args.wait
-        if parsed_args.wait_interval:
-            attrs['wait_interval'] = parsed_args.wait_interval
-        if parsed_args.wait_timeout:
-            attrs['wait_timeout'] = parsed_args.wait_timeout
+            if parsed_args.wait_interval:
+                attrs['wait_interval'] = parsed_args.wait_interval
+            if parsed_args.wait_timeout:
+                attrs['wait_timeout'] = parsed_args.wait_timeout
 
-        obj = self.app.client_manager.sdk_connection.create_cce_node(
+        obj = self.app.client_manager.sdk_connection.create_cce_cluster_node(
             **attrs)
 
         data = utils.get_dict_properties(

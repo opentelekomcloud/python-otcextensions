@@ -216,7 +216,7 @@ class CceMixin:
             'encrypted': False,
             'cmk_id': ''
         }],
-        wait=True, wait_timeout=300, wait_interval=5,
+        wait=False, wait_timeout=300, wait_interval=5,
         **kwargs
     ):
         """Create CCE cluster node
@@ -441,7 +441,7 @@ class CceMixin:
             spec['extendParam']['alpha.cce/preInstall'] = preinstall_script
         if not network_id:
             raise ValueError('network_id missing.')
-        spec['nodeNicSpec']['primaryNic'] = network_id
+        spec['nodeNicSpec']['primaryNic']['subnetId'] = network_id
         if tags:
             spec['userTags'] = tags
 
