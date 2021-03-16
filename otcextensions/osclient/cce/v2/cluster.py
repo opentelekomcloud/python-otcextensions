@@ -186,7 +186,7 @@ class CreateCCECluster(command.ShowOne):
             metavar='{' + ','.join(CONTAINER_NET_MODE_CHOICES) + '}',
             type=lambda s: s.lower(),
             choices=CONTAINER_NET_MODE_CHOICES,
-            required=True,
+            default='overlay_l2',
             help=_('Container network mode.')
         )
         parser.add_argument(
