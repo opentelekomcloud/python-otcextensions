@@ -391,12 +391,13 @@ class Proxy(proxy.Proxy):
             attempting to find a nonexistent resource.
 
         :returns:
-            One :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance` or None.
+            One :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`
+            or None.
         """
         group = self._get_resource(_group.Group, group)
         return self._find(_instance.Instance, name_or_id,
-                          ignore_missing = ignore_missing,
-                          group_id = group.id)
+                          ignore_missing=ignore_missing,
+                          group_id=group.id)
 
     def remove_instance(self, instance, delete_instance=False,
                         ignore_missing=True):

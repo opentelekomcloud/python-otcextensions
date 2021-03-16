@@ -32,7 +32,9 @@ class Instance(_base.Resource):
     allow_delete = True
 
     _query_mapping = resource.QueryParameters(
+        'id', 'name',
         'health_status', 'limit',
+        scaling_group_id='group_id',
         lifecycle_status='life_cycle_state',
         marker=query_marker_key
     )
@@ -87,18 +89,7 @@ class Instance(_base.Resource):
         session = cls._get_session(session)
         group_id = params.pop('group_id', None)
 
-        # Try to short-circuit by looking directly for a matching ID.
-        try:
-            match = cls.existing(
-                id=name_or_id,
-                connection=session._get_connection(),
-                **params
-            )
-            return match.fetch(session, **params)
-        except exceptions.NotFoundException:
-            pass
-
-        base_path = '/scaling_group_instance/{id}/list'.format(id = group_id)
+        base_path = '/scaling_group_instance/{id}/list'.format(id=group_id)
         data = cls.list(session, base_path=base_path, **params)
         result = cls._get_one_match(name_or_id, data)
         if result is not None:
