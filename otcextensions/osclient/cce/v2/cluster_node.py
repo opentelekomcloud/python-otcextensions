@@ -33,8 +33,17 @@ def _flatten_cluster_node(obj):
         'status': obj.status.status,
         'flavor': obj.spec.flavor,
         'ssh_key': obj.spec.login.get('sshKey', None),
-        'availability_zone': obj.spec.availability_zone
+        'availability_zone': obj.spec.availability_zone,
+        'operating_system': obj.spec.os,
+        'root_volume_type': obj.spec.root_volume.type,
+        'root_volume_size': obj.spec.root_volume.size
     }
+
+    i = 1
+    for item in obj.spec.data_volumes:
+        data['data_volume_type_' + str(i)] = item.get('type')
+        data['data_volume_size_' + str(i)] = item.get('size')
+        i += 1
 
     return data
 
@@ -71,9 +80,17 @@ class ListCCEClusterNode(command.Lister):
 
 class ShowCCEClusterNode(command.ShowOne):
     _description = _('Show single Cluster node details')
-    columns = ('ID', 'name', 'flavor',
-               'private_ip', 'public_ip', 'availability_zone', 'ssh_key',
-               'status')
+    columns = (
+        'ID',
+        'name',
+        'flavor',
+        'private_ip',
+        'public_ip',
+        'availability_zone',
+        'ssh_key',
+        'status',
+        'root_volume_type',
+        'root_volume_size',)
 
     def get_parser(self, prog_name):
         parser = super(ShowCCEClusterNode, self).get_parser(prog_name)
@@ -100,10 +117,14 @@ class ShowCCEClusterNode(command.ShowOne):
             node=parsed_args.node
         )
 
-        data = utils.get_dict_properties(
-            _flatten_cluster_node(obj), self.columns)
+        flat_data = _flatten_cluster_node(obj)
+        columns = tuple(flat_data)
 
-        return (self.columns, data)
+        data = utils.get_dict_properties(
+            flat_data,
+            columns)
+
+        return (columns, data)
 
 
 class DeleteCCEClusterNode(command.Command):
@@ -151,7 +172,9 @@ class CreateCCEClusterNode(command.Command):
         'public_ip',
         'availability_zone',
         'ssh_key',
-        'status')
+        'status',
+        'root_volume_type',
+        'root_volume_size')
 
     def get_parser(self, prog_name):
         parser = super(CreateCCEClusterNode, self).get_parser(prog_name)
@@ -345,10 +368,8 @@ class CreateCCEClusterNode(command.Command):
         )
         parser.add_argument(
             '--wait',
-            metavar='<wait>',
-            type=bool,
-            default=False,
-            help=_('Wait until CCE node is created.')
+            action='store_true',
+            help=('Wait for the instance to become active')
         )
         parser.add_argument(
             '--wait-interval',
@@ -423,18 +444,21 @@ class CreateCCEClusterNode(command.Command):
             attrs['root_volume_type'] = parsed_args.root_volume_type
         if parsed_args.tags:
             attrs['tags'] = parsed_args.tags
-        if parsed_args.wait:
-            attrs['wait'] = parsed_args.wait
-            if parsed_args.wait_interval:
-                attrs['wait_interval'] = parsed_args.wait_interval
-            if parsed_args.wait_timeout:
-                attrs['wait_timeout'] = parsed_args.wait_timeout
+        if not parsed_args.wait:
+            attrs['wait'] = False
+        if parsed_args.wait_interval:
+            attrs['wait_interval'] = parsed_args.wait_interval
+        if parsed_args.wait_timeout:
+            attrs['wait_timeout'] = parsed_args.wait_timeout
 
         obj = self.app.client_manager.sdk_connection.create_cce_cluster_node(
             **attrs)
 
-        data = utils.get_dict_properties(
-            _flatten_cluster_node(obj),
-            self.columns)
+        flat_data = _flatten_cluster_node(obj)
+        columns = tuple(flat_data)
 
-        return (self.columns, data)
+        data = utils.get_dict_properties(
+            flat_data,
+            columns)
+
+        return (columns, data)

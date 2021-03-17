@@ -216,7 +216,7 @@ class CceMixin:
             'encrypted': False,
             'cmk_id': ''
         }],
-        wait=False, wait_timeout=300, wait_interval=5,
+        wait=True, wait_timeout=300, wait_interval=5,
         **kwargs
     ):
         """Create CCE cluster node

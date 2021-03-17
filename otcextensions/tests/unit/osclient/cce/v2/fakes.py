@@ -85,13 +85,17 @@ class FakeClusterNode(test_base.Fake):
                 'login': {
                     'sshKey': 'key-' + uuid.uuid4().hex,
                 },
+                "rootVolume": {
+                    "type": "SATA",
+                    "size": random.randint(40, 100)
+                },
                 'data_volumes': [
                     {
-                        'type': 'dt' + uuid.uuid4().hex,
+                        'type': "SSD",
                         'size': random.randint(1, 15000),
                     },
                     {
-                        'type': 'dt' + uuid.uuid4().hex,
+                        'type': "SAS",
                         'size': random.randint(1, 15000),
                     },
                 ],

@@ -32,11 +32,14 @@ def _flatten_cluster(obj):
         'status': obj.status.status,
         'type': obj.spec.type,
         'flavor': obj.spec.flavor,
-        'endpoint': obj.status.endpoints.get('external_otc'),
         'router_id': obj.spec.host_network.router_id,
         'network_id': obj.spec.host_network.network_id,
         'version': obj.spec.version
     }
+
+    endpoints = obj.status.get('endpoints')
+    if endpoints:
+        data['endpoint'] = endpoints.get('external_otc')
 
     return data
 
