@@ -39,6 +39,8 @@ def _flatten_cluster_node(obj):
         'root_volume_size': obj.spec.root_volume.size
     }
 
+    print(obj)
+
     i = 1
     for item in obj.spec.data_volumes:
         data['data_volume_type_' + str(i)] = item.get('type')

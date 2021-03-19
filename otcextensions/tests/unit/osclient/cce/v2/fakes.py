@@ -89,7 +89,7 @@ class FakeClusterNode(test_base.Fake):
                     "type": "SATA",
                     "size": random.randint(40, 100)
                 },
-                'data_volumes': [
+                'dataVolumes': [
                     {
                         'type': "SSD",
                         'size': random.randint(1, 15000),
