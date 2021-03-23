@@ -129,7 +129,6 @@ class TestShowClusterNode(fakes.TestCCE):
         'data_volume_type_2',
         'data_volume_size_2')
 
-
     flat_data = cluster_node._flatten_cluster_node(_obj)
 
     data = (
@@ -276,7 +275,7 @@ class TestCreateClusterNode(fakes.TestCCE):
             ('network_id', 'nw'),
             ('root_volume_size', 230),
             ('root_volume_type', 'SATA'),
-            ('ssh_key', 'key'),         
+            ('ssh_key', 'key'),
         ]
 
         # Verify cm is triggereg with default parameters
