@@ -238,18 +238,18 @@ class CreateCCEClusterNode(command.Command):
         )
         parser.add_argument(
             '--dedicated-host',
-            metavar='<dedicated-host>',
+            metavar='<dedicated_host>',
             help=_('Name or ID of the Dedicated Host to which nodes will.'
                    'be scheduled.')
         )
         parser.add_argument(
             '--ecs-group',
-            metavar='<group-id>',
+            metavar='<group_id>',
             help=_('ID of the ECS group where the CCE node can belong to.')
         )
         parser.add_argument(
             '--fault-domain',
-            metavar='<fault-domain>',
+            metavar='<fault_domain>',
             help=_('The node is created in the specified fault domain.')
         )
         parser.add_argument(
@@ -260,7 +260,7 @@ class CreateCCEClusterNode(command.Command):
         )
         parser.add_argument(
             '--floating-ip',
-            metavar='<floating-ip>',
+            metavar='<floating_ip>',
             action='append',
             help=_('Address or ID of the existing floating IP to be '
                    'attached to the new node.\n'
