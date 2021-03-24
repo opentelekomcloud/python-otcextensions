@@ -85,17 +85,17 @@ class FakeClusterNode(test_base.Fake):
                 'login': {
                     'sshKey': 'key-' + uuid.uuid4().hex,
                 },
-                "rootVolume": {
-                    "type": "SATA",
-                    "size": random.randint(40, 100)
+                'rootVolume': {
+                    'type': 'SATA',
+                    'size': random.randint(40, 100)
                 },
                 'dataVolumes': [
                     {
-                        'type': "SSD",
+                        'type': 'SSD',
                         'size': random.randint(1, 15000),
                     },
                     {
-                        'type': "SAS",
+                        'type': 'SAS',
                         'size': random.randint(1, 15000),
                     },
                 ],
@@ -205,9 +205,9 @@ class FakeNodePool(test_base.Fake):
                     }
                 }
             },
-            "status": {
-                "currentNode": random.randint(0, 100),
-                "phase": ""
+            'status': {
+                'currentNode': random.randint(0, 100),
+                'phase': ''
             }
         }
         obj = node_pool.NodePool.existing(**object_info)

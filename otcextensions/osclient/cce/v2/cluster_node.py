@@ -192,7 +192,7 @@ class CreateCCEClusterNode(command.Command):
         )
         parser.add_argument(
             '--annotation',
-            metavar='<key_name>=<value=name>',
+            metavar='<key_name>=<value_name>',
             action=parseractions.KeyValueAction,
             dest='annotations',
             help=_('Annotations in form of key, value pairs.'
