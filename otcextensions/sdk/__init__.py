@@ -16,6 +16,7 @@ import openstack
 from openstack import _log
 from openstack import utils
 
+from otcextensions.sdk import proxy
 from otcextensions.sdk.compute.v2 import server
 from otcextensions.common import exc
 
@@ -81,6 +82,7 @@ OTC_SERVICES = {
     },
     'dds': {
         'service_type': 'dds',
+        'endpoint_service_type': 'ddsv3',
     },
     'deh': {
         'service_type': 'deh',
@@ -144,6 +146,11 @@ OTC_SERVICES = {
     'sdrs': {
         'service_type': 'sdrs'
     },
+    'sfsturbo': {
+        'service_type': 'sfsturbo',
+        'endpoint_service_type': 'sfsturbo',
+        # 'append_project_id': True,
+    },
     'smn': {
         'service_type': 'smn',
         'append_project_id': True
@@ -158,7 +165,7 @@ OTC_SERVICES = {
     },
     'waf': {
         'service_type': 'waf',
-        'set_endpoint_override': True
+        # 'set_endpoint_override': True
     }
 }
 
@@ -264,6 +271,10 @@ def extend_instance(obj, cls):
 
 
 def patch_openstack_resources():
+    openstack.proxy.Proxy._report_stats_statsd = \
+        proxy.Proxy._report_stats_statsd
+    openstack.proxy.Proxy._report_stats_influxdb = \
+        proxy.Proxy._report_stats_influxdb
     openstack.compute.v2.server.Server._get_tag_struct = \
         server.Server._get_tag_struct
     openstack.compute.v2.server.Server.add_tag = server.Server.add_tag
