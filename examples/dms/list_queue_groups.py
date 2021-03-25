@@ -18,6 +18,6 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-queue_id = '12345678-73e4-449f-a157-53d5d9900e21'
+queue_id = 'f53aa6a4-424a-4ea4-ab01-9a1b12c1f0a1'
 for raw in conn.dms.groups(queue_id):
     print(raw)

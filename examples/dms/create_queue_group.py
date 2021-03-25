@@ -11,13 +11,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Delete a Queue
+Create a Group in an existing queue
 """
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-queue_id = '4a5cf0ca-b00a-44f9-9631-f93784fca61f'
-raw = conn.dms.delete_queue(queue_id, ignore_missing=True)
-print(raw)
+attrs = {
+    'queue': 'f53aa6a4-424a-4ea4-ab01-9a1b12c1f0a1',  # Required; ID of the queue
+    'name': 'test' # Required
+}
+for raw in conn.dms.create_group(**attrs):
+    print(raw)
