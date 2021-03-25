@@ -19,7 +19,11 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
 
-instance = "instance_id_or_name"
+instance = 'instance_id_or_name'
 old_password = 'old_password'
 new_password = 'new_password'
-conn.dcs.find_instance(instance, old_password, new_password)
+inst = conn.dcs.find_instance(instance)
+conn.dcs.change_instance_password(
+    instance=inst,
+    current_password=old_password,
+    new_password=new_password)
