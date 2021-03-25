@@ -20,8 +20,8 @@ conn = openstack.connect(cloud='otc')
 
 
 instance = 'name_or_id'
-old_password = 'old_pw'
-new_password = 'new_pw'
+old_password = 'old_pwd'
+new_password = 'new_pwd'
 conn.dcs.change_instance_password(
     instance=instance,
     current_password=old_password,

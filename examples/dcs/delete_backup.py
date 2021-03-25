@@ -25,5 +25,4 @@ instance = conn.dcs.find_instance(name_or_id=instance)
 conn.dcs.delete_instance_backup(
     backup=backup_id,
     instance=instance,
-    ignore_missing=True
-)
+    ignore_missing=True)

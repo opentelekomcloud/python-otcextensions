@@ -119,7 +119,6 @@ class Instance(resource.Resource):
     vpc_id = resource.Body('vpc_id')
     vpc_name = resource.Body('vpc_name')
 
-    '''
     @classmethod
     def find(cls, session, name_or_id, ignore_missing=True, **params):
         """Find a resource by its name or id.
@@ -175,7 +174,6 @@ class Instance(resource.Resource):
             return None
         raise exceptions.ResourceNotFound(
             "No %s found for %s" % (cls.__name__, name_or_id))
-    '''
 
     def change_pwd(self, session, current_password, new_password):
         """Schange instance password
