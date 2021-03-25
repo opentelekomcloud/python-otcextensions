@@ -19,8 +19,8 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
 attrs = {
-    'queue': 'f53aa6a4-424a-4ea4-ab01-9a1b12c1f0a1',  # Required; ID of the queue
-    'group': 'g-b9f6941f-ea88-457a-aa50-3efc89e303c0'  # Required; ID of the group
+    'queue': 'f53aa6a4-424a-4ea4-ab01-9a1b12c1f0a1',  # Required; Queue-ID
+    'group': 'g-b9f6941f-ea88-457a-aa50-3efc89e303c0'  # Required; Group-ID
 }
 raw = conn.dms.delete_group(**attrs)
 print(raw)

@@ -11,16 +11,28 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Create a Group in an existing queue
+Confirm Messages
 """
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
+queue_name_or_id = '05da4695-f9f7-492c-8074-c71bc7245f18'
+queue = conn.dms.find_queue(name_or_id=queue_name_or_id)
+group_name_or_id = 'g-70ebb4ba-3cc3-456c-89fc-968a5f7a8ff1'
+group = conn.dms.find_group(queue, name_or_id=group_name_or_id)
+
+
 attrs = {
-    'queue': 'f53aa6a4-424a-4ea4-ab01-9a1b12c1f0a1',  # Required; Queue-ID
-    'name': 'test'  # Required
+    'queue': queue,  # Required; Queue-instance
+    'group': group,  # Required; Group-instance
+    'messages': [
+        {
+            'handler': 'handler_id',  # Required
+            'status': 'success'  # Required
+        }
+    ]
 }
-for raw in conn.dms.create_group(**attrs):
+for raw in conn.dms.ack_message(**attrs):
     print(raw)

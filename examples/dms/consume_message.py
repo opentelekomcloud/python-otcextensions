@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Create a Group in an existing queue
+Consume Messages
 """
 import openstack
 
@@ -19,8 +19,8 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
 attrs = {
-    'queue': 'f53aa6a4-424a-4ea4-ab01-9a1b12c1f0a1',  # Required; Queue-ID
-    'name': 'test'  # Required
+    'queue': '05da4695-f9f7-492c-8074-c71bc7245f18',  # Required; Queue-ID
+    'group': 'g-70ebb4ba-3cc3-456c-89fc-968a5f7a8ff1'  # Required; Group-ID
 }
-for raw in conn.dms.create_group(**attrs):
+for raw in conn.dms.consume_message(**attrs):
     print(raw)

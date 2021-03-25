@@ -11,16 +11,32 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Create a Group in an existing queue
+Create Messages
 """
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
+
 attrs = {
-    'queue': 'f53aa6a4-424a-4ea4-ab01-9a1b12c1f0a1',  # Required; Queue-ID
-    'name': 'test'  # Required
+    'queue': '05da4695-f9f7-492c-8074-c71bc7245f18',  # Required; ID of the queue
+    'messages': [
+        {
+            'body': 'test1',
+            'attributes': {
+                'attribute1': 'value1',
+                'attribute2': 'value2'
+            }
+        },
+        {
+            'body': 'test2',
+            'attributes': {
+                'attribute1': 'value1',
+                'attribute2': 'value2'
+            }
+        }
+    ]
 }
-for raw in conn.dms.create_group(**attrs):
+for raw in conn.dms.send_messages(**attrs):
     print(raw)
