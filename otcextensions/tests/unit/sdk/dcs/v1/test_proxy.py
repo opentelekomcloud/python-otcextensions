@@ -156,13 +156,13 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
 
     def test_change_pwd(self):
         self.sot = _instance.Instance()
-        self.sot.change_password = mock.Mock(return_value={})
+        self.sot.change_pwd = mock.Mock(return_value={})
         self.proxy._get = mock.Mock(return_value=self.sot)
         self.proxy._find = mock.Mock(return_value=self.sot)
         self.proxy._get_resource = mock.Mock(return_value=self.sot)
 
         self.proxy.change_instance_password(self.sot, 'curr', 'new')
-        self.sot.change_password.assert_called_with(
+        self.sot.change_pwd.assert_called_with(
             self.proxy,
             current_password='curr',
             new_password='new'

@@ -191,6 +191,8 @@ class Proxy(proxy.Proxy):
         :returns: `None`
         """
         inst = self._get_resource(_instance.Instance, instance)
+        print('meinTest')
+        print(inst)
         self._delete(_backup.Backup, backup, instance_id=inst.id,
                      ignore_missing=ignore_missing,
                      **attrs)
