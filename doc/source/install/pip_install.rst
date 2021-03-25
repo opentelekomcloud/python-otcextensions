@@ -104,7 +104,7 @@ manager pip:
 
 .. code-block:: bash
 
-    $ pip install otcextensions openstackclient
+    $ pip install otcextensions python-openstackclient
 
 
 CentOS
@@ -134,7 +134,7 @@ manager pip:
 
 .. code-block:: bash
 
-    $ pip install otcextensions openstackclient
+    $ pip install otcextensions python-openstackclient
 
 Fedora
 ^^^^^^
@@ -162,4 +162,4 @@ manager pip:
 
 .. code-block:: bash
 
-    (venv) $ pip install otcextensions openstackclient
+    (venv) $ pip install otcextensions python-openstackclient
