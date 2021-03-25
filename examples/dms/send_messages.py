@@ -20,7 +20,7 @@ conn = openstack.connect(cloud='otc')
 
 
 attrs = {
-    'queue': '05da4695-f9f7-492c-8074-c71bc7245f18',  # Required; ID of the queue
+    'queue': '05da4695-f9f7-492c-8074-c71bc7245f18',  # Required; Queue-ID
     'messages': [
         {
             'body': 'test1',
