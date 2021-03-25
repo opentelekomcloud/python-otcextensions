@@ -19,10 +19,11 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
 
-backup = 'backup_id'
-instance = 'instance_id'
+backup_id = 'backup_id'
+instance = 'instance_name_or_id'
+instance = conn.dcs.find_instance(name_or_id=instance)
 conn.dcs.delete_instance_backup(
-    backup=backup,
+    backup=backup_id,
     instance=instance,
     ignore_missing=True
 )
