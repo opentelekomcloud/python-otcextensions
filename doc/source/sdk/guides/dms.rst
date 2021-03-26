@@ -215,7 +215,7 @@ This interface is used to create an Instance with
 parameters.
 
 .. literalinclude:: ../examples/dms/create_instance.py
-   :lines: 16-35
+   :lines: 16-34
 
 Delete Instance
 ^^^^^^^^^^^^^^^
