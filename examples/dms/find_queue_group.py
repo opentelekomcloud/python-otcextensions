@@ -18,8 +18,8 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-queue = 'queue-name-or-id'
+queue = 'name_or_id'
 queue = conn.dms.find_queue(name_or_id=queue)
-group = 'group-name-or-id'
+group = 'name_or_id'
 raw = conn.dms.find_group(queue, name_or_id=group)
 print(raw)

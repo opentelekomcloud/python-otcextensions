@@ -18,6 +18,6 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-instance = 'instance-id'
+instance = 'instance_id'
 raw = conn.dms.get_instance(instance)
 print(raw)

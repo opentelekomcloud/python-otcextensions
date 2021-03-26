@@ -18,7 +18,7 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-instance = 'instance-name-or-id'
+instance = 'name_or_id'
 instance = conn.dms.find_instance(name_or_id=instance)
 attrs = {
     'description': 'That is just a test!'
