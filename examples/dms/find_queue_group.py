@@ -21,5 +21,5 @@ conn = openstack.connect(cloud='otc')
 queue = 'name_or_id'
 queue = conn.dms.find_queue(name_or_id=queue)
 group = 'name_or_id'
-raw = conn.dms.find_group(queue, name_or_id=group)
+raw = conn.dms.find_group(queue=queue, name_or_id=group)
 print(raw)
