@@ -207,7 +207,7 @@ class CreateCCENodePool(command.ShowOne):
         )
         parser.add_argument(
             '--k8s-tag',
-            metavar='<key_name>=<value=name>',
+            metavar='<key_name>=<value_name>',
             action=parseractions.KeyValueAction,
             dest='k8s_tags',
             help=_('Kubernetes tags in form of key, value pairs. Repeat '
