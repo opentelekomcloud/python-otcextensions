@@ -121,7 +121,7 @@ Change Instance Password
 This interface is used to change the login password of a DCS instance.
 
 .. literalinclude:: ../examples/dcs/change_instance_password.py
-   :lines: 16-25
+   :lines: 16-28
 
 List Statistics of all Instances
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -139,7 +139,7 @@ This interface is used to query all Config Parameters of a DCS Instance
 and to filter the output with query parameters.
 
 .. literalinclude:: ../examples/dcs/list_instance_params.py
-   :lines: 16-24
+   :lines: 16-25
 
 Update Instance Config Parameters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -147,7 +147,7 @@ Update Instance Config Parameters
 This interface is used to update config parameters of a DCS instance.
 
 .. literalinclude:: ../examples/dcs/update_instance_params.py
-   :lines: 16-27
+   :lines: 16-47
 
 Backup DCS Instance
 -------------------
