@@ -11,15 +11,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Restart an Instance
+List all Maintenance Windows
 """
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-instance = 'instance-name-or-id'
-instance = conn.dms.find_instance(name_or_id=instance)
-
-raw = conn.dms.restart_instance(instance)
-print(raw)
+for raw in conn.dms.maintenance_windows():
+    print(raw)

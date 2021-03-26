@@ -11,15 +11,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Restart an Instance
+Delete an Instance Topic
 """
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-instance = 'instance-name-or-id'
+topics = ['topic_name']  # Required, List of topic names
+instance = 'test-instance'
 instance = conn.dms.find_instance(name_or_id=instance)
 
-raw = conn.dms.restart_instance(instance)
+raw = conn.dms.delete_topic(instance, topics)
 print(raw)
