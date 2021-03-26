@@ -320,3 +320,13 @@ class TestAutoScalingInstance(TestAutoScalingProxy):
                 'delete_instance': False
             }
         )
+
+    def test_find(self):
+        self.verify_find(
+            test_method=self.proxy.find_instance,
+            resource_type=_instance.Instance,
+            value=['name_or_id', 'group'],
+            expected_kwargs={
+                'group_id': 'group'
+            }
+        )
