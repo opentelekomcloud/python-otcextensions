@@ -187,7 +187,7 @@ class TestShowDatabaseInstance(fakes.TestRds):
                                                      ignore_missing=False)
 
         self.assertEqual(self.columns, columns)
-        self.assertItemEqual(self.data, data)
+        self.assertEqual(self.data, data)
 
 
 class TestDeleteDatabaseInstance(fakes.TestRds):
