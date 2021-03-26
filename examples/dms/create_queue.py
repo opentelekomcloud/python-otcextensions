@@ -19,7 +19,7 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
 attrs = {
-    'name': 'test-queue',  # Required
+    'name': 'test-queue',
     'queue_mode': 'NORMAL',
     'description': 'No need for a description',
 }

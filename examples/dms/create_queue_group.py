@@ -19,8 +19,8 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
 attrs = {
-    'queue': 'f53aa6a4-424a-4ea4-ab01-9a1b12c1f0a1',  # Required; Queue-ID
-    'name': 'test'  # Required
+    'queue': 'queue_id',
+    'name': 'test'
 }
 for raw in conn.dms.create_group(**attrs):
     print(raw)
