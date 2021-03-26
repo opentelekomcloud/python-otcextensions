@@ -1,30 +1,37 @@
 Distributed Message Service (DMS)
-============================
+=================================
 
 .. contents:: Table of Contents
    :local:
 
-DMS is a fully-managed, high-performance message queuing service that supports normal queues, 
-first-in-first-out (FIFO) queues, Kafka queues, and Kafka premium instances. 
-It is compatible with HTTP and TCP, and provides a flexible and reliable asynchronous 
-communication mechanism for distributed applications.
-Normal and FIFO queues feature low-latency and high reliability. 
-They support dead letter messages for handling exceptions. 
+DMS is a fully-managed, high-performance message queuing service that
+supports normal queues, first-in-first-out (FIFO) queues,
+Kafka queues, and Kafka premium instances.
+It is compatible with HTTP and TCP, and provides a flexible
+and reliable asynchronous communication mechanism
+for distributed applications.
+Normal and FIFO queues feature low-latency and high reliability.
+They support dead letter messages for handling exceptions.
 In normal queues, partitions ensure higher concurrency.
-Kafka queues support high-throughput and high-reliability modes. 
-A Kafka queue is equivalent to a topic. The storage space and network bandwidth resources are allocated by the system, 
+Kafka queues support high-throughput and high-reliability modes.
+A Kafka queue is equivalent to a topic. The storage space and
+network bandwidth resources are allocated by the system,
 without requiring you to make choices.
-Kafka premium instances use physically isolated computing, storage, and bandwidth resources. 
-You can customize partitions and replicas for Kafka topics in the instances, 
-and configure the network bandwidth as required. The instances can be used right out of the box, 
-taking off the deployment and O&M pressure for you so that you can focus on developing your services.
+Kafka premium instances use physically isolated computing,
+storage, and bandwidth resources.
+You can customize partitions and replicas for Kafka topics in the instances,
+and configure the network bandwidth as required.
+The instances can be used right out of the box,
+taking off the deployment and O&M pressure for you
+so that you can focus on developing your services.
 
 DMS Queues
 ----------
 
-A message queue is a container that receives and stores message files. 
-By default, 5 queues can be created under a project. 
-Different messages in one queue can be retrieved by multiple consumers at the same time.
+A message queue is a container that receives and stores message files.
+By default, 5 queues can be created under a project.
+Different messages in one queue can be retrieved
+by multiple consumers at the same time.
 
 List Queues
 ^^^^^^^^^^^
@@ -76,10 +83,13 @@ or an instance of class
 DMS Queue Groups
 ----------------
 
-A consumer group is used to group consumers. A maximum of three consumer groups can be created in each queue.
-Messages in one queue can be retrieved once by each consumer group. 
-Messages acknowledged by one consumer group are no longer available to that consumer group but still available to other consumer groups.
-Consumers in the same consumer group can retrieve different messages from one queue at the same time.
+A consumer group is used to group consumers.
+A maximum of three consumer groups can be created in each queue.
+Messages in one queue can be retrieved once by each consumer group.
+Messages acknowledged by one consumer group are no longer available
+to that consumer group but still available to other consumer groups.
+Consumers in the same consumer group can retrieve
+different messages from one queue at the same time.
 
 List Queue Groups
 ^^^^^^^^^^^^^^^^^
@@ -121,9 +131,11 @@ or an instance of class
 DMS messages
 ------------
 
-Messages are JavaScript object notation (JSON) objects used for transmitting information. 
-They can be sent one by one or in batches. 
-Sending messages in batches can be achieved only through calling DMS application programming interfaces (APIs).
+Messages are JavaScript object notation (JSON) objects
+used for transmitting information.
+They can be sent one by one or in batches.
+Sending messages in batches can be achieved only
+through calling DMS application programming interfaces (APIs).
 
 Send message
 ^^^^^^^^^^^^
@@ -159,10 +171,14 @@ class
 DMS Instances
 -------------
 
-Kafka premium instances use physically isolated computing, storage, and bandwidth resources. 
-You can customize partitions and replicas for Kafka topics in the instances, 
-and configure the network bandwidth as required. The instances can be used right out of the box, 
-taking off the deployment and O&M pressure for you so that you can focus on developing your services.
+Kafka premium instances use physically isolated computing,
+storage, and bandwidth resources.
+You can customize partitions and replicas
+for Kafka topics in the instances,
+and configure the network bandwidth as required.
+The instances can be used right out of the box,
+taking off the deployment and O&M pressure for you
+so that you can focus on developing your services.
 
 List Instances
 ^^^^^^^^^^^^^^
@@ -222,7 +238,7 @@ or an instance of class
    :lines: 16-28
 
 Restart Instance
-^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^
 
 This interface is used to restart an Instance by ID
 or an instance of class
@@ -234,7 +250,9 @@ or an instance of class
 DMS Instance Topics
 -------------------
 
-After creating a Kafka premium instance, you must create a topic in the instance for creating and retrieving messages.
+After creating a Kafka premium instance,
+you must create a topic in the instance
+for creating and retrieving messages.
 
 List Instance Topics
 ^^^^^^^^^^^^^^^^^^^^
