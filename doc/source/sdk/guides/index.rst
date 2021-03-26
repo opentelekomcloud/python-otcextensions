@@ -15,6 +15,7 @@ Open Telekom Cloud related User Guides
    cts
    dcs
    deh
+   dms
    dns
    kms
    nat
