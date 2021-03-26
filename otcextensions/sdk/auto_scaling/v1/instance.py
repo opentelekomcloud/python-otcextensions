@@ -65,6 +65,10 @@ class Instance(_base.Resource):
     def find(cls, session, name_or_id, ignore_missing=True, **params):
         """Find a resource by its name or id.
 
+        This method was added in order to be able to get an object of the
+        current class if it exists. This object will be used in
+        some other proxy methods.
+
         :param session: The session to use for making this request.
         :type session: :class:`~keystoneauth1.adapter.Adapter`
         :param name_or_id: This resource's identifier, if needed by
