@@ -98,7 +98,7 @@ This interface is used to query all groups of a Queue
 and to filter the output with query parameters.
 
 .. literalinclude:: ../examples/dms/list_queue_groups.py
-   :lines: 16-24
+   :lines: 16-23
 
 Create Queue Group
 ^^^^^^^^^^^^^^^^^^
@@ -126,7 +126,7 @@ or an instance of class
 :class:`~otcextensions.sdk.dms.v1.group.Group`.
 
 .. literalinclude:: ../examples/cce/delete_cluster_node.py
-   :lines: 16-26
+   :lines: 16-25
 
 DMS messages
 ------------
@@ -280,7 +280,7 @@ or an instance of class
 :class:`~otcextensions.sdk.dms.v1.instance.Instance`.
 
 .. literalinclude:: ../examples/dms/delete_instance.py
-   :lines: 16-26
+   :lines: 16-25
 
 Misc
 ----
