@@ -129,6 +129,7 @@ class DeleteCCECluster(command.Command):
         if not parsed_args.wait:
             attrs['wait'] = False
 
+        _ = self.app.client_manager.cce  # initialize sdk_connection with cce methods
         if parsed_args.cluster:
             self.app.client_manager.sdk_connection.delete_cce_cluster(
                 **attrs
