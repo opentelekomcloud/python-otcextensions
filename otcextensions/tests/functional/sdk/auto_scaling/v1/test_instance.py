@@ -14,7 +14,9 @@ import os
 
 import fixtures
 import openstack
-from openstack import _log, utils
+
+from openstack import utils
+from openstack import _log
 
 from otcextensions.tests.functional import base
 
@@ -22,7 +24,7 @@ _logger = _log.setup_logging('openstack')
 
 
 class TestInstance(base.BaseFunctionalTest):
-    UUID = uuid.uuid4().hex[:8]
+    UUID = uuid.uuid4().hex[:9]
     NETWORK_NAME = "test-network-" + UUID
     SUBNET_NAME = "test-subnet-" + UUID
     ROUTER_NAME = "test-router-" + UUID
@@ -48,8 +50,8 @@ class TestInstance(base.BaseFunctionalTest):
 
     def _delete_keypair(self, key_pair):
         return self.conn.compute.delete_keypair(
-                keypair=key_pair
-            )
+            keypair=key_pair
+        )
 
     def _create_sec_group(self):
         return self.conn.network.create_security_group(
@@ -58,18 +60,18 @@ class TestInstance(base.BaseFunctionalTest):
 
     def _delete_sec_group(self, sec_group):
         return self.conn.network.delete_security_group(
-                security_group=sec_group
-            )
+            security_group=sec_group
+        )
 
     def _create_network(self):
         return self.conn.network.create_network(
             name=self.NETWORK_NAME
         )
 
-    def _delete_network(self,network):
+    def _delete_network(self, network):
         return self.conn.network.delete_network(
-                network=network
-            )
+            network=network
+        )
 
     def _create_subnet(self, network_id):
         return self.conn.network.create_subnet(
@@ -81,13 +83,13 @@ class TestInstance(base.BaseFunctionalTest):
 
     def _delete_subnet(self, subnet):
         return self.conn.network.delete_subnet(
-                subnet=subnet
-            )
+            subnet=subnet
+        )
 
     def _create_router(self, subnet_id):
         rtr = self.conn.network.create_router(
-                name=self.ROUTER_NAME
-            )
+            name=self.ROUTER_NAME
+        )
         return self.conn.network.add_interface_to_router(
             router=rtr,
             subnet_id=subnet_id
@@ -109,7 +111,7 @@ class TestInstance(base.BaseFunctionalTest):
         if image:
             return image.id
 
-    def _create_as_config(self,image_id, sec_group_id):
+    def _create_as_config(self, image_id, sec_group_id):
         config_attrs = {
             "name": self.AS_CONFIG_NAME,
             "instance_config": {
@@ -128,7 +130,7 @@ class TestInstance(base.BaseFunctionalTest):
         }
         return self.conn.auto_scaling.create_config(**config_attrs)
 
-    def _delete_as_config(self,as_config):
+    def _delete_as_config(self, as_config):
         return self.conn.auto_scaling.delete_config(
             config=as_config
         )
@@ -149,13 +151,13 @@ class TestInstance(base.BaseFunctionalTest):
         self.conn.auto_scaling.resume_group(as_group)
         return as_group
 
-    def _delete_as_group(self,as_group):
+    def _delete_as_group(self, as_group):
         self.conn.auto_scaling.pause_group(as_group)
         return self.conn.auto_scaling.delete_group(
             group=as_group
         )
 
-    def _wait_for_instance(self,as_group):
+    def _wait_for_instance(self, as_group):
         timeout = int(os.environ.get('OS_TEST_TIMEOUT'))
         for count in utils.iterate_timeout(
                 timeout=timeout,
@@ -223,7 +225,7 @@ class TestInstance(base.BaseFunctionalTest):
             self._delete_keypair(self.key_pair)
 
     def setUp(self):
-        test_timeout = 2 * int(os.environ.get('OS_TEST_TIMEOUT'))
+        test_timeout = 3 * int(os.environ.get('OS_TEST_TIMEOUT'))
         try:
             self.useFixture(
                 fixtures.EnvironmentVariable(
