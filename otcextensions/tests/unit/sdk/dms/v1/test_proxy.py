@@ -123,13 +123,21 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
             _message.Messages,
             method_kwargs={
                 'queue': 'qid',
-                'messages': [{'body': 'b1'}]
+                'messages': [{
+                    'body': 'b1',
+                    'attributes': {
+                        'attribute1': 'value1',
+                        'attribute2': 'value2'}
+                }]
             },
             expected_kwargs={
                 'queue_id': 'qid',
-                'messages': [
-                    {'attributes': {}, 'body': 'b1'}
-                ],
+                'messages': [{
+                    'body': 'b1',
+                    'attributes': {
+                        'attribute1': 'value1',
+                        'attribute2': 'value2'}
+                }],
                 'return_id': False
             }
         )
@@ -140,13 +148,23 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
             _message.Messages,
             method_kwargs={
                 'queue': 'qid',
-                'messages': [_message.Message(body='b1')]
+                'messages': [
+                    _message.Message(
+                        body='b1',
+                        attributes={
+                            'attribute1': 'value1',
+                            'attribute2': 'value2'}
+                    )
+                ]
             },
             expected_kwargs={
                 'queue_id': 'qid',
-                'messages': [
-                    {'attributes': {}, 'body': 'b1'}
-                ],
+                'messages': [{
+                    'body': 'b1',
+                    'attributes': {
+                        'attribute1': 'value1',
+                        'attribute2': 'value2'}
+                }],
                 'return_id': False
             }
         )
@@ -158,7 +176,9 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
             method_kwargs={
                 'queue': 'qid',
                 'body': 'b1',
-                'p1': 'v1'
+                'attributes': {
+                    'p1': 'v1'
+                }
             },
             expected_kwargs={
                 'queue_id': 'qid',
