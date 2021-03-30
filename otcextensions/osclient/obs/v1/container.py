@@ -48,7 +48,7 @@ class CreateContainer(command.ShowOne):
             help=_('New container name(s)'),
         )
         parser.add_argument(
-            '--storage_class',
+            '--storage-class',
             metavar='{' + ','.join(STORAGE_CLASSES) + '}',
             type=lambda s: s.upper(),
             choices=STORAGE_CLASSES,
