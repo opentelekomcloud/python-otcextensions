@@ -166,6 +166,9 @@ OTC_SERVICES = {
     'waf': {
         'service_type': 'waf',
         # 'set_endpoint_override': True
+    },
+    'vpcep': {
+        'service_type': 'vpcep'
     }
 }
 
