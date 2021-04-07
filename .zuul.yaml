@@ -24,11 +24,6 @@
     provides: otce-container-image
     vars: *otce_image_vars
 
-- job:
-    name: otce-promote-image
-    parent: otcinfra-promote-image-quay
-    vars: *otce_image_vars
-
 - project:
     merge-mode: squash-merge
     templates:
