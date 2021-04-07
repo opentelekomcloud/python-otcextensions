@@ -16,10 +16,10 @@ from openstack import proxy
 from openstack import resource
 
 from otcextensions.sdk.cce.v3 import cluster as _cluster
-from otcextensions.sdk.cce.v3 import cluster_node as _cluster_node
 from otcextensions.sdk.cce.v3 import cluster_cert as _cluster_cert
-from otcextensions.sdk.cce.v3 import node_pool as _node_pool
+from otcextensions.sdk.cce.v3 import cluster_node as _cluster_node
 from otcextensions.sdk.cce.v3 import job as _job
+from otcextensions.sdk.cce.v3 import node_pool as _node_pool
 
 
 class Proxy(proxy.Proxy):
@@ -381,3 +381,26 @@ class Proxy(proxy.Proxy):
         return resource.wait_for_status(
             self, job, status, failures, interval, wait,
             attribute='status.status')
+
+    # ======== Project cleanup ========
+    def _get_cleanup_dependencies(self):
+        return {
+            'cce': {
+                'before': ['compute', 'network']
+            }
+        }
+
+    def _service_cleanup(
+        self, dry_run=True, client_status_queue=None,
+        identified_resources=None,
+        filters=None, resource_evaluation_fn=None
+    ):
+        for obj in self.clusters():
+            self._service_cleanup_del_res(
+                self.delete_cluster,
+                obj,
+                dry_run=dry_run,
+                client_status_queue=client_status_queue,
+                identified_resources=identified_resources,
+                filters=filters,
+                resource_evaluation_fn=resource_evaluation_fn)
