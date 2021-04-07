@@ -52,9 +52,6 @@
         - otc-tox-docs
         - tox-functional
         - otce-upload-image
-    promote:
-      jobs:
-        - otce-promote-image
     periodic:
       jobs:
         - tox-functional-master
