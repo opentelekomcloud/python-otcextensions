@@ -207,7 +207,7 @@ class CreateCCENodePool(command.ShowOne):
         )
         parser.add_argument(
             '--k8s-tag',
-            metavar='<key_name>=<value=name>',
+            metavar='<key_name>=<value_name>',
             action=parseractions.KeyValueAction,
             dest='k8s_tags',
             help=_('Kubernetes tags in form of key, value pairs. Repeat '
@@ -400,7 +400,6 @@ class CreateCCENodePool(command.ShowOne):
 
         obj = self.app.client_manager.sdk_connection.create_cce_node_pool(
             **attrs)
-        print(obj)
 
         data = utils.get_dict_properties(
             _flatten_node_pool(obj),

@@ -151,7 +151,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
         """
         res = self.find_instance(instance)
-        return res.change_password(
+        return res.change_pwd(
             self,
             current_password=current_password,
             new_password=new_password)

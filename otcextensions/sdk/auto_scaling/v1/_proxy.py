@@ -379,6 +379,26 @@ class Proxy(proxy.Proxy):
             base_path='/scaling_group_instance/{id}/list'.format(id=group.id),
             **query)
 
+    def find_instance(self, name_or_id, group, ignore_missing=True):
+        """Find a single instance
+
+        :param name_or_id: The name or ID of a instance.
+        :param group: ID of a group
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be
+            raised when the resource does not exist.
+            When set to ``True``, None will be returned when
+            attempting to find a nonexistent resource.
+
+        :returns:
+            One :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`
+            or None.
+        """
+        group = self._get_resource(_group.Group, group)
+        return self._find(_instance.Instance, name_or_id,
+                          ignore_missing=ignore_missing,
+                          group_id=group.id)
+
     def remove_instance(self, instance, delete_instance=False,
                         ignore_missing=True):
         """Remove an instance of auto scaling group

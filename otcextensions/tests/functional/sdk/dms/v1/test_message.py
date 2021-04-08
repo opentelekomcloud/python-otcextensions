@@ -28,7 +28,6 @@ class TestMessage(base.BaseFunctionalTest):
 
     def setUp(self):
         super(TestMessage, self).setUp()
-        openstack.enable_logging(debug=True, http_debug=True)
         try:
             self.queue = self.conn.dms.create_queue(
                 name=TestMessage.QUEUE_ALIAS
