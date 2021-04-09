@@ -129,7 +129,8 @@ class DeleteCCECluster(command.Command):
         if not parsed_args.wait:
             attrs['wait'] = False
 
-        _ = self.app.client_manager.cce  # initialize sdk_connection with cce methods
+        # initialize sdk_connection with cce methods
+        _ = self.app.client_manager.cce
         if parsed_args.cluster:
             self.app.client_manager.sdk_connection.delete_cce_cluster(
                 **attrs
@@ -235,6 +236,8 @@ class CreateCCECluster(command.ShowOne):
         if parsed_args.multi_az:
             attrs['az'] = 'multi_az'
 
+        # initialize sdk_connection with cce methods
+        _ = self.app.client_manager.cce
         obj = self.app.client_manager.sdk_connection.create_cce_cluster(
             **attrs)
 
