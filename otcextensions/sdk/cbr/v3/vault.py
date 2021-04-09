@@ -17,7 +17,7 @@ class TagSpec (resource.Resource):
     #: Tag key, up to 36 chars
     key = resource.Body('key')
     #: Tag value, up to 43 chars
-    value= resourcde.Body('value')
+    value = resource.Body('value')
 
 
 class BindRuleSpec(resource.Resource):
@@ -31,25 +31,35 @@ class VolumeSpec(resource.Resource):
     #: Volume id
     id = resource.Body('id')
     #: OS type
-    os_version
+    os_version = resource.Body('os_version')
+
 
 class ResourceExtraInfoSpec(resource.Resource):
     #: Properties
     #: ID of the disk that is excluded from the backup
     exclude_volumes = resource.Body('exclude_volumes', type=list)
     #: Disk to be backed up
-    include_volumes = resource.Body('include_volumes', type=list, 
+    include_volumes = resource.Body('include_volumes', type=list,
                                     list_type=VolumeSpec)
 
 
 class ResourceSpec(resource.Resource):
     #: Properties
+    #: Number of backups
+    backup_count = resource.Body('backup_count', type=int)
+    #: Backup size
+    backup_size = resource.Body('backup_size', type=int)
     #: Extra info of the resource
     extra_info = resource.Body('extra_info', type=ResourceExtraInfoSpec)
     #: ID of the resource to be backed up
     id = resource.Body('id')
     #: Resource name
     name = resource.Body('name')
+    #: Protection status
+    #: values: available, error, protecting, restoring, removing
+    protect_status = resource.Body('protect_status')
+    #: Allocated capacity for the associated resource, in GB
+    size = resource.Body('size', type=int)
     #: type of the resource to be backed up.
     #: values: OS::Nova::Server, OS::Cinder::Volume
     type = resource.Body('type')
@@ -66,11 +76,13 @@ class BillingExtraInfoSpec(resource.Resource):
 
 class BillingSpec(resource.Resource):
     #: Properties
+    #: Allocated capacity in MB
+    allocated = resource.Body('allocated', type=int)
     #: Biling mode
     #: values: post_paid, pre_paid
     #: default: post_paid
     charging_mode = resource.Body('charging_mode')
-    #: Cloud platform
+    #: Cloud type
     #: values: public, hybrid
     cloud_type = resource.Body('cloud_type')
     #: Backup specifications
@@ -80,6 +92,8 @@ class BillingSpec(resource.Resource):
     console_url = resource.Body('console_url')
     #: Billing extra info spec
     extra_info = resource.Body('extra_info', type=BillingExtraInfoSpec)
+    #: Scenario when an account is frozen
+    frozen_scene = resource.Body('frozen_scene')
     #: Whether the fee is automatically deducted from the customers account
     #: default: false
     is_auto_pay = resource.Body('is_auto_pay', type=bool)
@@ -88,6 +102,8 @@ class BillingSpec(resource.Resource):
     is_auto_renew = resource.Body('is_auto_renew', type=bool)
     #: Object type
     object_type = resource.Body('object_type')
+    #: Order ID
+    order_id = resource.Body('order_id')
     #: Required duration for the package
     #: mandatory if charging_mode is set to pre_paid
     period_num = resource.Body('period_num', type=int)
@@ -95,18 +111,28 @@ class BillingSpec(resource.Resource):
     #: mandatory if charging_mode is pre_paid
     #: values: year, month
     period_type = resource.Body('period_type')
+    #: Product ID
+    product_id = resource.Body('product_id')
     #: Operation type
     protect_type = resource.Body('operation_type')
     #: Capicity in GB
     #: min: 1, max: 10485760
     size = resource.Body('size', type=int)
-
+    #: Specification code
+    spec_code = resource.Body('spec_code')
+    #: Status
+    #: values: available, lock, frozen, deleting, error
+    status = resource.Body('status')
+    #: Name of the bucket of the vault
+    storage_unit = resource.Body('storage_unit')
+    #: Used capacity in MB
+    used = resource.Body('used', type=int)
 
 
 class Vault(resource.Resource):
     """CBR Vault Resource"""
-    resource_key = 'backup'
-    resources_key = 'backups'
+    resource_key = 'vault'
+    resources_key = 'vaults'
     base_path = '/vaults'
 
     # capabilities
@@ -132,13 +158,21 @@ class Vault(resource.Resource):
     #: Rules for automatic association
     bind_rules = resource.Body('bind_rules', type=BindRuleSpec)
     #: Description
+    #: Creation time
+    created_at = resource.Body('created_at')
     description = resource.Body('description')
     #: Enterprise project id
     #: default:0
     enterprise_project_id = resource.Body('enterprise_project_id')
     #: Vault name
     name = resource.Body('name')
+    #: Project ID
+    project_id = resource.Body('project_id')
+    #: Vault type
+    provider_id = resource.Body('provider_id')
     #: Associated Resources
     resources = resource.Body('resources', type=ResourceSpec)
     #: Tag list up to 10 key value pairs
     tags = resource.Body('tags', type=TagSpec)
+    #: User ID
+    user_id = resource.Body('user_id')
