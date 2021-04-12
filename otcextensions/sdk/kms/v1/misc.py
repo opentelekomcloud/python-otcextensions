@@ -19,12 +19,14 @@ class Random(_base.Resource):
     create_path = '/kms/gen-random'
 
     allow_create = True
+    allow_get = False
 
     # Properties
     #: Random data length
     #: *Type:str*
     random_data_length = resource.Body('random_data_length', type=int)
     #: Random data content
+
     #: *Type:str*
     random_data = resource.Body('random_data')
 
@@ -32,14 +34,14 @@ class Random(_base.Resource):
 class InstanceNumber(_base.Resource):
 
     base_path = 'kms/user-instances'
-    allow_get = True
+    allow_fetch = True
     # Properties
     #: Instance number
     #: *Type: int*
     instance_num = resource.Body('instance_num', type=int)
 
-    def get(self, session):
-        return super(InstanceNumber, self).get(session, requires_id=False)
+    def fetch(self, session):
+        return super(InstanceNumber, self).fetch(session, requires_id=False)
 
 
 class Quota(_base.Resource):
