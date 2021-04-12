@@ -352,6 +352,9 @@ class CreateDatabaseInstance(command.ShowOne):
 
     def take_action(self, parsed_args):
         # Attention: not conform password result in BadRequest with no info
+
+        # initialize sdk_connection with rds methods
+        _ = self.app.client_manager.rds
         client = self.app.client_manager.sdk_connection
         attrs = {}
         for attr in [
@@ -407,6 +410,8 @@ class DeleteDatabaseInstance(command.Command):
         return parser
 
     def take_action(self, parsed_args):
+        # initialize sdk_connection with rds methods
+        _ = self.app.client_manager.rds
         client = self.app.client_manager.sdk_connection
         attrs = {}
         for attr in [
