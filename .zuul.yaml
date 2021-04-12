@@ -12,7 +12,7 @@
     vars: &otce_image_vars
       docker_images:
         - context: .
-          repository: quay.io/opentelekomcloud/python-openstackclient
+          repository: opentelekomcloud/python-openstackclient
           tags:
             # If zuul.tag is defined: [ '3', '3.19', '3.19.0' ].  Only works for 3-component tags.
             # Otherwise: ['latest']
