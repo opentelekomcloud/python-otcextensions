@@ -10,14 +10,36 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-"""
-Get single CBR Vault
-"""
+'''
+Bind resources to CBR vault
+'''
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-vault = 'vault_id'
-vault = conn.cbr.get_vault(vault=vault)
-print(vault)
+
+vault = 'vault_name_or_id'
+resources = [{
+    'id': 'server_id',
+    'type': 'OS::Nova::Server',
+    'extra_info': {
+        'include_volumes': [
+            {
+                'id': 'volume_id'
+            },
+            {
+                'id': 'volume_id'
+            },
+        ],
+        'exclude_volumes': [
+            'vol1_id',
+            'vol2_id'
+        ]
+    },
+}, {
+    'id': 'volume_id',
+    'type': 'OS::Cinder::Volume',
+}]
+vault = conn.cbr.find_vault(vault)
+conn.cbr.associate_resources(vault=vault.id, resources=resources)

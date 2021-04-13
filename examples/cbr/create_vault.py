@@ -20,26 +20,26 @@ conn = openstack.connect(cloud='otc')
 
 
 attrs = {
-	'description': 'my vault',
-	'auto_bind': False,
-	'bind_rules': {},
-	'name': 'vault-name',
-	'billing': {
-		'protect_type': 'backup',
-		'object_type': 'server',
-		'size': 40,
-		'cloud_type': 'public',
-		'consistent_level': 'crash_consistent',
-		'charging_mode': 'post_paid'
-	},
-	'auto_expand': False,
-	'resources': [
-		{
-			'name': 'server-name',
-			'type': 'OS::Nova::Server',
-			'id': 'server-id',
-		}
-	]
+    'description': 'my vault',
+    'auto_bind': False,
+    'bind_rules': {},
+    'name': 'vault-name',
+    'billing': {
+        'protect_type': 'backup',
+        'object_type': 'server',
+        'size': 40,
+        'cloud_type': 'public',
+        'consistent_level': 'crash_consistent',
+        'charging_mode': 'post_paid'
+    },
+    'auto_expand': False,
+    'resources': [
+        {
+            'name': 'server-name',
+            'type': 'OS::Nova::Server',
+            'id': 'server-id',
+        }
+    ]
 }
 
 vault = conn.cbr.create_vault(**attrs)

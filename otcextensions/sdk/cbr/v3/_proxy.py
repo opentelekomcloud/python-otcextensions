@@ -327,3 +327,73 @@ class Proxy(proxy.Proxy):
         return self._delete(
             _vault.Vault, vault, ignore_missing=ignore_missing,
         )
+
+    def unbind_policy(self, vault, policy):
+        """Disassociate policy from CBR vault
+
+        :param vault: The value can be the ID of a vault
+             or a :class:`~otcextensions.sdk.cbr.v3.vault.Vault`
+             instance.
+        :param policy: The value can be the ID of a policy
+             or a :class:`~otcextensions.sdk.cbr.v3.policy.Policy`
+             instance.
+        """
+        vault = self._get_resource(_vault.Vault, vault)
+        policy = self._get_resource(_policy.Policy, policy)
+        return vault.unbind_policy(
+            self,
+            policy_id=policy.id)
+
+    def bind_policy(self, vault, policy):
+        """Associate policy to an existing CBR vault
+
+        :param vault: The value can be the ID of a vault
+             or a :class:`~otcextensions.sdk.cbr.v3.vault.Vault`
+             instance.
+        :param policy: The value can be the ID of a policy
+             or a :class:`~otcextensions.sdk.cbr.v3.policy.Policy`
+             instance.
+        """
+        vault = self._get_resource(_vault.Vault, vault)
+        policy = self._get_resource(_policy.Policy, policy)
+        return vault.bind_policy(
+            self,
+            policy_id=policy.id)
+
+    def associate_resources(self, vault, resources):
+        """Associate resources to an existing CBR vault
+
+        :param vault: The value can be the ID of a vault
+             or a :class:`~otcextensions.sdk.cbr.v3.vault.Vault`
+             instance.
+        :param resources: array of resources in the format, while param id
+            and type are mandatory:
+            resources = [{
+                'id' : <resource_id>,
+                'type' : '<OS::Nova::Server|OS::Cinder::Volume>'
+                'extra_info': {
+                    'include_volumes': [
+                        <None|array_of_volume_ids>
+                    ],
+                    'exclude_volumes': [
+                        '<None|array_of_volume_ids>']
+                },
+            }]
+        """
+        vault = self._get_resource(_vault.Vault, vault)
+        return vault.associate_resources(
+            self,
+            resources)
+
+    def dissociate_resources(self, vault, resources):
+        """Associate resources to an existing CBR vault
+
+        :param vault: The value can be the ID of a vault
+             or a :class:`~otcextensions.sdk.cbr.v3.vault.Vault`
+             instance.
+        :param resources: list of ressource ids to be released from vault
+        """
+        vault = self._get_resource(_vault.Vault, vault)
+        return vault.dissociate_resources(
+            self,
+            resources)

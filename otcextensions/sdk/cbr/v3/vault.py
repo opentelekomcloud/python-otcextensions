@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
+from openstack import utils
 
 
 class TagSpec (resource.Resource):
@@ -157,9 +158,9 @@ class Vault(resource.Resource):
     billing = resource.Body('billing', type=BillingSpec)
     #: Rules for automatic association
     bind_rules = resource.Body('bind_rules', type=BindRuleSpec)
-    #: Description
     #: Creation time
     created_at = resource.Body('created_at')
+    #: Description
     description = resource.Body('description')
     #: Enterprise project id
     #: default:0
@@ -176,3 +177,69 @@ class Vault(resource.Resource):
     tags = resource.Body('tags', type=TagSpec)
     #: User ID
     user_id = resource.Body('user_id')
+
+    def bind_policy(self, session, policy_id):
+        """Method to associate a CBR policy to a CBR vault
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param str policy_id: The ID of the policy being attached to the
+            CBR vault.
+        """
+        url = utils.urljoin(self.base_path, self.id, 'associatepolicy')
+        body = {
+            'policy_id': policy_id
+        }
+        return session.post(url, json=body)
+
+    def unbind_policy(self, session, policy_id):
+        """Method to dissociate a CBR policy from a CBR vault
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param str policy_id: The ID of the policy being attached to the
+            CBR vault.
+        """
+        url = utils.urljoin(self.base_path, self.id, 'dissociatepolicy')
+        body = {
+            'policy_id': policy_id
+        }
+        return session.post(url, json=body)
+
+    def associate_resources(self, session, resources):
+        """Method to bind one or more ECS or Volume to a CBR vault
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param resources: array of resources in the format, while param id
+            and type are mandatory:
+            resources = [{
+                'id' : <resource_id>,
+                'type' : '<OS::Nova::Server|OS::Cinder::Volume>'
+                'extra_info': {
+                    'include_volumes': [
+                        <None|array_of_volume_ids>
+                    ],
+                    'exclude_volumes': [
+                        '<None|array_of_volume_ids>']
+                },
+            }]
+        """
+        url = utils.urljoin(self.base_path, self.id, 'addresources')
+        body = {
+            'resources': resources
+        }
+        return session.post(url, json=body)
+
+    def dissociate_resources(self, session, resources):
+        """Method to release one or more ECS or Volume to a CBR vault
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param resources: list of ressource ids to be released from vault
+        """
+        url = utils.urljoin(self.base_path, self.id, 'removeresources')
+        body = {
+            'resource_ids': resources
+        }
+        return session.post(url, json=body)

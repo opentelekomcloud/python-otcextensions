@@ -10,14 +10,18 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-"""
-Get single CBR Vault
-"""
+'''
+Release resources from CBR vault
+'''
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-vault = 'vault_id'
-vault = conn.cbr.get_vault(vault=vault)
-print(vault)
+
+vault = 'vault_name_or_id'
+resources = [
+    'list_of_resource_ids',
+]
+vault = conn.cbr.find_vault(vault)
+conn.cbr.dissociate_resources(vault=vault.id, resources=resources)

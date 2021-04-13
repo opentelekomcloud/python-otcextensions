@@ -10,14 +10,17 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-"""
-Get single CBR Vault
-"""
+'''
+Bind policy to CBR vault
+'''
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-vault = 'vault_id'
-vault = conn.cbr.get_vault(vault=vault)
-print(vault)
+
+policy = 'name_or_id'
+vault = 'name_or_id'
+policy = conn.cbr.find_policy(policy)
+vault = conn.cbr.find_vault(vault)
+conn.cbr.bind_policy(vault=vault.id, policy=policy.id)
