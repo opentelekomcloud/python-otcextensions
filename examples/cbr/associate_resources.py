@@ -23,23 +23,28 @@ vault = 'vault_name_or_id'
 resources = [{
     'id': 'server_id',
     'type': 'OS::Nova::Server',
-    'extra_info': {
-        'include_volumes': [
-            {
-                'id': 'volume_id'
-            },
-            {
-                'id': 'volume_id'
-            },
-        ],
-        'exclude_volumes': [
-            'vol1_id',
-            'vol2_id'
-        ]
-    },
-}, {
-    'id': 'volume_id',
-    'type': 'OS::Cinder::Volume',
+    # optional params
+    # 'extra_info': {
+    #     'include_volumes': [
+    #         {
+    #             'id': 'volume_id'
+    #         },
+    #         {
+    #             'id': 'volume_id'
+    #         },
+    #     ],
+    #     'exclude_volumes': [
+    #         'vol1_id',
+    #         'vol2_id'
+    #     ]
+    # },
 }]
+
+# For a disk vault
+# resources = {
+#   'id': 'volume_id',
+#    'type': 'OS::Cinder::Volume',
+# }]
+
 vault = conn.cbr.find_vault(vault)
 conn.cbr.associate_resources(vault=vault.id, resources=resources)
