@@ -17,9 +17,8 @@ import mock
 
 from openstackclient.tests.unit import utils
 
-from otcextensions.tests.unit.osclient import test_base
-
 from otcextensions.sdk.identity.v3 import credential
+from otcextensions.tests.unit.osclient import test_base
 
 
 def gen_data(data, columns):
@@ -38,9 +37,9 @@ class TestIdentity(utils.TestCommand):
     def setUp(self):
         super(TestIdentity, self).setUp()
 
-        self.app.client_manager.identity = mock.Mock()
+        self.app.client_manager.iam = mock.Mock()
 
-        self.client = self.app.client_manager.identity
+        self.client = self.app.client_manager.iam
 
 
 class FakeIdentityCredential(test_base.Fake):
