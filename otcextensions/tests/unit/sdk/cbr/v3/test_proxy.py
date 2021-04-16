@@ -115,3 +115,45 @@ class TestCBRVault(TestCBRProxy):
     def test_vault_delete(self):
         self.verify_delete(self.proxy.delete_vault,
                            _vault.Vault, True)
+
+    def test_bind_policy(self):
+        vault = _vault.Vault(id='vault')
+        policy = _policy.Policy(id='policy')
+        self._verify2(
+            'otcextensions.sdk.cbr.v3.vault.Vault.bind_policy',
+            self.proxy.bind_policy,
+            method_args=[vault, policy],
+            expected_args=[self.proxy],
+            expected_kwargs={'policy_id': 'policy'}
+        )
+
+    def test_unbind_policy(self):
+        vault = _vault.Vault(id='vault')
+        policy = _policy.Policy(id='policy')
+        self._verify2(
+            'otcextensions.sdk.cbr.v3.vault.Vault.unbind_policy',
+            self.proxy.unbind_policy,
+            method_args=[vault, policy],
+            expected_args=[self.proxy],
+            expected_kwargs={'policy_id': 'policy'}
+        )
+
+    def test_associate_resources(self):
+        vault = _vault.Vault(id='vault')
+        resources = 'resources'
+        self._verify2(
+            'otcextensions.sdk.cbr.v3.vault.Vault.associate_resources',
+            self.proxy.associate_resources,
+            method_args=[vault, resources],
+            expected_args=[self.proxy, resources],
+        )
+
+    def test_dissociate_resources(self):
+        vault = _vault.Vault(id='vault')
+        resources = 'resources'
+        self._verify2(
+            'otcextensions.sdk.cbr.v3.vault.Vault.dissociate_resources',
+            self.proxy.dissociate_resources,
+            method_args=[vault, resources],
+            expected_args=[self.proxy, resources],
+        )
