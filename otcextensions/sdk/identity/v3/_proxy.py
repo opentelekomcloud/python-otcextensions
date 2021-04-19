@@ -18,6 +18,7 @@ from openstack.identity.v3 import _proxy
 from otcextensions.sdk.identity.v3 import agency as _agency
 from otcextensions.sdk.identity.v3 import agency_role as _agency_role
 from otcextensions.sdk.identity.v3 import credential as _credential
+from otcextensions.sdk.identity.v3 import security_token as _security_token
 
 
 class Proxy(_proxy.Proxy):
@@ -426,3 +427,36 @@ class Proxy(_proxy.Proxy):
             }
         )
         return self._delete(_agency_role.AgencyRole, agency_role)
+
+    # ========== Security Token (temp AK/SK) ==========
+
+    def create_security_token(self, duration, method='token', **attrs):
+        """Create a new temporary AK/SK
+
+        :param int duration: Duration in seconds for the token validity.
+        :param str method: Authorization method (token or agency)
+        :param dict attrs: Keyword arguments which will be used to create a
+            :class:`~otcextensions.sdk.identity.v3.security_token.SecurityToken`,
+            comprised of the properties on the SecurityToken class.
+        :returns: The results of temporary security token creation
+        :rtype:
+            :class:`~otcextensions.sdk.identity.v3.security_token.SecurityToken`
+        """
+        # This method is so unique (similar to getting initial auth), that we
+        # need to do this totally differently
+        body = {
+            'auth': {
+                'identity': {
+                    'methods': [method],
+                    method: {**attrs}
+                },
+            }
+        }
+        body['auth']['identity'][method]['duration-secods'] = duration
+        uri = '%s/v3.0/OS-CREDENTIAL/securitytokens' % (
+            self._get_alternate_endpoint()
+        )
+        response = self.post(uri, json=body)
+        token = _security_token.SecurityToken()
+        token._translate_response(response)
+        return token
