@@ -366,19 +366,7 @@ class Proxy(proxy.Proxy):
         :param vault: The value can be the ID of a vault
              or a :class:`~otcextensions.sdk.cbr.v3.vault.Vault`
              instance.
-        :param resources: array of resources in the format, while param id
-            and type are mandatory:
-            resources = [{
-                'id' : <resource_id>,
-                'type' : '<OS::Nova::Server|OS::Cinder::Volume>'
-                'extra_info': {
-                    'include_volumes': [
-                        <None|array_of_volume_ids>
-                    ],
-                    'exclude_volumes': [
-                        '<None|array_of_volume_ids>']
-                },
-            }]
+        :param resources: array of resources in the format: id and type
         """
         vault = self._get_resource(_vault.Vault, vault)
         return vault.associate_resources(

@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 '''
-Bind resources to CBR vault
+Update CBR vault
 '''
 import openstack
 
@@ -19,10 +19,11 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
 
-vault = 'vault_name_or_id'
-resources = [{
-    'id': 'server_id',
-    'type': 'OS::Nova::Server'}]
+attrs = {
+    'name': 'vault2'
+}
 
-vault = conn.cbr.find_vault(vault)
-conn.cbr.associate_resources(vault=vault.id, resources=resources)
+vault = 'vault1'
+vault = conn.cbr.find_find(name_or_id=vault)
+vault = conn.cbr.update_vault(vault=vault, **attrs)
+print(vault)

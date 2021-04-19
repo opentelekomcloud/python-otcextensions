@@ -211,19 +211,7 @@ class Vault(resource.Resource):
 
         :param session: The session to use for making this request.
         :type session: :class:`~keystoneauth1.adapter.Adapter`
-        :param resources: array of resources in the format, while param id
-            and type are mandatory:
-            resources = [{
-                'id' : <resource_id>,
-                'type' : '<OS::Nova::Server|OS::Cinder::Volume>'
-                'extra_info': {
-                    'include_volumes': [
-                        <None|array_of_volume_ids>
-                    ],
-                    'exclude_volumes': [
-                        '<None|array_of_volume_ids>']
-                },
-            }]
+        :param resources: array of resources in the format: name, type
         """
         url = utils.urljoin(self.base_path, self.id, 'addresources')
         body = {
