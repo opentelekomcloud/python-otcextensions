@@ -172,9 +172,9 @@ class Vault(resource.Resource):
     #: Vault type
     provider_id = resource.Body('provider_id')
     #: Associated Resources
-    resources = resource.Body('resources', type=ResourceSpec)
+    resources = resource.Body('resources', type=list, list_type=ResourceSpec)
     #: Tag list up to 10 key value pairs
-    tags = resource.Body('tags', type=TagSpec)
+    tags = resource.Body('tags', type=list, list_type=TagSpec)
     #: User ID
     user_id = resource.Body('user_id')
 
