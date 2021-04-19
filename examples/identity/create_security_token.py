@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Create a KMS data encryption key
+Create Temporary AK/SK credentials
 """
 import openstack
 
@@ -19,8 +19,9 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-dek = conn.kms.create_datakey(
-    cmk='cmk_id',
-    datakey_length='512'
+token = conn.identity.create_security_token(
+    duration=60,    # duration in seconds
+    method='token'  # get temporary AK/SK based on current token
 )
-print(dek)
+
+print(token)

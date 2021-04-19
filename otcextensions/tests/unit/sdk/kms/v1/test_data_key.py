@@ -43,7 +43,7 @@ class TestKey(base.TestCase):
         self.assertEqual('/kms/create-datakey', sot.create_path)
         self.assertFalse(sot.allow_list)
         self.assertTrue(sot.allow_create)
-        self.assertFalse(sot.allow_get)
+        self.assertFalse(sot.allow_fetch)
         self.assertTrue(sot.allow_update)
         self.assertFalse(sot.allow_delete)
 
