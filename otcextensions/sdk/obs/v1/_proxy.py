@@ -86,7 +86,11 @@ class Proxy(sdk_proxy.Proxy):
         :returns: Detail of container
         :rtype: :class:`~otcextensions.sdk.obs.v1.container.Container`
         """
-        return self._head(_container.Container, container)
+        endpoint = self.get_container_endpoint(container)
+        return self._head(
+            _container.Container,
+            container,
+            endpoint_override=endpoint)
 
     def create_container(self, **attrs):
         """Create a new container from attributes
