@@ -55,7 +55,7 @@ or an instance of class
 .. literalinclude:: ../examples/cbr/delete_backup.py
    :lines: 16-23
 
-Backup
+Policy
 ------
 
 List CBR Policies
@@ -138,3 +138,84 @@ volumes.
 
 .. literalinclude:: ../examples/cbr/restore_data.py
    :lines: 16-36
+
+Vault
+-----
+
+List CBR Vaults
+^^^^^^^^^^^^^^^
+
+This interface is used to query CBR vaults and to filter
+the output with query parameters.
+
+.. literalinclude:: ../examples/cbr/list_vaults.py
+   :lines: 16-22
+
+Get CBR Vault
+^^^^^^^^^^^^^
+
+This interface is used to get a CBR vault by ID or an instance of
+class :class:`~otcextensions.sdk.cbr.v3.vault.Vault`.
+
+.. literalinclude:: ../examples/cbr/get_vault.py
+   :lines: 16-23
+
+Create CBR Vault
+^^^^^^^^^^^^^^^^
+
+This interface is used to create a CBR vault instance with
+parameters.
+
+.. literalinclude:: ../examples/cbr/create_vault.py
+   :lines: 16-46
+
+Update CBR Vault
+^^^^^^^^^^^^^^^^
+
+This interface is used to update a CBR vault instance with
+parameters.
+
+.. literalinclude:: ../examples/cbr/update_vault.py
+   :lines: 16-29
+
+Delete CBR Vault
+^^^^^^^^^^^^^^^^
+
+This interface is used to delete a CBR vault instance by id
+or an instance of class
+:class:`~otcextensions.sdk.cbr.v3.vault.Vault`.
+
+.. literalinclude:: ../examples/cbr/delete_vault.py
+   :lines: 16-23
+
+Bind Policy to CBR Vault
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to bind a CBR policy to a CBR vault.
+
+.. literalinclude:: ../examples/cbr/bind_policy.py
+   :lines: 16-26
+
+Unbind Policy to CBR Vault
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to release a CBR policy from a CBR vault.
+
+.. literalinclude:: ../examples/cbr/unbind_policy.py
+   :lines: 16-26
+
+Associate resources to CBR Vault
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to add resources to a CBR vault.
+
+.. literalinclude:: ../examples/cbr/associate_resources.py
+   :lines: 16-28
+
+Dissociate resources from CBR Vault
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to remove resources from CBR vault.
+
+.. literalinclude:: ../examples/cbr/dissociate_resources.py
+   :lines: 16-27
