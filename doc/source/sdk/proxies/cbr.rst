@@ -39,3 +39,12 @@ Restore Operations
 .. autoclass:: otcextensions.sdk.cbr.v3._proxy.Proxy
   :noindex:
   :members: restore_data
+
+Vault Operations
+^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.cbr.v3._proxy.Proxy
+  :noindex:
+  :members: vaults, get_vault, find_vault, create_vault, update_vault,
+            delete_vault, bind_policy, unbind_policy,
+            associate_resources, dissociate_resources
