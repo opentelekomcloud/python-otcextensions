@@ -90,7 +90,8 @@ class Proxy(sdk_proxy.Proxy):
         return self._head(
             _container.Container,
             container,
-            endpoint_override=endpoint)
+            endpoint_override=endpoint,
+            requests_auth=self._get_req_auth(endpoint))
 
     def create_container(self, **attrs):
         """Create a new container from attributes
