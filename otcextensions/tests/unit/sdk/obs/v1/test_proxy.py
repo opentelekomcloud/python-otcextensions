@@ -12,10 +12,8 @@
 
 from openstack.tests.unit import test_proxy_base
 
-from otcextensions.sdk.obs.v1 import _proxy
-
 from otcextensions.sdk.ak_auth import AKRequestsAuth
-
+from otcextensions.sdk.obs.v1 import _proxy
 from otcextensions.sdk.obs.v1 import container as _container
 from otcextensions.sdk.obs.v1 import obj as _obj
 
@@ -182,4 +180,22 @@ class TestObsProxy(test_proxy_base.TestProxyBase):
             NotImplementedError,
             self.proxy.delete_object_metadata,
             'container',
+        )
+
+
+class TestExtractName(TestObsProxy):
+
+    def test_extract_name(self):
+
+        self.assertEqual(
+            ['bucket'],
+            self.proxy._extract_name('/', project_id='123')
+        )
+        self.assertEqual(
+            ['object'],
+            self.proxy._extract_name('/dummy', project_id='123')
+        )
+        self.assertEqual(
+            ['object'],
+            self.proxy._extract_name('/dummy/dummy2', project_id='123')
         )
