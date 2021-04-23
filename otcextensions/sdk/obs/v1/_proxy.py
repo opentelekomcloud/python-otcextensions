@@ -9,10 +9,10 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from urllib import parse
 
 from otcextensions.sdk import ak_auth
 from otcextensions.sdk import sdk_proxy
-
 from otcextensions.sdk.obs.v1 import container as _container
 from otcextensions.sdk.obs.v1 import obj as _obj
 
@@ -27,6 +27,25 @@ class Proxy(sdk_proxy.Proxy):
 
     CONTAINER_ENDPOINT = \
         'https://%(container)s.obs.%(region_name)s.otc.t-systems.com'
+
+    def _extract_name(self, url, service_type=None, project_id=None):
+        url_path = parse.urlparse(url).path.strip()
+        # Remove / from the beginning to keep the list indexes of interesting
+        # things consistent
+        if url_path.startswith('/'):
+            url_path = url_path[1:]
+
+        # Split url into parts and exclude potential project_id in some urls
+        url_parts = url_path.split('/')
+
+        # Strip out anything that's empty or None
+        parts = [part for part in url_parts if part]
+
+        # Getting the root of an endpoint is a bucket operation
+        if not parts:
+            return ['bucket']
+        else:
+            return ['object']
 
     def get_container_endpoint(self, container):
         """Override to return mapped endpoint if override and region are set
