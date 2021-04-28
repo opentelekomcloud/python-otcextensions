@@ -89,7 +89,7 @@ class TestCBRRestore(TestCBRProxy):
             method_kwargs=attrs,
             expected_args=[_restore.Restore],
             expected_kwargs=dict(
-                backup=backup.id,
+                backup_id=backup.id,
                 **attrs
             )
         )

@@ -229,7 +229,7 @@ class Proxy(proxy.Proxy):
         backup = self._get_resource(_backup.Backup, backup)
         return self._create(
             _restore.Restore,
-            backup=backup.id,
+            backup_id=backup.id,
             **attrs
         )
 
@@ -385,3 +385,65 @@ class Proxy(proxy.Proxy):
         return vault.dissociate_resources(
             self,
             resources)
+
+    # ======== Share Member ========
+    def members(self, backup, **query):
+        """List share members for a backup
+
+        :param backup: The value can be the ID of a backup
+            or a :class:`~otcextensions.sdk.cbr.v3.backup.Backup`
+            instance.
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.cbr.v3.member.Member`,
+            comprised of the properties on the Member class.
+        :returns: The results of config creation
+        :rtype: :class:`~otcextensions.sdk.cbr.v3.member.Member`
+        """
+        backup = self._get_resource(_backup.Backup, backup)
+        return self._list(
+            _member.Member,
+            backup_id=backup.id,
+            **query
+        )
+
+    def get_member(self, member):
+        """Get the vault by UUID.
+
+        :param vault: key id or an instance of
+            :class:`~otcextensions.sdk.cbr.v3.vault.Vault`
+
+        :returns: instance of
+            :class:`~otcextensions.sdk.cbr.v3.vault.Vault`
+        """
+        return self._get(
+            _vault.Vault, vault
+        )
+    
+    def add_member(self, backup, members):
+        """Add a share member to existing backup
+
+        :param backup: The value can be the ID of a backup
+            or a :class:`~otcextensions.sdk.cbr.v3.backup.Backup`
+            instance.
+        :param list members: The list contains the project IDs of the backup
+            share members to be added
+        :returns: The results are the list of share member objects
+        """
+        backup = self._get_resource(_backup.Backup, backup)
+        return self._create(
+            _member.Member,
+            backup_id=backup.id
+        )
+    
+    def update_member(self, member, status='accepted', **attrs):
+        """Update CBR share members
+
+        :param member: The id or an instance of
+            :class:`~otcextensions.sdk.cbr.v3.member.Member`
+        :param str status: status to be updated share member
+        :param dict attrs: attributes for update on
+            :class:`~otcextensions.sdk.cbr.v3.member.Member`
+
+        :rtype: :class:`~otcextensions.sdk.cbr.v3.member.Member`
+        """
+        return self._update(_member.Member, member, status=status, **attrs)
