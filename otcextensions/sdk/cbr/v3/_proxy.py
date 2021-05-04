@@ -439,7 +439,7 @@ class Proxy(proxy.Proxy):
             members=members
         )
 
-    def update_member(self, member, backup, status='accepted', vault=None):
+    def update_member(self, backup, member, status='accepted', vault=None):
         """Update CBR share members
 
         :param member: The id or an instance of
@@ -458,7 +458,7 @@ class Proxy(proxy.Proxy):
             _member.Member, member, backup_id=backup.id,
             status=status, vault_id=vault.id)
 
-    def delete_member(self, member, backup, ignore_missing=True):
+    def delete_member(self, backup, member, ignore_missing=True):
         """Delete a single CBR vault.
 
         :param member: The id or an instance of

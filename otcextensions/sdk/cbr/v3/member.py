@@ -44,6 +44,18 @@ class Member(resource.Resource):
     status = resource.Body('status')
     #: Update time
     #: Example: 2020-02-05T10:38:34.209782
-    update_at = resource.Body('update_at')
+    updated_at = resource.Body('updated_at')
     #: ID of the vault where the shared backup is stored
     vault_id = resource.Body('vault_id')
+
+    #: Updating the resource does not allow the resource key
+    def commit(
+        self, session, prepend_key=False, has_body=True,
+            retry_on_conflict=None, base_path=None, **kwargs):
+        return super(Member, self).commit(
+            session,
+            prepend_key=prepend_key,
+            has_body=has_body,
+            retry_on_conflict=retry_on_conflict,
+            base_path=base_path,
+            **kwargs)
