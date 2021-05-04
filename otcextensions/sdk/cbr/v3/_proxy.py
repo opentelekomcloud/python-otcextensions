@@ -13,6 +13,7 @@ from openstack import proxy
 
 from otcextensions.sdk.cbr.v3 import backup as _backup
 from otcextensions.sdk.cbr.v3 import checkpoint as _checkpoint
+from otcextensions.sdk.cbr.v3 import member as _member
 from otcextensions.sdk.cbr.v3 import policy as _policy
 from otcextensions.sdk.cbr.v3 import restore as _restore
 from otcextensions.sdk.cbr.v3 import vault as _vault
@@ -406,21 +407,24 @@ class Proxy(proxy.Proxy):
             **query
         )
 
-    def get_member(self, member):
-        """Get the vault by UUID.
+    def get_member(self, backup, member):
+        """Get one CBR share member by UUID.
 
-        :param vault: key id or an instance of
-            :class:`~otcextensions.sdk.cbr.v3.vault.Vault`
-
+        :param member: key id or an instance of
+            :class:`~otcextensions.sdk.cbr.v3.member.Member`
+        :param backup: The value can be the ID of a backup
+            or a :class:`~otcextensions.sdk.cbr.v3.backup.Backup`
+            instance.
         :returns: instance of
-            :class:`~otcextensions.sdk.cbr.v3.vault.Vault`
+            :class:`~otcextensions.sdk.cbr.v3.member.Member`
         """
+        backup = self._get_resource(_backup.Backup, backup)
         return self._get(
-            _vault.Vault, vault
+            _member.Member, member, backup_id=backup.id
         )
-    
-    def add_member(self, backup, members):
-        """Add a share member to existing backup
+
+    def add_members(self, backup, members):
+        """Add a list of share members to an existing backup
 
         :param backup: The value can be the ID of a backup
             or a :class:`~otcextensions.sdk.cbr.v3.backup.Backup`
@@ -430,20 +434,46 @@ class Proxy(proxy.Proxy):
         :returns: The results are the list of share member objects
         """
         backup = self._get_resource(_backup.Backup, backup)
-        return self._create(
-            _member.Member,
-            backup_id=backup.id
+        return backup.add_members(
+            self,
+            members=members
         )
-    
-    def update_member(self, member, status='accepted', **attrs):
+
+    def update_member(self, member, backup, status='accepted', vault=None):
         """Update CBR share members
 
         :param member: The id or an instance of
             :class:`~otcextensions.sdk.cbr.v3.member.Member`
+        :param backup: The value can be the ID of a backup
+            or a :class:`~otcextensions.sdk.cbr.v3.backup.Backup`
+            instance.
         :param str status: status to be updated share member
-        :param dict attrs: attributes for update on
-            :class:`~otcextensions.sdk.cbr.v3.member.Member`
-
-        :rtype: :class:`~otcextensions.sdk.cbr.v3.member.Member`
+        :param vault: The value can be the ID of a vault
+             or a :class:`~otcextensions.sdk.cbr.v3.vault.Vault`
+             instance.
         """
-        return self._update(_member.Member, member, status=status, **attrs)
+        backup = self._get_resource(_backup.Backup, backup)
+        vault = self._get_resource(_vault.Vault, vault)
+        return self._update(
+            _member.Member, member, backup_id=backup.id,
+            status=status, vault_id=vault.id)
+
+    def delete_member(self, member, backup, ignore_missing=True):
+        """Delete a single CBR vault.
+
+        :param member: The id or an instance of
+            :class:`~otcextensions.sdk.cbr.v3.member.Member`
+        :param backup: The value can be the ID of a backup
+            or a :class:`~otcextensions.sdk.cbr.v3.backup.Backup`
+            instance.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the group does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent vault.
+        """
+        backup = self._get_resource(_backup.Backup, backup)
+        return self._delete(
+            _member.Member, member, backup_id=backup.id,
+            ignore_missing=ignore_missing,
+        )

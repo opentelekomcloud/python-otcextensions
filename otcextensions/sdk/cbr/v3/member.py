@@ -26,12 +26,12 @@ class Member(resource.Resource):
     allow_commit = True
 
     _query_mapping = resource.QueryParameters(
-        'backup_id', 'created_at', 'dest_project_id', 'id', 'image_id',
+        'created_at', 'dest_project_id', 'id', 'image_id',
         'status', 'updated_at', 'vault_id')
 
     #: Properties
     #: Backup ID
-    backup_id = resource.Body('backup_id')
+    backup_id = resource.URI('backup_id')
     #: Backup sharing time
     #: Example: 2020-02-05T10:38:34.209782
     created_at = resource.Body('created_at')
@@ -47,4 +47,3 @@ class Member(resource.Resource):
     update_at = resource.Body('update_at')
     #: ID of the vault where the shared backup is stored
     vault_id = resource.Body('vault_id')
-    
