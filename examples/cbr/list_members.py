@@ -19,7 +19,7 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
 
-backup = 'df5d3389-d5ea-4115-b268-53df57c8ed49'
+backup = 'backup_name_or_id'
 backup = conn.cbr.find_backup(name_or_id=backup)
 for member in conn.cbr.members(backup=backup.id):
     print(member)
