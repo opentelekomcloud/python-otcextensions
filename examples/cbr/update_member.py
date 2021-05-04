@@ -20,7 +20,7 @@ conn = openstack.connect(cloud='otc')
 
 member = 'member_id'
 backup = 'backup_id'
-vault='vault_id'
+vault = 'vault_id'
 member = conn.cbr.update_member(
     member=member,
     backup=backup,
