@@ -459,7 +459,7 @@ class Proxy(proxy.Proxy):
             status=status, vault_id=vault.id)
 
     def delete_member(self, backup, member, ignore_missing=True):
-        """Delete a single CBR vault.
+        """Delete a single CBR share member.
 
         :param member: The id or an instance of
             :class:`~otcextensions.sdk.cbr.v3.member.Member`
@@ -468,9 +468,9 @@ class Proxy(proxy.Proxy):
             instance.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
-            the group does not exist.
+            the share member does not exist.
             When set to ``True``, no exception will be set when attempting to
-            delete a nonexistent vault.
+            delete a nonexistent share member.
         """
         backup = self._get_resource(_backup.Backup, backup)
         return self._delete(
