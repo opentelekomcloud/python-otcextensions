@@ -219,3 +219,54 @@ This interface is used to remove resources from CBR vault.
 
 .. literalinclude:: ../examples/cbr/dissociate_resources.py
    :lines: 16-27
+
+Member
+------
+This API is used to add a member with whom the backup can be shared. Only
+cloud server backups can be shared among tenants in the same region.
+
+List CBR Share Member
+^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to query CBR share members of an existing CBR Backup
+and to filter the output with query parameters.
+
+.. literalinclude:: ../examples/cbr/list_members.py
+   :lines: 16-25
+
+Get CBR Share Member
+^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to get a CBR share member by ID or an instance of
+class :class:`~otcextensions.sdk.cbr.v3.member.Member`.
+
+.. literalinclude:: ../examples/cbr/get_member.py
+   :lines: 16-25
+
+Add CBR Share Member
+^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to add a list of destination project IDs as share
+member to a given CBR backup in a source project.
+
+.. literalinclude:: ../examples/cbr/add_member.py
+   :lines: 16-24
+
+Update CBR Share Member
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to update a CBR share member instance with
+parameters.
+
+.. literalinclude:: ../examples/cbr/update_member.py
+   :lines: 16-28
+
+Delete CBR Share Member
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to delete a CBR share member instance by id
+or an instance of class
+:class:`~otcextensions.sdk.cbr.v3.member.Member`.
+
+.. literalinclude:: ../examples/cbr/delete_member.py
+   :lines: 16-25

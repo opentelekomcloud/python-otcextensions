@@ -13,6 +13,7 @@ from openstack import proxy
 
 from otcextensions.sdk.cbr.v3 import backup as _backup
 from otcextensions.sdk.cbr.v3 import checkpoint as _checkpoint
+from otcextensions.sdk.cbr.v3 import member as _member
 from otcextensions.sdk.cbr.v3 import policy as _policy
 from otcextensions.sdk.cbr.v3 import restore as _restore
 from otcextensions.sdk.cbr.v3 import vault as _vault
@@ -229,7 +230,7 @@ class Proxy(proxy.Proxy):
         backup = self._get_resource(_backup.Backup, backup)
         return self._create(
             _restore.Restore,
-            backup=backup.id,
+            backup_id=backup.id,
             **attrs
         )
 
@@ -385,3 +386,94 @@ class Proxy(proxy.Proxy):
         return vault.dissociate_resources(
             self,
             resources)
+
+    # ======== Share Member ========
+    def members(self, backup, **query):
+        """List share members for a backup
+
+        :param backup: The value can be the ID of a backup
+            or a :class:`~otcextensions.sdk.cbr.v3.backup.Backup`
+            instance.
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.cbr.v3.member.Member`,
+            comprised of the properties on the Member class.
+        :returns: The results of config creation
+        :rtype: :class:`~otcextensions.sdk.cbr.v3.member.Member`
+        """
+        backup = self._get_resource(_backup.Backup, backup)
+        return self._list(
+            _member.Member,
+            backup_id=backup.id,
+            **query
+        )
+
+    def get_member(self, backup, member):
+        """Get one CBR share member by UUID.
+
+        :param member: key id or an instance of
+            :class:`~otcextensions.sdk.cbr.v3.member.Member`
+        :param backup: The value can be the ID of a backup
+            or a :class:`~otcextensions.sdk.cbr.v3.backup.Backup`
+            instance.
+        :returns: instance of
+            :class:`~otcextensions.sdk.cbr.v3.member.Member`
+        """
+        backup = self._get_resource(_backup.Backup, backup)
+        return self._get(
+            _member.Member, member, backup_id=backup.id
+        )
+
+    def add_members(self, backup, members):
+        """Add a list of share members to an existing backup
+
+        :param backup: The value can be the ID of a backup
+            or a :class:`~otcextensions.sdk.cbr.v3.backup.Backup`
+            instance.
+        :param list members: The list contains the project IDs of the backup
+            share members to be added
+        :returns: The results are the list of share member objects
+        """
+        backup = self._get_resource(_backup.Backup, backup)
+        return backup.add_members(
+            self,
+            members=members
+        )
+
+    def update_member(self, backup, member, status='accepted', vault=None):
+        """Update CBR share members
+
+        :param member: The id or an instance of
+            :class:`~otcextensions.sdk.cbr.v3.member.Member`
+        :param backup: The value can be the ID of a backup
+            or a :class:`~otcextensions.sdk.cbr.v3.backup.Backup`
+            instance.
+        :param str status: status to be updated share member
+        :param vault: The value can be the ID of a vault
+             or a :class:`~otcextensions.sdk.cbr.v3.vault.Vault`
+             instance.
+        """
+        backup = self._get_resource(_backup.Backup, backup)
+        vault = self._get_resource(_vault.Vault, vault)
+        return self._update(
+            _member.Member, member, backup_id=backup.id,
+            status=status, vault_id=vault.id)
+
+    def delete_member(self, backup, member, ignore_missing=True):
+        """Delete a single CBR share member.
+
+        :param member: The id or an instance of
+            :class:`~otcextensions.sdk.cbr.v3.member.Member`
+        :param backup: The value can be the ID of a backup
+            or a :class:`~otcextensions.sdk.cbr.v3.backup.Backup`
+            instance.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the share member does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent share member.
+        """
+        backup = self._get_resource(_backup.Backup, backup)
+        return self._delete(
+            _member.Member, member, backup_id=backup.id,
+            ignore_missing=ignore_missing,
+        )

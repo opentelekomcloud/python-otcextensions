@@ -188,3 +188,22 @@ class TestBackup(base.TestCase):
         self.assertEqual(
             EXAMPLE['extend_info']['app_consistency']['error_status'],
             test_backup.extend_info.app_consistency.error_status)
+
+    def test_add_members(self):
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.headers = {}
+        mock_response.json.return_value = {}
+
+        self.sess.post.return_value = mock_response
+
+        sot = _backup.Backup.existing(id=EXAMPLE['id'])
+
+        members = ['member1', 'member2']
+
+        sot.add_members(self.sess, members)
+
+        self.sess.post.assert_called_once_with(
+            'backups/%s/members' % EXAMPLE['id'],
+            json={'members': members}
+        )
