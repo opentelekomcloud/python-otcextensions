@@ -37,7 +37,7 @@ class Restore(resource.Resource):
 
     #: Properties
     #: URI backup reference
-    backup = resource.URI('backup_id')
+    backup_id = resource.URI('backup_id')
     #: Restores mapping relationship.
     #: Mandatory for VM restoreation and optional for disk restoration
     mappings = resource.Body('mappings', type=Mappings)
