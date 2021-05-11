@@ -166,11 +166,8 @@ class TestInstance(base.BaseFunctionalTest):
             instances = list(self.conn.auto_scaling.instances(
                 group=as_group
             ))
-            if ((len(instances) == self.MAX_INSTANCE_NUMBER)
-                    and (instances[0].lifecycle_state == 'INSERVICE')):
-                return instances[0]
-            else:
-                continue
+            if len(instances) == self.MAX_INSTANCE_NUMBER and instances[0].id:
+                return self.conn.auto_scaling.wait_for_instance(instances[0])
 
     def _delete_instance(self, instance, as_group):
         timeout = int(os.environ.get('OS_TEST_TIMEOUT'))
@@ -178,17 +175,10 @@ class TestInstance(base.BaseFunctionalTest):
             instance=instance,
             delete_instance=True
         )
-        for count in utils.iterate_timeout(
-            timeout=timeout,
-            message="Timeout waiting for deleting instance"
-        ):
-            instances = list(self.conn.auto_scaling.instances(
-                group=as_group
-            ))
-            if len(instances) == 0:
-                return None
-            else:
-                continue
+        self.conn.auto_scaling.wait_for_delete_instance(
+            instance=instance,
+            wait=timeout
+        )
 
     def _initialize_as_group_with_instance(self):
         self.key_pair = self._create_keypair()

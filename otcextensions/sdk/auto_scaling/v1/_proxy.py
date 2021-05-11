@@ -10,6 +10,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import proxy
+from openstack import utils
+
 from otcextensions.sdk.auto_scaling.v1 import activity as _activity
 from otcextensions.sdk.auto_scaling.v1 import config as _config
 from otcextensions.sdk.auto_scaling.v1 import group as _group
@@ -447,6 +449,68 @@ class Proxy(proxy.Proxy):
         group = self._get_resource(_group.Group, group)
         instance = _instance.Instance(scaling_group_id=group.id)
         return instance.batch_action(self, instances, action, delete_instance)
+
+    def wait_for_instance(self, instance, status='INSERVICE', failures=None,
+                          interval=2, wait=180):
+        """Wait for an instance to be in a particular status.
+
+        :param instance:
+            The :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`
+            or ID to wait on to reach the specified status.
+        :param status: Desired status.
+        :param failures:
+            Statuses that would be interpreted as failures.
+        :type failures: :py:class:`list`
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait before the change.
+            Default to 180
+        :return: The resource is returned on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` if transition
+                 to the desired status failed to occur in specified seconds.
+        :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
+                 has transited to one of the failure statuses.
+        """
+        failures = ['ERROR'] if failures is None else failures
+        for count in utils.iterate_timeout(
+            timeout=wait,
+            message="Timeout waiting for instance to be in {status} status"
+                    .format(status=status),
+            wait=interval
+        ):
+            instance = self._find(_instance.Instance, name_or_id=instance.id,
+                                  group_id=instance.scaling_group_id)
+            if instance and instance.lifecycle_state == status:
+                return instance
+
+    def wait_for_delete_instance(self, instance, interval=2, wait=180):
+        """Wait for the instance to be deleted.
+
+        :param instance:
+            The :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`
+            to wait on to be deleted.
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait for the delete.
+            Default to 180.
+        :return: Method returns self on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` transition
+                 to status failed to occur in wait seconds.
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        for count in utils.iterate_timeout(
+            timeout=wait,
+            message="Timeout waiting for instance to delete",
+            wait=interval
+        ):
+            instance = self._find(_instance.Instance, name_or_id=instance.id,
+                          group_id = instance.scaling_group_id)
+            if instance is None:
+                return instance
 
     # ======== Activities ========
     def activities(self, group, **query):
