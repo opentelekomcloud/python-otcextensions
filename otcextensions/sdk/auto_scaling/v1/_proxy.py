@@ -140,7 +140,7 @@ class Proxy(proxy.Proxy):
         return group.pause(self)
 
     def wait_for_group(self, group, status='INSERVICE', failures=None,
-                          interval=2, wait=180):
+                       interval=2, wait=180):
         """Wait for a group to be in a particular status.
 
         :param group: The value can be the ID of a group
@@ -567,7 +567,7 @@ class Proxy(proxy.Proxy):
             wait=interval
         ):
             instance = self._find(_instance.Instance, name_or_id=instance.id,
-                          group_id=instance.scaling_group_id)
+                                  group_id=instance.scaling_group_id)
             if instance is None:
                 return instance
 
