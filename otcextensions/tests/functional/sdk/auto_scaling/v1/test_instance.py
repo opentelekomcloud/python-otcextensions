@@ -149,13 +149,14 @@ class TestInstance(base.BaseFunctionalTest):
         }
         as_group = self.conn.auto_scaling.create_group(**group_attrs)
         self.conn.auto_scaling.resume_group(as_group)
-        return as_group
+        return self.conn.auto_scaling.wait_for_group(as_group)
 
     def _delete_as_group(self, as_group):
         self.conn.auto_scaling.pause_group(as_group)
-        return self.conn.auto_scaling.delete_group(
+        self.conn.auto_scaling.delete_group(
             group=as_group
         )
+        return self.conn.auto_scaling.wait_for_delete_group(as_group)
 
     def _wait_for_instance(self, as_group):
         timeout = int(os.environ.get('OS_TEST_TIMEOUT'))

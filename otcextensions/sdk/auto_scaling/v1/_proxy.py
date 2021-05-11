@@ -11,6 +11,7 @@
 # under the License.
 from openstack import proxy
 from openstack import utils
+from openstack import resource
 
 from otcextensions.sdk.auto_scaling.v1 import activity as _activity
 from otcextensions.sdk.auto_scaling.v1 import config as _config
@@ -137,6 +138,63 @@ class Proxy(proxy.Proxy):
             _group.Group, group
         )
         return group.pause(self)
+
+    def wait_for_group(self, group, status='INSERVICE', failures=None,
+                          interval=2, wait=180):
+        """Wait for a group to be in a particular status.
+
+        :param group: The value can be the ID of a group
+            or a :class:`~otcextensions.sdk.auto_scaling.v1.group.Group`
+            instance
+        :param status: Desired status.
+        :param failures:
+            Statuses that would be interpreted as failures.
+        :type failures: :py:class:`list`
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait before the change.
+            Default to 180
+        :return: The resource is returned on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` if transition
+                 to the desired status failed to occur in specified seconds.
+        :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
+                 has transited to one of the failure statuses.
+        """
+        group = self._get_resource(
+            _group.Group, group
+        )
+        failures = ['ERROR'] if failures is None else failures
+        return resource.wait_for_status(
+            self, group, status, failures, interval, wait
+        )
+
+    def wait_for_delete_group(self, group, interval=2, wait=60):
+        """Wait for the group to be deleted.
+
+        :param group:
+            The :class:`~otcextensions.sdk.auto_scaling.v1.group.Group`
+            to wait on to be deleted.
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait for the delete.
+            Default to 60.
+        :return: Method returns self on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` transition
+                 to status failed to occur in wait seconds.
+        """
+        group = self._get_resource(_group.Group, group)
+        for count in utils.iterate_timeout(
+            timeout=wait,
+            message="Timeout waiting for group to delete",
+            wait=interval
+        ):
+            group = self._find(_group.Group, name_or_id=group.id)
+            if group is None:
+                return group
 
     # ======== Configurations ========
     def configs(self, **query):
@@ -473,6 +531,7 @@ class Proxy(proxy.Proxy):
         :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
                  has transited to one of the failure statuses.
         """
+        instance = self._get_resource(_instance.Instance, instance)
         failures = ['ERROR'] if failures is None else failures
         for count in utils.iterate_timeout(
             timeout=wait,
@@ -508,7 +567,7 @@ class Proxy(proxy.Proxy):
             wait=interval
         ):
             instance = self._find(_instance.Instance, name_or_id=instance.id,
-                          group_id = instance.scaling_group_id)
+                          group_id=instance.scaling_group_id)
             if instance is None:
                 return instance
 
