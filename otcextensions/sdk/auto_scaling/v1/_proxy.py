@@ -10,8 +10,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import proxy
-from openstack import utils
 from openstack import resource
+from openstack import utils
 
 from otcextensions.sdk.auto_scaling.v1 import activity as _activity
 from otcextensions.sdk.auto_scaling.v1 import config as _config
@@ -175,7 +175,7 @@ class Proxy(proxy.Proxy):
 
         :param group:
             The :class:`~otcextensions.sdk.auto_scaling.v1.group.Group`
-            to wait on to be deleted.
+            or group ID to wait on to be deleted.
         :param int interval:
             Number of seconds to wait before to consecutive checks.
             Default to 2.
@@ -187,14 +187,7 @@ class Proxy(proxy.Proxy):
                  to status failed to occur in wait seconds.
         """
         group = self._get_resource(_group.Group, group)
-        for count in utils.iterate_timeout(
-            timeout=wait,
-            message="Timeout waiting for group to delete",
-            wait=interval
-        ):
-            group = self._find(_group.Group, name_or_id=group.id)
-            if group is None:
-                return group
+        return resource.wait_for_delete(self, group, interval, wait)
 
     # ======== Configurations ========
     def configs(self, **query):
@@ -514,7 +507,7 @@ class Proxy(proxy.Proxy):
 
         :param instance:
             The :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`
-            or ID to wait on to reach the specified status.
+            or instance ID to wait on to reach the specified status.
         :param status: Desired status.
         :param failures:
             Statuses that would be interpreted as failures.
@@ -549,7 +542,7 @@ class Proxy(proxy.Proxy):
 
         :param instance:
             The :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`
-            to wait on to be deleted.
+            or instance ID to wait on to be deleted.
         :param int interval:
             Number of seconds to wait before to consecutive checks.
             Default to 2.
@@ -569,7 +562,7 @@ class Proxy(proxy.Proxy):
             instance = self._find(_instance.Instance, name_or_id=instance.id,
                                   group_id=instance.scaling_group_id)
             if instance is None:
-                return instance
+                return
 
     # ======== Activities ========
     def activities(self, group, **query):
