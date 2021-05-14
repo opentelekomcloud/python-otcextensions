@@ -14,6 +14,7 @@
 import logging
 
 from osc_lib import utils
+from osc_lib import exceptions
 from osc_lib.command import command
 
 from otcextensions.i18n import _
@@ -31,14 +32,13 @@ def _flatten_policy(obj):
         'enabled': obj.enabled,
         'operation_type': obj.operation_type,
         'retention_duration_days': od.retention_duration_days,
+        'max_backups': od.max_backups,
         'year_backups': od.year_backups,
         'day_backups': od.day_backups,
         'week_backups': od.week_backups,
         'month_backups': od.month_backups,
         'timezone': od.timezone,
         'start_time': obj.trigger.properties.start_time,
-        'scheduler_id': obj.trigger.id,
-        'scheduler_name': obj.trigger.name,
     }
 
     return data
@@ -117,13 +117,12 @@ class ShowPolicy(command.ShowOne):
         'start_time',
         'enabled',
         'retention_duration_days',
+        'max_backups',
         'day_backups',
         'week_backups',
         'month_backups',
         'year_backups',
         'timezone',
-        'scheduler_id',
-        'scheduler_name',
     )
 
     def get_parser(self, prog_name):
@@ -138,11 +137,9 @@ class ShowPolicy(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.cbr
 
-        policy = client.find_policy(parsed_args.policy,
-                                    ignore_missing=False)
-
         obj = client.find_policy(
-            name_or_id=policy.id,
+            name_or_id=parsed_args.policy,
+            ignore_missing=False
         )
 
         data = utils.get_dict_properties(
@@ -158,6 +155,7 @@ class ShowPolicy(command.ShowOne):
 
         return (self.columns, data)
 
+
 class CreatePolicy(command.ShowOne):
     _description = _('Create CBR Policy')
     columns = (
@@ -167,13 +165,12 @@ class CreatePolicy(command.ShowOne):
         'start_time',
         'enabled',
         'retention_duration_days',
+        'max_backups',
         'day_backups',
         'week_backups',
         'month_backups',
         'year_backups',
         'timezone',
-        'scheduler_id',
-        'scheduler_name',
     )
 
     def get_parser(self, prog_name):
@@ -184,11 +181,9 @@ class CreatePolicy(command.ShowOne):
             help=_('Name of the CBR Policy.')
         )
         parser.add_argument(
-            '--enabled',
-            metavar='<autoscaling_enabled>',
-            default=True,
-            type=bool,
-            help=_('Enables or disables CBR Policy')
+            '--disable',
+            action='store_false',
+            help=_('Disables CBR Policy which is enabled by default.')
         )
         parser.add_argument(
             '--operation-type',
@@ -199,21 +194,31 @@ class CreatePolicy(command.ShowOne):
                    'Default: backup')
         )
         parser.add_argument(
+            '--pattern',
+            metavar='<pattern>',
+            required=True,
+            action='append',
+            dest='patterns',
+            help=_('Scheduling rule.\n'
+                   'Repeat Option for multiple rules.')
+        )
+        parser.add_argument(
             '--day-backups',
             metavar='<day_backups>',
             type=int,
             help=_('Specifies the number of retained daily backups.\n'
                    'Ranges from 0 to 100.\n'
                    'If this parameter is configured, timezone is '
-                   'mandatory.)
+                   'mandatory.')
         )
         parser.add_argument(
-            '--max-backups',
-            metavar='<max_backups>',
+            '--week-backups',
+            metavar='<week_backups>',
             type=int,
-            help=_('Maximum number of retained backups.\n'
-                   'Can be -1, backups will not cleared or ranges\n'
-                   'from 0 to 99999.')
+            help=_('Specifies the number of retained weekly backups.\n'
+                   'Ranges from 0 to 100.\n'
+                   'If this parameter is configured, timezone is '
+                   'mandatory.')
         )
         parser.add_argument(
             '--month-backups',
@@ -222,7 +227,29 @@ class CreatePolicy(command.ShowOne):
             help=_('Specifies the number of retained monthly backups.\n'
                    'Ranges from 0 to 100.\n'
                    'If this parameter is configured, timezone is '
-                   'mandatory.)
+                   'mandatory.')
+        )
+        parser.add_argument(
+            '--year-backups',
+            metavar='<year_backups>',
+            type=int,
+            help=_('Specifies the number of retained yearly backups.\n'
+                   'Ranges from 0 to 100.\n'
+                   'If this parameter is configured, timezone is '
+                   'mandatory.')
+        )
+        parser.add_argument(
+            '--timezone',
+            metavar='<timezone>',
+            help=_('Timezone where the user is located, e.g. UTC+08:00.')
+        )
+        parser.add_argument(
+            '--max-backups',
+            metavar='<max_backups>',
+            type=int,
+            help=_('Maximum number of retained backups.\n'
+                   'Can be -1, backups will not cleared or ranges\n'
+                   'from 0 to 99999.')
         )
         parser.add_argument(
             '--retention-duration-days',
@@ -234,10 +261,115 @@ class CreatePolicy(command.ShowOne):
                    'cleared based on the retention duration.\n'
                    'Ranges from 1 to 99999.')
         )
+        return parser
+
+    def take_action(self, parsed_args):
+
+        attrs = {
+            'operation_definition': {},
+            'trigger': {
+                'properties': {
+                    'pattern': {}
+                }
+            }
+        }
+
+        # mandatory
+        attrs['name'] = parsed_args.name
+        attrs['enabled'] = parsed_args.disable
+        attrs['operation_type'] = parsed_args.operation_type
+        attrs['trigger']['properties']['pattern'] = parsed_args.patterns
+
+        # optional
+        if parsed_args.day_backups:
+            attrs['operation_definition']['day_backups'] = parsed_args.day_backups
+        if parsed_args.week_backups:
+            attrs['operation_definition']['week_backups'] = parsed_args.week_backups
+        if parsed_args.month_backups:
+            attrs['operation_definition']['month_backups'] = parsed_args.month_backups
+        if parsed_args.year_backups:
+            attrs['operation_definition']['year_backups'] = parsed_args.year_backups
+        if parsed_args.max_backups:
+            attrs['operation_definition']['max_backups'] = parsed_args.max_backups
+        if parsed_args.retention_duration_days:
+            attrs['operation_definition']['retention_duration_days'] = parsed_args.retention_duration_days
+
+        if (parsed_args.day_backups
+            or parsed_args.week_backups
+            or parsed_args.month_backups
+                or parsed_args.year_backups) and not parsed_args.timezone:
+            msg = ("Parameter timezone must be provided if "
+                    "<day|week|month|year>_backups are being used.")
+            raise exceptions.BadRequest(msg)
+
+        if parsed_args.timezone:
+            attrs['operation_definition']['timezone'] = parsed_args.timezone
+
+        print(attrs)
+
+        client = self.app.client_manager.cbr
+        obj = client.create_policy(**attrs)
+
+        data = utils.get_dict_properties(
+            _flatten_policy(obj), self.columns)
+
+        if obj.associated_vaults:
+            data, self.columns = _add_vaults_to_policy_obj(
+                obj, data, self.columns)
+
+        if obj.trigger.properties.pattern:
+            data, self.columns = _add_scheduling_patterns(
+                obj, data, self.columns)
+
+        return (self.columns, data)
+
+'''
+class UpdatePolicy(command.ShowOne):
+    _description = _('Update CBR Policy')
+    columns = (
+        'ID',
+        'name',
+        'operation_type',
+        'start_time',
+        'enabled',
+        'retention_duration_days',
+        'max_backups',
+        'day_backups',
+        'week_backups',
+        'month_backups',
+        'year_backups',
+        'timezone',
+    )
+
+    def get_parser(self, prog_name):
+        parser = super(CreatePolicy, self).get_parser(prog_name)
         parser.add_argument(
-            '--timezone',
-            metavar='<timezone>',
-            help=_('Timezone where the user is located, e.g. UTC+08:00.')
+            '--name',
+            metavar='<name>',
+            help=_('Name of the CBR Policy.')
+        )
+        parser.add_argument(
+            '--enabled',
+            metavar='<autoscaling_enabled>',
+            type=bool,
+            help=_('Enables or disables CBR Policy')
+        )
+        parser.add_argument(
+            '--pattern',
+            metavar='<pattern>',
+            action='append',
+            dest='patterns',
+            help=_('Scheduling rule.\n'
+                   'Repeat Option for multiple rules.')
+        )
+        parser.add_argument(
+            '--day-backups',
+            metavar='<day_backups>',
+            type=int,
+            help=_('Specifies the number of retained daily backups.\n'
+                   'Ranges from 0 to 100.\n'
+                   'If this parameter is configured, timezone is '
+                   'mandatory.')
         )
         parser.add_argument(
             '--week-backups',
@@ -246,7 +378,16 @@ class CreatePolicy(command.ShowOne):
             help=_('Specifies the number of retained weekly backups.\n'
                    'Ranges from 0 to 100.\n'
                    'If this parameter is configured, timezone is '
-                   'mandatory.)
+                   'mandatory.')
+        )
+        parser.add_argument(
+            '--month-backups',
+            metavar='<month_backups>',
+            type=int,
+            help=_('Specifies the number of retained monthly backups.\n'
+                   'Ranges from 0 to 100.\n'
+                   'If this parameter is configured, timezone is '
+                   'mandatory.')
         )
         parser.add_argument(
             '--year-backups',
@@ -255,35 +396,111 @@ class CreatePolicy(command.ShowOne):
             help=_('Specifies the number of retained yearly backups.\n'
                    'Ranges from 0 to 100.\n'
                    'If this parameter is configured, timezone is '
-                   'mandatory.)
+                   'mandatory.')
         )
         parser.add_argument(
-            '--pattern',
-            metavar='<pattern>',
-            required=True,
-            action='append',
-            help=_('Scheduling rule.\n'
-                   'Repeat Option for multiple rules.)
+            '--timezone',
+            metavar='<timezone>',
+            help=_('Timezone where the user is located, e.g. UTC+08:00.')
+        )
+        parser.add_argument(
+            '--max-backups',
+            metavar='<max_backups>',
+            type=int,
+            help=_('Maximum number of retained backups.\n'
+                   'Can be -1, backups will not cleared or ranges\n'
+                   'from 0 to 99999.')
+        )
+        parser.add_argument(
+            '--retention-duration-days',
+            metavar='<retention_duration_days>',
+            default=-1,
+            type=int,
+            help=_('Duration of retaining a backup, in days.\n'
+                   '-1 indicates that the backups will not be '
+                   'cleared based on the retention duration.\n'
+                   'Ranges from 1 to 99999.')
         )
         return parser
 
     def take_action(self, parsed_args):
 
         attrs = {}
-        # mandatory
-        attrs['cluster'] = parsed_args.cluster
+        attrs = {
+            'operation_definition': {},
+            'trigger': {
+                'properties': {
+                    'pattern': {}
+                }
+            }
+        }
 
+        if parsed_args.name:
+            attrs['name'] = parsed_args.name
+        if pars
+        attrs['enabled'] = parsed_args.enabled
+        attrs['trigger']['properties']['pattern'] = parsed_args.patterns
+        if parsed_args.day_backups:
+            attrs['operation_definition']['day_backups'] = parsed_args.day_backups
+        if parsed_args.week_backups:
+            attrs['operation_definition']['week_backups'] = parsed_args.week_backups
+        if parsed_args.month_backups:
+            attrs['operation_definition']['month_backups'] = parsed_args.month_backups
+        if parsed_args.year_backups:
+            attrs['operation_definition']['year_backups'] = parsed_args.year_backups
+        if parsed_args.max_backups:
+            attrs['operation_definition']['max_backups'] = parsed_args.max_backups
+        if parsed_args.retention_duration_days:
+            attrs['operation_definition']['retention_duration_days'] = parsed_args.retention_duration_days
 
-        # optional
-        if parsed_args.az:
-            attrs['availability_zone'] = parsed_args.az
+        if (parsed_args.day_backups
+            or parsed_args.week_backups
+            or parsed_args.month_backups
+                or parsed_args.year_backups) and not parsed_args.timezone:
+            msg = ("Parameter timezone must be provided if "
+                    "<day|week|month|year>_backups are being used.")
+            raise exceptions.BadRequest(msg)
 
+        if parsed_args.timezone:
+            attrs['operation_definition']['timezone'] = parsed_args.timezone
 
-        obj = self.app.client_manager.sdk_connection.create_cce_node_pool(
-            **attrs)
+        client = self.app.client_manager.cbr
+        obj = client.create_policy(**attrs)
 
         data = utils.get_dict_properties(
-            _flatten_node_pool(obj),
-            self.columns)
+            _flatten_policy(obj), self.columns)
+
+        if obj.associated_vaults:
+            data, self.columns = _add_vaults_to_policy_obj(
+                obj, data, self.columns)
+
+        if obj.trigger.properties.pattern:
+            data, self.columns = _add_scheduling_patterns(
+                obj, data, self.columns)
 
         return (self.columns, data)
+'''
+
+class DeletePolicy(command.Command):
+    _description = _('Delete CBR Policy')
+
+    def get_parser(self, prog_name):
+        parser = super(DeletePolicy, self).get_parser(prog_name)
+        parser.add_argument(
+            'policy',
+            metavar='<policy>',
+            help=_('ID or name of the CBR Policy.')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.cbr
+
+        policy = client.find_policy(
+            name_or_id=parsed_args.policy,
+            ignore_missing=False
+        )
+
+        self.app.client_manager.cbr.delete_policy(
+            policy=policy.id,
+            ignore_missing=False)
