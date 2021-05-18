@@ -269,7 +269,7 @@ class CreatePolicy(command.ShowOne):
             'operation_definition': {},
             'trigger': {
                 'properties': {
-                    'pattern': {}
+                    'pattern': []
                 }
             }
         }
@@ -282,30 +282,36 @@ class CreatePolicy(command.ShowOne):
 
         # optional
         if parsed_args.day_backups:
-            attrs['operation_definition']['day_backups'] = parsed_args.day_backups
+            attrs['operation_definition'].update(
+                day_backups=parsed_args.day_backups)
         if parsed_args.week_backups:
-            attrs['operation_definition']['week_backups'] = parsed_args.week_backups
+            attrs['operation_definition'].update(
+                week_backups=parsed_args.week_backups)
         if parsed_args.month_backups:
-            attrs['operation_definition']['month_backups'] = parsed_args.month_backups
+            attrs['operation_definition'].update(
+                month_backups=parsed_args.month_backups)
         if parsed_args.year_backups:
-            attrs['operation_definition']['year_backups'] = parsed_args.year_backups
+            attrs['operation_definition'].update(
+                year_backups=parsed_args.year_backups)
         if parsed_args.max_backups:
-            attrs['operation_definition']['max_backups'] = parsed_args.max_backups
+            attrs['operation_definition'].update(
+                max_backups=parsed_args.max_backups)
         if parsed_args.retention_duration_days:
-            attrs['operation_definition']['retention_duration_days'] = parsed_args.retention_duration_days
+            rdd = parsed_args.retention_duration_days
+            attrs['operation_definition'].update(
+                retention_duration_days=rdd)
 
         if (parsed_args.day_backups
             or parsed_args.week_backups
             or parsed_args.month_backups
                 or parsed_args.year_backups) and not parsed_args.timezone:
             msg = ("Parameter timezone must be provided if "
-                    "<day|week|month|year>_backups are being used.")
+                   "<day|week|month|year>_backups are being used.")
             raise exceptions.BadRequest(msg)
 
         if parsed_args.timezone:
-            attrs['operation_definition']['timezone'] = parsed_args.timezone
-
-        print(attrs)
+            attrs['operation_definition'].update(
+                timezone=parsed_args.timezone)
 
         client = self.app.client_manager.cbr
         obj = client.create_policy(**attrs)
@@ -323,7 +329,7 @@ class CreatePolicy(command.ShowOne):
 
         return (self.columns, data)
 
-'''
+
 class UpdatePolicy(command.ShowOne):
     _description = _('Update CBR Policy')
     columns = (
@@ -342,17 +348,26 @@ class UpdatePolicy(command.ShowOne):
     )
 
     def get_parser(self, prog_name):
-        parser = super(CreatePolicy, self).get_parser(prog_name)
+        parser = super(UpdatePolicy, self).get_parser(prog_name)
+        parser.add_argument(
+            'policy',
+            metavar='<policy>',
+            help=_('ID or name of the CBR Policy.')
+        )
         parser.add_argument(
             '--name',
             metavar='<name>',
             help=_('Name of the CBR Policy.')
         )
         parser.add_argument(
-            '--enabled',
-            metavar='<autoscaling_enabled>',
-            type=bool,
-            help=_('Enables or disables CBR Policy')
+            '--disable',
+            action='store_true',
+            help=_('Disables CBR Policy which is enabled by default.')
+        )
+        parser.add_argument(
+            '--enable',
+            action='store_true',
+            help=_('Enables CBR Policy.')
         )
         parser.add_argument(
             '--pattern',
@@ -414,7 +429,6 @@ class UpdatePolicy(command.ShowOne):
         parser.add_argument(
             '--retention-duration-days',
             metavar='<retention_duration_days>',
-            default=-1,
             type=int,
             help=_('Duration of retaining a backup, in days.\n'
                    '-1 indicates that the backups will not be '
@@ -426,46 +440,64 @@ class UpdatePolicy(command.ShowOne):
     def take_action(self, parsed_args):
 
         attrs = {}
-        attrs = {
-            'operation_definition': {},
-            'trigger': {
-                'properties': {
-                    'pattern': {}
-                }
-            }
-        }
 
         if parsed_args.name:
             attrs['name'] = parsed_args.name
-        if pars
-        attrs['enabled'] = parsed_args.enabled
-        attrs['trigger']['properties']['pattern'] = parsed_args.patterns
-        if parsed_args.day_backups:
-            attrs['operation_definition']['day_backups'] = parsed_args.day_backups
-        if parsed_args.week_backups:
-            attrs['operation_definition']['week_backups'] = parsed_args.week_backups
-        if parsed_args.month_backups:
-            attrs['operation_definition']['month_backups'] = parsed_args.month_backups
-        if parsed_args.year_backups:
-            attrs['operation_definition']['year_backups'] = parsed_args.year_backups
-        if parsed_args.max_backups:
-            attrs['operation_definition']['max_backups'] = parsed_args.max_backups
-        if parsed_args.retention_duration_days:
-            attrs['operation_definition']['retention_duration_days'] = parsed_args.retention_duration_days
+        if parsed_args.enable:
+            attrs['enabled'] = True
+        if parsed_args.disable:
+            attrs['enabled'] = False
+        if parsed_args.patterns:
+            trigger = {
+                "trigger": {
+                    'properties': {
+                        'pattern': parsed_args.patterns
+                    }
+                }
+            }
+            attrs.update(trigger)
 
         if (parsed_args.day_backups
             or parsed_args.week_backups
             or parsed_args.month_backups
-                or parsed_args.year_backups) and not parsed_args.timezone:
-            msg = ("Parameter timezone must be provided if "
-                    "<day|week|month|year>_backups are being used.")
-            raise exceptions.BadRequest(msg)
-
-        if parsed_args.timezone:
-            attrs['operation_definition']['timezone'] = parsed_args.timezone
+            or parsed_args.year_backups
+            or parsed_args.max_backups
+            or parsed_args.retention_duration_days
+                or parsed_args.timezone):
+            attrs['operation_definition'] = {}
+            if parsed_args.day_backups:
+                attrs['operation_definition'].update(
+                    day_backups=parsed_args.day_backups)
+            if parsed_args.week_backups:
+                attrs['operation_definition'].update(
+                    week_backups=parsed_args.week_backups)
+            if parsed_args.month_backups:
+                attrs['operation_definition'].update(
+                    month_backups=parsed_args.month_backups)
+            if parsed_args.year_backups:
+                attrs['operation_definition'].update(
+                    year_backups=parsed_args.year_backups)
+            if parsed_args.max_backups:
+                attrs['operation_definition'].update(
+                    max_backups=parsed_args.max_backups)
+            if parsed_args.retention_duration_days:
+                rdd = parsed_args.retention_duration_days
+                attrs['operation_definition'].update(
+                    retention_duration_days=rdd)
+            if parsed_args.timezone:
+                attrs['operation_definition'].update(
+                    timezone=parsed_args.timezone)
 
         client = self.app.client_manager.cbr
-        obj = client.create_policy(**attrs)
+        policy = client.find_policy(
+            name_or_id=parsed_args.policy,
+            ignore_missing=False
+        )
+
+        if attrs:
+            obj = client.update_policy(policy=policy.id, **attrs)
+        else:
+            obj = policy
 
         data = utils.get_dict_properties(
             _flatten_policy(obj), self.columns)
@@ -479,7 +511,7 @@ class UpdatePolicy(command.ShowOne):
                 obj, data, self.columns)
 
         return (self.columns, data)
-'''
+
 
 class DeletePolicy(command.Command):
     _description = _('Delete CBR Policy')
