@@ -149,13 +149,14 @@ class TestInstance(base.BaseFunctionalTest):
         }
         as_group = self.conn.auto_scaling.create_group(**group_attrs)
         self.conn.auto_scaling.resume_group(as_group)
-        return as_group
+        return self.conn.auto_scaling.wait_for_group(as_group)
 
     def _delete_as_group(self, as_group):
         self.conn.auto_scaling.pause_group(as_group)
-        return self.conn.auto_scaling.delete_group(
+        self.conn.auto_scaling.delete_group(
             group=as_group
         )
+        self.conn.auto_scaling.wait_for_delete_group(as_group)
 
     def _wait_for_instance(self, as_group):
         timeout = int(os.environ.get('OS_TEST_TIMEOUT'))
@@ -166,11 +167,8 @@ class TestInstance(base.BaseFunctionalTest):
             instances = list(self.conn.auto_scaling.instances(
                 group=as_group
             ))
-            if ((len(instances) == self.MAX_INSTANCE_NUMBER)
-                    and (instances[0].lifecycle_state == 'INSERVICE')):
-                return instances[0]
-            else:
-                continue
+            if len(instances) == self.MAX_INSTANCE_NUMBER and instances[0].id:
+                return self.conn.auto_scaling.wait_for_instance(instances[0])
 
     def _delete_instance(self, instance, as_group):
         timeout = int(os.environ.get('OS_TEST_TIMEOUT'))
@@ -178,17 +176,10 @@ class TestInstance(base.BaseFunctionalTest):
             instance=instance,
             delete_instance=True
         )
-        for count in utils.iterate_timeout(
-            timeout=timeout,
-            message="Timeout waiting for deleting instance"
-        ):
-            instances = list(self.conn.auto_scaling.instances(
-                group=as_group
-            ))
-            if len(instances) == 0:
-                return None
-            else:
-                continue
+        self.conn.auto_scaling.wait_for_delete_instance(
+            instance=instance,
+            wait=timeout
+        )
 
     def _initialize_as_group_with_instance(self):
         self.key_pair = self._create_keypair()
