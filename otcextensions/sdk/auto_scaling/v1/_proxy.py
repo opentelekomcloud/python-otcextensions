@@ -560,7 +560,8 @@ class Proxy(proxy.Proxy):
             wait=interval
         ):
             instance = self._find(_instance.Instance, name_or_id=instance.id,
-                                  group_id=instance.scaling_group_id)
+                                  group_id=instance.scaling_group_id,
+                                  ignore_missing=True)
             if instance is None:
                 return
 
