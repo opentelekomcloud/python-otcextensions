@@ -52,7 +52,7 @@ EXAMPLE = {
     ]
 }
 
-EXAMPLE_LB_LIST = {
+EXAMPLE_LB = {
     "networks": [
         {
             "id": " a8327883-6b07-4497-9c61-68d03ee193a "
@@ -124,8 +124,8 @@ class TestGroup(base.TestCase):
         self.assertEqual(EXAMPLE['create_time'], sot.create_time)
 
     def test_make_it_lb_listeners(self):
-        sot = group.Group(**EXAMPLE_LB_LIST)
-        self.assertEqual(EXAMPLE_LB_LIST['scaling_group_id'], sot.id)
-        self.assertEqual(EXAMPLE_LB_LIST['scaling_group_name'], sot.name)
-        self.assertEqual(EXAMPLE_LB_LIST['create_time'], sot.create_time)
-        self.assertEqual(EXAMPLE_LB_LIST['lbaas_listeners'],sot.lbaas_listeners)
+        sot = group.Group(**EXAMPLE_LB)
+        self.assertEqual(EXAMPLE_LB['scaling_group_id'], sot.id)
+        self.assertEqual(EXAMPLE_LB['scaling_group_name'], sot.name)
+        self.assertEqual(EXAMPLE_LB['create_time'], sot.create_time)
+        self.assertEqual(EXAMPLE_LB['lbaas_listeners'], sot.lbaas_listeners)
