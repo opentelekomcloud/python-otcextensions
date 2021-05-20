@@ -71,6 +71,8 @@ class Group(_base.Resource):
     cool_down_time = resource.Body('cool_down_time')
     #: load balancer listener id reference
     lb_listener_id = resource.Body('lb_listener_id')
+    #: list of enhanced load balancers
+    lbaas_listeners = resource.Body('lbaas_listeners')
     #: Health periodic audit method, Valid values includes: ``ELB_AUDIT``,
     #: ``NOVA_AUDIT``, ELB_AUDIT and lb_listener_id are used in pairs.
     health_periodic_audit_method = resource.Body(
