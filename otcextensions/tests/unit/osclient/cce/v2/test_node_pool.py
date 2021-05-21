@@ -72,7 +72,14 @@ class TestListNodePool(fakes.TestCCE):
 
     _objs = fakes.FakeNodePool.create_multiple(3)
 
-    columns = ('ID', 'name', 'flavor', 'os', 'autoscaling', 'current_node')
+    columns = (
+        'ID',
+        'name',
+        'flavor',
+        'os',
+        'autoscaling',
+        'current_node',
+        'status')
 
     data = []
 
@@ -86,6 +93,7 @@ class TestListNodePool(fakes.TestCCE):
             flat_data['os'],
             flat_data['autoscaling'],
             flat_data['current_node'],
+            flat_data['status'],
         ))
 
     def setUp(self):
@@ -142,7 +150,8 @@ class TestShowNodePool(fakes.TestCCE):
         'min_node_count',
         'max_node_count',
         'scale_down_cooldown_time',
-        'priority',)
+        'priority',
+        'status',)
 
     flat_data = node_pool._flatten_node_pool(_obj)
 
@@ -162,6 +171,7 @@ class TestShowNodePool(fakes.TestCCE):
         flat_data['max_node_count'],
         flat_data['scale_down_cooldown_time'],
         flat_data['priority'],
+        flat_data['status']
     )
 
     def setUp(self):
