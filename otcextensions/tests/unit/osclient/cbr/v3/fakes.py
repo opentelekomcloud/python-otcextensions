@@ -11,16 +11,66 @@
 #   under the License.
 import random
 import uuid
+import datetime
 
 import mock
 
 from otcextensions.sdk.cbr.v3 import policy
+from otcextensions.tests.unit.osclient import test_base
 
-def _generate_vals():
-    my_list = []
-    for item in random.randint(1,10):
-        my_list.append(uuid.uuid4().hex)
-    return my_list
+
+def generate_uuid_list():
+    """Generate random list of UUIDs"""
+    uuid_list = []
+    random_int = random.randint(1, 10)
+    while random_int > 0:
+        uuid_list.append(uuid.uuid4().hex)
+        random_int -= 1
+    return uuid_list
+
+
+def generate_pattern():
+    pattern = ''
+    on_daily_base = random.choice([True, False])
+    days = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU']
+    if on_daily_base:
+        pattern = 'FREQ=DAILY;INTERVAL=' + str(random.randint(1, 30)) + ';'
+    else:
+        pattern = 'FREQ=WEEKLY;BYDAY='
+        day_count = random.randint(1, 7)
+        day_list = random.sample(days, day_count)
+        day_list_len = len(day_list)
+        for item in day_list:
+            pattern = pattern + item
+            if day_list_len != 1:
+                pattern += ','
+            else:
+                pattern += ';'
+            day_list_len -= 1
+    byhour = random.randint(0, 23)
+    if byhour < 10:
+        byhour = 'BYHOUR=' + '0' + str(byhour) + ';'
+    else:
+        byhour = 'BYHOUR=' + str(byhour) + ';'
+    pattern += byhour
+    byminute = random.randint(0, 59)
+    if byminute < 10:
+        byminute = 'BYMINUTE=' + '0' + str(byminute)
+    else:
+        byminute = 'BYMINUTE=' + str(byminute)
+    pattern += byminute
+    return pattern
+
+
+def generate_pattern_list():
+    """Generate random list of patterns"""
+    pattern_list = []
+    random_int = random.randint(1, 5)
+    while random_int > 0:
+        pattern_list.append(generate_pattern())
+        random_int -= 1
+    return pattern_list
+
 
 class TestCBR(test_base.TestCommand):
 
@@ -36,132 +86,33 @@ class TestCBR(test_base.TestCommand):
 class FakePolicy(test_base.Fake):
     """Fake one or more CBR policies"""
 
-    for item in random.randint(1, 10):
-
-
     @classmethod
     def generate(cls):
         object_info = {
             "name": 'name-' + uuid.uuid4().hex,
-            "associated_vaults": [],
-            "enabled": true,
+            "associated_vaults": generate_uuid_list(),
+            "enabled": random.choice([True, False]),
             "trigger": {
                 "properties": {
-                    "pattern": [
-                        "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR,SA,SU;BYHOUR=03;BYMINUTE=00"
-                    ],
-                    "start_time": "2021-05-18 11:38:55"
+                    "pattern": generate_pattern_list(),
+                    "start_time": datetime.datetime.now(),
                 },
                 "type": "time",
-                "id": "1a7dba0b-92a9-4ee0-ba2e-589281144346",
+                "id": 'trigger-' + "uuid.uuid4().hex",
                 "name": "default"
             },
             "operation_definition": {
-                "max_backups": -1,
-                "retention_duration_days": 30,
-                "year_backups": 0,
-                "day_backups": 0,
-                "month_backups": 0,
-                "week_backups": 0,
-                "timezone": "UTC+02:00"
+                "max_backups": random.randint(1, 99999),
+                "retention_duration_days": random.randint(1, 99999),
+                "year_backups": random.randint(0, 100),
+                "day_backups": random.randint(0, 100),
+                "month_backups": random.randint(0, 100),
+                "week_backups": random.randint(0, 100),
+                "timezone": 'UTC+0' + str(random.randint(0, 9)) + ':00',
             },
-            "operation_type": "backup",
-            "id": "35133b4e-d47a-4478-a904-a17b52dc346b"
+            "operation_type": random.choice(['backup', 'replication']),
+            "id": 'id-' + uuid.uuid4().hex,
         }
 
-        object_info = {
-            'kind': 'NodePool',
-            'apiVersion': 'v3',
-            'metadata': {
-                'name': 'name-' + uuid.uuid4().hex
-            },
-            'spec': {
-                'initialNodeCount': 0,
-                'type': 'vm',
-                'autoscaling': {
-                    'enable': random.choice([True, False]),
-                    'minNodeCount': 0,
-                    'maxNodeCount': random.randint(0, 100),
-                    'scaleDownCooldownTime': random.randint(1, 10),
-                    'priority': random.randint(1, 99)
-                },
-                'nodeManagement': {
-                    'serverGroupReference': 'sg-' + uuid.uuid4().hex
-                },
-                'nodeTemplate': {
-                    'flavor': 's2.large.2 ',
-                    'az': random.choice([
-                        'random',
-                        'eu-de-01',
-                        'eu-de-02',
-                        'eu-de-03']),
-                    'os': 'EulerOS 2.5',
-                    'login': {
-                        'sshKey': 'key-' + uuid.uuid4().hex
-                    },
-                    'rootVolume': {
-                        'volumetype': random.choice(['SAS', 'SATA', 'SSD']),
-                        'size': random.randint(40, 32768),
-                    },
-                    'dataVolumes': [
-                        {
-                            'volumetype': random.choice([
-                                'SAS', 'SATA', 'SSD']),
-                            'size': random.randint(100, 32768),
-                            'extendParam': {
-                                'useType': 'docker'
-                            }
-                        }
-                    ],
-                    'billingMode': 0,
-                    'extendParam': {
-                        'alpha.cce/preInstall': 'bHMgLWw=',
-                        'alpha.cce/postInstall': 'bHMgLWwK',
-                        'maxPods': 110,
-                    },
-                    'k8sTags': {
-                        't1-' + uuid.uuid4().hex: 'v1-' + uuid.uuid4().hex,
-                        't2-' + uuid.uuid4().hex: 'v2-' + uuid.uuid4().hex,
-                    },
-                    'taints': [
-                        {
-                            'key': 'key-' + uuid.uuid4().hex,
-                            'value': 'value-' + uuid.uuid4().hex,
-                            'effect': random.choice([
-                                'NoSchedule',
-                                'PrefereNoSchedule',
-                                'NoExecute'])
-                        },
-                        {
-                            'key': 'key-' + uuid.uuid4().hex,
-                            'value': 'value-' + uuid.uuid4().hex,
-                            'effect': random.choice([
-                                'NoSchedule',
-                                'PrefereNoSchedule',
-                                'NoExecute'])
-                        }
-                    ],
-                    'userTags': [
-                        {
-                            'key': 'key-' + uuid.uuid4().hex,
-                            'value': 'value-' + uuid.uuid4().hex,
-                        },
-                        {
-                            'key': 'key-' + uuid.uuid4().hex,
-                            'value': 'value-' + uuid.uuid4().hex,
-                        }
-                    ],
-                    'nodeNicSpec': {
-                        'primaryNic': {
-                            'subnetId': 'nw-' + uuid.uuid4().hex,
-                        }
-                    }
-                }
-            },
-            'status': {
-                'currentNode': random.randint(0, 100),
-                'phase': ''
-            }
-        }
-        obj = node_pool.NodePool.existing(**object_info)
+        obj = policy.Policy.existing(**object_info)
         return obj
