@@ -43,6 +43,7 @@ def _flatten_node_pool(obj):
         'max_node_count': obj.spec.autoscaling.max_node_count,
         'scale_down_cooldown_time': sdct,
         'priority': obj.spec.autoscaling.priority,
+        'status': obj.status.status,
     }
 
     return data
@@ -50,7 +51,14 @@ def _flatten_node_pool(obj):
 
 class ListCCENodePools(command.Lister):
     _description = _('List CCE Node Pools')
-    columns = ('ID', 'name', 'flavor', 'os', 'autoscaling', 'current_node')
+    columns = (
+        'ID',
+        'name',
+        'flavor',
+        'os',
+        'autoscaling',
+        'current_node',
+        'status')
 
     def get_parser(self, prog_name):
         parser = super(ListCCENodePools, self).get_parser(prog_name)
@@ -94,7 +102,8 @@ class ShowCCENodePool(command.ShowOne):
         'min_node_count',
         'max_node_count',
         'scale_down_cooldown_time',
-        'priority',)
+        'priority',
+        'status')
 
     def get_parser(self, prog_name):
         parser = super(ShowCCENodePool, self).get_parser(prog_name)
