@@ -52,7 +52,7 @@ EXAMPLE = {
     ]
 }
 
-EXAMPLE_LB = {
+EXAMPLE_EXTEND = {
     "networks": [
         {
             "id": " a8327883-6b07-4497-9c61-68d03ee193a "
@@ -85,12 +85,16 @@ EXAMPLE_LB = {
     "vpc_id": "863ccae2-ee85-4d27-bc5b-3ba2a198a9e2",
     "health_periodic_audit_method": "ELB_AUDIT",
     "health_periodic_audit_time": "5",
+    "health_periodic_audit_grace_period": 600,
     "instance_terminate_policy": "OLD_CONFIG_OLD_INSTANCE",
     "is_scaling": False,
     "delete_publicip": False,
+    "delete_volume": False,
     "notifications": [
         "EMAIL"
-    ]
+    ],
+    "enterprise_project_id": "0",
+    "multi_az_priority_policy": "EQUILIBRIUM_DISTRIBUTE"
 }
 
 
@@ -123,9 +127,25 @@ class TestGroup(base.TestCase):
         self.assertEqual(EXAMPLE['scaling_group_name'], sot.name)
         self.assertEqual(EXAMPLE['create_time'], sot.create_time)
 
-    def test_make_it_lb_listeners(self):
-        sot = group.Group(**EXAMPLE_LB)
-        self.assertEqual(EXAMPLE_LB['scaling_group_id'], sot.id)
-        self.assertEqual(EXAMPLE_LB['scaling_group_name'], sot.name)
-        self.assertEqual(EXAMPLE_LB['create_time'], sot.create_time)
-        self.assertEqual(EXAMPLE_LB['lbaas_listeners'], sot.lbaas_listeners)
+    def test_make_it_extend(self):
+        sot = group.Group(**EXAMPLE_EXTEND)
+        self.assertEqual(EXAMPLE_EXTEND['scaling_group_id'], sot.id)
+        self.assertEqual(EXAMPLE_EXTEND['scaling_group_name'], sot.name)
+        self.assertEqual(EXAMPLE_EXTEND['create_time'], sot.create_time)
+        self.assertEqual(
+            EXAMPLE_EXTEND['lbaas_listeners'], sot.lbaas_listeners
+        )
+        self.assertEqual(
+            EXAMPLE_EXTEND['health_periodic_audit_grace_period'],
+            sot.health_periodic_audit_grace_period
+        )
+        self.assertEqual(
+            EXAMPLE_EXTEND['delete_volume'], sot.delete_volume
+        )
+        self.assertEqual(
+            EXAMPLE_EXTEND['enterprise_project_id'], sot.enterprise_project_id
+        )
+        self.assertEqual(
+            EXAMPLE_EXTEND['multi_az_priority_policy'],
+            sot.multi_az_priority_policy
+        )
