@@ -127,16 +127,16 @@ class FakePolicyFixed(test_base.Fake):
         object_info = {
             "name": 'name-' + uuid.uuid4().hex,
             "associated_vaults": [
-                {'vault_id': '91bbf490549346ae821000df631e5c40'},
-                {'vault_id': 'ab762b6e0e9047eab21ecf564561b602'},
-                {'vault_id': '1ddcbf2c615949ffbb1ad64a0d3fdd57'},
+                {'vault_id': 'vault_id_1'},
+                {'vault_id': 'vault_id_2'},
+                {'vault_id': 'vault_id_3'},
             ],
             "enabled": random.choice([True, False]),
             "trigger": {
                 "properties": {
                     "pattern": [
-                        'FREQ=WEEKLY;BYDAY=WE,FR,SU;BYHOUR=10;BYMINUTE=04',
-                        'FREQ=WEEKLY;BYDAY=FR,SA;BYHOUR=19;BYMINUTE=44'
+                        'pattern_1',
+                        'pattern_2'
                     ],
                     "start_time": datetime.datetime.now(),
                 },

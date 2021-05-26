@@ -152,7 +152,7 @@ class ShowPolicy(command.ShowOne):
         if obj.trigger.properties.pattern:
             data, self.columns = _add_scheduling_patterns(
                 obj, data, self.columns)
-
+        
         return (self.columns, data)
 
 
@@ -318,10 +318,6 @@ class CreatePolicy(command.ShowOne):
 
         data = utils.get_dict_properties(
             _flatten_policy(obj), self.columns)
-
-        if obj.associated_vaults:
-            data, self.columns = _add_vaults_to_policy_obj(
-                obj, data, self.columns)
 
         if obj.trigger.properties.pattern:
             data, self.columns = _add_scheduling_patterns(
