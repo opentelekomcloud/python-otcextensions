@@ -19,14 +19,15 @@ from otcextensions.sdk.cbr.v3 import policy
 from otcextensions.tests.unit.osclient import test_base
 
 
-def generate_uuid_list():
-    """Generate random list of UUIDs"""
-    uuid_list = []
+def generate_vault_list():
+    """Generate random list of vault UUIDs"""
+    vault_list = []
     random_int = random.randint(1, 10)
     while random_int > 0:
-        uuid_list.append(uuid.uuid4().hex)
+        vault_list.append({
+            'vault_id': uuid.uuid4().hex})
         random_int -= 1
-    return uuid_list
+    return vault_list
 
 
 def generate_pattern():
@@ -78,23 +79,65 @@ class TestCBR(test_base.TestCommand):
         super(TestCBR, self).setUp()
 
         self.app.client_manager.cbr = mock.Mock()
-        self.app.client_manager.sdk_connection = mock.Mock()
         self.client = self.app.client_manager.cbr
-        self.sdk_client = self.app.client_manager.sdk_connection
 
 
 class FakePolicy(test_base.Fake):
-    """Fake one or more CBR policies"""
+    """Fake one or more CBR policies with random vaults list and patterns"""
 
     @classmethod
     def generate(cls):
         object_info = {
             "name": 'name-' + uuid.uuid4().hex,
-            "associated_vaults": generate_uuid_list(),
+            "associated_vaults": generate_vault_list(),
             "enabled": random.choice([True, False]),
             "trigger": {
                 "properties": {
                     "pattern": generate_pattern_list(),
+                    "start_time": datetime.datetime.now(),
+                },
+                "type": "time",
+                "id": 'trigger-' + "uuid.uuid4().hex",
+                "name": "default"
+            },
+            "operation_definition": {
+                "max_backups": random.randint(1, 99999),
+                "retention_duration_days": random.randint(1, 99999),
+                "year_backups": random.randint(0, 100),
+                "day_backups": random.randint(0, 100),
+                "month_backups": random.randint(0, 100),
+                "week_backups": random.randint(0, 100),
+                "timezone": 'UTC+0' + str(random.randint(0, 9)) + ':00',
+            },
+            "operation_type": random.choice(['backup', 'replication']),
+            "id": 'id-' + uuid.uuid4().hex,
+        }
+
+        obj = policy.Policy.existing(**object_info)
+        return obj
+
+
+class FakePolicyFixed(test_base.Fake):
+    """Fake one or more CBR policies with fixed associated vaults and
+        schedule patterns.
+    """
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            "name": 'name-' + uuid.uuid4().hex,
+            "associated_vaults": [
+                {'vault_id': '91bbf490549346ae821000df631e5c40'},
+                {'vault_id': 'ab762b6e0e9047eab21ecf564561b602'},
+                {'vault_id': '1ddcbf2c615949ffbb1ad64a0d3fdd57'},
+            ],
+            "enabled": random.choice([True, False]),
+            "trigger": {
+                "properties": {
+                    "pattern": [
+                        'FREQ=WEEKLY;BYDAY=WE,FR,SU;BYHOUR=10;BYMINUTE=04',
+                        'FREQ=WEEKLY;BYDAY=FR,SA;BYHOUR=19;BYMINUTE=44'
+                    ],
                     "start_time": datetime.datetime.now(),
                 },
                 "type": "time",
