@@ -152,7 +152,7 @@ class ShowPolicy(command.ShowOne):
         if obj.trigger.properties.pattern:
             data, self.columns = _add_scheduling_patterns(
                 obj, data, self.columns)
-        
+
         return (self.columns, data)
 
 
