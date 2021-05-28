@@ -14,7 +14,7 @@ from openstack import proxy
 from otcextensions.sdk.dcs.v1 import backup as _backup
 from otcextensions.sdk.dcs.v1 import config as _config
 from otcextensions.sdk.dcs.v1 import instance as _instance
-from otcextensions.sdk.dcs.v1 import restore as _restore
+from otcextensions.sdk.dcs.v1 import restore_record as _restore_record
 from otcextensions.sdk.dcs.v1 import statistic as _stat
 
 
@@ -202,11 +202,14 @@ class Proxy(proxy.Proxy):
         :param instance: The instance id or an instance of
             :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
         :param dict kwargs: Keyword arguments which will be used to overwrite a
-            :class:`~otcextensions.sdk.dcs.v1.restore.Restore`
+            :class:`~otcextensions.sdk.dcs.v1.restore_record.RestoreRecord`
             `backup_id` and `description` are expected
         """
         inst = self._get_resource(_instance.Instance, instance)
-        return self._create(_restore.Restore, instance_id=inst.id, **kwargs)
+        return self._create(
+            _restore_record.RestoreRecord,
+            instance_id=inst.id,
+            **kwargs)
 
     def restore_records(self, instance, **query):
         """List all instance restore records
@@ -214,11 +217,11 @@ class Proxy(proxy.Proxy):
         :param instance: The instance id or an instance of
             :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
         :returns: A generator of Instance object of
-            :class:`~otcextensions.sdk.dcs.v1.restore.Restore`
+            :class:`~otcextensions.sdk.dcs.v1.restore_record.RestoreRecord`
         """
         inst = self._get_resource(_instance.Instance, instance)
         return self._list(
-            _restore.Restore, paginated=False,
+            _restore_record.RestoreRecord, paginated=False,
             instance_id=inst.id, **query)
 
     # ======== Misc ========
