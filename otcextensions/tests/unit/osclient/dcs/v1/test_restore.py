@@ -11,13 +11,13 @@
 #   under the License.
 import mock
 
-from otcextensions.osclient.dcs.v1 import restore
+from otcextensions.osclient.dcs.v1 import restore_record
 from otcextensions.tests.unit.osclient.dcs.v1 import fakes
 
 
 class TestListRestoreRecords(fakes.TestDCS):
 
-    objects = fakes.FakeRestore.create_multiple(3)
+    objects = fakes.FakeRestoreRecord.create_multiple(3)
     inst = fakes.FakeInstance.create_one()
 
     columns = ('id', 'name', 'backup_id', 'progress', 'status', 'error_code')
@@ -37,7 +37,7 @@ class TestListRestoreRecords(fakes.TestDCS):
     def setUp(self):
         super(TestListRestoreRecords, self).setUp()
 
-        self.cmd = restore.ListRestoreRecords(self.app, None)
+        self.cmd = restore_record.ListRestoreRecords(self.app, None)
 
         self.client.restore_records = mock.Mock()
         self.client.find_instance = mock.Mock()
@@ -117,7 +117,7 @@ class TestListRestoreRecords(fakes.TestDCS):
 
 class TestRecoverBackup(fakes.TestDCS):
 
-    _data = fakes.FakeRestore.create_one()
+    _data = fakes.FakeRestoreRecord.create_one()
     inst = fakes.FakeInstance.create_one()
 
     columns = ()
@@ -129,7 +129,7 @@ class TestRecoverBackup(fakes.TestDCS):
     def setUp(self):
         super(TestRecoverBackup, self).setUp()
 
-        self.cmd = restore.RestoreBackup(self.app, None)
+        self.cmd = restore_record.RestoreBackup(self.app, None)
 
         self.client.restore_instance = mock.Mock()
         self.client.find_instance = mock.Mock()

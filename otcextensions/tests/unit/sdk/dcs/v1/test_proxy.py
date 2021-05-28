@@ -15,7 +15,7 @@ from otcextensions.sdk.dcs.v1 import _proxy
 from otcextensions.sdk.dcs.v1 import backup as _backup
 from otcextensions.sdk.dcs.v1 import config as _config
 from otcextensions.sdk.dcs.v1 import instance as _instance
-from otcextensions.sdk.dcs.v1 import restore as _restore
+from otcextensions.sdk.dcs.v1 import restore_record as _restore_record
 from otcextensions.sdk.dcs.v1 import statistic as _stat
 
 from openstack.tests.unit import test_proxy_base
@@ -237,7 +237,7 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
         )
 
     def test_restores_query(self):
-        self.sot = _restore.Restore()
+        self.sot = _restore_record.RestoreRecord()
         self.proxy._list = mock.Mock(return_value=self.sot)
 
         self.proxy.restore_records(
@@ -247,7 +247,7 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
             start_time='3',
             end_time='4')
         self.proxy._list.assert_called_with(
-            _restore.Restore,
+            _restore_record.RestoreRecord,
             paginated=False,
             instance_id='inst',
             start='1',
@@ -264,7 +264,7 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
             backup_id='bck',
             remark='rem')
         self.proxy._create.assert_called_with(
-            _restore.Restore,
+            _restore_record.RestoreRecord,
             instance_id='1',
             backup_id='bck',
             remark='rem'
