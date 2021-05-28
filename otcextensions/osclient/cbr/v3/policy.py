@@ -445,7 +445,7 @@ class UpdatePolicy(command.ShowOne):
             attrs['enabled'] = False
         if parsed_args.patterns:
             trigger = {
-                "trigger": {
+                'trigger': {
                     'properties': {
                         'pattern': parsed_args.patterns
                     }

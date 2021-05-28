@@ -4,7 +4,7 @@ Cloud Backup and Recovery (CBR)
 The CBR client is the command-line interface (CLI) for
 the Cloud Backup and Recovery (CBR) API and its extensions.
 
-For help on a specific `dns` command, enter:
+For help on a specific `cbr` command, enter:
 
 .. code-block:: console
 
