@@ -17,7 +17,7 @@ class OperationDefinition(resource.Resource):
     #: Specifies the number of retained daily backups
     #: The latest backup of each day is saved in the long term. This parameter
     #: can be effective together with the max number of retained backups
-    #: specified by 'max_backups'.
+    #: specified by 'max_backups'.0
     #: value: 0 to 100
     #: If this property is configured, 'timezone' is mandatory.
     day_backups = resource.Body('day_backups', type=int)
@@ -81,6 +81,8 @@ class Properties(resource.Resource):
     #: If the scheduling time is 14:00 every day:
     #: FREQ=DAILY;INTERVAL=1;BYHOUR=14;BYMINUTE=00
     pattern = resource.Body('pattern', type=list)
+    #: Start time of the scheduler in the format 2020-01-08 09:59:49
+    start_time = resource.Body('start_time')
 
 
 class Trigger(resource.Resource):
