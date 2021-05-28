@@ -94,8 +94,8 @@ class TestKey(base.TestCase):
         self.assertEqual('/kms/list-keys', sot.list_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
-        self.assertTrue(sot.allow_get)
-        self.assertFalse(sot.allow_update)
+        self.assertTrue(sot.allow_fetch)
+        self.assertFalse(sot.allow_commit)
         self.assertFalse(sot.allow_delete)
 
     def test_make_it(self):
@@ -164,7 +164,7 @@ class TestKey(base.TestCase):
         self.assertEqual(expected_list, result)
 
     def test_get(self):
-        sot = _key.Key.existing(
+        sot = _key.Key(
             id=EXAMPLE['key_id'])
         mock_response = mock.Mock()
         mock_response.status_code = 200
@@ -174,7 +174,7 @@ class TestKey(base.TestCase):
 
         self.sess.post.return_value = mock_response
 
-        result = sot.get(self.sess)
+        result = sot.fetch(self.sess)
 
         self.sess.post.assert_called_once_with(
             '/kms/describe-key',

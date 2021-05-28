@@ -18,7 +18,7 @@ _logger = _log.setup_logging('openstack')
 
 
 class TestKey(base.BaseFunctionalTest):
-    KEY_ALIAS = 'sdk_test_key'
+    KEY_ALIAS = 'sdkk_test_key'
     cmks = []
 
     def setUp(self):
@@ -40,6 +40,7 @@ class TestKey(base.BaseFunctionalTest):
         except exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
+        super(TestKey, self).tearDown()
 
     def test_list(self):
         self.keys = list(self.conn.kms.keys())

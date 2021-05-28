@@ -36,7 +36,7 @@ class TestListPoolMember(fakes.TestLoadBalancer):
             '',  # provisioning_status
             s.address,
             s.protocol_port,
-            '',  # s.operating_status,
+            s.operating_status,
             s.weight,
         ))
 

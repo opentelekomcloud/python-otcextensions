@@ -16,6 +16,7 @@ import mock
 
 from otcextensions.sdk.cce.v3 import cluster
 from otcextensions.sdk.cce.v3 import cluster_node
+from otcextensions.sdk.cce.v3 import node_pool
 from otcextensions.tests.unit.osclient import test_base
 
 
@@ -25,7 +26,9 @@ class TestCCE(test_base.TestCommand):
         super(TestCCE, self).setUp()
 
         self.app.client_manager.cce = mock.Mock()
+        self.app.client_manager.sdk_connection = mock.Mock()
         self.client = self.app.client_manager.cce
+        self.sdk_client = self.app.client_manager.sdk_connection
 
 
 class FakeCluster(test_base.Fake):
@@ -82,13 +85,17 @@ class FakeClusterNode(test_base.Fake):
                 'login': {
                     'sshKey': 'key-' + uuid.uuid4().hex,
                 },
-                'data_volumes': [
+                'rootVolume': {
+                    'type': 'SATA',
+                    'size': random.randint(40, 100)
+                },
+                'dataVolumes': [
                     {
-                        'type': 'dt' + uuid.uuid4().hex,
+                        'type': 'SSD',
                         'size': random.randint(1, 15000),
                     },
                     {
-                        'type': 'dt' + uuid.uuid4().hex,
+                        'type': 'SAS',
                         'size': random.randint(1, 15000),
                     },
                 ],
@@ -101,4 +108,107 @@ class FakeClusterNode(test_base.Fake):
             },
         }
         obj = cluster_node.ClusterNode.existing(**object_info)
+        return obj
+
+
+class FakeNodePool(test_base.Fake):
+    """Fake one or more CCE Nodepools"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'kind': 'NodePool',
+            'apiVersion': 'v3',
+            'metadata': {
+                'name': 'name-' + uuid.uuid4().hex
+            },
+            'spec': {
+                'initialNodeCount': 0,
+                'type': 'vm',
+                'autoscaling': {
+                    'enable': random.choice([True, False]),
+                    'minNodeCount': 0,
+                    'maxNodeCount': random.randint(0, 100),
+                    'scaleDownCooldownTime': random.randint(1, 10),
+                    'priority': random.randint(1, 99)
+                },
+                'nodeManagement': {
+                    'serverGroupReference': 'sg-' + uuid.uuid4().hex
+                },
+                'nodeTemplate': {
+                    'flavor': 's2.large.2 ',
+                    'az': random.choice([
+                        'random',
+                        'eu-de-01',
+                        'eu-de-02',
+                        'eu-de-03']),
+                    'os': 'EulerOS 2.5',
+                    'login': {
+                        'sshKey': 'key-' + uuid.uuid4().hex
+                    },
+                    'rootVolume': {
+                        'volumetype': random.choice(['SAS', 'SATA', 'SSD']),
+                        'size': random.randint(40, 32768),
+                    },
+                    'dataVolumes': [
+                        {
+                            'volumetype': random.choice([
+                                'SAS', 'SATA', 'SSD']),
+                            'size': random.randint(100, 32768),
+                            'extendParam': {
+                                'useType': 'docker'
+                            }
+                        }
+                    ],
+                    'billingMode': 0,
+                    'extendParam': {
+                        'alpha.cce/preInstall': 'bHMgLWw=',
+                        'alpha.cce/postInstall': 'bHMgLWwK',
+                        'maxPods': 110,
+                    },
+                    'k8sTags': {
+                        't1-' + uuid.uuid4().hex: 'v1-' + uuid.uuid4().hex,
+                        't2-' + uuid.uuid4().hex: 'v2-' + uuid.uuid4().hex,
+                    },
+                    'taints': [
+                        {
+                            'key': 'key-' + uuid.uuid4().hex,
+                            'value': 'value-' + uuid.uuid4().hex,
+                            'effect': random.choice([
+                                'NoSchedule',
+                                'PrefereNoSchedule',
+                                'NoExecute'])
+                        },
+                        {
+                            'key': 'key-' + uuid.uuid4().hex,
+                            'value': 'value-' + uuid.uuid4().hex,
+                            'effect': random.choice([
+                                'NoSchedule',
+                                'PrefereNoSchedule',
+                                'NoExecute'])
+                        }
+                    ],
+                    'userTags': [
+                        {
+                            'key': 'key-' + uuid.uuid4().hex,
+                            'value': 'value-' + uuid.uuid4().hex,
+                        },
+                        {
+                            'key': 'key-' + uuid.uuid4().hex,
+                            'value': 'value-' + uuid.uuid4().hex,
+                        }
+                    ],
+                    'nodeNicSpec': {
+                        'primaryNic': {
+                            'subnetId': 'nw-' + uuid.uuid4().hex,
+                        }
+                    }
+                }
+            },
+            'status': {
+                'currentNode': random.randint(0, 100),
+                'phase': ''
+            }
+        }
+        obj = node_pool.NodePool.existing(**object_info)
         return obj

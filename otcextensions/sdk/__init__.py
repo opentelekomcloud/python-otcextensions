@@ -16,8 +16,12 @@ import openstack
 from openstack import _log
 from openstack import utils
 
+from otcextensions.sdk import proxy
 from otcextensions.sdk.compute.v2 import server
 from otcextensions.common import exc
+
+from otcextensions.sdk.cloud import rds as _rds
+from otcextensions.sdk.cloud import cce as _cce
 
 
 _logger = _log.setup_logging('openstack')
@@ -51,6 +55,10 @@ OTC_SERVICES = {
         'endpoint_service_type': 'as',
         'append_project_id': True,
     },
+    'cbr': {
+        'service_type': 'cbr',
+        'append_project_id': True,
+    },
     'cce': {
         'service_type': 'cce',
         'endpoint_service_type': 'ccev2.0',
@@ -74,6 +82,7 @@ OTC_SERVICES = {
     },
     'dds': {
         'service_type': 'dds',
+        'endpoint_service_type': 'ddsv3',
     },
     'deh': {
         'service_type': 'deh',
@@ -99,16 +108,20 @@ OTC_SERVICES = {
     'ecs': {
         'service_type': 'ecs',
     },
+    'elb': {
+        'service_type': 'elb',
+        'replace_system': True
+    },
+    'identity': {
+        'service_type': 'identity',
+        'replace_system': True
+    },
     'kms': {
         'service_type': 'kms',
         'append_project_id': True,
     },
     'lts': {
         'service_type': 'lts'
-    },
-    'maas': {
-        'service_type': 'maas',
-        'append_project_id': True,
     },
     'mrs': {
         'service_type': 'mrs'
@@ -127,12 +140,16 @@ OTC_SERVICES = {
     },
     'rds': {
         'service_type': 'rds',
-        # 'additional_headers': {'content-type': 'application/json'},
         'endpoint_service_type': 'rdsv3',
-        'append_project_id': True,
+        'append_project_id': True
     },
     'sdrs': {
         'service_type': 'sdrs'
+    },
+    'sfsturbo': {
+        'service_type': 'sfsturbo',
+        'endpoint_service_type': 'sfsturbo',
+        # 'append_project_id': True,
     },
     'smn': {
         'service_type': 'smn',
@@ -143,9 +160,12 @@ OTC_SERVICES = {
         'append_project_id': True,
         'endpoint_service_type': 'vbs',
     },
+    'vpc': {
+        'service_type': 'vpc',
+    },
     'waf': {
         'service_type': 'waf',
-        'append_project_id': True,
+        # 'set_endpoint_override': True
     }
 }
 
@@ -243,7 +263,18 @@ def get_ak_sk(conn):
         return(ak, sk)
 
 
+def extend_instance(obj, cls):
+    """Apply mixins to a class instance after creation"""
+    base_cls = obj.__class__
+    base_cls_name = obj.__class__.__name__
+    obj.__class__ = type(base_cls_name, (base_cls, cls), {})
+
+
 def patch_openstack_resources():
+    openstack.proxy.Proxy._report_stats_statsd = \
+        proxy.Proxy._report_stats_statsd
+    openstack.proxy.Proxy._report_stats_influxdb = \
+        proxy.Proxy._report_stats_influxdb
     openstack.compute.v2.server.Server._get_tag_struct = \
         server.Server._get_tag_struct
     openstack.compute.v2.server.Server.add_tag = server.Server.add_tag
@@ -309,6 +340,9 @@ def load(conn, **kwargs):
         setattr(conn, 'get_ak_sk', get_ak_sk)
 
     patch_openstack_resources()
+
+    extend_instance(conn, _rds.RdsMixin)
+    extend_instance(conn, _cce.CceMixin)
 
     return None
 

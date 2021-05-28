@@ -20,34 +20,67 @@ conn = openstack.connect(cloud='otc')
 
 
 attrs = {
-    "kind": "Cluster",
-    "apiVersion": "v3",
-    "metadata": {
-        "name": "test2"
+    'kind': 'Node',
+    'apiVersion': 'v3',
+    'metadata': {
+        'name': 'myhost',
+        'labels': {
+            'foo': 'bar'
+        },
+        'annotations': {
+            'annotation1': 'abc'
+        }
     },
-    "spec": {
-        "type": "VirtualMachine",
-        "flavor": "cce.s1.small",
-        "version": "v1.13.10-r0",
-        "az": "eu-de-01",
-        "supportIstio": True,
-        "hostNetwork": {
-            "vpc": "26ca2783-dc40-4e3a-95b1-5a0756441e12",
-            "subnet": "25d24fc8-d019-4a34-9fff-0a09fde6a9cb",
-            "SecurityGroup": "f9ae0767-25be-44fc-a21c-5b8a0da66dec"
+    'spec': {
+        'flavor': 's2.large.2',
+        'az': 'eu-de-02',
+        'login': {
+            'sshKey': 'keypair-pub'
         },
-        "containerNetwork": {
-            "mode": "overlay_l2",
-            "cidr": "172.16.0.0/16"
+        'rootVolume': {
+            'size': 40,
+            'volumetype': 'SATA'
         },
-        "authentication": {
-            "mode": "rbac",
-            "authenticatingProxy": {}
+        'dataVolumes': [
+            {
+                'size': 100,
+                'volumetype': 'SATA'
+            }
+        ],
+        'userTags': [
+            {
+                'key': 'tag1',
+                'value': 'aaaa'
+            },
+            {
+                'key': 'tag2',
+                'value': 'bbbb'
+            }
+        ],
+        'k8sTags': {
+            'label-test': 'test'
         },
-        "billingMode": 0,
-        "kubernetesSvcIpRange": "10.247.0.0/16",
-        "kubeProxyMode": "iptables"
+        'publicIP': {
+            # ids: ['1234', '5678']
+            'count': 2,
+            'eip': {
+                'iptype': '5_bgp',
+                'bandwidth': {
+                    'chargemode': 'traffic',
+                    'size': 10,
+                    'sharetype': 'PER'
+                }
+            }
+        },
+        'count': 2,
+        'nodeNicSpec': {
+            'primaryNic': {
+                'subnetId': 'bbfc0a20-d66c-4f36-b4c1-265d669b8c62'
+            }
+        },
     }
 }
 
-conn.cce.create_cluster_node(**attrs)
+cluster = 'name_or_id'
+cluster = conn.cce.find_cluster(name_or_id=cluster)
+conn.cce.create_cluster_node(cluster=cluster, **attrs)

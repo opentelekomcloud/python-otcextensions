@@ -107,7 +107,7 @@ class TestZone(base.TestCase):
         )
 
         self.sess.post.assert_called_once_with(
-            'zones/%s/accosiaterouter' % FAKE_ID,
+            'zones/%s/associaterouter' % FAKE_ID,
             json={'router': {'router_id': 1, 'router_region': 'a'}}
         )
 
@@ -126,6 +126,6 @@ class TestZone(base.TestCase):
         )
 
         self.sess.post.assert_called_once_with(
-            'zones/%s/disaccosiaterouter' % FAKE_ID,
+            'zones/%s/disassociaterouter' % FAKE_ID,
             json={'router': {'router_id': 1}}
         )

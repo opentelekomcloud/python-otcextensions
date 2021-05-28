@@ -22,7 +22,7 @@ LOG = logging.getLogger(__name__)
 
 
 CONTAINER_NET_MODE_CHOICES = ['overlay_l2', 'underlay_ipvlan', 'vpc-router']
-CLUSTER_TYPES = ['BareMetal', 'VirtualMachine']
+CLUSTER_TYPES = ['VirtualMachine']
 
 
 def _flatten_cluster(obj):
@@ -32,11 +32,14 @@ def _flatten_cluster(obj):
         'status': obj.status.status,
         'type': obj.spec.type,
         'flavor': obj.spec.flavor,
-        'endpoint': obj.status.endpoints.get('external_otc'),
         'router_id': obj.spec.host_network.router_id,
         'network_id': obj.spec.host_network.network_id,
         'version': obj.spec.version
     }
+
+    endpoints = obj.status.get('endpoints')
+    if endpoints:
+        data['endpoint'] = endpoints.get('external_otc')
 
     return data
 
@@ -95,20 +98,46 @@ class DeleteCCECluster(command.Command):
         parser.add_argument(
             'cluster',
             metavar='<cluster>',
-            help=_('ID of the cluster')
+            help=_('Name or ID of the cluster')
+        )
+        parser.add_argument(
+            '--wait',
+            action='store_true',
+            help=_('Wait for the instance to become active')
+        )
+        parser.add_argument(
+            '--wait-interval',
+            type=int,
+            help=_('Interval for checking status')
+        )
+        parser.add_argument(
+            '--wait-timeout',
+            type=int,
+            help=_('Wait timeout')
         )
         return parser
 
     def take_action(self, parsed_args):
 
+        attrs = {}
+        for attr in [
+            'cluster', 'wait', 'wait_timeout', 'wait_interval'
+        ]:
+            if getattr(parsed_args, attr):
+                attrs[attr] = getattr(parsed_args, attr)
+
+        if not parsed_args.wait:
+            attrs['wait'] = False
+
+        # initialize sdk_connection with cce methods
+        _ = self.app.client_manager.cce
         if parsed_args.cluster:
-            client = self.app.client_manager.cce
-            cluster = client.find_cluster(parsed_args.cluster,
-                                          ignore_missing=False)
-            client.delete_cluster(cluster.id)
+            self.app.client_manager.sdk_connection.delete_cce_cluster(
+                **attrs
+            )
 
 
-class CreateCCECluster(command.Command):
+class CreateCCECluster(command.ShowOne):
     _description = _('Create CCE Cluster')
     columns = ('ID', 'name', 'version', 'endpoint')
 
@@ -120,19 +149,24 @@ class CreateCCECluster(command.Command):
             help=_('Name of the cluster.')
         )
         parser.add_argument(
-            'router_id',
+            'router',
             metavar='<router>',
-            help=_('ID of the Neutron Router.')
+            help=_('ID or name the Neutron Router.')
         )
         parser.add_argument(
-            'network_id',
+            'network',
             metavar='<network>',
-            help=_('ID of the Neutron network.')
+            help=_('ID or name of the Neutron network.')
         )
         parser.add_argument(
             '--description',
             metavar='<description>',
             help=_('Text description of the cluster.')
+        )
+        parser.add_argument(
+            '--multi-az',
+            action='store_true',
+            help=_('Support for multi-AZ cluster')
         )
         parser.add_argument(
             '--version',
@@ -153,21 +187,15 @@ class CreateCCECluster(command.Command):
             help=_('Cluster type.')
         )
         parser.add_argument(
-            '--highway-subnet',
-            metavar='<subnet_id>',
-            help=_('ID of the high-speed network that is used to create '
-                   'a bare metal node.')
-        )
-        parser.add_argument(
-            '--container-net-mode',
+            '--container-network-mode',
             metavar='{' + ','.join(CONTAINER_NET_MODE_CHOICES) + '}',
             type=lambda s: s.lower(),
             choices=CONTAINER_NET_MODE_CHOICES,
-            required=True,
+            default='overlay_l2',
             help=_('Container network mode.')
         )
         parser.add_argument(
-            '--container-net-cidr',
+            '--container-network-cidr',
             metavar='<CIDR>',
             help=_('Network segment of the container network.')
         )
@@ -181,47 +209,37 @@ class CreateCCECluster(command.Command):
             type=int,
             help=_('Interval for checking status')
         )
+        parser.add_argument(
+            '--wait-timeout',
+            type=int,
+            help=_('Wait timeout')
+        )
         return parser
 
     def take_action(self, parsed_args):
 
         attrs = {}
+        for attr in [
+            'name', 'type', 'flavor', 'router', 'network',
+            'container_network_mode', 'annotations', 'authentication_proxy_ca',
+            'authentication_mode', 'container_network_cidr',
+            'cpu_manager_policy', 'dss_master_volumes', 'description',
+            'external_ip', 'fix_pool_mask', 'labels', 'service_ip_range',
+            'kube_proxy_mode', 'upgrade_from', 'version', 'wait',
+            'wait_timeout', 'wait_interval'
+        ]:
+            if hasattr(parsed_args, attr) and getattr(parsed_args, attr):
+                attrs[attr] = getattr(parsed_args, attr)
 
-        attrs['name'] = parsed_args.name
-        spec = {}
-        spec['type'] = parsed_args.type
-        spec['flavor'] = parsed_args.flavor
-        if parsed_args.version:
-            spec['version'] = parsed_args.version
-        if parsed_args.description:
-            spec['description'] = parsed_args.description
-        host_net = {
-            'router_id': parsed_args.router_id,
-            'network_id': parsed_args.network_id
-        }
-        if spec['type'] == 'BareMetal':
-            host_net['highwaySubnet'] = parsed_args.highway_subnet
-        spec['hostNetwork'] = host_net
-        container_net = {
-            'mode': parsed_args.container_net_mode
-        }
-        if parsed_args.container_net_cidr:
-            container_net['cidr'] = parsed_args.container_net_cidr
-        spec['containerNetwork'] = container_net
+        if not parsed_args.wait:
+            attrs['wait'] = False
+        if parsed_args.multi_az:
+            attrs['az'] = 'multi_az'
 
-        attrs['spec'] = spec
-
-        client = self.app.client_manager.cce
-
-        obj = client.create_cluster(**attrs)
-
-        if obj.job_id and parsed_args.wait:
-            wait_args = {}
-            if parsed_args.wait_interval:
-                wait_args['interval'] = parsed_args.wait_interval
-
-            client.wait_for_job(obj.job_id, **wait_args)
-            obj = client.get_cluster(obj.id)
+        # initialize sdk_connection with cce methods
+        _ = self.app.client_manager.cce
+        obj = self.app.client_manager.sdk_connection.create_cce_cluster(
+            **attrs)
 
         data = utils.get_dict_properties(_flatten_cluster(obj), self.columns)
 

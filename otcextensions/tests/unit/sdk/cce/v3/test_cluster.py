@@ -55,7 +55,8 @@ EXAMPLE_LIST = {
                     'mode': 'rbac',
                     'authenticatingProxy': {}
                 },
-                'billingMode': 0
+                'billingMode': 0,
+                "kubeProxyMode": "iptables",
             },
             'status': {
                 'phase': 'Available',

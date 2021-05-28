@@ -154,3 +154,16 @@ class Proxy(proxy.Proxy):
         """
         return self._get(_status.FloatingIPWeekStat, requires_id=False,
                          value=None, **query)
+
+    # ======== Project cleanup ========
+    def _get_cleanup_dependencies(self):
+        return {
+            'anti_ddos': {
+                'before': ['network']
+            }
+        }
+
+    def _service_cleanup(self, dry_run=True, client_status_queue=None,
+                         identified_resources=None,
+                         filters=None, resource_evaluation_fn=None):
+        pass

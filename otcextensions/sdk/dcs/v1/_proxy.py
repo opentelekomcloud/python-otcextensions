@@ -14,7 +14,7 @@ from openstack import proxy
 from otcextensions.sdk.dcs.v1 import backup as _backup
 from otcextensions.sdk.dcs.v1 import config as _config
 from otcextensions.sdk.dcs.v1 import instance as _instance
-from otcextensions.sdk.dcs.v1 import restore as _restore
+from otcextensions.sdk.dcs.v1 import restore_record as _restore_record
 from otcextensions.sdk.dcs.v1 import statistic as _stat
 
 
@@ -42,7 +42,7 @@ class Proxy(proxy.Proxy):
     def get_instance(self, instance):
         """Get detail about a given instance
 
-        :param instance: The instance id, name or an instance of
+        :param instance: The instance id or an instance of
             :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
         :returns: one object of class
             :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
@@ -72,14 +72,10 @@ class Proxy(proxy.Proxy):
         :returns: The updated instance
         :rtype: :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
         """
-        res = self._get_resource(_instance.Instance, instance, **attrs)
-        res = res.update(
-            self,
-            has_body=False
-        )
-        # NOTE: unfortunately we need to refetch object, since update
-        # does not return it
-        return self._get(_instance.Instance, res)
+        # Update method does not return the instance object which needs to be
+        # fetched additionally in return statement.
+        self._update(_instance.Instance, instance, **attrs)
+        return self._get(_instance.Instance, instance)
 
     def delete_instance(self, instance, ignore_missing=True):
         """Delete an instance
@@ -155,7 +151,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
         """
         res = self.find_instance(instance)
-        return res.change_password(
+        return res.change_pwd(
             self,
             current_password=current_password,
             new_password=new_password)
@@ -183,7 +179,8 @@ class Proxy(proxy.Proxy):
             _backup.Backup, paginated=False,
             instance_id=inst.id, **query)
 
-    def delete_instance_backup(self, backup, ignore_missing=True, **attrs):
+    def delete_instance_backup(self, instance, backup, ignore_missing=True,
+                               **attrs):
         """Delete an instance backup
 
         :param backup: The instance id, an instance of
@@ -193,7 +190,8 @@ class Proxy(proxy.Proxy):
             raised when the queue does not exist.
         :returns: `None`
         """
-        self._delete(_backup.Backup, backup,
+        inst = self._get_resource(_instance.Instance, instance)
+        self._delete(_backup.Backup, backup, instance_id=inst.id,
                      ignore_missing=ignore_missing,
                      **attrs)
 
@@ -204,11 +202,14 @@ class Proxy(proxy.Proxy):
         :param instance: The instance id or an instance of
             :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
         :param dict kwargs: Keyword arguments which will be used to overwrite a
-            :class:`~otcextensions.sdk.dcs.v1.restore.Restore`
+            :class:`~otcextensions.sdk.dcs.v1.restore_record.RestoreRecord`
             `backup_id` and `description` are expected
         """
         inst = self._get_resource(_instance.Instance, instance)
-        return self._create(_restore.Restore, instance_id=inst.id, **kwargs)
+        return self._create(
+            _restore_record.RestoreRecord,
+            instance_id=inst.id,
+            **kwargs)
 
     def restore_records(self, instance, **query):
         """List all instance restore records
@@ -216,11 +217,11 @@ class Proxy(proxy.Proxy):
         :param instance: The instance id or an instance of
             :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
         :returns: A generator of Instance object of
-            :class:`~otcextensions.sdk.dcs.v1.restore.Restore`
+            :class:`~otcextensions.sdk.dcs.v1.restore_record.RestoreRecord`
         """
         inst = self._get_resource(_instance.Instance, instance)
         return self._list(
-            _restore.Restore, paginated=False,
+            _restore_record.RestoreRecord, paginated=False,
             instance_id=inst.id, **query)
 
     # ======== Misc ========
@@ -251,7 +252,7 @@ class Proxy(proxy.Proxy):
         :param instance: The value can be the ID of an instance
             or a :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
             instance.
-        :param paramss: List of parameters of
+        :param params: List of parameters of
             a :class:`~otcextensions.sdk.dcs.v1.config.Config`.
         :returns: None
         """

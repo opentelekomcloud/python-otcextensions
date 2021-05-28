@@ -100,7 +100,6 @@ class UpdateInstanceParam(command.Command):
                 raise argparse.ArgumentTypeError(msg)
 
         if params:
-            print('params=%s' % params)
             inst = client.find_instance(name_or_id=parsed_args.instance,
                                         ignore_missing=False)
 

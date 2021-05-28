@@ -7,5 +7,5 @@ DCS Resources
    v1/backup
    v1/config
    v1/instance
-   v1/restore
+   v1/restore_record
    v1/statistic

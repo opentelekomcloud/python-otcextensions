@@ -94,7 +94,8 @@ Create Group
 
 This interface is used to create an Auto-Scaling Group with parameters.
 
-**NEEDS TO BE DONE**
+.. literalinclude:: ../examples/auto_scaling/create_group.py
+   :lines: 16-37
 
 Get Group
 ^^^^^^^^^
@@ -171,7 +172,9 @@ Create Policy
 
 This interface is used to create an Auto-Scaling Policy with parameters.
 
-**NEEDS TO BE DONE**
+.. literalinclude:: ../examples/auto_scaling/create_policy.py
+   :lines: 16-35
+
 
 Get Policy
 ^^^^^^^^^^
