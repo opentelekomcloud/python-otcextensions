@@ -18,5 +18,6 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-for topic in conn.smn.topics():
+query = {}
+for topic in conn.smn.topics(**query):
     print(topic)
