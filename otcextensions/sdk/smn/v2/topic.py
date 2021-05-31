@@ -50,16 +50,30 @@ class Topic(resource.Resource):
     update_time = resource.Body('update_time')
 
 
-class TopicAttributes(resource.Resource):
-    base_path = '/notifications/topics/{topic_urn}s/attributes'
+class AttributeSpec(resource.Resource):
+    #: Properties
+    #: topic access policy
+    access_policy = resource.Body('access_policy')
+    #: Introduction
+    introduction = resource.Body('introduction')
 
-    allow_fetch = True
+
+class TopicAttributes(resource.Resource):
+    base_path = '/notifications/topics/%(topic_id)s/attributes'
+
+    allow_list = True
     allow_commit = True
     allow_delete = True
 
+    _query_mapping = resource.QueryParameters(
+        'offset', 'limit', 'name')
+
+    #: Properties
+    #: Topic URN
+    topic_id = resource.URI('topic_urn')
     #: Unique Request ID
     request_id = resource.Body('request_id')
-    #: topic access policy
-    access_policy = resource.Body('access_policy', type=dict)
-    #: description of a topic
-    introduction = resource.Body('introduction')
+    #: Unique Request ID
+    attributes = resource.Body('attributes', type=AttributeSpec)
+    #: Values of topic attributes
+    value = resource.Body('value')

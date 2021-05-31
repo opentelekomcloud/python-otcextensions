@@ -90,39 +90,24 @@ class Proxy(proxy.Proxy):
         """
         return self._update(_topic.Topic, topic, **attrs)
 
-    def find_topic(self, name_or_id, ignore_missing=False):
-        """Find a single SMN topic
-
-        :param name_or_id: The name or ID of a topic.
-        :param bool ignore_missing: When set to ``False``
-            :class:`~openstack.exceptions.ResourceNotFound` will be raised
-            when the topic does not exist.
-            When set to ``True``, no exception will be set when attempting
-            to delete a nonexistent topic.
-
-        :returns: One :class:`~otcextensions.sdk.smn.v2.topic.Topic`
-        """
-        return self._find(_topic.Topic, name_or_id,
-                          ignore_missing=ignore_missing)
-
     # ======== Topic Attributes (Access Policy)========
-    def get_topic_attributes(self, topic, name=None):
+    def get_topic_attribute(self, topic, **query):
         """Get SMN topic attributes
 
         :param topic: The value can be the ID of a topic or a
             :class:`~otcextensions.sdk.smn.v2.topic.Topic`
             instance.
-        :param name: Attribute Name.
+        :param query: Attribute query params.
 
         :returns: One :class:`~otcextensions.sdk.smn.v2.topic.TopicAttributes`
-
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
             when no resource can be found.
         """
-        attrs = {'name': name} if name else {}
         topic = self._get_resource(_topic.Topic, topic)
-        return self._get(_topic.TopicAttributes, topic_urn=topic.id,
-                         resource_key='attributes', **attrs)
+        return self._list(
+            _topic.TopicAttributes,
+            topic_id=topic.id,
+            **query)
 
     def update_topic_attribute(self, topic, name='access_policy', **attrs):
         """Update SMN topic attributes
@@ -143,7 +128,7 @@ class Proxy(proxy.Proxy):
         """
         topic = self._get_resource(_topic.Topic, topic)
         return self._update(_topic.TopicAttributes, id=name,
-                            topic_urn=topic.id, **attrs)
+                            topic_id=topic.id, **attrs)
 
     def delete_topic_attributes(self, topic, name=None):
         """Delete all attributes of a topic
@@ -163,9 +148,9 @@ class Proxy(proxy.Proxy):
         topic = self._get_resource(_topic.Topic, topic)
         if name:
             return self._delete(_topic.TopicAttributes,
-                                id=name, topic_urn=topic.id)
+                                id=name, topic_id=topic.id)
         return self._delete(_topic.TopicAttributes,
-                            topic_urn=topic.id, requires_id=False)
+                            topic_id=topic.id, requires_id=False)
 
     # ======== Subscription ========
     def create_subscription(self, topic, **attrs):
