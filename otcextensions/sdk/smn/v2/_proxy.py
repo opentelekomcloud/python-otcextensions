@@ -28,7 +28,6 @@ class Proxy(proxy.Proxy):
 
         :param dict attrs: Keyword arguments which will be used to create
             a :class:`~otcextensions.sdk.smn.v2.topic.Topic`
-
         :returns: :class:`~otcextensions.sdk.smn.v2.topic.Topic`
         """
         return self._create(_topic.Topic, **attrs)
@@ -43,7 +42,6 @@ class Proxy(proxy.Proxy):
             the topic does not exist.
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent topic.
-
         :returns: ``None``
         """
         return self._delete(_topic.Topic, topic,
@@ -54,9 +52,7 @@ class Proxy(proxy.Proxy):
 
         :param dict query: Optional query parameters to be sent to limit
             the resources being returned.
-
         :returns: A generator of topic objects
-
         :rtype: :class:`~otcextensions.sdk.smn.v2.topic.Topic`
         """
         return self._list(_topic.Topic, **query)
@@ -67,9 +63,7 @@ class Proxy(proxy.Proxy):
         :param topic: The value can be the ID of a topic or a
                         :class:`~otcextensions.sdk.smn.v2.topic.Topic`
                         instance.
-
         :returns: One :class:`~otcextensions.sdk.smn.v2.topic.Topic`
-
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                  when no resource can be found.
         """
@@ -83,9 +77,7 @@ class Proxy(proxy.Proxy):
                        instance.
         :param dict attrs: The attributes to update on the topic represented
                        by :class:`~otcextensions.sdk.smn.v2.topic.Topic`
-
         :returns: The updated topic.
-
         :rtype: :class:`~otcextensions.sdk.smn.v2.topic.Topic`
         """
         return self._update(_topic.Topic, topic, **attrs)
@@ -98,7 +90,6 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.smn.v2.topic.Topic`
             instance.
         :param query: Attribute query params.
-
         :returns: One :class:`~otcextensions.sdk.smn.v2.topic.TopicAttribute`
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
             when no resource can be found.
@@ -118,11 +109,9 @@ class Proxy(proxy.Proxy):
         :param name: Attribute Name.
         :param dict attrs: The attributes to update on the topic represented
             by :class:`~otcextensions.sdk.smn.v2.topic.TopicAttribute`
-
         :returns: request_id.
 
         :rtype: :class:`~otcextensions.sdk.smn.v2.topic.TopicAttribute`
-
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
             when no resource can be found.
         """
@@ -137,11 +126,8 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.smn.v2.topic.Topic`
             instance.
         :param name: Attribute Name.
-
         :returns: request_id.
-
         :rtype: :class:`~otcextensions.sdk.smn.v2.topic.TopicAttribute`
-
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
             when no resource can be found.
         """
@@ -161,7 +147,6 @@ class Proxy(proxy.Proxy):
             instance.
         :param dict attrs: Keyword arguments which will be used to create
             a :class:`~otcextensions.sdk.smn.v2.subscription.Subscription`
-
         :returns: :class:`~otcextensions.sdk.smn.v2.subscription.Subscription`
         """
         topic = self._get_resource(_topic.Topic, topic)
@@ -179,7 +164,6 @@ class Proxy(proxy.Proxy):
             if the subscription does not exist.
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent subscription.
-
         :returns: ``None``
         """
         base_path = '/notifications/subscriptions'
@@ -195,9 +179,7 @@ class Proxy(proxy.Proxy):
             instance.
         :param dict query: Optional query parameters to be sent to limit
             the resources being returned.
-
         :returns: A generator of subscription objects
-
         :rtype: :class:`~otcextensions.sdk.smn.v2.subscription.Subscription`
         """
         if topic:

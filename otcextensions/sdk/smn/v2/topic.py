@@ -35,18 +35,18 @@ class Topic(resource.Resource):
     #: Contains only digits, letters, underscores and hyphens
     name = resource.Body('name')
     #: Topic display name, which is presented as the name of
-    #:  the email sender in email messages
+    #: the email sender in email messages
     #: Contains only digits, letters, underscores and hyphens
     display_name = resource.Body('display_name')
     #: Message push policy
-    #:  0: Failed messages will be saved in message queues.
-    #:  1: Failed messages will be discarded.
+    #: 0: Failed messages will be saved in message queues.
+    #: 1: Failed messages will be discarded.
     push_policy = resource.Body('push_policy', type=int)
     #: Time when the topic was created
-    #:  The UTC time is in YYYY-MM-DDTHH:MM:SSZ format.
+    #: The UTC time is in YYYY-MM-DDTHH:MM:SSZ format.
     create_time = resource.Body('create_time')
     #: Time when the topic was updated
-    #:  The UTC time is in YYYY-MM-DDTHH:MM:SSZ format.
+    #: The UTC time is in YYYY-MM-DDTHH:MM:SSZ format.
     update_time = resource.Body('update_time')
 
 
