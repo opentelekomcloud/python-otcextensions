@@ -58,7 +58,7 @@ class AttributeSpec(resource.Resource):
     introduction = resource.Body('introduction')
 
 
-class TopicAttributes(resource.Resource):
+class TopicAttribute(resource.Resource):
     base_path = '/notifications/topics/%(topic_id)s/attributes'
 
     allow_list = True

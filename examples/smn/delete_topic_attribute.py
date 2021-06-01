@@ -21,7 +21,7 @@ conn = openstack.connect(cloud='otc')
 
 urn = 'urn:smn:eu-de:123:test'
 name = 'myattribute'
-topic = conn.smn.update_topic_attribute(
+attribute = conn.smn.delete_topic_attribute(
     topic=urn,
     name=name)
-print(topic)
+print(attribute)

@@ -19,9 +19,9 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
 
-urn = 'urn:smn:eu-de:123:tino'
+urn = 'urn:smn:eu-de:123:myname'
 topic = conn.smn.get_topic(topic=urn)
-attributes = conn.smn.get_topic_attribute(
+attributes = conn.smn.topic_attributes(
     topic=topic.id)
 for item in attributes:
     print(item)

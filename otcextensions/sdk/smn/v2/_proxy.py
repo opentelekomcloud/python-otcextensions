@@ -91,7 +91,7 @@ class Proxy(proxy.Proxy):
         return self._update(_topic.Topic, topic, **attrs)
 
     # ======== Topic Attributes (Access Policy)========
-    def get_topic_attribute(self, topic, **query):
+    def topic_attributes(self, topic, **query):
         """Get SMN topic attributes
 
         :param topic: The value can be the ID of a topic or a
@@ -99,13 +99,13 @@ class Proxy(proxy.Proxy):
             instance.
         :param query: Attribute query params.
 
-        :returns: One :class:`~otcextensions.sdk.smn.v2.topic.TopicAttributes`
+        :returns: One :class:`~otcextensions.sdk.smn.v2.topic.TopicAttribute`
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
             when no resource can be found.
         """
         topic = self._get_resource(_topic.Topic, topic)
         return self._list(
-            _topic.TopicAttributes,
+            _topic.TopicAttribute,
             topic_id=topic.id,
             **query)
 
@@ -117,20 +117,20 @@ class Proxy(proxy.Proxy):
             instance.
         :param name: Attribute Name.
         :param dict attrs: The attributes to update on the topic represented
-            by :class:`~otcextensions.sdk.smn.v2.topic.TopicAttributes`
+            by :class:`~otcextensions.sdk.smn.v2.topic.TopicAttribute`
 
         :returns: request_id.
 
-        :rtype: :class:`~otcextensions.sdk.smn.v2.topic.TopicAttributes`
+        :rtype: :class:`~otcextensions.sdk.smn.v2.topic.TopicAttribute`
 
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
             when no resource can be found.
         """
         topic = self._get_resource(_topic.Topic, topic)
-        return self._update(_topic.TopicAttributes, id=name,
+        return self._update(_topic.TopicAttribute, id=name,
                             topic_id=topic.id, **attrs)
 
-    def delete_topic_attributes(self, topic, name=None):
+    def delete_topic_attribute(self, topic, name=None):
         """Delete all attributes of a topic
 
         :param topic: Either the ID of a topic or a
@@ -140,16 +140,16 @@ class Proxy(proxy.Proxy):
 
         :returns: request_id.
 
-        :rtype: :class:`~otcextensions.sdk.smn.v2.topic.TopicAttributes`
+        :rtype: :class:`~otcextensions.sdk.smn.v2.topic.TopicAttribute`
 
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
             when no resource can be found.
         """
         topic = self._get_resource(_topic.Topic, topic)
         if name:
-            return self._delete(_topic.TopicAttributes,
+            return self._delete(_topic.TopicAttribute,
                                 id=name, topic_id=topic.id)
-        return self._delete(_topic.TopicAttributes,
+        return self._delete(_topic.TopicAttribute,
                             topic_id=topic.id, requires_id=False)
 
     # ======== Subscription ========

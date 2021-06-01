@@ -20,6 +20,7 @@ Open Telekom Cloud related User Guides
    kms
    nat
    rds
+   smn
    vpc
    logging
 
