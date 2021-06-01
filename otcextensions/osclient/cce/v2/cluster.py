@@ -82,7 +82,7 @@ class ShowCCECluster(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.cce
 
-        obj = client.find_cluster(parsed_args.cluster)
+        obj = client.find_cluster(parsed_args.cluster, ignore_missing=False)
 
         # display_columns, columns = _get_columns(obj)
         data = utils.get_dict_properties(_flatten_cluster(obj), self.columns)
