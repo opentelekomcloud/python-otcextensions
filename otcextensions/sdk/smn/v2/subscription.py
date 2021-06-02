@@ -14,7 +14,7 @@ from openstack import resource
 
 class Subscription(resource.Resource):
     resources_key = 'subscriptions'
-    base_path = '/notifications/topics/{topic_urn}s/subscriptions'
+    base_path = '/notifications/topics/%(topic_urn)s/subscriptions'
 
     # capabilities
     allow_create = True
@@ -25,30 +25,28 @@ class Subscription(resource.Resource):
         'offset', 'limit')
 
     #: Resource identifier of a subscription, which is unique
-    id = resource.Body('id', alias='subscription_urn')
-    subscription_urn = resource.Body('subscription_urn')
-    #: Resource identifier of a topic, which is unique
-    topic_urn = resource.Body('topic_urn')
-    #: Unique Request ID
-    request_id = resource.Body('request_id')
-    #: Specifies the Topic Name.
-    #: Contains only digits, letters, underscores and hyphens
-    name = resource.Body('name')
-    #: Topic display name, which is presented as the name
-    #:  of the email sender in email messages
-    #: Contains only digits, letters, underscores and hyphens
-    display_name = resource.Body('display_name')
+    id = resource.Body('subscription_urn', alternate_id=True)
+    #: Message receiving endpoint
+    endpoint = resource.Body('endpoint')
     #: Subscription protocol
     #: Following protocols are supported:
-    #:  email, sms, http and https
+    #: email, sms, http and https
     protocol = resource.Body('protocol')
     #: Project ID of the topic creator
     owner = resource.Body('owner')
-    #: Message receiving endpoint
-    endpoint = resource.Body('endpoint')
     #: Remarks
     remark = resource.Body('remark')
     #: Subscription status
     #:  0: unconfirmed
     #:  1: confirmed
+    #:  3: canceled
     status = resource.Body('status')
+    #: Resource identifier of a topic, which is unique
+    topic_urn = resource.URI('topic_urn')
+
+    def delete(self, session, error_message=None, **kwargs):
+        self.base_path = '/notifications/subscriptions'
+        return super(Subscription, self).delete(
+            session,
+            error_message=error_message,
+            **kwargs)

@@ -31,7 +31,7 @@ class TestSubscription(base.TestCase):
     def test_basic(self):
         sot = subscription.Subscription()
         self.assertEqual('subscriptions', sot.resources_key)
-        path = '/notifications/topics/{topic_urn}s/subscriptions'
+        path = '/notifications/topics/%(topic_urn)s/subscriptions'
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
@@ -41,7 +41,7 @@ class TestSubscription(base.TestCase):
 
     def test_make_it(self):
         sot = subscription.Subscription(**EXAMPLE)
-        self.assertEqual(EXAMPLE['subscription_urn'], sot.subscription_urn)
+        self.assertEqual(EXAMPLE['subscription_urn'], sot.id)
         self.assertEqual(EXAMPLE['topic_urn'], sot.topic_urn)
         self.assertEqual(EXAMPLE['protocol'], sot.protocol)
         self.assertEqual(EXAMPLE['owner'], sot.owner)

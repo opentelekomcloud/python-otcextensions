@@ -41,7 +41,7 @@ class TestTopic(base.TestCase):
 
     def test_make_it(self):
         sot = topic.Topic(**EXAMPLE)
-        self.assertEqual(EXAMPLE['topic_urn'], sot.topic_urn)
+        self.assertEqual(EXAMPLE['topic_urn'], sot.id)
         self.assertEqual(EXAMPLE['name'], sot.name)
         self.assertEqual(EXAMPLE['create_time'], sot.create_time)
         self.assertEqual(EXAMPLE['update_time'], sot.update_time)

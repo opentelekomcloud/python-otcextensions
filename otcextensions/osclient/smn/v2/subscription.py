@@ -25,8 +25,7 @@ LOG = logging.getLogger(__name__)
 
 
 def _get_columns(item):
-    column_map = {
-    }
+    column_map = {}
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
@@ -34,9 +33,9 @@ class ListSubscription(command.Lister):
 
     _description = _("List SMN Subscriptions.")
     columns = (
-        'Subscription Urn',
+        'ID',
         'Protocol',
-        'Topic Urn',
+        'Topic URN',
         'Owner',
         'Endpoint',
         'Status'
@@ -131,8 +130,7 @@ class CreateSubscription(command.ShowOne):
             if val:
                 attrs[arg] = val
 
-        topic = client.find_topic(parsed_args.topic,
-                                  ignore_missing=False)
+        topic = client.get_topic(parsed_args.topic)
         obj = client.create_subscription(topic, **attrs)
 
         display_columns, columns = _get_columns(obj)

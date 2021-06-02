@@ -27,24 +27,23 @@ class Topic(resource.Resource):
         'offset', 'limit')
 
     #: Resource identifier of a topic, which is unique
-    topic_urn = resource.Body('topic_urn')
-    id = resource.Body('id', alias='topic_urn')
-    #: Unique Request ID
-    request_id = resource.Body('request_id')
-    #: Specifies the Topic Name.
-    #: Contains only digits, letters, underscores and hyphens
-    name = resource.Body('name')
+    id = resource.Body('topic_urn', alternate_id=True)
+    #: Time when the topic was created
+    #: The UTC time is in YYYY-MM-DDTHH:MM:SSZ format.
+    create_time = resource.Body('create_time')
     #: Topic display name, which is presented as the name of
     #: the email sender in email messages
     #: Contains only digits, letters, underscores and hyphens
     display_name = resource.Body('display_name')
+    #: Specifies the Topic Name.
+    #: Contains only digits, letters, underscores and hyphens
+    name = resource.Body('name')
     #: Message push policy
     #: 0: Failed messages will be saved in message queues.
     #: 1: Failed messages will be discarded.
     push_policy = resource.Body('push_policy', type=int)
-    #: Time when the topic was created
-    #: The UTC time is in YYYY-MM-DDTHH:MM:SSZ format.
-    create_time = resource.Body('create_time')
+    #: Unique Request ID
+    request_id = resource.Body('request_id')
     #: Time when the topic was updated
     #: The UTC time is in YYYY-MM-DDTHH:MM:SSZ format.
     update_time = resource.Body('update_time')
@@ -59,7 +58,7 @@ class AttributeSpec(resource.Resource):
 
 
 class TopicAttribute(resource.Resource):
-    base_path = '/notifications/topics/%(topic_id)s/attributes'
+    base_path = '/notifications/topics/%(topic_urn)s/attributes'
 
     allow_list = True
     allow_commit = True
@@ -70,7 +69,7 @@ class TopicAttribute(resource.Resource):
 
     #: Properties
     #: Topic URN
-    topic_id = resource.URI('topic_urn')
+    topic_urn = resource.URI('topic_urn')
     #: Unique Request ID
     request_id = resource.Body('request_id')
     #: Unique Request ID

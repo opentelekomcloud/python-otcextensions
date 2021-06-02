@@ -17,3 +17,11 @@ Topic operations
 
 .. autoprogram-cliff:: openstack.smn.v2
    :command: smn topic *
+
+.. _smn_subscription:
+
+Subscription operations
+-----------------------
+
+.. autoprogram-cliff:: openstack.smn.v2
+   :command: smn subscription *

@@ -83,6 +83,12 @@ class Proxy(proxy.Proxy):
         return self._update(_topic.Topic, topic, **attrs)
 
     # ======== Topic Attributes (Access Policy)========
+    """
+        The Topic Attributes are not well designed via API. So the SDK
+        implementation sucks as well. We need for a proper API fix to get
+        this solved
+    """
+
     def topic_attributes(self, topic, **query):
         """Get SMN topic attributes
 
@@ -166,10 +172,8 @@ class Proxy(proxy.Proxy):
             delete a nonexistent subscription.
         :returns: ``None``
         """
-        base_path = '/notifications/subscriptions'
         return self._delete(_subscription.Subscription, subscription,
-                            ignore_missing=ignore_missing,
-                            base_path=base_path)
+                            ignore_missing=ignore_missing)
 
     def subscriptions(self, topic=None, **query):
         """Return a generator of Subscriptions

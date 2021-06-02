@@ -25,16 +25,16 @@ class TestListSubscription(fakes.TestSmn):
     _topic = fakes.FakeTopic.create_one()
 
     column_list_headers = (
-        'Subscription Urn',
+        'ID',
         'Protocol',
-        'Topic Urn',
+        'Topic URN',
         'Owner',
         'Endpoint',
         'Status'
     )
 
     columns = (
-        'subscription_urn',
+        'id',
         'protocol',
         'topic_urn',
         'owner',
@@ -46,7 +46,7 @@ class TestListSubscription(fakes.TestSmn):
 
     for s in objects:
         data.append(
-            (s.subscription_urn,
+            (s.id,
              s.protocol,
              s.topic_urn,
              s.owner,
@@ -115,22 +115,14 @@ class TestCreateSubscription(fakes.TestSmn):
     _data = fakes.FakeSubscription.create_one()
     _topic = fakes.FakeTopic.create_one()
 
-    columns = (
-        'endpoint',
-        'owner',
-        'protocol',
-        'remark',
-        'status',
-        'subscription_urn',
-        'topic_urn'
-    )
+    columns = ('endpoint', 'id', 'owner', 'protocol', 'remark', 'status')
 
     data = fakes.gen_data(_data, columns)
 
     def setUp(self):
         super(TestCreateSubscription, self).setUp()
 
-        self.client.find_topic = mock.Mock(return_value=self._topic)
+        self.client.get_topic = mock.Mock(return_value=self._topic)
         self.cmd = subscription.CreateSubscription(self.app, None)
 
         self.client.create_subscription = mock.Mock(return_value=self._data)
@@ -195,7 +187,7 @@ class TestDeleteSubscription(fakes.TestSmn):
         arglist = []
 
         for data in self._data:
-            arglist.append(data.subscription_urn)
+            arglist.append(data.id)
 
         verifylist = [
             ('subscription', arglist),
@@ -209,13 +201,13 @@ class TestDeleteSubscription(fakes.TestSmn):
 
         calls = []
         for data in self._data:
-            calls.append(call(data.subscription_urn, ignore_missing=False))
+            calls.append(call(data.id, ignore_missing=False))
         self.client.delete_subscription.assert_has_calls(calls)
         self.assertIsNone(result)
 
     def test_multiple_delete_with_exception(self):
         arglist = [
-            self._data[0].subscription_urn,
+            self._data[0].id,
             'unexist_subscription',
         ]
         verifylist = [
@@ -238,6 +230,6 @@ class TestDeleteSubscription(fakes.TestSmn):
                 '1 of 2 SMN Subscription(s) failed to delete.', str(e))
 
         self.client.delete_subscription.assert_any_call(
-            self._data[0].subscription_urn, ignore_missing=False)
+            self._data[0].id, ignore_missing=False)
         self.client.delete_subscription.assert_any_call(
             'unexist_subscription', ignore_missing=False)

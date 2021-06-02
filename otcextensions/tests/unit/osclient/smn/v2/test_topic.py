@@ -25,15 +25,15 @@ class TestListTopic(fakes.TestSmn):
 
     objects = fakes.FakeTopic.create_multiple(3)
 
-    column_list_headers = ('Topic Urn', 'Name', 'Display Name', 'Push Policy')
+    column_list_headers = ('ID', 'Name', 'Display Name', 'Push Policy')
 
-    columns = ('topic_urn', 'name', 'display_name', 'push_policy')
+    columns = ('id', 'name', 'display_name', 'push_policy')
 
     data = []
 
     for s in objects:
         data.append(
-            (s.topic_urn, s.name, s.display_name, s.push_policy))
+            (s.id, s.name, s.display_name, s.push_policy))
 
     def setUp(self):
         super(TestListTopic, self).setUp()
@@ -135,12 +135,11 @@ class TestUpdateTopic(fakes.TestSmn):
     columns = (
         'create_time',
         'display_name',
+        'id',
         'name',
         'push_policy',
         'request_id',
-        'topic_urn',
-        'update_time'
-    )
+        'update_time')
 
     data = fakes.gen_data(_data, columns)
 
@@ -182,12 +181,11 @@ class TestShowTopic(fakes.TestSmn):
     columns = (
         'create_time',
         'display_name',
+        'id',
         'name',
         'push_policy',
         'request_id',
-        'topic_urn',
-        'update_time'
-    )
+        'update_time')
 
     data = fakes.gen_data(_data, columns)
 

@@ -32,7 +32,7 @@ def _get_columns(item):
 class ListTopic(command.Lister):
 
     _description = _("List SMN Topics.")
-    columns = ('Topic Urn', 'Name', 'Display Name', 'Push Policy')
+    columns = ('ID', 'Name', 'Display Name', 'Push Policy')
 
     def get_parser(self, prog_name):
         parser = super(ListTopic, self).get_parser(prog_name)

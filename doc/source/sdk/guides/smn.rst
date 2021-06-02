@@ -108,6 +108,34 @@ You can add multiple subscriptions to each topic. This section describes
 how to add subscriptions to a topic you created or one to which you have
 been granted permissions and how to delete subscriptions.
 
+List Subscriptions
+^^^^^^^^^^^^^^^^^^
+
+This interface is used to query SMN Subscription and to filter
+the output with query parameters.
+
+.. literalinclude:: ../examples/smn/list_subscriptions.py
+   :lines: 16-27
+
+Create Subscription
+^^^^^^^^^^^^^^^^^^^
+
+This interface is used to create a subscription instance to a SMN topic.
+
+.. literalinclude:: ../examples/smn/create_subscription.py
+   :lines: 16-30
+
+Delete Subscription
+^^^^^^^^^^^^^^^^^^^
+
+This interface is used to delete a SMN subscription instance by id
+or an instance of class
+:class:`~otcextensions.sdk.smn.v2.subscription.Subscription`.
+
+.. literalinclude:: ../examples/smn/delete_subscription.py
+   :lines: 16-23
+
+
 Template
 --------
 
