@@ -3,7 +3,7 @@ otcextensions.sdk.smn.v2.topic
 
 .. automodule:: otcextensions.sdk.smn.v2.topic
 
-The CBR Topic Class
+The SMN Topic Class
 -------------------
 
 The ``Topic`` class inherits from

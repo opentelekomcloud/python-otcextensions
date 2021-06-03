@@ -35,7 +35,7 @@ PROTOCOL_CHOICES = ['email', 'default', 'sms', 'dms', 'http', 'https']
 class ListTemplate(command.Lister):
 
     _description = _("List message templates.")
-    columns = ('Message Template Id', 'Message Template Name', 'Protocol')
+    columns = ('ID', 'Name', 'Protocol')
 
     def get_parser(self, prog_name):
         parser = super(ListTemplate, self).get_parser(prog_name)

@@ -28,11 +28,10 @@ class Template(resource.Resource):
         name='message_template_name')
 
     #: Unique Request ID
-    id = resource.Body('id', alias='message_template_id')
-    message_template_id = resource.Body('message_template_id')
+    id = resource.Body('message_template_id', alternate_id=True)
     #: Specifies the Template Name.
     #: Contains only digits, letters, underscores and hyphens.
-    message_template_name = resource.Body('message_template_name')
+    name = resource.Body('message_template_name')
     #: Protocol supported by the template.
     protocol = resource.Body('protocol')
     #: Template content, which currently supports plain text only.

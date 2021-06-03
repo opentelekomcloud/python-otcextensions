@@ -150,6 +150,61 @@ template, SMN tries to match different types of subscribers to the template
 protocols. If there is no template for a specified protocol, SMN will use
 the default template to send messages to subscribers of that protocol.
 
+List Template
+^^^^^^^^^^^^^
+
+This interface is used to query SMN message templates and to filter
+the output with query parameters.
+
+.. literalinclude:: ../examples/smn/list_templates.py
+   :lines: 16-23
+
+Get Template
+^^^^^^^^^^^^
+
+This interface is used to get a SMN message template by ID or an instance of
+class :class:`~otcextensions.sdk.smn.v2.template.Template`.
+
+.. literalinclude:: ../examples/smn/get_template.py
+   :lines: 16-24
+
+Find Template
+^^^^^^^^^^^^^
+
+This interface is used to find a SMN message template by name or ID.
+
+.. literalinclude:: ../examples/smn/find_template.py
+   :lines: 16-24
+
+
+Create Template
+^^^^^^^^^^^^^^^
+
+This interface is used to create a SMN template instance with
+parameters.
+
+.. literalinclude:: ../examples/smn/create_template.py
+   :lines: 16-28
+
+Update Template
+^^^^^^^^^^^^^^^
+
+This interface is used to update a SMN message template instance with
+parameters.
+
+.. literalinclude:: ../examples/smn/update_template.py
+   :lines: 16-28
+
+Delete Template
+^^^^^^^^^^^^^^^
+
+This interface is used to delete a SMN message template instance by id
+or an instance of class
+:class:`~otcextensions.sdk.smn.v2.template.Template`.
+
+.. literalinclude:: ../examples/smn/delete_template.py
+   :lines: 16-24
+
 Message Publishing
 ------------------
 

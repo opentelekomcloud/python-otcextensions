@@ -45,9 +45,9 @@ class TestTemplate(base.TestCase):
     def test_make_it(self):
         sot = template.Template(**EXAMPLE)
         self.assertEqual(EXAMPLE['message_template_name'],
-                         sot.message_template_name)
+                         sot.name)
         self.assertEqual(EXAMPLE['message_template_id'],
-                         sot.message_template_id)
+                         sot.id)
         self.assertEqual(EXAMPLE['create_time'], sot.create_time)
         self.assertEqual(EXAMPLE['update_time'], sot.update_time)
         self.assertEqual(EXAMPLE['tag_names'], sot.tag_names)

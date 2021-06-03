@@ -26,14 +26,14 @@ class TestListTemplate(fakes.TestSmn):
     objects = fakes.FakeTemplate.create_multiple(3)
 
     column_list_headers = (
-        'Message Template Id',
-        'Message Template Name',
+        'ID',
+        'Name',
         'Protocol'
     )
 
     columns = (
-        'message_template_id',
-        'message_template_name',
+        'id',
+        'name',
         'protocol'
     )
 
@@ -41,7 +41,7 @@ class TestListTemplate(fakes.TestSmn):
 
     for s in objects:
         data.append(
-            (s.message_template_id, s.message_template_name, s.protocol))
+            (s.id, s.name, s.protocol))
 
     def setUp(self):
         super(TestListTemplate, self).setUp()
@@ -109,13 +109,12 @@ class TestCreateTemplate(fakes.TestSmn):
     columns = (
         'content',
         'create_time',
-        'message_template_id',
-        'message_template_name',
+        'id',
+        'name',
         'protocol',
         'request_id',
         'tag_names',
-        'update_time'
-    )
+        'update_time')
 
     data = fakes.gen_data(_data, columns)
 
@@ -158,8 +157,8 @@ class TestUpdateTemplate(fakes.TestSmn):
     columns = (
         'content',
         'create_time',
-        'message_template_id',
-        'message_template_name',
+        'id',
+        'name',
         'protocol',
         'request_id',
         'tag_names',
@@ -206,8 +205,8 @@ class TestShowTemplate(fakes.TestSmn):
     columns = (
         'content',
         'create_time',
-        'message_template_id',
-        'message_template_name',
+        'id',
+        'name',
         'protocol',
         'request_id',
         'tag_names',

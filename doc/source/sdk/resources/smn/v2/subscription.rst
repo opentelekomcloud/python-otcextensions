@@ -3,7 +3,7 @@ otcextensions.sdk.smn.v2.subscription
 
 .. automodule:: otcextensions.sdk.smn.v2.subscription
 
-The CBR Subscription Class
+The SMN Subscription Class
 --------------------------
 
 The ``Subscription`` class inherits from

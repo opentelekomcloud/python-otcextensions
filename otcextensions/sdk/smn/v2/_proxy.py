@@ -201,7 +201,7 @@ class Proxy(proxy.Proxy):
         :param dict attrs: Keyword arguments which will be used to create
             a :class:`~otcextensions.sdk.smn.v2.template.Template`
 
-        :returns: :class:`~otcextensions.sdk.smn.v2.template.Template
+        :returns: :class:`~otcextensions.sdk.smn.v2.template.Template`
         """
         return self._create(_template.Template, **attrs)
 
@@ -237,7 +237,7 @@ class Proxy(proxy.Proxy):
         """Get details a message templates
 
         :param template: The value can be the ID of a message template or a
-            :class:`~otcextensions.sdk.smn.v2.template.Template `instance.
+            :class:`~otcextensions.sdk.smn.v2.template.Template` instance.
 
         :returns: One :class:`~otcextensions.sdk.smn.v2.template.Template`
 

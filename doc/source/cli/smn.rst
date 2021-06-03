@@ -25,3 +25,9 @@ Subscription operations
 
 .. autoprogram-cliff:: openstack.smn.v2
    :command: smn subscription *
+
+Template operations
+-------------------
+
+.. autoprogram-cliff:: openstack.smn.v2
+   :command: smn template *
