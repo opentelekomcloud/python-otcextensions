@@ -52,12 +52,47 @@ class Proxy(proxy.Proxy):
 
     def wait_for_gateway(self, gateway, status='ACTIVE', failures=None,
                          interval=2, wait=300, attribute='status'):
+        """Wait for an gateway to be in a particular status.
+
+        :param gateway:
+            The :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
+            or gateway ID to wait on to reach the specified status.
+        :param status: Desired status.
+        :param failures:
+            Statuses that would be interpreted as failures.
+        :type failures: :py:class:`list`
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait before the change.
+            Default to 180
+        :return: The resource is returned on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` if transition
+                 to the desired status failed to occur in specified seconds.
+        :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
+                 has transited to one of the failure statuses.
+        """
         failures = ['PENDING_CREATE'] if failures is None else failures
         return resource.wait_for_status(
             self, gateway, status, failures, interval, wait)
 
     def wait_for_delete_gateway(self, gateway, interval=2, wait=180):
+        """Wait for the gateway to be deleted.
 
+        :param gateway:
+            The :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
+            or instance ID to wait on to be deleted.
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait for the delete.
+            Default to 180.
+        :return: Method returns self on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` transition
+                 to status failed to occur in wait seconds.
+        """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         for count in utils.iterate_timeout(
             timeout=wait,
