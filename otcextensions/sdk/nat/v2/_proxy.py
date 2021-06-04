@@ -50,6 +50,25 @@ class Proxy(proxy.Proxy):
         return self._delete(_gateway.Gateway, gateway,
                             ignore_missing=ignore_missing)
 
+    def wait_for_gateway(self, gateway, status='ACTIVE', failures=None,
+                         interval=2, wait=300, attribute='status'):
+        failures = ['PENDING_CREATE'] if failures is None else failures
+        return resource.wait_for_status(
+            self, gateway, status, failures, interval, wait)
+
+    def wait_for_delete_gateway(self, gateway, interval=2, wait=180):
+
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        for count in utils.iterate_timeout(
+            timeout=wait,
+            message="Timeout waiting for gateway to delete",
+            wait=interval
+        ):
+            gateway = self._find(_gateway.Gateway, name_or_id=gateway.id,
+                                 ignore_missing=True)
+            if gateway is None:
+                return
+
     def gateways(self, **query):
         """Return a generator of gateways
 
@@ -231,3 +250,4 @@ class Proxy(proxy.Proxy):
             if dry_run and need_delete:
                 for port in self._connection.network.ports(device_id=obj.id):
                     identified_resources[port.id] = port
+
