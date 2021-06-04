@@ -278,9 +278,10 @@ class Proxy(proxy.Proxy):
     # ======== Message Publish ========
     def publish_message(self, topic, **attrs):
 
-        """Publish messages in the text format or
-            using message structure or using a message template
-            to a topic.
+        """
+        Publish messages in the text format or
+        using message structure or using a message template
+        to a topic.
 
         :param topic: Either the ID of a topic or a
             :class: `~otcextensions.sdk.smn.v2.topic.Topic`
@@ -288,7 +289,7 @@ class Proxy(proxy.Proxy):
         :param dict attrs: Keyword arguments which will be used to Publish
             a Message.
 
-        :returns: :class:`~otcextensions.sdk.smn.v2.message.Message
+        :returns: :class:`~otcextensions.sdk.smn.v2.message.Message`
         """
         topic = self._get_resource(_topic.Topic, topic)
         return self._create(_message.Message,
@@ -297,13 +298,14 @@ class Proxy(proxy.Proxy):
     # ======== SMS Publish ========
     def send_sms(self, endpoint, message):
 
-        """Send a transactional SMS message to a specified phone number,
-            usually used for verification code or notification.
+        """
+        Send a transactional SMS message to a specified phone number,
+        usually used for verification code or notification.
 
         :param endpoint: Phone number.
         :param message: SMS message content.
 
-        :returns: :class:`~otcextensions.sdk.smn.v2.message.Message
+        :returns: :class:`~otcextensions.sdk.smn.v2.message.Message`
         """
         attrs = {
             'endpoint': endpoint,

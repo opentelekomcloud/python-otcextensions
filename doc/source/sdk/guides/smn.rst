@@ -208,8 +208,20 @@ or an instance of class
 Message Publishing
 ------------------
 
+Use the message structure to publish a message to the topic. After the
+message ID is returned, the message has been saved and is to be pushed
+to the subscribers of the topic. This API allows you to send different
+message content to different types of subscribers.
+
+.. literalinclude:: ../examples/smn/publish_message.py
+   :lines: 16-31
+
 SMS Publishing
 --------------
 
 Send a transactional SMS message to a specified phone number, usually used
 for verification code or notification.
+
+.. literalinclude:: ../examples/smn/send_sms.py
+   :lines: 16-27
+

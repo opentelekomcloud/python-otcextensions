@@ -31,9 +31,9 @@ def _get_columns(item):
 
 class PublishMessage(command.ShowOne):
     _description = _("Publish message. Three message formats are supported:\n"
-                     " - message\n"
-                     " - message_structure\n"
-                     " - message_template_name\n"
+                     "- message\n"
+                     "- message_structure\n"
+                     "- message_template_name\n"
                      "If the three formats are specified at the same time, "
                      "they take effect in the following sequence: \n"
                      "message_structure > message_template_name > message.")

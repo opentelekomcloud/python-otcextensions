@@ -18,6 +18,13 @@ Subscription Operations
   :noindex:
   :members: subscriptions, create_subscription, delete_subscription
 
+SMS Operations
+^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.smn.v2._proxy.Proxy
+  :noindex:
+  :members: send_sms
+
 Template Operations
 ^^^^^^^^^^^^^^^^^^^
 
@@ -40,3 +47,10 @@ Topic Attribute Operations
 .. autoclass:: otcextensions.sdk.smn.v2._proxy.Proxy
   :noindex:
   :members: topic_attributes, update_topic_attribute, delete_topic_attribute
+
+Message Operations
+^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.smn.v2._proxy.Proxy
+  :noindex:
+  :members: publish_message
