@@ -9,6 +9,8 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack import resource
+
 from otcextensions.sdk.nat.v2 import gateway as _gateway
 from otcextensions.sdk.nat.v2 import snat as _snat
 from otcextensions.sdk.nat.v2 import dnat as _dnat
@@ -94,15 +96,7 @@ class Proxy(proxy.Proxy):
                  to status failed to occur in wait seconds.
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        for count in utils.iterate_timeout(
-            timeout=wait,
-            message="Timeout waiting for gateway to delete",
-            wait=interval
-        ):
-            gateway = self._find(_gateway.Gateway, name_or_id=gateway.id,
-                                 ignore_missing=True)
-            if gateway is None:
-                return
+        return resource.wait_for_delete(self, gateway, interval, wait)
 
     def gateways(self, **query):
         """Return a generator of gateways
@@ -285,4 +279,3 @@ class Proxy(proxy.Proxy):
             if dry_run and need_delete:
                 for port in self._connection.network.ports(device_id=obj.id):
                     identified_resources[port.id] = port
-
