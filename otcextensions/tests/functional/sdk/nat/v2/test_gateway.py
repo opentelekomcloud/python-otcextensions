@@ -10,9 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from openstack import proxy
 from openstack import resource
-from openstack import utils
 
 from otcextensions.tests.functional import base
 from datetime import datetime
@@ -22,24 +20,48 @@ _logger = openstack._log.setup_logging('openstack')
 
 class TestGateway(base.BaseFunctionalTest):
 
-    UPDATE_NAME = "updated-gateway"
+    CIDR = "192.168.0.0/24"
+    IPV4 = 4
+    VPC_ID = None
+    NET_ID = None
+    SUBNET_ID = None
+    GATEWAY_ID = None
+    SPEC = 1
+    ID = None
+
+    def _initialize_network(self):
+        network = self.conn.network.create_network(name=self.NETWORK_NAME)
+        TestInstance.NET_ID = network.id
+
+        subnet = self.conn.network.create_subnet(
+            name=self.SUBNET_NAME,
+            ip_version=self.IPV4,
+            network_id=self.NET_ID,
+            cidr=self.CIDR
+        )
+        self.SUBNET_ID = subnet.id
+
+        vpc = self.conn.network.create_router(name=self.VPC_NAME)
+
+        self.VPC_ID = vpc.id
+        interface = router.add_interface(self.conn.network,
+                                         subnet_id=TestInstance.SUBNET_ID)
 
     def setUp(self):
         super(TestGateway, self).setUp()
         self.GATEWAY_NAME = self.getUniqueString('gateway')
-        self.VPC_NAME = self.getUniqueString('vpc')
-        self.spec = 1
+        self.UPDATE_NAME = self.getUniqueString('updated-gateway')
         self.NETWORK_NAME = self.getUniqueString('network')
-        self.network = self.conn.network.create_network(name=self.NETWORK_NAME)
-        self.vpc = self.conn.network.create_router(name=self.VPC_NAME)
-        gateway = self.conn.nat.create_gateway(name=self.GATEWAY_NAME,
-                                    internal_network_id=self.network['id'],
-                                    router_id=self.vpc['id'],
-                                    spec=self.spec)
+        self.SUBNET_NAME = self.getUniqueString('subnet')
+        self.VPC_NAME = self.getUniqueString('vpc')
+        self._initialize_network()
+        gateway = self.conn.nat.create_gateway(
+            name=self.GATEWAY_NAME, internal_network_id=self.network['id'],
+            router_id=self.vpc['id'], spec=self.spec)
+        self.conn.nat.wait_for_gateway(gateway=gateway)
         self.ID = gateway['id']
 
     def test_find_gateway(self):
-
         gw = self.conn.nat.find_gateway(self.GATEWAY_NAME)
         self.assertEqual(self.ID, gw.id)
 
@@ -49,8 +71,8 @@ class TestGateway(base.BaseFunctionalTest):
         self.assertEqual(self.ID, gw.id)
 
     def test_update(self):
-        gw = self.conn.network.update_gateway(self.ID,
-                                                 name=self.UPDATE_NAME)
+        gw = self.conn.network.update_gateway(self.ID, 
+                                              name=self.UPDATE_NAME)
         self.assertEqual(self.UPDATE_NAME, gw.name)
 
     def test_list(self):
@@ -76,7 +98,18 @@ class TestGateway(base.BaseFunctionalTest):
     def tearDown(self):
         gw = self.conn.nat.delete_gateway(self.ID, ignore_missing=True)
         self.assertIsNone(gw)
-
-        self.conn.network.delete_network(name=self.NETWORK_NAME)
-        self.conn.network.delete_router(name=self.VPC_NAME)
+        self._deinitialize_network()
         super(TestGateway, self).tearDown()
+
+    def _deinitialize_network(self):
+        router = self.conn.network.get_router(self.ROUTER_ID)
+        router.remove_interface(self.conn.network,
+                                subnet_id=self.SUBNET_ID)
+        self.conn.network.delete_router(
+            self.ROUTER_ID, ignore_missing=False)
+        self.conn.network.delete_subnet(
+            self.SUBNET_ID, ignore_missing=False)
+        self.conn.network.delete_network(
+            self.NET_ID, ignore_missing=False)
+        self.conn.network.delete_security_group(
+            self.SG_ID, ignore_missing=False)
