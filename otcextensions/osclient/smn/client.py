@@ -21,9 +21,9 @@ LOG = logging.getLogger(__name__)
 
 DEFAULT_API_VERSION = '2'
 API_VERSION_OPTION = 'os_smn_api_version'
-API_NAME = "smn"
+API_NAME = 'smn'
 API_VERSIONS = {
-    "2": "openstack.connection.Connection"
+    '2': 'openstack.connection.Connection'
 }
 
 
