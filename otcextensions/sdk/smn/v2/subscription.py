@@ -50,7 +50,7 @@ class Subscription(resource.Resource):
             session,
             error_message=error_message,
             **kwargs)
-    
+
     @classmethod
     def list(cls, session, paginated=True, base_path=None,
              allow_unknown_params=False, **params):

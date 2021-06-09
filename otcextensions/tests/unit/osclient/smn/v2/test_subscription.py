@@ -58,7 +58,7 @@ class TestListSubscription(fakes.TestSmn):
 
         self.cmd = subscription.ListSubscription(self.app, None)
 
-        self.client.find_topic = mock.Mock(return_value=self._topic)
+        self.client.get_topic = mock.Mock(return_value=self._topic)
         self.client.subscriptions = mock.Mock()
         self.client.api_mock = self.client.subscriptions
 
