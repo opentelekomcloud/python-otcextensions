@@ -28,7 +28,6 @@ class TestZone(TestDns):
             self.zone = self.client.create_zone(name=TestZone.ZONE_ALIAS)
         except openstack.exceptions.BadRequestException:
             self.zone = self.client.find_zone(TestZone.ZONE_ALIAS)
-        print(f'Created: {self.zone}')
         self.zones.append(self.zone)
 
     def tearDown(self):
@@ -42,10 +41,18 @@ class TestZone(TestDns):
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
 
-    def test_list(self):
+    def test_list_zones(self):
         self.all_zones = list(self.conn.dns.zones())
         self.assertGreaterEqual(len(self.all_zones), 0)
         if len(self.all_zones) > 0:
             zone = self.all_zones[0]
             zone = self.client.get_zone(zone=zone.id)
             self.assertIsNotNone(zone)
+
+    def test_get_zone(self):
+        zone = self.client.get_zone(self.zone.id)
+        self.assertEqual(zone.name, self.ZONE_ALIAS)
+
+    def test_find_zone(self):
+        zone = self.client.find_zone(self.zone.name)
+        self.assertEqual(self.zone.name, self.ZONE_ALIAS)
