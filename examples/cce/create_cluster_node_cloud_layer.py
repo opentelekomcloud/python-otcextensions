@@ -45,15 +45,15 @@ node = conn.create_cce_cluster_node(
             'value': 'hellovalue2'
         }],
     data_volumes=[{
-            'volumetype': 'SATA',
-            'size': 110,
-            'encrypted': False,
-            'cmk_id': ''
-        }, {
-            'volumetype': 'SAS',
-            'size': 120,
-            'encrypted': False,
-            'cmk_id': ''
-        }],
+        'volumetype': 'SATA',
+        'size': 110,
+        'encrypted': False,
+        'cmk_id': ''
+    }, {
+        'volumetype': 'SAS',
+        'size': 120,
+        'encrypted': False,
+        'cmk_id': ''
+    }],
     wait=False)
 print(node)
