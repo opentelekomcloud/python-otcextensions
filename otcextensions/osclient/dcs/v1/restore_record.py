@@ -10,7 +10,7 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-'''DCS Restore v1 action implementations'''
+'''DCS Restore Record v1 action implementations'''
 import logging
 
 from osc_lib import utils

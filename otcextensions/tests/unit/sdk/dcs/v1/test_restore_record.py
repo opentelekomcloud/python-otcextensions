@@ -11,7 +11,7 @@
 # under the License.
 from openstack.tests.unit import base
 
-from otcextensions.sdk.dcs.v1 import restore
+from otcextensions.sdk.dcs.v1 import restore_record
 
 FAKE_ID = "68d5745e-6af2-40e4-945d-fe449be00148"
 FAKE_INSTANCE_ID = "some_fake_id"
@@ -30,10 +30,10 @@ EXAMPLE = {
 }
 
 
-class TestRestore(base.TestCase):
+class TestRestoreRecord(base.TestCase):
 
     def test_basic(self):
-        sot = restore.Restore()
+        sot = restore_record.RestoreRecord()
 
         self.assertEqual('/instances/%(instance_id)s/restores', sot.base_path)
 
@@ -42,7 +42,9 @@ class TestRestore(base.TestCase):
 
     def test_make_it(self):
 
-        sot = restore.Restore(instance_id=FAKE_INSTANCE_ID, **EXAMPLE)
+        sot = restore_record.RestoreRecord(
+            instance_id=FAKE_INSTANCE_ID,
+            **EXAMPLE)
         self.assertEqual(FAKE_INSTANCE_ID, sot.instance_id)
         self.assertEqual(EXAMPLE['restore_id'], sot.id)
         self.assertEqual(EXAMPLE['backup_id'], sot.backup_id)

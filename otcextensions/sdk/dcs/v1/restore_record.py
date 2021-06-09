@@ -12,7 +12,7 @@
 from openstack import resource
 
 
-class Restore(resource.Resource):
+class RestoreRecord(resource.Resource):
 
     resources_key = 'restore_record_response'
 

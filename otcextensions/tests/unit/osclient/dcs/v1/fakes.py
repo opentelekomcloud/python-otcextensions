@@ -21,7 +21,7 @@ from otcextensions.tests.unit.osclient import test_base
 from otcextensions.sdk.dcs.v1 import backup
 from otcextensions.sdk.dcs.v1 import config
 from otcextensions.sdk.dcs.v1 import instance
-from otcextensions.sdk.dcs.v1 import restore
+from otcextensions.sdk.dcs.v1 import restore_record
 from otcextensions.sdk.dcs.v1 import statistic
 
 
@@ -135,8 +135,8 @@ class FakeBackup(test_base.Fake):
         return obj
 
 
-class FakeRestore(test_base.Fake):
-    """Fake one or more Restore"""
+class FakeRestoreRecord(test_base.Fake):
+    """Fake one or more Restore Records"""
 
     @classmethod
     def generate(cls):
@@ -150,7 +150,7 @@ class FakeRestore(test_base.Fake):
             'input_kbps': 'input-' + uuid.uuid4().hex,
             'output_kbps': 'output-' + uuid.uuid4().hex
         }
-        obj = restore.Restore.existing(**object_info)
+        obj = restore_record.RestoreRecord.existing(**object_info)
         return obj
 
 
