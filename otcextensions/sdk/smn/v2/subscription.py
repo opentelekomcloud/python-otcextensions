@@ -50,3 +50,15 @@ class Subscription(resource.Resource):
             session,
             error_message=error_message,
             **kwargs)
+    
+    @classmethod
+    def list(cls, session, paginated=True, base_path=None,
+             allow_unknown_params=False, **params):
+        if not params.get('topic_urn'):
+            base_path = '/notifications/subscriptions'
+        return super(Subscription, cls).list(
+            session=session,
+            paginated=paginated,
+            base_path=base_path,
+            allow_unknown_params=allow_unknown_params,
+            **params)

@@ -76,7 +76,7 @@ class ListSubscription(command.Lister):
                 attrs[arg] = val
         topic = getattr(parsed_args, 'topic') or None
         if topic:
-            topic = client.find_topic(topic, ignore_missing=False)
+            topic = client.get_topic(topic)
 
         data = client.subscriptions(topic, **attrs)
 

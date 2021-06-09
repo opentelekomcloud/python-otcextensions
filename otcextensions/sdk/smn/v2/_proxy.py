@@ -190,9 +190,7 @@ class Proxy(proxy.Proxy):
             topic = self._get_resource(_topic.Topic, topic)
             return self._list(_subscription.Subscription,
                               topic_urn=topic.id, **query)
-        base_path = '/notifications/subscriptions'
-        return self._list(_subscription.Subscription,
-                          base_path=base_path, **query)
+        return self._list(_subscription.Subscription, **query)
 
     # ======== Template ========
     def create_template(self, **attrs):
