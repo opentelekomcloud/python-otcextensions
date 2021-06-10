@@ -28,7 +28,9 @@ class TestZone(TestDns):
         self.create_network()
         # create public zone
         try:
-            self.zone = self.client.create_zone(name=TestZone.PUBLIC_ZONE_ALIAS)
+            self.zone = self.client.create_zone(
+                name=TestZone.PUBLIC_ZONE_ALIAS
+            )
         except openstack.exceptions.BadRequestException:
             self.zone = self.client.find_zone(TestZone.PUBLIC_ZONE_ALIAS)
         self.zones.append(self.zone)
@@ -38,10 +40,12 @@ class TestZone(TestDns):
             self.private_zone = self.client.create_zone(
                 name=TestZone.PRIVATE_ZONE_ALIAS,
                 router={'router_id': self.router_id},
-                zone_type = "private"
+                zone_type="private"
             )
         except openstack.exceptions.BadRequestException:
-            self.private_zone = self.client.find_zone(TestZone.PRIVATE_ZONE_ALIAS)
+            self.private_zone = self.client.find_zone(
+                TestZone.PRIVATE_ZONE_ALIAS
+            )
         self.zones.append(self.private_zone)
 
     def tearDown(self):
@@ -78,29 +82,36 @@ class TestZone(TestDns):
 
     def test_update_private_zone(self):
         description = 'sdk-test-zone-private-description'
-        zone = self.client.update_zone(self.private_zone.id, description=description)
+        zone = self.client.update_zone(
+            self.private_zone.id,
+            description=description
+        )
         self.assertEqual(zone.description, description)
 
     def test_add_router_to_private_zone(self):
-        self.add_rt_id, self.add_sub_id, self.add_net_id = self.create_additional_network()
+        rt_id, sub_id, net_id = self.create_additional_network()
         zone = self.client.add_router_to_zone(
             self.private_zone.id,
-            router_id=self.add_rt_id
+            router_id=rt_id
         )
-        self.destroy_additional_network(self.add_rt_id, self.add_sub_id, self.add_net_id)
-        self.assertEqual(json.loads(zone.text)['router_id'], self.add_rt_id)
+        self.destroy_additional_network(rt_id, sub_id, net_id)
+        self.assertEqual(json.loads(zone.text)['router_id'], rt_id)
         self.assertEqual(json.loads(zone.text)['status'], 'PENDING_CREATE')
 
     def test_remove_router_from_private_zone(self):
-        self.add_rt_id, self.add_sub_id, self.add_net_id = self.create_additional_network()
+        rt_id, sub_id, net_id = self.create_additional_network()
         self.client.add_router_to_zone(
             self.private_zone.id,
-            router_id=self.add_rt_id
+            router_id=rt_id
         )
         zone = self.client.remove_router_from_zone(
             self.private_zone.id,
-            router_id=self.add_rt_id
+            router_id=rt_id
         )
-        self.destroy_additional_network(self.add_rt_id, self.add_sub_id, self.add_net_id)
-        self.assertEqual(json.loads(zone.text)['router_id'], self.add_rt_id)
+        self.destroy_additional_network(
+            rt_id,
+            sub_id,
+            net_id
+        )
+        self.assertEqual(json.loads(zone.text)['router_id'], rt_id)
         self.assertEqual(json.loads(zone.text)['status'], 'PENDING_DELETE')

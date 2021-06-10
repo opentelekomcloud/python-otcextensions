@@ -40,12 +40,14 @@ class TestDns(base.BaseFunctionalTest):
     def create_network(self):
         self.cidr = '192.168.0.0/16'
         self.ipv4 = 4
+        self.dns_nameservers = ['100.125.4.25', '8.8.8.8']
 
         network = self.conn.network.create_network(name=self.net_name)
         self.assertEqual(self.net_name, network.name)
         self.net_id = network.id
         subnet = self.conn.network.create_subnet(
             name=self.subnet_name,
+            dns_nameservers=self.dns_nameservers,
             ip_version=self.ipv4,
             network_id=self.net_id,
             cidr=self.cidr
