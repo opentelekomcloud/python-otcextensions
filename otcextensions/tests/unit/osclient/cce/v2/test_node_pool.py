@@ -331,7 +331,7 @@ class TestCreateNodePool(fakes.TestCCE):
             'cluster_name',
             'pool_name',
             '--flavor', 'flav',
-            '--network-id', 'nw',
+            '--network', 'nw',
             '--os', 'CentOS',
             '--ssh-key', 'sshkey'
         ]
@@ -343,7 +343,7 @@ class TestCreateNodePool(fakes.TestCCE):
             ('az', 'random'),
             ('flavor', 'flav'),
             ('initial_node_count', 0),
-            ('network_id', 'nw'),
+            ('network', 'nw'),
             ('os', 'CentOS'),
             ('root_volume_size', 40),
             ('root_volume_type', 'SATA'),
@@ -366,7 +366,7 @@ class TestCreateNodePool(fakes.TestCCE):
             cluster='cluster_name',
             flavor='flav',
             name='pool_name',
-            network_id='nw',
+            network='nw',
             os='CentOS',
             root_volume_size=40,
             root_volume_type='SATA',
