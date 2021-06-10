@@ -16,23 +16,23 @@ from otcextensions.tests.functional.sdk.dns import TestDns
 _logger = openstack._log.setup_logging('openstack')
 
 
-class TestZone(TestDns):
-    ZONE_ALIAS = 'dns.sdk-test-zone-private.com.'
+class TestNameservers(TestDns):
+    ZONE_ALIAS = 'dns.sdk-test-zone-public.com.'
     zones = []
 
     def setUp(self):
-        super(TestZone, self).setUp()
+        super(TestNameservers, self).setUp()
         # create zone
         try:
             self.zone = self.client.create_zone(
-                name=TestZone.ZONE_ALIAS
+                name=TestNameservers.ZONE_ALIAS
             )
         except openstack.exceptions.BadRequestException:
-            self.zone = self.client.find_zone(TestZone.ZONE_ALIAS)
+            self.zone = self.client.find_zone(TestNameservers.ZONE_ALIAS)
         self.zones.append(self.zone)
 
     def tearDown(self):
-        super(TestZone, self).tearDown()
+        super(TestNameservers, self).tearDown()
         try:
             for zone in self.zones:
                 if zone:

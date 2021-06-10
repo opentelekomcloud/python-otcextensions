@@ -9,7 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import json
 import openstack
 
 from otcextensions.tests.functional.sdk.dns import TestDns
@@ -17,24 +16,24 @@ from otcextensions.tests.functional.sdk.dns import TestDns
 _logger = openstack._log.setup_logging('openstack')
 
 
-class TestZone(TestDns):
+class TestRecordsets(TestDns):
     PUBLIC_ZONE_ALIAS = 'dns.sdk-test-zone-public.com.'
     zones = []
 
     def setUp(self):
-        super(TestZone, self).setUp()
+        super(TestRecordsets, self).setUp()
 
         # create public zone
         try:
             self.zone = self.client.create_zone(
-                name=TestZone.PUBLIC_ZONE_ALIAS
+                name=TestRecordsets.PUBLIC_ZONE_ALIAS
             )
         except openstack.exceptions.BadRequestException:
-            self.zone = self.client.find_zone(TestZone.PUBLIC_ZONE_ALIAS)
+            self.zone = self.client.find_zone(TestRecordsets.PUBLIC_ZONE_ALIAS)
         self.zones.append(self.zone)
 
     def tearDown(self):
-        super(TestZone, self).tearDown()
+        super(TestRecordsets, self).tearDown()
         try:
             for zone in self.zones:
                 if zone:
