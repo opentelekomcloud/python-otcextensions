@@ -10,10 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from openstack import resource
+import openstack
 
 from otcextensions.tests.functional import base
-from datetime import datetime
+
 
 _logger = openstack._log.setup_logging('openstack')
 
@@ -23,7 +23,7 @@ class TestGateway(base.BaseFunctionalTest):
     CIDR = "192.168.0.0/24"
     IPV4 = 4
     VPC_ID = None
-    NET_ID = None
+    NETWORK_ID = None
     SUBNET_ID = None
     GATEWAY_ID = None
     SPEC = 1
@@ -31,12 +31,12 @@ class TestGateway(base.BaseFunctionalTest):
 
     def _initialize_network(self):
         network = self.conn.network.create_network(name=self.NETWORK_NAME)
-        TestInstance.NET_ID = network.id
+        self.NETWORK_ID = network.id
 
         subnet = self.conn.network.create_subnet(
             name=self.SUBNET_NAME,
             ip_version=self.IPV4,
-            network_id=self.NET_ID,
+            network_id=self.NETWORK_ID,
             cidr=self.CIDR
         )
         self.SUBNET_ID = subnet.id
@@ -44,8 +44,8 @@ class TestGateway(base.BaseFunctionalTest):
         vpc = self.conn.network.create_router(name=self.VPC_NAME)
 
         self.VPC_ID = vpc.id
-        interface = router.add_interface(self.conn.network,
-                                         subnet_id=TestInstance.SUBNET_ID)
+        interface = vpc.add_interface(self.conn.network,
+                                         subnet_id=self.SUBNET_ID)
 
     def setUp(self):
         super(TestGateway, self).setUp()
