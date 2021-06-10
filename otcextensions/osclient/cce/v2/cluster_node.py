@@ -309,10 +309,11 @@ class CreateCCEClusterNode(command.Command):
             help=_('Maximum number of pods on the node')
         )
         parser.add_argument(
-            '--network-id',
-            metavar='<network_id>',
+            '--network',
+            metavar='<network>',
             required=True,
-            help=_('ID of the network where the node will be created.')
+            help=_('ID or name of the network where the node will be '
+                   'created.')
         )
         parser.add_argument(
             '--node-image-id',
@@ -398,7 +399,7 @@ class CreateCCEClusterNode(command.Command):
         attrs['cluster'] = parsed_args.cluster
         attrs['count'] = parsed_args.count
         attrs['flavor'] = parsed_args.flavor
-        attrs['network_id'] = parsed_args.network_id
+        attrs['network'] = parsed_args.network
         attrs['ssh_key'] = parsed_args.ssh_key
 
         # optional
@@ -428,8 +429,8 @@ class CreateCCEClusterNode(command.Command):
             attrs['max_pods'] = parsed_args.max_pods
         if parsed_args.name:
             attrs['name'] = parsed_args.name
-        if parsed_args.network_id:
-            attrs['network_id'] = parsed_args.network_id
+        if parsed_args.network:
+            attrs['network'] = parsed_args.network
         if parsed_args.node_image_id:
             attrs['node_image_id'] = parsed_args.node_image_id
         if parsed_args.os:
