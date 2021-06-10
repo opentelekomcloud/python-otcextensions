@@ -44,7 +44,7 @@ class TestFloatingIps(TestDns):
         self.assertEqual(ip['address'], self.floatingip['address'])
 
     # BUG
-    # jira.tsi-dev.otc-service.com/servicedesk/customer/portal/4/OST-9283
+    # https://jira.tsi-dev.otc-service.com/browse/ONS-5716
     # def test_update_floatingip(self):
     #     ip = self.client.update_floating_ip(
     #         floating_ip=self.floatingip,
