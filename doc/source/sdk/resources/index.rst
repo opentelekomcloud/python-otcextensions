@@ -22,6 +22,7 @@ Open Telekom Cloud Resources
    Network Address Translation (NAT) <nat/index>
    Object Block Storage (OBS) <obs/index>
    Relational Database Service (RDS) <rds/index>
+   Simple Message Notification Service (SMN) <smn/index>
    Virtual Private Cloud (VPC) <vpc/index>
    Web Application Firewall (WAF) <waf/index>
 
