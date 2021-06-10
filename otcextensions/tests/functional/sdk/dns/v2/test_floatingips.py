@@ -15,7 +15,6 @@ from otcextensions.tests.functional.sdk.dns import TestDns
 
 _logger = openstack._log.setup_logging('openstack')
 
-
 class TestFloatingIps(TestDns):
 
     def setUp(self):
@@ -44,6 +43,8 @@ class TestFloatingIps(TestDns):
         ip = self.client.get_floating_ip(self.floatingip.id)
         self.assertEqual(ip['address'], self.floatingip['address'])
 
+    # BUG
+    # jira.tsi-dev.otc-service.com/servicedesk/customer/portal/4/OST-9283
     # def test_update_floatingip(self):
     #     ip = self.client.update_floating_ip(
     #         floating_ip=self.floatingip,
