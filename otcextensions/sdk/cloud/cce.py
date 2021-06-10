@@ -253,7 +253,7 @@ class CceMixin:
         :param str lvm_config: ConfigMap of the Docker data disk.
         :param int max_pods: Maximum number of pods on the node.
         :param str name: Cluster node name.
-        :param str network_id: ID of the network of the node.
+        :param str network: ID of the network of the node.
         :param str node_image_id: ID of a custom image used in a bare metal
             scenario.
         :param str os: Operating system of the cluster node.
@@ -294,7 +294,7 @@ class CceMixin:
         lvm_config = kwargs.get('lvm_override_config')
         max_pods = kwargs.get('max_pods')
         name = kwargs.get('name')
-        network_id = kwargs.get('network_id')
+        network = kwargs.get('network')
         node_image_id = kwargs.get('node_image_id')
         os = kwargs.get('os')
         postinstall_script = kwargs.get('postinstall_script')
@@ -439,9 +439,11 @@ class CceMixin:
             spec['extendParam']['alpha.cce/preInstall'] = postinstall_script
         if preinstall_script:
             spec['extendParam']['alpha.cce/preInstall'] = preinstall_script
-        if not network_id:
-            raise ValueError('network_id missing.')
-        spec['nodeNicSpec']['primaryNic']['subnetId'] = network_id
+        if not network:
+            raise ValueError('network missing.')
+        nw = self.network.find_network(
+            network, ignore_missing=False)
+        spec['nodeNicSpec']['primaryNic']['subnetId'] = nw.id
         if tags:
             spec['userTags'] = tags
 
@@ -576,7 +578,7 @@ class CceMixin:
             which nodes added after a scale-up will not be deleted.
         :param str ssh_key: SSH public key name for login in the created
             nodes
-        :param str network_id: ID of the network to which the CCE node pool
+        :param str network: ID of the network to which the CCE node pool
             belongs
         :param list tags: List of tags used to build UI labels in format
             [{
@@ -620,7 +622,7 @@ class CceMixin:
         public_key = kwargs.get('public_key')
         scale_down_cooldown_time = kwargs.get('scale_down_cooldown_time')
         ssh_key = kwargs.get('ssh_key')
-        network_id = kwargs.get('network_id')
+        network = kwargs.get('network')
         tags = kwargs.get('tags')
         taints = kwargs.get('taints')
 
@@ -649,11 +651,11 @@ class CceMixin:
                 and flavor
                 and os
                 and name
-                and network_id
+                and network
                 and ssh_key):
             raise ValueError('One or more of the following required '
                              'arguments are missing: cce_cluster, '
-                             'flavor, name, network_id, os, ssh_key')
+                             'flavor, name, network, os, ssh_key')
         node_template['flavor'] = flavor
         node_template['az'] = availability_zone
         if count:
@@ -794,7 +796,9 @@ class CceMixin:
             node_template['taints'] = taints
 
         # NIC specifications
-        node_template['nodeNicSpec']['primaryNic']['subnet_id'] = network_id
+        nw = self.network.find_network(
+            network, ignore_missing=False)
+        node_template['nodeNicSpec']['primaryNic']['subnet_id'] = nw.id
 
         # Node pool specs
         spec = {

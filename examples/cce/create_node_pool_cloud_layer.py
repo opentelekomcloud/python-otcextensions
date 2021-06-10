@@ -34,7 +34,7 @@ pool = conn.create_cce_node_pool(
     os='CentOS 7.7',
     root_volume_size=40,
     root_volume_type='SATA',
-    network_id='25d24fc8-d019-4a34-9fff-0a09fde6a123',
+    network='25d24fc8-d019-4a34-9fff-0a09fde6a123',
     tags=[
         {
             'key': 'hellokey1',
