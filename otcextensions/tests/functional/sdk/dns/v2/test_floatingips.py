@@ -15,6 +15,7 @@ from otcextensions.tests.functional.sdk.dns import TestDns
 
 _logger = openstack._log.setup_logging('openstack')
 
+
 class TestFloatingIps(TestDns):
 
     def setUp(self):
