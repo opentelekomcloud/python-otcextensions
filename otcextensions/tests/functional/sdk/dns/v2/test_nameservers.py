@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import openstack
+import uuid
 
 from otcextensions.tests.functional.sdk.dns import TestDns
 
@@ -17,7 +18,8 @@ _logger = openstack._log.setup_logging('openstack')
 
 
 class TestNameservers(TestDns):
-    ZONE_ALIAS = 'dns.sdk-test-zone-public.com.'
+    uuid_v4 = uuid.uuid4().hex[:8]
+    zone_alias = uuid_v4 + 'dns.sdk-test-zone-public.com.'
     zones = []
 
     def setUp(self):
@@ -25,10 +27,10 @@ class TestNameservers(TestDns):
         # create zone
         try:
             self.zone = self.client.create_zone(
-                name=TestNameservers.ZONE_ALIAS
+                name=self.zone_alias
             )
         except openstack.exceptions.BadRequestException:
-            self.zone = self.client.find_zone(TestNameservers.ZONE_ALIAS)
+            self.zone = self.client.find_zone(self.zone_alias)
         self.zones.append(self.zone)
 
     def tearDown(self):

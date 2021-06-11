@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import openstack
+import uuid
 
 from otcextensions.tests.functional.sdk.dns import TestDns
 
@@ -17,7 +18,8 @@ _logger = openstack._log.setup_logging('openstack')
 
 
 class TestRecordsets(TestDns):
-    PUBLIC_ZONE_ALIAS = 'dns.sdk-test-zone-public.com.'
+    uuid_v4 = uuid.uuid4().hex[:8]
+    zone_alias = uuid_v4 + 'dns.sdk-test-zone-public.com.'
     zones = []
 
     def setUp(self):
@@ -26,10 +28,10 @@ class TestRecordsets(TestDns):
         # create public zone
         try:
             self.zone = self.client.create_zone(
-                name=TestRecordsets.PUBLIC_ZONE_ALIAS
+                name=self.zone_alias
             )
         except openstack.exceptions.BadRequestException:
-            self.zone = self.client.find_zone(TestRecordsets.PUBLIC_ZONE_ALIAS)
+            self.zone = self.client.find_zone(self.zone_alias)
         self.zones.append(self.zone)
 
     def tearDown(self):
@@ -55,56 +57,56 @@ class TestRecordsets(TestDns):
     def test_create_recordset(self):
         rs = self.client.create_recordset(
             zone=self.zone.id,
-            name='a-record.dns.sdk-test-zone-public.com.',
+            name=f'a-record.{self.zone_alias}',
             type='A',
             records=['1.1.1.1', '2.2.2.2']
         )
-        self.assertEqual(rs.name, 'a-record.dns.sdk-test-zone-public.com.')
+        self.assertEqual(rs.name, f'a-record.{self.zone_alias}')
 
         rs = self.client.create_recordset(
             zone=self.zone.id,
-            name='aaaa-record.dns.sdk-test-zone-public.com.',
+            name=f'aaaa-record.{self.zone_alias}',
             type='AAAA',
             records=['ff03:0db8:85a3:0:0:8a2e:0370:7334']
         )
-        self.assertEqual(rs.name, 'aaaa-record.dns.sdk-test-zone-public.com.')
+        self.assertEqual(rs.name, f'aaaa-record.{self.zone_alias}')
 
         rs = self.client.create_recordset(
             zone=self.zone.id,
-            name='cname-record.dns.sdk-test-zone-public.com.',
+            name=f'cname-record.{self.zone_alias}',
             type='CNAME',
             records=['www.ex.com']
         )
-        self.assertEqual(rs.name, 'cname-record.dns.sdk-test-zone-public.com.')
+        self.assertEqual(rs.name, f'cname-record.{self.zone_alias}')
 
         rs = self.client.create_recordset(
             zone=self.zone.id,
-            name='mx-record.dns.sdk-test-zone-public.com.',
+            name=f'mx-record.{self.zone_alias}',
             type='MX',
             records=['10 mailserver1.example.com.']
         )
-        self.assertEqual(rs.name, 'mx-record.dns.sdk-test-zone-public.com.')
+        self.assertEqual(rs.name, f'mx-record.{self.zone_alias}')
 
         rs = self.client.create_recordset(
             zone=self.zone.id,
-            name='txt-record.dns.sdk-test-zone-public.com.',
+            name=f'txt-record.{self.zone_alias}',
             type='TXT',
             records=["\"Text.\""]
         )
-        self.assertEqual(rs.name, 'txt-record.dns.sdk-test-zone-public.com.')
+        self.assertEqual(rs.name, f'txt-record.{self.zone_alias}')
 
         rs = self.client.create_recordset(
             zone=self.zone.id,
-            name='ns-record.dns.sdk-test-zone-public.com.',
+            name=f'ns-record.{self.zone_alias}',
             type='NS',
             records=['ns.example.com']
         )
-        self.assertEqual(rs.name, 'ns-record.dns.sdk-test-zone-public.com.')
+        self.assertEqual(rs.name, f'ns-record.{self.zone_alias}')
 
     def test_get_recordset(self):
         rs = self.client.create_recordset(
             zone=self.zone.id,
-            name='a-record.dns.sdk-test-zone-public.com.',
+            name=f'a-record.{self.zone_alias}',
             type='A',
             records=['1.1.1.1', '2.2.2.2']
         )
@@ -112,12 +114,12 @@ class TestRecordsets(TestDns):
             recordset=rs.id,
             zone=self.zone.id
         )
-        self.assertEqual(record.name, 'a-record.dns.sdk-test-zone-public.com.')
+        self.assertEqual(record.name, f'a-record.{self.zone_alias}')
 
     def test_find_recordset(self):
         rs = self.client.create_recordset(
             zone=self.zone.id,
-            name='a-record.dns.sdk-test-zone-public.com.',
+            name=f'a-record.{self.zone_alias}',
             type='A',
             records=['1.1.1.1', '2.2.2.2']
         )
@@ -125,12 +127,12 @@ class TestRecordsets(TestDns):
             name_or_id=rs.id,
             zone=self.zone.id
         )
-        self.assertEqual(record.name, 'a-record.dns.sdk-test-zone-public.com.')
+        self.assertEqual(record.name, f'a-record.{self.zone_alias}')
 
     def test_update_recordset(self):
         rs = self.client.create_recordset(
             zone=self.zone.id,
-            name='a-record.dns.sdk-test-zone-public.com.',
+            name=f'a-record.{self.zone_alias}',
             type='A',
             records=['1.1.1.1', '2.2.2.2']
         )
@@ -144,7 +146,7 @@ class TestRecordsets(TestDns):
     def test_delete_recordset(self):
         rs = self.client.create_recordset(
             zone=self.zone.id,
-            name='a-record.dns.sdk-test-zone-public.com.',
+            name=f'a-record.{self.zone_alias}',
             type='A',
             records=['1.1.1.1', '2.2.2.2']
         )

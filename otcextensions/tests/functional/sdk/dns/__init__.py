@@ -18,13 +18,6 @@ from otcextensions.tests.functional import base
 
 
 class TestDns(base.BaseFunctionalTest):
-    uuid_v4 = uuid.uuid4().hex[:8]
-    router_name = 'sdk-dns-test-router-' + uuid_v4
-    net_name = 'sdk-dns-test-net-' + uuid_v4
-    subnet_name = 'sdk-dns-test-subnet-' + uuid_v4
-    router_id = None
-    net_id = None
-    subnet_id = None
 
     def setUp(self):
         super(TestDns, self).setUp()
@@ -38,59 +31,6 @@ class TestDns(base.BaseFunctionalTest):
         self.client = self.conn.dns
 
     def create_network(self):
-        self.cidr = '192.168.0.0/16'
-        self.ipv4 = 4
-        self.dns_nameservers = ['100.125.4.25', '8.8.8.8']
-
-        network = self.conn.network.create_network(name=self.net_name)
-        self.assertEqual(self.net_name, network.name)
-        self.net_id = network.id
-        subnet = self.conn.network.create_subnet(
-            name=self.subnet_name,
-            dns_nameservers=self.dns_nameservers,
-            ip_version=self.ipv4,
-            network_id=self.net_id,
-            cidr=self.cidr
-        )
-        self.assertEqual(self.subnet_name, subnet.name)
-        self.subnet_id = subnet.id
-
-        router = self.conn.network.create_router(name=self.router_name)
-        self.assertEqual(self.router_name, router.name)
-        self.router_id = router.id
-        interface = router.add_interface(
-            self.conn.network,
-            subnet_id=self.subnet_id
-        )
-        self.assertEqual(interface['subnet_id'], self.subnet_id)
-        self.assertIn('port_id', interface)
-
-    def destroy_network(self):
-        router = self.conn.network.get_router(self.router_id)
-
-        interface = router.remove_interface(
-            self.conn.network,
-            subnet_id=self.subnet_id
-        )
-        self.assertEqual(interface['subnet_id'], self.subnet_id)
-        self.assertIn('port_id', interface)
-        sot = self.conn.network.delete_router(
-            self.router_id,
-            ignore_missing=False
-        )
-        self.assertIsNone(sot)
-        sot = self.conn.network.delete_subnet(
-            self.subnet_id,
-            ignore_missing=False
-        )
-        self.assertIsNone(sot)
-        sot = self.conn.network.delete_network(
-            self.net_id,
-            ignore_missing=False
-        )
-        self.assertIsNone(sot)
-
-    def create_additional_network(self):
         cidr = '192.168.0.0/16'
         ipv4 = 4
         uuid_v4 = uuid.uuid4().hex[:8]
@@ -119,9 +59,16 @@ class TestDns(base.BaseFunctionalTest):
         )
         self.assertEqual(interface['subnet_id'], subnet_id)
         self.assertIn('port_id', interface)
-        return router_id, subnet_id, net_id
+        return {
+            'router_id': router_id,
+            'subnet_id': subnet_id,
+            'network_id': net_id
+        }
 
-    def destroy_additional_network(self, router_id, subnet_id, network_id):
+    def destroy_network(self, params: dict):
+        router_id = params.get('router_id')
+        subnet_id = params.get('subnet_id')
+        network_id = params.get('network_id')
         router = self.conn.network.get_router(router_id)
 
         interface = router.remove_interface(
