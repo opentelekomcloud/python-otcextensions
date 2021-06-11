@@ -63,11 +63,11 @@ class Backup(resource.Resource):
     allow_commit = False
 
     _query_mapping = resource.QueryParameters(
-        'checkpoint_id', 'dec', 'end_time', 'enterprise_project_id',
-        'image_type', 'limit', 'marker', 'member_status', 'name',
-        'offset', 'own_type', 'parent_id', 'resource_az', 'resource_id',
-        'resource_name', 'resource_type', 'sort', 'start_time',
-        'status', 'used_percent', 'vault_id')
+        'checkpoint_id', 'dec', 'end_time', 'image_type', 'limit',
+        'marker', 'member_status', 'name', 'offset', 'own_type',
+        'parent_id', 'resource_az', 'resource_id', 'resource_name',
+        'resource_type', 'sort', 'start_time', 'status',
+        'used_percent', 'vault_id')
 
     #: Properties
     #: Restore point ID
@@ -77,9 +77,6 @@ class Backup(resource.Resource):
     created_at = resource.Body('created_at')
     #: Backup description
     description = resource.Body('description')
-    #: Enterprise project ID
-    #: default: 0
-    enterprise_project_id = resource.Body('enterprise_project_id')
     #: Expiration time
     expired_at = resource.Body('expired_at')
     #: Extended Information

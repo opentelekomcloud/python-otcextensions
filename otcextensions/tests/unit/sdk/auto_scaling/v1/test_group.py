@@ -93,7 +93,6 @@ EXAMPLE_EXTEND = {
     "notifications": [
         "EMAIL"
     ],
-    "enterprise_project_id": "0",
     "multi_az_priority_policy": "EQUILIBRIUM_DISTRIBUTE"
 }
 
@@ -141,9 +140,6 @@ class TestGroup(base.TestCase):
         )
         self.assertEqual(
             EXAMPLE_EXTEND['delete_volume'], sot.delete_volume
-        )
-        self.assertEqual(
-            EXAMPLE_EXTEND['enterprise_project_id'], sot.enterprise_project_id
         )
         self.assertEqual(
             EXAMPLE_EXTEND['multi_az_priority_policy'],
