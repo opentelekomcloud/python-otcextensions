@@ -144,9 +144,8 @@ class Vault(resource.Resource):
     allow_commit = True
 
     _query_mapping = resource.QueryParameters(
-        'cloud_type', 'enterprise_project_id', 'id', 'limit',
-        'name', 'object_type', 'offset', 'policy_id', 'protect_type',
-        'resources_ids', 'status')
+        'cloud_type', 'id', 'limit', 'name', 'object_type', 'offset',
+        'policy_id', 'protect_type', 'resources_ids', 'status')
 
     #: Properties
     auto_bind = resource.Body('auto_bind', type=bool)
@@ -162,9 +161,6 @@ class Vault(resource.Resource):
     created_at = resource.Body('created_at')
     #: Description
     description = resource.Body('description')
-    #: Enterprise project id
-    #: default:0
-    enterprise_project_id = resource.Body('enterprise_project_id')
     #: Vault name
     name = resource.Body('name')
     #: Project ID

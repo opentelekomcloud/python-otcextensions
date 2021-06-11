@@ -83,7 +83,6 @@ class TestBackup(base.TestCase):
             'checkpoint_id': 'checkpoint_id',
             'dec': 'dec',
             'end_time': 'end_time',
-            'enterprise_project_id': 'enterprise_project_id',
             'image_type': 'image_type',
             'limit': 'limit',
             'marker': 'marker',

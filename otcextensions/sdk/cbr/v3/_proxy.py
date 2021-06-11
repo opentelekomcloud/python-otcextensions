@@ -32,7 +32,6 @@ class Proxy(proxy.Proxy):
             * `checkpoint_id`: Restore point ID
             * `dec`: Dedicated Cloud
             * `end_time`: Time when the backup ends
-            * `enterprise_project_id`: Enterprise project ID
             * `image_type`: Backup type: backup or replication
             * `limit`: Number of records displayed per page
             * `marker`: ID of the last record displayed
@@ -241,7 +240,6 @@ class Proxy(proxy.Proxy):
         :param dict query: Optional query parameters to be sent to limit the
             resources being returned.
             * `cloud_type`: Cloud type
-            * `enterprise_project_id`: Enterprise project ID
             * `id`: Vault ID
             * `limit`: Number of records displayed per page, range: 1-100
             * `name`: Vault name
