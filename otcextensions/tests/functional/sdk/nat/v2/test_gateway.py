@@ -9,107 +9,62 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
 import openstack
+import uuid
 
-from otcextensions.tests.functional import base
-
+from otcextensions.tests.functional.sdk.nat import TestNat
 
 _logger = openstack._log.setup_logging('openstack')
 
 
-class TestGateway(base.BaseFunctionalTest):
-
-    CIDR = "192.168.0.0/24"
-    IPV4 = 4
-    VPC_ID = None
-    NETWORK_ID = None
-    SUBNET_ID = None
-    GATEWAY_ID = None
-    SPEC = 1
-    ID = None
-
-    def _initialize_network(self):
-        network = self.conn.network.create_network(name=self.NETWORK_NAME)
-        self.NETWORK_ID = network.id
-
-        subnet = self.conn.network.create_subnet(
-            name=self.SUBNET_NAME,
-            ip_version=self.IPV4,
-            network_id=self.NETWORK_ID,
-            cidr=self.CIDR
-        )
-        self.SUBNET_ID = subnet.id
-
-        vpc = self.conn.network.create_router(name=self.VPC_NAME)
-
-        self.VPC_ID = vpc.id
-        interface = vpc.add_interface(self.conn.network,
-                                         subnet_id=self.SUBNET_ID)
+class TestGateway(TestNat):
+    uuid_v4 = uuid.uuid4().hex[:8]
+    gateway_name = uuid_v4 + 'test-gateway'
+    update_gateway_name = uuid_v4 + 'update-test-gateway'
+    attrs = {
+        "name": gateway_name,
+        "description": "my nat gateway 01",
+        "router_id": "d84f345c-80a1-4fa2-a39c-d0d397c3f09a",
+        "internal_network_id": "89d66639-aacb-4929-969d-07080b0f9fd9",
+        "spec": "1"
+    }
 
     def setUp(self):
         super(TestGateway, self).setUp()
-        self.GATEWAY_NAME = self.getUniqueString('gateway')
-        self.UPDATE_NAME = self.getUniqueString('updated-gateway')
-        self.NETWORK_NAME = self.getUniqueString('network')
-        self.SUBNET_NAME = self.getUniqueString('subnet')
-        self.VPC_NAME = self.getUniqueString('vpc')
-        self._initialize_network()
-        gateway = self.conn.nat.create_gateway(
-            name=self.GATEWAY_NAME, internal_network_id=self.network['id'],
-            router_id=self.vpc['id'], spec=self.spec)
-        self.conn.nat.wait_for_gateway(gateway=gateway)
-        self.ID = gateway['id']
-
-    def test_find_gateway(self):
-        gw = self.conn.nat.find_gateway(self.GATEWAY_NAME)
-        self.assertEqual(self.ID, gw.id)
-
-    def test_get(self):
-        gw = self.conn.nat.get_gateway(self.ID)
-        self.assertEqual(self.GATEWAY_NAME, gw.name)
-        self.assertEqual(self.ID, gw.id)
-
-    def test_update(self):
-        gw = self.conn.network.update_gateway(self.ID, 
-                                              name=self.UPDATE_NAME)
-        self.assertEqual(self.UPDATE_NAME, gw.name)
-
-    def test_list(self):
-        gateways = list(self.conn.nat.gateways())
-        self.assertGreaterEqual(len(gateways), 0)
-
-    def test_list_filters(self):
-        attrs = {
-            'limit': 1,
-            'id': '2',
-            'name': '3',
-            'spec': '4',
-            'router_id': '5',
-            'internal_network_id': '6',
-            'project_id': '7',
-            'status': 'active',
-            'admin_state_up': True,
-            'created_at': self.CURR_TIME
-        }
-        gateways = list(self.conn.nat.gateways(**attrs))
-        self.assertGreaterEqual(len(gateways), 0)
 
     def tearDown(self):
-        gw = self.conn.nat.delete_gateway(self.ID, ignore_missing=True)
-        self.assertIsNone(gw)
-        self._deinitialize_network()
         super(TestGateway, self).tearDown()
 
-    def _deinitialize_network(self):
-        router = self.conn.network.get_router(self.ROUTER_ID)
-        router.remove_interface(self.conn.network,
-                                subnet_id=self.SUBNET_ID)
-        self.conn.network.delete_router(
-            self.ROUTER_ID, ignore_missing=False)
-        self.conn.network.delete_subnet(
-            self.SUBNET_ID, ignore_missing=False)
-        self.conn.network.delete_network(
-            self.NET_ID, ignore_missing=False)
-        self.conn.network.delete_security_group(
-            self.SG_ID, ignore_missing=False)
+    def _create_gateway(self):
+        self.create_network()
+        self.attrs['router_id'] = self.network_info['router_id']
+        self.attrs['internal_network_id'] = self.network_info['network_id']
+        self.gateway = self.conn.nat.create_gateway(**self.attrs)
+        self.assertIsNotNone(self.gateway)
+
+    def test_01_list_gateways(self):
+        self._create_gateway()
+        self.gateways = list(self.conn.nat.gateways())
+        self.assertGreaterEqual(len(self.gateways), 0)
+        gateway = self.conn.nat.get_gateway(self.gateway.id)
+        self.assertNotIn(gateway, self.gateways)
+
+    def test_02_get_gateway(self):
+        gateway = self.conn.nat.get_gateway(self.gateway.id)
+        self.assertEqual(gateway.name, self.gateway_name)
+
+    def test_03_find_gateway(self):
+        gateway = self.conn.nat.find_gateway(self.gateway.name)
+        self.assertEqual(gateway.name, self.gateway)
+
+    def test_04_update_gateway(self):
+        update_gw = self.conn.nat.update_gateway(gateway=self.gateway.id,
+                                               name=self.update_gateway_name)
+        update_gw = self.conn.nat.get_gateway(update_gw.id)
+        self.assertEqual(update_gw.name, self.update_gateway_name)
+
+    def test_05_delete_gateway(self):
+        self.conn.nat.delete_gateway(gateway=self.gateway)
+        gateway = self.conn.nat.find_gateway(self.gateway_name)
+        self.assertIsNone(self.gateway)
+        self.destroy_network()
