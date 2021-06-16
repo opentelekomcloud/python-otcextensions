@@ -10,8 +10,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import json
-import openstack
 import uuid
+
+import openstack
 
 from otcextensions.tests.functional.sdk.dns import TestDns
 
@@ -22,6 +23,7 @@ class TestZone(TestDns):
     uuid_v4 = uuid.uuid4().hex[:8]
     public_zone_alias = uuid_v4 + 'dns.sdk-test-zone-public.com.'
     private_zone_alias = uuid_v4 + 'dns.sdk-test-zone-private.com.'
+    networks = []
 
     def setUp(self):
         super(TestZone, self).setUp()
@@ -54,11 +56,9 @@ class TestZone(TestDns):
             self.zone = self.client.find_zone(zone_name)
 
     def _create_multiple_networks(self, count=1):
-        networks = []
         for i in range(count):
             network = self.create_network()
-            networks.append(network)
-        return networks
+            self.networks.append(network)
 
     def test_01_list_zones(self):
         self._create_zone(self.public_zone_alias)
@@ -86,11 +86,11 @@ class TestZone(TestDns):
         self.assertEqual(zone.description, description)
 
     def test_05_update_private_zone(self):
-        network = self.create_network()
+        self._create_multiple_networks(count=2)
         # create private zone
         self._create_zone(
             zone_name=self.private_zone_alias,
-            router_id=network['router_id'],
+            router_id=self.networks[0]['router_id'],
             zone_type='private'
         )
         description = 'sdk-test-zone-private-description'
@@ -98,49 +98,42 @@ class TestZone(TestDns):
             self.zone.id,
             description=description
         )
-        self.destroy_network(network)
         self.assertEqual(zone.description, description)
 
     def test_06_add_router_to_private_zone(self):
-        networks = self._create_multiple_networks(count=2)
         self._create_zone(
             zone_name=self.private_zone_alias,
-            router_id=networks[0]['router_id'],
+            router_id=self.networks[0]['router_id'],
             zone_type='private'
         )
         zone = self.client.add_router_to_zone(
             self.zone.id,
-            router_id=networks[1]['router_id']
+            router_id=self.networks[1]['router_id']
         )
-        for network in networks:
-            self.destroy_network(network)
         self.assertEqual(
             json.loads(zone.text)['router_id'],
-            networks[1]['router_id']
+            self.networks[1]['router_id']
         )
         self.assertEqual(json.loads(zone.text)['status'], 'PENDING_CREATE')
 
     def test_07_remove_router_from_private_zone(self):
-        networks = self._create_multiple_networks(count=2)
-        # create private zone
         self._create_zone(
             zone_name=self.private_zone_alias,
-            router_id=networks[0]['router_id'],
+            router_id=self.networks[0]['router_id'],
             zone_type='private'
         )
         zone = self.client.add_router_to_zone(
             self.zone.id,
-            router_id=networks[1]['router_id']
+            router_id=self.networks[1]['router_id']
         )
-        self.assertIsNotNone(zone)
         zone = self.client.remove_router_from_zone(
             self.zone.id,
-            router_id=networks[1]['router_id']
+            router_id=self.networks[1]['router_id']
         )
-        for network in networks:
+        for network in self.networks:
             self.destroy_network(network)
         self.assertEqual(
             json.loads(zone.text)['router_id'],
-            networks[1]['router_id']
+            self.networks[1]['router_id']
         )
         self.assertEqual(json.loads(zone.text)['status'], 'PENDING_DELETE')
