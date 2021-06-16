@@ -39,7 +39,7 @@ class TestNat(base.BaseFunctionalTest):
         net_name = 'sdk-nat-test-net-' + uuid_v4
         subnet_name = 'sdk-nat-test-subnet-' + uuid_v4
 
-        if not self.network_info:
+        if not TestNat.network_info:
             network = self.conn.network.create_network(name=net_name)
             self.assertEqual(net_name, network.name)
             net_id = network.id
@@ -62,17 +62,17 @@ class TestNat(base.BaseFunctionalTest):
             self.assertEqual(interface['subnet_id'], subnet_id)
             self.assertIn('port_id', interface)
 
-            self.network_info = {
+            TestNat.network_info = {
                 'router_id': router_id,
                 'subnet_id': subnet_id,
                 'network_id': net_id
             }
 
     def destroy_network(self):
-        if self.network_info:
-            router_id = self.network_info['router_id']
-            subnet_id = self.network_info['subnet_id']
-            network_id = self.network_info['network_id']
+        if TestNat.network_info:
+            router_id = TestNat.network_info['router_id']
+            subnet_id = TestNat.network_info['subnet_id']
+            network_id = TestNat.network_info['network_id']
             router = self.conn.network.get_router(router_id)
 
             interface = router.remove_interface(
@@ -96,5 +96,5 @@ class TestNat(base.BaseFunctionalTest):
                 ignore_missing=False
             )
 
-            self.network_info = None
+            TestNat.network_info = None
             self.assertIsNone(sot)
