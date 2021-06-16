@@ -9,6 +9,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack import exceptions
 from openstack import proxy
 from openstack import resource
 from openstack import utils
@@ -83,7 +84,7 @@ class Proxy(proxy.Proxy):
             _group.Group, group,
         )
 
-    def delete_group(self, group, ignore_missing=True):
+    def delete_group(self, group, ignore_missing=True, force_delete=False):
         """Delete a group
 
         :param group: The value can be the ID of a group
@@ -95,9 +96,17 @@ class Proxy(proxy.Proxy):
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent group.
         """
-        return self._delete(
-            _group.Group, group, ignore_missing=ignore_missing,
-        )
+        res = self._get_resource(_group.Group, group)
+        params = {}
+        if force_delete:
+            params['force_delete'] = force_delete
+        try:
+            del_gr = res.delete(self, **params)
+        except exceptions.ResourceNotFound:
+            if ignore_missing:
+                return None
+            raise
+        return del_gr
 
     def find_group(self, name_or_id, ignore_missing=True):
         """Find a single group
