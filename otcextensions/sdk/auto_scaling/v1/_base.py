@@ -72,7 +72,3 @@ class Resource(resource.Resource):
     def create(self, session, prepend_key=False, base_path=None, **params):
         return super(Resource, self).create(session, prepend_key=prepend_key,
                                             base_path=base_path, **params)
-
-    def delete(self, session, error_message=None, **params):
-        return super(Resource, self).delete(
-            session, error_message=error_message, **params)

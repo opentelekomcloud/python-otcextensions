@@ -97,11 +97,8 @@ class Proxy(proxy.Proxy):
             delete a nonexistent group.
         """
         res = self._get_resource(_group.Group, group)
-        params = {}
-        if force_delete:
-            params['force_delete'] = force_delete
         try:
-            del_gr = res.delete(self, **params)
+            del_gr = res.delete(self, force_delete=force_delete)
         except exceptions.ResourceNotFound:
             if ignore_missing:
                 return None
