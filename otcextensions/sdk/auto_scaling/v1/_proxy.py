@@ -95,6 +95,9 @@ class Proxy(proxy.Proxy):
             the group does not exist.
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent group.
+        :param bool force_delete: When set to ``True`` indicates to forcibly
+            delete an AS group, remove the ECS instances and release them when
+            the AS group is running instances or performing scaling actions.
         """
         res = self._get_resource(_group.Group, group)
         try:

@@ -71,10 +71,25 @@ class TestAutoScalingGroups(TestAutoScalingProxy):
         )
 
     def test_delete(self):
-        self.verify_delete(
-            self.proxy.delete_group,
-            _group.Group, True,
+        self._verify2(
+            mock_method='openstack.resource.Resource.delete',
+            test_method=self.proxy.delete_group,
+            method_args=['group'],
+            expected_args=[self.proxy],
             expected_kwargs={
+                'force_delete': False
+            }
+        )
+
+    def test_delete_with_force_delete(self):
+        self._verify2(
+            mock_method='openstack.resource.Resource.delete',
+            test_method=self.proxy.delete_group,
+            method_args=['group'],
+            method_kwargs={'force_delete': True},
+            expected_args=[self.proxy],
+            expected_kwargs = {
+                'force_delete': True
             }
         )
 
