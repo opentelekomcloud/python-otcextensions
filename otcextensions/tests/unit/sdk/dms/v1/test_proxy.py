@@ -267,7 +267,7 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
             'otcextensions.sdk.dms.v1.instance.Instance._action',
             self.proxy.restart_instance,
             method_args=['value'],
-            expected_args=['restart', ['value']]
+            expected_args=[self.proxy, 'restart', ['value']]
         )
 
     def test_restart_instances(self):
@@ -275,7 +275,7 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
             'otcextensions.sdk.dms.v1.instance.Instance._action',
             self.proxy.restart_instances,
             method_args=[['1', '2']],
-            expected_args=['restart', ['1', '2']]
+            expected_args=[self.proxy, 'restart', ['1', '2']]
         )
 
     def test_delete_failed(self):
@@ -290,7 +290,7 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
             'otcextensions.sdk.dms.v1.instance.Instance._action',
             self.proxy.delete_batch,
             method_args=[['1', '2']],
-            expected_args=['delete', ['1', '2']]
+            expected_args=[self.proxy, 'delete', ['1', '2']]
         )
 
     def test_create_topic(self):

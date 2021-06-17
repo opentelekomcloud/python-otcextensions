@@ -59,7 +59,7 @@ class TestCesAlarm(TestCesProxy):
             'otcextensions.sdk.ces.v1.alarm.Alarm.change_alarm_status',
             self.proxy.switch_alarm_state,
             method_args=["alarm"],
-            expected_args=[]
+            expected_args=[self.proxy]
         )
 
     def test_alarm_find(self):

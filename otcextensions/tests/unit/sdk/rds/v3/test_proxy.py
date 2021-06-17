@@ -85,7 +85,7 @@ class TestConfiguration(TestRdsProxy):
             'otcextensions.sdk.rds.v3.configuration.Configuration.apply',
             self.proxy.apply_configuration,
             method_args=["val", ['a', 'b']],
-            expected_args=[['a', 'b']]
+            expected_args=[self.proxy, ['a', 'b']]
         )
 
 
@@ -196,6 +196,7 @@ class TestInstance(TestRdsProxy):
             'otcextensions.sdk.rds.v3.instance.Instance.get_backup_policy',
             self.proxy.get_instance_backup_policy,
             method_args=["val"],
+            expected_args=[self.proxy]
         )
 
     def test_update_instance_backup_policy(self):
@@ -212,5 +213,6 @@ class TestInstance(TestRdsProxy):
                 'keep_days': 1,
                 'start_time': '2',
                 'period': '3'
-            }
+            },
+            expected_args=[self.proxy]
         )
