@@ -263,7 +263,7 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
         )
 
     def test_restart_instance(self):
-        self._verify(
+        self._verify2(
             'otcextensions.sdk.dms.v1.instance.Instance._action',
             self.proxy.restart_instance,
             method_args=['value'],
@@ -271,7 +271,7 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
         )
 
     def test_restart_instances(self):
-        self._verify(
+        self._verify2(
             'otcextensions.sdk.dms.v1.instance.Instance._action',
             self.proxy.restart_instances,
             method_args=[['1', '2']],
@@ -279,14 +279,14 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
         )
 
     def test_delete_failed(self):
-        self._verify(
+        self._verify2(
             'otcextensions.sdk.dms.v1.instance.Instance.delete_failed',
             self.proxy.delete_failed,
             method_args=[]
         )
 
     def test_delete_batch(self):
-        self._verify(
+        self._verify2(
             'otcextensions.sdk.dms.v1.instance.Instance._action',
             self.proxy.delete_batch,
             method_args=[['1', '2']],
