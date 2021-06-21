@@ -32,9 +32,9 @@ class TestGateway(base.BaseFunctionalTest):
         cidr = '192.168.0.0/16'
         ipv4 = 4
         uuid_v4 = uuid.uuid4().hex[:8]
-        router_name = 'sdk-gw-test-router-' + uuid_v4
-        net_name = 'sdk-gw-test-net-' + uuid_v4
-        subnet_name = 'sdk-gw-test-subnet-' + uuid_v4
+        router_name = 'gw-test-router-' + uuid_v4
+        net_name = 'gw-test-net-' + uuid_v4
+        subnet_name = 'gw-test-subnet-' + uuid_v4
 
         if not TestGateway.network_info:
             network = self.conn.network.create_network(name=net_name)
@@ -72,12 +72,6 @@ class TestGateway(base.BaseFunctionalTest):
             self.assertIsNotNone(TestGateway.gateway)
 
     def destroy_network(self):
-        if TestGateway.gateway:
-            self.conn.nat.delete_gateway(gateway=TestGateway.gateway)
-            self.conn.nat.wait_for_delete_gateway(TestGateway.gateway)
-            gateway = self.conn.nat.find_gateway(TestGateway.gateway.name, ignore_missing=True)
-            self.assertIsNone(gateway)
-            TestGateway.gateway = None
         if TestGateway.network_info:
             router_id = TestGateway.network_info['router_id']
             subnet_id = TestGateway.network_info['subnet_id']
@@ -136,7 +130,8 @@ class TestGateway(base.BaseFunctionalTest):
     def test_05_delete_gateway(self):
         self.conn.nat.delete_gateway(gateway=TestGateway.gateway)
         self.conn.nat.wait_for_delete_gateway(TestGateway.gateway)
-        gateway = self.conn.nat.find_gateway(self.update_gateway_name, ignore_missing=True)
-        self.assertIsNone(gateway)
         TestGateway.gateway = None
         self.destroy_network()
+        gateway = self.conn.nat.find_gateway(self.update_gateway_name, ignore_missing=True)
+        self.assertIsNone(gateway)
+

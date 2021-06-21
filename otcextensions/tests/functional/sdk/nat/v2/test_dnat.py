@@ -27,19 +27,26 @@ class TestDnat(base.BaseFunctionalTest):
     admin_external_net_id = "0a2228f2-7f8a-45f1-8e09-9039e1d09975"
     network_info = None
     gateway = None
+    server = None
+    server_name = uuid_v4 + 'test-dnat-server'
     gateway_name = uuid_v4 + 'test-dnat-gateway'
+    flavor = "s3.medium.1"
+    image = "Standard_Ubuntu_18.04_latest"
+    kp_name = uuid_v4 + "test-dnat-kp"
+    fixed_ip = "192.168.0.10"
     attrs = {
         "name": gateway_name,
         "spec": "1"
     }
+    AZ = 'eu-de-01'
 
-    def create_network(self):
+    def _create_network(self):
         cidr = '192.168.0.0/16'
         ipv4 = 4
         uuid_v4 = uuid.uuid4().hex[:8]
-        router_name = 'sdk-dnat-test-router-' + uuid_v4
-        net_name = 'sdk-dnat-test-net-' + uuid_v4
-        subnet_name = 'sdk-dnat-test-subnet-' + uuid_v4
+        router_name = 'dnat-test-router-' + uuid_v4
+        net_name = 'dnat-test-net-' + uuid_v4
+        subnet_name = 'dnat-test-subnet-' + uuid_v4
 
         if not TestDnat.network_info:
             network = self.conn.network.create_network(name=net_name)
@@ -75,14 +82,35 @@ class TestDnat(base.BaseFunctionalTest):
             TestDnat.gateway = self.conn.nat.create_gateway(**self.attrs)
             self.conn.nat.wait_for_gateway(TestDnat.gateway)
             self.assertIsNotNone(TestDnat.gateway)
+        if not TestDnat.floating_ip:
+            TestDnat.floating_ip = self.conn.network.create_ip(
+                floating_network_id=self.admin_external_net_id)
+        image = self.conn.compute.find_image(self.image)
+        flavor = self.conn.compute.find_flavor(self.flavor)
+        TestDnat.keypair = self.conn.compute.create_keypair(name=self.kp_name)
+        if not TestDnat.port:
+            TestDnat.port = self.conn.network.create_port(network_id=TestDnat.network_info['network_id'])
+        TestDnat.server = self.conn.compute.create_server(
+            name=self.server_name, networks=[{"port": TestDnat.port.id}],
+            key_name=self.kp_name, flavorRef=flavor.id, imageRef=image.id)
+        self.conn.compute.wait_for_server(TestDnat.server)
 
-    def destroy_network(self):
+    def _destroy_network(self):
+        if TestDnat.floating_ip:
+            self.conn.network.delete_ip(TestDnat.floating_ip)
+            TestDnat.floating_ip = None
+        if TestDnat.server:
+            self.conn.compute.delete_server(TestDnat.server)
+            TestDnat.server = self.conn.compute.wait_for_delete(TestDnat.server, interval=5, wait=320)
+            self.assertIsNone(TestDnat.server)
+        if TestDnat.keypair:
+            self.conn.compute.delete_keypair(TestDnat.keypair)
+            self.conn.compute.wait_for_delete(TestDnat.keypair)
+            TestDnat.keypair = None
         if TestDnat.gateway:
             self.conn.nat.delete_gateway(gateway=TestDnat.gateway)
-            self.conn.nat.wait_for_delete_gateway(TestDnat.gateway)
-            gateway = self.conn.nat.find_gateway(TestDnat.gateway.name, ignore_missing=True)
-            self.assertIsNone(gateway)
-            TestDnat.gateway = None
+            TestDnat.gateway = self.conn.nat.wait_for_delete_gateway(TestDnat.gateway, interval=5, wait=250)
+            self.assertIsNone(TestDnat.gateway)
         if TestDnat.network_info:
             router_id = TestDnat.network_info['router_id']
             subnet_id = TestDnat.network_info['subnet_id']
@@ -119,24 +147,29 @@ class TestDnat(base.BaseFunctionalTest):
     def tearDown(self):
         super(TestDnat, self).tearDown()
 
-    def _create_network(self):
-        self.create_network()
-        if not TestDnat.floating_ip:
-            TestDnat.floating_ip = self.conn.network.create_ip(
-                floating_network_id=self.admin_external_net_id)
-        if not TestDnat.port:
-            TestDnat.port = self.conn.network.create_port(network_id=TestDnat.network_info['network_id'])
-
-    def _create_dnat_rule(self):
+    def test_01_create_dnat_rule(self):
         self._create_network()
         TestDnat.dnat_rule = self.conn.nat.create_dnat_rule(nat_gateway_id=TestDnat.gateway.id,
                                                             floating_ip_id=TestDnat.floating_ip.id,
                                                             network_id=TestDnat.network_info['network_id'],
-                                                            port_id=TestDnat.port.id,
-                                                            protocol='TCP', internal_service_port=80,
-                                                            external_service_port=80)
+                                                            private_ip=TestDnat.port.fixed_ips[0]["ip_address"],
+                                                            protocol='TCP', internal_service_port=22,
+                                                            external_service_port=22)
+        self.conn.nat.wait_for_dnat(TestDnat.dnat_rule)
         self.assertIsNotNone(TestDnat.dnat_rule)
-
-    def test_01_list_dnat_rules(self):
+        
+    def test_02_list_dnat_rules(self):
+        self._create_network()
         self._create_dnat_rule()
-        self.assertIsNotNone(TestDnat.dnat_rule)
+        self.dnat_rules = list(self.conn.nat.dnat_rules())
+        self.assertGreaterEqual(len(self.dnat_rules), 0)
+
+    def test_03_get_dnat_rule(self):
+        dnat_rule = self.conn.nat.get_dnat_rule(TestDnat.dnat_rule.id)
+        self.assertEqual(dnat_rule.id, TestDnat.dnat_rule.id)
+        
+    def test_04_delete_dnat_rule(self):
+        self.conn.nat.delete_dnat_rule(dnat=TestDnat.dnat_rule)
+        dnat_rule = self.conn.nat.wait_for_delete_dnat(TestDnat.dnat_rule)
+        self._destroy_network()
+        self.assertIsNone(dnat_rule)

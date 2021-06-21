@@ -30,13 +30,13 @@ class TestSnat(base.BaseFunctionalTest):
         "spec": "1"
     }
 
-    def create_network(self):
+    def _create_network(self):
         cidr = '192.168.0.0/16'
         ipv4 = 4
         uuid_v4 = uuid.uuid4().hex[:8]
-        router_name = 'sdk-snat-test-router-' + uuid_v4
-        net_name = 'sdk-snat-test-net-' + uuid_v4
-        subnet_name = 'sdk-snat-test-subnet-' + uuid_v4
+        router_name = 'snat-test-router-' + uuid_v4
+        net_name = 'snat-test-net-' + uuid_v4
+        subnet_name = 'snat-test-subnet-' + uuid_v4
 
         if not TestSnat.network_info:
             network = self.conn.network.create_network(name=net_name)
@@ -72,16 +72,18 @@ class TestSnat(base.BaseFunctionalTest):
             TestSnat.gateway = self.conn.nat.create_gateway(**self.attrs)
             self.conn.nat.wait_for_gateway(TestSnat.gateway)
             self.assertIsNotNone(TestSnat.gateway)
+        if not TestSnat.floating_ip:
+            TestSnat.floating_ip = self.conn.network.create_ip(
+                floating_network_id="0a2228f2-7f8a-45f1-8e09-9039e1d09975")
 
-    def destroy_network(self):
+    def _destroy_network(self):
         if TestSnat.gateway:
             self.conn.nat.delete_gateway(gateway=TestSnat.gateway)
             self.conn.nat.wait_for_delete_gateway(TestSnat.gateway)
-            gateway = self.conn.nat.find_gateway(TestSnat.gateway.name, ignore_missing=True)
-            self.assertIsNone(gateway)
             TestSnat.gateway = None
         if TestSnat.floating_ip:
             self.conn.network.delete_ip(TestSnat.floating_ip)
+            TestSnat.floating_ip = None
         if TestSnat.network_info:
             router_id = TestSnat.network_info['router_id']
             subnet_id = TestSnat.network_info['subnet_id']
@@ -112,21 +114,13 @@ class TestSnat(base.BaseFunctionalTest):
             TestSnat.network_info = None
             self.assertIsNone(sot)
 
-
     def setUp(self):
         super(TestSnat, self).setUp()
 
     def tearDown(self):
         super(TestSnat, self).tearDown()
 
-    def _create_network_with_gateway(self):
-        self.create_network()
-        if not TestSnat.floating_ip:
-            TestSnat.floating_ip = self.conn.network.create_ip(
-                floating_network_id="0a2228f2-7f8a-45f1-8e09-9039e1d09975")
-
     def _create_snat_rule(self):
-        self._create_network_with_gateway()
         TestSnat.snat_rule = self.conn.nat.create_snat_rule(floating_ip_id=TestSnat.floating_ip.id,
                                                             nat_gateway_id=TestSnat.gateway.id,
                                                             network_id=TestSnat.network_info['network_id'])
@@ -134,6 +128,7 @@ class TestSnat(base.BaseFunctionalTest):
         self.assertIsNotNone(TestSnat.snat_rule)
 
     def test_01_list_snat_rules(self):
+        self._create_network()
         self._create_snat_rule()
         self.snat_rules = list(self.conn.nat.snat_rules())
         self.assertGreaterEqual(len(self.snat_rules), 0)
@@ -144,12 +139,7 @@ class TestSnat(base.BaseFunctionalTest):
 
     def test_03_delete_snat_rule(self):
         self.conn.nat.delete_snat_rule(snat=TestSnat.snat_rule)
-        self.conn.nat.wait_for_delete_snat(TestSnat.snat_rule)
-        try:
-            snat_rule = self.conn.nat.get_snat_rule(TestSnat.snat_rule.id)
-        except openstack.exceptions.ResourceNotFound:
-            return
+        snat_rule = self.conn.nat.wait_for_delete_snat(TestSnat.snat_rule)
+        self._destroy_network()
         self.assertIsNone(snat_rule)
-        TestSnat.snat_rule = None
-        self.destroy_network()
 
