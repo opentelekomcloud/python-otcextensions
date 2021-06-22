@@ -29,6 +29,7 @@
     templates:
       - publish-to-pypi
       - publish-otc-docs-pti
+      - release-notes-jobs
     check:
       jobs:
         - otc-tox-pep8
