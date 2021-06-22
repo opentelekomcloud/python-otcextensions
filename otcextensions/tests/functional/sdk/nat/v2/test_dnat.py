@@ -28,6 +28,7 @@ class TestDnat(base.BaseFunctionalTest):
     network_info = None
     gateway = None
     server = None
+    keypair = None
     server_name = uuid_v4 + 'test-dnat-server'
     gateway_name = uuid_v4 + 'test-dnat-gateway'
     flavor = "s3.medium.1"
@@ -87,7 +88,8 @@ class TestDnat(base.BaseFunctionalTest):
                 floating_network_id=self.admin_external_net_id)
         image = self.conn.compute.find_image(self.image)
         flavor = self.conn.compute.find_flavor(self.flavor)
-        TestDnat.keypair = self.conn.compute.create_keypair(name=self.kp_name)
+        if not TestDnat.keypair:
+            TestDnat.keypair = self.conn.compute.create_keypair(name=self.kp_name)
         if not TestDnat.port:
             TestDnat.port = self.conn.network.create_port(network_id=TestDnat.network_info['network_id'])
         TestDnat.server = self.conn.compute.create_server(
@@ -101,16 +103,16 @@ class TestDnat(base.BaseFunctionalTest):
             TestDnat.floating_ip = None
         if TestDnat.server:
             self.conn.compute.delete_server(TestDnat.server)
-            TestDnat.server = self.conn.compute.wait_for_delete(TestDnat.server, interval=5, wait=320)
-            self.assertIsNone(TestDnat.server)
+            self.conn.compute.wait_for_delete(TestDnat.server, interval=5, wait=300)
+            TestDnat.server = None
         if TestDnat.keypair:
             self.conn.compute.delete_keypair(TestDnat.keypair)
             self.conn.compute.wait_for_delete(TestDnat.keypair)
             TestDnat.keypair = None
         if TestDnat.gateway:
             self.conn.nat.delete_gateway(gateway=TestDnat.gateway)
-            TestDnat.gateway = self.conn.nat.wait_for_delete_gateway(TestDnat.gateway, interval=5, wait=250)
-            self.assertIsNone(TestDnat.gateway)
+            self.conn.nat.wait_for_delete_gateway(TestDnat.gateway)
+            TestDnat.gateway = None
         if TestDnat.network_info:
             router_id = TestDnat.network_info['router_id']
             subnet_id = TestDnat.network_info['subnet_id']
@@ -159,8 +161,6 @@ class TestDnat(base.BaseFunctionalTest):
         self.assertIsNotNone(TestDnat.dnat_rule)
         
     def test_02_list_dnat_rules(self):
-        self._create_network()
-        self._create_dnat_rule()
         self.dnat_rules = list(self.conn.nat.dnat_rules())
         self.assertGreaterEqual(len(self.dnat_rules), 0)
 
@@ -170,6 +170,10 @@ class TestDnat(base.BaseFunctionalTest):
         
     def test_04_delete_dnat_rule(self):
         self.conn.nat.delete_dnat_rule(dnat=TestDnat.dnat_rule)
-        dnat_rule = self.conn.nat.wait_for_delete_dnat(TestDnat.dnat_rule)
+        self.conn.nat.wait_for_delete_dnat(TestDnat.dnat_rule)
         self._destroy_network()
+        try:
+            dnat_rule = self.conn.nat.get_dnat_rule(TestDnat.dnat_rule.id)
+        except openstack.exceptions.ResourceNotFound:
+            dnat_rule = None
         self.assertIsNone(dnat_rule)

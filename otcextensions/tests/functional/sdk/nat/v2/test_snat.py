@@ -139,7 +139,11 @@ class TestSnat(base.BaseFunctionalTest):
 
     def test_03_delete_snat_rule(self):
         self.conn.nat.delete_snat_rule(snat=TestSnat.snat_rule)
-        snat_rule = self.conn.nat.wait_for_delete_snat(TestSnat.snat_rule)
+        self.conn.nat.wait_for_delete_snat(TestSnat.snat_rule, interval=5, wait=250)
         self._destroy_network()
+        try:
+            snat_rule = self.conn.nat.get_snat_rule(TestSnat.snat_rule.id)
+        except openstack.exceptions.ResourceNotFound:
+            snat_rule = None
         self.assertIsNone(snat_rule)
 
