@@ -12,7 +12,6 @@
 # limitations under the License.
 
 import os
-import sys
 import warnings
 
 # -- General configuration ----------------------------------------------------
@@ -20,13 +19,12 @@ import warnings
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
-    'sphinx.ext.autodoc',
+    'reno.sphinxext',
     'otcdocstheme',
-    'cliff.sphinxext',
 ]
 
 # openstackdocstheme options
-#otcdocs_repo_name = 'opentelekomcloud/python-otcextensions'
+otcdocs_repo = 'opentelekomcloud/python-otcextensions'
 html_last_updated_fmt = '%Y-%m-%d %H:%M'
 html_theme = 'otcdocs'
 
@@ -38,12 +36,6 @@ enforcer_warnings_as_errors = False
 # autodoc generation is a bit aggressive and a nuisance when doing heavy
 # text edit cycles.
 # execute "export SPHINX_DEBUG=1" in your terminal to disable
-
-# The suffix of source filenames.
-source_suffix = '.rst'
-
-# The master toctree document.
-master_doc = 'index'
 
 # General information about the project.
 project = u'python-otcextensions'
@@ -102,11 +94,3 @@ latex_documents = [
 
 # Include both the class and __init__ docstrings when describing the class
 autoclass_content = "both"
-
-# -- Options for cliff.sphinxext plugin ---------------------------------------
-
-autoprogram_cliff_application = 'openstack'
-
-autoprogram_cliff_ignored = [
-    '--help', '--format', '--column', '--max-width', '--fit-width',
-    '--print-empty', '--prefix', '--noindent', '--quote']
