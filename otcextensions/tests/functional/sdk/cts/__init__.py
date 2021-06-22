@@ -9,10 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import os
-import uuid
-
-import fixtures
 
 from otcextensions.tests.functional import base
 
@@ -22,3 +18,4 @@ class TestCts(base.BaseFunctionalTest):
     def setUp(self):
         super(TestCts, self).setUp()
         self.client = self.conn.cts
+        self.obs_client = self.conn.object_store
