@@ -49,8 +49,10 @@ class TestTraces(TestCts):
                             % e.message)
 
     def _create_bucket(self):
-        self.bucket = self.obs_client.create_container(name=self.bucket_name)
-        self.obs_client.containers()
+        self.bucket = self.obs_client.create_container(
+            name=self.bucket_name,
+        )
+        self.assertIsNotNone(self.bucket)
 
     def _delete_bucket(self):
         if self.bucket:

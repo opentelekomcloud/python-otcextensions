@@ -52,6 +52,8 @@ class Proxy(sdk_proxy.Proxy):
 
         """
         region_name = getattr(self, 'region_name', 'eu-de')
+        if not region_name:
+            region_name = 'eu-de'
         endpoint = self.CONTAINER_ENDPOINT % {
             'container': container,
             'region_name': region_name
@@ -70,6 +72,8 @@ class Proxy(sdk_proxy.Proxy):
                 self.log.error('Cannot obtain AK/SK from config')
                 return None
             region = getattr(self, 'region_name', 'eu-de')
+            if not region:
+                region = 'eu-de'
             if not host:
                 host = self.get_endpoint()
 

@@ -18,4 +18,6 @@ class TestCts(base.BaseFunctionalTest):
     def setUp(self):
         super(TestCts, self).setUp()
         self.client = self.conn.cts
-        self.obs_client = self.conn.object_store
+        self.obs_client = self.conn.obs
+
+    # def _create_bucket(self, bucket):
