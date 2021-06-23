@@ -66,7 +66,8 @@ class TestGateway(base.BaseFunctionalTest):
             }
         if not TestGateway.gateway:
             self.attrs['router_id'] = TestGateway.network_info['router_id']
-            self.attrs['internal_network_id'] = TestGateway.network_info['network_id']
+            self.attrs['internal_network_id'] = \
+                TestGateway.network_info['network_id']
             TestGateway.gateway = self.conn.nat.create_gateway(**self.attrs)
             self.conn.nat.wait_for_gateway(TestGateway.gateway)
             self.assertIsNotNone(TestGateway.gateway)
@@ -122,8 +123,9 @@ class TestGateway(base.BaseFunctionalTest):
         self.assertEqual(gateway.name, self.gateway_name)
 
     def test_04_update_gateway(self):
-        update_gw = self.conn.nat.update_gateway(gateway=TestGateway.gateway.id,
-                                                 name=self.update_gateway_name)
+        update_gw = self.conn.nat.update_gateway(
+            gateway=TestGateway.gateway.id,
+            name=self.update_gateway_name)
         update_gw = self.conn.nat.get_gateway(update_gw.id)
         self.assertEqual(update_gw.name, self.update_gateway_name)
 
@@ -132,6 +134,6 @@ class TestGateway(base.BaseFunctionalTest):
         self.conn.nat.wait_for_delete_gateway(TestGateway.gateway)
         TestGateway.gateway = None
         self.destroy_network()
-        gateway = self.conn.nat.find_gateway(self.update_gateway_name, ignore_missing=True)
+        gateway = self.conn.nat.find_gateway(
+            self.update_gateway_name, ignore_missing=True)
         self.assertIsNone(gateway)
-

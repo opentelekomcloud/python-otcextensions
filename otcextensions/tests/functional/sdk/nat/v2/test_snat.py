@@ -18,7 +18,7 @@ _logger = openstack._log.setup_logging('openstack')
 
 
 class TestSnat(base.BaseFunctionalTest):
-    
+
     floating_ip = None
     snat_rule = None
     uuid_v4 = uuid.uuid4().hex[:8]
@@ -68,7 +68,8 @@ class TestSnat(base.BaseFunctionalTest):
             }
         if not TestSnat.gateway:
             self.attrs['router_id'] = TestSnat.network_info['router_id']
-            self.attrs['internal_network_id'] = TestSnat.network_info['network_id']
+            self.attrs['internal_network_id'] =\
+                TestSnat.network_info['network_id']
             TestSnat.gateway = self.conn.nat.create_gateway(**self.attrs)
             self.conn.nat.wait_for_gateway(TestSnat.gateway)
             self.assertIsNotNone(TestSnat.gateway)
@@ -121,9 +122,10 @@ class TestSnat(base.BaseFunctionalTest):
         super(TestSnat, self).tearDown()
 
     def _create_snat_rule(self):
-        TestSnat.snat_rule = self.conn.nat.create_snat_rule(floating_ip_id=TestSnat.floating_ip.id,
-                                                            nat_gateway_id=TestSnat.gateway.id,
-                                                            network_id=TestSnat.network_info['network_id'])
+        TestSnat.snat_rule = self.conn.nat.create_snat_rule(
+            floating_ip_id=TestSnat.floating_ip.id,
+            nat_gateway_id=TestSnat.gateway.id,
+            network_id=TestSnat.network_info['network_id'])
         self.conn.nat.wait_for_snat(TestSnat.snat_rule)
         self.assertIsNotNone(TestSnat.snat_rule)
 
@@ -139,11 +141,11 @@ class TestSnat(base.BaseFunctionalTest):
 
     def test_03_delete_snat_rule(self):
         self.conn.nat.delete_snat_rule(snat=TestSnat.snat_rule)
-        self.conn.nat.wait_for_delete_snat(TestSnat.snat_rule, interval=5, wait=250)
+        self.conn.nat.wait_for_delete_snat(
+            TestSnat.snat_rule, interval=5, wait=250)
         self._destroy_network()
         try:
             snat_rule = self.conn.nat.get_snat_rule(TestSnat.snat_rule.id)
         except openstack.exceptions.ResourceNotFound:
             snat_rule = None
         self.assertIsNone(snat_rule)
-

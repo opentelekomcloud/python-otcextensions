@@ -205,7 +205,7 @@ class Proxy(proxy.Proxy):
         return self._list(_snat.Snat, **query)
 
     def wait_for_snat(self, snat, status='ACTIVE', failures=None,
-                         interval=2, wait=300, attribute='status'):
+                      interval=2, wait=300, attribute='status'):
         """Wait for an snat rule to be in a particular status.
 
         :param snat:
@@ -303,7 +303,7 @@ class Proxy(proxy.Proxy):
         return self._list(_dnat.Dnat, **query)
 
     def wait_for_dnat(self, dnat, status='ACTIVE', failures=None,
-                         interval=2, wait=300, attribute='status'):
+                      interval=2, wait=300, attribute='status'):
         """Wait for an dnat rule to be in a particular status.
 
         :param dnat:
@@ -345,7 +345,7 @@ class Proxy(proxy.Proxy):
         :raises: :class:`~openstack.exceptions.ResourceTimeout` transition
                  to status failed to occur in wait seconds.
         """
-        snat = self._get_resource(_dnat.Dnat, dnat)
+        dnat = self._get_resource(_dnat.Dnat, dnat)
         return resource.wait_for_delete(self, dnat, interval, wait)
 
     # ======== Project cleanup ========
