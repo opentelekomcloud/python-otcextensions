@@ -147,12 +147,6 @@ class TestDnat(base.BaseFunctionalTest):
             TestDnat.network_info = None
             self.assertIsNone(sot)
 
-    def setUp(self):
-        super(TestDnat, self).setUp()
-
-    def tearDown(self):
-        super(TestDnat, self).tearDown()
-
     def test_01_create_dnat_rule(self):
         self._create_network()
         TestDnat.dnat_rule = self.conn.nat.create_dnat_rule(

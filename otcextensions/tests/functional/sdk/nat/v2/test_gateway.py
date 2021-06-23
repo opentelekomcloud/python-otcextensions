@@ -103,12 +103,6 @@ class TestGateway(base.BaseFunctionalTest):
             TestGateway.network_info = None
             self.assertIsNone(sot)
 
-    def setUp(self):
-        super(TestGateway, self).setUp()
-
-    def tearDown(self):
-        super(TestGateway, self).tearDown()
-
     def test_01_list_gateways(self):
         self.create_network()
         self.gateways = list(self.conn.nat.gateways())

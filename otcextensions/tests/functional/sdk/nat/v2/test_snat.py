@@ -115,12 +115,6 @@ class TestSnat(base.BaseFunctionalTest):
             TestSnat.network_info = None
             self.assertIsNone(sot)
 
-    def setUp(self):
-        super(TestSnat, self).setUp()
-
-    def tearDown(self):
-        super(TestSnat, self).tearDown()
-
     def _create_snat_rule(self):
         TestSnat.snat_rule = self.conn.nat.create_snat_rule(
             floating_ip_id=TestSnat.floating_ip.id,
