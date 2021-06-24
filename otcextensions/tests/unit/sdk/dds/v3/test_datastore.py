@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import mock
+from keystoneauth1 import adapter
 from openstack.tests.unit import base
 
 from otcextensions.sdk.dds.v3 import datastore
@@ -20,6 +21,9 @@ EXAMPLE = {"versions": "5.7"}
 class TestDatastore(base.TestCase):
     def setUp(self):
         super(TestDatastore, self).setUp()
+        self.sess = mock.Mock(spec=adapter.Adapter)
+        self.sess.get = mock.Mock()
+        self.sot = datastore.Datastore(**EXAMPLE)
 
     def test_basic(self):
         sot = datastore.Datastore()
