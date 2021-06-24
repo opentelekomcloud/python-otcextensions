@@ -21,9 +21,6 @@ EXAMPLE = {"versions": "5.7"}
 class TestDatastore(base.TestCase):
     def setUp(self):
         super(TestDatastore, self).setUp()
-        self.sess = mock.Mock(spec=adapter.Adapter)
-        self.sess.get = mock.Mock()
-        self.sot = datastore.Datastore(**EXAMPLE)
 
     def test_basic(self):
         sot = datastore.Datastore()
@@ -43,22 +40,3 @@ class TestDatastore(base.TestCase):
     def test_make_it(self):
         sot = datastore.Datastore(**EXAMPLE)
         self.assertEqual(EXAMPLE['versions'], sot.versions)
-
-    def test_list(self):
-        mock_response = mock.Mock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {'datastores': [EXAMPLE]}
-
-        self.sess.get.return_value = mock_response
-
-        result = list(self.sot.list(
-            self.sess,
-            datastore_name='datastore')
-        )
-
-        self.sess.get.assert_called_once_with(
-            '/datastores/%s/versions' % ('datastore'),
-            params={},
-        )
-
-        self.assertEqual([datastore.Datastore(**EXAMPLE)], result)
