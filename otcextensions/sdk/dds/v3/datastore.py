@@ -9,16 +9,18 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import _log
-
-from otcextensions.tests.functional.sdk.dds import TestDds
-
-_logger = _log.setup_logging('openstack')
+from openstack import resource
 
 
-class TestService(TestDds):
+class Datastore(resource.Resource):
+    base_path = '/datastores/%(datastore_name)s/versions'
 
-    def test_initialize(self):
-        client = self.client
+    # capabilities
+    allow_list = True
 
-        self.assertIsNotNone(client)
+    project_id = resource.URI('project_id')
+    datastore_name = resource.URI('datastore_name')
+
+    # Indicates the database version.
+    # :*Type:string*
+    versions = resource.Body('versions')
