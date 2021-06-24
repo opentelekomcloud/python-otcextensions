@@ -43,7 +43,7 @@ class TestDatastore(base.TestCase):
     def test_list(self):
         mock_response = mock.Mock()
         mock_response.status_code = 200
-        mock_response.json.return_value = {[EXAMPLE]}
+        mock_response.json.return_value = {'datastores': [EXAMPLE]}
 
         self.sess.get.return_value = mock_response
 
