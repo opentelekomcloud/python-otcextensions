@@ -9,7 +9,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
+import mock
 from openstack.tests.unit import base
 
 from otcextensions.sdk.dds.v3 import datastore
@@ -23,7 +23,9 @@ class TestDatastore(base.TestCase):
 
     def test_basic(self):
         sot = datastore.Datastore()
-        self.assertEqual('/datastores/%(datastore_name)s/versions', sot.base_path)
+        self.assertEqual(
+            '/datastores/%(datastore_name)s/versions',
+            sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_fetch)
         self.assertFalse(sot.allow_create)
@@ -36,4 +38,23 @@ class TestDatastore(base.TestCase):
 
     def test_make_it(self):
         sot = datastore.Datastore(**EXAMPLE)
-        self.assertEqual(EXAMPLE['name'], sot.name)
+        self.assertEqual(EXAMPLE['versions'], sot.versions)
+
+    def test_list(self):
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {[EXAMPLE]}
+
+        self.sess.get.return_value = mock_response
+
+        result = list(self.sot.list(
+            self.sess,
+            datastore_name='datastore')
+        )
+
+        self.sess.get.assert_called_once_with(
+            '/datastores/%s/versions' % ('datastore'),
+            params={},
+        )
+
+        self.assertEqual([datastore.Datastore(**EXAMPLE)], result)

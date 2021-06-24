@@ -23,7 +23,6 @@ class TestDatastores(TestDds):
         super(TestDatastores, self).setUp()
 
     def test_list_datastores(self):
-        versions = []
         datastores = self.client.datastores(datastore_name=self.datastore_name)
         self.assertEqual(next(datastores)['versions'], ['3.2', '3.4'])
 
