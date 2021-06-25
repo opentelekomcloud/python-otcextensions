@@ -24,11 +24,11 @@ class TestDatastores(TestDds):
 
     def test_list_datastores(self):
         datastores = self.client.datastores(datastore_name=self.datastore_name)
-        self.assertEqual(next(datastores)['versions'], ['3.2', '3.4'])
+        self.assertIsNotNone(next(datastores))
 
     def test_list_datastore_types(self):
         types = []
         datastore_types = self.client.datastore_types()
         for type in datastore_types:
             types.append(type.name)
-        self.assertEqual(types, [self.datastore_name])
+        self.assertIn(self.datastore_name, types)

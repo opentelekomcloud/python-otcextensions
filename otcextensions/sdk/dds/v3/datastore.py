@@ -18,7 +18,6 @@ class Datastore(resource.Resource):
     # capabilities
     allow_list = True
 
-    project_id = resource.URI('project_id')
     datastore_name = resource.URI('datastore_name')
 
     # Indicates the database version.
