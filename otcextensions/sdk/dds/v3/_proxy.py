@@ -22,11 +22,18 @@ class Proxy(proxy.Proxy):
         """List supported datastore types
 
         :returns: A generator of supported datastore types
-        :rtype object: object with name attribte
         """
-        for ds in ['DDS-Community']:
-            obj = type('obj', (object,), {'name': ds})
-            yield obj
+        datastores = [
+            {
+                'type': 'DDS-Community',
+                'version': ['3.2', '3.4'],
+                'storage_engine': 'wiredTiger'
+            }
+        ]
+        for ds in datastores:
+            for version in ds['version']:
+                ds['version'] = version
+                yield ds
 
         return
 

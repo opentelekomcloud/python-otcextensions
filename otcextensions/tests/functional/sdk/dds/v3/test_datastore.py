@@ -29,6 +29,7 @@ class TestDatastores(TestDds):
     def test_list_datastore_types(self):
         types = []
         datastore_types = self.client.datastore_types()
-        for type in datastore_types:
-            types.append(type.name)
-        self.assertIn(self.datastore_name, types)
+        for ds in datastore_types:
+            types.append(ds.copy())
+        self.assertIsNotNone(types)
+        self.assertEqual(len(types), 2)
