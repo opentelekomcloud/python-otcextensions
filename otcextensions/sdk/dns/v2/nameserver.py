@@ -10,11 +10,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import six
-
 from openstack import exceptions
 from openstack import resource
 from openstack import _log
-
 
 _logger = _log.setup_logging('openstack')
 
@@ -40,7 +38,6 @@ class NameServer(resource.Resource):
     address = resource.Body('address')
     #: NameServer public DNS address
     hostname = resource.Body('hostname')
-
 
     @classmethod
     def find(cls, session, name_or_id, ignore_missing=True, **params):

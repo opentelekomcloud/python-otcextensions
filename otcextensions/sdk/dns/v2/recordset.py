@@ -11,7 +11,6 @@
 # under the License.
 # from openstack import exceptions
 import six
-
 from openstack import exceptions
 from openstack import resource
 from openstack.dns.v2 import recordset
