@@ -9,11 +9,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import openstack
-
 from otcextensions.tests.functional.sdk.dds import TestDds
-
-_logger = openstack._log.setup_logging('openstack')
 
 
 class TestDatastores(TestDds):
@@ -23,13 +19,10 @@ class TestDatastores(TestDds):
         super(TestDatastores, self).setUp()
 
     def test_list_datastores(self):
-        datastores = self.client.datastores(datastore_name=self.datastore_name)
-        self.assertIsNotNone(next(datastores))
+        datastores = list(self.client.datastores(
+            datastore_name=self.datastore_name))
+        self.assertIsNotNone(datastores)
 
     def test_list_datastore_types(self):
-        types = []
-        datastore_types = self.client.datastore_types()
-        for ds in datastore_types:
-            types.append(ds.copy())
-        self.assertIsNotNone(types)
-        self.assertEqual(len(types), 2)
+        datastore_types = list(self.client.datastore_types())
+        self.assertEqual('DDS-Community', datastore_types[0].name)

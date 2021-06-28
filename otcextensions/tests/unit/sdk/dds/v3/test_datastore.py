@@ -9,21 +9,33 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from unittest import mock
+
+from keystoneauth1 import adapter
+
 from openstack.tests.unit import base
 
 from otcextensions.sdk.dds.v3 import datastore
 
-EXAMPLE = {"versions": "5.7"}
+
+EXAMPLE = {
+    "storage_engine": "wiredTiger",
+    "type": "DDS-Community",
+    "version": "3.2"}
 
 
 class TestDatastore(base.TestCase):
     def setUp(self):
         super(TestDatastore, self).setUp()
+        self.sess = mock.Mock(spec=adapter.Adapter)
+        self.sess.get = mock.Mock()
+        self.sess.default_microversion = None
+        self.sess._get_connection = mock.Mock(return_value=self.cloud)
 
     def test_basic(self):
         sot = datastore.Datastore()
         self.assertEqual(
-            '/datastores/%(datastore_name)s/versions',
+            '/datastores',
             sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_fetch)
@@ -37,4 +49,30 @@ class TestDatastore(base.TestCase):
 
     def test_make_it(self):
         sot = datastore.Datastore(**EXAMPLE)
-        self.assertEqual(EXAMPLE['versions'], sot.versions)
+        self.assertEqual(EXAMPLE['storage_engine'], sot.storage_engine)
+        self.assertEqual(EXAMPLE['type'], sot.type)
+        self.assertEqual(EXAMPLE['version'], sot.version)
+
+    def test_list(self):
+        sot = datastore.Datastore()
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {"versions": ["1", "2"]}
+        self.sess.get.return_value = mock_response
+
+        datastore_name = 'foo'
+        res = list(sot.list(self.sess, datastore_name=datastore_name))
+        self.sess.get.assert_called_with(
+            f'datastores/{datastore_name}/versions',
+            headers={'Accept': 'application/json'},
+            microversion=None
+        )
+        self.assertEqual(2, len(res))
+        self.assertEqual(
+            datastore.Datastore(
+                type=datastore_name,
+                storage_engine='wiredTiger',
+                version='1'
+            ).to_dict(computed=False),
+            res[0].to_dict(computed=False)
+        )
