@@ -28,7 +28,7 @@ class Zone(zone.Zone):
 
     _query_mapping = resource.QueryParameters(
         'name', 'type', 'email', 'status', 'description', 'ttl',
-        'limit', 'marker', 'router', 'zone_type'
+        'limit', 'marker', 'router', zone_type='type'
     )
 
     #: Recordset number of the zone
