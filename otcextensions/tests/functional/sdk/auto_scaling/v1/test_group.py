@@ -21,14 +21,11 @@ from otcextensions.tests.functional.sdk.auto_scaling.v1 import base
 
 _logger = _log.setup_logging('openstack')
 
-class TestInstance(base.BaseASTest):
+class TestGroup(base.BaseASTest):
 
     UUID = uuid.uuid4().hex[:9]
     AS_GROUP_NAME = "test-as-group-" + UUID
     AS_CONFIG_NAME = "test-as-config-" + UUID
-    DESIRE_INSTANCE_NUMBER = 1
-    MIN_INSTANCE_NUMBER = 0
-    MAX_INSTANCE_NUMBER = 1
     FLAVOR = "s3.medium.1"
     IMAGE_NAME = "Standard_Ubuntu_18.04_latest"
     DISK_SIZE = 4
@@ -66,30 +63,34 @@ class TestInstance(base.BaseASTest):
             config=as_config
         )
 
-    def _create_as_group(self, as_config_id, router_id, network_id):
+    def _create_as_group(self, router_id, network_id, min_instance_number=0,
+                         max_instance_number=1, desire_instance_number=0,
+                         as_config=None):
         group_attrs = {
             "scaling_group_name": self.AS_GROUP_NAME,
-            "scaling_configuration_id": as_config_id,
-            "desire_instance_number": self.DESIRE_INSTANCE_NUMBER,
-            "min_instance_number": self.MIN_INSTANCE_NUMBER,
-            "max_instance_number": self.MAX_INSTANCE_NUMBER,
+            "min_instance_number": min_instance_number,
+            "desire_instance_number": desire_instance_number,
+            "max_instance_number": max_instance_number,
             "vpc_id": router_id,
             "networks": [{
                 "id": network_id
             }]
         }
+        if as_config:
+            group_attrs["scaling_configuration_id"] = as_config.id
         as_group = self.conn.auto_scaling.create_group(**group_attrs)
-        self.conn.auto_scaling.resume_group(as_group)
-        return self.conn.auto_scaling.wait_for_group(as_group)
+        if as_config:
+            self.conn.auto_scaling.resume_group(as_group)
+        return as_group
 
-    def _delete_as_group(self, as_group):
-        self.conn.auto_scaling.pause_group(as_group)
+    def _delete_as_group(self, as_group, force_delete=False):
         self.conn.auto_scaling.delete_group(
-            group=as_group
+            group=as_group,
+            force_delete=force_delete
         )
-        self.conn.auto_scaling.wait_for_delete_group(as_group)
+        return self.conn.auto_scaling.wait_for_delete_group(as_group)
 
-    def _wait_for_instance(self, as_group):
+    def _wait_for_instances(self, as_group, desire_instance_number=0):
         timeout = int(os.environ.get('OS_TEST_TIMEOUT'))
         for count in utils.iterate_timeout(
                 timeout=timeout,
@@ -98,8 +99,11 @@ class TestInstance(base.BaseASTest):
             instances = list(self.conn.auto_scaling.instances(
                 group=as_group
             ))
-            if len(instances) == self.MAX_INSTANCE_NUMBER and instances[0].id:
-                return self.conn.auto_scaling.wait_for_instance(instances[0])
+            if (len(instances) == desire_instance_number and
+                    [instance.id for instance in instances if instance.id]):
+                for instance in instances:
+                    self.conn.auto_scaling.wait_for_instance(instance)
+                return
 
     def _delete_instance(self, instance):
         timeout = int(os.environ.get('OS_TEST_TIMEOUT'))
@@ -112,56 +116,57 @@ class TestInstance(base.BaseASTest):
             wait=timeout
         )
 
-    def _initialize_as_group_with_instance(self):
-        router = self.conn.network.get_router(self.infra.get("router_id"))
-        network = self.conn.network.get_network(self.infra.get("network_id"))
-        sec_group = self.conn.network.get_security_group(
-            self.infra.get("sec_group_id")
-        )
-        self.as_config = self._create_as_config(
-            self._get_image_id(), sec_group.id
-        )
-        self.as_group = self._create_as_group(
-            self.as_config.id, router.id, network.id
-        )
-        self.as_instance = self._wait_for_instance(
-            self.as_group
-        )
+    def _delete_instances(self, as_group):
+        instances = list(self.conn.auto_scaling.instances(
+            group=as_group
+        ))
+        for instance in instances:
+            self._delete_instance(instance)
 
-    def _deinitialize_as_group_with_instance(self):
-        if self.as_instance:
-            self._delete_instance(self.as_instance)
+    def _deinitialize_as_group(self):
         if self.as_group:
-            self._delete_as_group(self.as_group)
+            instances = list(self.conn.auto_scaling.instances(
+                group=self.as_group)
+            )
+            force_delete = False
+            if len(instances) > 0:
+                force_delete = True
+            self._delete_as_group(self.as_group, force_delete)
         if self.as_config:
             self._delete_as_config(self.as_config)
 
     def setUp(self):
-        super(TestInstance, self).setUp()
-        self._initialize_as_group_with_instance()
+        super(TestGroup, self).setUp()
 
     def tearDown(self):
         try:
-            self._deinitialize_as_group_with_instance()
+            self._deinitialize_as_group()
         except exceptions.SDKException as e:
             _logger.warning('Got exception during clearing '
                                          'resources %s'
                             % e.message)
         finally:
-            super(TestInstance, self).tearDown()
+            super(TestGroup, self).tearDown()
 
-    def test_find_instance_by_id(self):
-        result = self.conn.auto_scaling.find_instance(
-            name_or_id=self.as_instance.id,
-            group=self.as_group
-        )
-        self.assertIsNotNone(result)
-        self.assertEqual(self.as_instance.id, result.id)
+    #def test_01_create_as_group(self):
+    #    router = self.conn.network.get_router(self.infra.get("router_id"))
+    #    network = self.conn.network.get_network(self.infra.get("network_id"))
+    #    self.as_group = self._create_as_group(router.id, network.id)
+    #    self.assertIsNotNone(self.as_group)
+    #    self.assertEqual(self.as_group.name, self.AS_GROUP_NAME)
 
-    def test_find_instance_by_name(self):
-        result = self.conn.auto_scaling.find_instance(
-            name_or_id=self.as_instance.name,
-            group=self.as_group
-        )
-        self.assertIsNotNone(result)
-        self.assertEqual(self.as_instance.name, result.name)
+    def test_02_create_as_group_with_instance(self):
+        self.as_config = self._create_as_config(self._get_image_id(),
+                                                self.infra.get(
+                                                    "sec_group_id"
+                                                ))
+        self.as_group = self._create_as_group(router_id=self.infra.get("router_id"),
+                                              network_id=self.infra.get("network_id"),
+                                              min_instance_number=0,
+                                              desire_instance_number=1,
+                                              max_instance_number=1,
+                                              as_config=self.as_config)
+        self.conn.auto_scaling.resume_group(self.as_group)
+        self._wait_for_instances(self.as_group, desire_instance_number=1)
+        self.assertIsNotNone(self.as_group)
+        self.assertEqual(self.as_group.name, self.AS_GROUP_NAME)
