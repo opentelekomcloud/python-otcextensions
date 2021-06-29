@@ -45,13 +45,13 @@ class Proxy(proxy.Proxy):
 
     # ======= Flavors =======
     def flavors(self, region, engine_name):
-        """List flavors of all DB instances specifications  in specified region
+        """List flavors of all DB instances specifications in specified region
 
         :param engine_name: database engine name
         :param region: region
 
         :returns: A generator of flavor
-        :rtype: :class:`~otcextensions.sdk.rds_os.v1.flavor.Flavor`
+        :rtype: :class:`~otcextensions.sdk.dds.v3.flavor.Flavor`
         """
 
         return self._list(
