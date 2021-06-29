@@ -21,6 +21,7 @@ from otcextensions.tests.functional.sdk.auto_scaling.v1 import base
 
 _logger = _log.setup_logging('openstack')
 
+
 class TestInstance(base.BaseASTest):
 
     UUID = uuid.uuid4().hex[:9]
