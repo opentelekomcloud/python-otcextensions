@@ -140,8 +140,7 @@ class TestInstance(base.BaseASTest):
         try:
             self._deinitialize_as_group_with_instance()
         except exceptions.SDKException as e:
-            _logger.warning('Got exception during clearing '
-                                         'resources %s'
+            _logger.warning('Got exception during clearing resources %s'
                             % e.message)
         finally:
             super(TestInstance, self).tearDown()
