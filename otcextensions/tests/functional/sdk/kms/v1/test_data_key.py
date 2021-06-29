@@ -29,7 +29,6 @@ class TestDataKey(base.BaseFunctionalTest):
         )
 
     def tearDown(self):
-        super(TestDataKey, self).tearDown()
         try:
             if self.cmk:
                 key = self.cmk
@@ -38,6 +37,8 @@ class TestDataKey(base.BaseFunctionalTest):
         except exceptions.SDKException as e:
             self.warning = _logger.warning('Got exception during '
                                            'clearing resources %s' % e.message)
+        finally:
+            super(TestDataKey, self).tearDown()
 
     def test_dek(self):
 

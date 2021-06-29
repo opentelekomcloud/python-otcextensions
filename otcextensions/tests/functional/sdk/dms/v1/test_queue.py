@@ -33,7 +33,6 @@ class TestQueue(base.BaseFunctionalTest):
         self.queues.append(self.queue)
 
     def tearDown(self):
-        super(TestQueue, self).tearDown()
         try:
             for queue in self.queues:
                 if queue.id:
@@ -41,6 +40,8 @@ class TestQueue(base.BaseFunctionalTest):
         except exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
+        finally:
+            super(TestQueue, self).tearDown()
 
     def test_list(self):
         self.queues = list(self.conn.dms.queues())

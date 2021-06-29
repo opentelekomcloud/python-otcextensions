@@ -34,7 +34,6 @@ class TestNameservers(TestDns):
         self.zones.append(self.zone)
 
     def tearDown(self):
-        super(TestNameservers, self).tearDown()
         try:
             for zone in self.zones:
                 if zone:
@@ -42,6 +41,8 @@ class TestNameservers(TestDns):
         except openstack.exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
+        finally:
+            super(TestNameservers, self).tearDown()
 
     def test_list_nameservers(self):
         nameservers = []
