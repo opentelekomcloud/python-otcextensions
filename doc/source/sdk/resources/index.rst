@@ -14,6 +14,7 @@ Open Telekom Cloud Resources
    Cloud Eye Service (CES) <ces/index>
    Cloud Trace Service (CTS) <cts/index>
    Distributed Cache Service (DCS) <dcs/index>
+   Document Database Service (DDS) <dds/index>
    Dedicated Host Service (DeH) <deh/index>
    Distributed Message Service (DMS) <dms/index>
    Domain Name Service (DNS) <dns/index>

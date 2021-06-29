@@ -9,10 +9,10 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack.tests.unit import test_proxy_base
 
 from otcextensions.sdk.dds.v3 import _proxy
-
-from openstack.tests.unit import test_proxy_base
+from otcextensions.sdk.dds.v3 import datastore
 
 
 class TestDdsProxy(test_proxy_base.TestProxyBase):
@@ -20,3 +20,20 @@ class TestDdsProxy(test_proxy_base.TestProxyBase):
     def setUp(self):
         super(TestDdsProxy, self).setUp()
         self.proxy = _proxy.Proxy(self.session)
+
+
+class TestDatastore(TestDdsProxy):
+    def test_datastore_types(self):
+        res = list(self.proxy.datastore_types())
+        self.assertEqual('DDS-Community', res[0].name)
+
+    def test_datastores(self):
+        self.verify_list(
+            self.proxy.datastores,
+            datastore.Datastore,
+            method_kwargs={
+                'datastore_name': 'foo'},
+            expected_kwargs={
+                'datastore_name': 'foo'
+            }
+        )
