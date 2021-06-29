@@ -28,10 +28,10 @@ class Flavor(resource.Resource):
     #: Indicates the engine name.
     engine_name = resource.Body('engine_name')
     #: Indicates the node type. DDS contains the following types of nodes:
-    # - mongos
-    # - shard
-    # - config
-    # - replica
+    # * mongos
+    # * shard
+    # * config
+    # * replica
     type = resource.Body('type')
     #: Number of vCPUs.
     vcpus = resource.Body('vcpus')
