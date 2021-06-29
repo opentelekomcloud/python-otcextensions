@@ -8,4 +8,4 @@ DDS v3
    :maxdepth: 1
 
    v3/datastore
-   v3/flavors
+   v3/flavor
