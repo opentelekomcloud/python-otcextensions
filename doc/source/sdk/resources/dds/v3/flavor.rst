@@ -1,7 +1,7 @@
 otcextensions.sdk.dds.v3.flavors
 ===================================
 
-.. automodule:: otcextensions.sdk.dds.v3.flavors
+.. automodule:: otcextensions.sdk.dds.v3.flavor
 
 The Datastore Class
 -------------------
