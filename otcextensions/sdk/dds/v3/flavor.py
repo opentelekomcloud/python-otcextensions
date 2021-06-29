@@ -9,19 +9,29 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import exceptions
 from openstack import resource
 
 
-class FlavorsSpec(resource.Resource):
+class Flavor(resource.Resource):
+    base_path = '/flavors'
+
+    resources_key = 'flavors'
+
+    # capabilities
+    allow_list = True
+
+    _query_mapping = resource.QueryParameters(
+        'region', 'engine_name')
+
+    region = resource.URI('region')
     # Properties
     #: Indicates the engine name.
     engine_name = resource.Body('engine_name')
     #: Indicates the node type. DDS contains the following types of nodes:
-    # mongos
-    # shard
-    # config
-    # replica
+    # - mongos
+    # - shard
+    # - config
+    # - replica
     type = resource.Body('type')
     #: Number of vCPUs.
     vcpus = resource.Body('vcpus')
@@ -31,53 +41,3 @@ class FlavorsSpec(resource.Resource):
     spec_code = resource.Body('spec_code')
     #: Indicates the status of specifications in an AZ.
     az_status = resource.Body('az_status')
-
-
-class Flavor(resource.Resource):
-    base_path = '/flavors'
-
-    # capabilities
-    allow_list = True
-
-    region = resource.URI('region')
-    #: Storage engine
-    engine_name = resource.URI('engine_name')
-
-    # Properties
-    #: specification
-    flavors = resource.Body('flavors', type=FlavorsSpec)
-
-    @classmethod
-    def list(cls, session, paginated=True, base_path=None,
-             allow_unknown_params=False, **params):
-
-        if not cls.allow_list:
-            raise exceptions.MethodNotSupported(cls, "list")
-        session = cls._get_session(session)
-        microversion = cls._get_microversion_for_list(session)
-
-        if base_path is None:
-            base_path = cls.base_path
-
-        query_params = {
-            'region': params.get('region', 'eu-de'),
-            'engine_name': params.get('engine_name', 'DDS-Community')
-        }
-
-        response = session.get(
-            base_path,
-            headers={"Accept": "application/json"},
-            params=query_params,
-            microversion=microversion)
-        exceptions.raise_from_response(response)
-        resources = response.json()
-
-        if not isinstance(resources, list):
-            resources = [resources]
-
-        for raw_resource in resources:
-            value = cls.existing(
-                microversion=microversion,
-                connection=session._get_connection(),
-                **raw_resource)
-            yield value

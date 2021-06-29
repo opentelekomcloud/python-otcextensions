@@ -32,7 +32,9 @@ class TestFlavor(base.TestCase):
         self.assertFalse(sot.allow_delete)
         self.assertFalse(sot.allow_commit)
         self.assertDictEqual({'limit': 'limit',
-                              'marker': 'marker'},
+                              'marker': 'marker',
+                              'region': 'region',
+                              'engine_name': 'engine_name'},
                              sot._query_mapping._mapping)
 
     def test_make_it(self):
