@@ -145,5 +145,4 @@ class BaseASTest(base.BaseFunctionalTest):
         except exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
-        finally:
-            super(BaseASTest, self).tearDown()
+        super(BaseASTest, self).tearDown()

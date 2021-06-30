@@ -21,6 +21,7 @@ from otcextensions.tests.functional.sdk.auto_scaling.v1 import base
 
 _logger = _log.setup_logging('openstack')
 
+
 class TestInstance(base.BaseASTest):
 
     UUID = uuid.uuid4().hex[:9]
@@ -83,11 +84,13 @@ class TestInstance(base.BaseASTest):
         return self.conn.auto_scaling.wait_for_group(as_group)
 
     def _delete_as_group(self, as_group):
+        timeout = 2 * int(os.environ.get('OS_TEST_TIMEOUT'))
         self.conn.auto_scaling.pause_group(as_group)
         self.conn.auto_scaling.delete_group(
             group=as_group
         )
-        self.conn.auto_scaling.wait_for_delete_group(as_group)
+        self.conn.auto_scaling.wait_for_delete_group(
+            group=as_group, wait=timeout)
 
     def _wait_for_instance(self, as_group):
         timeout = int(os.environ.get('OS_TEST_TIMEOUT'))
@@ -102,7 +105,7 @@ class TestInstance(base.BaseASTest):
                 return self.conn.auto_scaling.wait_for_instance(instances[0])
 
     def _delete_instance(self, instance):
-        timeout = int(os.environ.get('OS_TEST_TIMEOUT'))
+        timeout = 2 * int(os.environ.get('OS_TEST_TIMEOUT'))
         self.conn.auto_scaling.remove_instance(
             instance=instance,
             delete_instance=True
@@ -113,16 +116,12 @@ class TestInstance(base.BaseASTest):
         )
 
     def _initialize_as_group_with_instance(self):
-        router = self.conn.network.get_router(self.infra.get("router_id"))
-        network = self.conn.network.get_network(self.infra.get("network_id"))
-        sec_group = self.conn.network.get_security_group(
-            self.infra.get("sec_group_id")
-        )
         self.as_config = self._create_as_config(
-            self._get_image_id(), sec_group.id
+            self._get_image_id(), self.infra.get("sec_group_id")
         )
         self.as_group = self._create_as_group(
-            self.as_config.id, router.id, network.id
+            self.as_config.id, self.infra.get("router_id"),
+            self.infra.get("network_id")
         )
         self.as_instance = self._wait_for_instance(
             self.as_group
@@ -144,11 +143,9 @@ class TestInstance(base.BaseASTest):
         try:
             self._deinitialize_as_group_with_instance()
         except exceptions.SDKException as e:
-            _logger.warning('Got exception during clearing '
-                                         'resources %s'
+            _logger.warning('Got exception during clearing resources %s'
                             % e.message)
-        finally:
-            super(TestInstance, self).tearDown()
+        super(TestInstance, self).tearDown()
 
     def test_find_instance_by_id(self):
         result = self.conn.auto_scaling.find_instance(
