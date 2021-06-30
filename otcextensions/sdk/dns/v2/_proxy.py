@@ -305,3 +305,46 @@ class Proxy(proxy.Proxy):
         # concat `region:floating_ip_id` as id
         attrs = {'ptrdname': None}
         return self._update(_fip.FloatingIP, floating_ip, **attrs)
+
+    def _get_cleanup_dependencies(self):
+        # DNS may depend on floating ip
+        return {
+            'dns': {
+                'before': ['network']
+            }
+        }
+
+    def _service_cleanup(self, dry_run=True, client_status_queue=False,
+                         identified_resources=None,
+                         filters=None, resource_evaluation_fn=None):
+        # Delete all public zones
+        for obj in self.zones():
+            self._service_cleanup_del_res(
+                self.delete_zone,
+                obj,
+                dry_run=dry_run,
+                client_status_queue=client_status_queue,
+                identified_resources=identified_resources,
+                filters=filters,
+                resource_evaluation_fn=resource_evaluation_fn)
+        # Delete all private zones
+        for obj in self.zones(type='private'):
+            self._service_cleanup_del_res(
+                self.delete_zone,
+                obj,
+                dry_run=dry_run,
+                client_status_queue=client_status_queue,
+                identified_resources=identified_resources,
+                filters=filters,
+                resource_evaluation_fn=resource_evaluation_fn)
+        # Unset all floatingIPs
+        # NOTE: FloatingIPs are not cleaned when filters are set
+        for obj in self.floating_ips():
+            self._service_cleanup_del_res(
+                self.unset_floating_ip,
+                obj,
+                dry_run=dry_run,
+                client_status_queue=client_status_queue,
+                identified_resources=identified_resources,
+                filters=filters,
+                resource_evaluation_fn=resource_evaluation_fn)

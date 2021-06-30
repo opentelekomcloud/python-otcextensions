@@ -28,13 +28,14 @@
     merge-mode: squash-merge
     templates:
       - publish-to-pypi
+      - publish-otc-docs-pti
+      - release-notes-jobs
     check:
       jobs:
         - otc-tox-pep8
         - otc-tox-py37
         - otc-tox-py38
         - otc-tox-py39
-        - otc-tox-docs
         - tox-functional
     check-post:
       jobs:
@@ -44,7 +45,6 @@
         - otc-tox-py37
         - otc-tox-py38
         - otc-tox-pep8
-        - otc-tox-docs
         - tox-functional
         - otce-upload-image
     periodic:

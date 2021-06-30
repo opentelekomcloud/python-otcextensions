@@ -55,12 +55,12 @@ class TestVpcPeering(TestVpcProxy):
         self.verify_update(self.proxy.update_peering, peering.Peering)
 
     def test_set_peering(self):
-        self._verify(
+        self._verify2(
             'otcextensions.sdk.vpc.v2.peering.Peering._set_peering',
             self.proxy.set_peering,
             method_args=[peering.Peering],
             method_kwargs={'set_status': 'accept'},
-            expected_args=['accept']
+            expected_args=[self.proxy, 'accept']
         )
 
 

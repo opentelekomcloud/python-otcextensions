@@ -77,7 +77,6 @@ class TestInstance(base.BaseFunctionalTest):
         self.instances.append(self.instance)
 
     def tearDown(self):
-        super(TestInstance, self).tearDown()
         try:
             for instance in self.instances:
                 if instance.id:
@@ -90,7 +89,9 @@ class TestInstance(base.BaseFunctionalTest):
         except openstack.exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
-        self._deinitialize_network()
+        finally:
+            self._deinitialize_network()
+            super(TestInstance, self).tearDown()
 
     def test_list(self):
         self.all_instances = list(self.conn.dms.instances())

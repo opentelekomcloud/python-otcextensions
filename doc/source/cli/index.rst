@@ -39,5 +39,6 @@ documentation of these services:
    nat
    obs
    rds_v3
+   smn
    volume_backup
    vpc

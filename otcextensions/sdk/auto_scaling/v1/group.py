@@ -96,8 +96,6 @@ class Group(_base.Resource):
     delete_volume = resource.Body('delete_volume', type=bool)
     #: Availability zones
     availability_zones = resource.Body('available_zones')
-    #: Enterprise project ID to which the AS group belongs
-    enterprise_project_id = resource.Body('enterprise_project_id')
     #: Create time of the group
     create_time = resource.Body('create_time')
     #: The priority policy used to select target AZs, valid values include:
