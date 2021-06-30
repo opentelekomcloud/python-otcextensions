@@ -25,7 +25,7 @@ extensions = [
 
 # openstackdocstheme options
 otcdocs_repo = 'opentelekomcloud/python-otcextensions'
-html_last_updated_fmt = '%Y-%m-%d %H:%M'
+otcdocs_bug_project = 'opentelekomcloud/python-otcextensions'
 html_theme = 'otcdocs'
 
 # TODO(shade) Set this to true once the build-openstack-sphinx-docs job is
