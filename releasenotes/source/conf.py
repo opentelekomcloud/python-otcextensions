@@ -92,5 +92,9 @@ latex_documents = [
      u'OpenTelekomCloud', 'manual'),
 ]
 
+html_theme_options = {
+    'display_toc': False,
+}
+
 # Include both the class and __init__ docstrings when describing the class
 autoclass_content = "both"
