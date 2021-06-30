@@ -90,7 +90,7 @@ class TestInstance(base.BaseASTest):
             group=as_group
         )
         self.conn.auto_scaling.wait_for_delete_group(
-            group=as_group,wait=timeout)
+            group=as_group, wait=timeout)
 
     def _wait_for_instance(self, as_group):
         timeout = int(os.environ.get('OS_TEST_TIMEOUT'))
