@@ -19,3 +19,10 @@ Datastore Operations
 .. autoclass:: otcextensions.sdk.dds.v3._proxy.Proxy
   :noindex:
   :members: datastores, datastore_types
+
+Flavor Operations
+^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.dds.v3._proxy.Proxy
+  :noindex:
+  :members: flavors
