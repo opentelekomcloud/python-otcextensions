@@ -84,11 +84,13 @@ class TestInstance(base.BaseASTest):
         return self.conn.auto_scaling.wait_for_group(as_group)
 
     def _delete_as_group(self, as_group):
+        timeout = 2 * int(os.environ.get('OS_TEST_TIMEOUT'))
         self.conn.auto_scaling.pause_group(as_group)
         self.conn.auto_scaling.delete_group(
             group=as_group
         )
-        self.conn.auto_scaling.wait_for_delete_group(as_group)
+        self.conn.auto_scaling.wait_for_delete_group(
+            group=as_group,wait=timeout)
 
     def _wait_for_instance(self, as_group):
         timeout = int(os.environ.get('OS_TEST_TIMEOUT'))
@@ -103,7 +105,7 @@ class TestInstance(base.BaseASTest):
                 return self.conn.auto_scaling.wait_for_instance(instances[0])
 
     def _delete_instance(self, instance):
-        timeout = int(os.environ.get('OS_TEST_TIMEOUT'))
+        timeout = 2 * int(os.environ.get('OS_TEST_TIMEOUT'))
         self.conn.auto_scaling.remove_instance(
             instance=instance,
             delete_instance=True
