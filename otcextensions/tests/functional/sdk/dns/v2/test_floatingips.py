@@ -33,11 +33,11 @@ class TestFloatingIps(TestDns):
         )
 
     def tearDown(self):
-        super(TestFloatingIps, self).tearDown()
         self.client.unset_floating_ip(
             floating_ip=self.floatingip,
         )
         self.conn.network.delete_ip(self.floating_ip)
+        super(TestFloatingIps, self).tearDown()
 
     def test_list_floatingips(self):
         ips = self.client.floating_ips()
