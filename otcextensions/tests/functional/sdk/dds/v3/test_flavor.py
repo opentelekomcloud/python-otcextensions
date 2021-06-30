@@ -9,16 +9,15 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import _log
-
 from otcextensions.tests.functional.sdk.dds import TestDds
 
-_logger = _log.setup_logging('openstack')
 
+class TestFlavors(TestDds):
 
-class TestService(TestDds):
+    def setUp(self):
+        super(TestFlavors, self).setUp()
 
-    def test_initialize(self):
-        client = self.client
-
-        self.assertIsNotNone(client)
+    def test_list_flavors(self):
+        flavors = list(self.client.flavors(
+            region='eu-de', engine_name='DDS-Community'))
+        self.assertIsNotNone(flavors)
