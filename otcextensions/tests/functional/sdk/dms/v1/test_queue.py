@@ -40,8 +40,7 @@ class TestQueue(base.BaseFunctionalTest):
         except exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
-        finally:
-            super(TestQueue, self).tearDown()
+        super(TestQueue, self).tearDown()
 
     def test_list(self):
         self.queues = list(self.conn.dms.queues())

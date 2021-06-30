@@ -35,8 +35,7 @@ class TestZone(TestDns):
         except openstack.exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
-        finally:
-            super(TestZone, self).tearDown()
+        super(TestZone, self).tearDown()
 
     def _create_zone(self, zone_name=None, router_id=None, zone_type='public'):
         if zone_type != 'public' and router_id:

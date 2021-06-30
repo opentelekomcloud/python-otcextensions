@@ -56,8 +56,7 @@ class TestMessage(base.BaseFunctionalTest):
         except openstack.exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
-        finally:
-            super(TestMessage, self).tearDown()
+        super(TestMessage, self).tearDown()
 
     def test_list(self):
         self.queues = list(self.conn.dms.queues())

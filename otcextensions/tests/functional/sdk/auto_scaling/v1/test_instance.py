@@ -143,8 +143,7 @@ class TestInstance(base.BaseASTest):
         except exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
-        finally:
-            super(TestInstance, self).tearDown()
+        super(TestInstance, self).tearDown()
 
     def test_find_instance_by_id(self):
         result = self.conn.auto_scaling.find_instance(
