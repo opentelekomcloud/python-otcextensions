@@ -13,6 +13,7 @@ from openstack import proxy
 
 from otcextensions.sdk.dds.v3 import datastore as _datastore
 from otcextensions.sdk.dds.v3 import flavor as _flavor
+from otcextensions.sdk.dds.v3 import instance as _instance
 
 
 class Proxy(proxy.Proxy):
@@ -59,3 +60,15 @@ class Proxy(proxy.Proxy):
             region=region,
             engine_name=engine_name
         )
+
+    # ======= Instance =======
+    def instances(self, **params):
+        """Return a generator of instances
+
+        :param dict params: Optional query parameters to be sent to limit
+            the instances being returned.
+
+        :returns: A generator of instance objects.
+        :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+        """
+        return self._list(_instance.Instance, **params)

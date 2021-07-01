@@ -9,3 +9,4 @@ DDS v3
 
    v3/datastore
    v3/flavor
+   v3/instance
