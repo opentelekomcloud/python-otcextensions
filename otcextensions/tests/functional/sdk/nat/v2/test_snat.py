@@ -74,7 +74,7 @@ class TestSnat(base.BaseFunctionalTest):
             self.conn.nat.wait_for_gateway(TestSnat.gateway)
             self.assertIsNotNone(TestSnat.gateway)
         if not TestSnat.floating_ip:
-            admin_external_net = self.conn.find_network(
+            admin_external_net = self.conn.network.find_network(
                 name_or_id='admin_external_net')
             self.assertIsNone(admin_external_net)
             TestSnat.floating_ip = self.conn.network.create_ip(
@@ -83,7 +83,8 @@ class TestSnat(base.BaseFunctionalTest):
     def _destroy_network(self):
         if TestSnat.gateway:
             self.conn.nat.delete_gateway(gateway=TestSnat.gateway)
-            self.conn.nat.wait_for_delete_gateway(TestSnat.gateway)
+            self.conn.nat.wait_for_delete_gateway(TestSnat.gateway,
+                                                  interval=4, wait=500)
             TestSnat.gateway = None
         if TestSnat.floating_ip:
             self.conn.network.delete_ip(TestSnat.floating_ip)

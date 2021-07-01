@@ -84,7 +84,7 @@ class TestDnat(base.BaseFunctionalTest):
             self.conn.nat.wait_for_gateway(TestDnat.gateway)
             self.assertIsNotNone(TestDnat.gateway)
         if not TestDnat.floating_ip:
-            admin_external_net = self.conn.find_network(
+            admin_external_net = self.conn.network.find_network(
                 name_or_id='admin_external_net')
             self.assertIsNone(admin_external_net)
             TestDnat.floating_ip = self.conn.network.create_ip(
