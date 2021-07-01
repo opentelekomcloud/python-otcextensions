@@ -86,7 +86,7 @@ class TestDnat(base.BaseFunctionalTest):
         if not TestDnat.floating_ip:
             admin_external_net = self.conn.network.find_network(
                 name_or_id='admin_external_net')
-            self.assertIsNone(admin_external_net)
+            self.assertIsNotNone(admin_external_net)
             TestDnat.floating_ip = self.conn.network.create_ip(
                 floating_network_id=admin_external_net.id)
         image = self.conn.compute.find_image(self.image)
@@ -170,8 +170,12 @@ class TestDnat(base.BaseFunctionalTest):
         self.assertEqual(dnat_rule.id, TestDnat.dnat_rule.id)
 
     def test_04_delete_dnat_rule(self):
-        self.conn.nat.delete_dnat_rule(dnat=TestDnat.dnat_rule)
-        self.conn.nat.wait_for_delete_dnat(TestDnat.dnat_rule)
+        try:
+            self.conn.nat.delete_dnat_rule(dnat=TestDnat.dnat_rule)
+            self.conn.nat.wait_for_delete_dnat(TestDnat.dnat_rule)
+        except AttributeError:
+            self._destroy_network()
+            raise
         self._destroy_network()
         try:
             dnat_rule = self.conn.nat.get_dnat_rule(TestDnat.dnat_rule.id)

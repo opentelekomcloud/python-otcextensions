@@ -76,7 +76,7 @@ class TestSnat(base.BaseFunctionalTest):
         if not TestSnat.floating_ip:
             admin_external_net = self.conn.network.find_network(
                 name_or_id='admin_external_net')
-            self.assertIsNone(admin_external_net)
+            self.assertIsNotNone(admin_external_net)
             TestSnat.floating_ip = self.conn.network.create_ip(
                 floating_network_id=admin_external_net.id)
 
@@ -138,9 +138,12 @@ class TestSnat(base.BaseFunctionalTest):
         self.assertEqual(snat_rule.id, TestSnat.snat_rule.id)
 
     def test_03_delete_snat_rule(self):
-        self.conn.nat.delete_snat_rule(snat=TestSnat.snat_rule)
-        self.conn.nat.wait_for_delete_snat(
-            TestSnat.snat_rule, interval=5, wait=250)
+        try:
+            self.conn.nat.delete_snat_rule(snat=TestSnat.snat_rule)
+            self.conn.nat.wait_for_delete_snat(TestSnat.snat_rule, interval=5, wait=250)
+        except AttributeError:
+            self._destroy_network()
+            raise
         self._destroy_network()
         try:
             snat_rule = self.conn.nat.get_snat_rule(TestSnat.snat_rule.id)
