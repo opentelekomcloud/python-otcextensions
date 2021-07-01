@@ -24,7 +24,6 @@ class TestDnat(base.BaseFunctionalTest):
     port = None
     uuid_v4 = uuid.uuid4().hex[:8]
     port_name = uuid_v4 + 'test-dnat-port'
-    admin_external_net_id = "0a2228f2-7f8a-45f1-8e09-9039e1d09975"
     network_info = None
     gateway = None
     server = None
@@ -85,8 +84,11 @@ class TestDnat(base.BaseFunctionalTest):
             self.conn.nat.wait_for_gateway(TestDnat.gateway)
             self.assertIsNotNone(TestDnat.gateway)
         if not TestDnat.floating_ip:
+            admin_external_net = self.conn.find_network(
+                name_or_id='admin_external_net')
+            self.assertIsNone(admin_external_net)
             TestDnat.floating_ip = self.conn.network.create_ip(
-                floating_network_id=self.admin_external_net_id)
+                floating_network_id=admin_external_net.id)
         image = self.conn.compute.find_image(self.image)
         flavor = self.conn.compute.find_flavor(self.flavor)
         if not TestDnat.keypair:

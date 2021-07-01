@@ -74,8 +74,11 @@ class TestSnat(base.BaseFunctionalTest):
             self.conn.nat.wait_for_gateway(TestSnat.gateway)
             self.assertIsNotNone(TestSnat.gateway)
         if not TestSnat.floating_ip:
+            admin_external_net = self.conn.find_network(
+                name_or_id='admin_external_net')
+            self.assertIsNone(admin_external_net)
             TestSnat.floating_ip = self.conn.network.create_ip(
-                floating_network_id="0a2228f2-7f8a-45f1-8e09-9039e1d09975")
+                floating_network_id=admin_external_net.id)
 
     def _destroy_network(self):
         if TestSnat.gateway:
