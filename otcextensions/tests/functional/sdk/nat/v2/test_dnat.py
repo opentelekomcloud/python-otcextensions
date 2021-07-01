@@ -173,7 +173,7 @@ class TestDnat(base.BaseFunctionalTest):
         try:
             self.conn.nat.delete_dnat_rule(dnat=TestDnat.dnat_rule)
             self.conn.nat.wait_for_delete_dnat(TestDnat.dnat_rule)
-        except AttributeError:
+        except openstack.exceptions.InvalidRequest:
             self._destroy_network()
             raise
         self._destroy_network()

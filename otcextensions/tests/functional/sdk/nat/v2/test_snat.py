@@ -140,8 +140,9 @@ class TestSnat(base.BaseFunctionalTest):
     def test_03_delete_snat_rule(self):
         try:
             self.conn.nat.delete_snat_rule(snat=TestSnat.snat_rule)
-            self.conn.nat.wait_for_delete_snat(TestSnat.snat_rule, interval=5, wait=250)
-        except AttributeError:
+            self.conn.nat.wait_for_delete_snat(TestSnat.snat_rule,
+                                               interval=5, wait=250)
+        except openstack.exceptions.InvalidRequest:
             self._destroy_network()
             raise
         self._destroy_network()
