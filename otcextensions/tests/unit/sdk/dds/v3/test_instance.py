@@ -80,7 +80,7 @@ class TestFlavor(base.TestCase):
             'subnet_id': 'subnet_id',
             'limit': 'limit',
             'offset': 'offset'},
-        sot._query_mapping._mapping)
+            sot._query_mapping._mapping)
 
     def test_make_it(self):
         sot = instance.Instance(**EXAMPLE)

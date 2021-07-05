@@ -158,6 +158,6 @@ class TestInstance(TestDds):
         instance = None
         try:
             instance = self.client.delete_instance(instance=self.instance)
-        except:
+        except Exception:
             self.destroy_network(self.network)
         self.assertIsNotNone(instance)
