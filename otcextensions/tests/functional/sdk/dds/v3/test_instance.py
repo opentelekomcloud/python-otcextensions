@@ -26,9 +26,9 @@ class TestInstance(TestDds):
         cidr = '192.168.0.0/16'
         ipv4 = 4
         uuid_v4 = uuid.uuid4().hex[:8]
-        router_name = 'sdk-dds-test-add-router-' + uuid_v4
-        net_name = 'sdk-dds-test-add-net-' + uuid_v4
-        subnet_name = 'sdk-dds-test-add-subnet-' + uuid_v4
+        router_name = 'sdk-dds-test-router-' + uuid_v4
+        net_name = 'sdk-dds-test-net-' + uuid_v4
+        subnet_name = 'sdk-dds-test-subnet-' + uuid_v4
 
         network = self.conn.network.create_network(name=net_name)
         self.assertEqual(net_name, network.name)
