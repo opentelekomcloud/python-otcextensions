@@ -85,5 +85,6 @@ class TestFlavor(base.TestCase):
     def test_make_it(self):
         sot = instance.Instance(**EXAMPLE)
         self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['datastore'], sot.datastore)
         self.assertEqual(EXAMPLE['flavor'], sot.flavor)
+        self.assertEqual(EXAMPLE['subnet_id'], sot.subnet_id)
+        self.assertEqual(EXAMPLE['security_group_id'], sot.security_group_id)
