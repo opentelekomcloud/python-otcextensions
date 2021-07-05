@@ -11,7 +11,6 @@
 # under the License.
 from urllib import parse
 
-
 from openstack import proxy
 from openstack import resource
 
