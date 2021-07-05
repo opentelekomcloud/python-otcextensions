@@ -1,0 +1,4 @@
+---
+fixes:
+  - |
+    Fixes metric naming for the CES service.
