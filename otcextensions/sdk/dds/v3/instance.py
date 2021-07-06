@@ -140,63 +140,29 @@ class Instance(resource.Resource):
         """Get a remote resource based on this instance.
 
         :param session: The session to use for making this request.
-        :type session: :class:`~keystoneauth1.adapter.Adapter`
+            :type session: :class:`~keystoneauth1.adapter.Adapter`
         :param boolean requires_id: A boolean indicating whether resource ID
-                                    should be part of the requested URI.
+            should be part of the requested URI.
         :param str base_path: Base part of the URI for fetching resources, if
-                              different from
-                              :data:`~openstack.resource.Resource.base_path`.
+            different from :data:`~openstack.resource.Resource.base_path`.
         :param str error_message: An Error message to be returned if
-                                  requested object does not exist.
+            requested object does not exist.
         :param dict params: Additional parameters that can be consumed.
+
         :return: This :class:`Resource` instance.
         :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
-                 :data:`Resource.allow_fetch` is not set to ``True``.
+            :data:`Resource.allow_fetch` is not set to ``True``.
         :raises: :exc:`~openstack.exceptions.ResourceNotFound` if
-                 the resource was not found.
+            the resource was not found.
         """
-        if not self.allow_fetch:
-            raise exceptions.MethodNotSupported(self, "fetch")
+        data = self.list(session, paginated=False, id=self.id)
+        result = self._get_one_match(self.id, data)
+        if not result:
+            raise exceptions.ResourceNotFound(
+                "No Instance found for %s" % (self.id))
 
-        params = {
-            'id': self.id,
-            'name': self.name,
-            'mode': self.mode,
-            'datastore_type': self.datastore_type,
-            'vpc_id': self.vpc_id,
-            'subnet_id': self.subnet_id,
-        }
-        query_params = self._query_mapping._transpose(params, self)
-        url = utils.urljoin(self.base_path) % params
-
-        session = self._get_session(session)
-        microversion = self._get_microversion_for(session, 'fetch')
-        response = session.get(
-            url, microversion=microversion,
-            headers={"Accept": "application/json"},
-            params=query_params.copy())
-
-        exceptions.raise_from_response(response)
-
-        try:
-            body = response.json()
-            if self.resources_key in body:
-                body = body[self.resources_key]
-
-            if not len(body) == 1:
-                raise exceptions.SDKException('Not a single result returned')
-
-            body = body[0]
-            body_attrs = self._consume_body_attrs(body)
-            self._body.attributes.update(body_attrs)
-            self._body.clean()
-
-        except ValueError:
-            # Server returned not parse-able response (202, 204, etc)
-            # Do simply nothing
-            pass
-
-        dict.update(self, self.to_dict())
+        self._body.attributes.update(result._body.attributes)
+        self._body.clean()
 
         return self
 

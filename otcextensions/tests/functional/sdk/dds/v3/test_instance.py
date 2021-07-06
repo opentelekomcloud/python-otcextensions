@@ -146,7 +146,7 @@ class TestInstance(TestDds):
         self.assertIsNotNone(instances)
 
     def test_03_get_instance(self):
-        instance = self.client.get_instance(id=self.instance.id)
+        instance = self.client.get_instance(self.instance.id)
         self.assertIsNotNone(instance)
 
     def test_04_find_instance(self):

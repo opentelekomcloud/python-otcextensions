@@ -94,7 +94,7 @@ class Proxy(proxy.Proxy):
             ignore_missing=ignore_missing,
         )
 
-    def get_instance(self, **attrs):
+    def get_instance(self, instance):
         """Get a single instance
 
         :param instance: The value can be either the ID of an instance or a
@@ -102,7 +102,7 @@ class Proxy(proxy.Proxy):
 
         :returns: One :class:`~otcextensions.sdk.dds.v3.instance.Instance`
         """
-        return self._get(_instance.Instance, **attrs)
+        return self._get(_instance.Instance, instance)
 
     def find_instance(self, name_or_id, ignore_missing=True):
         """Find a single instance
