@@ -11,7 +11,6 @@
 # under the License.
 from openstack import exceptions
 from openstack import resource
-from openstack import utils
 
 
 class FlavorSpec(resource.Resource):
