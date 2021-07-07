@@ -26,3 +26,11 @@ Flavor Operations
 .. autoclass:: otcextensions.sdk.dds.v3._proxy.Proxy
   :noindex:
   :members: flavors
+
+Instance Operations
+^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.dds.v3._proxy.Proxy
+  :noindex:
+  :members: create_instance, delete_instance, get_instance,
+            find_instance, instances
