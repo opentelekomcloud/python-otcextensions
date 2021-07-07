@@ -22,6 +22,7 @@ from otcextensions.common import exc
 
 from otcextensions.sdk.cloud import rds as _rds
 from otcextensions.sdk.cloud import cce as _cce
+from otcextensions.sdk.cloud import dds as _dds
 
 
 _logger = _log.setup_logging('openstack')
@@ -343,6 +344,7 @@ def load(conn, **kwargs):
 
     extend_instance(conn, _rds.RdsMixin)
     extend_instance(conn, _cce.CceMixin)
+    extend_instance(conn, _dds.DdsMixin)
 
     return None
 
