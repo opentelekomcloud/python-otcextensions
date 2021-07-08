@@ -13,13 +13,7 @@ from openstack import exceptions
 
 
 class DdsMixin:
-    def create_dds_instance(
-            self, name,
-            wait=True,
-            wait_timeout=600,
-            wait_interval=5,
-            **kwargs
-    ):
+    def create_dds_instance(self, name, **kwargs):
         """Create DDS instance with all the checks
 
         :param str name: dict(required=True, type=str),
@@ -38,9 +32,6 @@ class DdsMixin:
         :param str backup_timeframe: dict(type=str),
         :param str backup_keepdays: dict(type=str),
         :param str ssl_option: dict(type=str),
-        :param bool wait: dict(type=bool, default=True),
-        :param int wait_timeout: dict(type=int, default=180)
-        :param int wait_interval: Check interval.
 
         :returns: The results of instance creation
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
@@ -63,13 +54,6 @@ class DdsMixin:
         ssl_option = kwargs.get('ssl_option')
 
         attrs = {}
-        base_flavor = {
-            "type": "",
-            "num": 1,
-            "storage": "ULTRAHIGH",
-            "size": 10,
-            "spec_code": ""
-        }
         attrs['name'] = name
 
         if datastore_type:
@@ -149,18 +133,20 @@ class DdsMixin:
                         )
                 if 'size' in flavor:
                     if flavor['type'] == 'replica' \
-                            and flavor['size'] not in range(10, 2000):
+                            and not (10 <= flavor['size'] <= 2000):
                         raise exceptions.SDKException(
-                            '`size` value for `replica` is invalid'
+                            '`size` value for `replica` must be'
+                            ' between 10 and 2000 GB.'
                         )
                     elif flavor['type'] == 'config' \
                             and flavor['size'] != 20:
                         raise exceptions.SDKException(
-                            '`size` value for `config` is invalid'
+                            '`size` value for `config` must be 20 GB.'
                         )
-                    elif flavor['size'] not in range(10, 1000):
+                    elif not (10 <= flavor['size'] <= 1000):
                         raise exceptions.SDKException(
-                            '`size` value for `shard` is invalid'
+                            '`size` value for `shard` must be'
+                            ' between 10 and 1000 GB.'
                         )
                 if flavor['spec_code'] not in flavors_specs:
                     raise exceptions.SDKException(
@@ -182,44 +168,19 @@ class DdsMixin:
         if ssl_option:
             attrs['ssl_option'] = ssl_option
 
-        if wait_interval and not wait:
-            raise exceptions.SDKException(
-                '`wait-interval` is only valid with `wait`'
-            )
-
         obj = self.dds.create_instance(**attrs)
-
-        if obj.job_id and wait:
-            wait_args = {}
-            if wait_interval:
-                wait_args['interval'] = wait_interval
-            if wait_timeout:
-                wait_args['wait'] = wait_timeout
-
         obj = self.dds.get_instance(obj.id)
 
         return obj
 
-    def delete_dds_instance(
-            self, instance, wait=True, wait_timeout=180, wait_interval=5
-    ):
+    def delete_dds_instance(self, instance):
         """Delete DDS instance
 
-        :param str instance: Name, ID or instance
-        :param bool wait: dict(type=bool, default=True),
-        :param int wait_timeout: dict(type=int, default=180)
-        :param int wait_interval: Check interval.
+        :param str instance: Name or ID of instance
         """
 
-        inst = self.dds.find_instance(instance, ignore_missing=False)
-
-        obj = self.dds.delete_instance(inst.id)
-
-        if obj.job_id and wait:
-            wait_args = {}
-            if wait_interval:
-                wait_args['interval'] = wait_interval
-            if wait_timeout:
-                wait_args['wait'] = wait_timeout
-
-            self.dds.wait_for_job(obj.job_id, **wait_args)
+        inst = self.dds.find_instance(
+            name_or_id=instance,
+            ignore_missing=False
+        )
+        self.dds.delete_instance(inst.id)

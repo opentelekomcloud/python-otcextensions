@@ -133,6 +133,12 @@ class Instance(resource.Resource):
     #: Specifies whether to enable SSL.
     #: *Type:string*
     ssl_option = resource.Body('ssl_option')
+    #: Async job id
+    #: *Type:uuid*
+    job_id = resource.Body('job_id')
+    #: Instance status.
+    #: *Type:string*
+    status = resource.Body('status')
 
     def fetch(self, session, requires_id=True,
               base_path=None, error_message=None, **params):
