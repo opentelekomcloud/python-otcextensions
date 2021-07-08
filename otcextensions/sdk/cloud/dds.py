@@ -26,7 +26,7 @@ class DdsMixin:
         :param str datastore_type: dict(type=str, default='DDS-Community'),
         :param str datastore_version: dict(type=str),
         :param str datastore_storage_engine: dict(type=str, default='wiredTiger'),
-        :param str region: dict(type=str, choices=['eu-de, eu-nl'], default='eu-de'),
+        :param str region: dict(type=str, choices=['eu-de', 'eu-nl'], default='eu-de'),
         :param str availability_zone: dict(type=str),
         :param str router: dict(type=str),
         :param str network: dict(type=str),
@@ -34,10 +34,13 @@ class DdsMixin:
         :param str password: dict(type=str, no_log=True),
         :param str disk_encryption_id: dict(type=str),
         :param str mode: choices=['Sharding', 'ReplicaSet']
-        :param str flavor: dict(required=True, type=list, elements=dict),
+        :param str flavors: dict(required=True, type=list, elements=dict),
         :param str backup_timeframe: dict(type=str),
         :param str backup_keepdays: dict(type=str),
         :param str ssl_option: dict(type=str),
+        :param bool wait: dict(type=bool, default=True),
+        :param int wait_timeout: dict(type=int, default=180)
+        :param int wait_interval: Check interval.
 
         :returns: The results of instance creation
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
@@ -54,12 +57,19 @@ class DdsMixin:
         password = kwargs.get('password')
         disk_encryption_id = kwargs.get('disk_encryption_id')
         mode = kwargs.get('mode')
-        flavor = kwargs.get('flavor')
+        flavors = kwargs.get('flavors')
         backup_timeframe = kwargs.get('backup_timeframe')
         backup_keepdays = kwargs.get('backup_keepdays')
         ssl_option = kwargs.get('ssl_option')
 
         attrs = {}
+        base_flavor = {
+            "type": "",
+            "num": 1,
+            "storage": "ULTRAHIGH",
+            "size": 10,
+            "spec_code": ""
+        }
         attrs['name'] = name
 
         if datastore_type:
@@ -112,9 +122,51 @@ class DdsMixin:
                 )
             attrs['mode'] = mode
 
-        if flavor:
-            # need to add
-            print()
+        flavors_ref = list(self.dds.flavors(
+            region=region,
+            engine_name=datastore_type)
+        )
+        flavors_specs = [flavor.spec_code for flavor in flavors_ref]
+        if flavors:
+            for flavor in flavors:
+                if flavor['type'] in ['mongos', 'shard'] \
+                        and flavor['num'] not in range(2, 16):
+                    raise exceptions.SDKException(
+                        '`num` value must be in ranges from 2 to 16 '
+                        'for mongos and shard'
+                    )
+                if flavor['type'] == ['config', 'replica'] \
+                        and flavor['num'] != 1:
+                    raise exceptions.SDKException(
+                        '`num` value must be 1 '
+                        'for config and replica'
+                    )
+                if flavor['type'] == 'mongos':
+                    if all(k in flavor for k in ('storage', 'size')):
+                        raise exceptions.SDKException(
+                            '`storage` and `size` parameters'
+                            ' is invalid for the mongos nodes'
+                        )
+                if 'size' in flavor:
+                    if flavor['type'] == 'replica' \
+                            and flavor['size'] not in range(10, 2000):
+                        raise exceptions.SDKException(
+                            '`size` value for `replica` is invalid'
+                        )
+                    elif flavor['type'] == 'config' \
+                            and flavor['size'] != 20:
+                        raise exceptions.SDKException(
+                            '`size` value for `config` is invalid'
+                        )
+                    elif flavor['size'] not in range(10, 1000):
+                        raise exceptions.SDKException(
+                            '`size` value for `shard` is invalid'
+                        )
+                if flavor['spec_code'] not in flavors_specs:
+                    raise exceptions.SDKException(
+                        '`spec_code` not valid'
+                    )
+            attrs['flavor'] = flavors
 
         if backup_keepdays and backup_timeframe:
             backup_attrs = {}
