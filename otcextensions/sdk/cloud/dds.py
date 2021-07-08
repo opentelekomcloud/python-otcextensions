@@ -184,3 +184,5 @@ class DdsMixin:
             ignore_missing=False
         )
         self.dds.delete_instance(inst.id)
+
+        return None
