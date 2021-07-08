@@ -25,11 +25,11 @@ _logger = _log.setup_logging('openstack')
 class BaseASTest(base.BaseFunctionalTest):
 
     UUID = uuid.uuid4().hex[:9]
-    NETWORK_NAME = "test-network-" + UUID
-    SUBNET_NAME = "test-subnet-" + UUID
-    ROUTER_NAME = "test-router-" + UUID
-    SG_NAME = "test-sec-group-" + UUID
-    KP_NAME = "test-kp-" + UUID
+    NETWORK_NAME = "test-as-network-" + UUID
+    SUBNET_NAME = "test-as-subnet-" + UUID
+    ROUTER_NAME = "test-as-router-" + UUID
+    SG_NAME = "test-as-sec-group-" + UUID
+    KP_NAME = "test-as-kp-" + UUID
     IP_VERSION = 4
     CIDR = "192.168.0.0/16"
 
@@ -145,4 +145,5 @@ class BaseASTest(base.BaseFunctionalTest):
         except exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
-        super(BaseASTest, self).tearDown()
+        finally:
+            super(BaseASTest, self).tearDown()

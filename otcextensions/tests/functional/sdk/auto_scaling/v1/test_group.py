@@ -63,7 +63,22 @@ class TestGroup(base.BaseASTest):
             config=as_config
         )
 
-    def _create_as_group(self, router_id, network_id, min_instance_number=0,
+    def _wait_for_instances(self, as_group, timeout, desire_instance_number=0):
+        for count in utils.iterate_timeout(
+                timeout=timeout,
+                message="Timeout waiting for instance"
+        ):
+            instances = list(self.conn.auto_scaling.instances(
+                group=as_group
+            ))
+            if (len(instances) == desire_instance_number and
+                    [instance.id for instance in instances if instance.id]):
+                for instance in instances:
+                    self.conn.auto_scaling.wait_for_instance(instance=instance)
+                return
+
+    def _create_as_group(self, router_id, network_id,
+                         timeout, min_instance_number=0,
                          max_instance_number=1, desire_instance_number=0,
                          as_config=None):
         group_attrs = {
@@ -79,94 +94,119 @@ class TestGroup(base.BaseASTest):
         if as_config:
             group_attrs["scaling_configuration_id"] = as_config.id
         as_group = self.conn.auto_scaling.create_group(**group_attrs)
-        if as_config:
-            self.conn.auto_scaling.resume_group(as_group)
-        return as_group
+        self.conn.auto_scaling.resume_group(group = as_group)
+        if desire_instance_number > 0:
+            self._wait_for_instances(
+                as_group=as_group, timeout=timeout,
+                desire_instance_number=desire_instance_number
+            )
+        return self.conn.auto_scaling.wait_for_group(as_group)
 
-    def _delete_as_group(self, as_group, force_delete=False):
+    def _delete_instances(self, as_group, timeout):
+        try:
+            instances = list(self.conn.auto_scaling.instances(group=as_group))
+            if instances:
+                for instance in instances:
+                    self.conn.auto_scaling.remove_instance(
+                        instance=instance,
+                        delete_instance=True
+                    )
+                    self.conn.auto_scaling.wait_for_delete_instance(
+                        instance=instance, wait=timeout
+                    )
+                return
+        except exceptions.SDKException as e:
+            _logger.warning(
+                'Got exception during getting as instances %s' % e.message
+            )
+            print(e)
+
+    def _delete_as_group(self, as_group, timeout, force_delete=False):
+        self.conn.auto_scaling.pause_group(as_group)
+        if not force_delete:
+            self._delete_instances(as_group=as_group, timeout=timeout)
         self.conn.auto_scaling.delete_group(
             group=as_group,
             force_delete=force_delete
         )
-        return self.conn.auto_scaling.wait_for_delete_group(as_group)
-
-    def _wait_for_instances(self, as_group, desire_instance_number=0):
-        timeout = int(os.environ.get('OS_TEST_TIMEOUT'))
-        for count in utils.iterate_timeout(
-                timeout=timeout,
-                message="Timeout waiting for instance"
-        ):
-            instances = list(self.conn.auto_scaling.instances(
-                group=as_group
-            ))
-            if (len(instances) == desire_instance_number and
-                    [instance.id for instance in instances if instance.id]):
-                for instance in instances:
-                    self.conn.auto_scaling.wait_for_instance(instance)
-                return
-
-    def _delete_instance(self, instance):
-        timeout = int(os.environ.get('OS_TEST_TIMEOUT'))
-        self.conn.auto_scaling.remove_instance(
-            instance=instance,
-            delete_instance=True
-        )
-        self.conn.auto_scaling.wait_for_delete_instance(
-            instance=instance,
+        self.conn.auto_scaling.wait_for_delete_group(
+            group=as_group,
+            interval=5,
             wait=timeout
         )
 
-    def _delete_instances(self, as_group):
-        instances = list(self.conn.auto_scaling.instances(
-            group=as_group
-        ))
-        for instance in instances:
-            self._delete_instance(instance)
-
     def _deinitialize_as_group(self):
+        timeout = int(os.environ.get('OS_TEST_TIMEOUT'))
         if self.as_group:
-            instances = list(self.conn.auto_scaling.instances(
-                group=self.as_group)
+            self._delete_as_group(
+                as_group=self.as_group, timeout=timeout, force_delete=True
             )
-            force_delete = False
-            if len(instances) > 0:
-                force_delete = True
-            self._delete_as_group(self.as_group, force_delete)
         if self.as_config:
-            self._delete_as_config(self.as_config)
+            self._delete_as_config(as_config=self.as_config)
 
     def setUp(self):
         super(TestGroup, self).setUp()
+        self.as_group = None
+        self.as_config = None
 
     def tearDown(self):
         try:
             self._deinitialize_as_group()
         except exceptions.SDKException as e:
-            _logger.warning('Got exception during clearing '
-                                         'resources %s'
+            _logger.warning('Got exception during clearing resources %s'
                             % e.message)
+            print(e)
         finally:
             super(TestGroup, self).tearDown()
 
-    #def test_01_create_as_group(self):
-    #    router = self.conn.network.get_router(self.infra.get("router_id"))
-    #    network = self.conn.network.get_network(self.infra.get("network_id"))
-    #    self.as_group = self._create_as_group(router.id, network.id)
-    #    self.assertIsNotNone(self.as_group)
-    #    self.assertEqual(self.as_group.name, self.AS_GROUP_NAME)
+    def test_01_create_as_group(self):
+        timeout = int(os.environ.get('OS_TEST_TIMEOUT'))
+        self.as_group = self._create_as_group(
+            self.infra.get("router_id"), self.infra.get("network_id"),
+            timeout=timeout
+        )
+        self.assertIsNotNone(self.as_group)
+        self.assertEqual(self.as_group.name, self.AS_GROUP_NAME)
 
     def test_02_create_as_group_with_instance(self):
+        timeout = int(os.environ.get('OS_TEST_TIMEOUT'))
         self.as_config = self._create_as_config(self._get_image_id(),
                                                 self.infra.get(
                                                     "sec_group_id"
                                                 ))
-        self.as_group = self._create_as_group(router_id=self.infra.get("router_id"),
-                                              network_id=self.infra.get("network_id"),
-                                              min_instance_number=0,
-                                              desire_instance_number=1,
-                                              max_instance_number=1,
-                                              as_config=self.as_config)
-        self.conn.auto_scaling.resume_group(self.as_group)
-        self._wait_for_instances(self.as_group, desire_instance_number=1)
+        self.as_group = self._create_as_group(
+            router_id=self.infra.get("router_id"),
+            network_id=self.infra.get("network_id"),
+            timeout=timeout,
+            min_instance_number=0,
+            desire_instance_number=1,
+            max_instance_number=1,
+            as_config=self.as_config
+        )
+        self._wait_for_instances(self.as_group, timeout,
+                                 desire_instance_number=1)
         self.assertIsNotNone(self.as_group)
         self.assertEqual(self.as_group.name, self.AS_GROUP_NAME)
+
+    def test_03_simple_delete_as_group(self):
+        timeout = 2 * int(os.environ.get('OS_TEST_TIMEOUT'))
+        self.as_config = self._create_as_config(self._get_image_id(),
+                                                self.infra.get(
+                                                    "sec_group_id"
+                                                ))
+        self.as_group = self._create_as_group(
+            router_id = self.infra.get("router_id"),
+            network_id = self.infra.get("network_id"),
+            timeout=timeout,
+            min_instance_number = 0,
+            desire_instance_number = 1,
+            max_instance_number = 1,
+            as_config = self.as_config
+        )
+        self.assertIsNotNone(self.as_group)
+        self.assertEqual(self.as_group.name, self.AS_GROUP_NAME)
+        self._delete_as_group(
+            as_group=self.as_group,
+            timeout=timeout,
+            force_delete=False
+        )
