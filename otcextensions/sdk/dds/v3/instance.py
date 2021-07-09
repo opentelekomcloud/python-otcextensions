@@ -53,6 +53,63 @@ class BackupStrategySpec(resource.Resource):
     keep_days = resource.Body('keep_days')
 
 
+class VolumeSpec(resource.Resource):
+    #: Disk size.
+    #: *Type:string*
+    size = resource.Body('size')
+    #: Disk usage.
+    #: *Type:string*
+    used = resource.Body('used')
+
+
+class NodeSpec(resource.Resource):
+    #: Node ID.
+    #: *Type:string*
+    id = resource.Body('id')
+    #: Node name.
+    #: *Type:string*
+    name = resource.Body('name')
+    #: Node status.
+    #: *Type:string*
+    status = resource.Body('status')
+    #: Node role.
+    #: *Type:string*
+    role = resource.Body('role')
+    #: Private IP address of a node.
+    #: *Type:string*
+    private_ip = resource.Body('private_ip')
+    #: The EIP that has been bound.
+    #: *Type:string*
+    public_ip = resource.Body('public_ip')
+    #: Resource specifications code.
+    #: *Type:string*
+    spec_code = resource.Body('spec_code')
+    #: The AZ.
+    #: *Type:string*
+    availability_zone = resource.Body('availability_zone')
+
+
+class GroupSpec(resource.Resource):
+    #: Node type.
+    #: *Type:string*
+    type = resource.Body('type')
+    #: Group ID.
+    #: *Type:string*
+    id = resource.Body('id')
+    #: Group name.
+    #: *Type:string*
+    name = resource.Body('name')
+    #: Group status.
+    #: *Type:string*
+    status = resource.Body('status')
+    #: Volume information.
+    #: *Type:dict*
+    volume = resource.Body('volume', type=VolumeSpec)
+    #: Node information.
+    #: *Type:list*
+    nodes = resource.Body('nodes', type=list, list_type=NodeSpec)
+
+
 class DatastoreSpec(resource.Resource):
     #: Specifies the database type.
     #: The value is ``DDS-Community``.
@@ -63,10 +120,8 @@ class DatastoreSpec(resource.Resource):
     #: *Type:string*
     version = resource.Body('version')
     #: Specifies the storage engine.
-    #: valid value is wiredTiger.
     #: *Type:string*
     storage_engine = resource.Body('storage_engine')
-
 
 class Instance(resource.Resource):
     base_path = '/instances'
@@ -132,13 +187,40 @@ class Instance(resource.Resource):
     backup_strategy = resource.Body('backup_strategy', type=BackupStrategySpec)
     #: Specifies whether to enable SSL.
     #: *Type:string*
-    ssl_option = resource.Body('ssl_option')
+    ssl = resource.Body('ssl')
     #: Async job id
     #: *Type:uuid*
     job_id = resource.Body('job_id')
     #: Instance status.
     #: *Type:string*
     status = resource.Body('status')
+    #: Billing mode.
+    #: *Type:string*
+    pay_mode = resource.Body('pay_mode')
+    #: Maintenance time window.
+    #: *Type:string*
+    maintenance_window = resource.Body('maintenance_window')
+    #: Time zone.
+    #: *Type:string*
+    time_zone = resource.Body('time_zone')
+    #: Database port number.
+    #: *Type:int*
+    port = resource.Body('port')
+    #: Specifies the storage engine.
+    #: *Type:string*
+    engine = resource.Body('engine')
+    #: Time when a DB instance is created.
+    #: *Type:string*
+    created = resource.Body('created')
+    #: Time when a DB instance is updated.
+    #: *Type:string*
+    updated = resource.Body('updated')
+    #: Group information
+    #: *Type:dict*
+    groups = resource.Body('groups', type=list, list_type=GroupSpec)
+    #: Operations that is executed on the DB instance.
+    #: *Type:string*
+    actions = resource.Body('actions', type=list)
 
     def fetch(self, session, requires_id=True,
               base_path=None, error_message=None, **params):
