@@ -84,6 +84,7 @@ OTC_SERVICES = {
     'dds': {
         'service_type': 'dds',
         'endpoint_service_type': 'ddsv3',
+        'append_project_id': True
     },
     'deh': {
         'service_type': 'deh',

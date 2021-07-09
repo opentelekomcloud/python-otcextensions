@@ -22,6 +22,7 @@ class TestCase(base.TestCase):
         super(TestCase, self).setUp()
         sdk.load(self.cloud)
         self.cloud.config.config['rdsv3_api_version'] = '3'
+        self.cloud.config.config['ddsv3_api_version'] = '3'
 
     def get_keystone_v3_token(
             self,
@@ -78,19 +79,11 @@ class TestCase(base.TestCase):
     def get_dds_url(self, resource=None,
                     append=None, base_url_append=None,
                     qs_elements=None):
-        endpoint_url = (
-            f'https://ddsv3.example.com/'
-            'v3/%(project_id)s'
-        ) % {'project_id': self.cloud.current_project_id}
-        if endpoint_url.endswith('/'):
-            endpoint_url = endpoint_url[:-1]
-        to_join = [endpoint_url]
-        qs = ''
-        if base_url_append:
-            to_join.append(base_url_append)
-        if resource:
-            to_join.append(resource)
-        to_join.extend(append or [])
-        if qs_elements is not None:
-            qs = '?%s' % '&'.join(qs_elements)
-        return '%(uri)s%(qs)s' % {'uri': '/'.join(to_join), 'qs': qs}
+        url = self.get_mock_url(
+            'ddsv3', resource=resource,
+            append=append, base_url_append=base_url_append,
+            qs_elements=qs_elements)
+
+        url = url % {'project_id': self.cloud.current_project_id}
+
+        return url
