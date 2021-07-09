@@ -19,8 +19,10 @@ class DdsMixin:
         :param str name: dict(required=True, type=str),
         :param str datastore_type: dict(type=str, default='DDS-Community'),
         :param str datastore_version: dict(type=str),
-        :param str datastore_storage_engine: dict(type=str, default='wiredTiger'),
-        :param str region: dict(type=str, choices=['eu-de', 'eu-nl'], default='eu-de'),
+        :param str datastore_storage_engine:
+            dict(type=str, default='wiredTiger'),
+        :param str region:
+            dict(type=str, choices=['eu-de', 'eu-nl'], default='eu-de'),
         :param str availability_zone: dict(type=str),
         :param str router: dict(type=str),
         :param str network: dict(type=str),

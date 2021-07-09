@@ -22,8 +22,6 @@ class TestDdsMixin(base.TestCase):
         super(TestDdsMixin, self).setUp()
 
     def test_create_dds_instance(self):
-        # def test_05_delete_instance(self):
-        #     instance = self.conn.delete_dds_instance('fc9bb7bc2a1c49238be49efa49c8528cin02')
         attrs = {
             'name': 'dds_name',
             'datastore_type': 'DDS',
@@ -80,6 +78,23 @@ class TestDdsMixin(base.TestCase):
                 json={'id': 'fake'}
             ),
             dict(
+                method='GET',
+                uri=self.get_dds_url(
+                    resource='flavors',
+                    qs_elements=[f'region={attrs["region"]}',
+                                 f'engine_name={attrs["datastore_type"]}']
+                ),
+                status_code=200,
+                json={'flavors': [
+                    {"type": "replica",
+                     "num": 1,
+                     "storage": "ULTRAHIGH",
+                     "size": 30,
+                     "spec_code": "dds.mongodb.s2.medium.4.repset"
+                     }]
+                }
+            ),
+            dict(
                 method='POST',
                 uri=self.get_dds_url(
                     base_url_append='instances'
@@ -98,27 +113,10 @@ class TestDdsMixin(base.TestCase):
                 ),
                 status_code=200,
                 json={'instances': [{'id': 123987, 'name': 'inst_name'}]}
-            ),
-            dict(
-                method='GET',
-                uri=self.get_dds_url(
-                    resource='flavors',
-                    qs_elements=[f'region={attrs["region"]}',
-                                 f'engine_name={attrs["datastore_type"]}']
-                ),
-                status_code=200,
-                json={'flavors': [
-                    {"type": "replica",
-                     "num": 1,
-                     "storage": "ULTRAHIGH",
-                     "size": 30,
-                     "spec_code": "dds.mongodb.s2.medium.4.repset"
-                     }]
-                }
             )
         ])
 
         obj = self.cloud.create_dds_instance(**attrs)
         self.assert_calls()
 
-        self.assertEqual('123', obj.id)
+        self.assertEqual(123987, obj.id)
