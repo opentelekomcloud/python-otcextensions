@@ -36,9 +36,9 @@ class TestCase(base.TestCase):
                                                        name='ccev2.0')
         svc_cce.add_standard_endpoints(region='RegionOne', **ets_cce)
 
-        ets_dds = self.os_fixture._get_endpoint_templates('dds')
-        svc_dds = self.os_fixture.v3_token.add_service('dds', name='dds')
-        svc_dds.add_standard_endpoints(region='eu-de', **ets_dds)
+        ets_dds = self.os_fixture._get_endpoint_templates('ddsv3')
+        svc_dds = self.os_fixture.v3_token.add_service('ddsv3', name='ddsv3')
+        svc_dds.add_standard_endpoints(region='RegionOne', **ets_dds)
 
         return super(TestCase, self).get_keystone_v3_token()
 
@@ -79,8 +79,8 @@ class TestCase(base.TestCase):
                     append=None, base_url_append=None,
                     qs_elements=None):
         endpoint_url = (
-            f'https://dds.example.com/'
-            'api/v3/%(project_id)s'
+            f'https://ddsv3.example.com/'
+            'v3/%(project_id)s'
         ) % {'project_id': self.cloud.current_project_id}
         if endpoint_url.endswith('/'):
             endpoint_url = endpoint_url[:-1]

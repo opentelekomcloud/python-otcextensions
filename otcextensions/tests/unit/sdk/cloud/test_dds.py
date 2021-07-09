@@ -82,7 +82,7 @@ class TestDdsMixin(base.TestCase):
             dict(
                 method='POST',
                 uri=self.get_dds_url(
-                    resource='instances'
+                    base_url_append='instances'
                 ),
                 status_code=200,
                 json={
@@ -93,16 +93,7 @@ class TestDdsMixin(base.TestCase):
             dict(
                 method='GET',
                 uri=self.get_dds_url(
-                    resource='jobs',
-                    qs_elements=['id=15']
-                ),
-                status_code=200,
-                json={'status': 'completed'}
-            ),
-            dict(
-                method='GET',
-                uri=self.get_dds_url(
-                    resource='instances',
+                    base_url_append='instances',
                     qs_elements=['id=123987']
                 ),
                 status_code=200,
@@ -112,7 +103,8 @@ class TestDdsMixin(base.TestCase):
                 method='GET',
                 uri=self.get_dds_url(
                     resource='flavors',
-                    qs_elements=['id=123987']
+                    qs_elements=[f'region={attrs["region"]}',
+                                 f'engine_name={attrs["datastore_type"]}']
                 ),
                 status_code=200,
                 json={'flavors': [
