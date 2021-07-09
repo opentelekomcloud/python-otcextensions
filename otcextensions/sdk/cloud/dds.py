@@ -65,7 +65,7 @@ class DdsMixin:
                 'storage_engine': datastore_storage_engine
             }
             attrs['datastore'] = datastore
-        elif datastore_type or datastore_version or datastore_storage_engine:
+        elif datastore_version or datastore_storage_engine:
             raise exceptions.SDKException(
                 '`datastore_type` and `datastore_version`'
                 ' and `datastore_storage_engine` must be passed together'
@@ -117,7 +117,7 @@ class DdsMixin:
                         '`num` value must be in ranges from 2 to 16 '
                         'for mongos and shard'
                     )
-                if flavor['type'] == ['config', 'replica'] \
+                if flavor['type'] in ['config', 'replica'] \
                         and flavor['num'] != 1:
                     raise exceptions.SDKException(
                         '`num` value must be 1 '
