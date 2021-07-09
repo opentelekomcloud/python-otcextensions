@@ -123,6 +123,7 @@ class DatastoreSpec(resource.Resource):
     #: *Type:string*
     storage_engine = resource.Body('storage_engine')
 
+
 class Instance(resource.Resource):
     base_path = '/instances'
 
