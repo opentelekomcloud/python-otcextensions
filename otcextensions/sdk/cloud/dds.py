@@ -22,7 +22,7 @@ class DdsMixin:
         :param str datastore_storage_engine:
             dict(type=str, default='wiredTiger'),
         :param str region:
-            dict(type=str, choices=['eu-de', 'eu-nl'], default='eu-de'),
+            dict(type=str, default='eu-de'),
         :param str availability_zone: dict(type=str),
         :param str router: dict(type=str),
         :param str network: dict(type=str),
@@ -72,10 +72,6 @@ class DdsMixin:
             )
 
         if region:
-            if region not in ['eu-de', 'eu-nl']:
-                raise exceptions.SDKException(
-                    '`eu-de` or `eu-nl` are supported values'
-                )
             attrs['region'] = region
 
         if availability_zone:
