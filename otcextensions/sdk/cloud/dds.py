@@ -16,23 +16,23 @@ class DdsMixin:
     def create_dds_instance(self, name, **kwargs):
         """Create DDS instance with all the checks
 
-        :param str name: dict(required=True, type=str),
+        :param str availability_zone: dict(type=str),
+        :param str backup_timeframe: dict(type=str),
+        :param str backup_keepdays: dict(type=str),
         :param str datastore_type: dict(type=str, default='DDS-Community'),
         :param str datastore_version: dict(type=str),
         :param str datastore_storage_engine:
             dict(type=str, default='wiredTiger'),
+        :param str disk_encryption_id: dict(type=str),
+        :param str flavors: dict(required=True, type=list, elements=dict),
+        :param str mode: choices=['Sharding', 'ReplicaSet']
+        :param str name: dict(required=True, type=str),
+        :param str network: dict(type=str),
+        :param str password: dict(type=str, no_log=True),
         :param str region:
             dict(type=str, default='eu-de'),
-        :param str availability_zone: dict(type=str),
         :param str router: dict(type=str),
-        :param str network: dict(type=str),
         :param str security_group: dict(type=str),
-        :param str password: dict(type=str, no_log=True),
-        :param str disk_encryption_id: dict(type=str),
-        :param str mode: choices=['Sharding', 'ReplicaSet']
-        :param str flavors: dict(required=True, type=list, elements=dict),
-        :param str backup_timeframe: dict(type=str),
-        :param str backup_keepdays: dict(type=str),
         :param str ssl_option: dict(type=str),
 
         :returns: The results of instance creation
@@ -65,7 +65,7 @@ class DdsMixin:
                 'storage_engine': datastore_storage_engine
             }
             attrs['datastore'] = datastore
-        elif datastore_version or datastore_storage_engine:
+        elif datastore_type or datastore_version or datastore_storage_engine:
             raise exceptions.SDKException(
                 '`datastore_type` and `datastore_version`'
                 ' and `datastore_storage_engine` must be passed together'
@@ -73,26 +73,50 @@ class DdsMixin:
 
         if region:
             attrs['region'] = region
+        else:
+            raise exceptions.SDKException(
+                '`region` is mandatory parameter'
+            )
 
         if availability_zone:
             attrs['availability_zone'] = availability_zone
+        else:
+            raise exceptions.SDKException(
+                '`availability_zone` is mandatory parameter'
+            )
 
         if router:
             router_obj = self.network.find_router(router, ignore_missing=False)
             attrs['vpc_id'] = router_obj.id
+        else:
+            raise exceptions.SDKException(
+                '`router` is mandatory parameter'
+            )
 
         if network:
             network_obj = self.network.find_network(
                 network, ignore_missing=False)
             attrs['subnet_id'] = network_obj.id
+        else:
+            raise exceptions.SDKException(
+                '`network` is mandatory parameter'
+            )
 
         if security_group:
             security_group_obj = self.network.find_security_group(
                 security_group, ignore_missing=False)
             attrs['security_group_id'] = security_group_obj.id
+        else:
+            raise exceptions.SDKException(
+                '`security_group` is mandatory parameter'
+            )
 
         if password:
             attrs['password'] = password
+        else:
+            raise exceptions.SDKException(
+                '`password` is mandatory parameter'
+            )
 
         if disk_encryption_id:
             attrs['disk_encryption_id'] = disk_encryption_id
@@ -103,6 +127,10 @@ class DdsMixin:
                     '`Sharding` or `ReplicaSet` are supported values'
                 )
             attrs['mode'] = mode
+        else:
+            raise exceptions.SDKException(
+                '`mode` is mandatory parameter'
+            )
 
         flavors_ref = list(self.dds.flavors(
             region=region,
