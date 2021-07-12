@@ -87,7 +87,7 @@ class JobProxyMixin(object):
     def wait_for_job(self, job_id, status='success',
                      failures=None, interval=5, wait=3600,
                      attribute='status'):
-        if self.service_type in ['rdsv3', 'ddsv3']:
+        if self.service_type == 'rdsv3':
             status = 'completed'
             failures = ['failed']
         else:
