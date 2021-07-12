@@ -72,8 +72,7 @@ class TestAutoScalingGroups(TestAutoScalingProxy):
 
     def test_delete(self):
         self._verify2(
-            mock_method='otcextensions.sdk.auto_scaling.v1.'
-                        'group.Group.delete',
+            mock_method='otcextensions.sdk.auto_scaling.v1.group.Group.delete',
             test_method=self.proxy.delete_group,
             method_args=['group'],
             expected_args=[self.proxy],
@@ -84,13 +83,12 @@ class TestAutoScalingGroups(TestAutoScalingProxy):
 
     def test_delete_with_force_delete(self):
         self._verify2(
-            mock_method = 'otcextensions.sdk.auto_scaling.v1.'
-                          'group.Group.delete',
+            mock_method='otcextensions.sdk.auto_scaling.v1.group.Group.delete',
             test_method=self.proxy.delete_group,
             method_args=['group'],
             method_kwargs={'force_delete': True},
             expected_args=[self.proxy],
-            expected_kwargs = {
+            expected_kwargs={
                 'force_delete': True
             }
         )

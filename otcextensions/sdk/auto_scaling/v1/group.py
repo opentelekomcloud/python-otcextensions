@@ -136,7 +136,7 @@ class Group(_base.Resource):
         response = session.delete(request.url, headers=request.headers,
                                   microversion=microversion)
 
-        kwargs={}
+        kwargs = {}
         if error_message:
             kwargs['error_message'] = error_message
 
