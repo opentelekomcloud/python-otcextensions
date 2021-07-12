@@ -73,7 +73,8 @@ class TestGroup(base.BaseASTest):
                 group=as_group
             ))
             if (len(instances) == desire_instance_number
-                    and [instance.id for instance in instances if instance.id]):
+                    and [instance.id for instance in instances if instance.id]
+            ):
                 for instance in instances:
                     self.conn.auto_scaling.wait_for_instance(instance=instance)
                 return
@@ -186,9 +187,7 @@ class TestGroup(base.BaseASTest):
     def test_03_simple_delete_as_group(self):
         timeout = 2 * int(os.environ.get('OS_TEST_TIMEOUT'))
         self.as_config = self._create_as_config(self._get_image_id(),
-                                                self.infra.get(
-                                                    "sec_group_id"
-                                                ))
+                                                self.infra.get("sec_group_id"))
         self.as_group = self._create_as_group(
             router_id=self.infra.get("router_id"),
             network_id=self.infra.get("network_id"),
