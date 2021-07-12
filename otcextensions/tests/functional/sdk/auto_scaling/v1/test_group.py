@@ -73,8 +73,8 @@ class TestGroup(base.BaseASTest):
                 group=as_group
             ))
             if (len(instances) == desire_instance_number
-                    and [instance.id for instance in instances if instance.id]
-            ):
+                    and [instance.id for instance in instances
+                         if instance.id]):
                 for instance in instances:
                     self.conn.auto_scaling.wait_for_instance(instance=instance)
                 return
