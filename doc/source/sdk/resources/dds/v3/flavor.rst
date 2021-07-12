@@ -1,9 +1,9 @@
-otcextensions.sdk.dds.v3.flavors
+otcextensions.sdk.dds.v3.flavor
 ===================================
 
 .. automodule:: otcextensions.sdk.dds.v3.flavor
 
-The Datastore Class
+The Flavor Class
 -------------------
 
 The ``Flavor`` class inherits from

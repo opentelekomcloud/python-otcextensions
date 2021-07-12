@@ -18,3 +18,4 @@ class TestDds(base.BaseFunctionalTest):
     def setUp(self):
         super(TestDds, self).setUp()
         self.client = self.conn.dds
+        self.net_client = self.conn.network
