@@ -195,7 +195,7 @@ class DdsMixin:
             attrs['ssl_option'] = ssl_option
 
         obj = self.dds.create_instance(**attrs)
-
+        obj = self.dds.get_instance(obj.id)
         return obj
 
     def delete_dds_instance(self, instance):
