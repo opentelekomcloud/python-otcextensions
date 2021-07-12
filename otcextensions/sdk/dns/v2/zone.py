@@ -116,9 +116,8 @@ class Zone(zone.Zone):
     """DNS ZONE Resource"""
 
     _query_mapping = resource.QueryParameters(
-        'name', 'type', 'email', 'status', 'description', 'ttl',
-        'limit', 'marker', 'router', zone_type='type'
-    )
+        'zone_type', 'limit', 'marker', 'offset', 'tags',
+        zone_type='type')
 
     #: Recordset number of the zone
     record_num = resource.Body('record_num', type=int)

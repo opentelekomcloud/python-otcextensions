@@ -17,6 +17,7 @@ from openstack.dns.v2 import floating_ip
 
 class FloatingIP(floating_ip.FloatingIP):
     """DNS Floating IP Resource"""
+    resource_key = None
 
     @classmethod
     def find(cls, session, name_or_id, ignore_missing=True, **params):

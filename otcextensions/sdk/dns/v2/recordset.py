@@ -26,9 +26,7 @@ class Recordset(recordset.Recordset):
     #: Properties
     #: Is the recordset created by system.
     is_default = resource.Body('default', type=bool)
-    #: Timestamp when the zone was created
-    created_at = resource.Body('create_at')
-    #: Timestamp when the zone was last updated
+    #: Timestamp when the zone was last updated.
     updated_at = resource.Body('update_at')
 
     @classmethod
