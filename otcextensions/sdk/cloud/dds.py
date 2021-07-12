@@ -13,9 +13,7 @@ from openstack import exceptions
 
 
 class DdsMixin:
-    def create_dds_instance(self, name,
-                            wait=True, wait_timeout=600, wait_interval=5,
-                            **kwargs):
+    def create_dds_instance(self, name, **kwargs):
         """Create DDS instance with all the checks
 
         :param str availability_zone: dict(type=str),
@@ -36,9 +34,6 @@ class DdsMixin:
         :param str router: dict(type=str),
         :param str security_group: dict(type=str),
         :param str ssl_option: dict(type=str),
-        :param bool wait: dict(type=bool, default=True),
-        :param int wait_timeout: dict(type=int, default=180)
-        :param int wait_interval: Check interval.
 
         :returns: The results of instance creation
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
@@ -200,17 +195,6 @@ class DdsMixin:
             attrs['ssl_option'] = ssl_option
 
         obj = self.dds.create_instance(**attrs)
-
-        if obj.job_id and wait:
-            wait_args = {}
-            if wait_interval:
-                wait_args['interval'] = wait_interval
-            if wait_timeout:
-                wait_args['wait'] = wait_timeout
-
-            self.dds.wait_for_job(obj.job_id, **wait_args)
-
-        obj = self.dds.get_instance(obj.id)
 
         return obj
 
