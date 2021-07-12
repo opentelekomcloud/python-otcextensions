@@ -196,7 +196,17 @@ class Proxy(proxy.Proxy):
                  to status failed to occur in wait seconds.
         """
         group = self._get_resource(_group.Group, group)
-        return resource.wait_for_delete(self, group, interval, wait)
+        for count in utils.iterate_timeout(
+                timeout=wait,
+                message="Timeout waiting for group to delete",
+                wait=interval
+        ):
+            try:
+                group = self._get(_group.Group, group)
+                if not group:
+                    return
+            except exceptions.NotFoundException:
+                return
 
     # ======== Configurations ========
     def configs(self, **query):

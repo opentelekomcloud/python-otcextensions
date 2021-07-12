@@ -94,13 +94,14 @@ class TestGroup(base.BaseASTest):
         if as_config:
             group_attrs["scaling_configuration_id"] = as_config.id
         as_group = self.conn.auto_scaling.create_group(**group_attrs)
-        self.conn.auto_scaling.resume_group(group = as_group)
-        if desire_instance_number > 0:
+        if as_config:
+            self.conn.auto_scaling.resume_group(group = as_group)
             self._wait_for_instances(
                 as_group=as_group, timeout=timeout,
                 desire_instance_number=desire_instance_number
             )
-        return self.conn.auto_scaling.wait_for_group(as_group)
+            self.conn.auto_scaling.wait_for_group(as_group)
+        return as_group
 
     def _delete_instances(self, as_group, timeout):
         try:
@@ -119,7 +120,6 @@ class TestGroup(base.BaseASTest):
             _logger.warning(
                 'Got exception during getting as instances %s' % e.message
             )
-            print(e)
 
     def _delete_as_group(self, as_group, timeout, force_delete=False):
         self.conn.auto_scaling.pause_group(as_group)
@@ -129,7 +129,7 @@ class TestGroup(base.BaseASTest):
             group=as_group,
             force_delete=force_delete
         )
-        self.conn.auto_scaling.wait_for_delete_group(
+        return self.conn.auto_scaling.wait_for_delete_group(
             group=as_group,
             interval=5,
             wait=timeout
@@ -155,9 +155,7 @@ class TestGroup(base.BaseASTest):
         except exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
-            print(e)
-        finally:
-            super(TestGroup, self).tearDown()
+        super(TestGroup, self).tearDown()
 
     def test_01_create_as_group(self):
         timeout = int(os.environ.get('OS_TEST_TIMEOUT'))
@@ -183,8 +181,6 @@ class TestGroup(base.BaseASTest):
             max_instance_number=1,
             as_config=self.as_config
         )
-        self._wait_for_instances(self.as_group, timeout,
-                                 desire_instance_number=1)
         self.assertIsNotNone(self.as_group)
         self.assertEqual(self.as_group.name, self.AS_GROUP_NAME)
 
@@ -195,18 +191,51 @@ class TestGroup(base.BaseASTest):
                                                     "sec_group_id"
                                                 ))
         self.as_group = self._create_as_group(
-            router_id = self.infra.get("router_id"),
-            network_id = self.infra.get("network_id"),
+            router_id=self.infra.get("router_id"),
+            network_id=self.infra.get("network_id"),
             timeout=timeout,
-            min_instance_number = 0,
-            desire_instance_number = 1,
-            max_instance_number = 1,
-            as_config = self.as_config
+            min_instance_number=0,
+            desire_instance_number=1,
+            max_instance_number=1,
+            as_config=self.as_config
         )
         self.assertIsNotNone(self.as_group)
         self.assertEqual(self.as_group.name, self.AS_GROUP_NAME)
-        self._delete_as_group(
+        self.as_group = self._delete_as_group(
             as_group=self.as_group,
             timeout=timeout,
             force_delete=False
         )
+        self.assertIsNone(self.as_group)
+
+    def test_04_list_as_groups(self):
+        timeout = int(os.environ.get('OS_TEST_TIMEOUT'))
+        self.as_group = self._create_as_group(
+            self.infra.get("router_id"), self.infra.get("network_id"),
+            timeout=timeout
+        )
+        as_group_list = list(self.conn.auto_scaling.groups())
+        self.assertIsNotNone(as_group_list)
+
+    def test_05_update_as_group(self):
+        timeout = int(os.environ.get('OS_TEST_TIMEOUT'))
+        new_name = self.AS_GROUP_NAME + "_new"
+        self.as_group = self._create_as_group(
+            self.infra.get("router_id"), self.infra.get("network_id"),
+            timeout=timeout
+        )
+        self.conn.auto_scaling.update_group(group=self.as_group, name=new_name)
+        self.assertIsNotNone(self.as_group)
+        self.assertEqual(self.as_group.name, new_name)
+
+    def test_06_find_as_group(self):
+        timeout = int(os.environ.get('OS_TEST_TIMEOUT'))
+        self.as_group = self._create_as_group(
+            self.infra.get("router_id"), self.infra.get("network_id"),
+            timeout=timeout
+        )
+        find_as_group = self.conn.auto_scaling.find_group(
+            name_or_id=self.AS_GROUP_NAME
+        )
+        self.assertEqual(self.as_group.id, find_as_group.id)
+        self.assertEqual(self.as_group.name, find_as_group.name)
