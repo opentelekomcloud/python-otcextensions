@@ -33,6 +33,19 @@ class TestGroup(base.BaseASTest):
     DISK_VOL_TYPE = "SATA"
     DISK_TYPE = "SYS"
 
+    def setUp(self):
+        super(TestGroup, self).setUp()
+        self.as_group = None
+        self.as_config = None
+
+    def tearDown(self):
+        try:
+            self._deinitialize_as_group()
+        except exceptions.SDKException as e:
+            _logger.warning('Got exception during clearing resources %s'
+                            % e.message)
+        super(TestGroup, self).tearDown()
+
     def _get_image_id(self):
         image = self.conn.compute.find_image(
             name_or_id=self.IMAGE_NAME
@@ -145,19 +158,6 @@ class TestGroup(base.BaseASTest):
             )
         if self.as_config:
             self._delete_as_config(as_config=self.as_config)
-
-    def setUp(self):
-        super(TestGroup, self).setUp()
-        self.as_group = None
-        self.as_config = None
-
-    def tearDown(self):
-        try:
-            self._deinitialize_as_group()
-        except exceptions.SDKException as e:
-            _logger.warning('Got exception during clearing resources %s'
-                            % e.message)
-        super(TestGroup, self).tearDown()
 
     def test_01_create_as_group(self):
         timeout = int(os.environ.get('OS_TEST_TIMEOUT'))
