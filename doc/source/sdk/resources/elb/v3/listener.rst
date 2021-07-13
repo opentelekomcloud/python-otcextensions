@@ -3,7 +3,7 @@ otcextensions.sdk.vlb.v3.listener
 
 .. automodule:: otcextensions.sdk.vlb.v3.listener
 
-The Flavor Class
+The Listener Class
 ----------------
 
 The ``Listener`` class inherits from

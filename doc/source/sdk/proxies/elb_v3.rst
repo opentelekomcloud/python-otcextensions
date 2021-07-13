@@ -1,4 +1,4 @@
-Database ELB API
+ELB v3 API
 ================
 
 For details on how to use database, see /sdk/guides/rds (NEEDS TO BE DONE)

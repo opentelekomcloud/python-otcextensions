@@ -3,7 +3,7 @@ otcextensions.sdk.vlb.v3.quota
 
 .. automodule:: otcextensions.sdk.vlb.v3.quota
 
-The Instance Class
+The Quota Class
 ------------------
 
 The ``Quota`` class inherits from

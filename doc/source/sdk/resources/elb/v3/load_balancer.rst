@@ -3,7 +3,7 @@ otcextensions.sdk.vlb.v3.load_balancer
 
 .. automodule:: otcextensions.sdk.vlb.v3.load_balancer
 
-The Configuration Class
+The LoadBalancer Class
 -----------------------
 
 The ``LoadBalancer`` class inherits from
