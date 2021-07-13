@@ -125,9 +125,7 @@ class Group(_base.Resource):
 
         params = {}
         if force_delete:
-            params = {
-                "force_delete": "yes"
-            }
+            params["force_delete"] = "yes"
         request = self._prepare_request(params=params)
 
         session = self._get_session(session)
