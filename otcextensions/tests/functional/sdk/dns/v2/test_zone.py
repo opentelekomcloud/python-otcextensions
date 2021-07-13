@@ -29,12 +29,13 @@ class TestZone(TestDns):
         super(TestZone, self).setUp()
 
     def tearDown(self):
-        try:
-            if self.zone:
+        if self.zone:
+            try:
                 self.client.delete_zone(self.zone)
-        except openstack.exceptions.SDKException as e:
-            _logger.warning('Got exception during clearing resources %s'
-                            % e.message)
+            except openstack.exceptions.SDKException as e:
+                _logger.warning('Got exception during clearing resources %s'
+                                % e.message)
+            self.client.wait_for_delete_zone(self.zone)
         super(TestZone, self).tearDown()
 
     def _create_zone(self, zone_name=None, router_id=None, zone_type='public'):
@@ -47,6 +48,7 @@ class TestZone(TestDns):
                 )
             except openstack.exceptions.BadRequestException:
                 self.zone = self.client.find_zone(zone_name)
+            self.client.wait_for_zone(self.zone)
             return
         try:
             self.zone = self.client.create_zone(
@@ -54,6 +56,7 @@ class TestZone(TestDns):
             )
         except openstack.exceptions.BadRequestException:
             self.zone = self.client.find_zone(zone_name)
+        self.client.wait_for_zone(self.zone)
 
     def _create_multiple_networks(self, count=1):
         for i in range(count):

@@ -30,6 +30,7 @@ class TestRecordsets(TestDns):
             self.zone = self.client.create_zone(
                 name=self.zone_alias
             )
+            self.client.wait_for_zone(self.zone)
         except openstack.exceptions.BadRequestException:
             self.zone = self.client.find_zone(self.zone_alias)
         self.zones.append(self.zone)
@@ -39,6 +40,7 @@ class TestRecordsets(TestDns):
             for zone in self.zones:
                 if zone:
                     self.client.delete_zone(zone)
+                    self.client.wait_for_delete_zone(zone)
         except openstack.exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
@@ -61,6 +63,7 @@ class TestRecordsets(TestDns):
             type='A',
             records=['1.1.1.1', '2.2.2.2']
         )
+        self.client.wait_for_recordset(rs)
         self.assertEqual(rs.name, f'a-record.{self.zone_alias}')
 
         rs = self.client.create_recordset(
@@ -69,6 +72,7 @@ class TestRecordsets(TestDns):
             type='AAAA',
             records=['ff03:0db8:85a3:0:0:8a2e:0370:7334']
         )
+        self.client.wait_for_recordset(rs)
         self.assertEqual(rs.name, f'aaaa-record.{self.zone_alias}')
 
         rs = self.client.create_recordset(
@@ -77,6 +81,7 @@ class TestRecordsets(TestDns):
             type='CNAME',
             records=['www.ex.com']
         )
+        self.client.wait_for_recordset(rs)
         self.assertEqual(rs.name, f'cname-record.{self.zone_alias}')
 
         rs = self.client.create_recordset(
@@ -85,6 +90,7 @@ class TestRecordsets(TestDns):
             type='MX',
             records=['10 mailserver1.example.com.']
         )
+        self.client.wait_for_recordset(rs)
         self.assertEqual(rs.name, f'mx-record.{self.zone_alias}')
 
         rs = self.client.create_recordset(
@@ -93,6 +99,7 @@ class TestRecordsets(TestDns):
             type='TXT',
             records=["\"Text.\""]
         )
+        self.client.wait_for_recordset(rs)
         self.assertEqual(rs.name, f'txt-record.{self.zone_alias}')
 
         rs = self.client.create_recordset(
@@ -101,6 +108,7 @@ class TestRecordsets(TestDns):
             type='NS',
             records=['ns.example.com']
         )
+        self.client.wait_for_recordset(rs)
         self.assertEqual(rs.name, f'ns-record.{self.zone_alias}')
 
     def test_get_recordset(self):
@@ -110,6 +118,7 @@ class TestRecordsets(TestDns):
             type='A',
             records=['1.1.1.1', '2.2.2.2']
         )
+        self.client.wait_for_recordset(rs)
         record = self.client.get_recordset(
             recordset=rs.id,
             zone=self.zone.id
@@ -123,6 +132,7 @@ class TestRecordsets(TestDns):
             type='A',
             records=['1.1.1.1', '2.2.2.2']
         )
+        self.client.wait_for_recordset(rs)
         record = self.client.find_recordset(
             name_or_id=rs.id,
             zone=self.zone.id
@@ -136,6 +146,7 @@ class TestRecordsets(TestDns):
             type='A',
             records=['1.1.1.1', '2.2.2.2']
         )
+        self.client.wait_for_recordset(rs)
         record = self.client.update_recordset(
             recordset=rs.id,
             zone_id=self.zone.id,
@@ -150,9 +161,11 @@ class TestRecordsets(TestDns):
             type='A',
             records=['1.1.1.1', '2.2.2.2']
         )
-        self.assertEqual(rs.status, 'PENDING_CREATE')
+        self.client.wait_for_recordset(rs)
+        self.assertEqual(rs.status, 'ACTIVE')
         record = self.client.delete_recordset(
             recordset=rs.id,
             zone=self.zone.id
         )
+        self.client.wait_for_delete_recordset(record)
         self.assertIsNotNone(record)
