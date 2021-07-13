@@ -9,7 +9,28 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from dataclasses import dataclass
+from typing import List
+
 from openstack import exceptions
+
+
+@dataclass
+class FlavorSpec:
+    """
+    Flavor specification
+
+    * type: node type.
+    * num: node quantity.
+    * storage: [Optional] disk type.
+    * size: [Optional] disk size.
+    * spec_code: specification code.
+    """
+    type: str
+    num: str
+    spec_code: str
+    storage: str = None
+    size: int = None
 
 
 class DdsMixin:
@@ -18,7 +39,7 @@ class DdsMixin:
                             router,
                             network,
                             security_group,
-                            flavors: list,
+                            flavors: List[FlavorSpec],
                             password: str,
                             region='eu-de',
                             availability_zone='eu-de-01',
