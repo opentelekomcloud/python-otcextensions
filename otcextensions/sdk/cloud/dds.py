@@ -34,25 +34,27 @@ class FlavorSpec:
 
 
 class DdsMixin:
-    def create_dds_instance(self,
-                            name: str,
-                            router,
-                            network,
-                            security_group,
-                            flavors: List[FlavorSpec],
-                            password: str,
-                            region='eu-de',
-                            availability_zone='eu-de-01',
-                            datastore_type='DDS-Community',
-                            datastore_storage_engine='wiredTiger',
-                            datastore_version='3.2',
-                            mode='ReplicaSet',
-                            disk_encryption_id: str = None,
-                            backup_timeframe: str = None,
-                            backup_keepdays: str = None,
-                            ssl_option: str = None
-                            ):
+    def create_dds_instance(
+            self,
+            name: str,
+            router,
+            network,
+            security_group,
+            flavors: List[FlavorSpec],
+            password: str,
+            region='eu-de',
+            availability_zone='eu-de-01',
+            datastore_type='DDS-Community',
+            datastore_storage_engine='wiredTiger',
+            datastore_version='3.2',
+            mode='ReplicaSet',
+            disk_encryption_id: str = None,
+            backup_timeframe: str = None,
+            backup_keepdays: str = None,
+            ssl_option: str = None
+    ):
         """
+        Create DDS instance
 
         :param name: instance name, dict(required=True, type=str)
         :param router: router name or id, dict(type=str)
