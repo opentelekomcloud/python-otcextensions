@@ -11,6 +11,7 @@
 # under the License.
 
 import os
+import uuid
 
 from keystoneauth1 import exceptions as _exceptions
 
@@ -42,6 +43,8 @@ FLAVOR_NAME = _get_resource_value('flavor_name', 'm1.small')
 
 class BaseFunctionalTest(base.TestCase):
 
+    network_info = {}
+
     def setUp(self):
         super(BaseFunctionalTest, self).setUp()
         self.conn = connection.Connection(config=TEST_CLOUD_REGION)
@@ -52,6 +55,80 @@ class BaseFunctionalTest(base.TestCase):
             result = func(*args, **kwargs)
             self.assertIsNone(result)
         self.addCleanup(cleanup)
+
+    @classmethod
+    def create_network(self, usage_sg=False):
+        cidr = '192.168.0.0/16'
+        ipv4 = 4
+        uuid_v4 = uuid.uuid4().hex[:8]
+        router_name = 'dnat-test-router-' + uuid_v4
+        net_name = 'dnat-test-net-' + uuid_v4
+        subnet_name = 'dnat-test-subnet-' + uuid_v4
+
+        if not BaseFunctionalTest.network_info:
+            network = self.conn.network.create_network(name=net_name)
+            self.assertEqual(net_name, network.name)
+            net_id = network.id
+            subnet = self.conn.network.create_subnet(
+                name=subnet_name,
+                ip_version=ipv4,
+                network_id=net_id,
+                cidr=cidr
+            )
+            self.assertEqual(subnet_name, subnet.name)
+            subnet_id = subnet.id
+
+            router = self.conn.network.create_router(name=router_name)
+            self.assertEqual(router_name, router.name)
+            router_id = router.id
+            interface = router.add_interface(
+                self.conn.network,
+                subnet_id=subnet_id
+            )
+            self.assertEqual(interface['subnet_id'], subnet_id)
+            self.assertIn('port_id', interface)
+
+            BaseFunctionalTest.network_info = {
+                'router_id': router_id,
+                'subnet_id': subnet_id,
+                'network_id': net_id
+            }
+            if usage_sg:
+                sec_group = self.conn.network.find_security_group(
+                    name_or_id='default')
+                BaseFunctionalTest.network_info['sec_group'] = sec_group.id
+
+    @classmethod
+    def destroy_network(self):
+        if BaseFunctionalTest.network_info:
+            router_id = BaseFunctionalTest.network_info['router_id']
+            subnet_id = BaseFunctionalTest.network_info['subnet_id']
+            network_id = BaseFunctionalTest.network_info['network_id']
+
+            router = self.conn.network.get_router(router_id)
+
+            interface = router.remove_interface(
+                self.conn.network,
+                subnet_id=subnet_id
+            )
+            self.assertEqual(interface['subnet_id'], subnet_id)
+            self.assertIn('port_id', interface)
+            sot = self.conn.network.delete_router(
+                router_id,
+                ignore_missing=False
+            )
+            self.assertIsNone(sot)
+            sot = self.conn.network.delete_subnet(
+                subnet_id,
+                ignore_missing=False
+            )
+            self.assertIsNone(sot)
+            sot = self.conn.network.delete_network(
+                network_id,
+                ignore_missing=False
+            )
+            BaseFunctionalTest.network_info = None
+            self.assertIsNone(sot)
 
     # TODO(shade) Replace this with call to conn.has_service when we've merged
     #             the shade methods into Connection.
