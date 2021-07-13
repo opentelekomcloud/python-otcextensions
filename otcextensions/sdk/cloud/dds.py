@@ -13,10 +13,17 @@ from openstack import exceptions
 
 
 class DdsMixin:
-    def create_dds_instance(self, name, **kwargs):
+    def create_dds_instance(self,
+                            name,
+                            region='eu-de',
+                            availability_zone='eu-de-01',
+                            datastore_type='DDS-Community',
+                            datastore_storage_engine='wiredTiger',
+                            mode='ReplicaSet',
+                            **kwargs):
         """Create DDS instance with all the checks
 
-        :param str availability_zone: dict(type=str),
+        :param str availability_zone: dict(type=str, default='eu-de-01'),
         :param str backup_timeframe: dict(type=str),
         :param str backup_keepdays: dict(type=str),
         :param str datastore_type: dict(type=str, default='DDS-Community'),
@@ -25,7 +32,8 @@ class DdsMixin:
             dict(type=str, default='wiredTiger'),
         :param str disk_encryption_id: dict(type=str),
         :param str flavors: dict(required=True, type=list, elements=dict),
-        :param str mode: choices=['Sharding', 'ReplicaSet']
+        :param str mode: dict(choices=['Sharding', 'ReplicaSet'],
+            default='ReplicaSet')
         :param str name: dict(required=True, type=str),
         :param str network: dict(type=str),
         :param str password: dict(type=str, no_log=True),
@@ -39,17 +47,12 @@ class DdsMixin:
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
         """
 
-        datastore_type = kwargs.get('datastore_type')
         datastore_version = kwargs.get('datastore_version')
-        datastore_storage_engine = kwargs.get('datastore_storage_engine')
-        region = kwargs.get('region')
-        availability_zone = kwargs.get('availability_zone')
         router = kwargs.get('router')
         network = kwargs.get('network')
         security_group = kwargs.get('security_group')
         password = kwargs.get('password')
         disk_encryption_id = kwargs.get('disk_encryption_id')
-        mode = kwargs.get('mode')
         flavors = kwargs.get('flavors')
         backup_timeframe = kwargs.get('backup_timeframe')
         backup_keepdays = kwargs.get('backup_keepdays')
@@ -73,17 +76,9 @@ class DdsMixin:
 
         if region:
             attrs['region'] = region
-        else:
-            raise exceptions.SDKException(
-                '`region` is mandatory parameter'
-            )
 
         if availability_zone:
             attrs['availability_zone'] = availability_zone
-        else:
-            raise exceptions.SDKException(
-                '`availability_zone` is mandatory parameter'
-            )
 
         if router:
             router_obj = self.network.find_router(router, ignore_missing=False)
@@ -127,10 +122,6 @@ class DdsMixin:
                     '`Sharding` or `ReplicaSet` are supported values'
                 )
             attrs['mode'] = mode
-        else:
-            raise exceptions.SDKException(
-                '`mode` is mandatory parameter'
-            )
 
         flavors_ref = list(self.dds.flavors(
             region=region,
