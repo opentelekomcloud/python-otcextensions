@@ -18,7 +18,6 @@ class Quota(resource.Resource):
 
     # capabilities
     allow_fetch = True
-    allow_list = True
 
     # Properties
     #: Specifies the certificate quota.
