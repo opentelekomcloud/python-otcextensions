@@ -36,3 +36,10 @@ Quota Operations
 .. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
   :noindex:
   :members: quotas
+
+AvailabilityZone Operations
+^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
+  :noindex:
+  :members: availability_zones

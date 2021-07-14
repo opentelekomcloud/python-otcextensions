@@ -13,11 +13,11 @@
 from otcextensions.tests.functional.sdk.vlb import TestVlb
 
 
-class TestQuota(TestVlb):
+class TestAz(TestVlb):
 
     def setUp(self):
-        super(TestQuota, self).setUp()
+        super(TestAz, self).setUp()
 
-    def test_get_quotas(self):
-        qt = self.client.quotas()
+    def test_get_azs(self):
+        qt = list(self.client.availability_zones())
         self.assertGreaterEqual(len(qt), 0)

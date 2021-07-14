@@ -13,7 +13,7 @@
 from openstack import proxy
 from openstack import resource
 
-# from otcextensions.sdk.vlb.v2 import availability_zone as _availability_zone
+from otcextensions.sdk.vlb.v3 import availability_zone as _availability_zone
 # from otcextensions.sdk.vlb.v2 import availability_zone_profile as \
 #    _availability_zone_profile
 # from otcextensions.sdk.vlb.v2 import flavor as _flavor
@@ -148,3 +148,13 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.vlb.v3.quota.Quota`
         """
         return _quota.Quota.get(self)
+
+    # ======== Availability zone ========
+    def availability_zones(self, **query):
+        """Retrieve a generator of availability zones
+
+        :returns: A AvailabilityZone instance
+        :rtype: :class:
+                `~otcextensions.sdk.vlb.v3.availability_zone.AvailabilityZone`
+        """
+        return self._list(_availability_zone.AvailabilityZone, **query)
