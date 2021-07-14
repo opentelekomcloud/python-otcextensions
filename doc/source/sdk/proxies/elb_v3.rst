@@ -43,3 +43,10 @@ AvailabilityZone Operations
 .. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
   :noindex:
   :members: availability_zones
+
+Flavor Operations
+^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
+  :noindex:
+  :members: flavors, get_flavor, find_flavor

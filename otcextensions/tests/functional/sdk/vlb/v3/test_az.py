@@ -18,6 +18,6 @@ class TestAz(TestVlb):
     def setUp(self):
         super(TestAz, self).setUp()
 
-    def test_get_azs(self):
+    def test_list_azs(self):
         qt = list(self.client.availability_zones())
         self.assertGreaterEqual(len(qt), 0)

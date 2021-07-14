@@ -16,7 +16,7 @@ from openstack import resource
 from otcextensions.sdk.vlb.v3 import availability_zone as _availability_zone
 # from otcextensions.sdk.vlb.v2 import availability_zone_profile as \
 #    _availability_zone_profile
-# from otcextensions.sdk.vlb.v2 import flavor as _flavor
+from otcextensions.sdk.vlb.v3 import flavor as _flavor
 # from otcextensions.sdk.vlb.v2 import flavor_profile as _flavor_profile
 # from otcextensions.sdk.vlb.v2 import health_monitor as _hm
 # from otcextensions.sdk.vlb.v2 import l7_policy as _l7policy
@@ -158,3 +158,45 @@ class Proxy(proxy.Proxy):
                 `~otcextensions.sdk.vlb.v3.availability_zone.AvailabilityZone`
         """
         return self._list(_availability_zone.AvailabilityZone, **query)
+
+    # ======= Flavor =======
+    def flavors(self, **query):
+        """List all load balancer flavors that are
+        available to a specific user in a specific region.
+
+        :param engine_name: database engine name
+        :param region: region
+
+        :returns: A generator of flavor
+        :rtype: :class:`~otcextensions.sdk.vlb.v3.flavor.Flavor`
+        """
+
+        return self._list(
+            _flavor.Flavor,
+            **query
+        )
+
+    def get_flavor(self, flavor):
+        """Get a single instance
+
+        :param instance: The value can be either the ID of an instance or a
+            :class:`~otcextensions.sdk.dds.v3.flavor.Flavor` instance.
+
+        :returns: One :class:`~otcextensions.sdk.vlb.v3.flavor.Flavor`
+        """
+        return self._get(_flavor.Flavor, flavor)
+
+    def find_flavor(self, name_or_id, ignore_missing=True):
+        """Find a single flavor
+
+        :param name_or_id: The name or ID of a flavor
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the load balancer does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to delete a nonexistent load balancer.
+
+        :returns: ``None``
+        """
+        return self._find(_flavor.Flavor, name_or_id,
+                          ignore_missing=ignore_missing)
