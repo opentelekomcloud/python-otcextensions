@@ -105,7 +105,7 @@ class Recordset(recordset.Recordset):
             query_params = parse.parse_qs(parts.query)
             params.update(query_params)
             next_link = parse.urljoin(next_link,
-                                                       parts.path)
+                                      parts.path)
 
         # If we still have no link, and limit was given and is non-zero,
         # and the number of records yielded equals the limit, then the user

@@ -22,8 +22,10 @@ from urllib.parse import urlsplit
 
 from http import client as http_client
 
+
 class HTTPHeaders(http_client.HTTPMessage):
     pass
+
 
 def ensure_unicode(s, encoding=None, errors=None):
     # NOOP in Python 3, because every string is already unicode
