@@ -44,6 +44,7 @@ FLAVOR_NAME = _get_resource_value('flavor_name', 'm1.small')
 class BaseFunctionalTest(base.TestCase):
 
     network_info = {}
+    prefix = ''
 
     def setUp(self):
         super(BaseFunctionalTest, self).setUp()
@@ -61,9 +62,9 @@ class BaseFunctionalTest(base.TestCase):
         cidr = '192.168.0.0/16'
         ipv4 = 4
         uuid_v4 = uuid.uuid4().hex[:8]
-        router_name = 'dnat-test-router-' + uuid_v4
-        net_name = 'dnat-test-net-' + uuid_v4
-        subnet_name = 'dnat-test-subnet-' + uuid_v4
+        router_name = self.prefix + 'test-router-' + uuid_v4
+        net_name = self.prefix + 'test-net-' + uuid_v4
+        subnet_name = self.prefix + 'test-subnet-' + uuid_v4
 
         if not BaseFunctionalTest.network_info:
             network = self.conn.network.create_network(name=net_name)
