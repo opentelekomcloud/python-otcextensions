@@ -10,10 +10,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 # from openstack import exceptions
-import six
 from openstack import exceptions
 from openstack import resource
 from openstack.dns.v2 import recordset
+
+from urllib import parse
 
 
 class Recordset(recordset.Recordset):
@@ -100,10 +101,10 @@ class Recordset(recordset.Recordset):
         # This prevents duplication of query parameters that with large
         # number of pages result in HTTP 414 error eventually.
         if next_link:
-            parts = six.moves.urllib.parse.urlparse(next_link)
-            query_params = six.moves.urllib.parse.parse_qs(parts.query)
+            parts = parse.urlparse(next_link)
+            query_params = parse.parse_qs(parts.query)
             params.update(query_params)
-            next_link = six.moves.urllib.parse.urljoin(next_link,
+            next_link = parse.urljoin(next_link,
                                                        parts.path)
 
         # If we still have no link, and limit was given and is non-zero,
