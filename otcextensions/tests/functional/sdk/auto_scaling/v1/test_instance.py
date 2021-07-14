@@ -43,6 +43,13 @@ class TestInstance(base.BaseASTest):
         if image:
             return image.id
 
+    def _get_default_sec_group(self):
+        sec_group = self.conn.network.find_security_group(
+            name_or_id="default"
+        )
+        if sec_group:
+            return sec_group.id
+
     def _create_as_config(self, image_id, sec_group_id):
         config_attrs = {
             "name": self.AS_CONFIG_NAME,
@@ -117,7 +124,7 @@ class TestInstance(base.BaseASTest):
 
     def _initialize_as_group_with_instance(self):
         self.as_config = self._create_as_config(
-            self._get_image_id(), self.infra.get("sec_group_id")
+            self._get_image_id(), self._get_default_sec_group()
         )
         self.as_group = self._create_as_group(
             self.as_config.id, self.infra.get("router_id"),
