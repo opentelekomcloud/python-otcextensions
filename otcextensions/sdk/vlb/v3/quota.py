@@ -24,6 +24,8 @@ class Quota(resource.Resource):
     certificate = resource.Body('certificate', type=int)
     #: Specifies the health check quota.
     healthmonitor = resource.Body('healthmonitor', type=int)
+    #: Specifies the IP address group quota.
+    ipgroup = resource.Body('ipgroup', type=int)
     #: Specifies the forwarding policy quota.
     l7policy = resource.Body('l7policy', type=int)
     #: Specifies the listener quota.
@@ -36,8 +38,6 @@ class Quota(resource.Resource):
     members_per_pool = resource.Body('members_per_pool', type=int)
     #: Specifies the backend server group quota.
     pool = resource.Body('pool', type=int)
-    #: Specifies the IP address group quota.
-    ipgroup = resource.Body('ipgroup', type=int)
     #: Specifies the IP address group quota.
     project_id = resource.Body('project_id', type=str)
 

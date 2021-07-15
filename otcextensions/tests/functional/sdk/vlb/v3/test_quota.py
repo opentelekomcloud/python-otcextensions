@@ -19,5 +19,5 @@ class TestQuota(TestVlb):
         super(TestQuota, self).setUp()
 
     def test_get_quotas(self):
-        qt = self.client.quotas()
+        qt = self.client.get_quotas()
         self.assertGreaterEqual(len(qt), 0)

@@ -21,10 +21,10 @@ class AvailabilityZone(resource.Resource):
     allow_list = True
 
     # Properties
-    #: Specifies the AZ status.
-    state = resource.Body('state', type=str)
     #: Specifies the AZ code.
     code = resource.Body('code', type=str)
+    #: Specifies the AZ status.
+    state = resource.Body('state', type=str)
 
     @classmethod
     def list(cls, session, paginated=True, base_path=None,

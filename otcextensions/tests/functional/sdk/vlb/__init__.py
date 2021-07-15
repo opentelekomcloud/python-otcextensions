@@ -19,7 +19,7 @@ class TestVlb(base.BaseFunctionalTest):
     def setUp(self):
         super(TestVlb, self).setUp()
         self.client = self.conn.vlb
-        # self.net_client = self.conn.network
+        self.net_client = self.conn.network
 
     def create_load_balancer(self, **attrs):
         lb = None

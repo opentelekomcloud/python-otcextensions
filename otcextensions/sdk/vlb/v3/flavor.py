@@ -36,12 +36,11 @@ class Flavor(resource.Resource):
     name = resource.Body('name')
     #: Specifies whether the flavor is available to all users.
     shared = resource.Body('shared', type=bool)
-    #: Specifies the project ID.
-    project_id = resource.Body('project_id')
-    #: Specifies the flavor type.
-    type = resource.Body('type')
-
     #: Pagination information about the load balancer flavors.
     page_info = resource.Body('page_info', type=dict)
+    #: Specifies the project ID.
+    project_id = resource.Body('project_id')
     #: Specifies the request ID.
     request_id = resource.Body('request_id')
+    #: Specifies the flavor type.
+    type = resource.Body('type')
