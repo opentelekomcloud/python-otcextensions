@@ -28,7 +28,6 @@ class BaseASTest(base.BaseFunctionalTest):
     NETWORK_NAME = "test-as-network-" + UUID
     SUBNET_NAME = "test-as-subnet-" + UUID
     ROUTER_NAME = "test-as-router-" + UUID
-    SG_NAME = "test-as-sec-group-" + UUID
     KP_NAME = "test-as-kp-" + UUID
     IP_VERSION = 4
     CIDR = "192.168.0.0/16"
@@ -41,16 +40,6 @@ class BaseASTest(base.BaseFunctionalTest):
     def _delete_keypair(self, key_pair):
         return self.conn.compute.delete_keypair(
             keypair=key_pair
-        )
-
-    def _create_sec_group(self):
-        return self.conn.network.create_security_group(
-            name=self.SG_NAME
-        )
-
-    def _delete_sec_group(self, sec_group):
-        return self.conn.network.delete_security_group(
-            security_group=sec_group
         )
 
     def _create_network(self):
@@ -97,13 +86,11 @@ class BaseASTest(base.BaseFunctionalTest):
 
     def create_test_infra(self):
         key_pair = self._create_keypair()
-        sec_group = self._create_sec_group()
         network = self._create_network()
         subnet = self._create_subnet(network.id)
         router = self._create_router(subnet.id)
         return {
             "key_pair_id": key_pair.id,
-            "sec_group_id": sec_group.id,
             "network_id": network.id,
             "subnet_id": subnet.id,
             "router_id": router.id
@@ -113,9 +100,6 @@ class BaseASTest(base.BaseFunctionalTest):
         router = self.conn.network.get_router(infra.get("router_id"))
         subnet = self.conn.network.get_subnet(infra.get("subnet_id"))
         network = self.conn.network.get_network(infra.get("network_id"))
-        sec_group = self.conn.network.get_security_group(
-            infra.get("sec_group_id")
-        )
         key_pair = self.conn.compute.get_keypair(infra.get("key_pair_id"))
         if router:
             self._delete_router(router, subnet.id)
@@ -123,8 +107,6 @@ class BaseASTest(base.BaseFunctionalTest):
             self._delete_subnet(subnet)
         if network:
             self._delete_network(network)
-        if sec_group:
-            self._delete_sec_group(sec_group)
         if key_pair:
             self._delete_keypair(key_pair)
 
