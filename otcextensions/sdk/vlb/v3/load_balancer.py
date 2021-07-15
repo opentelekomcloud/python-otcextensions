@@ -92,7 +92,9 @@ class LoadBalancer(resource.Resource):
     #: Network id
     network_ids = resource.Body('elb_virsubnet_ids', type=list)
     #: FIP
-    floating_ips = resource.Body('publicips', type=list)
+    floating_ip = resource.Body('publicip', type=list, list_type=dict)
+    #: Assigned FIPs
+    floating_ips = resource.Body('publicips', type=list, list_type=dict)
     #: Router id
     vpc_id = resource.Body('vpc_id')
     #: Specifies whether to enable cross-VPC backend.
