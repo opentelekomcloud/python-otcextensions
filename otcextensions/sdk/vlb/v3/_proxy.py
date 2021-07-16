@@ -23,6 +23,7 @@ from otcextensions.sdk.vlb.v3 import flavor as _flavor
 # from otcextensions.sdk.vlb.v2 import l7_rule as _l7rule
 from otcextensions.sdk.vlb.v3 import listener as _listener
 from otcextensions.sdk.vlb.v3 import load_balancer as _lb
+from otcextensions.sdk.vlb.v3 import load_balancer_status as _lb_statuses
 # from otcextensions.sdk.vlb.v2 import member as _member
 # from otcextensions.sdk.vlb.v2 import pool as _pool
 # from otcextensions.sdk.vlb.v2 import provider as _provider
@@ -132,6 +133,22 @@ class Proxy(proxy.Proxy):
 
         return resource.wait_for_status(self, lb, status, failures, interval,
                                         wait, attribute='provisioning_status')
+
+    def get_load_balancer_statuses(self, loadbalancer_id):
+        """Get specific load balancer statuses by load balancer id.
+
+        :param loadbalancer_id: The load balancer id
+        :returns: The status of load balancer
+        :rtype:
+            :class:
+            `~otcextensions.sdk.vlb.v3.load_balancer_status.LoadBalancerStatus`
+        """
+        return self._get(
+            _lb_statuses.LoadBalancerStatus,
+            requires_id=False,
+            base_path='/elb/loadbalancers/%(loadbalancer_id)s/statuses',
+            loadbalancer_id=loadbalancer_id
+        )
 
     def listeners(self, **query):
         """Retrieve a generator of listeners

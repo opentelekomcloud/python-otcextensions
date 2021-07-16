@@ -33,7 +33,11 @@ class TestLoadbalancer(TestVlb):
         elb = self.client.find_load_balancer(TestVlb.load_balancer.name)
         self.assertIsNotNone(elb)
 
-    def test_04_update_loadbalancer(self):
+    def test_04_get_loadbalancer_statuses(self):
+        elb = self.client.get_load_balancer_statuses(TestVlb.load_balancer.id)
+        self.assertIsNotNone(elb)
+
+    def test_05_update_loadbalancer(self):
         new_description = 'changed'
         elb = self.client.update_load_balancer(
             TestVlb.load_balancer,

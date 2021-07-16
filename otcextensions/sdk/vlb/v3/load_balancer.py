@@ -59,6 +59,8 @@ class LoadBalancer(resource.Resource):
     l4_scale_flavor_id = resource.Body('l4_scale_flavor_id')
     #: Specifies the Layer-7 flavor.
     l7_flavor_id = resource.Body('l7_flavor_id')
+    #: Operating status of the forwarding policy added to the listener
+    l7policies = resource.Body('l7policies', type=list, list_type=dict)
     #: Reserved Layer 7 flavor.
     l7_scale_flavor_id = resource.Body('l7_scale_flavor_id')
     #: List of listeners associated with this load balancer
@@ -73,6 +75,8 @@ class LoadBalancer(resource.Resource):
     provider = resource.Body('provider')
     #: The provisioning status of this load balancer
     provisioning_status = resource.Body('provisioning_status')
+    #: Tags added to the load balancer
+    tags = resource.Body('tags', type=list)
     #: Timestamp when the load balancer was last updated
     updated_at = resource.Body('updated_at')
     #: VIP address of load balancer
@@ -85,17 +89,11 @@ class LoadBalancer(resource.Resource):
     vip_subnet_id = resource.Body('vip_subnet_cidr_id')
     # VIP qos policy id
     vip_qos_policy_id = resource.Body('vip_qos_policy_id')
-    #: Tags added to the load balancer
-    tags = resource.Body('tags', type=list)
 
-    #: Network id
-    network_ids = resource.Body('elb_virsubnet_ids', type=list)
     #: FIP
     floating_ip = resource.Body('publicip', type=list, list_type=dict)
     #: Assigned FIPs
     floating_ips = resource.Body('publicips', type=list, list_type=dict)
-    #: Router id
-    vpc_id = resource.Body('vpc_id')
     #: Specifies whether to enable cross-VPC backend.
     ip_target_enable = resource.Body('ip_target_enable')
     #: IPv6 vip address
@@ -104,3 +102,7 @@ class LoadBalancer(resource.Resource):
     ipv6_vip_subnet_id = resource.Body('ipv6_vip_virsubnet_id')
     #: IPv6 vip port id
     ipv6_vip_port_id = resource.Body('ipv6_vip_port_id')
+    #: Network id
+    network_ids = resource.Body('elb_virsubnet_ids', type=list)
+    #: Router id
+    vpc_id = resource.Body('vpc_id')

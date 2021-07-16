@@ -47,7 +47,7 @@ class TestVlb(base.BaseFunctionalTest):
         }
         if not az_list:
             az_list = ['eu-nl-01']
-            attrs['availability_zone_list'] = az_list
+        attrs['availability_zone_list'] = az_list
         if not publicip:
             publicip = {
                 "network_type": "5_bgp",
@@ -59,7 +59,7 @@ class TestVlb(base.BaseFunctionalTest):
                     "name": "elbv3_eip_traffic"
                 }
             }
-            attrs['publicip'] = publicip
+        attrs['publicip'] = publicip
         if not tags:
             tags = [
                 {
@@ -67,7 +67,7 @@ class TestVlb(base.BaseFunctionalTest):
                     "value": "api"
                 }
             ]
-            attrs['tags'] = tags
+        attrs['tags'] = tags
 
         if TestVlb.network and not TestVlb.load_balancer:
             TestVlb.load_balancer = self.client.create_load_balancer(**attrs)
