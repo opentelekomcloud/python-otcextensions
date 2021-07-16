@@ -146,7 +146,6 @@ class Proxy(proxy.Proxy):
         return self._get(
             _lb_statuses.LoadBalancerStatus,
             requires_id=False,
-            base_path='/elb/loadbalancers/%(loadbalancer_id)s/statuses',
             loadbalancer_id=loadbalancer_id
         )
 
