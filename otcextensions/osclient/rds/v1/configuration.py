@@ -433,4 +433,4 @@ class ShowDatabaseConfigurationParameter(command.ShowOne):
         #                                      ' parameter for the'
         #                                      ' configuration group'
         #                                      ' by name.'))
-        # return zip(*sorted(urllib.iteritems(param._info)))
+        # return zip(*sorted(param._info.items()))
