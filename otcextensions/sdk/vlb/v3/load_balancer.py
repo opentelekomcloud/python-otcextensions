@@ -26,16 +26,19 @@ class LoadBalancer(resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'description', 'flavor_id', 'name', 'project_id', 'provider',
-        'vip_address', 'vip_network_id', 'vip_port_id', 'vip_subnet_id',
-        'vip_qos_policy_id', 'provisioning_status', 'operating_status',
-        'availability_zone_list', is_admin_state_up='admin_state_up',
-        availability_zone='availability_zone_list',
+        'availability_zone_list', 'description',
+        'flavor_id', 'name', 'project_id', 'provider',
+        'provisioning_status', 'operating_status',
+        'vip_address', 'vip_network_id',
+        'vip_port_id', 'vip_subnet_id',
+        'vip_qos_policy_id',
+        is_admin_state_up='admin_state_up',
+        availability_zones='availability_zone_list',
     )
 
     # Properties
     #: Name of the target Octavia availability zone
-    availability_zone = resource.Body('availability_zone_list', type=list)
+    availability_zones = resource.Body('availability_zone_list', type=list)
     #: Billing information about the load balancer.
     billing_info = resource.Body('billing_info')
     #: Timestamp when the load balancer was created
@@ -48,8 +51,6 @@ class LoadBalancer(resource.Resource):
     flavor_id = resource.Body('flavor_id')
     #: Specifies whether the load balancer is a dedicated load balancer.
     guaranteed = resource.Body('guaranteed')
-    #: Load balancer ID.
-    id = resource.Body('id')
     #: The administrative state of the load balancer *Type: bool*
     is_admin_state_up = resource.Body('admin_state_up', type=bool)
     #: The Layer-4 flavor.
@@ -62,8 +63,6 @@ class LoadBalancer(resource.Resource):
     l7_scale_flavor_id = resource.Body('l7_scale_flavor_id')
     #: List of listeners associated with this load balancer
     listeners = resource.Body('listeners', type=list, list_type=dict)
-    #: The load balancer name
-    name = resource.Body('name')
     #: Operating status of the load balancer
     operating_status = resource.Body('operating_status')
     #: List of pools associated with this load balancer

@@ -15,72 +15,38 @@ from otcextensions.tests.functional.sdk.vlb import TestVlb
 
 
 class TestLoadbalancer(TestVlb):
-    uuid_v4 = uuid.uuid4().hex[:8]
-    az = 'eu-nl-01'
-    network_id = '1391c40a-8ab3-4249-96e4-cede1b3145cd'
-    vpc_id = '7cbf60cd-0300-498e-bb6a-3e25e7631e20'
-    subnet_id = 'dcedcde7-347d-4b04-bce8-4b926b6ca034'
-
-    lb_attrs = {
-        "name": "test-lbv3",
-        "description": "testing1",
-        "admin_state_up": True,
-        "publicip": {
-            "network_type": "5_bgp",
-            "billing_info": "",
-            "bandwidth": {
-                "size": 2,
-                "share_type": "PER",
-                "charge_mode": "traffic",
-                "name": "elbv3_eip_traffic"
-            }
-        },
-        "tags": [
-            {
-                "key": "test",
-                "value": "api"
-            }
-        ],
-        "l7_flavor_id": "d39af422-1fa5-48d8-bd41-8457716564ab",
-        "vip_subnet_cidr_id": subnet_id,
-        "vpc_id": vpc_id,
-        "guaranteed": True,
-        "availability_zone_list": [az],
-        "provider": "vlb",
-        "elb_virsubnet_ids": [network_id]
-    }
-
-    lb_attrs_eip = {
-        "vpc_id": vpc_id,
-        "availability_zone_list": [az],
-        "admin_state_up": True,
-        "vip_subnet_cidr_id": subnet_id,
-        "elb_virsubnet_ids": [network_id],
-        "name": "elb-ipv4-public",
-        "publicip": {
-            "network_type": "5_bgp",
-            "bandwidth": {
-                "size": 2,
-                "share_type": "PER",
-                "charge_mode": "traffic",
-                "name": "elb_eip_traffic"
-            }
-        }
-    }
-
 
     def setUp(self):
         super(TestLoadbalancer, self).setUp()
+        self.create_network()
+        self.create_load_balancer()
 
-        # self.vlb_name = 'sdk-vlb-test-lb-' + self.uuid_v4
-        # self.vlb = self.client.create_load_balancer(
-        #     name=self.vlb_name
-        # )
-        #
-        # self.addCleanup(self.conn.vlb.delete_load_balancer, self.vlb)
+    def test_01_list_loadbalancers(self):
+        elbs = list(self.client.load_balancers())
+        self.assertIsNotNone(elbs)
 
-
-    def test_create_loadbalancer(self):
-        # neutron_subnet_id = self.net_client.subnets()
-        elb = self.client.create_load_balancer(**self.lb_attrs_eip)
+    def test_02_get_loadbalancer(self):
+        elb = self.client.get_load_balancer(TestVlb.load_balancer)
         self.assertIsNotNone(elb)
+
+    def test_03_find_loadbalancer(self):
+        elb = self.client.find_load_balancer(TestVlb.load_balancer.name)
+        self.assertIsNotNone(elb)
+
+    def test_04_update_loadbalancer(self):
+        new_description = 'changed'
+        elb = self.client.update_load_balancer(
+            TestVlb.load_balancer,
+            description=new_description
+        )
+        self.assertEqual(elb['description'], new_description)
+
+        # cleanup
+        self.client.delete_load_balancer(
+            TestVlb.load_balancer,
+            cascade=True
+        )
+        self.net_client.delete_ip(
+            elb['floating_ips'][0]['publicip_id']
+        )
+        self.addCleanup(self.destroy_network, TestVlb.network)

@@ -15,15 +15,62 @@ from otcextensions.tests.functional import base
 
 
 class TestVlb(base.BaseFunctionalTest):
+    uuid_v4 = uuid.uuid4().hex[:8]
+    network = None
+    load_balancer = None
 
     def setUp(self):
         super(TestVlb, self).setUp()
         self.client = self.conn.vlb
         self.net_client = self.conn.network
 
-    def create_load_balancer(self, **attrs):
-        lb = None
-        return lb
+    def create_load_balancer(
+            self,
+            az_list=None,
+            publicip: dict = None,
+            tags: list = None,
+            name='sdk-vlb-test-lb-' + uuid_v4,
+            description='test',
+            admin_state_up=True,
+            guaranteed=True,
+            provider="vlb"
+    ):
+        attrs = {
+            'name': name,
+            'description': description,
+            'vip_subnet_cidr_id': TestVlb.network['subnet_id'],
+            'vpc_id': TestVlb.network['router_id'],
+            'elb_virsubnet_ids': [TestVlb.network['network_id']],
+            'admin_state_up': admin_state_up,
+            'guaranteed': guaranteed,
+            'provider': provider
+        }
+        if not az_list:
+            az_list = ['eu-nl-01']
+            attrs['availability_zone_list'] = az_list
+        if not publicip:
+            publicip = {
+                "network_type": "5_bgp",
+                "billing_info": "",
+                "bandwidth": {
+                    "size": 2,
+                    "share_type": "PER",
+                    "charge_mode": "traffic",
+                    "name": "elbv3_eip_traffic"
+                }
+            }
+            attrs['publicip'] = publicip
+        if not tags:
+            tags = [
+                {
+                    "key": "test",
+                    "value": "api"
+                }
+            ]
+            attrs['tags'] = tags
+
+        if TestVlb.network and not TestVlb.load_balancer:
+            TestVlb.load_balancer = self.client.create_load_balancer(**attrs)
 
     def create_network(
             self,
@@ -37,33 +84,34 @@ class TestVlb(base.BaseFunctionalTest):
         router_name += uuid_v4
         net_name += uuid_v4
         subnet_name += uuid_v4
+        if not TestVlb.network:
+            network = self.conn.network.create_network(name=net_name)
+            self.assertEqual(net_name, network.name)
+            net_id = network.id
+            subnet = self.conn.network.create_subnet(
+                name=subnet_name,
+                ip_version=ip_version,
+                network_id=net_id,
+                cidr=cidr
+            )
+            self.assertEqual(subnet_name, subnet.name)
+            subnet_id = subnet.id
 
-        network = self.conn.network.create_network(name=net_name)
-        self.assertEqual(net_name, network.name)
-        net_id = network.id
-        subnet = self.conn.network.create_subnet(
-            name=subnet_name,
-            ip_version=ip_version,
-            network_id=net_id,
-            cidr=cidr
-        )
-        self.assertEqual(subnet_name, subnet.name)
-        subnet_id = subnet.id
-
-        router = self.conn.network.create_router(name=router_name)
-        self.assertEqual(router_name, router.name)
-        router_id = router.id
-        interface = router.add_interface(
-            self.conn.network,
-            subnet_id=subnet_id
-        )
-        self.assertEqual(interface['subnet_id'], subnet_id)
-        self.assertIn('port_id', interface)
-        return {
-            'router_id': router_id,
-            'subnet_id': subnet_id,
-            'network_id': net_id
-        }
+            router = self.conn.network.create_router(name=router_name)
+            self.assertEqual(router_name, router.name)
+            router_id = router.id
+            interface = router.add_interface(
+                self.conn.network,
+                subnet_id=subnet_id
+            )
+            self.assertEqual(interface['subnet_id'], subnet_id)
+            self.assertIn('port_id', interface)
+            TestVlb.network = {
+                'router_id': router_id,
+                'subnet_id': subnet_id,
+                'network_id': net_id
+            }
+        return
 
     def destroy_network(self, params: dict):
         router_id = params.get('router_id')
