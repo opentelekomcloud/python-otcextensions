@@ -89,13 +89,10 @@ class Proxy(proxy.Proxy):
             the load balancer does not exist.
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent load balancer.
-        :param bool cascade: If true will delete all child objects of
-            the load balancer.
 
         :returns: ``None``
         """
         load_balancer = self._get_resource(_lb.LoadBalancer, load_balancer)
-        load_balancer.cascade = cascade
         return self._delete(_lb.LoadBalancer, load_balancer,
                             ignore_missing=ignore_missing)
 

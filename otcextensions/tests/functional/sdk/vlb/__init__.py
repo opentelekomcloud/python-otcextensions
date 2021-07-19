@@ -36,7 +36,8 @@ class TestVlb(base.BaseFunctionalTest):
             description='test',
             admin_state_up=True,
             guaranteed=True,
-            provider="vlb"
+            provider='vlb',
+            **kwargs
     ):
         attrs = {
             'name': name,
@@ -49,7 +50,8 @@ class TestVlb(base.BaseFunctionalTest):
             'provider': provider,
             'availability_zone_list': az_list,
             'publicip': publicip,
-            'tags': tags
+            'tags': tags,
+            **kwargs
         }
         if not az_list:
             attrs['availability_zone_list'] = ['eu-nl-01']
@@ -82,7 +84,8 @@ class TestVlb(base.BaseFunctionalTest):
             name='sdk-vlb-test-lis-' + uuid_v4,
             protocol_port=80,
             protocol='TCP',
-            tags: list = None
+            tags: list = None,
+            **kwargs
     ):
         attrs = {
             'protocol_port': protocol_port,
@@ -91,6 +94,7 @@ class TestVlb(base.BaseFunctionalTest):
             'name': name,
             'admin_state_up': admin_state_up,
             'tags': tags,
+            **kwargs
         }
         if not TestVlb.load_balancer:
             raise exceptions.SDKException
@@ -108,7 +112,8 @@ class TestVlb(base.BaseFunctionalTest):
                     }
                 ]
 
-        if TestVlb.network and not TestVlb.load_balancer:
+        if TestVlb.network and TestVlb.load_balancer\
+                and not TestVlb.listener:
             TestVlb.listener = self.client.create_listener(**attrs)
 
     def create_network(

@@ -14,42 +14,42 @@ import uuid
 from otcextensions.tests.functional.sdk.vlb import TestVlb
 
 
-class TestLoadbalancer(TestVlb):
+class TestListener(TestVlb):
 
     def setUp(self):
-        super(TestLoadbalancer, self).setUp()
+        super(TestListener, self).setUp()
         self.create_network()
         self.create_load_balancer()
+        self.create_listener()
 
-    def test_01_list_loadbalancers(self):
-        elbs = list(self.client.load_balancers())
-        self.assertIsNotNone(elbs)
+    def test_01_list_listeners(self):
+        lst = list(self.client.listeners())
+        self.assertIsNotNone(lst)
 
-    def test_02_get_loadbalancer(self):
-        elb = self.client.get_load_balancer(TestVlb.load_balancer)
-        self.assertIsNotNone(elb)
+    def test_02_get_listener(self):
+        lst = self.client.get_listener(TestVlb.listener)
+        self.assertIsNotNone(lst)
 
-    def test_03_find_loadbalancer(self):
-        elb = self.client.find_load_balancer(TestVlb.load_balancer.name)
-        self.assertIsNotNone(elb)
+    def test_03_find_listener(self):
+        lst = self.client.find_listener(TestVlb.listener.name)
+        self.assertIsNotNone(lst)
 
-    def test_04_get_loadbalancer_statuses(self):
-        elb = self.client.get_load_balancer_statuses(TestVlb.load_balancer.id)
-        self.assertIsNotNone(elb)
-
-    def test_05_update_loadbalancer(self):
+    def test_05_update_listener(self):
         new_description = 'changed'
-        elb = self.client.update_load_balancer(
-            TestVlb.load_balancer,
+        lst = self.client.update_listener(
+            TestVlb.listener,
             description=new_description
         )
-        self.assertEqual(elb['description'], new_description)
+        self.assertEqual(lst['description'], new_description)
 
         # cleanup
+        self.client.delete_listener(
+            TestVlb.listener
+        )
         self.client.delete_load_balancer(
             TestVlb.load_balancer
         )
         self.net_client.delete_ip(
-            elb['floating_ips'][0]['publicip_id']
+            TestVlb.load_balancer.floating_ips[0]['publicip_id']
         )
         self.addCleanup(self.destroy_network, TestVlb.network)

@@ -26,7 +26,8 @@ class Listener(resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'description', 'name', 'project_id', 'provider',
+        'description', 'name', 'loadbalancer_id',
+        'project_id', 'provider',
     )
 
     # Properties
