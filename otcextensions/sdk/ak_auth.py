@@ -16,42 +16,20 @@ import hmac
 
 import requests
 
-import six
+from urllib.parse import quote
+from urllib.parse import urlparse
+from urllib.parse import urlsplit
 
-try:
-    # python 2
-    from email.message import Message
-    from urllib import quote
-    from urlparse import urlparse
-    from urlparse import urlsplit
+from http import client as http_client
 
-    class HTTPHeaders(Message):
 
-        # The __iter__ method is not available in python2.x, so we have
-        # to port the py3 version.
-        def __iter__(self):
-            for field, value in self._headers:
-                yield field
+class HTTPHeaders(http_client.HTTPMessage):
+    pass
 
-    def ensure_unicode(s, encoding='utf-8', errors='strict'):
-        if isinstance(s, six.text_type):
-            return s
-        return unicode(s, encoding, errors)  # noqa
 
-except ImportError:
-    # python 3
-    from urllib.parse import quote
-    from urllib.parse import urlparse
-    from urllib.parse import urlsplit
-
-    from six.moves import http_client
-
-    class HTTPHeaders(http_client.HTTPMessage):
-        pass
-
-    def ensure_unicode(s, encoding=None, errors=None):
-        # NOOP in Python 3, because every string is already unicode
-        return s
+def ensure_unicode(s, encoding=None, errors=None):
+    # NOOP in Python 3, because every string is already unicode
+    return s
 
 
 EMPTY_SHA256_HASH = (
