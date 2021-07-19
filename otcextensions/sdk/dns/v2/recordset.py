@@ -26,3 +26,38 @@ class Recordset(recordset.Recordset):
     is_default = resource.Body('default', type=bool)
     #: Timestamp when the zone was last updated.
     updated_at = resource.Body('update_at')
+
+    @classmethod
+    def _get_next_link(cls, uri, response, data, marker, limit, total_yielded):
+        next_link = None
+        params = {}
+        if isinstance(data, dict):
+            links = data.get('links')
+            if links:
+                next_link = links.get('next')
+            total = data.get('metadata', {}).get('total_count')
+            if total:
+                # We have a kill switch
+                total_count = int(total)
+                if total_count <= total_yielded:
+                    return None, params
+
+        # Parse params from Link (next page URL) into params.
+        # This prevents duplication of query parameters that with large
+        # number of pages result in HTTP 414 error eventually.
+        if next_link:
+            parts = six.moves.urllib.parse.urlparse(next_link)
+            query_params = six.moves.urllib.parse.parse_qs(parts.query)
+            params.update(query_params)
+            next_link = six.moves.urllib.parse.urljoin(next_link,
+                                                       parts.path)
+
+        # If we still have no link, and limit was given and is non-zero,
+        # and the number of records yielded equals the limit, then the user
+        # is playing pagination ball so we should go ahead and try once more.
+        if not next_link:
+            next_link = uri
+            params['marker'] = marker
+            if limit:
+                params['limit'] = limit
+        return next_link, params

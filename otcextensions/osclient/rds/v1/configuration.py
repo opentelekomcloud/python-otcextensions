@@ -21,6 +21,7 @@ from osc_lib.command import command
 
 from otcextensions.i18n import _
 
+import six
 
 LOG = logging.getLogger(__name__)
 
@@ -39,7 +40,7 @@ def format_dict(data):
 
     output = ""
     for s in sorted(data):
-        output = output + s + "='" + str(data[s]) + "',\n "
+        output = output + s + "='" + six.text_type(data[s]) + "',\n "
     return output[:-2]
 
 
@@ -202,7 +203,7 @@ class CreateConfiguration(command.ShowOne):
             raise exceptions.CommandError(msg)
 
         if getattr(parsed_args, 'ind_values', None):
-            for k, v in parsed_args.ind_values.items():
+            for k, v in six.iteritems(parsed_args.ind_values):
                 values[k] = str(v)
 
         config_attrs['values'] = values
@@ -292,7 +293,7 @@ class SetConfiguration(command.ShowOne):
         # flatten values into the proper Configuration_attrs
         if getattr(parsed_args, 'values', None):
             config_attrs['values'] = {}
-            for k, v in parsed_args.values.items():
+            for k, v in six.iteritems(parsed_args.values):
                 config_attrs['values'][k] = str(v)
 
         config = client.get_parameter_group(parsed_args.parameter_group)
@@ -433,4 +434,4 @@ class ShowDatabaseConfigurationParameter(command.ShowOne):
         #                                      ' parameter for the'
         #                                      ' configuration group'
         #                                      ' by name.'))
-        # return zip(*sorted(param._info.items()))
+        # return zip(*sorted(six.iteritems(param._info)))
