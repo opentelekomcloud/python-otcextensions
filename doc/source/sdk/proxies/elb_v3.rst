@@ -28,7 +28,9 @@ Listener Operations
 
 .. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
   :noindex:
-  :members: listeners
+  :members: create_listener, delete_listener, listeners,
+            update_listener, find_listener, get_listener,
+            listeners
 
 Quota Operations
 ^^^^^^^^^^^^^^^^^^^
