@@ -33,6 +33,7 @@ from otcextensions.sdk.vlb.v3 import quota as _quota
 class Proxy(proxy.Proxy):
     skip_discovery = True
 
+    # ======== Load balancer ========
     def create_load_balancer(self, **attrs):
         """Create a new load balancer from attributes
 
@@ -149,10 +150,80 @@ class Proxy(proxy.Proxy):
             loadbalancer_id=loadbalancer_id
         )
 
+    # ======== Listener ========
+    def create_listener(self, **attrs):
+        """Create a new listener from attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.vlb.v2.
+            listener.Listener`, comprised of the properties on the
+            Listener class.
+
+        :returns: The results of listener creation
+        :rtype: :class:`~otcextensions.sdk.vlb.v2.listener.Listener`
+        """
+        return self._create(_listener.Listener, **attrs)
+
+    def delete_listener(self, listener, ignore_missing=True):
+        """Delete a listener
+
+        :param listener: The value can be either the ID of a listner or a
+               :class:`~otcextensions.sdk.vlb.v2.listener.Listener` instance.
+        :param bool ignore_missing: When set to ``False``
+                    :class:`~openstack.exceptions.ResourceNotFound` will be
+                    raised when the listner does not exist.
+                    When set to ``True``, no exception will be set when
+                    attempting to delete a nonexistent listener.
+        :returns: ``None``
+        """
+        self._delete(_listener.Listener, listener,
+                     ignore_missing=ignore_missing)
+
+    def update_listener(self, listener, **attrs):
+        """Update a listener
+
+        :param listener: Either the id of a listener or a
+                      :class:`~otcextensions.sdk.vlb.v2.listener.Listener`
+                      instance.
+        :param dict attrs: The attributes to update on the listener
+                           represented by ``listener``.
+        :returns: The updated listener
+        :rtype: :class:`~otcextensions.sdk.vlb.v2.listener.Listener`
+        """
+        return self._update(_listener.Listener, listener, **attrs)
+
+    def find_listener(self, name_or_id, ignore_missing=True):
+        """Find a single listener
+
+        :param name_or_id: The name or ID of a listener.
+        :param bool ignore_missing: When set to ``False``
+                    :class:`~openstack.exceptions.ResourceNotFound` will be
+                    raised when the resource does not exist.
+                    When set to ``True``, None will be returned when
+                    attempting to find a nonexistent resource.
+        :returns: One :class:`~otcextensions.sdk.vlb.v2.listener.Listener`
+         or None
+        """
+        return self._find(_listener.Listener, name_or_id,
+                          ignore_missing=ignore_missing)
+
+    def get_listener(self, listener):
+        """Get a single listener
+
+        :param listener: The value can be the ID of a listener or a
+               :class:`~otcextensions.sdk.vlb.v2.listener.Listener`
+               instance.
+        :returns: One :class:`~otcextensions.sdk.vlb.v2.listener.Listener`
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+                 when no resource can be found.
+        """
+        return self._get(_listener.Listener, listener)
+
     def listeners(self, **query):
         """Retrieve a generator of listeners
 
         :returns: A generator of listeners instances
+        :rtype: :class:`~otcextensions.sdk.vlb.v2.listener.Listener`
         """
         return self._list(_listener.Listener, **query)
 

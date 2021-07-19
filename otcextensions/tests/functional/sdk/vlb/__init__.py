@@ -11,6 +11,8 @@
 # under the License.
 import uuid
 
+from openstack import exceptions
+
 from otcextensions.tests.functional import base
 
 
@@ -18,6 +20,7 @@ class TestVlb(base.BaseFunctionalTest):
     uuid_v4 = uuid.uuid4().hex[:8]
     network = None
     load_balancer = None
+    listener = None
 
     def setUp(self):
         super(TestVlb, self).setUp()
@@ -43,13 +46,15 @@ class TestVlb(base.BaseFunctionalTest):
             'elb_virsubnet_ids': [TestVlb.network['network_id']],
             'admin_state_up': admin_state_up,
             'guaranteed': guaranteed,
-            'provider': provider
+            'provider': provider,
+            'availability_zone_list': az_list,
+            'publicip': publicip,
+            'tags': tags
         }
         if not az_list:
-            az_list = ['eu-nl-01']
-        attrs['availability_zone_list'] = az_list
+            attrs['availability_zone_list'] = ['eu-nl-01']
         if not publicip:
-            publicip = {
+            attrs['publicip'] = {
                 "network_type": "5_bgp",
                 "billing_info": "",
                 "bandwidth": {
@@ -59,18 +64,52 @@ class TestVlb(base.BaseFunctionalTest):
                     "name": "elbv3_eip_traffic"
                 }
             }
-        attrs['publicip'] = publicip
         if not tags:
-            tags = [
-                {
-                    "key": "test",
-                    "value": "api"
-                }
-            ]
-        attrs['tags'] = tags
+            attrs['tags'] = [
+                    {
+                        "key": "test",
+                        "value": "api"
+                    }
+                ]
 
         if TestVlb.network and not TestVlb.load_balancer:
             TestVlb.load_balancer = self.client.create_load_balancer(**attrs)
+
+    def create_listener(
+            self,
+            admin_state_up=True,
+            insert_headers: dict = None,
+            name='sdk-vlb-test-lis-' + uuid_v4,
+            protocol_port=80,
+            protocol='TCP',
+            tags: list = None
+    ):
+        attrs = {
+            'protocol_port': protocol_port,
+            'protocol': protocol,
+            'insert_headers': insert_headers,
+            'name': name,
+            'admin_state_up': admin_state_up,
+            'tags': tags,
+        }
+        if not TestVlb.load_balancer:
+            raise exceptions.SDKException
+        attrs['loadbalancer_id'] = TestVlb.load_balancer.id
+
+        if not insert_headers:
+            attrs['insert_headers']: {
+                'X-Forwarded-ELB-IP': True
+            }
+        if not tags:
+            attrs['tags'] = [
+                    {
+                        "key": "test",
+                        "value": "api"
+                    }
+                ]
+
+        if TestVlb.network and not TestVlb.load_balancer:
+            TestVlb.listener = self.client.create_listener(**attrs)
 
     def create_network(
             self,
