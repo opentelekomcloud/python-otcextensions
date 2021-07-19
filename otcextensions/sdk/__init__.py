@@ -16,13 +16,11 @@ import openstack
 from openstack import _log
 from openstack import utils
 
-from otcextensions.sdk import proxy
-from otcextensions.sdk.compute.v2 import server
 from otcextensions.common import exc
-
-from otcextensions.sdk.cloud import rds as _rds
+from otcextensions.sdk import proxy
 from otcextensions.sdk.cloud import cce as _cce
-from otcextensions.sdk.cloud import loadbalancer as _lb
+from otcextensions.sdk.cloud import rds as _rds
+from otcextensions.sdk.compute.v2 import server
 
 
 _logger = _log.setup_logging('openstack')
@@ -350,14 +348,13 @@ def load(conn, **kwargs):
     project_id = conn._get_project_info().id
 
     for (service_name, service) in OTC_SERVICES.items():
-        _logger.debug('trying to register service %s' % service_name)
+        # _logger.debug('trying to register service %s' % service_name)
         register_single_service(conn, service_name, project_id, service)
 
     patch_openstack_resources()
 
     extend_instance(conn, _rds.RdsMixin)
     extend_instance(conn, _cce.CceMixin)
-    extend_instance(conn, _lb.LoadBalancerMixin)
 
     return None
 
