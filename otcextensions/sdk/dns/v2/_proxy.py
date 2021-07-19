@@ -127,11 +127,11 @@ class Proxy(proxy.Proxy):
         return zone.disassociate_router(self, **router)
 
     def wait_for_zone(self, zone, status='ACTIVE', failures=None,
-                      interval=2, wait=300, attribute='status'):
+                      interval=2, wait=180, attribute='status'):
         """Wait for an zone to be in a particular status.
         :param zone:
             The :class:`~otcextensions.sdk.dns.v2.zone.Zone`
-            or zoen ID to wait on to reach the specified status.
+            or zone ID to wait on to reach the specified status.
         :param status: Desired status.
         :param failures:
             Statuses that would be interpreted as failures.
@@ -148,7 +148,7 @@ class Proxy(proxy.Proxy):
         :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
                  has transited to one of the failure statuses.
         """
-        failures = ['INACTIVE'] if failures is None else failures
+        failures = ['ERROR'] if failures is None else failures
         return resource.wait_for_status(
             self, zone, status, failures, interval, wait)
 
@@ -286,7 +286,7 @@ class Proxy(proxy.Proxy):
                           **attrs)
 
     def wait_for_recordset(self, recordset, status='ACTIVE', failures=None,
-                           interval=2, wait=300, attribute='status'):
+                           interval=2, wait=180, attribute='status'):
         """Wait for an recordset to be in a particular status.
         :param zone:
             The :class:`~otcextensions.sdk.dns.v2.recordset.Recordset`
@@ -307,7 +307,7 @@ class Proxy(proxy.Proxy):
         :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
                  has transited to one of the failure statuses.
         """
-        failures = ['INACTIVE'] if failures is None else failures
+        failures = ['ERROR'] if failures is None else failures
         return resource.wait_for_status(
             self, recordset, status, failures, interval, wait)
 

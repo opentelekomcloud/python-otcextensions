@@ -19,7 +19,7 @@ _logger = openstack._log.setup_logging('openstack')
 
 class TestRecordsets(TestDns):
     uuid_v4 = uuid.uuid4().hex[:8]
-    zone_alias = uuid_v4 + 'dns.sdk-test-zone-public.com.'
+    zone_alias = uuid_v4 + 'dns.sdk-test-rs-zone-public.com.'
     zones = []
 
     def setUp(self):
