@@ -234,7 +234,6 @@ class Proxy(proxy.Proxy):
             comprised of the properties on the Certificate class.
 
         :returns: The results of the Certificate Creation
-
         :rtype: :class:`~otcextensions.sdk.vlb.v3.certificate.Certificate`
         """
         return self._create(_certificate.Certificate, **attrs)
@@ -244,7 +243,6 @@ class Proxy(proxy.Proxy):
 
         :param dict query: Optional query parameters to be sent to limit
             the resources being returned.
-
         :returns: A generator of certificates objects.
         """
         return self._list(_certificate.Certificate, **query)
@@ -260,7 +258,6 @@ class Proxy(proxy.Proxy):
              when the certificate does not exist.
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent certificate.
-
         :returns: ``None``
         """
         return self._delete(_certificate.Certificate, certificate,
@@ -275,7 +272,6 @@ class Proxy(proxy.Proxy):
 
         :returns: One :class:
         `~otcextensions.sdk.vlb.v3.certificate.Certificate`
-
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
             when no resource can be found.
         """
@@ -289,7 +285,6 @@ class Proxy(proxy.Proxy):
           instance.
         :param dict attrs: The attributes to update on the certificate
          represented by ``certificate``.
-
         :returns: The updated certificate.
 
         :rtype: :class:`~otcextensions.vlb.v3.certificate.Certificate`
@@ -305,7 +300,6 @@ class Proxy(proxy.Proxy):
             when the certificate does not exist.
             When set to ``True``, no exception will be set when attempting
             to find a nonexistent certificate.
-
         :returns:
             One :class:`~otcextensions.sdk.vlb.v3.certificate.Certificate`
              or ``None``
