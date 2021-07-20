@@ -3,7 +3,7 @@ otcextensions.sdk.vlb.v3.member
 
 .. automodule:: otcextensions.sdk.vlb.v3.member
 
-The Pool Class
+The Member Class
 ------------------
 
 The ``Member`` class inherits from

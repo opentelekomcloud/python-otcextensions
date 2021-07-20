@@ -23,11 +23,14 @@ class TestVlb(base.BaseFunctionalTest):
     listener = None
     pool = None
     member = None
+    server = None
+    key_pair = None
 
     def setUp(self):
         super(TestVlb, self).setUp()
         self.client = self.conn.vlb
         self.net_client = self.conn.network
+        self.ecs_client = self.conn.compute
 
     def create_load_balancer(
             self,
@@ -135,6 +138,30 @@ class TestVlb(base.BaseFunctionalTest):
         if TestVlb.network and TestVlb.load_balancer \
                 and TestVlb.listener and not TestVlb.pool:
             TestVlb.pool = self.client.create_pool(**attrs)
+
+    def create_server(
+            self,
+            name='sdk-vlb-test-ecs-' + uuid_v4,
+            kp_name='sdk-vlb-test-kp-' + uuid_v4,
+            image_name='cirros-0.3.5-x86_64-disk',
+            flavor_name='m1.small'
+    ):
+
+        image = self.ecs_client.find_image(image_name)
+        flavor = self.ecs_client.find_flavor(flavor_name)
+
+        if not TestVlb.keypair:
+            TestVlb.keypair = self.ecs_client.create_keypair(name=kp_name)
+
+        server = self.ecs_client.create_server(
+            name=name,
+            image_id=image.id,
+            flavor_id=flavor.id,
+            networks=[{"uuid": TestVlb.network['network_id']}],
+            key_name=TestVlb.keypair.name
+        )
+        if not TestVlb.server:
+            TestVlb.server = self.ecs_client.wait_for_server(server)
 
     def create_network(
             self,
