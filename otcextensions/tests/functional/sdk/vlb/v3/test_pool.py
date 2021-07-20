@@ -13,10 +13,10 @@
 from otcextensions.tests.functional.sdk.vlb import TestVlb
 
 
-class TestListener(TestVlb):
+class TestPool(TestVlb):
 
     def setUp(self):
-        super(TestListener, self).setUp()
+        super(TestPool, self).setUp()
         self.create_network()
         self.create_load_balancer()
         self.create_listener()
