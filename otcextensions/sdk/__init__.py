@@ -16,13 +16,12 @@ import openstack
 from openstack import _log
 from openstack import utils
 
-from otcextensions.sdk import proxy
-from otcextensions.sdk.compute.v2 import server
 from otcextensions.common import exc
-
-from otcextensions.sdk.cloud import rds as _rds
+from otcextensions.sdk import proxy
 from otcextensions.sdk.cloud import cce as _cce
 from otcextensions.sdk.cloud import dds as _dds
+from otcextensions.sdk.cloud import rds as _rds
+from otcextensions.sdk.compute.v2 import server
 
 
 _logger = _log.setup_logging('openstack')
@@ -112,7 +111,7 @@ OTC_SERVICES = {
     },
     'elb': {
         'service_type': 'elb',
-        'replace_system': True
+        # 'replace_system': True
     },
     'identity': {
         'service_type': 'identity',
@@ -156,6 +155,10 @@ OTC_SERVICES = {
     'smn': {
         'service_type': 'smn',
         'append_project_id': True
+    },
+    'vlb': {
+        'service_type': 'vlb',
+        'endpoint_service_type': 'elbv3',
     },
     'volume_backup': {
         'service_type': 'volume_backup',
@@ -285,6 +288,57 @@ def patch_openstack_resources():
         exc.raise_from_response
 
 
+def register_single_service(conn, service_name, project_id=None, service=None):
+    """Register single service in the SDK"""
+    if not project_id:
+        project_id = conn._get_project_info().id
+    if not service and service_name in OTC_SERVICES:
+        service = OTC_SERVICES[service_name]
+
+    if service.get('replace_system', False):
+        # system_proxy = getattr(conn, service['service_type'])
+        # for service_type in system_proxy.all_types:
+        if service['service_type'] in conn._proxies:
+            del conn._proxies[service['service_type']]
+        # attr = getattr(conn, service_name)
+        # delattr(conn, service['service_type'])
+
+    sd = _get_descriptor(service_name)
+
+    conn.add_service(sd)
+
+    if service.get('append_project_id', False):
+        # If service requires project_id, but it is not present in the
+        # service catalog - set endpoint_override
+        ep = conn.endpoint_for(sd.service_type)
+        if ep and not ep.rstrip('/').endswith('\\%(project_id)s') \
+                and not ep.rstrip('/').endswith('$(tenant_id)s') \
+                and not ep.rstrip('/').endswith(project_id):
+            key = '_'.join([
+                sd.service_type.lower().replace('-', '_'),
+                'endpoint_override'])
+            if key not in conn.config.config:
+                conn.config.config[key] = utils.urljoin(ep,
+                                                        '%(project_id)s')
+
+    elif service.get('set_endpoint_override', False):
+        # SDK respects skip_discovery only if endpoint_override is set.
+        # In case, when append_project_id is skipped for the service,
+        # but the discovery on the service is not working - we might be
+        # failing dramatically.
+        ep = conn.endpoint_for(sd.service_type)
+        conn.config.config[
+            '_'.join([
+                sd.service_type.lower().replace('-', '_'),
+                'endpoint_override'
+            ])
+        ] = utils.urljoin(ep)
+
+    # Inject get_ak_sk into the connection to give possibility
+    # for some proxies to use them
+    setattr(conn, 'get_ak_sk', get_ak_sk)
+
+
 def load(conn, **kwargs):
     """Register supported OTC services and make them known to the OpenStackSDK
 
@@ -296,50 +350,8 @@ def load(conn, **kwargs):
     project_id = conn._get_project_info().id
 
     for (service_name, service) in OTC_SERVICES.items():
-        _logger.debug('trying to register service %s' % service_name)
-
-        if service.get('replace_system', False):
-            # system_proxy = getattr(conn, service['service_type'])
-            # for service_type in system_proxy.all_types:
-            if service['service_type'] in conn._proxies:
-                del conn._proxies[service['service_type']]
-            # attr = getattr(conn, service_name)
-            # delattr(conn, service['service_type'])
-
-        sd = _get_descriptor(service_name)
-
-        conn.add_service(sd)
-
-        if service.get('append_project_id', False):
-            # If service requires project_id, but it is not present in the
-            # service catalog - set endpoint_override
-            ep = conn.endpoint_for(sd.service_type)
-            if ep and not ep.rstrip('/').endswith('\\%(project_id)s') \
-                    and not ep.rstrip('/').endswith('$(tenant_id)s') \
-                    and not ep.rstrip('/').endswith(project_id):
-                key = '_'.join([
-                    sd.service_type.lower().replace('-', '_'),
-                    'endpoint_override'])
-                if key not in conn.config.config:
-                    conn.config.config[key] = utils.urljoin(ep,
-                                                            '%(project_id)s')
-
-        elif service.get('set_endpoint_override', False):
-            # SDK respects skip_discovery only if endpoint_override is set.
-            # In case, when append_project_id is skipped for the service,
-            # but the discovery on the service is not working - we might be
-            # failing dramatically.
-            ep = conn.endpoint_for(sd.service_type)
-            conn.config.config[
-                '_'.join([
-                    sd.service_type.lower().replace('-', '_'),
-                    'endpoint_override'
-                ])
-            ] = utils.urljoin(ep)
-
-        # Inject get_ak_sk into the connection to give possibility
-        # for some proxies to use them
-        setattr(conn, 'get_ak_sk', get_ak_sk)
+        # _logger.debug('trying to register service %s' % service_name)
+        register_single_service(conn, service_name, project_id, service)
 
     patch_openstack_resources()
 
