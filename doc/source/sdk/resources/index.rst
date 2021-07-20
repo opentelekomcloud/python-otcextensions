@@ -13,6 +13,7 @@ Open Telekom Cloud Resources
    Cloud Container Engine (CCE) <cce/index>
    Cloud Eye Service (CES) <ces/index>
    Cloud Trace Service (CTS) <cts/index>
+   Dedicated Load Balancer (DLB) <vlb/index>
    Distributed Cache Service (DCS) <dcs/index>
    Document Database Service (DDS) <dds/index>
    Dedicated Host Service (DeH) <deh/index>
