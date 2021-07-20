@@ -17,7 +17,7 @@ from otcextensions.sdk import dnsmixin
 _logger = _log.setup_logging('openstack')
 
 
-class NameServer(resource.Resource, dnsmixin.DNSProxyMixin):
+class NameServer(dnsmixin.DNSProxyMixin, resource.Resource):
     resource_key = 'nameserver'
     resources_key = 'nameservers'
     base_path = '/zones/%(zone_id)s/nameservers'

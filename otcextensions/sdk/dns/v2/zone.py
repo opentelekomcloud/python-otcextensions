@@ -23,7 +23,7 @@ class Router(router.Router):
     router_region = resource.Body('router_region')
 
 
-class Zone(zone.Zone, dnsmixin.DNSProxyMixin):
+class Zone(dnsmixin.DNSProxyMixin, zone.Zone):
     """DNS ZONE Resource"""
 
     _query_mapping = resource.QueryParameters(

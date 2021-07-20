@@ -14,7 +14,7 @@ from openstack.dns.v2 import recordset
 from otcextensions.sdk import dnsmixin
 
 
-class Recordset(recordset.Recordset, dnsmixin.DNSProxyMixin):
+class Recordset(dnsmixin.DNSProxyMixin, recordset.Recordset):
     """DNS Recordset Resource"""
 
     _query_mapping = resource.QueryParameters(
