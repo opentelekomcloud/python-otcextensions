@@ -252,10 +252,10 @@ class Proxy(proxy.Proxy):
 
         :param certificate: The value can be the ID of a ELB certificate or a
             :class:`~otcextensions.sdk.vlb.v3.certificate.Certificate`
-             instance.
+            instance.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
-             when the certificate does not exist.
+            when the certificate does not exist.
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent certificate.
         :returns: ``None``
@@ -271,7 +271,7 @@ class Proxy(proxy.Proxy):
             instance.
 
         :returns: One :class:
-        `~otcextensions.sdk.vlb.v3.certificate.Certificate`
+            `~otcextensions.sdk.vlb.v3.certificate.Certificate`
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
             when no resource can be found.
         """
@@ -281,10 +281,10 @@ class Proxy(proxy.Proxy):
         """Update a certificate
 
         :param certificate: The value can be either the ID of a ELB certificate
-         or a :class:`~otcextensions.sdk.vlb.v3.certificate.Certificate`
-          instance.
+            or a :class:`~otcextensions.sdk.vlb.v3.certificate.Certificate`
+            instance.
         :param dict attrs: The attributes to update on the certificate
-         represented by ``certificate``.
+            represented by ``certificate``.
         :returns: The updated certificate.
 
         :rtype: :class:`~otcextensions.vlb.v3.certificate.Certificate`
@@ -302,7 +302,7 @@ class Proxy(proxy.Proxy):
             to find a nonexistent certificate.
         :returns:
             One :class:`~otcextensions.sdk.vlb.v3.certificate.Certificate`
-             or ``None``
+            or ``None``
         """
         return self._find(_certificate.Certificate, name_or_id,
                           ignore_missing=ignore_missing)
@@ -322,7 +322,7 @@ class Proxy(proxy.Proxy):
 
         :returns: A AvailabilityZone instance
         :rtype: :class:
-                `~otcextensions.sdk.vlb.v3.availability_zone.AvailabilityZone`
+            `~otcextensions.sdk.vlb.v3.availability_zone.AvailabilityZone`
         """
         return self._list(_availability_zone.AvailabilityZone, **query)
 

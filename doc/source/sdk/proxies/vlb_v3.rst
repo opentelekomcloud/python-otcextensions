@@ -1,4 +1,4 @@
-VLB v3 API
+DLB v3 API
 ==========
 
 For details on how to use database, see /sdk/guides/vlb (NEEDS TO BE DONE)

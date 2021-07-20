@@ -1,7 +1,7 @@
-VLB Resources
+DLB Resources
 =============
 
-VLB v3
+DLB v3
 ^^^^^^
 
 .. toctree::
