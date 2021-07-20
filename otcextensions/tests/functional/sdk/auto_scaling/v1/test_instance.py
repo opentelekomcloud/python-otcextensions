@@ -36,12 +36,31 @@ class TestInstance(base.BaseASTest):
     DISK_VOL_TYPE = "SATA"
     DISK_TYPE = "SYS"
 
+    def setUp(self):
+        super(TestInstance, self).setUp()
+        self._initialize_as_group_with_instance()
+
+    def tearDown(self):
+        try:
+            self._deinitialize_as_group_with_instance()
+        except exceptions.SDKException as e:
+            _logger.warning('Got exception during clearing resources %s'
+                            % e.message)
+        super(TestInstance, self).tearDown()
+
     def _get_image_id(self):
         image = self.conn.compute.find_image(
             name_or_id=self.IMAGE_NAME
         )
         if image:
             return image.id
+
+    def _get_default_sec_group(self):
+        sec_group = self.conn.network.find_security_group(
+            name_or_id="default"
+        )
+        if sec_group:
+            return sec_group.id
 
     def _create_as_config(self, image_id, sec_group_id):
         config_attrs = {
@@ -117,7 +136,7 @@ class TestInstance(base.BaseASTest):
 
     def _initialize_as_group_with_instance(self):
         self.as_config = self._create_as_config(
-            self._get_image_id(), self.infra.get("sec_group_id")
+            self._get_image_id(), self._get_default_sec_group()
         )
         self.as_group = self._create_as_group(
             self.as_config.id, self.infra.get("router_id"),
@@ -134,18 +153,6 @@ class TestInstance(base.BaseASTest):
             self._delete_as_group(self.as_group)
         if self.as_config:
             self._delete_as_config(self.as_config)
-
-    def setUp(self):
-        super(TestInstance, self).setUp()
-        self._initialize_as_group_with_instance()
-
-    def tearDown(self):
-        try:
-            self._deinitialize_as_group_with_instance()
-        except exceptions.SDKException as e:
-            _logger.warning('Got exception during clearing resources %s'
-                            % e.message)
-        super(TestInstance, self).tearDown()
 
     def test_find_instance_by_id(self):
         result = self.conn.auto_scaling.find_instance(

@@ -19,6 +19,7 @@ from openstack import utils
 from otcextensions.common import exc
 from otcextensions.sdk import proxy
 from otcextensions.sdk.cloud import cce as _cce
+from otcextensions.sdk.cloud import dds as _dds
 from otcextensions.sdk.cloud import rds as _rds
 from otcextensions.sdk.compute.v2 import server
 
@@ -82,6 +83,7 @@ OTC_SERVICES = {
     'dds': {
         'service_type': 'dds',
         'endpoint_service_type': 'ddsv3',
+        'append_project_id': True
     },
     'deh': {
         'service_type': 'deh',
@@ -355,6 +357,7 @@ def load(conn, **kwargs):
 
     extend_instance(conn, _rds.RdsMixin)
     extend_instance(conn, _cce.CceMixin)
+    extend_instance(conn, _dds.DdsMixin)
 
     return None
 

@@ -14,16 +14,16 @@ from openstack import resource
 
 
 class FlavorSpec(resource.Resource):
-    #: Specifies the node type.
-    #: * mongos
-    #: * shard
-    #: * config
-    #: * replica
-    #: *Type:string*
-    type = resource.Body('type')
     #: Specifies node quantity.
     #: *Type:int*
     num = resource.Body('num', type=int)
+    #: Specifies the disk size.
+    #: valid value: ``ULTRAHIGH``,
+    #: *Type:int*
+    size = resource.Body('size', type=int)
+    #: Specifies the resource specification code.
+    #: *Type:string*
+    spec_code = resource.Body('spec_code')
     #: Specifies the disk type.
     #: Valid values:
     #: mongos: The value ranges from 2 to 16.
@@ -32,28 +32,88 @@ class FlavorSpec(resource.Resource):
     #: replica: The value is 1.
     #: *Type:string*
     storage = resource.Body('storage')
-    #: Specifies the disk size.
-    #: valid value: ``ULTRAHIGH``,
-    #: *Type:int*
-    size = resource.Body('size', type=int)
-    #: Specifies the resource specification code.
+    #: Specifies the node type.
+    #: * mongos
+    #: * shard
+    #: * config
+    #: * replica
     #: *Type:string*
-    spec_code = resource.Body('spec_code')
+    type = resource.Body('type')
 
 
 class BackupStrategySpec(resource.Resource):
+    #: Specifies the number of days to retain the generated backup files.
+    #: valid value range is from 0 to 732.
+    #: *Type:string*
+    keep_days = resource.Body('keep_days')
     #: Specifies the backup time window.
     #: valid value must be in the "hh:mm-HH:MM" format.
     #: Example value: 08:15-09:15
     #: *Type:string*
     start_time = resource.Body('start_time')
-    #: Specifies the number of days to retain the generated backup files.
-    #: valid value range is from 0 to 732.
+
+
+class VolumeSpec(resource.Resource):
+    #: Disk size.
     #: *Type:string*
-    keep_days = resource.Body('keep_days')
+    size = resource.Body('size')
+    #: Disk usage.
+    #: *Type:string*
+    used = resource.Body('used')
+
+
+class NodeSpec(resource.Resource):
+    #: The AZ.
+    #: *Type:string*
+    availability_zone = resource.Body('availability_zone')
+    #: Node ID.
+    #: *Type:string*
+    id = resource.Body('id')
+    #: Node name.
+    #: *Type:string*
+    name = resource.Body('name')
+    #: Private IP address of a node.
+    #: *Type:string*
+    private_ip = resource.Body('private_ip')
+    #: The EIP that has been bound.
+    #: *Type:string*
+    public_ip = resource.Body('public_ip')
+    #: Node role.
+    #: *Type:string*
+    role = resource.Body('role')
+    #: Resource specifications code.
+    #: *Type:string*
+    spec_code = resource.Body('spec_code')
+    #: Node status.
+    #: *Type:string*
+    status = resource.Body('status')
+
+
+class GroupSpec(resource.Resource):
+    #: Group ID.
+    #: *Type:string*
+    id = resource.Body('id')
+    #: Group name.
+    #: *Type:string*
+    name = resource.Body('name')
+    #: Node information.
+    #: *Type:list*
+    nodes = resource.Body('nodes', type=list, list_type=NodeSpec)
+    #: Group status.
+    #: *Type:string*
+    status = resource.Body('status')
+    #: Node type.
+    #: *Type:string*
+    type = resource.Body('type')
+    #: Volume information.
+    #: *Type:dict*
+    volume = resource.Body('volume', type=VolumeSpec)
 
 
 class DatastoreSpec(resource.Resource):
+    #: Specifies the storage engine.
+    #: *Type:string*
+    storage_engine = resource.Body('storage_engine')
     #: Specifies the database type.
     #: The value is ``DDS-Community``.
     #: *Type:string*
@@ -62,10 +122,6 @@ class DatastoreSpec(resource.Resource):
     #: valid value is 3.2 or 3.4.
     #: *Type:string*
     version = resource.Body('version')
-    #: Specifies the storage engine.
-    #: valid value is wiredTiger.
-    #: *Type:string*
-    storage_engine = resource.Body('storage_engine')
 
 
 class Instance(resource.Resource):
@@ -85,54 +141,87 @@ class Instance(resource.Resource):
         'id', 'name', 'mode', 'datastore_type',
         'vpc_id', 'subnet_id', 'limit', 'offset')
 
+    #: Operations that is executed on the DB instance.
+    #: *Type:string*
+    actions = resource.Body('actions', type=list)
+    #: Specifies the AZ ID.
+    #: *Type:string*
+    availability_zone = resource.Body('availability_zone')
+    #: Specifies the advanced backup policy.
+    #: *Type:dict*
+    backup_strategy = resource.Body('backup_strategy', type=BackupStrategySpec)
+    #: Time when a DB instance is created.
+    #: *Type:string*
+    created = resource.Body('created')
+    #: Specifies the database information.
+    #: *Type:dict*
+    datastore = resource.Body('datastore', type=DatastoreSpec)
+    #: Specifies the database type.
+    #: *Type:string*
+    datastore_type = resource.Body('datastore_type')
+    #: Specifies the key ID used for disk encryption.
+    #: *Type:string*
+    disk_encryption_id = resource.Body('disk_encryption_id')
+    #: Specifies the storage engine.
+    #: *Type:string*
+    engine = resource.Body('engine')
+    #: Specifies the instance specifications.
+    #: *Type:list*
+    flavor = resource.Body('flavor', type=list, list_type=FlavorSpec)
+    #: Group information
+    #: *Type:dict*
+    groups = resource.Body('groups', type=list, list_type=GroupSpec)
     #: DB instance ID.
     #: *Type:string*
     id = resource.Body('id')
-    #: DB instance name.
+    #: Async job id
+    #: *Type:uuid*
+    job_id = resource.Body('job_id')
+    #: Maintenance time window.
     #: *Type:string*
-    name = resource.Body('name')
+    maintenance_window = resource.Body('maintenance_window')
     #: Specifies the instance type.
     #: * Sharding indicates the cluster instance.
     #: * ReplicaSet indicate the replica set instance.
     #: *Type:string*
     mode = resource.Body('mode')
-    #: Specifies the database type.
+    #: DB instance name.
     #: *Type:string*
-    datastore_type = resource.Body('datastore_type')
-    #: Specifies the VPC ID.
+    name = resource.Body('name')
+    #: Specifies the database password.
     #: *Type:string*
-    vpc_id = resource.Body('vpc_id')
-    #: Data store information.
+    password = resource.Body('password')
+    #: Billing mode.
     #: *Type:string*
-    subnet_id = resource.Body('subnet_id')
+    pay_mode = resource.Body('pay_mode')
+    #: Database port number.
+    #: *Type:int*
+    port = resource.Body('port')
+    #: Specifies the region ID.
+    #: *Type:string*
+    region = resource.Body('region')
     #: Specifies the ID of the security group
     #: where a specified DB instance belongs to.
     #: *Type:string*
     security_group_id = resource.Body('security_group_id')
-    #: Specifies the database information.
-    #: *Type:dict*
-    datastore = resource.Body('datastore', type=DatastoreSpec)
-    #: Specifies the region ID.
+    #: Instance status.
     #: *Type:string*
-    region = resource.Body('region')
-    #: Specifies the AZ ID.
-    #: *Type:string*
-    availability_zone = resource.Body('availability_zone')
-    #: Specifies the database password.
-    #: *Type:string*
-    password = resource.Body('password')
-    #: Specifies the key ID used for disk encryption.
-    #: *Type:string*
-    disk_encryption_id = resource.Body('disk_encryption_id')
-    #: Specifies the instance specifications.
-    #: *Type:list*
-    flavor = resource.Body('flavor', type=list, list_type=FlavorSpec)
-    #: Specifies the advanced backup policy.
-    #: *Type:dict*
-    backup_strategy = resource.Body('backup_strategy', type=BackupStrategySpec)
+    status = resource.Body('status')
     #: Specifies whether to enable SSL.
     #: *Type:string*
-    ssl_option = resource.Body('ssl_option')
+    ssl = resource.Body('ssl')
+    #: Data store information.
+    #: *Type:string*
+    subnet_id = resource.Body('subnet_id')
+    #: Time zone.
+    #: *Type:string*
+    time_zone = resource.Body('time_zone')
+    #: Specifies the VPC ID.
+    #: *Type:string*
+    vpc_id = resource.Body('vpc_id')
+    #: Time when a DB instance is updated.
+    #: *Type:string*
+    updated = resource.Body('updated')
 
     def fetch(self, session, requires_id=True,
               base_path=None, error_message=None, **params):
