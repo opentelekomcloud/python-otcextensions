@@ -1,15 +1,15 @@
-ELB v3 API
+VLB v3 API
 ==========
 
 For details on how to use database, see /sdk/guides/rds (NEEDS TO BE DONE)
 
 .. automodule:: otcextensions.sdk.vlb.v3._proxy
 
-The ELB Class
+The VLB Class
 -------------
 
-The database high-level interface is available through the ``elb`` member of a
-:class:`~openstack.connection.Connection` object.  The ``elb`` member will only
+The database high-level interface is available through the ``vlb`` member of a
+:class:`~openstack.connection.Connection` object.  The ``vlb`` member will only
 be added if the ``otcextensions.sdk.register_otc_extensions(conn)`` method is
 called.
 

@@ -1,7 +1,7 @@
-ELB Resources
+VLB Resources
 =============
 
-ELB v3
+VLB v3
 ^^^^^^
 
 .. toctree::
