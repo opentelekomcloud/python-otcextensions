@@ -21,6 +21,7 @@ class TestVlb(base.BaseFunctionalTest):
     network = None
     load_balancer = None
     listener = None
+    pool = None
 
     def setUp(self):
         super(TestVlb, self).setUp()
@@ -106,6 +107,33 @@ class TestVlb(base.BaseFunctionalTest):
         if TestVlb.network and TestVlb.load_balancer \
                 and not TestVlb.listener:
             TestVlb.listener = self.client.create_listener(**attrs)
+
+    def create_pool(
+            self,
+            admin_state_up=True,
+            description = 'Test',
+            lb_algorithm = 'ROUND_ROBIN',
+            name='sdk-vlb-test-pool-' + uuid_v4,
+            protocol='TCP',
+            **kwargs
+    ):
+        attrs = {
+            'name': name,
+            'description': description,
+            'lb_algorithm': lb_algorithm,
+            'protocol': protocol,
+            'admin_state_up': admin_state_up,
+            **kwargs
+        }
+        if not TestVlb.listener:
+            raise exceptions.SDKException
+        attrs['listener_id'] = TestVlb.listener.id
+        if not TestVlb.load_balancer:
+            raise exceptions.SDKException
+        attrs['loadbalancer_id'] = TestVlb.load_balancer.id
+        if TestVlb.network and TestVlb.load_balancer \
+                and TestVlb.listener and not TestVlb.pool:
+            TestVlb.pool = self.client.create_pool(**attrs)
 
     def create_network(
             self,

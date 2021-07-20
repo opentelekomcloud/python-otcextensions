@@ -15,7 +15,7 @@ from openstack import resource
 
 from otcextensions.sdk.vlb.v3 import availability_zone as _availability_zone
 # from otcextensions.sdk.vlb.v2 import member as _member
-# from otcextensions.sdk.vlb.v2 import pool as _pool
+from otcextensions.sdk.vlb.v3 import pool as _pool
 # from otcextensions.sdk.vlb.v2 import provider as _provider
 from otcextensions.sdk.vlb.v3 import certificate as _certificate
 # from otcextensions.sdk.vlb.v2 import availability_zone_profile as \
@@ -366,3 +366,72 @@ class Proxy(proxy.Proxy):
         """
         return self._find(_flavor.Flavor, name_or_id,
                           ignore_missing=ignore_missing)
+
+    # ======= Pool =======
+    def create_pool(self, **attrs):
+        """Create a new pool from attributes
+        :param dict attrs: Keyword arguments which will be used to create
+                           a :class:`~otcextensions.sdk.vlb.v3.
+                           pool.Pool`,
+                           comprised of the properties on the
+                           Pool class.
+        :returns: The results of Pool creation
+        :rtype: :class:`~otcextensions.sdk.vlb.v3.pool.Pool`
+        """
+        return self._create(_pool.Pool, **attrs)
+
+    def get_pool(self, *attrs):
+        """Get a pool
+        :param pool: Value is
+            :class:`~otcextensions.sdk.vlb.v3.pool.Pool`
+            instance.
+        :returns: One
+             :class:`~otcextensions.sdk.vlb.v3.pool.Pool`
+        """
+        return self._get(_pool.Pool, *attrs)
+
+    def pools(self, **query):
+        """Retrieve a generator of pools
+        :returns: A generator of Pool instances
+        """
+        return self._list(_pool.Pool, **query)
+
+    def delete_pool(self, pool, ignore_missing=True):
+        """Delete a pool
+        :param pool: The pool is a
+            :class:`~otcextensions.sdk.vlb.v3.pool.Pool`
+            instance
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the pool does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent pool.
+        :returns: ``None``
+        """
+        return self._delete(_pool.Pool, pool,
+                            ignore_missing=ignore_missing)
+
+    def find_pool(self, name_or_id, ignore_missing=True):
+        """Find a single pool
+        :param name_or_id: The name or ID of a pool
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the pool does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to delete a nonexistent pool.
+        :returns: ``None``
+        """
+        return self._find(_pool.Pool, name_or_id,
+                          ignore_missing=ignore_missing)
+
+    def update_pool(self, pool, **attrs):
+        """Update a pool
+        :param pool: Either the id of a pool or a
+                      :class:`~otcextensions.sdk.vlb.v3.pool.Pool`
+                      instance.
+        :param dict attrs: The attributes to update on the pool
+                           represented by ``pool``.
+        :returns: The updated pool
+        :rtype: :class:`~otcextensions.sdk.vlb.v3.pool.Pool`
+        """
+        return self._update(_pool.Pool, pool, **attrs)
