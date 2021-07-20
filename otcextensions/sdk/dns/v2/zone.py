@@ -13,6 +13,7 @@ from openstack import resource
 from openstack.dns.v2 import zone
 from openstack.network.v2 import router
 from openstack import utils
+from otcextensions.sdk import dnsmixin
 
 
 class Router(router.Router):
@@ -22,7 +23,7 @@ class Router(router.Router):
     router_region = resource.Body('router_region')
 
 
-class Zone(zone.Zone):
+class Zone(zone.Zone, dnsmixin.DNSProxyMixin):
     """DNS ZONE Resource"""
 
     _query_mapping = resource.QueryParameters(
