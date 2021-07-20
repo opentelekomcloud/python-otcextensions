@@ -1,10 +1,10 @@
 otcextensions.sdk.vlb.v3.quota
-=================================
+==============================
 
 .. automodule:: otcextensions.sdk.vlb.v3.quota
 
 The Quota Class
-------------------
+---------------
 
 The ``Quota`` class inherits from
 :class:`~otcextensions.sdk.sdk_resource.Resource`.

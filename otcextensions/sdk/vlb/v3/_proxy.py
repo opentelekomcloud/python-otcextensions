@@ -14,6 +14,10 @@ from openstack import proxy
 from openstack import resource
 
 from otcextensions.sdk.vlb.v3 import availability_zone as _availability_zone
+# from otcextensions.sdk.vlb.v2 import member as _member
+# from otcextensions.sdk.vlb.v2 import pool as _pool
+# from otcextensions.sdk.vlb.v2 import provider as _provider
+from otcextensions.sdk.vlb.v3 import certificate as _certificate
 # from otcextensions.sdk.vlb.v2 import availability_zone_profile as \
 #    _availability_zone_profile
 from otcextensions.sdk.vlb.v3 import flavor as _flavor
@@ -24,10 +28,6 @@ from otcextensions.sdk.vlb.v3 import flavor as _flavor
 from otcextensions.sdk.vlb.v3 import listener as _listener
 from otcextensions.sdk.vlb.v3 import load_balancer as _lb
 from otcextensions.sdk.vlb.v3 import load_balancer_status as _lb_statuses
-# from otcextensions.sdk.vlb.v2 import member as _member
-# from otcextensions.sdk.vlb.v2 import pool as _pool
-# from otcextensions.sdk.vlb.v2 import provider as _provider
-from otcextensions.sdk.vlb.v3 import certificate as _certificate
 from otcextensions.sdk.vlb.v3 import quota as _quota
 
 
@@ -312,7 +312,6 @@ class Proxy(proxy.Proxy):
         """
         return self._find(_certificate.Certificate, name_or_id,
                           ignore_missing=ignore_missing)
-
 
     # ======== Quota ========
     def quotas(self):

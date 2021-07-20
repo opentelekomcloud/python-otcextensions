@@ -53,5 +53,3 @@ class Certificate(resource.Resource):
     type = resource.Body('type')
     #: Specifies the time when the certificate was updated.
     updated_at = resource.Body('updated_at')
-
-

@@ -67,13 +67,10 @@ class TestVlb(base.BaseFunctionalTest):
                 }
             }
         if not tags:
-            attrs['tags'] = [
-                    {
-                        "key": "test",
-                        "value": "api"
-                    }
-                ]
-
+            attrs['tags'] = [{
+                "key": "test",
+                "value": "api"
+            }]
         if TestVlb.network and not TestVlb.load_balancer:
             TestVlb.load_balancer = self.client.create_load_balancer(**attrs)
 
@@ -99,20 +96,14 @@ class TestVlb(base.BaseFunctionalTest):
         if not TestVlb.load_balancer:
             raise exceptions.SDKException
         attrs['loadbalancer_id'] = TestVlb.load_balancer.id
-
         if not insert_headers:
-            attrs['insert_headers']: {
-                'X-Forwarded-ELB-IP': True
-            }
+            attrs['insert_headers']: {'X-Forwarded-ELB-IP': True}
         if not tags:
-            attrs['tags'] = [
-                    {
-                        "key": "test",
-                        "value": "api"
-                    }
-                ]
-
-        if TestVlb.network and TestVlb.load_balancer\
+            attrs['tags'] = [{
+                "key": "test",
+                "value": "api"
+            }]
+        if TestVlb.network and TestVlb.load_balancer \
                 and not TestVlb.listener:
             TestVlb.listener = self.client.create_listener(**attrs)
 

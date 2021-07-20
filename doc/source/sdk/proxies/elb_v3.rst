@@ -1,12 +1,12 @@
 ELB v3 API
-================
+==========
 
 For details on how to use database, see /sdk/guides/rds (NEEDS TO BE DONE)
 
 .. automodule:: otcextensions.sdk.vlb.v3._proxy
 
 The ELB Class
-------------------
+-------------
 
 The database high-level interface is available through the ``elb`` member of a
 :class:`~openstack.connection.Connection` object.  The ``elb`` member will only
@@ -14,14 +14,14 @@ be added if the ``otcextensions.sdk.register_otc_extensions(conn)`` method is
 called.
 
 AvailabilityZone Operations
-^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
   :noindex:
   :members: availability_zones
 
 Certificate Operations
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
   :noindex:
@@ -29,14 +29,14 @@ Certificate Operations
             get_certificate, update_certificate, find_certificate
 
 Flavor Operations
-^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
   :noindex:
   :members: flavors, get_flavor, find_flavor
 
 Listener Operations
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
   :noindex:
@@ -45,7 +45,7 @@ Listener Operations
             listeners
 
 LoadBalancer Operations
-^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
   :noindex:
@@ -55,7 +55,7 @@ LoadBalancer Operations
             update_load_balancer
 
 Quota Operations
-^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
   :noindex:
