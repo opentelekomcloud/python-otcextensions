@@ -36,7 +36,8 @@ class VlbService(service_description.ServiceDescription):
 
         # First, check to see if we've got config that matches what we
         # understand in the SDK.
-        version_string = '3'  #  config.get_api_version('elbv3') or '3'
+        #  config.get_api_version('elbv3') or '3'
+        version_string = '3'
         endpoint_override = config.get_endpoint('elbv3')
 #        ep = urlparse(config.get_service_catalog().url_for(
 #            service_type='elbv3',
