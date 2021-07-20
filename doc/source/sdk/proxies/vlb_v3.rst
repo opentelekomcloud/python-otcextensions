@@ -1,7 +1,7 @@
 VLB v3 API
 ==========
 
-For details on how to use database, see /sdk/guides/rds (NEEDS TO BE DONE)
+For details on how to use database, see /sdk/guides/vlb (NEEDS TO BE DONE)
 
 .. automodule:: otcextensions.sdk.vlb.v3._proxy
 
@@ -18,15 +18,15 @@ AvailabilityZone Operations
 
 .. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
   :noindex:
-  :members: availability_zones
+  :members: availability_zones,
 
 Certificate Operations
 ^^^^^^^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
   :noindex:
-  :members: create_certificate, certificates, delete_certificate,
-            get_certificate, update_certificate, find_certificate
+  :members: create_certificate, delete_certificate, certificates,
+            update_certificate, find_certificate, get_certificate,
 
 Flavor Operations
 ^^^^^^^^^^^^^^^^^
@@ -41,8 +41,7 @@ Listener Operations
 .. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
   :noindex:
   :members: create_listener, delete_listener, listeners,
-            update_listener, find_listener, get_listener,
-            listeners
+            update_listener, find_listener, get_listener
 
 LoadBalancer Operations
 ^^^^^^^^^^^^^^^^^^^^^^^

@@ -14,6 +14,7 @@ Service Proxies
    Distributed Cache Service (DCS) <dcs>
    Document Database Service (DDS) <dds_v3>
    Dedicated Host Service (DeH) <deh>
+   Dedicated Load Balancer (VLB) <vlb_v3>
    Distributed Message Service (DMS) <dms>
    Domain Name Server Service (DNS) <dns>
    Identity Service (IAM) <identity_v3>
