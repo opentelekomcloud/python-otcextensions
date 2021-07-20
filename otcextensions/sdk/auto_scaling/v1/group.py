@@ -111,3 +111,32 @@ class Group(_base.Resource):
         '''pause group'''
         body = {'action': 'pause'}
         self._action(session, body)
+
+    def delete(self, session, error_message=None, force_delete=False):
+        """Delete the remote resource based on this instance.
+
+        This function overrides default Resource.delete to enable params
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+
+        :return: This :class:`Group` instance.
+        """
+
+        params = {}
+        if force_delete:
+            params["force_delete"] = "yes"
+        request = self._prepare_request(params=params)
+
+        session = self._get_session(session)
+        microversion = self._get_microversion_for(session, 'delete')
+
+        response = session.delete(request.url, headers=request.headers,
+                                  microversion=microversion)
+
+        kwargs = {}
+        if error_message:
+            kwargs['error_message'] = error_message
+
+        self._translate_response(response, has_body=False, **kwargs)
+        return self
