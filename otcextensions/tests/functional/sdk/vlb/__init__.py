@@ -22,6 +22,7 @@ class TestVlb(base.BaseFunctionalTest):
     load_balancer = None
     listener = None
     pool = None
+    member = None
 
     def setUp(self):
         super(TestVlb, self).setUp()
@@ -111,8 +112,8 @@ class TestVlb(base.BaseFunctionalTest):
     def create_pool(
             self,
             admin_state_up=True,
-            description = 'Test',
-            lb_algorithm = 'ROUND_ROBIN',
+            description='Test',
+            lb_algorithm='ROUND_ROBIN',
             name='sdk-vlb-test-pool-' + uuid_v4,
             protocol='TCP',
             **kwargs

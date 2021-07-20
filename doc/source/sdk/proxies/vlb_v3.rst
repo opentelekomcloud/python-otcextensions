@@ -53,6 +53,14 @@ LoadBalancer Operations
             delete_load_balancer, find_load_balancer,
             update_load_balancer
 
+Member Operations
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
+  :noindex:
+  :members: create_member, delete_member, find_member,
+            get_member, members, update_member
+
 Pool Operations
 ^^^^^^^^^^^^^^^^
 

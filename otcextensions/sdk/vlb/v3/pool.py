@@ -46,7 +46,8 @@ class Pool(resource.Resource):
     #: Specifies the load balancing algorithm used by the load balancer
     #: to route requests to backend servers.
     lb_algorithm = resource.Body('lb_algorithm')
-    #: Specifies the ID of the listener associated with the backend server group.
+    #: Specifies the ID of the listener associated with the
+    #: backend server group.
     listener_id = resource.Body('listener_id')
     #: Lists the listeners associated with the backend server group.
     listeners = resource.Body('listeners', type=list)

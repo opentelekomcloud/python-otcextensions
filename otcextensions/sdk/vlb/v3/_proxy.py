@@ -14,7 +14,7 @@ from openstack import proxy
 from openstack import resource
 
 from otcextensions.sdk.vlb.v3 import availability_zone as _availability_zone
-# from otcextensions.sdk.vlb.v2 import member as _member
+from otcextensions.sdk.vlb.v3 import member as _member
 from otcextensions.sdk.vlb.v3 import pool as _pool
 # from otcextensions.sdk.vlb.v2 import provider as _provider
 from otcextensions.sdk.vlb.v3 import certificate as _certificate
@@ -371,10 +371,10 @@ class Proxy(proxy.Proxy):
     def create_pool(self, **attrs):
         """Create a new pool from attributes
         :param dict attrs: Keyword arguments which will be used to create
-                           a :class:`~otcextensions.sdk.vlb.v3.
-                           pool.Pool`,
-                           comprised of the properties on the
-                           Pool class.
+            a :class:`~otcextensions.sdk.vlb.v3.
+            pool.Pool`,
+            comprised of the properties on the
+            Pool class.
         :returns: The results of Pool creation
         :rtype: :class:`~otcextensions.sdk.vlb.v3.pool.Pool`
         """
@@ -383,10 +383,8 @@ class Proxy(proxy.Proxy):
     def get_pool(self, *attrs):
         """Get a pool
         :param pool: Value is
-            :class:`~otcextensions.sdk.vlb.v3.pool.Pool`
-            instance.
-        :returns: One
-             :class:`~otcextensions.sdk.vlb.v3.pool.Pool`
+            :class:`~otcextensions.sdk.vlb.v3.pool.Pool` instance.
+        :returns: One :class:`~otcextensions.sdk.vlb.v3.pool.Pool`
         """
         return self._get(_pool.Pool, *attrs)
 
@@ -399,8 +397,7 @@ class Proxy(proxy.Proxy):
     def delete_pool(self, pool, ignore_missing=True):
         """Delete a pool
         :param pool: The pool is a
-            :class:`~otcextensions.sdk.vlb.v3.pool.Pool`
-            instance
+            :class:`~otcextensions.sdk.vlb.v3.pool.Pool` instance
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
             the pool does not exist.
@@ -427,11 +424,110 @@ class Proxy(proxy.Proxy):
     def update_pool(self, pool, **attrs):
         """Update a pool
         :param pool: Either the id of a pool or a
-                      :class:`~otcextensions.sdk.vlb.v3.pool.Pool`
-                      instance.
+            :class:`~otcextensions.sdk.vlb.v3.pool.Pool`
+            instance.
         :param dict attrs: The attributes to update on the pool
-                           represented by ``pool``.
+            represented by ``pool``.
         :returns: The updated pool
         :rtype: :class:`~otcextensions.sdk.vlb.v3.pool.Pool`
         """
         return self._update(_pool.Pool, pool, **attrs)
+
+    # ======= Member =======
+    def create_member(self, pool, **attrs):
+        """Create a new member from attributes
+        :param pool: The pool can be either the ID of a pool or a
+            :class:`~otcextensions.sdk.vlb.v3.pool.Pool` instance
+            that the member will be created in.
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.vlb.v3.member.Member`,
+            comprised of the properties on the Member class.
+        :returns: The results of member creation
+        :rtype: :class:`~otcextensions.sdk.vlb.v3.member.Member`
+        """
+        poolobj = self._get_resource(_pool.Pool, pool)
+        return self._create(_member.Member, pool_id=poolobj.id,
+                            **attrs)
+
+    def delete_member(self, member, pool, ignore_missing=True):
+        """Delete a member
+        :param member:
+            The member can be either the ID of a member or a
+            :class:`~otcextensions.sdk.vlb.v3.member.Member` instance.
+        :param pool: The pool can be either the ID of a pool or a
+            :class:`~otcextensions.sdk.vlb.v3.pool.Pool` instance
+            that the member belongs to.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be
+            raised when the member does not exist.
+            When set to ``True``, no exception will be set when
+            attempting to delete a nonexistent member.
+        :returns: ``None``
+        """
+        poolobj = self._get_resource(_pool.Pool, pool)
+        self._delete(_member.Member, member,
+                     ignore_missing=ignore_missing, pool_id=poolobj.id)
+
+    def find_member(self, name_or_id, pool, ignore_missing=True):
+        """Find a single member
+        :param str name_or_id: The name or ID of a member.
+        :param pool: The pool can be either the ID of a pool or a
+            :class:`~otcextensions.sdk.vlb.v3.pool.Pool` instance
+            that the member belongs to.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be
+            raised when the resource does not exist.
+            When set to ``True``, None will be returned when
+            attempting to find a nonexistent resource.
+        :returns: One :class:`~otcextensions.sdk.vlb.v3.member.Member`
+            or None
+        """
+        poolobj = self._get_resource(_pool.Pool, pool)
+        return self._find(_member.Member, name_or_id,
+                          ignore_missing=ignore_missing, pool_id=poolobj.id)
+
+    def get_member(self, member, pool):
+        """Get a single member
+        :param member: The member can be the ID of a member or a
+            :class:`~openstack.load_balancer.v2.member.Member`
+            instance.
+        :param pool: The pool can be either the ID of a pool or a
+            :class:`~otcextensions.sdk.vlb.v3.pool.Pool` instance
+            that the member belongs to.
+        :returns: One :class:`~otcextensions.sdk.vlb.v3.member.Member`
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+            when no resource can be found.
+        """
+        poolobj = self._get_resource(_pool.Pool, pool)
+        return self._get(_member.Member, member,
+                         pool_id=poolobj.id)
+
+    def members(self, pool, **query):
+        """Return a generator of members
+        :param pool: The pool can be either the ID of a pool or a
+            :class:`~otcextensions.sdk.vlb.v3.pool.Pool` instance
+            that the member belongs to.
+        :param dict query: Optional query parameters to be sent to limit
+            the resources being returned. Valid parameters are:
+        :returns: A generator of member objects
+        :rtype: :class:`~otcextensions.sdk.vlb.v3.member.Member`
+        """
+        poolobj = self._get_resource(_pool.Pool, pool)
+        return self._list(_member.Member, pool_id=poolobj.id, **query)
+
+    def update_member(self, member, pool, **attrs):
+        """Update a member
+        :param member: Either the ID of a member or a
+            :class:`~otcextensions.sdk.vlb.v3.member.Member`
+            instance.
+        :param pool: The pool can be either the ID of a pool or a
+            :class:`~otcextensions.sdk.vlb.v3.pool.Pool` instance
+            that the member belongs to.
+        :param dict attrs: The attributes to update on the member
+            represented by ``member``.
+        :returns: The updated member
+        :rtype: :class:`~otcextensions.sdk.vlb.v3.member.Member`
+        """
+        poolobj = self._get_resource(_pool.Pool, pool)
+        return self._update(_member.Member, member,
+                            pool_id=poolobj.id, **attrs)
