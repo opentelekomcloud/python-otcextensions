@@ -321,10 +321,12 @@ class Proxy(proxy.Proxy):
         """Retrieve a generator of availability zones
 
         :returns: A AvailabilityZone instance
+
         :rtype:
             :class:
             `~otcextensions.sdk.vlb.v3.availability_zone.AvailabilityZone`
         """
+
         return self._list(_availability_zone.AvailabilityZone, **query)
 
     # ======= Flavor =======
