@@ -23,6 +23,7 @@ class TestVlb(base.BaseFunctionalTest):
     listener = None
     pool = None
     member = None
+    health_monitor = None
     server = None
     keypair = None
 
@@ -155,6 +156,31 @@ class TestVlb(base.BaseFunctionalTest):
         if TestVlb.pool and not TestVlb.member:
             TestVlb.member = self.client.create_member(
                 TestVlb.pool, **attrs)
+
+    def create_health_monitor(
+            self,
+            type='TCP',
+            timeout=3,
+            delay=5,
+            max_retries=3,
+            admin_state_up=True,
+            monitor_port=8080,
+            **kwargs
+    ):
+        attrs = {
+            'type': type,
+            'timeout': timeout,
+            'delay': delay,
+            'max_retries': max_retries,
+            'admin_state_up': admin_state_up,
+            'monitor_port': monitor_port,
+            **kwargs
+        }
+        if not TestVlb.pool:
+            raise exceptions.SDKException
+        attrs['pool_id'] = TestVlb.pool.id
+        if TestVlb.pool and not TestVlb.health_monitor:
+            TestVlb.health_monitor = self.client.create_health_monitor(**attrs)
 
     def create_server(
             self,
