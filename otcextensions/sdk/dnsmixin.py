@@ -9,18 +9,15 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import six
-
+import urllib
 from openstack import exceptions
-from openstack import resource
 
 
-class Resource(resource.Resource):
+class DNSProxyMixin:
 
     @classmethod
     def find(cls, session, name_or_id, ignore_missing=True, **params):
         """Find a resource by its name or id.
-
         :param session: The session to use for making this request.
         :type session: :class:`~keystoneauth1.adapter.Adapter`
         :param name_or_id: This resource's identifier, if needed by
@@ -34,7 +31,6 @@ class Resource(resource.Resource):
                             underlying methods, such as to
                             :meth:`~openstack.resource.Resource.existing`
                             in order to pass on URI parameters.
-
         :return: The :class:`Resource` object matching the given name or id
                  or None if nothing matches.
         :raises: :class:`openstack.exceptions.DuplicateResource` if more
@@ -88,11 +84,10 @@ class Resource(resource.Resource):
         # This prevents duplication of query parameters that with large
         # number of pages result in HTTP 414 error eventually.
         if next_link:
-            parts = six.moves.urllib.parse.urlparse(next_link)
-            query_params = six.moves.urllib.parse.parse_qs(parts.query)
+            parts = urllib.parse.urlparse(next_link)
+            query_params = urllib.parse.parse_qs(parts.query)
             params.update(query_params)
-            next_link = six.moves.urllib.parse.urljoin(next_link,
-                                                       parts.path)
+            next_link = urllib.parse.urljoin(next_link, parts.path)
 
         # If we still have no link, and limit was given and is non-zero,
         # and the number of records yielded equals the limit, then the user
