@@ -321,7 +321,9 @@ class Proxy(proxy.Proxy):
         """Retrieve a generator of availability zones
 
         :returns: A AvailabilityZone instance
-        :rtype: :class:`~otcextensions.sdk.vlb.v3...AvailabilityZone`
+        :rtype:
+            :class:
+            `~otcextensions.sdk.vlb.v3.availability_zone.AvailabilityZone`
         """
         return self._list(_availability_zone.AvailabilityZone, **query)
 
@@ -343,10 +345,10 @@ class Proxy(proxy.Proxy):
         )
 
     def get_flavor(self, flavor):
-        """Get a single instance
+        """Get a single flavor
 
-        :param instance: The value can be either the ID of an instance or a
-            :class:`~otcextensions.sdk.dds.v3.flavor.Flavor` instance.
+        :param flavor: The value can be either the ID of an flavor or a
+            :class:`~otcextensions.sdk.dds.v3.flavor.Flavor`.
 
         :returns: One :class:`~otcextensions.sdk.vlb.v3.flavor.Flavor`
         """
@@ -358,9 +360,9 @@ class Proxy(proxy.Proxy):
         :param name_or_id: The name or ID of a flavor
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
-            when the load balancer does not exist.
+            when the flavor does not exist.
             When set to ``True``, no exception will be set when attempting
-            to delete a nonexistent load balancer.
+            to delete a nonexistent flavor.
 
         :returns: ``None``
         """
@@ -370,37 +372,48 @@ class Proxy(proxy.Proxy):
     # ======= Pool =======
     def create_pool(self, **attrs):
         """Create a new pool from attributes
+
         :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.vlb.v3.
-            pool.Pool`,
-            comprised of the properties on the
-            Pool class.
-        :returns: The results of Pool creation
+            a :class:`~otcextensions.sdk.vlb.v3.pool.Pool`,
+            comprised of the properties on the Pool class.
+
+        :returns: The results of the Pool Creation
         :rtype: :class:`~otcextensions.sdk.vlb.v3.pool.Pool`
         """
         return self._create(_pool.Pool, **attrs)
 
     def get_pool(self, *attrs):
-        """Get a pool
-        :param pool: Value is
-            :class:`~otcextensions.sdk.vlb.v3.pool.Pool` instance.
-        :returns: One :class:`~otcextensions.sdk.vlb.v3.pool.Pool`
+        """Get a single pool
+
+        :param dict attrs: Keyword arguments which will be used to get a
+            :class:`~otcextensions.sdk.vlb.v3.pool.Pool`
+            instance.
+
+        :returns: One :class:
+            `~otcextensions.sdk.vlb.v3.pool.Pool`
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+            when no resource can be found.
         """
         return self._get(_pool.Pool, *attrs)
 
     def pools(self, **query):
-        """Retrieve a generator of pools
-        :returns: A generator of Pool instances
+        """Return a generator of pool
+
+        :param dict query: Optional query parameters to be sent to limit
+            the resources being returned.
+        :returns: A generator of pools objects.
         """
         return self._list(_pool.Pool, **query)
 
     def delete_pool(self, pool, ignore_missing=True):
         """Delete a pool
-        :param pool: The pool is a
-            :class:`~otcextensions.sdk.vlb.v3.pool.Pool` instance
+
+        :param pool: The value can be the ID of a ELB pool or a
+            :class:`~otcextensions.sdk.vlb.v3.pool.Pool`
+            instance.
         :param bool ignore_missing: When set to ``False``
-            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
-            the pool does not exist.
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the pool does not exist.
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent pool.
         :returns: ``None``
@@ -410,6 +423,7 @@ class Proxy(proxy.Proxy):
 
     def find_pool(self, name_or_id, ignore_missing=True):
         """Find a single pool
+
         :param name_or_id: The name or ID of a pool
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
@@ -423,19 +437,22 @@ class Proxy(proxy.Proxy):
 
     def update_pool(self, pool, **attrs):
         """Update a pool
-        :param pool: Either the id of a pool or a
-            :class:`~otcextensions.sdk.vlb.v3.pool.Pool`
+
+        :param pool: The value can be either the ID of a ELB pool
+            or a :class:`~otcextensions.sdk.vlb.v3.pool.Pool`
             instance.
         :param dict attrs: The attributes to update on the pool
             represented by ``pool``.
-        :returns: The updated pool
-        :rtype: :class:`~otcextensions.sdk.vlb.v3.pool.Pool`
+        :returns: The updated pool.
+
+        :rtype: :class:`~otcextensions.vlb.v3.pool.Pool`
         """
         return self._update(_pool.Pool, pool, **attrs)
 
     # ======= Member =======
     def create_member(self, pool, **attrs):
         """Create a new member from attributes
+
         :param pool: The pool can be either the ID of a pool or a
             :class:`~otcextensions.sdk.vlb.v3.pool.Pool` instance
             that the member will be created in.
@@ -451,6 +468,7 @@ class Proxy(proxy.Proxy):
 
     def delete_member(self, member, pool, ignore_missing=True):
         """Delete a member
+
         :param member:
             The member can be either the ID of a member or a
             :class:`~otcextensions.sdk.vlb.v3.member.Member` instance.
@@ -470,6 +488,7 @@ class Proxy(proxy.Proxy):
 
     def find_member(self, name_or_id, pool, ignore_missing=True):
         """Find a single member
+
         :param str name_or_id: The name or ID of a member.
         :param pool: The pool can be either the ID of a pool or a
             :class:`~otcextensions.sdk.vlb.v3.pool.Pool` instance
@@ -488,6 +507,7 @@ class Proxy(proxy.Proxy):
 
     def get_member(self, member, pool):
         """Get a single member
+
         :param member: The member can be the ID of a member or a
             :class:`~openstack.load_balancer.v2.member.Member`
             instance.
@@ -504,6 +524,7 @@ class Proxy(proxy.Proxy):
 
     def members(self, pool, **query):
         """Return a generator of members
+
         :param pool: The pool can be either the ID of a pool or a
             :class:`~otcextensions.sdk.vlb.v3.pool.Pool` instance
             that the member belongs to.
@@ -517,6 +538,7 @@ class Proxy(proxy.Proxy):
 
     def update_member(self, member, pool, **attrs):
         """Update a member
+
         :param member: Either the ID of a member or a
             :class:`~otcextensions.sdk.vlb.v3.member.Member`
             instance.
