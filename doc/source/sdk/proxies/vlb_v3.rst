@@ -35,6 +35,15 @@ Flavor Operations
   :noindex:
   :members: flavors, get_flavor, find_flavor
 
+HealthMonitor Operations
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
+  :noindex:
+  :members: find_health_monitor, create_health_monitor,
+            get_health_monitor, health_monitors,
+            delete_health_monitor, update_health_monitor
+
 Listener Operations
 ^^^^^^^^^^^^^^^^^^^
 

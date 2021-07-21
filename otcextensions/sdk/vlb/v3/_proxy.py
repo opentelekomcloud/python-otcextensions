@@ -14,20 +14,20 @@ from openstack import proxy
 from openstack import resource
 
 from otcextensions.sdk.vlb.v3 import availability_zone as _availability_zone
-from otcextensions.sdk.vlb.v3 import member as _member
-from otcextensions.sdk.vlb.v3 import pool as _pool
 # from otcextensions.sdk.vlb.v2 import provider as _provider
 from otcextensions.sdk.vlb.v3 import certificate as _certificate
 # from otcextensions.sdk.vlb.v2 import availability_zone_profile as \
 #    _availability_zone_profile
 from otcextensions.sdk.vlb.v3 import flavor as _flavor
 # from otcextensions.sdk.vlb.v2 import flavor_profile as _flavor_profile
-# from otcextensions.sdk.vlb.v2 import health_monitor as _hm
+from otcextensions.sdk.vlb.v3 import health_monitor as _hm
 # from otcextensions.sdk.vlb.v2 import l7_policy as _l7policy
 # from otcextensions.sdk.vlb.v2 import l7_rule as _l7rule
 from otcextensions.sdk.vlb.v3 import listener as _listener
 from otcextensions.sdk.vlb.v3 import load_balancer as _lb
 from otcextensions.sdk.vlb.v3 import load_balancer_status as _lb_statuses
+from otcextensions.sdk.vlb.v3 import member as _member
+from otcextensions.sdk.vlb.v3 import pool as _pool
 from otcextensions.sdk.vlb.v3 import quota as _quota
 
 
@@ -321,10 +321,7 @@ class Proxy(proxy.Proxy):
         """Retrieve a generator of availability zones
 
         :returns: A AvailabilityZone instance
-
-        :rtype:
-            :class:
-            `~otcextensions.sdk.vlb.v3.availability_zone.AvailabilityZone`
+        :rtype: :class:`AvailabilityZone`
         """
 
         return self._list(_availability_zone.AvailabilityZone, **query)
@@ -531,7 +528,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.vlb.v3.pool.Pool` instance
             that the member belongs to.
         :param dict query: Optional query parameters to be sent to limit
-            the resources being returned. Valid parameters are:
+            the resources being returned.
         :returns: A generator of member objects
         :rtype: :class:`~otcextensions.sdk.vlb.v3.member.Member`
         """
@@ -555,3 +552,90 @@ class Proxy(proxy.Proxy):
         poolobj = self._get_resource(_pool.Pool, pool)
         return self._update(_member.Member, member,
                             pool_id=poolobj.id, **attrs)
+
+    # ======= HealthMonitor =======
+    def find_health_monitor(self, name_or_id, ignore_missing=True):
+        """Find a single health monitor
+
+        :param str name_or_id: The name or ID of a health monitor.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be
+            raised when the resource does not exist.
+            When set to ``True``, None will be returned when
+            attempting to find a nonexistent resource.
+        :returns: One
+            :class:`~otcextensions.sdk.vlb.v3.healthmonitor.HealthMonitor`
+            or None
+        :raises: :class:`openstack.exceptions.DuplicateResource` if more
+            than one resource is found for this request.
+        :raises: :class:`openstack.exceptions.ResourceNotFound` if nothing
+            is found and ignore_missing is ``False``.
+        """
+        return self._find(_hm.HealthMonitor, name_or_id,
+                          ignore_missing=ignore_missing)
+
+    def create_health_monitor(self, **attrs):
+        """Create a new health monitor from attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.vlb.v3.healthmonitor.HealthMonitor`,
+            comprised of the properties on the Member class.
+        :returns: The results of health monitor creation
+        :rtype: :class:`~otcextensions.sdk.vlb.v3.healthmonitor.HealthMonitor`
+        """
+        return self._create(_hm.HealthMonitor, **attrs)
+
+    def get_health_monitor(self, healthmonitor):
+        """Get a single health monitor
+
+        :param healthmonitor: The value can be the ID of a health monitor or a
+            :class:`~openstack.load_balancer.v2.healthmonitor.HealthMonitor`
+            instance.
+        :returns: One
+            :class:`~otcextensions.sdk.vlb.v3.healthmonitor.HealthMonitor`
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+            when no resource can be found.
+        """
+        return self._get(_hm.HealthMonitor, healthmonitor)
+
+    def health_monitors(self, **query):
+        """Return a generator of health monitors
+
+        :param dict query: Optional query parameters to be sent to limit
+            the resources being returned.
+        :returns: A generator of health monitor objects
+        :rtype: :class:`~otcextensions.sdk.vlb.v3.healthmonitor.HealthMonitor`
+        """
+        return self._list(_hm.HealthMonitor, **query)
+
+    def delete_health_monitor(self, healthmonitor, ignore_missing=True):
+        """Delete a health monitor
+
+        :param healthmonitor:
+            The value can be either the ID of a health monitor or a
+            :class:`~otcextensions.sdk.vlb.v3.health monitor.HealthMonitor`
+            instance.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be
+            raised when the member does not exist.
+            When set to ``True``, no exception will be set when
+            attempting to delete a nonexistent health monitor.
+        :returns: ``None``
+        """
+        return self._delete(_hm.HealthMonitor, healthmonitor,
+                            ignore_missing=ignore_missing)
+
+    def update_health_monitor(self, healthmonitor, **attrs):
+        """Update a health monitor
+
+        :param healthmonitor: The healthmonitor can be either the ID of the
+            health monitor or a
+            :class:`~openstack.load_balancer.v2.healthmonitor.HealthMonitor`
+            instance
+        :param dict attrs: The attributes to update on the health monitor
+            represented by ``healthmonitor``.
+        :returns: The updated health monitor
+        :rtype: :class:`~otcextensions.sdk.vlb.v3.health monitor.HealthMonitor`
+        """
+        return self._update(_hm.HealthMonitor, healthmonitor,
+                            **attrs)
