@@ -24,7 +24,7 @@ class TestVlb(base.BaseFunctionalTest):
     pool = None
     member = None
     server = None
-    key_pair = None
+    keypair = None
 
     def setUp(self):
         super(TestVlb, self).setUp()
@@ -42,6 +42,7 @@ class TestVlb(base.BaseFunctionalTest):
             admin_state_up=True,
             guaranteed=True,
             provider='vlb',
+            ip_target_enable=True,
             **kwargs
     ):
         attrs = {
@@ -55,6 +56,7 @@ class TestVlb(base.BaseFunctionalTest):
             'provider': provider,
             'availability_zone_list': az_list,
             'publicip': publicip,
+            'ip_target_enable': ip_target_enable,
             'tags': tags,
             **kwargs
         }
@@ -135,32 +137,51 @@ class TestVlb(base.BaseFunctionalTest):
         if not TestVlb.load_balancer:
             raise exceptions.SDKException
         attrs['loadbalancer_id'] = TestVlb.load_balancer.id
-        if TestVlb.network and TestVlb.load_balancer \
-                and TestVlb.listener and not TestVlb.pool:
+        if TestVlb.network and TestVlb.listener and not TestVlb.pool:
             TestVlb.pool = self.client.create_pool(**attrs)
+
+    def create_member(
+            self,
+            name='sdk-vlb-test-member-' + uuid_v4,
+            protocol_port=8080,
+            **kwargs
+    ):
+        attrs = {
+            'protocol_port': protocol_port,
+            'name': name,
+            'address': TestVlb.server.addresses[self.network_name][0]['addr'],
+            **kwargs
+        }
+        if TestVlb.pool and not TestVlb.member:
+            TestVlb.member = self.client.create_member(
+                TestVlb.pool, **attrs)
 
     def create_server(
             self,
             name='sdk-vlb-test-ecs-' + uuid_v4,
             kp_name='sdk-vlb-test-kp-' + uuid_v4,
-            image_name='cirros-0.3.5-x86_64-disk',
-            flavor_name='m1.small'
+            image_name='Standard_Fedora_34_latest',
+            flavor_name='s3.medium.1'
     ):
 
         image = self.ecs_client.find_image(image_name)
         flavor = self.ecs_client.find_flavor(flavor_name)
+        self.network_name = self.net_client.find_network(
+            TestVlb.network['network_id']
+        ).name
 
         if not TestVlb.keypair:
             TestVlb.keypair = self.ecs_client.create_keypair(name=kp_name)
 
-        server = self.ecs_client.create_server(
-            name=name,
-            image_id=image.id,
-            flavor_id=flavor.id,
-            networks=[{"uuid": TestVlb.network['network_id']}],
-            key_name=TestVlb.keypair.name
-        )
         if not TestVlb.server:
+            server = self.ecs_client.create_server(
+                name=name,
+                image_id=image.id,
+                flavor_id=flavor.id,
+                networks=[{"uuid": TestVlb.network['network_id']}],
+                key_name=TestVlb.keypair.name
+            )
+
             TestVlb.server = self.ecs_client.wait_for_server(server)
 
     def create_network(
@@ -231,3 +252,8 @@ class TestVlb(base.BaseFunctionalTest):
             ignore_missing=False
         )
         self.assertIsNone(sot)
+
+    def delete_server(self):
+        sot = self.ecs_client.delete_server(TestVlb.server.id)
+        self.assertIsNone(sot)
+        self.ecs_client.wait_for_delete(TestVlb.server)
