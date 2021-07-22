@@ -44,6 +44,15 @@ HealthMonitor Operations
             get_health_monitor, health_monitors,
             delete_health_monitor, update_health_monitor
 
+L7Policy Operations
+^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
+  :noindex:
+  :members: create_l7_policy, delete_l7_policy,
+            find_l7_policy, get_l7_policy, l7_policies,
+            update_l7_policy
+
 Listener Operations
 ^^^^^^^^^^^^^^^^^^^
 

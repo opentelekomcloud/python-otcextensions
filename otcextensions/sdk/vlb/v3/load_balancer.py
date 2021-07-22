@@ -46,7 +46,7 @@ class LoadBalancer(resource.Resource):
     #: The load balancer description
     description = resource.Body('description')
     #: EIP bound to the load balancer.
-    eips = resource.Body('eips', type=list, list_type=dict)
+    eips = resource.Body('eips', type=list)
     #: The load balancer flavor ID
     flavor_id = resource.Body('flavor_id')
     #: Specifies whether the load balancer is a dedicated load balancer.
@@ -60,15 +60,15 @@ class LoadBalancer(resource.Resource):
     #: Specifies the Layer-7 flavor.
     l7_flavor_id = resource.Body('l7_flavor_id')
     #: Operating status of the forwarding policy added to the listener
-    l7policies = resource.Body('l7policies', type=list, list_type=dict)
+    l7policies = resource.Body('l7policies', type=list)
     #: Reserved Layer 7 flavor.
     l7_scale_flavor_id = resource.Body('l7_scale_flavor_id')
     #: List of listeners associated with this load balancer
-    listeners = resource.Body('listeners', type=list, list_type=dict)
+    listeners = resource.Body('listeners', type=list)
     #: Operating status of the load balancer
     operating_status = resource.Body('operating_status')
     #: List of pools associated with this load balancer
-    pools = resource.Body('pools', type=list, list_type=dict)
+    pools = resource.Body('pools', type=list)
     #: The ID of the project this load balancer is associated with.
     project_id = resource.Body('project_id')
     #: Provider name for the load balancer.

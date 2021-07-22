@@ -21,7 +21,7 @@ from otcextensions.sdk.vlb.v3 import certificate as _certificate
 from otcextensions.sdk.vlb.v3 import flavor as _flavor
 # from otcextensions.sdk.vlb.v2 import flavor_profile as _flavor_profile
 from otcextensions.sdk.vlb.v3 import health_monitor as _hm
-# from otcextensions.sdk.vlb.v2 import l7_policy as _l7policy
+from otcextensions.sdk.vlb.v3 import l7_policy as _l7policy
 # from otcextensions.sdk.vlb.v2 import l7_rule as _l7rule
 from otcextensions.sdk.vlb.v3 import listener as _listener
 from otcextensions.sdk.vlb.v3 import load_balancer as _lb
@@ -39,12 +39,12 @@ class Proxy(proxy.Proxy):
         """Create a new load balancer from attributes
 
         :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.vlb.v2.
+            a :class:`~otcextensions.sdk.vlb.v3.
             load_balancer.LoadBalancer`, comprised of the properties on the
             LoadBalancer class.
 
         :returns: The results of load balancer creation
-        :rtype: :class:`~otcextensions.sdk.vlb.v2.load_balancer.LoadBalancer`
+        :rtype: :class:`~otcextensions.sdk.vlb.v3.load_balancer.LoadBalancer`
         """
         return self._create(_lb.LoadBalancer, **attrs)
 
@@ -52,11 +52,11 @@ class Proxy(proxy.Proxy):
         """Get a load balancer
 
         :param load_balancer: The value can be the name of a load balancer
-             or :class:`~otcextensions.sdk.vlb.v2.load_balancer.LoadBalancer`
+             or :class:`~otcextensions.sdk.vlb.v3.load_balancer.LoadBalancer`
              instance.
 
         :returns: One
-             :class:`~otcextensions.sdk.vlb.v2.load_balancer.LoadBalancer`
+             :class:`~otcextensions.sdk.vlb.v3.load_balancer.LoadBalancer`
         """
         return self._get(_lb.LoadBalancer, *attrs)
 
@@ -65,7 +65,7 @@ class Proxy(proxy.Proxy):
 
         :param name_or_id: The name or ID of a load balancer
 
-        :returns: One :class:`~otcextensions.sdk.vlb.v2.load_balancer.
+        :returns: One :class:`~otcextensions.sdk.vlb.v3.load_balancer.
                   LoadBalancerStats`
         """
         return self._get(_lb.LoadBalancerStats, lb_id=name_or_id,
@@ -83,7 +83,7 @@ class Proxy(proxy.Proxy):
         """Delete a load balancer
 
         :param load_balancer: The load_balancer can be either the name or a
-            :class:`~otcextensions.sdk.vlb.v2.load_balancer.LoadBalancer`
+            :class:`~otcextensions.sdk.vlb.v3.load_balancer.LoadBalancer`
             instance
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
@@ -116,13 +116,13 @@ class Proxy(proxy.Proxy):
         """Update a load balancer
 
         :param load_balancer: The load_balancer can be either the name or a
-            :class:`~otcextensions.sdk.vlb.v2.load_balancer.LoadBalancer`
+            :class:`~otcextensions.sdk.vlb.v3.load_balancer.LoadBalancer`
             instance
         :param dict attrs: The attributes to update on the load balancer
                            represented by ``load_balancer``.
 
         :returns: The updated load_balancer
-        :rtype: :class:`~otcextensions.sdk.vlb.v2.load_balancer.LoadBalancer`
+        :rtype: :class:`~otcextensions.sdk.vlb.v3.load_balancer.LoadBalancer`
         """
         return self._update(_lb.LoadBalancer, load_balancer, **attrs)
 
@@ -153,12 +153,12 @@ class Proxy(proxy.Proxy):
         """Create a new listener from attributes
 
         :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.vlb.v2.
+            a :class:`~otcextensions.sdk.vlb.v3.
             listener.Listener`, comprised of the properties on the
             Listener class.
 
         :returns: The results of listener creation
-        :rtype: :class:`~otcextensions.sdk.vlb.v2.listener.Listener`
+        :rtype: :class:`~otcextensions.sdk.vlb.v3.listener.Listener`
         """
         return self._create(_listener.Listener, **attrs)
 
@@ -166,7 +166,7 @@ class Proxy(proxy.Proxy):
         """Delete a listener
 
         :param listener: The value can be either the ID of a listner or a
-               :class:`~otcextensions.sdk.vlb.v2.listener.Listener` instance.
+               :class:`~otcextensions.sdk.vlb.v3.listener.Listener` instance.
         :param bool ignore_missing: When set to ``False``
                     :class:`~openstack.exceptions.ResourceNotFound` will be
                     raised when the listner does not exist.
@@ -181,12 +181,12 @@ class Proxy(proxy.Proxy):
         """Update a listener
 
         :param listener: Either the id of a listener or a
-                      :class:`~otcextensions.sdk.vlb.v2.listener.Listener`
+                      :class:`~otcextensions.sdk.vlb.v3.listener.Listener`
                       instance.
         :param dict attrs: The attributes to update on the listener
                            represented by ``listener``.
         :returns: The updated listener
-        :rtype: :class:`~otcextensions.sdk.vlb.v2.listener.Listener`
+        :rtype: :class:`~otcextensions.sdk.vlb.v3.listener.Listener`
         """
         return self._update(_listener.Listener, listener, **attrs)
 
@@ -199,7 +199,7 @@ class Proxy(proxy.Proxy):
                     raised when the resource does not exist.
                     When set to ``True``, None will be returned when
                     attempting to find a nonexistent resource.
-        :returns: One :class:`~otcextensions.sdk.vlb.v2.listener.Listener`
+        :returns: One :class:`~otcextensions.sdk.vlb.v3.listener.Listener`
          or None
         """
         return self._find(_listener.Listener, name_or_id,
@@ -209,9 +209,9 @@ class Proxy(proxy.Proxy):
         """Get a single listener
 
         :param listener: The value can be the ID of a listener or a
-               :class:`~otcextensions.sdk.vlb.v2.listener.Listener`
+               :class:`~otcextensions.sdk.vlb.v3.listener.Listener`
                instance.
-        :returns: One :class:`~otcextensions.sdk.vlb.v2.listener.Listener`
+        :returns: One :class:`~otcextensions.sdk.vlb.v3.listener.Listener`
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                  when no resource can be found.
         """
@@ -221,7 +221,7 @@ class Proxy(proxy.Proxy):
         """Retrieve a generator of listeners
 
         :returns: A generator of listeners instances
-        :rtype: :class:`~otcextensions.sdk.vlb.v2.listener.Listener`
+        :rtype: :class:`~otcextensions.sdk.vlb.v3.listener.Listener`
         """
         return self._list(_listener.Listener, **query)
 
@@ -508,7 +508,7 @@ class Proxy(proxy.Proxy):
         """Get a single member
 
         :param member: The member can be the ID of a member or a
-            :class:`~openstack.load_balancer.v2.member.Member`
+            :class:`~openstack.load_balancer.v3.member.Member`
             instance.
         :param pool: The pool can be either the ID of a pool or a
             :class:`~otcextensions.sdk.vlb.v3.pool.Pool` instance
@@ -589,7 +589,7 @@ class Proxy(proxy.Proxy):
         """Get a single health monitor
 
         :param healthmonitor: The value can be the ID of a health monitor or a
-            :class:`~openstack.load_balancer.v2.healthmonitor.HealthMonitor`
+            :class:`~openstack.load_balancer.v3.healthmonitor.HealthMonitor`
             instance.
         :returns: One
             :class:`~otcextensions.sdk.vlb.v3.healthmonitor.HealthMonitor`
@@ -630,7 +630,7 @@ class Proxy(proxy.Proxy):
 
         :param healthmonitor: The healthmonitor can be either the ID of the
             health monitor or a
-            :class:`~openstack.load_balancer.v2.healthmonitor.HealthMonitor`
+            :class:`~openstack.load_balancer.v3.healthmonitor.HealthMonitor`
             instance
         :param dict attrs: The attributes to update on the health monitor
             represented by ``healthmonitor``.
@@ -639,3 +639,89 @@ class Proxy(proxy.Proxy):
         """
         return self._update(_hm.HealthMonitor, healthmonitor,
                             **attrs)
+
+    # ======= L7Policy =======
+    def create_l7_policy(self, **attrs):
+        """Create a new l7policy from attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.vlb.v3.l7_policy.L7Policy`,
+            comprised of the properties on the L7Policy class.
+        :returns: The results of l7policy creation
+        :rtype: :class:`~otcextensions.sdk.vlb.v3.l7_policy.L7Policy`
+        """
+        return self._create(_l7policy.L7Policy, **attrs)
+
+    def delete_l7_policy(self, l7_policy, ignore_missing=True):
+        """Delete a l7policy
+
+        :param l7_policy:
+            The value can be either the ID of a l7policy or a
+            :class:`~otcextensions.sdk.vlb.v3.l7_policy.L7Policy`
+            instance.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be
+            raised when the l7policy does not exist.
+            When set to ``True``, no exception will be set when
+            attempting to delete a nonexistent l7policy.
+        :returns: ``None``
+        """
+        self._delete(_l7policy.L7Policy, l7_policy,
+                     ignore_missing=ignore_missing)
+
+    def find_l7_policy(self, name_or_id, ignore_missing=True):
+        """Find a single l7policy
+
+        :param str name_or_id: The name or ID of a l7policy.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be
+            raised when the resource does not exist.
+            When set to ``True``, None will be returned when
+            attempting to find a nonexistent resource.
+        :returns: One
+            :class:`~otcextensions.sdk.vlb.v3.l7_policy.L7Policy`
+            or None
+        :raises: :class:`openstack.exceptions.DuplicateResource` if more
+            than one resource is found for this request.
+        :raises: :class:`openstack.exceptions.ResourceNotFound` if nothing
+            is found and ignore_missing is ``False``.
+        """
+        return self._find(_l7policy.L7Policy, name_or_id,
+                          ignore_missing=ignore_missing)
+
+    def get_l7_policy(self, l7_policy):
+        """Get a single l7policy
+
+        :param healthmonitor: The value can be the ID of a l7policy or a
+            :class:`~openstack.load_balancer.v3.l7_policy.L7Policy`
+            instance.
+        :returns: One
+            :class:`~otcextensions.sdk.vlb.v3.l7_policy.L7Policy`
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+            when no resource can be found.
+        """
+        return self._get(_l7policy.L7Policy, l7_policy)
+
+    def l7_policies(self, **query):
+        """Return a generator of l7policies
+
+        :param dict query: Optional query parameters to be sent to limit
+            the resources being returned.
+        :returns: A generator of l7policies objects
+        :rtype: :class:`~otcextensions.sdk.vlb.v3.l7_policy.L7Policy`
+        """
+        return self._list(_l7policy.L7Policy, **query)
+
+    def update_l7_policy(self, l7_policy, **attrs):
+        """Update a l7policy
+
+        :param l7_policy: The l7policy can be either the ID of the
+            l7policy or a
+            :class:`~openstack.load_balancer.v3.l7_policy.L7Policy`
+            instance
+        :param dict attrs: The attributes to update on the l7policy
+            represented by ``L7policy``.
+        :returns: The updated l7policy
+        :rtype: :class:`~otcextensions.sdk.vlb.v3.l7_policy.L7Policy`
+        """
+        return self._update(_l7policy.L7Policy, l7_policy, **attrs)
