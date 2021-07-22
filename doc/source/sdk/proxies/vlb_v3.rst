@@ -53,6 +53,14 @@ L7Policy Operations
             find_l7_policy, get_l7_policy, l7_policies,
             update_l7_policy
 
+L7Rule Operations
+^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
+  :noindex:
+  :members: create_l7_rule, delete_l7_rule, find_l7_rule,
+            get_l7_rule, l7_rules, update_l7_rule
+
 Listener Operations
 ^^^^^^^^^^^^^^^^^^^
 
