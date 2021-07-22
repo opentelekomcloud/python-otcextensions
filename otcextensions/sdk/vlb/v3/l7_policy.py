@@ -29,7 +29,7 @@ class L7Policy(resource.Resource):
         'action', 'admin_state_up', 'description',
         'display_all_rules', 'id', 'listener_id',
         'name', 'position', 'provisioning_status',
-        'priority','redirect_url', 'redirect_pool_id',
+        'priority', 'redirect_url', 'redirect_pool_id',
         'redirect_listener_id',
         is_admin_state_up='admin_state_up',
     )

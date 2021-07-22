@@ -21,11 +21,50 @@ class TestVlb(base.BaseFunctionalTest):
     network = None
     load_balancer = None
     listener = None
+    additional_listener = None
     pool = None
     member = None
     health_monitor = None
+    certificate = None
+    l7policy = None
     server = None
     keypair = None
+
+    _private_key = """-----BEGIN RSA PRIVATE KEY-----
+MIICXQIBAAKBgQDFPN9ojPndxSC4E1pqWQVKGHCFlXAAGBOxbGfSzXqzsoyacotu
+eqMqXQbxrPSQFATeVmhZPNVEMdvcAMjYsV/mymtAwVqVA6q/OFdX/b3UHO+b/VqL
+o3J5SrM86Veqnjzwu4oCSabuEDiN+tga1syQmEG4OFM6NSmAYSxcZdE6LwIDAQAB
+AoGBAJvLzJCyIsCJcKHWL6onbSUtDtyFwPViD1QrVAtQYabF14g8CGUZG/9fgheu
+TXPtTDcvu7cZdUArvgYW3I9F9IBb2lmF3a44xfiAKdDhzr4DK/vQhvHPuuTeZA41
+r2zp8Cu+Bp40pSxmoAOK3B0/peZAka01Ju7c7ZChDWrxleHZAkEA/6dcaWHotfGS
+eW5YLbSms3f0m0GH38nRl7oxyCW6yMIDkFHURVMBKW1OhrcuGo8u0nTMi5IH9gRg
+5bH8XcujlQJBAMWBQgzCHyoSeryD3TFieXIFzgDBw6Ve5hyMjUtjvgdVKoxRPvpO
+kclc39QHP6Dm2wrXXHEej+9RILxBZCVQNbMCQQC42i+Ut0nHvPuXN/UkXzomDHde
+h1ySsOAO4H+8Y6OSI87l3HUrByCQ7stX1z3L0HofjHqV9Koy9emGTFLZEzSdAkB7
+Ei6cUKKmztkYe3rr+RcATEmwAw3tEJOHmrW5ErApVZKr2TzLMQZ7WZpIPzQRCYnY
+2ZZLDuZWFFG3vW+wKKktAkAaQ5GNzbwkRLpXF1FZFuNF7erxypzstbUmU/31b7tS
+i5LmxTGKL/xRYtZEHjya4Ikkkgt40q1MrUsgIYbFYMf2
+-----END RSA PRIVATE KEY-----"""
+
+    _certificate = """-----BEGIN CERTIFICATE-----
+MIIDIjCCAougAwIBAgIJALV96mEtVF4EMA0GCSqGSIb3DQEBBQUAMGoxCzAJBgNV
+BAYTAnh4MQswCQYDVQQIEwJ4eDELMAkGA1UEBxMCeHgxCzAJBgNVBAoTAnh4MQsw
+CQYDVQQLEwJ4eDELMAkGA1UEAxMCeHgxGjAYBgkqhkiG9w0BCQEWC3h4eEAxNjMu
+Y29tMB4XDTE3MTExMzAyMjYxM1oXDTIwMTExMjAyMjYxM1owajELMAkGA1UEBhMC
+eHgxCzAJBgNVBAgTAnh4MQswCQYDVQQHEwJ4eDELMAkGA1UEChMCeHgxCzAJBgNV
+BAsTAnh4MQswCQYDVQQDEwJ4eDEaMBgGCSqGSIb3DQEJARYLeHh4QDE2My5jb20w
+gZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAMU832iM+d3FILgTWmpZBUoYcIWV
+cAAYE7FsZ9LNerOyjJpyi256oypdBvGs9JAUBN5WaFk81UQx29wAyNixX+bKa0DB
+WpUDqr84V1f9vdQc75v9WoujcnlKszzpV6qePPC7igJJpu4QOI362BrWzJCYQbg4
+Uzo1KYBhLFxl0TovAgMBAAGjgc8wgcwwHQYDVR0OBBYEFMbTvDyvE2KsRy9zPq/J
+WOjovG+WMIGcBgNVHSMEgZQwgZGAFMbTvDyvE2KsRy9zPq/JWOjovG+WoW6kbDBq
+MQswCQYDVQQGEwJ4eDELMAkGA1UECBMCeHgxCzAJBgNVBAcTAnh4MQswCQYDVQQK
+EwJ4eDELMAkGA1UECxMCeHgxCzAJBgNVBAMTAnh4MRowGAYJKoZIhvcNAQkBFgt4
+eHhAMTYzLmNvbYIJALV96mEtVF4EMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEF
+BQADgYEAASkC/1iwiALa2RU3YCxqZFEEsZZvQxikrDkDbFeoa6Tk49Fnb1f7FCW6
+PTtY3HPWl5ygsMsSy0Fi3xp3jmuIwzJhcQ3tcK5gC99HWp6Kw37RL8WoB8GWFU0Q
+4tHLOjBIxkZROPRhH+zMIrqUexv6fsb3NWKhnlfh1Mj5wQE4Ldo=
+-----END CERTIFICATE-----"""
 
     def setUp(self):
         super(TestVlb, self).setUp()
@@ -90,6 +129,7 @@ class TestVlb(base.BaseFunctionalTest):
             protocol_port=80,
             protocol='TCP',
             tags: list = None,
+            additional=False,
             **kwargs
     ):
         attrs = {
@@ -114,6 +154,8 @@ class TestVlb(base.BaseFunctionalTest):
         if TestVlb.network and TestVlb.load_balancer \
                 and not TestVlb.listener:
             TestVlb.listener = self.client.create_listener(**attrs)
+        if additional and not TestVlb.additional_listener:
+            TestVlb.additional_listener = self.client.create_listener(**attrs)
 
     def create_pool(
             self,
@@ -181,6 +223,40 @@ class TestVlb(base.BaseFunctionalTest):
         attrs['pool_id'] = TestVlb.pool.id
         if TestVlb.pool and not TestVlb.health_monitor:
             TestVlb.health_monitor = self.client.create_health_monitor(**attrs)
+
+    def create_certificate(
+            self,
+            private_key=_private_key,
+            certificate=_certificate,
+            name='sdk-vlb-test-cert-' + uuid_v4,
+            **kwargs
+    ):
+        if not TestVlb.certificate:
+            TestVlb.certificate = self.client.create_certificate(
+                private_key=private_key,
+                certificate=certificate,
+                name=name,
+                **kwargs
+            )
+
+    def create_l7policy(
+            self,
+            redirect_listener_id,
+            action='REDIRECT_TO_LISTENER',
+            name='sdk-vlb-test-l7p-' + uuid_v4,
+            **kwargs
+    ):
+        attrs = {
+            'action': action,
+            'name': name,
+            'redirect_listener_id': redirect_listener_id,
+            **kwargs
+        }
+        if not TestVlb.listener:
+            raise exceptions.SDKException
+        attrs['listener_id'] = TestVlb.listener.id
+        if TestVlb.listener and not TestVlb.l7policy:
+            TestVlb.l7policy = self.client.create_l7_policy(**attrs)
 
     def create_server(
             self,
