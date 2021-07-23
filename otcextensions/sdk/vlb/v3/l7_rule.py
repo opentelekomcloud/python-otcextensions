@@ -14,8 +14,8 @@ from openstack import resource
 
 
 class L7Rule(resource.Resource):
-    resource_key = 'l7rule'
-    resources_key = 'l7rules'
+    resource_key = 'rule'
+    resources_key = 'rules'
     base_path = '/elb/l7policies/%(l7policy_id)s/rules'
 
     # capabilities

@@ -27,6 +27,7 @@ class TestVlb(base.BaseFunctionalTest):
     health_monitor = None
     certificate = None
     l7policy = None
+    l7rule = None
     server = None
     keypair = None
 
@@ -257,6 +258,27 @@ PTtY3HPWl5ygsMsSy0Fi3xp3jmuIwzJhcQ3tcK5gC99HWp6Kw37RL8WoB8GWFU0Q
         attrs['listener_id'] = TestVlb.listener.id
         if TestVlb.listener and not TestVlb.l7policy:
             TestVlb.l7policy = self.client.create_l7_policy(**attrs)
+
+    def create_l7rule(
+            self,
+            compare_type='EQUAL_TO',
+            admin_state_up=True,
+            value='/test.com',
+            type='PATH',
+            **kwargs
+    ):
+        attrs = {
+            'compare_type': compare_type,
+            'admin_state_up': admin_state_up,
+            'value': value,
+            'type': type,
+            **kwargs
+        }
+        if TestVlb.l7policy and not TestVlb.l7rule:
+            TestVlb.l7rule = self.client.create_l7_rule(
+                TestVlb.l7policy,
+                **attrs
+            )
 
     def create_server(
             self,
