@@ -74,8 +74,7 @@ class Proxy(proxy.Proxy):
         """
         return self._list(_lb.LoadBalancer, **query)
 
-    def delete_load_balancer(self, load_balancer, ignore_missing=True,
-                             cascade=False):
+    def delete_load_balancer(self, load_balancer, ignore_missing=True):
         """Delete a load balancer
 
         :param load_balancer: The load_balancer can be either the name or a
@@ -89,7 +88,7 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        load_balancer = self._get_resource(_lb.LoadBalancer, load_balancer)
+        # load_balancer = self._get_resource(_lb.LoadBalancer, load_balancer)
         return self._delete(_lb.LoadBalancer, load_balancer,
                             ignore_missing=ignore_missing)
 
