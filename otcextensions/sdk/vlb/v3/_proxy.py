@@ -303,7 +303,7 @@ class Proxy(proxy.Proxy):
                           ignore_missing=ignore_missing)
 
     # ======== Quota ========
-    def quotas(self):
+    def get_quotas(self):
         """Retrieve a quotas
 
         :returns: A quota instance
