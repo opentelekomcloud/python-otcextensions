@@ -119,12 +119,12 @@ class TestDnsRecordset(TestDnsProxy):
 
     def test_recordset_find(self):
         self._verify("openstack.proxy.Proxy._find",
-                      self.proxy.find_recordset,
-                      method_args=['zone', 'rs'],
-                      method_kwargs={},
-                      expected_args=[recordset.Recordset, 'rs'],
-                      expected_kwargs={'ignore_missing': True,
-                                       'zone_id': 'zone'})
+                     self.proxy.find_recordset,
+                     method_args=['zone', 'rs'],
+                     method_kwargs={},
+                     expected_args=[recordset.Recordset, 'rs'],
+                     expected_kwargs={'ignore_missing': True,
+                                      'zone_id': 'zone'})
 
 
 class TestDnsFloatIP(TestDnsProxy):

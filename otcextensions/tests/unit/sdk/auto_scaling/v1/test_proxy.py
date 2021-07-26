@@ -76,9 +76,7 @@ class TestAutoScalingGroups(TestAutoScalingProxy):
             test_method=self.proxy.delete_group,
             method_args=['group'],
             expected_args=[self.proxy],
-            expected_kwargs={
-                'force_delete': False
-            }
+            expected_kwargs={}
         )
 
     def test_delete_with_force_delete(self):
@@ -340,7 +338,7 @@ class TestAutoScalingInstance(TestAutoScalingProxy):
         self.verify_find(
             test_method=self.proxy.find_instance,
             resource_type=_instance.Instance,
-            value=['name_or_id', 'group'],
+            method_kwargs={'group': 'group'},
             expected_kwargs={
                 'group_id': 'group'
             }

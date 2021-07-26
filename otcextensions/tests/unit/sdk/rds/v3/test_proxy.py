@@ -42,12 +42,15 @@ class TestFlavor(TestRdsProxy):
 
 class TestDatastore(TestRdsProxy):
     def test_datastores(self):
-        self.verify_list(self.proxy.datastores,
-                         datastore.Datastore,
-                         method_args=['ss'],
-                         expected_kwargs={
-                             'database_name': 'ss'
-                         })
+        self.verify_list(
+            self.proxy.datastores,
+            datastore.Datastore,
+            method_args=['ss'],
+            expected_kwargs={
+                'database_name': 'ss'
+            },
+            expected_args=[]
+        )
 
 
 class TestConfiguration(TestRdsProxy):
@@ -91,9 +94,13 @@ class TestConfiguration(TestRdsProxy):
 
 class TestBackup(TestRdsProxy):
     def test_backups(self):
-        self.verify_list(self.proxy.backups,
-                         backup.Backup, method_args=['inst'],
-                         expected_kwargs={'instance_id': 'inst'})
+        self.verify_list(
+            self.proxy.backups,
+            backup.Backup,
+            method_args=['inst'],
+            expected_args=[],
+            expected_kwargs={'instance_id': 'inst'}
+        )
 
     def test_create_backup(self):
         self.verify_create(
@@ -102,9 +109,11 @@ class TestBackup(TestRdsProxy):
             method_args=['inst'],
             method_kwargs={'x': 1, 'y': 2, 'z': 3},
             expected_kwargs={
-                'instance_id': 'inst',
-                'x': 1, 'y': 2, 'z': 3
-            })
+                'x': 1, 'y': 2, 'z': 3,
+                'instance_id': 'inst'
+            },
+            expected_args=[]
+        )
 
     def test_delete_backup(self):
         self.verify_delete(self.proxy.delete_backup,
@@ -115,9 +124,16 @@ class TestBackup(TestRdsProxy):
                            backup.Backup, True)
 
     def test_find_backup(self):
-        self.verify_find(self.proxy.find_backup, backup.Backup,
-                         value=['name_or_id', 'iid'],
-                         expected_kwargs={'instance_id': 'iid'})
+        self.verify_find(
+            self.proxy.find_backup,
+            backup.Backup,
+            method_args=['name'],
+            expected_kwargs={
+                'ignore_missing': True,
+                'instance_id': 'name'
+            },
+            expected_args=['resource_name']
+        )
 
     def test_wait_for_backup(self):
         value = backup.Backup(id='fake')
@@ -125,6 +141,7 @@ class TestBackup(TestRdsProxy):
             self.proxy.wait_for_backup,
             method_args=[value],
             expected_args=[
+                self.proxy,
                 value,
                 'COMPLETED',
                 ['FAILED'],
@@ -132,10 +149,13 @@ class TestBackup(TestRdsProxy):
             ])
 
     def test_download_links(self):
-        self.verify_list(self.proxy.backup_download_links,
-                         backup.BackupFile,
-                         method_args=['bck_id'],
-                         expected_kwargs={'backup_id': 'bck_id'})
+        self.verify_list(
+            self.proxy.backup_download_links,
+            backup.BackupFile,
+            method_args=['bck_id'],
+            expected_kwargs={'backup_id': 'bck_id'},
+            expected_args=[]
+        )
 
 
 class TestInstance(TestRdsProxy):
