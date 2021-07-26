@@ -58,7 +58,9 @@ class TestObsProxy(test_proxy_base.TestProxyBase):
 
     def test_delete_container(self):
         self.verify_delete(
-            self.proxy.delete_container, _container.Container, ignore=True,
+            self.proxy.delete_container,
+            _container.Container,
+            ignore_missing=True,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
             expected_kwargs={
                 'endpoint_override': 'https://resource_or_id.obs.regio.'
@@ -102,7 +104,8 @@ class TestObsProxy(test_proxy_base.TestProxyBase):
                 'endpoint_override': 'https://container.obs.regio.'
                                      'otc.t-systems.com',
                 'requests_auth': self._ak_auth
-            }
+            },
+            expected_args=[]
         )
 
     def test_create_object(self):
@@ -123,7 +126,7 @@ class TestObsProxy(test_proxy_base.TestProxyBase):
 
     def test_delete_object(self):
         self.verify_delete(
-            self.proxy.delete_object, _obj.Object, ignore=True,
+            self.proxy.delete_object, _obj.Object, ignore_missing=True,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
             expected_kwargs={
                 'endpoint_override': 'https://None.obs.regio.'

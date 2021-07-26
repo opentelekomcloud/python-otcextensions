@@ -152,9 +152,9 @@ class TestTask(TestVolumeBackupProxy):
             mock_method='openstack.proxy.Proxy._list',
             method_args=['pol_id'],
             expected_kwargs={
-                'paginated': False,
                 'policy_id': 'pol_id'
-            }
+            },
+            expected_args=[]
         )
 
 

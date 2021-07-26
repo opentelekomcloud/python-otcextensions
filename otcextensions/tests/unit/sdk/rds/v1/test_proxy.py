@@ -108,7 +108,8 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
                 'dbId': 'dbId',
                 'region': 'regio',
                 'headers': RDS_HEADERS
-            }
+            },
+            expected_args=[]
         )
 
     def test_get_flavor(self):
@@ -313,7 +314,7 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
     def test_get_backup_policy(self):
         self.verify_get(
             self.proxy.get_backup_policy, _backup.BackupPolicy,
-            value=[],
+            method_args=[],
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
             method_kwargs={
                 'instance': 'id'
