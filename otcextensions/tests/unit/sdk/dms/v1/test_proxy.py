@@ -178,9 +178,10 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
         )
 
     def test_send_message(self):
-        self.verify_create(
+        value = _message.Message(id='1')
+        self._verify(
+            'openstack.proxy.Proxy._create',
             self.proxy.send_message,
-            _message.Messages,
             method_kwargs={
                 'queue': 'qid',
                 'body': 'b1',
@@ -195,10 +196,10 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
                 ],
                 'return_id': True
             },
-            # method_result=_message.Message(id='1'),
+            method_result=value,
             expected_result=_message.Messages(
-                messages=[_message.Message(id='1')]
-            )
+                messages=[value]),
+            expected_args=[_message.Messages]
         )
 
     def test_consume_message(self):
