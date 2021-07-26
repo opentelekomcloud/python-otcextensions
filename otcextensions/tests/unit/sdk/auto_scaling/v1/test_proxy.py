@@ -48,7 +48,7 @@ class TestAutoScalingGroups(TestAutoScalingProxy):
         )
 
     def test_find(self):
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy._find',
             self.proxy.find_group,
             method_args=["flavor"],
@@ -71,7 +71,7 @@ class TestAutoScalingGroups(TestAutoScalingProxy):
         )
 
     def test_delete(self):
-        self._verify2(
+        self._verify(
             mock_method='otcextensions.sdk.auto_scaling.v1.group.Group.delete',
             test_method=self.proxy.delete_group,
             method_args=['group'],
@@ -82,7 +82,7 @@ class TestAutoScalingGroups(TestAutoScalingProxy):
         )
 
     def test_delete_with_force_delete(self):
-        self._verify2(
+        self._verify(
             mock_method='otcextensions.sdk.auto_scaling.v1.group.Group.delete',
             test_method=self.proxy.delete_group,
             method_args=['group'],
@@ -94,7 +94,7 @@ class TestAutoScalingGroups(TestAutoScalingProxy):
         )
 
     def test_update(self):
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy._update',
             self.proxy.update_group,
             method_args=['INSTANCE'],
@@ -129,7 +129,7 @@ class TestAutoScalingConfigs(TestAutoScalingProxy):
         )
 
     def test_find(self):
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy._find',
             self.proxy.find_config,
             method_args=["flavor"],
@@ -196,7 +196,7 @@ class TestAutoScalingPolicy(TestAutoScalingProxy):
         )
 
     def test_find(self):
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy._find',
             self.proxy.find_policy,
             method_args=['pol', 'group'],
@@ -209,7 +209,7 @@ class TestAutoScalingPolicy(TestAutoScalingProxy):
         )
 
     def test_update(self):
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy._update',
             self.proxy.update_policy,
             method_args=['INSTANCE'],
@@ -222,7 +222,7 @@ class TestAutoScalingPolicy(TestAutoScalingProxy):
         )
 
     def test_execute(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.auto_scaling.v1.policy.Policy._action',
             self.proxy.execute_policy,
             method_args=['INSTANCE'],
@@ -230,7 +230,7 @@ class TestAutoScalingPolicy(TestAutoScalingProxy):
         )
 
     def test_resume(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.auto_scaling.v1.policy.Policy._action',
             self.proxy.resume_policy,
             method_args=['INSTANCE'],
@@ -238,7 +238,7 @@ class TestAutoScalingPolicy(TestAutoScalingProxy):
         )
 
     def test_pause(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.auto_scaling.v1.policy.Policy._action',
             self.proxy.pause_policy,
             method_args=['INSTANCE'],
@@ -279,7 +279,8 @@ class TestAutoScalingQuota(TestAutoScalingProxy):
             expected_kwargs={
                 'paginated': False,
                 'scaling_group_id': 'INSTANCE'
-            }
+            },
+            expected_args=[]
         )
 
 
@@ -289,11 +290,12 @@ class TestAutoScalingInstance(TestAutoScalingProxy):
         self.verify_list(
             self.proxy.instances, _instance.Instance,
             method_args=['group'],
-            base_path='/scaling_group_instance/group/list'
+            base_path='/scaling_group_instance/group/list',
+            expected_args=[]
         )
 
     def test_batch_action_remove(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.auto_scaling.v1.instance.Instance.batch_action',
             self.proxy.batch_instance_action,
             method_args=['INSTANCE', ['a1', 'a2'], 'REMOVE'],
@@ -301,7 +303,7 @@ class TestAutoScalingInstance(TestAutoScalingProxy):
         )
 
     def test_batch_action_add(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.auto_scaling.v1.instance.Instance.batch_action',
             self.proxy.batch_instance_action,
             method_args=['INSTANCE', ['a1', 'a2'], 'ADD'],
@@ -309,7 +311,7 @@ class TestAutoScalingInstance(TestAutoScalingProxy):
         )
 
     def test_batch_action_protect(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.auto_scaling.v1.instance.Instance.batch_action',
             self.proxy.batch_instance_action,
             method_args=['INSTANCE', ['a1', 'a2'], 'PROTECT'],
@@ -317,7 +319,7 @@ class TestAutoScalingInstance(TestAutoScalingProxy):
         )
 
     def test_batch_action_unprotect(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.auto_scaling.v1.instance.Instance.batch_action',
             self.proxy.batch_instance_action,
             method_args=['INSTANCE', ['a1', 'a2'], 'UNPROTECT'],
@@ -325,11 +327,11 @@ class TestAutoScalingInstance(TestAutoScalingProxy):
         )
 
     def test_delete(self):
-        self.verify_delete(
-            self.proxy.remove_instance,
-            _instance.Instance, True,
+        self._verify(
+            test_method=self.proxy.remove_instance,
             mock_method='otcextensions.sdk.auto_scaling.v1.'
                         'instance.Instance.remove',
+            method_args=['instance'],
             expected_args=[self.proxy],
             expected_kwargs={
                 'delete_instance': False
@@ -340,7 +342,7 @@ class TestAutoScalingInstance(TestAutoScalingProxy):
         self.verify_find(
             test_method=self.proxy.find_instance,
             resource_type=_instance.Instance,
-            value=['name_or_id', 'group'],
+            method_kwargs={'group': 'group'},
             expected_kwargs={
                 'group_id': 'group'
             }
