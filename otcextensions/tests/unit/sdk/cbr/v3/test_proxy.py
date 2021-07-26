@@ -179,7 +179,8 @@ class TestCBRMember(TestCBRProxy):
             self.proxy.members,
             _member.Member,
             method_args=[backup],
-            expected_kwargs={'backup_id': backup.id}
+            expected_kwargs={'backup_id': backup.id},
+            expected_args=[]
         )
 
     def test_get(self):

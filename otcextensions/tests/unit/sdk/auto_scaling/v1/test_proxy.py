@@ -277,7 +277,8 @@ class TestAutoScalingQuota(TestAutoScalingProxy):
             expected_kwargs={
                 'paginated': False,
                 'scaling_group_id': 'INSTANCE'
-            }
+            },
+            expected_args=[]
         )
 
 
@@ -287,7 +288,8 @@ class TestAutoScalingInstance(TestAutoScalingProxy):
         self.verify_list(
             self.proxy.instances, _instance.Instance,
             method_args=['group'],
-            base_path='/scaling_group_instance/group/list'
+            base_path='/scaling_group_instance/group/list',
+            expected_args=[]
         )
 
     def test_batch_action_remove(self):
@@ -323,11 +325,11 @@ class TestAutoScalingInstance(TestAutoScalingProxy):
         )
 
     def test_delete(self):
-        self.verify_delete(
-            self.proxy.remove_instance,
-            _instance.Instance, True,
+        self._verify(
+            test_method=self.proxy.remove_instance,
             mock_method='otcextensions.sdk.auto_scaling.v1.'
                         'instance.Instance.remove',
+            method_args=['instance'],
             expected_args=[self.proxy],
             expected_kwargs={
                 'delete_instance': False

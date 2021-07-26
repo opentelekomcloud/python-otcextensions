@@ -45,4 +45,7 @@ class TestCssSProxy(test_proxy_base.TestProxyBase):
         )
 
     def test_flavors(self):
-        self.verify_list(self.proxy.flavors, _flavor.Flavor, paginated=False)
+        self.verify_list(
+            self.proxy.flavors,
+            _flavor.Flavor,
+        )

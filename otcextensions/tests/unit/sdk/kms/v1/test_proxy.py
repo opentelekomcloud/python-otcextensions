@@ -108,7 +108,8 @@ class TestKmsDataKeys(TestKmsProxy):
                 'prepend_key': False,
                 'name': 'some_name',
                 'key_id': 'CMK'
-            }
+            },
+            expected_args=['CMK']
         )
 
     def test_create_no_plain(self):
