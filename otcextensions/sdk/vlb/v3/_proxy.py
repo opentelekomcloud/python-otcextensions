@@ -342,7 +342,7 @@ class Proxy(proxy.Proxy):
         """Get a single flavor
 
         :param flavor: The value can be either the ID of an flavor or a
-            :class:`~otcextensions.sdk.dds.v3.flavor.Flavor`.
+            :class:`~otcextensions.sdk.vlb.v3.flavor.Flavor`.
 
         :returns: One :class:`~otcextensions.sdk.vlb.v3.flavor.Flavor`
         """

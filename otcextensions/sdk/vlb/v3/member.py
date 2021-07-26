@@ -51,4 +51,4 @@ class Member(resource.Resource):
     #: Specifies the ID of the subnet where the backend server works.
     subnet_cidr_id = resource.Body('subnet_cidr_id')
     #: Specifies the weight of the backend server.
-    weight = resource.Body('weight')
+    weight = resource.Body('weight', type=int)
