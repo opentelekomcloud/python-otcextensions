@@ -35,6 +35,32 @@ Flavor Operations
   :noindex:
   :members: flavors, get_flavor, find_flavor
 
+HealthMonitor Operations
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
+  :noindex:
+  :members: find_health_monitor, create_health_monitor,
+            get_health_monitor, health_monitors,
+            delete_health_monitor, update_health_monitor
+
+L7Policy Operations
+^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
+  :noindex:
+  :members: create_l7_policy, delete_l7_policy,
+            find_l7_policy, get_l7_policy, l7_policies,
+            update_l7_policy
+
+L7Rule Operations
+^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
+  :noindex:
+  :members: create_l7_rule, delete_l7_rule, find_l7_rule,
+            get_l7_rule, l7_rules, update_l7_rule
+
 Listener Operations
 ^^^^^^^^^^^^^^^^^^^
 
@@ -53,9 +79,25 @@ LoadBalancer Operations
             delete_load_balancer, find_load_balancer,
             update_load_balancer
 
+Member Operations
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
+  :noindex:
+  :members: create_member, delete_member, find_member,
+            get_member, members, update_member
+
+Pool Operations
+^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
+  :noindex:
+  :members: create_pool, get_pool, pools, delete_pool,
+            find_pool, update_pool
+
 Quota Operations
 ^^^^^^^^^^^^^^^^
 
 .. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
   :noindex:
-  :members: quotas
+  :members: get_quotas
