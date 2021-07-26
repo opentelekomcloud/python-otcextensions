@@ -122,7 +122,7 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
         )
 
     # def test_find_flavor(self):
-    #     self._verify2(
+    #     self._verify(
     #         'otcextensions.sdk.sdk_proxy.Proxy._find',
     #         self.proxy.find_flavor,
     #         method_args=["flavor"],
@@ -156,7 +156,7 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
         )
 
     def test_update_instance(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.sdk_proxy.Proxy._update',
             self.proxy.update_instance,
             method_args=['INSTANCE'],
@@ -180,7 +180,7 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
         )
 
     def test_find_instance(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.sdk_proxy.Proxy._find',
             self.proxy.find_instance,
             method_args=["instance"],
@@ -264,7 +264,7 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
     #     )
     #
     # def test_find_configuration(self):
-    #     self._verify2(
+    #     self._verify(
     #         'otcextensions.sdk.sdk_proxy.Proxy._find',
     #         self.proxy.find_configuration,
     #         method_args=["config"],
@@ -327,7 +327,7 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
 
     def test_set_backup_policy(self):
         # TODO(agoncharov) upstream BaseProxy is renamed to Proxy
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.sdk_proxy.Proxy._update',
             self.proxy.set_backup_policy,
             method_args=['POLICY', 'INST_ID'],

@@ -66,7 +66,7 @@ class TestBackupPolicy(TestVolumeBackupProxy):
         )
 
     def test_update(self):
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy._update',
             self.proxy.update_backup_policy,
             method_args=['INSTANCE'],
@@ -79,7 +79,7 @@ class TestBackupPolicy(TestVolumeBackupProxy):
         )
 
     def test_execute_policy(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.volume_backup.v2.backup_policy.'
             'BackupPolicy.execute',
             self.proxy.execute_policy,
@@ -88,7 +88,7 @@ class TestBackupPolicy(TestVolumeBackupProxy):
         )
 
     def test_enable_policy(self):
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy._update',
             self.proxy.enable_policy,
             method_args=['INSTANCE'],
@@ -100,7 +100,7 @@ class TestBackupPolicy(TestVolumeBackupProxy):
         )
 
     def test_disable_policy(self):
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy._update',
             self.proxy.disable_policy,
             method_args=['INSTANCE'],
@@ -114,7 +114,7 @@ class TestBackupPolicy(TestVolumeBackupProxy):
 
 class TestBackupPolicyResource(TestVolumeBackupProxy):
     def test_link(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.volume_backup.v2.backup_policy.'
             'BackupPolicyResource._process',
             self.proxy.link_resources_to_policy,
@@ -129,7 +129,7 @@ class TestBackupPolicyResource(TestVolumeBackupProxy):
         )
 
     def test_unlink(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.volume_backup.v2.backup_policy.'
             'BackupPolicyResource._process',
             self.proxy.unlink_resources_of_policy,

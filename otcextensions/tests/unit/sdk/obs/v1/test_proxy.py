@@ -134,7 +134,7 @@ class TestObsProxy(test_proxy_base.TestProxyBase):
         )
 
     def test_download_object(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.obs.v1.obj.Object.download',
             self.proxy.download_object,
             method_args=[{}],

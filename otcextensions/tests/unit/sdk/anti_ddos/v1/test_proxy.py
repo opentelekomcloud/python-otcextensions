@@ -85,7 +85,7 @@ class TestAntiDdosProxy(test_proxy_base.TestProxyBase):
         )
 
     def test_float_ip_stat_week(self):
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy._get',
             self.proxy.floating_ip_stat_week,
             method_args=None,

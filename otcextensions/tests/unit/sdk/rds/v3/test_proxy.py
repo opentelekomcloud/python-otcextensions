@@ -81,7 +81,7 @@ class TestConfiguration(TestRdsProxy):
                            configuration.Configuration)
 
     def test_apply_configuration(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.rds.v3.configuration.Configuration.apply',
             self.proxy.apply_configuration,
             method_args=["val", ['a', 'b']],
@@ -167,7 +167,7 @@ class TestInstance(TestRdsProxy):
                            instance.Instance, True)
 
     def test_fetch_restore_times(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.rds.v3.instance.Instance.fetch_restore_times',
             self.proxy.get_instance_restore_time,
             method_args=["inst"],
@@ -175,7 +175,7 @@ class TestInstance(TestRdsProxy):
         )
 
     def test_restore(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.rds.v3.instance.Instance.restore',
             self.proxy.restore_instance,
             method_args=["inst"],
@@ -192,7 +192,7 @@ class TestInstance(TestRdsProxy):
         pass
 
     def test_get_instance_backup_policy(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.rds.v3.instance.Instance.get_backup_policy',
             self.proxy.get_instance_backup_policy,
             method_args=["val"],
@@ -200,7 +200,7 @@ class TestInstance(TestRdsProxy):
         )
 
     def test_update_instance_backup_policy(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.rds.v3.instance.Instance.set_backup_policy',
             self.proxy.set_instance_backup_policy,
             method_args=["val"],

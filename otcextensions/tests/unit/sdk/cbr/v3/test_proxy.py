@@ -46,7 +46,7 @@ class TestCBRBackup(TestCBRProxy):
     def test_member_add(self):
         members = ['member1', 'member2']
         backup = _backup.Backup(id='backup')
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.cbr.v3.backup.Backup.add_members',
             self.proxy.add_members,
             method_args=[backup, members],
@@ -94,7 +94,7 @@ class TestCBRRestore(TestCBRProxy):
     def test_restore_server(self):
         attrs = {'a': 'b'}
         backup = _backup.Backup(id='my_backup')
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy._create',
             self.proxy.restore_data,
             method_args=[backup],
@@ -131,7 +131,7 @@ class TestCBRVault(TestCBRProxy):
     def test_bind_policy(self):
         vault = _vault.Vault(id='vault')
         policy = _policy.Policy(id='policy')
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.cbr.v3.vault.Vault.bind_policy',
             self.proxy.bind_policy,
             method_args=[vault, policy],
@@ -142,7 +142,7 @@ class TestCBRVault(TestCBRProxy):
     def test_unbind_policy(self):
         vault = _vault.Vault(id='vault')
         policy = _policy.Policy(id='policy')
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.cbr.v3.vault.Vault.unbind_policy',
             self.proxy.unbind_policy,
             method_args=[vault, policy],
@@ -153,7 +153,7 @@ class TestCBRVault(TestCBRProxy):
     def test_associate_resources(self):
         vault = _vault.Vault(id='vault')
         resources = 'resources'
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.cbr.v3.vault.Vault.associate_resources',
             self.proxy.associate_resources,
             method_args=[vault, resources],
@@ -163,7 +163,7 @@ class TestCBRVault(TestCBRProxy):
     def test_dissociate_resources(self):
         vault = _vault.Vault(id='vault')
         resources = 'resources'
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.cbr.v3.vault.Vault.dissociate_resources',
             self.proxy.dissociate_resources,
             method_args=[vault, resources],
@@ -185,7 +185,7 @@ class TestCBRMember(TestCBRProxy):
     def test_get(self):
         backup = _backup.Backup(id='backup')
         member = _member.Member(id='member')
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy._get',
             self.proxy.get_member,
             method_args=[backup, member],
@@ -197,7 +197,7 @@ class TestCBRMember(TestCBRProxy):
     def test_delete(self):
         backup = _backup.Backup(id='backup')
         member = _member.Member(id='member')
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy._delete',
             self.proxy.delete_member,
             method_args=[backup, member, True],
@@ -213,7 +213,7 @@ class TestCBRMember(TestCBRProxy):
         member = _member.Member(id='member')
         status = 'accepted'
         vault = _vault.Vault(id='vault')
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy._update',
             self.proxy.update_member,
             method_args=[backup, member, status, vault],

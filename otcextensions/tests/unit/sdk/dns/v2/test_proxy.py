@@ -56,7 +56,7 @@ class TestDnsZone(TestDnsProxy):
         self.verify_update(self.proxy.update_zone, zone.Zone)
 
     def test_associate_router(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.dns.v2.zone.Zone.associate_router',
             self.proxy.add_router_to_zone,
             method_args=['zone_id'],
@@ -66,7 +66,7 @@ class TestDnsZone(TestDnsProxy):
         )
 
     def test_disassociate_router(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.dns.v2.zone.Zone.disassociate_router',
             self.proxy.remove_router_from_zone,
             method_args=['zone_id'],
@@ -118,7 +118,7 @@ class TestDnsRecordset(TestDnsProxy):
                          expected_kwargs={'zone_id': 'zid'})
 
     def test_recordset_find(self):
-        self._verify2("openstack.proxy.Proxy._find",
+        self._verify("openstack.proxy.Proxy._find",
                       self.proxy.find_recordset,
                       method_args=['zone', 'rs'],
                       method_kwargs={},
@@ -143,7 +143,7 @@ class TestDnsFloatIP(TestDnsProxy):
                            floating_ip.FloatingIP)
 
     def test_floating_ip_unset(self):
-        self._verify2('openstack.proxy.Proxy._update',
+        self._verify('openstack.proxy.Proxy._update',
                       self.proxy.unset_floating_ip,
                       method_args=['value'],
                       method_kwargs={},

@@ -170,7 +170,7 @@ class TestIdentityAgencyProjectRoles(TestIdentityProxy):
                  'role_ref_id': 'fake_project',
                  'id': 'fake_role'})
         ]
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy._head',
             self.proxy.check_agency_project_role,
             method_kwargs={
@@ -201,7 +201,7 @@ class TestIdentityAgencyProjectRoles(TestIdentityProxy):
             agency_fake,
             agency_role_fake,
         ]
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy.put',
             self.proxy.grant_agency_project_role,
             method_kwargs={
@@ -230,7 +230,7 @@ class TestIdentityAgencyProjectRoles(TestIdentityProxy):
             agency_fake,
             agency_role_fake,
         ]
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy._delete',
             self.proxy.revoke_agency_project_role,
             method_kwargs={
@@ -288,7 +288,7 @@ class TestIdentityAgencyDomainRoles(TestIdentityProxy):
                  'role_ref_id': 'fake_domain',
                  'id': 'fake_role'})
         ]
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy._head',
             self.proxy.check_agency_domain_role,
             method_kwargs={
@@ -319,7 +319,7 @@ class TestIdentityAgencyDomainRoles(TestIdentityProxy):
             agency_fake,
             agency_role_fake,
         ]
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy.put',
             self.proxy.grant_agency_domain_role,
             method_kwargs={
@@ -348,7 +348,7 @@ class TestIdentityAgencyDomainRoles(TestIdentityProxy):
             agency_fake,
             agency_role_fake,
         ]
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy._delete',
             self.proxy.revoke_agency_domain_role,
             method_kwargs={
