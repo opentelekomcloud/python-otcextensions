@@ -89,7 +89,8 @@ class TestCCEClusterNode(TestCCEProxy):
                 expected_kwargs={
                     'paginated': False,
                     'cluster_uuid': 'cluster_id'
-                }
+                },
+                expected_args=[]
             )
 
     def test_get(self):

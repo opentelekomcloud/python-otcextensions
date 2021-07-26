@@ -63,7 +63,7 @@ class TestObsProxy(test_proxy_base.TestProxyBase):
             ignore_missing=True,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
             expected_kwargs={
-                'endpoint_override': 'https://resource_or_id.obs.regio.'
+                'endpoint_override': 'https://resource_id.obs.regio.'
                                      'otc.t-systems.com',
                 'ignore_missing': True,
                 'requests_auth': self._ak_auth
