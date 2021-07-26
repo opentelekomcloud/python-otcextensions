@@ -225,7 +225,7 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
 
     def test_delete_backup(self):
         instance = _instance.Instance(id='instance_id')
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy._delete',
             self.proxy.delete_instance_backup,
             method_args=[instance, 'backup_1'],
