@@ -22,9 +22,9 @@ EXAMPLE = {
     'name': 'listener',
     'admin_state_up': True,
     'tags': [{
-                "key": "test",
-                "value": "api"
-            }],
+        "key": "test",
+        "value": "api"
+    }],
 }
 
 

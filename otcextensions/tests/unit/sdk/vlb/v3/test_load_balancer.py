@@ -57,5 +57,7 @@ class TestLoadBalancer(base.TestCase):
     def test_make_it(self):
         sot = load_balancer.LoadBalancer(**EXAMPLE)
         self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['availability_zone_list'], sot.availability_zones)
+        self.assertEqual(
+            EXAMPLE['availability_zone_list'],
+            sot.availability_zones)
         self.assertEqual(EXAMPLE['publicip'], sot.floating_ip[0])

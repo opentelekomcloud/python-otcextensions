@@ -37,4 +37,6 @@ class TestLoadBalancer(base.TestCase):
         sot = l7_policy.L7Policy(**EXAMPLE)
         self.assertEqual(EXAMPLE['name'], sot.name)
         self.assertEqual(EXAMPLE['action'], sot.action)
-        self.assertEqual(EXAMPLE['redirect_listener_id'], sot.redirect_listener_id)
+        self.assertEqual(
+            EXAMPLE['redirect_listener_id'],
+            sot.redirect_listener_id)
