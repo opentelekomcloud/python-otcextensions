@@ -13,14 +13,15 @@
 from otcextensions.sdk.css.v1 import _proxy
 from otcextensions.sdk.css.v1 import flavor as _flavor
 from otcextensions.sdk.css.v1 import cluster as _cluster
+from otcextensions.sdk.css.v1 import snapshot as _snapshot
 
 from openstack.tests.unit import test_proxy_base
 
 
-class TestCssSProxy(test_proxy_base.TestProxyBase):
+class TestCssProxy(test_proxy_base.TestProxyBase):
 
     def setUp(self):
-        super(TestCssSProxy, self).setUp()
+        super(TestCssProxy, self).setUp()
         self.proxy = _proxy.Proxy(self.session)
 
     def test_clusters(self):
@@ -48,4 +49,109 @@ class TestCssSProxy(test_proxy_base.TestProxyBase):
         self.verify_list(
             self.proxy.flavors,
             _flavor.Flavor,
+        )
+
+    def test_snapshots(self):
+        self._verify(
+            "openstack.proxy.Proxy._list",
+            self.proxy.snapshots,
+            method_args=['cluster-uuid'],
+            expected_args=[_snapshot.Snapshot],
+            expected_kwargs={
+                'base_path': '/clusters/cluster-uuid/index_snapshots'
+            }
+        )
+
+    def test_create_snapshot(self):
+        self.verify_create(
+            self.proxy.create_snapshot, _snapshot.Snapshot,
+            method_kwargs={
+                'cluster': 'cluster-uuid',
+                'x': 1, 'y': 2
+            },
+            expected_kwargs={
+                'cluster_id': 'cluster-uuid',
+                'prepend_key': False,
+                'x': 1, 'y': 2
+            }
+        )
+
+    def test_delete_snapshot(self):
+        self._verify(
+            "openstack.proxy.Proxy._delete",
+            self.proxy.delete_snapshot,
+            method_args=['cluster-uuid', 'snapshot-uuid', True],
+            expected_args=[_snapshot.Snapshot, 'snapshot-uuid'],
+            expected_kwargs={
+                'cluster_id': 'cluster-uuid',
+                'ignore_missing': True
+            }
+        )
+
+    def test_set_snapshot_configuration(self):
+        self.verify_create(
+            self.proxy.set_snapshot_configuration,
+            _snapshot.SnapshotConfiguration,
+            method_kwargs={
+                'cluster': 'cluster-uuid',
+                'auto_setting': False,
+                'x': 1, 'y': 2
+            },
+            expected_kwargs={
+                'cluster_id': 'cluster-uuid',
+                'setting': 'setting',
+                'x': 1, 'y': 2
+            }
+        )
+
+    def test_set_snapshot_policy(self):
+        self.verify_create(
+            self.proxy.set_snapshot_policy, _snapshot.SnapshotPolicy,
+            method_kwargs={
+                'cluster': 'cluster-uuid',
+                'x': 1, 'y': 2
+            },
+            expected_kwargs={
+                'cluster_id': 'cluster-uuid',
+                'x': 1, 'y': 2
+            }
+        )
+
+    def test_get_snapshot_policy(self):
+        self._verify(
+            "openstack.proxy.Proxy._get",
+            self.proxy.get_snapshot_policy,
+            method_args=['cluster-uuid'],
+            expected_args=[_snapshot.SnapshotPolicy],
+            expected_kwargs={
+                'cluster_id': 'cluster-uuid',
+                'requires_id': False
+            }
+        )
+
+    def test_restore_snapshot(self):
+        self.verify_create(
+            self.proxy.restore_snapshot, _snapshot.Snapshot,
+            method_kwargs={
+                'cluster': 'cluster-uuid',
+                'snapshot': 'snap-uuid',
+                'x': 1, 'y': 2
+            },
+            expected_kwargs={
+                'custom_uri': 'cluster-uuid/index_snapshot/snap-uuid/restore',
+                'prepend_key': False,
+                'x': 1, 'y': 2
+            }
+        )
+
+    def test_disable_snapshot_function(self):
+        self._verify(
+            "openstack.proxy.Proxy._delete",
+            self.proxy.disable_snapshot_function,
+            method_args=['cluster-uuid'],
+            expected_args=[_snapshot.Snapshot],
+            expected_kwargs={
+                'custom_uri': 'cluster-uuid/index_snapshots',
+                'requires_id': False
+            }
         )
