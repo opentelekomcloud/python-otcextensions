@@ -45,8 +45,8 @@ def translate_response(func):
         node_count = defaultdict(int)
         for node in obj.nodes:
             node_count[node['type']] += 1
-
         setattr(obj, 'node_count', dict(node_count))
+
         columns = (
             'id',
             'name',
@@ -133,9 +133,9 @@ class CreateCluster(command.ShowOne):
         )
 
         parser.add_argument(
-            '--volume_type',
+            '--volume-type',
             metavar='<volume_type>',
-            required=True,
+            default='COMMON',
             help=_('The Volume Type of the Node.')
         )
 
@@ -143,8 +143,8 @@ class CreateCluster(command.ShowOne):
             '--volume-size',
             metavar='<volume_size>',
             type=int,
-            required=True,
-            help=_('The Volume Size of the Node.')
+            help=_('The Volume Size of the Node.\n'
+                   'Deafult value is set respective to flavor')
         )
         parser.add_argument(
             '--https-enable',
@@ -184,6 +184,7 @@ class CreateCluster(command.ShowOne):
 
         return parser
 
+    @translate_response
     def take_action(self, parsed_args):
 
         client = self.app.client_manager.css
@@ -195,7 +196,7 @@ class CreateCluster(command.ShowOne):
                 'flavorRef': parsed_args.flavor,
                 'volume': {
                     'volume_type': parsed_args.volume_type,
-                    'size': parsed_args.size
+                    'size': parsed_args.volume_size
                 },
                 'nics': {
                     'vpcId': parsed_args.router_id,
@@ -219,8 +220,8 @@ class CreateCluster(command.ShowOne):
                 'version': parsed_args.elasticsearch_version,
                 'type': 'elasticsearch'
             }
-
-        return client.create_cluster(**attrs)
+        cluster = client.create_cluster(**attrs)
+        return client.get_cluster(cluster.id)
 
 
 class ShowCluster(command.ShowOne):
@@ -239,9 +240,7 @@ class ShowCluster(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.css
 
-        return client.get_cluster(
-            cluster=parsed_args.cluster,
-        )
+        return client.get_cluster(parsed_args.cluster)
 
 
 class RestartCluster(command.ShowOne):
@@ -256,17 +255,15 @@ class RestartCluster(command.ShowOne):
         )
         return parser
 
+    @translate_response
     def take_action(self, parsed_args):
         client = self.app.client_manager.css
 
-        obj = client.restart_cluster(
-            cluster=parsed_args.cluster,
-        )
-
-        return (('Job Id',), obj.jobId)
+        client.restart_cluster(parsed_args.cluster,)
+        return client.get_cluster(parsed_args.cluster)
 
 
-class ExtendCluster(command.Command):
+class ExtendCluster(command.ShowOne):
     _description = _('Scaling Out a Cluster with only Common Nodes.')
 
     def get_parser(self, prog_name):
@@ -284,6 +281,7 @@ class ExtendCluster(command.Command):
         )
         return parser
 
+    @translate_response
     def take_action(self, parsed_args):
         client = self.app.client_manager.css
 
@@ -291,6 +289,7 @@ class ExtendCluster(command.Command):
             parsed_args.cluster,
             parsed_args.modifySize
         )
+        return client.get_cluster(parsed_args.cluster)
 
 
 class DeleteCluster(command.Command):
