@@ -124,7 +124,7 @@ class Cluster(resource.Resource):
     def extend(self, session, new_size):
         """Extend cluster capacity.
         """
-        if not 1 < new_size <= 32:
+        if not 0 < new_size <= 32:
             raise exceptions.SDKException('CSS Cluster size can be [1..32]')
         res = self._action(session, 'extend',
                            {'grow': {'modifySize': new_size}})

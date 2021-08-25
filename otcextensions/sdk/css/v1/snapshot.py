@@ -10,6 +10,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
+from openstack import utils
+
+from otcextensions.common import format as otc_format
 
 
 class DatastoreSpec(resource.Resource):
@@ -21,7 +24,7 @@ class DatastoreSpec(resource.Resource):
 
 class Snapshot(resource.Resource):
 
-    base_path = '/clusters/%(cluster_id)s/index_snapshot'
+    base_path = '/clusters/%(clusterId)s/index_snapshot'
     # base_path = '/clusters/%(cluster_id}s/index_snapshot'
 
     resource_key = 'backup'
@@ -32,7 +35,7 @@ class Snapshot(resource.Resource):
     allow_list = True
 
     #: ID of the cluster where index data is to be backed up.
-    cluster_id = resource.URI('cluster_id')
+    clusterId = resource.URI('cluster_id')
 
     #: ID of the snapshot.
     id = resource.Body('id')
@@ -44,52 +47,58 @@ class Snapshot(resource.Resource):
     indices = resource.Body('indices')
 
     #: Time when a snapshot is created.
-    created = resource.Body('created')
+    created_at = resource.Body('created')
     #: Type of the data search engine.
     datastore = resource.Body('datastore', type=DatastoreSpec)
     #: Cluster ID.
-    clusterId = resource.Body('clusterId')
+    cluster_id = resource.Body('clusterId')
     #: Cluster name.
-    clusterName = resource.Body('clusterName')
+    cluster_name = resource.Body('clusterName')
     #: Snapshot status.
     status = resource.Body('status')
     #: Time when a snapshot status is updated.
-    updated = resource.Body('updated')
+    updated_at = resource.Body('updated')
     #: Snapshot Type Automatic/Manual
-    backupType = resource.Body('backupType')
+    backup_type = resource.Body('backupType')
     #: Snapshot creation mode.
-    backupMethod = resource.Body('backupMethod')
+    backup_method = resource.Body('backupMethod')
     #: Time when the snapshot starts to be executed.
-    backupExpectedStartTime = resource.Body('backupExpectedStartTime')
+    backup_start_time = resource.Body('backupExpectedStartTime')
     #: Snapshot retention period.
-    backupKeepDay = resource.Body('backupKeepDay', type=int)
+    backup_keep_days = resource.Body('backupKeepDay', type=int)
     #: Time when a snapshot is executed every day.
-    backupPeriod = resource.Body('backupPeriod')
+    backup_period = resource.Body('backupPeriod')
     #: Indices that need to be backed up.
     indices = resource.Body('indices')
     #: Total number of shards of the indices to be backed up.
-    totalShards = resource.Body('totalShards', type=int)
+    total_shards = resource.Body('totalShards', type=int)
     #: Number of shards that fail to be backed up.
-    failedShards = resource.Body('failedShards', type=int)
+    failed_shards = resource.Body('failedShards', type=int)
     #: Version of the snapshot.
     version = resource.Body('version')
     #: Snapshot restoration status.
-    restoreStatus = resource.Body('restoreStatus')
+    restore_status = resource.Body('restoreStatus')
     #: Timestamp when the snapshot starts to be executed.
-    startTime = resource.Body('startTime')
+    start_time = resource.Body('startTime')
     #: Timestamp when the snapshot execution ends.
-    endTime = resource.Body('endTime')
+    end_time = resource.Body('endTime')
     #: Bucket for storing snapshot data.
-    bucketName = resource.Body('bucketName')
+    bucket_name = resource.Body('bucketName')
 
     #: ID of the cluster, to which the snapshot is to be restored.
-    targetCluster = resource.Body('targetCluster')
+    target_cluster = resource.Body('targetCluster')
     #: Name of the index to be restored.
     indices = resource.Body('indices')
     #: Rule for defining the indices to be restored.
-    renamePattern = resource.Body('renamePattern')
+    rename_pattern = resource.Body('renamePattern')
     #: Rule for renaming an index.
-    renameReplacement = resource.Body('renameReplacement')
+    rename_replacement = resource.Body('renameReplacement')
+
+    def restore(self, session, **body):
+        """Preform actions given the message body.
+        """
+        url = utils.urljoin(self.base_path, self.id, 'restore')
+        return session.post(url, json=body)
 
 
 class SnapshotPolicy(resource.Resource):
@@ -103,28 +112,26 @@ class SnapshotPolicy(resource.Resource):
     cluster_id = resource.URI('cluster_id')
 
     #: Retention days for a snapshot.
-    keepday = resource.Body('keepday', type=int)
+    backup_keep_days = resource.Body('keepday', type=int)
     #: Time when a snapshot is created every day.
-    period = resource.Body('period')
+    backup_period = resource.Body('period')
     #: Snapshot name prefix.
-    prefix = resource.Body('prefix')
+    backup_prefix = resource.Body('prefix')
     #: OBS bucket for storing snapshots.
-    bucket = resource.Body('bucket')
+    bucket_name = resource.Body('bucket')
     #: Storage path of the snapshot in the OBS bucket.
-    basePath = resource.Body('basePath')
+    backup_path = resource.Body('basePath')
     #: Agency used to access OBS buckets.
     agency = resource.Body('agency')
     #: Whether to enable the automatic snapshot creation policy.
-    enable = resource.Body('enable')
+    enable = resource.Body('enable', type=otc_format.BoolStr_1)
     #: Name of the index to be backed up.
     indices = resource.Body('indices')
     #: Snapshot encryption ID.
-    snapshotCmkId = resource.Body('snapshotCmkId')
-    #: Prefix of the snapshot name that is automatically created.
-    prefix = resource.Body('prefix')
+    cmk_id = resource.Body('snapshotCmkId')
     #: Whether to delete all automatically created snapshots when the
     #:  automatic snapshot creation policy is disabled.
-    deleteAuto = resource.Body('deleteAuto')
+    delete_auto = resource.Body('deleteAuto')
 
 
 class SnapshotConfiguration(resource.Resource):
@@ -134,13 +141,13 @@ class SnapshotConfiguration(resource.Resource):
     allow_create = True
 
     #: ID of the cluster where automatic snapshot creation is enabled.
-    cluster_id = resource.URI('cluster_id')
+    clusterId = resource.URI('cluster_id')
     #: Setting -> auto_setting or custom setting
     setting = resource.URI('setting')
 
     #: OBS bucket used for index data backup.
-    bucket = resource.Body('bucket')
+    bucket_name = resource.Body('bucket')
     #: IAM agency used to access OBS.
     agency = resource.Body('agency')
     #: Key ID used for snapshot encryption.
-    snapshotCmkId = resource.Body('snapshotCmkId')
+    cmk_id = resource.Body('snapshotCmkId')

@@ -19,7 +19,6 @@ from otcextensions.osclient.css.v1 import cluster
 from otcextensions.tests.unit.osclient.css.v1 import fakes
 
 from openstackclient.tests.unit import utils as tests_utils
-from collections import defaultdict
 
 
 COLUMNS = (
@@ -37,6 +36,7 @@ COLUMNS = (
     'is_disk_encrypted',
     'is_https_enabled',
     'progress',
+    'actions',
     'router_id',
     'subnet_id',
     'security_group_id',
@@ -111,6 +111,8 @@ class TestCreateCluster(fakes.TestCss):
 
     data = fakes.gen_data(_data, columns)
 
+    default_timeout = 15
+
     def setUp(self):
         super(TestCreateCluster, self).setUp()
 
@@ -118,6 +120,7 @@ class TestCreateCluster(fakes.TestCss):
 
         self.client.create_cluster = mock.Mock(return_value=self._data)
         self.client.get_cluster = mock.Mock(return_value=self._data)
+        self.client.wait_for_cluster = mock.Mock(return_value=True)
 
     def test_create(self):
         arglist = [
@@ -128,7 +131,8 @@ class TestCreateCluster(fakes.TestCss):
             '--security-group-id', 'sg-uuid',
             '--instanceNum', '2',
             '--volume-type', 'COMMON',
-            '--volume-size', '60'
+            '--volume-size', '60',
+            '--wait'
         ]
         verifylist = [
             ('name', 'test-css'),
@@ -139,6 +143,7 @@ class TestCreateCluster(fakes.TestCss):
             ('volume_type', 'COMMON'),
             ('volume_size', 60),
             ('instanceNum', 2),
+            ('wait', True),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -162,6 +167,8 @@ class TestCreateCluster(fakes.TestCss):
             }
         }
         self.client.create_cluster.assert_called_with(**attrs)
+        self.client.wait_for_cluster.assert_called_with(
+            self._data.id, self.default_timeout)
         self.client.get_cluster.assert_called_with(self._data.id)
         self.assertEqual(self.columns, columns)
 
@@ -174,21 +181,27 @@ class TestRestartCluster(fakes.TestCss):
 
     data = fakes.gen_data(_data, columns)
 
+    default_timeout = 10
+
     def setUp(self):
         super(TestRestartCluster, self).setUp()
 
         self.cmd = cluster.RestartCluster(self.app, None)
 
-        self.client.restart_cluster = mock.Mock(return_value=None)
+        self.client.find_cluster = mock.Mock(return_value=self._data)
         self.client.get_cluster = mock.Mock(return_value=self._data)
+        self.client.restart_cluster = mock.Mock(return_value=None)
+        self.client.wait_for_cluster = mock.Mock(return_value=True)
 
     def test_restart(self):
         arglist = [
-            self._data.id,
+            self._data.name,
+            '--wait',
         ]
 
         verifylist = [
-            ('cluster', self._data.id),
+            ('cluster', self._data.name),
+            ('wait', True),
         ]
 
         # Verify cm is triggered with default parameters
@@ -196,7 +209,10 @@ class TestRestartCluster(fakes.TestCss):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.restart_cluster.assert_called_with(self._data.id)
+        self.client.find_cluster.assert_called_with(self._data.name)
+        self.client.restart_cluster.assert_called_with(self._data)
+        self.client.wait_for_cluster.assert_called_with(
+            self._data.id, self.default_timeout)
         self.client.get_cluster.assert_called_with(self._data.id)
 
         self.assertEqual(self.columns, columns)
@@ -210,22 +226,29 @@ class TestExtendCluster(fakes.TestCss):
 
     data = fakes.gen_data(_data, columns)
 
+    default_timeout = 15
+
     def setUp(self):
         super(TestExtendCluster, self).setUp()
 
         self.cmd = cluster.ExtendCluster(self.app, None)
 
+        self.client.find_cluster = mock.Mock(return_value=self._data)
         self.client.extend_cluster = mock.Mock(return_value=None)
         self.client.get_cluster = mock.Mock(return_value=self._data)
+        self.client.wait_for_cluster = mock.Mock(return_value=True)
 
-    def test_restart(self):
+    def test_extend(self):
         arglist = [
-            self._data.id, '2',
+            self._data.name,
+            '--add-nodes', '2',
+            '--wait',
         ]
 
         verifylist = [
-            ('cluster', self._data.id),
-            ('modifySize', 2),
+            ('cluster', self._data.name),
+            ('add_nodes', 2),
+            ('wait', True),
         ]
 
         # Verify cm is triggered with default parameters
@@ -233,7 +256,10 @@ class TestExtendCluster(fakes.TestCss):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.extend_cluster.assert_called_with(self._data.id, 2)
+        self.client.find_cluster.assert_called_with(self._data.name)
+        self.client.extend_cluster.assert_called_with(self._data, 2)
+        self.client.wait_for_cluster.assert_called_with(
+            self._data.id, self.default_timeout)
         self.client.get_cluster.assert_called_with(self._data.id)
 
         self.assertEqual(self.columns, columns)
@@ -242,12 +268,6 @@ class TestExtendCluster(fakes.TestCss):
 class TestShowCluster(fakes.TestCss):
 
     _data = fakes.FakeCluster.create_one()
-    setattr(_data, 'version', _data.datastore.version)
-    setattr(_data, 'type', _data.datastore.type)
-    node_count = defaultdict(int)
-    for node in _data.nodes:
-        node_count[node['type']] += 1
-    setattr(_data, 'node_count', dict(node_count))
 
     columns = COLUMNS
 
@@ -258,7 +278,7 @@ class TestShowCluster(fakes.TestCss):
 
         self.cmd = cluster.ShowCluster(self.app, None)
 
-        self.client.get_cluster = mock.Mock(return_value=self._data)
+        self.client.find_cluster = mock.Mock(return_value=self._data)
 
     def test_show_no_options(self):
         arglist = []
@@ -283,7 +303,7 @@ class TestShowCluster(fakes.TestCss):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.get_cluster.assert_called_with(self._data.id)
+        self.client.find_cluster.assert_called_with(self._data.id)
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -301,7 +321,7 @@ class TestShowCluster(fakes.TestCss):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         find_mock_result = exceptions.CommandError('Resource Not Found')
-        self.client.get_cluster = (
+        self.client.find_cluster = (
             mock.Mock(side_effect=find_mock_result)
         )
 
@@ -310,7 +330,7 @@ class TestShowCluster(fakes.TestCss):
             self.cmd.take_action(parsed_args)
         except Exception as e:
             self.assertEqual('Resource Not Found', str(e))
-        self.client.get_cluster.assert_called_with('unexist_css_cluster')
+        self.client.find_cluster.assert_called_with('unexist_css_cluster')
 
 
 class TestDeleteCluster(fakes.TestCss):
@@ -327,27 +347,30 @@ class TestDeleteCluster(fakes.TestCss):
 
     def test_delete(self):
         arglist = [
-            self._data[0].id,
+            self._data[0].name,
         ]
 
         verifylist = [
-            ('cluster', [self._data[0].id]),
+            ('cluster', [self._data[0].name]),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
+        self.client.find_cluster = (
+            mock.Mock(return_value=self._data[0])
+        )
+
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
-        self.client.delete_cluster.assert_called_with(
-            self._data[0].id, ignore_missing=False)
+        self.client.delete_cluster.assert_called_with(self._data[0].id)
         self.assertIsNone(result)
 
     def test_multiple_delete(self):
         arglist = []
 
-        for data in self._data:
-            arglist.append(data.id)
+        for css_cluster in self._data:
+            arglist.append(css_cluster.name)
 
         verifylist = [
             ('cluster', arglist),
@@ -356,18 +379,22 @@ class TestDeleteCluster(fakes.TestCss):
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
+        self.client.find_cluster = (
+            mock.Mock(side_effect=self._data)
+        )
+
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
 
         calls = []
-        for data in self._data:
-            calls.append(call(data.id, ignore_missing=False))
+        for css_cluster in self._data:
+            calls.append(call(css_cluster.id))
         self.client.delete_cluster.assert_has_calls(calls)
         self.assertIsNone(result)
 
     def test_multiple_delete_with_exception(self):
         arglist = [
-            self._data[0].id,
+            self._data[0].name,
             'unexist_css_cluster',
         ]
         verifylist = [
@@ -377,9 +404,9 @@ class TestDeleteCluster(fakes.TestCss):
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        delete_mock_result = [None, exceptions.CommandError]
-        self.client.delete_cluster = (
-            mock.Mock(side_effect=delete_mock_result)
+        find_mock_results = [self._data[0], exceptions.CommandError]
+        self.client.find_cluster = (
+            mock.Mock(side_effect=find_mock_results)
         )
 
         # Trigger the action
@@ -388,7 +415,8 @@ class TestDeleteCluster(fakes.TestCss):
         except Exception as e:
             self.assertEqual('1 of 2 Cluster(s) failed to delete.', str(e))
 
-        self.client.delete_cluster.assert_any_call(
-            self._data[0].id, ignore_missing=False)
-        self.client.delete_cluster.assert_any_call(
+        self.client.find_cluster.assert_any_call(
+            self._data[0].name, ignore_missing=False)
+        self.client.find_cluster.assert_any_call(
             'unexist_css_cluster', ignore_missing=False)
+        self.client.delete_cluster.assert_called_once_with(self._data[0].id)

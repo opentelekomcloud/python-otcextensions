@@ -9,6 +9,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack import exceptions
 from openstack import proxy
 from otcextensions.sdk.css.v1 import cluster as _cluster
 from otcextensions.sdk.css.v1 import flavor as _flavor
@@ -17,6 +18,7 @@ from otcextensions.sdk.css.v1 import cert as _cert
 
 from six.moves.urllib.parse import urlparse
 from six.moves.urllib.parse import urlunparse
+import time
 
 
 class Proxy(proxy.Proxy):
@@ -47,8 +49,24 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
         """
         return self._get(
-            _cluster.Cluster, cluster,
+            _cluster.Cluster, cluster
         )
+
+    def find_cluster(self, name_or_id, ignore_missing=False):
+        """Find a single gateway
+
+        :param name_or_id: The name or ID of a CSS cluster
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            if the cluster does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to find a nonexistent cluster.
+
+        :returns:
+            One :class:`~otcextensions.sdk.nat.v2.gateway.Gateway` or ``None``
+        """
+        return self._find(_cluster.Cluster, name_or_id,
+                          ignore_missing=ignore_missing)
 
     def create_cluster(self, **attrs):
         """Create a cluster from attributes
@@ -234,11 +252,11 @@ class Proxy(proxy.Proxy):
         """
 
         cluster = self._get_resource(_cluster.Cluster, cluster)
-        uri = f'{cluster.id}/index_snapshots'
+        base_path = f'/clusters/{cluster.id}/index_snapshots'
         return self._delete(
             _snapshot.Snapshot,
+            base_path=base_path,
             requires_id=False,
-            custom_uri=uri,
             ignore_missing=ignore_missing
         )
 
@@ -255,13 +273,9 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
-        uri = f'{cluster.id}/index_snapshot/{snapshot}/restore'
-        return self._create(
-            _snapshot.Snapshot,
-            custom_uri=uri,
-            prepend_key=False,
-            **attrs
-        )
+        snapshot = self._get_resource(_snapshot.Snapshot, snapshot,
+                                      cluster_id=cluster.id)
+        return snapshot.restore(self, **attrs)
 
     def get_certificate(self):
         urlcomp = list(urlparse(self.get_endpoint()))
@@ -274,3 +288,19 @@ class Proxy(proxy.Proxy):
         )
         self.endpoint_override = None
         return resp
+
+    def wait_for_cluster(self, cluster, timeout=15):
+
+        timeout = timeout * 60
+        if not 59 < timeout <= 1800:
+            raise exceptions.SDKException('Timeout Can be [1..30] minutes.')
+        to = time.time() + timeout
+        while to > time.time():
+            obj = self.get_cluster(cluster)
+            if not obj.actions:
+                return True
+            if getattr(obj, 'error'):
+                raise exceptions.SDKException(obj.error)
+            time.sleep(5)
+        raise exceptions.SDKException(
+            'Wait Timed Out. Cluster action still in progress.')

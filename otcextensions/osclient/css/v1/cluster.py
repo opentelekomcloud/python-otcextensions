@@ -62,6 +62,7 @@ def translate_response(func):
             'is_disk_encrypted',
             'is_https_enabled',
             'progress',
+            'actions',
             'router_id',
             'subnet_id',
             'security_group_id',
@@ -181,7 +182,18 @@ class CreateCluster(command.ShowOne):
             required=True,
             help=_('Security group ID.')
         )
-
+        parser.add_argument(
+            '--wait',
+            action='store_true',
+            help=('Wait for Cluster to Restart.')
+        )
+        parser.add_argument(
+            '--timeout',
+            metavar='<timeout>',
+            type=int,
+            default=15,
+            help=_("Timeout for the wait in minutes. (Default 15 mins)"),
+        )
         return parser
 
     @translate_response
@@ -221,6 +233,8 @@ class CreateCluster(command.ShowOne):
                 'type': 'elasticsearch'
             }
         cluster = client.create_cluster(**attrs)
+        if parsed_args.wait:
+            client.wait_for_cluster(cluster.id, parsed_args.timeout)
         return client.get_cluster(cluster.id)
 
 
@@ -240,7 +254,7 @@ class ShowCluster(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.css
 
-        return client.get_cluster(parsed_args.cluster)
+        return client.find_cluster(parsed_args.cluster)
 
 
 class RestartCluster(command.ShowOne):
@@ -251,16 +265,30 @@ class RestartCluster(command.ShowOne):
         parser.add_argument(
             'cluster',
             metavar='<cluster>',
-            help=_("ID of the CSS cluster to be restart."),
+            help=_("ID or Name of the CSS cluster to be restart."),
+        )
+        parser.add_argument(
+            '--wait',
+            action='store_true',
+            help=('Wait for Cluster to Restart.')
+        )
+        parser.add_argument(
+            '--timeout',
+            metavar='<timeout>',
+            type=int,
+            default=10,
+            help=_("Timeout for the wait in minutes. (Default 10 mins)"),
         )
         return parser
 
     @translate_response
     def take_action(self, parsed_args):
         client = self.app.client_manager.css
-
-        client.restart_cluster(parsed_args.cluster,)
-        return client.get_cluster(parsed_args.cluster)
+        cluster = client.find_cluster(parsed_args.cluster)
+        client.restart_cluster(cluster)
+        if parsed_args.wait:
+            client.wait_for_cluster(cluster.id, parsed_args.timeout)
+        return client.get_cluster(cluster.id)
 
 
 class ExtendCluster(command.ShowOne):
@@ -271,25 +299,37 @@ class ExtendCluster(command.ShowOne):
         parser.add_argument(
             'cluster',
             metavar='<cluster>',
-            help=_("ID of the CSS cluster to be extended."),
+            help=_("ID or Name of the CSS cluster to be extended."),
         )
         parser.add_argument(
-            'modifySize',
-            metavar='<modifySize>',
+            '--add-nodes',
+            metavar='<add_nodes>',
             type=int,
-            help=_("Number of instances to be scaled out."),
+            required=True,
+            help=_("Number of css nodes to be scaled out."),
+        )
+        parser.add_argument(
+            '--wait',
+            action='store_true',
+            help=('Wait for Cluster Scaling Task to complete.')
+        )
+        parser.add_argument(
+            '--timeout',
+            metavar='<timeout>',
+            type=int,
+            default=15,
+            help=_("Timeout for the wait in minutes. (Default 15 mins)"),
         )
         return parser
 
     @translate_response
     def take_action(self, parsed_args):
         client = self.app.client_manager.css
-
-        client.extend_cluster(
-            parsed_args.cluster,
-            parsed_args.modifySize
-        )
-        return client.get_cluster(parsed_args.cluster)
+        cluster = client.find_cluster(parsed_args.cluster)
+        client.extend_cluster(cluster, parsed_args.add_nodes)
+        if parsed_args.wait:
+            client.wait_for_cluster(cluster.id, parsed_args.timeout)
+        return client.get_cluster(cluster.id)
 
 
 class DeleteCluster(command.Command):
@@ -301,21 +341,22 @@ class DeleteCluster(command.Command):
             'cluster',
             metavar='<cluster>',
             nargs='+',
-            help=_("ID(s) of the CSS cluster(s) to be deleted."),
+            help=_("ID or Name of the CSS cluster(s) to be deleted."),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.css
         result = 0
-        for clusterId in parsed_args.cluster:
+        for name_or_id in parsed_args.cluster:
             try:
-                client.delete_cluster(clusterId, ignore_missing=False)
+                cluster = client.find_cluster(name_or_id, ignore_missing=False)
+                client.delete_cluster(cluster.id)
             except Exception as e:
                 result += 1
                 LOG.error(_("Failed to delete cluster(s) with "
-                          "ID '%(clusterId)s': %(e)s"),
-                          {'clusterId': clusterId, 'e': e})
+                          "ID or Name '%(cluster)s': %(e)s"),
+                          {'cluster': name_or_id, 'e': e})
         if result > 0:
             total = len(parsed_args.cluster)
             msg = (_("%(result)s of %(total)s Cluster(s) failed "
