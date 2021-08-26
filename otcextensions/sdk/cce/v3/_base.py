@@ -99,7 +99,8 @@ class Resource(resource.Resource):
             # TZ info away (it is anyway only UTC)
             # Project cleanup is the one who tries really to parse the date,
             # thus we need to ensure it is parsable
-            return object.__getattribute__(metadata, name)[0:24]
+            timestamp = object.__getattribute__(metadata, name)
+            return timestamp[0:24] if timestamp else None
         else:
             return object.__getattribute__(self, name)
 
