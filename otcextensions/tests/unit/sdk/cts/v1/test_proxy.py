@@ -69,10 +69,10 @@ class TestCTSProxy(test_proxy_base.TestProxyBase):
     def test_get_tracker(self):
         self.verify_get(
             self.proxy.get_tracker, _tracker.Tracker,
-            expected_args=[_tracker.Tracker, 'value'],
+            expected_args=['resource_id'],
             expected_kwargs={
                 'requires_id': False
-            }
+            },
         )
 
     def test_create_tracker(self):

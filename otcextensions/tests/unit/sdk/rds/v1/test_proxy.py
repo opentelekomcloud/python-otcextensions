@@ -108,7 +108,8 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
                 'dbId': 'dbId',
                 'region': 'regio',
                 'headers': RDS_HEADERS
-            }
+            },
+            expected_args=[]
         )
 
     def test_get_flavor(self):
@@ -122,7 +123,7 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
         )
 
     # def test_find_flavor(self):
-    #     self._verify2(
+    #     self._verify(
     #         'otcextensions.sdk.sdk_proxy.Proxy._find',
     #         self.proxy.find_flavor,
     #         method_args=["flavor"],
@@ -156,7 +157,7 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
         )
 
     def test_update_instance(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.sdk_proxy.Proxy._update',
             self.proxy.update_instance,
             method_args=['INSTANCE'],
@@ -180,7 +181,7 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
         )
 
     def test_find_instance(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.sdk_proxy.Proxy._find',
             self.proxy.find_instance,
             method_args=["instance"],
@@ -264,7 +265,7 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
     #     )
     #
     # def test_find_configuration(self):
-    #     self._verify2(
+    #     self._verify(
     #         'otcextensions.sdk.sdk_proxy.Proxy._find',
     #         self.proxy.find_configuration,
     #         method_args=["config"],
@@ -313,7 +314,7 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
     def test_get_backup_policy(self):
         self.verify_get(
             self.proxy.get_backup_policy, _backup.BackupPolicy,
-            value=[],
+            method_args=[],
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
             method_kwargs={
                 'instance': 'id'
@@ -327,7 +328,7 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
 
     def test_set_backup_policy(self):
         # TODO(agoncharov) upstream BaseProxy is renamed to Proxy
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.sdk_proxy.Proxy._update',
             self.proxy.set_backup_policy,
             method_args=['POLICY', 'INST_ID'],
