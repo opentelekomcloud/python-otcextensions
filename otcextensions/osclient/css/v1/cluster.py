@@ -14,6 +14,7 @@
 import logging
 
 from osc_lib import utils
+from osc_lib.cli import parseractions
 from osc_lib.command import command
 from osc_lib import exceptions
 from otcextensions.common import sdk_utils
@@ -114,8 +115,8 @@ class CreateCluster(command.ShowOne):
             help=_("Cluster Name.")
         )
         parser.add_argument(
-            '--elasticsearch-version',
-            metavar='<elasticsearch_version>',
+            '--version',
+            metavar='<version>',
             help=_('Engine version. The value can be 6.2.3, 7.1.1 or 7.6.2.')
         )
         parser.add_argument(
@@ -124,7 +125,6 @@ class CreateCluster(command.ShowOne):
             dest='flavor',
             help=_("flavor_ref spec_code")
         )
-
         parser.add_argument(
             '--instanceNum',
             metavar='<instanceNum>',
@@ -132,14 +132,12 @@ class CreateCluster(command.ShowOne):
             required=True,
             help=_('Number of clusters. The value range is 1 to 32.')
         )
-
         parser.add_argument(
             '--volume-type',
             metavar='<volume_type>',
             default='COMMON',
             help=_('The Volume Type of the Node.')
         )
-
         parser.add_argument(
             '--volume-size',
             metavar='<volume_size>',
@@ -157,13 +155,11 @@ class CreateCluster(command.ShowOne):
             metavar='<system_cmk_id>',
             help=_('The system encryption is used for cluster encryption.')
         )
-
         parser.add_argument(
             '--adminPwd',
             dest='adminPwd',
             help=_('Password of the cluster user admin in security mode.')
         )
-
         parser.add_argument(
             '--router-id',
             metavar='<router_id>',
@@ -181,6 +177,35 @@ class CreateCluster(command.ShowOne):
             metavar='<security_group_id>',
             required=True,
             help=_('Security group ID.')
+        )
+        parser.add_argument(
+            '--backup-policy',
+            metavar='period=<period>,prefix=<prefix>,keepday=<keepday>',
+            required_keys=['period', 'prefix', 'keepday'],
+            dest='backup_policy',
+            action=parseractions.MultiKeyValueAction,
+            help=_('Automatic backup creation policy.'
+                   'This function is enabled by default.'
+                   'The following keys are required:\n'
+                   'period=<period>: Time when a snapshot is created '
+                   'every day.\n'
+                   'prefix=<prefix>: Prefix of the name of the snapshot '
+                   'that is automatically created.\n'
+                   'keepday=<keepday>: Number of days for which automatically '
+                   'created snapshots are reserved. Value range: 1 to 90.'),
+        )
+        parser.add_argument(
+            '--tag',
+            action=parseractions.MultiKeyValueAction,
+            metavar='key=<key>,value=<value>',
+            required_keys=['key', 'value'],
+            dest='tags',
+            help=_('key=<key>: Tag key. The value can contain 1 to 36 '
+                   'characters. Only digits, letters, hyphens (-) and '
+                   'underscores (_) are allowed.\n'
+                   'value=<value>: Tag value. The value can contain 0 to 43 '
+                   'characters. Only digits, letters, hyphens (-) and '
+                   'underscores (_) are allowed.'),
         )
         parser.add_argument(
             '--wait',
@@ -227,11 +252,23 @@ class CreateCluster(command.ShowOne):
         if parsed_args.adminPwd:
             attrs['authorityEnable'] = True
             attrs['adminPwd'] = parsed_args.adminPwd
-        if parsed_args.elasticsearch_version:
+        if parsed_args.version:
             attrs['datastore'] = {
-                'version': parsed_args.elasticsearch_version,
+                'version': parsed_args.version,
                 'type': 'elasticsearch'
             }
+        backup_policy = parsed_args.backup_policy
+        if backup_policy:
+            if len(backup_policy) > 1:
+                msg = '--backup-policy option cannot be repeated'
+                raise exceptions.CommandError(msg)
+            else:
+                backup_policy = backup_policy[0]
+                backup_policy['keepday'] = int(backup_policy['keepday'])
+                attrs['backupStrategy'] = backup_policy
+        if parsed_args.tags:
+            attrs['tags'] = parsed_args.tags
+
         cluster = client.create_cluster(**attrs)
         if parsed_args.wait:
             client.wait_for_cluster(cluster.id, parsed_args.timeout)

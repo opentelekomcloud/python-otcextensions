@@ -9,7 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-# import six
 from openstack import exceptions
 from openstack import resource
 from openstack import utils
@@ -121,12 +120,12 @@ class Cluster(resource.Resource):
         self._translate_response(res)
         return self
 
-    def extend(self, session, new_size):
+    def extend(self, session, add_nodes):
         """Extend cluster capacity.
         """
-        if not 0 < new_size <= 32:
+        if not 0 < add_nodes <= 32:
             raise exceptions.SDKException('CSS Cluster size can be [1..32]')
         res = self._action(session, 'extend',
-                           {'grow': {'modifySize': new_size}})
+                           {'grow': {'modifySize': add_nodes}})
         self._translate_response(res)
         return self

@@ -11,12 +11,19 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Get details of CSS Cluster by cluster_id or instance of Cluster class
+Restore a snapshot to a cluster
 """
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
+attrs = {
+    "targetCluster": "target-cluster-uuid",
+    "indices": "myindex1,myindex2"
+}
+
 cluster_id = 'cluster-uuid'
-conn.css.disable_snapshot_function(cluster_id)
+snapshot_id = 'snapshot-uuid'
+
+conn.css.restore_snapshot(cluster_id, snapshot_id, **attrs)

@@ -11,12 +11,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Get details of CSS Cluster by cluster_id or instance of Cluster class
+Scale nodes of CSS Cluster by cluster_id or
+ instance of Cluster class.
 """
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-cluster_id = 'cluster-uuid'
-conn.css.disable_snapshot_function(cluster_id)
+cluster_id = 'cluter-uuid'
+add_nodes = 2
+conn.css.extend_cluster(cluster_id, add_nodes)

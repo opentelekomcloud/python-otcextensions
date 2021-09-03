@@ -132,6 +132,10 @@ class TestCreateCluster(fakes.TestCss):
             '--instanceNum', '2',
             '--volume-type', 'COMMON',
             '--volume-size', '60',
+            '--backup-policy',
+            'period=00:00 GMT+08:00,keepday=7,prefix=snapshot',
+            '--tag', 'key=key1,value=value1',
+            '--tag', 'key=key2,value=value2',
             '--wait'
         ]
         verifylist = [
@@ -140,9 +144,13 @@ class TestCreateCluster(fakes.TestCss):
             ('router_id', 'router-uuid'),
             ('network_id', 'network-uuid'),
             ('security_group_id', 'sg-uuid'),
+            ('instanceNum', 2),
             ('volume_type', 'COMMON'),
             ('volume_size', 60),
-            ('instanceNum', 2),
+            ('backup_policy', [{'period': '00:00 GMT+08:00',
+                                'keepday': '7', 'prefix': 'snapshot'}]),
+            ('tags', [{'key': 'key1', 'value': 'value1'},
+                      {'key': 'key2', 'value': 'value2'}]),
             ('wait', True),
         ]
         # Verify cm is triggereg with default parameters
@@ -164,7 +172,14 @@ class TestCreateCluster(fakes.TestCss):
                     'netId': 'network-uuid',
                     'securityGroupId': 'sg-uuid'
                 }
-            }
+            },
+            'backupStrategy': {
+                'period': '00:00 GMT+08:00',
+                'keepday': 7,
+                'prefix': 'snapshot'
+            },
+            'tags': [{'key': 'key1', 'value': 'value1'},
+                     {'key': 'key2', 'value': 'value2'}]
         }
         self.client.create_cluster.assert_called_with(**attrs)
         self.client.wait_for_cluster.assert_called_with(

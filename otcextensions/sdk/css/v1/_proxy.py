@@ -53,7 +53,7 @@ class Proxy(proxy.Proxy):
         )
 
     def find_cluster(self, name_or_id, ignore_missing=False):
-        """Find a single gateway
+        """Find a single cluster
 
         :param name_or_id: The name or ID of a CSS cluster
         :param bool ignore_missing: When set to ``False``
@@ -63,7 +63,7 @@ class Proxy(proxy.Proxy):
             to find a nonexistent cluster.
 
         :returns:
-            One :class:`~otcextensions.sdk.nat.v2.gateway.Gateway` or ``None``
+            One :class:`~otcextensions.sdk.css.v1.cluster.Cluster` or ``None``
         """
         return self._find(_cluster.Cluster, name_or_id,
                           ignore_missing=ignore_missing)
@@ -93,17 +93,18 @@ class Proxy(proxy.Proxy):
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return cluster.restart(self)
 
-    def extend_cluster(self, cluster, new_size):
+    def extend_cluster(self, cluster, add_nodes):
         """Scaling Out a Cluster with only Common Nodes
 
         :param cluster: key id or an instance of
             :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
+        :param add_nodes: Number of common nodes to be scaled out.
 
         :returns: instance of
             :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
-        return cluster.extend(self, new_size)
+        return cluster.extend(self, add_nodes)
 
     def delete_cluster(self, cluster, ignore_missing=False):
         """Delete a cluster
