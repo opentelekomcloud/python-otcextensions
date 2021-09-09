@@ -28,7 +28,7 @@ class L7Rule(resource.Resource):
     _query_mapping = resource.QueryParameters(
         'admin_state_up', 'compare_type', 'id',
         'invert', 'key', 'provisioning_status',
-        'type', 'value', is_admin_state_up='admin_state_up'
+        'type', 'rule_value', is_admin_state_up='admin_state_up'
     )
 
     # Properties
@@ -52,4 +52,4 @@ class L7Rule(resource.Resource):
     #: Specifies the match content.
     type = resource.Body('type')
     #: Specifies the value of the match item.
-    value = resource.Body('value')
+    rule_value = resource.Body('value')

@@ -824,5 +824,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.vlb.v3.l7_rule.L7Rule`
         """
         l7policyobj = self._get_resource(_l7policy.L7Policy, l7_policy)
+        if 'value' in attrs:
+            attrs['rule_value'] = attrs.pop('value')
         return self._update(_l7rule.L7Rule, l7rule,
                             l7policy_id=l7policyobj.id, **attrs)
