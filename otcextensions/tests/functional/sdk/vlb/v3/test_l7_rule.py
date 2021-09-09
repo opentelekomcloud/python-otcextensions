@@ -46,13 +46,19 @@ class TestL7Rule(TestVlb):
 
     def test_04_update_l7Rule(self):
         compare_type = 'STARTS_WITH'
+        rule_value = '/testchange.com'
         l7p = self.client.update_l7_rule(
             TestVlb.l7rule,
             TestVlb.l7policy,
             compare_type=compare_type,
         )
         self.assertEqual(l7p['compare_type'], compare_type)
-
+        l7p = self.client.update_l7_rule(
+            TestVlb.l7rule,
+            TestVlb.l7policy,
+            value=rule_value,
+        )
+        self.assertEqual(l7p['value'], rule_value)
         # cleanup
         self.client.delete_l7_rule(TestVlb.l7rule, TestVlb.l7policy)
         self.client.delete_l7_policy(TestVlb.l7policy)
