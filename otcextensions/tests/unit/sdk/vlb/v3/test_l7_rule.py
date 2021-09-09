@@ -37,5 +37,5 @@ class TestLoadBalancer(base.TestCase):
     def test_make_it(self):
         sot = l7_rule.L7Rule(**EXAMPLE)
         self.assertEqual(EXAMPLE['compare_type'], sot.compare_type)
-        self.assertEqual(EXAMPLE['value'], sot.value)
+        self.assertEqual(EXAMPLE['value'], sot.rule_value)
         self.assertEqual(EXAMPLE['type'], sot.type)
