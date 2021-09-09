@@ -10,7 +10,7 @@ For help on a specific `css` command, enter:
 
    $ openstack css help SUBCOMMAND
 
-.. _cluster:
+.. _css_cluster:
 
 CSS Cluster Operations
 ----------------------
