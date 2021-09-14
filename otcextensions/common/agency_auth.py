@@ -11,11 +11,11 @@
 # under the License.
 import json
 
-from keystoneauth1.identity.v3 import base
+from keystoneauth1 import _utils as utils
 from keystoneauth1 import access
 from keystoneauth1 import exceptions
 from keystoneauth1 import loading
-from keystoneauth1 import _utils as utils
+from keystoneauth1.identity.v3 import base
 
 
 _logger = utils.get_logger(__name__)
@@ -27,6 +27,7 @@ class AssumeRoleMethod(base.AuthMethod):
                           'user_domain_id',
                           'user_domain_name',
                           'password',
+                          'roles',
                           'target_agency_name',
                           'target_domain_id',
                           'target_domain_name',
@@ -55,6 +56,8 @@ class AssumeRoleMethod(base.AuthMethod):
             agency['domain_id'] = self.target_domain_id
         elif self.target_domain_name:
             agency['domain_name'] = self.target_domain_name
+        if self.roles:
+            agency['restrict'] = {'roles': list(self.roles)}
 
         return 'assume_role', agency
 
@@ -169,6 +172,8 @@ class AgencyLoader(loading.BaseV3Loader):
                         help="Domain id available through agency"),
             loading.Opt('target-domain-name',
                         help="Domain name available through agency"),
+            loading.Opt('roles',
+                        help="List of the roles to request from agency"),
         ])
         return options
 

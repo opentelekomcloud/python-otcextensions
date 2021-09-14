@@ -99,3 +99,31 @@ class AgencyTest(utils.TestCase):
         self.assertRequestHeaderEqual('X-Auth-Token', self.TEST_TOKEN)
         self.assertEqual(s.auth.auth_ref.auth_token, self.TEST_TOKEN)
         # TODO(not_gtema): add other tests
+
+    def test_authenticate_with_username_password_roles(self):
+        self.stub_auth(json=self.TEST_RESPONSE_DICT)
+        a = agency_auth.Agency(self.TEST_URL,
+                               username=self.TEST_USER,
+                               password=self.TEST_PASS,
+                               target_domain_id=self.TEST_TARGET_DOMAIN_ID,
+                               target_agency_name=self.TEST_TARGET_AGENCY_NAME,
+                               target_project_id=self.TEST_TARGET_PROJECT_ID,
+                               roles=["r1", "r2"])
+        self.assertFalse(a.has_scope_parameters)
+        s = session.Session(auth=a)
+
+        self.assertEqual({'X-Auth-Token': self.TEST_TOKEN},
+                         s.get_auth_headers())
+
+        req = {'auth': {'identity':
+               {'methods': ['assume_role'],
+                'assume_role': {'domain_id': self.TEST_TARGET_DOMAIN_ID,
+                                'xrole_name': self.TEST_TARGET_AGENCY_NAME,
+                                'restrict': {'roles': ['r1', 'r2']}}},
+               'scope': {'project': {'id': self.TEST_TARGET_PROJECT_ID}}}}
+
+        self.assertRequestBodyIs(json=req)
+        self.assertRequestHeaderEqual('Content-Type', 'application/json')
+        self.assertRequestHeaderEqual('Accept', 'application/json')
+        self.assertRequestHeaderEqual('X-Auth-Token', self.TEST_TOKEN)
+        self.assertEqual(s.auth.auth_ref.auth_token, self.TEST_TOKEN)
