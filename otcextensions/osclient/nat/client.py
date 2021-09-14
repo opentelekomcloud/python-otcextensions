@@ -28,7 +28,7 @@ API_VERSIONS = {
 
 
 def make_client(instance):
-    """Returns a rds proxy"""
+    """Returns a nat proxy"""
 
     conn = instance.sdk_connection
 

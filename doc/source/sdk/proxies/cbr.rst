@@ -18,6 +18,13 @@ Backup Operations
   :noindex:
   :members: backups, get_backup, delete_backup, find_backup
 
+Share Member Operations
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.cbr.v3._proxy.Proxy
+  :noindex:
+  :members: members, get_member, add_members, update_member, delete_member
+
 Policy Operations
 ^^^^^^^^^^^^^^^^^
 
@@ -39,3 +46,12 @@ Restore Operations
 .. autoclass:: otcextensions.sdk.cbr.v3._proxy.Proxy
   :noindex:
   :members: restore_data
+
+Vault Operations
+^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.cbr.v3._proxy.Proxy
+  :noindex:
+  :members: vaults, get_vault, find_vault, create_vault, update_vault,
+            delete_vault, bind_policy, unbind_policy,
+            associate_resources, dissociate_resources

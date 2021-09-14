@@ -1,8 +1,8 @@
 OTC Extensions
 ==============
 
-.. image:: https://travis-ci.org/OpenTelekomCloud/python-otcextensions.svg?branch=master
-    :target: https://travis-ci.org/OpenTelekomCloud/python-otcextensions
+.. image:: https://zuul.otc-service.com/api/tenant/eco/badge?project=opentelekomcloud/python-otcextensions&pipeline=check&branch=master
+    :target: https://zuul.otc-service.com/t/eco/builds?project=opentelekomcloud%2Fpython-otcextensions
 
 .. image:: https://readthedocs.org/projects/python-otcextensions/badge/?version=latest
     :target: http://python-otcextensions.readthedocs.io/en/latest/?badge=latest

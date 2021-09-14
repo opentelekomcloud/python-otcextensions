@@ -82,7 +82,7 @@ class ShowCCECluster(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.cce
 
-        obj = client.find_cluster(parsed_args.cluster)
+        obj = client.find_cluster(parsed_args.cluster, ignore_missing=False)
 
         # display_columns, columns = _get_columns(obj)
         data = utils.get_dict_properties(_flatten_cluster(obj), self.columns)
@@ -129,6 +129,8 @@ class DeleteCCECluster(command.Command):
         if not parsed_args.wait:
             attrs['wait'] = False
 
+        # initialize sdk_connection with cce methods
+        _ = self.app.client_manager.cce
         if parsed_args.cluster:
             self.app.client_manager.sdk_connection.delete_cce_cluster(
                 **attrs
@@ -234,6 +236,8 @@ class CreateCCECluster(command.ShowOne):
         if parsed_args.multi_az:
             attrs['az'] = 'multi_az'
 
+        # initialize sdk_connection with cce methods
+        _ = self.app.client_manager.cce
         obj = self.app.client_manager.sdk_connection.create_cce_cluster(
             **attrs)
 

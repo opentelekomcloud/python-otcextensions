@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
+from openstack import utils
 
 
 class AppCSpec(resource.Resource):
@@ -62,11 +63,11 @@ class Backup(resource.Resource):
     allow_commit = False
 
     _query_mapping = resource.QueryParameters(
-        'checkpoint_id', 'dec', 'end_time', 'enterprise_project_id',
-        'image_type', 'limit', 'marker', 'member_status', 'name',
-        'offset', 'own_type', 'parent_id', 'resource_az', 'resource_id',
-        'resource_name', 'resource_type', 'sort', 'start_time',
-        'status', 'used_percent', 'vault_id')
+        'checkpoint_id', 'dec', 'end_time', 'image_type', 'limit',
+        'marker', 'member_status', 'name', 'offset', 'own_type',
+        'parent_id', 'resource_az', 'resource_id', 'resource_name',
+        'resource_type', 'sort', 'start_time', 'status',
+        'used_percent', 'vault_id')
 
     #: Properties
     #: Restore point ID
@@ -76,9 +77,6 @@ class Backup(resource.Resource):
     created_at = resource.Body('created_at')
     #: Backup description
     description = resource.Body('description')
-    #: Enterprise project ID
-    #: default: 0
-    enterprise_project_id = resource.Body('enterprise_project_id')
     #: Expiration time
     expired_at = resource.Body('expired_at')
     #: Extended Information
@@ -113,3 +111,17 @@ class Backup(resource.Resource):
     updated_at = resource.Body('updated_at')
     #: Vault ID
     vault_id = resource.Body('vault_id')
+
+    def add_members(self, session, members):
+        """Method to add several share members to a backup
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param list members: List of target project IDs to which the backup
+            is shared
+        """
+        url = utils.urljoin(self.base_path, self.id, '/members')
+        body = {
+            'members': members
+        }
+        return session.post(url, json=body)

@@ -16,8 +16,8 @@ import logging
 from osc_lib import utils
 from osc_lib.command import command
 
-from otcextensions.i18n import _
 from otcextensions.common import sdk_utils
+from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
@@ -49,7 +49,7 @@ class ListCredentials(command.Lister):
         return parser
 
     def take_action(self, parsed_args):
-        client = self.app.client_manager.identity
+        client = self.app.client_manager.iam
 
         table_columns = (
             'Access Key',
@@ -88,7 +88,7 @@ class ShowCredential(command.ShowOne):
 
     def take_action(self, parsed_args):
 
-        client = self.app.client_manager.identity
+        client = self.app.client_manager.iam
 
         obj = client.find_credential(
             parsed_args.credential,
@@ -118,7 +118,7 @@ class DeleteCredential(command.Command):
 
     def take_action(self, parsed_args):
         if parsed_args.credential:
-            client = self.app.client_manager.identity
+            client = self.app.client_manager.iam
             for credential in parsed_args.credential:
                 credential = client.find_credential(
                     credential,
@@ -151,7 +151,7 @@ class UpdateCredential(command.ShowOne):
         return parser
 
     def take_action(self, parsed_args):
-        client = self.app.client_manager.identity
+        client = self.app.client_manager.iam
         args_list = [
             'description', 'status'
         ]
@@ -190,8 +190,7 @@ class CreateCredential(command.ShowOne):
 
     def take_action(self, parsed_args):
 
-        client = self.app.client_manager.identity
-
+        client = self.app.client_manager.iam
         attrs = {}
 
         attrs['user_id'] = parsed_args.user_id

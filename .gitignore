@@ -26,3 +26,4 @@ cover
 releasenotes/build
 .ropeproject
 test.py
+.vscode

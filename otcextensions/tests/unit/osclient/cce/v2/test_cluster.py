@@ -141,7 +141,10 @@ class TestClusterShow(fakes.TestCCE):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_cluster.assert_called_once_with('cluster_uuid')
+        self.client.find_cluster.assert_called_once_with(
+            'cluster_uuid',
+            ignore_missing=False
+        )
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)

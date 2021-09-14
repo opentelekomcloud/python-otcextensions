@@ -143,7 +143,7 @@ Encrypt Datakey
 This interface is used to encrypt a KMS data encryption key.
 
 .. literalinclude:: ../examples/kms/encrypt_datakey.py
-   :lines: 16-27
+   :lines: 16-25
 
 Decrypt Datakey
 ^^^^^^^^^^^^^^^

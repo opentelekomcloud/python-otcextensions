@@ -56,7 +56,9 @@ class TestDehProxy(test_proxy_base.TestProxyBase):
 
     def test_delete_host(self):
         self.verify_delete(
-            self.proxy.delete_host, _host.Host, ignore=True,
+            self.proxy.delete_host,
+            _host.Host,
+            ignore_missing=True,
         )
 
     def test_update_host(self):
@@ -71,7 +73,8 @@ class TestDehProxy(test_proxy_base.TestProxyBase):
             method_kwargs={},
             expected_kwargs={
                 'dedicated_host_id': 'host_id'
-            }
+            },
+            expected_args=[]
         )
 
     def test_host_types(self):
@@ -82,5 +85,6 @@ class TestDehProxy(test_proxy_base.TestProxyBase):
             expected_kwargs={
                 'paginated': False,
                 'availability_zone': 'az'
-            }
+            },
+            expected_args=[]
         )

@@ -28,7 +28,7 @@ class TestKmsKeys(TestKmsProxy):
     def test_list(self):
         self.verify_list(
             self.proxy.keys, _key.Key,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
+            # mock_method='openstack.proxy.Proxy._list',
             method_kwargs={
                 'some_arg': 'arg_value',
             },
@@ -41,7 +41,7 @@ class TestKmsKeys(TestKmsProxy):
         self.verify_get(
             self.proxy.get_key,
             _key.Key,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
+            # mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
             expected_kwargs={
             }
         )
@@ -49,7 +49,7 @@ class TestKmsKeys(TestKmsProxy):
     def test_create(self):
         self.verify_create(
             self.proxy.create_key, _key.Key,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
+            mock_method='openstack.proxy.Proxy._create',
             method_kwargs={
                 'instance': 'test',
                 'name': 'some_name'
@@ -62,7 +62,7 @@ class TestKmsKeys(TestKmsProxy):
         )
 
     def test_enable(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.kms.v1.key.Key.enable',
             self.proxy.enable_key,
             method_args=['INSTANCE'],
@@ -70,7 +70,7 @@ class TestKmsKeys(TestKmsProxy):
         )
 
     def test_disable(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.kms.v1.key.Key.disable',
             self.proxy.disable_key,
             method_args=['INSTANCE'],
@@ -78,7 +78,7 @@ class TestKmsKeys(TestKmsProxy):
         )
 
     def test_schedule_deletion(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.kms.v1.key.Key.schedule_deletion',
             self.proxy.schedule_key_deletion,
             method_args=['INSTANCE', 3],
@@ -86,7 +86,7 @@ class TestKmsKeys(TestKmsProxy):
         )
 
     def test_cancel_deletion(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.kms.v1.key.Key.cancel_deletion',
             self.proxy.cancel_key_deletion,
             method_args=['INSTANCE'],
@@ -99,7 +99,7 @@ class TestKmsDataKeys(TestKmsProxy):
     def test_create(self):
         self.verify_create(
             self.proxy.create_datakey, _data_key.DataKey,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
+            mock_method='openstack.proxy.Proxy._create',
             method_args=['CMK'],
             method_kwargs={
                 'name': 'some_name'
@@ -108,11 +108,12 @@ class TestKmsDataKeys(TestKmsProxy):
                 'prepend_key': False,
                 'name': 'some_name',
                 'key_id': 'CMK'
-            }
+            },
+            expected_args=[]
         )
 
     def test_create_no_plain(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.kms.v1.data_key.DataKey.create_wo_plain',
             self.proxy.create_datakey_wo_plain,
             method_args=['INSTANCE'],
@@ -123,7 +124,7 @@ class TestKmsDataKeys(TestKmsProxy):
         )
 
     # def test_encrypt(self):
-    #     self._verify2(
+    #     self._verify(
     #         'otcextensions.sdk.kms.v1.data_key.DataKey.encrypt',
     #         self.proxy.encrypt_datakey,
     #         method_args=['INSTANCE'],
@@ -131,7 +132,7 @@ class TestKmsDataKeys(TestKmsProxy):
     #     )
     #
     # def test_decrypt(self):
-    #     self._verify2(
+    #     self._verify(
     #         'otcextensions.sdk.kms.v1.data_key.DataKey.decrypt',
     #         self.proxy.decrypt_datakey,
     #         method_args=['INSTANCE'],
@@ -144,7 +145,7 @@ class TestKmsRandom(TestKmsProxy):
     def test_create(self):
         self.verify_create(
             self.proxy.generate_random, _misc.Random,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
+            mock_method='openstack.proxy.Proxy._create',
             method_kwargs={
                 'random_data_length': 100
             },
@@ -158,8 +159,8 @@ class TestKmsRandom(TestKmsProxy):
 class TestKmsInstanceNum(TestKmsProxy):
 
     def test_get(self):
-        self._verify2(
-            'otcextensions.sdk.kms.v1.misc.InstanceNumber.get',
+        self._verify(
+            'otcextensions.sdk.kms.v1.misc.InstanceNumber.fetch',
             self.proxy.get_instance_number,
             method_args=[],
             expected_args=[self.proxy],
@@ -169,7 +170,7 @@ class TestKmsInstanceNum(TestKmsProxy):
 class TestKmsQuota(TestKmsProxy):
 
     def test_quotas(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.kms.v1.misc.Quota.list',
             self.proxy.quotas,
             method_args=[],

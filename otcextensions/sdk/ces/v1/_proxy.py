@@ -22,6 +22,10 @@ class Proxy(proxy.Proxy):
 
     skip_discovery = True
 
+    def _extract_name(self, url, service_type=None, project_id=None):
+        return super()._extract_name(
+            url.lower(), service_type=service_type, project_id=project_id)
+
     # ======== Alarms ========
     def alarms(self, **query):
         """Return a generator of alarms
