@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    Agency auth now also support undocumented "restrict" setting for requesting
+    explicit roles in the scope. This is really undocumented feature, therefore
+    it is not documented there. Really.
