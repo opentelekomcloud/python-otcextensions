@@ -124,14 +124,16 @@ class TestCreateCluster(fakes.TestCss):
 
     def test_create(self):
         arglist = [
-            '--name', 'test-css',
+            'test-css',
             '--flavor', 'css-flavor',
             '--router-id', 'router-uuid',
             '--network-id', 'network-uuid',
             '--security-group-id', 'sg-uuid',
-            '--instanceNum', '2',
+            '--count', '2',
+            '--size', '60',
             '--volume-type', 'COMMON',
-            '--volume-size', '60',
+            '--https-enable',
+            '--admin-pwd', 'testtest',
             '--backup-policy',
             'period=00:00 GMT+08:00,keepday=7,prefix=snapshot',
             '--tag', 'key=key1,value=value1',
@@ -144,9 +146,11 @@ class TestCreateCluster(fakes.TestCss):
             ('router_id', 'router-uuid'),
             ('network_id', 'network-uuid'),
             ('security_group_id', 'sg-uuid'),
-            ('instanceNum', 2),
-            ('volume_type', 'COMMON'),
+            ('count', 2),
             ('volume_size', 60),
+            ('volume_type', 'COMMON'),
+            ('https_enable', True),
+            ('admin_pwd', 'testtest'),
             ('backup_policy', [{'period': '00:00 GMT+08:00',
                                 'keepday': '7', 'prefix': 'snapshot'}]),
             ('tags', [{'key': 'key1', 'value': 'value1'},
@@ -173,6 +177,9 @@ class TestCreateCluster(fakes.TestCss):
                     'securityGroupId': 'sg-uuid'
                 }
             },
+            'httpsEnable': 'true',
+            'authorityEnable': True,
+            'adminPwd': 'testtest',
             'backupStrategy': {
                 'period': '00:00 GMT+08:00',
                 'keepday': 7,

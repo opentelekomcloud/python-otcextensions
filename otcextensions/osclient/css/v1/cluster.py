@@ -24,6 +24,8 @@ from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
+DISK_TYPE_CHOICES = ['common', 'high', 'ultrahigh']
+
 
 def _get_columns(item):
     column_map = {
@@ -109,46 +111,71 @@ class CreateCluster(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(CreateCluster, self).get_parser(prog_name)
         parser.add_argument(
-            '--name',
+            'name',
             metavar='<name>',
-            required=True,
-            help=_("Cluster Name.")
+            help=_('Cluster Name.')
         )
         parser.add_argument(
             '--version',
             metavar='<version>',
-            help=_('Engine version. The value can be 6.2.3, 7.1.1 or 7.6.2.')
+            help=_('Cluster Engine version. The value can be '
+                   '6.2.3, 7.1.1 or 7.6.2.')
         )
         parser.add_argument(
             '--flavor',
             metavar='<flavor>',
-            dest='flavor',
-            help=_("flavor_ref spec_code")
+            required=True,
+            help=_('Cluster Instance flavor.')
         )
         parser.add_argument(
-            '--instanceNum',
-            metavar='<instanceNum>',
+            '--count',
+            metavar='<count>',
             type=int,
             required=True,
             help=_('Number of clusters. The value range is 1 to 32.')
         )
-        parser.add_argument(
-            '--volume-type',
-            metavar='<volume_type>',
-            default='COMMON',
-            help=_('The Volume Type of the Node.')
-        )
-        parser.add_argument(
-            '--volume-size',
-            metavar='<volume_size>',
+        disk_group = parser.add_argument_group('Volume Parameters')
+        disk_group.add_argument(
+            '--size',
+            metavar='<size>',
+            dest='volume_size',
             type=int,
-            help=_('The Volume Size of the Node.\n'
-                   'Deafult value is set respective to flavor')
+            required=True,
+            help=_('Size of the instance disk volume in GB, '
+                   'which must be a multiple of 4 and 10. ')
+        )
+        disk_group.add_argument(
+            '--volume-type',
+            metavar='{' + ','.join(DISK_TYPE_CHOICES) + '}',
+            type=lambda s: s.upper(),
+            required=True,
+            dest='volume_type',
+            choices=[s.upper() for s in DISK_TYPE_CHOICES],
+            help=_('Volume type. (COMMON, HIGH, ULTRAHIGH).')
+        )
+        network_group = parser.add_argument_group('Network Parameters')
+        network_group.add_argument(
+            '--router-id',
+            metavar='<router_id>',
+            required=True,
+            help=_('Router ID.')
+        )
+        network_group.add_argument(
+            '--network-id',
+            metavar='<network_id>',
+            required=True,
+            help=_('Network ID.')
+        )
+        network_group.add_argument(
+            '--security-group-id',
+            metavar='<security_group_id>',
+            required=True,
+            help=_('Security group ID.')
         )
         parser.add_argument(
             '--https-enable',
-            metavar='<https_enable>',
-            help=_('The https is enabled or not.')
+            action='store_true',
+            help=_('Whether communication is encrypted on the cluster.')
         )
         parser.add_argument(
             '--system-cmk-id',
@@ -156,27 +183,9 @@ class CreateCluster(command.ShowOne):
             help=_('The system encryption is used for cluster encryption.')
         )
         parser.add_argument(
-            '--adminPwd',
-            dest='adminPwd',
+            '--admin-pwd',
+            metavar='<admin_pwd>',
             help=_('Password of the cluster user admin in security mode.')
-        )
-        parser.add_argument(
-            '--router-id',
-            metavar='<router_id>',
-            required=True,
-            help=_('Router ID.')
-        )
-        parser.add_argument(
-            '--network-id',
-            metavar='<network_id>',
-            required=True,
-            help=_('Network ID.')
-        )
-        parser.add_argument(
-            '--security-group-id',
-            metavar='<security_group_id>',
-            required=True,
-            help=_('Security group ID.')
         )
         parser.add_argument(
             '--backup-policy',
@@ -217,7 +226,7 @@ class CreateCluster(command.ShowOne):
             metavar='<timeout>',
             type=int,
             default=15,
-            help=_("Timeout for the wait in minutes. (Default 15 mins)"),
+            help=_('Timeout for the wait in minutes (Default 15 mins).'),
         )
         return parser
 
@@ -228,7 +237,7 @@ class CreateCluster(command.ShowOne):
 
         attrs = {
             'name': parsed_args.name,
-            'instanceNum': parsed_args.instanceNum,
+            'instanceNum': parsed_args.count,
             'instance': {
                 'flavorRef': parsed_args.flavor,
                 'volume': {
@@ -242,20 +251,27 @@ class CreateCluster(command.ShowOne):
                 }
             }
         }
+        version = parsed_args.version
+        if version:
+            attrs['datastore'] = {
+                'version': version,
+                'type': 'elasticsearch'
+            }
+
         if parsed_args.https_enable:
-            attrs['httpsEnable'] = parsed_args.https_enable
+            attrs['httpsEnable'] = 'true'
+            if (version and version != '6.2.3') or not version:
+                attrs['authorityEnable'] = True
+                admin_password = parsed_args.admin_pwd
+                if not admin_password:
+                    msg = 'admin_pwd is mandatary in https_enable mode'
+                    raise exceptions.CommandError(msg)
+                attrs['adminPwd'] = admin_password
+
         if parsed_args.system_cmk_id:
             attrs['diskEncryption'] = {
                 'systemEncrypted': 1,
                 'systemCmkid': parsed_args.system_cmk_id
-            }
-        if parsed_args.adminPwd:
-            attrs['authorityEnable'] = True
-            attrs['adminPwd'] = parsed_args.adminPwd
-        if parsed_args.version:
-            attrs['datastore'] = {
-                'version': parsed_args.version,
-                'type': 'elasticsearch'
             }
         backup_policy = parsed_args.backup_policy
         if backup_policy:

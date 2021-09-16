@@ -18,9 +18,12 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-cluster_id = '5ae2d850-c201-4b61-ac06-c2750d0402ba'
+cluster_id = 'cluster-uuid'
+
+# Set Cluster Snapshot Configuration automatically.
 conn.css.set_snapshot_configuration(cluster_id, auto_setting=True)
 
+# Set Cluster Snapshot Configuration with custom bucket & agency.
 attrs = {
     "bucket": "css-backup-1626212749424",
     "agency": "css_obs_agency"

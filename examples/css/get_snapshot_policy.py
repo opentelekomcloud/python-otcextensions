@@ -18,6 +18,6 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-cluster_id = '5ae2d850-c201-4b61-ac06-c2750d0402ba'
+cluster_id = 'cluster-uuid'
 resp = conn.css.get_snapshot_policy(cluster_id)
 print(resp)

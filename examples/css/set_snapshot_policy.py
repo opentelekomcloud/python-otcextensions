@@ -25,6 +25,6 @@ attrs = {
     "enable": "true"
 }
 
-cluster_id = '5ae2d850-c201-4b61-ac06-c2750d0402ba'
+cluster_id = 'cluster-uuid'
 resp = conn.css.set_snapshot_policy(cluster_id, **attrs)
 print(resp)

@@ -18,5 +18,5 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-cluster_id = 'cluter-uuid'
+cluster_id = 'cluster-uuid'
 conn.css.delete_cluster(cluster_id)
