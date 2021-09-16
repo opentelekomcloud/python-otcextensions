@@ -158,7 +158,7 @@ IAM agency.
 :class:`~otcextensions.sdk.css.v1.snapshot.SnapshotConfiguration`.
 
 .. literalinclude:: ../examples/css/set_snapshot_configuration.py
-   :lines: 16-28
+   :lines: 16-31
 
 Disable Snapshot Function
 ^^^^^^^^^^^^^^^^^^^^^^^^^
