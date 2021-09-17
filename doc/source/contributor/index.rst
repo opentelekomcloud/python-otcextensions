@@ -76,6 +76,16 @@ add new features to the project.
 
    create/resource
 
+Add Release Notes to your Pull Request
+--------------------------------------
+
+Every Pull Request should add release notes for trackability of changes of
+OTCExstensions. For this purpose, we use Reno to fullfil this requirement.
+The following link will explain how to install and use the tool.
+
+.. toctree::
+
+   release_notes
 
 Contacting the OTC Extensions Developers
 ----------------------------------------
