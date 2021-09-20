@@ -16,8 +16,7 @@ from otcextensions.sdk.css.v1 import flavor as _flavor
 from otcextensions.sdk.css.v1 import snapshot as _snapshot
 from otcextensions.sdk.css.v1 import cert as _cert
 
-from six.moves.urllib.parse import urlparse
-from six.moves.urllib.parse import urlunparse
+from urllib.parse import urlsplit
 import time
 
 
@@ -279,10 +278,9 @@ class Proxy(proxy.Proxy):
         return snapshot.restore(self, **attrs)
 
     def get_certificate(self):
-        urlcomp = list(urlparse(self.get_endpoint()))
-        urlcomp[2] = ''
-        baseurl = urlunparse(urlcomp)
-        self.endpoint_override = baseurl + '/v1.0/'
+        split_url = urlsplit(self.get_endpoint())
+        self.endpoint_override = \
+            f'{split_url.scheme}://{split_url.netloc}/v1.0/'
         resp = self._get(
             _cert.Cert,
             requires_id=False,

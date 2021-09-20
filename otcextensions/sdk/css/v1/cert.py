@@ -18,4 +18,4 @@ class Cert(resource.Resource):
     allow_fetch = True
 
     #: certificate transcoded type
-    certBase64 = resource.Body('certBase64')
+    cert_base64 = resource.Body('certBase64')

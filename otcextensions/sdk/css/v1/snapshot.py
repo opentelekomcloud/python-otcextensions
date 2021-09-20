@@ -24,7 +24,7 @@ class DatastoreSpec(resource.Resource):
 
 class Snapshot(resource.Resource):
 
-    base_path = '/clusters/%(clusterId)s/index_snapshot'
+    base_path = '/clusters/%(cluster_id)s/index_snapshot'
     # base_path = '/clusters/%(cluster_id}s/index_snapshot'
 
     resource_key = 'backup'
@@ -35,7 +35,7 @@ class Snapshot(resource.Resource):
     allow_list = True
 
     #: ID of the cluster where index data is to be backed up.
-    clusterId = resource.URI('cluster_id')
+    cluster_id = resource.URI('cluster_id')
 
     #: ID of the snapshot.
     id = resource.Body('id')
@@ -50,8 +50,6 @@ class Snapshot(resource.Resource):
     created_at = resource.Body('created')
     #: Type of the data search engine.
     datastore = resource.Body('datastore', type=DatastoreSpec)
-    #: Cluster ID.
-    cluster_id = resource.Body('clusterId')
     #: Cluster name.
     cluster_name = resource.Body('clusterName')
     #: Snapshot status.

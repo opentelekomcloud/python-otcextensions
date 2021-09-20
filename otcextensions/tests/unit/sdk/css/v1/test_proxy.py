@@ -10,12 +10,18 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import mock
+
 from otcextensions.sdk.css.v1 import _proxy
 from otcextensions.sdk.css.v1 import flavor as _flavor
 from otcextensions.sdk.css.v1 import cluster as _cluster
 from otcextensions.sdk.css.v1 import snapshot as _snapshot
+from otcextensions.sdk.css.v1 import cert as _cert
 
 from openstack.tests.unit import test_proxy_base
+
+
+ENDPOINT_CSS = 'http://css.example.com/v1.0'
 
 
 class TestCssProxy(test_proxy_base.TestProxyBase):
@@ -23,6 +29,9 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
     def setUp(self):
         super(TestCssProxy, self).setUp()
         self.proxy = _proxy.Proxy(self.session)
+        self.session.get_endpoint = mock.Mock(
+            return_value=ENDPOINT_CSS
+        )
 
     def test_clusters(self):
         self.verify_list(self.proxy.clusters, _cluster.Cluster)
@@ -168,4 +177,12 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
                 'requires_id': False,
                 'base_path': '/clusters/cluster-uuid/index_snapshots'
             }
+        )
+
+    def test_get_certificate(self):
+        self._verify(
+            "openstack.proxy.Proxy._get",
+            self.proxy.get_certificate,
+            expected_args=[_cert.Cert],
+            expected_kwargs={'requires_id': False},
         )
