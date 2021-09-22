@@ -471,12 +471,16 @@ class TestListWhitelist(fakes.TestVpcep):
 
 class TestManageWhitelist(fakes.TestVpcep):
 
-    objects = fakes.FakeManageWhitelist.create_one()
+    objects = fakes.FakeWhitelist.create_multiple(3)
 
-    column_list_headers = ('Domain Id', 'Status')
-    columns = ('domain_id', 'status')
+    column_list_headers = ('Permission',)
 
-    data = objects.permissions
+    columns = ('permission',)
+
+    data = []
+
+    for s in objects:
+        data.append((s.permission,))
 
     def setUp(self):
         super(TestManageWhitelist, self).setUp()

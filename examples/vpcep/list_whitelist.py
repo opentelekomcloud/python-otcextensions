@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Create VPC Endpoint Service
+Get whitelist of VPC Endpoint Service
 """
 import openstack
 from otcextensions import sdk
@@ -22,8 +22,7 @@ conn = openstack.connect(cloud='otc')
 
 sdk.register_otc_extensions(conn)
 
-endpoint_service_id = '63fa38cf-0ec9-484e-a883-f3c5258ed964'
+endpoint_service_id = 'endpoint-service-uuid'
 
 whitelist = conn.vpcep.whitelist(endpoint_service_id)
-for s in whitelist:
-    print(s)
+print(list(whitelist))

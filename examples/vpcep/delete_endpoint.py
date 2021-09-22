@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Delete VPC Endpoint details
+Delete VPC Endpoint
 """
 import openstack
 from otcextensions import sdk
@@ -22,5 +22,5 @@ conn = openstack.connect(cloud='otc')
 
 sdk.register_otc_extensions(conn)
 
-endpoint_id = '4a83e731-4052-447c-9fff-544ab5cee3f7'
+endpoint_id = 'endpoint-uuid'
 conn.vpcep.delete_endpoint(endpoint_id)

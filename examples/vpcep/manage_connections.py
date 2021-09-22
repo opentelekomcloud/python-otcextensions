@@ -11,25 +11,25 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Manage VPC Endpoint Service Whitelist
+Manage Connections to a VPC Endpoint Service
 """
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='qainfra')
+conn = openstack.connect(cloud='otc')
 
 sdk.register_otc_extensions(conn)
 
 args = {
     "endpoints": [
-        "f5ed95ed-2eeb-4e85-a21f-945a9c72e2eb"
+        "endpoint1-uuid",
+        "endpoint2-uuid"
     ],
     "action": "receive"
 }
 
-endpoint_service_id = 'c92dc513-befd-463d-b225-bfdb8b53a7d9'
+endpoint_service_id = 'endpoint-service-uuid'
 connections = conn.vpcep.manage_connections(
     endpoint_service_id, **args)
-for connection in connections:
-    print(connection)
+print(list(connections))

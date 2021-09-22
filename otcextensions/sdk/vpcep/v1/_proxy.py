@@ -115,10 +115,10 @@ class Proxy(proxy.Proxy):
                           endpoint_service_id=endpoint_service.id,
                           **params)
 
-    def manage_connections(self,
-                           endpoint_service,
-                           endpoints,
-                           action):
+    def manage_connection(self,
+                          endpoint_service,
+                          endpoints,
+                          action):
         """Return a generator of endpoint_service_connections
 
         :param endpoint_service:
@@ -129,22 +129,22 @@ class Proxy(proxy.Proxy):
         :param action: Specifies whether to receive or reject a VPC endpoint
           connection for a VPC endpoint service.
 
-        :returns: A generator of endpoint_service Connection objects.
+        :returns: A generator of
+          :class:`~otcextensions.sdk.vpcep.v1.endpoint_service.Connection`
+          instance.
         """
+
         endpoint_service = self._get_resource(
-            _endpoint_service.EndpointService, endpoint_service)
+            _endpoint_service.EndpointService,
+            endpoint_service
+        )
 
-        assert(action.lower() in ['receive', 'reject'])
-
-        if not isinstance(type(endpoints), list):
-            endpoints = list(endpoints)
-        attr = {
-            'endpoints': endpoints,
-            'action': action,
-        }
-        return self._create(_endpoint_service.ManageConnection,
-                            endpoint_service_id=endpoint_service.id,
-                            **attr)
+        connection = self._get_resource(
+            _endpoint_service.Connection, None,
+            endpoint_service_id=endpoint_service.id,
+        )
+        return connection._manage_connection(
+            self, endpoints, action)
 
     def whitelist(self, endpoint_service, **params):
         """Return a generator of vpc endpoint service whitelist
@@ -174,36 +174,27 @@ class Proxy(proxy.Proxy):
 
         :param endpoint_service:
           The value can be the ID of a Endpoint Service or a
-          :class:`~otcextensions.sdk.vpcep.v1.endpoint_service.EndpointService`
+          :class:`~otcextensions.sdk.vpcep.v1.endpoint_service.Whitelist`
           instance.
         :param demains: List of Domain IDs to be added or removed
           from whitelist of a VPC Endpoint Service.
         :param action: Specifies whether to add or remove the domains
           from whitelist for a VPC endpoint service.
 
-        :returns: List of Domain IDs Added or Removed from Whitelist.
+        :returns: A generator of
+          :class:`~otcextensions.sdk.vpcep.v1.endpoint_service.Whitelist`
+          instance.
         """
         endpoint_service = self._get_resource(
             _endpoint_service.EndpointService,
-            endpoint_service)
-        assert(action.lower() in ['add', 'remove'])
+            endpoint_service
+        )
 
-        if not isinstance(type(domains), list):
-            domains = list(domains)
-
-        permissions = []
-        for domain in domains:
-            if not domain.startswith('iam:domain::'):
-                permissions.append('iam:domain::' + domain)
-            else:
-                permissions.append(domain)
-        attr = {
-            'permissions': permissions,
-            'action': action
-        }
-        return self._create(_endpoint_service.ManageWhitelist,
-                            endpoint_service_id=endpoint_service.id,
-                            **attr)
+        whitelist = self._get_resource(
+            _endpoint_service.Whitelist, None,
+            endpoint_service_id=endpoint_service.id,
+        )
+        return whitelist._manage_whitelist(self, domains, action)
 
     # ======== VPC Endpoint ========
 

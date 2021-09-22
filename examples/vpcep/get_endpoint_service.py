@@ -21,7 +21,7 @@ conn = openstack.connect(cloud='otc')
 
 sdk.register_otc_extensions(conn)
 
-endpoint_service_id = '63fa38cf-0ec9-484e-a883-f3c5258ed964'
+endpoint_service_id = 'endpoint-service-uuid'
 
 endpoint_service = conn.vpcep.get_endpoint_service(endpoint_service_id)
 print(endpoint_service)

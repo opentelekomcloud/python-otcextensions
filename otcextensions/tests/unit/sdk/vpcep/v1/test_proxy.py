@@ -23,8 +23,8 @@
 # under the License.
 
 from otcextensions.sdk.vpcep.v1 import _proxy
-from otcextensions.sdk.vpcep.v1 import endpoint_service
-from otcextensions.sdk.vpcep.v1 import endpoint
+from otcextensions.sdk.vpcep.v1 import endpoint_service as _endpoint_service
+from otcextensions.sdk.vpcep.v1 import endpoint as _endpoint
 
 from openstack.tests.unit import test_proxy_base
 
@@ -36,84 +36,92 @@ class TestVpcepProxy(test_proxy_base.TestProxyBase):
 
 
 class TestEndpointService(TestVpcepProxy):
-    def test_endpoint_service_create(self):
+    def test_create_endpoint_service(self):
         self.verify_create(self.proxy.create_endpoint_service,
-                           endpoint_service.EndpointService,
+                           _endpoint_service.EndpointService,
                            method_kwargs={'name': 'id'},
                            expected_kwargs={'name': 'id'})
 
-    def test_endpoint_service_delete(self):
+    def test_delete_endpoint_service(self):
         self.verify_delete(self.proxy.delete_endpoint_service,
-                           endpoint_service.EndpointService, True)
+                           _endpoint_service.EndpointService, True)
 
-    def test_endpoint_service_get(self):
+    def test_get_endpoint_service(self):
         self.verify_get(self.proxy.get_endpoint_service,
-                        endpoint_service.EndpointService)
+                        _endpoint_service.EndpointService)
 
-    def test_endpoint_services(self):
+    def test_list_endpoint_services(self):
         self.verify_list(self.proxy.endpoint_services,
-                         endpoint_service.EndpointService)
+                         _endpoint_service.EndpointService)
 
-    def test_endpoint_service_update(self):
+    def test_update_endpoint_service(self):
         self.verify_update(self.proxy.update_endpoint_service,
-                           endpoint_service.EndpointService)
+                           _endpoint_service.EndpointService)
 
-    def test_whitelist_list(self):
+    def test_list_whitelist(self):
         self.verify_list(self.proxy.whitelist,
-                         endpoint_service.Whitelist,
+                         _endpoint_service.Whitelist,
                          method_kwargs={'endpoint_service': 'uuid'},
                          expected_kwargs={'endpoint_service_id': 'uuid'}
                          )
 
-    def test_whitelist_manage(self):
-        self.verify_create(self.proxy.manage_whitelist,
-                           endpoint_service.ManageWhitelist,
-                           method_kwargs={
-                               'endpoint_service': 'uuid',
-                               'domains': ['uuid1'],
-                               'action': 'add'},
-                           expected_kwargs={
-                               'endpoint_service_id': 'uuid',
-                               'permissions': ['iam:domain::uuid1'],
-                               'action': 'add'}
-                           )
+    def test_manage_whitelist(self):
+        self._verify(
+            ('otcextensions.sdk.vpcep.v1.endpoint_service.'
+             'Whitelist._manage_whitelist'),
+            self.proxy.manage_whitelist,
+            method_args=[
+                _endpoint_service.Whitelist,
+                'domain-uuid',
+                'add'
+            ],
+            expected_args=[
+                self.proxy,
+                'domain-uuid',
+                'add'
+            ],
+        )
 
-    def test_connections_list(self):
+    def test_list_connections(self):
         self.verify_list(self.proxy.connections,
-                         endpoint_service.Connection,
+                         _endpoint_service.Connection,
                          method_kwargs={'endpoint_service': 'uuid'},
                          expected_kwargs={'endpoint_service_id': 'uuid'}
                          )
 
-    def test_connections_manage(self):
-        self.verify_create(self.proxy.manage_connections,
-                           endpoint_service.ManageConnection,
-                           method_kwargs={
-                               'endpoint_service': 'uuid',
-                               'endpoints': ['uuid1', 'uuid2'],
-                               'action': 'reject'},
-                           expected_kwargs={
-                               'endpoint_service_id': 'uuid',
-                               'endpoints': ['uuid1', 'uuid2'],
-                               'action': 'reject'}
-                           )
+    def test_manage_connection(self):
+        self._verify(
+            ('otcextensions.sdk.vpcep.v1.endpoint_service.'
+             'Connection._manage_connection'),
+            self.proxy.manage_connection,
+            method_args=[
+                _endpoint_service.Connection,
+                'endpoint-uuid1,endpoint-uuid2',
+                'receive'
+            ],
+            expected_args=[
+                self.proxy,
+                'endpoint-uuid1,endpoint-uuid2',
+                'receive'
+            ],
+        )
 
 
 class TestEndpoint(TestVpcepProxy):
     def test_endpoint_create(self):
         self.verify_create(self.proxy.create_endpoint,
-                           endpoint.Endpoint,
+                           _endpoint.Endpoint,
                            method_kwargs={'name': 'id'},
                            expected_kwargs={'name': 'id'})
 
     def test_endpoint_delete(self):
         self.verify_delete(self.proxy.delete_endpoint,
-                           endpoint.Endpoint, True)
+                           _endpoint.Endpoint, True)
 
     def test_endpoint_get(self):
         self.verify_get(self.proxy.get_endpoint,
-                        endpoint.Endpoint)
+                        _endpoint.Endpoint)
 
     def test_endpoints(self):
         self.verify_list(self.proxy.endpoints,
-                         endpoint.Endpoint)
+                         _endpoint.Endpoint)

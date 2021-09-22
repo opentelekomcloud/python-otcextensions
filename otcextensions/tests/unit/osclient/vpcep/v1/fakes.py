@@ -140,20 +140,20 @@ class FakeWhitelist(test_base.Fake):
         return endpoint_service.Whitelist(**object_info)
 
 
-class FakeManageWhitelist(test_base.Fake):
+class FakeConnection(test_base.Fake):
     """Fake one or more Endpoint(s)."""
     @classmethod
     def generate(cls):
-        """Create a fake Whitelist.
+        """Create a fake SNAT Rule.
 
         :return:
             A FakeResource object, with id, status and so on
         """
         # Set default attributes.
         object_info = {
-            "permissions": [
-                "id1-" + uuid.uuid4().hex,
-                "id2-" + uuid.uuid4().hex
-            ]
+            "id": "id-" + uuid.uuid4().hex,
+            "permission": "*",
+            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         }
-        return endpoint_service.ManageWhitelist(**object_info)
+
+        return endpoint_service.Connection(**object_info)

@@ -427,7 +427,7 @@ class ListWhitelist(command.Lister):
 class ManageWhitelist(command.Lister):
     _description = _("Manage whitelist records of a VPC endpoint service.")
 
-    columns = ('Domain Id', 'Status')
+    columns = ('Permission',)
 
     def get_parser(self, prog_name):
         parser = super(ManageWhitelist, self).get_parser(prog_name)
@@ -468,14 +468,8 @@ class ManageWhitelist(command.Lister):
         data = client.manage_whitelist(parsed_args.endpointservice,
                                        domains=parsed_args.domain,
                                        action=request_status[0])
-        if request_status[0] == 'add':
-            status = 'Added'
-        elif request_status[0] == 'remove':
-            status = 'Removed'
-
-        return (self.columns, (utils.get_item_properties(
-            type('obj', (object, ), {'domain_id': value, 'status': status}),
-            self.columns,) for value in data.permissions))
+        return (self.columns, (utils.get_item_properties(s, self.columns)
+                               for s in data))
 
 
 class ListConnections(command.Lister):

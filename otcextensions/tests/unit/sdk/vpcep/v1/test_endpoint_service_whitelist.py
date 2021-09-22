@@ -26,14 +26,6 @@ EXAMPLE = {
     "created_at": "2018-10-18T13:26:40Z"
 }
 
-EXAMPLE_LIST = {
-    "permissions":
-    [
-        DOMAIN1_ID,
-        DOMAIN2_ID
-    ]
-}
-
 
 class TestEndpointWhitelist(base.TestCase):
 
@@ -52,23 +44,3 @@ class TestEndpointWhitelist(base.TestCase):
         sot = endpoint_service.Whitelist(**EXAMPLE)
         for key, value in EXAMPLE.items():
             self.assertEqual(getattr(sot, key), value)
-
-
-class TestEndpointManageWhitelist(base.TestCase):
-
-    def test_basic(self):
-        sot = endpoint_service.ManageWhitelist()
-        path = ('/vpc-endpoint-services/%(endpoint_service_id)s'
-                '/permissions/action')
-        self.assertEqual(path, sot.base_path)
-        self.assertTrue(sot.allow_create)
-        self.assertFalse(sot.allow_list)
-        self.assertFalse(sot.allow_fetch)
-        self.assertFalse(sot.allow_commit)
-        self.assertFalse(sot.allow_delete)
-
-    def test_make_it(self):
-        sot = endpoint_service.ManageWhitelist(**EXAMPLE_LIST)
-        permissions_list = EXAMPLE_LIST['permissions']
-        for i in range(len(permissions_list)):
-            self.assertEqual(permissions_list[i], sot.permissions[i])

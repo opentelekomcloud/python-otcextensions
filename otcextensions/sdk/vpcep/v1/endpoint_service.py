@@ -9,7 +9,9 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack import exceptions
 from openstack import resource
+from openstack import utils
 
 
 class Port(resource.Resource):
@@ -143,22 +145,21 @@ class Connection(resource.Resource):
     #: Specifies the connection status of the VPC endpoint.
     status = resource.Body('status')
 
+    def _manage_connection(self, session, endpoints, action):
+        """Accept/Reject Endpoint Connection"""
+        assert(action.lower() in ['receive', 'reject'])
 
-class ManageConnection(resource.Resource):
-    base_path = ('/vpc-endpoint-services/%(endpoint_service_id)s'
-                 '/connections/action')
-
-    # capabilities
-    allow_create = True
-
-    endpoint_service_id = resource.URI('endpoint_service_id')
-
-    #: Lists the VPC endpoints.
-    endpoints = resource.Body('endpoints', type=list)
-    #: List the connections.
-    connections = resource.Body('connections', type=list, list_type=Connection)
-    #: Specifies the operation to be performed.
-    action = resource.Body('action')
+        if isinstance(type(endpoints), str):
+            endpoints = [value.strip() for value in endpoints.split(',')]
+        body = {
+            'endpoints': endpoints,
+            'action': action,
+        }
+        url = utils.urljoin(self.base_path, 'action')
+        response = session.post(url, json=body)
+        exceptions.raise_from_response(response)
+        for connection in response.json()['connections']:
+            yield self._translate_response(connection)
 
 
 class Whitelist(resource.Resource):
@@ -182,18 +183,27 @@ class Whitelist(resource.Resource):
     #: Indicates the time of adding the whitelist record.
     created_at = resource.Body('created_at')
 
+    def _manage_whitelist(self, session, domains, action):
+        """Add/Remove tenants from whitelist"""
 
-class ManageWhitelist(resource.Resource):
-    base_path = ('/vpc-endpoint-services/%(endpoint_service_id)s'
-                 '/permissions/action')
+        assert(action.lower() in ['add', 'remove'])
 
-    # capabilities
-    allow_create = True
+        if isinstance(type(domains), str):
+            domains = [value.strip() for value in domains.split(',')]
 
-    endpoint_service_id = resource.URI('endpoint_service_id')
+        permissions = []
+        for domain in domains:
+            if not domain.startswith('iam:domain::'):
+                permissions.append('iam:domain::' + domain)
+            else:
+                permissions.append(domain)
+        body = {
+            'permissions': permissions,
+            'action': action
+        }
 
-    # Properties
-    #: Lists the whitelist records.
-    permissions = resource.Body('permissions', type=list)
-    #: Specifies the operation to be performed.
-    action = resource.Body('action')
+        url = utils.urljoin(self.base_path, 'action')
+        response = session.post(url, json=body)
+        exceptions.raise_from_response(response)
+        for permission in response.json()['permissions']:
+            yield self._translate_response({'permission': permission})

@@ -21,16 +21,14 @@ conn = openstack.connect(cloud='otc')
 
 sdk.register_otc_extensions(conn)
 
-endpoint_service_id = '63fa38cf-0ec9-484e-a883-f3c5258ed964'
+endpoint_service_id = 'endpoint-service-uuid'
 
 domains = [
-    "iam:domain::5fc973eea581490997e82ea11a1d0101",
-    "iam:domain::5fc973eea581490997e82ea11a1d0121",
+    "iam:domain::domain1-uuid",
+    "iam:domain::domain2-uuid"
 ]
 action = "add"
 
 whitelist = conn.vpcep.manage_whitelist(
     endpoint_service_id, domains, action)
-for domain_id in whitelist:
-    print(domain_id)
-print(list(whitelist.permissions))
+print(list(whitelist))

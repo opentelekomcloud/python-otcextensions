@@ -23,13 +23,13 @@ conn = openstack.connect(cloud='otc')
 sdk.register_otc_extensions(conn)
 
 attrs = {
-    "network_id": "894ef6dc-1018-4182-80ce-b30414cbd6dd",
-    "router_id": "fc7fbc57-dd83-403f-a325-6a068584f476",
+    "network_id": "network-uuid",
+    "router_id": "router-uuid",
     "tags": [{
         "key": "test1",
         "value": "test1"
     }],
-    "endpoint_service_id": "63fa38cf-0ec9-484e-a883-f3c5258ed964",
+    "endpoint_service_id": "endpoint-service-uuid",
     "enable_dns": True
 }
 
