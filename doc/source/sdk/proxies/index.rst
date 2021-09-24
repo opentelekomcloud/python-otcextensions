@@ -10,6 +10,7 @@ Service Proxies
    Cloud Container Engine v1 (CCEv1) <cce_v1>
    Cloud Container Engine v2 (CCE) <cce_v3>
    Cloud Eye Service (CES) <ces>
+   Cloud Search Service (CSS) <css>
    Cloud Trace Service (CTS) <cts>
    Distributed Cache Service (DCS) <dcs>
    Document Database Service (DDS) <dds_v3>

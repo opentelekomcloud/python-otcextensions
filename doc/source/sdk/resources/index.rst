@@ -12,6 +12,7 @@ Open Telekom Cloud Resources
    Cloud Backup and Recovery Service (CBR) <cbr/index>
    Cloud Container Engine (CCE) <cce/index>
    Cloud Eye Service (CES) <ces/index>
+   Cloud Search Service (CSS) <css/index>
    Cloud Trace Service (CTS) <cts/index>
    Dedicated Load Balancer (DLB) <vlb/index>
    Distributed Cache Service (DCS) <dcs/index>
