@@ -11,34 +11,19 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Create CSS Cluster
+Create CSS Cluster Snapshot
 """
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-
+cluster_id = 'cluster-uuid'
 attrs = {
-    'name': 'ES-Test',
-    'instanceNum': 4,
-    'instance': {
-        'flavorRef': 'css.large.8',
-        'volume': {
-            'volume_type': 'COMMON',
-            'size': 100
-        },
-        'nics': {
-            'vpcId': 'vpc_id',
-            'netId': 'network_id',
-            'securityGroupId': 'security_group_id'
-        }
-    },
-    'httpsEnable': 'false',
-    'diskEncryption': {
-        'systemEncrypted': '1',
-        'systemCmkid': 'KMS_key_id'
-    }
+    "name": "snapshot_001",
+    "indices": "myindex1,myindex2",
+    "description": ""
 }
-result = conn.css.create_cluster(**attrs)
+
+result = conn.css.create_snapshot(cluster_id, **attrs)
 print(result)
