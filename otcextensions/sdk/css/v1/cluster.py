@@ -104,6 +104,8 @@ class Cluster(resource.Resource):
     subnet_id = resource.Body('subnetId')
     #: Cluster update time
     updated_at = resource.Body('updated')
+    #: Restart Cluster Job ID
+    jobId = resource.Body('jobId')
 
     def _action(self, session, action, body=None):
         """Preform actions given the message body.
@@ -118,12 +120,12 @@ class Cluster(resource.Resource):
         self._translate_response(res)
         return self
 
-    def expand(self, session, new_size):
-        """Expand cluster capacity.
+    def extend(self, session, add_nodes):
+        """Extend cluster capacity.
         """
-        if not 1 < new_size <= 32:
+        if not 0 < add_nodes <= 32:
             raise exceptions.SDKException('CSS Cluster size can be [1..32]')
         res = self._action(session, 'extend',
-                           {'grow': {'modifySize': new_size}})
+                           {'grow': {'modifySize': add_nodes}})
         self._translate_response(res)
         return self

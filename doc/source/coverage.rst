@@ -47,6 +47,12 @@ under several service tags. This may change in future.
       - X
       - X
       -
+    * - css
+      - Cloud Search Service
+      - X
+      - X
+      - X
+      -
     * - cts
       - Clout Trace Service
       - X
