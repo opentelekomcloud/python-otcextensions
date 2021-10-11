@@ -1,5 +1,4 @@
 from openstack import resource
-from otcextensions.sdk.tms.v1 import tag as _tag
 
 
 class Tag(resource.Resource):
@@ -15,7 +14,7 @@ class Tag(resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'action', 'tag', 'key', 'value', 'limit', 'marker', 'order_field', 'order_method'
+        'key', 'value', 'limit', 'marker', 'order_field', 'order_method'
     )
 
     # Properties
@@ -23,6 +22,7 @@ class Tag(resource.Resource):
     tag = resource.Body('tag')
     #: Specifies the tag key
     key = resource.Body('key')
+
     value = resource.Body('value')
     limit = resource.Body('limit')
     marker = resource.Body('marker')
