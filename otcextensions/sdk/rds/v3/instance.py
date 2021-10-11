@@ -335,18 +335,31 @@ class Instance(_base.Resource):
 
         return None
 
-    def get_logs(self, session, log_type, start_date=None, end_date=None, offset=1, limit=10, level='ALL'):
-        """Get instance logs
+    def get_logs(self, session, log_type, start_date=None, end_date=None,
+                 offset=1, limit=10, level='ALL'):
+        """Get instance logs. If no dates are specified logs are gathered 
+            from the last 24 hours.
+        :param session: The session to use for making this request.
+            :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param str log_type: The type of logs to query: 'errorlog' or 'slowlog'.
+        :param str start_date: Start date of the of the log query. Format:
+            %Y-%m-%dT%H:%M:%S%z where z is the tzinfo in HHMM format.
+        :param str end_date: End date of the of the log query. Format:
+            %Y-%m-%dT%H:%M:%S%z where z is the tzinfo in HHMM format.
+        :param int offset: .
+        :param int limit: Specifies the number of records on a page. Its value range is from 1 to 100
+        :param str level: Specifies the log level.
+
         """
         if log_type not in ['errorlog', 'slowlog']:
             raise Exception('The parameter log_type has to be either "errorlog" or "slowlog".')
-        if not start_date:
-            yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
-            start_date = yesterday.astimezone().replace(microsecond=0).isoformat()
-            start_date = start_date[:-3] + start_date[-2:]
-        if not end_date:
-            end_date = datetime.datetime.now().astimezone().replace(microsecond=0).isoformat()
-            end_date = end_date[:-3] + end_date[-2:]
+        if bool(start_date) ^ bool(end_date):
+            raise Exception('The parameters start_date and end_date should only be specified together.')
+        else:
+            current_time = datetime.datetime.now().astimezone()
+            yesterday = current_time - datetime.timedelta(days=1)
+            start_date = yesterday.strftime("%Y-%m-%dT%H:%M:%S%z")
+            end_date = current_time.strftime("%Y-%m-%dT%H:%M:%S%z")
 
         url_params = log_type + '?' + '&'.join([
             'start_date=' + start_date,
