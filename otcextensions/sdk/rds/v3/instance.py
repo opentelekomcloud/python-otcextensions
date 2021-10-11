@@ -9,6 +9,8 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import datetime
+
 from openstack import exceptions
 from openstack import resource
 from openstack import utils
@@ -226,6 +228,16 @@ class Instance(_base.Resource):
         if result is not None:
             return result
 
+    def _action(self, session, request_body):
+        url = utils.urljoin(self.base_path, self.id, 'action')
+        response = session.post(url, json=request_body)
+        exceptions.raise_from_response(response)
+
+    def _tag_action(self, session, request_body):
+        url = utils.urljoin(self.base_path, self.id, 'tags', 'action')
+        response = session.post(url, json=request_body)
+        exceptions.raise_from_response(response)
+
     def fetch(self, session, requires_id=True,
               base_path=None, error_message=None, **params):
         """Get a remote resource based on this instance.
@@ -266,10 +278,10 @@ class Instance(_base.Resource):
         return self.restore_time
 
     def get_instance_configuration(self, session):
-        pass
+        raise NotImplementedError()
 
-    def update_instance_configuration(self, session):
-        pass
+    def update_instance_configuration(self, session, values):
+        raise NotImplementedError()
 
     def restore(self, session, backup=None, restore_time=None):
         """Restore instance from the backup of PIR.
@@ -322,3 +334,66 @@ class Instance(_base.Resource):
         exceptions.raise_from_response(response)
 
         return None
+
+    def get_logs(self, session, log_type, start_date=None, end_date=None, offset=1, limit=10, level='ALL'):
+        """Get instance logs
+        """
+        if log_type not in ['errorlog', 'slowlog']:
+            raise Exception('The parameter log_type has to be either "errorlog" or "slowlog".')
+        if not start_date:
+            yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+            start_date = yesterday.astimezone().replace(microsecond=0).isoformat()
+            start_date = start_date[:-3] + start_date[-2:]
+        if not end_date:
+            end_date = datetime.datetime.now().astimezone().replace(microsecond=0).isoformat()
+            end_date = end_date[:-3] + end_date[-2:]
+
+        url_params = log_type + '?' + '&'.join([
+            'start_date=' + start_date,
+            'end_date=' + end_date,
+            'offset=' + str(offset),
+            'limit=' + str(limit),
+            'level=' + level
+        ])
+        url = utils.urljoin(self.base_path, self.id, url_params)
+        response = session.get(url)
+        exceptions.raise_from_response(response)
+        return response.json()
+
+    def restart(self, session):
+        """Restart the database instance
+        """
+        self._action(session, {"restart": {}})
+
+    def enlarge_volume(self, session, size):
+        """Enlarge the instance volume
+        """
+        self._action(session, {"enlarge_volume": {"size": int(size)}})
+
+    def update_flavor(self, session, spec_code):
+        """Enlarge the instance volume
+        """
+        self._action(session, {"resize_flavor": {"spec_code": spec_code}})
+
+    def add_tag(self, session, key, value):
+        """Add tag to instance
+        """
+        request_body = {
+            "action": "create",
+            "tags": [{
+                "key": key,
+                "value": value
+            }]
+        }
+        self._tag_action(session, request_body)
+
+    def remove_tag(self, session, key):
+        """Remove tag from instance
+        """
+        request_body = {
+            "action": "delete",
+            "tags": [{
+                "key": key
+            }]
+        }
+        self._tag_action(session, request_body)
