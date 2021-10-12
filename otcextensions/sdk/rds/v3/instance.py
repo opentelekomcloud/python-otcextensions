@@ -9,8 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import datetime
-
 from openstack import exceptions
 from openstack import resource
 from openstack import utils
@@ -335,10 +333,10 @@ class Instance(_base.Resource):
 
         return None
 
-    def get_logs(self, session, log_type, start_date=None, end_date=None,
-                 offset=1, limit=10, level='ALL'):
-        """Get instance logs. If no dates are specified logs are gathered 
-            from the last 24 hours.
+    def get_logs(self, session, log_type, start_date, end_date,
+                 offset, limit, level):
+        """Get instance logs.
+
         :param session: The session to use for making this request.
             :type session: :class:`~keystoneauth1.adapter.Adapter`
         :param str log_type: The type of logs to query: 'errorlog' or 'slowlog'.
@@ -351,16 +349,6 @@ class Instance(_base.Resource):
         :param str level: Specifies the log level.
 
         """
-        if log_type not in ['errorlog', 'slowlog']:
-            raise Exception('The parameter log_type has to be either "errorlog" or "slowlog".')
-        if bool(start_date) ^ bool(end_date):
-            raise Exception('The parameters start_date and end_date should only be specified together.')
-        else:
-            current_time = datetime.datetime.now().astimezone()
-            yesterday = current_time - datetime.timedelta(days=1)
-            start_date = yesterday.strftime("%Y-%m-%dT%H:%M:%S%z")
-            end_date = current_time.strftime("%Y-%m-%dT%H:%M:%S%z")
-
         url_params = log_type + '?' + '&'.join([
             'start_date=' + start_date,
             'end_date=' + end_date,
@@ -384,7 +372,7 @@ class Instance(_base.Resource):
         self._action(session, {"enlarge_volume": {"size": int(size)}})
 
     def update_flavor(self, session, spec_code):
-        """Enlarge the instance volume
+        """Chage the instance's flavor
         """
         self._action(session, {"resize_flavor": {"spec_code": spec_code}})
 

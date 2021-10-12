@@ -10,6 +10,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import datetime
+
 from openstack import proxy
 from openstack import resource
 
@@ -205,6 +207,69 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         return instance.set_backup_policy(self, keep_days=keep_days,
                                           start_time=start_time, period=period)
 
+    def restart_instance(self, instance):
+        """Restart the database instance
+
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.restart(self)
+
+    def enlarge_instance_volume(self, instance, size):
+        """Enlarge the instance volume
+
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+        :param size:
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.enlarge_volume(self, size)
+
+    def change_instance_flavor(self, instance, spec_code):
+        """Chage the instance's flavor.
+
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+        :param spec_code:
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.update_flavor(self, spec_code)
+
+    def get_instance_logs(self, instance, log_type, start_date=None, end_date=None,
+                 offset=1, limit=10, level='ALL'):
+        """Get instance logs. If no dates are specified logs are gathered 
+            from the last 24 hours.
+
+        :param session: The session to use for making this request.
+            :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param str log_type: The type of logs to query: 'errorlog' or 'slowlog'.
+        :param str start_date: Start date of the of the log query. Format:
+            %Y-%m-%dT%H:%M:%S%z where z is the tzinfo in HHMM format.
+        :param str end_date: End date of the of the log query. Format:
+            %Y-%m-%dT%H:%M:%S%z where z is the tzinfo in HHMM format.
+        :param int offset: Specifies the page offset such as 1, 2, 3 or 4.
+        :param int limit: Specifies the number of records on a page.
+            Its value range is from 1 to 100.
+        :param str level: Specifies the log level. 
+            Values: ALL, INFO, LOG, WARNING, ERROR, FATAL, PANIC, NOTE.
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        if log_type not in ['errorlog', 'slowlog']:
+            raise Exception('The parameter log_type has to be either '
+                '"errorlog" or "slowlog".')
+        if bool(start_date) ^ bool(end_date):
+            raise Exception('The parameters start_date and end_date should '
+                'only be specified together.')
+        else:
+            current_time = datetime.datetime.now().astimezone()
+            yesterday = current_time - datetime.timedelta(days=1)
+            start_date = yesterday.strftime("%Y-%m-%dT%H:%M:%S%z")
+            end_date = current_time.strftime("%Y-%m-%dT%H:%M:%S%z")
+
+        return instance.get_logs(self, log_type, start_date, end_date,
+                 offset, limit, level)
+
 #     def get_instance_configuration(self, instance):
 #         """Obtaining a Configuration associated to instance.
 #
@@ -340,6 +405,28 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         cg = self._get_resource(_configuration.Configuration,
                                 configuration)
         return cg.apply(self, instances)
+
+    # ======= Tags =======
+    def add_tag(self, instance, key, value):
+        """Add tag to instance.
+
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+        :param str key: Name of the tag to be added.
+        :param str value: Value of the tag to be added.
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.add_tag(self, key, value)
+
+    def remove_tag(self, instance, key):
+        """Remove tag from instance.
+
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+        :param str key: Name of the tag to be removed.
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.remove_tag(self, key)
 
     # ======= Backups =======
     def backups(self, instance, **params):
