@@ -146,7 +146,7 @@ PTtY3HPWl5ygsMsSy0Fi3xp3jmuIwzJhcQ3tcK5gC99HWp6Kw37RL8WoB8GWFU0Q
             raise exceptions.SDKException
         attrs['loadbalancer_id'] = TestVlb.load_balancer.id
         if not insert_headers:
-            attrs['insert_headers']: {'X-Forwarded-ELB-IP': True}
+            attrs['insert_headers'] = {'X-Forwarded-ELB-IP': True}
         if not tags:
             attrs['tags'] = [{
                 "key": "test",
