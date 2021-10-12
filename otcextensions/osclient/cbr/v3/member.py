@@ -23,12 +23,12 @@ LOG = logging.getLogger(__name__)
 
 class ListMembers(command.Lister):
     _description = _('List CBR Shares')
-    columns = ('ID', 'name', 'operation_type', 'start_time', 'enabled')
+    columns = ('ID', 'dest_project_id', 'vault_id', 'image_id')
 
     def get_parser(self, prog_name):
         parser = super(ListMembers, self).get_parser(prog_name)
         parser.add_argument(
-            'backup-id',
+            'backup',
             metavar='<backup_id>',
             help=_('The ID of the backup.')
         )
@@ -59,8 +59,7 @@ class ListMembers(command.Lister):
         client = self.app.client_manager.cbr
 
         query = {}
-        print(parsed_args)
-        query['backup_id'] = parsed_args.backup_id
+        
         if parsed_args.dest_project_id:
             query['dest_project_id'] = parsed_args.dest_project_id
         if parsed_args.image_id:
@@ -70,11 +69,14 @@ class ListMembers(command.Lister):
         if parsed_args.vault_id:
             query['vault_id'] = parsed_args.vault_id
 
+        backup = client.find_backup(parsed_args.backup)
+        query['backup'] = backup
+
         data = client.members(**query)
 
         table = (self.columns,
                  (utils.get_dict_properties(
-                     _flatten_policy(s), self.columns,
+                     s, self.columns,
                  ) for s in data))
         return table
 
