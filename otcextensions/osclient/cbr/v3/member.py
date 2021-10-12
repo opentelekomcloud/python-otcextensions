@@ -30,7 +30,7 @@ class ListMembers(command.Lister):
         parser.add_argument(
             'backup',
             metavar='<backup_id>',
-            help=_('The ID of the backup.')
+            help=_('The ID or name of the backup.')
         )
         parser.add_argument(
             '--dest-project-id',
@@ -81,50 +81,42 @@ class ListMembers(command.Lister):
         return table
 
 
-class ShowPolicy(command.ShowOne):
-    _description = _('Show single Policy details')
+class ShowMember(command.ShowOne):
+    _description = _('Show single Member details')
     columns = (
         'ID',
-        'name',
-        'operation_type',
-        'start_time',
-        'enabled',
-        'retention_duration_days',
-        'max_backups',
-        'day_backups',
-        'week_backups',
-        'month_backups',
-        'year_backups',
-        'timezone',
+        'status',
+        'image_id',
+        'vault_id',
+        'dest_project_id',
+        'created_at'
     )
 
     def get_parser(self, prog_name):
-        parser = super(ShowPolicy, self).get_parser(prog_name)
+        parser = super(ShowMember, self).get_parser(prog_name)
         parser.add_argument(
-            'policy',
-            metavar='<policy>',
-            help=_('ID or name of the CBR policy.')
+            'backup',
+            metavar='<backup_id>',
+            help=_('The ID of the backup.')
+        )
+        parser.add_argument(
+            '--member-id',
+            metavar='<member_id>',
+            required=True,
+            help=_('Member ID. The member ID is the same as the project ID.')
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.cbr
 
-        obj = client.find_policy(
-            name_or_id=parsed_args.policy,
-            ignore_missing=False
+        obj = client.get_member(
+            member=parsed_args.member_id,
+            backup=parsed_args.backup
         )
 
         data = utils.get_dict_properties(
-            _flatten_policy(obj), self.columns)
-
-        if obj.associated_vaults:
-            data, self.columns = _add_vaults_to_policy_obj(
-                obj, data, self.columns)
-
-        if obj.trigger.properties.pattern:
-            data, self.columns = _add_scheduling_patterns(
-                obj, data, self.columns)
+            obj, self.columns)
 
         return (self.columns, data)
 
