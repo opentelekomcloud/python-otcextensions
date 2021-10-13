@@ -23,7 +23,7 @@ LOG = logging.getLogger(__name__)
 
 
 def _flatten_policy(obj):
-    """Flatten the structure of the node pool into a single dict
+    """Flatten the structure of the policy into a single dict
     """
     od = obj.operation_definition
     data = {
