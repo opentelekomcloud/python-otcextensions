@@ -161,17 +161,11 @@ class UpdateMember(command.ShowOne):
     _description = _('Update CBR Policy')
     columns = (
         'ID',
-        'name',
-        'operation_type',
-        'start_time',
-        'enabled',
-        'retention_duration_days',
-        'max_backups',
-        'day_backups',
-        'week_backups',
-        'month_backups',
-        'year_backups',
-        'timezone',
+        'status',
+        'image_id',
+        'vault_id',
+        'dest_project_id',
+        'created_at'
     )
 
     def get_parser(self, prog_name):
@@ -221,11 +215,11 @@ class UpdateMember(command.ShowOne):
         return (self.columns, data)
 
 
-class DeletePolicy(command.Command):
+class DeleteMember(command.Command):
     _description = _('Delete CBR Policy')
 
     def get_parser(self, prog_name):
-        parser = super(DeletePolicy, self).get_parser(prog_name)
+        parser = super(DeleteMember, self).get_parser(prog_name)
         parser.add_argument(
             'policy',
             metavar='<policy>',
