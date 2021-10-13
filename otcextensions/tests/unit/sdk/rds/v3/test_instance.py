@@ -261,3 +261,101 @@ class TestInstance(base.TestCase):
                                     '19:00-20:00', 'period': '1,2'}})
 
         self.assertIsNone(rt)
+
+    def test_tag_action(self):
+        sot = instance.Instance(**EXAMPLE)
+        tags = {
+            'action': 'create',
+            'tags': [{
+                'key': 'test_tag', 'value': 'test_value'
+            }]
+        }
+
+        response = mock.Mock()
+        response.status_code = 200
+        response.headers = {}
+        self.sess.post.return_value = response
+
+        rt = sot._tag_action(self.sess, tags)
+
+        self.sess.post.assert_called_with(
+            'instances/IDENTIFIER/tags/action',
+            json=tags)
+
+        self.assertIsNone(rt)
+
+    def test_add_tag(self):
+        sot = instance.Instance(**EXAMPLE)
+        test_tag_name = 'tagname'
+        test_tag_value = 'tagvalue'
+        sot._tag_action = mock.Mock()
+
+        rt = sot.add_tag(self.sess, test_tag_name, test_tag_value)
+
+        sot._tag_action.assert_called_with(self.sess,
+            {'action': 'create', 'tags': 
+             [{'key': test_tag_name, 'value': test_tag_value}]})
+
+        self.assertIsNone(rt)
+
+    def test_remove_tag(self):
+        sot = instance.Instance(**EXAMPLE)
+        test_tag_name = 'tagname'
+        sot._tag_action = mock.Mock()
+
+        rt = sot.remove_tag(self.sess, test_tag_name)
+
+        sot._tag_action.assert_called_with(self.sess,
+            {'action': 'delete', 'tags': [{'key': 'tagname'}]})
+
+        self.assertIsNone(rt)
+
+    def test_action(self):
+        sot = instance.Instance(**EXAMPLE)
+        action = {"restart": {}}
+        response = mock.Mock()
+        response.status_code = 200
+        response.headers = {}
+        self.sess.post.return_value = response
+
+        rt = sot._action(self.sess, action)
+
+        self.sess.post.assert_called_with(
+            'instances/IDENTIFIER/action',
+            json=action)
+
+        self.assertIsNone(rt)
+
+    def test_restart(self):
+        sot = instance.Instance(**EXAMPLE)
+        sot._action = mock.Mock()
+
+        rt = sot.restart(self.sess)
+
+        sot._action.assert_called_with(self.sess, {'restart': {}})
+
+        self.assertIsNone(rt)
+
+    def test_enlarge_volume(self):
+        sot = instance.Instance(**EXAMPLE)
+        size = 200
+        sot._action = mock.Mock()
+
+        rt = sot.enlarge_volume(self.sess, size)
+
+        sot._action.assert_called_with(
+            self.sess, {'enlarge_volume': {'size': size}})
+
+        self.assertIsNone(rt)
+
+    def test_update_flavor(self):
+        sot = instance.Instance(**EXAMPLE)
+        flavor_spec_code = 'dummy.spec.code'
+        sot._action = mock.Mock()
+
+        rt = sot.update_flavor(self.sess, flavor_spec_code)
+
+        sot._action.assert_called_with(
+            self.sess, {'resize_flavor': {'spec_code': flavor_spec_code}})
+
+        self.assertIsNone(rt)

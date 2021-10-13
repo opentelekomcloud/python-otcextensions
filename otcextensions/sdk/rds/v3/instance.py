@@ -117,6 +117,9 @@ class Instance(_base.Resource):
     #: indicating the reliability first and availability first, respectively.
     #: *Type:string*
     switch_strategy = resource.Body('switch_strategy')
+    #: Lists the tags and their values attached to the instance.
+    #: *Type:dict*
+    tags = resource.Body('tags', type=dict)
     #: Time Zone.
     #: *Type:string*
     time_zone = resource.Body('time_zone')
@@ -206,7 +209,6 @@ class Instance(_base.Resource):
         session = cls._get_session(session)
 
         result = cls._find(session, name_or_id, id=name_or_id, **params)
-
         if not result:
             result = cls._find(session, name_or_id, name=name_or_id, **params)
 
