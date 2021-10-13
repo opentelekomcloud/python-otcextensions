@@ -10,23 +10,27 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+
 """
-Add Tag
+Query Tags
 """
 import openstack
 from otcextensions import sdk
 
-openstack.enable_logging(True)
+# openstack.enable_logging()
 conn = openstack.connect(cloud='otc')
 sdk.register_otc_extensions(conn)
 
+tag_id = "test"
 attrs = {
     "key": "test",
     "value": "test",
-    "limit": "10",
+    "limit": "1",
+    "marker": "marker",
     "order_field": "key",
-    "order_method": "asc"
+    "order_method": "asc",
 }
 
-tag = conn.get_predefine_tag(**attrs)
-print(tag)
+
+tags = conn.tms.query_predefine_tag(**attrs)
+print(tags)

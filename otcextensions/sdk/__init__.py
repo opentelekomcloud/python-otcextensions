@@ -156,6 +156,9 @@ OTC_SERVICES = {
         'service_type': 'smn',
         'append_project_id': True
     },
+    'tms': {
+        'service_type': 'tms'
+    },
     'vlb': {
         'service_type': 'vlb',
         'endpoint_service_type': 'elbv3',

@@ -22,8 +22,8 @@ class Proxy(proxy.Proxy):
     def delete_predefine_tag(self, tag, ignore_missing=True):
         return self._delete(_tag.Tag, tag, ignore_missing=ignore_missing)
 
-    def query_predefine_tag(self, **query):
-        return self._list(_tag.Tag, **query)
+    def query_predefine_tag(self, **attrs):
+        return self._list(_tag.Tag, **attrs)
 
     def get_predefine_tag(self, tag):
         return self._get(_tag.Tag, tag)
