@@ -13,6 +13,8 @@
 from openstack.load_balancer.v2 import _proxy
 
 from otcextensions.sdk.elb.v2 import elb_certificate as _certificate
+from otcextensions.sdk.elb.v2 import load_balancer_tags as _tag
+from otcextensions.sdk.elb.v2 import load_balancer as _load_balancer
 
 
 class Proxy(_proxy.Proxy):
@@ -105,3 +107,22 @@ class Proxy(_proxy.Proxy):
         """
         return self._find(_certificate.Certificate, name_or_id,
                           ignore_missing=ignore_missing)
+
+    # ======== Load Balancer Tag ========
+    def load_balancer_tags(self, loadbalancer, **query):
+        """Return a generator of tags
+
+        :param loadbalancer: The loadbalancer can be either the ID of a
+            loadbalancer or
+            :class:`~otcextensions.sdk.elb.v2.loadbalancer.Loadbalancer`
+            instance that the l7rule belongs to.
+        :param dict query: Optional query parameters to be sent to limit
+            the resources being returned.
+
+        :returns: A generator of tags objects.
+        """
+        loadbalancerobj = self._get_resource(
+            _load_balancer.LoadBalancer,
+            loadbalancer
+        )
+        return self._list(_tag.Tag, loadbalancer_id=loadbalancerobj.id, **query)

@@ -13,10 +13,10 @@ import uuid
 
 # from openstack import resource
 
-from otcextensions.tests.functional.sdk.elb import TestElbCertificate
+from otcextensions.tests.functional.sdk.elb import TestElb
 
 
-class TestCertificate(TestElbCertificate):
+class TestCertificate(TestElb):
 
     _PRIVATE_KEY = """-----BEGIN PRIVATE KEY-----
 MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDrvw+CfkRMtN6I
