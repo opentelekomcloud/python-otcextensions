@@ -17,3 +17,9 @@ Policy operations
 
 .. autoprogram-cliff:: openstack.cbr.v3
    :command: cbr policy *
+
+Member operations
+-----------------
+
+.. autoprogram-cliff:: openstack.cbr.v3
+   :command: cbr member *
