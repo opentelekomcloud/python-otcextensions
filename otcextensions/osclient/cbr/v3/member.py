@@ -250,7 +250,7 @@ class DeleteMember(command.Command):
         backup = parsed_args.backup
 
         try:
-            result = client.delete_member(
+            client.delete_member(
                 member=member,
                 backup=backup,
                 ignore_missing=False
