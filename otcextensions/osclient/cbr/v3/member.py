@@ -231,20 +231,30 @@ class DeleteMember(command.Command):
     def get_parser(self, prog_name):
         parser = super(DeleteMember, self).get_parser(prog_name)
         parser.add_argument(
-            'policy',
-            metavar='<policy>',
-            help=_('ID or name of the CBR Policy.')
+            'backup',
+            metavar='<backup_id>',
+            help=_('The ID or name of the backup.')
+        )
+        parser.add_argument(
+            '--member-id',
+            metavar='<member_id>',
+            required=True,
+            help=_('Member ID. The member ID is the same as the project ID.')
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.cbr
 
-        policy = client.find_policy(
-            name_or_id=parsed_args.policy,
-            ignore_missing=False
-        )
+        member = parsed_args.member_id
+        backup = parsed_args.backup
 
-        self.app.client_manager.cbr.delete_policy(
-            policy=policy.id,
-            ignore_missing=False)
+        try:
+            result = client.delete_member(
+                member=member,
+                backup=backup,
+                ignore_missing=False
+            )
+        except exceptions.NotFoundException as e:
+            if (e.message == 'BackupService.6705'):
+                sys.exit('Error: Backup/Member not found.')
