@@ -147,3 +147,27 @@ class Proxy(_proxy.Proxy):
             load_balancer
         )
         return self._create(_tag.Tag, loadbalancer_id=lb_obj.id, **attrs)
+
+    def delete_load_balancer_tag(self, load_balancer, key, ignore_missing=True):
+        """Delete a tag
+
+        :param key: tag key
+        :param load_balancer: The load_balancer can be either the ID of a
+            load balancer or
+            :class:`~otcextensions.sdk.elb.v2.loadbalancer.Loadbalancer`
+            instance that the load_balancer belongs to..
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+             when the tag does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent tag.
+
+        :returns: ``None``
+        """
+        lb_obj = self._get_resource(
+            _load_balancer.LoadBalancer,
+            load_balancer
+        )
+        return self._delete(_tag.Tag, key,
+                            loadbalancer_id=lb_obj.id,
+                            ignore_missing=ignore_missing)

@@ -18,20 +18,37 @@ class TestLoadBalancerTags(TestElb):
 
     def setUp(self):
         super(TestLoadBalancerTags, self).setUp()
+        self.create_network()
+        self.create_load_balancer()
 
-    def test_list_tags(self):
+    def test_01_list_tags(self):
         query = {}
         tags = list(self.client.load_balancer_tags(
-            load_balancer='4a5539ee-4370-47f7-9b21-6f0500cd60f6',
+            load_balancer=TestElb.load_balancer.id,
             **query))
         self.assertGreaterEqual(len(tags), 0)
 
-    def test_create_tag(self):
-        tag = {
+    def test_02_create_tag(self):
+        kv = {
             'key': 'key1',
             'value': 'value1'
         }
         tag = self.client.create_load_balancer_tag(
-            load_balancer='4a5539ee-4370-47f7-9b21-6f0500cd60f6',
-            **tag)
+            load_balancer=TestElb.load_balancer.id,
+            **kv)
         self.assertIsNotNone(tag)
+        self.assertEqual(kv['key'], tag.key)
+        self.assertEqual(kv['value'], tag.value)
+
+    def test_03_delete_tag(self):
+        key = 'key1'
+        tag = self.client.delete_load_balancer_tag(
+            load_balancer=TestElb.load_balancer.id,
+            key=key
+        )
+        self.assertIsNotNone(tag)
+
+        self.client.delete_load_balancer(
+            TestElb.load_balancer
+        )
+        self.addCleanup(self.destroy_network, TestElb.network)
