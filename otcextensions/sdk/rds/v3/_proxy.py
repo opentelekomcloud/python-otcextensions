@@ -271,6 +271,27 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         return instance.get_logs(self, log_type, start_date, end_date,
                                  offset, limit, level)
 
+    def add_tag(self, instance, key, value):
+        """Add tag to instance.
+
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+        :param str key: Name of the tag to be added.
+        :param str value: Value of the tag to be added.
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.add_tag(self, key, value)
+
+    def remove_tag(self, instance, key):
+        """Remove tag from instance.
+
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+        :param str key: Name of the tag to be removed.
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.remove_tag(self, key)
+
 #     def get_instance_configuration(self, instance):
 #         """Obtaining a Configuration associated to instance.
 #
@@ -406,28 +427,6 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         cg = self._get_resource(_configuration.Configuration,
                                 configuration)
         return cg.apply(self, instances)
-
-    # ======= Tags =======
-    def add_tag(self, instance, key, value):
-        """Add tag to instance.
-
-        :param instance: This parameter can be either the ID of an instance
-            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
-        :param str key: Name of the tag to be added.
-        :param str value: Value of the tag to be added.
-        """
-        instance = self._get_resource(_instance.Instance, instance)
-        return instance.add_tag(self, key, value)
-
-    def remove_tag(self, instance, key):
-        """Remove tag from instance.
-
-        :param instance: This parameter can be either the ID of an instance
-            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
-        :param str key: Name of the tag to be removed.
-        """
-        instance = self._get_resource(_instance.Instance, instance)
-        return instance.remove_tag(self, key)
 
     # ======= Backups =======
     def backups(self, instance, **params):

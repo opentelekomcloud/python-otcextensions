@@ -284,7 +284,6 @@ class TestInstance(TestRdsProxy):
                            '2020-01-02T12:34:56+0000', 10, 20, 'ERROR']
         )
 
-class TestTag(TestRdsProxy):
     def test_add_tag(self):
         self._verify(
             'otcextensions.sdk.rds.v3.instance.Instance.add_tag',
