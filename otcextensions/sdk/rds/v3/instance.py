@@ -337,17 +337,19 @@ class Instance(_base.Resource):
 
     def get_logs(self, session, log_type, start_date, end_date,
                  offset, limit, level):
-        """Get instance logs.
+        """Get instance logs
 
         :param session: The session to use for making this request.
             :type session: :class:`~keystoneauth1.adapter.Adapter`
-        :param str log_type: The type of logs to query: 'errorlog' or 'slowlog'.
+        :param str log_type: The type of logs to query:
+            'errorlog' or 'slowlog'.
         :param str start_date: Start date of the of the log query. Format:
             %Y-%m-%dT%H:%M:%S%z where z is the tzinfo in HHMM format.
         :param str end_date: End date of the of the log query. Format:
             %Y-%m-%dT%H:%M:%S%z where z is the tzinfo in HHMM format.
         :param int offset: .
-        :param int limit: Specifies the number of records on a page. Its value range is from 1 to 100
+        :param int limit: Specifies the number of records on a page. Its value
+            range is from 1 to 100.
         :param str level: Specifies the log level.
 
         """

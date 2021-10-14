@@ -292,9 +292,9 @@ class TestInstance(base.TestCase):
 
         rt = sot.add_tag(self.sess, test_tag_name, test_tag_value)
 
-        sot._tag_action.assert_called_with(self.sess,
-            {'action': 'create', 'tags': 
-             [{'key': test_tag_name, 'value': test_tag_value}]})
+        sot._tag_action.assert_called_with(
+            self.sess, {'action': 'create', 'tags':
+                        [{'key': test_tag_name, 'value': test_tag_value}]})
 
         self.assertIsNone(rt)
 
@@ -305,8 +305,8 @@ class TestInstance(base.TestCase):
 
         rt = sot.remove_tag(self.sess, test_tag_name)
 
-        sot._tag_action.assert_called_with(self.sess,
-            {'action': 'delete', 'tags': [{'key': 'tagname'}]})
+        sot._tag_action.assert_called_with(
+            self.sess, {'action': 'delete', 'tags': [{'key': 'tagname'}]})
 
         self.assertIsNone(rt)
 

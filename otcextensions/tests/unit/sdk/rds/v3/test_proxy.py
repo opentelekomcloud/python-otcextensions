@@ -280,7 +280,8 @@ class TestInstance(TestRdsProxy):
                 'limit': 20,
                 'level': 'ERROR'
             },
-            expected_args=[self.proxy, 'errorlog', '2020-01-01T12:34:56+0000', '2020-01-02T12:34:56+0000', 10, 20, 'ERROR']
+            expected_args=[self.proxy, 'errorlog', '2020-01-01T12:34:56+0000',
+                           '2020-01-02T12:34:56+0000', 10, 20, 'ERROR']
         )
 
 class TestTag(TestRdsProxy):

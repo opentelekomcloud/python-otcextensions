@@ -227,7 +227,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         return instance.enlarge_volume(self, size)
 
     def change_instance_flavor(self, instance, spec_code):
-        """Chage the instance's flavor.
+        """Change the instance's flavor.
 
         :param instance: This parameter can be either the ID of an instance
             or a :class:`~openstack.sdk.rds.v3.instance.Instance`
@@ -236,14 +236,15 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         instance = self._get_resource(_instance.Instance, instance)
         return instance.update_flavor(self, spec_code)
 
-    def get_instance_logs(self, instance, log_type, start_date=None, end_date=None,
-                 offset=1, limit=10, level='ALL'):
-        """Get instance logs. If no dates are specified logs are gathered 
+    def get_instance_logs(self, instance, log_type, start_date=None,
+                          end_date=None, offset=1, limit=10, level='ALL'):
+        """Get instance logs. If no dates are specified logs are gathered
             from the last 24 hours.
 
-        :param session: The session to use for making this request.
-            :type session: :class:`~keystoneauth1.adapter.Adapter`
-        :param str log_type: The type of logs to query: 'errorlog' or 'slowlog'.
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+        :param str log_type: The type of logs to query:
+            'errorlog' or 'slowlog'.
         :param str start_date: Start date of the of the log query. Format:
             %Y-%m-%dT%H:%M:%S%z where z is the tzinfo in HHMM format.
         :param str end_date: End date of the of the log query. Format:
@@ -251,16 +252,16 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         :param int offset: Specifies the page offset such as 1, 2, 3 or 4.
         :param int limit: Specifies the number of records on a page.
             Its value range is from 1 to 100.
-        :param str level: Specifies the log level. 
+        :param str level: Specifies the log level.
             Values: ALL, INFO, LOG, WARNING, ERROR, FATAL, PANIC, NOTE.
         """
         instance = self._get_resource(_instance.Instance, instance)
         if log_type not in ['errorlog', 'slowlog']:
             raise Exception('The parameter log_type has to be either '
-                '"errorlog" or "slowlog".')
+                            '"errorlog" or "slowlog".')
         if bool(start_date) ^ bool(end_date):
             raise Exception('The parameters start_date and end_date should '
-                'only be specified together.')
+                            'only be specified together.')
         elif not any([start_date, end_date]):
             current_time = datetime.datetime.now().astimezone()
             yesterday = current_time - datetime.timedelta(days=1)
@@ -268,7 +269,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
             end_date = current_time.strftime("%Y-%m-%dT%H:%M:%S%z")
 
         return instance.get_logs(self, log_type, start_date, end_date,
-                 offset, limit, level)
+                                 offset, limit, level)
 
 #     def get_instance_configuration(self, instance):
 #         """Obtaining a Configuration associated to instance.

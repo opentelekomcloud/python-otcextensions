@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    Add RDS v3 SDK support for the following instance operations: restart, resize volume, change flavor, query logs, add/remove tag.
