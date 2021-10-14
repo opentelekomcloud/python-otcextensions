@@ -22,6 +22,16 @@ class TestLoadBalancerTags(TestElb):
     def test_list_tags(self):
         query = {}
         tags = list(self.client.load_balancer_tags(
-            loadbalancer='4a5539ee-4370-47f7-9b21-6f0500cd60f6',
+            load_balancer='4a5539ee-4370-47f7-9b21-6f0500cd60f6',
             **query))
         self.assertGreaterEqual(len(tags), 0)
+
+    def test_create_tag(self):
+        tag = {
+            'key': 'key1',
+            'value': 'value1'
+        }
+        tag = self.client.create_load_balancer_tag(
+            load_balancer='4a5539ee-4370-47f7-9b21-6f0500cd60f6',
+            **tag)
+        self.assertIsNotNone(tag)

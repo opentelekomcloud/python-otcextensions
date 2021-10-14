@@ -13,8 +13,8 @@
 from openstack.load_balancer.v2 import _proxy
 
 from otcextensions.sdk.elb.v2 import elb_certificate as _certificate
-from otcextensions.sdk.elb.v2 import load_balancer_tags as _tag
 from otcextensions.sdk.elb.v2 import load_balancer as _load_balancer
+from otcextensions.sdk.elb.v2 import load_balancer_tag as _tag
 
 
 class Proxy(_proxy.Proxy):
@@ -109,20 +109,41 @@ class Proxy(_proxy.Proxy):
                           ignore_missing=ignore_missing)
 
     # ======== Load Balancer Tag ========
-    def load_balancer_tags(self, loadbalancer, **query):
+    def load_balancer_tags(self, load_balancer, **query):
         """Return a generator of tags
 
-        :param loadbalancer: The loadbalancer can be either the ID of a
-            loadbalancer or
+        :param load_balancer: The load_balancer can be either the ID of a
+            load balancer or
             :class:`~otcextensions.sdk.elb.v2.loadbalancer.Loadbalancer`
-            instance that the l7rule belongs to.
+            instance that the load_balancer belongs to.
         :param dict query: Optional query parameters to be sent to limit
             the resources being returned.
 
         :returns: A generator of tags objects.
         """
-        loadbalancerobj = self._get_resource(
+        lb_obj = self._get_resource(
             _load_balancer.LoadBalancer,
-            loadbalancer
+            load_balancer
         )
-        return self._list(_tag.Tag, loadbalancer_id=loadbalancerobj.id, **query)
+        return self._list(_tag.Tag, loadbalancer_id=lb_obj.id, **query)
+
+    def create_load_balancer_tag(self, load_balancer, **attrs):
+        """Create a new tag from attributes
+
+        :param load_balancer: The load_balancer can be either the ID of a
+            load balancer or
+            :class:`~otcextensions.sdk.elb.v2.loadbalancer.Loadbalancer`
+            instance that the load_balancer belongs to.
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.elb.v2.load_balancer_tag.Tag`,
+            comprised of the properties on the Tag class.
+
+        :returns: The results of the Tag Creation
+
+        :rtype: :class:`~otcextensions.sdk.elb.v2.load_balancer_tag.Tag`
+        """
+        lb_obj = self._get_resource(
+            _load_balancer.LoadBalancer,
+            load_balancer
+        )
+        return self._create(_tag.Tag, loadbalancer_id=lb_obj.id, **attrs)
