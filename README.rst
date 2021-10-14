@@ -146,6 +146,7 @@ Contributing
 Further Links
 -------------
 
+* `Release Notes <https://docs.otc-service.com/releasenotes/python-otcextensions/>`_
 * `Issue Tracker <https://github.com/OpenTelekomCloud/python-otcextensions/issues>`_
 
 .. _instructions: http://python-otcextensions.readthedocs.io/en/latest/install/
