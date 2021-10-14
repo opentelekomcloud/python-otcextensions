@@ -150,7 +150,9 @@ class Proxy(_proxy.Proxy):
         )
         return self._create(_lb_tag.Tag, loadbalancer_id=lb_obj.id, **attrs)
 
-    def delete_load_balancer_tag(self, load_balancer, key, ignore_missing=True):
+    def delete_load_balancer_tag(
+            self, load_balancer, key, ignore_missing=True
+    ):
         """Delete a tag
 
         :param key: tag key
