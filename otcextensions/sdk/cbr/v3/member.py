@@ -47,6 +47,8 @@ class Member(resource.Resource):
     updated_at = resource.Body('updated_at')
     #: ID of the vault where the shared backup is stored
     vault_id = resource.Body('vault_id')
+    #: Dummy value for create functionality
+    members = resource.Body('members', type=list)
 
     #: Updating the resource does not allow the resource key
     def commit(
@@ -59,3 +61,14 @@ class Member(resource.Resource):
             retry_on_conflict=retry_on_conflict,
             base_path=base_path,
             **kwargs)
+
+    def create(self, session, prepend_key=False, base_path=None, **params):
+        """It is crucial to send {members: []} in the body instead of the
+            single key. So prepend_key is set to False and the dummy body
+            attribute members is used.
+        """
+        return super(Member, self).create(
+            session=session,
+            prepend_key=prepend_key,
+            base_path=base_path,
+            **params)

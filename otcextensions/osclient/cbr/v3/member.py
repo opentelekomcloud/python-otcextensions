@@ -12,14 +12,16 @@
 #
 '''CBR Share Backup implementation'''
 import logging
+import sys
 
 from osc_lib import utils
-from osc_lib import exceptions
 from osc_lib.command import command
+from openstack import exceptions
 
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
+
 
 class ListMembers(command.Lister):
     _description = _('List CBR Shares')
@@ -59,7 +61,7 @@ class ListMembers(command.Lister):
         client = self.app.client_manager.cbr
 
         query = {}
-        
+
         if parsed_args.dest_project_id:
             query['dest_project_id'] = parsed_args.dest_project_id
         if parsed_args.image_id:
@@ -121,40 +123,48 @@ class ShowMember(command.ShowOne):
         return (self.columns, data)
 
 
-# class AddMember(command.ShowOne):
-#     _description = _('Adding CBR Member Share')
-#     columns = ('ID', 'dest_project_id', 'vault_id', 'image_id', 'status')
+class AddMember(command.Lister):
+    _description = _('Add one or more Project IDs for shared backups.')
+    columns = ('ID', 'dest_project_id', 'status')
 
-#     def get_parser(self, prog_name):
-#         parser = super(AddMember, self).get_parser(prog_name)
-#         parser.add_argument(
-#             'backup',
-#             metavar='<backup_id>',
-#             help=_('The ID of the backup.')
-#         )
-#         parser.add_argument(
-#             '--member',
-#             metavar='<member>',
-#             required=True,
-#             help=_('Project ID of the backup share members to be added.')
-#         )
-#         return parser
+    def get_parser(self, prog_name):
+        parser = super(AddMember, self).get_parser(prog_name)
+        parser.add_argument(
+            'backup',
+            metavar='<backup_id>',
+            help=_('The ID of the backup.')
+        )
+        parser.add_argument(
+            '--members',
+            metavar='<members>',
+            nargs='+',
+            required=True,
+            help=_('One or more Project IDs to be added for a \n'
+                   'backup sharing.')
+        )
+        return parser
 
-#     def take_action(self, parsed_args):
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.cbr
 
-#         client = self.app.client_manager.cbr
-#         data = client.add_members(
-#             backup=parsed_args.backup,
-#             members=[parsed_args.member]
-#         )
-#         obj = {}
-#         obj['member'] = data.json()['members'][0]
-#         print('\n\n')
-#         print(data)
-#         data = utils.get_dict_properties(
-#             obj, self.columns)
-#         return data
+        backup = client.find_backup(parsed_args.backup)
 
+        try:
+            data = client.add_members(
+                backup=backup.id,
+                members=parsed_args.members
+            )
+        except exceptions.BadRequestException as e:
+            if (e.message == 'BackupService.6703') and (e.status_code == 400):
+                sys.exit('Error: One or more share member already exist.')
+
+        data = client.members(backup)
+
+        table = (self.columns,
+                 (utils.get_dict_properties(
+                     s, self.columns,
+                 ) for s in data))
+        return table
 
 
 class UpdateMember(command.ShowOne):

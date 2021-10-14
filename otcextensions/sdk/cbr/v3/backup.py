@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
-from openstack import utils
 
 
 class AppCSpec(resource.Resource):
@@ -111,17 +110,3 @@ class Backup(resource.Resource):
     updated_at = resource.Body('updated_at')
     #: Vault ID
     vault_id = resource.Body('vault_id')
-
-    def add_members(self, session, members):
-        """Method to add several share members to a backup
-
-        :param session: The session to use for making this request.
-        :type session: :class:`~keystoneauth1.adapter.Adapter`
-        :param list members: List of target project IDs to which the backup
-            is shared
-        """
-        url = utils.urljoin(self.base_path, self.id, '/members')
-        body = {
-            'members': members
-        }
-        return session.post(url, json=body)

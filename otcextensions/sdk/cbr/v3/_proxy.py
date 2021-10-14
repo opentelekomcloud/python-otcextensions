@@ -431,9 +431,9 @@ class Proxy(proxy.Proxy):
             share members to be added
         :returns: The results are the list of share member objects
         """
-        backup = self._get_resource(_backup.Backup, backup)
-        return backup.add_members(
-            self,
+        return self._create(
+            _member.Member,
+            backup_id=backup,
             members=members
         )
 

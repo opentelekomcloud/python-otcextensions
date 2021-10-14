@@ -27,6 +27,12 @@ EXAMPLE = {
     'id': 'member_id'
 }
 
+ADD_MEMBER = {
+    'status': 'pending',
+    'backup_id': 'backup_id',
+    'members' : ['member_1', 'member_2']
+}
+
 
 class TestMember(base.TestCase):
 
@@ -61,3 +67,25 @@ class TestMember(base.TestCase):
         self.assertEqual(EXAMPLE['vault_id'], sot.vault_id)
         self.assertEqual(EXAMPLE['dest_project_id'], sot.dest_project_id)
         self.assertEqual(EXAMPLE['updated_at'], sot.updated_at)
+
+'''TO BE DONE
+    def test_add_members(self):
+        sot = member.Member.existing(**ADD_MEMBER)
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.headers = {}
+        mock_response.json.return_value = {}
+
+        self.sess.post.return_value = mock_response
+
+        sot = member.Member.existing(id=EXAMPLE['id'])
+
+        members = ['member1', 'member2']
+
+        sot.add_members(self.sess, members)
+
+        self.sess.post.assert_called_once_with(
+            'backups/%s/members' % EXAMPLE['id'],
+            json={'members': members}
+        )
+'''
