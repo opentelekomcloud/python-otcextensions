@@ -31,7 +31,9 @@ class TestElbLoadBalancerTag(base.TestCase):
     def test_basic(self):
         sot = load_balancer_tag.Tag()
 
-        self.assertEqual('/loadbalancers/%(loadbalancer_id)s/tags', sot.base_path)
+        self.assertEqual(
+            '/loadbalancers/%(loadbalancer_id)s/tags',
+            sot.base_path)
         self.assertEqual('tags', sot.resources_key)
         self.assertIsNone(sot.resource_key)
 

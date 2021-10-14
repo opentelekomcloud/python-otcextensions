@@ -13,8 +13,8 @@
 from openstack.tests.unit import test_proxy_base
 
 from otcextensions.sdk.elb.v2 import _proxy
-from otcextensions.sdk.elb.v2 import load_balancer_tag
 from otcextensions.sdk.elb.v2 import listener_tag
+from otcextensions.sdk.elb.v2 import load_balancer_tag
 
 
 class TestElbProxy(test_proxy_base.TestProxyBase):
@@ -65,6 +65,7 @@ class TestElbLoadBalancerTag(TestElbProxy):
                 'loadbalancer_id': 'id',
             }
         )
+
 
 class TestElbLoadBalancerListenerTag(TestElbProxy):
     def test_listener_tag_create(self):
