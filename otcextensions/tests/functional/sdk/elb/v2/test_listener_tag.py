@@ -14,17 +14,18 @@
 from otcextensions.tests.functional.sdk.elb import TestElb
 
 
-class TestLoadBalancerTags(TestElb):
+class TestLoadBalancerListenerTags(TestElb):
 
     def setUp(self):
-        super(TestLoadBalancerTags, self).setUp()
+        super(TestLoadBalancerListenerTags, self).setUp()
         self.create_network()
         self.create_load_balancer()
+        self.create_listener()
 
     def test_01_list_tags(self):
         query = {}
-        tags = list(self.client.load_balancer_tags(
-            load_balancer=TestElb.load_balancer.id,
+        tags = list(self.client.listener_tags(
+            listener='6d565cb7-2be4-4fcc-80c6-cc10765317a5',
             **query))
         self.assertGreaterEqual(len(tags), 0)
 
@@ -33,8 +34,8 @@ class TestLoadBalancerTags(TestElb):
             'key': 'key1',
             'value': 'value1'
         }
-        tag = self.client.create_load_balancer_tag(
-            load_balancer=TestElb.load_balancer.id,
+        tag = self.client.create_listener_tag(
+            listener='6d565cb7-2be4-4fcc-80c6-cc10765317a5',
             **kv)
         self.assertIsNotNone(tag)
         self.assertEqual(kv['key'], tag.key)
@@ -42,12 +43,15 @@ class TestLoadBalancerTags(TestElb):
 
     def test_03_delete_tag(self):
         key = 'key1'
-        tag = self.client.delete_load_balancer_tag(
-            load_balancer=TestElb.load_balancer.id,
+        tag = self.client.delete_listener_tag(
+            listener='6d565cb7-2be4-4fcc-80c6-cc10765317a5',
             key=key
         )
         self.assertIsNotNone(tag)
 
+        self.client.delete_listener(
+            TestElb.listener
+        )
         self.client.delete_load_balancer(
             TestElb.load_balancer
         )

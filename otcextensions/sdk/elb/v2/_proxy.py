@@ -14,7 +14,9 @@ from openstack.load_balancer.v2 import _proxy
 
 from otcextensions.sdk.elb.v2 import elb_certificate as _certificate
 from otcextensions.sdk.elb.v2 import load_balancer as _load_balancer
-from otcextensions.sdk.elb.v2 import load_balancer_tag as _tag
+from openstack.load_balancer.v2 import listener as _listener
+from otcextensions.sdk.elb.v2 import load_balancer_tag as _lb_tag
+from otcextensions.sdk.elb.v2 import listener_tag as _lstnr_tag
 
 
 class Proxy(_proxy.Proxy):
@@ -125,7 +127,7 @@ class Proxy(_proxy.Proxy):
             _load_balancer.LoadBalancer,
             load_balancer
         )
-        return self._list(_tag.Tag, loadbalancer_id=lb_obj.id, **query)
+        return self._list(_lb_tag.Tag, loadbalancer_id=lb_obj.id, **query)
 
     def create_load_balancer_tag(self, load_balancer, **attrs):
         """Create a new tag from attributes
@@ -146,7 +148,7 @@ class Proxy(_proxy.Proxy):
             _load_balancer.LoadBalancer,
             load_balancer
         )
-        return self._create(_tag.Tag, loadbalancer_id=lb_obj.id, **attrs)
+        return self._create(_lb_tag.Tag, loadbalancer_id=lb_obj.id, **attrs)
 
     def delete_load_balancer_tag(self, load_balancer, key, ignore_missing=True):
         """Delete a tag
@@ -168,6 +170,72 @@ class Proxy(_proxy.Proxy):
             _load_balancer.LoadBalancer,
             load_balancer
         )
-        return self._delete(_tag.Tag, key,
+        return self._delete(_lb_tag.Tag, key,
                             loadbalancer_id=lb_obj.id,
+                            ignore_missing=ignore_missing)
+
+    # ======== Listener Tag ========
+    def listener_tags(self, listener, **query):
+        """Return a generator of tags
+
+        :param listener: The listener can be either the ID of a
+            listener or
+            :class:`~otcextensions.sdk.elb.v2.listener.Listener`
+            instance that the listener belongs to.
+        :param dict query: Optional query parameters to be sent to limit
+            the resources being returned.
+
+        :returns: A generator of tags objects.
+        """
+        listener_obj = self._get_resource(
+            _listener.Listener,
+            listener
+        )
+        return self._list(_lstnr_tag.Tag, listener_id=listener_obj.id, **query)
+
+    def create_listener_tag(self, listener, **attrs):
+        """Create a new tag from attributes
+
+        :param listener: The listener can be either the ID of a
+            listener or
+            :class:`~otcextensions.sdk.elb.v2.listener.Listener`
+            instance that the listener belongs to.
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.elb.v2.listener_tag.Tag`,
+            comprised of the properties on the Tag class.
+
+        :returns: The results of the Tag Creation
+
+        :rtype: :class:`~otcextensions.sdk.elb.v2.listener_tag.Tag`
+        """
+        listener_obj = self._get_resource(
+            _listener.Listener,
+            listener
+        )
+        return self._create(
+            _lstnr_tag.Tag, listener_id=listener_obj.id, **attrs
+        )
+
+    def delete_listener_tag(self, listener, key, ignore_missing=True):
+        """Delete a tag
+
+        :param key: tag key
+        :param listener: The listener can be either the ID of a
+            listener or
+            :class:`~otcextensions.sdk.elb.v2.listener.Listener`
+            instance that the load_balancer belongs to..
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+             when the tag does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent tag.
+
+        :returns: ``None``
+        """
+        listener_obj = self._get_resource(
+            _listener.Listener,
+            listener
+        )
+        return self._delete(_lstnr_tag.Tag, key,
+                            listener_id=listener_obj.id,
                             ignore_missing=ignore_missing)

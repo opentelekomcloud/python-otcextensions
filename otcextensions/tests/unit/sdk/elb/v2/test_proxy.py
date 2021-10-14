@@ -14,15 +14,16 @@ from openstack.tests.unit import test_proxy_base
 
 from otcextensions.sdk.elb.v2 import _proxy
 from otcextensions.sdk.elb.v2 import load_balancer_tag
+from otcextensions.sdk.elb.v2 import listener_tag
 
 
-class TestVlbProxy(test_proxy_base.TestProxyBase):
+class TestElbProxy(test_proxy_base.TestProxyBase):
     def setUp(self):
-        super(TestVlbProxy, self).setUp()
+        super(TestElbProxy, self).setUp()
         self.proxy = _proxy.Proxy(self.session)
 
 
-class TestElbLoadBalancerTag(TestVlbProxy):
+class TestElbLoadBalancerTag(TestElbProxy):
     def test_load_balancer_tag_create(self):
         self.verify_create(
             self.proxy.create_load_balancer_tag,
@@ -62,5 +63,48 @@ class TestElbLoadBalancerTag(TestVlbProxy):
             },
             expected_kwargs={
                 'loadbalancer_id': 'id',
+            }
+        )
+
+class TestElbLoadBalancerListenerTag(TestElbProxy):
+    def test_listener_tag_create(self):
+        self.verify_create(
+            self.proxy.create_listener_tag,
+            listener_tag.Tag,
+            method_kwargs={
+                'key': 'key1',
+                'value': 'value1',
+                'listener': 'id',
+            },
+            expected_kwargs={
+                'key': 'key1',
+                'value': 'value1',
+                'listener_id': 'id',
+            }
+        )
+
+    def test_load_balancer_delete(self):
+        self.verify_delete(
+            self.proxy.delete_listener_tag,
+            listener_tag.Tag,
+            True,
+            method_kwargs={
+                'key': 'resource_id',
+            },
+            expected_kwargs={
+                'listener_id': 'resource_id',
+                'ignore_missing': True
+            }
+        )
+
+    def test_listeners(self):
+        self.verify_list(
+            self.proxy.listener_tags,
+            listener_tag.Tag,
+            method_kwargs={
+                'listener': 'id',
+            },
+            expected_kwargs={
+                'listener_id': 'id',
             }
         )
