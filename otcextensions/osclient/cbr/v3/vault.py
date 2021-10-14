@@ -174,6 +174,37 @@ class ShowVault(command.ShowOne):
         return (self.columns, data)
 
 
+class CreateVault(command.ShowOne):
+    _description = _('Create CBR Vault')
+    columns = (
+        'ID',
+        'name',
+        'operation_type',
+        'start_time',
+        'enabled',
+        'retention_duration_days',
+        'max_backups',
+        'day_backups',
+        'week_backups',
+        'month_backups',
+        'year_backups',
+        'timezone',
+    )
+
+    def get_parser(self, prog_name):
+        parser = super(CreatePolicy, self).get_parser(prog_name)
+        parser.add_argument(
+            'name',
+            metavar='<name>',
+            help=_('Name of the CBR Policy.')
+        )
+        parser.add_argument(
+            '--disable',
+            action='store_false',
+            help=_('Disables CBR Policy which is enabled by default.')
+        )
+
+
 class DeleteVault(command.Command):
     _description = _('Delete CBR Vault')
 
