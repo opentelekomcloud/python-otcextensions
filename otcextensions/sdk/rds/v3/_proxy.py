@@ -261,7 +261,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         if bool(start_date) ^ bool(end_date):
             raise Exception('The parameters start_date and end_date should '
                 'only be specified together.')
-        else:
+        elif not any([start_date, end_date]):
             current_time = datetime.datetime.now().astimezone()
             yesterday = current_time - datetime.timedelta(days=1)
             start_date = yesterday.strftime("%Y-%m-%dT%H:%M:%S%z")
