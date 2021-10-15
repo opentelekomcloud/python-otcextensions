@@ -52,7 +52,9 @@ class TestLoadBalancerListenerTags(TestElb):
         self.client.delete_listener(
             TestElb.listener
         )
+        TestElb.listener = None
         self.client.delete_load_balancer(
             TestElb.load_balancer
         )
+        TestElb.load_balancer = None
         self.addCleanup(self.destroy_network, TestElb.network)

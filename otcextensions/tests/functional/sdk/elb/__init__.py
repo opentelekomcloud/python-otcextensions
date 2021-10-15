@@ -130,3 +130,4 @@ class TestElb(base.BaseFunctionalTest):
             ignore_missing=False
         )
         self.assertIsNone(sot)
+        self.network = None

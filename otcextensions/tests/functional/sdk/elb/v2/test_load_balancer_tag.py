@@ -18,6 +18,7 @@ class TestLoadBalancerTags(TestElb):
 
     def setUp(self):
         super(TestLoadBalancerTags, self).setUp()
+
         self.create_network()
         self.create_load_balancer()
 
@@ -51,4 +52,5 @@ class TestLoadBalancerTags(TestElb):
         self.client.delete_load_balancer(
             TestElb.load_balancer
         )
+        TestElb.load_balancer = None
         self.addCleanup(self.destroy_network, TestElb.network)
