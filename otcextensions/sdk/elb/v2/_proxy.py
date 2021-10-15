@@ -127,8 +127,8 @@ class Proxy(_proxy.Proxy):
             _load_balancer.LoadBalancer,
             load_balancer
         )
-        base_path = self.session.get_project_id() +\
-                    '/loadbalancers/%(loadbalancer_id)s/tags'
+        pr_id = self.session.get_project_id()
+        base_path = pr_id + '/loadbalancers/%(loadbalancer_id)s/tags'
         return self._list(
             _lb_tag.Tag,
             base_path=base_path,
@@ -206,8 +206,8 @@ class Proxy(_proxy.Proxy):
             _listener.Listener,
             listener
         )
-        base_path = self.session.get_project_id() +\
-                    '/listeners/%(listener_id)s/tags'
+        pr_id = self.session.get_project_id()
+        base_path = pr_id + '/listeners/%(listener_id)s/tags'
         return self._list(
             _lstnr_tag.Tag,
             listener_id=listener_obj.id,
