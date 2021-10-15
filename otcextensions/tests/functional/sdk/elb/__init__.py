@@ -44,7 +44,7 @@ class TestElb(base.BaseFunctionalTest):
 
     def create_listener(
             self,
-            name='sdk-vlb-test-lis-' + uuid_v4,
+            name='sdk-elb-test-lis-' + uuid_v4,
             protocol_port=80,
             protocol='TCP',
             **kwargs
@@ -130,4 +130,4 @@ class TestElb(base.BaseFunctionalTest):
             ignore_missing=False
         )
         self.assertIsNone(sot)
-        self.network = None
+        TestElb.network = None
