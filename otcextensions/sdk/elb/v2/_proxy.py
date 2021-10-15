@@ -127,7 +127,14 @@ class Proxy(_proxy.Proxy):
             _load_balancer.LoadBalancer,
             load_balancer
         )
-        return self._list(_lb_tag.Tag, loadbalancer_id=lb_obj.id, **query)
+        base_path = self.session.get_project_id() +\
+                    '/loadbalancers/%(loadbalancer_id)s/tags'
+        return self._list(
+            _lb_tag.Tag,
+            base_path=base_path,
+            loadbalancer_id=lb_obj.id,
+            paginated=False,
+            **query)
 
     def create_load_balancer_tag(self, load_balancer, **attrs):
         """Create a new tag from attributes
@@ -148,7 +155,10 @@ class Proxy(_proxy.Proxy):
             _load_balancer.LoadBalancer,
             load_balancer
         )
-        return self._create(_lb_tag.Tag, loadbalancer_id=lb_obj.id, **attrs)
+        return self._create(
+            _lb_tag.Tag,
+            loadbalancer_id=lb_obj.id,
+            **attrs)
 
     def delete_load_balancer_tag(
             self, load_balancer, key, ignore_missing=True
@@ -162,7 +172,7 @@ class Proxy(_proxy.Proxy):
             instance that the load_balancer belongs to..
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
-             when the tag does not exist.
+            when the tag does not exist.
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent tag.
 
@@ -172,9 +182,12 @@ class Proxy(_proxy.Proxy):
             _load_balancer.LoadBalancer,
             load_balancer
         )
-        return self._delete(_lb_tag.Tag, key,
-                            loadbalancer_id=lb_obj.id,
-                            ignore_missing=ignore_missing)
+        return self._delete(
+            _lb_tag.Tag,
+            key,
+            loadbalancer_id=lb_obj.id,
+            ignore_missing=ignore_missing,
+        )
 
     # ======== Listener Tag ========
     def listener_tags(self, listener, **query):
@@ -193,7 +206,14 @@ class Proxy(_proxy.Proxy):
             _listener.Listener,
             listener
         )
-        return self._list(_lstnr_tag.Tag, listener_id=listener_obj.id, **query)
+        base_path = self.session.get_project_id() +\
+                    '/listeners/%(listener_id)s/tags'
+        return self._list(
+            _lstnr_tag.Tag,
+            listener_id=listener_obj.id,
+            base_path=base_path,
+            paginated=False,
+            **query)
 
     def create_listener_tag(self, listener, **attrs):
         """Create a new tag from attributes
@@ -238,6 +258,9 @@ class Proxy(_proxy.Proxy):
             _listener.Listener,
             listener
         )
-        return self._delete(_lstnr_tag.Tag, key,
-                            listener_id=listener_obj.id,
-                            ignore_missing=ignore_missing)
+        return self._delete(
+            _lstnr_tag.Tag,
+            key,
+            listener_id=listener_obj.id,
+            ignore_missing=ignore_missing
+        )
