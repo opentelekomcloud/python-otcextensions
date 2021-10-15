@@ -30,7 +30,7 @@ EXAMPLE = {
 ADD_MEMBER = {
     'status': 'pending',
     'backup_id': 'backup_id',
-    'members' : ['member_1', 'member_2']
+    'members': ['member_1', 'member_2']
 }
 
 
@@ -67,6 +67,7 @@ class TestMember(base.TestCase):
         self.assertEqual(EXAMPLE['vault_id'], sot.vault_id)
         self.assertEqual(EXAMPLE['dest_project_id'], sot.dest_project_id)
         self.assertEqual(EXAMPLE['updated_at'], sot.updated_at)
+
 
 '''TO BE DONE
     def test_add_members(self):
