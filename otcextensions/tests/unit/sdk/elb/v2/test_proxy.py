@@ -9,7 +9,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
+import mock
 from openstack.tests.unit import test_proxy_base
 
 from otcextensions.sdk.elb.v2 import _proxy
@@ -21,6 +21,7 @@ class TestElbProxy(test_proxy_base.TestProxyBase):
     def setUp(self):
         super(TestElbProxy, self).setUp()
         self.proxy = _proxy.Proxy(self.session)
+        self.session.get_project_id = mock.Mock(return_value='aa')
 
 
 class TestElbLoadBalancerTag(TestElbProxy):

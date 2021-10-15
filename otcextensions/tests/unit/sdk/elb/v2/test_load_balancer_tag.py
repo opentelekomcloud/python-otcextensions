@@ -35,7 +35,7 @@ class TestElbLoadBalancerTag(base.TestCase):
             '/loadbalancers/%(loadbalancer_id)s/tags',
             sot.base_path)
         self.assertEqual('tags', sot.resources_key)
-        self.assertIsNone(sot.resource_key)
+        self.assertEqual('tag', sot.resource_key)
 
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_fetch)
