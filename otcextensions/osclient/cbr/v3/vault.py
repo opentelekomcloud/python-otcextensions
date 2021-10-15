@@ -14,6 +14,8 @@
 import logging
 
 from osc_lib import utils
+from osc_lib import exceptions
+from osc_lib.cli import parseractions
 from osc_lib.command import command
 
 from otcextensions.i18n import _
@@ -40,6 +42,37 @@ def _flatten_vault(obj):
     }
 
     return data
+
+
+def _format_resource_list(resources):
+    """Formats the resource list
+
+        :param list resources: List of resources where the
+            key indicates if the resource is a volume or a server. The value
+            shall contain the ID of the resource.
+
+        :returns: a proper formated resource list for the API request
+    """
+    final_resources = []
+    for resource in resources:
+        resource_type = ''
+        resource_id = ''
+        if resource['server']:
+            resource_type = 'OS::Nova::Server'
+            resource_id = resource['server']
+        elif resource['volume']:
+            resource_type = 'OS::Nova::Volume'
+            resource_id = resource['volume']
+        else:
+            raise Exception('Wrong input for --resource attribute. '
+                            'The format is:\n'
+                            '--resources server=id,volume=id\n'
+                            'and can contain multiple values.')
+        final_resources.append({
+            'id': resource_id,
+            'type': resource_type
+        })
+    return final_resources
 
 
 def _add_resources_to_vault_obj(obj, data, columns):
@@ -121,7 +154,7 @@ class ListVaults(command.Lister):
         if parsed_args.protect_type:
             query['protect_type'] = parsed_args.protect_type
         if parsed_args.vault_id:
-            query['vault_id'] = parsed_argsvault_id
+            query['vault_id'] = parsed_args.vault_id
 
         data = client.vaults(**query)
         table = (self.columns,
@@ -129,6 +162,7 @@ class ListVaults(command.Lister):
                      _flatten_vault(s), self.columns,
                  ) for s in data))
         return table
+
 
 class ShowVault(command.ShowOne):
     _description = _('Show single Vault details')
@@ -179,30 +213,146 @@ class CreateVault(command.ShowOne):
     columns = (
         'ID',
         'name',
-        'operation_type',
-        'start_time',
-        'enabled',
-        'retention_duration_days',
-        'max_backups',
-        'day_backups',
-        'week_backups',
-        'month_backups',
-        'year_backups',
-        'timezone',
+        'description',
+        'auto_bind',
+        'auto_expand',
+        'object_type',
+        'protect_type',
+        'provider_id',
+        'status',
+        'allocated',
+        'size',
+        'consistent_level',
     )
 
     def get_parser(self, prog_name):
-        parser = super(CreatePolicy, self).get_parser(prog_name)
+        parser = super(CreateVault, self).get_parser(prog_name)
         parser.add_argument(
             'name',
             metavar='<name>',
-            help=_('Name of the CBR Policy.')
+            help=_('Name of the CBR Vault.')
+        )
+        '''
+        parser.add_argument(
+            '--auto-bind',
+            action=store_true,
+            help=_('Parameter enables automatic association of resources.')
         )
         parser.add_argument(
-            '--disable',
-            action='store_false',
-            help=_('Disables CBR Policy which is enabled by default.')
+            '--bind-rules',
+            metavar='<tag_key1=tag_value1,tag_key2=tag_value2>',
+            action=parseractions.MultiKeyValueAction
+            help=_('Bind multiple resources to CBR vault by using one or '
+                   'more tags in the format:\n'
+                   '--bind-rules tag_key1=tag_value1,tag_key2=tag_value2')
         )
+        '''
+        parser.add_argument(
+            '--auto-expand',
+            action='store_true',
+            help=_('Parameter enables automatic expand of the vault '
+                   'capacity.')
+        )
+        parser.add_argument(
+            '--cloud-type',
+            metavar='<cloud_type>',
+            choices=['public', 'hybrid'],
+            default='public',
+            help=_('Cloud type.\n'
+                   'Default: public\n'
+                   'Choices: public, hybrid')
+        )
+        parser.add_argument(
+            '--description',
+            metavar='<description>',
+            help=_('Description of the CBR Vault.')
+        )
+        parser.add_argument(
+            '--policy',
+            metavar='<policy>',
+            help=_('Name or ID of the Backup Policy for automatic backups.')
+        )
+        parser.add_argument(
+            '--protect-type',
+            metavar='<protect_type>',
+            choices=['backup', 'replication'],
+            default='backup',
+            help=_('Operation type.\n'
+                   'Default: backup\n'
+                   'Choices: backup, replication')
+        )
+        parser.add_argument(
+            '--resources',
+            metavar='<server=id,volume=id>',
+            action=parseractions.MultiKeyValueAction,
+            help=_('One or more servers or volumes to be attached to the '
+                   'vault in the format:\n'
+                   '--resources server=id,volume=id,etc.')
+        )
+        parser.add_argument(
+            '--size',
+            metavar='<size>',
+            type=int,
+            default=100,
+            help=_('Size of the Vault in GB.\n'
+                   'Default: 100')
+        )
+        parser.add_argument(
+            '--tags',
+            metavar='<tag_key1=tag_value1,tag_key2=tag_value2>',
+            action=parseractions.MultiKeyValueAction,
+            help=_('One or more tags to be added in the format:\n'
+                   '--tags key=value,key=value')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.cbr
+
+        attrs = {
+            'bind_rules': {},
+            'billing': {
+                'consistent_level': 'crash_consistent',
+                'object_type': 'server'
+            },
+        }
+
+        # mandatory params
+        attrs['name'] = parsed_args.name
+        attrs['protect_type'] = parsed_args.protect_type
+        if parsed_args.resources:
+            resources = _format_resource_list(parsed_args.resources)
+            attrs['resources'] = resources
+        else:
+            attrs['resources'] = []
+        attrs['billing']['size'] = parsed_args.size
+        attrs['billing']['cloud_type'] = parsed_args.cloud_type
+
+        # optional params
+        if parsed_args.auto_expand:
+            attrs['auto_expand'] = True
+        if parsed_args.description:
+            attrs['description'] = parsed_args.description
+        if parsed_args.policy:
+            policy = client.find_policy(parsed_args.policy)
+            if policy.id:
+                attrs['backup_policy_id'] = policy.id
+            else:
+                raise exceptions.BadRequest(
+                    'The Policy '
+                    + parsed_args.policy + 'was \n'
+                    'not found.')
+        if parsed_args.tags:
+            for t in parsed_args.tags:
+                for key in t.keys():
+                    print('Hier ist mein Key: ' + key)
+
+        obj = client.create_vault(**attrs)
+
+        data = utils.get_dict_properties(
+            _flatten_vault(obj), self.columns)
+
+        return (self.columns, data)
 
 
 class DeleteVault(command.Command):
