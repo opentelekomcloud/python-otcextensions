@@ -21,11 +21,13 @@ class Resource(resource.Resource):
             raise exceptions.MethodNotSupported(self, "delete")
 
         session = self._get_session(session)
-        base_path = (
-                            session.get_project_id() + self.base_path
-                     ) % self._uri.attributes
+        session.get_project_id() + self.base_path
+        base_path = session.get_project_id() + self.base_path
 
-        uri = utils.urljoin(base_path, self._body.dirty.get('id'))
+        uri = utils.urljoin(
+            base_path % self._uri.attributes,
+            self._body.dirty.get('id')
+        )
 
         microversion = self._get_microversion_for(session, 'delete')
 
