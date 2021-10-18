@@ -17,7 +17,7 @@ from otcextensions.sdk.elb.v2 import _base_tag
 class Tag(_base_tag.Resource):
     resources_key = 'tags'
     resource_key = 'tag'
-    base_path = ('/loadbalancers/%(loadbalancer_id)s/tags')
+    base_path = '/loadbalancers/%(loadbalancer_id)s/tags'
 
     _query_mapping = resource.QueryParameters(
         'key'
