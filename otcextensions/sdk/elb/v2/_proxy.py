@@ -128,7 +128,7 @@ class Proxy(_proxy.Proxy):
             load_balancer
         )
         pr_id = self.session.get_project_id()
-        base_path = pr_id + '/loadbalancers/%(loadbalancer_id)s/tags'
+        base_path = pr_id + _lb_tag.Tag.base_path
         return self._list(
             _lb_tag.Tag,
             base_path=base_path,
@@ -155,9 +155,12 @@ class Proxy(_proxy.Proxy):
             _load_balancer.LoadBalancer,
             load_balancer
         )
+        pr_id = self.session.get_project_id()
+        base_path = pr_id + _lb_tag.Tag.base_path
         return self._create(
             _lb_tag.Tag,
             loadbalancer_id=lb_obj.id,
+            base_path=base_path,
             **attrs)
 
     def delete_load_balancer_tag(
@@ -207,7 +210,7 @@ class Proxy(_proxy.Proxy):
             listener
         )
         pr_id = self.session.get_project_id()
-        base_path = pr_id + '/listeners/%(listener_id)s/tags'
+        base_path = pr_id + _lstnr_tag.Tag.base_path
         return self._list(
             _lstnr_tag.Tag,
             listener_id=listener_obj.id,
@@ -234,8 +237,13 @@ class Proxy(_proxy.Proxy):
             _listener.Listener,
             listener
         )
+        pr_id = self.session.get_project_id()
+        base_path = pr_id + _lstnr_tag.Tag.base_path
         return self._create(
-            _lstnr_tag.Tag, listener_id=listener_obj.id, **attrs
+            _lstnr_tag.Tag,
+            listener_id=listener_obj.id,
+            base_path=base_path,
+            **attrs
         )
 
     def delete_listener_tag(self, listener, key, ignore_missing=True):
