@@ -29,10 +29,6 @@ class Resource(resource.Resource):
     )
 
     # Properties
-    #: Specifies listener
-    listener_id = resource.URI('listener_id')
-    #: Specifies load balancer
-    loadbalancer_id = resource.URI('loadbalancer_id')
     #: Specifies the tag key
     key = resource.Body('key')
     #: Specifies the tag value

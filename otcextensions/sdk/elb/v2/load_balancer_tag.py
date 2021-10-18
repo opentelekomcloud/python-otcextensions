@@ -16,3 +16,7 @@ from otcextensions.sdk.elb.v2 import _base_tag
 
 class Tag(_base_tag.Resource):
     base_path = '/loadbalancers/%(loadbalancer_id)s/tags'
+
+    # Properties
+    #: Specifies load balancer
+    loadbalancer_id = resource.URI('loadbalancer_id')
