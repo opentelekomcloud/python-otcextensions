@@ -16,20 +16,3 @@ from otcextensions.sdk.elb.v2 import _base_tag
 
 class Tag(_base_tag.Resource):
     base_path = '/loadbalancers/%(loadbalancer_id)s/tags'
-
-    _query_mapping = resource.QueryParameters(
-        'key'
-    )
-
-    # capabilities
-    allow_create = True
-    allow_delete = True
-    allow_list = True
-
-    # Properties
-    #: Specifies load balancer
-    loadbalancer_id = resource.URI('loadbalancer_id')
-    #: Specifies the tag key
-    key = resource.Body('key')
-    #: Specifies the tag value
-    value = resource.Body('value')

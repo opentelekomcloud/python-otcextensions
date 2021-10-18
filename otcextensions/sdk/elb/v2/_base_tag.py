@@ -19,6 +19,25 @@ class Resource(resource.Resource):
     resources_key = 'tags'
     resource_key = 'tag'
 
+    # capabilities
+    allow_create = True
+    allow_delete = True
+    allow_list = True
+
+    _query_mapping = resource.QueryParameters(
+        'key'
+    )
+
+    # Properties
+    #: Specifies listener
+    listener_id = resource.URI('listener_id')
+    #: Specifies load balancer
+    loadbalancer_id = resource.URI('loadbalancer_id')
+    #: Specifies the tag key
+    key = resource.Body('key')
+    #: Specifies the tag value
+    value = resource.Body('value')
+
     def _prepare_request(self, requires_id=None, prepend_key=False,
                          patch=False, base_path=None, params=None, **kwargs):
         """Prepare a request to be sent to the server
