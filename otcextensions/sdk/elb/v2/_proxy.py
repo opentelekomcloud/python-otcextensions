@@ -155,12 +155,9 @@ class Proxy(_proxy.Proxy):
             _load_balancer.LoadBalancer,
             load_balancer
         )
-        pr_id = self.session.get_project_id()
-        base_path = pr_id + _lb_tag.Tag.base_path
         return self._create(
             _lb_tag.Tag,
             loadbalancer_id=lb_obj.id,
-            base_path=base_path,
             **attrs)
 
     def delete_load_balancer_tag(
@@ -237,12 +234,9 @@ class Proxy(_proxy.Proxy):
             _listener.Listener,
             listener
         )
-        pr_id = self.session.get_project_id()
-        base_path = pr_id + _lstnr_tag.Tag.base_path
         return self._create(
             _lstnr_tag.Tag,
             listener_id=listener_obj.id,
-            base_path=base_path,
             **attrs
         )
 
@@ -256,7 +250,7 @@ class Proxy(_proxy.Proxy):
             instance that the load_balancer belongs to..
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
-             when the tag does not exist.
+            when the tag does not exist.
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent tag.
 

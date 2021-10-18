@@ -16,22 +16,41 @@ from openstack import utils
 
 class Resource(resource.Resource):
 
-    def _raw_delete(self, session, **kwargs):
-        if not self.allow_delete:
-            raise exceptions.MethodNotSupported(self, "delete")
+    resources_key = 'tags'
+    resource_key = 'tag'
 
-        session = self._get_session(session)
-        session.get_project_id() + self.base_path
-        base_path = session.get_project_id() + self.base_path
+    def _prepare_request(self, requires_id=None, prepend_key=False,
+                         patch=False, base_path=None, params=None, **kwargs):
+        """Prepare a request to be sent to the server
 
-        uri = utils.urljoin(
-            base_path % self._uri.attributes,
-            self._body.dirty.get('id')
-        )
+        Create operations don't require an ID, but all others do,
+        so only try to append an ID when it's needed with
+        requires_id. Create and update operations sometimes require
+        their bodies to be contained within an dict -- if the
+        instance contains a resource_key and prepend_key=True,
+        the body will be wrapped in a dict with that key.
+        If patch=True, a JSON patch is prepared instead of the full body.
 
-        microversion = self._get_microversion_for(session, 'delete')
+        Return a _Request object that contains the constructed URI
+        as well a body and headers that are ready to send.
+        Only dirty body and header contents will be returned.
+        """
+        if requires_id is None:
+            requires_id = self.requires_id
 
-        return session.delete(
-            uri,
-            microversion=microversion,
-        )
+        body = self._prepare_request_body(patch, prepend_key)
+        headers = {}
+
+        if base_path is None:
+            base_path = self.base_path
+        uri = base_path % self._uri.attributes
+        if requires_id:
+            if self.id is None:
+                raise exceptions.InvalidRequest(
+                    "Request requires an ID but none was found")
+
+            uri = utils.urljoin(uri, self.id)
+
+        uri = utils.urljoin(self.location.project['id'], uri)
+
+        return resource._Request(uri, body, headers)
