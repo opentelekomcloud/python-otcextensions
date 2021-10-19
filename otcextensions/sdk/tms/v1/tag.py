@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
+from openstack import utils
 
 
 class Tag(resource.Resource):
@@ -38,3 +39,25 @@ class Tag(resource.Resource):
     order_field = resource.Body('order_field')
     #: Specifies the sorting method of the order_field field.
     order_method = resource.Body('order_method')
+
+    def _action(self, session, action, body):
+        """Preform actions given the message body.
+        """
+        url = utils.urljoin(self.base_path, action)
+        return session.post(
+            url,
+            json=body)
+        exceptions.raise_from_response(response)
+        return response
+
+    def create_tag(self, session, **tag):
+        """Create tag.
+        """
+        # res = self._action(session, 'create', tag)
+        # self._translate_response(res)
+        return self._action(session, 'action', tag)
+
+    def delete_tag(self, session, **kwargs):
+        """Delete tag
+        """
+        return self._action(session, 'action')

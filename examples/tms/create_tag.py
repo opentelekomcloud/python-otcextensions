@@ -17,21 +17,14 @@ Query Tags
 import openstack
 from otcextensions import sdk
 
-openstack.enable_logging(http_debug=True)
+openstack.enable_logging(debug=True)
 conn = openstack.connect(cloud='otc')
 sdk.register_otc_extensions(conn)
 
 attrs = {
-    "key": "test",
-    "value": "test",
-    "limit": "1",
-    "marker": "marker",
-    "order_field": "key",
-    "order_method": "asc",
+    "action": "create",
+    "tags": ["tags"]
 }
 
-tagid = "test"
-
-
-for raw in conn.tms.query_predefine_tag(**attrs):
+for raw in conn.tms.create_predefine_tags(**attrs):
     print(raw)

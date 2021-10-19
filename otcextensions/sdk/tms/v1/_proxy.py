@@ -16,17 +16,39 @@ from openstack import proxy
 
 class Proxy(proxy.Proxy):
 
-    def create_predefine_tag(self, **attrs):
-        return self._create(_tag.Tag, **attrs)
+    def create_predefine_tags(self,  **attrs):
+        """Create new predefine tags
+        :param
+        :return
+        """
+        tag = self._get_resource(_tag.Tag, **attrs)
+        return tag.create_tag(self)
 
-    def delete_predefine_tag(self, tag, ignore_missing=True):
-        return self._delete(_tag.Tag, tag, ignore_missing=ignore_missing)
+    def delete_predefine_tags(self, ignore_missing=True, **attrs):
+        """Delete tags
+        :param DeletePredefineTagsRequest
+        :return: DeletePredefineTagsResponse
+        """
+        tag = self._get_resource(_tag.Tag, ignore_missing, **attrs)
+        return tag.delete_tag(self)
 
     def query_predefine_tag(self, **attrs):
+        """Query tags by attributes
+        :param
+        :return
+        """
         return self._list(_tag.Tag, **attrs)
 
     def get_predefine_tag(self, tag):
+        """Get a tag
+        :param
+        :return
+        """
         return self._get(_tag.Tag, tag)
 
     def modify_predefine_tag(self, **attrs):
+        """Modify a tag
+        :param
+        :return
+        """
         return self._update(_tag.Tag, **attrs)
