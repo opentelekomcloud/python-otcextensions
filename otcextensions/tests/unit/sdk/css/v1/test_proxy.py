@@ -199,4 +199,3 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
             expected_args=[_cert.Cert],
             expected_kwargs={'requires_id': False},
         )
-
