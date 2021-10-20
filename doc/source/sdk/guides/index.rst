@@ -9,15 +9,19 @@ Open Telekom Cloud related User Guides
 
    anti_ddos
    auto_scaling
+   cbr
    cce
    ces
+   css
    cts
    dcs
    deh
+   dms
    dns
    kms
    nat
    rds
+   smn
    vpc
    logging
 

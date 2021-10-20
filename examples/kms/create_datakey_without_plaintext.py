@@ -20,7 +20,7 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
 dek = conn.kms.create_datakey_wo_plain(
-    key_id='cmk_id',
+    cmk='cmk_id',
     datakey_length='512'
 )
 print(dek)

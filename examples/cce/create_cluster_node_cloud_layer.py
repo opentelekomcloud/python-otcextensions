@@ -21,16 +21,17 @@ conn = openstack.connect(cloud='otc')
 
 node = conn.create_cce_cluster_node(
     annotations={'annotation1': 'abc'},
-    availability_zone='eu-de-02',
-    cluster='7ca53d10-2a70-11eb-9ade-0255ac101123',
+    availability_zone='eu-de-01',
+    cluster='d9b37539-c927-11eb-bc4e-0255ac101123',
     count=1,
     flavor='s2.large.2',
     k8s_tags={
         "muh": "kuh"},
-    keypair='keypair-pub',
+    ssh_key='keypair-pub',
     labels={'foo': 'bar'},
     max_pods=16,
-    name='node1',
+    name='node2',
+    network='25d24fc8-d019-4a34-9fff-0a09fde6a123',
     offload_node=False,
     os='CentOS 7.7',
     root_volume_size=40,
@@ -43,5 +44,16 @@ node = conn.create_cce_cluster_node(
             'key': 'hellokey2',
             'value': 'hellovalue2'
         }],
+    data_volumes=[{
+        'volumetype': 'SATA',
+        'size': 110,
+        'encrypted': False,
+        'cmk_id': ''
+    }, {
+        'volumetype': 'SAS',
+        'size': 120,
+        'encrypted': False,
+        'cmk_id': ''
+    }],
     wait=False)
 print(node)

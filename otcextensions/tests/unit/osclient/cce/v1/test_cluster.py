@@ -55,8 +55,6 @@ class TestCluster(fakes.TestCCE):
     def test_flatten_no_nodes(self):
         _obj = fakes.FakeCluster.create_one(0)
 
-        print(_obj.to_dict())
-
         # remove hosts to ensure count is properly calculated
         # _obj._update(spec={'host_list': {'spec': {'host_list': []}}})
 

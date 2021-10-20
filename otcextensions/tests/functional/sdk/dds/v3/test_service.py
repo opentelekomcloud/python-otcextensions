@@ -11,14 +11,14 @@
 # under the License.
 from openstack import _log
 
-from otcextensions.tests.functional import base
+from otcextensions.tests.functional.sdk.dds import TestDds
 
 _logger = _log.setup_logging('openstack')
 
 
-class TestService(base.BaseFunctionalTest):
+class TestService(TestDds):
 
     def test_initialize(self):
-        client = self.conn.dds
+        client = self.client
 
         self.assertIsNotNone(client)

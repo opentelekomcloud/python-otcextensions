@@ -9,7 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-# import six
 from openstack import exceptions
 from openstack import resource
 from openstack import utils
@@ -144,7 +143,6 @@ class Cluster(_base.Resource):
         If `value` is anything other than a Resource, likely to
         be a string already representing an ID, it is returned.
         """
-        print('in the _get_id')
         if isinstance(value, resource.Resource):
             return value.metadata.id
         else:

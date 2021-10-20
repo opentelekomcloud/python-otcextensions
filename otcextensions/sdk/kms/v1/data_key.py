@@ -32,6 +32,7 @@ class DataKey(_base.Resource):
 
     allow_create = True
     allow_update = True
+    allow_fetch = False
 
     # Properties
     #: Secret key (CMK) ID
@@ -60,12 +61,11 @@ class DataKey(_base.Resource):
     #: *Type:str*
     cipher_text = resource.Body('cipher_text')
 
-    def create_wo_plain(self, session, prepend_key=True, requires_id=True,
-                        endpoint_override=None, headers=None):
+    def create_wo_plain(self, session, prepend_key=True, requires_id=True):
         return super(DataKey, self).create(
-            session, prepend_key=prepend_key, requires_id=requires_id,
-            endpoint_override=endpoint_override, headers=headers,
-            uri='/kms/create-datakey-without-plaintext')
+            session, prepend_key=prepend_key,
+            uri='/kms/create-datakey-without-plaintext',
+            requires_id=requires_id)
 
     def encrypt(self, session):
         """Encrypt DEK

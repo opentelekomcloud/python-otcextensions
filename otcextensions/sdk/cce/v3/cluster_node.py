@@ -35,7 +35,7 @@ class StatusSpec(_base.StatusSpec):
 class PublicIPSpec(resource.Resource):
     # Properties:
     #: List of IDs for the existing floating ips.
-    ids = resource.Body('ids')
+    ids = resource.Body('ids', type=list)
     #: Count of the IP addresses to be dynamically created.
     count = resource.Body('count', type=int)
     #: Elastic IP address. Dict of {

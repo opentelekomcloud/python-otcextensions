@@ -54,7 +54,7 @@ or name.
 Delete CCE Cluster
 ^^^^^^^^^^^^^^^^^^
 
-This interface is used to get a CCE cluster by ID
+This interface is used to delete a CCE cluster by ID
 or an instance of class
 :class:`~otcextensions.sdk.cce.v3.cluster.Cluster`.
 

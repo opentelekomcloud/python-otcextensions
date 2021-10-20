@@ -9,7 +9,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
+import requests
 from unittest import mock
 
 from otcextensions.sdk.identity.v3 import _proxy
@@ -18,6 +18,17 @@ from otcextensions.sdk.identity.v3 import agency
 from otcextensions.sdk.identity.v3 import agency_role
 
 from openstack.tests.unit import test_proxy_base
+
+
+class FakeResponse:
+    def __init__(self, response, status_code=200, headers=None):
+        self.body = response
+        self.status_code = status_code
+        headers = headers if headers else {'content-type': 'application/json'}
+        self.headers = requests.structures.CaseInsensitiveDict(headers)
+
+    def json(self):
+        return self.body
 
 
 class TestIdentityProxy(test_proxy_base.TestProxyBase):
@@ -159,7 +170,7 @@ class TestIdentityAgencyProjectRoles(TestIdentityProxy):
                  'role_ref_id': 'fake_project',
                  'id': 'fake_role'})
         ]
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy._head',
             self.proxy.check_agency_project_role,
             method_kwargs={
@@ -190,7 +201,7 @@ class TestIdentityAgencyProjectRoles(TestIdentityProxy):
             agency_fake,
             agency_role_fake,
         ]
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy.put',
             self.proxy.grant_agency_project_role,
             method_kwargs={
@@ -219,7 +230,7 @@ class TestIdentityAgencyProjectRoles(TestIdentityProxy):
             agency_fake,
             agency_role_fake,
         ]
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy._delete',
             self.proxy.revoke_agency_project_role,
             method_kwargs={
@@ -277,7 +288,7 @@ class TestIdentityAgencyDomainRoles(TestIdentityProxy):
                  'role_ref_id': 'fake_domain',
                  'id': 'fake_role'})
         ]
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy._head',
             self.proxy.check_agency_domain_role,
             method_kwargs={
@@ -308,7 +319,7 @@ class TestIdentityAgencyDomainRoles(TestIdentityProxy):
             agency_fake,
             agency_role_fake,
         ]
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy.put',
             self.proxy.grant_agency_domain_role,
             method_kwargs={
@@ -337,7 +348,7 @@ class TestIdentityAgencyDomainRoles(TestIdentityProxy):
             agency_fake,
             agency_role_fake,
         ]
-        self._verify2(
+        self._verify(
             'openstack.proxy.Proxy._delete',
             self.proxy.revoke_agency_domain_role,
             method_kwargs={
@@ -349,3 +360,43 @@ class TestIdentityAgencyDomainRoles(TestIdentityProxy):
                 agency_role.AgencyRole, agency_role_fake
             ],
         )
+
+
+class TestIdentitySecurityTokens(TestIdentityProxy):
+
+    @mock.patch('otcextensions.sdk.identity.v3._proxy.Proxy.post')
+    @mock.patch(
+        'otcextensions.sdk.identity.v3._proxy.Proxy._get_alternate_endpoint',
+        return_value='fake')
+    def test_create_security_token_token(self, elt_ep_mock, post_mock):
+        post_mock.return_value = FakeResponse({
+            'credential': {'access': 'f1'}}
+        )
+        token = self.proxy.create_security_token(duration=2, method='token')
+        post_mock.assert_called_with(
+            'fake/v3.0/OS-CREDENTIAL/securitytokens',
+            json={'auth': {'identity': {
+                'methods': ['token'], 'token': {'duration-secods': 2}}}}
+        )
+        self.assertEqual('f1', token.access)
+
+    @mock.patch('otcextensions.sdk.identity.v3._proxy.Proxy.post')
+    @mock.patch(
+        'otcextensions.sdk.identity.v3._proxy.Proxy._get_alternate_endpoint',
+        return_value='fake')
+    def test_create_security_token_agency(self, elt_ep_mock, post_mock):
+        post_mock.return_value = FakeResponse({
+            'credential': {'access': 'f1'}}
+        )
+        token = self.proxy.create_security_token(
+            duration=2, method='assume_role',
+            domain_id='d1', xrole_name='xr1'
+        )
+        post_mock.assert_called_with(
+            'fake/v3.0/OS-CREDENTIAL/securitytokens',
+            json={'auth': {'identity': {
+                'methods': ['assume_role'], 'assume_role': {
+                    'domain_id': 'd1', 'xrole_name': 'xr1',
+                    'duration-secods': 2}}}}
+        )
+        self.assertEqual('f1', token.access)

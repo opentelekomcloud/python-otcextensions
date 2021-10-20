@@ -21,7 +21,6 @@ class TestHost(base.BaseFunctionalTest):
 
     def setUp(self):
         super(TestHost, self).setUp()
-        openstack.enable_logging(debug=True, http_debug=True)
         self.client = self.conn.deh
         res = self.client.create_host(
             name=uuid.uuid4().hex,

@@ -19,6 +19,7 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
 
-instance = 'instance_id'
+instance = 'name_or_id'
+instance = conn.dcs.find_instance(instance)
 for param in conn.dcs.instance_params(instance):
     print(param)

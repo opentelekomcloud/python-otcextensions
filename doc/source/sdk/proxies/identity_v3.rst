@@ -110,3 +110,10 @@ User Operations
   :noindex:
   :members: create_user, update_user, delete_user, get_user, find_user, users,
             user_projects
+
+Security Token Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.identity.v3._proxy.Proxy
+  :noindex:
+  :members: create_security_token

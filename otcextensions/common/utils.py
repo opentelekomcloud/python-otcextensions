@@ -21,12 +21,10 @@ from __future__ import print_function
 # import json
 import os
 # import re
-# import six.moves.urllib.parse as urlparse
 # import sys
 import threading
 # import uuid
 #
-# import six
 
 if os.name == 'nt':
     import msvcrt

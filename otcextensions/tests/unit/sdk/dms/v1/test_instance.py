@@ -36,7 +36,6 @@ JSON_DATA = {
     "ssl_enable": False,
     "enable_publicip": False,
     "publicip_id": "",
-    "enterprise_project_id": "0",
     "specification": "100MB",
     "partition_num": "300",
     "retention_policy": "produce_reject",

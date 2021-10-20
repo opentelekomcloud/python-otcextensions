@@ -43,6 +43,7 @@ def _flatten_node_pool(obj):
         'max_node_count': obj.spec.autoscaling.max_node_count,
         'scale_down_cooldown_time': sdct,
         'priority': obj.spec.autoscaling.priority,
+        'status': obj.status.status,
     }
 
     return data
@@ -50,7 +51,14 @@ def _flatten_node_pool(obj):
 
 class ListCCENodePools(command.Lister):
     _description = _('List CCE Node Pools')
-    columns = ('ID', 'name', 'flavor', 'os', 'autoscaling', 'current_node')
+    columns = (
+        'ID',
+        'name',
+        'flavor',
+        'os',
+        'autoscaling',
+        'current_node',
+        'status')
 
     def get_parser(self, prog_name):
         parser = super(ListCCENodePools, self).get_parser(prog_name)
@@ -94,7 +102,8 @@ class ShowCCENodePool(command.ShowOne):
         'min_node_count',
         'max_node_count',
         'scale_down_cooldown_time',
-        'priority',)
+        'priority',
+        'status')
 
     def get_parser(self, prog_name):
         parser = super(ShowCCENodePool, self).get_parser(prog_name)
@@ -207,7 +216,7 @@ class CreateCCENodePool(command.ShowOne):
         )
         parser.add_argument(
             '--k8s-tag',
-            metavar='<key_name>=<value=name>',
+            metavar='<key_name>=<value_name>',
             action=parseractions.KeyValueAction,
             dest='k8s_tags',
             help=_('Kubernetes tags in form of key, value pairs. Repeat '
@@ -286,10 +295,10 @@ class CreateCCENodePool(command.ShowOne):
             help=_('Additional public key to be added to for login.')
         )
         parser.add_argument(
-            '--network-id',
-            metavar='<network_id>',
+            '--network',
+            metavar='<network>',
             required=True,
-            help=_('ID of the network to which the cluster node '
+            help=_('ID or name of the network to which the cluster node '
                    'will belong to.')
         )
         parser.add_argument(
@@ -350,7 +359,7 @@ class CreateCCENodePool(command.ShowOne):
         attrs['flavor'] = parsed_args.flavor
         attrs['os'] = parsed_args.os
         attrs['name'] = parsed_args.name
-        attrs['network_id'] = parsed_args.network_id
+        attrs['network'] = parsed_args.network
         attrs['ssh_key'] = parsed_args.ssh_key
 
         # optional
@@ -400,7 +409,6 @@ class CreateCCENodePool(command.ShowOne):
 
         obj = self.app.client_manager.sdk_connection.create_cce_node_pool(
             **attrs)
-        print(obj)
 
         data = utils.get_dict_properties(
             _flatten_node_pool(obj),

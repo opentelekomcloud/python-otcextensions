@@ -82,8 +82,6 @@ class ListAutoScalingPolicy(command.Lister):
 
         data = client.policies(group=group.id, **args)
 
-        print('querying %s with %s' % (group.id, args))
-
         return (
             self.columns,
             (utils.get_item_properties(

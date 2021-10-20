@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -209,7 +210,12 @@ class CceMixin:
         count=1,
         root_volume_size=40,
         root_volume_type='SATA',
-        data_volumes=[{'SATA': 100}],
+        data_volumes=[{
+            'volumetype': 'SATA',
+            'size': 100,
+            'encrypted': False,
+            'cmk_id': ''
+        }],
         wait=True, wait_timeout=300, wait_interval=5,
         **kwargs
     ):
@@ -217,34 +223,46 @@ class CceMixin:
 
         :param dict annotations: Annotations.
         :param str availability_zone: Availability zone of the cluster_node.
+        :param int bandwidth: Bandwidth size for the floating IPs being
+            created. Must be used together with fip_count.
         :param int count: Count of the cluster nodes to be created.
         :param str cluster: CCE cluster attached to.
-        :param list data_volumes: List of Data volumes attached to the
-            cluster node.
-        :param str dedicated_host: ID of the Dedicated Host to which
+        :param list data_volumes: Data disk parameters of a node. At
+            present, only one data disk can be configured. The list must have
+            the following structure while parameter encrypted and cmk_id are
+            optional:
+            [{
+                'volumetype': 'SATA',
+                'size': 100,
+                'encrypted': False,
+                'cmk_id': ''
+            },]
+        :param str dedicated_host: Name or ID of the Dedicated Host to which
             nodes will be scheduled.
         :param str ecs_group: ID of the ECS group where the CCE node can
             belong to.
         :param str fault_domain: The node is created in the specified fault
             domain.
+        :param int fip_count: Count of floating ip addresses to be attached.
         :param str flavor: Flavor ID of the CCE node.
-        :param str floating_ip: Floating IP used by the node to access public
-            networks.
+        :param list floating_ips: List of Floating IP addresses or IDs to
+            be attached to the nodes. The count of the CCE nodes and the
+            Floating IP count must be equal.
         :param dict k8s_tags: Dictionary of Kubernetes tags.
-        :param str keypair: Keypair to login into the node.
         :param dict labels: Option labels.
         :param str lvm_config: ConfigMap of the Docker data disk.
         :param int max_pods: Maximum number of pods on the node.
         :param str name: Cluster node name.
-        :param str node_image_id: ID of a custom image used in a baremetall
+        :param str network: ID of the network of the node.
+        :param str node_image_id: ID of a custom image used in a bare metal
             scenario.
-        :param bool offload_node: If node is offloading its components.
         :param str os: Operating system of the cluster node.
         :param str postinstall_script: Base64 encoded post installation
             script.
         :param str preinstall_script: Base64 encoded pre installation script.
         :param int root_volume_size: Size of the root volume.
         :param str root_volume_type: Type of the root volume.
+        :param str ssh_key: Keypair to login into the node.
         :param list tags: List of tags used to build UI labels in format
             [{
                 'key': 'key1',
@@ -253,32 +271,35 @@ class CceMixin:
                 'key': 'key2',
                 'value': 'value2
             }]
-        :param bool wait: dict(type=bool, default=True),
-        :param int wait_timeout: dict(type=int, default=180)
-        :param int wait_interval: Check interval.
+        :param bool wait: Wait for node creation.
+        :param int wait_timeout: Timeout for node creation. Wait must be True.
+        :param int wait_interval: Check interval for node creation status.
+            Wait must be True.
 
         :returns: The results of cluster node creation
         :rtype: :class:`~otcextensions.sdk.cce.v3.cluster_node.ClusterNode`
         """
         annotations = kwargs.get('annotations')
         availability_zone = kwargs.get('availability_zone')
+        bandwidth = kwargs.get('bandwidth')
         cce_cluster = kwargs.get('cluster')
         dedicated_host = kwargs.get('dedicated_host')
         ecs_group = kwargs.get('ecs_group')
         fault_domain = kwargs.get('fault_domain')
+        fip_count = kwargs.get('fip_count')
         flavor = kwargs.get('flavor')
-        floating_ip = kwargs.get('floating_ip')
+        floating_ips = kwargs.get('floating_ips')
         k8s_tags = kwargs.get('k8s_tags')
-        keypair = kwargs.get('keypair')
         labels = kwargs.get('labels')
         lvm_config = kwargs.get('lvm_override_config')
         max_pods = kwargs.get('max_pods')
         name = kwargs.get('name')
+        network = kwargs.get('network')
         node_image_id = kwargs.get('node_image_id')
-        preinstall_script = kwargs.get('preinstall_script')
-        postinstall_script = kwargs.get('postinstall_script')
-        offload_node = kwargs.get('offload_node')
         os = kwargs.get('os')
+        postinstall_script = kwargs.get('postinstall_script')
+        preinstall_script = kwargs.get('preinstall_script')
+        ssh_key = kwargs.get('ssh_key')
         tags = kwargs.get('tags')
 
         volume_types = ['SAS', 'SATA', 'SSD']
@@ -292,15 +313,17 @@ class CceMixin:
         if labels and isinstance(labels, dict):
             metadata['labels'] = labels
 
-        if root_volume_type.upper() not in volume_types:
-            raise ValueError('Root volume type %s is not supported, use: %s'
-                             % root_volume_type, volume_types)
-
         spec = {
+            'dataVolumes': {},
             'extendParam': {},
+            'k8sTags': {},
+            'login': {},
+            'nodeNicSpec': {
+                'primaryNic': {}
+            },
+            'publicIP': {},
             'rootVolume': {},
-            'dataVolumes': [],
-            'login': {}
+            'userTags': []
         }
 
         if count and isinstance(count, int):
@@ -308,38 +331,100 @@ class CceMixin:
                 raise ValueError('count is 0 or lower')
             spec['count'] = count
         spec['flavor'] = flavor
-        spec['login']['sshKey'] = keypair
-        spec['rootVolume']['volumetype'] = root_volume_type.upper()
-        if root_volume_size and isinstance(root_volume_size, int):
+        spec['login']['sshKey'] = ssh_key
+
+        # Root volume specs
+        if root_volume_size:
+            if not isinstance(root_volume_size, int):
+                raise ValueError('root_volume_size is not an integer value')
             if root_volume_size < 40:
                 raise ValueError('Root volume size %s is lower than 40 GB.'
                                  % root_volume_size)
             spec['rootVolume']['size'] = root_volume_size
+        if root_volume_type.upper() not in volume_types:
+            raise ValueError('Root volume type %s is not supported, use: %s'
+                             % root_volume_type, volume_types)
+        spec['rootVolume']['volumetype'] = root_volume_type.upper()
 
+        # Data volume specs
+        volumes = []
         for item in data_volumes:
-            for key in item:
-                if key.upper() not in volume_types:
-                    raise ValueError('data volume type %s must be one of '
-                                     'the following choices: %s'
-                                     % key, volume_types)
-                if not (100 <= item[key] <= 32768):
-                    raise ValueError('The data volume size must be specified '
-                                     'between 100 and 32768 GB.')
-                spec['dataVolumes'].append({
-                    'volumetype': key.upper(),
-                    'size': item[key]
+            if not (item['volumetype'] and item['size']):
+                raise ValueError('One or both data volume keys: volumetype '
+                                 'or size are missing.')
+            if item['volumetype'] not in volume_types:
+                raise ValueError('The data volumes volumetype %s must be '
+                                 'one of the following choices: %s'
+                                 % item['volumetype'], volume_types)
+            if not isinstance(item['size'], int):
+                try:
+                    item['size'] = int(item['size'])
+                except ValueError:
+                    print('data_volume size %s cannot be converted into '
+                          'integer value.' % item['size'])
+            if not (100 <= item['size'] <= 32768):
+                raise ValueError('The data volume size must be specified '
+                                 'between 100 and 32768 GB.')
+            if ('encrypted' in item) and item['encrypted']:
+                if not item['cmk_id']:
+                    raise ValueError('Parameter cmk_id is missing to use '
+                                     'data volume encryption.')
+                volumes.append({
+                    'volumetype': item['volumetype'].upper(),
+                    'size': item['size'],
+                    'metadata': {
+                        '__system__encrypted': '1',
+                        '__system__cmkid': item['cmk_id']
+                    }
                 })
+            else:
+                volumes.append({
+                    'volumetype': item['volumetype'].upper(),
+                    'size': item['size']
+                })
+        if volumes:
+            spec['dataVolumes'] = volumes
 
         if availability_zone:
             spec['az'] = availability_zone
         if dedicated_host:
-            spec['dedicatedHostId'] = dedicated_host
+            deh = self.deh.find_host(
+                name_or_id=dedicated_host,
+                ignore_missing=False)
+            spec['dedicatedHostId'] = deh.id
         if ecs_group:
-            spec['ecs_group'] = ecs_group
+            spec['ecsGroupId'] = ecs_group
         if fault_domain:
             spec['faultDomain'] = fault_domain
-        if floating_ip:
-            spec['publicIP'] = floating_ip
+        if floating_ips and isinstance(floating_ips, list):
+            ids = []
+            if not (count == len(floating_ips)):
+                raise ValueError('The length of the list floating_ip_ids is'
+                                 'different from CCE node count.')
+            for ip in floating_ips:
+                ip = self.network.find_ip(name_or_id=ip, ignore_missing=False)
+                ids.append(ip.id)
+            if ids:
+                spec['publicIP']['ids'] = ids
+        if fip_count and bandwidth:
+            if not isinstance(bandwidth, int):
+                raise ValueError('bandwidth must be an integer value.')
+            if not isinstance(fip_count, int):
+                raise ValueError('fip_count must be an integer value.')
+            if floating_ips:
+                raise ValueError('floating_ips is used together with'
+                                 'fip_count. These values are exclusive.')
+            spec['publicIP'] = {
+                'count': fip_count,
+                'eip': {
+                    'iptype': '5_bgp',
+                    'bandwidth': {
+                        'chargemode': 'traffic',
+                        'size': bandwidth,
+                        'sharetype': 'PER'
+                    }
+                }
+            }
         if k8s_tags and isinstance(k8s_tags, dict):
             spec['k8sTags'] = k8s_tags
         if lvm_config:
@@ -348,14 +433,17 @@ class CceMixin:
             spec['extendParam']['maxPods'] = max_pods
         if node_image_id:
             spec['extendParam']['alpha.cce/NodeImageID'] = node_image_id
-        if offload_node and isinstance(offload_node, bool):
-            spec['offloadNode'] = offload_node
         if os:
             spec['os'] = os
         if postinstall_script:
             spec['extendParam']['alpha.cce/preInstall'] = postinstall_script
         if preinstall_script:
             spec['extendParam']['alpha.cce/preInstall'] = preinstall_script
+        if not network:
+            raise ValueError('network missing.')
+        nw = self.network.find_network(
+            network, ignore_missing=False)
+        spec['nodeNicSpec']['primaryNic']['subnetId'] = nw.id
         if tags:
             spec['userTags'] = tags
 
@@ -490,7 +578,7 @@ class CceMixin:
             which nodes added after a scale-up will not be deleted.
         :param str ssh_key: SSH public key name for login in the created
             nodes
-        :param str network_id: ID of the network to which the CCE node pool
+        :param str network: ID of the network to which the CCE node pool
             belongs
         :param list tags: List of tags used to build UI labels in format
             [{
@@ -534,7 +622,7 @@ class CceMixin:
         public_key = kwargs.get('public_key')
         scale_down_cooldown_time = kwargs.get('scale_down_cooldown_time')
         ssh_key = kwargs.get('ssh_key')
-        network_id = kwargs.get('network_id')
+        network = kwargs.get('network')
         tags = kwargs.get('tags')
         taints = kwargs.get('taints')
 
@@ -563,11 +651,11 @@ class CceMixin:
                 and flavor
                 and os
                 and name
-                and network_id
+                and network
                 and ssh_key):
             raise ValueError('One or more of the following required '
                              'arguments are missing: cce_cluster, '
-                             'flavor, name, network_id, os, ssh_key')
+                             'flavor, name, network, os, ssh_key')
         node_template['flavor'] = flavor
         node_template['az'] = availability_zone
         if count:
@@ -622,7 +710,7 @@ class CceMixin:
                     'volumetype': item['volumetype'].upper(),
                     'size': item['size'],
                     'metadata': {
-                        '__system__encrypted': "1",
+                        '__system__encrypted': '1',
                         '__system__cmkid': item['cmk_id']
                     }
                 })
@@ -708,7 +796,9 @@ class CceMixin:
             node_template['taints'] = taints
 
         # NIC specifications
-        node_template['nodeNicSpec']['primaryNic']['subnet_id'] = network_id
+        nw = self.network.find_network(
+            network, ignore_missing=False)
+        node_template['nodeNicSpec']['primaryNic']['subnet_id'] = nw.id
 
         # Node pool specs
         spec = {

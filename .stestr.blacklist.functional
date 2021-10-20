@@ -10,3 +10,5 @@ otcextensions.tests.functional.sdk.deh*
 otcextensions.tests.functional.sdk.dds*
 otcextensions.tests.functional.sdk.plas*
 otcextensions.tests.functional.sdk.lts*
+otcextensions.tests.functional.sdk.dds.v3.test_instance*
+otcextensions.tests.functional.sdk.vlb*

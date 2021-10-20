@@ -9,7 +9,11 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack import exceptions
 from openstack import proxy
+from openstack import resource
+from openstack import utils
+
 from otcextensions.sdk.auto_scaling.v1 import activity as _activity
 from otcextensions.sdk.auto_scaling.v1 import config as _config
 from otcextensions.sdk.auto_scaling.v1 import group as _group
@@ -80,7 +84,7 @@ class Proxy(proxy.Proxy):
             _group.Group, group,
         )
 
-    def delete_group(self, group, ignore_missing=True):
+    def delete_group(self, group, ignore_missing=True, force_delete=False):
         """Delete a group
 
         :param group: The value can be the ID of a group
@@ -91,10 +95,18 @@ class Proxy(proxy.Proxy):
             the group does not exist.
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent group.
+        :param bool force_delete: When set to ``True`` indicates to forcibly
+            delete an AS group, remove the ECS instances and release them when
+            the AS group is running instances or performing scaling actions.
         """
-        return self._delete(
-            _group.Group, group, ignore_missing=ignore_missing,
-        )
+        res = self._get_resource(_group.Group, group)
+        try:
+            del_gr = res.delete(self, force_delete=force_delete)
+        except exceptions.ResourceNotFound:
+            if ignore_missing:
+                return None
+            raise
+        return del_gr
 
     def find_group(self, name_or_id, ignore_missing=True):
         """Find a single group
@@ -135,6 +147,56 @@ class Proxy(proxy.Proxy):
             _group.Group, group
         )
         return group.pause(self)
+
+    def wait_for_group(self, group, status='INSERVICE', failures=None,
+                       interval=2, wait=180):
+        """Wait for a group to be in a particular status.
+
+        :param group: The value can be the ID of a group
+            or a :class:`~otcextensions.sdk.auto_scaling.v1.group.Group`
+            instance
+        :param status: Desired status.
+        :param failures:
+            Statuses that would be interpreted as failures.
+        :type failures: :py:class:`list`
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait before the change.
+            Default to 180
+        :return: The resource is returned on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` if transition
+                 to the desired status failed to occur in specified seconds.
+        :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
+                 has transited to one of the failure statuses.
+        """
+        group = self._get_resource(
+            _group.Group, group
+        )
+        failures = ['ERROR'] if failures is None else failures
+        return resource.wait_for_status(
+            self, group, status, failures, interval, wait
+        )
+
+    def wait_for_delete_group(self, group, interval=2, wait=60):
+        """Wait for the group to be deleted.
+
+        :param group:
+            The :class:`~otcextensions.sdk.auto_scaling.v1.group.Group`
+            or group ID to wait on to be deleted.
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait for the delete.
+            Default to 60.
+        :return: Method returns self on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` transition
+                 to status failed to occur in wait seconds.
+        """
+        group = self._get_resource(_group.Group, group)
+        return resource.wait_for_delete(self, group, interval, wait)
 
     # ======== Configurations ========
     def configs(self, **query):
@@ -379,6 +441,26 @@ class Proxy(proxy.Proxy):
             base_path='/scaling_group_instance/{id}/list'.format(id=group.id),
             **query)
 
+    def find_instance(self, name_or_id, group, ignore_missing=True):
+        """Find a single instance
+
+        :param name_or_id: The name or ID of a instance.
+        :param group: ID of a group
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be
+            raised when the resource does not exist.
+            When set to ``True``, None will be returned when
+            attempting to find a nonexistent resource.
+
+        :returns:
+            One :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`
+            or None.
+        """
+        group = self._get_resource(_group.Group, group)
+        return self._find(_instance.Instance, name_or_id,
+                          ignore_missing=ignore_missing,
+                          group_id=group.id)
+
     def remove_instance(self, instance, delete_instance=False,
                         ignore_missing=True):
         """Remove an instance of auto scaling group
@@ -427,6 +509,70 @@ class Proxy(proxy.Proxy):
         group = self._get_resource(_group.Group, group)
         instance = _instance.Instance(scaling_group_id=group.id)
         return instance.batch_action(self, instances, action, delete_instance)
+
+    def wait_for_instance(self, instance, status='INSERVICE', failures=None,
+                          interval=2, wait=180):
+        """Wait for an instance to be in a particular status.
+
+        :param instance:
+            The :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`
+            or instance ID to wait on to reach the specified status.
+        :param status: Desired status.
+        :param failures:
+            Statuses that would be interpreted as failures.
+        :type failures: :py:class:`list`
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait before the change.
+            Default to 180
+        :return: The resource is returned on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` if transition
+                 to the desired status failed to occur in specified seconds.
+        :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
+                 has transited to one of the failure statuses.
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        failures = ['ERROR'] if failures is None else failures
+        for count in utils.iterate_timeout(
+            timeout=wait,
+            message="Timeout waiting for instance to be in {status} status"
+                    .format(status=status),
+            wait=interval
+        ):
+            instance = self._find(_instance.Instance, name_or_id=instance.id,
+                                  group_id=instance.scaling_group_id)
+            if instance and instance.lifecycle_state == status:
+                return instance
+
+    def wait_for_delete_instance(self, instance, interval=2, wait=180):
+        """Wait for the instance to be deleted.
+
+        :param instance:
+            The :class:`~otcextensions.sdk.auto_scaling.v1.instance.Instance`
+            or instance ID to wait on to be deleted.
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait for the delete.
+            Default to 180.
+        :return: Method returns self on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` transition
+                 to status failed to occur in wait seconds.
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        for count in utils.iterate_timeout(
+            timeout=wait,
+            message="Timeout waiting for instance to delete",
+            wait=interval
+        ):
+            instance = self._find(_instance.Instance, name_or_id=instance.id,
+                                  group_id=instance.scaling_group_id,
+                                  ignore_missing=True)
+            if instance is None:
+                return
 
     # ======== Activities ========
     def activities(self, group, **query):

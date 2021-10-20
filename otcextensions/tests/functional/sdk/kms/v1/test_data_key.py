@@ -35,8 +35,9 @@ class TestDataKey(base.BaseFunctionalTest):
                 if key.id:
                     self.conn.kms.schedule_key_deletion(key, 7)
         except exceptions.SDKException as e:
-            _logger.warning('Got exception during clearing resources %s'
-                            % e.message)
+            self.warning = _logger.warning('Got exception during '
+                                           'clearing resources %s' % e.message)
+        super(TestDataKey, self).tearDown()
 
     def test_dek(self):
 

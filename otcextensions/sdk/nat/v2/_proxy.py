@@ -9,6 +9,8 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack import resource
+
 from otcextensions.sdk.nat.v2 import gateway as _gateway
 from otcextensions.sdk.nat.v2 import snat as _snat
 from otcextensions.sdk.nat.v2 import dnat as _dnat
@@ -49,6 +51,52 @@ class Proxy(proxy.Proxy):
         """
         return self._delete(_gateway.Gateway, gateway,
                             ignore_missing=ignore_missing)
+
+    def wait_for_gateway(self, gateway, status='ACTIVE', failures=None,
+                         interval=2, wait=300, attribute='status'):
+        """Wait for an gateway to be in a particular status.
+
+        :param gateway:
+            The :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
+            or gateway ID to wait on to reach the specified status.
+        :param status: Desired status.
+        :param failures:
+            Statuses that would be interpreted as failures.
+        :type failures: :py:class:`list`
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait before the change.
+            Default to 180
+        :return: The resource is returned on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` if transition
+                 to the desired status failed to occur in specified seconds.
+        :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
+                 has transited to one of the failure statuses.
+        """
+        failures = ['INACTIVE'] if failures is None else failures
+        return resource.wait_for_status(
+            self, gateway, status, failures, interval, wait)
+
+    def wait_for_delete_gateway(self, gateway, interval=2, wait=180):
+        """Wait for the gateway to be deleted.
+
+        :param gateway:
+            The :class:`~otcextensions.sdk.nat.v2.gateway.Gateway`
+            or instance ID to wait on to be deleted.
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait for the delete.
+            Default to 180.
+        :return: Method returns self on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` transition
+                 to status failed to occur in wait seconds.
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return resource.wait_for_delete(self, gateway, interval, wait)
 
     def gateways(self, **query):
         """Return a generator of gateways
@@ -156,6 +204,52 @@ class Proxy(proxy.Proxy):
         """
         return self._list(_snat.Snat, **query)
 
+    def wait_for_snat(self, snat, status='ACTIVE', failures=None,
+                      interval=2, wait=300, attribute='status'):
+        """Wait for an snat rule to be in a particular status.
+
+        :param snat:
+            The :class:`~otcextensions.sdk.nat.v2.snat.Snat`
+            or snat ID to wait on to reach the specified status.
+        :param status: Desired status.
+        :param failures:
+            Statuses that would be interpreted as failures.
+        :type failures: :py:class:`list`
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait before the change.
+            Default to 180
+        :return: The resource is returned on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` if transition
+                 to the desired status failed to occur in specified seconds.
+        :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
+                 has transited to one of the failure statuses.
+        """
+        failures = ['INACTIVE'] if failures is None else failures
+        return resource.wait_for_status(
+            self, snat, status, failures, interval, wait)
+
+    def wait_for_delete_snat(self, snat, interval=2, wait=180):
+        """Wait for the snat rule to be deleted.
+
+        :param snat:
+            The :class:`~otcextensions.sdk.nat.v2.snat.Snat`
+            or instance ID to wait on to be deleted.
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait for the delete.
+            Default to 180.
+        :return: Method returns self on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` transition
+                 to status failed to occur in wait seconds.
+        """
+        snat = self._get_resource(_snat.Snat, snat)
+        return resource.wait_for_delete(self, snat, interval, wait)
+
     # ======== DNAT rules ========
     def create_dnat_rule(self, **attrs):
         """Create a new DNAT rule from attributes
@@ -207,6 +301,52 @@ class Proxy(proxy.Proxy):
         :returns: A generator of Dnat objects.
         """
         return self._list(_dnat.Dnat, **query)
+
+    def wait_for_dnat(self, dnat, status='ACTIVE', failures=None,
+                      interval=2, wait=300, attribute='status'):
+        """Wait for an dnat rule to be in a particular status.
+
+        :param dnat:
+            The :class:`~otcextensions.sdk.nat.v2.dnat.Dnat`
+            or dnat ID to wait on to reach the specified status.
+        :param status: Desired status.
+        :param failures:
+            Statuses that would be interpreted as failures.
+        :type failures: :py:class:`list`
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait before the change.
+            Default to 180
+        :return: The resource is returned on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` if transition
+                 to the desired status failed to occur in specified seconds.
+        :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
+                 has transited to one of the failure statuses.
+        """
+        failures = ['INACTIVE'] if failures is None else failures
+        return resource.wait_for_status(
+            self, dnat, status, failures, interval, wait)
+
+    def wait_for_delete_dnat(self, dnat, interval=2, wait=180):
+        """Wait for the dnat rule to be deleted.
+
+        :param dnat:
+            The :class:`~otcextensions.sdk.nat.v2.dnat.Dnat`
+            or instance ID to wait on to be deleted.
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait for the delete.
+            Default to 180.
+        :return: Method returns self on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` transition
+                 to status failed to occur in wait seconds.
+        """
+        dnat = self._get_resource(_dnat.Dnat, dnat)
+        return resource.wait_for_delete(self, dnat, interval, wait)
 
     # ======== Project cleanup ========
     def _get_cleanup_dependencies(self):

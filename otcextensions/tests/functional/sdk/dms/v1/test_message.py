@@ -28,7 +28,6 @@ class TestMessage(base.BaseFunctionalTest):
 
     def setUp(self):
         super(TestMessage, self).setUp()
-        openstack.enable_logging(debug=True, http_debug=True)
         try:
             self.queue = self.conn.dms.create_queue(
                 name=TestMessage.QUEUE_ALIAS
@@ -50,7 +49,6 @@ class TestMessage(base.BaseFunctionalTest):
         self.groups.append(self.group)
 
     def tearDown(self):
-        super(TestMessage, self).tearDown()
         try:
             for queue in self.queues:
                 if queue.id:
@@ -58,6 +56,7 @@ class TestMessage(base.BaseFunctionalTest):
         except openstack.exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
+        super(TestMessage, self).tearDown()
 
     def test_list(self):
         self.queues = list(self.conn.dms.queues())

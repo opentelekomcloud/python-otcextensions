@@ -71,25 +71,36 @@ class Group(_base.Resource):
     cool_down_time = resource.Body('cool_down_time')
     #: load balancer listener id reference
     lb_listener_id = resource.Body('lb_listener_id')
-    #: Health periodic audit method, Valid values includes: ``ELB_AUDIT``,
+    #: list of enhanced load balancers
+    lbaas_listeners = resource.Body('lbaas_listeners')
+    #: Health periodic audit method, Valid values include: ``ELB_AUDIT``,
     #: ``NOVA_AUDIT``, ELB_AUDIT and lb_listener_id are used in pairs.
     health_periodic_audit_method = resource.Body(
         'health_periodic_audit_method')
-    #: Health periodic audit time, valid values includes: ``5``, ``15``,
+    #: Health periodic audit time, valid values include: ``5``, ``15``,
     #: ``60``, ``180``, default is ``5`` minutes
     health_periodic_audit_time = resource.Body('health_periodic_audit_time')
-    #: Instance terminate policy, valid values includes:
+    #: Grace period for instance health check, valid if audit method is
+    #: ``ELB_AUDIT``, value range is 0-86400, default value is 600
+    health_periodic_audit_grace_period = \
+        resource.Body('health_periodic_audit_grace_period')
+    #: Instance terminate policy, valid values include:
     #: ``OLD_CONFIG_OLD_INSTANCE`` (default), ``OLD_CONFIG_NEW_INSTANCE``,
     #: ``OLD_INSTANCE``, ``NEW_INSTANCE``
     instance_terminate_policy = resource.Body('instance_terminate_policy')
-    #: notification methods, ``EMAIL``
+    #: Notification methods, ``EMAIL``
     notifications = resource.Body('notifications')
     #: Should delete public ip when terminate instance, default ``false``
     delete_publicip = resource.Body('delete_publicip', type=bool)
-    #: availability zones
+    #: Should delete data disks when deleting the ECS, default ``false``
+    delete_volume = resource.Body('delete_volume', type=bool)
+    #: Availability zones
     availability_zones = resource.Body('available_zones')
     #: Create time of the group
     create_time = resource.Body('create_time')
+    #: The priority policy used to select target AZs, valid values include:
+    #: ``EQUILIBRIUM_DISTRIBUTE`` (default), ``PICK_FIRST``
+    multi_az_priority_policy = resource.Body('multi_az_priority_policy')
 
     def resume(self, session):
         '''resume group'''
@@ -100,3 +111,32 @@ class Group(_base.Resource):
         '''pause group'''
         body = {'action': 'pause'}
         self._action(session, body)
+
+    def delete(self, session, error_message=None, force_delete=False):
+        """Delete the remote resource based on this instance.
+
+        This function overrides default Resource.delete to enable params
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+
+        :return: This :class:`Group` instance.
+        """
+
+        params = {}
+        if force_delete:
+            params["force_delete"] = "yes"
+        request = self._prepare_request(params=params)
+
+        session = self._get_session(session)
+        microversion = self._get_microversion_for(session, 'delete')
+
+        response = session.delete(request.url, headers=request.headers,
+                                  microversion=microversion)
+
+        kwargs = {}
+        if error_message:
+            kwargs['error_message'] = error_message
+
+        self._translate_response(response, has_body=False, **kwargs)
+        return self

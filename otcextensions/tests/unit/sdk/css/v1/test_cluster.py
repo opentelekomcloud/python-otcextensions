@@ -78,19 +78,30 @@ class TestCluster(base.TestCase):
 
     def test_make_it(self):
         sot = cluster.Cluster(**EXAMPLE)
-        self.assertEqual(EXAMPLE['id'], sot.id)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['actions'], sot.actions)
+        updated_sot_attrs = (
+            'cmkId',
+            'datastore',
+            'httpsEnable',
+            'diskEncrypted',
+            'diskEncryption',
+            'instance',
+            'instanceNum',
+            'actionProgress',
+            'vpcId',
+            'subnetId',
+            'securityGroupId',
+            'instances',
+            'updated',
+            'created',
+        )
+
         self.assertEqual(EXAMPLE['cmkId'], sot.cmk_id)
-        self.assertEqual(EXAMPLE['created'], sot.created_at)
         self.assertEqual(EXAMPLE['datastore']['type'], sot.datastore.type)
         self.assertEqual(EXAMPLE['datastore']['version'],
                          sot.datastore.version)
-        self.assertEqual(True,
-                         sot.disk_encryption.is_disk_encrypted)
+        self.assertEqual(EXAMPLE['diskEncrypted'], sot.is_disk_encrypted)
         self.assertEqual(EXAMPLE['diskEncryption']['systemCmkid'],
                          sot.disk_encryption.cms_id)
-        self.assertEqual(EXAMPLE['endpoint'], sot.endpoint)
         instance = sot.instance
         self.assertEqual(EXAMPLE['instance']['flavorRef'], instance.flavor)
         self.assertEqual(EXAMPLE['instance']['nics']['vpcId'],
@@ -101,11 +112,16 @@ class TestCluster(base.TestCase):
                          instance.nics.security_group_id)
         self.assertEqual(EXAMPLE['instances'], sot.nodes)
         self.assertEqual(EXAMPLE['instanceNum'], sot.instance_count)
-        self.assertEqual(EXAMPLE['diskEncrypted'], sot.is_disk_encrypted)
         self.assertEqual(EXAMPLE['httpsEnable'], sot.is_https_enabled)
         self.assertEqual(EXAMPLE['actionProgress'], sot.progress)
         self.assertEqual(EXAMPLE['vpcId'], sot.router_id)
         self.assertEqual(EXAMPLE['securityGroupId'], sot.security_group_id)
-        self.assertEqual(EXAMPLE['status'], sot.status)
         self.assertEqual(EXAMPLE['subnetId'], sot.subnet_id)
         self.assertEqual(EXAMPLE['updated'], sot.updated_at)
+        self.assertEqual(EXAMPLE['created'], sot.created_at)
+
+        for key, value in EXAMPLE.items():
+            if key in updated_sot_attrs:
+                pass
+            else:
+                self.assertEqual(getattr(sot, key), value)
