@@ -20,6 +20,7 @@ class Tag(resource.Resource):
 
     allow_create = True
     allow_fetch = True
+    allow_commit = True
     allow_delete = True
     allow_list = True
 
@@ -50,11 +51,9 @@ class Tag(resource.Resource):
         exceptions.raise_from_response(response)
         return response
 
-    def create_tag(self, session, **tag):
+    def create_tag(self, session, tag):
         """Create tag.
         """
-        # res = self._action(session, 'create', tag)
-        # self._translate_response(res)
         return self._action(session, 'action', tag)
 
     def delete_tag(self, session, **kwargs):

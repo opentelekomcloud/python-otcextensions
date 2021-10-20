@@ -16,26 +16,37 @@ from openstack import proxy
 
 class Proxy(proxy.Proxy):
 
-    def create_predefine_tags(self,  **attrs):
-        """Create new predefine tags
-        :param
-        :return
-        """
+    def create_predefine_tags(self, **attrs):
+        """Create new predefined tags from attributes
+
+         :param dict attrs: Keyword arguments which will be used to create
+             a :class:`~otcextensions.sdk.tms.v1.tag.Tag`,
+             comprised of the properties on the PredefinedTag class.
+
+         :returns: The results of the tags creation
+
+         :rtype: :class:`~otcextensions.sdk.tms.v1.predefined_tag.PredefinedTag`
+         """
         tag = self._get_resource(_tag.Tag, **attrs)
         return tag.create_tag(self)
 
-    def delete_predefine_tags(self, ignore_missing=True, **attrs):
-        """Delete tags
-        :param DeletePredefineTagsRequest
-        :return: DeletePredefineTagsResponse
-        """
-        tag = self._get_resource(_tag.Tag, ignore_missing, **attrs)
+    def delete_predefine_tags(self, **attrs):
+        """Delete predefined tags from attributes
+
+         :param dict attrs: Keyword arguments which will be used to delete
+             :class:`~otcextensions.sdk.tms.v1.tag.Tag`
+             instances.
+
+         :returns: None
+         """
+        tag = self._get_resource(_tag.Tag, **attrs)
         return tag.delete_tag(self)
 
     def query_predefine_tag(self, **attrs):
         """Query tags by attributes
-        :param
-        :return
+        :param dict query: Optional query parameters to be sent to limit
+             the resources being returned.
+        :return A generator of predefined tag objects.
         """
         return self._list(_tag.Tag, **attrs)
 
@@ -47,8 +58,13 @@ class Proxy(proxy.Proxy):
         return self._get(_tag.Tag, tag)
 
     def modify_predefine_tag(self, **attrs):
-        """Modify a tag
-        :param
-        :return
+        """Update predefined tags from attributes
+
+        :param dict attrs: Keyword arguments which will be used to modify
+            :class:`~otcextensions.sdk.tms.v1.predefined_tag.PredefinedTag`
+            instances.
+
+        :returns: None
+
         """
         return self._update(_tag.Tag, **attrs)

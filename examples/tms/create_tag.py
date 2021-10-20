@@ -12,7 +12,7 @@
 # under the License.
 
 """
-Query Tags
+Create Tags
 """
 import openstack
 from otcextensions import sdk
@@ -23,7 +23,16 @@ sdk.register_otc_extensions(conn)
 
 attrs = {
     "action": "create",
-    "tags": ["tags"]
+    "tags": [
+        {
+            "key": "TEST",
+            "value": "TEST1"
+        },
+        {
+            "key": "TEST2",
+            "value": "TEST2"
+        }
+    ]
 }
 
 for raw in conn.tms.create_predefine_tags(**attrs):
