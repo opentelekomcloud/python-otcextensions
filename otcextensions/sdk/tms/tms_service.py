@@ -18,5 +18,5 @@ class TmsService(service_description.ServiceDescription):
     """The TMS service."""
 
     supported_versions = {
-        '1.0': _proxy.Proxy
+        '1': _proxy.Proxy
     }
