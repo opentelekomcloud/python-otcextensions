@@ -30,13 +30,13 @@ class Proxy(proxy.Proxy):
                                    "Content-type": "application/json"}
 
     # ======== Cluster ========
-    def clusters(self):
+    def clusters(self, **query):
         """List all Clusters.
 
         :returns: a generator of
             (:class:`~otcextensions.sdk.css.v1.cluster.Cluster`) instances
         """
-        return self._list(_cluster.Cluster)
+        return self._list(_cluster.Cluster, **query)
 
     def get_cluster(self, cluster):
         """Get the cluster by UUID
