@@ -34,7 +34,10 @@ Instance Operations
   :noindex:
   :members: instances, get_instance, find_instance,
             create_instance, delete_instance, restore_instance,
-            get_instance_restore_time
+            get_instance_restore_time, restart_instance,
+            enlarge_instance_volume, change_instance_flavor,
+            get_instance_logs, add_tag, remove_tag
+
 
 Backup Operations
 ^^^^^^^^^^^^^^^^^
