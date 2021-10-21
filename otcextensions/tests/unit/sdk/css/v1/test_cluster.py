@@ -75,6 +75,11 @@ class TestCluster(base.TestCase):
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_delete)
         self.assertTrue(sot.allow_commit)
+        self.assertDictEqual({'id': 'id',
+                              'start': 'start',
+                              'limit': 'limit',
+                              'marker': 'marker'},
+                             sot._query_mapping._mapping)
 
     def test_make_it(self):
         sot = cluster.Cluster(**EXAMPLE)

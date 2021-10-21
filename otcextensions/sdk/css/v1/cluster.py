@@ -64,6 +64,9 @@ class Cluster(resource.Resource):
     allow_fetch = True
     allow_patch = True
 
+    _query_mapping = resource.QueryParameters(
+        'id', 'start', 'limit')
+
     # Properties
     #: Current actions
     actions = resource.Body('actions', type=list)

@@ -34,7 +34,20 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
         )
 
     def test_clusters(self):
-        self.verify_list(self.proxy.clusters, _cluster.Cluster)
+        self.verify_list(
+            self.proxy.clusters,
+            _cluster.Cluster,
+            method_kwargs={
+                'id': 'foo',
+                'start': 999,
+                'limit': 666
+            },
+            expected_kwargs={
+                'id': 'foo',
+                'start': 999,
+                'limit': 666
+            }
+        )
 
     def test_get_cluster(self):
         self.verify_get(self.proxy.get_cluster, _cluster.Cluster)
