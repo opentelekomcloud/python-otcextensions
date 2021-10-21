@@ -236,3 +236,73 @@ class TestInstance(TestRdsProxy):
             },
             expected_args=[self.proxy]
         )
+
+    def test_restart_instance(self):
+        self._verify(
+            'otcextensions.sdk.rds.v3.instance.Instance.restart',
+            self.proxy.restart_instance,
+            method_args=["val"],
+            expected_args=[self.proxy]
+        )
+
+    def test_enlarge_instance_volume(self):
+        self._verify(
+            'otcextensions.sdk.rds.v3.instance.Instance.enlarge_volume',
+            self.proxy.enlarge_instance_volume,
+            method_args=["val"],
+            method_kwargs={
+                'size': 200
+            },
+            expected_args=[self.proxy, 200]
+        )
+
+    def test_update_flavor(self):
+        self._verify(
+            'otcextensions.sdk.rds.v3.instance.Instance.update_flavor',
+            self.proxy.change_instance_flavor,
+            method_args=["val"],
+            method_kwargs={
+                'spec_code': 'test.spec.code'
+            },
+            expected_args=[self.proxy, 'test.spec.code']
+        )
+
+    def test_get_instance_logs(self):
+        self._verify(
+            'otcextensions.sdk.rds.v3.instance.Instance.get_logs',
+            self.proxy.get_instance_logs,
+            method_args=["val"],
+            method_kwargs={
+                'log_type': 'errorlog',
+                'start_date': '2020-01-01T12:34:56+0000',
+                'end_date': '2020-01-02T12:34:56+0000',
+                'offset': 10,
+                'limit': 20,
+                'level': 'ERROR'
+            },
+            expected_args=[self.proxy, 'errorlog', '2020-01-01T12:34:56+0000',
+                           '2020-01-02T12:34:56+0000', 10, 20, 'ERROR']
+        )
+
+    def test_add_tag(self):
+        self._verify(
+            'otcextensions.sdk.rds.v3.instance.Instance.add_tag',
+            self.proxy.add_tag,
+            method_args=["val"],
+            method_kwargs={
+                'key': 'tagkey',
+                'value': 'tagval'
+            },
+            expected_args=[self.proxy, 'tagkey', 'tagval']
+        )
+
+    def test_remove_tag(self):
+        self._verify(
+            'otcextensions.sdk.rds.v3.instance.Instance.remove_tag',
+            self.proxy.remove_tag,
+            method_args=["val"],
+            method_kwargs={
+                'key': 'tagkey'
+            },
+            expected_args=[self.proxy, 'tagkey']
+        )
