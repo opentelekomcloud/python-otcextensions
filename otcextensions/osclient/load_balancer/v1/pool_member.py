@@ -200,7 +200,7 @@ class CreatePoolMember(command.ShowOne):
             args['protocol_port'] = parsed_args.protocol_port
         if parsed_args.subnet_id:
             args['subnet_id'] = parsed_args.subnet_id
-        if parsed_args.weight:
+        if isinstance(parsed_args.weight, int):
             args['weight'] = parsed_args.weight
         if parsed_args.disable:
             args['is_admin_state_up'] = False
@@ -276,7 +276,7 @@ class SetPoolMember(command.ShowOne):
             args['is_admin_state_up'] = False
         if parsed_args.name:
             args['name'] = parsed_args.name
-        if parsed_args.weight:
+        if isinstance(parsed_args.weight, int):
             args['weight'] = parsed_args.weight
 
         client = self.app.client_manager.network
