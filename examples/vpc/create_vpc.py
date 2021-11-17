@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -9,16 +10,22 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import service_description
+"""
+Create VPC
+"""
+import openstack
+from otcextensions import sdk
 
-from otcextensions.sdk.vpc.v1 import _proxy as _proxy_v1
-from otcextensions.sdk.vpc.v2 import _proxy as _proxy_v2
 
+openstack.enable_logging(True)
+conn = openstack.connect(cloud='otc')
+sdk.register_otc_extensions(conn)
 
-class VpcService(service_description.ServiceDescription):
-    """The VPC service."""
+attrs = {
+    "name": "test_vpc",
+    "description": "test",
+    "cidr": "192.168.0.0/24"
+}
 
-    supported_versions = {
-        '1': _proxy_v1.Proxy,
-        '2': _proxy_v2.Proxy
-    }
+vpc = conn.vpc.create_vpc(**attrs)
+print(vpc)
