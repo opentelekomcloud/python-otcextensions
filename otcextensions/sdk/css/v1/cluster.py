@@ -132,3 +132,65 @@ class Cluster(resource.Resource):
                            {'grow': {'modifySize': add_nodes}})
         self._translate_response(res)
         return self
+
+    @classmethod
+    def list(cls, session, paginated=False, base_path=None,
+             allow_unknown_params=False, **params):
+
+        if not cls.allow_list:
+            raise exceptions.MethodNotSupported(cls, "list")
+        session = cls._get_session(session)
+        microversion = cls._get_microversion_for_list(session)
+
+        if base_path is None:
+            base_path = cls.base_path
+        params = cls._query_mapping._validate(
+            params, base_path=base_path,
+            allow_unknown_params=allow_unknown_params)
+
+        query_params = cls._query_mapping._transpose(params, cls)
+        uri = base_path % params
+
+        limit = query_params.get('limit')
+
+        # Track the total number of resources yielded so we can paginate
+        # swift objects
+        total_yielded = query_params.get('start', 0)
+        while uri:
+            # Copy query_params due to weird mock unittest interactions
+            response = session.get(
+                uri,
+                headers={"Accept": "application/json"},
+                params=query_params.copy(),
+                microversion=microversion)
+            exceptions.raise_from_response(response)
+            data = response.json()
+
+            # Discard any existing pagination keys
+            query_params.pop('start', None)
+            query_params.pop('limit', None)
+
+            if cls.resources_key:
+                resources = data[cls.resources_key]
+            else:
+                resources = data
+
+            if not isinstance(resources, list):
+                resources = [resources]
+
+            marker = None
+            for raw_resource in resources:
+                value = cls.existing(
+                    microversion=microversion,
+                    connection=session._get_connection(),
+                    **raw_resource)
+                marker = total_yielded + 1
+                yield value
+                total_yielded += 1
+
+            if resources and paginated:
+                uri, next_params = cls._get_next_link(
+                    uri, response, data, marker, limit, total_yielded)
+                query_params.update(next_params)
+            else:
+                return
