@@ -1,0 +1,5 @@
+---
+features:
+  - Add VPC resource implementation.
+other:
+  - VPC proxy contain all supported resources as v1.

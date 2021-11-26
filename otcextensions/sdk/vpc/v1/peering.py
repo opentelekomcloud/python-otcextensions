@@ -17,7 +17,7 @@ from openstack import utils
 class Peering(resource.Resource):
     resources_key = 'peerings'
     resource_key = 'peering'
-    base_path = '/vpc/peerings'
+    base_path = '/v2.0/vpc/peerings'
 
     # capabilities
     allow_create = True
@@ -32,17 +32,13 @@ class Peering(resource.Resource):
         router_id='vpc_id'
     )
 
-    #: Specifies the VPC peering connection ID.
-    #: *Type: uuid*
-    id = resource.Body('id')
+    # Properties
     #: Specifies information about the local VPC.
     #: *Type: dict*
     peer_vpc_info = resource.Body('accept_vpc_info', type=dict)
     #: Specifies information about the local VPC.
     #: *Type: dict*
     local_vpc_info = resource.Body('request_vpc_info', type=dict)
-    #: Specifies the name of the VPC peering connection.
-    name = resource.Body('name')
     #: Specifies the status.
     status = resource.Body('status')
     #: Provides supplementary information about the VPC peering connection.

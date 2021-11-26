@@ -9,17 +9,16 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from otcextensions.sdk.vpc.v2 import peering as _peering
-from otcextensions.sdk.vpc.v2 import route as _route
-
 from openstack import proxy
+
+from otcextensions.sdk.vpc.v1 import peering as _peering
+from otcextensions.sdk.vpc.v1 import route as _route
+from otcextensions.sdk.vpc.v1 import vpc as _vpc
 
 
 class Proxy(proxy.Proxy):
 
-    def _override_endpoint(self):
-        endpoint = self.get_endpoint(service_type='network')
-        setattr(self, 'endpoint_override', endpoint)
+    skip_discovery = True
 
     # ======== Peering ========
     def create_peering(self, **attrs):
@@ -28,7 +27,6 @@ class Proxy(proxy.Proxy):
         :param dict attrs: Keyword arguments which will be used to create
             a :class:`~otcextensions.sdk.vpc.v2.peering.Peering`
         """
-        self._override_endpoint()
         return self._create(_peering.Peering, **attrs)
 
     def delete_peering(self, peering, ignore_missing=True):
@@ -44,9 +42,9 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        self._override_endpoint()
-        return self._delete(_peering.Peering, peering,
-                            ignore_missing=ignore_missing)
+        return self._delete(
+            _peering.Peering, peering,
+            ignore_missing=ignore_missing)
 
     def peerings(self, **query):
         """Return a generator of vpc peerings
@@ -58,7 +56,6 @@ class Proxy(proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.vpc.v2.peering.Peering`
         """
-        self._override_endpoint()
         return self._list(_peering.Peering, **query)
 
     def get_peering(self, peering):
@@ -73,7 +70,6 @@ class Proxy(proxy.Proxy):
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                  when no resource can be found.
         """
-        self._override_endpoint()
         return self._get(_peering.Peering, peering)
 
     def find_peering(self, name_or_id, ignore_missing=False):
@@ -88,9 +84,9 @@ class Proxy(proxy.Proxy):
 
         :returns: One :class:`~otcextensions.sdk.vpc.v2.peering.Peering`
         """
-        self._override_endpoint()
-        return self._find(_peering.Peering, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(
+            _peering.Peering, name_or_id,
+            ignore_missing=ignore_missing)
 
     def update_peering(self, peering, **attrs):
         """Update a vpc peering
@@ -105,7 +101,6 @@ class Proxy(proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.vpc.v2.peering.Peering`
         """
-        self._override_endpoint()
         return self._update(_peering.Peering, peering, **attrs)
 
     def set_peering(self, peering, set_status):
@@ -125,18 +120,15 @@ class Proxy(proxy.Proxy):
             raise ValueError(
                 "results: status must be one of %r." % valid_status)
         peering = self._get_resource(_peering.Peering, peering)
-        self._override_endpoint()
         return peering._set_peering(self, set_status.lower())
 
     # ======== Route ========
-
     def add_route(self, **attrs):
         """Add vpc route
 
         :param dict attrs: Keyword arguments which will be used to create
             a :class:`~otcextensions.sdk.vpc.v2.route.Route`
         """
-        self._override_endpoint()
         return self._create(_route.Route, **attrs)
 
     def delete_route(self, route, ignore_missing=True):
@@ -152,7 +144,6 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        self._override_endpoint()
         return self._delete(_route.Route, route,
                             ignore_missing=ignore_missing)
 
@@ -166,7 +157,6 @@ class Proxy(proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.vpc.v2.route.Route`
         """
-        self._override_endpoint()
         return self._list(_route.Route, **query)
 
     def get_route(self, route):
@@ -181,8 +171,21 @@ class Proxy(proxy.Proxy):
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                  when no resource can be found.
         """
-        self._override_endpoint()
         return self._get(_route.Route, route)
+
+    # ========== VPC ==========
+    def vpcs(self, **query):
+        """Return a generator of vpcs
+
+        :param dict query: Optional query parameters to be sent to limit
+            the resources being returned.
+
+        :returns: A generator of vpc objects
+
+        :rtype: :class:`~otcextensions.sdk.vpc.v1.vpc.Vpc`
+        """
+        query['project_id'] = self.get_project_id()
+        return self._list(_vpc.Vpc, **query)
 
     # ========== Project cleanup ==========
     def _get_cleanup_dependencies(self):
