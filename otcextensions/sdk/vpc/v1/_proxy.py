@@ -188,10 +188,10 @@ class Proxy(proxy.Proxy):
 
     def create_vpc(self, **attrs):
         """ Create a new vpc from attributes
-            :param dict attrs: Keyword arguments which will be used to create
+        :param dict attrs: Keyword arguments which will be used to create
             a :class:`~otcextensions.sdk.vpc.v1.vpc.Vpc`
 
-            :returns: A generator of vpc objects
+        :returns: A generator of vpc objects
         """
         attrs['project_id'] = self.get_project_id()
         return self._create(_vpc.Vpc, **attrs)
