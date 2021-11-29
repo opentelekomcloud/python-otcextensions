@@ -17,7 +17,6 @@ from otcextensions.sdk.vpc.v1 import vpc as _vpc
 
 
 class Proxy(proxy.Proxy):
-
     skip_discovery = True
 
     # ======== Peering ========
@@ -186,6 +185,16 @@ class Proxy(proxy.Proxy):
         """
         query['project_id'] = self.get_project_id()
         return self._list(_vpc.Vpc, **query)
+
+    def create_vpc(self, **attrs):
+        """ Create a new vpc from attributes
+            :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.vpc.v1.vpc.Vpc`
+
+            :returns: A generator of vpc objects
+        """
+        attrs['project_id'] = self.get_project_id()
+        return self._create(_vpc.Vpc, **attrs)
 
     # ========== Project cleanup ==========
     def _get_cleanup_dependencies(self):
