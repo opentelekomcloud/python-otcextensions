@@ -31,10 +31,10 @@ class Vpc(resource.Resource):
     #: Provides supplementary information about the VPC.
     description = resource.Body('description')
     #: Specifies whether the shared SNAT function is enabled.
-    enable_shared_snat = resource.Body('enable_shared_snat', type='bool')
+    enable_shared_snat = resource.Body('enable_shared_snat', type=bool)
     #: Specifies the VPC name.
     name = resource.Body('name')
     #: Specifies the route list.
-    routes = resource.Body('routes', type='list')
+    routes = resource.Body('routes', type=list, list_type=dict)
     #: Specifies the VPC status.
     status = resource.Body('status')

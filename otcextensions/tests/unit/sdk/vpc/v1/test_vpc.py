@@ -9,11 +9,12 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from unittest import mock
+
 from keystoneauth1 import adapter
 
-import mock
-
 from openstack.tests.unit import base
+
 from otcextensions.sdk.vpc.v1 import vpc
 
 
@@ -21,11 +22,11 @@ IDENTIFIER = 'ID'
 EXAMPLE = {
     "name": "vpc",
     "cidr": "192.168.200.0/24",
-    "status": "ab78be2d-782f-42a5-aa72-35879f6890ff",
+    "status": "CREATING",
     "description": "test",
     "tenant_id": "6fbe9263116a4b68818cf1edce16bc4f",
-    "routes": "[]",
-    "enable_shared_snat": "",
+    "routes": [],
+    "enable_shared_snat": False,
     "id": "3d42a0d4-a980-4613-ae76-a2cddecff054"
 }
 
@@ -56,6 +57,5 @@ class TestVpc(base.TestCase):
         self.assertEqual(EXAMPLE['description'], sot.description)
         self.assertEqual(EXAMPLE['cidr'], sot.cidr)
         self.assertEqual(EXAMPLE['status'], sot.status)
-        self.assertEqual(EXAMPLE['routes'], sot.status)
+        self.assertEqual(EXAMPLE['routes'], sot.routes)
         self.assertEqual(EXAMPLE['enable_shared_snat'], sot.enable_shared_snat)
-        self.assertEqual(EXAMPLE['tenant_id'], sot.project_id)
