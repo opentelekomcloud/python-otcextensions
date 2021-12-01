@@ -19,11 +19,11 @@ from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
-DEFAULT_API_VERSION = '1'
+DEFAULT_API_VERSION = '2'
 API_VERSION_OPTION = 'os_vpc_api_version'
 API_NAME = "vpc"
 API_VERSIONS = {
-    "1": "openstack.connection.Connection"
+    "2": "openstack.connection.Connection"
 }
 
 

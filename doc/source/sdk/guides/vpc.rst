@@ -20,7 +20,7 @@ List VPC Peerings
 This interface is used to query all VPC peering connections accessible to the
 tenant submitting the request. The connections are filtered based on the
 filtering condition.
-:class:`~otcextensions.sdk.vpc.v2.peering.Peering`.
+:class:`~otcextensions.sdk.vpc.v1.peering.Peering`.
 
 .. literalinclude:: ../examples/vpc/list_peerings.py
    :lines: 16-23
@@ -30,7 +30,7 @@ Create VPC Peering
 
 This interface is used to create a VPC peering connection  with
 parameters.
-:class:`~otcextensions.sdk.vpc.v2.peering.Peering`.
+:class:`~otcextensions.sdk.vpc.v1.peering.Peering`.
 
 .. literalinclude:: ../examples/vpc/create_peering.py
    :lines: 16-33
@@ -40,7 +40,7 @@ Get VPC Peering
 
 This interface is used to get a VPC peering connection by ID
 or an instance of class.
-:class:`~otcextensions.sdk.vpc.v2.peering.Peering`.
+:class:`~otcextensions.sdk.vpc.v1.peering.Peering`.
 
 .. literalinclude:: ../examples/vpc/get_peering.py
    :lines: 16-26
@@ -49,7 +49,7 @@ Find VPC Peering
 ^^^^^^^^^^^^^^^^
 
 This interface is used to find a VPC peering connection by id or name.
-:class:`~otcextensions.sdk.vpc.v2.peering.Peering`.
+:class:`~otcextensions.sdk.vpc.v1.peering.Peering`.
 
 .. literalinclude:: ../examples/vpc/find_peering.py
    :lines: 16-26
@@ -59,7 +59,7 @@ Update VPC Peering
 
 This interface is used to update parameters of a VPC peering connection by
 id or an instance of class.
-:class:`~otcextensions.sdk.vpc.v2.peering.Peering`.
+:class:`~otcextensions.sdk.vpc.v1.peering.Peering`.
 
 .. literalinclude:: ../examples/vpc/update_peering.py
    :lines: 16-24
@@ -69,7 +69,7 @@ Delete VPC Peering
 
 This interface is used to delete a VPC peering connection by ID
 or an instance of class.
-:class:`~otcextensions.sdk.vpc.v2.peering.Peering`.
+:class:`~otcextensions.sdk.vpc.v1.peering.Peering`.
 
 .. literalinclude:: ../examples/vpc/delete_peering.py
    :lines: 16-23
@@ -79,7 +79,7 @@ Set VPC Peering
 
 This interface is used to accept of reject a VPC peering connection
 request by ID or an instance of class.
-:class:`~otcextensions.sdk.vpc.v2.peering.Peering`.
+:class:`~otcextensions.sdk.vpc.v1.peering.Peering`.
 
 .. literalinclude:: ../examples/vpc/set_peering.py
    :lines: 16-32
@@ -96,7 +96,7 @@ List VPC Routes
 
 This interface is used to query all routes of the tenant submitting the
 request. The routes are filtered based on the filtering condition.
-:class:`~otcextensions.sdk.vpc.v2.route.Route`.
+:class:`~otcextensions.sdk.vpc.v1.route.Route`.
 
 .. literalinclude:: ../examples/vpc/list_routes.py
    :lines: 16-23
@@ -105,7 +105,7 @@ Add VPC Route
 ^^^^^^^^^^^^^
 
 This Interface is used to add a VPC route.
-:class:`~otcextensions.sdk.vpc.v2.route.Route`.
+:class:`~otcextensions.sdk.vpc.v1.route.Route`.
 
 .. literalinclude:: ../examples/vpc/add_route.py
    :lines: 16-31
@@ -115,7 +115,7 @@ Get VPC Route
 
 This interface is used to get a VPC route by ID
 or an instance of class.
-:class:`~otcextensions.sdk.vpc.v2.route.Route`.
+:class:`~otcextensions.sdk.vpc.v1.route.Route`.
 
 .. literalinclude:: ../examples/vpc/get_route.py
    :lines: 16-26
@@ -125,7 +125,7 @@ Delete VPC Route
 
 This interface is used to delete a VPC route by ID
 or an instance of class.
-:class:`~otcextensions.sdk.vpc.v2.peering.Peering`.
+:class:`~otcextensions.sdk.vpc.v1.peering.Peering`.
 
 .. literalinclude:: ../examples/vpc/delete_route.py
    :lines: 16-23
