@@ -191,17 +191,25 @@ class Proxy(proxy.Proxy):
         :param dict attrs: Keyword arguments which will be used to create
             a :class:`~otcextensions.sdk.vpc.v1.vpc.Vpc`
         """
-        attrs['project_id'] = self.get_project_id()
-        return self._create(_vpc.Vpc, **attrs)
+        return self._create(_vpc.Vpc, **attrs,
+                            project_id=self.get_project_id())
 
-    def delete_vpc(self, vpc):
+    def delete_vpc(self, vpc, ignore_missing=True):
         """ Delete a vpc
         :param vpc: vpc id or an instance of
             :class:`~otcextensions.sdk.vpc.v1.vpc.Vpc`
 
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the vpc route does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent route.
+
         :returns: none
         """
-        return self._delete(_vpc.Vpc, vpc, project_id=self.get_project_id())
+        return self._delete(_vpc.Vpc, vpc,
+                            project_id=self.get_project_id(),
+                            ignore_missing=ignore_missing)
 
     def get_vpc(self, vpc):
         """ Get a vpc by id
@@ -219,7 +227,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.vpc.v1.vpc.Vpc`
 
         :param dict attrs: The attributes to update on the vpc
-            represented by ``vpc``.
+            represented by ``vpcd``.
         """
         attrs['project_id'] = self.get_project_id()
         return self._update(_vpc.Vpc, vpc, **attrs)

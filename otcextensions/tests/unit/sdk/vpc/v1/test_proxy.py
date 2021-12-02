@@ -12,6 +12,7 @@
 from otcextensions.sdk.vpc.v1 import _proxy
 from otcextensions.sdk.vpc.v1 import peering
 from otcextensions.sdk.vpc.v1 import route
+from otcextensions.sdk.vpc.v1 import vpc
 
 from openstack.tests.unit import test_proxy_base
 
@@ -66,3 +67,38 @@ class TestVpcRoute(TestVpcProxy):
 
     def test_routes(self):
         self.verify_list(self.proxy.routes, route.Route)
+
+
+class TestVpc(TestVpcProxy):
+    def test_vpc_create(self):
+        self.verify_create(self.proxy.create_vpc, vpc.Vpc,
+                           method_kwargs={'name': 'id'},
+                           expected_kwargs={
+                               'name': 'id',
+                               'project_id': self.proxy.get_project_id()
+                           })
+
+    def test_vpc_delete(self):
+        self.verify_delete(self.proxy.delete_vpc, vpc.Vpc, True,
+                           expected_kwargs={
+                               'ignore_missing': True,
+                               'project_id': self.proxy.get_project_id()})
+
+    def test_vpc_get(self):
+        self.verify_get(self.proxy.get_vpc, vpc.Vpc, 'id',
+                        expected_kwargs={
+                            'project_id': self.proxy.get_project_id()})
+
+    def test_vpcs(self):
+        self.verify_list(self.proxy.vpcs, vpc.Vpc,
+                         expected_kwargs={
+                             'project_id': self.proxy.get_project_id()
+                         })
+
+    def test_vpc_update(self):
+        self.verify_update(self.proxy.update_vpc, vpc.Vpc,
+                           method_kwargs={'name': 'id'},
+                           expected_kwargs={
+                               'name': 'id',
+                               'project_id': self.proxy.get_project_id()
+                           })
