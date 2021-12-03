@@ -1,7 +1,7 @@
 VPC API
 =======
 
-.. automodule:: otcextensions.sdk.vpc.v2._proxy
+.. automodule:: otcextensions.sdk.vpc.v1._proxy
 
 The Virtual Private Cloud Class
 -------------------------------
@@ -14,7 +14,7 @@ member of a :class:`~openstack.connection.Connection` object.  The
 VPC Peering Operations
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. autoclass:: otcextensions.sdk.vpc.v2._proxy.Proxy
+.. autoclass:: otcextensions.sdk.vpc.v1._proxy.Proxy
   :noindex:
   :members: peerings, find_peering, create_peering,
             update_peering, delete_peering, set_peering
@@ -22,6 +22,6 @@ VPC Peering Operations
 VPC Route Operations
 ^^^^^^^^^^^^^^^^^^^^
 
-.. autoclass:: otcextensions.sdk.vpc.v2._proxy.Proxy
+.. autoclass:: otcextensions.sdk.vpc.v1._proxy.Proxy
   :noindex:
   :members: routes, get_route, add_route, delete_route

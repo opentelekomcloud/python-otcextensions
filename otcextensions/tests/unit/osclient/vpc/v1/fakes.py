@@ -17,8 +17,8 @@ from datetime import datetime
 from openstackclient.tests.unit import utils
 from otcextensions.tests.unit.osclient import test_base
 
-from otcextensions.sdk.vpc.v2 import peering
-from otcextensions.sdk.vpc.v2 import route
+from otcextensions.sdk.vpc.v1 import peering
+from otcextensions.sdk.vpc.v1 import route
 
 
 def gen_data(data, columns):

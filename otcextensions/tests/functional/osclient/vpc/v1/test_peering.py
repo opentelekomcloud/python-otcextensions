@@ -12,7 +12,7 @@
 
 import json
 
-from otcextensions.tests.functional.osclient.vpc.v2 import common
+from otcextensions.tests.functional.osclient.vpc.v1 import common
 
 
 class TestPeering(common.VpcTestCase):

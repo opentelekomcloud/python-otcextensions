@@ -9,33 +9,30 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from otcextensions.sdk.vpc.v2 import peering as _peering
-from otcextensions.sdk.vpc.v2 import route as _route
-
 from openstack import proxy
+
+from otcextensions.sdk.vpc.v1 import peering as _peering
+from otcextensions.sdk.vpc.v1 import route as _route
+from otcextensions.sdk.vpc.v1 import vpc as _vpc
 
 
 class Proxy(proxy.Proxy):
-
-    def _override_endpoint(self):
-        endpoint = self.get_endpoint(service_type='network')
-        setattr(self, 'endpoint_override', endpoint)
+    skip_discovery = True
 
     # ======== Peering ========
     def create_peering(self, **attrs):
         """Create a new vpc peering from attributes
 
         :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.vpc.v2.peering.Peering`
+            a :class:`~otcextensions.sdk.vpc.v1.peering.Peering`
         """
-        self._override_endpoint()
         return self._create(_peering.Peering, **attrs)
 
     def delete_peering(self, peering, ignore_missing=True):
         """Delete a vpc peering
 
         :param peering: key id or an instance of
-            :class:`~otcextensions.sdk.vpc.v2.peering.Peering`
+            :class:`~otcextensions.sdk.vpc.v1.peering.Peering`
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
             the vpc peering does not exist.
@@ -44,9 +41,9 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        self._override_endpoint()
-        return self._delete(_peering.Peering, peering,
-                            ignore_missing=ignore_missing)
+        return self._delete(
+            _peering.Peering, peering,
+            ignore_missing=ignore_missing)
 
     def peerings(self, **query):
         """Return a generator of vpc peerings
@@ -56,24 +53,22 @@ class Proxy(proxy.Proxy):
 
         :returns: A generator of vpc peering objects
 
-        :rtype: :class:`~otcextensions.sdk.vpc.v2.peering.Peering`
+        :rtype: :class:`~otcextensions.sdk.vpc.v1.peering.Peering`
         """
-        self._override_endpoint()
         return self._list(_peering.Peering, **query)
 
     def get_peering(self, peering):
         """Get a single vpc peering
 
         :param peering: The value can be the ID of a vpc peering or a
-                        :class:`~otcextensions.sdk.vpc.v2.peering.Peering`
+                        :class:`~otcextensions.sdk.vpc.v1.peering.Peering`
                         instance.
 
-        :returns: One :class:`~otcextensions.sdk.vpc.v2.peering.Peering`
+        :returns: One :class:`~otcextensions.sdk.vpc.v1.peering.Peering`
 
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                  when no resource can be found.
         """
-        self._override_endpoint()
         return self._get(_peering.Peering, peering)
 
     def find_peering(self, name_or_id, ignore_missing=False):
@@ -86,64 +81,60 @@ class Proxy(proxy.Proxy):
             When set to ``True``, no exception will be set when attempting
             to delete a nonexistent peering.
 
-        :returns: One :class:`~otcextensions.sdk.vpc.v2.peering.Peering`
+        :returns: One :class:`~otcextensions.sdk.vpc.v1.peering.Peering`
         """
-        self._override_endpoint()
-        return self._find(_peering.Peering, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(
+            _peering.Peering, name_or_id,
+            ignore_missing=ignore_missing)
 
     def update_peering(self, peering, **attrs):
         """Update a vpc peering
 
         :param peering: Either the ID of a vpc peering or a
-                       :class:`~otcextensions.sdk.vpc.v2.peering.Peering`
+                       :class:`~otcextensions.sdk.vpc.v1.peering.Peering`
                        instance.
         :param dict attrs: The attributes to update on the vpc peering
             represented by ``peering``.
 
         :returns: The updated peering
 
-        :rtype: :class:`~otcextensions.sdk.vpc.v2.peering.Peering`
+        :rtype: :class:`~otcextensions.sdk.vpc.v1.peering.Peering`
         """
-        self._override_endpoint()
         return self._update(_peering.Peering, peering, **attrs)
 
     def set_peering(self, peering, set_status):
         """Accept/Reject a vpc peering connection request
 
         :param peering: Either the ID of a vpc peering or a
-                       :class:`~otcextensions.sdk.vpc.v2.peering.Peering`
+                       :class:`~otcextensions.sdk.vpc.v1.peering.Peering`
                        instance.
         :param set_status: The value can been ``accept`` or ``reject``
 
         :returns: The updated peering
 
-        :rtype: :class:`~otcextensions.sdk.vpc.v2.peering.Peering`
+        :rtype: :class:`~otcextensions.sdk.vpc.v1.peering.Peering`
         """
         valid_status = ['accept', 'reject']
         if set_status.lower() not in valid_status:
             raise ValueError(
                 "results: status must be one of %r." % valid_status)
         peering = self._get_resource(_peering.Peering, peering)
-        self._override_endpoint()
         return peering._set_peering(self, set_status.lower())
 
     # ======== Route ========
-
     def add_route(self, **attrs):
         """Add vpc route
 
         :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.vpc.v2.route.Route`
+            a :class:`~otcextensions.sdk.vpc.v1.route.Route`
         """
-        self._override_endpoint()
         return self._create(_route.Route, **attrs)
 
     def delete_route(self, route, ignore_missing=True):
         """Delete a vpc route
 
         :param route: route id or an instance of
-            :class:`~otcextensions.sdk.vpc.v2.route.Route`
+            :class:`~otcextensions.sdk.vpc.v1.route.Route`
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
             the vpc route does not exist.
@@ -152,7 +143,6 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        self._override_endpoint()
         return self._delete(_route.Route, route,
                             ignore_missing=ignore_missing)
 
@@ -164,25 +154,83 @@ class Proxy(proxy.Proxy):
 
         :returns: A generator of vpc route objects
 
-        :rtype: :class:`~otcextensions.sdk.vpc.v2.route.Route`
+        :rtype: :class:`~otcextensions.sdk.vpc.v1.route.Route`
         """
-        self._override_endpoint()
         return self._list(_route.Route, **query)
 
     def get_route(self, route):
         """Get details of a single vpc route
 
         :param route: The value can be the ID of a vpc route or a
-                        :class:`~otcextensions.sdk.vpc.v2.route.Route`
+                        :class:`~otcextensions.sdk.vpc.v1.route.Route`
                         instance.
 
-        :returns: One :class:`~otcextensions.sdk.vpc.v2.route.Route`
+        :returns: One :class:`~otcextensions.sdk.vpc.v1.route.Route`
 
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                  when no resource can be found.
         """
-        self._override_endpoint()
         return self._get(_route.Route, route)
+
+    # ========== VPC ==========
+    def vpcs(self, **query):
+        """Return a generator of vpcs
+
+        :param dict query: Optional query parameters to be sent to limit
+            the resources being returned.
+
+        :returns: A generator of vpc objects
+
+        :rtype: :class:`~otcextensions.sdk.vpc.v1.vpc.Vpc`
+        """
+        query['project_id'] = self.get_project_id()
+        return self._list(_vpc.Vpc, **query)
+
+    def create_vpc(self, **attrs):
+        """ Create a new vpc from attributes
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.vpc.v1.vpc.Vpc`
+        """
+        return self._create(_vpc.Vpc, **attrs,
+                            project_id=self.get_project_id())
+
+    def delete_vpc(self, vpc, ignore_missing=True):
+        """ Delete a vpc
+        :param vpc: vpc id or an instance of
+            :class:`~otcextensions.sdk.vpc.v1.vpc.Vpc`
+
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the vpc route does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent route.
+
+        :returns: none
+        """
+        return self._delete(_vpc.Vpc, vpc,
+                            project_id=self.get_project_id(),
+                            ignore_missing=ignore_missing)
+
+    def get_vpc(self, vpc):
+        """ Get a vpc by id
+        :param vpc: vpc id or an instance of
+            :class:`~otcextensions.sdk.vpc.v1.vpc.Vpc`
+
+        :returns: One :class:`~otcextensions.sdk.vpc.v1.vpc.Vpc`
+        """
+        return self._get(_vpc.Vpc, vpc, project_id=self.get_project_id())
+
+    def update_vpc(self, vpc, **attrs):
+        """ Update vpc
+
+        :param vpc: vpc id or an instance of
+            :class:`~otcextensions.sdk.vpc.v1.vpc.Vpc`
+
+        :param dict attrs: The attributes to update on the vpc
+            represented by ``vpcd``.
+        """
+        attrs['project_id'] = self.get_project_id()
+        return self._update(_vpc.Vpc, vpc, **attrs)
 
     # ========== Project cleanup ==========
     def _get_cleanup_dependencies(self):
