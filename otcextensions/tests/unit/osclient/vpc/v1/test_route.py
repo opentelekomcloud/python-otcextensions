@@ -16,7 +16,7 @@ from unittest.mock import call
 from osc_lib import exceptions
 
 from otcextensions.osclient.vpc.v2 import route
-from otcextensions.tests.unit.osclient.vpc.v2 import fakes
+from otcextensions.tests.unit.osclient.vpc.v1 import fakes
 
 from openstackclient.tests.unit import utils as tests_utils
 
