@@ -220,6 +220,22 @@ class Proxy(proxy.Proxy):
         """
         return self._get(_vpc.Vpc, vpc, project_id=self.get_project_id())
 
+    def find_vpc(self, name_or_id, ignore_missing=False):
+        """Find a single vpc
+
+        :param name_or_id: The name or ID of a vpc
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the vpc does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to delete a nonexistent peering.
+
+        :returns: One :class:`~otcextensions.sdk.vpc.v1.vpc.Vpc`
+        """
+        return self._find(
+            _vpc.Vpc, name_or_id,
+            ignore_missing=ignore_missing)
+
     def update_vpc(self, vpc, **attrs):
         """ Update vpc
 
