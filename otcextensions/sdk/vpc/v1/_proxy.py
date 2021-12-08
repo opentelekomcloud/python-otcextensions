@@ -234,7 +234,8 @@ class Proxy(proxy.Proxy):
         """
         return self._find(
             _vpc.Vpc, name_or_id,
-            ignore_missing=ignore_missing)
+            ignore_missing=ignore_missing,
+            project_id=self.get_project_id())
 
     def update_vpc(self, vpc, **attrs):
         """ Update vpc
