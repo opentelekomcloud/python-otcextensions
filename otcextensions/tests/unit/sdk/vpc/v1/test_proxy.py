@@ -102,3 +102,9 @@ class TestVpc(TestVpcProxy):
                                'name': 'id',
                                'project_id': self.proxy.get_project_id()
                            })
+
+    def test_vpc_find(self):
+        self.verify_find(self.proxy.find_vpc, vpc.Vpc, 'id',
+                         expected_kwargs={
+                             'project_id': self.proxy.get_project_id()
+                         })
