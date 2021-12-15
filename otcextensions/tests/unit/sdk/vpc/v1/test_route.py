@@ -39,7 +39,7 @@ class TestRoute(base.TestCase):
         sot = route.Route()
         self.assertEqual('route', sot.resource_key)
         self.assertEqual('routes', sot.resources_key)
-        path = '/vpc/routes'
+        path = '/v2.0/vpc/routes'
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)

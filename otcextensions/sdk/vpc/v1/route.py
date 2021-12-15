@@ -15,7 +15,7 @@ from openstack import resource
 class Route(resource.Resource):
     resources_key = 'routes'
     resource_key = 'route'
-    base_path = '/vpc/routes'
+    base_path = '/v2.0/vpc/routes'
 
     # capabilities
     allow_create = True
