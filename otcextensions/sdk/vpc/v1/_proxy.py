@@ -9,11 +9,12 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import proxy
+from openstack import exceptions, proxy
 
-from otcextensions.sdk.vpc.v1 import peering as _peering
-from otcextensions.sdk.vpc.v1 import route as _route
-from otcextensions.sdk.vpc.v1 import vpc as _vpc
+from otcextensions.sdk.vpc.v1 import (
+    peering as _peering, route as _route, subnet as _subnet,
+    vpc as _vpc
+)
 
 
 class Proxy(proxy.Proxy):
@@ -187,15 +188,17 @@ class Proxy(proxy.Proxy):
         return self._list(_vpc.Vpc, **query)
 
     def create_vpc(self, **attrs):
-        """ Create a new vpc from attributes
-        :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.vpc.v1.vpc.Vpc`
+        """Create a new vpc from attributes
+
+        :param dict attrs: Keyword arguments which will be used to create a
+            :class:`~otcextensions.sdk.vpc.v1.vpc.Vpc`
         """
         return self._create(_vpc.Vpc, **attrs,
                             project_id=self.get_project_id())
 
     def delete_vpc(self, vpc, ignore_missing=True):
-        """ Delete a vpc
+        """Delete a vpc
+
         :param vpc: vpc id or an instance of
             :class:`~otcextensions.sdk.vpc.v1.vpc.Vpc`
 
@@ -212,9 +215,10 @@ class Proxy(proxy.Proxy):
                             ignore_missing=ignore_missing)
 
     def get_vpc(self, vpc):
-        """ Get a vpc by id
+        """Get a vpc by id
+
         :param vpc: vpc id or an instance of
-            :class:`~otcextensions.sdk.vpc.v1.vpc.Vpc`
+           :class:`~otcextensions.sdk.vpc.v1.vpc.Vpc`
 
         :returns: One :class:`~otcextensions.sdk.vpc.v1.vpc.Vpc`
         """
@@ -224,6 +228,7 @@ class Proxy(proxy.Proxy):
         """Find a single vpc
 
         :param name_or_id: The name or ID of a vpc
+
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
             when the vpc does not exist.
@@ -238,7 +243,7 @@ class Proxy(proxy.Proxy):
             project_id=self.get_project_id())
 
     def update_vpc(self, vpc, **attrs):
-        """ Update vpc
+        """Update vpc
 
         :param vpc: vpc id or an instance of
             :class:`~otcextensions.sdk.vpc.v1.vpc.Vpc`
@@ -248,6 +253,122 @@ class Proxy(proxy.Proxy):
         """
         attrs['project_id'] = self.get_project_id()
         return self._update(_vpc.Vpc, vpc, **attrs)
+
+    # ========== Subnet ==========
+    def subnets(self, **query):
+        """Return a generator of subnets
+
+        :param dict query: Optional query parameters to be sent to limit
+            the resources being returned.
+
+        :returns: A generator of subnet objects
+
+        :rtype: :class:`~otcextensions.sdk.vpc.v1.subnet.Subnet`
+        """
+        query['project_id'] = self.get_project_id()
+        return self._list(_subnet.Subnet, **query)
+
+    def create_subnet(self, **attrs):
+        """Create a new subnet from attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.vpc.v1.subnet.Subnet`
+        """
+        attrs['project_id'] = self.get_project_id()
+        return self._create(_subnet.Subnet, **attrs)
+
+    def get_subnet(self, subnet):
+        """Get a subnet by id
+
+        :param subnet: subnet id or an instance of
+            :class:`~otcextensions.sdk.vpc.v1.subnet.Subnet`
+
+        :returns: One :class:`~otcextensions.sdk.vpc.v1.subnet.Subnet`
+        """
+        return self._get(_subnet.Subnet, subnet,
+                         project_id=self.get_project_id())
+
+    def find_subnet(self, name_or_id, ignore_missing=False):
+        """Find a single subnet
+
+        :param name_or_id: The name or ID of a subnet
+
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the subnet does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to delete a nonexistent peering.
+
+        :returns: One :class:`~otcextensions.sdk.vpc.v1.subnet.Subnet`
+        """
+        return self._find(
+            _subnet.Subnet, name_or_id,
+            ignore_missing=ignore_missing,
+            project_id=self.get_project_id())
+
+    def update_subnet(self, subnet, **attrs):
+        """Update subnet
+
+        :param subnet: subnet id or an instance of
+            :class:`~otcextensions.sdk.vpc.v1.subnet.Subnet`
+
+        :param dict attrs: The attributes to update on the subnet
+            represented by ``subnet``.
+        """
+        attrs['project_id'] = self.get_project_id()
+
+        rs = self._get_resource(_subnet.Subnet, subnet)
+        if rs.vpc_id is None and 'vpc_id' not in attrs:
+            raise AttributeError('Updating subnet requires VPC ID')
+        vpc_id = attrs.pop('vpc_id', rs.vpc_id)  # vpc_id can't be changed
+
+        attrs.pop('base_path', None)
+        base_path = _subnet.vpc_subnet_base_path(vpc_id)
+
+        return self._update(_subnet.Subnet,
+                            subnet,
+                            base_path=base_path,
+                            **attrs)
+
+    def _delete(self, resource_type, value, ignore_missing=True, **attrs):
+        """Override of ``_delete`` with support of ``base_path``"""
+        base_path = attrs.pop('base_path', None)
+
+        res = self._get_resource(resource_type, value, **attrs)
+
+        try:
+            rv = res.delete(self, base_path=base_path)
+        except exceptions.ResourceNotFound:
+            if ignore_missing:
+                return None
+            raise
+
+        return rv
+
+    def delete_subnet(self, subnet, vpc_id=None, ignore_missing=True):
+        """Delete a subnet
+
+        :param subnet: subnet id or an instance of
+            :class:`~otcextensions.sdk.vpc.v1.subnet.Subnet`
+
+        :param vpc_id: VPC id. By default, taken from ``subnet``, if provided.
+
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the subnet route does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent route.
+
+        :returns: none
+        """
+        sn_res = self._get_resource(_subnet.Subnet, subnet)
+        sn_res.vpc_id = vpc_id or sn_res.vpc_id
+        if sn_res.vpc_id is None:
+            raise AttributeError('Deleting subnet requires VPC ID')
+
+        return self._delete(_subnet.Subnet, subnet,
+                            ignore_missing=ignore_missing,
+                            base_path=_subnet.vpc_subnet_base_path(sn_res.vpc_id))
 
     # ========== Project cleanup ==========
     def _get_cleanup_dependencies(self):
