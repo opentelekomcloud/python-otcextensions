@@ -11,7 +11,11 @@
 # under the License.
 from openstack.tests.unit import test_proxy_base
 
-from otcextensions.sdk.vpc.v1 import _proxy, peering, route, subnet, vpc
+from otcextensions.sdk.vpc.v1 import _proxy
+from otcextensions.sdk.vpc.v1 import peering
+from otcextensions.sdk.vpc.v1 import route
+from otcextensions.sdk.vpc.v1 import subnet
+from otcextensions.sdk.vpc.v1 import vpc
 
 
 class TestVpcProxy(test_proxy_base.TestProxyBase):

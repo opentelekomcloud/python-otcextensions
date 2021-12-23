@@ -41,10 +41,6 @@ class TestService(base.BaseFunctionalTest):
         self.vpc = self.conn.vpc.create_vpc(**attrs)
         self.addCleanup(self.conn.vpc.delete_vpc, self.vpc)
 
-    def test_initialize(self):
-        client = self.conn.vpc
-        self.assertIsNotNone(client)
-
     def test_create_subnet(self):
         cidr = self.vpc.cidr
         gateway, _ = cidr.split("/")

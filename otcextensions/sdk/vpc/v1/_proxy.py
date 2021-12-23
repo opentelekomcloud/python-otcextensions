@@ -9,12 +9,13 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import exceptions, proxy
+from openstack import exceptions
+from openstack import proxy
 
-from otcextensions.sdk.vpc.v1 import (
-    peering as _peering, route as _route, subnet as _subnet,
-    vpc as _vpc
-)
+from otcextensions.sdk.vpc.v1 import peering as _peering
+from otcextensions.sdk.vpc.v1 import route as _route
+from otcextensions.sdk.vpc.v1 import subnet as _subnet
+from otcextensions.sdk.vpc.v1 import vpc as _vpc
 
 
 class Proxy(proxy.Proxy):
@@ -366,9 +367,11 @@ class Proxy(proxy.Proxy):
         if sn_res.vpc_id is None:
             raise AttributeError('Deleting subnet requires VPC ID')
 
+        base_path = _subnet.vpc_subnet_base_path(sn_res.vpc_id)
+
         return self._delete(_subnet.Subnet, subnet,
                             ignore_missing=ignore_missing,
-                            base_path=_subnet.vpc_subnet_base_path(sn_res.vpc_id))
+                            base_path=base_path)
 
     # ========== Project cleanup ==========
     def _get_cleanup_dependencies(self):
