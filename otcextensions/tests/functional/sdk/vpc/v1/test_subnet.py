@@ -33,7 +33,6 @@ class TestService(base.BaseFunctionalTest):
     def setUp(self):
         super().setUp()
 
-        self.client = self.conn.vpc
         attrs = {
             'name': 'test-vpc-' + self.seed,
             'cidr': '192.168.0.0/16'
@@ -98,7 +97,7 @@ class TestService(base.BaseFunctionalTest):
     def test_list_subnets(self):
         subnet = self._create_subnet()
 
-        subnets = list(self.conn.vpc.subnets())
+        subnets = list(self.conn.vpc.subnets(vpc_id=subnet.vpc_id))
         self.assertGreaterEqual(len(subnets), 1)
 
         self.assertIn(subnet, subnets)
