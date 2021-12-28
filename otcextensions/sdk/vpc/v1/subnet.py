@@ -32,6 +32,8 @@ class Subnet(resource.Resource):
     allow_delete = True
     allow_list = True
 
+    _query_mapping = resource.QueryParameters('vpc_id')
+
     # Properties
     project_id = resource.URI('project_id')
     description = resource.Body('description')
