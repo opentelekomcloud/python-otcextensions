@@ -22,20 +22,21 @@ class TestDCSQuota(fakes.TestDCS):
         super(TestDCSQuota, self).setUp()
         self.client = self.app.client_manager.dcs
 
+
 class TestListDCSQuota(TestDCSQuota):
     quotas = fakes.FakeQuota.create_multiple(2)
     columns = ('quota', 'used', 'type', 'min', 'max', 'unit')
 
     data = []
 
-    for quota in quotas:
+    for s in quotas:
         data.append((
-            quota.quota,
-            quota.used,
-            quota.type,
-            quota.min,
-            quota.max,
-            quota.unit
+            s.quota,
+            s.used,
+            s.type,
+            s.min,
+            s.max,
+            s.unit
         ))
 
     def setUp(self):

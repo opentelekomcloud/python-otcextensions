@@ -173,6 +173,7 @@ class FakeConfig(test_base.Fake):
         obj = config.Config.existing(**object_info)
         return obj
 
+
 class FakeQuota(test_base.Fake):
     """Fake one or more Quota"""
 
@@ -180,6 +181,7 @@ class FakeQuota(test_base.Fake):
     def generate(cls):
 
         qtype = random.choice(['instances', 'ram'])
+
         def _generate_unit_by_type(qtype):
             return 'null' if qtype == 'instances' else 'GB'
 
