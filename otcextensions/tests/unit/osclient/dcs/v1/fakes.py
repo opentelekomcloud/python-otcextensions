@@ -23,6 +23,7 @@ from otcextensions.sdk.dcs.v1 import config
 from otcextensions.sdk.dcs.v1 import instance
 from otcextensions.sdk.dcs.v1 import restore_record
 from otcextensions.sdk.dcs.v1 import statistic
+from otcextensions.sdk.dcs.v1 import quota
 
 
 class TestDCS(utils.TestCommand):
@@ -170,4 +171,25 @@ class FakeConfig(test_base.Fake):
             'description': uuid.uuid4().hex
         }
         obj = config.Config.existing(**object_info)
+        return obj
+
+class FakeQuota(test_base.Fake):
+    """Fake one or more Quota"""
+
+    @classmethod
+    def generate(cls):
+
+        qtype = random.choice(['instances', 'ram'])
+        def _generate_unit_by_type(qtype):
+            return 'null' if qtype == 'instances' else 'GB'
+
+        object_info = {
+            'quota': random.randint(1, 65535),
+            'used': random.randint(1, 65535),
+            'type': qtype,
+            'unit': _generate_unit_by_type(qtype),
+            'max': random.randint(1, 65535),
+            'min': random.randint(1, 10)
+        }
+        obj = quota.Quota.existing(**object_info)
         return obj
