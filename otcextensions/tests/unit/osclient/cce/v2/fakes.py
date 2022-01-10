@@ -17,6 +17,7 @@ import mock
 from otcextensions.sdk.cce.v3 import cluster
 from otcextensions.sdk.cce.v3 import cluster_node
 from otcextensions.sdk.cce.v3 import node_pool
+from otcextensions.sdk.cce.v3 import cluster_cert
 from otcextensions.tests.unit.osclient import test_base
 
 
@@ -211,4 +212,22 @@ class FakeNodePool(test_base.Fake):
             }
         }
         obj = node_pool.NodePool.existing(**object_info)
+        return obj
+
+class FakeClusterCertificate(test_base.Fake):
+    """Fake one or more Cluster Certificate"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'ca': uuid.uuid4().hex,
+            'client_certificate': uuid.uuid4().hex,
+            'client_key': uuid.uuid4().hex,
+            'context': {
+                'name': uuid.uuid4().hex[:8],
+                'user': uuid.uuid4().hex[:8],
+                'cluster': uuid.uuid4().hex[:8],
+            },
+        }
+        obj = cluster_cert.ClusterCertificate.existing(**object_info)
         return obj

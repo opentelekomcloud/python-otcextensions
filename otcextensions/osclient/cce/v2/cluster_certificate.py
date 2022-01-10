@@ -39,13 +39,12 @@ def _flatten_cluster_certificate(obj):
 class ShowCCEClusterCertificates(command.ShowOne):
     _description = _('Show Cluster certificates details')
     columns = (
-        'kind',
-        'apiVersion',
-        'preferences',
+        'name',
+        'cluster',
+        'user',
         'ca',
         'client_certificate',
-        'client_key',
-        'context')
+        'client_key')
 
     def get_parser(self, prog_name):
         parser = super(ShowCCEClusterCertificates, self).get_parser(prog_name)
