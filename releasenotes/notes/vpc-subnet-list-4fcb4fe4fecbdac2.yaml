@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    Allow passing ``vpc_id`` when listing subnets
