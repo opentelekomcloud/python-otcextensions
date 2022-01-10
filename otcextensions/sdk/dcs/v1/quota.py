@@ -10,7 +10,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from openstack import resource, exceptions
+from openstack import exceptions
+from openstack import resource
 
 
 class Quota(resource.Resource):
