@@ -66,7 +66,8 @@ class TestClusterCertificateShow(fakes.TestCCE):
     def setUp(self):
         super(TestClusterCertificateShow, self).setUp()
 
-        self.cmd = cluster_certificate.ShowCCEClusterCertificates(self.app, None)
+        self.cmd = cluster_certificate.ShowCCEClusterCertificates(
+            self.app, None)
 
         self.client.find_cluster = mock.Mock(
             return_value=cluster.Cluster(id='cluster_uuid'))

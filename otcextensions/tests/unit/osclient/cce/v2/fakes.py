@@ -214,6 +214,7 @@ class FakeNodePool(test_base.Fake):
         obj = node_pool.NodePool.existing(**object_info)
         return obj
 
+
 class FakeClusterCertificate(test_base.Fake):
     """Fake one or more Cluster Certificate"""
 
