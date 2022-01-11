@@ -16,6 +16,7 @@ from otcextensions.sdk.dcs.v1 import config as _config
 from otcextensions.sdk.dcs.v1 import instance as _instance
 from otcextensions.sdk.dcs.v1 import restore_record as _restore_record
 from otcextensions.sdk.dcs.v1 import statistic as _stat
+from otcextensions.sdk.dcs.v1 import quota as _quota
 
 
 class Proxy(proxy.Proxy):
@@ -262,3 +263,12 @@ class Proxy(proxy.Proxy):
             self,
             params
         )
+
+    # ======== Quotas ========
+    def quotas(self):
+        """Return a generator of quotas
+
+        :returns: A generator of quota objects
+        :rtype: :class:`~otcextensions.sdk.dcs.v1.quota.Quota`
+        """
+        return self._list(_quota.Quota)

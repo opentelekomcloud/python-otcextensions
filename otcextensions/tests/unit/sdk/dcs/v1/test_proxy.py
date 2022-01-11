@@ -17,6 +17,7 @@ from otcextensions.sdk.dcs.v1 import config as _config
 from otcextensions.sdk.dcs.v1 import instance as _instance
 from otcextensions.sdk.dcs.v1 import restore_record as _restore_record
 from otcextensions.sdk.dcs.v1 import statistic as _stat
+from otcextensions.sdk.dcs.v1 import quota as _quota
 
 from openstack.tests.unit import test_proxy_base
 
@@ -292,4 +293,9 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
         self.sot._update.assert_called_with(
             self.proxy,
             params
+        )
+
+    def test_quotas(self):
+        self.verify_list(
+            self.proxy.quotas, _quota.Quota,
         )
