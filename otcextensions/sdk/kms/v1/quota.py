@@ -15,7 +15,7 @@ from otcextensions.sdk import quotamixin
 
 
 class Quota(quotamixin.QuotaProxyMixin, resource.Resource):
-    """Distributed Cache Service Quota resource"""
+    """Key Management Service Quota resource"""
     resources_key = 'quotas.resources'
     base_path = '/quota'
 
