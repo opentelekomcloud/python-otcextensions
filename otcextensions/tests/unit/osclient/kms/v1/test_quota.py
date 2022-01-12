@@ -13,10 +13,10 @@
 import mock
 
 from otcextensions.osclient.kms.v1 import quota
-from otcextensions.tests.unit.osclient.dcs.v1 import fakes
+from otcextensions.tests.unit.osclient.kms.v1 import fakes
 
 
-class TestKMSQuota(fakes.TestDCS):
+class TestKMSQuota(fakes.TestKMS):
 
     def setUp(self):
         super(TestKMSQuota, self).setUp()
@@ -24,7 +24,7 @@ class TestKMSQuota(fakes.TestDCS):
 
 
 class TestListKMSQuota(TestKMSQuota):
-    quotas = fakes.FakeQuota.create_multiple(2)
+    quotas = fakes.FakeCMK.create_multiple(2)
     columns = ('quota', 'used', 'type')
 
     data = []
