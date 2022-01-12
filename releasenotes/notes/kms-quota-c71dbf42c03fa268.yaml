@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    SDK KMS Quota list operation support.
+    CLI List KMS Quotas
