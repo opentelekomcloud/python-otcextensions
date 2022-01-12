@@ -20,11 +20,11 @@ class TestKMSQuota(fakes.TestKMS):
 
     def setUp(self):
         super(TestKMSQuota, self).setUp()
-        self.client = self.app.client_manager.dcs
+        self.client = self.app.client_manager.kms
 
 
 class TestListKMSQuota(TestKMSQuota):
-    quotas = fakes.FakeCMK.create_multiple(2)
+    quotas = fakes.FakeQuota.create_multiple(2)
     columns = ('quota', 'used', 'type')
 
     data = []
