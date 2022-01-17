@@ -16,6 +16,7 @@ import datetime
 import mock
 
 from otcextensions.sdk.cbr.v3 import policy
+from otcextensions.sdk.cbr.v3 import task
 from otcextensions.tests.unit.osclient import test_base
 
 
@@ -158,4 +159,30 @@ class FakePolicyFixed(test_base.Fake):
         }
 
         obj = policy.Policy.existing(**object_info)
+        return obj
+
+
+class FakeTask(test_base.Fake):
+    """Fake one or more CBR task with random vaults list and patterns"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'status': 'success',
+            'provider_id': 'pid-' + uuid.uuid4().hex,
+            'checkpoint_id': 'cid-' + uuid.uuid4().hex,
+            'updated_at': uuid.uuid4().hex,
+            'error_info': {'message': '', 'code': ''},
+            'vault_id': 'pid-' + uuid.uuid4().hex,
+            'started_at': uuid.uuid4().hex,
+            'id': 'id-' + uuid.uuid4().hex,
+            'ended_at': uuid.uuid4().hex,
+            'created_at': uuid.uuid4().hex,
+            'operation_type': 'backup',
+            'vault_name': 'vault-' + uuid.uuid4().hex,
+            'project_id': 'prjid-' + uuid.uuid4().hex,
+            'policy_id': 'polid-' + uuid.uuid4().hex
+        }
+
+        obj = task.Task.existing(**object_info)
         return obj

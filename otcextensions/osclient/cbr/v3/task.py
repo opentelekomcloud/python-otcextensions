@@ -24,21 +24,20 @@ LOG = logging.getLogger(__name__)
 def _flatten_task(obj):
     """Flatten the structure of the task into a single dict
     """
-    od = obj.operation_definition
+
     data = {
         'id': obj.id,
         'checkpoint_id': obj.checkpoint_id,
         'policy_id': obj.policy_id,
+        'provider_id': obj.provider_id,
         'vault_id': obj.vault_id,
         'vault_name': obj.vault_name,
-        'resource_id': obj.extra_info.resource_info.id,
-        'resource_name': obj.extra_info.resource_info.name,
-        'resource_type': obj.extra_info.resource_info.type,
         'operation_type': obj.operation_type,
         'error_mesage': obj.error_info.message,
         'error_code': obj.error_info.code,
         'created_at': obj.created_at,
         'ended_at': obj.ended_at,
+        'started_at': obj.started_at,
         'updated_at': obj.updated_at,
     }
 
@@ -47,7 +46,7 @@ def _flatten_task(obj):
 
 class ListTasks(command.Lister):
     _description = _('List CBR Tasks')
-    columns = ('id', 'resource_id', 'resource_name', 'resource_type',
+    columns = ('id', 'checkpoint_id', 'provider_id',
                'operation_type', 'created_at', 'ended_at')
 
     def get_parser(self, prog_name):
@@ -73,16 +72,15 @@ class ShowTask(command.ShowOne):
         'id',
         'checkpoint_id',
         'policy_id',
+        'provider_id',
         'vault_id',
         'vault_name',
-        'resource_id',
-        'resource_name',
-        'resource_type',
         'operation_type',
         'error_mesage',
         'error_code',
         'created_at',
         'ended_at',
+        'started_at',
         'updated_at'
     )
 
