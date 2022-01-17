@@ -95,6 +95,7 @@ class ResourceSpec(resource.Resource):
     #: Type of the resource to be backed up
     type = resource.Body('type')
 
+
 class ExtendInfoRemoveResources(resource.Resource):
     #: Properties
     #: Number of resources that fail to be deleted

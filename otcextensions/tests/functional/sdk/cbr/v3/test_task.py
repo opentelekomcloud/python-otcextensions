@@ -26,7 +26,3 @@ class TestTask(base.BaseFunctionalTest):
     def test_list(self):
         objects = list(self.cbr.tasks())
         self.assertGreaterEqual(len(objects), 0)
-
-    def test_get_task(self):
-        task = self.cbr.get_task('9274f0dd-8679-4fd7-af66-f11c5f1bcd03')
-        self.assertIsNotNone(task)
