@@ -10,3 +10,4 @@ Cloud Backup and Recovery Resources
    v3/policy
    v3/restore
    v3/vault
+   v3/task

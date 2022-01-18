@@ -270,3 +270,24 @@ or an instance of class
 
 .. literalinclude:: ../examples/cbr/delete_member.py
    :lines: 16-25
+
+Task
+------
+
+List CBR Tasks
+^^^^^^^^^^^^^^^^^
+
+This interface is used to query CBR tasks and to filter
+the output with query parameters.
+
+.. literalinclude:: ../examples/cbr/list_tasks.py
+   :lines: 16-22
+
+Get CBR Task
+^^^^^^^^^^^^^^
+
+This interface is used to get a CBR task by ID or an instance of
+class :class:`~otcextensions.sdk.cbr.v3.task.Task`.
+
+.. literalinclude:: ../examples/cbr/get_task.py
+   :lines: 16-24
