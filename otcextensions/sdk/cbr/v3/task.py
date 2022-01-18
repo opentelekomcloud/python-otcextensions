@@ -145,7 +145,7 @@ class Task(resource.Resource):
     #: Creation time
     created_at = resource.Body('created_at')
     #: Task end time
-    ended_at = resource.Body('created_at')
+    ended_at = resource.Body('ended_at')
     #: Task error message
     error_info = resource.Body('error_info', type=ErrorInfoSpec)
     #: Task extension information
