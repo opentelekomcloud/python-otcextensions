@@ -17,3 +17,11 @@ Policy operations
 
 .. autoprogram-cliff:: openstack.cbr.v3
    :command: cbr policy *
+
+.. _cbr_task:
+
+Task operations
+-----------------
+
+.. autoprogram-cliff:: openstack.cbr.v3
+   :command: cbr task *

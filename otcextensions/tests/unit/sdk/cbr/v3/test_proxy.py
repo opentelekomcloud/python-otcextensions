@@ -19,6 +19,7 @@ from otcextensions.sdk.cbr.v3 import policy as _policy
 from otcextensions.sdk.cbr.v3 import checkpoint as _checkpoint
 from otcextensions.sdk.cbr.v3 import restore as _restore
 from otcextensions.sdk.cbr.v3 import vault as _vault
+from otcextensions.sdk.cbr.v3 import task as _task
 
 
 class TestCBRProxy(test_proxy_base.TestProxyBase):
@@ -225,3 +226,12 @@ class TestCBRMember(TestCBRProxy):
                 'status': status,
                 'vault_id': vault.id}
         )
+
+
+class TestCBRTask(TestCBRProxy):
+
+    def test_tasks(self):
+        self.verify_list(self.proxy.tasks, _task.Task)
+
+    def test_task_get(self):
+        self.verify_get(self.proxy.get_task, _task.Task)
