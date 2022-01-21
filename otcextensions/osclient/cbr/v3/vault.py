@@ -56,8 +56,6 @@ class ListVaults(command.Lister):
     def take_action(self, parsed_args):
         client = self.app.client_manager.cbr
 
-        query = {}
-
         data = client.vaults()
 
         table = (self.columns,

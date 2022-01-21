@@ -78,7 +78,7 @@ class TestListVault(fakes.TestCBR):
         self.cmd = vault.ListVaults(self.app, None)
 
         self.client.vaults = mock.Mock()
-        self.client.api_mock = self.client.tasks
+        self.client.api_mock = self.client.vaults
 
     def test_default(self):
         arglist = []
@@ -139,7 +139,7 @@ class TestShowVault(fakes.TestCBR):
 
         self.cmd = vault.ShowVault(self.app, None)
 
-        self.client.get_task = mock.Mock()
+        self.client.find_vault = mock.Mock()
 
     def test_default(self):
         arglist = [
@@ -152,7 +152,7 @@ class TestShowVault(fakes.TestCBR):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.get_task.side_effect = [
+        self.client.find_vault.side_effect = [
             self.object
         ]
 
