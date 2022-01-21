@@ -17,6 +17,7 @@ import mock
 
 from otcextensions.sdk.cbr.v3 import policy
 from otcextensions.sdk.cbr.v3 import task
+from otcextensions.sdk.cbr.v3 import vault
 from otcextensions.tests.unit.osclient import test_base
 
 
@@ -185,4 +186,44 @@ class FakeTask(test_base.Fake):
         }
 
         obj = task.Task.existing(**object_info)
+        return obj
+
+
+class FakeVault(test_base.Fake):
+    """Fake one or more CBR vault with random vaults list and patterns"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'backup_policy_id': 'bid-' + uuid.uuid4().hex,
+            'billing': {
+                'cloud_type': 'public',
+                'consistent_level': 'crash_consistent',
+                'object_type': 'server',
+                'protect_type': 'backup',
+                'size': random.randint(0, 100),
+                'charging_mode': 'post_paid',
+                'is_auto_renew': False,
+                'is_auto_pay': False,
+            },
+            'description': 'vault_description',
+            'name': 'vault-' + uuid.uuid4().hex,
+            'resources': [{
+                'extra_info': {
+                    'include_volumes': [{
+                        'id': 'vid-' + uuid.uuid4().hex,
+                        'os_version': 'CentOS 7.6 64bit'
+                    }]
+                },
+                'id': 'id-' + uuid.uuid4().hex,
+                'type': 'OS::Nova::Server'
+            }],
+            'tags': [{
+                'key': 'key-' + uuid.uuid4().hex,
+                'value': 'val-' + uuid.uuid4().hex
+            }],
+            'enterprise_project_id': '0'
+        }
+
+        obj = vault.Vault.existing(**object_info)
         return obj

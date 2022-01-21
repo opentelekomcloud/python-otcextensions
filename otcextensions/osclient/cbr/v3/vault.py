@@ -35,10 +35,10 @@ def _flatten_vault(obj):
         'project_id': obj.project_id,
         'provider_id': obj.provider_id,
         'user_id': obj.user_id,
-        'billing': obj.billing,
-        'bind_rules': obj.bind_rules,
-        'resources': obj.resources,
-        'tags': obj.tags,
+        # 'billing': obj.billing,
+        # 'bind_rules': obj.bind_rules,
+        # 'resources': obj.resources,
+        # 'tags': obj.tags,
     }
 
     return data
