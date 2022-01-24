@@ -21,9 +21,12 @@ class DirectConnect(resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'region', 'engine_name')
+        'project_id', 'name', 'description', 'port_name', 'bandwidth',
+        'location', 'peer_location', 'device_id', 'interface_name',
+        'redundant_id', 'provider', 'provider_status', 'type', 'hosting_id',
+        'vlan', 'charge_mode', 'order_id', 'product_id', 'status', 'admin_state_up',
+        project_id='tenant_id')
 
-    region = resource.URI('region')
     # Properties
     #: ID of the direct connection.
     id = resource.Body('id')
@@ -49,7 +52,9 @@ class DirectConnect(resource.Resource):
     #: Specifies the connection bandwidth in Mbit/s.
     provider = resource.Body('provider')
     #: Specifies the status of the carrier's leased line.\
-    # The vall125ue can be hosted.
+    # The value can be ACTIVE or DOWN.
+    provider_status = resource.Body('provider_status')
+    #: Specifies the connection type. The value can be hosted.
     type = resource.Body('type')
     #: Specifies the ID of the operations connection on which the hosted connection is created.
     hosting_id = resource.Body('hosting_id')
@@ -61,24 +66,9 @@ class DirectConnect(resource.Resource):
     order_id = resource.Body('order_id')
     #: Specifies the product ID corresponding to the connection's order.
     product_id = resource.Body('product_id')
-    #: Specifies the convbvv
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    #
-    # nection status.\
+    #: Specifies the connection status.\
     # The value can be ACTIVE, DOWN, BUILD, ERROR, PENDING_DELETE, DELETED, APPLY, DENY, PENDING_PAY, PAID,\
-    erwsxcxx c  x  axxxcORDERING, ACCEPT, or REJECTED.
+    # ORDERING, ACCEPT, or REJECTED.
     status = resource.Body('status')
     #: Specifies the administrative status of the connection.\
     # The value can be true or false.
