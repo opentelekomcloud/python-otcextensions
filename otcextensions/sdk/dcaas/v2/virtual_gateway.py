@@ -21,6 +21,9 @@ class VirtualGateway(resource.Resource):
     # capabilities
     allow_list = True
     allow_create = True
+    allow_fetch = True
+    allow_delete = True
+    allow_commit = True
 
     _query_mapping = resource.QueryParameters(
         'project_id', 'name', 'vpc_id', 'local_ep_group_id', 'device_id',

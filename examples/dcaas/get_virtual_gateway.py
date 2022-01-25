@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
- Create virtual gateway
+ Get virtual gateway
 """
 import openstack
 from otcextensions import sdk
@@ -21,7 +21,7 @@ conn = openstack.connect(cloud='devstack-admin')
 sdk.register_otc_extensions(conn)
 
 attrs = {
-    "virtual_gateway_id": "24f86468-b729-493c-b122-f430e15e646e",
+    "virtual_gateway": "bbfff7a6-a4ef-490c-b21a-90b7f1e10478",
 }
 
 vg = conn.dcaas.get_virtual_gateway(**attrs)

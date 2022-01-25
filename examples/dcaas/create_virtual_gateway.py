@@ -22,7 +22,7 @@ sdk.register_otc_extensions(conn)
 
 attrs = {
     "vpc_id": "24f86468-b729-493c-b122-f430e15e646e",
-    "local_ep_group_id": "1117869d-a7e5-46ce-8405-bd81637f9e92"
+    "local_ep_group_id": "30f8c88d-5a12-4a32-ab67-93710dda88e1"
 }
 
 vg = conn.dcaas.create_virtual_gateway(**attrs)

@@ -75,6 +75,7 @@ OTC_SERVICES = {
     },
     'dcaas': {
         'service_type': 'dcaas',
+        'append_project_id': False,
     },
     'dcs': {
         'service_type': 'dcs',

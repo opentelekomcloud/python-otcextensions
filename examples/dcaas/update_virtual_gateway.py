@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Delete virtual gateway
+ Update virtual gateway
 """
 import openstack
 from otcextensions import sdk
@@ -20,5 +20,10 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='devstack-admin')
 sdk.register_otc_extensions(conn)
 
-virtual_gateway_id = "bbfff7a6-a4ef-490c-b21a-90b7f1e10478"
-conn.dcaas.delete_virtual_gateway(virtual_gateway_id)
+attrs = {
+    "virtual_gateway": "464e3ae7-06b8-4175-92af-b6ac277b26fc",
+    "name": "newname"
+}
+
+vg = conn.dcaas.update_virtual_gateway(**attrs)
+print(vg)

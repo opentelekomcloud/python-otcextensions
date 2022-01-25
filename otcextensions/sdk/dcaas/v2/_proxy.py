@@ -11,8 +11,6 @@
 # under the License.
 from openstack import proxy
 
-from otcextensions.sdk.dcaas.v2 import direct_connect as _dc
-from otcextensions.sdk.dcaas.v2 import virtual_interface as _virtual_interface
 from otcextensions.sdk.dcaas.v2 import virtual_gateway as _virtual_gateway
 
 
@@ -91,5 +89,79 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         return self._find(_virtual_gateway.VirtualGateway, name_or_id,
+                          ignore_missing=ignore_missing,
+                          **attrs)
+
+    # ======== Direct connects ========
+    def direct_connects(self, **query):
+        """Retrieve a generator of direct connects
+
+        :returns: A generator of direct connects
+            :class:`~otcextensions.sdk.dcaas.v2.direct_connect.DirectConnect` instances
+        """
+        return self._list(_direct_connect.DirectConnect, **query)
+
+    def create_direct_connect(self, **attrs):
+        """Create a new direct connect from attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+                           a :class:`~otcextensions.sdk.dcaas.v2.direct_connect.DirectConnect`,
+                           comprised of the properties on the DirectConnect class.
+        :returns: The results of direct connect creation
+        :rtype: :class:`~otcextensions.sdk.dcaas.v2.direct_connect.DirectConnect`
+        """
+        return self._create(_direct_connect.DirectConnect, prepend_key=False, **attrs)
+
+    def get_direct_connect(self, direct_connect):
+        """Get a direct connect
+
+        :param direct_connect: The value can be the ID of a direct connect
+             or a :class:`~otcextensions.sdk.dcaas.v2.direct_connect.DirectConnect` instance.
+        :returns: Direct connect instance
+        :rtype: :class:`~otcextensions.sdk.dcaas.v2.direct_connect.DirectConnect`
+        """
+        return self._get(_direct_connect.DirectConnect, direct_connect)
+
+    def delete_direct_connect(self, direct_connect, ignore_missing=True):
+        """Delete a direct connect
+
+        :param direct_connect: The value can be the ID of a direct connect
+             or a :class:`~otcextensions.sdk.dcaas.v2.direct_connect.DirectConnect` instance.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the direct connect does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent zone.
+
+        :returns: Direct connect been deleted
+        :rtype: :class:`~otcextensions.sdk.direct_conect.v2.direct_connect.DirectConnect`
+        """
+        return self._delete(_direct_connect.DirectConnect, direct_connect, ignore_missing=ignore_missing)
+
+    def update_direct_connect(self, direct_connect, **attrs):
+        """Update direct connect attributes
+
+        :param direct_connect: The id or an instance of
+            :class:`~otcextensions.sdk.dcaas.v2.direct_connect.DirectConnect`
+        :param dict attrs: attributes for update on
+            :class:`~otcextensions.sdk.dcaas.v2.direct_connect.DirectConnect`
+
+        :rtype: :class:`~otcextensions.sdk.dcaas.v2.direct_connect.DirectConnect`
+        """
+        return self._update(_direct_connect.DirectConnect, direct_connect, **attrs)
+
+    def find_direct_connect(self, name_or_id, ignore_missing=True, **attrs):
+        """Find a single direct connect
+
+        :param name_or_id: The name or ID of a direct connect
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the zone does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to delete a nonexistent zone.
+
+        :returns: ``None``
+        """
+        return self._find(_direct_connect.DirectConnect, name_or_id,
                           ignore_missing=ignore_missing,
                           **attrs)
