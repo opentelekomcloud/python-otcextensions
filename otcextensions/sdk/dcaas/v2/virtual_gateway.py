@@ -60,3 +60,5 @@ class VirtualGateway(resource.Resource):
     #: Specifies the virtual gateway status. The value can be ACTIVE, DOWN,
     # BUILD, ERROR, PENDING_CREATE, PENDING_UPDATE, or PENDING_DELETE.
     status = resource.Body('status')
+    #: Specifies the project ID.
+    project_id = resource.Body('tenant_id')

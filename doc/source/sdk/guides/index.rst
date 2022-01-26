@@ -14,6 +14,7 @@ Open Telekom Cloud related User Guides
    ces
    css
    cts
+   dcaas
    dcs
    deh
    dms

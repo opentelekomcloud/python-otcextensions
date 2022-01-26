@@ -9,10 +9,9 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+
 from openstack import proxy
 
-from otcextensions.sdk.dcaas.v2 import direct_connect as _direct_connect
-from otcextensions.sdk.dcaas.v2 import virtual_interface as _virtual_interface
 from otcextensions.sdk.dcaas.v2 import virtual_gateway as _virtual_gateway
 
 
@@ -25,8 +24,8 @@ class Proxy(proxy.Proxy):
         """Retrieve a generator of virtual gateways
 
         :returns: A generator of virtual gateways
-            :class:`~otcextensions.sdk.dcaas.v2.virtual_gateway.VirtualGateway`
-             instances
+         :class:`~otcextensions.sdk.dcaas.v2.virtual_gateway.VirtualGateway`
+         instances
         """
         return self._list(_virtual_gateway.VirtualGateway, **query)
 
