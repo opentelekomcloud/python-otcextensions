@@ -17,11 +17,11 @@ import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='devstack-admin')
+conn = openstack.connect(cloud='otc')
 sdk.register_otc_extensions(conn)
 
 attrs = {
-    "virtual_gateway": "464e3ae7-06b8-4175-92af-b6ac277b26fc",
+    "virtual_gateway": "virtual-gateway-uuid",
     "name": "newname"
 }
 

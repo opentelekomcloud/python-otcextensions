@@ -17,8 +17,8 @@ import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='devstack-admin')
+conn = openstack.connect(cloud='otc')
 sdk.register_otc_extensions(conn)
 
-virtual_gateway_id = "bbfff7a6-a4ef-490c-b21a-90b7f1e10478"
+virtual_gateway_id = "virtual-gateway-uuid"
 conn.dcaas.delete_virtual_gateway(virtual_gateway_id)

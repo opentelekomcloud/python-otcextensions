@@ -39,13 +39,16 @@ class VirtualGateway(resource.Resource):
     description = resource.Body('description')
     #: Specifies the ID of the VPC to be accessed.
     vpc_id = resource.Body('vpc_id')
-    #: Specifies the ID of the local endpoint group that records CIDR blocks of the VPC subnets.
+    #: Specifies the ID of the local endpoint group that records CIDR blocks
+    # of the VPC subnets.
     local_ep_group_id = resource.Body('local_ep_group_id')
     #: Specifies the ID of the physical device used by the virtual gateway.
     device_id = resource.Body('device_id')
-    #: Specifies the ID of the redundant physical device used by the virtual gateway.
+    #: Specifies the ID of the redundant physical device used by
+    # the virtual gateway.
     redundant_device_id = resource.Body('redundant_device_id')
-    #: Specifies the virtual gateway type. The value can be default or double ipsec.
+    #: Specifies the virtual gateway type. The value can be default
+    # or double ipsec.
     type = resource.Body('type')
     #: Specifies the bandwidth provided for IPsec VPN in Mbit/s.
     ipsec_bandwidth = resource.Body('ipsec_bandwidth')
@@ -54,6 +57,6 @@ class VirtualGateway(resource.Resource):
     #: Specifies the administrative status of the virtual gateway.\
     # The value can be true or false.
     admin_state_up = resource.Body('admin_state_up', type=bool)
-    #: Specifies the virtual gateway status. The value can be ACTIVE, DOWN, BUILD, ERROR, PENDING_CREATE,
-    #PENDING_UPDATE, or PENDING_DELETE.
+    #: Specifies the virtual gateway status. The value can be ACTIVE, DOWN,
+    # BUILD, ERROR, PENDING_CREATE, PENDING_UPDATE, or PENDING_DELETE.
     status = resource.Body('status')
