@@ -35,13 +35,50 @@ def _flatten_vault(obj):
         'project_id': obj.project_id,
         'provider_id': obj.provider_id,
         'user_id': obj.user_id,
-        'billing': obj.billing,
-        'bind_rules': obj.bind_rules,
+        'status': obj.billing.status,
+        'operation_type': obj.billing.protect_type,
+        'object_type': obj.billing.object_type,
+        'spec_code': obj.billing.spec_code,
+        'size': obj.billing.size,
+        'consistent_level': obj.billing.consistent_level,
+        'charging_mode': obj.billing.charging_mode,
+        'is_auto_pay': obj.billing.is_auto_pay,
+        'is_auto_renew': obj.billing.is_auto_renew,
+        'bind_rules': obj.bind_rules.tags,
         'resources': obj.resources,
         'tags': obj.tags,
     }
 
     return data
+
+
+def _add_resources_to_vault_obj(obj, data, columns):
+    """Add associated resources to column and data tuples
+    """
+    i = 0
+    for s in obj.resources:
+        if obj.resources[i].id:
+            name = 'resource_id_' + str(i + 1)
+            data += (obj.resources[i].id,)
+            columns = columns + (name,)
+
+            name = 'resource_type_' + str(i + 1)
+            data += (obj.resources[i].type,)
+            columns = columns + (name,)
+
+            i += 1
+    return data, columns
+
+
+def _add_tags_to_vault_obj(obj, data, columns, name):
+    if name == 'bind_rules':
+        data += ('\n'.join((f'value={tag.value}, key={tag.key}'
+                            for tag in obj.bind_rules.tags)),)
+    else:
+        data += ('\n'.join((f'value={tag.value}, key={tag.key}'
+                            for tag in obj.tags)),)
+    columns = columns + (name,)
+    return data, columns
 
 
 def _normalize_resources(resources):
@@ -56,13 +93,13 @@ def _normalize_tags(tags):
     result = []
     for tag in tags:
         try:
-            (k, v) = tag.split('=')
+            tag = tag.split('=')
             result.append({
-                'key': k,
-                'value': v
+                'key': tag[0],
+                'value': tag[1]
             })
         except IndexError:
-            result.append({'key': k, 'value': ''})
+            result.append({'key': tag[0], 'value': ''})
     return result
 
 
@@ -100,6 +137,15 @@ class ShowVault(command.ShowOne):
         'project_id',
         'provider_id',
         'user_id',
+        'status',
+        'operation_type',
+        'object_type',
+        'spec_code',
+        'size',
+        'consistent_level',
+        'charging_mode',
+        'is_auto_pay',
+        'is_auto_renew',
     )
 
     def get_parser(self, prog_name):
@@ -122,6 +168,16 @@ class ShowVault(command.ShowOne):
         data = utils.get_dict_properties(
             _flatten_vault(obj), self.columns)
 
+        if obj.resources:
+            data, self.columns = _add_resources_to_vault_obj(
+                obj, data, self.columns)
+        if obj.tags:
+            data, self.columns = _add_tags_to_vault_obj(
+                obj, data, self.columns, 'tags')
+        if obj.bind_rules:
+            data, self.columns = _add_tags_to_vault_obj(
+                obj, data, self.columns, 'bind_rules')
+
         return self.columns, data
 
 
@@ -134,10 +190,15 @@ class CreateVault(command.ShowOne):
         'description',
         'enterprise_project_id',
         'auto_bind',
-        'bind_rules',
-        'billing',
-        'resources',
-        'tags'
+        'status',
+        'operation_type',
+        'object_type',
+        'spec_code',
+        'size',
+        'consistent_level',
+        'charging_mode',
+        'is_auto_pay',
+        'is_auto_renew',
     )
 
     def get_parser(self, prog_name):
@@ -145,7 +206,6 @@ class CreateVault(command.ShowOne):
         parser.add_argument(
             'name',
             metavar='<name>',
-            required=True,
             help=_('Name of the CBR Vault.')
         )
         parser.add_argument(
@@ -197,14 +257,12 @@ class CreateVault(command.ShowOne):
         )
         parser.add_argument(
             '--is_auto_renew',
-            metavar='<is_auto_renew>',
             action='store_false',
             help=_('Whether to automatically renew the subscription '
                    'after expiration. By default, it is not renewed.')
         )
         parser.add_argument(
             '--is_auto_pay',
-            metavar='<is_auto_pay>',
             action='store_false',
             help=_('Whether the fee is automatically deducted from the '
                    'customer account balance after an order is submitted. '
@@ -260,7 +318,8 @@ class CreateVault(command.ShowOne):
         attrs['billing']['object_type'] = parsed_args.object_type
         attrs['billing']['size'] = parsed_args.size
 
-        attrs['resources'] = _normalize_resources(parsed_args.resource)
+        if parsed_args.resource:
+            attrs['resources'] = _normalize_resources(parsed_args.resource)
 
         # optional
         if parsed_args.is_auto_renew:
@@ -287,6 +346,16 @@ class CreateVault(command.ShowOne):
 
         data = utils.get_dict_properties(
             _flatten_vault(obj), self.columns)
+
+        if obj.resources:
+            data, self.columns = _add_resources_to_vault_obj(
+                obj, data, self.columns)
+        if obj.bind_rules.tags:
+            data, self.columns = _add_tags_to_vault_obj(
+                obj, data, self.columns, 'bind_rules')
+        if obj.tags:
+            data, self.columns = _add_tags_to_vault_obj(
+                obj, data, self.columns, 'tags')
 
         return self.columns, data
 
