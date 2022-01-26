@@ -9,9 +9,9 @@
 #   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #   License for the specific language governing permissions and limitations
 #   under the License.
+import datetime
 import random
 import uuid
-import datetime
 
 import mock
 
@@ -195,6 +195,7 @@ class FakeVault(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
+            'id': 'id-' + uuid.uuid4().hex,
             'backup_policy_id': 'bid-' + uuid.uuid4().hex,
             'billing': {
                 'cloud_type': 'public',
@@ -207,6 +208,7 @@ class FakeVault(test_base.Fake):
                 'is_auto_pay': False,
             },
             'description': 'vault_description',
+            'auto_bind': False,
             'name': 'vault-' + uuid.uuid4().hex,
             'resources': [{
                 'extra_info': {
@@ -222,6 +224,9 @@ class FakeVault(test_base.Fake):
                 'key': 'key-' + uuid.uuid4().hex,
                 'value': 'val-' + uuid.uuid4().hex
             }],
+            'bind_rules': {
+                'tags': []
+            },
             'enterprise_project_id': '0'
         }
 

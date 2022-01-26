@@ -363,7 +363,125 @@ class CreateVault(command.ShowOne):
 class UpdateVault(command.ShowOne):
     _description = _('Update CBR Vault')
     columns = (
+        'ID',
+        'name',
+        'backup_policy',
+        'description',
+        'enterprise_project_id',
+        'auto_bind',
+        'status',
+        'operation_type',
+        'object_type',
+        'spec_code',
+        'size',
+        'consistent_level',
+        'charging_mode',
+        'is_auto_pay',
+        'is_auto_renew',
     )
+
+    def get_parser(self, prog_name):
+        parser = super(UpdateVault, self).get_parser(prog_name)
+        parser.add_argument(
+            'vault',
+            metavar='<vault>',
+            help=_('ID or name of the CBR Vault.')
+        )
+        parser.add_argument(
+            '--name',
+            metavar='<name>',
+            help=_('Name of the CBR Vault.')
+        )
+        parser.add_argument(
+            '--auto_bind',
+            metavar='<auto_bind>',
+            type=bool,
+            help=_('Whether automatic association is supported.')
+        )
+        parser.add_argument(
+            '--bind_rule',
+            metavar='<bind_rule>',
+            action='append',
+            help=_('Filters automatically associated resources by tag '
+                   'in KEY=VALUE format. '
+                   'Repeat for multiple values.')
+        )
+        parser.add_argument(
+            '--auto_expand',
+            metavar='<auto_expand>',
+            type=bool,
+            help=_('Whether to enable auto capacity expansion for the vault.')
+        )
+        parser.add_argument(
+            '--smn_notify',
+            metavar='<smn_notify>',
+            type=bool,
+            help=_('Exception notification function.')
+        )
+        parser.add_argument(
+            '--size',
+            metavar='<size>',
+            type=int,
+            help=_('Capacity, in GB.\n'
+                   'Ranges from 1 to 10485760.')
+        )
+        parser.add_argument(
+            '--threshold',
+            metavar='<threshold>',
+            type=int,
+            help=_('Vault capacity threshold. If the vault capacity usage '
+                   'exceeds this threshold and smn_notify is true, '
+                   'an exception notification is sent.\n'
+                   'Ranges from 1 to 100.')
+        )
+
+        return parser
+
+    def take_action(self, parsed_args):
+        attrs = {
+            'billing': {}
+        }
+
+        if parsed_args.name:
+            attrs['name'] = parsed_args.name
+        if parsed_args.auto_bind:
+            attrs['auto_bind'] = parsed_args.auto_bind
+        if parsed_args.bind_rule:
+            attrs['bind_rules']['tags'] = _normalize_tags(parsed_args.bind_rule)
+        if parsed_args.auto_expand:
+            attrs['auto_expand'] = parsed_args.auto_expand
+        if parsed_args.smn_notify:
+            attrs['smn_notify'] = parsed_args.smn_notify
+        if parsed_args.size:
+            attrs['billing']['size'] = parsed_args.size
+        if parsed_args.threshold:
+            attrs['threshold'] = parsed_args.threshold
+
+        client = self.app.client_manager.cbr
+        vault = client.find_vault(
+            name_or_id=parsed_args.vault,
+            ignore_missing=False
+        )
+
+        if attrs:
+            obj = client.update_vault(vault=vault.id, **attrs)
+        else:
+            obj = vault
+
+        data = utils.get_dict_properties(
+            _flatten_vault(obj), self.columns)
+
+        if obj.resources:
+            data, self.columns = _add_resources_to_vault_obj(
+                obj, data, self.columns)
+        if obj.bind_rules.tags:
+            data, self.columns = _add_tags_to_vault_obj(
+                obj, data, self.columns, 'bind_rules')
+        if obj.tags:
+            data, self.columns = _add_tags_to_vault_obj(
+                obj, data, self.columns, 'tags')
+
+        return self.columns, data
 
 
 class DeleteVault(command.Command):
