@@ -11,10 +11,12 @@
 #   under the License.
 #
 '''CBR Vault CLI implementation'''
+import json
 import logging
 
 from osc_lib import utils
 from osc_lib.command import command
+from otcextensions.common import sdk_utils
 
 from otcextensions.i18n import _
 
@@ -79,6 +81,29 @@ def _add_tags_to_vault_obj(obj, data, columns, name):
                             for tag in obj.tags)),)
     columns = columns + (name,)
     return data, columns
+
+
+def _add_associated_policy_to_vault_obj(data, columns):
+    """Add associated resources to column and data tuples
+    """
+    return_data = ()
+    for k, v in data['associate_policy'].items():
+        return_data += (v,)
+        columns = columns + (k,)
+    return return_data, columns
+
+
+def _add_associated_resources_to_vault_obj(data, columns):
+    """Add associated resources to column and data tuples
+    """
+    return_data = ()
+    i = 0
+    for s in data['add_resource_ids']:
+        name = 'resource_' + str(i + 1)
+        return_data += (s,)
+        columns = columns + (name,)
+        i += 1
+    return return_data, columns
 
 
 def _normalize_resources(resources):
@@ -177,7 +202,6 @@ class ShowVault(command.ShowOne):
         if obj.bind_rules.tags:
             data, self.columns = _add_tags_to_vault_obj(
                 obj, data, self.columns, 'bind_rules')
-
         return self.columns, data
 
 
@@ -281,7 +305,7 @@ class CreateVault(command.ShowOne):
             '--resource',
             metavar='<resource>',
             action='append',
-            help=_('Associated resources in "id=resource_id '
+            help=_('Associated resource in "id=resource_id '
                    'type=resource_type name=resource_name" format.'
                    'Repeat for multiple values.')
         )
@@ -457,7 +481,9 @@ class UpdateVault(command.ShowOne):
         if parsed_args.auto_bind:
             attrs['auto_bind'] = parsed_args.auto_bind
         if parsed_args.bind_rule:
-            attrs['bind_rules']['tags'] = _normalize_tags(parsed_args.bind_rule)
+            attrs['bind_rules']['tags'] = _normalize_tags(
+                parsed_args.bind_rule
+            )
         if parsed_args.auto_expand:
             attrs['auto_expand'] = parsed_args.auto_expand
         if parsed_args.smn_notify:
@@ -517,3 +543,159 @@ class DeleteVault(command.Command):
         self.app.client_manager.cbr.delete_vault(
             vault=vault.id,
             ignore_missing=False)
+
+
+class AssociateVaultResource(command.ShowOne):
+    _description = _('Associate resource to the CBR Vault')
+
+    columns = ()
+
+    def get_parser(self, prog_name):
+        parser = super(AssociateVaultResource, self).get_parser(prog_name)
+        parser.add_argument(
+            'vault',
+            metavar='<vault>',
+            help=_('ID or name of the CBR Vault.')
+        )
+        parser.add_argument(
+            '--resource',
+            metavar='<resource>',
+            action='append',
+            help=_('Associated resource in "id=resource_id '
+                   'type=resource_type name=resource_name" format.'
+                   'Repeat for multiple values.')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+
+        resources = []
+
+        client = self.app.client_manager.cbr
+        vault = client.find_vault(
+            name_or_id=parsed_args.vault,
+            ignore_missing=False
+        )
+
+        if parsed_args.resource:
+            resources = _normalize_resources(parsed_args.resource)
+
+        if resources:
+            obj = client.associate_resources(
+                vault=vault.id,
+                resources=resources
+            )
+
+            data = json.loads(obj._content.decode('utf-8'))
+
+            if data['add_resource_ids']:
+                data, self.columns = _add_associated_resources_to_vault_obj(
+                    data, self.columns)
+
+            return self.columns, data
+
+
+class DissociateVaultResource(command.Command):
+    _description = _('Dissociate resource from the CBR Vault')
+
+    def get_parser(self, prog_name):
+        parser = super(DissociateVaultResource, self).get_parser(prog_name)
+        parser.add_argument(
+            'vault',
+            metavar='<vault>',
+            help=_('ID or name of the CBR Vault.')
+        )
+        parser.add_argument(
+            '--resource',
+            metavar='<resource>',
+            action='append',
+            help=_('Removed resource IDs.'
+                   'Repeat for multiple values.')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.cbr
+
+        vault = client.find_vault(
+            name_or_id=parsed_args.vault,
+            ignore_missing=False
+        )
+
+        if parsed_args.resource:
+            client.dissociate_resources(
+                vault=vault.id,
+                resources=parsed_args.resource
+            )
+
+
+class BindVaultPolicy(command.ShowOne):
+    _description = _('Bind policy to the CBR Vault')
+
+    columns = ()
+
+    def get_parser(self, prog_name):
+        parser = super(BindVaultPolicy, self).get_parser(prog_name)
+        parser.add_argument(
+            'vault',
+            metavar='<vault>',
+            help=_('ID or name of the CBR Vault.')
+        )
+        parser.add_argument(
+            'policy',
+            metavar='<policy>',
+            help=_('ID or name of the CBR Vault.')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+
+        client = self.app.client_manager.cbr
+        vault = client.find_vault(
+            name_or_id=parsed_args.vault,
+            ignore_missing=False
+        )
+
+        if parsed_args.policy:
+            obj = client.bind_policy(
+                vault=vault.id,
+                policy=parsed_args.policy
+            )
+
+            data = json.loads(obj._content.decode('utf-8'))
+            if data['associate_policy']:
+                data, self.columns = _add_associated_policy_to_vault_obj(
+                    data, self.columns)
+
+            return self.columns, data
+
+
+class UnbindVaultPolicy(command.Command):
+    _description = _('Unbind policy from the CBR Vault')
+
+    def get_parser(self, prog_name):
+        parser = super(UnbindVaultPolicy, self).get_parser(prog_name)
+        parser.add_argument(
+            'vault',
+            metavar='<vault>',
+            help=_('ID or name of the CBR Vault.')
+        )
+        parser.add_argument(
+            'policy',
+            metavar='<policy>',
+            help=_('ID or name of the CBR Vault.')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+
+        client = self.app.client_manager.cbr
+        vault = client.find_vault(
+            name_or_id=parsed_args.vault,
+            ignore_missing=False
+        )
+
+        client.unbind_policy(
+            vault=vault.id,
+            policy=parsed_args.policy
+        )

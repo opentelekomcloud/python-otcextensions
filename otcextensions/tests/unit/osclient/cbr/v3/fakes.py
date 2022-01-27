@@ -220,15 +220,18 @@ class FakeVault(test_base.Fake):
                         'os_version': 'CentOS 7.6 64bit'
                     }]
                 },
-                'id': 'id-' + uuid.uuid4().hex,
+                'id': 'resource_id',
                 'type': 'OS::Nova::Server'
             }],
             'tags': [{
-                'key': 'key-' + uuid.uuid4().hex,
-                'value': 'val-' + uuid.uuid4().hex
+                'key': 'key-tags',
+                'value': 'val-tags'
             }],
             'bind_rules': {
-                'tags': []
+                'tags': [{
+                    'key': 'key-bind',
+                    'value': 'val-bind'
+                }]
             },
             'project_id': '0'
         }

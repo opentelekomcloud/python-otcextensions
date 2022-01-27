@@ -12,8 +12,9 @@
 import mock
 
 from otcextensions.osclient.cbr.v3 import vault
-from otcextensions.tests.unit.osclient.cbr.v3 import fakes
 from otcextensions.sdk.cbr.v3 import vault as vaultSDK
+from otcextensions.tests.unit.osclient.cbr.v3 import fakes
+
 
 class TestVault(fakes.TestCBR):
 
@@ -76,6 +77,120 @@ class TestVault(fakes.TestCBR):
         )
 
         self.assertEqual(data, cmp_data)
+
+    def test_add_resources_to_vault_output(self):
+        obj = fakes.FakeVault.create_one()
+
+        column = ()
+        data = ()
+        verify_column = (
+            'resource_id_1',
+            'resource_type_1',
+        )
+        verify_data = (
+            'resource_id',
+            'OS::Nova::Server',
+        )
+
+        data, column = vault._add_resources_to_vault_obj(obj, data, column)
+
+        self.assertEqual(data, verify_data)
+        self.assertEqual(column, verify_column)
+
+    def test_add_tags_to_vault_output(self):
+        obj = fakes.FakeVault.create_one()
+
+        column = ()
+        data = ()
+        verify_column = (
+            'tags',
+        )
+        verify_data = (
+            ('value=val-tags, key=key-tags',)
+        )
+
+        data, column = vault._add_tags_to_vault_obj(obj, data, column, 'tags')
+
+        self.assertEqual(data, verify_data)
+        self.assertEqual(column, verify_column)
+
+    def test_add_associated_policy_to_vault_output(self):
+        obj = {
+            'associate_policy': {
+                'vault_id': 'cc56d0c6-c0c3-47e6-84cc-d7840dccb706',
+                'policy_id': '6359dd6f-4146-42f8-9d7f-fbd6fa740d9f'
+            }
+        }
+
+        column = ()
+        verify_column = (
+            'vault_id',
+            'policy_id'
+        )
+        verify_data = (
+            'cc56d0c6-c0c3-47e6-84cc-d7840dccb706',
+            '6359dd6f-4146-42f8-9d7f-fbd6fa740d9f'
+        )
+
+        data, column = vault._add_associated_policy_to_vault_obj(obj, column)
+
+        self.assertEqual(data, verify_data)
+        self.assertEqual(column, verify_column)
+
+    def test_add_associated_resources_to_vault_output(self):
+        obj = {
+            'add_resource_ids': [
+                'cc56d0c6-c0c3-47e6-84cc-d7840dccb706',
+                '6359dd6f-4146-42f8-9d7f-fbd6fa740d9f'
+            ]
+        }
+
+        column = ()
+        verify_column = (
+            'resource_1',
+            'resource_2'
+        )
+        verify_data = (
+            'cc56d0c6-c0c3-47e6-84cc-d7840dccb706',
+            '6359dd6f-4146-42f8-9d7f-fbd6fa740d9f'
+        )
+
+        data, column = vault._add_associated_resources_to_vault_obj(obj, column)
+
+        self.assertEqual(data, verify_data)
+        self.assertEqual(column, verify_column)
+
+    def test_normalize_resources(self):
+        resources = [
+            'id=987654 type=OS::Nova::Server name=Server',
+            'id=012345 type=OS::Sfs::Turbo name=Turbo'
+        ]
+
+        verify_result = [
+            {'id': '987654', 'name': 'Server', 'type': 'OS::Nova::Server'},
+            {'id': '012345', 'name': 'Turbo', 'type': 'OS::Sfs::Turbo'}
+        ]
+
+        result = vault._normalize_resources(resources)
+
+        self.assertEqual(result, verify_result)
+
+    def test_normalize_tags(self):
+        tags = [
+            'key1=value',
+            'key2=',
+            'key3'
+        ]
+
+        verify_result = [
+            {'key': 'key1', 'value': 'value'},
+            {'key': 'key2', 'value': ''},
+            {'key': 'key3', 'value': ''}
+        ]
+
+        result = vault._normalize_tags(tags)
+
+        self.assertEqual(result, verify_result)
 
 
 class TestListVault(fakes.TestCBR):
@@ -388,6 +503,13 @@ class TestCreateVault(fakes.TestCBR):
             self.object,
             self.data,
             self.columns,
+            'bind_rules'
+        )
+
+        self.data, self.columns = vault._add_tags_to_vault_obj(
+            self.object,
+            self.data,
+            self.columns,
             'tags'
         )
 
@@ -498,8 +620,113 @@ class TestUpdateVault(fakes.TestCBR):
             self.object,
             self.data,
             self.columns,
+            'bind_rules'
+        )
+
+        self.data, self.columns = vault._add_tags_to_vault_obj(
+            self.object,
+            self.data,
+            self.columns,
             'tags'
         )
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
+
+
+class TestDissociateVaultResource(fakes.TestCBR):
+
+    def setUp(self):
+        super(TestDissociateVaultResource, self).setUp()
+
+        self.cmd = vault.DissociateVaultResource(self.app, None)
+
+        self.client.dissociate_resources = mock.Mock()
+
+    def test_delete(self):
+        arglist = [
+            'vault',
+            '--resource', 'resource'
+        ]
+        verifylist = [
+            ('vault', 'vault'),
+            ('resource', ['resource']),
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response for find_vault
+        self.client.find_vault.side_effect = [
+            vaultSDK.Vault(id='vault')
+        ]
+
+        # Set the response
+        self.client.dissociate_resources.side_effect = [{}]
+
+        # Trigger the action
+        self.cmd.take_action(parsed_args)
+
+        dissociate_calls = [
+            mock.call(
+                vault='vault',
+                resources=['resource']),
+        ]
+
+        find_calls = [
+            mock.call(
+                name_or_id='vault',
+                ignore_missing=False),
+        ]
+
+        self.client.find_vault.assert_has_calls(find_calls)
+        self.client.dissociate_resources.assert_has_calls(dissociate_calls)
+        self.assertEqual(1, self.client.dissociate_resources.call_count)
+
+
+class TestUnbindVaultPolicy(fakes.TestCBR):
+
+    def setUp(self):
+        super(TestUnbindVaultPolicy, self).setUp()
+
+        self.cmd = vault.UnbindVaultPolicy(self.app, None)
+
+        self.client.unbind_policy = mock.Mock()
+
+    def test_delete(self):
+        arglist = [
+            'vault',
+            'policy'
+        ]
+        verifylist = [
+            ('vault', 'vault'),
+            ('policy', 'policy'),
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response for find_vault
+        self.client.find_vault.side_effect = [
+            vaultSDK.Vault(id='vault')
+        ]
+
+        # Set the response
+        self.client.unbind_policy.side_effect = [{}]
+
+        # Trigger the action
+        self.cmd.take_action(parsed_args)
+
+        unbind_calls = [
+            mock.call(
+                vault='vault',
+                policy='policy'),
+        ]
+
+        find_calls = [
+            mock.call(
+                name_or_id='vault',
+                ignore_missing=False),
+        ]
+
+        self.client.find_vault.assert_has_calls(find_calls)
+        self.client.unbind_policy.assert_has_calls(unbind_calls)
+        self.assertEqual(1, self.client.unbind_policy.call_count)
