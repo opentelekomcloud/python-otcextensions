@@ -197,6 +197,9 @@ class FakeVault(test_base.Fake):
         object_info = {
             'id': 'id-' + uuid.uuid4().hex,
             'backup_policy_id': 'bid-' + uuid.uuid4().hex,
+            'created_at': uuid.uuid4().hex,
+            'provider_id': uuid.uuid4().hex,
+            'user_id': uuid.uuid4().hex,
             'billing': {
                 'cloud_type': 'public',
                 'consistent_level': 'crash_consistent',
@@ -227,7 +230,7 @@ class FakeVault(test_base.Fake):
             'bind_rules': {
                 'tags': []
             },
-            'enterprise_project_id': '0'
+            'project_id': '0'
         }
 
         obj = vault.Vault.existing(**object_info)

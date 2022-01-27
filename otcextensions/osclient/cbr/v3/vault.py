@@ -174,7 +174,7 @@ class ShowVault(command.ShowOne):
         if obj.tags:
             data, self.columns = _add_tags_to_vault_obj(
                 obj, data, self.columns, 'tags')
-        if obj.bind_rules:
+        if obj.bind_rules.tags:
             data, self.columns = _add_tags_to_vault_obj(
                 obj, data, self.columns, 'bind_rules')
 
@@ -186,10 +186,14 @@ class CreateVault(command.ShowOne):
     columns = (
         'ID',
         'name',
-        'backup_policy',
-        'description',
-        'enterprise_project_id',
         'auto_bind',
+        'auto_expand',
+        'backup_policy_id',
+        'created_at',
+        'description',
+        'project_id',
+        'provider_id',
+        'user_id',
         'status',
         'operation_type',
         'object_type',
@@ -337,7 +341,9 @@ class CreateVault(command.ShowOne):
         if parsed_args.auto_bind:
             attrs['auto_bind'] = parsed_args.auto_bind
         if parsed_args.bind_rule:
-            attrs['bind_rules']['tags'] = _normalize_tags(parsed_args.bind_rule)
+            attrs['bind_rules']['tags'] = _normalize_tags(
+                parsed_args.bind_rule
+            )
         if parsed_args.tag:
             attrs['tags'] = _normalize_tags(parsed_args.tag)
 
@@ -365,10 +371,14 @@ class UpdateVault(command.ShowOne):
     columns = (
         'ID',
         'name',
-        'backup_policy',
-        'description',
-        'enterprise_project_id',
         'auto_bind',
+        'auto_expand',
+        'backup_policy_id',
+        'created_at',
+        'description',
+        'project_id',
+        'provider_id',
+        'user_id',
         'status',
         'operation_type',
         'object_type',

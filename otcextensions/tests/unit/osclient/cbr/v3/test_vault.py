@@ -283,10 +283,14 @@ class TestCreateVault(fakes.TestCBR):
     columns = (
         'ID',
         'name',
-        'backup_policy',
-        'description',
-        'enterprise_project_id',
         'auto_bind',
+        'auto_expand',
+        'backup_policy_id',
+        'created_at',
+        'description',
+        'project_id',
+        'provider_id',
+        'user_id',
         'status',
         'operation_type',
         'object_type',
@@ -334,12 +338,14 @@ class TestCreateVault(fakes.TestCBR):
         arglist = [
             'vault_name',
             '--consistent_level', 'crash_consistent',
+            '--backup_policy', 'id',
             '--object_type', 'disk',
             '--size', '40',
         ]
         verifylist = [
             ('name', 'vault_name'),
             ('consistent_level', 'crash_consistent'),
+            ('backup_policy', 'id'),
             ('object_type', 'disk'),
             ('size', 40)
         ]
@@ -357,6 +363,7 @@ class TestCreateVault(fakes.TestCBR):
 
         self.client.create_vault.assert_called_once_with(
             resources=[],
+            backup_policy_id='id',
             bind_rules={'tags': []},
             billing={
                 'cloud_type': 'public',
@@ -367,6 +374,116 @@ class TestCreateVault(fakes.TestCBR):
                 'size': 40,
                 'is_auto_renew': True,
                 'is_auto_pay': True
+            },
+            name='vault_name'
+        )
+
+        self.data, self.columns = vault._add_resources_to_vault_obj(
+            self.object,
+            self.data,
+            self.columns
+        )
+
+        self.data, self.columns = vault._add_tags_to_vault_obj(
+            self.object,
+            self.data,
+            self.columns,
+            'tags'
+        )
+
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
+
+
+class TestUpdateVault(fakes.TestCBR):
+
+    object = fakes.FakeVault.create_one()
+
+    columns = (
+        'ID',
+        'name',
+        'auto_bind',
+        'auto_expand',
+        'backup_policy_id',
+        'created_at',
+        'description',
+        'project_id',
+        'provider_id',
+        'user_id',
+        'status',
+        'operation_type',
+        'object_type',
+        'spec_code',
+        'size',
+        'consistent_level',
+        'charging_mode',
+        'is_auto_pay',
+        'is_auto_renew',
+    )
+
+    flat_data = vault._flatten_vault(object)
+
+    data = (
+        flat_data['id'],
+        flat_data['name'],
+        flat_data['auto_bind'],
+        flat_data['auto_expand'],
+        flat_data['backup_policy_id'],
+        flat_data['created_at'],
+        flat_data['description'],
+        flat_data['project_id'],
+        flat_data['provider_id'],
+        flat_data['user_id'],
+        flat_data['status'],
+        flat_data['operation_type'],
+        flat_data['object_type'],
+        flat_data['spec_code'],
+        flat_data['size'],
+        flat_data['consistent_level'],
+        flat_data['charging_mode'],
+        flat_data['is_auto_pay'],
+        flat_data['is_auto_renew'],
+    )
+
+    def setUp(self):
+        super(TestUpdateVault, self).setUp()
+
+        self.cmd = vault.UpdateVault(self.app, None)
+        self.app.client_manager.sdk_connection = mock.Mock()
+
+        self.client.update_vault = mock.Mock()
+
+    def test_default(self):
+        arglist = [
+            'vault_id',
+            '--name', 'vault_name',
+            '--size', '40',
+        ]
+        verifylist = [
+            ('vault', 'vault_id'),
+            ('name', 'vault_name'),
+            ('size', 40),
+        ]
+
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.update_vault.side_effect = [
+            self.object
+        ]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.find_vault.assert_called_with(
+            name_or_id='vault_id',
+            ignore_missing=False)
+
+        self.client.update_vault.assert_called_once_with(
+            vault=mock.ANY,
+            billing={
+                'size': 40,
             },
             name='vault_name'
         )
