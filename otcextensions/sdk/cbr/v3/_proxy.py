@@ -379,7 +379,7 @@ class Proxy(proxy.Proxy):
         :param vault: The value can be the ID of a vault
              or a :class:`~otcextensions.sdk.cbr.v3.vault.Vault`
              instance.
-        :param resources: list of ressource ids to be released from vault
+        :param resources: list of resource ids to be released from vault
         """
         vault = self._get_resource(_vault.Vault, vault)
         return vault.dissociate_resources(
