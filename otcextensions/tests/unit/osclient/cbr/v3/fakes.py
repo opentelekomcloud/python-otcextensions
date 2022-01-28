@@ -238,3 +238,8 @@ class FakeVault(test_base.Fake):
 
         obj = vault.Vault.existing(**object_info)
         return obj
+
+
+class VaultDefaultStruct:
+    def __init__(self, **entries):
+        self.__dict__.update(entries)

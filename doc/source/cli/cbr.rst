@@ -25,3 +25,11 @@ Task operations
 
 .. autoprogram-cliff:: openstack.cbr.v3
    :command: cbr task *
+
+.. _cbr_vault:
+
+Vault operations
+-----------------
+
+.. autoprogram-cliff:: openstack.cbr.v3
+   :command: cbr vault *

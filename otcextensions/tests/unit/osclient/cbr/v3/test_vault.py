@@ -9,6 +9,7 @@
 #   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #   License for the specific language governing permissions and limitations
 #   under the License.
+
 import mock
 
 from otcextensions.osclient.cbr.v3 import vault
@@ -155,7 +156,9 @@ class TestVault(fakes.TestCBR):
             '6359dd6f-4146-42f8-9d7f-fbd6fa740d9f'
         )
 
-        data, column = vault._add_associated_resources_to_vault_obj(obj, column)
+        data, column = vault._add_associated_resources_to_vault_obj(
+            obj, column
+        )
 
         self.assertEqual(data, verify_data)
         self.assertEqual(column, verify_column)
@@ -730,3 +733,129 @@ class TestUnbindVaultPolicy(fakes.TestCBR):
         self.client.find_vault.assert_has_calls(find_calls)
         self.client.unbind_policy.assert_has_calls(unbind_calls)
         self.assertEqual(1, self.client.unbind_policy.call_count)
+
+
+class TestAssociateVaultResource(fakes.TestCBR):
+    object = fakes.VaultDefaultStruct(
+        **{
+            '_content': b'{"add_resource_ids": ["resource_id"]}'
+        }
+    )
+    columns = (
+        'resource_1',
+    )
+    data = (
+        'resource_id',
+    )
+
+    def setUp(self):
+        super(TestAssociateVaultResource, self).setUp()
+
+        self.cmd = vault.AssociateVaultResource(self.app, None)
+        self.app.client_manager.sdk_connection = mock.Mock()
+
+        self.client.associate_resources = mock.Mock()
+
+    def test_default(self):
+        arglist = [
+            'vault_id',
+            '--resource', 'id=resource_id type=resource_type'
+        ]
+        verifylist = [
+            ('vault', 'vault_id'),
+            ('resource', ['id=resource_id type=resource_type']),
+        ]
+
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response for find_vault
+        self.client.find_vault.side_effect = [
+            vaultSDK.Vault(id='vault_id')
+        ]
+
+        # Set the response
+        self.client.associate_resources.side_effect = [
+            self.object
+        ]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.associate_resources.assert_called_with(
+            vault='vault_id',
+            resources=[{'id': 'resource_id', 'type': 'resource_type'}]
+        )
+
+        self.client.associate_resources.assert_called_once_with(
+            vault='vault_id',
+            resources=[{'id': 'resource_id', 'type': 'resource_type'}]
+        )
+
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
+
+
+class TestBindVaultPolicy(fakes.TestCBR):
+    object = fakes.VaultDefaultStruct(
+        **{
+            '_content': b'{"associate_policy": '
+                        b'{"vault_id" : "vault_id",'
+                        b'"policy_id" : "policy_id"}}'
+        }
+    )
+    columns = (
+        'vault_id',
+        'policy_id',
+    )
+    data = (
+        'vault_id',
+        'policy_id',
+    )
+
+    def setUp(self):
+        super(TestBindVaultPolicy, self).setUp()
+
+        self.cmd = vault.BindVaultPolicy(self.app, None)
+        self.app.client_manager.sdk_connection = mock.Mock()
+
+        self.client.bind_policy = mock.Mock()
+
+    def test_default(self):
+        arglist = [
+            'vault_id',
+            'policy_id',
+        ]
+        verifylist = [
+            ('vault', 'vault_id'),
+            ('policy', 'policy_id'),
+        ]
+
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response for find_vault
+        self.client.find_vault.side_effect = [
+            vaultSDK.Vault(id='vault_id')
+        ]
+
+        # Set the response
+        self.client.bind_policy.side_effect = [
+            self.object
+        ]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.bind_policy.assert_called_with(
+            vault='vault_id',
+            policy='policy_id'
+        )
+
+        self.client.bind_policy.assert_called_once_with(
+            vault='vault_id',
+            policy='policy_id'
+        )
+
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
