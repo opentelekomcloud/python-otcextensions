@@ -9,14 +9,15 @@
 #   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #   License for the specific language governing permissions and limitations
 #   under the License.
+import datetime
 import random
 import uuid
-import datetime
 
 import mock
 
 from otcextensions.sdk.cbr.v3 import policy
 from otcextensions.sdk.cbr.v3 import task
+from otcextensions.sdk.cbr.v3 import vault
 from otcextensions.tests.unit.osclient import test_base
 
 
@@ -186,3 +187,59 @@ class FakeTask(test_base.Fake):
 
         obj = task.Task.existing(**object_info)
         return obj
+
+
+class FakeVault(test_base.Fake):
+    """Fake one or more CBR vault with random vaults list and patterns"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'id': 'id-' + uuid.uuid4().hex,
+            'backup_policy_id': 'bid-' + uuid.uuid4().hex,
+            'created_at': uuid.uuid4().hex,
+            'provider_id': uuid.uuid4().hex,
+            'user_id': uuid.uuid4().hex,
+            'billing': {
+                'cloud_type': 'public',
+                'consistent_level': 'crash_consistent',
+                'object_type': 'server',
+                'protect_type': 'backup',
+                'size': random.randint(0, 100),
+                'charging_mode': 'post_paid',
+                'is_auto_renew': False,
+                'is_auto_pay': False,
+            },
+            'description': 'vault_description',
+            'auto_bind': False,
+            'name': 'vault-' + uuid.uuid4().hex,
+            'resources': [{
+                'extra_info': {
+                    'include_volumes': [{
+                        'id': 'vid-' + uuid.uuid4().hex,
+                        'os_version': 'CentOS 7.6 64bit'
+                    }]
+                },
+                'id': 'resource_id',
+                'type': 'OS::Nova::Server'
+            }],
+            'tags': [{
+                'key': 'key-tags',
+                'value': 'val-tags'
+            }],
+            'bind_rules': {
+                'tags': [{
+                    'key': 'key-bind',
+                    'value': 'val-bind'
+                }]
+            },
+            'project_id': '0'
+        }
+
+        obj = vault.Vault.existing(**object_info)
+        return obj
+
+
+class VaultDefaultStruct:
+    def __init__(self, **entries):
+        self.__dict__.update(entries)
