@@ -16,6 +16,7 @@ from otcextensions.sdk.cbr.v3 import checkpoint as _checkpoint
 from otcextensions.sdk.cbr.v3 import member as _member
 from otcextensions.sdk.cbr.v3 import policy as _policy
 from otcextensions.sdk.cbr.v3 import restore as _restore
+from otcextensions.sdk.cbr.v3 import task as _task
 from otcextensions.sdk.cbr.v3 import vault as _vault
 
 
@@ -378,7 +379,7 @@ class Proxy(proxy.Proxy):
         :param vault: The value can be the ID of a vault
              or a :class:`~otcextensions.sdk.cbr.v3.vault.Vault`
              instance.
-        :param resources: list of ressource ids to be released from vault
+        :param resources: list of resource ids to be released from vault
         """
         vault = self._get_resource(_vault.Vault, vault)
         return vault.dissociate_resources(
@@ -475,3 +476,31 @@ class Proxy(proxy.Proxy):
             _member.Member, member, backup_id=backup.id,
             ignore_missing=ignore_missing,
         )
+
+    # ======== Task ========
+    def tasks(self, **query):
+        """List of tasks
+
+        :param dict query: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.cbr.v3.task.Task`,
+            comprised of the properties on the Task class.
+        :returns: A generator of task
+            :class:`~otcextensions.sdk.cbr.v3.task.Task` instances
+        """
+        return self._list(
+            _task.Task,
+            **query
+        )
+
+    def get_task(self, task):
+        """Get one CBR task by id.
+
+        :param member: key id or an instance of
+            :class:`~otcextensions.sdk.cbr.v3.task.Task`
+        :param task: The value can be the ID of a task
+            or a :class:`~otcextensions.sdk.cbr.v3.task.Task`
+            instance.
+        :returns: instance of
+            :class:`~otcextensions.sdk.cbr.v3.task.Task`
+        """
+        return self._get(_task.Task, task)
