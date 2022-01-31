@@ -20,8 +20,6 @@ class MaintenanceTimeWindow(resource.Resource):
     # capabilities
     allow_list = True
 
-    project_id = resource.URI('project_id')
-
     #: Properties
     #: An indicator of whether the maintenance time window is set to the
     # default time segment.
