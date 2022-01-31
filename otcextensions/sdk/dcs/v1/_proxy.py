@@ -17,6 +17,7 @@ from otcextensions.sdk.dcs.v1 import instance as _instance
 from otcextensions.sdk.dcs.v1 import restore_record as _restore_record
 from otcextensions.sdk.dcs.v1 import statistic as _stat
 from otcextensions.sdk.dcs.v1 import quota as _quota
+from otcextensions.sdk.dcs.v1 import maintenance_time_window as _maintenance_tw
 
 
 class Proxy(proxy.Proxy):
@@ -272,3 +273,20 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.dcs.v1.quota.Quota`
         """
         return self._list(_quota.Quota)
+
+    # ======== Maintenance Time Window ========
+    def maintenance_time_windows(self):
+        """Return a generator of maintenance time windows
+
+        :returns: A generator of maintenance time window objects
+        :rtype: :class:`~otcextensions.sdk.dcs.v1.maintenance_time_window
+        .MaintenanceTimeWindow
+        """
+
+        endpoint = _maintenance_tw.MaintenanceTimeWindow._get_session(
+            self).get_endpoint().split('/%').pop(0)
+        base_path = endpoint + '/instances/maintain-windows'
+
+        return self._list(
+            resource_type=_maintenance_tw.MaintenanceTimeWindow,
+            base_path=base_path)
