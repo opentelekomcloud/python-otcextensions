@@ -282,7 +282,6 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.dcs.v1.maintenance_time_window
         .MaintenanceTimeWindow
         """
-
         endpoint = _maintenance_tw.MaintenanceTimeWindow._get_session(
             self).get_endpoint().split('/%').pop(0)
         base_path = endpoint + '/instances/maintain-windows'
