@@ -14,6 +14,7 @@ Open Telekom Cloud Resources
    Cloud Eye Service (CES) <ces/index>
    Cloud Search Service (CSS) <css/index>
    Cloud Trace Service (CTS) <cts/index>
+   Direct Connect (DCAAS) <dcaas/index>
    Dedicated Load Balancer (DLB) <vlb/index>
    Distributed Cache Service (DCS) <dcs/index>
    Document Database Service (DDS) <dds/index>
