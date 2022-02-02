@@ -51,7 +51,7 @@ class VirtualGateway(resource.Resource):
     # or double ipsec.
     type = resource.Body('type')
     #: Specifies the bandwidth provided for IPsec VPN in Mbit/s.
-    ipsec_bandwidth = resource.Body('ipsec_bandwidth')
+    ipsec_bandwidth = resource.Body('ipsec_bandwidth', type=int)
     #: Specifies the BGP ASN of the virtual gateway.
     bgp_asn = resource.Body('bgp_asn', type=int)
     #: Specifies the administrative status of the virtual gateway.\
