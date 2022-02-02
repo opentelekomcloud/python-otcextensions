@@ -26,10 +26,11 @@ class Connection(resource.Resource):
     allow_commit = True
 
     _query_mapping = resource.QueryParameters(
-        'project_id', 'name', 'description', 'port_name', 'bandwidth',
+        'id', 'project_id', 'name', 'description', 'port_type', 'bandwidth',
         'location', 'peer_location', 'device_id', 'interface_name',
         'redundant_id', 'provider', 'provider_status', 'type', 'hosting_id',
-        'vlan', 'charge_mode', 'order_id', 'product_id', 'status',
+        'vlan', 'charge_mode', 'apply_time', 'create_time', 'delete_time',
+        'order_id', 'product_id', 'status',
         'admin_state_up', project_id='tenant_id')
 
     # Properties
@@ -43,7 +44,7 @@ class Connection(resource.Resource):
     # The value can be 1G or 10G.
     port_type = resource.Body('port_type')
     #: Specifies the connection bandwidth in Mbit/s.
-    bandwidth = resource.Body('bandwidth')
+    bandwidth = resource.Body('bandwidth', type=int)
     #: Specifies the connection access location.
     location = resource.Body('location')
     #: Specifies the physical location of the peer device accessed
@@ -65,11 +66,17 @@ class Connection(resource.Resource):
     #: Specifies the ID of the operations connection on which the hosted
     # connection is created.
     hosting_id = resource.Body('hosting_id')
-    #:Specifies the VLAN pre-allocated to the hosted connection.
+    #: Specifies the VLAN pre-allocated to the hosted connection.
     vlan = resource.Body('vlan', type=int)
     #: Specifies the billing mode. The value can be prepayment,
     # bandwidth, or traffic.
     charge_mode = resource.Body('charge_mode')
+    #: Specifies the time when the connection is requested.
+    apply_time = resource.Body('apply_time')
+    #: Specifies the time when the connection is created.
+    create_time = resource.Body('create_time')
+    #: Specifies the time when the connection is deleted.
+    delete_time = resource.Body('delete_time')
     #: Specifies the order number of the connection.
     order_id = resource.Body('order_id')
     #: Specifies the product ID corresponding to the connection's order.

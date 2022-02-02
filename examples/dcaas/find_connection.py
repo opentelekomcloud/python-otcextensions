@@ -17,11 +17,11 @@ import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='devstack-admin')
+conn = openstack.connect(cloud='otc')
 sdk.register_otc_extensions(conn)
 
 attrs = {
-    "name_or_id": "82a21970-09d7-4f1d-bfb4-85c18f044c40",
+    "name_or_id": "name-or-uuid",
 }
 
 c = conn.dcaas.find_connection(**attrs)

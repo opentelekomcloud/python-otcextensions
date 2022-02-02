@@ -18,8 +18,9 @@ from otcextensions import sdk
 
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='devstack-admin')
+conn = openstack.connect(cloud='otc')
 sdk.register_otc_extensions(conn)
 
-for c in conn.dcaas.direct_connections():
+
+for c in conn.dcaas.connections():
     print(c)
