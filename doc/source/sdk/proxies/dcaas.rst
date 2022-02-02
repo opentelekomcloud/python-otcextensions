@@ -18,3 +18,11 @@ DCAAS Virtual Gateway
   :noindex:
   :members: virtual_gateways, find_virtual_gateway, create_virtual_gateway,
             update_virtual_gateway, delete_virtual_gateway, get_virtual_gateway
+
+DCAAS Connection
+^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.dcaas.v2._proxy.Proxy
+  :noindex:
+  :members: connections, find_connection, create_connection,
+            update_connection, delete_connection, get_connection
