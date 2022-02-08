@@ -12,6 +12,7 @@ Service Proxies
    Cloud Eye Service (CES) <ces>
    Cloud Search Service (CSS) <css>
    Cloud Trace Service (CTS) <cts>
+   Direct Connect (DCAAS) <dcaas>
    Distributed Cache Service (DCS) <dcs>
    Document Database Service (DDS) <dds_v3>
    Dedicated Host Service (DeH) <deh>
