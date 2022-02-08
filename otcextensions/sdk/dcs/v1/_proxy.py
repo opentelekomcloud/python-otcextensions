@@ -18,6 +18,7 @@ from otcextensions.sdk.dcs.v1 import restore_record as _restore_record
 from otcextensions.sdk.dcs.v1 import statistic as _stat
 from otcextensions.sdk.dcs.v1 import quota as _quota
 from otcextensions.sdk.dcs.v1 import maintenance_time_window as _maintenance_tw
+from otcextensions.sdk.dcs.v1 import service_specification as _service_spec
 
 
 class Proxy(proxy.Proxy):
@@ -289,3 +290,20 @@ class Proxy(proxy.Proxy):
         return self._list(
             resource_type=_maintenance_tw.MaintenanceTimeWindow,
             base_path=base_path)
+
+    # ======== Service Specification ========
+    def service_specifications(self):
+        """Return a generator of service specifications
+
+        :returns: A generator of service specifications
+        :rtype: :class:`~otcextensions.sdk.dcs.v1.service_specification
+        .ServiceSpecification
+        """
+        endpoint = _service_spec.ServiceSpecification._get_session(
+            self).get_endpoint().split('/%').pop(0)
+        base_path = endpoint + '/products'
+
+        return self._list(
+            resource_type=_service_spec.ServiceSpecification,
+            base_path=base_path
+        )
