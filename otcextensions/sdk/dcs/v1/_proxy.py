@@ -18,6 +18,7 @@ from otcextensions.sdk.dcs.v1 import restore_record as _restore_record
 from otcextensions.sdk.dcs.v1 import statistic as _stat
 from otcextensions.sdk.dcs.v1 import quota as _quota
 from otcextensions.sdk.dcs.v1 import maintenance_time_window as _maintenance_tw
+from otcextensions.sdk.dcs.v1 import availability_zone as _az
 
 
 class Proxy(proxy.Proxy):
@@ -289,3 +290,21 @@ class Proxy(proxy.Proxy):
         return self._list(
             resource_type=_maintenance_tw.MaintenanceTimeWindow,
             base_path=base_path)
+
+    # ========= Available Zone ========
+    def availability_zones(self):
+        """Return a generator of Availability Zones where a DCS instance
+        resides.
+
+        :returns: A generator of Availability Zone objects
+        :rtype: :class:`~otcextensions.sdk.dcs.v1.availability_zone
+        .AvailabilityZone
+        """
+        endpoint = _az.AvailabilityZone._get_session(
+            self).get_endpoint().split('/%').pop(0)
+        base_path = endpoint + '/availableZones'
+
+        return self._list(
+            resource_type=_az.AvailabilityZone,
+            base_path=base_path
+        )
