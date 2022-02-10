@@ -9,3 +9,4 @@ DCS Resources
    v1/instance
    v1/restore_record
    v1/statistic
+   v1/service_specification

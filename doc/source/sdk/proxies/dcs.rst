@@ -3,7 +3,7 @@ DCS API
 
 .. automodule:: otcextensions.sdk.dcs.v1._proxy
 
-The Distributed Message Service Class
+The Distributed Cache Service Class
 -------------------------------------
 
 The dcs high-level interface is available through the ``dcs``
