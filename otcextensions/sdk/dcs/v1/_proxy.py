@@ -271,7 +271,7 @@ class Proxy(proxy.Proxy):
         """Return a generator of quotas
 
         :returns: A generator of quota objects
-        :rtype: :class:`~otcextensions.sdk.dcs.v1.quota.Quota`
+        :rtype: :class:`~otcextensions.sdk.dcs.v1.quota.Quota`.
         """
         return self._list(_quota.Quota)
 
@@ -281,7 +281,8 @@ class Proxy(proxy.Proxy):
 
         :returns: A generator of maintenance time window objects
         :rtype: :class:
-        `~otcextensions.sdk.dcs.v1.maintenance_time_window.MaintenanceTimeWindow`
+        `~otcextensions.sdk.dcs.v1.maintenance_time_window
+        .MaintenanceTimeWindow`.
         """
         endpoint = _maintenance_tw.MaintenanceTimeWindow._get_session(
             self).get_endpoint().split('/%').pop(0)
@@ -297,7 +298,7 @@ class Proxy(proxy.Proxy):
 
         :returns: A generator of service specifications
         :rtype: :class:
-        `~otcextensions.sdk.dcs.v1.service_specification.ServiceSpecification`
+        `~otcextensions.sdk.dcs.v1.service_specification.ServiceSpecification`.
         """
         endpoint = _service_spec.ServiceSpecification._get_session(
             self).get_endpoint().split('/%').pop(0)

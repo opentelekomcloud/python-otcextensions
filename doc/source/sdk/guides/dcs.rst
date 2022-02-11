@@ -201,7 +201,7 @@ This interface is used to restore a DCS Instance.
    :lines: 16-27
 
 DCS Service Specifications
-__________________________
+--------------------------
 
 This API is used to query the product ID (parameter product_id) which
 indicates the specifications of the DCS service you created.
