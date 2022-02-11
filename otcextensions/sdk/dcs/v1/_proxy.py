@@ -280,8 +280,8 @@ class Proxy(proxy.Proxy):
         """Return a generator of maintenance time windows
 
         :returns: A generator of maintenance time window objects
-        :rtype: :class:`~otcextensions.sdk.dcs.v1.maintenance_time_window
-        .MaintenanceTimeWindow
+        :rtype: :class:
+        `~otcextensions.sdk.dcs.v1.maintenance_time_window.MaintenanceTimeWindow`
         """
         endpoint = _maintenance_tw.MaintenanceTimeWindow._get_session(
             self).get_endpoint().split('/%').pop(0)
@@ -296,8 +296,8 @@ class Proxy(proxy.Proxy):
         """Return a generator of service specifications
 
         :returns: A generator of service specifications
-        :rtype: :class:`~otcextensions.sdk.dcs.v1.service_specification
-        .ServiceSpecification
+        :rtype: :class:
+        `~otcextensions.sdk.dcs.v1.service_specification.ServiceSpecification`
         """
         endpoint = _service_spec.ServiceSpecification._get_session(
             self).get_endpoint().split('/%').pop(0)
