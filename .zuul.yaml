@@ -27,9 +27,10 @@
 
 - project:
     merge-mode: squash-merge
+    default-branch: master
     templates:
       - publish-to-pypi
-      - publish-otc-docs-pti
+      - publish-otc-docs-hc-pti
       - release-notes-jobs
     check:
       jobs:
