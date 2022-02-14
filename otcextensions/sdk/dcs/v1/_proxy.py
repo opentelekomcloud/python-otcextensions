@@ -314,8 +314,9 @@ class Proxy(proxy.Proxy):
         resides.
 
         :returns: A generator of Availability Zone objects
-        :rtype: :class:`~otcextensions.sdk.dcs.v1.availability_zone
-        .AvailabilityZone
+        :rtype:
+            :class:
+                `~otcextensions.sdk.dcs.v1.availability_zone.AvailabilityZone`
         """
         endpoint = _az.AvailabilityZone._get_session(
             self).get_endpoint().split('/%').pop(0)
