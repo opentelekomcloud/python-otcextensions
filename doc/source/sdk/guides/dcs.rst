@@ -213,3 +213,16 @@ This interface is used to query all DCS Service Specifications
 
 .. literalinclude:: ../examples/dcs/list_service_specification.py
    :lines: 16-23
+
+DCS Availability Zones
+----------------------
+
+This API is used to query the ID of the AZ where a DCS instance resides.
+
+List Availability Zones
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to query all AZ where a DCS instance resides.
+
+.. literalinclude:: ../examples/dcs/list_availability_zones.py
+   :lines: 16-23

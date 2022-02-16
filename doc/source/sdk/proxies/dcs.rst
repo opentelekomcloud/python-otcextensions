@@ -48,3 +48,10 @@ Service Specification Operations
 .. autoclass:: otcextensions.sdk.dcs.v1._proxy.Proxy
   :noindex:
   :members: service_specifications
+
+Availability Zone Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.dcs.v1._proxy.Proxy
+  :noindex:
+  :members: availability_zones

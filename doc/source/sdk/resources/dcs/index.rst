@@ -10,3 +10,4 @@ DCS Resources
    v1/restore_record
    v1/statistic
    v1/service_specification
+   v1/availability_zone
