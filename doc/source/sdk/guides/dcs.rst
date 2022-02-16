@@ -200,6 +200,35 @@ This interface is used to restore a DCS Instance.
 .. literalinclude:: ../examples/dcs/restore_instance.py
    :lines: 16-27
 
+DCS Quotas
+----------
+
+This API is used to query the default instance quota and total memory
+quota of a tenant and the maximum and minimum quotas a tenant can apply for.
+Different tenants have different quotas in different regions.
+
+List Quotas
+^^^^^^^^^^^
+
+This interface is used to query all DCS Quotas.
+
+.. literalinclude:: ../examples/dcs/list_quotas.py
+   :lines: 16-23
+
+DCS Maintenance Time Windows
+----------------------------
+
+The API is used to query the start time and end time of the maintenance
+time window.
+
+List Maintenance Time Windows
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to query all maintenance time windows.
+
+.. literalinclude:: ../examples/dcs/list_maintenance_time_windows.py
+   :lines: 16-23
+
 DCS Service Specifications
 --------------------------
 
