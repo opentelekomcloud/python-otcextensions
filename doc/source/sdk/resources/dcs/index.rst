@@ -11,3 +11,5 @@ DCS Resources
    v1/statistic
    v1/service_specification
    v1/availability_zone
+   v1/quota
+   v1/maintenance_time_window
