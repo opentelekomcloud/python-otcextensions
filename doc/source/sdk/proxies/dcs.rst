@@ -42,6 +42,20 @@ Instance Configuration Operations
   :noindex:
   :members: instance_params, update_instance_params
 
+Quota Operations
+^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.dcs.v1._proxy.Proxy
+  :noindex:
+  :members: quotas
+
+Maintenance Time Window Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.dcs.v1._proxy.Proxy
+  :noindex:
+  :members: maintenance_time_windows
+
 Service Specification Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
