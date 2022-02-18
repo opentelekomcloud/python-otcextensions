@@ -14,6 +14,7 @@ from openstack import proxy
 
 from otcextensions.sdk.dcaas.v2 import virtual_gateway as _virtual_gateway
 from otcextensions.sdk.dcaas.v2 import connection as _connection
+from otcextensions.sdk.dcaas.v2 import virtual_interface as _virtual_interface
 
 
 class Proxy(proxy.Proxy):
@@ -94,7 +95,7 @@ class Proxy(proxy.Proxy):
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
             when the zone does not exist.
             When set to ``True``, no exception will be set when attempting
-            to delete a nonexistent zone.
+            to delete a nonexistent virtual gateway.
 
         :returns: ``None``
         """
@@ -129,7 +130,7 @@ class Proxy(proxy.Proxy):
         :param connection: The value can be the ID of a connection
              or a :class:`~otcextensions.sdk.dcaas.v2.connection.Connection`
              instance.
-        :returns: Direct connect instance
+        :returns: Connection instance
         :rtype: :class:`~otcextensions.sdk.dcaas.v2.connection.Connection`
         """
         return self._get(_connection.Connection, connection)
@@ -144,7 +145,7 @@ class Proxy(proxy.Proxy):
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
             the connection does not exist.
             When set to ``True``, no exception will be set when attempting to
-            delete a nonexistent zone.
+            delete a nonexistent connection.
 
         :returns: `None`
         """
@@ -176,5 +177,90 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         return self._find(_connection.Connection, name_or_id,
+                          ignore_missing=ignore_missing,
+                          **attrs)
+
+    # ======== Virtual interface ========
+    def virtual_interfaces(self, **query):
+        """Retrieve a generator of virtual interfaces
+
+        :returns: A generator of virtual interfaces
+            :class:`~otcextensions.sdk.dcaas.v2.virtual_interface.
+            VirtualInterface` instances
+        """
+        return self._list(_virtual_interface.VirtualInterface, **query)
+
+    def create_virtual_interface(self, **attrs):
+        """Create a new virtual interface from attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.dcaas.v2.virtual_interface.
+            VirtualInterface`, comprised of the properties on the Connection
+            class.
+        :returns: The results of virtual interface creation
+        :rtype: :class:`~otcextensions.sdk.dcaas.v2.virtual_interface.
+            VirtualInterface`
+        """
+        return self._create(_virtual_interface.VirtualInterface,
+                            prepend_key=False, **attrs)
+
+    def get_virtual_interface(self, virtual_interface):
+        """Get a virtual_interface
+
+        :param virtual_interface: The value can be the ID of a virtual_interface
+             or a :class:`~otcextensions.sdk.dcaas.v2.virtual_interface.
+             VirtualInterface` instance.
+        :returns: Virtual interface instance
+        :rtype: :class:`~otcextensions.sdk.dcaas.v2.virtual_interface.
+        VirtualInterface`
+        """
+        return self._get(_virtual_interface.VirtualInterface, virtual_interface)
+
+    def delete_virtual_interface(self, virtual_interface, ignore_missing=True):
+        """Delete a virtual interface
+
+        :param virtual_interface: The value can be the ID of a virtual interface
+             or a :class:`~otcextensions.sdk.dcaas.v2.virtual_interface.
+             VirtualInterface` instance.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the virtual interface does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent virtual interface.
+
+        :returns: `None`
+        """
+        return self._delete(_virtual_interface.VirtualInterface,
+                            virtual_interface, ignore_missing=ignore_missing)
+
+    def update_virtual_interface(self, virtual_interface, **attrs):
+        """Update virtual interface attributes
+
+        :param virtual_interface: The id or an instance of
+            :class:`~otcextensions.sdk.dcaas.v2.virtual_interface.
+            VirtualInterface`
+        :param dict attrs: attributes for update on
+            :class:`~otcextensions.sdk.dcaas.v2.virtual_interface.
+            VirtualInterface`
+
+        :rtype: :class:`~otcextensions.sdk.dcaas.v2.virtual_interface.
+        VirtualInterface`
+        """
+        return self._update(_virtual_interface.VirtualInterface,
+                            virtual_interface, **attrs)
+
+    def find_virtual_interface(self, name_or_id, ignore_missing=True, **attrs):
+        """Find a single virtual interface
+
+        :param name_or_id: The name or ID of a virtual interface
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the virtual interface does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to delete a nonexistent virtual interface.
+
+        :returns: ``None``
+        """
+        return self._find(_virtual_interface.VirtualInterface, name_or_id,
                           ignore_missing=ignore_missing,
                           **attrs)

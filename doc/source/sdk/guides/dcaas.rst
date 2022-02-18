@@ -16,7 +16,7 @@ connections to access multiple VPCs.
 List Virtual Gateways
 ^^^^^^^^^^^^^^^^^^^^^
 
-This interface is used to query all virtual gateways connections accessible to
+This interface is used to query all virtual gateways accessible to
 the tenant submitting the request. The virtual gateways are filtered based on
 the filtering condition.
 :class:`~otcextensions.sdk.dcaas.v2.virtual_gateway.VirtualGateway`.
@@ -138,4 +138,69 @@ This interface is used to delete a connection by ID or an instance of class.
 :class:`~otcextensions.sdk.dcaas.v2.connection.Connection`.
 
 .. literalinclude:: ../examples/dcaas/delete_connection.py
+   :lines: 16-24
+
+Virtual Interface
+-----------------
+
+Virtual interfaces associate user gateways with virtual gateways, enabling
+local data centers to access VPCs.
+
+List Virtual Interfaces
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to query all virtual interfaces accessible to
+the tenant submitting the request. The virtual interfaces are filtered based on
+the filtering condition.
+:class:`~otcextensions.sdk.dcaas.v2.virtual_interface.VirtualInterface`.
+
+.. literalinclude:: ../examples/dcaas/list_virtual_interfaces.py
+   :lines: 16-25
+
+Create Virtual Interface
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to create a virtual interface with parameters.
+:class:`~otcextensions.sdk.dcaas.v2.virtual_interface.VirtualInterface`.
+
+.. literalinclude:: ../examples/dcaas/create_virtual_interface.py
+   :lines: 16-29
+
+Get Virtual Interface
+^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to get a virtual interface by ID
+or an instance of class.
+:class:`~otcextensions.sdk.dcaas.v2.virtual_interface.VirtualInterface`.
+
+.. literalinclude:: ../examples/dcaas/get_virtual_interface.py
+   :lines: 16-28
+
+Find Virtual Interface
+^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to find a virtual interface by id or name.
+:class:`~otcextensions.sdk.dcaas.v2.virtual_interface.VirtualInterface`.
+
+.. literalinclude:: ../examples/dcaas/find_virtual_interface.py
+   :lines: 16-28
+
+Update Virtual Interface
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to update parameters of a virtual interface by
+id or an instance of class.
+:class:`~otcextensions.sdk.dcaas.v2.virtual_interface.VirtualInterface`.
+
+.. literalinclude:: ../examples/dcaas/update_virtual_interface.py
+   :lines: 16-29
+
+Delete Virtual Interface
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to delete a virtual interface by ID
+or an instance of class.
+:class:`~otcextensions.sdk.dcaas.v2.virtual_interface.VirtualInterface`.
+
+.. literalinclude:: ../examples/dcaas/delete_virtual_interface.py
    :lines: 16-24
