@@ -6,3 +6,4 @@ DCAAS Resources
 
    v2/connection
    v2/virtual_gateway
+   v2/virtual_interface
