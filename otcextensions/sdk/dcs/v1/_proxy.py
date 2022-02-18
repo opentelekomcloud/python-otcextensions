@@ -9,8 +9,11 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from urllib.parse import urlparse
 
 from openstack import proxy
+from openstack.utils import urljoin
+
 from otcextensions.sdk.dcs.v1 import backup as _backup
 from otcextensions.sdk.dcs.v1 import config as _config
 from otcextensions.sdk.dcs.v1 import instance as _instance
@@ -25,6 +28,15 @@ from otcextensions.sdk.dcs.v1 import availability_zone as _az
 class Proxy(proxy.Proxy):
 
     skip_discovery = True
+
+    def _get_alternate_endpoint(self):
+        url_parts = urlparse(self.get_endpoint())
+        #api_version = url_parts.path.split('/').pop(1)
+        alternate_endpoint = '{scheme}://{netloc}'.format(
+            scheme=url_parts.scheme,
+            netloc=url_parts.netloc,
+        )
+        return alternate_endpoint
 
     # ======== Instances ========
     def create_instance(self, **kwargs):
@@ -284,9 +296,9 @@ class Proxy(proxy.Proxy):
         :rtype:
             :class:`~sdk.dcs.v1.maintenance_time_window.MaintenanceTimeWindow`.
         """
-        endpoint = _maintenance_tw.MaintenanceTimeWindow._get_session(
-            self).get_endpoint().split('/%').pop(0)
-        base_path = endpoint + '/instances/maintain-windows'
+        base = self._get_alternate_endpoint()
+        base_path = urljoin(
+            base, _maintenance_tw.MaintenanceTimeWindow.base_path)
 
         return self._list(
             resource_type=_maintenance_tw.MaintenanceTimeWindow,

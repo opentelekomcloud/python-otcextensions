@@ -17,6 +17,8 @@ class MaintenanceTimeWindow(resource.Resource):
 
     resources_key = 'maintain_windows'
 
+    base_path = '/v1.0/instances/maintain-windows'
+
     # capabilities
     allow_list = True
 
