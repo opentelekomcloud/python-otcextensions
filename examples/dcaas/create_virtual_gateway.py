@@ -17,12 +17,12 @@ import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='devstack-admin')
+conn = openstack.connect(cloud='otc')
 sdk.register_otc_extensions(conn)
 
 attrs = {
-    "vpc_id": "2b97ab2d-f8b8-41e2-88ac-73912f88745f",
-    "local_ep_group_id": "3389da83-4f35-43de-b2eb-633681bd9ae6"
+    "vpc_id": "vpc-uuid",
+    "local_ep_group_id": "local-ep-group-uuid"
 }
 
 vg = conn.dcaas.create_virtual_gateway(**attrs)

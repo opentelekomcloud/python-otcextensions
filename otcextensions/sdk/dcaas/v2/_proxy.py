@@ -160,7 +160,8 @@ class Proxy(proxy.Proxy):
         :param dict attrs: attributes for update on
             :class:`~otcextensions.sdk.dcaas.v2.connection.Connection`
 
-        :rtype: :class:`~otcextensions.sdk.dcaas.v2.connection.Connection`
+        :rtype:
+            :class:`~otcextensions.sdk.dcaas.v2.connection.Connection`
         """
         return self._update(_connection.Connection, connection, **attrs)
 
@@ -207,21 +208,23 @@ class Proxy(proxy.Proxy):
     def get_virtual_interface(self, virtual_interface):
         """Get a virtual_interface
 
-        :param virtual_interface: The value can be the ID of a virtual_interface
-             or a :class:`~otcextensions.sdk.dcaas.v2.virtual_interface.
-             VirtualInterface` instance.
+        :param virtual_interface: The value can be the ID of a
+            virtual_interface or a :class:`~otcextensions.sdk.dcaas.v2.
+            virtual_interface.VirtualInterface` instance.
         :returns: Virtual interface instance
-        :rtype: :class:`~otcextensions.sdk.dcaas.v2.virtual_interface.
-        VirtualInterface`
+        :rtype:
+            :class:`~otcextensions.sdk.dcaas.v2.virtual_interface.
+            VirtualInterface`
         """
-        return self._get(_virtual_interface.VirtualInterface, virtual_interface)
+        return self._get(_virtual_interface.VirtualInterface,
+                         virtual_interface)
 
     def delete_virtual_interface(self, virtual_interface, ignore_missing=True):
         """Delete a virtual interface
 
-        :param virtual_interface: The value can be the ID of a virtual interface
-             or a :class:`~otcextensions.sdk.dcaas.v2.virtual_interface.
-             VirtualInterface` instance.
+        :param virtual_interface: The value can be the ID of a virtual
+            interface or a :class:`~otcextensions.sdk.dcaas.v2.
+            virtual_interface.VirtualInterface` instance.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
             the virtual interface does not exist.
@@ -244,7 +247,7 @@ class Proxy(proxy.Proxy):
             VirtualInterface`
 
         :rtype: :class:`~otcextensions.sdk.dcaas.v2.virtual_interface.
-        VirtualInterface`
+            VirtualInterface`
         """
         return self._update(_virtual_interface.VirtualInterface,
                             virtual_interface, **attrs)
