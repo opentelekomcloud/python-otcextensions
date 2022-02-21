@@ -24,5 +24,5 @@ attrs = {
     "name_or_id": "name_or_uuid",
 }
 
-c = conn.dcaas.find_virtual_interface(**attrs)
-print(c)
+vi = conn.dcaas.find_virtual_interface(**attrs)
+print(vi)
