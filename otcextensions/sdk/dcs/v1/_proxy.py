@@ -29,12 +29,13 @@ class Proxy(proxy.Proxy):
 
     skip_discovery = True
 
-    def _get_alternate_endpoint(self):
+    def _get_endpoint_with_api_version(self):
         url_parts = urlparse(self.get_endpoint())
-        #api_version = url_parts.path.split('/').pop(1)
-        alternate_endpoint = '{scheme}://{netloc}'.format(
+        api_version = url_parts.path.split('/').pop(1)
+        alternate_endpoint = '{scheme}://{netloc}/{api_version}'.format(
             scheme=url_parts.scheme,
             netloc=url_parts.netloc,
+            api_version=api_version
         )
         return alternate_endpoint
 
@@ -296,12 +297,13 @@ class Proxy(proxy.Proxy):
         :rtype:
             :class:`~sdk.dcs.v1.maintenance_time_window.MaintenanceTimeWindow`.
         """
-        base = self._get_alternate_endpoint()
+        base = self._get_endpoint_with_api_version()
         base_path = urljoin(
-            base, _maintenance_tw.MaintenanceTimeWindow.base_path)
+            base, _maintenance_tw.MaintenanceTimeWindow.base_path
+        )
 
         return self._list(
-            resource_type=_maintenance_tw.MaintenanceTimeWindow,
+            _maintenance_tw.MaintenanceTimeWindow,
             base_path=base_path)
 
     # ======== Service Specification ========
@@ -311,12 +313,13 @@ class Proxy(proxy.Proxy):
         :returns: A generator of service specifications
         :rtype: :class:`~sdk.dcs.v1.service_specification.ServiceSpecification`
         """
-        endpoint = _service_spec.ServiceSpecification._get_session(
-            self).get_endpoint().split('/%').pop(0)
-        base_path = endpoint + '/products'
+        base = self._get_endpoint_with_api_version()
+        base_path = urljoin(
+            base, _service_spec.ServiceSpecification.base_path
+        )
 
         return self._list(
-            resource_type=_service_spec.ServiceSpecification,
+            _service_spec.ServiceSpecification,
             base_path=base_path
         )
 
@@ -330,11 +333,7 @@ class Proxy(proxy.Proxy):
             :class:
                 `~otcextensions.sdk.dcs.v1.availability_zone.AvailabilityZone`
         """
-        endpoint = _az.AvailabilityZone._get_session(
-            self).get_endpoint().split('/%').pop(0)
-        base_path = endpoint + '/availableZones'
+        base = self._get_endpoint_with_api_version()
+        base_path = urljoin(base, _az.AvailabilityZone)
 
-        return self._list(
-            resource_type=_az.AvailabilityZone,
-            base_path=base_path
-        )
+        return self._list(_az.AvailabilityZone, base_path=base_path)
