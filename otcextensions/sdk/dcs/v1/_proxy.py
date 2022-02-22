@@ -334,6 +334,6 @@ class Proxy(proxy.Proxy):
                 `~otcextensions.sdk.dcs.v1.availability_zone.AvailabilityZone`
         """
         base = self._get_endpoint_with_api_version()
-        base_path = urljoin(base, _az.AvailabilityZone)
+        base_path = urljoin(base, _az.AvailabilityZone.base_path)
 
         return self._list(_az.AvailabilityZone, base_path=base_path)
