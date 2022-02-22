@@ -26,7 +26,7 @@ class VirtualInterface(resource.Resource):
     allow_commit = True
 
     _query_mapping = resource.QueryParameters(
-        'id', 'project_id', 'name', 'description', 'direct_conect_id',
+        'id', 'project_id', 'name', 'description', 'direct_connect_id',
         'vgw_id', 'type', 'service_type', 'vlan', 'bandwidth',
         'local_gateway_v4_ip', 'remote_gateway_v4_ip', 'route_mode', 'bgp_asn',
         'bgp_md5', 'remote_ep_group_id', 'service_ep_group_id',
