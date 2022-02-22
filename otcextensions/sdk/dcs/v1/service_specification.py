@@ -53,6 +53,8 @@ class ServiceSpecification(resource.Resource):
 
     resources_key = 'products'
 
+    base_path = '/products'
+
     # capabilities
     allow_list = True
 
