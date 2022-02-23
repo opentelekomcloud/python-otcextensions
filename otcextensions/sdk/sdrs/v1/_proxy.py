@@ -11,7 +11,22 @@
 # under the License.
 from openstack import proxy
 
+from otcextensions.sdk.sdrs.v1 import job as _job
+
 
 class Proxy(proxy.Proxy):
 
     skip_discovery = True
+
+    # ======== Job ========
+    def get_job(self, job):
+        """ Get single SDRS job by UUID.
+
+        :param job: The id or and instance of
+            :class:'otcextensions.sdk.sdrs.v1.job.Job'
+
+        :returns: instance of
+            :class: 'class:'otcextensions.sdk.sdrs.v1.job.Job'
+        """
+        return self._get(_job.Job, job)
+

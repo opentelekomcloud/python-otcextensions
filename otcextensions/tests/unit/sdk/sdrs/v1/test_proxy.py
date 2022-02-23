@@ -14,9 +14,17 @@ from otcextensions.sdk.sdrs.v1 import _proxy
 
 from openstack.tests.unit import test_proxy_base
 
+from otcextensions.sdk.sdrs.v1 import job as _job
 
-class TestSdrsProxy(test_proxy_base.TestProxyBase):
+
+class TestSDRSProxy(test_proxy_base.TestProxyBase):
 
     def setUp(self):
-        super(TestSdrsProxy, self).setUp()
+        super(TestSDRSProxy, self).setUp()
         self.proxy = _proxy.Proxy(self.session)
+
+
+class TestSDRSJob(TestSDRSProxy):
+
+    def test_get_job(self):
+        self.verify_get(self.proxy.get_job, _job.Job)
