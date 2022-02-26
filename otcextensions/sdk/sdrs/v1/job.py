@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
-from openstack import utils
 
 
 class EntitySpecSub(resource.Body):

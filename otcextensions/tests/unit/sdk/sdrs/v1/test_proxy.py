@@ -15,6 +15,7 @@ from otcextensions.sdk.sdrs.v1 import _proxy
 from openstack.tests.unit import test_proxy_base
 
 from otcextensions.sdk.sdrs.v1 import job as _job
+from otcextensions.sdk.sdrs.v1 import active_domains as _active_domains
 
 
 class TestSDRSProxy(test_proxy_base.TestProxyBase):
@@ -28,3 +29,9 @@ class TestSDRSJob(TestSDRSProxy):
 
     def test_get_job(self):
         self.verify_get(self.proxy.get_job, _job.Job)
+
+
+class TestSDRSActiveDomains(TestSDRSProxy):
+
+    def test_get_domains(self):
+        self.verify_list(self.proxy.get_domains, _active_domains.ActiveDomain)

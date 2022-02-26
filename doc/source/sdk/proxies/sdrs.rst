@@ -1,5 +1,5 @@
 SDRS API
-=======
+========
 
 .. automodule:: otcextensions.sdk.sdrs.v1._proxy
 
@@ -17,3 +17,10 @@ Job Operations
 .. autoclass:: otcextensions.sdk.sdrs.v1._proxy.Proxy
   :noindex:
   :members: get_job
+
+Active-active domains Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.sdrs.v1._proxy.Proxy
+  :noindex:
+  :members: get_domains

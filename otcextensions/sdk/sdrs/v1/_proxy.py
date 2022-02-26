@@ -12,7 +12,7 @@
 from openstack import proxy
 
 from otcextensions.sdk.sdrs.v1 import job as _job
-
+from otcextensions.sdk.sdrs.v1 import active_domains as _active_domains
 
 class Proxy(proxy.Proxy):
 
@@ -23,10 +23,18 @@ class Proxy(proxy.Proxy):
         """ Get single SDRS job by UUID.
 
         :param job: The id or and instance of
-            :class:'otcextensions.sdk.sdrs.v1.job.Job'
+            :class:'~otcextensions.sdk.sdrs.v1.job.Job'
 
         :returns: instance of
-            :class: 'class:'otcextensions.sdk.sdrs.v1.job.Job'
+            :class: '~class:'otcextensions.sdk.sdrs.v1.job.Job'
         """
         return self._get(_job.Job, job)
 
+    # ======== Active-active domain ========
+    def get_domains(self):
+        """Retrieve a generator of Active-active domains
+
+        :returns: A generator of active-active domains
+            :class: '~otcextensions.sdk.sdrs.v1.active_domains.ActiveDomain'
+        """
+        return self._list(_active_domains.ActiveDomain)

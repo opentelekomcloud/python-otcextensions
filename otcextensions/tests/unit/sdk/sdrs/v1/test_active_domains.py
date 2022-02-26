@@ -15,36 +15,25 @@ from keystoneauth1 import adapter
 import mock
 from openstack.tests.unit import base
 
-from otcextensions.sdk.sdrs.v1 import job as _job
+from otcextensions.sdk.sdrs.v1 import active_domains as _active_domains
 
 
-EXAMPLE = {
-    'job_id': uuid.uuid4()
-}
-
-
-class TestJob(base.TestCase):
+class TestActiveDomains(base.TestCase):
 
     def setUp(self):
-        super(TestJob, self).setUp()
+        super(TestActiveDomains, self).setUp()
         self.sess = mock.Mock(spec=adapter.Adapter)
-        self.sess.get = mock.Mock()
+        self.sess.list = mock.Mock()
         self.sess.default_microversion = '1'
         self.sess._get_connection = mock.Mock(return_value=self.cloud)
-        self.sot = _job.Job()
+        self.sot = _active_domains.ActiveDomain()
 
     def test_basic(self):
-        sot = _job.Job()
-        self.assertEqual('/jobs',
+        sot = _active_domains.ActiveDomain()
+        self.assertEqual('/active-domains',
                          sot.base_path)
-        self.assertFalse(sot.allow_list)
+        self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
-        self.assertTrue(sot.allow_fetch)
+        self.assertFalse(sot.allow_fetch)
         self.assertFalse(sot.allow_commit)
         self.assertFalse(sot.allow_delete)
-
-    def test_make_it(self):
-        test_job = _job.Job(**EXAMPLE)
-        self.assertEqual(
-            EXAMPLE['job_id'],
-            test_job.job_id)
