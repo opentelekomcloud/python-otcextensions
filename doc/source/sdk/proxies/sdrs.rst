@@ -24,3 +24,13 @@ Active-active domains Operations
 .. autoclass:: otcextensions.sdk.sdrs.v1._proxy.Proxy
   :noindex:
   :members: get_domains
+
+Protection group Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.sdrs.v1._proxy.Proxy
+  :noindex:
+  :members: create_protection_group, protection_groups, get_protection_group,
+            delete_protection_group, find_protection_group,
+            update_protection_group, enable_protection, disable_protection,
+            perform_failover, perform_planned_failover

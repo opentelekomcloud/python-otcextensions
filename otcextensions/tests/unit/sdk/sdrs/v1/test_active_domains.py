@@ -26,10 +26,10 @@ class TestActiveDomains(base.TestCase):
         self.sess.list = mock.Mock()
         self.sess.default_microversion = '1'
         self.sess._get_connection = mock.Mock(return_value=self.cloud)
-        self.sot = _active_domains.ActiveDomain()
+        self.sot = _active_domains.ActiveDomains()
 
     def test_basic(self):
-        sot = _active_domains.ActiveDomain()
+        sot = _active_domains.ActiveDomains()
         self.assertEqual('/active-domains',
                          sot.base_path)
         self.assertTrue(sot.allow_list)

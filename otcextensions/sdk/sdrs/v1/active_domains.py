@@ -34,7 +34,7 @@ class Domains(resource.Resource):
     remote_replication_cluster = resource.Body('remote_replication_cluster', type=ReplicationCluster)
 
 
-class ActiveDomain(resource.Resource):
+class ActiveDomains(resource.Resource):
     """SDRS Active-Active Domain Resource"""
     base_path = '/active-domains'
 

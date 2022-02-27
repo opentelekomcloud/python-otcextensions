@@ -11,3 +11,12 @@ The ``Job`` class inherits from
 
 .. autoclass:: otcextensions.sdk.sdrs.v1.job.Job
    :members:
+
+.. autoclass:: otcextensions.sdk.sdrs.v1.job.SubJob
+   :members:
+
+.. autoclass:: otcextensions.sdk.sdrs.v1.job.EntitySpec
+   :members:
+
+.. autoclass:: otcextensions.sdk.sdrs.v1.job.EntitySpecSub
+   :members:
