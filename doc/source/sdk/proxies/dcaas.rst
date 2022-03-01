@@ -26,3 +26,12 @@ DCAAS Connection
   :noindex:
   :members: connections, find_connection, create_connection,
             update_connection, delete_connection, get_connection
+
+DCAAS Virtual Interface
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.dcaas.v2._proxy.Proxy
+  :noindex:
+  :members: virtual_interfaces, find_virtual_interface,
+            create_virtual_interface, update_virtual_interface,
+            delete_virtual_interface, get_virtual_interface
