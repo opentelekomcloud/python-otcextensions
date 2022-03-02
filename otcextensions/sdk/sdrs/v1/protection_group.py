@@ -92,7 +92,7 @@ class ProtectionGroup(resource.Resource):
         :param session: The session to use for making this request.
         :type session: :class:`~keystoneauth1.adapter.Adapter`
         :param str protection_group: ID of protection group to
-        be enabled
+            be enabled
         """
         url = utils.urljoin(self.base_path, protection_group, '/action')
         body = {
@@ -106,7 +106,7 @@ class ProtectionGroup(resource.Resource):
         :param session: The session to use for making this request.
         :type session: :class:`~keystoneauth1.adapter.Adapter`
         :param str protection_group: ID of protection group to
-        be disabled
+            be disabled
         """
         url = utils.urljoin(self.base_path, protection_group, '/action')
         body = {
@@ -121,7 +121,7 @@ class ProtectionGroup(resource.Resource):
         :param session: The session to use for making this request.
         :type session: :class:`~keystoneauth1.adapter.Adapter`
         :param str protection_group: ID of protection group to
-        perform failover
+            perform failover
         """
         url = utils.urljoin(self.base_path, protection_group, '/action')
         body = {
@@ -137,9 +137,9 @@ class ProtectionGroup(resource.Resource):
         :param session: The session to use for making this request.
         :type session: :class:`~keystoneauth1.adapter.Adapter`
         :param str protection_group: ID of protection group to
-        perform planned failover
+            perform planned failover
         :param str priority_station: direction of planned failover
-        Values: source of target
+            Values: source of target
         """
         url = utils.urljoin(self.base_path, protection_group, '/action')
         body = {
@@ -147,5 +147,4 @@ class ProtectionGroup(resource.Resource):
                 "priority_station": priority_station
             }
         }
-
         return session.post(url, json=body)

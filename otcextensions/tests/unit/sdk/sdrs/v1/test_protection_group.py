@@ -46,10 +46,10 @@ EXAMPLE = {
 }
 
 
-class TestJob(base.TestCase):
+class TestProtectionGroup(base.TestCase):
 
     def setUp(self):
-        super(TestJob, self).setUp()
+        super(TestProtectionGroup, self).setUp()
         self.sess = mock.Mock(spec=adapter.Adapter)
         self.sess.get = mock.Mock()
         self.sess.default_microversion = '1'

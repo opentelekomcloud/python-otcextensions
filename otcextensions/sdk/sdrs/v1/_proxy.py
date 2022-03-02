@@ -10,13 +10,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import proxy
+from openstack import exceptions
 
 from otcextensions.sdk.sdrs.v1 import job as _job
 from otcextensions.sdk.sdrs.v1 import active_domains as _active_domains
 from otcextensions.sdk.sdrs.v1 import protection_group as _protection_group
+from otcextensions.sdk.sdrs.v1 import protected_instance as _protected_instance
+
 
 class Proxy(proxy.Proxy):
-
     skip_discovery = True
 
     # ======== Job ========
@@ -65,7 +67,7 @@ class Proxy(proxy.Proxy):
             * 'query_type': Query type of protection group
             * `status`: Status
 
-        :returns: A generator of backup
+        :returns: A generator of protection groups
             :class:`~otcextensions.sdk.sdrs.v1.protection_group.ProtectionGroup` instances
         """
         return self._list(_protection_group.ProtectionGroup, **query)
@@ -91,10 +93,10 @@ class Proxy(proxy.Proxy):
              or a :class:`~otcextensions.sdk.sdrs.v1.protection_group.ProtectionGroup`
              instance.
         :param bool ignore_missing: When set to ``False``
-            :class:`~otcextensions.sdk.sdrs.v1.protection_group.ProtectionGroup` will be raised when
-            the group does not exist.
+            :class:`~otcextensions.sdk.sdrs.v1.protection_group.ProtectionGroup` will
+            be raised when the group does not exist.
             When set to ``True``, no exception will be set when attempting to
-            delete a nonexistent backup.
+            delete a nonexistent protection group.
         """
         return self._delete(
             _protection_group.ProtectionGroup,
@@ -110,19 +112,19 @@ class Proxy(proxy.Proxy):
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
             when the group does not exist.
             When set to ``True``, no exception will be set when attempting
-            to delete a nonexistent group.
+            to delete a nonexistent protection group.
 
-        :returns: ``None``
+        :returns: a :class:`~otcextensions.sdk.sdrs.v1.protection_group.ProtectionGroup`
         """
         return self._find(
             _protection_group.ProtectionGroup, name_or_id,
-            ignore_missing=ignore_missing,
+            ignore_missing=ignore_missing
         )
 
     def update_protection_group(self, protection_group, name):
         """Update SDRS protection group name
 
-        :param protection_group: The value can be the ID of a backup
+        :param protection_group: The value can be the ID of a protection group
             or a :class:`~otcextensions.sdk.sdrs.v1.protection_group.ProtectionGroup`
             instance.
         :param str name: name to be updated for protection group
@@ -205,4 +207,225 @@ class Proxy(proxy.Proxy):
             self,
             protection_group=protection_group.id,
             priority_station=priority_station
+        )
+
+    # ======== Protected instance ========
+    def create_protected_instance(self, **attrs):
+        """Creating a protected instance using attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`,
+            comprised of the properties on the Protected instance class.
+        :returns: The results of config creation
+        :rtype: :class:`~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
+        """
+        return self._create(
+            _protected_instance.ProtectedInstance,
+            **attrs
+        )
+
+    def delete_protected_instance(self, protected_instance,  delete_target_server=False,
+                                  delete_target_eip=False, ignore_missing=True):
+        """Delete a single SDRS protected instance.
+
+        :param protected_instance: The value can be the ID of a protected instance
+             or a :class:`~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
+             instance.
+        :param bool delete_target_server: Specifies whether target
+            ECS should be deleted after protection group deletion
+        :param bool delete_target_eip: Specifies whether target
+            EIP should be deleted after protection group deletion
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the group does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent protected instance
+        :returns: instance of
+            :class:`~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
+        """
+        res = self._get_resource(_protected_instance.ProtectedInstance,
+                                 protected_instance)
+        try:
+            del_in = res.delete(self, delete_target_server=delete_target_server,
+                                delete_target_eip=delete_target_eip)
+        except exceptions.ResourceNotFound:
+            if ignore_missing:
+                return None
+            raise
+        return del_in
+
+    def protected_instances(self, **query):
+        """Retrieve a generator of Protected instances
+
+        :param dict query: Optional query parameters to be sent to limit the
+            resources being returned.
+            * 'availability_zone': Production site AZ
+            * `limit`: Number of records displayed per page
+            * `name`: Protection group name
+            * `offset`: Offset value
+            * 'protected_instance_ids': Protected instance ID list
+            * 'query_type': Query type of protected instance
+            * 'server_group_id': Protected instance ID
+            * 'server_group_ids': Protected instance ID list
+            * `status`: Status
+
+        :returns: A generator of protected instances
+            :class:`~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
+            instances
+        """
+        return self._list(_protected_instance.ProtectedInstance,
+                          **query)
+
+    def get_protected_instance(self, instance_id):
+        """Get the SDRS protected instance by UUID.
+
+        :param instance_id: key id or an instance of
+            :class:`~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
+
+        :returns: instance of
+            :class:`~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
+        """
+        return self._get(
+            _protected_instance.ProtectedInstance,
+            instance_id
+        )
+
+    def update_protected_instance(self, instance_id, name):
+        """Update SDRS protected instance name
+
+        :param instance_id: The value can be the ID of a protected instance
+            or a :class:`~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
+            instance.
+        :param str name: name to be updated for protected instance
+
+        :rtype: :class:`~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
+        """
+        protected_instance = self._get_resource(
+            _protected_instance.ProtectedInstance, instance_id
+        )
+        return self._update(
+            _protected_instance.ProtectedInstance,
+            protected_instance,
+            name=name
+        )
+
+    def find_protected_instance(self, name_or_id, ignore_missing=True):
+        """Find a single SDRS protected instance by name or id
+
+        :param name_or_id: The name or ID of a protected instance
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the group does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to delete a nonexistent protection group.
+
+        :returns: a :class:`~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
+        """
+        return self._find(
+            _protected_instance.ProtectedInstance,
+            name_or_id,
+            ignore_missing=ignore_missing
+        )
+
+    def attach_replication_pair(self, protected_instance,
+                                replication_id,
+                                device='/dev/vdb'):
+        """Attach replication pair to protected instance
+
+        :param protected_instance: The value can be the ID of a protected instance
+            or a :class:`~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
+        :param replication_id:
+        :param device: Disk device name of replication pair
+        """
+        protected_instance = self._get_resource(
+            _protected_instance.ProtectedInstance,
+            protected_instance)
+
+        return protected_instance.attach_pair(
+            self,
+            protected_instance=protected_instance.id,
+            replication_id=replication_id,
+            device=device
+        )
+
+    def detach_replication_pair(self,
+                                protected_instance,
+                                replication_id):
+        """Detach replication pair from protected instance
+
+        :param protected_instance: The value can be the ID of a protected instance
+            or a :class:`~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
+        :param replication_id:
+        """
+        protected_instance = self._get_resource(
+            _protected_instance.ProtectedInstance,
+            protected_instance)
+        return protected_instance.detach_pair(
+            self,
+            protected_instance=protected_instance.id,
+            replication_id=replication_id
+        )
+
+    def add_nic(self, protected_instance, subnet_id,
+                security_groups=None, ip_address=None):
+        """Add NIC to a protected instance
+
+        :param protected_instance: The value can be the ID of a protected instance
+            or a :class:`~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
+        :param str subnet_id: Subnet ID of the NIC to be added
+        :param list security_groups: list of security groups to be added for NIC
+            in format 'id': 'value'
+        :param str ip_address: IP address of NIC
+        """
+        protected_instance = self._get_resource(
+            _protected_instance.ProtectedInstance,
+            protected_instance)
+        return protected_instance.add_nic(
+            self,
+            protected_instance=protected_instance.id,
+            subnet_id=subnet_id,
+            security_groups=security_groups,
+            ip_address=ip_address
+        )
+
+    def delete_nic(self, protected_instance, nic_id):
+        """Delete NIC from a protected instance
+
+        :param protected_instance: The value can be the ID of a protected instance
+            or a :class:`~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
+        :param str nic_id: ID of a Network interface card to be deleted
+        """
+        protected_instance = self._get_resource(
+            _protected_instance.ProtectedInstance,
+            protected_instance)
+        return protected_instance.delete_nic(
+            self,
+            protected_instance=protected_instance.id,
+            nic_id=nic_id
+        )
+
+    def modify_protected_instance(self,
+                                  protected_instance,
+                                  flavor=None,
+                                  production_flavor=None,
+                                  dr_flavor=None):
+        """Modify server(s) flavor of protected instance
+
+        :param protected_instance: The value can be the ID of a protected instance
+            or a :class:`~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
+        :param str flavor: flavor ID for both production and DR sites
+        :param str production_flavor: flavor ID for production site
+            If 'flavor' is specified this parameter doesn't take effect
+        :param str dr_flavor: flavor ID for DR site
+            If 'flavor' is specified this parameter doesn't take effect
+        """
+        protected_instance = self._get_resource(
+            _protected_instance.ProtectedInstance,
+            protected_instance)
+        return protected_instance.modify_instance(
+            self,
+            protected_instance=protected_instance.id,
+            flavor=flavor,
+            production_flavor=production_flavor,
+            dr_flavor=dr_flavor
         )

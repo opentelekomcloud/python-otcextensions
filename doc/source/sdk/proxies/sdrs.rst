@@ -34,3 +34,13 @@ Protection group Operations
             delete_protection_group, find_protection_group,
             update_protection_group, enable_protection, disable_protection,
             perform_failover, perform_planned_failover
+
+Protected instance Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.sdrs.v1._proxy.Proxy
+  :noindex:
+  :members: create_protected_instance, delete_protected_instance, protected_instances,
+            get_protected_instance, update_protected_instance, find_protected_instance,
+            attach_replication_pair, detach_replication_pair, add_nic,
+            delete_nic, modify_protected_instance

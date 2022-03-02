@@ -6,4 +6,5 @@ Storage Disaster Recovery Service Resources
 
    v1/active_domains
    v1/job
+   v1/protected_instance
    v1/protection_group

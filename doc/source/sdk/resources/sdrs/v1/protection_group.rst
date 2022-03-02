@@ -1,7 +1,7 @@
 otcextensions.sdk.sdrs.v1.protection_group.ProtectionGroup
-=================================
+==========================================================
 
-.. automodule:: otcextensions.sdk.sdrs.v1.job
+.. automodule:: otcextensions.sdk.sdrs.v1.protection_group
 
 The SDRS Protection group Class
 -------------------------------
