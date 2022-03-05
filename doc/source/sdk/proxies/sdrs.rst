@@ -44,3 +44,12 @@ Protected instance Operations
             get_protected_instance, update_protected_instance, find_protected_instance,
             attach_replication_pair, detach_replication_pair, add_nic,
             delete_nic, modify_protected_instance
+
+Replication pair Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.sdrs.v1._proxy.Proxy
+  :noindex:
+  :members: create_replication_pair, delete_replication_pair, replication_pairs,
+            get_replication_pair, find_replication_pair, expand_replication_pair,
+            update_replication_pair

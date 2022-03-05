@@ -16,6 +16,8 @@ from otcextensions.sdk.sdrs.v1 import job as _job
 from otcextensions.sdk.sdrs.v1 import active_domains as _active_domains
 from otcextensions.sdk.sdrs.v1 import protection_group as _protection_group
 from otcextensions.sdk.sdrs.v1 import protected_instance as _protected_instance
+from otcextensions.sdk.sdrs.v1 import replication_pair as _replication_pair
+from otcextensions.sdk.sdrs.v1 import dr_drill as _dr_drill
 
 
 class Proxy(proxy.Proxy):
@@ -112,7 +114,7 @@ class Proxy(proxy.Proxy):
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
             when the group does not exist.
             When set to ``True``, no exception will be set when attempting
-            to delete a nonexistent protection group.
+            to find a nonexistent protection group.
 
         :returns: a :class:`~otcextensions.sdk.sdrs.v1.protection_group.ProtectionGroup`
         """
@@ -265,8 +267,8 @@ class Proxy(proxy.Proxy):
             * `offset`: Offset value
             * 'protected_instance_ids': Protected instance ID list
             * 'query_type': Query type of protected instance
-            * 'server_group_id': Protected instance ID
-            * 'server_group_ids': Protected instance ID list
+            * 'server_group_id': Protection group ID
+            * 'server_group_ids': Protection groups ID list
             * `status`: Status
 
         :returns: A generator of protected instances
@@ -315,9 +317,9 @@ class Proxy(proxy.Proxy):
         :param name_or_id: The name or ID of a protected instance
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
-            when the group does not exist.
+            when the instance does not exist.
             When set to ``True``, no exception will be set when attempting
-            to delete a nonexistent protection group.
+            to find a nonexistent protected instance.
 
         :returns: a :class:`~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
         """
@@ -328,42 +330,48 @@ class Proxy(proxy.Proxy):
         )
 
     def attach_replication_pair(self, protected_instance,
-                                replication_id,
+                                replication,
                                 device='/dev/vdb'):
         """Attach replication pair to protected instance
 
         :param protected_instance: The value can be the ID of a protected instance
             or a :class:`~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
-        :param replication_id:
+        :param replication:The value can be the ID of a replication pair
+            or a :class:`~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`
         :param device: Disk device name of replication pair
         """
         protected_instance = self._get_resource(
             _protected_instance.ProtectedInstance,
             protected_instance)
+        replication = self._get_resource(
+            _replication_pair.ReplicationPair, replication)
 
         return protected_instance.attach_pair(
             self,
             protected_instance=protected_instance.id,
-            replication_id=replication_id,
+            replication_id=replication.id,
             device=device
         )
 
     def detach_replication_pair(self,
                                 protected_instance,
-                                replication_id):
+                                replication):
         """Detach replication pair from protected instance
 
         :param protected_instance: The value can be the ID of a protected instance
             or a :class:`~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
-        :param replication_id:
+        :param replication:The value can be the ID of a replication pair
+            or a :class:`~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`
         """
         protected_instance = self._get_resource(
             _protected_instance.ProtectedInstance,
             protected_instance)
+        replication = self._get_resource(
+            _replication_pair.ReplicationPair, replication)
         return protected_instance.detach_pair(
             self,
             protected_instance=protected_instance.id,
-            replication_id=replication_id
+            replication_id=replication.id
         )
 
     def add_nic(self, protected_instance, subnet_id,
@@ -428,4 +436,135 @@ class Proxy(proxy.Proxy):
             flavor=flavor,
             production_flavor=production_flavor,
             dr_flavor=dr_flavor
+        )
+
+    # ======== Replication pair ========
+
+    def create_replication_pair(self, **attrs):
+        """Creating a replication pair using attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`,
+            comprised of the properties on the Replication Pair class.
+        :returns: The results of config creation
+        :rtype: :class:`~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`
+        """
+        return self._create(
+            _replication_pair.ReplicationPair,
+            **attrs
+        )
+
+    def delete_replication_pair(self, replication, server_group_id=None,
+                                delete_target_volume=False, ignore_missing=True):
+        """Delete a single SDRS replication pair
+
+        :param replication: The value can be the ID of a replication pair
+             or a :class:`~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`
+             instance.
+        :param bool server_group_id: Protection group ID of replication pair
+        :param bool delete_target_volume: Specifies whether DR site
+            volume should be deleted after replication pair deletion
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the group does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent protected instance
+        :returns: instance of
+            :class:`~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`
+        """
+        res = self._get_resource(_replication_pair.ReplicationPair,
+                                 replication)
+        try:
+            del_in = res.delete(self, server_group_id=server_group_id,
+                                delete_target_volume=delete_target_volume)
+        except exceptions.ResourceNotFound:
+            if ignore_missing:
+                return None
+            raise
+        return del_in
+
+    def replication_pairs(self, **query):
+        """Retrieve a generator of Replication pairs
+
+        :param dict query: Optional query parameters to be sent to limit the
+            resources being returned.
+            * 'availability_zone': Production site AZ
+            * `limit`: Number of records displayed per page
+            * `name`: Replication pair name
+            * `offset`: Offset value
+            * 'protected_instance_id': Protected instance ID
+            * 'protected_instance_ids': Protected instances ID list
+            * 'query_type': Query type of replication pair
+                Values: status_abnormal, general
+            * 'server_group_id': Protection group ID
+            * 'server_group_ids': Protection groups ID list
+            * `status`: Status
+
+        :returns: A generator of replication pairs
+            :class:`~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`
+            instances
+        """
+        return self._list(_replication_pair.ReplicationPair,
+                          **query)
+
+    def get_replication_pair(self, replication):
+        """Get the SDRS replication pair by UUID.
+
+        :param replication: key id or an instance of
+            :class:`~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`
+
+        :returns: instance of
+            :class:`~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`
+        """
+        return self._get(_replication_pair.ReplicationPair,
+                         replication)
+
+    def find_replication_pair(self, name_or_id, ignore_missing=True):
+        """Find a single SDRS replication pair by name or id
+
+        :param name_or_id: The name or ID of a replication pair
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the pair does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to find a nonexistent replication pair
+
+        :returns: a :class:`~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`
+        """
+        return self._find(
+            _replication_pair.ReplicationPair,
+            name_or_id,
+            ignore_missing=ignore_missing
+        )
+
+    def expand_replication_pair(self, replication, new_size):
+        """Expand replication pair
+
+        :param replication: The value can be the ID of a replication pair
+            or a :class:`~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`
+        :param int new_size: Replication pair new size
+        """
+        replication = self._get_resource(_replication_pair.ReplicationPair,
+                                         replication)
+        return replication.expand_replication(self,
+                                              replication=replication.id,
+                                              new_size=new_size)
+
+    def update_replication_pair(self, replication, name):
+        """Update SDRS replication pair name
+
+        :param replication: The value can be the ID of a replication pair
+            or a :class:`~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`
+            instance.
+        :param str name: name to be updated for replication pair
+
+        :rtype: :class:`~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`
+        """
+        replication = self._get_resource(
+            _replication_pair.ReplicationPair, replication
+        )
+        return self._update(
+            _replication_pair.ReplicationPair,
+            replication,
+            name=name
         )

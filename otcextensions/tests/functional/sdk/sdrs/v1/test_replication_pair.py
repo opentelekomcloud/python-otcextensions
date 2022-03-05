@@ -16,12 +16,12 @@ from otcextensions.tests.functional import base
 _logger = _log.setup_logging('openstack')
 
 
-class TestDomains(base.BaseFunctionalTest):
+class TestReplicationPair(base.BaseFunctionalTest):
 
     def setUp(self):
-        super(TestDomains, self).setUp()
+        super(TestReplicationPair, self).setUp()
         self.sdrs = self.conn.sdrs
 
     def test_list(self):
-        objects = list(self.sdrs.get_domains())
+        objects = list(self.sdrs.replication_pairs())
         self.assertGreaterEqual(len(objects), 0)

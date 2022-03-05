@@ -11,3 +11,12 @@ The ``ProtectedInstance`` class inherits from
 
 .. autoclass:: otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance
    :members:
+
+.. autoclass:: otcextensions.sdk.sdrs.v1.protected_instance.Attachment
+   :members:
+
+.. autoclass:: otcextensions.sdk.sdrs.v1.protected_instance.Metadata
+   :members:
+
+.. autoclass:: otcextensions.sdk.sdrs.v1.protected_instance.TagSpec
+   :members:

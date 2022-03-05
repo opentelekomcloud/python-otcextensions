@@ -16,10 +16,10 @@ from otcextensions.tests.functional import base
 _logger = _log.setup_logging('openstack')
 
 
-class TestJob(base.BaseFunctionalTest):
+class TestProtectionGroup(base.BaseFunctionalTest):
 
     def setUp(self):
-        super(TestJob, self).setUp()
+        super(TestProtectionGroup, self).setUp()
         self.sdrs = self.conn.sdrs
 
     def test_list(self):

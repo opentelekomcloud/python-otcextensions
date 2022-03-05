@@ -18,6 +18,7 @@ from otcextensions.sdk.sdrs.v1 import job as _job
 from otcextensions.sdk.sdrs.v1 import active_domains as _active_domains
 from otcextensions.sdk.sdrs.v1 import protection_group as _protection_group
 from otcextensions.sdk.sdrs.v1 import protected_instance as _protected_instance
+from otcextensions.sdk.sdrs.v1 import replication_pair as _replication_pair
 
 
 class TestSDRSProxy(test_proxy_base.TestProxyBase):
@@ -128,7 +129,7 @@ class TestSDRSProtectionGroup(TestSDRSProxy):
         )
 
 
-class TestSDRSProtectionGroup(TestSDRSProxy):
+class TestSDRSProtedInstance(TestSDRSProxy):
 
     def test_protected_instance_create(self):
         self.verify_create(self.proxy.create_protected_instance,
@@ -177,31 +178,31 @@ class TestSDRSProtectionGroup(TestSDRSProxy):
 
     def test_attach_replication_pair(self):
         protected_instance = _protected_instance.ProtectedInstance()
-        replication_id = 'replication_id'
+        replication = _replication_pair.ReplicationPair()
         device = 'device_name'
         self._verify(
             mock_method='otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance.attach_pair',
             test_method=self.proxy.attach_replication_pair,
-            method_args=[protected_instance, replication_id, device],
+            method_args=[protected_instance, replication, device],
             expected_args=[self.proxy],
             expected_kwargs={
                 'protected_instance': protected_instance.id,
-                'replication_id': replication_id,
+                'replication_id': replication.id,
                 'device': device
             }
         )
 
     def test_detach_replication_pair(self):
         protected_instance = _protected_instance.ProtectedInstance()
-        replication_id = 'replication_id'
+        replication = _replication_pair.ReplicationPair()
         self._verify(
             mock_method='otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance.detach_pair',
             test_method=self.proxy.detach_replication_pair,
-            method_args=[protected_instance, replication_id],
+            method_args=[protected_instance, replication],
             expected_args=[self.proxy],
             expected_kwargs={
                 'protected_instance': protected_instance.id,
-                'replication_id': replication_id
+                'replication_id': replication.id
             }
         )
 
@@ -251,5 +252,67 @@ class TestSDRSProtectionGroup(TestSDRSProxy):
                 'flavor': flavor,
                 'production_flavor': production_flavor,
                 'dr_flavor': None
+            }
+        )
+
+class TestSDRSReplicationPair(TestSDRSProxy):
+
+    def test_replication_pair_create(self):
+        self.verify_create(self.proxy.create_replication_pair,
+                           _replication_pair.ReplicationPair,
+                           method_kwargs={'name': 'id'},
+                           expected_kwargs={'name': 'id'})
+
+    def test_replication_pair_delete(self):
+        replication_pair = _replication_pair.ReplicationPair()
+        server_group_id = 'server_group_id'
+        delete_target_volume = True
+        self._verify(
+            mock_method='otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair.delete',
+            test_method=self.proxy.delete_replication_pair,
+            method_args=[replication_pair, server_group_id, delete_target_volume],
+            expected_args=[self.proxy],
+            expected_kwargs={
+                'server_group_id': server_group_id,
+                'delete_target_volume': delete_target_volume
+            }
+        )
+
+    def test_replication_pair(self):
+        self.verify_list(self.proxy.replication_pairs,
+                         _replication_pair.ReplicationPair)
+
+    def test_replication_pair_get(self):
+        self.verify_get(self.proxy.get_replication_pair,
+                        _replication_pair.ReplicationPair)
+
+    def test_replication_pair_find(self):
+        self.verify_find(self.proxy.find_replication_pair,
+                         _replication_pair.ReplicationPair)
+
+    def test_replication_pair_expand(self):
+        replication = _replication_pair.ReplicationPair(id='replication')
+        new_size = 100
+        self._verify(
+            mock_method='otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair.expand_replication',
+            test_method=self.proxy.expand_replication_pair,
+            method_args=[replication, new_size],
+            expected_args=[self.proxy],
+            expected_kwargs={
+                'replication': replication.id,
+                'new_size': new_size
+                }
+        )
+
+    def test_replication_pair_update(self):
+        replication = _replication_pair.ReplicationPair()
+        name = 'name'
+        self._verify(
+            'openstack.proxy.Proxy._update',
+            self.proxy.update_replication_pair,
+            method_args=[replication, name],
+            expected_args=[_replication_pair.ReplicationPair, replication],
+            expected_kwargs={
+                'name': name
             }
         )
