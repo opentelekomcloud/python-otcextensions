@@ -21,6 +21,7 @@ from otcextensions.sdk.sdrs.v1 import dr_drill as _dr_drill
 
 
 class Proxy(proxy.Proxy):
+
     skip_discovery = True
 
     # ======== Job ========
@@ -64,6 +65,7 @@ class Proxy(proxy.Proxy):
             resources being returned.
             * 'availability_zone': Production site AZ
             * `limit`: Number of records displayed per page
+            * `marker`: ID of the last record displayed
             * `name`: Protection group name
             * `offset`: Offset value
             * 'query_type': Query type of protection group
@@ -263,6 +265,7 @@ class Proxy(proxy.Proxy):
             resources being returned.
             * 'availability_zone': Production site AZ
             * `limit`: Number of records displayed per page
+            * `marker`: ID of the last record displayed
             * `name`: Protection group name
             * `offset`: Offset value
             * 'protected_instance_ids': Protected instance ID list
@@ -490,6 +493,7 @@ class Proxy(proxy.Proxy):
             resources being returned.
             * 'availability_zone': Production site AZ
             * `limit`: Number of records displayed per page
+            * `marker`: ID of the last record displayed
             * `name`: Replication pair name
             * `offset`: Offset value
             * 'protected_instance_id': Protected instance ID
@@ -566,5 +570,108 @@ class Proxy(proxy.Proxy):
         return self._update(
             _replication_pair.ReplicationPair,
             replication,
+            name=name
+        )
+
+    # ======== Disaster recovery drill ========
+
+    def create_dr_drill(self, **attrs):
+        """Creating a disaster recovery drill using attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.sdrs.v1.dr_drill.DRDrill`,
+            comprised of the properties on the DR drill class.
+        :returns: The results of config creation
+        :rtype: :class:`~otcextensions.sdk.sdrs.v1.dr_drill.DRDrill`
+        """
+        return self._create(
+            _dr_drill.DRDrill,
+            **attrs
+        )
+
+    def delete_dr_drill(self, dr_drill, ignore_missing=True):
+        """Delete a single SDRS DR drill
+
+        :param dr_drill: The value can be the ID of a dr_drill
+             or a :class:`~otcextensions.sdk.sdrs.v1.dr_drill.DRDrill`
+             instance.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~otcextensions.sdk.sdrs.v1.dr_drill.DRDrill` will
+            be raised when the dr_drill does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent DR drill
+        """
+        return self._delete(
+            _dr_drill.DRDrill,
+            dr_drill,
+            ignore_missing=ignore_missing,
+        )
+
+    def dr_drills(self, **query):
+        """Retrieve a generator of DR drills
+
+        :param dict query: Optional query parameters to be sent to limit the
+            resources being returned.
+            * 'drill_vpc_id': VPC ID used for DR drill
+            * `limit`: Number of records displayed per page
+            * `marker`: ID of the last record displayed
+            * `name`: DR drill name
+            * `offset`: Offset value
+            * 'server_group_id': Protection group ID
+            * `status`: Status
+
+        :returns: A generator of dr drills
+            :class:`~otcextensions.sdk.sdrs.v1.dr_drill.DRDrill`
+            instances
+        """
+        return self._list(_dr_drill.DRDrill,
+                          **query)
+
+    def get_dr_drill(self, dr_drill):
+        """Get the SDRS DR drill by UUID.
+
+        :param dr_drill: key id or an instance of
+            :class:`~otcextensions.sdk.sdrs.v1.dr_drill.DRDrill`
+
+        :returns: instance of
+            :class:`~otcextensions.sdk.sdrs.v1.dr_drill.DRDrill`
+        """
+        return self._get(_dr_drill.DRDrill,
+                         dr_drill)
+
+    def find_dr_drill(self, name_or_id, ignore_missing=True):
+        """Find a single SDRS DR drill by name or id
+
+        :param name_or_id: The name or ID of a DR drill
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the pair does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to find a nonexistent DR drill
+
+        :returns: a :class:`~otcextensions.sdk.sdrs.v1.dr_drill.DRDrill`
+        """
+        return self._find(
+            _dr_drill.DRDrill,
+            name_or_id,
+            ignore_missing=ignore_missing
+        )
+
+    def update_dr_drill(self, dr_drill, name):
+        """Update SDRS DR drill name
+
+        :param dr_drill: The value can be the ID of a DR drill
+            or a :class:`~otcextensions.sdk.sdrs.v1.dr_drill.DRDrill`
+            instance.
+        :param str name: name to be updated for DR drill
+
+        :rtype: :class:`~otcextensions.sdk.sdrs.v1.dr_drill.DRDrill`
+        """
+        dr_drill = self._get_resource(
+            _dr_drill.DRDrill, dr_drill
+        )
+        return self._update(
+            _dr_drill.DRDrill,
+            dr_drill,
             name=name
         )

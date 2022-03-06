@@ -53,3 +53,11 @@ Replication pair Operations
   :members: create_replication_pair, delete_replication_pair, replication_pairs,
             get_replication_pair, find_replication_pair, expand_replication_pair,
             update_replication_pair
+
+Disaster Recovery drill Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.sdrs.v1._proxy.Proxy
+  :noindex:
+  :members: create_dr_drill, delete_dr_drill, dr_drills,
+            get_dr_drill, find_dr_drill, update_dr_drill

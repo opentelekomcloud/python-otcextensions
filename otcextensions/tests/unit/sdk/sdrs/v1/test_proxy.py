@@ -19,6 +19,7 @@ from otcextensions.sdk.sdrs.v1 import active_domains as _active_domains
 from otcextensions.sdk.sdrs.v1 import protection_group as _protection_group
 from otcextensions.sdk.sdrs.v1 import protected_instance as _protected_instance
 from otcextensions.sdk.sdrs.v1 import replication_pair as _replication_pair
+from otcextensions.sdk.sdrs.v1 import dr_drill as _dr_drill
 
 
 class TestSDRSProxy(test_proxy_base.TestProxyBase):
@@ -255,6 +256,7 @@ class TestSDRSProtedInstance(TestSDRSProxy):
             }
         )
 
+
 class TestSDRSReplicationPair(TestSDRSProxy):
 
     def test_replication_pair_create(self):
@@ -301,7 +303,7 @@ class TestSDRSReplicationPair(TestSDRSProxy):
             expected_kwargs={
                 'replication': replication.id,
                 'new_size': new_size
-                }
+            }
         )
 
     def test_replication_pair_update(self):
@@ -316,3 +318,42 @@ class TestSDRSReplicationPair(TestSDRSProxy):
                 'name': name
             }
         )
+
+
+class TestSDRSDRDrill(TestSDRSProxy):
+
+    def test_dr_drill_create(self):
+        self.verify_create(self.proxy.create_dr_drill,
+                           _dr_drill.DRDrill,
+                           method_kwargs={'name': 'id'},
+                           expected_kwargs={'name': 'id'})
+
+    def test_dr_drill_delete(self):
+        self.verify_delete(self.proxy.delete_dr_drill,
+                           _dr_drill.DRDrill)
+
+    def test_dr_drill_list(self):
+        self.verify_list(self.proxy.dr_drills,
+                         _dr_drill.DRDrill)
+
+    def test_dr_drill_get(self):
+        self.verify_get(self.proxy.get_dr_drill,
+                        _dr_drill.DRDrill)
+
+    def test_dr_drill_find(self):
+        self.verify_find(self.proxy.find_dr_drill,
+                         _dr_drill.DRDrill)
+
+    def test_dr_drill_update(self):
+        drill = _dr_drill.DRDrill()
+        name = 'name'
+        self._verify(
+            'openstack.proxy.Proxy._update',
+            self.proxy.update_dr_drill,
+            method_args=[drill, name],
+            expected_args=[_dr_drill.DRDrill, drill],
+            expected_kwargs={
+                'name': name
+            }
+        )
+        
