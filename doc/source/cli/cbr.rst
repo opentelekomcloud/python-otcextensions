@@ -10,6 +10,14 @@ For help on a specific `cbr` command, enter:
 
    $ openstack cbr help SUBCOMMAND
 
+.. _cbr_checkpoint:
+
+Checkpoint operations
+---------------------
+
+.. autoprogram-cliff:: openstack.cbr.v3
+   :command: cbr checkpoint *
+
 .. _cbr_policy:
 
 Policy operations
