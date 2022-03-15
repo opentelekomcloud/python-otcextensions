@@ -146,14 +146,18 @@ class TestCreateCheckpoint(fakes.TestCBR):
     def test_default(self):
         arglist = [
             '--vault-id', 'vault_id',
+            '--auto-trigger',
             '--description', 'description',
+            '--no-incremental',
             '--backup-name', 'backup_name',
             '--resources', 'resource-1-uuid',
             '--resources', 'resource-2-uuid'
         ]
         verifylist = [
             ('vault_id', 'vault_id'),
+            ('auto_trigger', True),
             ('description', 'description'),
+            ('no_incremental', False),
             ('backup_name', 'backup_name'),
             ('resources', ['resource-1-uuid', 'resource-2-uuid'])
         ]
@@ -171,11 +175,15 @@ class TestCreateCheckpoint(fakes.TestCBR):
 
         self.client.create_checkpoint.assert_called_once_with(
             parameters={
+                'auto-trigger': True,
                 'description': 'description',
+                'incremental': False,
                 'name': 'backup_name',
                 'resources': ['resource-1-uuid', 'resource-2-uuid']},
             vault_id='vault_id',
         )
+
+        a = 5
 
         # self.data, self.columns = policy._add_scheduling_patterns(
         #     self.object,

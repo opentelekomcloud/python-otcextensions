@@ -121,8 +121,9 @@ class CreateCheckpoint(command.ShowOne):
         )
         parser.add_argument(
             '--auto-trigger',
-            default=False,
-            help=_('Whether automatic triggering is enabled. ')
+            dest='auto_trigger',
+            action='store_true',
+            help=_('Whether automatic triggering is enabled.')
         )
         parser.add_argument(
             '--description',
@@ -130,8 +131,9 @@ class CreateCheckpoint(command.ShowOne):
             help=_('Backup description.')
         )
         parser.add_argument(
-            '--incremental',
-            default=False,
+            '--no-incremental',
+            dest='no_incremental',
+            action='store_false',
             help=_('Scheduling rule.\n'
                    'Repeat Option for multiple rules.')
         )
@@ -182,22 +184,20 @@ class CreateCheckpoint(command.ShowOne):
                 attrs['resource_details'].append(resource)
 
         # optional
-        if parsed_args.auto_trigger:
-            attrs['parameters'].update(
-                auto_trigger=parsed_args.auto_trigger)
+
+        if parsed_args.auto_trigger is not None:
+            attrs['parameters'].update(auto_trigger=parsed_args.auto_trigger)
         if parsed_args.description:
             attrs['parameters'].update(
                 description=parsed_args.description)
-        if parsed_args.incremental:
-            attrs['parameters'].update(
-                incremental=parsed_args.incremental)
+        if parsed_args.no_incremental is not None:
+            attrs['parameters'].update(incremental=parsed_args.no_incremental)
         if parsed_args.backup_name:
             attrs['parameters'].update(
                 name=parsed_args.backup_name)
         if parsed_args.resources:
             attrs['parameters'].update(
                 resources=parsed_args.resources)
-
         client = self.app.client_manager.cbr
         obj = client.create_checkpoint(**attrs)
 
