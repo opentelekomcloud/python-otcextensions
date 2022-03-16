@@ -50,6 +50,7 @@ class TestCheckpoint(fakes.TestCBR):
 
         self.assertEqual(data, cmp_data)
 
+
 class TestShowCheckpoint(fakes.TestCBR):
 
     object = fakes.FakeCheckpoint.create_one()
@@ -183,13 +184,3 @@ class TestCreateCheckpoint(fakes.TestCBR):
             vault_id='vault_id',
         )
 
-        a = 5
-
-        # self.data, self.columns = policy._add_scheduling_patterns(
-        #     self.object,
-        #     self.data,
-        #     self.columns
-        # )
-        #
-        # self.assertEqual(self.columns, columns)
-        # self.assertEqual(self.data, data)

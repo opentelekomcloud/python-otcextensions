@@ -24,20 +24,25 @@ LOG = logging.getLogger(__name__)
 def _flatten_checkpoint(obj):
     """Flatten the structure of the checkpoint into a single dict
     """
-    vault = obj.vault
-    ei = obj.extra_info
+    vault_id, vault_name, backup_name = ('', '', '')
+    if obj.vault:
+        vault_id = obj.vault.id
+        vault_name = obj.vault.name
+    if obj.extra_info:
+        backup_name = obj.extra_info.name
     data = {
         'created_at': obj.created_at,
         'id': obj.id,
         'project_id': obj.project_id,
         'status': obj.status,
         'name': obj.name,
-        'vault_id': vault.id,
-        'vault_name': vault.name,
-        'backup_name': ei.name
+        'vault_id': vault_id,
+        'vault_name': vault_name,
+        'backup_name': backup_name
     }
 
     return data
+
 
 def _add_resources_to_obj(obj, data, columns):
     """Add resources to obj.vault
@@ -50,6 +55,7 @@ def _add_resources_to_obj(obj, data, columns):
             columns = columns + (name,)
             i += 1
     return data, columns
+
 
 def _add_skipped_resources_to_obj(obj, data, columns):
     """Add skipped resources to obj.vault
@@ -81,7 +87,7 @@ class ShowCheckpoint(command.ShowOne):
         parser.add_argument(
             'checkpoint',
             metavar='<checkpoint>',
-            help=_('ID or name of the CBR restore point.')
+            help=_('ID of the CBR checkpoint.')
         )
         return parser
 

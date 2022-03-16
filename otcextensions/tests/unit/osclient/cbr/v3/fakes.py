@@ -99,11 +99,11 @@ class FakeCheckpoint(test_base.Fake):
                 {
                     'id': uuid.uuid4().hex,
                     'name': uuid.uuid4().hex
-                },
+            },
             'extra_info':
                 {
                     'name': 'backup-' + uuid.uuid4().hex
-                }
+            }
         }
 
         obj = checkpoint.Checkpoint.existing(**object_info)
