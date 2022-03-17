@@ -198,7 +198,7 @@ class CreateCheckpoint(command.ShowOne):
             attrs['parameters'].update(
                 resources=parsed_args.resources)
         if parsed_args.resource_details:
-            attrs['parameters'].update(resource_details = _normalize_resources(
+            attrs['parameters'].update(resource_details=_normalize_resources(
                 parsed_args.resource_details))
 
         client = self.app.client_manager.cbr

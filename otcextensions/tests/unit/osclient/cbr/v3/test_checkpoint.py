@@ -198,7 +198,8 @@ class TestCreateCheckpoint(fakes.TestCBR):
                 'incremental': False,
                 'name': 'backup_name',
                 'resources': ['resource-1-uuid', 'resource-2-uuid'],
-                'resource_details': [{'id': 'uuid', 'name': 'name', 'type': 'OS::Nova::Server'}]},
+                'resource_details': [{'id': 'uuid', 'name': 'name',
+                                      'type': 'OS::Nova::Server'}]},
             vault_id='vault_id',
         )
 
