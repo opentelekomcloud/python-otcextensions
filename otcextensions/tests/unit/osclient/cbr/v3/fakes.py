@@ -98,7 +98,18 @@ class FakeCheckpoint(test_base.Fake):
             'vault':
                 {
                     'id': uuid.uuid4().hex,
-                    'name': uuid.uuid4().hex
+                    'name': uuid.uuid4().hex,
+                    "resources": [
+                        {
+                            'name': 'resource-name-' + uuid.uuid4().hex,
+                            'resource_size': '6',
+                            'backup_size': '6840',
+                            'protect_status': 'available',
+                            'backup_count': '18',
+                            'type': 'OS::Nova::Server',
+                            'id': 'pid-' + uuid.uuid4().hex,
+                            'extra_info': '{}'
+                        }]
             },
             'extra_info':
                 {

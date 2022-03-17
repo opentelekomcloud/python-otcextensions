@@ -44,6 +44,14 @@ def _flatten_checkpoint(obj):
     return data
 
 
+def _normalize_resources(resource_details):
+    result = []
+    for rd in resource_details:
+        res = dict(map(lambda s: s.split('='), rd.split(' ')))
+        result.append(res)
+    return result
+
+
 def _add_resources_to_obj(obj, data, columns):
     """Add resources to obj.vault
     """
@@ -155,12 +163,12 @@ class CreateCheckpoint(command.ShowOne):
         )
 
         parser.add_argument(
-            '--resource_details',
+            '--resource-details',
+            metavar='<resource_details>',
             action='append',
-            help=_('Resource details. "ID" - ID of the resource to be backed'
-                   'up, "name" - Name of the resource to be backed up,'
-                   '"type" - Type of the resource to be backed up, which can'
-                   ' be OS::Nova::Server or OS::Cinder::Volume.')
+            help=_('Associated resource in "id=resource_id '
+                   'type=resource_type name=resource_name" format.'
+                   'Repeat for multiple values.')
         )
 
         return parser
@@ -173,21 +181,6 @@ class CreateCheckpoint(command.ShowOne):
 
         # mandatory
         attrs['vault_id'] = parsed_args.vault_id
-
-        if parsed_args.resource_details:
-            list_resource_details = parsed_args.resource_details
-
-            attrs['resource_details'] = []
-
-            for rd in list_resource_details:
-                # if not rd['id']:
-                resource = {'id': rd['id']}
-                if rd['name']:
-                    resource['name'] = rd['name']
-                if rd['type']:
-                    resource['type'] = rd['type']
-
-                attrs['resource_details'].append(resource)
 
         # optional
 
@@ -204,6 +197,10 @@ class CreateCheckpoint(command.ShowOne):
         if parsed_args.resources:
             attrs['parameters'].update(
                 resources=parsed_args.resources)
+        if parsed_args.resource_details:
+            attrs['parameters'].update(resource_details = _normalize_resources(
+                parsed_args.resource_details))
+
         client = self.app.client_manager.cbr
         obj = client.create_checkpoint(**attrs)
 
@@ -211,7 +208,7 @@ class CreateCheckpoint(command.ShowOne):
             _flatten_checkpoint(obj), self.columns)
 
         if obj.vault.resources:
-            data, self.colomns = _add_resources_to_obj(obj, data, self.columns)
+            data, self.columns = _add_resources_to_obj(obj, data, self.columns)
 
         if obj.vault.skipped_resources:
             data, self.columns = _add_skipped_resources_to_obj(obj, data,
