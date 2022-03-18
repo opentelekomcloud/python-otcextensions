@@ -61,3 +61,11 @@ Disaster Recovery drill Operations
   :noindex:
   :members: create_dr_drill, delete_dr_drill, dr_drills,
             get_dr_drill, find_dr_drill, update_dr_drill
+
+Task Center Operations
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.sdrs.v1._proxy.Proxy
+  :noindex:
+  :members: failed_tasks, delete_failed_task, delete_all_failed_tasks,
+            delete_protection_group_tasks

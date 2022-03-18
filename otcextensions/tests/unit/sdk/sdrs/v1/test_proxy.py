@@ -20,6 +20,7 @@ from otcextensions.sdk.sdrs.v1 import protection_group as _protection_group
 from otcextensions.sdk.sdrs.v1 import protected_instance as _protected_instance
 from otcextensions.sdk.sdrs.v1 import replication_pair as _replication_pair
 from otcextensions.sdk.sdrs.v1 import dr_drill as _dr_drill
+from otcextensions.sdk.sdrs.v1 import task_center as _task_center
 
 
 class TestSDRSProxy(test_proxy_base.TestProxyBase):
@@ -355,5 +356,35 @@ class TestSDRSDRDrill(TestSDRSProxy):
             expected_kwargs={
                 'name': name
             }
+        )
+
+
+class TestSDRSTaskCenter(TestSDRSProxy):
+
+    def test_failed_tasks(self):
+        self.verify_list(self.proxy.failed_tasks,
+                         _task_center.FailedTask)
+
+    def test_failed_task_delete(self):
+        self.verify_delete(self.proxy.delete_failed_task,
+                           _task_center.FailedTask)
+
+    def test_delete_all_failed_tasks(self):
+        endpoint = self.proxy.get_endpoint()
+        self._verify(
+            mock_method='otcextensions.sdk.sdrs.v1.task_center.FailedTask.delete_all_tasks',
+            test_method=self.proxy.delete_all_failed_tasks,
+            method_args=[],
+            expected_args=[self.session, endpoint]
+        )
+
+    def test_delete_protection_group_tasks(self):
+        endpoint = self.proxy.get_endpoint()
+        group = _protection_group.ProtectionGroup()
+        self._verify(
+            mock_method='otcextensions.sdk.sdrs.v1.task_center.FailedTask.delete_protection_tasks',
+            test_method=self.proxy.delete_protection_group_tasks,
+            method_args=[group],
+            expected_args=[self.session, endpoint, group.id]
         )
         

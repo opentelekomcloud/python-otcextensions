@@ -1,7 +1,7 @@
 otcextensions.sdk.sdrs.v1.active_domains.ActiveDomains
 ======================================================
 
-.. automodule:: otcextensions.sdk.sdrs.v1.job
+.. automodule:: otcextensions.sdk.sdrs.v1.active_domains
 
 The SDRS Active-active domain Class
 -----------------------------------

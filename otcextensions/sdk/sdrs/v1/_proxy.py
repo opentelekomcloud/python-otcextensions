@@ -18,10 +18,10 @@ from otcextensions.sdk.sdrs.v1 import protection_group as _protection_group
 from otcextensions.sdk.sdrs.v1 import protected_instance as _protected_instance
 from otcextensions.sdk.sdrs.v1 import replication_pair as _replication_pair
 from otcextensions.sdk.sdrs.v1 import dr_drill as _dr_drill
+from otcextensions.sdk.sdrs.v1 import task_center as _task_center
 
 
 class Proxy(proxy.Proxy):
-
     skip_discovery = True
 
     # ======== Job ========
@@ -228,7 +228,7 @@ class Proxy(proxy.Proxy):
             **attrs
         )
 
-    def delete_protected_instance(self, protected_instance,  delete_target_server=False,
+    def delete_protected_instance(self, protected_instance, delete_target_server=False,
                                   delete_target_eip=False, ignore_missing=True):
         """Delete a single SDRS protected instance.
 
@@ -675,3 +675,67 @@ class Proxy(proxy.Proxy):
             dr_drill,
             name=name
         )
+
+    # ======== Failed tasks ========
+
+    def failed_tasks(self, **query):
+        """Retrieve a generator of Failed tasks
+
+        :param dict query: Optional query parameters to be sent to limit the
+            resources being returned.
+            * 'failure_status': query the task failure status
+            * `limit`: Number of records displayed per page
+            * `marker`: ID of the last record displayed
+            * `offset`: Offset value
+            * 'resource_name': protection group name
+            * `resource_type`: type of the resource
+            * `server_group_id`: protection group ID
+
+        :returns: A generator of failed tasks
+            :class:`~otcextensions.sdk.sdrs.v1.task_center.FailedTask`
+            instances
+        """
+        return self._list(_task_center.FailedTask,
+                          **query)
+
+    def delete_failed_task(self, failed_job_id, ignore_missing=True):
+        """Delete a single Failed task
+
+        :param failed_job_id: The value can be the ID of a failed task
+             or a :class:`~otcextensions.sdk.sdrs.v1.task_center.FailedTask`
+             instance.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~otcextensions.sdk.sdrs.v1.task_center.FailedTask` will
+            be raised when the dr_drill does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent Failed task
+        """
+        return self._delete(
+            _task_center.FailedTask,
+            failed_job_id,
+            ignore_missing=ignore_missing,
+        )
+
+    def delete_all_failed_tasks(self):
+        """Delete all failed tasks of all protection
+        groups
+        """
+        endpoint = self.get_endpoint()
+        return _task_center.FailedTask.delete_all_tasks(self.session, endpoint)
+
+    def delete_protection_group_tasks(self, protection_group):
+        """Delete all failed tasks of a single
+        protection group
+
+        :param protection_group: The value can be the ID of a protection group
+             or a :class:`~otcextensions.sdk.sdrs.v1.protection_group.ProtectionGroup`
+             instance.
+        """
+        protection_group = self._get_resource(
+            _protection_group.ProtectionGroup,
+            protection_group
+        )
+        endpoint = self.get_endpoint()
+        return _task_center.FailedTask.delete_protection_tasks(self.session,
+                                                               endpoint,
+                                                               protection_group.id)
