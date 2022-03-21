@@ -9,5 +9,6 @@ Storage Disaster Recovery Service Resources
    v1/job
    v1/protected_instance
    v1/protection_group
+   v1/quota
    v1/replication_pair
    v1/task_center

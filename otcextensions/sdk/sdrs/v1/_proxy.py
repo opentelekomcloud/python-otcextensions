@@ -19,6 +19,7 @@ from otcextensions.sdk.sdrs.v1 import protected_instance as _protected_instance
 from otcextensions.sdk.sdrs.v1 import replication_pair as _replication_pair
 from otcextensions.sdk.sdrs.v1 import dr_drill as _dr_drill
 from otcextensions.sdk.sdrs.v1 import task_center as _task_center
+from otcextensions.sdk.sdrs.v1 import quota as _quota
 
 
 class Proxy(proxy.Proxy):
@@ -739,3 +740,14 @@ class Proxy(proxy.Proxy):
         return _task_center.FailedTask.delete_protection_tasks(self.session,
                                                                endpoint,
                                                                protection_group.id)
+
+    # ======== Tenant SDRS quota ========
+
+    def quotas(self):
+        """Retrieve a generator of SDRS quotas
+
+        :returns: A generator of resource quotas
+            :class:`~otcextensions.sdk.sdrs.v1.quota.Quota`
+            instances
+        """
+        return self._list(_quota.Quota)

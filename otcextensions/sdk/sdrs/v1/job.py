@@ -12,13 +12,13 @@
 from openstack import resource
 
 
-class EntitySpecSub(resource.Body):
+class EntitySpecSub(resource.Resource):
     #: Properties
     #: Protection group ID
     server_group_id = resource.Body('server_group_id')
 
 
-class SubJob(resource.Body):
+class SubJob(resource.Resource):
     #: Properties
     #: Task begin time
     begin_time = resource.Body('begin_time')

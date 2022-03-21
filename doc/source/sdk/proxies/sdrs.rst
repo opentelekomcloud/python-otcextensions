@@ -69,3 +69,10 @@ Task Center Operations
   :noindex:
   :members: failed_tasks, delete_failed_task, delete_all_failed_tasks,
             delete_protection_group_tasks
+
+Quota Operations
+^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.sdrs.v1._proxy.Proxy
+  :noindex:
+  :members: quotas

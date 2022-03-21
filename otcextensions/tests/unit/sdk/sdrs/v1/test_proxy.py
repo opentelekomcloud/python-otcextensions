@@ -21,6 +21,7 @@ from otcextensions.sdk.sdrs.v1 import protected_instance as _protected_instance
 from otcextensions.sdk.sdrs.v1 import replication_pair as _replication_pair
 from otcextensions.sdk.sdrs.v1 import dr_drill as _dr_drill
 from otcextensions.sdk.sdrs.v1 import task_center as _task_center
+from otcextensions.sdk.sdrs.v1 import quota as _quota
 
 
 class TestSDRSProxy(test_proxy_base.TestProxyBase):
@@ -387,4 +388,10 @@ class TestSDRSTaskCenter(TestSDRSProxy):
             method_args=[group],
             expected_args=[self.session, endpoint, group.id]
         )
-        
+
+
+class TestSDRSQuotas(TestSDRSProxy):
+
+    def test_quotas(self):
+        self.verify_list(self.proxy.quotas,
+                         _quota.Quota)
