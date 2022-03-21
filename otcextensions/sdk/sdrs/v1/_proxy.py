@@ -92,7 +92,7 @@ class Proxy(proxy.Proxy):
         )
 
     def delete_protection_group(self, protection_group, ignore_missing=True):
-        """Delete a single SDRS protection_group.
+        """Delete a single SDRS protection group.
 
         :param protection_group: The value can be the ID of a protection_group
              or a :class:`~otcextensions.sdk.sdrs.v1.protection_group.ProtectionGroup`
