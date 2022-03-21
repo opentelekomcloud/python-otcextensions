@@ -20,6 +20,7 @@ class TestServiceSpecification(base.TestCase):
     def test_basic(self):
         sot = service_specification.ServiceSpecification()
         self.assertEqual('products', sot.resources_key)
+        self.assertEqual('/products', sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_fetch)

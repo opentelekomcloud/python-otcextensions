@@ -17,6 +17,8 @@ class AvailabilityZone(resource.Resource):
 
     resources_key = 'available_zones'
 
+    base_path = '/availableZones'
+
     # capabilities
     allow_list = True
 
