@@ -25,4 +25,3 @@ class TestDrDrill(base.BaseFunctionalTest):
     def test_list(self):
         objects = list(self.sdrs.dr_drills())
         self.assertGreaterEqual(len(objects), 0)
-

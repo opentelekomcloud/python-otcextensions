@@ -29,9 +29,12 @@ class Domains(resource.Resource):
     #: Active-active domain availability
     sold_out = resource.Body('sold_out', type=bool)
     #: Active-active domain local replication cluster parameters
-    local_replication_cluster = resource.Body('local_replication_cluster', type=ReplicationCluster)
+    local_replication_cluster = resource.Body('local_replication_cluster',
+                                              type=ReplicationCluster)
     #: Active-active domain remote replication cluster parameters
-    remote_replication_cluster = resource.Body('remote_replication_cluster', type=ReplicationCluster)
+    remote_replication_cluster = resource.Body(
+        'remote_replication_cluster',
+        type=ReplicationCluster)
 
 
 class ActiveDomains(resource.Resource):
@@ -44,7 +47,3 @@ class ActiveDomains(resource.Resource):
     #: Properties
     #: List of available domains
     domains = resource.Body('domains', type=list, list_type=Domains)
-
-
-
-

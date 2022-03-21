@@ -17,7 +17,8 @@ from openstack.tests.unit import test_proxy_base
 from otcextensions.sdk.sdrs.v1 import job as _job
 from otcextensions.sdk.sdrs.v1 import active_domains as _active_domains
 from otcextensions.sdk.sdrs.v1 import protection_group as _protection_group
-from otcextensions.sdk.sdrs.v1 import protected_instance as _protected_instance
+from otcextensions.sdk.sdrs.v1 import protected_instance as \
+    _protected_instance
 from otcextensions.sdk.sdrs.v1 import replication_pair as _replication_pair
 from otcextensions.sdk.sdrs.v1 import dr_drill as _dr_drill
 from otcextensions.sdk.sdrs.v1 import task_center as _task_center
@@ -40,7 +41,8 @@ class TestSDRSJob(TestSDRSProxy):
 class TestSDRSActiveDomains(TestSDRSProxy):
 
     def test_get_domains(self):
-        self.verify_list(self.proxy.get_domains, _active_domains.ActiveDomains)
+        self.verify_list(self.proxy.get_domains,
+                         _active_domains.ActiveDomains)
 
 
 class TestSDRSProtectionGroup(TestSDRSProxy):
@@ -84,7 +86,8 @@ class TestSDRSProtectionGroup(TestSDRSProxy):
     def test_enable_protection(self):
         group = _protection_group.ProtectionGroup()
         self._verify(
-            'otcextensions.sdk.sdrs.v1.protection_group.ProtectionGroup.enable_protection_group',
+            'otcextensions.sdk.sdrs.v1.'
+            'protection_group.ProtectionGroup.enable_protection_group',
             self.proxy.enable_protection,
             method_args=[group],
             expected_args=[self.proxy],
@@ -96,7 +99,8 @@ class TestSDRSProtectionGroup(TestSDRSProxy):
     def test_disable_protection(self):
         group = _protection_group.ProtectionGroup()
         self._verify(
-            'otcextensions.sdk.sdrs.v1.protection_group.ProtectionGroup.disable_protection_group',
+            'otcextensions.sdk.sdrs.v1.protection_group.'
+            'ProtectionGroup.disable_protection_group',
             self.proxy.disable_protection,
             method_args=[group],
             expected_args=[self.proxy],
@@ -108,7 +112,8 @@ class TestSDRSProtectionGroup(TestSDRSProxy):
     def test_perfrom_failover(self):
         group = _protection_group.ProtectionGroup()
         self._verify(
-            'otcextensions.sdk.sdrs.v1.protection_group.ProtectionGroup.perform_failover',
+            'otcextensions.sdk.sdrs.v1.protection_group.'
+            'ProtectionGroup.perform_failover',
             self.proxy.perform_failover,
             method_args=[group],
             expected_args=[self.proxy],
@@ -121,7 +126,8 @@ class TestSDRSProtectionGroup(TestSDRSProxy):
         group = _protection_group.ProtectionGroup()
         priority_station = 'target'
         self._verify(
-            'otcextensions.sdk.sdrs.v1.protection_group.ProtectionGroup.perform_planned_failover',
+            'otcextensions.sdk.sdrs.v1.protection_group.'
+            'ProtectionGroup.perform_planned_failover',
             self.proxy.perform_planned_failover,
             method_args=[group, priority_station],
             expected_args=[self.proxy],
@@ -144,7 +150,8 @@ class TestSDRSProtedInstance(TestSDRSProxy):
         protected_instance = _protected_instance.ProtectedInstance()
         delete_target_server = True
         self._verify(
-            mock_method='otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance.delete',
+            mock_method='otcextensions.sdk.sdrs.v1.'
+                        'protected_instance.ProtectedInstance.delete',
             test_method=self.proxy.delete_protected_instance,
             method_args=[protected_instance, delete_target_server],
             expected_args=[self.proxy],
@@ -169,7 +176,8 @@ class TestSDRSProtedInstance(TestSDRSProxy):
             'openstack.proxy.Proxy._update',
             self.proxy.update_protected_instance,
             method_args=[protected_instance, name],
-            expected_args=[_protected_instance.ProtectedInstance, protected_instance],
+            expected_args=[_protected_instance.ProtectedInstance,
+                           protected_instance],
             expected_kwargs={
                 'name': name
             }
@@ -184,7 +192,8 @@ class TestSDRSProtedInstance(TestSDRSProxy):
         replication = _replication_pair.ReplicationPair()
         device = 'device_name'
         self._verify(
-            mock_method='otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance.attach_pair',
+            mock_method='otcextensions.sdk.sdrs.v1.protected_instance.'
+                        'ProtectedInstance.attach_pair',
             test_method=self.proxy.attach_replication_pair,
             method_args=[protected_instance, replication, device],
             expected_args=[self.proxy],
@@ -199,7 +208,8 @@ class TestSDRSProtedInstance(TestSDRSProxy):
         protected_instance = _protected_instance.ProtectedInstance()
         replication = _replication_pair.ReplicationPair()
         self._verify(
-            mock_method='otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance.detach_pair',
+            mock_method='otcextensions.sdk.sdrs.v1.protected_instance.'
+                        'ProtectedInstance.detach_pair',
             test_method=self.proxy.detach_replication_pair,
             method_args=[protected_instance, replication],
             expected_args=[self.proxy],
@@ -215,9 +225,11 @@ class TestSDRSProtedInstance(TestSDRSProxy):
         security_groups = ['security_group_id_1', 'security_group_id_2']
         ip_address = 'ip_address'
         self._verify(
-            mock_method='otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance.add_nic',
+            mock_method='otcextensions.sdk.sdrs.v1.protected_instance.'
+                        'ProtectedInstance.add_nic',
             test_method=self.proxy.add_nic,
-            method_args=[protected_instance, subnet_id, security_groups, ip_address],
+            method_args=[protected_instance, subnet_id,
+                         security_groups, ip_address],
             expected_args=[self.proxy],
             expected_kwargs={
                 'protected_instance': protected_instance.id,
@@ -231,7 +243,8 @@ class TestSDRSProtedInstance(TestSDRSProxy):
         protected_instance = _protected_instance.ProtectedInstance()
         nic_id = 'nic_id'
         self._verify(
-            mock_method='otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance.delete_nic',
+            mock_method='otcextensions.sdk.sdrs.v1.protected_instance.'
+                        'ProtectedInstance.delete_nic',
             test_method=self.proxy.delete_nic,
             method_args=[protected_instance, nic_id],
             expected_args=[self.proxy],
@@ -246,7 +259,8 @@ class TestSDRSProtedInstance(TestSDRSProxy):
         flavor = 'flavor_id'
         production_flavor = 'production_flavor'
         self._verify(
-            mock_method='otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance.modify_instance',
+            mock_method='otcextensions.sdk.sdrs.v1.protected_instance.'
+                        'ProtectedInstance.modify_instance',
             test_method=self.proxy.modify_protected_instance,
             method_args=[protected_instance, flavor, production_flavor],
             expected_args=[self.proxy],
@@ -272,9 +286,12 @@ class TestSDRSReplicationPair(TestSDRSProxy):
         server_group_id = 'server_group_id'
         delete_target_volume = True
         self._verify(
-            mock_method='otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair.delete',
+            mock_method='otcextensions.sdk.sdrs.v1.replication_pair.'
+                        'ReplicationPair.delete',
             test_method=self.proxy.delete_replication_pair,
-            method_args=[replication_pair, server_group_id, delete_target_volume],
+            method_args=[replication_pair,
+                         server_group_id,
+                         delete_target_volume],
             expected_args=[self.proxy],
             expected_kwargs={
                 'server_group_id': server_group_id,
@@ -298,7 +315,8 @@ class TestSDRSReplicationPair(TestSDRSProxy):
         replication = _replication_pair.ReplicationPair(id='replication')
         new_size = 100
         self._verify(
-            mock_method='otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair.expand_replication',
+            mock_method='otcextensions.sdk.sdrs.v1.replication_pair.'
+                        'ReplicationPair.expand_replication',
             test_method=self.proxy.expand_replication_pair,
             method_args=[replication, new_size],
             expected_args=[self.proxy],
@@ -373,7 +391,8 @@ class TestSDRSTaskCenter(TestSDRSProxy):
     def test_delete_all_failed_tasks(self):
         endpoint = self.proxy.get_endpoint()
         self._verify(
-            mock_method='otcextensions.sdk.sdrs.v1.task_center.FailedTask.delete_all_tasks',
+            mock_method='otcextensions.sdk.sdrs.v1.task_center.'
+                        'FailedTask.delete_all_tasks',
             test_method=self.proxy.delete_all_failed_tasks,
             method_args=[],
             expected_args=[self.session, endpoint]
@@ -383,7 +402,8 @@ class TestSDRSTaskCenter(TestSDRSProxy):
         endpoint = self.proxy.get_endpoint()
         group = _protection_group.ProtectionGroup()
         self._verify(
-            mock_method='otcextensions.sdk.sdrs.v1.task_center.FailedTask.delete_protection_tasks',
+            mock_method='otcextensions.sdk.sdrs.v1.task_center.'
+                        'FailedTask.delete_protection_tasks',
             test_method=self.proxy.delete_protection_group_tasks,
             method_args=[group],
             expected_args=[self.session, endpoint, group.id]

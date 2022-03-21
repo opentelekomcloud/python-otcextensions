@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import uuid
 from keystoneauth1 import adapter
 import mock
 from openstack.tests.unit import base
