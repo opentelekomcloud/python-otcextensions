@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import uuid
+import time
 
 # from openstack import resource
 
@@ -118,12 +119,14 @@ rNcviNEW
 
     def setUp(self):
         super(TestCertificate, self).setUp()
+
         self.cert_name = "SDK-" + uuid.uuid4().hex
         self.cert = self.client.create_certificate(
             private_key=self._PRIVATE_KEY,
             certificate=self._CERTIFICATE,
             name=self.cert_name
         )
+
         self.addCleanup(self.conn.elb.delete_certificate, self.cert)
 
     def test_list_certificates(self):
@@ -166,3 +169,4 @@ rNcviNEW
         cert_cmp = self.client.get_certificate(cert_cmp.id)
         self.assertEqual(self.cert.name, cert_cmp.name)
         self.assertEqual(self.cert.id, cert_cmp.id)
+
