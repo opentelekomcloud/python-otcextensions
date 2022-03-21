@@ -7,9 +7,9 @@ The Storage Disaster Recovery Service Class
 -------------------------------------------
 
 The SDRS high-level interface is available through the ``sdrs`` member of a
-:class:`~openstack.connection.Connection` object.  The ``sdrs`` member will only
-be added if the ``otcextensions.sdk.register_otc_extensions(conn)`` method is
-called.
+:class:`~openstack.connection.Connection` object.  The ``sdrs`` member will
+only be added if the ``otcextensions.sdk.register_otc_extensions(conn)``
+method is called.
 
 Job Operations
 ^^^^^^^^^^^^^^
