@@ -29,7 +29,6 @@ class TestCheckpoint(fakes.TestCBR):
             flat_data['created_at'],
             flat_data['id'],
             flat_data['status'],
-            flat_data['name'],
             flat_data['vault_id'],
             flat_data['vault_name'],
             flat_data['backup_name']
@@ -41,7 +40,6 @@ class TestCheckpoint(fakes.TestCBR):
             obj.created_at,
             obj.id,
             obj.status,
-            obj.name,
             vault.id,
             vault.name,
             ei.name
@@ -70,10 +68,9 @@ class TestShowCheckpoint(fakes.TestCBR):
     object = fakes.FakeCheckpoint.create_one()
 
     columns = (
-        'created_at',
         'id',
         'status',
-        'name',
+        'created_at',
         'vault_id',
         'vault_name',
         'backup_name'
@@ -82,10 +79,9 @@ class TestShowCheckpoint(fakes.TestCBR):
     flat_data = checkpoint._flatten_checkpoint(object)
 
     data = (
-        flat_data['created_at'],
         flat_data['id'],
         flat_data['status'],
-        flat_data['name'],
+        flat_data['created_at'],
         flat_data['vault_id'],
         flat_data['vault_name'],
         flat_data['backup_name']
@@ -129,10 +125,9 @@ class TestCreateCheckpoint(fakes.TestCBR):
     object = fakes.FakeCheckpoint.create_one()
 
     columns = (
-        'created_at',
         'id',
         'status',
-        'name',
+        'created_at',
         'vault_id',
         'vault_name',
         'backup_name',
@@ -141,10 +136,9 @@ class TestCreateCheckpoint(fakes.TestCBR):
     flat_data = checkpoint._flatten_checkpoint(object)
 
     data = (
-        flat_data['created_at'],
         flat_data['id'],
         flat_data['status'],
-        flat_data['name'],
+        flat_data['created_at'],
         flat_data['vault_id'],
         flat_data['vault_name'],
         flat_data['backup_name']

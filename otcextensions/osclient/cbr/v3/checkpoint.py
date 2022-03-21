@@ -35,7 +35,6 @@ def _flatten_checkpoint(obj):
         'id': obj.id,
         'project_id': obj.project_id,
         'status': obj.status,
-        'name': obj.name,
         'vault_id': vault_id,
         'vault_name': vault_name,
         'backup_name': backup_name
@@ -81,10 +80,9 @@ def _add_skipped_resources_to_obj(obj, data, columns):
 class ShowCheckpoint(command.ShowOne):
     _description = _('Show single restore point details')
     columns = (
-        'created_at',
         'id',
         'status',
-        'name',
+        'created_at',
         'vault_id',
         'vault_name',
         'backup_name'
@@ -115,10 +113,9 @@ class ShowCheckpoint(command.ShowOne):
 class CreateCheckpoint(command.ShowOne):
     _description = _('Create CBR Restore point')
     columns = (
-        'created_at',
         'id',
         'status',
-        'name',
+        'created_at',
         'vault_id',
         'vault_name',
         'backup_name'
