@@ -18,6 +18,9 @@ from otcextensions.sdk.dcs.v1 import instance as _instance
 from otcextensions.sdk.dcs.v1 import restore_record as _restore_record
 from otcextensions.sdk.dcs.v1 import statistic as _stat
 from otcextensions.sdk.dcs.v1 import quota as _quota
+from otcextensions.sdk.dcs.v1 import maintenance_time_window as _mtw
+from otcextensions.sdk.dcs.v1 import service_specification as _service_spec
+from otcextensions.sdk.dcs.v1 import availability_zone as _az
 
 from openstack.tests.unit import test_proxy_base
 
@@ -299,3 +302,36 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
         self.verify_list(
             self.proxy.quotas, _quota.Quota,
         )
+
+    @mock.patch(
+        'otcextensions.sdk.dcs.v1._proxy.Proxy._get_endpoint_with_api_version',
+        return_value='fake'
+    )
+    def test_maintenance_time_windows(self, epo_mock):
+        self.verify_list(
+            self.proxy.maintenance_time_windows,
+            _mtw.MaintenanceTimeWindow
+        )
+        epo_mock.assert_called_with()
+
+    @mock.patch(
+        'otcextensions.sdk.dcs.v1._proxy.Proxy._get_endpoint_with_api_version',
+        return_value='fake'
+    )
+    def test_service_specification(self, epo_mock):
+        self.verify_list(
+            self.proxy.service_specifications,
+            _service_spec.ServiceSpecification
+        )
+        epo_mock.assert_called_with()
+
+    @mock.patch(
+        'otcextensions.sdk.dcs.v1._proxy.Proxy._get_endpoint_with_api_version',
+        return_value='fake'
+    )
+    def test_availability_zones(self, epo_mock):
+        self.verify_list(
+            self.proxy.availability_zones,
+            _az.AvailabilityZone
+        )
+        epo_mock.assert_called_with()
