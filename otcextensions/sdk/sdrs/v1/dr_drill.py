@@ -41,7 +41,9 @@ class DRDrill(resource.Resource):
     #: Creation time
     created_at = resource.Body('created_at')
     #: Drill servers information
-    drill_servers = resource.Body('drill_servers', type=list, list_type=DrillServers)
+    drill_servers = resource.Body('drill_servers',
+                                  type=list,
+                                  list_type=DrillServers)
     #: DR drill VPC ID
     drill_vpc_id = resource.Body('drill_vpc_id')
     #: Job ID

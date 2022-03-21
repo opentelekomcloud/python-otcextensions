@@ -83,7 +83,8 @@ class TestProtectedInstance(base.TestCase):
         }, sot._query_mapping._mapping)
 
     def test_make_it(self):
-        test_protected_instance = _protected_instance.ProtectedInstance(**EXAMPLE)
+        test_protected_instance = \
+            _protected_instance.ProtectedInstance(**EXAMPLE)
         self.assertEqual(
             EXAMPLE['id'],
             test_protected_instance.id)
