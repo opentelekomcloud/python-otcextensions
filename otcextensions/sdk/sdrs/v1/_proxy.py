@@ -55,9 +55,9 @@ class Proxy(proxy.Proxy):
             `~otcextensions.sdk.sdrs.v1.protection_group.ProtectionGroup`,
             comprised of the properties on the ProtectionGroup class.
         :returns: The results of config creation
-        :rtype: :class:
+        :rtype:
+            :class:
             `~otcextensions.sdk.sdrs.v1.protection_group.ProtectionGroup`
-
         """
         return self._create(_protection_group.ProtectionGroup, **attrs)
 
@@ -146,7 +146,8 @@ class Proxy(proxy.Proxy):
             instance.
         :param str name: name to be updated for protection group
 
-        :rtype: :class:
+        :rtype:
+            :class:
             `~otcextensions.sdk.sdrs.v1.protection_group.ProtectionGroup`
         """
         protection_group = self._get_resource(
@@ -242,8 +243,9 @@ class Proxy(proxy.Proxy):
             protected_instance.ProtectedInstance`,
             comprised of the properties on the Protected instance class.
         :returns: The results of config creation
-        :rtype: :class:
-        `~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
+        :rtype:
+            :class:
+            `~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
         """
         return self._create(
             _p_instance.ProtectedInstance,
@@ -336,8 +338,9 @@ class Proxy(proxy.Proxy):
             instance.
         :param str name: name to be updated for protected instance
 
-        :rtype: :class:
-        `~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
+        :rtype:
+            :class:
+            `~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
         """
         protected_instance = self._get_resource(
             _p_instance.ProtectedInstance, instance_id
@@ -358,8 +361,9 @@ class Proxy(proxy.Proxy):
             When set to ``True``, no exception will be set when attempting
             to find a nonexistent protected instance.
 
-        :returns: a :class:
-        `~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
+        :returns:
+            :class:
+            `~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
         """
         return self._find(
             _p_instance.ProtectedInstance,
@@ -372,11 +376,12 @@ class Proxy(proxy.Proxy):
                                 device='/dev/vdb'):
         """Attach replication pair to protected instance
 
-        :param protected_instance: The value can be the ID of
-        a protected instance or a :class:
+        :param protected_instance: The value can be the ID of a protected
+            instance or
+            :class:
             `~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
-        :param replication:The value can be the ID of a replication pair
-            or a :class:
+        :param replication:The value can be the ID of a replication pair or
+            :class:
             `~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`
         :param device: Disk device name of replication pair
         """
@@ -401,8 +406,8 @@ class Proxy(proxy.Proxy):
         :param protected_instance: The value can be the ID of a
             protected instance or a :class:
             `~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
-        :param replication:The value can be the ID of a replication pair
-            or a :class:
+        :param replication:The value can be the ID of a replication pair or
+            :class:
             `~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`
         """
         protected_instance = self._get_resource(
@@ -421,8 +426,9 @@ class Proxy(proxy.Proxy):
         """Add NIC to a protected instance
 
         :param protected_instance: The value can be the ID of a
-        protected instance or a :class:
-        `~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
+            protected instance or
+            :class:
+            `~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
         :param str subnet_id: Subnet ID of the NIC to be added
         :param list security_groups: list of security groups to
             be added for NIC in format 'id': 'value'
@@ -493,7 +499,8 @@ class Proxy(proxy.Proxy):
             `~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`,
             comprised of the properties on the Replication Pair class.
         :returns: The results of config creation
-        :rtype: :class:
+        :rtype:
+            :class:
             `~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`
         """
         return self._create(
@@ -548,7 +555,7 @@ class Proxy(proxy.Proxy):
             * 'protected_instance_id': Protected instance ID
             * 'protected_instance_ids': Protected instances ID list
             * 'query_type': Query type of replication pair
-                Values: status_abnormal, general
+            Values: status_abnormal, general
             * 'server_group_id': Protection group ID
             * 'server_group_ids': Protection groups ID list
             * `status`: Status
@@ -617,7 +624,8 @@ class Proxy(proxy.Proxy):
             instance.
         :param str name: name to be updated for replication pair
 
-        :rtype: :class:
+        :rtype:
+            :class:
             `~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`
         """
         replication = self._get_resource(
