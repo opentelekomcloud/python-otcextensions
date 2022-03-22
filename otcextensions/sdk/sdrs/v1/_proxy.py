@@ -51,12 +51,11 @@ class Proxy(proxy.Proxy):
         """Creating a SDRS protection group using attributes
 
         :param dict attrs:  Keyword arguments which will be used to create
-            a :class:
-            `~otcextensions.sdk.sdrs.v1.protection_group.ProtectionGroup`,
-            comprised of the properties on the ProtectionGroup class.
+            a :class:`~otcextensions.sdk.sdrs.v1.protection_group.
+            ProtectionGroup`, comprised of the properties on
+            the ProtectionGroup class.
         :returns: The results of config creation
-        :rtype:
-            :class: `~otcextensions.sdk.sdrs.v1.protection_group.
+        :rtype: :class:`~otcextensions.sdk.sdrs.v1.protection_group.
             ProtectionGroup`
         """
         return self._create(_protection_group.ProtectionGroup, **attrs)
@@ -331,11 +330,10 @@ class Proxy(proxy.Proxy):
         """Update SDRS protected instance name
 
         :param instance_id: The value can be the ID of a protected instance
-            or a :class:
-            `~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
-            instance.
+            or a :class:`~otcextensions.sdk.sdrs.v1.protected_instance.
+            ProtectedInstance` instance.
         :param str name: name to be updated for protected instance
-        :returns: :class: `~otcextensions.sdk.sdrs.v1.protected_instance.
+        :returns: :class:`~otcextensions.sdk.sdrs.v1.protected_instance.
             ProtectedInstance``
         """
         protected_instance = self._get_resource(
@@ -356,7 +354,8 @@ class Proxy(proxy.Proxy):
             when the instance does not exist.
             When set to ``True``, no exception will be set when attempting
             to find a nonexistent protected instance.
-        :returns: :class: `~otcextensions.sdk.sdrs.v1.protected_instance.
+        :returns: Protected instance
+        :rtype: :class:`~otcextensions.sdk.sdrs.v1.protected_instance.
             ProtectedInstance`
         """
         return self._find(
@@ -611,11 +610,11 @@ class Proxy(proxy.Proxy):
         """Update SDRS replication pair name
 
         :param replication: The value can be the ID of a replication pair
-            or a :class: `~otcextensions.sdk.sdrs.v1.replication_pair.
+            or a :class:`~otcextensions.sdk.sdrs.v1.replication_pair.
             ReplicationPair` instance.
         :param str name: name to be updated for replication pair
         :returns: Replication pair instance
-        :rtype: :class: `~otcextensions.sdk.sdrs.v1.replication_pair.
+        :rtype: :class:`~otcextensions.sdk.sdrs.v1.replication_pair.
             ReplicationPair`
         """
         replication = self._get_resource(
