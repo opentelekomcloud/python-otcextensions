@@ -15,6 +15,7 @@ import uuid
 
 import mock
 
+from otcextensions.sdk.cbr.v3 import checkpoint
 from otcextensions.sdk.cbr.v3 import policy
 from otcextensions.sdk.cbr.v3 import task
 from otcextensions.sdk.cbr.v3 import vault
@@ -82,6 +83,42 @@ class TestCBR(test_base.TestCommand):
 
         self.app.client_manager.cbr = mock.Mock()
         self.client = self.app.client_manager.cbr
+
+
+class FakeCheckpoint(test_base.Fake):
+    """Fake one or more CBR checkpoint"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'created_at': uuid.uuid4().hex,
+            'id': 'pid-' + uuid.uuid4().hex,
+            'status': 'available',
+            'name': 'checkpoint-' + uuid.uuid4().hex,
+            'vault':
+                {
+                    'id': uuid.uuid4().hex,
+                    'name': uuid.uuid4().hex,
+                    "resources": [
+                        {
+                            'name': 'resource-name-' + uuid.uuid4().hex,
+                            'resource_size': '6',
+                            'backup_size': '6840',
+                            'protect_status': 'available',
+                            'backup_count': '18',
+                            'type': 'OS::Nova::Server',
+                            'id': 'pid-' + uuid.uuid4().hex,
+                            'extra_info': '{}'
+                        }]
+            },
+            'extra_info':
+                {
+                    'name': 'backup-' + uuid.uuid4().hex
+            }
+        }
+
+        obj = checkpoint.Checkpoint.existing(**object_info)
+        return obj
 
 
 class FakePolicy(test_base.Fake):
