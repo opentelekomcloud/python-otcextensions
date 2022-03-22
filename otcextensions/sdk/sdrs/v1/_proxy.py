@@ -55,7 +55,8 @@ class Proxy(proxy.Proxy):
             `~otcextensions.sdk.sdrs.v1.protection_group.ProtectionGroup`,
             comprised of the properties on the ProtectionGroup class.
         :returns: The results of config creation
-        :rtype: :class: `~otcextensions.sdk.sdrs.v1.protection_group.
+        :rtype:
+            :class: `~otcextensions.sdk.sdrs.v1.protection_group.
             ProtectionGroup`
         """
         return self._create(_protection_group.ProtectionGroup, **attrs)
@@ -334,9 +335,8 @@ class Proxy(proxy.Proxy):
             `~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
             instance.
         :param str name: name to be updated for protected instance
-
-        :rtype: :class: `~otcextensions.sdk.sdrs.v1.protected_instance.
-            ProtectedInstance`
+        :returns: :class: `~otcextensions.sdk.sdrs.v1.protected_instance.
+            ProtectedInstance``
         """
         protected_instance = self._get_resource(
             _p_instance.ProtectedInstance, instance_id
@@ -356,7 +356,6 @@ class Proxy(proxy.Proxy):
             when the instance does not exist.
             When set to ``True``, no exception will be set when attempting
             to find a nonexistent protected instance.
-
         :returns: :class: `~otcextensions.sdk.sdrs.v1.protected_instance.
             ProtectedInstance`
         """
@@ -486,14 +485,14 @@ class Proxy(proxy.Proxy):
     # ======== Replication pair ========
 
     def create_replication_pair(self, **attrs):
-        """Creating a replication pair using attributes
+        """Create a replication pair using attributes
 
         :param dict attrs: Keyword arguments which will be used to create
-            a :class:
-            `~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`,
-            comprised of the properties on the Replication Pair class.
+            a :class:`~otcextensions.sdk.sdrs.v1.replication_pair.
+            ReplicationPair`, comprised of the properties on the Replication
+            Pair class.
         :returns: The results of config creation
-        :rtype: :class: `~otcextensions.sdk.sdrs.v1.replication_pair.
+        :rtype: :class:`~otcextensions.sdk.sdrs.v1.replication_pair.
             ReplicationPair`
         """
         return self._create(
@@ -612,11 +611,10 @@ class Proxy(proxy.Proxy):
         """Update SDRS replication pair name
 
         :param replication: The value can be the ID of a replication pair
-            or a :class:
-            `~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`
-            instance.
+            or a :class: `~otcextensions.sdk.sdrs.v1.replication_pair.
+            ReplicationPair` instance.
         :param str name: name to be updated for replication pair
-
+        :returns: Replication pair instance
         :rtype: :class: `~otcextensions.sdk.sdrs.v1.replication_pair.
             ReplicationPair`
         """
