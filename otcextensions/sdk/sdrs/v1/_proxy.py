@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import proxy
-from openstack import exceptions
 
 from otcextensions.sdk.sdrs.v1 import job as _job
 from otcextensions.sdk.sdrs.v1 import active_domains as _active_domains
