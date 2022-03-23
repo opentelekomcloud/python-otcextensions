@@ -276,15 +276,10 @@ class Proxy(proxy.Proxy):
         """
         res = self._get_resource(_p_instance.ProtectedInstance,
                                  protected_instance)
-        try:
-            del_in = res.delete(self,
-                                delete_target_server=delete_target_server,
-                                delete_target_eip=delete_target_eip)
-        except exceptions.ResourceNotFound:
-            if ignore_missing:
-                return None
-            raise
-        return del_in
+        return res.delete(self,
+                          delete_target_server=delete_target_server,
+                          delete_target_eip=delete_target_eip,
+                          ignore_missing=ignore_missing)
 
     def protected_instances(self, **query):
         """Retrieve a generator of Protected instances
@@ -524,14 +519,10 @@ class Proxy(proxy.Proxy):
         """
         res = self._get_resource(_replication_pair.ReplicationPair,
                                  replication)
-        try:
-            del_in = res.delete(self, server_group_id=server_group_id,
-                                delete_target_volume=delete_target_volume)
-        except exceptions.ResourceNotFound:
-            if ignore_missing:
-                return None
-            raise
-        return del_in
+        return res.delete(self,
+                          server_group_id=server_group_id,
+                          delete_target_volume=delete_target_volume,
+                          ignore_missing=ignore_missing)
 
     def replication_pairs(self, **query):
         """Retrieve a generator of Replication pairs

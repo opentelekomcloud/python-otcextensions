@@ -11,6 +11,7 @@
 # under the License.
 from openstack import resource
 from openstack import utils
+from openstack import exceptions
 
 
 class Attachment(resource.Resource):
@@ -101,8 +102,9 @@ class ProtectedInstance(resource.Resource):
     #: Update time
     updated_at = resource.Body('updated_at')
 
-    def delete(self, session, error_message=None,
-               delete_target_server=False, delete_target_eip=False):
+    def delete(self, session,
+               delete_target_server=False, delete_target_eip=False,
+               ignore_missing=True):
         """Delete the remote resource based on this instance.
 
         This function overrides default Resource.delete to enable params
@@ -113,7 +115,11 @@ class ProtectedInstance(resource.Resource):
             ECS should be deleted after protection group deletion
         :param bool delete_target_eip: Specifies whether target
             ECS should be deleted after protection group deletion
-
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the group does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to delete a nonexistent protected instance
         :return: This :class:`Group` instance.
         """
         body = {
@@ -123,10 +129,12 @@ class ProtectedInstance(resource.Resource):
         request = self._prepare_request()
         response = session.delete(request.url,
                                   json=body)
-        kwargs = {}
-        if error_message:
-            kwargs['error_message'] = error_message
-        self._translate_response(response, has_body=True, **kwargs)
+        try:
+            self._translate_response(response, has_body=True)
+        except exceptions.ResourceNotFound:
+            if ignore_missing:
+                return None
+            raise
         return self
 
     def attach_pair(self, session, protected_instance,
