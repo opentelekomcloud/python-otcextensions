@@ -146,7 +146,8 @@ OTC_SERVICES = {
         'append_project_id': True
     },
     'sdrs': {
-        'service_type': 'sdrs'
+        'service_type': 'sdrs',
+        'append_project_id': True
     },
     'sfsturbo': {
         'service_type': 'sfsturbo',

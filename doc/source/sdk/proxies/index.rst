@@ -26,6 +26,7 @@ Service Proxies
    Relational Database Service RDS V1 (RDSv1) <rds_v1>
    Relational Database Service RDS V3 (RDS) <rds_v3>
    Simple Message Notification Service (SMN) <smn>
+   Storage Disaster Recovery Service (SDRS) <sdrs>
    Volume Backup Service (VBS) <volume_backup>
    Virtual Private Cloud (VPC) <vpc>
    Web Application Firewall (WAF) <waf>
