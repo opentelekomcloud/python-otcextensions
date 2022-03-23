@@ -27,6 +27,7 @@ Open Telekom Cloud Resources
    Object Block Storage (OBS) <obs/index>
    Relational Database Service (RDS) <rds/index>
    Simple Message Notification Service (SMN) <smn/index>
+   Storage Disaster Recovery Service (SDRS) <sdrs/index>
    Virtual Private Cloud (VPC) <vpc/index>
    Web Application Firewall (WAF) <waf/index>
 
