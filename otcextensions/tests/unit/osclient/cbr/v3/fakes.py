@@ -16,6 +16,7 @@ import uuid
 import mock
 
 from otcextensions.sdk.cbr.v3 import backup
+from otcextensions.sdk.cbr.v3 import backup
 from otcextensions.sdk.cbr.v3 import checkpoint
 from otcextensions.sdk.cbr.v3 import policy
 from otcextensions.sdk.cbr.v3 import task
@@ -84,6 +85,42 @@ class TestCBR(test_base.TestCommand):
 
         self.app.client_manager.cbr = mock.Mock()
         self.client = self.app.client_manager.cbr
+
+
+class FakeBackup(test_base.Fake):
+    """Fake one or more CBR backups"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            "id": 'id-' + uuid.uuid4().hex,
+            "name": 'name-' + uuid.uuid4().hex,
+            "checkpoint_id": 'id-' + uuid.uuid4().hex,
+            "created_at": uuid.uuid4().hex,
+            "description": uuid.uuid4().hex,
+            "expired_at": uuid.uuid4().hex,
+            "image_type": uuid.uuid4().hex,
+            "parent_id": uuid.uuid4().hex,
+            "project_id": uuid.uuid4().hex,
+            "protected_at": uuid.uuid4().hex,
+            "resource_az": uuid.uuid4().hex,
+            "resource_id": uuid.uuid4().hex,
+            "resource_name": 'resname' + uuid.uuid4().hex,
+            "resource_size": 5,
+            "resource_type": random.choice(['OS::Cinder::Volume',
+                                            'OS::Nova::Server']),
+            "status": 'available',
+            "updated_at": uuid.uuid4().hex,
+            "vault_id": uuid.uuid4().hex,
+            "provider_id": uuid.uuid4().hex,
+            "children":
+                [
+                    {'id': uuid.uuid4().hex}
+                ]
+        }
+
+        obj = backup.Backup.existing(**object_info)
+        return obj
 
 
 class FakeBackup(test_base.Fake):
