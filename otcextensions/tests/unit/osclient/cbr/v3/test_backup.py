@@ -21,6 +21,25 @@ class TestBackup(fakes.TestCBR):
     def setUp(self):
         super(TestBackup, self).setUp()
 
+    def test_add_children_to_backup_obj(self):
+        obj = fakes.FakeBackup.create_one()
+
+        column = ()
+        data = ()
+        verify_column = (
+            'child_backup_1',
+            'child_backup_2'
+        )
+        verify_data = (
+            'child_backup_uuid_1',
+            'child_backup_uuid_2'
+        )
+
+        data, column = backup._add_children_to_backup_obj(obj, data, column)
+
+        self.assertEqual(data, verify_data)
+        self.assertEqual(column, verify_column)
+
     def test_flatten(self):
         obj = fakes.FakeBackup.create_one()
 
@@ -353,3 +372,115 @@ class TestDeleteBackup(fakes.TestCBR):
         self.client.delete_backup.assert_has_calls(delete_calls)
         self.client.find_backup.assert_has_calls(find_calls)
         self.assertEqual(1, self.client.delete_backup.call_count)
+
+
+class TestRestoreBackup(fakes.TestCBR):
+
+    object = fakes.FakeBackup.create_one()
+
+    columns = (
+        'id',
+        'name',
+        'checkpoint_id',
+        'created_at',
+        'description',
+        'expired_at',
+        'image_type',
+        'parent_id',
+        'project_id',
+        'protected_at',
+        'resource_az',
+        'resource_id',
+        'resource_name',
+        'resource_size',
+        'resource_type',
+        'status',
+        'updated_at',
+        'vault_id',
+        'provider_id',
+    )
+
+    flat_data = backup._flatten_backup(object)
+
+    data = (
+        flat_data['id'],
+        flat_data['name'],
+        flat_data['checkpoint_id'],
+        flat_data['created_at'],
+        flat_data['description'],
+        flat_data['expired_at'],
+        flat_data['image_type'],
+        flat_data['parent_id'],
+        flat_data['project_id'],
+        flat_data['protected_at'],
+        flat_data['resource_az'],
+        flat_data['resource_id'],
+        flat_data['resource_name'],
+        flat_data['resource_size'],
+        flat_data['resource_type'],
+        flat_data['status'],
+        flat_data['updated_at'],
+        flat_data['vault_id'],
+        flat_data['provider_id']
+    )
+
+    def setUp(self):
+        super(TestRestoreBackup, self).setUp()
+
+        self.cmd = backup.RestoreBackup(self.app, None)
+        self.app.client_manager.sdk_connection = mock.Mock()
+
+        self.client.restore_data = mock.Mock()
+
+    def test_default(self):
+        arglist = [
+            '--backup-id', 'backup_uuid',
+            '--volume-id', 'volume_uuid',
+            '--power-on', 'True',
+            '--server-id', 'server_uuid',
+            '--target-disk-volume-id', 'volume_uuid'
+        ]
+        verifylist = [
+            ('backup_id', 'backup_uuid'),
+            ('volume_id', 'volume_uuid'),
+            ('power_on', True),
+            ('server_id', 'server_uuid'),
+            ('target_disk_volume_id', 'volume_uuid')
+        ]
+
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+        #
+        # Set the response
+        self.client.create_policy.side_effect = [
+            self.object
+        ]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.create_policy.assert_called_once_with(
+            operation_definition={
+                'day_backups': 1,
+                'week_backups': 2,
+                'month_backups': 3,
+                'year_backups': 4,
+                'max_backups': 10,
+                'retention_duration_days': 9,
+                'timezone': 'tz'},
+            trigger={
+                'properties': {
+                    'pattern': ['pattern_1', 'pattern_2']}},
+            name='policy_name',
+            enabled=False,
+            operation_type='backup'
+        )
+
+        self.data, self.columns = policy._add_scheduling_patterns(
+            self.object,
+            self.data,
+            self.columns
+        )
+
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)

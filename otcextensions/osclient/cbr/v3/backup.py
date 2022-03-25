@@ -337,7 +337,27 @@ class DeleteBackup(command.Command):
 class RestoreBackup(command.Command):
     _description = _('Restore CBR Backup data')
 
-    columns = ()
+    columns = (
+        'id',
+        'name',
+        'checkpoint_id',
+        'created_at',
+        'description',
+        'expired_at',
+        'image_type',
+        'parent_id',
+        'project_id',
+        'protected_at',
+        'resource_az',
+        'resource_id',
+        'resource_name',
+        'resource_size',
+        'resource_type',
+        'status',
+        'updated_at',
+        'vault_id',
+        'provider_id',
+    )
 
     def get_parser(self, prog_name):
         parser = super(RestoreBackup, self).get_parser(prog_name)
@@ -366,8 +386,8 @@ class RestoreBackup(command.Command):
                    ' mandatory for VM restoration.')
         )
         parser.add_argument(
-            '--volume-id',
-            metavar='<volume_id>',
+            '--target-disk-volume-id',
+            metavar='<target_disk_volume_id>',
             help=_('ID of the target disk to be restored. This parameter is'
                    ' mandatory for disk restoration..')
         )

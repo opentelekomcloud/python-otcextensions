@@ -151,7 +151,8 @@ class FakeBackup(test_base.Fake):
             "provider_id": uuid.uuid4().hex,
             "children":
                 [
-                    {'id': uuid.uuid4().hex}
+                    {'id': 'child_backup_uuid_1'},
+                    {'id': 'child_backup_uuid_2'}
                 ]
         }
 
