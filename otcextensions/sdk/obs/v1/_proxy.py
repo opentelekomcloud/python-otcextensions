@@ -51,6 +51,8 @@ class Proxy(sdk_proxy.Proxy):
         """Override to return mapped endpoint if override and region are set
 
         """
+        if isinstance(container, _container.Container):
+            container = container.name
         region_name = getattr(self, 'region_name', 'eu-de')
         endpoint = self.CONTAINER_ENDPOINT % {
             'container': container,
@@ -100,7 +102,7 @@ class Proxy(sdk_proxy.Proxy):
     def get_container(self, container):
         """Get the detail of a container
 
-        :param id: Container id or an object of class
+        :param container: Container name or an object of class
                    :class:`~otcextensions.sdk.obs.v1.container.Container`
         :returns: Detail of container
         :rtype: :class:`~otcextensions.sdk.obs.v1.container.Container`
