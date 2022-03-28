@@ -14,7 +14,6 @@
 import logging
 
 from osc_lib import utils
-from osc_lib import exceptions
 from osc_lib.command import command
 
 from otcextensions.i18n import _
@@ -61,6 +60,14 @@ def _add_children_to_backup_obj(obj, data, columns):
             columns = columns + (name,)
             i += 1
     return data, columns
+
+
+def _normalize_mappings(mappings):
+    result = []
+    for m in mappings:
+        res = dict(map(lambda s: s.split('='), m.split(' ')))
+        result.append(res)
+    return result
 
 
 class ListBackups(command.Lister):
@@ -194,7 +201,8 @@ class ListBackups(command.Lister):
         parser.add_argument(
             '--used-percent',
             metavar='<used_percent>',
-            help=_('Backups are filtered based on the occupied vault capacity.')
+            help=_('Backups are filtered based on the '
+                   'occupied vault capacity.')
         )
         parser.add_argument(
             '--vault-id',
@@ -362,22 +370,17 @@ class RestoreBackup(command.Command):
     def get_parser(self, prog_name):
         parser = super(RestoreBackup, self).get_parser(prog_name)
         parser.add_argument(
-            '--backup-id',
-            metavar='<backup_id>',
-            required=True,
-            help=_('Disk backup ID.')
-        )
-        parser.add_argument(
-            '--volume-id',
-            metavar='<volume_id>',
-            required=True,
-            help=_('ID of the disk to which data is restored.')
+            '--mappings',
+            metavar='<mappings>',
+            action='append',
+            help=_('Restored mapping relationship  in "volume_id=volume_uuid'
+                   ' backup_id=backup_uuid", where volume_id - ID of the disk'
+                   ' to which data is restored, backup_id - Disk backup ID.')
         )
         parser.add_argument(
             '--power-on',
-            metavar='<power_on>',
-            type=bool,
-            help=_('Whether the server is powered on after restoration. ')
+            action='store_true',
+            help=_('Whether the server is powered on after restoration.')
         )
         parser.add_argument(
             '--server-id',
@@ -386,33 +389,31 @@ class RestoreBackup(command.Command):
                    ' mandatory for VM restoration.')
         )
         parser.add_argument(
-            '--target-disk-volume-id',
-            metavar='<target_disk_volume_id>',
+            '--volume-id',
+            metavar='<volume_id>',
             help=_('ID of the target disk to be restored. This parameter is'
-                   ' mandatory for disk restoration..')
+                   ' mandatory for disk restoration.')
         )
 
         return parser
 
     def take_action(self, parsed_args):
-        client = self.app.client_manager.cbr
 
-        query = {}
+        query = {
+            'mappings': []
+        }
 
-        if parsed_args.backup_id:
-            query['backup_id'] = parsed_args.backup_id
-
-        if parsed_args.volume_id:
-            query['volume_id'] = parsed_args.volume_id
-
-        if parsed_args.power_on:
+        if parsed_args.power_on is not None:
             query['power_on'] = parsed_args.power_on
 
         if parsed_args.server_id:
             query['server_id'] = parsed_args.server_id
 
         if parsed_args.volume_id:
-            query['target_disk_volume_id'] = parsed_args.target_disk_volume_id
+            query['volume_id'] = parsed_args.volume_id
+
+        if parsed_args.mappings:
+            query['mappings'] = _normalize_mappings(parsed_args.mappings)
 
         obj = self.app.client_manager.cbr.restore_data(
             **query)
@@ -425,4 +426,3 @@ class RestoreBackup(command.Command):
                 obj, data, self.columns)
 
         return (self.columns, data)
-

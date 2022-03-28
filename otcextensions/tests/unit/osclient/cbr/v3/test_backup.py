@@ -434,18 +434,15 @@ class TestRestoreBackup(fakes.TestCBR):
 
     def test_default(self):
         arglist = [
-            '--backup-id', 'backup_uuid',
-            '--volume-id', 'volume_uuid',
-            '--power-on', 'True',
+            '--mappings', 'backup_id=backup_uuid volume_id=volume_uuid',
             '--server-id', 'server_uuid',
-            '--target-disk-volume-id', 'volume_uuid'
+            '--volume-id', 'volume_uuid'
         ]
         verifylist = [
-            ('backup_id', 'backup_uuid'),
-            ('volume_id', 'volume_uuid'),
-            ('power_on', True),
+            ('power_on', False),
             ('server_id', 'server_uuid'),
-            ('target_disk_volume_id', 'volume_uuid')
+            ('volume_id', 'volume_uuid'),
+            ('mappings', ['backup_id=backup_uuid volume_id=volume_uuid'])
         ]
 
         # Verify cm is triggereg with default parameters
@@ -460,11 +457,11 @@ class TestRestoreBackup(fakes.TestCBR):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.restore_data.assert_called_once_with(
-                backup_id='backup_uuid',
-                volume_id='volume_uuid',
-                power_on=True,
-                server_id='server_uuid',
-                target_disk_volume_id='volume_uuid'
+            mappings=[{'backup_id': 'backup_uuid',
+                       'volume_id': 'volume_uuid'}],
+            power_on=False,
+            server_id='server_uuid',
+            volume_id='volume_uuid'
         )
 
         self.data, self.columns = backup._add_children_to_backup_obj(
