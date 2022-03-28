@@ -452,31 +452,22 @@ class TestRestoreBackup(fakes.TestCBR):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
         #
         # Set the response
-        self.client.create_policy.side_effect = [
+        self.client.restore_data.side_effect = [
             self.object
         ]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.create_policy.assert_called_once_with(
-            operation_definition={
-                'day_backups': 1,
-                'week_backups': 2,
-                'month_backups': 3,
-                'year_backups': 4,
-                'max_backups': 10,
-                'retention_duration_days': 9,
-                'timezone': 'tz'},
-            trigger={
-                'properties': {
-                    'pattern': ['pattern_1', 'pattern_2']}},
-            name='policy_name',
-            enabled=False,
-            operation_type='backup'
+        self.client.restore_data.assert_called_once_with(
+                backup_id='backup_uuid',
+                volume_id='volume_uuid',
+                power_on=True,
+                server_id='server_uuid',
+                target_disk_volume_id='volume_uuid'
         )
 
-        self.data, self.columns = policy._add_scheduling_patterns(
+        self.data, self.columns = backup._add_children_to_backup_obj(
             self.object,
             self.data,
             self.columns

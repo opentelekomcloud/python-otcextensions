@@ -412,14 +412,17 @@ class RestoreBackup(command.Command):
             query['server_id'] = parsed_args.server_id
 
         if parsed_args.volume_id:
-            query['volume_id'] = parsed_args.volume_id
+            query['target_disk_volume_id'] = parsed_args.target_disk_volume_id
 
         obj = self.app.client_manager.cbr.restore_data(
-            backup=parsed_args.backup_id,
-            ignore_missing=False)
+            **query)
 
         data = utils.get_dict_properties(
             _flatten_backup(obj), self.columns)
 
-        return (self.columns. data)
+        if obj.children:
+            data, self.columns = _add_children_to_backup_obj(
+                obj, data, self.columns)
+
+        return (self.columns, data)
 
