@@ -37,8 +37,6 @@ class TestContainer(base.BaseFunctionalTest):
         self.assertIsNotNone(bucket)
         self.assertIsNotNone(bucket.name, self.bucket_name)
 
-
-    # def test_02_get_object(self):
-    #     a_container = self.client.get_container('ansideln')
-    #     object = self.client.get_object('certificate.pdf', container=a_container)
-    #     print(object)
+    def test_02_list_containers(self):
+        containers = list(self.client.containers())
+        self.assertIsNotNone(containers)
