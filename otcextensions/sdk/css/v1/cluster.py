@@ -109,6 +109,8 @@ class Cluster(resource.Resource):
     updated_at = resource.Body('updated')
     #: Restart Cluster Job ID
     jobId = resource.Body('jobId')
+    #: Array of tags
+    tags = resource.Body('tags', type=list)
 
     def _action(self, session, action, body=None):
         """Preform actions given the message body.

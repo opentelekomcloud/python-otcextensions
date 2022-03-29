@@ -21,24 +21,32 @@ conn = openstack.connect(cloud='otc')
 
 attrs = {
     'name': 'ES-Test',
-    'instanceNum': 4,
+    'instanceNum': 1,
+    'datastore': {
+        'type': 'elasticsearch',
+        'version': '7.6.2'
+    },
     'instance': {
-        'flavorRef': 'css.large.8',
+        'flavorRef': 'css.xlarge.2',
         'volume': {
             'volume_type': 'COMMON',
             'size': 100
         },
+
         'nics': {
-            'vpcId': 'vpc_id',
-            'netId': 'network_id',
-            'securityGroupId': 'security_group_id'
+            'vpcId': 'vpcId',
+            'netId': 'netId',
+            'securityGroupId': 'securityGroupId'
         }
     },
     'httpsEnable': 'false',
     'diskEncryption': {
-        'systemEncrypted': '1',
-        'systemCmkid': 'KMS_key_id'
-    }
+        'systemEncrypted': '0',
+    },
+    'tags': [{'key': "key0", 'value': "value0"},
+             {'key': "key1", 'value': "value1"},
+             {'key': "key2", 'value': "value2"},
+             {'key': "key3", 'value': "value3"}]
 }
 result = conn.css.create_cluster(**attrs)
 print(result)
