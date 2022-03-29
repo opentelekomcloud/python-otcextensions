@@ -38,7 +38,7 @@ def _flatten_domain(i, obj):
     return data
 
 
-class ListDomains(command.Lister):
+class ListDomain(command.Lister):
     _description = _('List Active-active domains')
     columns = (
         'ID',
@@ -50,7 +50,7 @@ class ListDomains(command.Lister):
     )
 
     def get_parser(self, prog_name):
-        parser = super(ListDomains, self).get_parser(prog_name)
+        parser = super(ListDomain, self).get_parser(prog_name)
 
         return parser
 
