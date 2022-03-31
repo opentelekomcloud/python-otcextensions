@@ -9,12 +9,23 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import collections
+import os
 from urllib import parse
 
+from openstack import exceptions
+from openstack.cloud import _utils
+
+from otcextensions.common import utils
 from otcextensions.sdk import ak_auth
 from otcextensions.sdk import sdk_proxy
 from otcextensions.sdk.obs.v1 import container as _container
 from otcextensions.sdk.obs.v1 import obj as _obj
+
+DEFAULT_OBJECT_SEGMENT_SIZE = 1073741824  # 1GB
+DEFAULT_MAX_FILE_SIZE = (5 * 1024 * 1024 * 1024 + 2) / 2
+EXPIRES_ISO8601_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
+SHORT_EXPIRES_ISO8601_FORMAT = '%Y-%m-%d'
 
 
 def _normalize_obs_keys(obj):
@@ -22,7 +33,6 @@ def _normalize_obs_keys(obj):
 
 
 class Proxy(sdk_proxy.Proxy):
-
     skip_discovery = True
 
     CONTAINER_ENDPOINT = \
@@ -51,8 +61,6 @@ class Proxy(sdk_proxy.Proxy):
         """Override to return mapped endpoint if override and region are set
 
         """
-        if isinstance(container, _container.Container):
-            container = container.name
         region_name = getattr(self, 'region_name', 'eu-de')
         endpoint = self.CONTAINER_ENDPOINT % {
             'container': container,
@@ -107,6 +115,7 @@ class Proxy(sdk_proxy.Proxy):
         :returns: Detail of container
         :rtype: :class:`~otcextensions.sdk.obs.v1.container.Container`
         """
+        container = self._get_container_name(container=container)
         endpoint = self.get_container_endpoint(container)
         return self._head(
             _container.Container,
@@ -148,6 +157,7 @@ class Proxy(sdk_proxy.Proxy):
 
         :returns: ``None``
         """
+        container = self._get_container_name(container=container)
         endpoint = self.get_container_endpoint(container)
         self._delete(_container.Container, container,
                      endpoint_override=endpoint,
@@ -311,7 +321,8 @@ class Proxy(sdk_proxy.Proxy):
             **attrs)
         return obj.stream(self, chunk_size=chunk_size)
 
-    def create_object(self, container, name, **attrs):
+    def create_object(self, container, name, filename=None, segment_size=None,
+                      use_slo=True, metadata=None, data=None, **headers):
         """Upload a new object from attributes
 
         :param container: The value can be the name of a container or a
@@ -325,18 +336,207 @@ class Proxy(sdk_proxy.Proxy):
         :returns: The results of object creation
         :rtype: :class:`~otcextensions.sdk.obs.v1.container.Container`
         """
-        # TODO(mordred) Add ability to stream data from a file
-        # TODO(mordred) Use create_object from OpenStackCloud
-        # container_name = self._get_container_name(container=container)
+        if data is not None and filename:
+            raise ValueError(
+                "Both filename and data given. Please choose one.")
+
+        if not filename and data is None:
+            filename = name
+
+        container = self._get_container_name(container=container)
         endpoint = self.get_container_endpoint(container)
-        return self._create(
-            _obj.Object,
-            # container=container_name,
-            endpoint_override=endpoint,
-            requests_auth=self._get_req_auth(endpoint),
-            name=name, **attrs)
+
+        if data is not None:
+            self.log.debug(
+                "swift uploading data to %(endpoint)s",
+                {'endpoint': endpoint})
+            return self._create(
+                _obj.Object, container=container,
+                name=name, data=data,
+                **headers)
+
+        # segment_size gets used as a step value in a range call, so needs
+        # to be an int
+        if segment_size:
+            segment_size = int(segment_size)
+        segment_size = self.get_object_segment_size(segment_size)
+        file_size = os.path.getsize(filename)
+
+        if self.is_object_stale(container, name, filename, md5, sha256):
+
+            self._connection.log.debug(
+                "swift uploading %(filename)s to %(endpoint)s",
+                {'filename': filename, 'endpoint': endpoint})
+
+            if metadata is not None:
+                # Rely on the class headers calculation for requested metadata
+                meta_headers = _obj.Object()._calculate_headers(metadata)
+                headers.update(meta_headers)
+
+            if file_size <= segment_size:
+                self._upload_object(endpoint, filename, headers)
+
+            else:
+                self._upload_large_object(
+                    endpoint, filename, headers,
+                    file_size, segment_size, use_slo)
+
     # Backwards compat
-    # upload_object = create_object
+    upload_object = create_object
+
+    def is_object_stale(
+            self, container, name, filename, file_md5=None, file_sha256=None):
+        """Check to see if an object matches the hashes of a file.
+        :param container: Name of the container.
+        :param name: Name of the object.
+        :param filename: Path to the file.
+        :param file_md5: Pre-calculated md5 of the file contents. Defaults to
+            None which means calculate locally.
+        :param file_sha256: Pre-calculated sha256 of the file contents.
+            Defaults to None which means calculate locally.
+        """
+        try:
+            metadata = self.get_object_metadata(name, container).metadata
+        except exceptions.NotFoundException:
+            self._connection.log.debug(
+                "swift stale check, no object: {container}/{name}".format(
+                    container=container, name=name))
+            return True
+
+        if not (file_md5 or file_sha256):
+            (file_md5, file_sha256) = \
+                utils._get_file_hashes(filename)
+        md5_key = metadata.get(
+            self._connection._OBJECT_MD5_KEY,
+            metadata.get(self._connection._SHADE_OBJECT_MD5_KEY, ''))
+        sha256_key = metadata.get(
+            self._connection._OBJECT_SHA256_KEY, metadata.get(
+                self._connection._SHADE_OBJECT_SHA256_KEY, ''))
+        up_to_date = utils._hashes_up_to_date(
+            md5=file_md5, sha256=file_sha256,
+            md5_key=md5_key, sha256_key=sha256_key)
+
+        if not up_to_date:
+            self._connection.log.debug(
+                "swift checksum mismatch: "
+                " %(filename)s!=%(container)s/%(name)s",
+                {'filename': filename, 'container': container, 'name': name})
+            return True
+
+        self._connection.log.debug(
+            "swift object up to date: %(container)s/%(name)s",
+            {'container': container, 'name': name})
+        return False
+
+    def _upload_object(self, endpoint, filename, headers):
+        with open(filename, 'rb') as dt:
+            return self.put(
+                endpoint, headers=headers, data=dt)
+
+    def _upload_large_object(
+            self, endpoint, filename,
+            headers, file_size, segment_size, use_slo):
+        # If the object is big, we need to break it up into segments that
+        # are no larger than segment_size, upload each of them individually
+        # and then upload a manifest object. The segments can be uploaded in
+        # parallel, so we'll use the async feature of the TaskManager.
+
+        segment_futures = []
+        segment_results = []
+        retry_results = []
+        retry_futures = []
+        manifest = []
+
+        # Get an OrderedDict with keys being the swift location for the
+        # segment, the value a FileSegment file-like object that is a
+        # slice of the data for the segment.
+        segments = self._get_file_segments(
+            endpoint, filename, file_size, segment_size)
+
+        # Schedule the segments for upload
+        for name, segment in segments.items():
+            # Async call to put - schedules execution and returns a future
+            segment_future = self._connection._pool_executor.submit(
+                self.put,
+                name, headers=headers, data=segment,
+                raise_exc=False)
+            segment_futures.append(segment_future)
+            # TODO(mordred) Collect etags from results to add to this manifest
+            # dict. Then sort the list of dicts by path.
+            manifest.append(dict(
+                path='/{name}'.format(name=name),
+                size_bytes=segment.length))
+
+        # Try once and collect failed results to retry
+        segment_results, retry_results = self._connection._wait_for_futures(
+            segment_futures, raise_on_error=False)
+
+        self._add_etag_to_manifest(segment_results, manifest)
+
+        for result in retry_results:
+            # Grab the FileSegment for the failed upload so we can retry
+            name = self._object_name_from_url(result.url)
+            segment = segments[name]
+            segment.seek(0)
+            # Async call to put - schedules execution and returns a future
+            segment_future = self._connection._pool_executor.submit(
+                self.put,
+                name, headers=headers, data=segment)
+            # TODO(mordred) Collect etags from results to add to this manifest
+            # dict. Then sort the list of dicts by path.
+            retry_futures.append(segment_future)
+
+        # If any segments fail the second time, just throw the error
+        segment_results, retry_results = self._connection._wait_for_futures(
+            retry_futures, raise_on_error=True)
+
+        self._add_etag_to_manifest(segment_results, manifest)
+
+        try:
+            if use_slo:
+                return self._finish_large_object_slo(
+                    endpoint, headers, manifest)
+            else:
+                return self._finish_large_object_dlo(
+                    endpoint, headers)
+        except Exception:
+            try:
+                segment_prefix = endpoint.split('/')[-1]
+                self.log.debug(
+                    "Failed to upload large object manifest for %s. "
+                    "Removing segment uploads.", segment_prefix)
+                self._delete_autocreated_image_objects(
+                    segment_prefix=segment_prefix)
+            except Exception:
+                self.log.exception(
+                    "Failed to cleanup image objects for %s:",
+                    segment_prefix)
+            raise
+
+    def _get_file_segments(self, endpoint, filename, file_size, segment_size):
+        # Use an ordered dict here so that testing can replicate things
+        segments = collections.OrderedDict()
+        for (index, offset) in enumerate(range(0, file_size, segment_size)):
+            remaining = file_size - (index * segment_size)
+            segment = _utils.FileSegment(
+                filename, offset,
+                segment_size if segment_size < remaining else remaining)
+            name = '{endpoint}/{index:0>6}'.format(
+                endpoint=endpoint, index=index)
+            segments[name] = segment
+        return segments
+
+    def get_object_segment_size(self, segment_size):
+        """Get a segment size that will work given capabilities"""
+        if segment_size is None:
+            segment_size = DEFAULT_OBJECT_SEGMENT_SIZE
+        min_segment_size = 0
+        server_max_file_size = DEFAULT_MAX_FILE_SIZE
+        if segment_size > server_max_file_size:
+            return server_max_file_size
+        if segment_size < min_segment_size:
+            return min_segment_size
+        return segment_size
 
     def copy_object(self):
         """Copy an object."""
@@ -380,7 +580,6 @@ class Proxy(sdk_proxy.Proxy):
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                  when no resource can be found.
         """
-        raise NotImplementedError
         container_name = self._get_container_name(obj, container)
         endpoint = self.get_container_endpoint(container_name)
 
