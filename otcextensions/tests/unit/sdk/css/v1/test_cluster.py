@@ -19,7 +19,7 @@ FAKE_ID = "68d5745e-6af2-40e4-945d-fe449be00148"
 EXAMPLE = {
     "datastore": {
         "type": "elasticsearch",
-        "version": "6.2.3"
+        "version": "7.6.2"
     },
     "instanceNum": 4,
     "instance": {
@@ -57,7 +57,11 @@ EXAMPLE = {
     "subnetId": "675ae21c-cc1c-4fc5-9cb4-4c07fce79648",
     "securityGroupId": "e9e098c8-2116-4b92-823c-036f0f17360b",
     "actionProgress": {},
-    "actions": []
+    "actions": [],
+    'tags': [{'key': "key0", 'value': "value0"},
+             {'key': "key1", 'value': "value1"},
+             {'key': "key2", 'value': "value2"},
+             {'key': "key3", 'value': "value3"}]
 }
 
 
@@ -124,6 +128,7 @@ class TestCluster(base.TestCase):
         self.assertEqual(EXAMPLE['subnetId'], sot.subnet_id)
         self.assertEqual(EXAMPLE['updated'], sot.updated_at)
         self.assertEqual(EXAMPLE['created'], sot.created_at)
+        self.assertEqual(EXAMPLE['tags'], sot.tags)
 
         for key, value in EXAMPLE.items():
             if key in updated_sot_attrs:
