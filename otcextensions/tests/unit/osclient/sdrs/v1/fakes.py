@@ -11,11 +11,41 @@
 #   under the License.
 import random
 import uuid
+import datetime
 
 import mock
 
 from otcextensions.sdk.sdrs.v1 import active_domains
+from otcextensions.sdk.sdrs.v1 import job
 from otcextensions.tests.unit.osclient import test_base
+
+FAIL_REASON = "SdrsExtendReplicationPairNewTask-fail:SDRS.0011:Client " \
+              "error : {\"badRequest\": {\"message\": \"Extending Replica" \
+              "tion error: Check replication volume size or volume " \
+              "status or volume quota fail, detail is f() takes exactly " \
+              "1 argument (2 given)\", \"code\": 400}}"
+
+
+def generate_entities():
+    """Generate random list of sub_jobs"""
+    jobs_list = []
+    random_int = random.randint(1, 10)
+    while random_int > 0:
+        sub_job = {
+            'id': uuid.uuid4().hex,
+            'status': random.choice(['SUCCESS', 'FAIL', 'INIT']),
+            'job_type': uuid.uuid4().hex,
+            'begin_time': datetime.datetime.now(),
+            'end_time': datetime.datetime.now(),
+            'error_code': None,
+            'fail_reason': None,
+            'entities': {
+                'server_group_id': uuid.uuid4().hex
+            }
+        }
+        jobs_list.append(sub_job)
+        random_int -= 1
+    return jobs_list
 
 
 class TestSDRS(test_base.TestCommand):
@@ -52,4 +82,29 @@ class FakeActiveDomain(test_base.Fake):
         }
 
         obj = active_domains.ActiveDomains.existing(**object_info)
+        return obj
+
+
+class FakeJob(test_base.Fake):
+    """Fake one or more SDRS jobs"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'job_id': uuid.uuid4().hex,
+            'status': random.choice(['SUCCESS', 'FAIL', 'INIT']),
+            'job_type': uuid.uuid4().hex,
+            'begin_time': datetime.datetime.now(),
+            'end_time': datetime.datetime.now()
+        }
+
+        entities = random.choice([True, False])
+
+        if entities:
+            object_info['entities'] = dict(sub_jobs=generate_entities())
+        else:
+            object_info['error_code'] = 'SDRS.001'
+            object_info['fail_reason'] = FAIL_REASON
+
+        obj = job.Job.existing(**object_info)
         return obj

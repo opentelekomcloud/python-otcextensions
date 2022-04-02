@@ -10,10 +10,18 @@ For help on a specific `sdrs` command, enter:
 
    $ openstack sdrs help SUBCOMMAND
 
-.. _sdrs_active_domains:
+.. _sdrs_active_domain:
 
-Active-active domain operations
--------------------------------
+Active-active domains operations
+--------------------------------
 
 .. autoprogram-cliff:: openstack.sdrs.v1
-   :command: sdrs active domain *
+   :command: sdrs active domains *
+
+.. _sdrs_job:
+
+Job operations
+--------------
+
+.. autoprogram-cliff:: openstack.sdrs.v1
+   :command: sdrs job *

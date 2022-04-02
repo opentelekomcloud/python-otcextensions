@@ -10,19 +10,19 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 
-from otcextensions.osclient.sdrs.v1 import active_domain
+from otcextensions.osclient.sdrs.v1 import active_domains
 from otcextensions.tests.unit.osclient.sdrs.v1 import fakes
 
 
-class TestActiveDomain(fakes.TestSDRS):
+class TestActiveDomains(fakes.TestSDRS):
 
     def setUp(self):
-        super(TestActiveDomain, self).setUp()
+        super(TestActiveDomains, self).setUp()
 
     def test_flatten(self):
         obj = fakes.FakeActiveDomain.create_one()
         i = len(obj['domains']) - 1
-        flat_data = active_domain._flatten_domain(i, obj)
+        flat_data = active_domains._flatten_domain(i, obj)
 
         data = (
             flat_data['id'],
