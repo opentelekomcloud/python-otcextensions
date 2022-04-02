@@ -16,7 +16,7 @@ Active-active domains operations
 --------------------------------
 
 .. autoprogram-cliff:: openstack.sdrs.v1
-   :command: sdrs active domains *
+   :command: sdrs active domain *
 
 .. _sdrs_job:
 
