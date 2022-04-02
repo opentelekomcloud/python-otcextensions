@@ -52,6 +52,7 @@ def _add_parsed_task_to_obj(obj, data, columns):
     columns += ('error_code',)
     return data, columns
 
+
 def _flatten_job(obj):
     """Flatten the structure of the job into a single dict
     """
@@ -78,7 +79,7 @@ class ShowJob(command.ShowOne):
     )
 
     def get_parser(self, prog_name):
-        parser = super(ShowJob,self).get_parser(prog_name)
+        parser = super(ShowJob, self).get_parser(prog_name)
         parser.add_argument(
             'job',
             metavar='<job>',
