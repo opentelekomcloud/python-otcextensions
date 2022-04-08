@@ -21,6 +21,7 @@ class TestContainer(base.BaseFunctionalTest):
     uuid_v4 = uuid.uuid4().hex[:8]
     bucket_name = 'obs-test-' + uuid_v4
     object_name = f'obs{uuid_v4}.object'
+    data = str(uuid.uuid4())
     container = None
     object = None
 
@@ -35,14 +36,17 @@ class TestContainer(base.BaseFunctionalTest):
         self.object = self.client.create_object(
             container=self.container,
             name=self.object_name,
-            data='12345'
+            data=self.data
         )
         self.addCleanup(self.client.delete_object, self.object)
         self.addCleanup(self.client.delete_container, self.container)
-    #
-    # def test_01_get_object(self):
-    #     object = self.client.get_object(self.object_name, container=self.container)
-    #     self.assertIsNotNone(object)
+
+    def test_01_get_object(self):
+        object = self.client.get_object(
+            self.object_name,
+            container=self.container
+        )
+        self.assertIsNotNone(object)
 
     def test_02_get_object_metadata(self):
         object = self.client.get_object_metadata(
@@ -50,3 +54,4 @@ class TestContainer(base.BaseFunctionalTest):
             container=self.container
         )
         self.assertIsNotNone(object)
+        self.assertIsNotNone(object.etag)

@@ -102,7 +102,8 @@ class Object(_base.BaseResource):
     sse_algorithm = resource.Header(
         'x-amz-server-side-encryption-customer-algorithm'
     )
-    #:Indicates a key used to decrypt objects. The header is used in SSE-C mode.
+    #: Indicates a key used to decrypt objects.
+    #: The header is used in SSE-C mode.
     #: Constraints: This header is a base64-encoded 256-bit or 512-bit key and
     #: must be used together with
     # x-amz-server-side-encryption-customer-algorithm and

@@ -353,6 +353,8 @@ class Proxy(sdk_proxy.Proxy):
             return self._create(
                 _obj.Object, container=container,
                 name=name, data=data,
+                endpoint_override=endpoint,
+                requests_auth=self._get_req_auth(endpoint),
                 **headers)
 
         # segment_size gets used as a step value in a range call, so needs
@@ -559,10 +561,10 @@ class Proxy(sdk_proxy.Proxy):
 
         :returns: ``None``
         """
-        # container_name = self._get_container_name(obj, container)
-        endpoint = self.get_container_endpoint(container)
+        container_name = self._get_container_name(obj, container)
+        endpoint = self.get_container_endpoint(container_name)
         self._delete(_obj.Object, obj, ignore_missing=ignore_missing,
-                     # container=container_name,
+                     container=container_name,
                      endpoint_override=endpoint,
                      requests_auth=self._get_req_auth(endpoint),
                      )
