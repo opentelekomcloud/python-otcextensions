@@ -299,6 +299,7 @@ class TestShowBackup(fakes.TestCBR):
             'backup'
         ]
         verifylist = [
+            ('backup', 'backup')
         ]
 
         # Verify cm is triggereg with default parameters
@@ -431,14 +432,17 @@ class TestRestoreBackup(fakes.TestCBR):
         self.app.client_manager.sdk_connection = mock.Mock()
 
         self.client.restore_data = mock.Mock()
+        self.client.find_backup = mock.Mock()
 
     def test_default(self):
         arglist = [
+            'backup_uuid',
             '--mappings', 'backup_id=backup_uuid volume_id=volume_uuid',
             '--server-id', 'server_uuid',
             '--volume-id', 'volume_uuid'
         ]
         verifylist = [
+            ('backup', 'backup_uuid'),
             ('power_on', False),
             ('server_id', 'server_uuid'),
             ('volume_id', 'volume_uuid'),
@@ -450,25 +454,21 @@ class TestRestoreBackup(fakes.TestCBR):
         #
         # Set the response
         self.client.restore_data.side_effect = [
-            self.object
+            {}
+        ]
+
+        self.client.find_backup.side_effect = [
+            backupSDK.Backup(id='backup_uuid')
         ]
 
         # Trigger the action
-        columns, data = self.cmd.take_action(parsed_args)
+        self.cmd.take_action(parsed_args)
 
         self.client.restore_data.assert_called_once_with(
+            backup='backup_uuid',
             mappings=[{'backup_id': 'backup_uuid',
                        'volume_id': 'volume_uuid'}],
             power_on=False,
             server_id='server_uuid',
             volume_id='volume_uuid'
         )
-
-        self.data, self.columns = backup._add_children_to_backup_obj(
-            self.object,
-            self.data,
-            self.columns
-        )
-
-        self.assertEqual(self.columns, columns)
-        self.assertEqual(self.data, data)

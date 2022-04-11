@@ -370,6 +370,11 @@ class RestoreBackup(command.Command):
     def get_parser(self, prog_name):
         parser = super(RestoreBackup, self).get_parser(prog_name)
         parser.add_argument(
+            'backup',
+            metavar='backup',
+            help=_('Backup id.')
+        )
+        parser.add_argument(
             '--mappings',
             metavar='<mappings>',
             action='append',
@@ -403,6 +408,11 @@ class RestoreBackup(command.Command):
             'mappings': []
         }
 
+        backup = self.app.client_manager.cbr.find_backup(
+            name_or_id=parsed_args.backup,
+            ignore_missing=False
+        )
+
         if parsed_args.power_on is not None:
             query['power_on'] = parsed_args.power_on
 
@@ -415,14 +425,4 @@ class RestoreBackup(command.Command):
         if parsed_args.mappings:
             query['mappings'] = _normalize_mappings(parsed_args.mappings)
 
-        obj = self.app.client_manager.cbr.restore_data(
-            **query)
-
-        data = utils.get_dict_properties(
-            _flatten_backup(obj), self.columns)
-
-        if obj.children:
-            data, self.columns = _add_children_to_backup_obj(
-                obj, data, self.columns)
-
-        return (self.columns, data)
+        self.app.client_manager.cbr.restore_data(backup=backup.id, **query)
