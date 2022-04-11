@@ -98,11 +98,11 @@ class ShowJob(command.ShowOne):
             _flatten_job(obj), self.columns
         )
 
-        if obj.entities.sub_jobs:
+        if getattr(obj.entities, 'sub_jobs', None):
             data, self.columns = _add_sub_jobs_to_obj(obj, data,
                                                       self.columns)
 
-        if obj.entities.server_group_id:
+        if getattr(obj.entities, 'server_group_id', None):
             data, self.columns = _add_server_group_to_obj(obj, data,
                                                           self.columns)
 
