@@ -9,14 +9,8 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import collections
-import os
 from urllib import parse
 
-from openstack import exceptions
-from openstack.cloud import _utils
-
-from otcextensions.common import utils
 from otcextensions.sdk import ak_auth
 from otcextensions.sdk import sdk_proxy
 from otcextensions.sdk.obs.v1 import container as _container

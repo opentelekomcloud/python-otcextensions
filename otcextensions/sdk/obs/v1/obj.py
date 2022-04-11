@@ -57,16 +57,18 @@ class Object(_base.BaseResource):
     container = resource.URI("container")
     #: The unique name for the object.
     name = resource.Body('Key', alternate_id=True)
-
+    #: The date and time that the object was created or the last
+    #: time that the metadata was changed.
+    last_modified = resource.Body('LastModified')
+    #: size of the response body. Instead it contains the size of
+    #: the object, in bytes.
+    content_length = resource.Body('Size', type=int)
     # Headers for requests
     #: private, public-read, public-read-write, authenticated-read
     #: bucket-owner-read, bucket-owner-full-control
     acl = resource.Header('x-amz-acl')
 
     accept_ranges = resource.Header('Accept-Ranges')
-    #: size of the response body. Instead it contains the size of
-    #: the object, in bytes.
-    content_length = resource.Header('Content-Length', type=int)
     #: The MD5 digest string of the message body is calculated according
     #: to the RFC 1864 standard. That is, calculate the 128-bit binary array
     #: (the message header data encrypted with MD5) first,
@@ -80,9 +82,6 @@ class Object(_base.BaseResource):
     #: The entity tag (ETag) only reflects changes to the contents
     #: of an object, not its metadata.
     etag = resource.Header('ETag', type=str)
-    #: The date and time that the object was created or the last
-    #: time that the metadata was changed.
-    last_modified = resource.Header('Last-Modified')
     #: Indicates the value created by OBS to uniquely identify a request.
     #: OBS uses this value to troubleshoot faults.
     request_id = resource.Header('x-amz-request-id', type=str)

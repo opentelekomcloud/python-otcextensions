@@ -96,6 +96,7 @@ class TestObject(base.TestCase):
         mock_response = mock.Mock()
         mock_response.status_code = 200
         mock_response.content = ''
+        mock_response.headers = {}
 
         self.sess.put.return_value = mock_response
 
