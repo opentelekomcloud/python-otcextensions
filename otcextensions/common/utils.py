@@ -17,17 +17,17 @@ from __future__ import print_function
 
 # import errno
 # import functools
-# import hashlib
 # import json
 import os
 # import re
 # import sys
 import threading
+
 # import uuid
 #
 
 if os.name == 'nt':
-    import msvcrt
+    pass
 else:
     msvcrt = None
 
@@ -39,7 +39,7 @@ else:
 
 _memoized_property_lock = threading.Lock()
 
-SENSITIVE_HEADERS = ('X-Auth-Token', )
+SENSITIVE_HEADERS = ('X-Auth-Token',)
 REQUIRED_FIELDS_ON_DATA = ('disk_format', 'container_format')
 
 

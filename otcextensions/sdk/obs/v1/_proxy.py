@@ -16,13 +16,17 @@ from otcextensions.sdk import sdk_proxy
 from otcextensions.sdk.obs.v1 import container as _container
 from otcextensions.sdk.obs.v1 import obj as _obj
 
+DEFAULT_OBJECT_SEGMENT_SIZE = 1073741824  # 1GB
+DEFAULT_MAX_FILE_SIZE = (5 * 1024 * 1024 * 1024 + 2) / 2
+EXPIRES_ISO8601_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
+SHORT_EXPIRES_ISO8601_FORMAT = '%Y-%m-%d'
+
 
 def _normalize_obs_keys(obj):
     return {k.lower(): v for k, v in obj.items()}
 
 
 class Proxy(sdk_proxy.Proxy):
-
     skip_discovery = True
 
     CONTAINER_ENDPOINT = \
@@ -100,11 +104,12 @@ class Proxy(sdk_proxy.Proxy):
     def get_container(self, container):
         """Get the detail of a container
 
-        :param id: Container id or an object of class
+        :param container: Container name or an object of class
                    :class:`~otcextensions.sdk.obs.v1.container.Container`
         :returns: Detail of container
         :rtype: :class:`~otcextensions.sdk.obs.v1.container.Container`
         """
+        container = self._get_container_name(container=container)
         endpoint = self.get_container_endpoint(container)
         return self._head(
             _container.Container,
@@ -146,6 +151,7 @@ class Proxy(sdk_proxy.Proxy):
 
         :returns: ``None``
         """
+        container = self._get_container_name(container=container)
         endpoint = self.get_container_endpoint(container)
         self._delete(_container.Container, container,
                      endpoint_override=endpoint,
@@ -309,13 +315,18 @@ class Proxy(sdk_proxy.Proxy):
             **attrs)
         return obj.stream(self, chunk_size=chunk_size)
 
-    def create_object(self, container, name, **attrs):
+    def create_object(self, container, name, filename=None, data=None,
+                      **headers):
         """Upload a new object from attributes
 
         :param container: The value can be the name of a container or a
                :class:`~otcextensions.sdk.obs.v1.container.Container`
                instance.
         :param name: Name of the object to create.
+        :param data: The content to upload to the object. Mutually exclusive
+            with filename.
+        :param filename: The path to the local file whose contents will be
+            uploaded. Mutually exclusive with data.
         :param dict attrs: Keyword arguments which will be used to create
                a :class:`~otcextensions.sdk.obs.v1.obj.Object`,
                comprised of the properties on the Object class.
@@ -323,18 +334,40 @@ class Proxy(sdk_proxy.Proxy):
         :returns: The results of object creation
         :rtype: :class:`~otcextensions.sdk.obs.v1.container.Container`
         """
-        # TODO(mordred) Add ability to stream data from a file
-        # TODO(mordred) Use create_object from OpenStackCloud
-        # container_name = self._get_container_name(container=container)
+        if data is not None and filename:
+            raise ValueError(
+                "Both filename and data given. Please choose one.")
+
+        if not filename and data is None:
+            filename = name
+
+        container = self._get_container_name(container=container)
         endpoint = self.get_container_endpoint(container)
-        return self._create(
-            _obj.Object,
-            # container=container_name,
-            endpoint_override=endpoint,
-            requests_auth=self._get_req_auth(endpoint),
-            name=name, **attrs)
+
+        if data is not None:
+            self.log.debug(
+                "uploading data to %(endpoint)s",
+                {'endpoint': endpoint})
+            return self._create(
+                _obj.Object, container=container,
+                name=name, data=data,
+                endpoint_override=endpoint,
+                requests_auth=self._get_req_auth(endpoint),
+                **headers)
+
+        elif filename is not None:
+            self.log.debug(
+                "uploading %(filename)s to %(endpoint)s",
+                {'filename': filename, 'endpoint': endpoint})
+            self._upload_object(endpoint, filename, headers)
+
     # Backwards compat
-    # upload_object = create_object
+    upload_object = create_object
+
+    def _upload_object(self, endpoint, filename, headers):
+        with open(filename, 'rb') as dt:
+            return self.put(
+                endpoint, headers=headers, data=dt)
 
     def copy_object(self):
         """Copy an object."""
@@ -357,10 +390,10 @@ class Proxy(sdk_proxy.Proxy):
 
         :returns: ``None``
         """
-        # container_name = self._get_container_name(obj, container)
-        endpoint = self.get_container_endpoint(container)
+        container_name = self._get_container_name(obj, container)
+        endpoint = self.get_container_endpoint(container_name)
         self._delete(_obj.Object, obj, ignore_missing=ignore_missing,
-                     # container=container_name,
+                     container=container_name,
                      endpoint_override=endpoint,
                      requests_auth=self._get_req_auth(endpoint),
                      )
@@ -378,7 +411,6 @@ class Proxy(sdk_proxy.Proxy):
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                  when no resource can be found.
         """
-        raise NotImplementedError
         container_name = self._get_container_name(obj, container)
         endpoint = self.get_container_endpoint(container_name)
 
