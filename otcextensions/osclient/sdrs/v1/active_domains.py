@@ -21,18 +21,20 @@ from otcextensions.i18n import _
 LOG = logging.getLogger(__name__)
 
 
-def _flatten_domain(i, obj):
+def _flatten_domain(obj):
     """Flatten the structure of active-active domains into a single dict
     """
+    obj = obj.domains
+    i = 0
     data = {
-        'id': obj.domains[i].id,
-        'name': obj.domains[i].name,
-        'description': obj.domains[i].description,
-        'sold_out': obj.domains[i].sold_out,
+        'id': obj[i].id,
+        'name': obj[i].name,
+        'description': obj[i].description,
+        'sold_out': obj[i].sold_out,
         'local_replication_cluster':
-            obj.domains[i].local_replication_cluster.availability_zone,
+            obj[i].local_replication_cluster.availability_zone,
         'remote_replication_cluster':
-            obj.domains[i].remote_replication_cluster.availability_zone
+            obj[i].remote_replication_cluster.availability_zone
     }
 
     return data
@@ -61,6 +63,6 @@ class ListDomain(command.Lister):
 
         table = (self.columns,
                  (utils.get_dict_properties(
-                     _flatten_domain(i, s), self.columns,
-                 ) for i, s in enumerate(data)))
+                     _flatten_domain(s), self.columns,
+                 ) for s in data))
         return table
