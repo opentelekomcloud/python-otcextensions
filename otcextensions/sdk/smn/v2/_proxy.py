@@ -288,7 +288,6 @@ class Proxy(proxy.Proxy):
         return self._find(_template.Template, name_or_id,
                           ignore_missing=ignore_missing)
 
-
     # ======== Message Publish ========
     def publish_message(self, topic, **attrs):
 
