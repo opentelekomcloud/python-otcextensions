@@ -216,46 +216,16 @@ class ListBackups(command.Lister):
 
         query = {}
 
-        if parsed_args.checkpoint_id:
-            query['checkpoint_id'] = parsed_args.checkpoint_id
-        if parsed_args.dec:
-            query['dec'] = parsed_args.dec
-        if parsed_args.end_time:
-            query['end_time'] = parsed_args.end_time
-        if parsed_args.image_type:
-            query['image_type'] = parsed_args.image_type
-        if parsed_args.limit:
-            query['limit'] = parsed_args.limit
-        if parsed_args.marker:
-            query['marker'] = parsed_args.marker
-        if parsed_args.member_status:
-            query['member_status'] = parsed_args.member_status
-        if parsed_args.name:
-            query['name'] = parsed_args.name
-        if parsed_args.offset:
-            query['offset'] = parsed_args.offset
-        if parsed_args.own_type:
-            query['own_type'] = parsed_args.own_type
-        if parsed_args.parent_id:
-            query['parent_id'] = parsed_args.parent_id
-        if parsed_args.resource_az:
-            query['resource_az'] = parsed_args.resource_az
-        if parsed_args.resource_id:
-            query['resource_id'] = parsed_args.resource_id
-        if parsed_args.resource_name:
-            query['resource_name'] = parsed_args.resource_name
-        if parsed_args.resource_type:
-            query['resource_type'] = parsed_args.resource_type
-        if parsed_args.sort:
-            query['sort'] = parsed_args.sort
-        if parsed_args.start_time:
-            query['start_time'] = parsed_args.start_time
-        if parsed_args.status:
-            query['status'] = parsed_args.status
-        if parsed_args.used_percent:
-            query['used_percent'] = parsed_args.used_percent
-        if parsed_args.vault_id:
-            query['vault_id'] = parsed_args.vault_id
+        args_list = ['checkpoint_id', 'dec', 'end_time', 'image_type', 'limit',
+                     'marker', 'member_status', 'name', 'offset', 'own_type',
+                     'parent_id', 'resource_az', 'resource_id',
+                     'resource_name', 'resource_type', 'sort', 'start_time',
+                     'status', 'used_percent', 'vault_id']
+
+        for arg in args_list:
+            val = getattr(parsed_args, arg)
+            if val is not None:
+                query[arg] = val
 
         data = client.backups(**query)
 
@@ -413,14 +383,12 @@ class RestoreBackup(command.Command):
             ignore_missing=False
         )
 
-        if parsed_args.power_on is not None:
-            query['power_on'] = parsed_args.power_on
+        args_list = ['power_on', 'server_id', 'volume_id']
 
-        if parsed_args.server_id:
-            query['server_id'] = parsed_args.server_id
-
-        if parsed_args.volume_id:
-            query['volume_id'] = parsed_args.volume_id
+        for arg in args_list:
+            val = getattr(parsed_args, arg)
+            if val is not None:
+                query[arg] = val
 
         if parsed_args.mappings:
             query['mappings'] = _normalize_mappings(parsed_args.mappings)
