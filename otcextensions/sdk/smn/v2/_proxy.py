@@ -70,7 +70,7 @@ class Proxy(proxy.Proxy):
         return self._get(_topic.Topic, topic)
 
     def find_topic(self, name_or_id, ignore_missing=False):
-        """Find a single message topic.
+        """Find a SMN topic
 
         :param name_or_id: The name or ID of a topic.
         :param bool ignore_missing: When set to ``False``
