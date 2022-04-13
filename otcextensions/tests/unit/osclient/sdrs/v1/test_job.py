@@ -72,7 +72,7 @@ class TestJob(fakes.TestSDRS):
             'job'
         ]
 
-        verifylist = []
+        verifylist = [('job', 'job')]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
