@@ -27,6 +27,15 @@ class HostNetworkSpec(resource.Resource):
     router_id = resource.Body('vpc')
 
 
+class EniNetworkSpec(resource.Resource):
+
+    # Properties
+    #: IPv4 Subnet ID of the ENI container subnet.
+    eni_subnet_id = resource.Body('eniSubnetId')
+    #: ENI subnet CIDR block.
+    eni_subnet_cidr = resource.Body('eniSubnetCIDR')
+
+
 class ClusterSpec(resource.Resource):
 
     #: Authentication
@@ -52,6 +61,8 @@ class ClusterSpec(resource.Resource):
     type = resource.Body('type')
     #: Cluster version ['v1.11.7-r2', 'v1.13.10-r0'].
     version = resource.Body('version')
+    #: Eni network parameters.
+    eni_network = resource.Body('eniNetwork', type=EniNetworkSpec)
 
 
 class StatusSpec(_base.StatusSpec):
