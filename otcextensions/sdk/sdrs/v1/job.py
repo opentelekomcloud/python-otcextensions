@@ -47,7 +47,7 @@ class EntitySpec(resource.Resource):
     #: Protection group ID
     server_group_id = resource.Body('server_group_id')
     #: Sub job information
-    sub_jobs = resource.Body('sub_jobs', type=SubJob)
+    sub_jobs = resource.Body('sub_jobs', type=list, list_type=SubJob)
 
 
 class Job(resource.Resource):

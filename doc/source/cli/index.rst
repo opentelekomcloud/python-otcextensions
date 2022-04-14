@@ -40,6 +40,7 @@ documentation of these services:
    nat
    obs
    rds_v3
+   sdrs
    smn
    volume_backup
    vpc
