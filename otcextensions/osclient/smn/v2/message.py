@@ -62,6 +62,7 @@ class PublishMessage(command.ShowOne):
         parser.add_argument(
             '--message',
             metavar='<message>',
+            required=True,
             help=_("Message content. The message content is a UTF-8-coded "
                    "character string of no more than 256 KB."),
         )

@@ -25,7 +25,7 @@ class TestMessage(base.TestCase):
 
     def test_basic(self):
         sot = message.Message()
-        path = '/notifications/topics/{topic_urn}s/publish'
+        path = '/notifications/topics/%(topic_urn)s/publish'
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_create)
         self.assertFalse(sot.allow_list)
