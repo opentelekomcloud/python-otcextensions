@@ -14,11 +14,14 @@
 Add one or more CBR share member to a CBR backup
 """
 import openstack
+from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud='devstack-admin')
+sdk.register_otc_extensions(conn)
 
-backup = 'backup_id'
-members = ['list_of_project_ids']
+backup = 'autobk_1677'
+members = ['5045c215010c440d91b2f7dce1f3753b']
 backup = conn.cbr.find_backup(name_or_id=backup)
 member = conn.cbr.add_members(backup=backup.id, members=members)
+print(member)

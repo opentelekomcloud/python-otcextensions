@@ -26,36 +26,43 @@ def _flatten_member(obj):
     """Flatten the structure of the member into a single dict
     """
     data = {
-        'count': obj.count
+        'id': obj.id,
+        'status': obj.status,
+        'created_at': obj.created_at,
+        'updated_at': obj.updated_at,
+        'backup_id': obj.backup_id,
+        'image_id': obj.image_id,
+        'dest_project_id': obj.dest_project_id,
+        'vault_id': obj.vault_id
     }
 
     return data
 
 
-def _add_vaults_to_policy_obj(obj, data, columns):
-    """Add associated vaults to column and data tuples
+def _add_members_to_obj(obj, data, columns):
+    """Add members to obj.members
     """
     i = 0
-    for s in obj.associated_vaults:
-        if obj.associated_vaults[i].vault_id:
-            name = 'associated_vault_' + str(i + 1)
-            data += (obj.associated_vaults[i].vault_id,)
-            columns = columns + (name,)
-            i += 1
+    for member in obj.members:
+        name = 'member_' + str(i + 1)
+        data += ('\n'.join((f'{a}={v}' for a,v in member[i])),)
+        columns = columns + (name,)
+        i += 1
     return data, columns
 
 
 class ListMembers(command.Lister):
 
-    _description = _('List CBR Share members')
-    columns = ('ID', 'name', 'operation_type', 'start_time', 'enabled')
+    _description = _('List CBR Share Members')
+    columns = ('id', 'status', 'created_at', 'updated_at', 'backup_id',
+               'image_id', 'dest_project_id', 'vault_id')
 
     def get_parser(self, prog_name):
         parser = super(ListMembers, self).get_parser(prog_name)
         parser.add_argument(
-            'backup-id',
-            metavar='<backup_id>',
-            help=_('Backup ID.')
+            'backup',
+            metavar='<backup>',
+            help=_('Backup name or id.')
         )
         parser.add_argument(
             '--dest-project-id',
@@ -83,6 +90,7 @@ class ListMembers(command.Lister):
         parser.add_argument(
             '--offset',
             metavar='<offset>',
+            type=int,
             help=_('Offset value, which is a positive integer.')
         )
         parser.add_argument(
@@ -127,436 +135,192 @@ class ListMembers(command.Lister):
         if parsed_args.vault_id:
             query['vault_id'] = parsed_args.vault_id
 
-        data = client.members(**query)
+        backup = client.find_backup(
+            name_or_id=parsed_args.backup, ignore_missing=False)
 
+        members_data = client.members(backup=backup.id, **query)
         table = (self.columns,
                  (utils.get_dict_properties(
-                     _flatten_policy(s), self.columns,
-                 ) for s in data))
+                     _flatten_member(s), self.columns,
+                 ) for s in members_data))
         return table
 
 
-class ShowPolicy(command.ShowOne):
-    _description = _('Show single Policy details')
-    columns = (
-        'ID',
-        'name',
-        'operation_type',
-        'start_time',
-        'enabled',
-        'retention_duration_days',
-        'max_backups',
-        'day_backups',
-        'week_backups',
-        'month_backups',
-        'year_backups',
-        'timezone',
-    )
+class ShowMember(command.ShowOne):
+    _description = _('Show single CBR Share Member.')
+    columns = ('id', 'status', 'created_at', 'updated_at', 'backup_id',
+               'image_id', 'dest_project_id', 'vault_id')
 
     def get_parser(self, prog_name):
-        parser = super(ShowPolicy, self).get_parser(prog_name)
+        parser = super(ShowMember, self).get_parser(prog_name)
         parser.add_argument(
-            'policy',
-            metavar='<policy>',
-            help=_('ID or name of the CBR policy.')
+            'backup',
+            metavar='<backup>',
+            help=_('Backup name or id.')
+        )
+        parser.add_argument(
+            'member-id',
+            metavar='<member_id>',
+            help=_('Member ID, which is the project ID of the tenant'
+                   ' who receives the shared backup.')
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.cbr
 
-        obj = client.find_policy(
-            name_or_id=parsed_args.policy,
+        backup = client.find_backup(
+            name_or_id=parsed_args.backup,
             ignore_missing=False
         )
 
+        obj = client.get_member(
+            member=parsed_args.member,
+            backup=backup.id
+        )
+
         data = utils.get_dict_properties(
-            _flatten_policy(obj), self.columns)
-
-        if obj.associated_vaults:
-            data, self.columns = _add_vaults_to_policy_obj(
-                obj, data, self.columns)
-
-        if obj.trigger.properties.pattern:
-            data, self.columns = _add_scheduling_patterns(
-                obj, data, self.columns)
+            _flatten_member(obj), self.columns)
 
         return (self.columns, data)
 
 
-class CreatePolicy(command.ShowOne):
-    _description = _('Create CBR Policy')
-    columns = (
-        'ID',
-        'name',
-        'operation_type',
-        'start_time',
-        'enabled',
-        'retention_duration_days',
-        'max_backups',
-        'day_backups',
-        'week_backups',
-        'month_backups',
-        'year_backups',
-        'timezone',
-    )
+class AddMembers(command.ShowOne):
+    _description = _('Add Share Member.')
+    columns = ('id', 'status', 'created_at', 'updated_at', 'backup_id',
+               'image_id', 'dest_project_id', 'vault_id')
 
     def get_parser(self, prog_name):
-        parser = super(CreatePolicy, self).get_parser(prog_name)
+        parser = super(AddMembers, self).get_parser(prog_name)
         parser.add_argument(
-            'name',
-            metavar='<name>',
-            help=_('Name of the CBR Policy.')
+            'backup',
+            metavar='<backup>',
+            help=_('Backup name or id.')
         )
         parser.add_argument(
-            '--disable',
-            action='store_false',
-            help=_('Disables CBR Policy which is enabled by default.')
-        )
-        parser.add_argument(
-            '--operation-type',
-            metavar='<operation_type>',
-            default='backup',
-            choices=['backup', 'replication'],
-            help=_('backup or replication\n'
-                   'Default: backup')
-        )
-        parser.add_argument(
-            '--pattern',
-            metavar='<pattern>',
+            '--members',
+            action='append',
             required=True,
-            action='append',
-            dest='patterns',
-            help=_('Scheduling rule.\n'
-                   'Repeat Option for multiple rules.')
-        )
-        parser.add_argument(
-            '--day-backups',
-            metavar='<day_backups>',
-            type=int,
-            help=_('Specifies the number of retained daily backups.\n'
-                   'Ranges from 0 to 100.\n'
-                   'If this parameter is configured, timezone is '
-                   'mandatory.')
-        )
-        parser.add_argument(
-            '--week-backups',
-            metavar='<week_backups>',
-            type=int,
-            help=_('Specifies the number of retained weekly backups.\n'
-                   'Ranges from 0 to 100.\n'
-                   'If this parameter is configured, timezone is '
-                   'mandatory.')
-        )
-        parser.add_argument(
-            '--month-backups',
-            metavar='<month_backups>',
-            type=int,
-            help=_('Specifies the number of retained monthly backups.\n'
-                   'Ranges from 0 to 100.\n'
-                   'If this parameter is configured, timezone is '
-                   'mandatory.')
-        )
-        parser.add_argument(
-            '--year-backups',
-            metavar='<year_backups>',
-            type=int,
-            help=_('Specifies the number of retained yearly backups.\n'
-                   'Ranges from 0 to 100.\n'
-                   'If this parameter is configured, timezone is '
-                   'mandatory.')
-        )
-        parser.add_argument(
-            '--timezone',
-            metavar='<timezone>',
-            help=_('Timezone where the user is located, e.g. UTC+08:00.')
-        )
-        parser.add_argument(
-            '--max-backups',
-            metavar='<max_backups>',
-            type=int,
-            help=_('Maximum number of retained backups.\n'
-                   'Can be -1, backups will not cleared or ranges\n'
-                   'from 0 to 99999.')
-        )
-        parser.add_argument(
-            '--retention-duration-days',
-            metavar='<retention_duration_days>',
-            default=-1,
-            type=int,
-            help=_('Duration of retaining a backup, in days.\n'
-                   '-1 indicates that the backups will not be '
-                   'cleared based on the retention duration.\n'
-                   'Ranges from 1 to 99999.')
-        )
-        return parser
-
-    def take_action(self, parsed_args):
-
-        attrs = {
-            'operation_definition': {},
-            'trigger': {
-                'properties': {
-                    'pattern': []
-                }
-            }
-        }
-
-        # mandatory
-        attrs['name'] = parsed_args.name
-        attrs['enabled'] = parsed_args.disable
-        attrs['operation_type'] = parsed_args.operation_type
-        attrs['trigger']['properties']['pattern'] = parsed_args.patterns
-
-        # optional
-        if parsed_args.day_backups:
-            attrs['operation_definition'].update(
-                day_backups=parsed_args.day_backups)
-        if parsed_args.week_backups:
-            attrs['operation_definition'].update(
-                week_backups=parsed_args.week_backups)
-        if parsed_args.month_backups:
-            attrs['operation_definition'].update(
-                month_backups=parsed_args.month_backups)
-        if parsed_args.year_backups:
-            attrs['operation_definition'].update(
-                year_backups=parsed_args.year_backups)
-        if parsed_args.max_backups:
-            attrs['operation_definition'].update(
-                max_backups=parsed_args.max_backups)
-        if parsed_args.retention_duration_days:
-            rdd = parsed_args.retention_duration_days
-            attrs['operation_definition'].update(
-                retention_duration_days=rdd)
-
-        if (parsed_args.day_backups
-            or parsed_args.week_backups
-            or parsed_args.month_backups
-                or parsed_args.year_backups) and not parsed_args.timezone:
-            msg = ("Parameter timezone must be provided if "
-                   "<day|week|month|year>_backups are being used.")
-            raise exceptions.BadRequest(msg)
-
-        if parsed_args.timezone:
-            attrs['operation_definition'].update(
-                timezone=parsed_args.timezone)
-
-        client = self.app.client_manager.cbr
-        obj = client.create_policy(**attrs)
-
-        data = utils.get_dict_properties(
-            _flatten_policy(obj), self.columns)
-
-        if obj.trigger.properties.pattern:
-            data, self.columns = _add_scheduling_patterns(
-                obj, data, self.columns)
-
-        return (self.columns, data)
-
-
-class UpdatePolicy(command.ShowOne):
-    _description = _('Update CBR Policy')
-    columns = (
-        'ID',
-        'name',
-        'operation_type',
-        'start_time',
-        'enabled',
-        'retention_duration_days',
-        'max_backups',
-        'day_backups',
-        'week_backups',
-        'month_backups',
-        'year_backups',
-        'timezone',
-    )
-
-    def get_parser(self, prog_name):
-        parser = super(UpdatePolicy, self).get_parser(prog_name)
-        parser.add_argument(
-            'policy',
-            metavar='<policy>',
-            help=_('ID or name of the CBR Policy.')
-        )
-        parser.add_argument(
-            '--name',
-            metavar='<name>',
-            help=_('Name of the CBR Policy.')
-        )
-        parser.add_argument(
-            '--disable',
-            action='store_true',
-            help=_('Disables CBR Policy which is enabled by default.')
-        )
-        parser.add_argument(
-            '--enable',
-            action='store_true',
-            help=_('Enables CBR Policy.')
-        )
-        parser.add_argument(
-            '--pattern',
-            metavar='<pattern>',
-            action='append',
-            dest='patterns',
-            help=_('Scheduling rule.\n'
-                   'Repeat Option for multiple rules.')
-        )
-        parser.add_argument(
-            '--day-backups',
-            metavar='<day_backups>',
-            type=int,
-            help=_('Specifies the number of retained daily backups.\n'
-                   'Ranges from 0 to 100.\n'
-                   'If this parameter is configured, timezone is '
-                   'mandatory.')
-        )
-        parser.add_argument(
-            '--week-backups',
-            metavar='<week_backups>',
-            type=int,
-            help=_('Specifies the number of retained weekly backups.\n'
-                   'Ranges from 0 to 100.\n'
-                   'If this parameter is configured, timezone is '
-                   'mandatory.')
-        )
-        parser.add_argument(
-            '--month-backups',
-            metavar='<month_backups>',
-            type=int,
-            help=_('Specifies the number of retained monthly backups.\n'
-                   'Ranges from 0 to 100.\n'
-                   'If this parameter is configured, timezone is '
-                   'mandatory.')
-        )
-        parser.add_argument(
-            '--year-backups',
-            metavar='<year_backups>',
-            type=int,
-            help=_('Specifies the number of retained yearly backups.\n'
-                   'Ranges from 0 to 100.\n'
-                   'If this parameter is configured, timezone is '
-                   'mandatory.')
-        )
-        parser.add_argument(
-            '--timezone',
-            metavar='<timezone>',
-            help=_('Timezone where the user is located, e.g. UTC+08:00.')
-        )
-        parser.add_argument(
-            '--max-backups',
-            metavar='<max_backups>',
-            type=int,
-            help=_('Maximum number of retained backups.\n'
-                   'Can be -1, backups will not cleared or ranges\n'
-                   'from 0 to 99999.')
-        )
-        parser.add_argument(
-            '--retention-duration-days',
-            metavar='<retention_duration_days>',
-            type=int,
-            help=_('Duration of retaining a backup, in days.\n'
-                   '-1 indicates that the backups will not be '
-                   'cleared based on the retention duration.\n'
-                   'Ranges from 1 to 99999.')
+            help=_('Project IDs of the backup share members to be added.')
         )
         return parser
 
     def take_action(self, parsed_args):
 
         attrs = {}
-
-        if parsed_args.name:
-            attrs['name'] = parsed_args.name
-        if parsed_args.enable:
-            attrs['enabled'] = True
-        if parsed_args.disable:
-            attrs['enabled'] = False
-        if parsed_args.patterns:
-            trigger = {
-                'trigger': {
-                    'properties': {
-                        'pattern': parsed_args.patterns
-                    }
-                }
-            }
-            attrs.update(trigger)
-
-        if (parsed_args.day_backups
-            or parsed_args.week_backups
-            or parsed_args.month_backups
-            or parsed_args.year_backups
-            or parsed_args.max_backups
-            or parsed_args.retention_duration_days
-                or parsed_args.timezone):
-            attrs['operation_definition'] = {}
-            if parsed_args.day_backups:
-                attrs['operation_definition'].update(
-                    day_backups=parsed_args.day_backups)
-            if parsed_args.week_backups:
-                attrs['operation_definition'].update(
-                    week_backups=parsed_args.week_backups)
-            if parsed_args.month_backups:
-                attrs['operation_definition'].update(
-                    month_backups=parsed_args.month_backups)
-            if parsed_args.year_backups:
-                attrs['operation_definition'].update(
-                    year_backups=parsed_args.year_backups)
-            if parsed_args.max_backups:
-                attrs['operation_definition'].update(
-                    max_backups=parsed_args.max_backups)
-            if parsed_args.retention_duration_days:
-                rdd = parsed_args.retention_duration_days
-                attrs['operation_definition'].update(
-                    retention_duration_days=rdd)
-            if parsed_args.timezone:
-                attrs['operation_definition'].update(
-                    timezone=parsed_args.timezone)
-
         client = self.app.client_manager.cbr
-        policy = client.find_policy(
-            name_or_id=parsed_args.policy,
+        backup = client.find_backup(
+            name_or_id=parsed_args.backup,
             ignore_missing=False
         )
 
+        attrs['members'] = parsed_args.members
+
+        client = self.app.client_manager.cbr
+        obj = client.add_members(backup=backup.id, members=attrs['members'])
+
+        print(obj)
+        # data = utils.get_dict_properties(
+        #     _flatten_member(obj), self.columns)
+        table = (self.columns,
+                 (utils.get_dict_properties(
+                     _flatten_member(s), self.columns,
+                 ) for s in obj.members))
+
+        return table
+
+
+class UpdateMember(command.ShowOne):
+    _description = _('Update the Share Member Status.')
+    columns = ('ID', 'status', 'created_at', 'updated_at', 'backup_id',
+               'image_id', 'dest_project_id', 'vault_id')
+
+    def get_parser(self, prog_name):
+        parser = super(UpdateMember, self).get_parser(prog_name)
+        parser.add_argument(
+            'backup',
+            metavar='<backup>',
+            help=_('Backup name or id.')
+        )
+        parser.add_argument(
+            'member-id',
+            metavar='<member_id>',
+            help=_('Member ID, which is the same ID as in project ID.')
+        )
+        parser.add_argument(
+            '--status',
+            metavar='status',
+            required=True,
+            choices=['accepted', 'pending', 'rejected'],
+            help=_('Status of a shared backup.')
+        )
+        parser.add_argument(
+            '--vault-id',
+            dest='vault_id',
+            help=_('Specifies the vault in which the shared backup is to be stored. Only UUID is supported.'
+                   ' When updating the status of a backup share member status, if the backup is accepted,'
+                   ' vault_id must be specified. If the backup is rejected, vault_id is not required.')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+
+        attrs = {}
+        client = self.app.client_manager.cbr
+
+        backup = client.find_backup(
+            name_or_id=parsed_args.backup,
+            ignore_missing=False
+        )
+
+        member = client.find_member(
+            name_or_id=parsed_args.member_шв,
+            ignore_missing=False
+        )
+
+        attrs['status'] = parsed_args.status
+
+        if parsed_args.vault_id:
+            attrs['vault_id'] = parsed_args.vault_id
+
         if attrs:
-            obj = client.update_policy(policy=policy.id, **attrs)
+            obj = client.update_member(backup=backup.id,
+                                       member=member.id, **attrs)
         else:
-            obj = policy
+            obj = member
 
         data = utils.get_dict_properties(
-            _flatten_policy(obj), self.columns)
-
-        if obj.associated_vaults:
-            data, self.columns = _add_vaults_to_policy_obj(
-                obj, data, self.columns)
-
-        if obj.trigger.properties.pattern:
-            data, self.columns = _add_scheduling_patterns(
-                obj, data, self.columns)
+            _flatten_member(obj), self.columns)
 
         return (self.columns, data)
 
 
-class DeletePolicy(command.Command):
-    _description = _('Delete CBR Policy')
+class DeleteMember(command.Command):
+    _description = _('Delete Share Member')
 
     def get_parser(self, prog_name):
-        parser = super(DeletePolicy, self).get_parser(prog_name)
+        parser = super(DeleteMember, self).get_parser(prog_name)
         parser.add_argument(
-            'policy',
-            metavar='<policy>',
-            help=_('ID or name of the CBR Policy.')
+            'backup',
+            metavar='<backup>',
+            help=_('Backup name or id.')
         )
+        parser.add_argument(
+            'member-id',
+            metavar='<member_id>',
+            help=_('Backup name or id.')
+        )
+
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.cbr
 
-        policy = client.find_policy(
-            name_or_id=parsed_args.policy,
+        backup = client.find_backup(
+            name_or_id=parsed_args.backup,
             ignore_missing=False
         )
 
-        self.app.client_manager.cbr.delete_policy(
-            policy=policy.id,
+        self.app.client_manager.cbr.delete_member(
+            backup=backup.id, member=parsed_args.member_id,
             ignore_missing=False)
