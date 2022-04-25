@@ -159,7 +159,7 @@ class ShowMember(command.ShowOne):
             help=_('Backup name or id.')
         )
         parser.add_argument(
-            'member-id',
+            'member',
             metavar='<member_id>',
             help=_('Member ID, which is the project ID of the tenant'
                    ' who receives the shared backup.')
@@ -173,7 +173,6 @@ class ShowMember(command.ShowOne):
             name_or_id=parsed_args.backup,
             ignore_missing=False
         )
-
         obj = client.get_member(
             member=parsed_args.member,
             backup=backup.id
@@ -232,7 +231,7 @@ class AddMembers(command.ShowOne):
 
 class UpdateMember(command.ShowOne):
     _description = _('Update the Share Member Status.')
-    columns = ('ID', 'status', 'created_at', 'updated_at', 'backup_id',
+    columns = ('id', 'status', 'created_at', 'updated_at', 'backup_id',
                'image_id', 'dest_project_id', 'vault_id')
 
     def get_parser(self, prog_name):
@@ -243,7 +242,7 @@ class UpdateMember(command.ShowOne):
             help=_('Backup name or id.')
         )
         parser.add_argument(
-            'member-id',
+            'member',
             metavar='<member_id>',
             help=_('Member ID, which is the same ID as in project ID.')
         )
@@ -272,20 +271,22 @@ class UpdateMember(command.ShowOne):
             name_or_id=parsed_args.backup,
             ignore_missing=False
         )
-
-        member = client.find_member(
-            name_or_id=parsed_args.member_шв,
-            ignore_missing=False
+        print("BACKUUUUUUUUUUUUUUUUUUUUUP")
+        member = client.get_member(
+            member=parsed_args.member,
+            backup=backup.id
         )
-
+        print('MEMBERRRRRRRRRRRRRRRRRRRR')
         attrs['status'] = parsed_args.status
 
         if parsed_args.vault_id:
             attrs['vault_id'] = parsed_args.vault_id
 
         if attrs:
+            print('BEFFOOOORE')
             obj = client.update_member(backup=backup.id,
-                                       member=member.id, **attrs)
+                                       member=parsed_args.member, **attrs)
+            print('AFTEEEEEER')
         else:
             obj = member
 
