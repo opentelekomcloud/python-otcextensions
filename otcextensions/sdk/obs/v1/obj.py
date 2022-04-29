@@ -13,6 +13,7 @@
 # from botocore.exceptions import ClientError
 import base64
 import hashlib
+from io import BufferedReader
 
 from openstack import _log
 from openstack import exceptions
@@ -245,7 +246,8 @@ class Object(_base.BaseResource):
 
         session = self._get_session(session)
 
-        if not self.content_md5 and self.data:
+        if not self.content_md5 and self.data and\
+                not isinstance(self.data, BufferedReader):
             md5 = hashlib.md5()
             md5.update(str.encode(self.data))
             self.content_md5 = base64.b64encode(md5.digest()).decode()

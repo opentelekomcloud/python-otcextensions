@@ -9,8 +9,13 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import os
 from urllib import parse
 
+from openstack import exceptions
+from urllib3.exceptions import LocationParseError
+
+from otcextensions.common import utils
 from otcextensions.sdk import ak_auth
 from otcextensions.sdk import sdk_proxy
 from otcextensions.sdk.obs.v1 import container as _container
@@ -316,9 +321,15 @@ class Proxy(sdk_proxy.Proxy):
         return obj.stream(self, chunk_size=chunk_size)
 
     def create_object(self, container, name, filename=None, data=None,
+                      segment_size=None, use_slo=True, md5=None,
+                      generate_checksums=None,
                       **headers):
         """Upload a new object from attributes
 
+        :param generate_checksums:
+        :param md5:
+        :param use_slo:
+        :param segment_size:
         :param container: The value can be the name of a container or a
                :class:`~otcextensions.sdk.obs.v1.container.Container`
                instance.
@@ -355,19 +366,97 @@ class Proxy(sdk_proxy.Proxy):
                 requests_auth=self._get_req_auth(endpoint),
                 **headers)
 
-        elif filename is not None:
+        if segment_size:
+            segment_size = int(segment_size)
+        segment_size = self.get_object_segment_size(segment_size)
+        file_size = os.path.getsize(filename)
+
+        if generate_checksums and md5 is None:
+            md5 = utils._get_file_hashes(filename)
+
+        if self.is_object_stale(container, name, filename, md5):
+
             self.log.debug(
                 "uploading %(filename)s to %(endpoint)s",
                 {'filename': filename, 'endpoint': endpoint})
-            self._upload_object(endpoint, filename, headers)
+
+            if file_size <= segment_size:
+                self._upload_object(endpoint, filename, headers, name)
+            else:
+                self._upload_large_object(
+                    endpoint, filename, headers,
+                    file_size, segment_size, use_slo)
 
     # Backwards compat
     upload_object = create_object
 
-    def _upload_object(self, endpoint, filename, headers):
+    def _upload_object(self, endpoint, filename, headers, name=None):
+        if not name:
+            name = os.path.basename(filename)
         with open(filename, 'rb') as dt:
-            return self.put(
-                endpoint, headers=headers, data=dt)
+            return self._create(
+                _obj.Object,
+                name=name, data=dt,
+                endpoint_override=endpoint,
+                requests_auth=self._get_req_auth(endpoint),
+                **headers)
+
+    def _upload_large_object(self, endpoint, filename, headers,
+                             file_size, segment_size, use_slo):
+        """
+
+        :param endpoint:
+        :param filename:
+        :param headers:
+        :param file_size:
+        :param segment_size:
+        :param use_slo:
+        :return:
+        """
+        raise NotImplementedError
+
+    def is_object_stale(
+            self, container, name, filename, file_md5=None):
+        """Check to see if an object matches the hashes of a file.
+        :param container: Name of the container.
+        :param name: Name of the object.
+        :param filename: Path to the file.
+        :param file_md5: Pre-calculated md5 of the file contents. Defaults to
+            None which means calculate locally.
+        """
+        try:
+            metadata = self.get_object_metadata(name, container)
+        except (exceptions.NotFoundException, LocationParseError):
+            self.log.debug(
+                "swift stale check, no object: {container}/{name}".format(
+                    container=container, name=name))
+            return True
+
+        if not file_md5:
+            file_md5 = utils._get_file_hashes(filename)
+        if file_md5 == metadata.etag.strip('\"'):
+            self.log.debug(
+                "swift object up to date: %(container)s/%(name)s",
+                {'container': container, 'name': name})
+            return False
+        self.log.debug(
+            "swift checksum mismatch: "
+            " %(filename)s!=%(container)s/%(name)s",
+            {'filename': filename, 'container': container, 'name': name})
+        return True
+
+    def get_object_segment_size(self, segment_size):
+        """Get a segment size that will work given capabilities"""
+        if segment_size is None:
+            segment_size = DEFAULT_OBJECT_SEGMENT_SIZE
+        min_segment_size = 0
+        server_max_file_size = DEFAULT_MAX_FILE_SIZE
+
+        if segment_size > server_max_file_size:
+            return server_max_file_size
+        if segment_size < min_segment_size:
+            return min_segment_size
+        return segment_size
 
     def copy_object(self):
         """Copy an object."""

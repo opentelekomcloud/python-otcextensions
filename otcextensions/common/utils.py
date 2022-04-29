@@ -15,6 +15,7 @@
 
 from __future__ import print_function
 
+import hashlib
 # import errno
 # import functools
 # import json
@@ -49,3 +50,22 @@ def merge_two_dicts(x, y):
     if y:
         z.update(y)
     return z
+
+
+def _calculate_data_hashes(data):
+    _md5 = hashlib.md5(usedforsecurity=False)
+
+    if hasattr(data, 'read'):
+        for chunk in iter(lambda: data.read(8192), b''):
+            _md5.update(chunk)
+    else:
+        _md5.update(data)
+    return _md5.hexdigest()
+
+
+def _get_file_hashes(filename):
+    _md5 = None
+    with open(filename, 'rb') as file_obj:
+        _md5 = _calculate_data_hashes(file_obj)
+
+    return _md5
