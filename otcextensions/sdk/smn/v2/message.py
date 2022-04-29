@@ -13,7 +13,7 @@ from openstack import resource
 
 
 class Message(resource.Resource):
-    base_path = '/notifications/topics/{topic_urn}s/publish'
+    base_path = '/notifications/topics/%(topic_urn)s/publish'
 
     # capabilities
     allow_create = True
@@ -41,3 +41,5 @@ class Message(resource.Resource):
     #: Time-to-live (TTL) of a message, specifically, the maximum time
     #: period for retaining the message in the system
     time_to_live = resource.Body('time_to_live')
+    #: Resource identifier of a topic, which is unique
+    topic_urn = resource.URI('topic_urn')

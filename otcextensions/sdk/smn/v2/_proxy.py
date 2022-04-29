@@ -69,6 +69,21 @@ class Proxy(proxy.Proxy):
         """
         return self._get(_topic.Topic, topic)
 
+    def find_topic(self, name_or_id, ignore_missing=False):
+        """Find a SMN topic
+
+        :param name_or_id: The name or ID of a topic.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the template does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to delete a nonexistent template.
+
+        :returns: One :class:`~otcextensions.sdk.smn.v2.topic.Topic`
+        """
+        return self._find(_topic.Topic, name_or_id,
+                          ignore_missing=ignore_missing)
+
     def update_topic(self, topic, **attrs):
         """Update a SMN topic
 
