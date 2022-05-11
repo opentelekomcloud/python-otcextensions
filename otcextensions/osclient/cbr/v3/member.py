@@ -139,6 +139,7 @@ class ListMembers(command.Lister):
             name_or_id=parsed_args.backup, ignore_missing=False)
 
         members_data = client.members(backup=backup.id, **query)
+
         table = (self.columns,
                  (utils.get_dict_properties(
                      _flatten_member(s), self.columns,
@@ -184,7 +185,7 @@ class ShowMember(command.ShowOne):
         return (self.columns, data)
 
 
-class AddMembers(command.ShowOne):
+class AddMembers(command.Lister):
     _description = _('Add Share Member.')
     columns = ('id', 'status', 'created_at', 'updated_at', 'backup_id',
                'image_id', 'dest_project_id', 'vault_id')
@@ -216,17 +217,12 @@ class AddMembers(command.ShowOne):
         attrs['members'] = parsed_args.members
 
         client = self.app.client_manager.cbr
-        obj = client.add_members(backup=backup.id, members=attrs['members'])
+        members_data = client.add_members(backup=backup.id, members=attrs['members'])
 
-        print(obj)
-        # data = utils.get_dict_properties(
-        #     _flatten_member(obj), self.columns)
-        table = (self.columns,
-                 (utils.get_dict_properties(
+        data = (utils.get_dict_properties(
                      _flatten_member(s), self.columns,
-                 ) for s in obj.members))
-
-        return table
+                 ) for s in members_data)
+        return (self.columns, data)
 
 
 class UpdateMember(command.ShowOne):
@@ -255,7 +251,7 @@ class UpdateMember(command.ShowOne):
         )
         parser.add_argument(
             '--vault-id',
-            dest='vault_id',
+            metavar='vault_id',
             help=_('Specifies the vault in which the shared backup is to be stored. Only UUID is supported.'
                    ' When updating the status of a backup share member status, if the backup is accepted,'
                    ' vault_id must be specified. If the backup is rejected, vault_id is not required.')
@@ -267,33 +263,19 @@ class UpdateMember(command.ShowOne):
         attrs = {}
         client = self.app.client_manager.cbr
 
-        backup = client.find_backup(
-            name_or_id=parsed_args.backup,
-            ignore_missing=False
-        )
-        print("BACKUUUUUUUUUUUUUUUUUUUUUP")
-        member = client.get_member(
-            member=parsed_args.member,
-            backup=backup.id
-        )
-        print('MEMBERRRRRRRRRRRRRRRRRRRR')
         attrs['status'] = parsed_args.status
 
         if parsed_args.vault_id:
-            attrs['vault_id'] = parsed_args.vault_id
+            attrs['vault'] = parsed_args.vault_id
 
         if attrs:
-            print('BEFFOOOORE')
-            obj = client.update_member(backup=backup.id,
+            obj = client.update_member(backup=parsed_args.backup,
                                        member=parsed_args.member, **attrs)
-            print('AFTEEEEEER')
-        else:
-            obj = member
 
-        data = utils.get_dict_properties(
-            _flatten_member(obj), self.columns)
+            data = utils.get_dict_properties(
+                _flatten_member(obj), self.columns)
 
-        return (self.columns, data)
+            return (self.columns, data)
 
 
 class DeleteMember(command.Command):

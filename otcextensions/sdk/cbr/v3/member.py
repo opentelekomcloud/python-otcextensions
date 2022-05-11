@@ -9,7 +9,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import resource
+from openstack import resource, exceptions
 
 
 class Member(resource.Resource):
@@ -59,3 +59,17 @@ class Member(resource.Resource):
             retry_on_conflict=retry_on_conflict,
             base_path=base_path,
             **kwargs)
+
+    def add_members(self, session, backup_id, members):
+        """Method to add several share members to a backup
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param list members: List of target project IDs to which the backup
+            is shared
+        """
+        url = self.base_path % backup_id
+        body = {
+            'members': members
+        }
+        response = session.post(url, json=body)
