@@ -15,6 +15,7 @@
 
 from __future__ import print_function
 
+import collections
 import hashlib
 # import errno
 # import functools
@@ -69,3 +70,54 @@ def _get_file_hashes(filename):
         _md5 = _calculate_data_hashes(file_obj)
 
     return _md5
+
+
+class FileSegment:
+    """File-like object to pass to requests."""
+
+    def __init__(self, filename, offset, length):
+        self.filename = filename
+        self.offset = offset
+        self.length = length
+        self.pos = 0
+        self._file = open(filename, 'rb')
+        self.seek(0)
+
+    def tell(self):
+        return self._file.tell() - self.offset
+
+    def seek(self, offset, whence=0):
+        if whence == 0:
+            self._file.seek(self.offset + offset, whence)
+        elif whence == 1:
+            self._file.seek(offset, whence)
+        elif whence == 2:
+            self._file.seek(self.offset + self.length - offset, 0)
+
+    def read(self, size=-1):
+        remaining = self.length - self.pos
+        if remaining <= 0:
+            return b''
+
+        to_read = remaining if size < 0 else min(size, remaining)
+        chunk = self._file.read(to_read)
+        self.pos += len(chunk)
+
+        return chunk
+
+    def reset(self):
+        self._file.seek(self.offset, 0)
+
+
+def _get_file_segments(endpoint, filename, file_size, segment_size):
+    # Use an ordered dict here so that testing can replicate things
+    segments = collections.OrderedDict()
+    for (index, offset) in enumerate(range(0, file_size, segment_size)):
+        remaining = file_size - (index * segment_size)
+        segment = FileSegment(
+            filename, offset,
+            segment_size if segment_size < remaining else remaining)
+        name = '{endpoint}/{index:0>6}'.format(
+            endpoint=endpoint, index=index)
+        segments[name] = segment
+    return segments

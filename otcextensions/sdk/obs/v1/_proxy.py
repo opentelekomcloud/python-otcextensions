@@ -9,6 +9,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import json
 import os
 from urllib import parse
 
@@ -21,7 +22,8 @@ from otcextensions.sdk import sdk_proxy
 from otcextensions.sdk.obs.v1 import container as _container
 from otcextensions.sdk.obs.v1 import obj as _obj
 
-DEFAULT_OBJECT_SEGMENT_SIZE = 1073741824  # 1GB
+# DEFAULT_OBJECT_SEGMENT_SIZE = 1073741824  # 1GB
+DEFAULT_OBJECT_SEGMENT_SIZE = 70000000  # 70MB
 DEFAULT_MAX_FILE_SIZE = (5 * 1024 * 1024 * 1024 + 2) / 2
 EXPIRES_ISO8601_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 SHORT_EXPIRES_ISO8601_FORMAT = '%Y-%m-%d'
@@ -91,6 +93,7 @@ class Proxy(sdk_proxy.Proxy):
             )
             setattr(self, '_ak_auth', auth)
         return auth
+
     # ======== Containers ========
 
     def containers(self, **query):
@@ -326,10 +329,20 @@ class Proxy(sdk_proxy.Proxy):
                       **headers):
         """Upload a new object from attributes
 
-        :param generate_checksums:
-        :param md5:
-        :param use_slo:
-        :param segment_size:
+        :param generate_checksums: Whether to generate checksums on the client
+            side that get added to headers for later prevention of double
+            uploads of identical data. (optional, defaults to True)
+        :param md5: A hexadecimal md5 of the file. (Optional), if it is known
+            and can be passed here, it will save repeating the expensive md5
+            process. It is assumed to be accurate.
+        :param use_slo: If the object is large enough to need to be a Large
+            Object, use a static rather than dynamic object. Static Objects
+            will delete segment objects when the manifest object is deleted.
+            (optional, defaults to True)
+        :param segment_size: Break the uploaded object into segments of this
+            many bytes. (Optional) SDK will attempt to discover the maximum
+            value for this from the server if it is not specified, or will use
+            a reasonable default.
         :param container: The value can be the name of a container or a
                :class:`~otcextensions.sdk.obs.v1.container.Container`
                instance.
@@ -404,16 +417,52 @@ class Proxy(sdk_proxy.Proxy):
     def _upload_large_object(self, endpoint, filename, headers,
                              file_size, segment_size, use_slo):
         """
-
-        :param endpoint:
-        :param filename:
-        :param headers:
-        :param file_size:
-        :param segment_size:
-        :param use_slo:
-        :return:
+        If the object is big, we need to break it up into segments that
+        are no larger than segment_size, upload each of them individually
+        and then upload a manifest object. The segments can be uploaded in
+        parallel, so we'll use the async feature of the TaskManager.
         """
+
         raise NotImplementedError
+
+    def _finish_large_object_slo(self, endpoint, headers, manifest):
+        # of the concatenation of the etags of the results
+        headers = headers.copy()
+        retries = 3
+        while True:
+            try:
+                return exceptions.raise_from_response(self.put(
+                    endpoint,
+                    params={'multipart-manifest': 'put'},
+                    headers=headers, data=json.dumps(manifest))
+                )
+            except Exception:
+                retries -= 1
+                if retries == 0:
+                    raise
+
+    def _finish_large_object_dlo(self, endpoint, headers):
+        headers = headers.copy()
+        headers['X-Object-Manifest'] = endpoint
+        retries = 3
+        while True:
+            try:
+                return exceptions.raise_from_response(
+                    self.put(endpoint, headers=headers))
+            except Exception:
+                retries -= 1
+                if retries == 0:
+                    raise
+
+    def _object_name_from_url(self, url):
+        '''Get container_name/object_name from the full URL called.
+        Remove the Swift endpoint from the front of the URL, and remove
+        the leaving / that will leave behind.'''
+        endpoint = self.get_endpoint()
+        object_name = url.replace(endpoint, '')
+        if object_name.startswith('/'):
+            object_name = object_name[1:]
+        return object_name
 
     def is_object_stale(
             self, container, name, filename, file_md5=None):
@@ -553,3 +602,23 @@ class Proxy(sdk_proxy.Proxy):
         res = self._get_resource(_obj.Object, obj, container=container_name)
         res.delete_metadata(self, keys)
         return res
+
+    def _delete_autocreated_image_objects(
+            self, container=None, segment_prefix=None
+    ):
+        """Delete all objects autocreated for image uploads.
+        This method should generally not be needed, as shade should clean up
+        the objects it uses for object-based image creation. If something goes
+        wrong and it is found that there are leaked objects, this method can be
+        used to delete any objects that shade has created on the user's behalf
+        in service of image uploads.
+        :param str container: Name of the container. Defaults to 'images'.
+        :param str segment_prefix: Prefix for the image segment names to
+            delete. If not given, all image upload segments present are
+            deleted.
+        """
+        deleted = False
+        for obj in self.objects(container, prefix=segment_prefix):
+            self.delete_object(obj, ignore_missing=True)
+            deleted = True
+        return deleted
