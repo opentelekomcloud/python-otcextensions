@@ -10,6 +10,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import openstack
 from openstack.tests.unit import test_proxy_base
 
 from otcextensions.sdk.cbr.v3 import _proxy
@@ -20,6 +21,7 @@ from otcextensions.sdk.cbr.v3 import checkpoint as _checkpoint
 from otcextensions.sdk.cbr.v3 import restore as _restore
 from otcextensions.sdk.cbr.v3 import vault as _vault
 from otcextensions.sdk.cbr.v3 import task as _task
+from unittest import mock
 
 
 class TestCBRProxy(test_proxy_base.TestProxyBase):
@@ -45,13 +47,17 @@ class TestCBRBackup(TestCBRProxy):
         self.verify_get(self.proxy.get_backup, _backup.Backup)
 
     def test_member_add(self):
-        members = ['member1', 'member2']
+        members = ['member1']
         backup = _backup.Backup(id='backup')
+        m1 = _member.Member(id='member1')
+        openstack.proxy.Proxy._get = mock.Mock()
+        openstack.proxy.Proxy._get.return_value = m1
         self._verify(
             'otcextensions.sdk.cbr.v3.backup.Backup.add_members',
             self.proxy.add_members,
             method_args=[backup, members],
             expected_args=[self.proxy],
+            expected_result=[m1],
             expected_kwargs={'members': members}
         )
 
