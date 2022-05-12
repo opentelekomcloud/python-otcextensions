@@ -364,4 +364,24 @@ class TestUpdateDirectConnection(fakes.TestDcaas):
 
 
 class TestDeleteDirectConnection(fakes.TestDcaas):
-    _data = fakes.FakeDirectConnection.create_multiple(2)
+    _data = fakes.FakeDirectConnection.create_one()
+
+    def setUp(self):
+        super(TestDeleteDirectConnection, self).setUp()
+        self.client.delete_connection = mock.Mock(return_value=None)
+        self.cmd = connection.DeleteDirectConnection(self.app, None)
+
+    def test_delete_by_name(self):
+        arglist = [
+            self._data.name,
+        ]
+        verifylist = [
+            ('direct_connection', self._data.name),
+        ]
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+        self.client.find_connection = (
+            mock.Mock(return_value=self._data)
+        )
+        result = self.cmd.take_action(parsed_args)
+        self.client.delete_connection.assert_called_with(self._data.id)
+        self.assertIsNone(result)

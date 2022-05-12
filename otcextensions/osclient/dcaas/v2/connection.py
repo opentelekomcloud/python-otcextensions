@@ -481,5 +481,5 @@ class DeleteDirectConnection(command.Command):
         client = self.app.client_manager.dcaas
         if parsed_args.direct_connection:
             direct_connection = client.find_connection(
-                parsed_args.direct_connection.id)
+                parsed_args.direct_connection)
             client.delete_connection(direct_connection.id)
