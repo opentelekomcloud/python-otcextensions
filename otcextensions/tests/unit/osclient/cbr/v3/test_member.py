@@ -12,8 +12,6 @@
 import mock
 
 from otcextensions.osclient.cbr.v3 import member
-from otcextensions.sdk.cbr.v3 import member as memberSDK
-from otcextensions.sdk.cbr.v3 import backup as backupSDK
 from otcextensions.tests.unit.osclient.cbr.v3 import fakes
 
 
@@ -228,7 +226,6 @@ class TestAddMembers(fakes.TestCBR):
         self.backup_client = self.app.client_manager.cbr
         self.backup_client.add_members = mock.Mock()
         self.client.find_backup = mock.Mock()
-
 
     def test_default(self):
         arglist = [

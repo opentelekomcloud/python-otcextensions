@@ -124,9 +124,5 @@ class Backup(resource.Resource):
         body = {
             'members': members
         }
-        response = session.post(url, json=body)
-        query = {}
-        return self.list(
-            self, paginated=True,
-            base_path=self.base_path,
-            **query)
+        session.post(url, json=body)
+

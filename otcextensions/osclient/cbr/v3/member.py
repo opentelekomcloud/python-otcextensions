@@ -14,7 +14,6 @@
 import logging
 
 from osc_lib import utils
-from osc_lib import exceptions
 from osc_lib.command import command
 
 from otcextensions.i18n import _
@@ -46,7 +45,7 @@ def _add_members_to_obj(obj, data, columns):
     for member in obj.members:
         name = 'member_' + str(i + 1)
         data += ('\n'.join((f'{a}={v}' for a,v in member[i])),)
-        columns = columns + (name,)
+        columns = columns + (name, )
         i += 1
     return data, columns
 
@@ -217,11 +216,11 @@ class AddMembers(command.Lister):
         attrs['members'] = parsed_args.members
 
         client = self.app.client_manager.cbr
-        members_data = client.add_members(backup=backup.id, members=attrs['members'])
+        members_data = client.add_members(backup=backup.id,
+                                          members=attrs['members'])
 
         data = (utils.get_dict_properties(
-                     _flatten_member(s), self.columns,
-                 ) for s in members_data)
+                     _flatten_member(s), self.columns,) for s in members_data)
         return (self.columns, data)
 
 
@@ -252,9 +251,11 @@ class UpdateMember(command.ShowOne):
         parser.add_argument(
             '--vault-id',
             metavar='vault_id',
-            help=_('Specifies the vault in which the shared backup is to be stored. Only UUID is supported.'
-                   ' When updating the status of a backup share member status, if the backup is accepted,'
-                   ' vault_id must be specified. If the backup is rejected, vault_id is not required.')
+            help=_('Specifies the vault in which the shared backup is'
+                   ' to be stored. Only UUID is supported. When updating'
+                   ' the status of a backup share member status,'
+                   ' if the backup is accepted, vault_id must be specified.'
+                   ' If the backup is rejected, vault_id is not required.')
         )
         return parser
 

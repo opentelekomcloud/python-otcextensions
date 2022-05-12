@@ -406,7 +406,7 @@ class Proxy(proxy.Proxy):
             **query
         )
 
-    def get_member(self, backup, member):
+    def get_member(self, backup, member, **attrs):
         """Get one CBR share member by UUID.
 
         :param member: key id or an instance of
@@ -433,10 +433,15 @@ class Proxy(proxy.Proxy):
         :returns: The results are the list of share member objects
         """
         backup = self._get_resource(_backup.Backup, backup)
-        return backup.add_members(
+        backup.add_members(
             self,
             members=members
         )
+        members_data = []
+        for member_id in members:
+            member = self._get(_member.Member, member_id, backup_id=backup.id)
+            members_data.append(member)
+        return members_data
 
     def update_member(self, backup, member, status='accepted', vault=None):
         """Update CBR share members
