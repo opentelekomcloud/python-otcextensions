@@ -285,13 +285,11 @@ class DeleteMember(command.Command):
         parser = super(DeleteMember, self).get_parser(prog_name)
         parser.add_argument(
             'backup',
-            metavar='<backup>',
             help=_('Backup name or id.')
         )
         parser.add_argument(
-            'member-id',
-            metavar='<member_id>',
-            help=_('Backup name or id.')
+            'member',
+            help=_('Member id.')
         )
 
         return parser
@@ -305,5 +303,5 @@ class DeleteMember(command.Command):
         )
 
         self.app.client_manager.cbr.delete_member(
-            backup=backup.id, member=parsed_args.member_id,
+            backup=backup.id, member=parsed_args.member,
             ignore_missing=False)
