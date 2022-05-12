@@ -44,7 +44,7 @@ def _add_members_to_obj(obj, data, columns):
     i = 0
     for member in obj.members:
         name = 'member_' + str(i + 1)
-        data += ('\n'.join((f'{a}={v}' for a,v in member[i])),)
+        data += ('\n'.join((f'{a}={v}' for a, v in member[i])),)
         columns = columns + (name, )
         i += 1
     return data, columns
@@ -219,8 +219,8 @@ class AddMembers(command.Lister):
         members_data = client.add_members(backup=backup.id,
                                           members=attrs['members'])
 
-        data = (utils.get_dict_properties(
-                     _flatten_member(s), self.columns,) for s in members_data)
+        data = (utils.get_dict_properties(_flatten_member(s),
+                                          self.columns,) for s in members_data)
         return (self.columns, data)
 
 

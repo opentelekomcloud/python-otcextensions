@@ -11,6 +11,7 @@
 # under the License.
 from openstack import resource
 from openstack import utils
+from otcextensions.sdk.cbr.v3 import member as _member
 
 
 class AppCSpec(resource.Resource):
@@ -125,4 +126,9 @@ class Backup(resource.Resource):
             'members': members
         }
         session.post(url, json=body)
+        members_data = []
+        for member_id in members:
+            member = self._get(_member.Member, member_id, backup_id=self.id)
+            members_data.append(member)
+        return members_data
 
