@@ -323,7 +323,7 @@ class Proxy(sdk_proxy.Proxy):
         return obj.stream(self, chunk_size=chunk_size)
 
     def create_object(self, container, name, filename=None, data=None,
-                      segment_size=None, use_slo=True, md5=None,
+                      segment_size=None, md5=None,
                       generate_checksums=None,
                       **headers):
         """Upload a new object from attributes
@@ -334,10 +334,6 @@ class Proxy(sdk_proxy.Proxy):
         :param md5: A hexadecimal md5 of the file. (Optional), if it is known
             and can be passed here, it will save repeating the expensive md5
             process. It is assumed to be accurate.
-        :param use_slo: If the object is large enough to need to be a Large
-            Object, use a static rather than dynamic object. Static Objects
-            will delete segment objects when the manifest object is deleted.
-            (optional, defaults to True)
         :param segment_size: Break the uploaded object into segments of this
             many bytes. (Optional) SDK will attempt to discover the maximum
             value for this from the server if it is not specified, or will use
@@ -397,7 +393,7 @@ class Proxy(sdk_proxy.Proxy):
             else:
                 self._upload_large_object(
                     endpoint, filename, headers,
-                    file_size, segment_size, use_slo)
+                    file_size, segment_size)
 
     # Backwards compat
     upload_object = create_object
@@ -414,7 +410,7 @@ class Proxy(sdk_proxy.Proxy):
                 **headers)
 
     def _upload_large_object(self, endpoint, filename, headers,
-                             file_size, segment_size, use_slo):
+                             file_size, segment_size):
         """
         If the object is big, we need to break it up into segments that
         are no larger than segment_size, upload each of them individually
@@ -427,10 +423,6 @@ class Proxy(sdk_proxy.Proxy):
         retry_results = []
         retry_futures = []
         manifest = []
-        pparts = self.parts('https://anton-obs-test.obs.eu-de.otc.t-systems.com/StudentBook.pdf',
-                           '00000180B800A84F481FC74AF7F40D24')
-        cmp = _obj.Object.complete_multypart_upload(
-            self, 'https://anton-obs-test.obs.eu-de.otc.t-systems.com/StudentBook.pdf', '00000180B800A84F481FC74AF7F40D24', pparts['parts'])
 
         object_name = os.path.basename(filename)
 
@@ -448,6 +440,7 @@ class Proxy(sdk_proxy.Proxy):
                 self.put,
                 f'{url}?partNumber={name[-1]}&uploadId={upload_id}',
                 headers=headers, data=segment,
+                requests_auth=self._get_req_auth(endpoint),
                 raise_exc=False)
             segment_futures.append(segment_future)
             # dict. Then sort the list of dicts by path.
@@ -467,7 +460,9 @@ class Proxy(sdk_proxy.Proxy):
             segment_future = self._connection._pool_executor.submit(
                 self.put,
                 f'{url}?partNumber={name[-1]}&uploadId={upload_id}',
-                headers=headers, data=segment)
+                headers=headers, data=segment,
+                requests_auth=self._get_req_auth(endpoint)
+            )
             # dict. Then sort the list of dicts by path.
             retry_futures.append(segment_future)
 
@@ -477,7 +472,7 @@ class Proxy(sdk_proxy.Proxy):
 
         try:
             return self._finish_large_object_upload(
-                url, headers, object_name, upload_id)
+                url, headers, upload_id)
         except Exception:
             try:
                 segment_prefix = endpoint.split('/')[-1]
@@ -503,7 +498,10 @@ class Proxy(sdk_proxy.Proxy):
             try:
                 return exceptions.raise_from_response(
                     _obj.Object.complete_multypart_upload(
-                        self, endpoint, upload_id, parts['parts']))
+                        self, endpoint, upload_id,
+                        parts['Parts'], headers,
+                        requests_auth=self._get_req_auth(endpoint)
+                    ))
             except Exception:
                 retries -= 1
                 if retries == 0:

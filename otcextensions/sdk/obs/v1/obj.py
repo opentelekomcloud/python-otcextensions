@@ -317,7 +317,14 @@ class Object(_base.BaseResource):
         return dict_resource
 
     @staticmethod
-    def complete_multypart_upload(proxy, endpoint, upload_id, data):
+    def complete_multypart_upload(
+            proxy, endpoint, upload_id, data, headers, **params):
         url = f'{endpoint}?uploadId={upload_id}'
-
-        response = proxy.post(url, data=data)
+        root = ET.Element("CompleteMultipartUpload")
+        for item in data:
+            part = ET.SubElement(root, "Part")
+            ET.SubElement(part, 'PartNumber').text = item['PartNumber']
+            ET.SubElement(part, 'ETag').text = item['ETag']
+        tree = ET.ElementTree(root)
+        data = ET.tostring(tree.getroot()).decode()
+        return proxy.post(url, data=data, headers=headers, params=params)
