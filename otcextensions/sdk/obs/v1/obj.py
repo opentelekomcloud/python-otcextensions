@@ -13,6 +13,7 @@
 # from botocore.exceptions import ClientError
 import base64
 import hashlib
+import xml.etree.ElementTree as ET
 from io import BufferedReader
 
 from openstack import _log
@@ -21,9 +22,6 @@ from openstack import resource
 
 # from otcextensions.i18n import _
 from otcextensions.sdk.obs.v1 import _base
-
-import xml.etree.ElementTree as ET
-
 
 _logger = _log.setup_logging('openstack')
 
@@ -292,3 +290,34 @@ class Object(_base.BaseResource):
             f.write(response.content)
 
         return
+
+    @staticmethod
+    def initiate_multypart_upload(proxy, endpoint, name):
+        endpoint += f'/{name}?uploads'
+        response = proxy.post(endpoint)
+        dict_resource = {}
+        root = ET.fromstring(response.content)
+        for element in root:
+            dict_raw_resource = _base.BaseResource.etree_to_dict(element)
+            dict_resource.update(dict_raw_resource)
+        return dict_resource['UploadId']
+
+    @staticmethod
+    def get_parts(proxy, endpoint):
+        response = proxy.get(endpoint)
+        dict_resource = {}
+        root = ET.fromstring(response.content)
+        for element in root:
+            dict_raw_resource = _base.BaseResource.etree_to_dict(element)
+            if element.tag == 'Part':
+                dict_resource.setdefault('Parts', []).\
+                    append(dict_raw_resource['Part'])
+                continue
+            dict_resource.update(dict_raw_resource)
+        return dict_resource
+
+    @staticmethod
+    def complete_multypart_upload(proxy, endpoint, upload_id, data):
+        url = f'{endpoint}?uploadId={upload_id}'
+
+        response = proxy.post(url, data=data)

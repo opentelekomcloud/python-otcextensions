@@ -9,7 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import json
 import os
 from urllib import parse
 
@@ -423,32 +422,88 @@ class Proxy(sdk_proxy.Proxy):
         parallel, so we'll use the async feature of the TaskManager.
         """
 
-        raise NotImplementedError
+        segment_futures = []
+        segment_results = []
+        retry_results = []
+        retry_futures = []
+        manifest = []
+        pparts = self.parts('https://anton-obs-test.obs.eu-de.otc.t-systems.com/StudentBook.pdf',
+                           '00000180B800A84F481FC74AF7F40D24')
+        cmp = _obj.Object.complete_multypart_upload(
+            self, 'https://anton-obs-test.obs.eu-de.otc.t-systems.com/StudentBook.pdf', '00000180B800A84F481FC74AF7F40D24', pparts['parts'])
 
-    def _finish_large_object_slo(self, endpoint, headers, manifest):
-        # of the concatenation of the etags of the results
-        headers = headers.copy()
-        retries = 3
-        while True:
+        object_name = os.path.basename(filename)
+
+        segments = utils._get_file_segments(
+            endpoint, filename, file_size, segment_size)
+
+        upload_id = _obj.Object.initiate_multypart_upload(
+            self, endpoint, object_name
+        )
+        url = f'{endpoint}/{object_name}'
+        # Schedule the segments for upload
+        for name, segment in segments.items():
+            # Async call to put - schedules execution and returns a future
+            segment_future = self._connection._pool_executor.submit(
+                self.put,
+                f'{url}?partNumber={name[-1]}&uploadId={upload_id}',
+                headers=headers, data=segment,
+                raise_exc=False)
+            segment_futures.append(segment_future)
+            # dict. Then sort the list of dicts by path.
+            manifest.append(dict(
+                path='/{name}'.format(name=name),
+                size_bytes=segment.length))
+
+        segment_results, retry_results = self._connection._wait_for_futures(
+            segment_futures, raise_on_error=False)
+
+        for result in retry_results:
+            # Grab the FileSegment for the failed upload so we can retry
+            name = self._object_name_from_url(result.url)
+            segment = segments[name]
+            segment.seek(0)
+            # Async call to put - schedules execution and returns a future
+            segment_future = self._connection._pool_executor.submit(
+                self.put,
+                f'{url}?partNumber={name[-1]}&uploadId={upload_id}',
+                headers=headers, data=segment)
+            # dict. Then sort the list of dicts by path.
+            retry_futures.append(segment_future)
+
+        # If any segments fail the second time, just throw the error
+        segment_results, retry_results = self._connection._wait_for_futures(
+            retry_futures, raise_on_error=True)
+
+        try:
+            return self._finish_large_object_upload(
+                url, headers, object_name, upload_id)
+        except Exception:
             try:
-                return exceptions.raise_from_response(self.put(
-                    endpoint,
-                    params={'multipart-manifest': 'put'},
-                    headers=headers, data=json.dumps(manifest))
-                )
+                segment_prefix = endpoint.split('/')[-1]
+                self.log.debug(
+                    "Failed to upload large object manifest for %s. "
+                    "Removing segment uploads.", segment_prefix)
+                self._delete_autocreated_image_objects(
+                    segment_prefix=segment_prefix)
             except Exception:
-                retries -= 1
-                if retries == 0:
-                    raise
+                self.log.exception(
+                    "Failed to cleanup image objects for %s:",
+                    segment_prefix)
+            raise
 
-    def _finish_large_object_dlo(self, endpoint, headers):
-        headers = headers.copy()
-        headers['X-Object-Manifest'] = endpoint
+    def parts(self, endpoint, upload_id):
+        return _obj.Object.get_parts(
+            self, f'{endpoint}?uploadId={upload_id}')
+
+    def _finish_large_object_upload(self, endpoint, headers, upload_id):
+        parts = self.parts(endpoint, upload_id)
         retries = 3
         while True:
             try:
                 return exceptions.raise_from_response(
-                    self.put(endpoint, headers=headers))
+                    _obj.Object.complete_multypart_upload(
+                        self, endpoint, upload_id, parts['parts']))
             except Exception:
                 retries -= 1
                 if retries == 0:

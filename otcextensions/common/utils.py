@@ -117,7 +117,7 @@ def _get_file_segments(endpoint, filename, file_size, segment_size):
         segment = FileSegment(
             filename, offset,
             segment_size if segment_size < remaining else remaining)
-        name = '{endpoint}/{index:0>6}'.format(
-            endpoint=endpoint, index=index)
+        name = '{endpoint}/{index}'.format(
+            endpoint=endpoint, index=index + 1)
         segments[name] = segment
     return segments
