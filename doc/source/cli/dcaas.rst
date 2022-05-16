@@ -1,5 +1,5 @@
 Direct Connect (DCAAS)
-=================================
+======================
 
 The DCAAS client is the command-line interface (CLI) for
 the Network Direct Connection (DCAAS) API and its extensions.
