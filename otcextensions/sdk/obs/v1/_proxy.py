@@ -429,8 +429,9 @@ class Proxy(sdk_proxy.Proxy):
         segments = utils._get_file_segments(
             endpoint, filename, file_size, segment_size)
 
-        upload_id = _obj.Object.initiate_multypart_upload(
-            self, endpoint, object_name
+        upload_id = _obj.Object.initiate_multipart_upload(
+            self, endpoint, object_name,
+            requests_auth=self._get_req_auth(endpoint)
         )
         url = f'{endpoint}/{object_name}'
         # Schedule the segments for upload
@@ -497,7 +498,7 @@ class Proxy(sdk_proxy.Proxy):
         while True:
             try:
                 return exceptions.raise_from_response(
-                    _obj.Object.complete_multypart_upload(
+                    _obj.Object.complete_multipart_upload(
                         self, endpoint, upload_id,
                         parts['Parts'], headers,
                         requests_auth=self._get_req_auth(endpoint)

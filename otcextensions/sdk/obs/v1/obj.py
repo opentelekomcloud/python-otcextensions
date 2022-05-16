@@ -292,9 +292,9 @@ class Object(_base.BaseResource):
         return
 
     @staticmethod
-    def initiate_multypart_upload(proxy, endpoint, name):
+    def initiate_multipart_upload(proxy, endpoint, name, **params):
         endpoint += f'/{name}?uploads'
-        response = proxy.post(endpoint)
+        response = proxy.post(endpoint, params=params)
         dict_resource = {}
         root = ET.fromstring(response.content)
         for element in root:
@@ -317,7 +317,7 @@ class Object(_base.BaseResource):
         return dict_resource
 
     @staticmethod
-    def complete_multypart_upload(
+    def complete_multipart_upload(
             proxy, endpoint, upload_id, data, headers, **params):
         url = f'{endpoint}?uploadId={upload_id}'
         root = ET.Element("CompleteMultipartUpload")
