@@ -425,13 +425,13 @@ class Proxy(sdk_proxy.Proxy):
         manifest = []
 
         object_name = os.path.basename(filename)
-
+        requests_auth = self._get_req_auth(endpoint)
         segments = utils._get_file_segments(
             endpoint, filename, file_size, segment_size)
 
         upload_id = _obj.Object.initiate_multipart_upload(
             self, endpoint, object_name,
-            requests_auth=self._get_req_auth(endpoint)
+            requests_auth=requests_auth
         )
         url = f'{endpoint}/{object_name}'
         # Schedule the segments for upload
@@ -441,7 +441,7 @@ class Proxy(sdk_proxy.Proxy):
                 self.put,
                 f'{url}?partNumber={name[-1]}&uploadId={upload_id}',
                 headers=headers, data=segment,
-                requests_auth=self._get_req_auth(endpoint),
+                requests_auth=requests_auth,
                 raise_exc=False)
             segment_futures.append(segment_future)
             # dict. Then sort the list of dicts by path.
@@ -462,7 +462,7 @@ class Proxy(sdk_proxy.Proxy):
                 self.put,
                 f'{url}?partNumber={name[-1]}&uploadId={upload_id}',
                 headers=headers, data=segment,
-                requests_auth=self._get_req_auth(endpoint)
+                requests_auth=requests_auth
             )
             # dict. Then sort the list of dicts by path.
             retry_futures.append(segment_future)
@@ -488,12 +488,13 @@ class Proxy(sdk_proxy.Proxy):
                     segment_prefix)
             raise
 
-    def parts(self, endpoint, upload_id):
+    def parts(self, endpoint, upload_id, requests_auth):
         return _obj.Object.get_parts(
-            self, f'{endpoint}?uploadId={upload_id}')
+            self, f'{endpoint}?uploadId={upload_id}', requests_auth)
 
     def _finish_large_object_upload(self, endpoint, headers, upload_id):
-        parts = self.parts(endpoint, upload_id)
+        requests_auth = self._get_req_auth(endpoint)
+        parts = self.parts(endpoint, upload_id, requests_auth)
         retries = 3
         while True:
             try:
@@ -501,7 +502,7 @@ class Proxy(sdk_proxy.Proxy):
                     _obj.Object.complete_multipart_upload(
                         self, endpoint, upload_id,
                         parts['Parts'], headers,
-                        requests_auth=self._get_req_auth(endpoint)
+                        requests_auth=requests_auth
                     ))
             except Exception:
                 retries -= 1

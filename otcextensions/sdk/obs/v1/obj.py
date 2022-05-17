@@ -293,8 +293,9 @@ class Object(_base.BaseResource):
 
     @staticmethod
     def initiate_multipart_upload(proxy, endpoint, name, **params):
-        endpoint += f'/{name}?uploads'
-        response = proxy.post(endpoint, params=params)
+        response = proxy.post(url=f'/{name}?uploads',
+                              endpoint_override=endpoint,
+                              **params)
         dict_resource = {}
         root = ET.fromstring(response.content)
         for element in root:
@@ -303,8 +304,8 @@ class Object(_base.BaseResource):
         return dict_resource['UploadId']
 
     @staticmethod
-    def get_parts(proxy, endpoint):
-        response = proxy.get(endpoint)
+    def get_parts(proxy, endpoint, requests_auth):
+        response = proxy.get(endpoint, requests_auth=requests_auth)
         dict_resource = {}
         root = ET.fromstring(response.content)
         for element in root:
@@ -327,4 +328,5 @@ class Object(_base.BaseResource):
             ET.SubElement(part, 'ETag').text = item['ETag']
         tree = ET.ElementTree(root)
         data = ET.tostring(tree.getroot()).decode()
-        return proxy.post(url, data=data, headers=headers, params=params)
+        return proxy.post(url, data=data,
+                          headers=headers, params=params)
