@@ -10,15 +10,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import base64
-import mock
 import hashlib
+from collections import namedtuple
 
+import mock
 from keystoneauth1 import adapter
-
 from openstack.tests.unit import base
 
 from otcextensions.sdk.obs.v1 import obj
-
 
 EXAMPLE = {
     "Key": "name",
@@ -114,4 +113,93 @@ class TestObject(base.TestCase):
                 'Content-MD5': data_md5
             }
         )
-    #
+
+    def test_initiate_multipart_upload(self):
+        sot = obj.Object()
+        return_data = namedtuple('response', ['content'])
+        response_data = '''
+        <InitiateMultipartUpload> 
+        <UploadId>ID</UploadId> 
+        </InitiateMultipartUpload>
+        '''
+        response_data = return_data(response_data)
+
+        self.sess.post = mock.Mock(return_value=response_data)
+        result = sot.initiate_multipart_upload(
+            self.sess,
+            'http://obs.otc.t-systems.com',
+            'test'
+        )
+
+        self.sess.post.assert_called_once_with(
+            url='/test?uploads',
+            endpoint_override='http://obs.otc.t-systems.com'
+        )
+
+    def test_get_parts(self):
+        sot = obj.Object()
+        return_data = namedtuple('response', ['content'])
+        response_data = '''
+        <ListPartsResult> 
+        <StorageClass>STANDARD</StorageClass> 
+        <PartNumberMarker>1</PartNumberMarker> 
+        <NextPartNumberMarker>3</NextPartNumberMarker> 
+        <MaxParts>2</MaxParts> 
+        <IsTruncated>true</IsTruncated> 
+        <Part> 
+        <PartNumber>2</PartNumber> 
+        <LastModified>2010-11-10T20:48:34.000Z</LastModified> 
+        <ETag>"7778aef83f66abc1fa1e8477f296d394"</ETag> 
+        <Size>10485760</Size> 
+        </Part> 
+        <Part> 
+        <PartNumber>3</PartNumber> 
+        <LastModified>2010-11-10T20:48:33.000Z</LastModified> 
+        <ETag>"aaaa18db4cc2f85cedef654fccc4a4x8"</ETag> 
+        <Size>10485760</Size> 
+        </Part> 
+        </ListPartsResult>
+        '''
+        response_data = return_data(response_data)
+
+        self.sess.get = mock.Mock(return_value=response_data)
+        result = sot.get_parts(
+            self.sess,
+            'http://obs.otc.t-systems.com',
+            'test'
+        )
+
+        self.sess.get.assert_called_once_with(
+            'http://obs.otc.t-systems.com',
+            requests_auth='test'
+        )
+
+    def test_complete_multipart_upload(self):
+        sot = obj.Object()
+        input_data = [
+            {'PartNumber': '1', 'ETag': '1'},
+            {'PartNumber': '2', 'ETag': '2'},
+            {'PartNumber': '3', 'ETag': '3'}
+        ]
+        output_data = '<CompleteMultipartUpload>' \
+                      '<Part><PartNumber>1</PartNumber><ETag>1</ETag>' \
+                      '</Part><Part><PartNumber>2</PartNumber><ETag>2</ETag>' \
+                      '</Part><Part><PartNumber>3</PartNumber>' \
+                      '<ETag>3</ETag></Part>' \
+                      '</CompleteMultipartUpload>'
+
+        self.sess.post = mock.Mock(return_value=input_data)
+        result = sot.complete_multipart_upload(
+            self.sess,
+            'http://obs.otc.t-systems.com',
+            'test',
+            input_data,
+            {}
+        )
+
+        self.sess.post.assert_called_once_with(
+            'http://obs.otc.t-systems.com?uploadId=test',
+            data=output_data,
+            headers={},
+            params={}
+        )
