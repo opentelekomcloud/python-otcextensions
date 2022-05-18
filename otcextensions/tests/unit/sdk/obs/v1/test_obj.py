@@ -38,30 +38,30 @@ EXAMPLE_LIST = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 """
 
 INITIATE_MPU_RESP = '''
-<InitiateMultipartUpload> 
-<UploadId>ID</UploadId> 
+<InitiateMultipartUpload>
+<UploadId>ID</UploadId>
 </InitiateMultipartUpload>
 '''
 
 LIST_PARTS_RESP = '''
-<ListPartsResult> 
-<StorageClass>STANDARD</StorageClass> 
-<PartNumberMarker>1</PartNumberMarker> 
-<NextPartNumberMarker>3</NextPartNumberMarker> 
-<MaxParts>2</MaxParts> 
-<IsTruncated>true</IsTruncated> 
-<Part> 
-<PartNumber>2</PartNumber> 
-<LastModified>2010-11-10T20:48:34.000Z</LastModified> 
-<ETag>"7778aef83f66abc1fa1e8477f296d394"</ETag> 
-<Size>10485760</Size> 
-</Part> 
-<Part> 
-<PartNumber>3</PartNumber> 
-<LastModified>2010-11-10T20:48:33.000Z</LastModified> 
-<ETag>"aaaa18db4cc2f85cedef654fccc4a4x8"</ETag> 
-<Size>10485760</Size> 
-</Part> 
+<ListPartsResult>
+<StorageClass>STANDARD</StorageClass>
+<PartNumberMarker>1</PartNumberMarker>
+<NextPartNumberMarker>3</NextPartNumberMarker>
+<MaxParts>2</MaxParts>
+<IsTruncated>true</IsTruncated>
+<Part>
+<PartNumber>2</PartNumber>
+<LastModified>2010-11-10T20:48:34.000Z</LastModified>
+<ETag>"7778aef83f66abc1fa1e8477f296d394"</ETag>
+<Size>10485760</Size>
+</Part>
+<Part>
+<PartNumber>3</PartNumber>
+<LastModified>2010-11-10T20:48:33.000Z</LastModified>
+<ETag>"aaaa18db4cc2f85cedef654fccc4a4x8"</ETag>
+<Size>10485760</Size>
+</Part>
 </ListPartsResult>
 '''
 
