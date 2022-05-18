@@ -480,7 +480,7 @@ class Proxy(sdk_proxy.Proxy):
                     "Failed to upload large object for %s. "
                     "Aborting uploads.", upload_id)
                 self._abort_multipart_upload(endpoint=url,
-                    upload_id=upload_id)
+                                             upload_id=upload_id)
             except Exception:
                 self.log.exception(
                     "Failed to cleanup image objects for %s:",
