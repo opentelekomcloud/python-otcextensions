@@ -13,6 +13,8 @@
 # from botocore.exceptions import ClientError
 import base64
 import hashlib
+import xml.etree.ElementTree as ET
+from io import BufferedReader
 
 from openstack import _log
 from openstack import exceptions
@@ -20,9 +22,6 @@ from openstack import resource
 
 # from otcextensions.i18n import _
 from otcextensions.sdk.obs.v1 import _base
-
-import xml.etree.ElementTree as ET
-
 
 _logger = _log.setup_logging('openstack')
 
@@ -245,7 +244,8 @@ class Object(_base.BaseResource):
 
         session = self._get_session(session)
 
-        if not self.content_md5 and self.data:
+        if not self.content_md5 and self.data and\
+                not isinstance(self.data, BufferedReader):
             md5 = hashlib.md5()
             md5.update(str.encode(self.data))
             self.content_md5 = base64.b64encode(md5.digest()).decode()
@@ -290,3 +290,43 @@ class Object(_base.BaseResource):
             f.write(response.content)
 
         return
+
+    @staticmethod
+    def initiate_multipart_upload(proxy, endpoint, name, **params):
+        response = proxy.post(url=f'/{name}?uploads',
+                              endpoint_override=endpoint,
+                              **params)
+        dict_resource = {}
+        root = ET.fromstring(response.content)
+        for element in root:
+            dict_raw_resource = _base.BaseResource.etree_to_dict(element)
+            dict_resource.update(dict_raw_resource)
+        return dict_resource['UploadId']
+
+    @staticmethod
+    def get_parts(proxy, endpoint, requests_auth):
+        response = proxy.get(endpoint, requests_auth=requests_auth)
+        dict_resource = {}
+        root = ET.fromstring(response.content)
+        for element in root:
+            dict_raw_resource = _base.BaseResource.etree_to_dict(element)
+            if element.tag == 'Part':
+                dict_resource.setdefault('Parts', []).\
+                    append(dict_raw_resource['Part'])
+                continue
+            dict_resource.update(dict_raw_resource)
+        return dict_resource
+
+    @staticmethod
+    def complete_multipart_upload(
+            proxy, endpoint, upload_id, data, headers, **params):
+        url = f'{endpoint}?uploadId={upload_id}'
+        root = ET.Element("CompleteMultipartUpload")
+        for item in data:
+            part = ET.SubElement(root, "Part")
+            ET.SubElement(part, 'PartNumber').text = item['PartNumber']
+            ET.SubElement(part, 'ETag').text = item['ETag']
+        tree = ET.ElementTree(root)
+        data = ET.tostring(tree.getroot()).decode()
+        return proxy.post(url, data=data,
+                          headers=headers, params=params)
