@@ -1,0 +1,7 @@
+---
+features:
+  - |
+    SDK OBS large objects upload
+fixes:
+  - |
+    SDK OBS file permissions assigning
