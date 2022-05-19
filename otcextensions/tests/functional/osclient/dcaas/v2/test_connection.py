@@ -35,11 +35,12 @@ class TestDirectConnection(base.TestCase):
 
     def _create_direct_connection(self):
         json_output = json.loads(self.openstack(
-            'dcaas connection create {name}'
-            ' port_type {port_type}'
-            ' bandwidth {bandwidth}'
-            ' location {location}'
-            ' provider {provider} -f json'.format(
+            'dcaas connection create'
+            ' {port_type}'
+            ' {bandwidth}'
+            ' {location}'
+            ' {provider}'
+            '--name {name} -f json'.format(
                 name=self.DC_NAME,
                 port_type=self.PORT_TYPE,
                 bandwidth=self.BANDWIDTH,
