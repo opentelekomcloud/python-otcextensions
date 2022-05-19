@@ -20,7 +20,7 @@ class TestDirectConnection(base.TestCase):
 
     UUID = uuid.uuid4().hex[:8]
     DC_NAME = "direct_connect-" + UUID
-    BANDWIDTH = 100
+    BANDWIDTH = 50
     PORT_TYPE = "1G"
     PROVIDER = "OTC"
     LOCATION = "Biere"
@@ -29,9 +29,11 @@ class TestDirectConnection(base.TestCase):
         super(TestDirectConnection, self).setUp()
 
     def tearDown(self):
-        if self.DC_ID:
-            self._delete_direct_connection()
-        super(TestDirectConnection, self).tearDown()
+        try:
+            if self.DC_ID:
+                self._delete_direct_connection()
+        finally:
+            super(TestDirectConnection, self).tearDown()
 
     def _create_direct_connection(self):
         json_output = json.loads(self.openstack(
@@ -40,7 +42,7 @@ class TestDirectConnection(base.TestCase):
             ' {bandwidth}'
             ' {location}'
             ' {provider}'
-            '--name {name} -f json'.format(
+            ' --name {name} -f json'.format(
                 name=self.DC_NAME,
                 port_type=self.PORT_TYPE,
                 bandwidth=self.BANDWIDTH,
