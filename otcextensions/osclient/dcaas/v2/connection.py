@@ -456,7 +456,7 @@ class UpdateDirectConnection(command.ShowOne):
                 parsed_args.direct_connection
             )
             obj = client.update_connection(
-                direct_connection=direct_connection.id, **attrs
+                direct_connection.id, **attrs
             )
 
         display_columns, columns = _get_columns(obj)

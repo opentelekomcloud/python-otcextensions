@@ -72,7 +72,6 @@ class TestDirectConnection(base.TestCase):
         self._create_direct_connection()
         json_output = json.loads(self.openstack(
             'dcaas connection list '
-            '--limit 1 '
             '--name {name} '
             '--bandwidth {bandwidth} '
             '--port_type {port_type} '
