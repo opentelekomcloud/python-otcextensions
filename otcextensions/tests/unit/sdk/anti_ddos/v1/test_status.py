@@ -86,8 +86,6 @@ class TestTask(base.TestCase):
 
         self.assertEqual('/query_task_status', sot.base_path)
 
-        self.assertTrue(sot.allow_get)
-
     def test_make_it(self):
 
         sot = status.TaskStatus(**EXAMPLE_TASK)
@@ -151,8 +149,6 @@ class TestStatWeek(base.TestCase):
         sot = status.FloatingIPWeekStat()
 
         self.assertEqual('/antiddos/weekly', sot.base_path)
-
-        self.assertTrue(sot.allow_get)
 
     def test_make_it(self):
 

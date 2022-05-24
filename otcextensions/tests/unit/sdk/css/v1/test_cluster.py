@@ -75,7 +75,6 @@ class TestCluster(base.TestCase):
 
         self.assertEqual('/clusters', sot.base_path)
         self.assertTrue(sot.allow_list)
-        self.assertTrue(sot.allow_get)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_delete)
         self.assertTrue(sot.allow_commit)
