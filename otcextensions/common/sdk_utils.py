@@ -15,9 +15,9 @@ from cliff import columns
 
 
 def get_osc_show_columns_for_sdk_resource(
-    sdk_resource,
-    osc_column_map,
-    invisible_columns=None
+        sdk_resource,
+        osc_column_map,
+        invisible_columns=None
 ):
     """Get and filter the display and attribute columns for an SDK resource.
 
@@ -32,10 +32,10 @@ def get_osc_show_columns_for_sdk_resource(
               columns
     """
 
-    if getattr(sdk_resource, 'allow_get', None) is not None:
+    try:
         resource_dict = sdk_resource.to_dict(
             body=True, headers=False, ignore_none=True)
-    else:
+    except Exception:
         resource_dict = sdk_resource
 
     # Build the OSC column names to display for the SDK resource.
