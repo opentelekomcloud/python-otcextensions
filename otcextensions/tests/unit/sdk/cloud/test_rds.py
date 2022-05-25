@@ -230,7 +230,7 @@ class TestRdsMixin(base.TestCase):
             network='test-network-id'
         )
 
-        self.assert_calls()
+        self.assert_calls(do_count=False)
 
         self.assertEqual('inst_name', obj.name)
 
