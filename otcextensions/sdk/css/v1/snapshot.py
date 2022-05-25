@@ -33,6 +33,7 @@ class Snapshot(resource.Resource):
     allow_create = True
     allow_delete = True
     allow_list = True
+    allow_get = True
 
     #: ID of the cluster where index data is to be backed up.
     cluster_id = resource.URI('cluster_id')

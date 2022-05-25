@@ -70,7 +70,7 @@ class TestStatus(base.TestCase):
 
         self.assertEqual('/antiddos/%(floating_ip_id)s/status', sot.base_path)
 
-        self.assertTrue(sot.allow_get)
+        self.assertTrue(sot.allow_fetch)
 
     def test_make_it(self):
 

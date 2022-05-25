@@ -27,6 +27,7 @@ class Key(_base.Resource):
     allow_create = True
     allow_update = False
     allow_fetch = True
+    allow_get = True
 
     # Properties
     #: Secret key ID

@@ -37,6 +37,7 @@ class FloatingIPStatus(resource.Resource):
 
     # capabilities
     allow_get = True
+    allow_fetch = True
 
     # Properties
     floating_ip_id = resource.URI('floating_ip_id')
@@ -136,6 +137,7 @@ class FloatingIPWeekStat(resource.Resource):
 
     # capabilities
     allow_get = True
+    allow_fetch = True
 
     _query_mapping = resource.QueryParameters('period_start_date')
 
