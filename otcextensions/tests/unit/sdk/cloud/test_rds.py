@@ -123,7 +123,7 @@ class TestRdsMixin(base.TestCase):
             volume_type='ULTRAHIGH',
             network='test-network-id'
         )
-
+        print(dict(obj))
         self.assert_calls(do_count=False)
 
         self.assertEqual('inst_name', obj.name)
