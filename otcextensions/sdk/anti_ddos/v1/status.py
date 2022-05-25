@@ -20,6 +20,7 @@ class TaskStatus(resource.Resource):
 
     # capabilities
     allow_fetch = True
+    allow_get = True
 
     _query_mapping = resource.QueryParameters('task_id')
 
