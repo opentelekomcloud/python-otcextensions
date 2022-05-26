@@ -132,7 +132,7 @@ class TestConfig(base.TestCase):
         self.assertEqual('/scaling_configuration', sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
-        self.assertTrue(sot.allow_get)
+        self.assertTrue(sot.allow_fetch)
         self.assertFalse(sot.allow_commit)
         self.assertTrue(sot.allow_delete)
 
