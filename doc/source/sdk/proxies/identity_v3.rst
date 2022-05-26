@@ -92,8 +92,7 @@ Role Assignment Operations
   :noindex:
   :members: role_assignments, role_assignments_filter,
             assign_project_role_to_user, unassign_project_role_from_user,
-            validate_user_has_role, assign_project_role_to_group,
-            unassign_project_role_from_group, validate_group_has_role
+            assign_project_role_to_group, unassign_project_role_from_group
 
 Service Operations
 ^^^^^^^^^^^^^^^^^^
