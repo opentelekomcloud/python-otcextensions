@@ -35,7 +35,6 @@
     check:
       jobs:
         - otc-tox-pep8
-        - otc-tox-py37
         - otc-tox-py38
         - otc-tox-py39
         - tox-functional
@@ -44,7 +43,6 @@
         - otce-upload-image
     gate:
       jobs:
-        - otc-tox-py37
         - otc-tox-py38
         - otc-tox-pep8
         - tox-functional
