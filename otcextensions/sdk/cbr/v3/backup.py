@@ -124,4 +124,4 @@ class Backup(resource.Resource):
         body = {
             'members': members
         }
-        session.post(url, json=body)
+        return session.post(url, json=body)
