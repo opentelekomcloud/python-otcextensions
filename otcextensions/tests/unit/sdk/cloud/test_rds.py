@@ -123,8 +123,10 @@ class TestRdsMixin(base.TestCase):
             volume_type='ULTRAHIGH',
             network='test-network-id'
         )
-        print(dict(obj))
-        self.assert_calls(do_count=False)
+        print(self.calls)
+        for i in self.adapter.request_history:
+            print(i)
+        self.assert_calls()
 
         self.assertEqual('inst_name', obj.name)
 
@@ -230,7 +232,7 @@ class TestRdsMixin(base.TestCase):
             network='test-network-id'
         )
 
-        self.assert_calls(do_count=False)
+        self.assert_calls()
 
         self.assertEqual('inst_name', obj.name)
 
@@ -500,7 +502,7 @@ class TestRdsMixin(base.TestCase):
             volume_type='ULTRAHIGH'
         )
 
-        self.assert_calls(do_count=False)
+        self.assert_calls()
 
         self.assertEqual('copy_name', obj.name)
 
@@ -661,7 +663,7 @@ class TestRdsMixin(base.TestCase):
             volume_type='ULTRAHIGH'
         )
 
-        self.assert_calls(do_count=False)
+        self.assert_calls()
 
         self.assertEqual('inst_name', obj.name)
 
@@ -814,7 +816,7 @@ class TestRdsMixin(base.TestCase):
             volume_type='ULTRAHIGH'
         )
 
-        self.assert_calls(do_count=False)
+        self.assert_calls()
 
         self.assertEqual('inst_name', obj.name)
 

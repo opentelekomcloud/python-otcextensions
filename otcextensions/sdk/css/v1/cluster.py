@@ -63,7 +63,6 @@ class Cluster(resource.Resource):
     allow_delete = True
     allow_fetch = True
     allow_patch = True
-    allow_get = True
 
     _query_mapping = resource.QueryParameters(
         'id', 'start', 'limit')
