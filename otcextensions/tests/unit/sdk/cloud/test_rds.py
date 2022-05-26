@@ -123,9 +123,6 @@ class TestRdsMixin(base.TestCase):
             volume_type='ULTRAHIGH',
             network='test-network-id'
         )
-        print(self.calls)
-        for i in self.adapter.request_history:
-            print(i)
         self.assert_calls()
 
         self.assertEqual('inst_name', obj.name)
