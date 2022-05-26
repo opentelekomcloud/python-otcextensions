@@ -18,7 +18,7 @@ import mock
 from otcextensions.sdk.cbr.v3 import backup
 from otcextensions.sdk.cbr.v3 import checkpoint
 from otcextensions.sdk.cbr.v3 import policy
-from otcextensions.sdk.cbr.v3 import member
+# from otcextensions.sdk.cbr.v3 import member
 from otcextensions.sdk.cbr.v3 import task
 from otcextensions.sdk.cbr.v3 import vault
 from otcextensions.tests.unit.osclient import test_base
@@ -236,24 +236,24 @@ class FakePolicyFixed(test_base.Fake):
         return obj
 
 
-class FakeMember(test_base.Fake):
-    """Fake one or more CBR members"""
-
-    @classmethod
-    def generate(cls):
-        object_info = {
-            "id": 'id-' + uuid.uuid4().hex,
-            "status": random.choice(['pending', 'accepted', 'rejected']),
-            "created_at": uuid.uuid4().hex,
-            "updated_at": uuid.uuid4().hex,
-            "backup_id": uuid.uuid4().hex,
-            "image_id": uuid.uuid4().hex,
-            "dest_project_id": uuid.uuid4().hex,
-            "vault_id": uuid.uuid4().hex
-        }
-
-        obj = member.Member.existing(**object_info)
-        return obj
+# class FakeMember(test_base.Fake):
+#     """Fake one or more CBR members"""
+#
+#     @classmethod
+#     def generate(cls):
+#         object_info = {
+#             "id": 'id-' + uuid.uuid4().hex,
+#             "status": random.choice(['pending', 'accepted', 'rejected']),
+#             "created_at": uuid.uuid4().hex,
+#             "updated_at": uuid.uuid4().hex,
+#             "backup_id": uuid.uuid4().hex,
+#             "image_id": uuid.uuid4().hex,
+#             "dest_project_id": uuid.uuid4().hex,
+#             "vault_id": uuid.uuid4().hex
+#         }
+#
+#         obj = member.Member.existing(**object_info)
+#         return obj
 
 
 class FakeTask(test_base.Fake):

@@ -46,20 +46,20 @@ class TestCBRBackup(TestCBRProxy):
     def test_backup_get(self):
         self.verify_get(self.proxy.get_backup, _backup.Backup)
 
-    def test_member_add(self):
-        members = ['member1']
-        backup = _backup.Backup(id='backup')
-        m1 = _member.Member(id='member1')
-        openstack.proxy.Proxy._get = mock.Mock()
-        openstack.proxy.Proxy._get.return_value = m1
-        self._verify(
-            'otcextensions.sdk.cbr.v3.backup.Backup.add_members',
-            self.proxy.add_members,
-            method_args=[backup, members],
-            expected_args=[self.proxy],
-            expected_result=[m1],
-            expected_kwargs={'members': members}
-        )
+    # def test_member_add(self):
+    #     members = ['member1']
+    #     backup = _backup.Backup(id='backup')
+    #     m1 = _member.Member(id='member1')
+    #     openstack.proxy.Proxy._get = mock.Mock()
+    #     openstack.proxy.Proxy._get.return_value = m1
+    #     self._verify(
+    #         'otcextensions.sdk.cbr.v3.backup.Backup.add_members',
+    #         self.proxy.add_members,
+    #         method_args=[backup, members],
+    #         expected_args=[self.proxy],
+    #         expected_result=[m1],
+    #         expected_kwargs={'members': members}
+    #     )
 
 
 class TestCBRPolicy(TestCBRProxy):
