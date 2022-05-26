@@ -37,7 +37,6 @@ class BackupPolicy(resource.Resource):
     allow_delete = True
     allow_list = True
     allow_commit = True
-    # allow_get = True
 
     #: Properties
     #: Backup Policy id
