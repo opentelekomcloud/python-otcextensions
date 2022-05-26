@@ -56,6 +56,7 @@ class TestSnapshot(base.TestCase):
         self.assertEqual(
             '/clusters/%(cluster_id)s/index_snapshot', sot.base_path)
         self.assertTrue(sot.allow_list)
+        self.assertTrue(sot.allow_fetch)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_delete)
         self.assertFalse(sot.allow_commit)

@@ -59,8 +59,8 @@ class Key(_base.Resource):
 
     def fetch(self, session, requires_id=None,
               base_path=None, error_message=None):
-        if not self.allow_get:
-            raise exceptions.MethodNotSupported(self, "get")
+        if not self.allow_fetch:
+            raise exceptions.MethodNotSupported(self, "fetch")
         url = self.get_path
         body = {
             'key_id': self.id

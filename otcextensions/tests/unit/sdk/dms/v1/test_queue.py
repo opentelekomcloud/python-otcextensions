@@ -36,6 +36,7 @@ class TestQueue(base.TestCase):
 
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_list)
+        self.assertTrue(sot.allow_fetch)
         self.assertFalse(sot.allow_commit)
         self.assertTrue(sot.allow_delete)
 

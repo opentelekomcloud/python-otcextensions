@@ -32,10 +32,10 @@ def get_osc_show_columns_for_sdk_resource(
               columns
     """
 
-    try:
+    if getattr(sdk_resource, 'allow_fetch', None) is not None:
         resource_dict = sdk_resource.to_dict(
             body=True, headers=False, ignore_none=True)
-    except Exception:
+    else:
         resource_dict = sdk_resource
 
     # Build the OSC column names to display for the SDK resource.
