@@ -1,0 +1,4 @@
+---
+fixes:
+  - |
+    Allow get operation fix according removal from openstack.resource
