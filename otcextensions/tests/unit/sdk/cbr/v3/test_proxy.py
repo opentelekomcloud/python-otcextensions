@@ -10,18 +10,18 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import openstack
+from unittest import mock
+
 from openstack.tests.unit import test_proxy_base
 
 from otcextensions.sdk.cbr.v3 import _proxy
 from otcextensions.sdk.cbr.v3 import backup as _backup
+from otcextensions.sdk.cbr.v3 import checkpoint as _checkpoint
 from otcextensions.sdk.cbr.v3 import member as _member
 from otcextensions.sdk.cbr.v3 import policy as _policy
-from otcextensions.sdk.cbr.v3 import checkpoint as _checkpoint
 from otcextensions.sdk.cbr.v3 import restore as _restore
-from otcextensions.sdk.cbr.v3 import vault as _vault
 from otcextensions.sdk.cbr.v3 import task as _task
-from unittest import mock
+from otcextensions.sdk.cbr.v3 import vault as _vault
 
 
 class TestCBRProxy(test_proxy_base.TestProxyBase):
