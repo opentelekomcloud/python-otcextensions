@@ -352,7 +352,7 @@ class TestUpdateDirectConnection(fakes.TestDcaas):
         ]
 
         self.client.api_mock.assert_called_with(
-            direct_connection=self._data.id,
+            self._data.id,
             name='updated_name',
             description='updated description',
             bandwidth=150,
