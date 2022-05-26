@@ -20,7 +20,6 @@ class TaskStatus(resource.Resource):
 
     # capabilities
     allow_fetch = True
-    allow_get = True
 
     _query_mapping = resource.QueryParameters('task_id')
 
@@ -37,7 +36,6 @@ class FloatingIPStatus(resource.Resource):
     base_path = '/antiddos/%(floating_ip_id)s/status'
 
     # capabilities
-    allow_get = True
     allow_fetch = True
 
     # Properties
@@ -137,7 +135,6 @@ class FloatingIPWeekStat(resource.Resource):
     base_path = '/antiddos/weekly'
 
     # capabilities
-    allow_get = True
     allow_fetch = True
 
     _query_mapping = resource.QueryParameters('period_start_date')

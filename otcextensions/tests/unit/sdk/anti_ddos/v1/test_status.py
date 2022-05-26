@@ -86,7 +86,7 @@ class TestTask(base.TestCase):
 
         self.assertEqual('/query_task_status', sot.base_path)
 
-        self.assertTrue(sot.allow_get)
+        self.assertTrue(sot.allow_fetch)
 
     def test_make_it(self):
 
