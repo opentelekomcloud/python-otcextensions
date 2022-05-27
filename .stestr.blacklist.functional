@@ -13,3 +13,4 @@ otcextensions.tests.functional.sdk.lts*
 otcextensions.tests.functional.sdk.dds.v3.test_instance*
 otcextensions.tests.functional.sdk.vlb*
 otcextensions.tests.functional.sdk.obs*
+otcextensions.tests.functional.sdk.cts.test_tracker*
