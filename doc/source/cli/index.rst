@@ -31,6 +31,7 @@ documentation of these services:
    css
    cts
    dcs
+   dcaas
    deh
    dms
    dns
