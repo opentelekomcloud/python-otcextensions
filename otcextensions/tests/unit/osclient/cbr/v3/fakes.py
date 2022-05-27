@@ -9,13 +9,18 @@
 #   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #   License for the specific language governing permissions and limitations
 #   under the License.
+import datetime
 import random
 import uuid
-import datetime
 
 import mock
 
+from otcextensions.sdk.cbr.v3 import backup
+from otcextensions.sdk.cbr.v3 import checkpoint
 from otcextensions.sdk.cbr.v3 import policy
+from otcextensions.sdk.cbr.v3 import member
+from otcextensions.sdk.cbr.v3 import task
+from otcextensions.sdk.cbr.v3 import vault
 from otcextensions.tests.unit.osclient import test_base
 
 
@@ -80,6 +85,76 @@ class TestCBR(test_base.TestCommand):
 
         self.app.client_manager.cbr = mock.Mock()
         self.client = self.app.client_manager.cbr
+
+
+class FakeBackup(test_base.Fake):
+    """Fake one or more CBR backups"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            "id": 'id-' + uuid.uuid4().hex,
+            "name": 'name-' + uuid.uuid4().hex,
+            "checkpoint_id": 'id-' + uuid.uuid4().hex,
+            "created_at": uuid.uuid4().hex,
+            "description": uuid.uuid4().hex,
+            "expired_at": uuid.uuid4().hex,
+            "image_type": uuid.uuid4().hex,
+            "parent_id": uuid.uuid4().hex,
+            "project_id": uuid.uuid4().hex,
+            "protected_at": uuid.uuid4().hex,
+            "resource_az": uuid.uuid4().hex,
+            "resource_id": uuid.uuid4().hex,
+            "resource_name": 'resname' + uuid.uuid4().hex,
+            "resource_size": 5,
+            "resource_type": random.choice(['OS::Cinder::Volume',
+                                            'OS::Nova::Server']),
+            "status": 'available',
+            "updated_at": uuid.uuid4().hex,
+            "vault_id": uuid.uuid4().hex,
+            "provider_id": uuid.uuid4().hex,
+            "children": [{'id': 'child_backup_uuid_1'},
+                         {'id': 'child_backup_uuid_2'}]
+        }
+
+        obj = backup.Backup.existing(**object_info)
+        return obj
+
+
+class FakeCheckpoint(test_base.Fake):
+    """Fake one or more CBR checkpoint"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'created_at': uuid.uuid4().hex,
+            'id': 'pid-' + uuid.uuid4().hex,
+            'status': 'available',
+            'name': 'checkpoint-' + uuid.uuid4().hex,
+            'vault':
+                {
+                    'id': uuid.uuid4().hex,
+                    'name': uuid.uuid4().hex,
+                    "resources": [
+                        {
+                            'name': 'resource-name-' + uuid.uuid4().hex,
+                            'resource_size': '6',
+                            'backup_size': '6840',
+                            'protect_status': 'available',
+                            'backup_count': '18',
+                            'type': 'OS::Nova::Server',
+                            'id': 'pid-' + uuid.uuid4().hex,
+                            'extra_info': '{}'
+                        }]
+            },
+            'extra_info':
+                {
+                    'name': 'backup-' + uuid.uuid4().hex
+            }
+        }
+
+        obj = checkpoint.Checkpoint.existing(**object_info)
+        return obj
 
 
 class FakePolicy(test_base.Fake):
@@ -159,3 +234,105 @@ class FakePolicyFixed(test_base.Fake):
 
         obj = policy.Policy.existing(**object_info)
         return obj
+
+
+class FakeMember(test_base.Fake):
+    """Fake one or more CBR members"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            "id": 'id-' + uuid.uuid4().hex,
+            "status": random.choice(['pending', 'accepted', 'rejected']),
+            "created_at": uuid.uuid4().hex,
+            "updated_at": uuid.uuid4().hex,
+            "backup_id": uuid.uuid4().hex,
+            "image_id": uuid.uuid4().hex,
+            "dest_project_id": uuid.uuid4().hex,
+            "vault_id": uuid.uuid4().hex
+        }
+
+        obj = member.Member.existing(**object_info)
+        return obj
+
+
+class FakeTask(test_base.Fake):
+    """Fake one or more CBR task with random vaults list and patterns"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'status': 'success',
+            'provider_id': 'pid-' + uuid.uuid4().hex,
+            'checkpoint_id': 'cid-' + uuid.uuid4().hex,
+            'updated_at': uuid.uuid4().hex,
+            'error_info': {'message': '', 'code': ''},
+            'vault_id': 'pid-' + uuid.uuid4().hex,
+            'started_at': uuid.uuid4().hex,
+            'id': 'id-' + uuid.uuid4().hex,
+            'ended_at': uuid.uuid4().hex,
+            'created_at': uuid.uuid4().hex,
+            'operation_type': 'backup',
+            'vault_name': 'vault-' + uuid.uuid4().hex,
+            'project_id': 'prjid-' + uuid.uuid4().hex,
+            'policy_id': 'polid-' + uuid.uuid4().hex
+        }
+
+        obj = task.Task.existing(**object_info)
+        return obj
+
+
+class FakeVault(test_base.Fake):
+    """Fake one or more CBR vault with random vaults list and patterns"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            'id': 'id-' + uuid.uuid4().hex,
+            'backup_policy_id': 'bid-' + uuid.uuid4().hex,
+            'created_at': uuid.uuid4().hex,
+            'provider_id': uuid.uuid4().hex,
+            'user_id': uuid.uuid4().hex,
+            'billing': {
+                'cloud_type': 'public',
+                'consistent_level': 'crash_consistent',
+                'object_type': 'server',
+                'protect_type': 'backup',
+                'size': random.randint(0, 100),
+                'charging_mode': 'post_paid',
+                'is_auto_renew': False,
+                'is_auto_pay': False,
+            },
+            'description': 'vault_description',
+            'auto_bind': False,
+            'name': 'vault-' + uuid.uuid4().hex,
+            'resources': [{
+                'extra_info': {
+                    'include_volumes': [{
+                        'id': 'vid-' + uuid.uuid4().hex,
+                        'os_version': 'CentOS 7.6 64bit'
+                    }]
+                },
+                'id': 'resource_id',
+                'type': 'OS::Nova::Server'
+            }],
+            'tags': [{
+                'key': 'key-tags',
+                'value': 'val-tags'
+            }],
+            'bind_rules': {
+                'tags': [{
+                    'key': 'key-bind',
+                    'value': 'val-bind'
+                }]
+            },
+            'project_id': '0'
+        }
+
+        obj = vault.Vault.existing(**object_info)
+        return obj
+
+
+class VaultDefaultStruct:
+    def __init__(self, **entries):
+        self.__dict__.update(entries)

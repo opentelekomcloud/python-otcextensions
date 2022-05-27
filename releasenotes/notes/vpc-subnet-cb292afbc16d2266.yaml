@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    Add VPC Subnet resource implementation

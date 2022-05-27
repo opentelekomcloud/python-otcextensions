@@ -23,16 +23,18 @@
     parent: otcinfra-upload-image-quay
     provides: otce-container-image
     vars: *otce_image_vars
+    nodeset: ubuntu-focal
 
 - project:
     merge-mode: squash-merge
+    default-branch: master
     templates:
       - publish-to-pypi
-      - publish-otc-docs-pti
+      - publish-otc-docs-hc-pti
+      - release-notes-jobs
     check:
       jobs:
         - otc-tox-pep8
-        - otc-tox-py37
         - otc-tox-py38
         - otc-tox-py39
         - tox-functional
@@ -41,7 +43,6 @@
         - otce-upload-image
     gate:
       jobs:
-        - otc-tox-py37
         - otc-tox-py38
         - otc-tox-pep8
         - tox-functional

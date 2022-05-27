@@ -12,8 +12,12 @@ Open Telekom Cloud Resources
    Cloud Backup and Recovery Service (CBR) <cbr/index>
    Cloud Container Engine (CCE) <cce/index>
    Cloud Eye Service (CES) <ces/index>
+   Cloud Search Service (CSS) <css/index>
    Cloud Trace Service (CTS) <cts/index>
+   Direct Connect (DCAAS) <dcaas/index>
+   Dedicated Load Balancer (DLB) <vlb/index>
    Distributed Cache Service (DCS) <dcs/index>
+   Document Database Service (DDS) <dds/index>
    Dedicated Host Service (DeH) <deh/index>
    Distributed Message Service (DMS) <dms/index>
    Domain Name Service (DNS) <dns/index>
@@ -23,6 +27,7 @@ Open Telekom Cloud Resources
    Object Block Storage (OBS) <obs/index>
    Relational Database Service (RDS) <rds/index>
    Simple Message Notification Service (SMN) <smn/index>
+   Storage Disaster Recovery Service (SDRS) <sdrs/index>
    Virtual Private Cloud (VPC) <vpc/index>
    Web Application Firewall (WAF) <waf/index>
 

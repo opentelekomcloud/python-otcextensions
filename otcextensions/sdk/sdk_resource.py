@@ -201,7 +201,8 @@ class Resource(resource.Resource):
         args = self._prepare_override_args(
             endpoint_override=endpoint_override,
             request_headers={"Accept": ""},
-            additional_headers=headers)
+            additional_headers=headers,
+            requests_auth=requests_auth)
 
         response = session.head(request.url,
                                 **args)

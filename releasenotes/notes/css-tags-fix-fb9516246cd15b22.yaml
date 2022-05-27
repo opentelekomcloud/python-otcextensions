@@ -1,0 +1,4 @@
+---
+fixes:
+  - |
+    CSS cluster tags creation fix.

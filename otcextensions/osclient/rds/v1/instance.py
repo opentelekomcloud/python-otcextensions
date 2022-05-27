@@ -21,7 +21,6 @@ from osc_lib.command import command
 from otcextensions.common import sdk_utils
 from otcextensions.i18n import _
 
-import six
 
 LOG = logging.getLogger(__name__)
 
@@ -173,7 +172,7 @@ class ShowDatabaseInstance(command.ShowOne):
 
         #
         # instance = set_attributes_for_print_detail(obj)
-        # return zip(*sorted(six.iteritems(instance)))
+        # return zip(*sorted(instance.items()))
 
 
 class CreateDatabaseInstance(command.ShowOne):
@@ -408,7 +407,7 @@ class CreateDatabaseInstance(command.ShowOne):
             attrs['vpc'] = parsed_args.network_id
         instance = client.create_instance(**attrs)
         instance = set_attributes_for_print_detail(instance)
-        return zip(*sorted(six.iteritems(instance)))
+        return zip(*sorted(instance.items()))
 
 
 class CreateInstanceFromBackup(command.ShowOne):
@@ -497,7 +496,7 @@ class CreateInstanceFromBackup(command.ShowOne):
         attrs['name'] = parsed_args.name
         instance = client.create_instance(**attrs)
         instance = set_attributes_for_print_detail(instance)
-        return zip(*sorted(six.iteritems(instance)))
+        return zip(*sorted(instance.items()))
 
 
 class DeleteDatabaseInstance(command.Command):
@@ -634,7 +633,7 @@ class EnableDatabaseInstanceLog(command.ShowOne):
         #                                    parsed_args.instance)
         # log_info = db_instances.log_enable(instance, parsed_args.log_name)
         # result = log_info._info
-        # return zip(*sorted(six.iteritems(result)))
+        # return zip(*sorted(result.items()))
 
 
 class ResizeDatabaseInstanceVolume(command.Command):

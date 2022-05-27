@@ -9,7 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-# import six
 from openstack import exceptions
 from openstack import resource
 from openstack import utils
@@ -65,6 +64,9 @@ class Cluster(resource.Resource):
     allow_fetch = True
     allow_patch = True
 
+    _query_mapping = resource.QueryParameters(
+        'id', 'start', 'limit')
+
     # Properties
     #: Current actions
     actions = resource.Body('actions', type=list)
@@ -105,6 +107,10 @@ class Cluster(resource.Resource):
     subnet_id = resource.Body('subnetId')
     #: Cluster update time
     updated_at = resource.Body('updated')
+    #: Restart Cluster Job ID
+    jobId = resource.Body('jobId')
+    #: Array of tags
+    tags = resource.Body('tags', type=list)
 
     def _action(self, session, action, body=None):
         """Preform actions given the message body.
@@ -119,12 +125,74 @@ class Cluster(resource.Resource):
         self._translate_response(res)
         return self
 
-    def expand(self, session, new_size):
-        """Expand cluster capacity.
+    def extend(self, session, add_nodes):
+        """Extend cluster capacity.
         """
-        if not 1 < new_size <= 32:
+        if not 0 < add_nodes <= 32:
             raise exceptions.SDKException('CSS Cluster size can be [1..32]')
         res = self._action(session, 'extend',
-                           {'grow': {'modifySize': new_size}})
+                           {'grow': {'modifySize': add_nodes}})
         self._translate_response(res)
         return self
+
+    @classmethod
+    def list(cls, session, paginated=False, base_path=None,
+             allow_unknown_params=False, **params):
+
+        if not cls.allow_list:
+            raise exceptions.MethodNotSupported(cls, "list")
+        session = cls._get_session(session)
+        microversion = cls._get_microversion_for_list(session)
+
+        if base_path is None:
+            base_path = cls.base_path
+        params = cls._query_mapping._validate(
+            params, base_path=base_path,
+            allow_unknown_params=allow_unknown_params)
+
+        query_params = cls._query_mapping._transpose(params, cls)
+        uri = base_path % params
+
+        limit = query_params.get('limit')
+
+        # Track the total number of resources yielded so we can paginate
+        # swift objects
+        total_yielded = query_params.get('start', 0)
+        while uri:
+            # Copy query_params due to weird mock unittest interactions
+            response = session.get(
+                uri,
+                headers={"Accept": "application/json"},
+                params=query_params.copy(),
+                microversion=microversion)
+            exceptions.raise_from_response(response)
+            data = response.json()
+
+            # Discard any existing pagination keys
+            query_params.pop('start', None)
+            query_params.pop('limit', None)
+
+            if cls.resources_key:
+                resources = data[cls.resources_key]
+            else:
+                resources = data
+
+            if not isinstance(resources, list):
+                resources = [resources]
+
+            marker = None
+            for raw_resource in resources:
+                value = cls.existing(
+                    microversion=microversion,
+                    connection=session._get_connection(),
+                    **raw_resource)
+                marker = total_yielded + 1
+                yield value
+                total_yielded += 1
+
+            if resources and paginated:
+                uri, next_params = cls._get_next_link(
+                    uri, response, data, marker, limit, total_yielded)
+                query_params.update(next_params)
+            else:
+                return

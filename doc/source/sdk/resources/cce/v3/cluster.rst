@@ -18,5 +18,8 @@ The ``Cluster`` class inherits from
 .. autoclass:: otcextensions.sdk.cce.v3.cluster.HostNetworkSpec
    :members:
 
+.. autoclass:: otcextensions.sdk.cce.v3.cluster.EniNetworkSpec
+   :members:
+
 .. autoclass:: otcextensions.sdk.cce.v3.cluster.StatusSpec
    :members:

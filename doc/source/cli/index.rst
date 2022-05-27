@@ -28,6 +28,7 @@ documentation of these services:
    cbr
    cce_v2
    ces
+   css
    cts
    dcs
    deh
@@ -39,6 +40,7 @@ documentation of these services:
    nat
    obs
    rds_v3
+   sdrs
    smn
    volume_backup
    vpc

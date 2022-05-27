@@ -44,6 +44,7 @@ class Container(_base.BaseResource):
     name = resource.Body('Name', alternate_id=True, alias='id')
     creation_date = resource.Body('CreationDate')
 
+    storage_acl = resource.Header('x-amz-acl')
     storage_class = resource.Header('x-default-storage-class')
 
     def _translate_response(self, response, has_body=True, error_message=None):

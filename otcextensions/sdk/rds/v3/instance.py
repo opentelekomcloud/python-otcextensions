@@ -117,6 +117,9 @@ class Instance(_base.Resource):
     #: indicating the reliability first and availability first, respectively.
     #: *Type:string*
     switch_strategy = resource.Body('switch_strategy')
+    #: Lists the tags and their values attached to the instance.
+    #: *Type:dict*
+    tags = resource.Body('tags', type=dict)
     #: Time Zone.
     #: *Type:string*
     time_zone = resource.Body('time_zone')
@@ -206,7 +209,6 @@ class Instance(_base.Resource):
         session = cls._get_session(session)
 
         result = cls._find(session, name_or_id, id=name_or_id, **params)
-
         if not result:
             result = cls._find(session, name_or_id, name=name_or_id, **params)
 
@@ -225,6 +227,16 @@ class Instance(_base.Resource):
         result = cls._get_one_match(name_or_id, data)
         if result is not None:
             return result
+
+    def _action(self, session, request_body):
+        url = utils.urljoin(self.base_path, self.id, 'action')
+        response = session.post(url, json=request_body)
+        exceptions.raise_from_response(response)
+
+    def _tag_action(self, session, request_body):
+        url = utils.urljoin(self.base_path, self.id, 'tags', 'action')
+        response = session.post(url, json=request_body)
+        exceptions.raise_from_response(response)
 
     def fetch(self, session, requires_id=True,
               base_path=None, error_message=None, **params):
@@ -266,10 +278,10 @@ class Instance(_base.Resource):
         return self.restore_time
 
     def get_instance_configuration(self, session):
-        pass
+        raise NotImplementedError()
 
-    def update_instance_configuration(self, session):
-        pass
+    def update_instance_configuration(self, session, values):
+        raise NotImplementedError()
 
     def restore(self, session, backup=None, restore_time=None):
         """Restore instance from the backup of PIR.
@@ -322,3 +334,71 @@ class Instance(_base.Resource):
         exceptions.raise_from_response(response)
 
         return None
+
+    def get_logs(self, session, log_type, start_date, end_date,
+                 offset, limit, level):
+        """Get instance logs
+
+        :param session: The session to use for making this request.
+            :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param str log_type: The type of logs to query:
+            'errorlog' or 'slowlog'.
+        :param str start_date: Start date of the of the log query. Format:
+            %Y-%m-%dT%H:%M:%S%z where z is the tzinfo in HHMM format.
+        :param str end_date: End date of the of the log query. Format:
+            %Y-%m-%dT%H:%M:%S%z where z is the tzinfo in HHMM format.
+        :param int offset: .
+        :param int limit: Specifies the number of records on a page. Its value
+            range is from 1 to 100.
+        :param str level: Specifies the log level.
+
+        """
+        url_params = log_type + '?' + '&'.join([
+            'start_date=' + start_date,
+            'end_date=' + end_date,
+            'offset=' + str(offset),
+            'limit=' + str(limit),
+            'level=' + level
+        ])
+        url = utils.urljoin(self.base_path, self.id, url_params)
+        response = session.get(url)
+        exceptions.raise_from_response(response)
+        return response.json()
+
+    def restart(self, session):
+        """Restart the database instance
+        """
+        self._action(session, {"restart": {}})
+
+    def enlarge_volume(self, session, size):
+        """Enlarge the instance volume
+        """
+        self._action(session, {"enlarge_volume": {"size": int(size)}})
+
+    def update_flavor(self, session, spec_code):
+        """Chage the instance's flavor
+        """
+        self._action(session, {"resize_flavor": {"spec_code": spec_code}})
+
+    def add_tag(self, session, key, value):
+        """Add tag to instance
+        """
+        request_body = {
+            "action": "create",
+            "tags": [{
+                "key": key,
+                "value": value
+            }]
+        }
+        self._tag_action(session, request_body)
+
+    def remove_tag(self, session, key):
+        """Remove tag from instance
+        """
+        request_body = {
+            "action": "delete",
+            "tags": [{
+                "key": key
+            }]
+        }
+        self._tag_action(session, request_body)

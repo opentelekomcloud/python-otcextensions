@@ -13,10 +13,10 @@ import uuid
 
 # from openstack import resource
 
-from otcextensions.tests.functional.sdk.elb import TestElbCertificate
+from otcextensions.tests.functional.sdk.elb import TestElb
 
 
-class TestCertificate(TestElbCertificate):
+class TestCertificate(TestElb):
 
     _PRIVATE_KEY = """-----BEGIN PRIVATE KEY-----
 MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDrvw+CfkRMtN6I
@@ -118,14 +118,12 @@ rNcviNEW
 
     def setUp(self):
         super(TestCertificate, self).setUp()
-
         self.cert_name = "SDK-" + uuid.uuid4().hex
         self.cert = self.client.create_certificate(
             private_key=self._PRIVATE_KEY,
             certificate=self._CERTIFICATE,
             name=self.cert_name
         )
-
         self.addCleanup(self.conn.elb.delete_certificate, self.cert)
 
     def test_list_certificates(self):
@@ -145,39 +143,26 @@ rNcviNEW
         self.assertEqual(self.cert.create_time, cert.create_time)
         self.assertEqual(self.cert.expire_time, cert.expire_time)
 
-    def test_update_certificate(self):
-        cert2 = self.client.create_certificate(
-            private_key=self._PRIVATE_KEY,
-            certificate=self._CERTIFICATE,
-            name=self.cert_name + "_2"
-        )
-
-        self.addCleanup(self.conn.elb.delete_certificate, cert2)
-        cert2_cmp = self.client.update_certificate(
-            cert2,
-            name=self.cert_name + "_2_cp"
-        )
-        self.assertEqual(cert2.name, cert2_cmp.name)
-
-        cert2_cmp = self.client.get_certificate(cert2_cmp.id)
-        self.assertEqual(cert2.name, cert2_cmp.name)
-        self.assertEqual(cert2.id, cert2_cmp.id)
-
     def test_update_certificate_content(self):
-        cert2 = self.client.create_certificate(
-            private_key=self._PRIVATE_KEY,
-            content=self._CERTIFICATE,
-            name=self.cert_name + "_2"
-        )
-        self.addCleanup(self.conn.elb.delete_certificate, cert2)
-        cert2_cmp = self.client.update_certificate(
-            cert2,
+        cert_cmp = self.client.update_certificate(
+            self.cert,
             private_key=self._PRIVATE_KEY_UP,
             content=self._CERTIFICATE_UP,
-            name=self.cert_name + "_2_cp"
+            name=self.cert_name + "_cp"
         )
-        self.assertEqual(cert2.name, cert2_cmp.name)
+        self.assertEqual(self.cert.name, cert_cmp.name)
 
-        cert2_cmp = self.client.get_certificate(cert2_cmp.id)
-        self.assertEqual(cert2.name, cert2_cmp.name)
-        self.assertEqual(cert2.id, cert2_cmp.id)
+        cert_cmp = self.client.get_certificate(cert_cmp.id)
+        self.assertEqual(self.cert.name, cert_cmp.name)
+        self.assertEqual(self.cert.id, cert_cmp.id)
+
+    def test_update_certificate(self):
+        cert_cmp = self.client.update_certificate(
+            self.cert,
+            name=self.cert_name + "_cp"
+        )
+        self.assertEqual(self.cert.name, cert_cmp.name)
+
+        cert_cmp = self.client.get_certificate(cert_cmp.id)
+        self.assertEqual(self.cert.name, cert_cmp.name)
+        self.assertEqual(self.cert.id, cert_cmp.id)

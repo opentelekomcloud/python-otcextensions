@@ -1,8 +1,8 @@
 OTC Extensions
 ==============
 
-.. image:: https://zuul.eco.tsi-dev.otc-service.com/api/tenant/eco/badge?project=opentelekomcloud/python-otcextensions&pipeline=check&branch=master
-    :target: https://zuul.eco.tsi-dev.otc-service.com/t/eco/builds?project=opentelekomcloud%2Fpython-otcextensions
+.. image:: https://zuul.otc-service.com/api/tenant/eco/badge?project=opentelekomcloud/python-otcextensions&pipeline=check&branch=master
+    :target: https://zuul.otc-service.com/t/eco/builds?project=opentelekomcloud%2Fpython-otcextensions
 
 .. image:: https://readthedocs.org/projects/python-otcextensions/badge/?version=latest
     :target: http://python-otcextensions.readthedocs.io/en/latest/?badge=latest
@@ -146,6 +146,7 @@ Contributing
 Further Links
 -------------
 
+* `Release Notes <https://docs.otc-service.com/releasenotes/python-otcextensions/>`_
 * `Issue Tracker <https://github.com/OpenTelekomCloud/python-otcextensions/issues>`_
 
 .. _instructions: http://python-otcextensions.readthedocs.io/en/latest/install/

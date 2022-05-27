@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -9,9 +10,9 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-'''
-Create CSS cluster
-'''
+"""
+Create CSS Cluster
+"""
 import openstack
 
 openstack.enable_logging(True)
@@ -20,24 +21,32 @@ conn = openstack.connect(cloud='otc')
 
 attrs = {
     'name': 'ES-Test',
-    'instanceNum': 4,
+    'instanceNum': 1,
+    'datastore': {
+        'type': 'elasticsearch',
+        'version': '7.6.2'
+    },
     'instance': {
-        'flavorRef': 'css.large.8',
+        'flavorRef': 'css.xlarge.2',
         'volume': {
             'volume_type': 'COMMON',
             'size': 100
         },
+
         'nics': {
-            'vpcId': 'vpc_id',
-            'netId': 'network_id',
-            'securityGroupId': 'security_group_id'
+            'vpcId': 'vpcId',
+            'netId': 'netId',
+            'securityGroupId': 'securityGroupId'
         }
     },
     'httpsEnable': 'false',
     'diskEncryption': {
-        'systemEncrypted': '1',
-        'systemCmkid': 'KMS_key_id'
-    }
+        'systemEncrypted': '0',
+    },
+    'tags': [{'key': "key0", 'value': "value0"},
+             {'key': "key1", 'value': "value1"},
+             {'key': "key2", 'value': "value2"},
+             {'key': "key3", 'value': "value3"}]
 }
 result = conn.css.create_cluster(**attrs)
 print(result)

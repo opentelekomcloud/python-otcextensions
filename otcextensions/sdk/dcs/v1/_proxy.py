@@ -9,18 +9,35 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from urllib.parse import urlparse
 
 from openstack import proxy
+from openstack.utils import urljoin
+
 from otcextensions.sdk.dcs.v1 import backup as _backup
 from otcextensions.sdk.dcs.v1 import config as _config
 from otcextensions.sdk.dcs.v1 import instance as _instance
 from otcextensions.sdk.dcs.v1 import restore_record as _restore_record
 from otcextensions.sdk.dcs.v1 import statistic as _stat
+from otcextensions.sdk.dcs.v1 import quota as _quota
+from otcextensions.sdk.dcs.v1 import maintenance_time_window as _maintenance_tw
+from otcextensions.sdk.dcs.v1 import service_specification as _service_spec
+from otcextensions.sdk.dcs.v1 import availability_zone as _az
 
 
 class Proxy(proxy.Proxy):
 
     skip_discovery = True
+
+    def _get_endpoint_with_api_version(self):
+        url_parts = urlparse(self.get_endpoint())
+        api_version = url_parts.path.split('/').pop(1)
+        alternate_endpoint = '{scheme}://{netloc}/{api_version}'.format(
+            scheme=url_parts.scheme,
+            netloc=url_parts.netloc,
+            api_version=api_version
+        )
+        return alternate_endpoint
 
     # ======== Instances ========
     def create_instance(self, **kwargs):
@@ -262,3 +279,61 @@ class Proxy(proxy.Proxy):
             self,
             params
         )
+
+    # ======== Quotas ========
+    def quotas(self):
+        """Return a generator of quotas
+
+        :returns: A generator of quota objects
+        :rtype: :class:`~otcextensions.sdk.dcs.v1.quota.Quota`.
+        """
+        return self._list(_quota.Quota)
+
+    # ======== Maintenance Time Window ========
+    def maintenance_time_windows(self):
+        """Return a generator of maintenance time windows
+
+        :returns: A generator of maintenance time window objects
+        :rtype:
+            :class:`~sdk.dcs.v1.maintenance_time_window.MaintenanceTimeWindow`.
+        """
+        base = self._get_endpoint_with_api_version()
+        base_path = urljoin(
+            base, _maintenance_tw.MaintenanceTimeWindow.base_path
+        )
+
+        return self._list(
+            _maintenance_tw.MaintenanceTimeWindow,
+            base_path=base_path)
+
+    # ======== Service Specification ========
+    def service_specifications(self):
+        """Return a generator of service specifications
+
+        :returns: A generator of service specifications
+        :rtype: :class:`~sdk.dcs.v1.service_specification.ServiceSpecification`
+        """
+        base = self._get_endpoint_with_api_version()
+        base_path = urljoin(
+            base, _service_spec.ServiceSpecification.base_path
+        )
+
+        return self._list(
+            _service_spec.ServiceSpecification,
+            base_path=base_path
+        )
+
+    # ========= Available Zone ========
+    def availability_zones(self):
+        """Return a generator of Availability Zones where a DCS instance
+        resides.
+
+        :returns: A generator of Availability Zone objects
+        :rtype:
+            :class:
+                `~otcextensions.sdk.dcs.v1.availability_zone.AvailabilityZone`
+        """
+        base = self._get_endpoint_with_api_version()
+        base_path = urljoin(base, _az.AvailabilityZone.base_path)
+
+        return self._list(_az.AvailabilityZone, base_path=base_path)

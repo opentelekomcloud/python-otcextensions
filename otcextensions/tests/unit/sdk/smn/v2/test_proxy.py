@@ -84,7 +84,8 @@ class TestSmnSubscription(TestSmnProxy):
             self.proxy.create_subscription, subscription.Subscription,
             method_args=['topic_id'],
             method_kwargs={'name': 'id'},
-            expected_kwargs={'topic_urn': 'topic_id', 'name': 'id'}
+            expected_kwargs={'topic_urn': 'topic_id', 'name': 'id'},
+            expected_args=[]
         )
 
     def test_subscription_delete(self):
@@ -98,7 +99,8 @@ class TestSmnSubscription(TestSmnProxy):
         self.verify_list(
             self.proxy.subscriptions, subscription.Subscription,
             method_args=['topic_id'],
-            expected_kwargs={'topic_urn': 'topic_id'}
+            expected_kwargs={'topic_urn': 'topic_id'},
+            expected_args=[]
         )
 
 
@@ -110,7 +112,8 @@ class TestSmnMessage(TestSmnProxy):
             method_kwargs={'subject': 'Test Message'},
             expected_kwargs={
                 'topic_urn': 'topic_id',
-                'subject': 'Test Message'}
+                'subject': 'Test Message'},
+            expected_args=[]
         )
 
 

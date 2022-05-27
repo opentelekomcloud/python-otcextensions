@@ -3,7 +3,7 @@ DCS API
 
 .. automodule:: otcextensions.sdk.dcs.v1._proxy
 
-The Distributed Message Service Class
+The Distributed Cache Service Class
 -------------------------------------
 
 The dcs high-level interface is available through the ``dcs``
@@ -41,3 +41,31 @@ Instance Configuration Operations
 .. autoclass:: otcextensions.sdk.dcs.v1._proxy.Proxy
   :noindex:
   :members: instance_params, update_instance_params
+
+Quota Operations
+^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.dcs.v1._proxy.Proxy
+  :noindex:
+  :members: quotas
+
+Maintenance Time Window Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.dcs.v1._proxy.Proxy
+  :noindex:
+  :members: maintenance_time_windows
+
+Service Specification Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.dcs.v1._proxy.Proxy
+  :noindex:
+  :members: service_specifications
+
+Availability Zone Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.dcs.v1._proxy.Proxy
+  :noindex:
+  :members: availability_zones

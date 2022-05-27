@@ -10,9 +10,13 @@ Service Proxies
    Cloud Container Engine v1 (CCEv1) <cce_v1>
    Cloud Container Engine v2 (CCE) <cce_v3>
    Cloud Eye Service (CES) <ces>
+   Cloud Search Service (CSS) <css>
    Cloud Trace Service (CTS) <cts>
+   Direct Connect (DCAAS) <dcaas>
    Distributed Cache Service (DCS) <dcs>
+   Document Database Service (DDS) <dds_v3>
    Dedicated Host Service (DeH) <deh>
+   Dedicated Load Balancer (DLB) <vlb_v3>
    Distributed Message Service (DMS) <dms>
    Domain Name Server Service (DNS) <dns>
    Identity Service (IAM) <identity_v3>
@@ -22,6 +26,7 @@ Service Proxies
    Relational Database Service RDS V1 (RDSv1) <rds_v1>
    Relational Database Service RDS V3 (RDS) <rds_v3>
    Simple Message Notification Service (SMN) <smn>
+   Storage Disaster Recovery Service (SDRS) <sdrs>
    Volume Backup Service (VBS) <volume_backup>
    Virtual Private Cloud (VPC) <vpc>
    Web Application Firewall (WAF) <waf>

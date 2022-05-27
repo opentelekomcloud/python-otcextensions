@@ -30,10 +30,10 @@ class Metadata(resource.Resource):
     name = resource.Body('name')
     #: Create time
     #: *Type:str
-    created_at = resource.Body('creationTimeStamp')
+    created_at = resource.Body('creationTimestamp')
     #: Update time
     #: *Type:str
-    updated_at = resource.Body('updateTimeStamp')
+    updated_at = resource.Body('updateTimestamp')
 
 
 class StatusSpec(resource.Resource):
@@ -55,6 +55,10 @@ class Resource(resource.Resource):
     metadata = resource.Body('metadata', type=Metadata)
     #: Cluster status
     status = resource.Body('status', type=StatusSpec)
+    #: Creation date. A virtual attribute fetched from metadata
+    created_at = resource.Body('created_at')
+    #: Update date. A virtual attribute fetched from metadata
+    updated_at = resource.Body('updated_at')
 
     def __getattribute__(self, name):
         """Return an attribute on this instance
@@ -87,6 +91,16 @@ class Resource(resource.Resource):
         elif name in ['job_id', 'status.job_id']:
             status = object.__getattribute__(self, 'status')
             return object.__getattribute__(status, 'job_id')
+        elif name in ['created_at', 'updated_at']:
+            metadata = object.__getattribute__(self, 'metadata')
+            # CCE return completely broken time format:
+            # 2021-08-26 11:46:31.841673 +0000 UTC
+            # Since it is far away from being any existing standard - drop
+            # TZ info away (it is anyway only UTC)
+            # Project cleanup is the one who tries really to parse the date,
+            # thus we need to ensure it is parsable
+            timestamp = object.__getattribute__(metadata, name)
+            return timestamp[0:24] if timestamp else None
         else:
             return object.__getattribute__(self, name)
 

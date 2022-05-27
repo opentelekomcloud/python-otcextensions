@@ -15,11 +15,6 @@ import os
 import sys
 import warnings
 
-import otcdocstheme
-
-sys.path.insert(0, os.path.abspath('../..'))
-sys.path.insert(0, os.path.abspath('.'))
-
 # -- General configuration ----------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
@@ -27,12 +22,11 @@ sys.path.insert(0, os.path.abspath('.'))
 extensions = [
     'sphinx.ext.autodoc',
     'otcdocstheme',
-    'enforcer',
     'cliff.sphinxext',
 ]
 
 # openstackdocstheme options
-repository_name = 'OpenTelekomCloud/python-otcextensions'
+#otcdocs_repo_name = 'opentelekomcloud/python-otcextensions'
 html_last_updated_fmt = '%Y-%m-%d %H:%M'
 html_theme = 'otcdocs'
 
@@ -45,9 +39,6 @@ enforcer_warnings_as_errors = False
 # text edit cycles.
 # execute "export SPHINX_DEBUG=1" in your terminal to disable
 
-# Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
-
 # The suffix of source filenames.
 source_suffix = '.rst'
 
@@ -56,7 +47,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'python-otcextensions'
-copyright = u'2017, Various members of the OpenTelekomCloud'
+copyright = u'2021, Various members of the OpenTelekomCloud'
 
 # A few variables have to be set for the log-a-bug feature.
 #   gitsha: The SHA checksum of the bug description. Extracted from git log.
@@ -70,7 +61,7 @@ except Exception:
     warnings.warn("Can not get git sha.")
     gitsha = "unknown"
 
-bug_tag = "docs"
+otcdocs_bug_tag = "docs"
 pwd = os.getcwd()
 # html_context allows us to pass arbitrary values into the html template
 html_context = {"pwd": pwd,
@@ -84,7 +75,7 @@ add_function_parentheses = True
 add_module_names = True
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = 'native'
 
 autodoc_member_order = "bysource"
 

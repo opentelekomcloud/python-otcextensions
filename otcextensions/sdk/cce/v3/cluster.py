@@ -9,7 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-# import six
 from openstack import resource
 
 from otcextensions.sdk.cce.v3 import _base
@@ -26,6 +25,15 @@ class HostNetworkSpec(resource.Resource):
     network_id = resource.Body('subnet')
     #: ID of the VPC that is used to create a node.
     router_id = resource.Body('vpc')
+
+
+class EniNetworkSpec(resource.Resource):
+
+    # Properties
+    #: IPv4 Subnet ID of the ENI container subnet.
+    eni_subnet_id = resource.Body('eniSubnetId')
+    #: ENI subnet CIDR block.
+    eni_subnet_cidr = resource.Body('eniSubnetCIDR')
 
 
 class ClusterSpec(resource.Resource):
@@ -53,6 +61,8 @@ class ClusterSpec(resource.Resource):
     type = resource.Body('type')
     #: Cluster version ['v1.11.7-r2', 'v1.13.10-r0'].
     version = resource.Body('version')
+    #: Eni network parameters.
+    eni_network = resource.Body('eniNetwork', type=EniNetworkSpec)
 
 
 class StatusSpec(_base.StatusSpec):
