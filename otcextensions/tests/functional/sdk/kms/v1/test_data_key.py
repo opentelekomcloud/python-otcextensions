@@ -21,24 +21,23 @@ _logger = _log.setup_logging('openstack')
 
 class TestDataKey(base.BaseFunctionalTest):
 
-    @classmethod
-    def setUpClass(cls):
-        super(TestDataKey, cls).setUpClass()
-        # cls.cmk = cls.conn.kms.find_key(alias='sdk_test_key1')
-        cls.cmk = cls.conn.kms.create_key(
+    def setUp(self):
+        super(TestDataKey, self).setUp()
+        # self.cmk = self.conn.kms.find_key(alias='sdk_test_key1')
+        self.cmk = self.conn.kms.create_key(
             key_alias=uuid.uuid4().hex
         )
 
-    @classmethod
-    def tearDownClass(cls):
+    def tearDown(self):
         try:
-            if cls.cmk:
-                key = cls.cmk
+            if self.cmk:
+                key = self.cmk
                 if key.id:
-                    cls.conn.kms.schedule_key_deletion(key, 7)
+                    self.conn.kms.schedule_key_deletion(key, 7)
         except exceptions.SDKException as e:
-            _logger.warning('Got exception during clearing resources %s'
-                            % e.message)
+            self.warning = _logger.warning('Got exception during '
+                                           'clearing resources %s' % e.message)
+        super(TestDataKey, self).tearDown()
 
     def test_dek(self):
 

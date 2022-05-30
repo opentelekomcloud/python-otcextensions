@@ -1,5 +1,3 @@
-#   Copyright 2013 Nebula Inc.
-#
 #   Licensed under the Apache License, Version 2.0 (the "License"); you may
 #   not use this file except in compliance with the License. You may obtain
 #   a copy of the License at
@@ -109,12 +107,12 @@ class TestListListener(fakes.TestLoadBalancer):
 
     def test_list_filters_exceptions_proto(self):
         arglist = [
-            '--protocol', 'UDP',
+            '--protocol', 'SMTP',
             '--protocol_port', '12'
         ]
 
         verifylist = [
-            ('protocol', 'UDP'),
+            ('protocol', 'SMTP'),
             ('protocol_port', 12)
         ]
 

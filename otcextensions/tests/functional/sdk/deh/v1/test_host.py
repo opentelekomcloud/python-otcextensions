@@ -19,12 +19,10 @@ _logger = openstack._log.setup_logging('openstack')
 
 class TestHost(base.BaseFunctionalTest):
 
-    @classmethod
-    def setUpClass(cls):
-        super(TestHost, cls).setUpClass()
-        openstack.enable_logging(debug=True, http_debug=True)
-        cls.client = cls.conn.deh
-        res = cls.client.create_host(
+    def setUp(self):
+        super(TestHost, self).setUp()
+        self.client = self.conn.deh
+        res = self.client.create_host(
             name=uuid.uuid4().hex,
             availability_zone='eu-de-01',
             host_type='general',
@@ -32,13 +30,12 @@ class TestHost(base.BaseFunctionalTest):
         )
         assert len(res.dedicated_host_ids) == 1
         host_id = res.dedicated_host_ids[0]
-        cls.host = cls.client.get_host(host_id)
+        self.host = self.client.get_host(host_id)
 
-    @classmethod
-    def tearDownClass(cls):
+    def tearDown(self):
         try:
-            if cls.host.id:
-                cls.client.delete_host(cls.host)
+            if self.host.id:
+                self.client.delete_host(self.host)
         except openstack.exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)

@@ -1,5 +1,3 @@
-#   Copyright 2013 Nebula Inc.
-#
 #   Licensed under the Apache License, Version 2.0 (the "License"); you may
 #   not use this file except in compliance with the License. You may obtain
 #   a copy of the License at
@@ -172,7 +170,7 @@ class TestCreateAutoScalingGroup(TestAutoScalingConfig):
         arglist = [
             'config_name',
             '--flavor', 'some_flavor',
-            '--image_id', 'some_image',
+            '--image-id', 'some_image',
             '--disk', 'SYS,SSD,10',
             '--disk', 'DATA,SSD,5',
         ]

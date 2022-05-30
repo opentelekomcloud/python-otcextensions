@@ -9,7 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-# import six
 from openstack import resource
 
 from otcextensions.sdk.cce.v3 import _base
@@ -28,12 +27,21 @@ class HostNetworkSpec(resource.Resource):
     router_id = resource.Body('vpc')
 
 
+class EniNetworkSpec(resource.Resource):
+
+    # Properties
+    #: IPv4 Subnet ID of the ENI container subnet.
+    eni_subnet_id = resource.Body('eniSubnetId')
+    #: ENI subnet CIDR block.
+    eni_subnet_cidr = resource.Body('eniSubnetCIDR')
+
+
 class ClusterSpec(resource.Resource):
 
     #: Authentication
     authentication = resource.Body('authentication', type=dict)
     #: Billing mode of the cluster. Currently, only pay-per-use is supported.
-    billing = resource.Body('billing_mode', type=int)
+    billing = resource.Body('billingMode')
     #: Container network parameters.
     container_network = resource.Body('containerNetwork', type=dict)
     #: Cluster description.
@@ -44,10 +52,17 @@ class ClusterSpec(resource.Resource):
     flavor = resource.Body('flavor')
     #: Node network parameters.
     host_network = resource.Body('hostNetwork', type=HostNetworkSpec)
+    #: Service forwarding mode
+    kube_proxy_mode = resource.Body('kubeProxyMode')
+    #: Service CIDR block or the IP address range which the kubernetes
+    #: clusterIp must fall within
+    service_ip_range = resource.Body('kubernetesSvcIpRange')
     #: Cluster type.
     type = resource.Body('type')
-    #: Cluster version ['v1.9.2-r2', 'v1.11.3-r1'].
+    #: Cluster version ['v1.11.7-r2', 'v1.13.10-r0'].
     version = resource.Body('version')
+    #: Eni network parameters.
+    eni_network = resource.Body('eniNetwork', type=EniNetworkSpec)
 
 
 class StatusSpec(_base.StatusSpec):

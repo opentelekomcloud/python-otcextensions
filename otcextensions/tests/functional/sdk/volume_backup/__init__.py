@@ -14,7 +14,6 @@ from otcextensions.tests.functional import base
 
 class TestVbs(base.BaseFunctionalTest):
 
-    @classmethod
-    def setUpClass(cls):
-        super(TestVbs, cls).setUpClass()
-        cls.client = cls.conn.volume_backup
+    def setUp(self):
+        super(TestVbs, self).setUp()
+        self.client = self.conn.volume_backup

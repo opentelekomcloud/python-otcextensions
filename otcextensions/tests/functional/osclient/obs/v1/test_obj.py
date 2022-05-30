@@ -35,43 +35,39 @@ class ObsObjectTests(base.TestCase):
 
     OBJECT_CONTENT = uuid.uuid4().hex
 
-    @classmethod
-    def setUpClass(cls):
-        super(ObsObjectTests, cls).setUpClass()
-        json_output = json.loads(cls.openstack(
-            CONTAINER_CREATE_COMMAND % {'name': cls.CONTAINER_NAME}
-        ))
-        cls.container_id = json_output["id"]
-        cls.assertOutput(cls.CONTAINER_NAME, json_output['name'])
-        with open(cls.OBJECT_NAME, 'w') as file:
-            file.write(cls.OBJECT_CONTENT)
-        json_output = json.loads(cls.openstack(
-            OBJECT_CREATE_COMMAND % {
-                'name': cls.OBJECT_NAME,
-                'container': cls.CONTAINER_NAME
-            }
-        ))
-        cls.object_id = json_output["id"]
-        cls.assertOutput(cls.OBJECT_NAME, json_output['name'])
-
-    @classmethod
-    def tearDownClass(cls):
+    def tearDown(self):
         try:
-            cls.openstack(
+            self.openstack(
                 OBJECT_DELETE_COMMAND % {
-                    'name': cls.OBJECT_NAME,
-                    'container': cls.CONTAINER_NAME
+                    'name': self.OBJECT_NAME,
+                    'container': self.CONTAINER_NAME
                 }
             )
-            cls.openstack(
-                CONTAINER_DELETE_COMMAND % {'name': cls.CONTAINER_NAME}
+            self.openstack(
+                CONTAINER_DELETE_COMMAND % {'name': self.CONTAINER_NAME}
             )
-            os.remove(cls.OBJECT_NAME)
+            os.remove(self.OBJECT_NAME)
         finally:
-            super(ObsObjectTests, cls).tearDownClass()
+            super(ObsObjectTests, self).tearDown()
 
     def setUp(self):
         super(ObsObjectTests, self).setUp()
+        json_output = json.loads(self.openstack(
+            CONTAINER_CREATE_COMMAND % {'name': self.CONTAINER_NAME}
+        ))
+        self.container_id = json_output["id"]
+        self.assertOutput(self.CONTAINER_NAME, json_output['name'])
+        with open(self.OBJECT_NAME, 'w') as file:
+            file.write(self.OBJECT_CONTENT)
+        json_output = json.loads(self.openstack(
+            OBJECT_CREATE_COMMAND % {
+                'name': self.OBJECT_NAME,
+                'container': self.CONTAINER_NAME
+            }
+        ))
+        self.object_id = json_output["id"]
+        self.assertOutput(self.OBJECT_NAME, json_output['name'])
+
         ver_fixture = fixtures.EnvironmentVariable(
             'OS_OBS_API_VERSION', '1'
         )

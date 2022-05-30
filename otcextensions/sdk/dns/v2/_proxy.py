@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import proxy
+from openstack import resource
 from otcextensions.sdk.dns.v2 import nameserver as _ns
 from otcextensions.sdk.dns.v2 import recordset as _rs
 from otcextensions.sdk.dns.v2 import zone as _zone
@@ -83,7 +84,7 @@ class Proxy(proxy.Proxy):
         """
         return self._update(_zone.Zone, zone, **attrs)
 
-    def find_zone(self, name_or_id, ignore_missing=True):
+    def find_zone(self, name_or_id, ignore_missing=True, **attrs):
         """Find a single zone
 
         :param name_or_id: The name or ID of a zone
@@ -96,13 +97,15 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         return self._find(_zone.Zone, name_or_id,
-                          ignore_missing=ignore_missing)
+                          ignore_missing=ignore_missing,
+                          **attrs)
 
     def add_router_to_zone(self, zone, **router):
         """Add router(VPC) to private zone
 
         :param zone: The value can be the ID of a zone
              or a :class:`~otcextensions.sdk.dns.v2.zone.Zone` instance.
+        :param router: The parameter router_id is mandatory
         :returns: updater instance of
             :class:`~otcextensions.sdk.dns.v2.zone.Router`
         :rtype: :class:`~otcextensions.sdk.dns.v2.zone.Router`
@@ -115,12 +118,57 @@ class Proxy(proxy.Proxy):
 
         :param zone: The value can be the ID of a zone
              or a :class:`~otcextensions.sdk.dns.v2.zone.Zone` instance.
+        :param router: The parameter router_id is mandatory
         :returns: updater instance of
             :class:`~otcextensions.sdk.dns.v2.zone.Router`
         :rtype: :class:`~otcextensions.sdk.dns.v2.zone.Router`
         """
         zone = self._get_resource(_zone.Zone, zone)
         return zone.disassociate_router(self, **router)
+
+    def wait_for_zone(self, zone, status='ACTIVE', failures=None,
+                      interval=2, wait=180, attribute='status'):
+        """Wait for an zone to be in a particular status.
+        :param zone:
+            The :class:`~otcextensions.sdk.dns.v2.zone.Zone`
+            or zone ID to wait on to reach the specified status.
+        :param status: Desired status.
+        :param failures:
+            Statuses that would be interpreted as failures.
+        :type failures: :py:class:`list`
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait before the change.
+            Default to 180
+        :return: The resource is returned on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` if transition
+                 to the desired status failed to occur in specified seconds.
+        :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
+                 has transited to one of the failure statuses.
+        """
+        failures = ['ERROR'] if failures is None else failures
+        return resource.wait_for_status(
+            self, zone, status, failures, interval, wait)
+
+    def wait_for_delete_zone(self, zone, interval=2, wait=180):
+        """Wait for the zone to be deleted.
+        :param zone:
+            The :class:`~otcextensions.sdk.dns.v2.zone.Zone`
+            or zone ID to wait on to be deleted.
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait for the delete.
+            Default to 180.
+        :return: Method returns self on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` transition
+                 to status failed to occur in wait seconds.
+        """
+        zone = self._get_resource(_zone.Zone, zone)
+        return resource.wait_for_delete(self, zone, interval, wait)
 
     # ======== Nameservers ========
     def nameservers(self, zone):
@@ -223,12 +271,12 @@ class Proxy(proxy.Proxy):
 
         :param zone: The value can be the ID of a zone
              or a :class:`~otcextensions.sdk.dns.v2.zone.Zone` instance.
-        :param name_or_id: The name or ID of a zone
+        :param name_or_id: The name or ID of a recordset
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
-            when the zone does not exist.
+            when the recordset does not exist.
             When set to ``True``, no exception will be set when attempting
-            to delete a nonexistent zone.
+            to delete a nonexistent recordset.
 
         :returns: :class:`~otcextensions.sdk.dns.v2.recordset.Recordset`
         """
@@ -236,6 +284,50 @@ class Proxy(proxy.Proxy):
         return self._find(_rs.Recordset, name_or_id,
                           ignore_missing=ignore_missing, zone_id=zone.id,
                           **attrs)
+
+    def wait_for_recordset(self, recordset, status='ACTIVE', failures=None,
+                           interval=2, wait=180, attribute='status'):
+        """Wait for an recordset to be in a particular status.
+        :param zone:
+            The :class:`~otcextensions.sdk.dns.v2.recordset.Recordset`
+            or recordset ID to wait on to reach the specified status.
+        :param status: Desired status.
+        :param failures:
+            Statuses that would be interpreted as failures.
+        :type failures: :py:class:`list`
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait before the change.
+            Default to 180
+        :return: The resource is returned on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` if transition
+                 to the desired status failed to occur in specified seconds.
+        :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
+                 has transited to one of the failure statuses.
+        """
+        failures = ['ERROR'] if failures is None else failures
+        return resource.wait_for_status(
+            self, recordset, status, failures, interval, wait)
+
+    def wait_for_delete_recordset(self, recordset, interval=2, wait=180):
+        """Wait for the recordset to be deleted.
+        :param recordset:
+            The :class:`~otcextensions.sdk.dns.v2.recordset.Recordset`
+            or recordset ID to wait on to be deleted.
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait for the delete.
+            Default to 180.
+        :return: Method returns self on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` transition
+                 to status failed to occur in wait seconds.
+        """
+        recordset = self._get_resource(_rs.Recordset, recordset)
+        return resource.wait_for_delete(self, recordset, interval, wait)
 
     # ======== FloatingIPs ========
     def floating_ips(self, **query):
@@ -302,3 +394,46 @@ class Proxy(proxy.Proxy):
         # concat `region:floating_ip_id` as id
         attrs = {'ptrdname': None}
         return self._update(_fip.FloatingIP, floating_ip, **attrs)
+
+    def _get_cleanup_dependencies(self):
+        # DNS may depend on floating ip
+        return {
+            'dns': {
+                'before': ['network']
+            }
+        }
+
+    def _service_cleanup(self, dry_run=True, client_status_queue=False,
+                         identified_resources=None,
+                         filters=None, resource_evaluation_fn=None):
+        # Delete all public zones
+        for obj in self.zones():
+            self._service_cleanup_del_res(
+                self.delete_zone,
+                obj,
+                dry_run=dry_run,
+                client_status_queue=client_status_queue,
+                identified_resources=identified_resources,
+                filters=filters,
+                resource_evaluation_fn=resource_evaluation_fn)
+        # Delete all private zones
+        for obj in self.zones(type='private'):
+            self._service_cleanup_del_res(
+                self.delete_zone,
+                obj,
+                dry_run=dry_run,
+                client_status_queue=client_status_queue,
+                identified_resources=identified_resources,
+                filters=filters,
+                resource_evaluation_fn=resource_evaluation_fn)
+        # Unset all floatingIPs
+        # NOTE: FloatingIPs are not cleaned when filters are set
+        for obj in self.floating_ips():
+            self._service_cleanup_del_res(
+                self.unset_floating_ip,
+                obj,
+                dry_run=dry_run,
+                client_status_queue=client_status_queue,
+                identified_resources=identified_resources,
+                filters=filters,
+                resource_evaluation_fn=resource_evaluation_fn)

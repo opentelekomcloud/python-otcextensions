@@ -19,7 +19,7 @@ _logger = _log.setup_logging('openstack')
 
 
 class Quota(_base.Resource):
-    """AutoScaling Quota resource"""
+    """DMS Quota resource"""
     resources_key = 'quotas.resources'
     base_path = '/quotas/dms'
 

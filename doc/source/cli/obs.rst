@@ -1,6 +1,5 @@
-================================================
-Object Storage service (obs) command-line client
-================================================
+Object Storage service (OBS)
+============================
 
 The OBS client is the command-line interface (CLI) for
 the ObjectBlockStorage service (OBS) API and its extensions.

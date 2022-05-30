@@ -89,13 +89,14 @@ class TestCCEClusterNode(TestCCEProxy):
                 expected_kwargs={
                     'paginated': False,
                     'cluster_uuid': 'cluster_id'
-                }
+                },
+                expected_args=[]
             )
 
     def test_get(self):
         with patch.object(self.proxy, '_find',
                           return_value=_cluster.Cluster(id='cluster_id')):
-            self._verify2(
+            self._verify(
                 'otcextensions.sdk.sdk_proxy.Proxy._get',
                 self.proxy.get_cluster_node,
                 method_args=['cluster_id', 'node'],
@@ -109,7 +110,7 @@ class TestCCEClusterNode(TestCCEProxy):
         attrs = {'a': 'b'}
         with patch.object(self.proxy, '_find',
                           return_value=_cluster.Cluster(id='cluster_id')):
-            self._verify2(
+            self._verify(
                 'otcextensions.sdk.cce.v1.cluster_node.ClusterNode.create',
                 self.proxy.add_node,
                 method_args=['cluster_id'],
@@ -126,7 +127,7 @@ class TestCCEClusterNode(TestCCEProxy):
     def test_delete_nodes(self):
         with patch.object(self.proxy, '_find',
                           return_value=_cluster.Cluster(id='cluster_id')):
-            self._verify2(
+            self._verify(
                 'otcextensions.sdk.cce.v1.cluster.Cluster.delete_nodes',
                 self.proxy.delete_cluster_nodes,
                 method_args=['cluster_id', ['n1', 'n2']],

@@ -1,5 +1,3 @@
-#   Copyright 2013 Nebula Inc.
-#
 #   Licensed under the Apache License, Version 2.0 (the "License"); you may
 #   not use this file except in compliance with the License. You may obtain
 #   a copy of the License at
@@ -38,7 +36,7 @@ class TestListPoolMember(fakes.TestLoadBalancer):
             '',  # provisioning_status
             s.address,
             s.protocol_port,
-            '',  # s.operating_status,
+            s.operating_status,
             s.weight,
         ))
 
@@ -270,6 +268,50 @@ class TestCreatePoolMember(fakes.TestLoadBalancer):
         self.assertEqual(self.columns, columns)
         self.assertItemEqual(self.data, data)
 
+    def test_create_zero_weight(self):
+        arglist = [
+            'pool_id',
+            '--address', 'addr',
+            '--protocol_port', '123',
+            '--disable',
+            '--name', 'name',
+            '--subnet_id', 'subnet',
+            '--weight', '0'
+        ]
+
+        verifylist = [
+            ('pool', 'pool_id'),
+            ('address', 'addr'),
+            ('protocol_port', 123),
+            ('disable', True),
+            ('name', 'name'),
+            ('subnet_id', 'subnet'),
+            ('weight', 0),
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.create_pool_member.side_effect = [
+            self._object
+        ]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.create_pool_member.assert_called_once_with(
+            address='addr',
+            is_admin_state_up=False,
+            name='name',
+            pool='pool_id',
+            protocol_port=123,
+            subnet_id='subnet',
+            weight=0
+        )
+
+        self.assertEqual(self.columns, columns)
+        self.assertItemEqual(self.data, data)
+
 
 class TestUpdatePoolMember(fakes.TestLoadBalancer):
 
@@ -331,6 +373,44 @@ class TestUpdatePoolMember(fakes.TestLoadBalancer):
             name='name',
             pool='pool_id',
             weight=13
+        )
+
+        self.assertEqual(self.columns, columns)
+        self.assertItemEqual(self.data, data)
+
+    def test_update_zero_weight(self):
+        arglist = [
+            'pool_id',
+            'member',
+            '--disable',
+            '--name', 'name',
+            '--weight', '0'
+        ]
+
+        verifylist = [
+            ('pool', 'pool_id'),
+            ('member', 'member'),
+            ('disable', True),
+            ('name', 'name'),
+            ('weight', 0),
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.update_pool_member.side_effect = [
+            self._object
+        ]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.update_pool_member.assert_called_once_with(
+            pool_member='member',
+            is_admin_state_up=False,
+            name='name',
+            pool='pool_id',
+            weight=0
         )
 
         self.assertEqual(self.columns, columns)

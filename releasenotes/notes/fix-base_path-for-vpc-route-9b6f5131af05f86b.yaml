@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    Fix base_path for Vpc route.
+

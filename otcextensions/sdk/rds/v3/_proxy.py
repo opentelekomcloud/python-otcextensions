@@ -10,6 +10,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import datetime
+
 from openstack import proxy
 from openstack import resource
 
@@ -36,8 +38,8 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
     def datastore_types(self):
         """List supported datastore types
 
-        :returns: A generator of supported datastore types
-        :rtype object: object with name attribte
+        :returns: A generator of supported datastore type objects
+            with name attribute.
         """
         for ds in ['MySQL', 'PostgreSQL', 'SQLServer']:
             obj = type('obj', (object, ), {'name': ds})
@@ -49,7 +51,8 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         :param database_name: database store name
             (MySQL, PostgreSQL, or SQLServer and is case-sensitive.)
 
-        :returns: A generator of supported datastore versions
+        :returns: A generator of supported datastore versions.
+
         :rtype: :class:`~otcextensions.sdk.rds.v3.datastore.Datastore`
         """
         return self._list(
@@ -65,8 +68,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         :param datastore_name: datastore_name
         :param version_name: version_name
 
-        :returns: A generator of flavor
-        :rtype: :class:`~otcextensions.sdk.rds.v3.flavor.Flavor`
+        :returns: A generator of flavor objects.
         """
         return self._list(_flavor.Flavor,
                           datastore_name=datastore_name,
@@ -78,15 +80,14 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         """Create a new instance from attributes
 
         :param dict attrs: Keyword arguments which will be used to create
-                   a :class:`~otcextensions.sdk.rds.v3.instance.Instance`,
-                   comprised of the properties on the Instance class.
+            a :class:`~otcextensions.sdk.rds.v3.instance.Instance`,
+            comprised of the properties on the Instance class.
 
-        :returns: The results of server creation
+        :returns: The result of an instance creation.
+
         :rtype: :class:`~otcextensions.sdk.rds.v3.instance.Instance`
         """
-        return self._create(
-            _instance.Instance,
-            **attrs)
+        return self._create(_instance.Instance, **attrs)
 
     def delete_instance(self, instance, ignore_missing=True):
         """Delete an instance
@@ -99,8 +100,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
             When set to ``True``, no exception will be set when
             attempting to delete a nonexistent instance.
 
-        :returns:
-            :class:`~otcextensions.sdk.rds.v3.instance.Instance` instance.
+        :returns: ``None``
         """
         return self._delete(
             _instance.Instance,
@@ -111,7 +111,9 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
     def get_instance(self, instance):
         """Get a single instance
 
-        :param isntance: The name or ID of a instance.
+        :param instance: The value can be either the ID of an instance or a
+            :class:`~otcextensions.sdk.rds.v3.instance.Instance` instance.
+
         :returns: One :class:`~otcextensions.sdk.rds.v3.instance.Instance`
         """
         return self._get(_instance.Instance, instance)
@@ -121,12 +123,13 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
 
         :param name_or_id: The name or ID of a instance.
         :param bool ignore_missing: When set to ``False``
-                    :class:`~openstack.exceptions.ResourceNotFound` will be
-                    raised when the resource does not exist.
-                    When set to ``True``, None will be returned when
-                    attempting to find a nonexistent resource.
-        :returns: One :class:`~otcextensions.sdk.rds.v3.instance.Instance`
-                  or None
+            :class:`~openstack.exceptions.ResourceNotFound` will be
+            raised when the resource does not exist.
+            When set to ``True``, None will be returned when
+            attempting to find a nonexistent resource.
+
+        :returns:
+            One :class:`~otcextensions.sdk.rds.v3.instance.Instance` or None.
         """
         return self._find(_instance.Instance,
                           name_or_id,
@@ -135,8 +138,10 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
     def instances(self, **params):
         """Return a generator of instances
 
-        :returns: A generator of instance objects
-        :rtype: :class:`~otcextensions.sdk.rds.v3.instance.Instance`
+        :param dict params: Optional query parameters to be sent to limit
+            the instances being returned.
+
+        :returns: A generator of instance objects.
         """
         return self._list(_instance.Instance, **params)
 
@@ -144,8 +149,8 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
                          instance,
                          backup=None,
                          restore_time=None):
-        """Restore instance from backup
-           or Restore using Point in Time Recovery
+        """Restore instance from backup or Restore using Point in
+            Time Recovery
 
         :param instance: Either the id of a source target instance or a
             :class:`~otcextensions.sdk.rds.v3.instance.Instance` instance.
@@ -153,7 +158,6 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
             :class:`~otcextensions.sdk.rds.v3.backup.Backup` instance.
 
         :returns: Job ID
-        :rtype:
         """
         instance = self._get_resource(_instance.Instance, instance)
         if backup:
@@ -165,7 +169,9 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
 
         :param instance: This parameter can be either the ID of an instance
             or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+
         :returns: Instance restore time
+
         :rtype: list
 
         """
@@ -177,9 +183,10 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
 
         :param instance: This parameter can be either the ID of an instance
             or a :class:`~openstack.sdk.rds.v3.instance.Instance`
-        :returns: Instance Backup policy
-        :rtype: :class:`~otcextensions.sdk.rds.v3.instance.BackupPolicy`
 
+        :returns: Instance Backup policy.
+
+        :rtype: :class:`~otcextensions.sdk.rds.v3.instance.BackupPolicy`
         """
         instance = self._get_resource(_instance.Instance, instance)
         return instance.get_backup_policy(self)
@@ -199,6 +206,91 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         instance = self._get_resource(_instance.Instance, instance)
         return instance.set_backup_policy(self, keep_days=keep_days,
                                           start_time=start_time, period=period)
+
+    def restart_instance(self, instance):
+        """Restart the database instance
+
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.restart(self)
+
+    def enlarge_instance_volume(self, instance, size):
+        """Enlarge the instance volume
+
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+        :param size:
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.enlarge_volume(self, size)
+
+    def change_instance_flavor(self, instance, spec_code):
+        """Change the instance's flavor.
+
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+        :param spec_code:
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.update_flavor(self, spec_code)
+
+    def get_instance_logs(self, instance, log_type, start_date=None,
+                          end_date=None, offset=1, limit=10, level='ALL'):
+        """Get instance logs. If no dates are specified logs are gathered
+            from the last 24 hours.
+
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+        :param str log_type: The type of logs to query:
+            'errorlog' or 'slowlog'.
+        :param str start_date: Start date of the of the log query. Format:
+            %Y-%m-%dT%H:%M:%S%z where z is the tzinfo in HHMM format.
+        :param str end_date: End date of the of the log query. Format:
+            %Y-%m-%dT%H:%M:%S%z where z is the tzinfo in HHMM format.
+        :param int offset: Specifies the page offset such as 1, 2, 3 or 4.
+        :param int limit: Specifies the number of records on a page.
+            Its value range is from 1 to 100.
+        :param str level: Specifies the log level.
+            Values: ALL, INFO, LOG, WARNING, ERROR, FATAL, PANIC, NOTE.
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        if log_type not in ['errorlog', 'slowlog']:
+            raise Exception('The parameter log_type has to be either '
+                            '"errorlog" or "slowlog".')
+        if bool(start_date) ^ bool(end_date):
+            raise Exception('The parameters start_date and end_date should '
+                            'only be specified together.')
+        elif not any([start_date, end_date]):
+            current_time = datetime.datetime.now().astimezone()
+            yesterday = current_time - datetime.timedelta(days=1)
+            start_date = yesterday.strftime("%Y-%m-%dT%H:%M:%S%z")
+            end_date = current_time.strftime("%Y-%m-%dT%H:%M:%S%z")
+
+        return instance.get_logs(self, log_type, start_date, end_date,
+                                 offset, limit, level)
+
+    def add_tag(self, instance, key, value):
+        """Add tag to instance.
+
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+        :param str key: Name of the tag to be added.
+        :param str value: Value of the tag to be added.
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.add_tag(self, key, value)
+
+    def remove_tag(self, instance, key):
+        """Remove tag from instance.
+
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+        :param str key: Name of the tag to be removed.
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.remove_tag(self, key)
 
 #     def get_instance_configuration(self, instance):
 #         """Obtaining a Configuration associated to instance.
@@ -229,12 +321,13 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
 #                             **attrs)
 #
     # ======= Configurations =======
-    def configurations(self, **attrs):
+    def configurations(self, **params):
         """Obtaining a list of DB Configuration.
 
-        :returns: A generator of Configuration object
-        :rtype:
-            :class:`~otcextensions.sdk.rds.v3.configuration.Configuration`
+        :param dict params: Optional query parameters to be sent to limit
+            the configurations being returned.
+
+        :returns: A generator of Configuration objects.
         """
         return self._list(
             _configuration.Configuration,
@@ -244,12 +337,12 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
     def get_configuration(self, cg):
         """Obtaining a Configuration.
 
-        :param parameter_group: The value can be the ID of a Configuration
-            or a object of
-            :class:`~otcextensions.sdk.rds.v3.configuration.Configuration`.
+        :param parameter_group: The value can be the ID of a Configuration or
+            a :class:`~otcextensions.sdk.rds.v3.configuration.Configuration`
+            instance.
 
-        :returns: A Configuration Object
-        :rtype: :class:`~otcextensions.rds.v3.configuration.Configuration`
+        :returns:
+            One :class:`~otcextensions.rds.v3.configuration.Configuration`
         """
         return self._get(_configuration.Configuration, cg)
 
@@ -258,13 +351,14 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
 
         :param name_or_id: The name or ID of configuration.
         :param bool ignore_missing: When set to ``False``
-                    :class:`~openstack.exceptions.ResourceNotFound` will be
-                    raised when the resource does not exist.
-                    When set to ``True``, None will be returned when
-                    attempting to find a nonexistent resource.
-        :returns: One
-        :class:`~otcextensions.sdk.rds.v3.configuration.Configuration`
-                  or None
+            :class:`~openstack.exceptions.ResourceNotFound` will be
+            raised when the resource does not exist.
+            When set to ``True``, None will be returned when
+            attempting to find a nonexistent resource.
+
+        :returns: A configuration object.
+
+        :rtype: :class:`~otcextensions.sdk.rds.v3.configuration.Configuration`
         """
         return self._find(_configuration.Configuration,
                           name_or_id,
@@ -273,8 +367,10 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
     def create_configuration(self, **attrs):
         """Create DB Configuration.
 
-        :param dict **attrs: Dict to overwrite Configuration object
-        :returns: A Configuration Object
+        :param dict attrs: Dict to overwrite Configuration object
+
+        :returns: A Configuration object.
+
         :rtype:
             :class:`~otcextensions.sdk.rds.v3.configuration.Configuration`
         """
@@ -294,8 +390,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
             When set to ``True``, no exception will be set when
             attempting to delete a nonexistent Configuration.
 
-        :returns: None
-        :rtype: None
+        :returns: ``None``
         """
         self._delete(
             _configuration.Configuration,
@@ -310,9 +405,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
             or a :class:`~openstack.sdk.rds.v3.config.Configuration`
         :param dict attrs: The attributes to update on the configuration.
 
-        :returns: None
-        :rtype:
-            :class:`~otcextensions.rds.v3.configuration.Configuration`.
+        :returns: ``None``
         """
         return self._update(_configuration.Configuration, config,
                             **attrs)
@@ -325,7 +418,9 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
             :class:`~otcextensions.sdk.rds.v3.configuration.Configuration`.
         :param instances: List of instance ids the configuration should be
             applied to
-        :returns: Updated Configuration Object
+
+        :returns: Updated Configuration object.
+
         :rtype:
             :class:`~otcextensions.rds.v3.configuration.Configuration`.
         """
@@ -339,8 +434,10 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
 
         :param instance: This parameter can be either the ID of an instance
             or a :class:`~openstack.sdk.rds.v3.instance.Instance`
-        :returns: A generator of backup
-        :rtype: :class:`~otcextensions.sdk.rds.v3.backup.Backup`
+        :param dict params: Optional query parameters to be sent to limit
+            the instance backups being returned.
+
+        :returns: A generator of backup objects.
         """
         instance = self._get_resource(_instance.Instance, instance)
         return self._list(_backup.Backup, instance_id=instance.id, **params)
@@ -348,7 +445,11 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
     def create_backup(self, instance, **attrs):
         """Create a backups of instance
 
-        :returns: A new backup object
+        :param instance: This parameter can be either the ID of an instance
+            or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+
+        :returns: A new backup object.
+
         :rtype: :class:`~otcextensions.sdk.rds.v3.backup.Backup`
         """
         instance = self._get_resource(_instance.Instance, instance)
@@ -359,7 +460,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         """Deletes given backup
 
         :param instance: The value can be either the ID of an instance or a
-            :class:`~openstack.database.v3.instance.Instance` instance.
+            :class:`~otcextension.sdk.rds.v3.instance.Instance` instance.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be
             raised when the instance does not exist.
@@ -377,14 +478,15 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
 
         :param name_or_id: The name or ID of a instance.
         :param instance: The value can be either the ID of an instance or a
-            :class:`~openstack.database.v3.instance.Instance` instance.
-         :param bool ignore_missing: When set to ``False``
-                    :class:`~openstack.exceptions.ResourceNotFound` will be
-                    raised when the resource does not exist.
-                    When set to ``True``, None will be returned when
-                    attempting to find a nonexistent resource.
+            :class:`~otcextension.sdk.rds.v3.instance.Instance` instance.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be
+            raised when the resource does not exist.
+            When set to ``True``, None will be returned when
+            attempting to find a nonexistent resource.
+
         :returns: One :class:`~otcextensions.sdk.rds.v3.backup.Backup`
-                  or None
+            or None
         """
         instance = self._get_resource(_instance.Instance, instance)
         return self._find(_backup.Backup,
@@ -395,10 +497,11 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
     def backup_download_links(self, backup_id):
         """Obtaining a backup file download links.
 
-        :param backup_id
-        :returns: files link
-        :rtype: :class:`~otcextensions.sdk.rds.v3.backup.BackupFile`
+        :param backup_id:
 
+        :returns: backup files download link
+
+        :rtype: :class:`~otcextensions.sdk.rds.v3.backup.BackupFile`
         """
         return self._list(_backup.BackupFile, backup_id=backup_id)
 

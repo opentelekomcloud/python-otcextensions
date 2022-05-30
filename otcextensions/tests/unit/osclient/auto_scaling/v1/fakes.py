@@ -1,5 +1,3 @@
-#   Copyright 2013 Nebula Inc.
-#
 #   Licensed under the Apache License, Version 2.0 (the "License"); you may
 #   not use this file except in compliance with the License. You may obtain
 #   a copy of the License at
@@ -52,7 +50,7 @@ class FakeGroup(test_base.Fake):
             'id': 'id-' + uuid.uuid4().hex,
             'status': 'SOME STATUS',
             'detail': 'detail-' + uuid.uuid4().hex,
-            'network_id': 'id-vpc-' + uuid.uuid4().hex,
+            'router_id': 'id-vpc-' + uuid.uuid4().hex,
         }
         obj = group.Group.existing(**object_info)
         return obj

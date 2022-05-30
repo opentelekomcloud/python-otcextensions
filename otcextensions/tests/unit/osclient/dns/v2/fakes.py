@@ -61,7 +61,7 @@ class FakeZone(test_base.Fake):
             'serial': random.randint(1, 600),
             'status': uuid.uuid4().hex,
             'ttl': random.randint(1, 600),
-            'updated_at': time.clock() * 1000,
+            'updated_at': time.time() * 1000,
             'zone_type': uuid.uuid4().hex,
         }
         obj = zone.Zone.existing(**object_info)

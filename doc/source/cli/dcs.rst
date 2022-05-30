@@ -1,6 +1,5 @@
-===================================================
-Distributed Cache Service (DCS) command-line client
-===================================================
+Distributed Cache Service (DCS)
+===============================
 
 The DCS client is the command-line interface (CLI) for
 the Distributed Cache Service (DMS) API and its extensions.

@@ -11,13 +11,13 @@
 # under the License.
 from openstack import resource
 from openstack import _log
+from otcextensions.sdk import dnsmixin
 
-from otcextensions.sdk import sdk_resource
 
 _logger = _log.setup_logging('openstack')
 
 
-class NameServer(sdk_resource.Resource):
+class NameServer(dnsmixin.DNSProxyMixin, resource.Resource):
     resource_key = 'nameserver'
     resources_key = 'nameservers'
     base_path = '/zones/%(zone_id)s/nameservers'
@@ -27,6 +27,7 @@ class NameServer(sdk_resource.Resource):
     allow_list = True
     allow_get = False
     allow_delete = False
+    allow_update = False
 
     #: Properties
     #: The ID of zone using this name-server

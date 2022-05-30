@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    CLI CBR Vault operations (List, Show, Create, Update, Delete, Associate/Dissociate resources, Bind/Unbind policy)

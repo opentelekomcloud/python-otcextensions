@@ -10,9 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-'''Instance v1 action implementations'''
+'''Instance v3 action implementations'''
 import argparse
 
+from osc_lib.cli import format_columns
 from osc_lib import exceptions
 from osc_lib import utils
 from osc_lib.command import command
@@ -21,9 +22,19 @@ from otcextensions.common import sdk_utils
 from otcextensions.i18n import _
 
 
+_formatters = {
+    'backup_strategy': format_columns.DictColumn,
+    'charge_info': format_columns.DictColumn,
+    'datastore': format_columns.DictColumn,
+    'ha': format_columns.DictColumn,
+    'nodes': format_columns.ListDictColumn,
+    'volume': format_columns.DictColumn,
+}
+
+
 def _get_columns(item):
     column_map = {}
-    hidden = ['job_id']
+    hidden = ['job_id', 'location']
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
                                                            hidden)
 
@@ -82,8 +93,8 @@ class ListDatabaseInstances(command.Lister):
             type=lambda s: s.lower(),
             choices=HA_TYPE_CHOICES,
             help=_(
-                'Specifies the instance type. Values cane be single/ha/replica'
-            ))
+                'Specifies the instance type. '
+                'Values cane be single/ha/replica.'))
         parser.add_argument(
             '--datastore-type',
             metavar='{' + ','.join(DATASTORE_TYPE_CHOICES) + '}',
@@ -162,13 +173,12 @@ class ShowDatabaseInstance(command.ShowOne):
         obj = client.find_instance(parsed_args.instance, ignore_missing=False)
 
         display_columns, columns = _get_columns(obj)
-        data = utils.get_item_properties(obj, columns)
+        data = utils.get_item_properties(obj, columns, formatters=_formatters)
 
         return (display_columns, data)
 
 
 class CreateDatabaseInstance(command.ShowOne):
-
     _description = _("Create a new database instance.")
 
     def get_parser(self, prog_name):
@@ -179,14 +189,15 @@ class CreateDatabaseInstance(command.ShowOne):
             help=_("Name of the instance.")
         )
         parser.add_argument(
-            'flavor_ref',
-            metavar='<flavor_ref>',
+            'flavor',
+            metavar='<flavor>',
             help=_("Flavor spec_code")
         )
         disk_group = parser.add_argument_group('Disk data')
         disk_group.add_argument(
             '--size',
             metavar='<size>',
+            dest='volume_size',
             type=int,
             required=True,
             help=_("Size of the instance disk volume in GB. ")
@@ -196,6 +207,7 @@ class CreateDatabaseInstance(command.ShowOne):
             metavar='{' + ','.join(DISK_TYPE_CHOICES) + '}',
             type=lambda s: s.upper(),
             required=True,
+            dest='volume_type',
             choices=[s.upper() for s in DISK_TYPE_CHOICES],
             help=_("Volume type. (COMMON, ULTRAHIGH).")
         )
@@ -224,7 +236,7 @@ class CreateDatabaseInstance(command.ShowOne):
         )
         parser.add_argument(
             '--configuration',
-            dest='configuration_id',
+            dest='configuration',
             metavar='<configuration_id>',
             default=None,
             help=_("ID of the configuration group to attach to the instance.")
@@ -253,18 +265,20 @@ class CreateDatabaseInstance(command.ShowOne):
         new_instance_group.add_argument(
             '--router-id',
             metavar='<router_id>',
+            dest='router',
             help=_('ID of a Router the DB should be connected to')
         )
         new_instance_group.add_argument(
             '--network-id',
             metavar='<net_id>',
+            dest='network',
             help=_('ID of a Neutron network the DB should be connected to.')
         )
         new_instance_group.add_argument(
             '--security-group-id',
-            dest='security_group_id',
+            dest='security_group',
             metavar='<security_group_id>',
-            help=_('Security group ID')
+            help=_('Security group ID.')
         )
         parser.add_argument(
             '--ha-mode',
@@ -272,13 +286,13 @@ class CreateDatabaseInstance(command.ShowOne):
             type=lambda s: s.lower(),
             choices=HA_MODE_CHOICES,
             help=_('replication mode for the standby DB instance. '
-                   'This parameter is required when using `ha`flavors')
+                   'This parameter is required when using `ha` flavors.')
         )
         parser.add_argument(
             '--charge-mode',
             metavar='<charge_mode>',
             default='postPaid',
-            help=_('Specifies the billing mode')
+            help=_('Specifies the billing mode.')
         )
         create_from_group = parser.add_argument_group(
             'Create FROM group',
@@ -302,6 +316,17 @@ class CreateDatabaseInstance(command.ShowOne):
             help=_('Backup ID or Name to create new instance from.')
         )
         create_from_group.add_argument(
+            '--backup-keepdays',
+            metavar='<backup_keepday>',
+            help=_('Specifies the retention days for specific backup files.')
+        )
+        create_from_group.add_argument(
+            '--backup-timeframe',
+            metavar='<HH:MM-HH:MM>',
+            help=_('Specifies the backup time window. Automated backups will '
+                   'be triggered during the backup time window.')
+        )
+        create_from_group.add_argument(
             '--restore-time',
             metavar='<time>',
             help=_('Time (UNIX timestamp in ms) to create new instance '
@@ -317,173 +342,42 @@ class CreateDatabaseInstance(command.ShowOne):
             type=int,
             help=_('Interval for checking status')
         )
+        parser.add_argument(
+            '--wait-timeout',
+            type=int,
+            help=_('Timeout')
+        )
+
         return parser
 
     def take_action(self, parsed_args):
         # Attention: not conform password result in BadRequest with no info
-        client = self.app.client_manager.rds
 
+        # initialize sdk_connection with rds methods
+        _ = self.app.client_manager.rds
+        client = self.app.client_manager.sdk_connection
         attrs = {}
-        args_list = [
-            'name', 'availability_zone', 'configuration_id', 'region',
-            'router_id', 'network_id', 'security_group_id',
-            'disk_encryption_id', 'port', 'password', 'flavor_ref'
-        ]
-        for arg in args_list:
-            if getattr(parsed_args, arg):
-                attrs[arg] = getattr(parsed_args, arg)
-        volume = {}
-        if parsed_args.size:
-            volume = {"size": parsed_args.size}
-            if parsed_args.volume_type:
-                volume['type'] = parsed_args.volume_type
-            attrs['volume'] = volume
-        if parsed_args.datastore_type:
-            datastore = {
-                'type': parsed_args.datastore_type,
-                'version': parsed_args.datastore_version
-            }
-            attrs['datastore'] = datastore
-        if parsed_args.ha_mode:
-            ha = {'mode': 'ha', 'replication_mode': parsed_args.ha_mode}
-            attrs['ha'] = ha
-        if parsed_args.charge_mode:
-            attrs['charge_info'] = {'charge_mode': parsed_args.charge_mode}
+        for attr in [
+            'availability_zone', 'backup', 'backup_keepdays',
+            'backup_timeframe', 'charge_mode', 'configuration',
+            'datastore_type', 'datastore_version', 'disk_encryption_id',
+            'flavor', 'from_instance', 'ha_mode', 'name', 'network',
+            'password', 'port', 'region', 'replica_of', 'restore_time',
+            'router', 'security_group', 'volume_size', 'volume_type', 'wait',
+            'wait_timeout', 'wait_interval'
+        ]:
+            if getattr(parsed_args, attr):
+                attrs[attr] = getattr(parsed_args, attr)
 
-        new_instance_required = [
-            parsed_args.router_id,
-            parsed_args.network_id,
-            parsed_args.security_group_id,
-            parsed_args.password
-        ]
+        if not parsed_args.wait:
+            attrs['wait'] = False
 
-        if (not parsed_args.replica_of
-                and not (parsed_args.datastore_type
-                         and parsed_args.datastore_version)):
-            raise exceptions.CommandError(
-                _('`--datastore-type` and `--datastore-version` are '
-                  'required')
-            )
-
-        if parsed_args.replica_of:
-            # Create replica
-            if (parsed_args.password or parsed_args.port
-                    or parsed_args.router_id or parsed_args.security_group_id
-                    or parsed_args.network_id):
-                raise exceptions.CommandError(
-                    _('Setting password/port/router/network/sg is not '
-                      'supported when creating replica')
-                )
-            src = client.find_instance(parsed_args.replica_of,
-                                       ignore_missing=False)
-            parsed_args.datastore_type = src['datastore']['type']
-            parsed_args.datastore_version = src['datastore']['version']
-            attrs['replica_of_id'] = src.id
-            attrs.pop('datastore', None)
-        elif parsed_args.from_instance:
-            source = client.find_instance(parsed_args.from_instance,
-                                          ignore_missing=False)
-            if parsed_args.backup:
-                # Create from backup
-                backup = client.find_backup(
-                    name_or_id=parsed_args.backup,
-                    instance=source,
-                    ignore_missing=False)
-                attrs['restore_point'] = {
-                    'type': 'backup',
-                    'backup_id': backup.id,
-                    'instance_id': backup.instance_id
-                }
-            elif parsed_args.restore_time:
-                attrs['restore_point'] = {
-                    'type': 'timestamp',
-                    'restore_time': parsed_args.restore_time,
-                    'instance_id': source.id
-                }
-        elif parsed_args.backup or parsed_args.restore_time:
-            raise exceptions.CommandError(
-                _('`--from-instance` is required when restoring from '
-                  'backup or using PITR.')
-            )
-        elif not all(new_instance_required):
-            raise exceptions.CommandError(
-                _('`--router-id`, `--subnet-id`, `--security-group-id`, '
-                  '`--password` parameters are required when creating '
-                  'new primary instance.')
-            )
-
-        flavors = list(client.flavors(
-            datastore_name=parsed_args.datastore_type,
-            version_name=parsed_args.datastore_version)
+        obj = client.create_rds_instance(
+            **attrs
         )
-        flavor = None
-        for f in flavors:
-            if f.name == parsed_args.flavor_ref:
-                flavor = f
-        if not flavor:
-            raise exceptions.CommandError(
-                _(
-                    'Flavor {flavor} can not be found'.format(
-                        flavor=parsed_args.flavor_ref)
-                )
-            )
-        if flavor.instance_mode == 'ha' and not parsed_args.ha_mode:
-            raise exceptions.CommandError(
-                _('`--ha-mode` is required when using HA enabled flavor')
-            )
-        if flavor.instance_mode != 'ha' and parsed_args.ha_mode:
-            raise exceptions.CommandError(
-                _('`ha` enabled flavor must be '
-                  'chosen when setting ha_mode')
-            )
-        if flavor.instance_mode != 'replica' and parsed_args.replica_of:
-            raise exceptions.CommandError(
-                _('`replica` enabled flavor must be '
-                  'chosen when creating replica')
-            )
-        if parsed_args.ha_mode:
-            if ',' not in parsed_args.availability_zone:
-                raise exceptions.CommandError(
-                    _('List of availability zones must be used when '
-                      'creating ha instance')
-                )
-        if parsed_args.ha_mode:
-            mode = parsed_args.ha_mode
-            if (parsed_args.datastore_type.lower() == 'postgresql'
-                    and mode not in ['async', 'sync']):
-                raise exceptions.CommandError(
-                    _('`async` or `sync` ha_mode can be used for '
-                      'PostgreSQL isntance')
-                )
-            elif (parsed_args.datastore_type.lower() == 'mysql'
-                    and mode not in ['async', 'semisync']):
-                raise exceptions.CommandError(
-                    _('`async` or `semisync` ha_mode can be used for '
-                      'MySQL isntance')
-                )
-            elif (parsed_args.datastore_type.lower() == 'sqlserver'
-                    and mode not in ['sync']):
-                raise exceptions.CommandError(
-                    _('Only `sync` ha_mode can be used for '
-                      'SQLServer isntance')
-                )
-        if parsed_args.wait_interval and not parsed_args.wait:
-            raise exceptions.CommandError(
-                _('`--wait-interval` is only valid with `--wait`')
-            )
-
-        obj = client.create_instance(**attrs)
-
-        if obj.job_id and parsed_args.wait:
-            wait_args = {}
-            if parsed_args.wait_interval:
-                wait_args['interval'] = parsed_args.wait_interval
-
-            client.wait_for_job(obj.job_id, **wait_args)
-            obj = client.get_instance(obj.id)
 
         display_columns, columns = _get_columns(obj)
-        data = utils.get_item_properties(obj, columns, formatters={})
+        data = utils.get_item_properties(obj, columns, formatters=_formatters)
         return (display_columns, data)
 
 
@@ -508,22 +402,32 @@ class DeleteDatabaseInstance(command.Command):
             type=int,
             help=_('Interval for checking status')
         )
+        parser.add_argument(
+            '--wait-timeout',
+            type=int,
+            help=_('Timeout')
+        )
         return parser
 
     def take_action(self, parsed_args):
-        client = self.app.client_manager.rds
-        instance = client.find_instance(parsed_args.instance)
-        try:
-            response = client.delete_instance(instance.id)
-            if parsed_args.wait and response.job_id:
-                wait_args = {}
-                if parsed_args.wait_interval:
-                    wait_args['interval'] = parsed_args.wait_interval
+        # initialize sdk_connection with rds methods
+        _ = self.app.client_manager.rds
+        client = self.app.client_manager.sdk_connection
+        attrs = {}
+        for attr in [
+            'instance', 'wait', 'wait_timeout', 'wait_interval'
+        ]:
+            if getattr(parsed_args, attr):
+                attrs[attr] = getattr(parsed_args, attr)
 
-                client.wait_for_job(response.job_id, **wait_args)
+        if not parsed_args.wait:
+            attrs['wait'] = False
+
+        try:
+            client.delete_rds_instance(**attrs)
         except Exception as e:
             msg = (_("Failed to delete instance %(instance)s: %(e)s") % {
-                'instance': parsed_args.instance,
+                'instance': parsed_args.name,
                 'e': e
             })
             raise exceptions.CommandError(msg)

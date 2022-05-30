@@ -26,78 +26,75 @@ class TestMessage(base.BaseFunctionalTest):
     messages = []
     received_messages = []
 
-    @classmethod
-    def setUpClass(cls):
-        super(TestMessage, cls).setUpClass()
-        openstack.enable_logging(debug=True, http_debug=True)
+    def setUp(self):
+        super(TestMessage, self).setUp()
         try:
-            cls.queue = cls.conn.dms.create_queue(
+            self.queue = self.conn.dms.create_queue(
                 name=TestMessage.QUEUE_ALIAS
             )
 
         except openstack.exceptions.BadRequestException:
-            cls.queue = cls.conn.dms.get_queue(TestMessage.QUEUE_ALIAS)
+            self.queue = self.conn.dms.find_queue(TestMessage.QUEUE_ALIAS)
 
-        cls.queues.append(cls.queue)
+        self.queues.append(self.queue)
 
         try:
-            cls.group = cls.conn.dms.create_group(
-                cls.queue, {"name": "test_group"}
+            self.group = self.conn.dms.create_group(
+                self.queue, "test_group"
             )
 
         except openstack.exceptions.DuplicateResource:
-            cls.queue = cls.conn.dms.groups(cls.queue)
+            self.queue = self.conn.dms.groups(self.queue)
 
-        cls.groups.append(cls.group)
+        self.groups.append(self.group)
 
-    @classmethod
-    def tearDownClass(cls):
+    def tearDown(self):
         try:
-            for queue in cls.queues:
+            for queue in self.queues:
                 if queue.id:
-                    cls.conn.dms.delete_queue(queue)
+                    self.conn.dms.delete_queue(queue)
         except openstack.exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
+        super(TestMessage, self).tearDown()
 
-    def test_list(cls):
-        cls.queues = list(cls.conn.dms.queues())
-        cls.assertGreaterEqual(len(cls.queues), 0)
-        if len(cls.queues) > 0:
-            queue = cls.queues[0]
-            q = cls.conn.dms.get_queue(queue=queue.id)
-            cls.assertIsNotNone(q)
+    def test_list(self):
+        self.queues = list(self.conn.dms.queues())
+        self.assertGreaterEqual(len(self.queues), 0)
+        if len(self.queues) > 0:
+            queue = self.queues[0]
+            q = self.conn.dms.get_queue(queue=queue.id)
+            self.assertIsNotNone(q)
 
-    def test_group(cls):
-        cls.queues = list(cls.conn.dms.queues())
-        # cls.assertGreaterEqual(len(cls.queues), 0)
-        if len(cls.queues) > 0:
-            # queue = cls.queues[0]
-            # q = cls.conn.dms.get_queue(queue=queue.id)
-            # cls.assertIsNotNone(q)
+    def test_group(self):
+        self.queues = list(self.conn.dms.queues())
+        # self.assertGreaterEqual(len(self.queues), 0)
+        if len(self.queues) > 0:
+            # queue = self.queues[0]
+            # q = self.conn.dms.get_queue(queue=queue.id)
+            # self.assertIsNotNone(q)
             try:
-                cls.group = cls.conn.dms.create_group(
-                    cls.queue, {"name": "test_group"}
+                self.group = self.conn.dms.create_group(
+                    self.queue, "test_group2"
                 )
 
             except openstack.exceptions.BadRequestException:
-                cls.queue = cls.conn.dms.groups(cls.queue)
+                self.queue = self.conn.dms.groups(self.queue)
 
-            cls.groups.append(cls.group)
+            self.groups.append(self.group)
 
     # OS_TEST_TIMEOUT=60 is needed due to testbed slowness
-    @classmethod
-    def test_message(cls):
-        cls.queues = list(cls.conn.dms.queues())
-        # cls.assertGreaterEqual(len(cls.queues), 0)
-        if len(cls.queues) > 0:
-            # queue = cls.queues[0]
-            # q = cls.conn.dms.get_queue(queue=queue.id)
+    def test_message(self):
+        self.queues = list(self.conn.dms.queues())
+        # self.assertGreaterEqual(len(self.queues), 0)
+        if len(self.queues) > 0:
+            # queue = self.queues[0]
+            # q = self.conn.dms.get_queue(queue=queue.id)
             time.sleep(50)
 
-            # cls.assertIsNotNone(q)
-            cls.message = cls.conn.dms.send_messages(
-                cls.queue,
+            # self.assertIsNotNone(q)
+            self.message = self.conn.dms.send_messages(
+                self.queue,
                 messages=[
                     {"body": "TEST11",
                         "attributes":
@@ -111,19 +108,19 @@ class TestMessage(base.BaseFunctionalTest):
             #            "attribute1" : "value1",
             #            "attribute2" : "value2" } }
 
-            cls.messages.append(cls.message)
+            self.messages.append(self.message)
             try:
-                cls.group = cls.conn.dms.create_group(
-                    cls.queue, {"name": "test_group2"}
+                self.group = self.conn.dms.create_group(
+                    self.queue, "test_group3"
                 )
 
             except openstack.exceptions.BadRequestException:
-                cls.queue = cls.conn.dms.groups(cls.queue)
+                self.queue = self.conn.dms.groups(self.queue)
 
-            cls.groups.append(cls.group)
+            self.groups.append(self.group)
 
-            cls.received_messages = cls.dms.consume_message(
-                cls.queue,
-                cls.group
+            self.received_messages = self.conn.dms.consume_message(
+                self.queue,
+                self.group
             )
-            cls.assertGreaterEqual(len(cls.received_messages), 0)
+            self.assertGreaterEqual(len(list(self.received_messages)), 0)

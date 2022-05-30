@@ -1,5 +1,3 @@
-#   Copyright 2013 Nebula Inc.
-#
 #   Licensed under the Apache License, Version 2.0 (the "License"); you may
 #   not use this file except in compliance with the License. You may obtain
 #   a copy of the License at
@@ -23,8 +21,9 @@ from otcextensions.tests.unit.osclient import test_base
 from otcextensions.sdk.dcs.v1 import backup
 from otcextensions.sdk.dcs.v1 import config
 from otcextensions.sdk.dcs.v1 import instance
-from otcextensions.sdk.dcs.v1 import restore
+from otcextensions.sdk.dcs.v1 import restore_record
 from otcextensions.sdk.dcs.v1 import statistic
+from otcextensions.sdk.dcs.v1 import quota
 
 
 class TestDCS(utils.TestCommand):
@@ -137,8 +136,8 @@ class FakeBackup(test_base.Fake):
         return obj
 
 
-class FakeRestore(test_base.Fake):
-    """Fake one or more Restore"""
+class FakeRestoreRecord(test_base.Fake):
+    """Fake one or more Restore Records"""
 
     @classmethod
     def generate(cls):
@@ -152,7 +151,7 @@ class FakeRestore(test_base.Fake):
             'input_kbps': 'input-' + uuid.uuid4().hex,
             'output_kbps': 'output-' + uuid.uuid4().hex
         }
-        obj = restore.Restore.existing(**object_info)
+        obj = restore_record.RestoreRecord.existing(**object_info)
         return obj
 
 
@@ -172,4 +171,27 @@ class FakeConfig(test_base.Fake):
             'description': uuid.uuid4().hex
         }
         obj = config.Config.existing(**object_info)
+        return obj
+
+
+class FakeQuota(test_base.Fake):
+    """Fake one or more Quota"""
+
+    @classmethod
+    def generate(cls):
+
+        qtype = random.choice(['instances', 'ram'])
+
+        def _generate_unit_by_type(qtype):
+            return 'null' if qtype == 'instances' else 'GB'
+
+        object_info = {
+            'quota': random.randint(1, 65535),
+            'used': random.randint(1, 65535),
+            'type': qtype,
+            'unit': _generate_unit_by_type(qtype),
+            'max': random.randint(1, 65535),
+            'min': random.randint(1, 10)
+        }
+        obj = quota.Quota.existing(**object_info)
         return obj

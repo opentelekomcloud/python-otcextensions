@@ -39,7 +39,9 @@ EXAMPLE_LIST = {
             'spec': {
                 'type': 'VirtualMachine',
                 'flavor': 'cce.s1.small',
-                'version': 'v1.11.3-r1',
+                'version': 'v1.13.10-r0',
+                'az': 'eu-de-01',
+                'supportIstio': True,
                 'description': 'thisisademocluster',
                 'hostNetwork': {
                     'vpc': 'a8cc62dc-acc2-47d0-9bfb-3b1d776c520b',
@@ -50,10 +52,11 @@ EXAMPLE_LIST = {
                     'cidr': '172.16.0.0/16'
                 },
                 'authentication': {
-                    'mode': 'x509',
+                    'mode': 'rbac',
                     'authenticatingProxy': {}
                 },
-                'billingMode': 0
+                'billingMode': 0,
+                "kubeProxyMode": "iptables",
             },
             'status': {
                 'phase': 'Available',

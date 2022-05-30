@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    Add find_vpc method to the proxy layer for the VPC service.

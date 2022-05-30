@@ -9,12 +9,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+
 from openstack import resource
 
 from otcextensions.sdk.auto_scaling.v1 import _base
+from otcextensions.sdk import quotamixin
 
 
-class Quota(_base.Resource):
+class Quota(quotamixin.QuotaProxyMixin, _base.Resource):
     """AutoScaling Quota resource"""
     resources_key = 'quotas.resources'
     base_path = '/quotas'
@@ -31,14 +33,6 @@ class Quota(_base.Resource):
     max = resource.Body('max', type=int)
     #: Quota amount
     quota = resource.Body('quota', type=int)
-
-    @classmethod
-    def list(cls, session, paginated=False,
-             endpoint_override=None, headers=None, **params):
-        return super(Quota, cls).list_ext(
-            session, paginated,
-            endpoint_override, headers,
-            **params)
 
 
 class ScalingQuota(Quota):

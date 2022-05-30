@@ -42,12 +42,15 @@ class TestFlavor(TestRdsProxy):
 
 class TestDatastore(TestRdsProxy):
     def test_datastores(self):
-        self.verify_list(self.proxy.datastores,
-                         datastore.Datastore,
-                         method_args=['ss'],
-                         expected_kwargs={
-                             'database_name': 'ss'
-                         })
+        self.verify_list(
+            self.proxy.datastores,
+            datastore.Datastore,
+            method_args=['ss'],
+            expected_kwargs={
+                'database_name': 'ss'
+            },
+            expected_args=[]
+        )
 
 
 class TestConfiguration(TestRdsProxy):
@@ -85,15 +88,19 @@ class TestConfiguration(TestRdsProxy):
             'otcextensions.sdk.rds.v3.configuration.Configuration.apply',
             self.proxy.apply_configuration,
             method_args=["val", ['a', 'b']],
-            expected_args=[['a', 'b']]
+            expected_args=[self.proxy, ['a', 'b']]
         )
 
 
 class TestBackup(TestRdsProxy):
     def test_backups(self):
-        self.verify_list(self.proxy.backups,
-                         backup.Backup, method_args=['inst'],
-                         expected_kwargs={'instance_id': 'inst'})
+        self.verify_list(
+            self.proxy.backups,
+            backup.Backup,
+            method_args=['inst'],
+            expected_args=[],
+            expected_kwargs={'instance_id': 'inst'}
+        )
 
     def test_create_backup(self):
         self.verify_create(
@@ -102,9 +109,11 @@ class TestBackup(TestRdsProxy):
             method_args=['inst'],
             method_kwargs={'x': 1, 'y': 2, 'z': 3},
             expected_kwargs={
-                'instance_id': 'inst',
-                'x': 1, 'y': 2, 'z': 3
-            })
+                'x': 1, 'y': 2, 'z': 3,
+                'instance_id': 'inst'
+            },
+            expected_args=[]
+        )
 
     def test_delete_backup(self):
         self.verify_delete(self.proxy.delete_backup,
@@ -115,9 +124,16 @@ class TestBackup(TestRdsProxy):
                            backup.Backup, True)
 
     def test_find_backup(self):
-        self.verify_find(self.proxy.find_backup, backup.Backup,
-                         value=['name_or_id', 'iid'],
-                         expected_kwargs={'instance_id': 'iid'})
+        self.verify_find(
+            self.proxy.find_backup,
+            backup.Backup,
+            method_args=['name'],
+            expected_kwargs={
+                'ignore_missing': True,
+                'instance_id': 'name'
+            },
+            expected_args=['resource_name']
+        )
 
     def test_wait_for_backup(self):
         value = backup.Backup(id='fake')
@@ -125,6 +141,7 @@ class TestBackup(TestRdsProxy):
             self.proxy.wait_for_backup,
             method_args=[value],
             expected_args=[
+                self.proxy,
                 value,
                 'COMPLETED',
                 ['FAILED'],
@@ -132,10 +149,13 @@ class TestBackup(TestRdsProxy):
             ])
 
     def test_download_links(self):
-        self.verify_list(self.proxy.backup_download_links,
-                         backup.BackupFile,
-                         method_args=['bck_id'],
-                         expected_kwargs={'backup_id': 'bck_id'})
+        self.verify_list(
+            self.proxy.backup_download_links,
+            backup.BackupFile,
+            method_args=['bck_id'],
+            expected_kwargs={'backup_id': 'bck_id'},
+            expected_args=[]
+        )
 
 
 class TestInstance(TestRdsProxy):
@@ -167,7 +187,7 @@ class TestInstance(TestRdsProxy):
                            instance.Instance, True)
 
     def test_fetch_restore_times(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.rds.v3.instance.Instance.fetch_restore_times',
             self.proxy.get_instance_restore_time,
             method_args=["inst"],
@@ -175,7 +195,7 @@ class TestInstance(TestRdsProxy):
         )
 
     def test_restore(self):
-        self._verify2(
+        self._verify(
             'otcextensions.sdk.rds.v3.instance.Instance.restore',
             self.proxy.restore_instance,
             method_args=["inst"],
@@ -196,6 +216,7 @@ class TestInstance(TestRdsProxy):
             'otcextensions.sdk.rds.v3.instance.Instance.get_backup_policy',
             self.proxy.get_instance_backup_policy,
             method_args=["val"],
+            expected_args=[self.proxy]
         )
 
     def test_update_instance_backup_policy(self):
@@ -212,5 +233,76 @@ class TestInstance(TestRdsProxy):
                 'keep_days': 1,
                 'start_time': '2',
                 'period': '3'
-            }
+            },
+            expected_args=[self.proxy]
+        )
+
+    def test_restart_instance(self):
+        self._verify(
+            'otcextensions.sdk.rds.v3.instance.Instance.restart',
+            self.proxy.restart_instance,
+            method_args=["val"],
+            expected_args=[self.proxy]
+        )
+
+    def test_enlarge_instance_volume(self):
+        self._verify(
+            'otcextensions.sdk.rds.v3.instance.Instance.enlarge_volume',
+            self.proxy.enlarge_instance_volume,
+            method_args=["val"],
+            method_kwargs={
+                'size': 200
+            },
+            expected_args=[self.proxy, 200]
+        )
+
+    def test_update_flavor(self):
+        self._verify(
+            'otcextensions.sdk.rds.v3.instance.Instance.update_flavor',
+            self.proxy.change_instance_flavor,
+            method_args=["val"],
+            method_kwargs={
+                'spec_code': 'test.spec.code'
+            },
+            expected_args=[self.proxy, 'test.spec.code']
+        )
+
+    def test_get_instance_logs(self):
+        self._verify(
+            'otcextensions.sdk.rds.v3.instance.Instance.get_logs',
+            self.proxy.get_instance_logs,
+            method_args=["val"],
+            method_kwargs={
+                'log_type': 'errorlog',
+                'start_date': '2020-01-01T12:34:56+0000',
+                'end_date': '2020-01-02T12:34:56+0000',
+                'offset': 10,
+                'limit': 20,
+                'level': 'ERROR'
+            },
+            expected_args=[self.proxy, 'errorlog', '2020-01-01T12:34:56+0000',
+                           '2020-01-02T12:34:56+0000', 10, 20, 'ERROR']
+        )
+
+    def test_add_tag(self):
+        self._verify(
+            'otcextensions.sdk.rds.v3.instance.Instance.add_tag',
+            self.proxy.add_tag,
+            method_args=["val"],
+            method_kwargs={
+                'key': 'tagkey',
+                'value': 'tagval'
+            },
+            expected_args=[self.proxy, 'tagkey', 'tagval']
+        )
+
+    def test_remove_tag(self):
+        self._verify(
+            'otcextensions.sdk.rds.v3.instance.Instance.remove_tag',
+            self.proxy.remove_tag,
+            method_args=["val"],
+            method_kwargs={
+                'key': 'tagkey'
+            },
+            expected_args=[self.proxy, 'tagkey']
         )

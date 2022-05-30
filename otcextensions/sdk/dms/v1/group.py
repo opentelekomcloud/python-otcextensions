@@ -9,28 +9,27 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import _log
+from openstack import exceptions
 from openstack import resource
-# from openstack import utils
+from openstack import utils
 
 from otcextensions.sdk.dms.v1 import _base
-
-_logger = _log.setup_logging('openstack')
 
 
 class Group(_base.Resource):
 
     # NOTE: we are not interested in the also returned short queue info
     resources_key = 'groups'
-
     base_path = 'queues/%(queue_id)s/groups'
+
     # capabilities
     allow_create = True
     allow_list = True
     allow_delete = True
 
     _query_mapping = resource.QueryParameters(
-        'include_deadletter'
+        'include_deadletter', 'page_size', 'current_page'
+        # 'include_messages_num'
     )
 
     # Properties
@@ -56,17 +55,17 @@ class Group(_base.Resource):
     #: *Type: int*
     available_deadletters = resource.Body('available_deadletters', type=int)
 
-    def create(self, session, group):
+    def create(self, session, *args, **kwargs):
         """create group"""
-        body = {"groups": [{'name': group}]}
+        body = {"groups": [{'name': self.name}]}
 
         request = self._prepare_request(requires_id=False,
                                         prepend_key=False)
 
         response = session.post(
             request.url,
-            json=body,
-            headers={'Content-Length': str(len(str(body)))})
+            json=body
+        )
 
         # Squize groups into single response entity
         resp = response.json()
@@ -78,3 +77,23 @@ class Group(_base.Resource):
             self._body.clean()
 
         return self
+
+    def ack(self, session, queue_obj, ids, status='success'):
+        uri = utils.urljoin(self.base_path, self.id, 'ack')
+        self.queue_id = queue_obj.id
+
+        uri = uri % self._uri.attributes
+
+        ack_list = list()
+        for msg in ids:
+            ack_list.append(
+                {"handler": msg,
+                 "status": status}
+            )
+
+        response = session.post(
+            uri, json={'message': ack_list}
+        )
+
+        exceptions.raise_from_response(response)
+        return

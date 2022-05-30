@@ -15,8 +15,12 @@ from otcextensions.sdk.dcs.v1 import _proxy
 from otcextensions.sdk.dcs.v1 import backup as _backup
 from otcextensions.sdk.dcs.v1 import config as _config
 from otcextensions.sdk.dcs.v1 import instance as _instance
-from otcextensions.sdk.dcs.v1 import restore as _restore
+from otcextensions.sdk.dcs.v1 import restore_record as _restore_record
 from otcextensions.sdk.dcs.v1 import statistic as _stat
+from otcextensions.sdk.dcs.v1 import quota as _quota
+from otcextensions.sdk.dcs.v1 import maintenance_time_window as _mtw
+from otcextensions.sdk.dcs.v1 import service_specification as _service_spec
+from otcextensions.sdk.dcs.v1 import availability_zone as _az
 
 from openstack.tests.unit import test_proxy_base
 
@@ -79,14 +83,6 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
             _instance.Instance,
             'VALUE',
             a='b'
-        )
-        self.sot.update.assert_called_with(
-            self.proxy,
-            has_body=False
-        )
-        self.proxy._get.assert_called_with(
-            _instance.Instance,
-            self.sot
         )
 
     def test_extend_instance(self):
@@ -164,13 +160,13 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
 
     def test_change_pwd(self):
         self.sot = _instance.Instance()
-        self.sot.change_password = mock.Mock(return_value={})
+        self.sot.change_pwd = mock.Mock(return_value={})
         self.proxy._get = mock.Mock(return_value=self.sot)
         self.proxy._find = mock.Mock(return_value=self.sot)
         self.proxy._get_resource = mock.Mock(return_value=self.sot)
 
         self.proxy.change_instance_password(self.sot, 'curr', 'new')
-        self.sot.change_password.assert_called_with(
+        self.sot.change_pwd.assert_called_with(
             self.proxy,
             current_password='curr',
             new_password='new'
@@ -232,12 +228,20 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
         )
 
     def test_delete_backup(self):
-        self.verify_delete(
-            self.proxy.delete_instance_backup, _backup.Backup, True,
+        instance = _instance.Instance(id='instance_id')
+        self._verify(
+            'openstack.proxy.Proxy._delete',
+            self.proxy.delete_instance_backup,
+            method_args=[instance, 'backup_1'],
+            expected_args=[_backup.Backup, 'backup_1'],
+            expected_kwargs={
+                'instance_id': instance.id,
+                'ignore_missing': True
+            }
         )
 
     def test_restores_query(self):
-        self.sot = _restore.Restore()
+        self.sot = _restore_record.RestoreRecord()
         self.proxy._list = mock.Mock(return_value=self.sot)
 
         self.proxy.restore_records(
@@ -247,7 +251,7 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
             start_time='3',
             end_time='4')
         self.proxy._list.assert_called_with(
-            _restore.Restore,
+            _restore_record.RestoreRecord,
             paginated=False,
             instance_id='inst',
             start='1',
@@ -264,7 +268,7 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
             backup_id='bck',
             remark='rem')
         self.proxy._create.assert_called_with(
-            _restore.Restore,
+            _restore_record.RestoreRecord,
             instance_id='1',
             backup_id='bck',
             remark='rem'
@@ -293,3 +297,41 @@ class TestDCSProxy(test_proxy_base.TestProxyBase):
             self.proxy,
             params
         )
+
+    def test_quotas(self):
+        self.verify_list(
+            self.proxy.quotas, _quota.Quota,
+        )
+
+    @mock.patch(
+        'otcextensions.sdk.dcs.v1._proxy.Proxy._get_endpoint_with_api_version',
+        return_value='fake'
+    )
+    def test_maintenance_time_windows(self, epo_mock):
+        self.verify_list(
+            self.proxy.maintenance_time_windows,
+            _mtw.MaintenanceTimeWindow
+        )
+        epo_mock.assert_called_with()
+
+    @mock.patch(
+        'otcextensions.sdk.dcs.v1._proxy.Proxy._get_endpoint_with_api_version',
+        return_value='fake'
+    )
+    def test_service_specification(self, epo_mock):
+        self.verify_list(
+            self.proxy.service_specifications,
+            _service_spec.ServiceSpecification
+        )
+        epo_mock.assert_called_with()
+
+    @mock.patch(
+        'otcextensions.sdk.dcs.v1._proxy.Proxy._get_endpoint_with_api_version',
+        return_value='fake'
+    )
+    def test_availability_zones(self, epo_mock):
+        self.verify_list(
+            self.proxy.availability_zones,
+            _az.AvailabilityZone
+        )
+        epo_mock.assert_called_with()

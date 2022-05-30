@@ -1,5 +1,3 @@
-#   Copyright 2013 Nebula Inc.
-#
 #   Licensed under the Apache License, Version 2.0 (the "License"); you may
 #   not use this file except in compliance with the License. You may obtain
 #   a copy of the License at
@@ -58,10 +56,10 @@ class TestListAutoScalingActivity(TestAutoScalingActivity):
 
     def test_list_default(self):
         arglist = [
-            '--start_time', '2200-01-01T00:00:00Z',
-            '--end_time', '2200-01-02T00:00:00Z',
+            '--start-time', '2200-01-01T00:00:00Z',
+            '--end-time', '2200-01-02T00:00:00Z',
             '--limit', '14',
-            'group1'
+            '--group', 'group1'
         ]
 
         verifylist = [

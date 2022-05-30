@@ -1,0 +1,16 @@
+otcextensions.tests.functional.osclient.obs*
+otcextensions.tests.functional.osclient.rds.v3.test_instance*
+otcextensions.tests.functional.osclient.volume_backup*
+otcextensions.tests.functional.osclient.nat*
+otcextensions.tests.functional.osclient.rds*
+otcextensions.tests.functional.sdk.cce.v1*
+otcextensions.tests.functional.sdk.kms*
+otcextensions.tests.functional.sdk.volume_backup*
+otcextensions.tests.functional.sdk.deh*
+otcextensions.tests.functional.sdk.dds*
+otcextensions.tests.functional.sdk.plas*
+otcextensions.tests.functional.sdk.lts*
+otcextensions.tests.functional.sdk.dds.v3.test_instance*
+otcextensions.tests.functional.sdk.vlb*
+otcextensions.tests.functional.sdk.obs*
+otcextensions.tests.functional.sdk.cts.v1.test_tracker*

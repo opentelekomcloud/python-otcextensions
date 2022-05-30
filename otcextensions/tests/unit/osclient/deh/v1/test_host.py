@@ -1,5 +1,3 @@
-#   Copyright 2013 Nebula Inc.
-#
 #   Licensed under the Apache License, Version 2.0 (the "License"); you may
 #   not use this file except in compliance with the License. You may obtain
 #   a copy of the License at
@@ -70,7 +68,7 @@ class TestListHost(fakes.TestDeH):
             '--host_type', 'some_type',
             '--host_type_name', 'some_type_name',
             '--flavor', 'some_flavor',
-            '--state', 'available',
+            '--status', 'available',
             '--tenant', 'all',
             '--availability_zone', 'some_az',
             '--limit', '1',
@@ -84,7 +82,7 @@ class TestListHost(fakes.TestDeH):
             ('host_type', 'some_type'),
             ('host_type_name', 'some_type_name'),
             ('flavor', 'some_flavor'),
-            ('state', 'available'),
+            ('status', 'available'),
             ('tenant', 'all'),
             ('availability_zone', 'some_az'),
             ('limit', 1),
@@ -113,7 +111,7 @@ class TestListHost(fakes.TestDeH):
             limit=1,
             marker='some_marker',
             name='some_name',
-            state='available',
+            status='available',
             tenant='all'
         )
 
@@ -128,7 +126,7 @@ class TestShowHost(fakes.TestDeH):
     columns = (
         'allocated_at', 'auto_placement', 'availability_zone',
         'available_memory', 'available_vcpus', 'host_properties', 'id',
-        'instance_total', 'name', 'project_id', 'released_at', 'state', 'tags'
+        'instance_total', 'name', 'project_id', 'released_at', 'status', 'tags'
     )
 
     data = fakes.gen_data(_data, columns)
@@ -270,7 +268,7 @@ class TestSetHost(fakes.TestDeH):
     columns = (
         'allocated_at', 'auto_placement', 'availability_zone',
         'available_memory', 'available_vcpus', 'host_properties', 'id',
-        'instance_total', 'name', 'project_id', 'released_at', 'state', 'tags'
+        'instance_total', 'name', 'project_id', 'released_at', 'status', 'tags'
     )
 
     data = fakes.gen_data(_fake, columns)
@@ -418,7 +416,7 @@ class TestUnsetHost(fakes.TestDeH):
     columns = (
         'allocated_at', 'auto_placement', 'availability_zone',
         'available_memory', 'available_vcpus', 'host_properties', 'id',
-        'instance_total', 'name', 'project_id', 'released_at', 'state', 'tags'
+        'instance_total', 'name', 'project_id', 'released_at', 'status', 'tags'
     )
 
     data = fakes.gen_data(_fake, columns)

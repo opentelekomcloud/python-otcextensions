@@ -91,11 +91,11 @@ class ListHost(command.Lister):
             help=_('Flavor ID.')
         )
         parser.add_argument(
-            '--state',
+            '--status',
             metavar='{' + ','.join(HOST_STATES) + '}',
             type=lambda s: s.lower(),
             choices=HOST_STATES,
-            help=_('Host state filter.')
+            help=_('Host status filter.')
         )
         parser.add_argument(
             '--tenant',
@@ -142,8 +142,8 @@ class ListHost(command.Lister):
             query['host_type_name'] = parsed_args.host_type_name
         if parsed_args.flavor:
             query['flavor'] = parsed_args.flavor
-        if parsed_args.state:
-            query['state'] = parsed_args.state
+        if parsed_args.status:
+            query['status'] = parsed_args.status
         if parsed_args.tenant:
             query['tenant'] = parsed_args.tenant
         if parsed_args.availability_zone:

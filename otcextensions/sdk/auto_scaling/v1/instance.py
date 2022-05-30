@@ -25,7 +25,6 @@ class Instance(_base.Resource):
     # ok, we just fix the base path to list because there are no common rules
     # for the operations for instance
     base_path = '/scaling_group_instance'
-    list_path = '/scaling_group_instance/%(scaling_group_id)s/list'
     query_marker_key = 'start_number'
 
     # capabilities
@@ -33,7 +32,9 @@ class Instance(_base.Resource):
     allow_delete = True
 
     _query_mapping = resource.QueryParameters(
+        'id', 'name',
         'health_status', 'limit',
+        scaling_group_id='group_id',
         lifecycle_status='life_cycle_state',
         marker=query_marker_key
     )
@@ -61,12 +62,47 @@ class Instance(_base.Resource):
     create_time = resource.Body('create_time')
 
     @classmethod
-    def list(cls, session, paginated=False,
-             endpoint_override=None, headers=None, **params):
-        return super(Instance, cls).list_ext(
-            session, paginated,
-            endpoint_override, headers,
-            **params)
+    def find(cls, session, name_or_id, ignore_missing=True, **params):
+        """Find a resource by its name or id.
+
+        This method was added in order to be able to get an object of the
+        current class if it exists. This object will be used in
+        some other proxy methods.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param name_or_id: This resource's identifier, if needed by
+                           the request. The default is ``None``.
+        :param bool ignore_missing: When set to ``False``
+                    :class:`~openstack.exceptions.ResourceNotFound` will be
+                    raised when the resource does not exist.
+                    When set to ``True``, None will be returned when
+                    attempting to find a nonexistent resource.
+        :param dict params: Any additional parameters to be passed into
+                            underlying methods, such as to
+                            :meth:`~openstack.resource.Resource.existing`
+                            in order to pass on URI parameters.
+
+        :return: The :class:`Resource` object matching the given name or id
+                 or None if nothing matches.
+        :raises: :class:`openstack.exceptions.DuplicateResource` if more
+                 than one resource is found for this request.
+        :raises: :class:`openstack.exceptions.ResourceNotFound` if nothing
+                 is found and ignore_missing is ``False``.
+        """
+        session = cls._get_session(session)
+        group_id = params.pop('group_id', None)
+
+        base_path = '/scaling_group_instance/{id}/list'.format(id=group_id)
+        data = cls.list(session, base_path=base_path, **params)
+        result = cls._get_one_match(name_or_id, data)
+        if result is not None:
+            return result
+
+        if ignore_missing:
+            return None
+        raise exceptions.ResourceNotFound(
+            "No %s found for %s" % (cls.__name__, name_or_id))
 
     def remove(self, session, delete_instance=False, ignore_missing=True):
         """Remove an instance of auto scaling group

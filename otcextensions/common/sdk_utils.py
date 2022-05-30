@@ -13,13 +13,11 @@ import argparse
 
 from cliff import columns
 
-import six
-
 
 def get_osc_show_columns_for_sdk_resource(
-    sdk_resource,
-    osc_column_map,
-    invisible_columns=None
+        sdk_resource,
+        osc_column_map,
+        invisible_columns=None
 ):
     """Get and filter the display and attribute columns for an SDK resource.
 
@@ -34,7 +32,7 @@ def get_osc_show_columns_for_sdk_resource(
               columns
     """
 
-    if getattr(sdk_resource, 'allow_get', None) is not None:
+    if getattr(sdk_resource, 'allow_fetch', None) is not None:
         resource_dict = sdk_resource.to_dict(
             body=True, headers=False, ignore_none=True)
     else:
@@ -47,7 +45,7 @@ def get_osc_show_columns_for_sdk_resource(
     for col_name in invisible_columns:
         if col_name in display_columns:
             display_columns.remove(col_name)
-    for sdk_attr, osc_attr in six.iteritems(osc_column_map):
+    for sdk_attr, osc_attr in osc_column_map.items():
         if sdk_attr in display_columns:
             attr_map[osc_attr] = sdk_attr
             display_columns.remove(sdk_attr)

@@ -1,5 +1,3 @@
-#   Copyright 2013 Nebula Inc.
-#
 #   Licensed under the Apache License, Version 2.0 (the "License"); you may
 #   not use this file except in compliance with the License. You may obtain
 #   a copy of the License at
@@ -56,8 +54,6 @@ class TestCluster(fakes.TestCCE):
 
     def test_flatten_no_nodes(self):
         _obj = fakes.FakeCluster.create_one(0)
-
-        print(_obj.to_dict())
 
         # remove hosts to ensure count is properly calculated
         # _obj._update(spec={'host_list': {'spec': {'host_list': []}}})

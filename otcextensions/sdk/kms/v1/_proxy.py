@@ -9,15 +9,22 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from otcextensions.sdk import sdk_proxy
+from openstack import proxy
 from otcextensions.sdk.kms.v1 import data_key as _data_key
 from otcextensions.sdk.kms.v1 import key as _key
 from otcextensions.sdk.kms.v1 import misc as _misc
 
 
-class Proxy(sdk_proxy.Proxy):
+class Proxy(proxy.Proxy):
 
     skip_discovery = True
+
+    def __init__(self, session, *args, **kwargs):
+        super(Proxy, self).__init__(session=session, *args, **kwargs)
+        self.additional_headers = {
+            'Content-Type': 'application/json',
+            'X-Language': 'en-us'
+        }
 
     # ======== CMK Keys ========
     def keys(self, **query):
@@ -194,6 +201,8 @@ class Proxy(sdk_proxy.Proxy):
     def decrypt_datakey(self, cmk, cipher_text, datakey_cipher_length):
         """Decrypt a data key
 
+        :param cmk: key id or an instance of
+            :class:`~otcextensions.sdk.kms.v1.key.Key`
         :param cipher_text: encrypted value retrieved from
             :func:`~otcextensions.sdk.kms.v1.data_key.DataKey.encrypt` call.
         :param datakey_cipher_length: datakey_cipher_length (expected value 64)
@@ -231,7 +240,7 @@ class Proxy(sdk_proxy.Proxy):
             :class:`~otcextensions.sdk.kms.v1.key.InstanceNumber`
         """
         instance_num_obj = _misc.InstanceNumber()
-        return instance_num_obj.get(self)
+        return instance_num_obj.fetch(self)
 
     def quotas(self):
         """List quota resources for KMS service

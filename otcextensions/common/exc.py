@@ -12,12 +12,11 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
+import json
 import re
 import sys
 
 from openstack import exceptions
-
-import six
 
 
 class BaseException(Exception):
@@ -180,8 +179,7 @@ def from_response(response, body=None):
         details = ': '.join(details_temp)
         return cls(details=details)
     elif body:
-        if six.PY3:
-            body = body.decode('utf-8')
+        body = body.decode('utf-8')
         details = body.replace('\n\n', '\n')
         return cls(details=details)
 
@@ -206,6 +204,36 @@ class SSLCertificateError(BaseException):
     pass
 
 
+def _extract_message(obj):
+    if isinstance(obj, dict):
+        # Most of services: compute, network
+        if obj.get('message'):
+            return obj['message']
+        # Ironic starting with Stein
+        elif obj.get('faultstring'):
+            return obj['faultstring']
+        elif obj.get('error_code'):
+            return obj['error_code']
+        elif obj.get('error_msg'):
+            return obj['error_msg']
+        # Stupid VBS service returns another incompatibility
+        elif obj.get('badRequest'):
+            return obj['badRequest']
+        else:
+            # We are in the dead end. Not to hide potential error info take it
+            # as it is
+            return obj
+
+    elif isinstance(obj, str):
+        # Ironic before Stein has double JSON encoding, nobody remembers why.
+        try:
+            obj = json.loads(obj)
+        except Exception:
+            pass
+        else:
+            return _extract_message(obj)
+
+
 def raise_from_response(response, error_message=None):
     """Raise an instance of an HTTPException based on keystoneauth response."""
     if response.status_code < 400:
@@ -227,18 +255,11 @@ def raise_from_response(response, error_message=None):
 
         try:
             content = response.json()
-            error = content.get('error', None)
-            messages = []
-            if error:
-                messages = [error.get('message', None)]
-            elif isinstance(content, dict):
-                if 'message' in content:
-                    messages = [content['message'], ]
-                if 'error_code' in content:
-                    details = content['error_code']
-            else:
-                messages = [obj.get('message') for obj in content.values()
-                            if isinstance(obj, dict)]
+            messages = [_extract_message(obj) for obj in content.values()]
+            if not any(messages):
+                # Exception dict may be the root dict in projects that use WSME
+                messages = [_extract_message(content)]
+
             # Join all of the messages together nicely and filter out any
             # objects that don't have a "message" attr.
             details = '\n'.join(msg for msg in messages if msg)

@@ -9,18 +9,35 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from urllib.parse import urlparse
 
 from openstack import proxy
+from openstack.utils import urljoin
+
 from otcextensions.sdk.dcs.v1 import backup as _backup
 from otcextensions.sdk.dcs.v1 import config as _config
 from otcextensions.sdk.dcs.v1 import instance as _instance
-from otcextensions.sdk.dcs.v1 import restore as _restore
+from otcextensions.sdk.dcs.v1 import restore_record as _restore_record
 from otcextensions.sdk.dcs.v1 import statistic as _stat
+from otcextensions.sdk.dcs.v1 import quota as _quota
+from otcextensions.sdk.dcs.v1 import maintenance_time_window as _maintenance_tw
+from otcextensions.sdk.dcs.v1 import service_specification as _service_spec
+from otcextensions.sdk.dcs.v1 import availability_zone as _az
 
 
 class Proxy(proxy.Proxy):
 
     skip_discovery = True
+
+    def _get_endpoint_with_api_version(self):
+        url_parts = urlparse(self.get_endpoint())
+        api_version = url_parts.path.split('/').pop(1)
+        alternate_endpoint = '{scheme}://{netloc}/{api_version}'.format(
+            scheme=url_parts.scheme,
+            netloc=url_parts.netloc,
+            api_version=api_version
+        )
+        return alternate_endpoint
 
     # ======== Instances ========
     def create_instance(self, **kwargs):
@@ -42,7 +59,7 @@ class Proxy(proxy.Proxy):
     def get_instance(self, instance):
         """Get detail about a given instance
 
-        :param instance: The instance id, name or an instance of
+        :param instance: The instance id or an instance of
             :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
         :returns: one object of class
             :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
@@ -72,14 +89,10 @@ class Proxy(proxy.Proxy):
         :returns: The updated instance
         :rtype: :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
         """
-        res = self._get_resource(_instance.Instance, instance, **attrs)
-        res = res.update(
-            self,
-            has_body=False
-        )
-        # NOTE: unfortunately we need to refetch object, since update
-        # does not return it
-        return self._get(_instance.Instance, res)
+        # Update method does not return the instance object which needs to be
+        # fetched additionally in return statement.
+        self._update(_instance.Instance, instance, **attrs)
+        return self._get(_instance.Instance, instance)
 
     def delete_instance(self, instance, ignore_missing=True):
         """Delete an instance
@@ -155,7 +168,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
         """
         res = self.find_instance(instance)
-        return res.change_password(
+        return res.change_pwd(
             self,
             current_password=current_password,
             new_password=new_password)
@@ -183,7 +196,8 @@ class Proxy(proxy.Proxy):
             _backup.Backup, paginated=False,
             instance_id=inst.id, **query)
 
-    def delete_instance_backup(self, backup, ignore_missing=True, **attrs):
+    def delete_instance_backup(self, instance, backup, ignore_missing=True,
+                               **attrs):
         """Delete an instance backup
 
         :param backup: The instance id, an instance of
@@ -193,7 +207,8 @@ class Proxy(proxy.Proxy):
             raised when the queue does not exist.
         :returns: `None`
         """
-        self._delete(_backup.Backup, backup,
+        inst = self._get_resource(_instance.Instance, instance)
+        self._delete(_backup.Backup, backup, instance_id=inst.id,
                      ignore_missing=ignore_missing,
                      **attrs)
 
@@ -204,11 +219,14 @@ class Proxy(proxy.Proxy):
         :param instance: The instance id or an instance of
             :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
         :param dict kwargs: Keyword arguments which will be used to overwrite a
-            :class:`~otcextensions.sdk.dcs.v1.restore.Restore`
+            :class:`~otcextensions.sdk.dcs.v1.restore_record.RestoreRecord`
             `backup_id` and `description` are expected
         """
         inst = self._get_resource(_instance.Instance, instance)
-        return self._create(_restore.Restore, instance_id=inst.id, **kwargs)
+        return self._create(
+            _restore_record.RestoreRecord,
+            instance_id=inst.id,
+            **kwargs)
 
     def restore_records(self, instance, **query):
         """List all instance restore records
@@ -216,11 +234,11 @@ class Proxy(proxy.Proxy):
         :param instance: The instance id or an instance of
             :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
         :returns: A generator of Instance object of
-            :class:`~otcextensions.sdk.dcs.v1.restore.Restore`
+            :class:`~otcextensions.sdk.dcs.v1.restore_record.RestoreRecord`
         """
         inst = self._get_resource(_instance.Instance, instance)
         return self._list(
-            _restore.Restore, paginated=False,
+            _restore_record.RestoreRecord, paginated=False,
             instance_id=inst.id, **query)
 
     # ======== Misc ========
@@ -251,7 +269,7 @@ class Proxy(proxy.Proxy):
         :param instance: The value can be the ID of an instance
             or a :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
             instance.
-        :param paramss: List of parameters of
+        :param params: List of parameters of
             a :class:`~otcextensions.sdk.dcs.v1.config.Config`.
         :returns: None
         """
@@ -261,3 +279,61 @@ class Proxy(proxy.Proxy):
             self,
             params
         )
+
+    # ======== Quotas ========
+    def quotas(self):
+        """Return a generator of quotas
+
+        :returns: A generator of quota objects
+        :rtype: :class:`~otcextensions.sdk.dcs.v1.quota.Quota`.
+        """
+        return self._list(_quota.Quota)
+
+    # ======== Maintenance Time Window ========
+    def maintenance_time_windows(self):
+        """Return a generator of maintenance time windows
+
+        :returns: A generator of maintenance time window objects
+        :rtype:
+            :class:`~sdk.dcs.v1.maintenance_time_window.MaintenanceTimeWindow`.
+        """
+        base = self._get_endpoint_with_api_version()
+        base_path = urljoin(
+            base, _maintenance_tw.MaintenanceTimeWindow.base_path
+        )
+
+        return self._list(
+            _maintenance_tw.MaintenanceTimeWindow,
+            base_path=base_path)
+
+    # ======== Service Specification ========
+    def service_specifications(self):
+        """Return a generator of service specifications
+
+        :returns: A generator of service specifications
+        :rtype: :class:`~sdk.dcs.v1.service_specification.ServiceSpecification`
+        """
+        base = self._get_endpoint_with_api_version()
+        base_path = urljoin(
+            base, _service_spec.ServiceSpecification.base_path
+        )
+
+        return self._list(
+            _service_spec.ServiceSpecification,
+            base_path=base_path
+        )
+
+    # ========= Available Zone ========
+    def availability_zones(self):
+        """Return a generator of Availability Zones where a DCS instance
+        resides.
+
+        :returns: A generator of Availability Zone objects
+        :rtype:
+            :class:
+                `~otcextensions.sdk.dcs.v1.availability_zone.AvailabilityZone`
+        """
+        base = self._get_endpoint_with_api_version()
+        base_path = urljoin(base, _az.AvailabilityZone.base_path)
+
+        return self._list(_az.AvailabilityZone, base_path=base_path)

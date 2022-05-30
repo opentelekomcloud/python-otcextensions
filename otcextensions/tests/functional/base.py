@@ -42,16 +42,10 @@ FLAVOR_NAME = _get_resource_value('flavor_name', 'm1.small')
 
 class BaseFunctionalTest(base.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        super(BaseFunctionalTest, cls).setUpClass()
-        cls.conn = connection.Connection(config=TEST_CLOUD_REGION)
-        sdk.register_otc_extensions(cls.conn)
-
-    # def setUp(self):
-    #     super(BaseFunctionalTest, self).setUp()
-    #     self.conn = connection.Connection(config=TEST_CLOUD_REGION)
-    #     sdk.register_otc_extensions(self.conn)
+    def setUp(self):
+        super(BaseFunctionalTest, self).setUp()
+        self.conn = connection.Connection(config=TEST_CLOUD_REGION)
+        sdk.register_otc_extensions(self.conn)
 
     def addEmptyCleanup(self, func, *args, **kwargs):
         def cleanup():

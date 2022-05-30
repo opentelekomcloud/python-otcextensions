@@ -1,5 +1,3 @@
-#   Copyright 2013 Nebula Inc.
-#
 #   Licensed under the Apache License, Version 2.0 (the "License"); you may
 #   not use this file except in compliance with the License. You may obtain
 #   a copy of the License at
@@ -21,6 +19,7 @@ from openstackclient.tests.unit import utils
 from otcextensions.tests.unit.osclient import test_base
 
 from otcextensions.sdk.kms.v1 import key
+from otcextensions.sdk.kms.v1 import quota
 # from otcextensions.sdk.kms.v1 import data_key
 
 
@@ -57,4 +56,19 @@ class FakeCMK(test_base.Fake):
             'key_type': 'type-' + uuid.uuid4().hex,
         }
         obj = key.Key.existing(**object_info)
+        return obj
+
+
+class FakeQuota(test_base.Fake):
+    """Fake one or more Quota"""
+
+    @classmethod
+    def generate(cls):
+
+        object_info = {
+            'quota': random.randint(1, 65535),
+            'used': random.randint(1, 65535),
+            'type': random.choice(['CMK', 'grant_per_CMK']),
+        }
+        obj = quota.Quota.existing(**object_info)
         return obj
