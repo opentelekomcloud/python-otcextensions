@@ -125,12 +125,12 @@ OTC_SERVICES = {
     'lts': {
         'service_type': 'lts'
     },
-    'nat': {
-        'service_type': 'nat',
-    },
     'mrs': {
         'service_type': 'mrs',
         'append_project_id': True,
+    },
+    'nat': {
+        'service_type': 'nat',
     },
     'obs': {
         'service_type': 'obs',

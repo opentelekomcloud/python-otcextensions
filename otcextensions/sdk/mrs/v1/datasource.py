@@ -25,7 +25,7 @@ class Datasource(sdk_resource.Resource):
     # capabilities
     allow_create = True
     allow_list = True
-    allow_get = True
+    allow_fetch = True
     allow_delete = True
     allow_update = True
 
@@ -34,23 +34,21 @@ class Datasource(sdk_resource.Resource):
         'is_protected')
 
     #: Properties
-    # Specifies ds ID
+    #: Data source ID
     id = resource.Body('id', alternate_id=True)
-
-    # Name of the ds
+    #: Data source name
     name = resource.Body('name')
-
-    # type of the ds
+    #: type of the ds
     type = resource.Body('type')
-
-    # url of the ds
+    #: Data source URL
     url = resource.Body('url')
-
-    # description of the ds
+    #: Data source description
     description = resource.Body('description')
-
-    # is_public  of the ds
+    #: Whether the data source is public
     is_public = resource.Body('is_public')
-
-    # is_protected of the ds
+    #: Whether the data source is protected
     is_protected = resource.Body('is_protected')
+    #: Data source creation time
+    created_at = resource.Body('created_at')
+    #: Data source update time
+    updated_at = resource.Body('updated_at')
