@@ -9,8 +9,9 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import resource
+
 from openstack import _log
+from openstack import resource
 
 from otcextensions.sdk import sdk_resource
 
@@ -25,7 +26,7 @@ class Datasource(sdk_resource.Resource):
     # capabilities
     allow_create = True
     allow_list = True
-    allow_fetch = True
+    allow_get = True
     allow_delete = True
     allow_update = True
 

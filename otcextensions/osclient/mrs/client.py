@@ -14,7 +14,6 @@ import logging
 
 from otcextensions import sdk
 
-
 LOG = logging.getLogger(__name__)
 
 DEFAULT_API_VERSION = '1.0'
@@ -33,7 +32,6 @@ def make_client(instance):
     if getattr(conn, 'mrs', None) is None:
         LOG.debug('OTC extensions are not registered. Do that now')
         sdk.register_otc_extensions(conn)
-
 
     # register unconditionally, since we need to override default MRS
     # sdk.register_otc_extensions(conn)

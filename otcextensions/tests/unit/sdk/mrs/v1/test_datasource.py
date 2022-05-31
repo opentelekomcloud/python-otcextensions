@@ -14,7 +14,6 @@ from openstack.tests.unit import base
 
 from otcextensions.sdk.mrs.v1 import datasource
 
-
 EXAMPLE = {
     "name": "my-data-source",
     "url": "/simple/mapreduce/input",
