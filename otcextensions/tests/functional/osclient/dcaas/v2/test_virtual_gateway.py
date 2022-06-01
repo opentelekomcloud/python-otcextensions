@@ -20,8 +20,8 @@ class TestVirtualGateway(base.TestCase):
 
     UUID = uuid.uuid4().hex[:8]
     VG_NAME = "gateway-" + UUID
-    VPC_ID = "test_vpc_id1"
-    LOCAL_EP_GROUP_ID = "test_lepg_id1"
+    VPC_ID = "908d9cf3-da64-4acb-393f-e5eb6b9e838a"
+    LOCAL_EP_GROUP_ID = "f8834cf1-5468-87c7-223d-56e78b9699ab"
 
     def setUp(self):
         super(TestVirtualGateway, self).setUp()
@@ -48,7 +48,7 @@ class TestVirtualGateway(base.TestCase):
         return json_output
 
     def _delete_virtual_gateway(self):
-        self.openstack('dcaas gateway delete '+ self.VG_ID)
+        self.openstack('dcaas gateway delete ' + self.VG_ID)
 
     def test_create_virtual_gateway(self):
         json_output = self._create_virtual_gateway()
