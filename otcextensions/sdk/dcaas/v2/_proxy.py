@@ -15,6 +15,7 @@ from openstack import proxy
 from otcextensions.sdk.dcaas.v2 import virtual_gateway as _virtual_gateway
 from otcextensions.sdk.dcaas.v2 import connection as _connection
 from otcextensions.sdk.dcaas.v2 import virtual_interface as _virtual_interface
+from otcextensions.sdk.dcaas.v2 import endpoint_group as _endpoint_group
 
 
 class Proxy(proxy.Proxy):
@@ -266,4 +267,91 @@ class Proxy(proxy.Proxy):
         """
         return self._find(_virtual_interface.VirtualInterface, name_or_id,
                           ignore_missing=ignore_missing,
+                          **attrs)
+
+    # ======== Direct Connect Endpoint Group ========
+    def endpoint_groups(self, **query):
+        """Retrieve a generator of direct connect endpoint groups.
+
+        :returns: A generator of direct connect endpoint groups.
+            :class:`~otcextensions.sdk.dcaas.v2.endpoint_group.
+                DirectConnectEndpointGroup` instances
+        """
+        return self._list(_endpoint_group.DirectConnectEndpointGroup, **query)
+
+    def create_endpoint_group(self, **attrs):
+        """Create a new direct connect endpoint group from attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.dcaas.v2.endpoint_group.
+            DirectConnectEndpointGroup`, comprised of the properties on the
+            DirectConnectEndpointGroup class.
+        :returns: The results of endpoint group creation
+        :rtype: :class:`~otcextensions.sdk.dcaas.v2.endpoint_group.
+            DirectConnectEndpointGroup`
+        """
+        return self._create(_endpoint_group.DirectConnectEndpointGroup,
+                            prepend_key=False, **attrs)
+
+    def get_endpoint_group(self, endpoint_group):
+        """Get a direct connect endpoint group.
+
+        :param endpoint_group: The value can be the ID of a
+            endpoint group or a :class:`~otcextensions.sdk.dcaas.v2.
+            endpoint_group.DirectConnectEndpointGroup` instance.
+        :returns: Endpoint Group instance
+        :rtype:
+            :class:`~otcextensions.sdk.dcaas.v2.endpoint_group.
+            DirectConnectEndpointGroup`
+        """
+        return self._get(_endpoint_group.DirectConnectEndpointGroup,
+                         endpoint_group)
+
+    def delete_endpoint_group(self, endpoint_group, ignore_missing=True):
+        """Delete a Direct Connect Endpoint Group.
+
+        :param endpoint_group: The value can be the ID of a endpoint
+            group or a :class:`~otcextensions.sdk.dcaas.v2.
+            endpoint_group.DirectConnectEndpointGroup` instance.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the endpoint group does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent endpoint group.
+
+        :returns: `None`
+        """
+        return self._delete(_endpoint_group.DirectConnectEndpointGroup,
+                            endpoint_group, ignore_missing=ignore_missing)
+
+    def update_endpoint_group(self, endpoint_group, **attrs):
+        """Update Direct Connect Endpoint Group attributes
+
+        :param endpoint_group: The id or an instance of
+            :class:`~otcextensions.sdk.dcaas.v2.endpoint_group.
+            DirectConnectEndpointGroup`
+        :param dict attrs: attributes for update on
+            :class:`~otcextensions.sdk.dcaas.v2.endpoint_group.
+            DirectConnectEndpointGroup`
+
+        :rtype: :class:`~otcextensions.sdk.dcaas.v2.endpoint_group.
+            DirectConnectEndpointGroup`
+        """
+        return self._update(_endpoint_group.DirectConnectEndpointGroup,
+                            endpoint_group, **attrs)
+
+    def find_endpoint_group(self, name_or_id, ignore_missing=True, **attrs):
+        """Find a single Endpoint Group.
+
+        :param name_or_id: The name or ID of a endpoint group.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the endpoint group does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to delete a nonexistent endpoint group.
+
+        :returns: ``None``
+        """
+        return self._find(_endpoint_group.DirectConnectEndpointGroup,
+                          name_or_id, ignore_missing=ignore_missing,
                           **attrs)
