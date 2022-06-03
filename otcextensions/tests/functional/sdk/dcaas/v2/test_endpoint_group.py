@@ -9,8 +9,8 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+
 import openstack
-import uuid
 
 from otcextensions.tests.functional.sdk.dcaas.v2 import base
 
@@ -24,7 +24,7 @@ class TestDirectConnectEndpointGroup(base.BaseDCTest):
         self.dcaas = self.conn.dcaas
 
     def tearDown(self):
-        super(TestDirectConnectEndpointGroup, self).setUp()
+        super(TestDirectConnectEndpointGroup, self).tearDown()
 
     def test_list_endpoint_group(self):
         endpoint_groups = list(self.dcaas.endpoint_groups())
