@@ -19,11 +19,11 @@ from otcextensions.sdk.dcaas.v2 import endpoint_group
 
 
 EXAMPLE = {
-    "name" : "endpoint group1",
+    "name": "endpoint group1",
     "description": "test description",
-    "endpoints" : ["10.2.0.0/24", "10.3.0.0/24"],
+    "endpoints": ["10.2.0.0/24", "10.3.0.0/24"],
     "tenant_id": "6fbe9263116a4b68818cf1edce16bc4f",
-    "type" : "cidr"
+    "type": "cidr"
 }
 
 

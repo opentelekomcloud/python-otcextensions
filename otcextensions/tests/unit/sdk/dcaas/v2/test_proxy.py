@@ -74,16 +74,16 @@ class TestDcaasProxy(test_proxy_base.TestProxyBase):
 
     def test_find_endpoint_group(self):
         self.verify_find(self.proxy.find_endpoint_group,
-                        _endpoint_group.DirectConnectEndpointGroup,
-                        method_kwargs = {'id': 'test_id'},
-                        expected_kwargs = {'id': 'test_id'}
+                         _endpoint_group.DirectConnectEndpointGroup,
+                         method_kwargs={'id': 'test_id'},
+                         expected_kwargs={'id': 'test_id'}
                          )
 
     def test_update_endpoint_group(self):
         self.verify_update(self.proxy.update_endpoint_group,
                            _endpoint_group.DirectConnectEndpointGroup,
-                           method_kwargs={'id':'test_id'},
-                           expected_kwargs={'id':'test_id'}
+                           method_kwargs={'id': 'test_id'},
+                           expected_kwargs={'id': 'test_id'}
                            )
 
     def test_delete_endpoint_group(self):
