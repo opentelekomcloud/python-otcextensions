@@ -27,6 +27,7 @@ class TestDirectConnectEndpointGroup(base.BaseDCTest):
     def setUp(self):
         super(TestDirectConnectEndpointGroup, self).setUp()
         self.dcaas = self.conn.dcaas
+        self._create_endpoint_group()
 
     def tearDown(self):
         try:
@@ -49,18 +50,15 @@ class TestDirectConnectEndpointGroup(base.BaseDCTest):
             self.dcaas.delete_endpoint_group(self.endpoint_group.id)
 
     def test_create_and_get_endpoint_group(self):
-        self._create_endpoint_group()
         endpoint_group = self.dcaas.get_endpoint_group(self.endpoint_group.id)
         self.assertEqual(endpoint_group.name, self.EG_NAME)
 
     def test_list_endpoint_group(self):
-        self._create_endpoint_group()
         endpoint_groups = list(self.dcaas.endpoint_groups())
         self.assertEqual(len(endpoint_groups), 1)
 
     def test_find_and_update_endpoint_group(self):
         updated_name = "updated_name"
-        self._create_endpoint_group()
         endpoint_group = self.dcaas.find_endpoint_group(self.EG_NAME)
         updated_ep_group = self.dcaas.update_endpoint_group(
             endpoint_group=endpoint_group,
