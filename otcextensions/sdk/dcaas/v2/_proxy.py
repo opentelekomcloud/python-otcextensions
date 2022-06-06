@@ -350,7 +350,10 @@ class Proxy(proxy.Proxy):
             When set to ``True``, no exception will be set when attempting
             to delete a nonexistent endpoint group.
 
-        :returns: ``None``
+        :returns: one object of class
+            :class:`~otcextensions.sdk.dcaas.v2.endpoint_group.
+            DirectConnectEndpointGroup`
+
         """
         return self._find(_endpoint_group.DirectConnectEndpointGroup,
                           name_or_id, ignore_missing=ignore_missing,
