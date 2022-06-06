@@ -12,37 +12,42 @@
 
 from openstack.tests.unit import base
 
-from otcextensions.sdk.mrs.v1 import datasource
+from otcextensions.sdk.mrs.v1 import job
 
 EXAMPLE = {
-    "name": "my-data-source",
-    "url": "/simple/mapreduce/input",
+    "name": "my-mapreduce-job",
+    "mains": [],
+    "libs": [
+        "092b628b-26a3-4571-9ba4-f8d000df8877"
+    ],
     "is_protected": False,
+    "interface": [],
     "is_public": False,
-    "type": "hdfs",
-    "description": "this is the data source template"
+    "type": "MapReduce",
+    "description": "This is the Map Reduce job template"
 }
 
 
-class TestDatasource(base.TestCase):
+class TestJob(base.TestCase):
 
     def test_basic(self):
-        sot = datasource.Datasource()
-        self.assertEqual('data_source', sot.resource_key)
-        self.assertEqual('data_sources', sot.resources_key)
-        path = '/data-sources'
+        sot = job.Job()
+        self.assertEqual('job', sot.resource_key)
+        self.assertEqual('jobs', sot.resources_key)
+        path = '/jobs'
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_get)
         self.assertFalse(sot.allow_commit)
         self.assertTrue(sot.allow_delete)
+        self.assertTrue(sot.allow_update)
 
     def test_make_it(self):
-        sot = datasource.Datasource(**EXAMPLE)
+        sot = job.Job(**EXAMPLE)
         self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['url'], sot.url)
-        self.assertEqual(EXAMPLE['type'], sot.type)
         self.assertEqual(EXAMPLE['description'], sot.description)
+        self.assertEqual(EXAMPLE['libs'], sot.libs)
+        self.assertEqual(EXAMPLE['type'], sot.type)
         self.assertEqual(EXAMPLE['is_public'], sot.is_public)
         self.assertEqual(EXAMPLE['is_protected'], sot.is_protected)

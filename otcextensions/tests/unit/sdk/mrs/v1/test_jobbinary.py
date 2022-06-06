@@ -12,37 +12,36 @@
 
 from openstack.tests.unit import base
 
-from otcextensions.sdk.mrs.v1 import datasource
+from otcextensions.sdk.mrs.v1 import jobbinary
 
 EXAMPLE = {
-    "name": "my-data-source",
-    "url": "/simple/mapreduce/input",
+    "name": "my-job-binary",
+    "url": "/simple/mapreduce/program",
     "is_protected": False,
     "is_public": False,
-    "type": "hdfs",
-    "description": "this is the data source template"
+    "description": "this is the job binary template"
 }
 
 
-class TestDatasource(base.TestCase):
+class TestJobBinary(base.TestCase):
 
     def test_basic(self):
-        sot = datasource.Datasource()
-        self.assertEqual('data_source', sot.resource_key)
-        self.assertEqual('data_sources', sot.resources_key)
-        path = '/data-sources'
+        sot = jobbinary.Jobbinary()
+        self.assertEqual('job_binary', sot.resource_key)
+        self.assertEqual('binaries', sot.resources_key)
+        path = '/job-binaries'
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_get)
         self.assertFalse(sot.allow_commit)
         self.assertTrue(sot.allow_delete)
+        self.assertTrue(sot.allow_update)
 
     def test_make_it(self):
-        sot = datasource.Datasource(**EXAMPLE)
+        sot = jobbinary.Jobbinary(**EXAMPLE)
         self.assertEqual(EXAMPLE['name'], sot.name)
         self.assertEqual(EXAMPLE['url'], sot.url)
-        self.assertEqual(EXAMPLE['type'], sot.type)
-        self.assertEqual(EXAMPLE['description'], sot.description)
         self.assertEqual(EXAMPLE['is_public'], sot.is_public)
         self.assertEqual(EXAMPLE['is_protected'], sot.is_protected)
+        self.assertEqual(EXAMPLE['description'], sot.description)

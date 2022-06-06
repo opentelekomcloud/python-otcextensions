@@ -64,7 +64,7 @@ class ListJobbinary(command.Lister):
         if parsed_args.marker:
             query['marker'] = parsed_args.marker
 
-        data = client.jobbinary(**query)
+        data = client.jobbinaries(**query)
 
         table = (self.columns,
                  (utils.get_item_properties(

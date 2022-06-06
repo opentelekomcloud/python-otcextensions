@@ -12,60 +12,58 @@
 
 
 import uuid
+
 import openstack
 from openstack import _log
-from otcextensions.tests.functional import base
+
+from otcextensions.tests.functional.sdk.mrs import TestMrs
 
 _logger = _log.setup_logging('openstack')
 
 
-class TestDS(base.BaseFunctionalTest):
+class TestJobbinary(TestMrs):
+    jobbinary = None
 
-    @classmethod
-    def setUpClass(cls):
-        super(TestDS, cls).setUpClass()
-        openstack.enable_logging(debug=True, http_debug=True)
-        cls.client = cls.conn.mrs
-
-        res = cls.client.create_datasource(
+    def setUp(self):
+        super(TestJobbinary, self).setUp()
+        res = self.client.create_jobbinary(
             name=uuid.uuid4().hex,
-            url='/simple/mapreduce/input',
-            type='hdfs',
-            description='test ds'
+            url="/simple/mapreduce/program",
+            description='this is the job binary template',
         )
         id = res.id
-        cls.datasource = cls.client.get_datasource(id)
+        self.jobbinary = self.client.get_jobbinary(id)
 
-        _logger.debug("SAHARA create test ds")
-        _logger.debug(cls.datasource)
+        _logger.debug("SAHARA create test jobbinary")
+        _logger.debug(self.jobbinary)
 
-    @classmethod
-    def tearDownClass(cls):
+    def tearDown(self):
         try:
             pass
-            if cls.datasource.id:
+            if self.jobbinary.id:
                 pass
-                cls.client.delete_datasource(cls.datasource)
+                self.client.delete_jobbinary(self.jobbinary)
         except openstack.exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
+        super(TestJobbinary, self).tearDown()
 
     def test_list(self):
-        self.datasources = list(self.conn.mrs.datasources())
-        self.assertGreaterEqual(len(self.datasources), 0)
-        for ds in self.datasources:
-            _logger.debug(ds)
+        self.jb = list(self.client.jobbinaries())
+        self.assertGreaterEqual(len(self.jb), 0)
+        for bin in self.jb:
+            _logger.debug(bin)
 
     def test_update(self):
-        res = self.client.update_datasource(
-            self.datasource,
-            url='/simple/mapreduce/input',
-            type='hdfs',
-            description='funct_test update ds'
+        res = self.client.update_jobbinary(
+            self.jobbinary,
+            is_protected=False,
+            is_public=False,
+            description='updated'
         )
 
         _logger.debug(res)
-        self.datasources = list(self.conn.mrs.datasources())
-        self.assertGreaterEqual(len(self.datasources), 0)
-        for ds in self.datasources:
-            _logger.debug(ds)
+        self.jbs = list(self.client.jobbinaries())
+        self.assertGreaterEqual(len(self.jbs), 0)
+        for jb in self.jbs:
+            _logger.debug(jb)

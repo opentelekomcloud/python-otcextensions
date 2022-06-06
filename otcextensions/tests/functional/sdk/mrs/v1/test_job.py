@@ -11,46 +11,44 @@
 # under the License.
 
 import uuid
+
 import openstack
 from openstack import _log
-from otcextensions.tests.functional import base
+
+from otcextensions.tests.functional.sdk.mrs import TestMrs
 
 _logger = _log.setup_logging('openstack')
 
 
-class TestJob(base.BaseFunctionalTest):
+class TestJob(TestMrs):
+    job = None
 
-    @classmethod
-    def setUpClass(cls):
-        super(TestJob, cls).setUpClass()
-        openstack.enable_logging(debug=True, http_debug=True)
-        cls.client = cls.conn.mrs
-
-        res = cls.client.create_job(
+    def setUp(self):
+        super(TestJob, self).setUp()
+        res = self.client.create_job(
             name=uuid.uuid4().hex,
-            type='MapReduce',
-            description='test job'
+            type='DistCp',
+            description='test job',
         )
-        # assert len(res.id) == 1
         id = res.id
-        cls.job = cls.client.get_job(id)
+        self.job = self.client.get_job(id)
 
         _logger.debug("SAHARA create test job")
-        _logger.debug(cls.job)
+        _logger.debug(self.job)
 
-    @classmethod
-    def tearDownClass(cls):
+    def tearDown(self):
         try:
             pass
-            if cls.job.id:
+            if self.job.id:
                 pass
-                cls.client.delete_job(cls.job)
+                self.client.delete_job(self.job)
         except openstack.exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
+        super(TestJob, self).tearDown()
 
     def test_list(self):
-        self.jobs = list(self.conn.mrs.jobs())
+        self.jobs = list(self.client.jobs())
         self.assertGreaterEqual(len(self.jobs), 0)
         for j in self.jobs:
             _logger.debug(j)
@@ -63,7 +61,7 @@ class TestJob(base.BaseFunctionalTest):
         )
 
         _logger.debug(res)
-        self.jobs = list(self.conn.mrs.jobs())
+        self.jobs = list(self.client.jobs())
         self.assertGreaterEqual(len(self.jobs), 0)
         for j in self.jobs:
             _logger.debug(j)

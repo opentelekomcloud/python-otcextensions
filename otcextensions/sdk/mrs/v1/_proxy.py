@@ -170,8 +170,8 @@ class Proxy(sdk_proxy.Proxy):
         return self._update(_datasource.Datasource, datasource, **attrs)
 
     # ======== jobbinaries ========
-    def jobbinary(self, **query):
-        """Retrieve a generator of hosts
+    def jobbinaries(self, **query):
+        """Retrieve a generator of jobbinaries
 
         :param dict query: Optional query parameters to be sent to limit the
             resources being returned.
@@ -179,13 +179,13 @@ class Proxy(sdk_proxy.Proxy):
             * `marker`:  pagination marker
             * `limit`: pagination limit
 
-        :returns: A generator of datasoruce
-            :class:`~otcextensions.sdk.mrs.v1.datasoruce.Jobbinary` instances
+        :returns: A generator of jobbinary
+            :class:`~otcextensions.sdk.mrs.v1.jobbinary.Jobbinary` instances
         """
         return self._list(_jobbinary.Jobbinary, paginated=True, **query)
 
     def create_jobbinary(self, **attrs):
-        """Create (allocate) a new ds from attributes
+        """Create a new jobbinary
 
         :param dict attrs: Keyword arguments which will be used to create
                a :class:`~otcextensions.sdk.mrs.v1.jobbinary.Jobbinary`,
@@ -198,9 +198,9 @@ class Proxy(sdk_proxy.Proxy):
     def get_jobbinary(self, jobbinary):
         """Get a jobbinary
 
-        :param host: The value can be the ID of a DS
+        :param host: The value can be the ID of a jobbinary
         or a :class:`~otcextensions.sdk.mrs.v1.jobbinary.Jobbinary`
-        :returns: Host instance
+        :returns: Jobbinary instance
         :rtype: :class:`~otcextensions.sdk.mrs.v1.jobbinary.Jobbinary`
         """
         return self._get(_jobbinary.Jobbinary, jobbinary)
@@ -216,7 +216,6 @@ class Proxy(sdk_proxy.Proxy):
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent host.
 
-        :returns: host been deleted
         :rtype: :class:`~otcextensions.sdk.mrs.v1.jobbinary.Jobbinary`
         """
         return self._delete(_jobbinary.Jobbinary, jobbinary,
@@ -238,7 +237,7 @@ class Proxy(sdk_proxy.Proxy):
                           ignore_missing=ignore_missing)
 
     def update_jobbinary(self, jobbinary, **attrs):
-        """Update ds attributes
+        """Update jobbinary attributes
 
         :param host: The id or an instance of
             :class:`~otcextensions.sdk.mrs.v1.jobbinary.Jobbinary`
@@ -250,8 +249,8 @@ class Proxy(sdk_proxy.Proxy):
         return self._update(_jobbinary.Jobbinary, jobbinary, **attrs)
 
     # ======== jobs ========
-    def job(self, **query):
-        """Retrieve a generator of hosts
+    def jobs(self, **query):
+        """Retrieve a generator of jobs
 
         :param dict query: Optional query parameters to be sent to limit the
             resources being returned.
@@ -259,18 +258,18 @@ class Proxy(sdk_proxy.Proxy):
             * `marker`:  pagination marker
             * `limit`: pagination limit
 
-        :returns: A generator of datasoruce
-            :class:`~otcextensions.sdk.mrs.v1.datasoruce.Job` instances
+        :returns: A generator of jobs
+            :class:`~otcextensions.sdk.mrs.v1.job.Job` instances
         """
         return self._list(_job.Job, paginated=True, **query)
 
     def create_job(self, **attrs):
-        """Create (allocate) a new ds from attributes
+        """Create (allocate) a new job from attributes
 
         :param dict attrs: Keyword arguments which will be used to create
                a :class:`~otcextensions.sdk.mrs.v1.job.Job`,
                comprised of the properties on the Job class.
-        :returns: The results of datasoruce creation
+        :returns: The results of job creation
         :rtype: :class:`~otcextensions.sdk.mrs.v1.job.Job`
         """
         return self._create(_job.Job, prepend_key=False, **attrs)
@@ -278,9 +277,9 @@ class Proxy(sdk_proxy.Proxy):
     def get_job(self, job):
         """Get a job
 
-        :param host: The value can be the ID of a DS
+        :param host: The value can be the ID of a job
         or a :class:`~otcextensions.sdk.mrs.v1.job.Job`
-        :returns: Host instance
+        :returns: Job instance
         :rtype: :class:`~otcextensions.sdk.mrs.v1.job.Job`
         """
         return self._get(_job.Job, job)
@@ -296,7 +295,7 @@ class Proxy(sdk_proxy.Proxy):
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent host.
 
-        :returns: host been deleted
+        :returns: Job been deleted
         :rtype: :class:`~otcextensions.sdk.mrs.v1.job.Job`
         """
         return self._delete(_job.Job, job,
@@ -310,7 +309,7 @@ class Proxy(sdk_proxy.Proxy):
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
             when the host does not exist.
             When set to ``True``, no exception will be set when attempting
-            to delete a nonexistent ds.
+            to delete a nonexistent job.
 
         :returns: ``None``
         """
@@ -318,7 +317,7 @@ class Proxy(sdk_proxy.Proxy):
                           ignore_missing=ignore_missing)
 
     def update_job(self, job, **attrs):
-        """Update ds attributes
+        """Update job attributes
 
         :param host: The id or an instance of
             :class:`~otcextensions.sdk.mrs.v1.job.Job`
@@ -332,7 +331,7 @@ class Proxy(sdk_proxy.Proxy):
     def cancel(self, job):
         """Confirm consumed message
 
-        :param jobid: An object of an instance of
+        :param job: An object of an instance of
           :class:`~otcextensions.sdk.mrs.v1.job.CancelJob
         :param status: The expeced status of the consumed message
         :returns: An object of an instance of
