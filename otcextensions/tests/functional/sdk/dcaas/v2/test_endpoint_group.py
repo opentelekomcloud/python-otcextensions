@@ -35,7 +35,7 @@ class TestDirectConnectEndpointGroup(base.BaseDCTest):
             super(TestDirectConnectEndpointGroup, self).tearDown()
 
     def _create_endpoint_group(self):
-        project_id = self.conn.current_project_id()
+        project_id = self.conn.session.get_project_id()
         endpoints = [self.CIDR]
         self.endpoint_group = self.dcaas.create_endpoint_group(
             project_id=project_id,
