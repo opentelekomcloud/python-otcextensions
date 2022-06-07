@@ -37,29 +37,25 @@ class Job(sdk_resource.Resource):
         'is_protected', 'mains', 'libs', 'interface')
 
     #: Properties
-    # Specifies ds ID
+    #: Job object ID
     id = resource.Body('id', alternate_id=True)
-
-    # Name of the job
+    #: Job object name
     name = resource.Body('name')
-
-    # type of the job
+    #: Job object type
     type = resource.Body('type')
-
-    # description of the job
+    #: Job object description
     description = resource.Body('description')
-
-    # is_public  of the job
+    #: Whether a job object is public
     is_public = resource.Body('is_public')
-
-    # is_protected of the job
+    #: Whether a job object is protected
     is_protected = resource.Body('is_protected')
-
-    # mains of the job
-    mains = resource.Body('mains', type=list)
-
-    # libs of the job
-    libs = resource.Body('libs', type=list)
-
-    # interface of the job
+    #: User-defined interface set
     interface = resource.Body('interface', type=list)
+    #: Executable program set of a job object
+    mains = resource.Body('mains', type=list)
+    #: Dependency package set of a job object
+    libs = resource.Body('libs', type=list)
+    #: Job object creation time
+    created_at = resource.Body('created_at')
+    #: Job object update time
+    updated_at = resource.Body('updated_at')

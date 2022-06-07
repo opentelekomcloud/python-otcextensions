@@ -47,7 +47,7 @@ class Proxy(sdk_proxy.Proxy):
         :returns: A generator of cluster
             :class:`~otcextensions.sdk.mrs.v1.cluster.Cluster` instances
         """
-        return self._list(_cluster.Cluster, **query)
+        return self._list(_cluster.ClusterInfo, **query)
 
     def hosts(self, **query):
         """Retrieve a generator of hosts
@@ -82,10 +82,10 @@ class Proxy(sdk_proxy.Proxy):
             delete a nonexistent host.
 
         :returns: host been deleted
-        :rtype: :class:`~otcextensions.sdk.mrs.v1.cluster.Cluster`
+        :rtype: :class:`~otcextensions.sdk.mrs.v1.cluster.ClusterInfo`
         """
         return self._delete(
-            _cluster.Cluster,
+            _cluster.ClusterInfo,
             cluster,
             ignore_missing=ignore_missing)
 

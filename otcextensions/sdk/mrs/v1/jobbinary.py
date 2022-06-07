@@ -35,20 +35,19 @@ class Jobbinary(sdk_resource.Resource):
         'is_protected')
 
     #: Properties
-    # Specifies ds ID
+    #: Binary object ID
     id = resource.Body('id', alternate_id=True)
-
-    # Name of the ds
+    #: Binary object name
     name = resource.Body('name')
-
-    # url of the ds
+    #: Binary object URL
     url = resource.Body('url')
-
-    # description of the ds
+    #: Binary object description
     description = resource.Body('description')
-
-    # is_public  of the ds
+    #: Whether a binary object is public
     is_public = resource.Body('is_public')
-
-    # is_protected of the ds
+    #: Whether a binary object is protected
     is_protected = resource.Body('is_protected')
+    #: Binary object creation time
+    created_at = resource.Body('created_at')
+    #: Binary object update time
+    updated_at = resource.Body('updated_at')

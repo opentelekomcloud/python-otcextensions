@@ -34,16 +34,15 @@ class TestHost(base.TestCase):
 
     def test_basic(self):
         sot = cluster.Host()
-        self.assertEqual('host', sot.resource_key)
         self.assertEqual('hosts', sot.resources_key)
         path = '/clusters/%(cluster_id)s/hosts'
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_list)
-        self.assertTrue(sot.allow_create)
+        self.assertFalse(sot.allow_create)
         self.assertTrue(sot.allow_get)
         self.assertFalse(sot.allow_commit)
-        self.assertTrue(sot.allow_delete)
-        self.assertTrue(sot.allow_update)
+        self.assertFalse(sot.allow_delete)
+        self.assertFalse(sot.allow_update)
 
     def test_make_it(self):
         sot = cluster.Host(**EXAMPLE)
