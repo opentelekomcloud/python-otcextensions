@@ -32,10 +32,10 @@ class ListEndpointGroups(command.Lister):
     _description = _("List of Direct Connect Endpoint Groups.")
     columns = (
         'id',
-        'tenant id',
         'name',
         'description',
         'endpoints',
+        'project id',
         'type'
     )
 
@@ -58,8 +58,8 @@ class ListEndpointGroups(command.Lister):
                    "Connect Endpoint Group.")
         )
         parser.add_argument(
-            '--tenant_id',
-            metavar='<tenant_id>',
+            '--project_id',
+            metavar='<project_id>',
             help=_("Specifies the project ID.")
         )
         parser.add_argument(
@@ -85,7 +85,7 @@ class ListEndpointGroups(command.Lister):
             'name',
             'description',
             'endpoints',
-            'tenant_id',
+            'project_id',
             'type'
         ]
 
@@ -130,8 +130,8 @@ class CreateEndpointGroup(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(CreateEndpointGroup, self).get_parser(prog_name)
         parser.add_argument(
-            'tenant_id',
-            metavar='<tenant_id>',
+            'project_id',
+            metavar='<project_id>',
             help=_("Specifies the project ID.")
         )
         parser.add_argument(
@@ -165,7 +165,7 @@ class CreateEndpointGroup(command.ShowOne):
         client = self.app.client_manager.dcaas
 
         args_list = [
-            'tenant_id',
+            'project_id',
             'endpoints',
             'type',
             'name',
