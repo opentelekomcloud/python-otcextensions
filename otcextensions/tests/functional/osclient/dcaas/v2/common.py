@@ -107,14 +107,14 @@ class DcaasTestCase(base.TestCase):
         endpoints = self.CIDR
         json_output = json.loads(self.openstack(
             'dcaas endpoint group create '
+            '--name {name} '
             '{project_id} '
-            '{endpoints} '
             '{type} '
-            '--name {name} -f json'.format(
+            '{endpoints} -f json'.format(
                 name=self.EP_GROUP_NAME,
                 project_id=project_id,
-                endpoints=endpoints,
-                type=self.EP_GROUP_TYPE
+                type=self.EP_GROUP_TYPE,
+                endpoints=endpoints
             )
         ))
         return json_output['id']
