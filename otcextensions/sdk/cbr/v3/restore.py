@@ -12,7 +12,7 @@
 from openstack import resource
 
 
-class Mappings(resource.Resource):
+class Mapping(resource.Resource):
     #: Properties
     #: Disk backup ID
     backup_id = resource.Body('backup_id')
@@ -40,7 +40,7 @@ class Restore(resource.Resource):
     backup_id = resource.URI('backup_id')
     #: Restores mapping relationship.
     #: Mandatory for VM restoreation and optional for disk restoration
-    mappings = resource.Body('mappings', type=Mappings)
+    mappings = resource.Body('mappings', type=list, list_type=Mapping)
     #: Whether the server is powered on after restoration.
     #: Default: True
     power_on = resource.Body('power_on', type=bool)
