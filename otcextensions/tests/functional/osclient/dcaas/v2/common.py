@@ -104,7 +104,7 @@ class DcaasTestCase(base.TestCase):
 
     def create_endpoint_group(self):
         project_id = self._get_project_id()
-        endpoints = [self.CIDR]
+        endpoints = self.CIDR
         json_output = json.loads(self.openstack(
             'dcaas endpoint group create '
             '{project_id} '
