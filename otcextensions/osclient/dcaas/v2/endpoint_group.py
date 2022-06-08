@@ -34,9 +34,9 @@ class ListEndpointGroups(command.Lister):
         'id',
         'name',
         'description',
-        'endpoints',
         'project id',
-        'type'
+        'type',
+        'endpoints'
     )
 
     def get_parser(self, prog_name):
@@ -63,17 +63,18 @@ class ListEndpointGroups(command.Lister):
             help=_("Specifies the project ID.")
         )
         parser.add_argument(
-            '--endpoints',
-            metavar='<endpoints>',
-            type=list,
-            help=_("Specifies the list of the endpoints in a Direct Connect "
-                   "Endpoint Group.")
-        )
-        parser.add_argument(
             '--type',
             metavar='<type>',
             help=_("Specifies the type of the Direct Connect endpoints."
                    "The value can only be cidr.")
+        )
+        parser.add_argument(
+            '--endpoints',
+            metavar='<endpoint>',
+            nargs='+',
+            default=[],
+            help=_("Specifies the list of the endpoints in a Direct Connect "
+                   "Endpoint Group.")
         )
         return parser
 
@@ -84,12 +85,17 @@ class ListEndpointGroups(command.Lister):
             'id',
             'name',
             'description',
-            'endpoints',
             'project_id',
             'type'
         ]
 
         attrs = {}
+        endpoints = []
+        if parsed_args.endpoints:
+            for endpoint in parsed_args.endpoints:
+                endpoints.append(endpoint)
+        if endpoints:
+            attrs['endpoints'] = endpoints
         for arg in args_list:
             val = getattr(parsed_args, arg)
             if val:
@@ -130,24 +136,6 @@ class CreateEndpointGroup(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(CreateEndpointGroup, self).get_parser(prog_name)
         parser.add_argument(
-            'project_id',
-            metavar='<project_id>',
-            help=_("Specifies the project ID.")
-        )
-        parser.add_argument(
-            'endpoints',
-            metavar='<endpoints>',
-            type=list,
-            help=_("Specifies the list of the endpoints in a Direct Connect "
-                   "Endpoint Group.")
-        )
-        parser.add_argument(
-            'type',
-            metavar='<type>',
-            help=_("Specifies the type of the Direct Connect endpoints."
-                   "The value can only be cidr.")
-        )
-        parser.add_argument(
             '--name',
             metavar='<name>',
             help=_("Specifies the name of the Direct Connect "
@@ -159,19 +147,43 @@ class CreateEndpointGroup(command.ShowOne):
             help=_("Provides supplementary information about the "
                    "Direct Connect Endpoint Group.")
         )
+        parser.add_argument(
+            'project_id',
+            metavar='<project_id>',
+            help=_("Specifies the project ID.")
+        )
+        parser.add_argument(
+            'type',
+            metavar='<type>',
+            help=_("Specifies the type of the Direct Connect endpoints."
+                   "The value can only be cidr.")
+        )
+        parser.add_argument(
+            'endpoints',
+            metavar='<endpoint>',
+            nargs='+',
+            default=[],
+            help=_("Specifies the list of the endpoints in a Direct Connect "
+                   "Endpoint Group.")
+        )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.dcaas
 
         args_list = [
-            'project_id',
-            'endpoints',
-            'type',
             'name',
-            'description'
+            'description',
+            'project_id',
+            'type'
         ]
         attrs = {}
+        endpoints = []
+        if parsed_args.endpoints:
+            for endpoint in parsed_args.endpoints:
+                endpoints.append(endpoint)
+        if endpoints:
+            attrs['endpoints'] = endpoints
         for arg in args_list:
             val = getattr(parsed_args, arg)
             if val:

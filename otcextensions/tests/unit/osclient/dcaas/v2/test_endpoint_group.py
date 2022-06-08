@@ -27,17 +27,17 @@ class TestListEndpointGroups(fakes.TestDcaas):
         'id',
         'name',
         'description',
-        'endpoints',
         'project id',
-        'type'
+        'type',
+        'endpoints',
     )
     columns = (
         'id',
         'name',
         'description',
-        'endpoints',
         'project id',
-        'type'
+        'type',
+        'endpoints'
     )
     data = []
     for s in objects:
@@ -45,9 +45,9 @@ class TestListEndpointGroups(fakes.TestDcaas):
             s.id,
             s.name,
             s.description,
-            s.endpoints,
             s.project_id,
-            s.type
+            s.type,
+            s.endpoints,
         ))
 
     def setUp(self):
@@ -73,17 +73,17 @@ class TestListEndpointGroups(fakes.TestDcaas):
             '--id', '1',
             '--name', 'test',
             '--description', 'test description',
-            '--endpoints', ["10.2.0.0/24", "10.3.0.0/24"],
             '--project_id', 'tid1',
-            '--type', 'cidr'
+            '--type', 'cidr',
+            '--endpoints', '10.2.0.0/24', '10.3.0.0/24',
         ]
         verifylist = [
             ('id', '1'),
             ('name', 'test'),
             ('description', 'test description'),
-            ('endpoints', ["10.2.0.0/24", "10.3.0.0/24"]),
             ('project_id', 'tid1'),
-            ('type', 'cidr')
+            ('type', 'cidr'),
+            ('endpoints', ["10.2.0.0/24", "10.3.0.0/24"]),
         ]
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -94,9 +94,9 @@ class TestListEndpointGroups(fakes.TestDcaas):
             id='1',
             name='test',
             description='test description',
-            endpoints=["10.2.0.0/24", "10.3.0.0/24"],
             project_id='tid1',
-            type='cidr'
+            type='cidr',
+            endpoints=["10.2.0.0/24", "10.3.0.0/24"],
         )
 
 
@@ -122,18 +122,18 @@ class TestCreateEndpointGroup(fakes.TestDcaas):
 
     def test_create(self):
         arglist = [
-            'tid1',
-            ["10.2.0.0/24", "10.3.0.0/24"],
-            'cidr',
             '--name', 'test',
             '--description', 'test description',
+            'tid1',
+            'cidr',
+            '10.2.0.0/24', '10.3.0.0/24'
         ]
         verifylist = [
-            ('project_id', 'tid1'),
-            ('endpoints', ["10.2.0.0/24", "10.3.0.0/24"]),
-            ('type', 'cidr'),
             ('name', 'test'),
             ('description', 'test description'),
+            ('project_id', 'tid1'),
+            ('type', 'cidr'),
+            ('endpoints', ["10.2.0.0/24", "10.3.0.0/24"])
         ]
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
         columns, data = self.cmd.take_action(parsed_args)
@@ -144,7 +144,7 @@ class TestCreateEndpointGroup(fakes.TestDcaas):
             name='test',
             description='test description'
         )
-        self.assertItemsEqual(self.columns, columns)
+        self.assertEqual(self.columns, columns)
 
 
 class TestShowEndpointGroup(fakes.TestDcaas):

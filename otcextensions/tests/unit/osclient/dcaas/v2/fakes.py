@@ -88,8 +88,8 @@ class FakeEndpointGroup(test_base.Fake):
             "id": "id-" + uuid.uuid4().hex,
             "name": "name" + uuid.uuid4().hex,
             "description": "test description",
-            "endpoints": ["10.2.0.0/24", "10.3.0.0/24"],
             "tenant_id": "tid" + uuid.uuid4().hex,
-            "type": "cidr"
+            "type": "cidr",
+            "endpoints": ["10.2.0.0/24", "10.3.0.0/24"],
         }
         return endpoint_group.DirectConnectEndpointGroup(**object_info)
