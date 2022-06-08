@@ -17,7 +17,6 @@ from otcextensions.sdk.mrs.v1 import job as _job
 
 
 class Proxy(sdk_proxy.Proxy):
-
     skip_discovery = True
 
     def __init__(self, session, *args, **kwargs):
@@ -32,62 +31,80 @@ class Proxy(sdk_proxy.Proxy):
 
         :param dict query: Optional query parameters to be sent to limit the
             resources being returned.
-
-            * `marker`:  pagination marker
-            * `limit`: pagination limit
-            * `id`: Specifies MRS ID.
-            * `name`: Specifies the MRS name.
-            * `cluster_type`: Specifes the MRS type.
-            * `host_type_name`: Specifes the MRS name of type.
-            * `flavor`: Specifies flavor ID of master.
-            * `status`: Specifies the MRS status.
-               The value can be TERMINATED, fault or AVALIABLE.
-            * `availability_zone`:  Specifies the AZ to which the MRS belongs.
-
         :returns: A generator of cluster
-            :class:`~otcextensions.sdk.mrs.v1.cluster.Cluster` instances
+            :class:`~otcextensions.sdk.mrs.v1.cluster.ClusterInfo` instances
         """
         return self._list(_cluster.ClusterInfo, **query)
 
-    def hosts(self, **query):
-        """Retrieve a generator of hosts
+    def get_cluster(self, cluster):
+        """Get a cluster
 
-        :param dict query: Optional query parameters to be sent to limit the
-            resources being returned.
-
-            * `marker`:  pagination marker
-            * `limit`: pagination limit
-            * `id`: Specifies MRS ID.
-            * `name`: Specifies the MRS name.
-            * `type`: Specifes the MRS type.
-            * `host_type_name`: Specifes the DeH name of type.
-            * `flavor`: Specifies flavor ID of master.
-            * `status`: Specifies the MRS status.
-               The value can be TERMINATED, fault or AVALIABLE.
-
-        :returns: A generator of host
-            :class:`~otcextensions.sdk.mrs.v1.cluster.Cluster` instances
+        :param cluster: The value can be the ID or an instance of
+            :class:`~otcextensions.sdk.cbr.v3.cluster.ClusterInfo`
+        :returns: Cluster instance
+        :rtype: :class:`~otcextensions.sdk.mrs.v1.cluster.ClusterInfo`
         """
-        return self._list(_cluster.Host, **query)
+        return self._get(_cluster.ClusterInfo, cluster)
+
+    def find_cluster(self, name_or_id, ignore_missing=True):
+        """Find a single Cluster by name or id
+
+        :param name_or_id: The name or ID of a Cluster
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the group does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to delete a nonexistent group.
+
+        :returns: ``None``
+        """
+        return self._find(
+            _cluster.ClusterInfo, name_or_id,
+            ignore_missing=ignore_missing,
+        )
+
+    def update_cluster(self, cluster, **attrs):
+        """Update Cluster attributes
+
+        :param cluster: The id or an instance of
+            :class:`~otcextensions.sdk.cbr.v1.cluster.ClusterInfo`
+        :param dict attrs: attributes for update on
+            :class:`~otcextensions.sdk.cbr.v1.cluster.ClusterInfo`
+
+        :rtype: :class:`~otcextensions.sdk.cbr.v1.cluster.ClusterInfo`
+        """
+        return self._update(_cluster.ClusterInfo, cluster, **attrs)
 
     def delete_cluster(self, cluster, ignore_missing=True):
         """Delete (release) a cluster
 
-        :param host: The value can be the ID of a cluster
-             or a :class:`~otcextensions.sdk.mrs.v1.host.Cluster` instance.
+        :param cluster: The value can be the ID of a cluster
+             or a :class:`~otcextensions.sdk.mrs.v1.cluster.ClusterInfo` instance.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
             the host does not exist.
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent host.
 
-        :returns: host been deleted
-        :rtype: :class:`~otcextensions.sdk.mrs.v1.cluster.ClusterInfo`
+        :returns: Cluster been deleted
+        :rtype: :class:`~otcextensions.sdk.mrs.v1.cluster.Cluster`
         """
+        if isinstance(cluster, _cluster.ClusterInfo):
+            cluster = cluster.id
         return self._delete(
-            _cluster.ClusterInfo,
+            _cluster.Cluster,
             cluster,
-            ignore_missing=ignore_missing)
+            ignore_missing=ignore_missing,)
+
+    def hosts(self, **query):
+        """Retrieve a generator of hosts
+
+        :param dict query: Optional query parameters to be sent to limit the
+            resources being returned.
+        :returns: A generator of host
+            :class:`~otcextensions.sdk.mrs.v1.cluster.Host` instances
+        """
+        return self._list(_cluster.Host, **query)
 
     # ======== datasources ========
     def datasources(self, **query):

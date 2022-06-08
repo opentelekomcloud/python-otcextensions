@@ -26,6 +26,7 @@ class ClusterInfo(sdk_resource.Resource):
     # capabilities
     allow_list = True
     allow_get = True
+    allow_update = True
 
     _query_mapping = resource.QueryParameters(
         'status', 'marker', 'limit',
@@ -198,3 +199,10 @@ class Host(sdk_resource.Resource):
     data_volume_size = resource.Body('data_volume_size')
     #: Number of data disks
     data_volume_count = resource.Body('data_volume_count')
+
+
+class Cluster(sdk_resource.Resource):
+    base_path = '/clusters'
+
+    # capabilities
+    allow_delete = True

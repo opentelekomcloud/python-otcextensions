@@ -1,19 +1,17 @@
-#   Copyright 2013 Nebula Inc.
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
 #
-#   Licensed under the Apache License, Version 2.0 (the "License"); you may
-#   not use this file except in compliance with the License. You may obtain
-#   a copy of the License at
+#      http://www.apache.org/licenses/LICENSE-2.0
 #
-#        http://www.apache.org/licenses/LICENSE-2.0
-#
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-#   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-#   License for the specific language governing permissions and limitations
-#   under the License.
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
 import mock
 
-from otcextensions.osclient.mrs.v1 import host
+from otcextensions.osclient.mrs.v1 import cluster
 from otcextensions.tests.unit.osclient.mrs.v1 import fakes
 
 
@@ -34,7 +32,7 @@ class TestListHost(fakes.TestMrs):
     def setUp(self):
         super(TestListHost, self).setUp()
 
-        self.cmd = host.ListHost(self.app, None)
+        self.cmd = cluster.ListClusterHost(self.app, None)
 
         self.client.hosts = mock.Mock()
         self.client.api_mock = self.client.hosts
@@ -136,7 +134,7 @@ class TestShowHost(fakes.TestMrs):
     def setUp(self):
         super(TestShowHost, self).setUp()
 
-        self.cmd = host.ShowHost(self.app, None)
+        self.cmd = cluster.ShowHost(self.app, None)
 
         self.client.find_host = mock.Mock()
         self.client.api_mock = self.client.find_host
@@ -187,7 +185,7 @@ class TestCreateHost(fakes.TestMrs):
     def setUp(self):
         super(TestCreateHost, self).setUp()
 
-        self.cmd = host.CreateHost(self.app, None)
+        self.cmd = cluster.CreateHost(self.app, None)
 
         self.client.create_host = mock.Mock()
         self.client.api_mock = self.client.create_host
