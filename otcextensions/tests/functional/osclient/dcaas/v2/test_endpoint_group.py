@@ -11,7 +11,6 @@
 #    under the License.
 
 import json
-import uuid
 
 from otcextensions.tests.functional.osclient.dcaas.v2 import common
 

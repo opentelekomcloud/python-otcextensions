@@ -58,7 +58,7 @@ class DcaasTestCase(base.TestCase):
 
     def _create_subnet(self):
         json.loads(self.openstack(
-            'subnet create {subnet} -f json'
+            'subnet create {subnet} -f json '
             '--network {network} '
             '--subnet-range {subnet_range} '.format(
                 subnet=self.SUBNET_NAME,
@@ -75,7 +75,8 @@ class DcaasTestCase(base.TestCase):
         ))
         json.loads(self.openstack(
             'router add subnet {router} {subnet} '.format(
-                router=self.ROUTER_NAME,subnet=self.SUBNET_NAME
+                router=self.ROUTER_NAME,
+                subnet=self.SUBNET_NAME
             )
         ))
 
