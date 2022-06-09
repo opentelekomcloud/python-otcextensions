@@ -89,7 +89,7 @@ class DcaasTestCase(base.TestCase):
         )
 
     def _delete_router(self):
-        json.loads(self.openstack('router delete ' + self.ROUTER_NAME))
+        self.openstack('router delete ' + self.ROUTER_NAME)
 
     def create_test_infra(self):
         self._create_network()
