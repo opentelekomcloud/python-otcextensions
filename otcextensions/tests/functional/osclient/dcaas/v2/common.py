@@ -36,8 +36,7 @@ class DcaasTestCase(base.TestCase):
 
     def tearDown(self):
         try:
-            if self.EP_GROUP_ID:
-                self.delete_endpoint_group()
+            self.delete_endpoint_group()
         finally:
             self.delete_test_infra()
             super(DcaasTestCase, self).tearDown()
@@ -121,5 +120,5 @@ class DcaasTestCase(base.TestCase):
 
     def delete_endpoint_group(self):
         self.openstack(
-            'dcaas endpoint group delete ' + self.EP_GROUP_NAME
+            'dcaas endpoint group delete ' + self.EP_GROUP_ID
         )
