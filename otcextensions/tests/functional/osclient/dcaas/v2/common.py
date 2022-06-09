@@ -54,7 +54,7 @@ class DcaasTestCase(base.TestCase):
         ))
 
     def _delete_network(self):
-        json.loads(self.openstack('network delete ' + self.NETWORK_NAME))
+        self.openstack('network delete ' + self.NETWORK_NAME)
 
     def _create_subnet(self):
         json.loads(self.openstack(
@@ -67,7 +67,7 @@ class DcaasTestCase(base.TestCase):
         ))
 
     def _delete_subnet(self):
-        json.loads(self.openstack('subnet delete ' + self.SUBNET_NAME))
+        self.openstack('subnet delete ' + self.SUBNET_NAME)
 
     def _create_router(self):
         json.loads(self.openstack(
