@@ -120,6 +120,6 @@ class DcaasTestCase(base.TestCase):
         return json_output['id']
 
     def delete_endpoint_group(self):
-        json.loads(self.openstack(
+        self.openstack(
             'dcaas endpoint group delete ' + self.EP_GROUP_NAME
-        ))
+        )
