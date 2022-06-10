@@ -204,3 +204,61 @@ or an instance of class.
 
 .. literalinclude:: ../examples/dcaas/delete_virtual_interface.py
    :lines: 16-24
+
+Endpoint Group
+--------------
+
+List Endpoint Groups
+^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to query the Direct Connect Endpoint Group list and
+to filter the output with query parameters.
+
+.. literalinclude:: ../examples/dcaas/list_endpoint_groups.py
+   :lines: 16-26
+
+Create Endpoint Group
+^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to create Direct Connect Endpoint Group with parameters.
+
+.. literalinclude:: ../examples/dcaas/create_endpoint_group.py
+   :lines: 16-32
+
+Get Endpoint Group
+^^^^^^^^^^^^^^^^^^
+
+This interface is used to get a DCAAS Endpoint Group by ID
+or an instance of class
+:class:`~otcextensions.sdk.dcaas.v2.endpoint_group.DirectConnectEndpointGroup`.
+
+.. literalinclude:: ../examples/dcaas/get_endpoint_group.py
+   :lines: 16-28
+
+Find Endpoint Group
+^^^^^^^^^^^^^^^^^^^
+
+This interface is used to find a Direct Connect Endpoint Group by name or ID.
+
+.. literalinclude:: ../examples/dcaas/find_endpoint_group.py
+   :lines: 16-28
+
+Update Endpoint Group
+^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to update a Direct Connect Endpoint Group by ID
+or an instance of class
+:class:`~otcextensions.sdk.dcaas.v2.endpoint_group.DirectConnectEndpointGroup`.
+
+.. literalinclude:: ../examples/dcaas/update_endpoint_group.py
+   :lines: 16-29
+
+Delete Endpoint Group
+^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to delete a Direct Connect Endpoint Group by ID
+or an instance of class
+:class:`~otcextensions.sdk.dcaas.v2.endpoint_group.DirectConnectEndpointGroup`.
+
+.. literalinclude:: ../examples/dcaas/delete_endpoint_group.py
+   :lines: 16-24

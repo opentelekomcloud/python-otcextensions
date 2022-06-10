@@ -46,8 +46,9 @@ class TestDirectConnectEndpointGroup(base.BaseDCTest):
         )
 
     def _delete_endpoint_group(self):
-        if self.endpoint_group:
-            self.dcaas.delete_endpoint_group(self.endpoint_group.id)
+        endpoint_groups = list(self.dcaas.endpoint_groups())
+        for endpoint_group in endpoint_groups:
+            self.dcaas.delete_endpoint_group(endpoint_group.id)
 
     def test_create_and_get_endpoint_group(self):
         endpoint_group = self.dcaas.get_endpoint_group(self.endpoint_group.id)

@@ -35,3 +35,12 @@ DCAAS Virtual Interface
   :members: virtual_interfaces, find_virtual_interface,
             create_virtual_interface, update_virtual_interface,
             delete_virtual_interface, get_virtual_interface
+
+DCAAS Endpoint Group
+^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass::otcextensions.sdk.dcaas.v2._proxy.Proxy
+  :noindex:
+  :members: endpoint_groups, find_endpoint_group,
+            create_endpoint_group, update_endpoint_group,
+            delete_endpoint_group, get_endpoint_group
