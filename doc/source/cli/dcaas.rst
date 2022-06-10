@@ -18,6 +18,14 @@ Direct Connect Operations
 .. autoprogram-cliff:: openstack.dcaas.v2
    :command: dcaas connection *
 
+.. _endpoint_group:
+
+Direct Connect Endpoint Group Operations
+----------------------------------------
+
+.. autoprogram-cliff:: openstack.dcaas.v2
+   :command: dcaas endpoint group *
+
 .. _virtual_gateway:
 
 Virtual Gateway Operations

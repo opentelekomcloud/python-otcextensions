@@ -19,6 +19,7 @@ from openstackclient.tests.unit import utils
 from otcextensions.tests.unit.osclient import test_base
 
 from otcextensions.sdk.dcaas.v2 import connection
+from otcextensions.sdk.dcaas.v2 import endpoint_group
 from otcextensions.sdk.dcaas.v2 import virtual_gateway
 
 
@@ -73,6 +74,26 @@ class FakeDirectConnection(test_base.Fake):
             "admin_state_up": True
         }
         return connection.Connection(**object_info)
+
+
+class FakeEndpointGroup(test_base.Fake):
+    """Fake one or more Endpoint Group"""
+    @classmethod
+    def generate(cls):
+        """Create a fake Endpoint Group.
+
+        :return:
+            A FakeResource object, with id, name and so on
+        """
+        object_info = {
+            "id": "id-" + uuid.uuid4().hex,
+            "name": "name" + uuid.uuid4().hex,
+            "description": "test description",
+            "tenant_id": "tid" + uuid.uuid4().hex,
+            "type": "cidr",
+            "endpoints": ["10.2.0.0/24", "10.3.0.0/24"],
+        }
+        return endpoint_group.DirectConnectEndpointGroup(**object_info)
 
 
 class FakeVirtualGateway(test_base.Fake):
