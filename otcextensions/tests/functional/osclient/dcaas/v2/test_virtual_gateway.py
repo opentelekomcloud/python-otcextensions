@@ -13,35 +13,32 @@
 import json
 import uuid
 
-from openstackclient.tests.functional import base
+from otcextensions.tests.functional.osclient.dcaas.v2 import common
 
 
-class TestVirtualGateway(base.TestCase):
+class TestVirtualGateway(common.DcaasTestCase):
 
     UUID = uuid.uuid4().hex[:8]
     VG_NAME = "gateway-" + UUID
-    VPC_ID = "908d9cf3-da64-4acb-393f-e5eb6b9e838a"
-    LOCAL_EP_GROUP_ID = "f8834cf1-5468-87c7-223d-56e78b9699ab"
 
     def setUp(self):
         super(TestVirtualGateway, self).setUp()
 
     def tearDown(self):
         try:
-            if self.VG_ID:
-                self._delete_virtual_gateway()
+            self._delete_virtual_gateway()
         finally:
             super(TestVirtualGateway, self).tearDown()
 
     def _create_virtual_gateway(self):
         json_output = json.loads(self.openstack(
-            'dcaas gateway create'
-            ' {vpc_id}'
-            ' {local_ep_group_id}'
-            ' --name {name} -f json'.format(
+            'dcaas gateway create '
+            '{vpc_id} '
+            '{local_ep_group_id} '
+            '--name {name} -f json '.format(
                 name=self.VG_NAME,
                 vpc_id=self.VPC_ID,
-                local_ep_group_id=self.LOCAL_EP_GROUP_ID
+                local_ep_group_id=self.EP_GROUP_ID
             )
         ))
         self.VG_ID = json_output['id']
@@ -71,7 +68,7 @@ class TestVirtualGateway(base.TestCase):
             '--local_ep_group_id {local_ep_group_id} -f json'.format(
                 name=self.VG_NAME,
                 vpc_id=self.VPC_ID,
-                local_ep_group_id=self.LOCAL_EP_GROUP_ID
+                local_ep_group_id=self.EP_GROUP_ID
             )
         ))
         self.assertIsNotNone(json_output)
