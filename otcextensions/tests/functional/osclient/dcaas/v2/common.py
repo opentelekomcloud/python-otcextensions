@@ -48,13 +48,12 @@ class DcaasTestCase(base.TestCase):
         return json_output['project_id']
 
     def _create_network(self):
-        json_output = json.loads(self.openstack(
+        json.loads(self.openstack(
             'network create -f json ' + self.NETWORK_NAME
         ))
-        self.NETWORK_ID = json_output['id']
 
     def _delete_network(self):
-        self.openstack('network delete ' + self.NETWORK_ID)
+        self.openstack('network delete ' + self.NETWORK_NAME)
 
     def _create_subnet(self):
         json_output = json.loads(self.openstack(
