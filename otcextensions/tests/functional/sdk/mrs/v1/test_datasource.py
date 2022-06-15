@@ -54,12 +54,10 @@ class TestDS(TestMrs):
     def test_02_update(self):
         res = self.client.update_datasource(
             self.data_source,
-            url='/simple/mapreduce/input',
-            type='hdfs',
             description='funct_test update ds'
         )
-
         _logger.debug(res)
         self.data_source = self.client.get_datasource(res)
         self.assertIsNotNone(self.data_source)
+        self.assertEqual('funct_test update ds', res.description)
         _logger.debug(self.data_source)
