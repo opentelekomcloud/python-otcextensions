@@ -21,14 +21,11 @@ from otcextensions.common import sdk_utils
 
 LOG = logging.getLogger(__name__)
 
-
-_formatters = {
-}
+_formatters = {}
 
 
 def _get_columns(item):
-    column_map = {
-    }
+    column_map = {}
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
@@ -83,7 +80,7 @@ class DeleteJob(command.Command):
             'id',
             metavar='<id>',
             nargs='+',
-            help=_('UUID or name of the job.')
+            help=_('Id of the job.')
         )
 
         return parser
@@ -107,45 +104,50 @@ class CreateJob(command.ShowOne):
         parser.add_argument(
             'name',
             metavar='<name>',
-            help=_('Name for the job')
+            help=_('Job object name')
         )
-        parser.add_argument('--is_public',
-                            action='store_const',
-                            default='false',
-                            const='false',
-                            dest='is_public')
-        parser.add_argument('--is_protected',
-                            action='store_const',
-                            const='false',
-                            dest='is_protected')
+        parser.add_argument(
+            '--is_public',
+            action='store_const',
+            default='false',
+            const='false',
+            dest='is_public'
+        )
+        parser.add_argument(
+            '--is_protected',
+            action='store_const',
+            default='false',
+            const='false',
+            dest='is_protected'
+        )
         parser.add_argument(
             '--type',
             metavar='<type>',
             required=True,
-            help=_('type of the Job.')
+            help=_('Job object type')
         )
 
         parser.add_argument(
             '--libs',
             metavar='<libs>',
-            help=_('libs of the Job.')
+            help=_('Dependency package set of a job object')
         )
 
         parser.add_argument(
             '--mains',
             metavar='<mains>',
-            help=_('mains of the Job.')
+            help=_('Executable program set of a job object')
         )
 
         parser.add_argument(
             '--interface',
             metavar='<interface>',
-            help=_('interface of the Job.')
+            help=_('User-defined interface set')
         )
         parser.add_argument(
             '--description',
             metavar='<description>',
-            help=_('Job description')
+            help=_('Job object description')
         )
 
         return parser
@@ -179,7 +181,7 @@ class CreateJob(command.ShowOne):
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
 
-        return (display_columns, data)
+        return display_columns, data
 
 
 class UpdateJob(command.ShowOne):
@@ -192,29 +194,38 @@ class UpdateJob(command.ShowOne):
         parser = super(UpdateJob, self).get_parser(prog_name)
 
         parser.add_argument(
-            'name',
-            metavar='<name>',
-            help=_('Name for the job')
+            'job',
+            metavar='<job>',
+            help=_('ID or name of the job object')
         )
-        parser.add_argument('--is_public',
-                            action='store_const',
-                            default='false',
-                            const='false',
-                            dest='is_public')
-        parser.add_argument('--is_protected',
-                            action='store_const',
-                            const='false',
-                            dest='is_protected')
+        parser.add_argument(
+            '--name',
+            metavar='<name>',
+            help=_('Job object name')
+        )
+        parser.add_argument(
+            '--is_public',
+            action='store_const',
+            default='false',
+            const='false',
+            dest='is_public'
+        )
+        parser.add_argument(
+            '--is_protected',
+            action='store_const',
+            const='false',
+            dest='is_protected'
+        )
         parser.add_argument(
             '--type',
             metavar='<type>',
             required=True,
-            help=_('type of the Job')
+            help=_('Job object type')
         )
         parser.add_argument(
             '--description',
             metavar='<description>',
-            help=_('Job description')
+            help=_('Job object description')
         )
 
         return parser
@@ -236,19 +247,21 @@ class UpdateJob(command.ShowOne):
         if parsed_args.is_protected:
             attrs['is_protected'] = parsed_args.is_protected
 
-        job = client.find_job(parsed_args.name,
+        job = client.find_job(parsed_args.job,
                               ignore_missing=False)
 
-        if job:
+        if attrs:
             obj = client.update_job(
                 job=job,
                 **attrs
             )
+        else:
+            obj = job
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
 
-        return (display_columns, data)
+        return display_columns, data
 
 
 class ShowJob(command.ShowOne):
@@ -260,20 +273,20 @@ class ShowJob(command.ShowOne):
         parser.add_argument(
             'job',
             metavar='<job>',
-            help=_('UUID of the job.')
+            help=_('Name or ID of the job.')
         )
 
         return parser
 
     def take_action(self, parsed_args):
-
         client = self.app.client_manager.mrs
 
         obj = client.find_job(
             parsed_args.job,
+            ignore_missing=False
         )
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
 
-        return (display_columns, data)
+        return display_columns, data

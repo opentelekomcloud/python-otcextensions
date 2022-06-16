@@ -253,7 +253,6 @@ class UpdateDatasource(command.ShowOne):
             parsed_args.datasource,
             ignore_missing=False
         )
-        print(f'ATTRIBUTES: {attrs}')
         if attrs:
             obj = client.update_datasource(
                 datasource=datasource,
@@ -261,7 +260,6 @@ class UpdateDatasource(command.ShowOne):
             )
         else:
             obj = datasource
-        print(f'OBJECT: {obj}')
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
 

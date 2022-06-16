@@ -13,12 +13,12 @@
 from openstack import _log
 from openstack import resource
 
-from otcextensions.sdk import sdk_resource
+from otcextensions.sdk.mrs.v1 import _base
 
 _logger = _log.setup_logging('openstack')
 
 
-class Jobbinary(sdk_resource.Resource):
+class Jobbinary(_base.Resource):
     resource_key = 'job_binary'
     resources_key = 'binaries'
     base_path = '/job-binaries'

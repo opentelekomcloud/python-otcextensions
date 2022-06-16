@@ -13,12 +13,12 @@
 from openstack import _log
 from openstack import resource
 
-from otcextensions.sdk import sdk_resource
+from otcextensions.sdk.mrs.v1 import _base
 
 _logger = _log.setup_logging('openstack')
 
 
-class Job(sdk_resource.Resource):
+class Job(_base.Resource):
     resource_key = 'job'
     resources_key = 'jobs'
     base_path = '/jobs'

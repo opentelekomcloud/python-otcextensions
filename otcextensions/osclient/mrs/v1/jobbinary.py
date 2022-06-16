@@ -16,19 +16,16 @@ import logging
 from osc_lib import utils
 from osc_lib.command import command
 
-from otcextensions.i18n import _
 from otcextensions.common import sdk_utils
+from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
-
-_formatters = {
-}
+_formatters = {}
 
 
 def _get_columns(item):
-    column_map = {
-    }
+    column_map = {}
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
@@ -96,7 +93,7 @@ class DeleteJobbinary(command.Command):
 
 
 class CreateJobbinary(command.ShowOne):
-    _description = _('Create jb')
+    _description = _('Create jobbinary')
 
     columns = ('id', 'name', 'url', 'description',
                'is_public', 'is_protected')
@@ -108,27 +105,31 @@ class CreateJobbinary(command.ShowOne):
             '--name',
             metavar='<name>',
             required=True,
-            help=_('Name for the jobbinary')
+            help=_('Binary object name')
         )
-        parser.add_argument('--is_public',
-                            action='store_const',
-                            default='false',
-                            const='false',
-                            dest='is_public')
-        parser.add_argument('--is_protected',
-                            action='store_const',
-                            const='false',
-                            dest='is_protected')
+        parser.add_argument(
+            '--is_public',
+            action='store_const',
+            default='false',
+            const='false',
+            dest='is_public'
+        )
+        parser.add_argument(
+            '--is_protected',
+            action='store_const',
+            const='false',
+            dest='is_protected'
+        )
         parser.add_argument(
             '--url',
             metavar='<url>',
             required=True,
-            help=_('url of the DS.')
+            help=_('Binary object URL')
         )
         parser.add_argument(
             '--description',
             metavar='<description>',
-            help=_('DS description')
+            help=_('Binary object description')
         )
 
         return parser
@@ -156,7 +157,7 @@ class CreateJobbinary(command.ShowOne):
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
 
-        return (display_columns, data)
+        return display_columns, data
 
 
 class UpdateJobbinary(command.ShowOne):
@@ -169,29 +170,37 @@ class UpdateJobbinary(command.ShowOne):
         parser = super(UpdateJobbinary, self).get_parser(prog_name)
 
         parser.add_argument(
-            'name',
-            metavar='<name>',
-            help=_('Name for the datasource')
+            'jobbinary',
+            metavar='<jobbinary>',
+            help=_('Binary object name or ID')
         )
-        parser.add_argument('--is_public',
-                            action='store_const',
-                            default='false',
-                            const='false',
-                            dest='is_public')
-        parser.add_argument('--is_protected',
-                            action='store_const',
-                            const='false',
-                            dest='is_protected')
+        parser.add_argument(
+            '--name',
+            metavar='<name>',
+            help=_('Binary object name')
+        )
+        parser.add_argument(
+            '--is_public',
+            action='store_const',
+            default='false',
+            const='false',
+            dest='is_public'
+        )
+        parser.add_argument(
+            '--is_protected',
+            action='store_const',
+            const='false',
+            dest='is_protected'
+        )
         parser.add_argument(
             '--url',
             metavar='<url>',
-            required=True,
-            help=_('url of the DS.')
+            help=_('Binary object URL')
         )
         parser.add_argument(
             '--description',
             metavar='<description>',
-            help=_('DS description')
+            help=_('Binary object description')
         )
 
         return parser
@@ -213,23 +222,27 @@ class UpdateJobbinary(command.ShowOne):
         if parsed_args.is_protected:
             attrs['is_protected'] = parsed_args.is_protected
 
-        datasource = client.find_jobbinary(parsed_args.name,
-                                           ignore_missing=False)
+        jobbinary = client.find_jobbinary(
+            parsed_args.jobbinary,
+            ignore_missing=False
+        )
 
-        if datasource:
+        if attrs:
             obj = client.update_jobbinary(
-                datasource=datasource,
+                jobbinary=jobbinary,
                 **attrs
             )
+        else:
+            obj = jobbinary
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
 
-        return (display_columns, data)
+        return display_columns, data
 
 
 class ShowJobbinary(command.ShowOne):
-    _description = _('Show the MRS Jobbinary details')
+    _description = _('Show the Jobbinary details')
 
     def get_parser(self, prog_name):
         parser = super(ShowJobbinary, self).get_parser(prog_name)
@@ -237,20 +250,20 @@ class ShowJobbinary(command.ShowOne):
         parser.add_argument(
             'jobbinary',
             metavar='<jobbinary>',
-            help=_('UUID of the jobbinary.')
+            help=_('Name or ID of the jobbinary.')
         )
 
         return parser
 
     def take_action(self, parsed_args):
-
         client = self.app.client_manager.mrs
 
         obj = client.find_jobbinary(
             parsed_args.jobbinary,
+            ignore_missing=False
         )
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
 
-        return (display_columns, data)
+        return display_columns, data

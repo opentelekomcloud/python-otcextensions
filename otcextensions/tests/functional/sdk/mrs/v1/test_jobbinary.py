@@ -62,6 +62,7 @@ class TestJobbinary(TestMrs):
             description='updated'
         )
 
+        self.assertEqual('updated', res.description)
         _logger.debug(res)
         self.jbs = list(self.client.jobbinaries())
         self.assertGreaterEqual(len(self.jbs), 0)

@@ -10,15 +10,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from openstack import _log, exceptions
+from openstack import _log
 from openstack import resource
 
-from otcextensions.sdk import sdk_resource
+from otcextensions.sdk.mrs.v1 import _base
 
 _logger = _log.setup_logging('openstack')
 
 
-class Datasource(sdk_resource.Resource):
+class Datasource(_base.Resource):
     resource_key = 'data_source'
     resources_key = 'data_sources'
     base_path = '/data-sources'
@@ -53,42 +53,3 @@ class Datasource(sdk_resource.Resource):
     created_at = resource.Body('created_at')
     #: Data source update time
     updated_at = resource.Body('updated_at')
-
-    def update(self, session, prepend_key=False, has_body=True,
-               endpoint_override=None, headers=None, requests_auth=None):
-        """Update the remote resource based on this instance.
-
-        :param session: The session to use for making this request.
-        :type session: :class:`~keystoneauth1.adapter.Adapter`
-        :param prepend_key: A boolean indicating whether the resource_key
-                            should be prepended in a resource update request.
-                            Default to True.
-
-        :return: This :class:`Resource` instance.
-        :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
-                 :data:`Resource.allow_update` is not set to ``True``.
-        """
-        # The id cannot be dirty for an update
-        self._body._dirty.discard("id")
-
-        # Only try to update if we actually have anything to update.
-        if not any([self._body.dirty, self._header.dirty]):
-            return self
-
-        if not self.allow_update:
-            raise exceptions.MethodNotSupported(self, "update")
-
-        request = self._prepare_request(prepend_key=prepend_key)
-        session = self._get_session(session)
-
-        args = self._prepare_override_args(
-            endpoint_override=endpoint_override,
-            request_headers=request.headers,
-            additional_headers=headers,
-            requests_auth=requests_auth)
-
-        response = session.put(
-            request.url, json=request.body, **args)
-
-        self._translate_response(response, has_body=has_body)
-        return self

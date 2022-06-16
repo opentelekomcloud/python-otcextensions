@@ -56,10 +56,10 @@ class TestJob(TestMrs):
     def test_update(self):
         res = self.client.update_job(
             self.job,
-            type='MapReduce',
+            type='DistCp',
             description='funct_test update mapreduce'
         )
-
+        self.assertEqual('funct_test update mapreduce', res.description)
         _logger.debug(res)
         self.jobs = list(self.client.jobs())
         self.assertGreaterEqual(len(self.jobs), 0)
