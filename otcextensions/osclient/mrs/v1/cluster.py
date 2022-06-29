@@ -15,16 +15,49 @@ import logging
 
 from osc_lib import utils
 from osc_lib.command import command
-
+from datetime import datetime
 from otcextensions.i18n import _
 from otcextensions.common import sdk_utils
 
 LOG = logging.getLogger(__name__)
 
-CLUSTER_STATES = ['available', 'fault', 'released']
-
+CLUSTER_STATES = ['starting', 'running', 'terminated',
+                  'failed', 'abnormal', 'terminating',
+                  'frozen', 'scaling-out', 'scaling-in']
+TIMESTAMP = '%Y-%m-%dT%H:%M:%S'
 
 _formatters = {}
+
+
+def _utc_to_timestamp(obj):
+    obj = float(obj)
+    return datetime.utcfromtimestamp(obj).strftime(TIMESTAMP)
+
+
+def _flatten_cluster(obj):
+    """Flatten the structure of the cluster into a single dict
+    """
+    data = {
+        'id': obj.id,
+        'name': obj.name,
+        'status': obj.status,
+        'region': obj.region,
+        'cluster_type': obj.cluster_type,
+        'availability_zone': obj.az_id,
+        'version': obj.cluster_version,
+        'tags': obj.tags,
+        'created_at': _utc_to_timestamp(obj.created_at),
+        'updated_at': _utc_to_timestamp(obj.updated_at),
+        'billing_type': obj.billing_type,
+        'vpc': obj.vpc,
+        'master_node_flavor': obj.master_node_size,
+        'core_node_flavor': obj.core_node_size,
+        'external_ip': obj.external_ip,
+        'internal_ip': obj.internal_ip,
+
+    }
+
+    return data
 
 
 def _get_columns(item):
@@ -32,69 +65,66 @@ def _get_columns(item):
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
+def _normalize_tags(tags):
+    result = ''
+    for tag in tags:
+        tag_parts = tag.split('=')
+        if len(tag_parts) == 2 and tag_parts[1]:
+            result += f'{tag_parts[0]}*{tag_parts[1]},'
+        else:
+            result += f'{tag_parts[0]},'
+    return result[:-1]
+
+
+def _add_tags_to_cluster_obj(obj, data, columns):
+    res = ''
+    tags = obj.tags[0].split(',')
+    for tag in tags:
+        tag_parts = tag.split('=')
+        res += f'key={tag_parts[0]}, value={tag_parts[1]}\n'
+    data += (res,)
+    columns = columns + ('tags',)
+    return data, columns
+
+
 class ListCluster(command.Lister):
     _description = _('List MRS clusters')
     columns = (
-        'id', 'name', 'status', 'flavor',
+        'id', 'name', 'status', 'region',
         'cluster_type', 'availability_zone', 'version'
     )
 
     def get_parser(self, prog_name):
         parser = super(ListCluster, self).get_parser(prog_name)
         parser.add_argument(
-            '--id',
-            metavar='<id>',
-            help=_('Cluster id.')
-        )
-        parser.add_argument(
-            '--name',
-            metavar='<name>',
-            help=_('Cluster name.')
-        )
-        parser.add_argument(
-            '--cluster_type',
-            metavar='<cluster_type>',
-            help=_('Cluster type.')
-        )
-        parser.add_argument(
-            '--version',
-            metavar='<version>',
-            help=_('Cluster version.')
-        )
-        parser.add_argument(
-            '--flavor',
-            metavar='<flavor>',
-            help=_('Flavor ID.')
+            '--project-id',
+            metavar='<project_id>',
+            help=_("Specifies the project ID."),
         )
         parser.add_argument(
             '--status',
-            metavar='{' + ','.join(CLUSTER_STATES) + '}',
+            metavar='<status>',
             type=lambda s: s.lower(),
             choices=CLUSTER_STATES,
             help=_('Cluster status filter.')
         )
         parser.add_argument(
-            '--availability_zone',
-            metavar='<availability_zone>',
-            help=_('Availability zone.')
+            '--tag',
+            metavar='<tag>',
+            action='append',
+            help=_('Tag to assign to the server in KEY=VALUE format. '
+                   'Repeat for multiple values.')
         )
         parser.add_argument(
             '--limit',
             metavar='<limit>',
             type=int,
-            help=_('Number of entries to display.')
+            help=_('Limit number of records to return.')
         )
         parser.add_argument(
             '--marker',
             metavar='<marker>',
-            help=_('ID of the last record on the previous page.')
-        )
-        parser.add_argument(
-            '--changes_since',
-            metavar='<changes_since>',
-            help=_('Filters the response by a date and time stamp when the '
-                   'MRS last changed status. Format: '
-                   'CCYY-MM-DDThh:mm:ss+hh:mm')
+            help=_('Current page number.')
         )
         return parser
 
@@ -103,34 +133,70 @@ class ListCluster(command.Lister):
 
         query = {}
 
-        if parsed_args.id:
-            query['id'] = parsed_args.id
-        if parsed_args.name:
-            query['name'] = parsed_args.name
-        if parsed_args.flavor:
-            query['flavor'] = parsed_args.flavor
+        if parsed_args.project_id:
+            query['project_id'] = parsed_args.project_id
         if parsed_args.status:
             query['status'] = parsed_args.status
-        if parsed_args.cluster_type:
-            query['cluster_type'] = parsed_args.cluster_type
-        if parsed_args.version:
-            query['version'] = parsed_args.version
-        if parsed_args.availability_zone:
-            query['availability_zone'] = parsed_args.availability_zone
         if parsed_args.limit:
             query['limit'] = parsed_args.limit
         if parsed_args.marker:
             query['marker'] = parsed_args.marker
-        if parsed_args.changes_since:
-            query['changes_since'] = parsed_args.changes_since
+        if parsed_args.tag:
+            query['tags'] = _normalize_tags(parsed_args.tag)
 
         data = client.clusters(**query)
 
         table = (self.columns,
-                 (utils.get_item_properties(
-                     s, self.columns, formatters=_formatters
+                 (utils.get_dict_properties(
+                     _flatten_cluster(s), self.columns,
                  ) for s in data))
         return table
+
+
+class ShowCluster(command.ShowOne):
+    _description = _('Show single Cluster details')
+    columns = (
+        'ID',
+        'name',
+        'status',
+        'region',
+        'cluster_type',
+        'availability_zone',
+        'version',
+        'created_at',
+        'updated_at',
+        'billing_type',
+        'vpc',
+        'master_node_flavor',
+        'core_node_flavor',
+        'external_ip',
+        'internal_ip',
+    )
+
+    def get_parser(self, prog_name):
+        parser = super(ShowCluster, self).get_parser(prog_name)
+        parser.add_argument(
+            'cluster',
+            metavar='<cluster>',
+            help=_('ID or name of the MRS cluster.')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.mrs
+
+        obj = client.find_cluster(
+            name_or_id=parsed_args.cluster,
+            ignore_missing=False
+        )
+
+        data = utils.get_dict_properties(
+            _flatten_cluster(obj), self.columns)
+
+        if obj.tags:
+            data, self.columns = _add_tags_to_cluster_obj(
+                obj, data, self.columns)
+        return self.columns, data
 
 
 class ListClusterHost(command.Lister):
@@ -152,7 +218,6 @@ class ListClusterHost(command.Lister):
         return parser
 
     def take_action(self, parsed_args):
-
         client = self.app.client_manager.mrs
 
         query = {}
