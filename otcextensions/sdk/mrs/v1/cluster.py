@@ -14,11 +14,34 @@ from openstack import _log
 from openstack import resource
 
 from otcextensions.sdk import sdk_resource
-
+from otcextensions.sdk.mrs.v1 import _base
 _logger = _log.setup_logging('openstack')
 
 
-class ClusterInfo(sdk_resource.Resource):
+class ParametersSpec (resource.Resource):
+    #: Properties
+    #: Order ID obtained by the system during scale-out or scale-in.
+    order_id = resource.Body('order_id')
+    #: Cluster scale-in or scale-out type.
+    scale_type = resource.Body('scale_type')
+    #: ID of the newly added or removed node.
+    node_id = resource.Body('node_id')
+    #: Node group to be scaled out or in.
+    node_group = resource.Body('node_group')
+    #: Task node specifications.
+    task_node_info = resource.Body('task_node_info', type=dict)
+    #: Number of nodes to be added or removed.
+    instances = resource.Body('instances', type=int)
+    #: Indicates whether the bootstrap action specified
+    #: during cluster creation is performed on nodes.
+    skip_bootstrap_scripts = resource.Body('skip_bootstrap_scripts', type=bool)
+    #: Whether to start components on the added nodes after cluster scale-out.
+    scale_without_start = resource.Body('scale_without_start', type=bool)
+    #: ID list of Task nodes to be deleted during task node scale-in..
+    server_ids = resource.Body('server_ids', type=list)
+
+
+class ClusterInfo(_base.Resource):
     resource_key = 'cluster'
     resources_key = 'clusters'
     base_path = '/cluster_infos'
@@ -157,6 +180,8 @@ class ClusterInfo(sdk_resource.Resource):
     tags = resource.Body('tags', type=list)
     #: Node change status.
     scale = resource.Body('scale')
+    #: Core parameters.
+    parameters = resource.Body('parameters', type=ParametersSpec)
 
 
 class Host(sdk_resource.Resource):

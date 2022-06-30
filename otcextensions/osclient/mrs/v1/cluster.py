@@ -358,73 +358,73 @@ class UpdateCluster(command.ShowOne):
             help=_('ID or Name of the cluster.')
         )
         parser.add_argument(
-            'scale_type',
+            '--scale_type',
             metavar='<scale_type>',
             required=True,
             choices=['scale_in', 'scale_out'],
             help=_('Cluster scale-in or scale-out type.')
         )
         parser.add_argument(
-            'node_id',
+            '--node_id',
             metavar='<node_id>',
-            required=True,
+            default='node_orderadd',
             help=_('ID of the newly added or removed node.')
         )
         parser.add_argument(
-            'instances',
+            '--instances',
             metavar='<instances>',
             type=int,
             required=True,
             help=_('Number of nodes to be added or removed.')
         )
         parser.add_argument(
-            'node_group',
+            '--node_group',
             metavar='<node_group>',
             help=_('Node group to be scaled out or in.')
         )
         parser.add_argument(
-            'skip_bootstrap',
-            metavar='<skip_bootstrap>',
+            '--skip_bootstrap_scripts',
+            metavar='<skip_bootstrap_scripts>',
             type=bool,
             help=_('indicates whether the bootstrap action specified '
                    'during cluster creation is performed on nodes '
                    'added during scale-out.')
         )
         parser.add_argument(
-            'scale_without_start',
+            '--scale_without_start',
             metavar='<scale_without_start>',
             type=bool,
             help=_('Whether to start components on the added '
                    'nodes after cluster scale-out.')
         )
         parser.add_argument(
-            'server_id',
-            metavar='<server_id>',
+            '--server_ids',
+            metavar='<server_ids>',
             action='append',
             help=_('Task node to be deleted during task node scale-in.'
                    'Repeat for multiple values.')
         )
         parser.add_argument(
-            'node_size',
+            '--node_size',
             metavar='<node_size>',
             help=_('Instance specifications of a Task node.'
                    'For example: c2.2xlarge.linux.mrs')
         )
         parser.add_argument(
-            'data_volume_type',
+            '--data_volume_type',
             metavar='<data_volume_type>',
             choices=['SATA', 'SAS', 'SSD'],
             help=_('Data disk storage type of the Task node.')
         )
         parser.add_argument(
-            'data_volume_count',
+            '--data_volume_count',
             metavar='<data_volume_count>',
             type=int,
             help=_('Number of data disks of a Task node.'
                    'Value range: 1 to 10.')
         )
         parser.add_argument(
-            'data_volume_size',
+            '--data_volume_size',
             metavar='<data_volume_size>',
             type=int,
             help=_('Data disk storage space of a Task node.'
@@ -436,43 +436,47 @@ class UpdateCluster(command.ShowOne):
 
         client = self.app.client_manager.mrs
 
+        args_list = [
+            'node_group',
+            'skip_bootstrap_scripts',
+            'scale_without_start',
+            'server_ids',
+        ]
+        task_args_list = [
+            'node_size',
+            'data_volume_type',
+            'data_volume_count',
+            'data_volume_size',
+        ]
+
         attrs = {
             'parameters': {
-                'task_node_info': {}
+                'scale_type': parsed_args.scale_type,
+                'node_id': parsed_args.node_id,
+                'instances': parsed_args.instances
             },
-            'scale_type': parsed_args.scale_type,
-            'node_id': parsed_args.node_id,
-            'instances': parsed_args.instances
         }
+        for arg in args_list:
+            val = getattr(parsed_args, arg)
+            if val:
+                attrs['parameters'][arg] = val
 
-        # mandatory
-        if parsed_args.node_group:
-            attrs['parameters']['node_group'] = parsed_args.node_group
-        if parsed_args.skip_bootstrap:
-            attrs['parameters']['skip_bootstrap_scripts'] = parsed_args.skip_bootstrap
-        if parsed_args.scale_without_start:
-            attrs['parameters']['scale_without_start'] = parsed_args.scale_without_start
-        if parsed_args.server_id:
-            attrs['parameters']['server_ids'] = parsed_args.server_id
-        if parsed_args.node_size:
-            attrs['parameters']['task_node_info']['node_size'] = parsed_args.node_size
-            if parsed_args.data_volume_type:
-                attrs['parameters']['task_node_info']['data_volume_type'] = parsed_args.data_volume_type
-            if parsed_args.data_volume_count:
-                attrs['parameters']['task_node_info']['data_volume_count'] = parsed_args.data_volume_count
-            if parsed_args.data_volume_size:
-                attrs['parameters']['task_node_info']['data_volume_size'] = parsed_args.data_volume_size
+        node_info = {
+            'task_node_info': {}
+        }
+        for arg in task_args_list:
+            val = getattr(parsed_args, arg)
+            if val:
+                node_info['task_node_info'][arg] = val
+        if node_info['task_node_info']:
+            attrs['parameters'].update(node_info)
 
         cluster = client.find_cluster(
             name_or_id=parsed_args.cluster,
             ignore_missing=False
         )
-
-        if attrs:
-            obj = client.update_cluster(cluster=cluster.id, **attrs)
-        else:
-            obj = cluster
-
+        print(attrs)
+        obj = client.update_cluster(cluster=cluster.id, **attrs)
         data = utils.get_dict_properties(
             _flatten_cluster(obj), self.columns)
 
