@@ -1,5 +1,5 @@
-Cloud Backup and Recovery Resources
-===================================
+MapReduce Service Resources
+===========================
 
 .. toctree::
    :maxdepth: 1
