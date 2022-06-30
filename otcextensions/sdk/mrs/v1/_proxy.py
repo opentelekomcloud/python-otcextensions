@@ -109,7 +109,7 @@ class Proxy(sdk_proxy.Proxy):
 
     # ======== datasources ========
     def datasources(self, **query):
-        """Retrieve a generator of hosts
+        """Retrieve a generator of datasources
 
         :param dict query: Optional query parameters to be sent to limit the
             resources being returned.
@@ -136,9 +136,9 @@ class Proxy(sdk_proxy.Proxy):
     def get_datasource(self, datasource):
         """Get a datasource
 
-        :param host: The value can be the ID of a DS
-        or a :class:`~otcextensions.sdk.mrs.v1.datasource.Datasource`
-        :returns: Host instance
+        :param datasource: The value can be the ID or an instance of
+            :class:`~otcextensions.sdk.mrs.v1.datasource.Datasource`
+        :returns: Datasource instance
         :rtype: :class:`~otcextensions.sdk.mrs.v1.datasource.Datasource`
         """
         return self._get(_datasource.Datasource, datasource)
@@ -216,8 +216,8 @@ class Proxy(sdk_proxy.Proxy):
     def get_jobbinary(self, jobbinary):
         """Get a jobbinary
 
-        :param host: The value can be the ID of a jobbinary
-        or a :class:`~otcextensions.sdk.mrs.v1.jobbinary.Jobbinary`
+        :param jobbinary: The value can be the ID or an instance of
+            :class:`~otcextensions.sdk.mrs.v1.jobbinary.Jobbinary`
         :returns: Jobbinary instance
         :rtype: :class:`~otcextensions.sdk.mrs.v1.jobbinary.Jobbinary`
         """
@@ -295,8 +295,8 @@ class Proxy(sdk_proxy.Proxy):
     def get_job(self, job):
         """Get a job
 
-        :param host: The value can be the ID of a job
-        or a :class:`~otcextensions.sdk.mrs.v1.job.Job`
+        :param job: The value can be the ID or an instance of
+            :class:`~otcextensions.sdk.mrs.v1.job.Job`
         :returns: Job instance
         :rtype: :class:`~otcextensions.sdk.mrs.v1.job.Job`
         """

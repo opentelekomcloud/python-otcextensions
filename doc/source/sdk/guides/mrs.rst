@@ -42,7 +42,7 @@ is a instance of class
    :lines: 16-23
 
 Update MRS Cluster
-^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^
 
 This interface is used to update a MRS Cluster instance with
 parameters.

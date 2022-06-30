@@ -12,7 +12,7 @@ The ``ClusterInfo`` class inherits from
 .. autoclass:: otcextensions.sdk.mrs.v1.cluster.ClusterInfo
    :members:
 
-.. autoclass:: otcextensions.sdk.cbr.v1.cluster.ParametersSpec
+.. autoclass:: otcextensions.sdk.mrs.v1.cluster.ParametersSpec
    :members:
 
 The MRS Cluster Class
