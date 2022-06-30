@@ -118,7 +118,7 @@ class Proxy(sdk_proxy.Proxy):
             * `limit`: pagination limit
 
         :returns: A generator of datasoruce
-            :class:`~otcextensions.sdk.mrs.v1.datasoruce.Datasource` instances
+            :class:`~otcextensions.sdk.mrs.v1.datasource.Datasource` instances
         """
         return self._list(_datasource.Datasource, paginated=True, **query)
 
@@ -345,14 +345,3 @@ class Proxy(sdk_proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.mrs.v1.job.Job`
         """
         return self._update(_job.Job, job, **attrs)
-
-    def cancel(self, job):
-        """Confirm consumed message
-
-        :param job: An object of an instance of
-          :class:`~otcextensions.sdk.mrs.v1.job.CancelJob
-        :param status: The expeced status of the consumed message
-        :returns: An object of an instance of
-          :class:`~otcextensions.sdk.mrs.v1.job.CancelJob`
-        """
-        return job.cancel(self.session)
