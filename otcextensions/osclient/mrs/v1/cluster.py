@@ -54,7 +54,30 @@ def _flatten_cluster(obj):
         'core_node_flavor': obj.core_node_size,
         'external_ip': obj.external_ip,
         'internal_ip': obj.internal_ip,
-
+        'master_num': obj.master_num,
+        'core_num': obj.core_num,
+        'master_node_size': obj.master_node_size,
+        'core_node_size': obj.core_node_size,
+        'component_list': obj.component_list,
+        'deployment_id': obj.deployment_id,
+        'instance_id': obj.instance_id,
+        'vnc': obj.vnc,
+        'project_id': obj.project_id,
+        'volume_size': obj.volume_size,
+        'volume_type': obj.volume_type,
+        'subnet_id': obj.subnet_id,
+        'subnet_name': obj.subnet_name,
+        'security_group_id': obj.security_group_id,
+        'non_master_security_group_id': obj.non_master_security_group_id,
+        'safe_mode': obj.safe_mode,
+        'key': obj.key,
+        'master_ip': obj.master_ip,
+        'preffered_private_ip': obj.preffered_private_ip,
+        'charging_start_time': obj.charging_start_time,
+        'task_node_groups': obj.task_node_groups,
+        'node_groups': obj.node_groups,
+        'bootstrap_scripts': obj.bootstrap_scripts,
+        'scale': obj.scale
     }
 
     return data
@@ -171,6 +194,31 @@ class ShowCluster(command.ShowOne):
         'core_node_flavor',
         'external_ip',
         'internal_ip',
+        'master_num',
+        'core_num',
+        'master_node_size',
+        'core_node_size',
+        'deployment_id',
+        'component_list',
+        'deployment_id',
+        'instance_id',
+        'vnc',
+        'project_id',
+        'volume_size',
+        'volume_type',
+        'subnet_id',
+        'subnet_name',
+        'security_group_id',
+        'non_master_security_group_id',
+        'safe_mode',
+        'key',
+        'master_ip',
+        'preffered_private_ip',
+        'charging_start_time',
+        'task_node_groups',
+        'node_groups',
+        'bootstrap_scripts',
+        'scale'
     )
 
     def get_parser(self, prog_name):
@@ -241,202 +289,191 @@ class DeleteCluster(command.Command):
         parser = super(DeleteCluster, self).get_parser(prog_name)
 
         parser.add_argument(
-            'id',
-            metavar='<id>',
+            'cluster',
+            metavar='<cluster>',
             nargs='+',
-            help=_('UUID or name of the cluster.')
+            help=_('ID or Name of the cluster.')
         )
 
         return parser
 
     def take_action(self, parsed_args):
-        if parsed_args.cluster_id:
+        if parsed_args.cluster:
             client = self.app.client_manager.mrs
-            for id in parsed_args.cluster_id:
-                client.delete_cluster(id=id, ignore_missing=False)
+            for cluster in parsed_args.cluster:
+                client.delete_cluster(cluster=cluster, ignore_missing=False)
 
 
-class CreateCluster(command.ShowOne):
-    _description = _('Create/allocate cluster')
-
-    columns = ('id')
+class UpdateCluster(command.ShowOne):
+    _description = _('Update MRS Cluster')
+    columns = (
+        'ID',
+        'name',
+        'status',
+        'region',
+        'cluster_type',
+        'availability_zone',
+        'version',
+        'created_at',
+        'updated_at',
+        'billing_type',
+        'vpc',
+        'master_node_flavor',
+        'core_node_flavor',
+        'external_ip',
+        'internal_ip',
+        'master_num',
+        'core_num',
+        'master_node_size',
+        'core_node_size',
+        'deployment_id',
+        'component_list',
+        'deployment_id',
+        'instance_id',
+        'vnc',
+        'project_id',
+        'volume_size',
+        'volume_type',
+        'subnet_id',
+        'subnet_name',
+        'security_group_id',
+        'non_master_security_group_id',
+        'safe_mode',
+        'key',
+        'master_ip',
+        'preffered_private_ip',
+        'charging_start_time',
+        'task_node_groups',
+        'node_groups',
+        'bootstrap_scripts',
+        'scale'
+    )
 
     def get_parser(self, prog_name):
-        parser = super(CreateCluster, self).get_parser(prog_name)
+        parser = super(UpdateCluster, self).get_parser(prog_name)
 
         parser.add_argument(
-            '--name',
-            metavar='<name>',
+            'cluster',
+            metavar='<cluster>',
+            help=_('ID or Name of the cluster.')
+        )
+        parser.add_argument(
+            'scale_type',
+            metavar='<scale_type>',
             required=True,
-            help=_('DNS Name for the host.')
+            choices=['scale_in', 'scale_out'],
+            help=_('Cluster scale-in or scale-out type.')
         )
-        parser.add_argument('--auto_placement',
-                            action='store_const',
-                            default='on',
-                            const='on',
-                            dest='auto_placement')
-        parser.add_argument('--no-auto_placement',
-                            action='store_const',
-                            const='off',
-                            dest='auto_placement')
         parser.add_argument(
-            '--availability_zone',
-            metavar='<az>',
+            'node_id',
+            metavar='<node_id>',
             required=True,
-            help=_('The AZ the host belongs to.')
+            help=_('ID of the newly added or removed node.')
         )
         parser.add_argument(
-            '--host_type',
-            metavar='<type>',
-            help=_('DeH type.')
-        )
-        parser.add_argument(
-            '--quantity',
-            metavar='[0..]',
+            'instances',
+            metavar='<instances>',
             type=int,
-            default=1,
-            help=_('Number of DeHs to allocate.')
-        )
-
-        return parser
-
-    def take_action(self, parsed_args):
-
-        client = self.app.client_manager.deh
-
-        attrs = {}
-
-        if parsed_args.name:
-            attrs['name'] = parsed_args.name
-        if parsed_args.auto_placement:
-            attrs['auto_placement'] = parsed_args.auto_placement
-        if parsed_args.availability_zone:
-            attrs['availability_zone'] = parsed_args.availability_zone
-        if parsed_args.host_type:
-            attrs['host_type'] = parsed_args.host_type
-        if parsed_args.quantity:
-            attrs['quantity'] = parsed_args.quantity
-
-        obj = client.create_host(
-            **attrs
-        )
-
-        table = (self.columns,
-                 (utils.get_item_properties(
-                     s, self.columns, formatters=_formatters
-                 ) for s in obj.dedicated_host_ids))
-        return table
-
-
-class SetHost(command.ShowOne):
-    _description = _('Update a Host')
-
-    def get_parser(self, prog_name):
-        parser = super(SetHost, self).get_parser(prog_name)
-
-        parser.add_argument(
-            'host',
-            metavar='<host>',
-            help=_('UUID or name of the host.')
+            required=True,
+            help=_('Number of nodes to be added or removed.')
         )
         parser.add_argument(
-            '--name',
-            metavar='<name>',
-            help=_('DNS Name for the host.')
+            'node_group',
+            metavar='<node_group>',
+            help=_('Node group to be scaled out or in.')
         )
-        parser.add_argument('--auto_placement',
-                            action='store_const',
-                            default='on',
-                            const='on',
-                            dest='auto_placement')
-        parser.add_argument('--no-auto_placement',
-                            action='store_const',
-                            const='off',
-                            dest='auto_placement')
-
+        parser.add_argument(
+            'skip_bootstrap',
+            metavar='<skip_bootstrap>',
+            type=bool,
+            help=_('indicates whether the bootstrap action specified '
+                   'during cluster creation is performed on nodes '
+                   'added during scale-out.')
+        )
+        parser.add_argument(
+            'scale_without_start',
+            metavar='<scale_without_start>',
+            type=bool,
+            help=_('Whether to start components on the added '
+                   'nodes after cluster scale-out.')
+        )
+        parser.add_argument(
+            'server_id',
+            metavar='<server_id>',
+            action='append',
+            help=_('Task node to be deleted during task node scale-in.'
+                   'Repeat for multiple values.')
+        )
+        parser.add_argument(
+            'node_size',
+            metavar='<node_size>',
+            help=_('Instance specifications of a Task node.'
+                   'For example: c2.2xlarge.linux.mrs')
+        )
+        parser.add_argument(
+            'data_volume_type',
+            metavar='<data_volume_type>',
+            choices=['SATA', 'SAS', 'SSD'],
+            help=_('Data disk storage type of the Task node.')
+        )
+        parser.add_argument(
+            'data_volume_count',
+            metavar='<data_volume_count>',
+            type=int,
+            help=_('Number of data disks of a Task node.'
+                   'Value range: 1 to 10.')
+        )
+        parser.add_argument(
+            'data_volume_size',
+            metavar='<data_volume_size>',
+            type=int,
+            help=_('Data disk storage space of a Task node.'
+                   'Value range: 100 GB to 32,000 GB.')
+        )
         return parser
 
     def take_action(self, parsed_args):
 
         client = self.app.client_manager.mrs
 
-        attrs = {}
+        attrs = {
+            'parameters': {
+                'task_node_info': {}
+            },
+            'scale_type': parsed_args.scale_type,
+            'node_id': parsed_args.node_id,
+            'instances': parsed_args.instances
+        }
 
-        if parsed_args.name:
-            attrs['name'] = parsed_args.name
-        if parsed_args.auto_placement:
-            attrs['auto_placement'] = parsed_args.auto_placement
+        # mandatory
+        if parsed_args.node_group:
+            attrs['parameters']['node_group'] = parsed_args.node_group
+        if parsed_args.skip_bootstrap:
+            attrs['parameters']['skip_bootstrap_scripts'] = parsed_args.skip_bootstrap
+        if parsed_args.scale_without_start:
+            attrs['parameters']['scale_without_start'] = parsed_args.scale_without_start
+        if parsed_args.server_id:
+            attrs['parameters']['server_ids'] = parsed_args.server_id
+        if parsed_args.node_size:
+            attrs['parameters']['task_node_info']['node_size'] = parsed_args.node_size
+            if parsed_args.data_volume_type:
+                attrs['parameters']['task_node_info']['data_volume_type'] = parsed_args.data_volume_type
+            if parsed_args.data_volume_count:
+                attrs['parameters']['task_node_info']['data_volume_count'] = parsed_args.data_volume_count
+            if parsed_args.data_volume_size:
+                attrs['parameters']['task_node_info']['data_volume_size'] = parsed_args.data_volume_size
 
-        host = client.find_host(parsed_args.host, ignore_missing=False)
-
-        if host:
-            obj = client.update_host(
-                host=host,
-                **attrs
-            )
-
-            display_columns, columns = _get_columns(obj)
-            data = utils.get_item_properties(obj, columns)
-
-            return (display_columns, data)
-
-
-class ListServer(command.Lister):
-    _description = _('List Servers on a DeH')
-    columns = (
-        'addresses', 'id', 'name', 'metadata', 'status', 'user_id'
-    )
-
-    def get_parser(self, prog_name):
-        parser = super(ListServer, self).get_parser(prog_name)
-
-        parser.add_argument(
-            'host',
-            metavar='<host>',
-            help=_('UUID of the DeH host.')
+        cluster = client.find_cluster(
+            name_or_id=parsed_args.cluster,
+            ignore_missing=False
         )
 
-        return parser
+        if attrs:
+            obj = client.update_cluster(cluster=cluster.id, **attrs)
+        else:
+            obj = cluster
 
-    def take_action(self, parsed_args):
-        client = self.app.client_manager.deh
+        data = utils.get_dict_properties(
+            _flatten_cluster(obj), self.columns)
 
-        host = client.find_host(parsed_args.host, ignore_missing=False)
-
-        if host:
-            data = client.servers(host=host)
-
-            table = (self.columns,
-                     (utils.get_item_properties(
-                         s, self.columns, formatters=_formatters
-                     ) for s in data))
-            return table
-
-
-class ListHostType(command.Lister):
-    _description = _('List DeH host types')
-    columns = (
-        'host_type', 'host_type_name'
-    )
-
-    def get_parser(self, prog_name):
-        parser = super(ListHostType, self).get_parser(prog_name)
-
-        parser.add_argument(
-            'az',
-            metavar='<az>',
-            help=_('Availability zone.')
-        )
-
-        return parser
-
-    def take_action(self, parsed_args):
-        client = self.app.client_manager.deh
-
-        data = client.host_types(parsed_args.az)
-
-        table = (self.columns,
-                 (utils.get_item_properties(
-                     s, self.columns, formatters=_formatters
-                 ) for s in data))
-        return table
+        return self.columns, data
