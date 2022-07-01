@@ -50,7 +50,6 @@ def _flatten_cluster(obj):
         'updated_at': _utc_to_timestamp(obj.updated_at),
         'billing_type': obj.billing_type,
         'vpc': obj.vpc,
-        'master_node_flavor': obj.master_node_size,
         'core_node_flavor': obj.core_node_size,
         'external_ip': obj.external_ip,
         'internal_ip': obj.internal_ip,
@@ -190,7 +189,6 @@ class ShowCluster(command.ShowOne):
         'updated_at',
         'billing_type',
         'vpc',
-        'master_node_flavor',
         'core_node_flavor',
         'external_ip',
         'internal_ip',
@@ -200,7 +198,6 @@ class ShowCluster(command.ShowOne):
         'core_node_size',
         'deployment_id',
         'component_list',
-        'deployment_id',
         'instance_id',
         'vnc',
         'project_id',
@@ -318,7 +315,6 @@ class UpdateCluster(command.ShowOne):
         'updated_at',
         'billing_type',
         'vpc',
-        'master_node_flavor',
         'core_node_flavor',
         'external_ip',
         'internal_ip',
@@ -328,7 +324,6 @@ class UpdateCluster(command.ShowOne):
         'core_node_size',
         'deployment_id',
         'component_list',
-        'deployment_id',
         'instance_id',
         'vnc',
         'project_id',
@@ -475,7 +470,7 @@ class UpdateCluster(command.ShowOne):
             name_or_id=parsed_args.cluster,
             ignore_missing=False
         )
-        print(attrs)
+
         obj = client.update_cluster(cluster=cluster.id, **attrs)
         data = utils.get_dict_properties(
             _flatten_cluster(obj), self.columns)

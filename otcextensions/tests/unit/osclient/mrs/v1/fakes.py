@@ -20,15 +20,13 @@ import mock
 from openstackclient.tests.unit import utils
 from otcextensions.tests.unit.osclient import test_base
 
-from otcextensions.sdk.mrs.v1 import host
-from otcextensions.sdk.mrs.v1 import host_type
-from otcextensions.sdk.mrs.v1 import server
+from otcextensions.sdk.mrs.v1 import cluster
 
 
 def gen_data(data, columns):
     """Fill expected data tuple based on columns list
     """
-    return tuple(getattr(data, attr, '') for attr in columns)
+    return tuple(getattr(data, attr, "") for attr in columns)
 
 
 class TestMrs(utils.TestCommand):
@@ -46,70 +44,152 @@ class FakeHost(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'id': 'id-' + uuid.uuid4().hex,
-            # 'dedicated_host_ids': ['id-' + uuid.uuid4().hex],
-            'name': uuid.uuid4().hex,
-            'auto_placement': random.choice(['on', 'off']),
-            'availability_zone': uuid.uuid4().hex,
-            'state': random.choice(['available', 'fault', 'released']),
-            'project_id': uuid.uuid4().hex,
-            'available_vcpus': random.randint(1, 600),
-            'available_memory': random.randint(1, 600),
-            'instance_total': random.randint(1, 600),
-            'allocated_at': uuid.uuid4().hex,
-            'released_at': uuid.uuid4().hex,
-            'host_properties': {
-                'vcpus': random.randint(1, 600),
-                'cores': random.randint(1, 600),
-                'sockets': random.randint(1, 600),
-                'memory': random.randint(1, 600),
-                'host_type': uuid.uuid4().hex,
-                'host_type_name': uuid.uuid4().hex,
-                'available_instance_capacities': [
-                    {'flavor': uuid.uuid4().hex}
-                ],
-            }
+            "id": "id-" + uuid.uuid4().hex,
+            "name": uuid.uuid4().hex,
+            "ip": "192.168.0.169",
+            "status": "ACTIVE",
+            "flavor": "c2.2xlarge.linux.mrs",
+            "type": random.choice(["Core", "Master"]),
+            "mem": random.randint(1, 10000),
+            "cpu": random.randint(1, 10),
+            "root_volume_size": random.randint(1, 300),
+            "data_volume_type": random.choice(["SATA", "SAS", "SSD"]),
+            "data_volume_size": random.randint(1, 1000),
+            "data_volume_count": random.randint(1, 5)
         }
-        obj = host.Host.existing(**object_info)
+        obj = cluster.Host.existing(**object_info)
         return obj
 
 
-class FakeHostType(test_base.Fake):
-    """Fake one or more Host type"""
+class FakeCluster(test_base.Fake):
+    """Fake one or more Cluster"""
 
     @classmethod
     def generate(cls):
         object_info = {
-            'host_type': uuid.uuid4().hex,
-            'host_type_name': uuid.uuid4().hex,
+            "id": "id-" + uuid.uuid4().hex,
+            "name": uuid.uuid4().hex,
+            "master_num": random.randint(1, 5),
+            "core_num": random.randint(1, 5),
+            "status": random.choice(["starting", "running", "terminated",
+                                     "failed", "abnormal", "terminating",
+                                     "frozen", "scaling-out", "scaling-in"]
+                                    ),
+            "created_at": 1487570757,
+            "updated_at": 1487668974,
+            "billing_type": "Metered",
+            "region": "eu-de",
+            "vpc": "vpc-autotest",
+            "fee": "0",
+            "hadoop_version": "",
+            "component_list": [{
+                "id": None,
+                "componentId": "MRS 3.0.2_001",
+                "componentName": "Hadoop",
+                "componentVersion": "3.1.1",
+                "external_datasources": None,
+                "componentDesc": "A distributed data processing framework for big data sets",
+                "componentDescEn": None,
+            }],
+            "master_node_size": "s1.8xlarge.linux.mrs",
+            "core_node_size": "s2.2xlarge.linux.mrs",
+            "external_ip": "100.120.0.2",
+            "external_alternate_ip": "192.120.0.2",
+            "internal_ip": "192.120.0.3",
+            "deployment_id": "dep_id-" + uuid.uuid4().hex,
+            "remark": "",
+            "order_id": "null",
+            "az_id": "null",
+            "az": random.choice(["eu-de-01", "eu-de-02", "eu-de-03"]),
+            "master_node_product_id": "m_id-" + uuid.uuid4().hex,
+            "master_node_spec_id": "mspec_id-" + uuid.uuid4().hex,
+            "core_node_product_id": "c_id-" + uuid.uuid4().hex,
+            "core_node_spec_id": "cspec_id-" + uuid.uuid4().hex,
+            "instanceId": "inst_id-" + uuid.uuid4().hex,
+            "vnc": None,
+            "project_id": "proj_id-" + uuid.uuid4().hex,
+            "volume_size": random.randint(1, 1000),
+            "volume_type": random.choice(["SATA", "SAS", "SSD"]),
+            "subnet_id": "sub_id-" + uuid.uuid4().hex,
+            "subnet_name": "subnet-ftest",
+            "security_group_id": "sec_gr_id-" + uuid.uuid4().hex,
+            "non_master_security_group_id": "sec_gr_id_1-" + uuid.uuid4().hex,
+            "stage_desc": "Installing MRS Manager",
+            "mrs_install_state": False,
+            "safe_mode": 1,
+            "cluster_version": "MRS 3.0.2",
+            "bootstrapScripts": [
+                {
+                    "name": "test1-success",
+                    "uri": "s3a://bootscript/script/simple/basic_success.sh",
+                    "parameters": "",
+                    "nodes": ["master", "core"],
+                    "active_master": True,
+                    "fail_action": "errorout",
+                    "before_component_start": True,
+                    "state": "SUCCESS",
+                    "start_time": 1527681083
+                }
+            ],
+            "node_groups": [
+                {
+                    "groupName": "master_node_default_group",
+                    "nodeNum": 1,
+                    "nodeSize": "s1.xlarge.linux.mrs",
+                    "nodeSpecId": "cdc6035a249a40249312f5ef72a23cd7",
+                    "vmProductId": "",
+                    "vmSpecCode": None,
+                    "nodeProductId": "dc970349d128460e960a0c2b826c427c",
+                    "rootVolumeSize": 40,
+                    "rootVolumeProductId": "16c1dcf0897249758b1ec276d06e0572",
+                    "rootVolumeType": "SATA",
+                    "rootVolumeResourceSpecCode": "",
+                    "rootVolumeResourceType": "",
+                    "dataVolumeType": "SATA",
+                    "dataVolumeCount": 1,
+                    "dataVolumeSize": 100,
+                    "dataVolumeProductId": "16c1dcf0897249758b1ec276d06e0572",
+                    "dataVolumeResourceSpecCode": "",
+                    "dataVolumeResourceType": ""
+                }
+            ],
+            "task_node_groups": [
+                {
+                    "groupName": "task_node_default_group",
+                    "nodeNum": 1,
+                    "nodeSize": "s1.xlarge.linux.mrs",
+                    "nodeSpecId": "cdc6035a249a40249312f5ef72a23cd7",
+                    "vmProductId": "",
+                    "vmSpecCode": None,
+                    "nodeProductId": "dc970349d128460e960a0c2b826c427c",
+                    "rootVolumeSize": 40,
+                    "rootVolumeProductId": "16c1dcf0897249758b1ec276d06e0572",
+                    "rootVolumeType": "SATA",
+                    "rootVolumeResourceSpecCode": "",
+                    "rootVolumeResourceType": "",
+                    "dataVolumeType": "SATA",
+                    "dataVolumeCount": 1,
+                    "dataVolumeSize": 100,
+                    "dataVolumeProductId": "16c1dcf0897249758b1ec276d06e0572",
+                    "dataVolumeResourceSpecCode": "",
+                    "dataVolumeResourceType": "",
+                    "AutoScalingPolicy": None
+                }
+            ],
+            "cluster_type": 0,
+            "tags": "k1=v1,k2=v2,k3=v3",
+            "key": "myp",
+            "master_ip": "192.168.1.1",
+            "preffered_private_ip": "192.168.1.2",
+            "error_info": None,
+            "log_collection": 1,
+            "master_data_volume_type": random.choice(["SATA", "SAS", "SSD"]),
+            "master_data_volume_size": random.randint(1, 1000),
+            "master_data_volume_count": random.randint(1, 10),
+            "core_data_volume_type": random.choice(["SATA", "SAS", "SSD"]),
+            "core_data_volume_size": random.randint(1, 1000),
+            "core_data_volume_count": random.randint(1, 10),
         }
-        obj = host_type.HostType.existing(**object_info)
-        return obj
 
-
-class FakeServer(test_base.Fake):
-    """Fake one or more HostServers"""
-
-    @classmethod
-    def generate(cls):
-        object_info = {
-            'addresses': {
-                'id-' + uuid.uuid4().hex: [{
-                    'addr': 'addr-' + uuid.uuid4().hex,
-                    'version': 4
-                }]
-            },
-            'created_at': uuid.uuid4().hex,
-            'updated_at': uuid.uuid4().hex,
-            'flavor': {'id-' + uuid.uuid4().hex},
-            'id': 'id-' + uuid.uuid4().hex,
-            'metadata': {
-                'os_type': uuid.uuid4().hex
-            },
-            'name': uuid.uuid4().hex,
-            'status': uuid.uuid4().hex,
-            'tenant_id': uuid.uuid4().hex,
-            'user_id': uuid.uuid4().hex
-        }
-        obj = server.Server.existing(**object_info)
+        obj = cluster.ClusterInfo.existing(**object_info)
         return obj

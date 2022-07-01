@@ -26,7 +26,7 @@ class TestServiceSpecification(base.BaseFunctionalTest):
     def test_service_specification(self):
         objects = list(self.dcs.service_specifications())
 
-        self.assertEqual(len(objects), 3)
+        self.assertGreaterEqual(len(objects), 1)
 
         for obj in objects:
             self.assertIsInstance(obj, dict)

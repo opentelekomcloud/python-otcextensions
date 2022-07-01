@@ -97,7 +97,7 @@ This interface is used to create a MRS Datasource instance with
 parameters.
 
 .. literalinclude:: ../examples/mrs/create_datasource.py
-   :lines: 16-32
+   :lines: 16-31
 
 Update MRS Datasource
 ^^^^^^^^^^^^^^^^^^^^^
@@ -165,7 +165,7 @@ This interface is used to update a MRS Job binary instance with
 parameters.
 
 .. literalinclude:: ../examples/mrs/update_jobbinary.py
-   :lines: 16-33
+   :lines: 16-30
 
 Delete MRS Job binary
 ^^^^^^^^^^^^^^^^^^^^^
