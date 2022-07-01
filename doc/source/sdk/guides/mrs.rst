@@ -156,7 +156,7 @@ This interface is used to create a MRS Job binary instance with
 parameters.
 
 .. literalinclude:: ../examples/mrs/create_jobbinary.py
-   :lines: 16-31
+   :lines: 16-30
 
 Update MRS Job binary
 ^^^^^^^^^^^^^^^^^^^^^

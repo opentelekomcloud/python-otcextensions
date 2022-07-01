@@ -88,7 +88,7 @@ class FakeCluster(test_base.Fake):
                 "componentName": "Hadoop",
                 "componentVersion": "3.1.1",
                 "external_datasources": None,
-                "componentDesc": "A distributed data processing framework for big data sets",
+                "componentDesc": "A distributed data processing framework",
                 "componentDescEn": None,
             }],
             "master_node_size": "s1.8xlarge.linux.mrs",
