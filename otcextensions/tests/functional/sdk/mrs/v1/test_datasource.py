@@ -51,6 +51,7 @@ class TestDS(TestMrs):
         for ds in self.data_sources:
             _logger.debug(ds)
 
+    # unstable test
     def test_02_update(self):
         res = self.client.update_datasource(
             self.data_source,

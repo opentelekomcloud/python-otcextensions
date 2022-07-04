@@ -21,6 +21,9 @@ from openstackclient.tests.unit import utils
 from otcextensions.tests.unit.osclient import test_base
 
 from otcextensions.sdk.mrs.v1 import cluster
+from otcextensions.sdk.mrs.v1 import datasource
+from otcextensions.sdk.mrs.v1 import job
+from otcextensions.sdk.mrs.v1 import jobbinary
 
 
 def gen_data(data, columns):
@@ -192,4 +195,64 @@ class FakeCluster(test_base.Fake):
         }
 
         obj = cluster.ClusterInfo.existing(**object_info)
+        return obj
+
+
+class FakeDatasource(test_base.Fake):
+    """Fake one or more Datasource"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            "id": "id-" + uuid.uuid4().hex,
+            "name": uuid.uuid4().hex,
+            "type": random.choice(["hdfs", "obs"]),
+            "url": "/simple/mapreduce/input",
+            "description": "this is the data source template",
+            "is_public": random.choice([False, True]),
+            "is_protected": random.choice([False, True]),
+        }
+        obj = datasource.Datasource.existing(**object_info)
+        return obj
+
+
+class FakeJob(test_base.Fake):
+    """Fake one or more Job"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            "id": "id-" + uuid.uuid4().hex,
+            "name": uuid.uuid4().hex,
+            "type": random.choice(["MapReduce", "SparkScript",
+                                   "Hive", "DistCp"]),
+            "description": "This is the Map Reduce job template",
+            "created_at": "2017-06-22T09:39:13",
+            "updated_at": "2017-06-22T09:39:13",
+            "project_id": "pr-" + uuid.uuid4().hex,
+            "is_public": False,
+            "is_protected": False,
+            "interface": [],
+            "mains": [],
+            "libs": [],
+        }
+        obj = job.Job.existing(**object_info)
+        return obj
+
+class FakeJobbinary(test_base.Fake):
+    """Fake one or more Jobbinary"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            "id": "id-" + uuid.uuid4().hex,
+            "name": uuid.uuid4().hex,
+            "description": "this is the job binary template",
+            "is_public": random.choice([False, True]),
+            "is_protected": random.choice([False, True]),
+            "url": "/simple/mapreduce/program",
+            "created_at": "2017-06-22T09:39:13",
+            "updated_at": "2017-06-22T09:39:13",
+        }
+        obj = jobbinary.Jobbinary.existing(**object_info)
         return obj

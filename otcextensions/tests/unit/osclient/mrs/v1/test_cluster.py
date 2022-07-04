@@ -349,7 +349,7 @@ class TestDeleteCluster(fakes.TestMrs):
         self.assertEqual(1, self.client.delete_cluster.call_count)
 
 
-class TestUpdateVault(fakes.TestMrs):
+class TestUpdateCluster(fakes.TestMrs):
     object = fakes.FakeCluster.create_one()
 
     columns = (
@@ -437,7 +437,7 @@ class TestUpdateVault(fakes.TestMrs):
     )
 
     def setUp(self):
-        super(TestUpdateVault, self).setUp()
+        super(TestUpdateCluster, self).setUp()
 
         self.cmd = cluster.UpdateCluster(self.app, None)
         self.app.client_manager.sdk_connection = mock.Mock()
