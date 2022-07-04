@@ -146,7 +146,7 @@ class Proxy(sdk_proxy.Proxy):
     def delete_datasource(self, datasource, ignore_missing=True):
         """Delete (release) a datasource
 
-        :param host: The value can be the ID of a datasource
+        :param datasource: The value can be the ID of a datasource
              or a :class:`~otcextensions.sdk.mrs.v1.datasource.Datasource` .
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
@@ -154,7 +154,7 @@ class Proxy(sdk_proxy.Proxy):
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent host.
 
-        :returns: host been deleted
+        :returns: datasource been deleted
         :rtype: :class:`~otcextensions.sdk.mrs.v1.datasource.Datasource`
         """
         return self._delete(_datasource.Datasource, datasource,
@@ -178,7 +178,7 @@ class Proxy(sdk_proxy.Proxy):
     def update_datasource(self, datasource, **attrs):
         """Update ds attributes
 
-        :param host: The id or an instance of
+        :param datasource: The id or an instance of
             :class:`~otcextensions.sdk.mrs.v1.datasource.Datasource`
         :param dict attrs: attributes for update on
             :class:`~otcextensions.sdk.mrs.v1.datasource.Datasource`
@@ -226,7 +226,7 @@ class Proxy(sdk_proxy.Proxy):
     def delete_jobbinary(self, jobbinary, ignore_missing=True):
         """Delete (release) a jobbinary
 
-        :param host: The value can be the ID of a jobbinary
+        :param jobbinary: The value can be the ID of a jobbinary
              or a :class:`~otcextensions.sdk.mrs.v1.jobbinary.Jobbinary` .
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
@@ -257,7 +257,7 @@ class Proxy(sdk_proxy.Proxy):
     def update_jobbinary(self, jobbinary, **attrs):
         """Update jobbinary attributes
 
-        :param host: The id or an instance of
+        :param jobbinary: The id or an instance of
             :class:`~otcextensions.sdk.mrs.v1.jobbinary.Jobbinary`
         :param dict attrs: attributes for update on
             :class:`~otcextensions.sdk.mrs.v1.jobbinary.Jobbinary`
@@ -305,7 +305,7 @@ class Proxy(sdk_proxy.Proxy):
     def delete_job(self, job, ignore_missing=True):
         """Delete (release) a job
 
-        :param host: The value can be the ID of a job
+        :param job: The value can be the ID of a job
              or a :class:`~otcextensions.sdk.mrs.v1.job.Job` .
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
@@ -337,7 +337,7 @@ class Proxy(sdk_proxy.Proxy):
     def update_job(self, job, **attrs):
         """Update job attributes
 
-        :param host: The id or an instance of
+        :param job: The id or an instance of
             :class:`~otcextensions.sdk.mrs.v1.job.Job`
         :param dict attrs: attributes for update on
             :class:`~otcextensions.sdk.mrs.v1.job.Job`
