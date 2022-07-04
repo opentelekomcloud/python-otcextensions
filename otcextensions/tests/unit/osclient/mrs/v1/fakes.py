@@ -16,14 +16,13 @@ import random
 import uuid
 
 import mock
-
 from openstackclient.tests.unit import utils
-from otcextensions.tests.unit.osclient import test_base
 
 from otcextensions.sdk.mrs.v1 import cluster
 from otcextensions.sdk.mrs.v1 import datasource
 from otcextensions.sdk.mrs.v1 import job
 from otcextensions.sdk.mrs.v1 import jobbinary
+from otcextensions.tests.unit.osclient import test_base
 
 
 def gen_data(data, columns):
@@ -238,6 +237,7 @@ class FakeJob(test_base.Fake):
         }
         obj = job.Job.existing(**object_info)
         return obj
+
 
 class FakeJobbinary(test_base.Fake):
     """Fake one or more Jobbinary"""
