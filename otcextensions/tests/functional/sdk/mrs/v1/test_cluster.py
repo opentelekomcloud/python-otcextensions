@@ -1,4 +1,3 @@
-
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -10,15 +9,15 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import openstack
 
-from openstack import service_description
+from otcextensions.tests.functional.sdk.mrs import TestMrs
 
-from otcextensions.sdk.mrs.v1 import _proxy
+_logger = openstack._log.setup_logging('openstack')
 
 
-class MrsService(service_description.ServiceDescription):
-    """The MRS (Big Data) service."""
+class TestCuster(TestMrs):
 
-    supported_versions = {
-        '1': _proxy.Proxy,
-    }
+    def test_list(self):
+        self.clusters = list(self.client.clusters())
+        self.assertGreaterEqual(len(self.clusters), 0)
