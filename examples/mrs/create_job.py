@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python3
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -10,15 +10,26 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+'''
+Create MRS Job with attributes
+'''
+import openstack
 
-from openstack import service_description
+openstack.enable_logging(True)
+conn = openstack.connect(cloud='otc')
 
-from otcextensions.sdk.mrs.v1 import _proxy
+attrs = {
+    "name": "my-mapreduce-job",
+    "mains": [],
+    "libs": [
+        "092b628b-26a3-4571-9ba4-f8d000df8877"
+    ],
+    "is_protected": False,
+    "interface": [],
+    "is_public": False,
+    "type": "MapReduce",
+    "description": "This is the Map Reduce job template"
+}
 
-
-class MrsService(service_description.ServiceDescription):
-    """The MRS (Big Data) service."""
-
-    supported_versions = {
-        '1': _proxy.Proxy,
-    }
+job = conn.mrs.create_job(**attrs)
+print(job)
