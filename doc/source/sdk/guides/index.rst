@@ -20,6 +20,7 @@ Open Telekom Cloud related User Guides
    dms
    dns
    kms
+   mrs
    nat
    rds
    smn

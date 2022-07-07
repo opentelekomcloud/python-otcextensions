@@ -12,5 +12,5 @@ The ``Restore`` class inherits from
 .. autoclass:: otcextensions.sdk.cbr.v3.restore.Restore
    :members:
 
-.. autoclass:: otcextensions.sdk.cbr.v3.restore.Mappings
+.. autoclass:: otcextensions.sdk.cbr.v3.restore.Mapping
    :members:

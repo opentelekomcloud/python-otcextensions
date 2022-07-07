@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python3
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -10,15 +10,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+"""
+Delete MRS Cluster
+"""
+import openstack
 
-from openstack import service_description
+openstack.enable_logging(True)
+conn = openstack.connect(cloud='otc')
 
-from otcextensions.sdk.mrs.v1 import _proxy
-
-
-class MrsService(service_description.ServiceDescription):
-    """The MRS (Big Data) service."""
-
-    supported_versions = {
-        '1': _proxy.Proxy,
-    }
+name_or_id = 'name_or_id'
+cluster = conn.mrs.find_cluster(name_or_id)
+conn.mrs.delete_cluster(cluster=cluster)

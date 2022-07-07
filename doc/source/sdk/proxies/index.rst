@@ -21,6 +21,7 @@ Service Proxies
    Domain Name Server Service (DNS) <dns>
    Identity Service (IAM) <identity_v3>
    Key Management Service (KMS) <kms>
+   MapReduce Service (MRS) <mrs>
    Network Address Translation (NAT) <nat>
    Object Block Storage (OBS) <obs>
    Relational Database Service RDS V1 (RDSv1) <rds_v1>
