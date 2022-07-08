@@ -20,6 +20,7 @@ from otcextensions.tests.unit.osclient import test_base
 
 from otcextensions.sdk.dcaas.v2 import connection
 from otcextensions.sdk.dcaas.v2 import endpoint_group
+from otcextensions.sdk.dcaas.v2 import virtual_gateway
 
 
 def gen_data(data, columns):
@@ -93,3 +94,29 @@ class FakeEndpointGroup(test_base.Fake):
             "endpoints": ["10.2.0.0/24", "10.3.0.0/24"],
         }
         return endpoint_group.DirectConnectEndpointGroup(**object_info)
+
+
+class FakeVirtualGateway(test_base.Fake):
+    """Fake one or more Virtual Gateway."""
+    @classmethod
+    def generate(cls):
+        """Create a fake Virtual Gateway.
+
+        :return:
+            A FakeResource object, with id, name and so on
+        """
+        object_info = {
+            "id": "id-" + uuid.uuid4().hex,
+            "name": "name-" + uuid.uuid4().hex,
+            "description": "test description",
+            "vpc_id": "908d9cf3-da64-4acb-393f-e5eb6b9e838a",
+            "local_ep_group_id": "f8834cf1-5468-87c7-223d-56e78b9699ab",
+            "device_id": "test_device_id1",
+            "redundant_device_id": "test_r_device_id1",
+            "type": "double ipsec",
+            "bgp_asn": 10,
+            "ipsec_bandwidth": 50,
+            "status": "ACTIVE",
+            "admin_state_up": True
+        }
+        return virtual_gateway.VirtualGateway(**object_info)
