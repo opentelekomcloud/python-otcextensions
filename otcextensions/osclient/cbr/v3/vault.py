@@ -15,6 +15,7 @@ import json
 import logging
 
 from osc_lib import utils
+from osc_lib.cli import parseractions
 from osc_lib.command import command
 
 from otcextensions.i18n import _
@@ -558,10 +559,13 @@ class AssociateVaultResource(command.ShowOne):
         )
         parser.add_argument(
             '--resource',
-            metavar='<resource>',
-            action='append',
-            help=_('Associated resource in "id=resource_id '
-                   'type=resource_type name=resource_name" format.'
+            metavar='name=<name>,value=<value>,type=<type>',
+            action=parseractions.MultiKeyValueAction,
+            dest='resource',
+            required_keys=['id', 'type'],
+            optional_keys=['name'],
+            help=_('Associated resource in "id=resource_id,'
+                   'type=resource_type,name=resource_name" format.'
                    'Repeat for multiple values.')
         )
         return parser
@@ -576,8 +580,7 @@ class AssociateVaultResource(command.ShowOne):
             ignore_missing=False
         )
 
-        if parsed_args.resource:
-            resources = _normalize_resources(parsed_args.resource)
+        resources = parsed_args.resource
 
         if resources:
             obj = client.associate_resources(
