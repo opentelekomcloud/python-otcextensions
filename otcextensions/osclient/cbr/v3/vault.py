@@ -106,14 +106,6 @@ def _add_associated_resources_to_vault_obj(data, columns):
     return return_data, columns
 
 
-def _normalize_resources(resources):
-    result = []
-    for resource in resources:
-        res = dict(map(lambda s: s.split('='), resource.split(' ')))
-        result.append(res)
-    return result
-
-
 def _normalize_tags(tags):
     result = []
     for tag in tags:
@@ -134,13 +126,85 @@ class ListVaults(command.Lister):
 
     def get_parser(self, prog_name):
         parser = super(ListVaults, self).get_parser(prog_name)
-
+        parser.add_argument(
+            '--id',
+            metavar='<id>',
+            help=_('Vault ID.')
+        )
+        parser.add_argument(
+            '--name',
+            metavar='<name>',
+            help=_('Vault name')
+        )
+        parser.add_argument(
+            '--cloud-type',
+            metavar='<cloud_type>',
+            help=_('Cloud type, which is public.')
+        )
+        parser.add_argument(
+            '--limit',
+            type=int,
+            metavar='<limit>',
+            help=_('Limit.')
+        )
+        parser.add_argument(
+            '--object-type',
+            metavar='<object_type>',
+            help=_('Object type, which can be server or disk.')
+        )
+        parser.add_argument(
+            '--offset',
+            type=int,
+            metavar='<offset>',
+            help=_('Offset value. The value must be a positive integer.')
+        )
+        parser.add_argument(
+            '--policy-id',
+            metavar='<policy_id>',
+            help=_('Policy ID.')
+        )
+        parser.add_argument(
+            '--protect-type',
+            metavar='<protect_type>',
+            help=_('Protection type, which is backup.')
+        )
+        parser.add_argument(
+            '--resource-ids',
+            metavar='<resource_ids>',
+            help=_('Resource ID.')
+        )
+        parser.add_argument(
+            '--status',
+            metavar='<status>',
+            help=_('Status.')
+        )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.cbr
+        args = {}
+        if parsed_args.id:
+            args['id'] = parsed_args.id
+        if parsed_args.name:
+            args['name'] = parsed_args.name
+        if parsed_args.cloud_type:
+            args['cloud_type'] = parsed_args.cloud_type
+        if parsed_args.limit:
+            args['limit'] = parsed_args.limit
+        if parsed_args.object_type:
+            args['object_type'] = parsed_args.object_type
+        if parsed_args.offset:
+            args['offset'] = parsed_args.offset
+        if parsed_args.policy_id:
+            args['policy_id'] = parsed_args.policy_id
+        if parsed_args.protect_type:
+            args['protect_type'] = parsed_args.protect_type
+        if parsed_args.resource_ids:
+            args['resource_ids'] = parsed_args.resource_ids
+        if parsed_args.status:
+            args['status'] = parsed_args.status
 
-        data = client.vaults()
+        data = client.vaults(**args)
 
         table = (self.columns,
                  (utils.get_dict_properties(
