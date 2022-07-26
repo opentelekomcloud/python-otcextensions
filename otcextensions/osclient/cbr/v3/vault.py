@@ -169,11 +169,6 @@ class ListVaults(command.Lister):
             help=_('Protection type, which is backup.')
         )
         parser.add_argument(
-            '--resource-ids',
-            metavar='<resource_ids>',
-            help=_('Resource ID.')
-        )
-        parser.add_argument(
             '--status',
             metavar='<status>',
             help=_('Status.')
@@ -199,8 +194,6 @@ class ListVaults(command.Lister):
             args['policy_id'] = parsed_args.policy_id
         if parsed_args.protect_type:
             args['protect_type'] = parsed_args.protect_type
-        if parsed_args.resource_ids:
-            args['resource_ids'] = parsed_args.resource_ids
         if parsed_args.status:
             args['status'] = parsed_args.status
 
