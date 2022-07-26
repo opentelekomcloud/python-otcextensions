@@ -295,7 +295,7 @@ class CreateVault(command.ShowOne):
         )
         parser.add_argument(
             '--backup-policy',
-            metavar='<backup-policy>',
+            metavar='<backup_policy>',
             help=_('Name or id of the CBR Policy.')
         )
         parser.add_argument(
