@@ -294,8 +294,8 @@ class CreateVault(command.ShowOne):
             help=_('Name of the CBR Vault.')
         )
         parser.add_argument(
-            '--backup_policy',
-            metavar='<backup_policy>',
+            '--backup-policy',
+            metavar='<backup-policy>',
             help=_('Name or id of the CBR Policy.')
         )
         parser.add_argument(
@@ -304,18 +304,18 @@ class CreateVault(command.ShowOne):
             help=_('User-defined CBR Vault description.')
         )
         parser.add_argument(
-            '--enterprise_project_id',
+            '--enterprise-project-id',
             metavar='<enterprise_project_id>',
             help=_('Enterprise project ID.')
         )
         parser.add_argument(
-            '--auto_bind',
+            '--auto-bind',
             metavar='<auto_bind>',
             type=bool,
             help=_('Whether automatic association is supported.')
         )
         parser.add_argument(
-            '--consistent_level',
+            '--consistent-level',
             metavar='<consistent_level>',
             required=True,
             default='crash_consistent',
@@ -326,7 +326,7 @@ class CreateVault(command.ShowOne):
                    'Backup specifications.')
         )
         parser.add_argument(
-            '--object_type',
+            '--object-type',
             metavar='<object_type>',
             required=True,
             choices=['server', 'disk', 'turbo'],
@@ -341,20 +341,20 @@ class CreateVault(command.ShowOne):
                    'Ranges from 1 to 10485760.')
         )
         parser.add_argument(
-            '--is_auto_renew',
+            '--is-auto-renew',
             action='store_false',
             help=_('Whether to automatically renew the subscription '
                    'after expiration. By default, it is not renewed.')
         )
         parser.add_argument(
-            '--is_auto_pay',
+            '--is-auto-pay',
             action='store_false',
             help=_('Whether the fee is automatically deducted from the '
                    'customer account balance after an order is submitted. '
                    'The non-automatic payment mode is used by default.')
         )
         parser.add_argument(
-            '--console_url',
+            '--console-url',
             metavar='<console_url>',
             help=_('Redirection URL.')
         )
@@ -377,7 +377,7 @@ class CreateVault(command.ShowOne):
                    'Repeat for multiple values.')
         )
         parser.add_argument(
-            '--bind_rule',
+            '--bind-rule',
             metavar='<bind_rule>',
             action='append',
             help=_('Filters automatically associated resources by tag '
@@ -487,13 +487,13 @@ class UpdateVault(command.ShowOne):
             help=_('Name of the CBR Vault.')
         )
         parser.add_argument(
-            '--auto_bind',
+            '--auto-bind',
             metavar='<auto_bind>',
             type=bool,
             help=_('Whether automatic association is supported.')
         )
         parser.add_argument(
-            '--bind_rule',
+            '--bind-rule',
             metavar='<bind_rule>',
             action='append',
             help=_('Filters automatically associated resources by tag '
@@ -501,13 +501,13 @@ class UpdateVault(command.ShowOne):
                    'Repeat for multiple values.')
         )
         parser.add_argument(
-            '--auto_expand',
+            '--auto-expand',
             metavar='<auto_expand>',
             type=bool,
             help=_('Whether to enable auto capacity expansion for the vault.')
         )
         parser.add_argument(
-            '--smn_notify',
+            '--smn-notify',
             metavar='<smn_notify>',
             type=bool,
             help=_('Exception notification function.')

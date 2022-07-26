@@ -163,21 +163,6 @@ class TestVault(fakes.TestCBR):
         self.assertEqual(data, verify_data)
         self.assertEqual(column, verify_column)
 
-    def test_normalize_resources(self):
-        resources = [
-            'id=987654 type=OS::Nova::Server name=Server',
-            'id=012345 type=OS::Sfs::Turbo name=Turbo'
-        ]
-
-        verify_result = [
-            {'id': '987654', 'name': 'Server', 'type': 'OS::Nova::Server'},
-            {'id': '012345', 'name': 'Turbo', 'type': 'OS::Sfs::Turbo'}
-        ]
-
-        result = vault._normalize_resources(resources)
-
-        self.assertEqual(result, verify_result)
-
     def test_normalize_tags(self):
         tags = [
             'key1=value',
@@ -485,9 +470,9 @@ class TestCreateVault(fakes.TestCBR):
     def test_default(self):
         arglist = [
             'vault_name',
-            '--consistent_level', 'crash_consistent',
-            '--backup_policy', 'id',
-            '--object_type', 'disk',
+            '--consistent-level', 'crash_consistent',
+            '--backup-policy', 'id',
+            '--object-type', 'disk',
             '--size', '40',
         ]
         verifylist = [
