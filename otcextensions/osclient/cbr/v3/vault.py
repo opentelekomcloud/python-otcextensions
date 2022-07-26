@@ -360,10 +360,13 @@ class CreateVault(command.ShowOne):
         )
         parser.add_argument(
             '--resource',
-            metavar='<resource>',
-            action='append',
-            help=_('Associated resource in "id=resource_id '
-                   'type=resource_type name=resource_name" format.'
+            metavar='name=<name>,value=<value>,type=<type>',
+            action=parseractions.MultiKeyValueAction,
+            dest='resource',
+            required_keys=['id', 'type'],
+            optional_keys=['name'],
+            help=_('Associated resource in "id=resource_id,'
+                   'type=resource_type,name=resource_name" format.'
                    'Repeat for multiple values.')
         )
         parser.add_argument(
@@ -404,7 +407,7 @@ class CreateVault(command.ShowOne):
         attrs['billing']['size'] = parsed_args.size
 
         if parsed_args.resource:
-            attrs['resources'] = _normalize_resources(parsed_args.resource)
+            attrs['resources'] = parsed_args.resource
 
         # optional
         if parsed_args.is_auto_renew:
