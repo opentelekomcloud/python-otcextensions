@@ -163,21 +163,6 @@ class TestVault(fakes.TestCBR):
         self.assertEqual(data, verify_data)
         self.assertEqual(column, verify_column)
 
-    def test_normalize_resources(self):
-        resources = [
-            'id=987654 type=OS::Nova::Server name=Server',
-            'id=012345 type=OS::Sfs::Turbo name=Turbo'
-        ]
-
-        verify_result = [
-            {'id': '987654', 'name': 'Server', 'type': 'OS::Nova::Server'},
-            {'id': '012345', 'name': 'Turbo', 'type': 'OS::Sfs::Turbo'}
-        ]
-
-        result = vault._normalize_resources(resources)
-
-        self.assertEqual(result, verify_result)
-
     def test_normalize_tags(self):
         tags = [
             'key1=value',
@@ -223,9 +208,29 @@ class TestListVault(fakes.TestCBR):
         self.client.api_mock = self.client.vaults
 
     def test_default(self):
-        arglist = []
+        arglist = [
+            '--id', 'vault-id',
+            '--name', 'vault-name',
+            '--cloud-type', 'cloud-type',
+            '--limit', '12',
+            '--object-type', 'object-type',
+            '--offset', '1',
+            '--policy-id', 'policy-id',
+            '--protect-type', 'protect-type',
+            '--status', 'status',
+        ]
 
-        verifylist = []
+        verifylist = [
+            ('id', 'vault-id'),
+            ('name', 'vault-name'),
+            ('cloud_type', 'cloud-type'),
+            ('limit', 12),
+            ('object_type', 'object-type'),
+            ('offset', 1),
+            ('policy_id', 'policy-id'),
+            ('protect_type', 'protect-type'),
+            ('status', 'status')
+        ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -238,7 +243,17 @@ class TestListVault(fakes.TestCBR):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.api_mock.assert_called_once_with()
+        self.client.api_mock.assert_called_once_with(
+            id='vault-id',
+            name='vault-name',
+            cloud_type='cloud-type',
+            limit=12,
+            object_type='object-type',
+            offset=1,
+            policy_id='policy-id',
+            protect_type='protect-type',
+            status='status'
+        )
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
@@ -455,9 +470,9 @@ class TestCreateVault(fakes.TestCBR):
     def test_default(self):
         arglist = [
             'vault_name',
-            '--consistent_level', 'crash_consistent',
-            '--backup_policy', 'id',
-            '--object_type', 'disk',
+            '--consistent-level', 'crash_consistent',
+            '--backup-policy', 'id',
+            '--object-type', 'disk',
             '--size', '40',
         ]
         verifylist = [
@@ -759,11 +774,11 @@ class TestAssociateVaultResource(fakes.TestCBR):
     def test_default(self):
         arglist = [
             'vault_id',
-            '--resource', 'id=resource_id type=resource_type'
+            '--resource', 'id=resource_id,type=resource_type'
         ]
         verifylist = [
             ('vault', 'vault_id'),
-            ('resource', ['id=resource_id type=resource_type']),
+            ('resource', [{'id': 'resource_id', 'type': 'resource_type'}]),
         ]
 
         # Verify cm is triggereg with default parameters

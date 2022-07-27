@@ -15,6 +15,7 @@ import json
 import logging
 
 from osc_lib import utils
+from osc_lib.cli import parseractions
 from osc_lib.command import command
 
 from otcextensions.i18n import _
@@ -105,14 +106,6 @@ def _add_associated_resources_to_vault_obj(data, columns):
     return return_data, columns
 
 
-def _normalize_resources(resources):
-    result = []
-    for resource in resources:
-        res = dict(map(lambda s: s.split('='), resource.split(' ')))
-        result.append(res)
-    return result
-
-
 def _normalize_tags(tags):
     result = []
     for tag in tags:
@@ -133,13 +126,78 @@ class ListVaults(command.Lister):
 
     def get_parser(self, prog_name):
         parser = super(ListVaults, self).get_parser(prog_name)
-
+        parser.add_argument(
+            '--id',
+            metavar='<id>',
+            help=_('Vault ID.')
+        )
+        parser.add_argument(
+            '--name',
+            metavar='<name>',
+            help=_('Vault name')
+        )
+        parser.add_argument(
+            '--cloud-type',
+            metavar='<cloud_type>',
+            help=_('Cloud type, which is public.')
+        )
+        parser.add_argument(
+            '--limit',
+            type=int,
+            metavar='<limit>',
+            help=_('Limit.')
+        )
+        parser.add_argument(
+            '--object-type',
+            metavar='<object_type>',
+            help=_('Object type, which can be server or disk.')
+        )
+        parser.add_argument(
+            '--offset',
+            type=int,
+            metavar='<offset>',
+            help=_('Offset value. The value must be a positive integer.')
+        )
+        parser.add_argument(
+            '--policy-id',
+            metavar='<policy_id>',
+            help=_('Policy ID.')
+        )
+        parser.add_argument(
+            '--protect-type',
+            metavar='<protect_type>',
+            help=_('Protection type, which is backup.')
+        )
+        parser.add_argument(
+            '--status',
+            metavar='<status>',
+            help=_('Status.')
+        )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.cbr
+        args = {}
+        if parsed_args.id:
+            args['id'] = parsed_args.id
+        if parsed_args.name:
+            args['name'] = parsed_args.name
+        if parsed_args.cloud_type:
+            args['cloud_type'] = parsed_args.cloud_type
+        if parsed_args.limit:
+            args['limit'] = parsed_args.limit
+        if parsed_args.object_type:
+            args['object_type'] = parsed_args.object_type
+        if parsed_args.offset:
+            args['offset'] = parsed_args.offset
+        if parsed_args.policy_id:
+            args['policy_id'] = parsed_args.policy_id
+        if parsed_args.protect_type:
+            args['protect_type'] = parsed_args.protect_type
+        if parsed_args.status:
+            args['status'] = parsed_args.status
 
-        data = client.vaults()
+        data = client.vaults(**args)
 
         table = (self.columns,
                  (utils.get_dict_properties(
@@ -236,7 +294,7 @@ class CreateVault(command.ShowOne):
             help=_('Name of the CBR Vault.')
         )
         parser.add_argument(
-            '--backup_policy',
+            '--backup-policy',
             metavar='<backup_policy>',
             help=_('Name or id of the CBR Policy.')
         )
@@ -246,18 +304,18 @@ class CreateVault(command.ShowOne):
             help=_('User-defined CBR Vault description.')
         )
         parser.add_argument(
-            '--enterprise_project_id',
+            '--enterprise-project-id',
             metavar='<enterprise_project_id>',
             help=_('Enterprise project ID.')
         )
         parser.add_argument(
-            '--auto_bind',
+            '--auto-bind',
             metavar='<auto_bind>',
             type=bool,
             help=_('Whether automatic association is supported.')
         )
         parser.add_argument(
-            '--consistent_level',
+            '--consistent-level',
             metavar='<consistent_level>',
             required=True,
             default='crash_consistent',
@@ -268,7 +326,7 @@ class CreateVault(command.ShowOne):
                    'Backup specifications.')
         )
         parser.add_argument(
-            '--object_type',
+            '--object-type',
             metavar='<object_type>',
             required=True,
             choices=['server', 'disk', 'turbo'],
@@ -283,29 +341,32 @@ class CreateVault(command.ShowOne):
                    'Ranges from 1 to 10485760.')
         )
         parser.add_argument(
-            '--is_auto_renew',
+            '--is-auto-renew',
             action='store_false',
             help=_('Whether to automatically renew the subscription '
                    'after expiration. By default, it is not renewed.')
         )
         parser.add_argument(
-            '--is_auto_pay',
+            '--is-auto-pay',
             action='store_false',
             help=_('Whether the fee is automatically deducted from the '
                    'customer account balance after an order is submitted. '
                    'The non-automatic payment mode is used by default.')
         )
         parser.add_argument(
-            '--console_url',
+            '--console-url',
             metavar='<console_url>',
             help=_('Redirection URL.')
         )
         parser.add_argument(
             '--resource',
-            metavar='<resource>',
-            action='append',
-            help=_('Associated resource in "id=resource_id '
-                   'type=resource_type name=resource_name" format.'
+            metavar='name=<name>,value=<value>,type=<type>',
+            action=parseractions.MultiKeyValueAction,
+            dest='resource',
+            required_keys=['id', 'type'],
+            optional_keys=['name'],
+            help=_('Associated resource in "id=resource_id,'
+                   'type=resource_type,name=resource_name" format.'
                    'Repeat for multiple values.')
         )
         parser.add_argument(
@@ -316,7 +377,7 @@ class CreateVault(command.ShowOne):
                    'Repeat for multiple values.')
         )
         parser.add_argument(
-            '--bind_rule',
+            '--bind-rule',
             metavar='<bind_rule>',
             action='append',
             help=_('Filters automatically associated resources by tag '
@@ -346,7 +407,7 @@ class CreateVault(command.ShowOne):
         attrs['billing']['size'] = parsed_args.size
 
         if parsed_args.resource:
-            attrs['resources'] = _normalize_resources(parsed_args.resource)
+            attrs['resources'] = parsed_args.resource
 
         # optional
         if parsed_args.is_auto_renew:
@@ -426,13 +487,13 @@ class UpdateVault(command.ShowOne):
             help=_('Name of the CBR Vault.')
         )
         parser.add_argument(
-            '--auto_bind',
+            '--auto-bind',
             metavar='<auto_bind>',
             type=bool,
             help=_('Whether automatic association is supported.')
         )
         parser.add_argument(
-            '--bind_rule',
+            '--bind-rule',
             metavar='<bind_rule>',
             action='append',
             help=_('Filters automatically associated resources by tag '
@@ -440,13 +501,13 @@ class UpdateVault(command.ShowOne):
                    'Repeat for multiple values.')
         )
         parser.add_argument(
-            '--auto_expand',
+            '--auto-expand',
             metavar='<auto_expand>',
             type=bool,
             help=_('Whether to enable auto capacity expansion for the vault.')
         )
         parser.add_argument(
-            '--smn_notify',
+            '--smn-notify',
             metavar='<smn_notify>',
             type=bool,
             help=_('Exception notification function.')
@@ -558,10 +619,13 @@ class AssociateVaultResource(command.ShowOne):
         )
         parser.add_argument(
             '--resource',
-            metavar='<resource>',
-            action='append',
-            help=_('Associated resource in "id=resource_id '
-                   'type=resource_type name=resource_name" format.'
+            metavar='name=<name>,value=<value>,type=<type>',
+            action=parseractions.MultiKeyValueAction,
+            dest='resource',
+            required_keys=['id', 'type'],
+            optional_keys=['name'],
+            help=_('Associated resource in "id=resource_id,'
+                   'type=resource_type,name=resource_name" format.'
                    'Repeat for multiple values.')
         )
         return parser
@@ -576,8 +640,7 @@ class AssociateVaultResource(command.ShowOne):
             ignore_missing=False
         )
 
-        if parsed_args.resource:
-            resources = _normalize_resources(parsed_args.resource)
+        resources = parsed_args.resource
 
         if resources:
             obj = client.associate_resources(
