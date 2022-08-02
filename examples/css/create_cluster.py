@@ -45,9 +45,9 @@ attrs = {
         'systemEncrypted': '0',
     },
     'tags': [{'key': "key0", 'value': "value0"},
-              {'key': "key1", 'value': "value1"},
-              {'key': "key2", 'value': "value2"},
-              {'key': "key3", 'value': "value3"}],
+             {'key': "key1", 'value': "value1"},
+             {'key': "key2", 'value': "value2"},
+             {'key': "key3", 'value': "value3"}],
     'backupStrategy': {
         'period': "00:00 GMT+03:00",
         'prefix': 'backup',

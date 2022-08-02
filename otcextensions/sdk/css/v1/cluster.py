@@ -50,6 +50,7 @@ class DiskEncryption(resource.Resource):
     #: KMS Key ID
     cms_id = resource.Body('systemCmkid')
 
+
 class BackupStrategy(resource.Resource):
     #: Time when a snapshot is created every day.
     period = resource.Body('period')
@@ -63,6 +64,7 @@ class BackupStrategy(resource.Resource):
     basepath = resource.Body('basePath')
     #: IAM agency used to access OBS.
     agency = resource.Body('agency')
+
 
 class Cluster(resource.Resource):
     base_path = '/clusters'
