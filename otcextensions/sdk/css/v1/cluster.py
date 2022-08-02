@@ -50,6 +50,19 @@ class DiskEncryption(resource.Resource):
     #: KMS Key ID
     cms_id = resource.Body('systemCmkid')
 
+class BackupStrategy(resource.Resource):
+    #: Time when a snapshot is created every day.
+    period = resource.Body('period')
+    #: Prefix of the name of the snapshot that is automatically created.
+    prefix = resource.Body('prefix')
+    #: Number of days for which automatically created snapshots are reserved.
+    keepday = resource.Body('keepday')
+    #: OBS bucket used for storing backup.
+    bucket = resource.Body('bucket')
+    #: Storage path of the snapshot in the OBS bucket.
+    basepath = resource.Body('basePath')
+    #: IAM agency used to access OBS.
+    agency = resource.Body('agency')
 
 class Cluster(resource.Resource):
     base_path = '/clusters'
@@ -111,6 +124,8 @@ class Cluster(resource.Resource):
     jobId = resource.Body('jobId')
     #: Array of tags
     tags = resource.Body('tags', type=list)
+    #: Automatic snapshot creation
+    backup_strategy = resource.Body('backupStrategy', type=BackupStrategy)
 
     def _action(self, session, action, body=None):
         """Preform actions given the message body.

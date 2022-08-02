@@ -14,10 +14,11 @@
 Create CSS Cluster
 """
 import openstack
+from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-
+conn = openstack.connect(cloud='otc-test')
+sdk.register_otc_extensions(conn)
 
 attrs = {
     'name': 'ES-Test',
@@ -43,10 +44,14 @@ attrs = {
     'diskEncryption': {
         'systemEncrypted': '0',
     },
-    'tags': [{'key': "key0", 'value': "value0"},
-             {'key': "key1", 'value': "value1"},
-             {'key': "key2", 'value': "value2"},
-             {'key': "key3", 'value': "value3"}]
+    'backupStrategy': {
+        'period': "00:00 GMT+03:00",
+        'prefix': 'backup',
+        'keepday': 1,
+        'bucket': 'css-test-0',
+        'agency': 'test-css',
+        'basePath': 'css'
+    },
 }
 result = conn.css.create_cluster(**attrs)
 print(result)
