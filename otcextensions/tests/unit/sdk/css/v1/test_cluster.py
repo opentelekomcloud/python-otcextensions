@@ -61,7 +61,15 @@ EXAMPLE = {
     'tags': [{'key': "key0", 'value': "value0"},
              {'key': "key1", 'value': "value1"},
              {'key': "key2", 'value': "value2"},
-             {'key': "key3", 'value': "value3"}]
+             {'key': "key3", 'value': "value3"}],
+    "backupStrategy": {
+        "period": "00:00 GMT+03:00",
+        "prefix": "backup",
+        "keepday": 1,
+        "bucket": "css-test-0",
+        "agency": "test-css",
+        "basePath": "css"
+    }
 }
 
 
@@ -102,6 +110,7 @@ class TestCluster(base.TestCase):
             'instances',
             'updated',
             'created',
+            'backupStrategy',
         )
 
         self.assertEqual(EXAMPLE['cmkId'], sot.cmk_id)
@@ -129,6 +138,18 @@ class TestCluster(base.TestCase):
         self.assertEqual(EXAMPLE['updated'], sot.updated_at)
         self.assertEqual(EXAMPLE['created'], sot.created_at)
         self.assertEqual(EXAMPLE['tags'], sot.tags)
+        self.assertEqual(EXAMPLE['backupStrategy']['period'],
+                         sot.backup_strategy.period)
+        self.assertEqual(EXAMPLE['backupStrategy']['prefix'],
+                         sot.backup_strategy.prefix)
+        self.assertEqual(EXAMPLE['backupStrategy']['keepday'],
+                         sot.backup_strategy.keepday)
+        self.assertEqual(EXAMPLE['backupStrategy']['bucket'],
+                         sot.backup_strategy.bucket)
+        self.assertEqual(EXAMPLE['backupStrategy']['agency'],
+                         sot.backup_strategy.agency)
+        self.assertEqual(EXAMPLE['backupStrategy']['basePath'],
+                         sot.backup_strategy.basepath)
 
         for key, value in EXAMPLE.items():
             if key in updated_sot_attrs:
