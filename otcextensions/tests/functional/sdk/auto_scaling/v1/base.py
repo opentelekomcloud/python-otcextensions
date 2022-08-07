@@ -28,87 +28,83 @@ class BaseASTest(base.BaseFunctionalTest):
     NETWORK_NAME = "test-as-network-" + UUID
     SUBNET_NAME = "test-as-subnet-" + UUID
     ROUTER_NAME = "test-as-router-" + UUID
+    NETWORK = None
     KP_NAME = "test-as-kp-" + UUID
     IP_VERSION = 4
     CIDR = "192.168.0.0/16"
 
-    def _create_keypair(self):
-        return self.conn.compute.create_keypair(
-            name=self.KP_NAME
-        )
+    def create_network(
+            self,
+            cidr='192.168.0.0/16',
+            ip_version=4
+    ):
+        router_name = self.ROUTER_NAME
+        net_name = self.NETWORK_NAME
+        subnet_name = self.SUBNET_NAME
+        if not BaseASTest.NETWORK:
+            network = self.conn.network.create_network(name=net_name)
+            self.assertEqual(net_name, network.name)
+            net_id = network.id
+            subnet = self.conn.network.create_subnet(
+                name=subnet_name,
+                ip_version=ip_version,
+                network_id=net_id,
+                cidr=cidr
+            )
+            self.assertEqual(subnet_name, subnet.name)
+            subnet_id = subnet.id
 
-    def _delete_keypair(self, key_pair):
-        return self.conn.compute.delete_keypair(
-            keypair=key_pair
-        )
+            router = self.conn.network.create_router(name=router_name)
+            self.assertEqual(router_name, router.name)
+            router_id = router.id
+            interface = router.add_interface(
+                self.conn.network,
+                subnet_id=subnet_id
+            )
+            self.assertEqual(interface['subnet_id'], subnet_id)
+            self.assertIn('port_id', interface)
+            keypair = self.conn.compute.create_keypair(
+                name=self.KP_NAME
+            )
+            self.assertIsNotNone(keypair)
+            BaseASTest.NETWORK = {
+                'router_id': router_id,
+                'subnet_id': subnet_id,
+                'network_id': net_id
+            }
+        return
 
-    def _create_network(self):
-        return self.conn.network.create_network(
-            name=self.NETWORK_NAME
-        )
+    def destroy_network(self):
+        params = BaseASTest.NETWORK
+        router_id = params.get('router_id')
+        subnet_id = params.get('subnet_id')
+        network_id = params.get('network_id')
+        router = self.conn.network.get_router(router_id)
 
-    def _delete_network(self, network):
-        return self.conn.network.delete_network(
-            network=network
-        )
-
-    def _create_subnet(self, network_id):
-        return self.conn.network.create_subnet(
-            name=self.SUBNET_NAME,
-            network_id=network_id,
-            ip_version=self.IP_VERSION,
-            cidr=self.CIDR
-        )
-
-    def _delete_subnet(self, subnet):
-        return self.conn.network.delete_subnet(
-            subnet=subnet
-        )
-
-    def _create_router(self, subnet_id):
-        router = self.conn.network.create_router(
-            name=self.ROUTER_NAME
-        )
-        self.conn.network.add_interface_to_router(
-            router=router,
+        interface = router.remove_interface(
+            self.conn.network,
             subnet_id=subnet_id
         )
-        return router
-
-    def _delete_router(self, router, subnet_id):
-        self.conn.network.remove_interface_from_router(
-            router=router,
-            subnet_id=subnet_id
+        self.assertEqual(interface['subnet_id'], subnet_id)
+        self.assertIn('port_id', interface)
+        sot = self.conn.network.delete_router(
+            router_id,
+            ignore_missing=False
         )
-        return self.conn.network.delete_router(
-            router=router
+        self.assertIsNone(sot)
+        sot = self.conn.network.delete_subnet(
+            subnet_id,
+            ignore_missing=False
         )
-
-    def create_test_infra(self):
-        key_pair = self._create_keypair()
-        network = self._create_network()
-        subnet = self._create_subnet(network.id)
-        router = self._create_router(subnet.id)
-        return {
-            "key_pair_id": key_pair.id,
-            "network_id": network.id,
-            "subnet_id": subnet.id,
-            "router_id": router.id
-        }
-
-    def delete_test_infra(self, infra: dict):
-        router = self.conn.network.get_router(infra.get("router_id"))
-        subnet = self.conn.network.get_subnet(infra.get("subnet_id"))
-        network = self.conn.network.get_network(infra.get("network_id"))
-        key_pair = self.conn.compute.get_keypair(infra.get("key_pair_id"))
-        if router:
-            self._delete_router(router, subnet.id)
-        if subnet:
-            self._delete_subnet(subnet)
-        if network:
-            self._delete_network(network)
-        if key_pair:
-            self._delete_keypair(key_pair)
+        self.assertIsNone(sot)
+        sot = self.conn.network.delete_network(
+            network_id,
+            ignore_missing=False
+        )
+        self.assertIsNone(sot)
+        BaseASTest.NETWORK = None
+        keypair = self.conn.compute.delete_keypair(keypair=self.KP_NAME)
+        self.assertIsNone(keypair)
 
     def setUp(self):
         test_timeout = 3 * int(os.environ.get('OS_TEST_TIMEOUT'))
@@ -119,11 +115,11 @@ class BaseASTest(base.BaseFunctionalTest):
         except ValueError:
             pass
         super(BaseASTest, self).setUp()
-        self.infra = self.create_test_infra()
+        self.create_network()
 
     def tearDown(self):
         try:
-            self.delete_test_infra(self.infra)
+            self.destroy_network()
         except exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
