@@ -44,14 +44,6 @@ class TestInstance(base.BaseASTest):
         super(TestInstance, self).setUp()
         self._initialize_as_group_with_instance()
 
-    def tearDown(self):
-        try:
-            self._deinitialize_as_group_with_instance()
-        except exceptions.SDKException as e:
-            _logger.warning('Got exception during clearing resources %s'
-                            % e.message)
-        super(TestInstance, self).tearDown()
-
     def _get_image_id(self):
         image = self.conn.compute.find_image(
             name_or_id=self.IMAGE_NAME
@@ -148,17 +140,16 @@ class TestInstance(base.BaseASTest):
             )
 
     def _wait_for_instance(self):
-        as_group = TestInstance.AS_GROUP
+        timeout = int(os.environ.get('OS_TEST_TIMEOUT'))
         for count in utils.iterate_timeout(
-                timeout=self.TIMEOUT,
+                timeout=timeout,
                 message="Timeout waiting for instance"
         ):
             instances = list(self.conn.auto_scaling.instances(
-                group=as_group
+                group=TestInstance.AS_GROUP
             ))
             if len(instances) == self.MAX_INSTANCE_NUMBER and instances[0].id:
-                TestInstance.AS_INSTANCE =\
-                    self.conn.auto_scaling.wait_for_instance(instances[0])
+                return self.conn.auto_scaling.wait_for_instance(instances[0])
 
     def _delete_instance(self):
         if TestInstance.AS_INSTANCE:
@@ -174,7 +165,7 @@ class TestInstance(base.BaseASTest):
     def _initialize_as_group_with_instance(self):
         self._create_as_config()
         self._create_as_group()
-        # self._wait_for_instance()
+        TestInstance.AS_INSTANCE = self._wait_for_instance()
 
     def _deinitialize_as_group_with_instance(self):
         self._delete_instance()
@@ -198,7 +189,7 @@ class TestInstance(base.BaseASTest):
         self.assertIsNotNone(as_group_list)
 
     def test_04_update_as_group(self):
-        new_name = self.AS_GROUP_NAME + "_new"
+        new_name = self.AS_GROUP_NAME
         as_group = self.conn.auto_scaling.update_group(
             group=TestInstance.AS_GROUP, name=new_name)
         self.assertIsNotNone(as_group)
@@ -206,23 +197,25 @@ class TestInstance(base.BaseASTest):
 
     def test_05_find_as_group(self):
         find_as_group = self.conn.auto_scaling.find_group(
-            name_or_id=self.AS_GROUP_NAME
+            name_or_id=TestInstance.AS_GROUP.id
         )
         self.assertEqual(TestInstance.AS_GROUP.id, find_as_group.id)
         self.assertEqual(TestInstance.AS_GROUP.name, find_as_group.name)
+        self._deinitialize_as_group_with_instance()
+        self.destroy_network()
 
-    # def test_06_find_instance_by_id(self):
-    #     result = self.conn.auto_scaling.find_instance(
-    #         name_or_id=TestInstance.AS_INSTANCE.id,
-    #         group=TestInstance.AS_GROUP.id
-    #     )
-    #     self.assertIsNotNone(result)
-    #     self.assertEqual(TestInstance.AS_INSTANCE.id, result.id)
-    #
-    # def test_07_find_instance_by_name(self):
-    #     result = self.conn.auto_scaling.find_instance(
-    #         name_or_id=TestInstance.AS_GROUP.name,
-    #         group=TestInstance.AS_GROUP.id
-    #     )
-    #     self.assertIsNotNone(result)
-    #     self.assertEqual(TestInstance.AS_INSTANCE.name, result.name)
+    def test_06_find_instance_by_id(self):
+        result = self.conn.auto_scaling.find_instance(
+            name_or_id=TestInstance.AS_INSTANCE.id,
+            group=TestInstance.AS_GROUP.id
+        )
+        self.assertIsNotNone(result)
+        self.assertEqual(TestInstance.AS_INSTANCE.id, result.id)
+
+    def test_07_find_instance_by_name(self):
+        result = self.conn.auto_scaling.find_instance(
+            name_or_id=TestInstance.AS_INSTANCE.name,
+            group=TestInstance.AS_GROUP.id
+        )
+        self.assertIsNotNone(result)
+        self.assertEqual(TestInstance.AS_INSTANCE.name, result.name)

@@ -15,7 +15,6 @@ import uuid
 
 import fixtures
 
-from openstack import exceptions
 from openstack import _log
 from otcextensions.tests.functional import base
 
@@ -29,6 +28,7 @@ class BaseASTest(base.BaseFunctionalTest):
     SUBNET_NAME = "test-as-subnet-" + UUID
     ROUTER_NAME = "test-as-router-" + UUID
     NETWORK = None
+    KEYPAIR = None
     KP_NAME = "test-as-kp-" + UUID
     IP_VERSION = 4
     CIDR = "192.168.0.0/16"
@@ -63,48 +63,52 @@ class BaseASTest(base.BaseFunctionalTest):
             )
             self.assertEqual(interface['subnet_id'], subnet_id)
             self.assertIn('port_id', interface)
-            keypair = self.conn.compute.create_keypair(
-                name=self.KP_NAME
-            )
-            self.assertIsNotNone(keypair)
             BaseASTest.NETWORK = {
                 'router_id': router_id,
                 'subnet_id': subnet_id,
                 'network_id': net_id
             }
+        if not BaseASTest.KEYPAIR:
+            keypair = self.conn.compute.create_keypair(
+                name=self.KP_NAME
+            )
+            self.assertIsNotNone(keypair)
+            BaseASTest.KEYPAIR = keypair
         return
 
     def destroy_network(self):
-        params = BaseASTest.NETWORK
-        router_id = params.get('router_id')
-        subnet_id = params.get('subnet_id')
-        network_id = params.get('network_id')
-        router = self.conn.network.get_router(router_id)
+        if BaseASTest.NETWORK:
+            params = BaseASTest.NETWORK
+            router_id = params.get('router_id')
+            subnet_id = params.get('subnet_id')
+            network_id = params.get('network_id')
+            router = self.conn.network.get_router(router_id)
 
-        interface = router.remove_interface(
-            self.conn.network,
-            subnet_id=subnet_id
-        )
-        self.assertEqual(interface['subnet_id'], subnet_id)
-        self.assertIn('port_id', interface)
-        sot = self.conn.network.delete_router(
-            router_id,
-            ignore_missing=False
-        )
-        self.assertIsNone(sot)
-        sot = self.conn.network.delete_subnet(
-            subnet_id,
-            ignore_missing=False
-        )
-        self.assertIsNone(sot)
-        sot = self.conn.network.delete_network(
-            network_id,
-            ignore_missing=False
-        )
-        self.assertIsNone(sot)
-        BaseASTest.NETWORK = None
-        keypair = self.conn.compute.delete_keypair(keypair=self.KP_NAME)
-        self.assertIsNone(keypair)
+            interface = router.remove_interface(
+                self.conn.network,
+                subnet_id=subnet_id
+            )
+            self.assertEqual(interface['subnet_id'], subnet_id)
+            self.assertIn('port_id', interface)
+            sot = self.conn.network.delete_router(
+                router_id,
+                ignore_missing=False
+            )
+            self.assertIsNone(sot)
+            sot = self.conn.network.delete_subnet(
+                subnet_id,
+                ignore_missing=False
+            )
+            self.assertIsNone(sot)
+            sot = self.conn.network.delete_network(
+                network_id,
+                ignore_missing=False
+            )
+            self.assertIsNone(sot)
+            BaseASTest.NETWORK = None
+            keypair = self.conn.compute.delete_keypair(keypair=self.KP_NAME)
+            self.assertIsNone(keypair)
+            BaseASTest.KEYPAIR = None
 
     def setUp(self):
         test_timeout = 3 * int(os.environ.get('OS_TEST_TIMEOUT'))
@@ -116,11 +120,3 @@ class BaseASTest(base.BaseFunctionalTest):
             pass
         super(BaseASTest, self).setUp()
         self.create_network()
-
-    def tearDown(self):
-        try:
-            self.destroy_network()
-        except exceptions.SDKException as e:
-            _logger.warning('Got exception during clearing resources %s'
-                            % e.message)
-        super(BaseASTest, self).tearDown()
