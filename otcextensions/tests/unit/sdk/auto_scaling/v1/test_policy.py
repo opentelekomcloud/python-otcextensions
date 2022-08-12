@@ -113,6 +113,7 @@ class TestPolicy(base.TestCase):
             'scaling_policy/%s' %
             EXAMPLE['scaling_policy_id'],
             microversion=None,
+            skip_cache=False,
             params={}
         )
 
