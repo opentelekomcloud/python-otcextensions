@@ -178,44 +178,27 @@ class TestInstance(base.BaseASTest):
         self.assertIsNotNone(as_group)
         self.assertEqual(as_group.name, self.AS_GROUP_NAME)
 
-    def test_02_simple_delete_as_group(self):
-        self._delete_as_group()
-        as_group = self.conn.auto_scaling.find_group(
-            name_or_id=self.AS_GROUP_NAME)
-        self.assertIsNone(as_group)
-
-    def test_03_list_as_groups(self):
+    def test_02_list_as_groups(self):
         as_group_list = list(self.conn.auto_scaling.groups())
         self.assertIsNotNone(as_group_list)
 
-    def test_04_update_as_group(self):
+    def test_03_update_as_group(self):
         new_name = self.AS_GROUP_NAME
         as_group = self.conn.auto_scaling.update_group(
             group=TestInstance.AS_GROUP, name=new_name)
         self.assertIsNotNone(as_group)
         self.assertEqual(as_group.name, new_name)
 
-    def test_05_find_as_group(self):
+    def test_04_find_as_group(self):
         find_as_group = self.conn.auto_scaling.find_group(
             name_or_id=TestInstance.AS_GROUP.id
         )
         self.assertEqual(TestInstance.AS_GROUP.id, find_as_group.id)
         self.assertEqual(TestInstance.AS_GROUP.name, find_as_group.name)
         self._deinitialize_as_group_with_instance()
-        self.destroy_network()
 
-    def test_06_find_instance_by_id(self):
-        result = self.conn.auto_scaling.find_instance(
-            name_or_id=TestInstance.AS_INSTANCE.id,
-            group=TestInstance.AS_GROUP.id
-        )
-        self.assertIsNotNone(result)
-        self.assertEqual(TestInstance.AS_INSTANCE.id, result.id)
-
-    def test_07_find_instance_by_name(self):
-        result = self.conn.auto_scaling.find_instance(
-            name_or_id=TestInstance.AS_INSTANCE.name,
-            group=TestInstance.AS_GROUP.id
-        )
-        self.assertIsNotNone(result)
-        self.assertEqual(TestInstance.AS_INSTANCE.name, result.name)
+    def test_05_simple_delete_as_group(self):
+        self._delete_as_group()
+        as_group = self.conn.auto_scaling.find_group(
+            name_or_id=self.AS_GROUP_NAME)
+        self.assertIsNone(as_group)
