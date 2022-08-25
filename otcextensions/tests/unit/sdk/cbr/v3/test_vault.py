@@ -112,7 +112,8 @@ class TestVault(base.TestCase):
             'vaults/%s' %
             EXAMPLE['id'],
             microversion=None,
-            params={}
+            params={},
+            skip_cache=False
         )
 
         self.assertEqual(sot, result)

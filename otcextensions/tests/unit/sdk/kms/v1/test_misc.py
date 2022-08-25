@@ -100,7 +100,8 @@ class TestInstanceNum(base.TestCase):
         self.sess.get.assert_called_once_with(
             'kms/user-instances',
             microversion=None,
-            params={}
+            params={},
+            skip_cache=False
         )
 
         self.assertEqual(sot, result)
