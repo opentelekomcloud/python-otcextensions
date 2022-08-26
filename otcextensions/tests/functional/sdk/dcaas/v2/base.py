@@ -21,7 +21,7 @@ _logger = _log.setup_logging('openstack')
 
 class BaseDCTest(base.BaseFunctionalTest):
 
-    UUID = uuid.uuid4().hex[:9]
+    UUID = uuid.uuid4().hex[:10]
     NETWORK_NAME = "test-dc-network-" + UUID
     SUBNET_NAME = "test-dc-subnet-" + UUID
     ROUTER_NAME = "test-dc-router-" + UUID
