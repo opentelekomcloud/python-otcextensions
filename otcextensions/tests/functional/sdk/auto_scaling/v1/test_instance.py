@@ -172,7 +172,7 @@ class TestInstance(base.BaseASTest):
         self._delete_as_group()
         self._delete_as_config()
 
-    def test_01_create_as_group(self):
+    def test_01_find_as_group(self):
         as_group = self.conn.auto_scaling.find_group(
             name_or_id=self.AS_GROUP_NAME)
         self.assertIsNotNone(as_group)
