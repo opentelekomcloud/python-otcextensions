@@ -56,7 +56,7 @@ class TestDirectConnectEndpointGroup(base.BaseDCTest):
 
     def test_list_endpoint_group(self):
         endpoint_groups = list(self.dcaas.endpoint_groups())
-        self.assertEqual(len(endpoint_groups), 1)
+        self.assertGreaterEqual(len(endpoint_groups), 1)
 
     def test_find_and_update_endpoint_group(self):
         updated_name = "updated_name"

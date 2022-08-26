@@ -17,7 +17,7 @@ from otcextensions.tests.functional.sdk.auto_scaling.v1 import base
 _logger = _log.setup_logging('openstack')
 
 
-class TestQuota(base.BaseASTest):
+class TestQuota(base.TestAs):
 
     def setUp(self):
         super(TestQuota, self).setUp()
