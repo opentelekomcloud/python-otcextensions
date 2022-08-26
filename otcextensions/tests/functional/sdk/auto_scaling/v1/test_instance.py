@@ -198,7 +198,7 @@ class TestInstance(base.BaseASTest):
         self._deinitialize_as_group_with_instance()
 
     def test_05_delete_as_network(self):
-        self.conn.vpc.find_vpc(name_or_id=vpc_id)
+        self.conn.vpc.find_vpc(name_or_id=TestInstance.NETWORK.get('router_id'))
         self._delete_as_group()
         as_group = self.conn.auto_scaling.find_group(
             name_or_id=self.AS_GROUP_NAME)
