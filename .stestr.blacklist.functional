@@ -1,4 +1,3 @@
-otcextensions.tests.functional.sdk.auto_scaling.v1.test_group*
 otcextensions.tests.functional.osclient.obs*
 otcextensions.tests.functional.osclient.rds.v3.test_instance*
 otcextensions.tests.functional.osclient.volume_backup*
