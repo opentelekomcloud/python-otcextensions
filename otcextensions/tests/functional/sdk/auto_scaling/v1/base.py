@@ -33,8 +33,8 @@ class TestAs(base.BaseFunctionalTest):
     DISK_SIZE = 4
     KP_NAME = None
     AS_GROUP_NAME = None
-    network = None
-    keypair = None
+    NETWORK = None
+    KEYPAIR = None
 
     def setUp(self):
         test_timeout = 3 * TestAs.TIMEOUT
@@ -61,7 +61,7 @@ class TestAs(base.BaseFunctionalTest):
         net_name += TestAs.UUID_V4
         subnet_name += TestAs.UUID_V4
         kp_name += TestAs.UUID_V4
-        if not TestAs.network:
+        if not TestAs.NETWORK:
             network = self.client_net.create_network(name=net_name)
             self.assertEqual(net_name, network.name)
             net_id = network.id
@@ -83,17 +83,17 @@ class TestAs(base.BaseFunctionalTest):
             )
             self.assertEqual(interface['subnet_id'], subnet_id)
             self.assertIn('port_id', interface)
-            TestAs.network = {
+            TestAs.NETWORK = {
                 'router_id': router_id,
                 'subnet_id': subnet_id,
                 'network_id': net_id
             }
-            if not TestAs.keypair:
+            if not TestAs.KEYPAIR:
                 keypair = self.conn.compute.create_keypair(
                     name=kp_name
                 )
                 self.assertIsNotNone(keypair)
-                TestAs.keypair = keypair
+                TestAs.KEYPAIR = keypair
                 TestAs.KP_NAME = kp_name
         return
 
@@ -104,7 +104,7 @@ class TestAs(base.BaseFunctionalTest):
 
         keypair = self.conn.compute.delete_keypair(keypair=kp_name)
         self.assertIsNone(keypair)
-        TestAs.keypair = None
+        TestAs.KEYPAIR = None
 
         router = self.client_net.get_router(router_id)
         interface = router.remove_interface(
@@ -187,9 +187,9 @@ class TestAs(base.BaseFunctionalTest):
                 "desire_instance_number": desire_instances_number,
                 "min_instance_number": min_instances_number,
                 "max_instance_number": max_instances_number,
-                "vpc_id": TestAs.network.get('router_id'),
+                "vpc_id": TestAs.NETWORK.get('router_id'),
                 "networks": [{
-                    "id": TestAs.network.get('network_id')
+                    "id": TestAs.NETWORK.get('network_id')
                 }]
             }
             as_group = self.client.create_group(**group_attrs)

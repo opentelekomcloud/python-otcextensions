@@ -54,8 +54,8 @@ class TestASWorkflow(TestAs):
             name_or_id=find_as_group.name)
         self.assertIsNone(as_group)
 
-        self.destroy_network(TestAs.network, TestAs.KP_NAME)
+        self.destroy_network(TestAs.NETWORK, TestAs.KP_NAME)
         vpc = self.conn.vpc.find_vpc(
-            TestAs.network.get('router_id'),
+            TestAs.NETWORK.get('router_id'),
             ignore_missing=True)
         self.assertIsNone(vpc)
