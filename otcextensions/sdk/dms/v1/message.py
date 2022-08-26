@@ -47,7 +47,7 @@ class Message(resource.Resource):
     def list(cls, session, paginated=True, base_path=None,
              allow_unknown_params=False, **params):
 
-        microversion = cls._get_microversion_for_list(session)
+        microversion = cls._get_microversion(session, action='list')
 
         if base_path is None:
             base_path = cls.base_path

@@ -113,8 +113,13 @@ class TestPolicy(base.TestCase):
             'scaling_policy/%s' %
             EXAMPLE['scaling_policy_id'],
             microversion=None,
+<<<<<<< HEAD
             skip_cache=False,
             params={}
+=======
+            params={},
+            skip_cache=False
+>>>>>>> fix-unit-test
         )
 
         self.assertEqual(sot, result)
