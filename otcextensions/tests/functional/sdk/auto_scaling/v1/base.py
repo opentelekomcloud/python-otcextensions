@@ -9,12 +9,13 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import utils
 import os
 import uuid
-from openstack import exceptions
+
 import fixtures
 from openstack import _log
+from openstack import exceptions
+from openstack import utils
 
 from otcextensions.tests.functional import base
 
@@ -27,7 +28,7 @@ class TestAs(base.BaseFunctionalTest):
     AS_GROUP = None
     AS_CONFIG = None
     AS_INSTANCE = None
-    MAX_INSTANCES_NUMBER = 1
+    MAX_INST_NUMBER = 1
     IMAGE_NAME = "Standard_Debian_10_latest"
     DISK_SIZE = 4
     KP_NAME = None
@@ -177,7 +178,7 @@ class TestAs(base.BaseFunctionalTest):
     def create_as_group(self, group_name='test-as-group-',
                         desire_instances_number=1,
                         min_instances_number=0,
-                        max_instances_number=MAX_INSTANCES_NUMBER):
+                        max_instances_number=MAX_INST_NUMBER):
         if not TestAs.AS_GROUP:
             group_name += TestAs.UUID_V4
             group_attrs = {
@@ -196,7 +197,7 @@ class TestAs(base.BaseFunctionalTest):
             as_group = self.client.wait_for_group(as_group)
             TestAs.AS_GROUP = as_group
             TestAs.AS_GROUP_NAME = group_name
-            TestAs.MAX_INSTANCES_NUMBER = max_instances_number
+            TestAs.MAX_INST_NUMBER = max_instances_number
 
     def delete_as_group(self, force_delete=False):
         if TestAs.AS_GROUP:
@@ -242,7 +243,7 @@ class TestAs(base.BaseFunctionalTest):
             instances = list(self.client.instances(
                 group=TestAs.AS_GROUP
             ))
-            if len(instances) == TestAs.MAX_INSTANCES_NUMBER and instances[0].id:
+            if len(instances) == TestAs.MAX_INST_NUMBER and instances[0].id:
                 return self.client.wait_for_instance(instances[0])
 
     def delete_instance(self):

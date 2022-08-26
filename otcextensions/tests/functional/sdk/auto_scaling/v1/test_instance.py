@@ -17,10 +17,10 @@ from otcextensions.tests.functional.sdk.auto_scaling.v1.base import TestAs
 _logger = _log.setup_logging('openstack')
 
 
-class TestInstance(TestAs):
+class TestASWorkflow(TestAs):
 
     def setUp(self):
-        super(TestInstance, self).setUp()
+        super(TestASWorkflow, self).setUp()
         self.create_network()
         self.initialize_as_group_with_instance()
 
