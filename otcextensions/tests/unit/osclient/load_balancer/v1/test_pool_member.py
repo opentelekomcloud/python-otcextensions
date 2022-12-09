@@ -10,7 +10,7 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-import mock
+from unittest import mock
 
 from openstackclient.tests.unit import utils
 
@@ -145,7 +145,7 @@ class TestShowPoolMember(fakes.TestLoadBalancer):
 
     columns = (
         'address', 'admin_state_up', 'id', 'name',
-        # 'operating_status',
+        'operating_status',
         'protocol_port', 'subnet_id', 'weight')
 
     data = (
@@ -153,7 +153,7 @@ class TestShowPoolMember(fakes.TestLoadBalancer):
         _object.is_admin_state_up,
         _object.id,
         _object.name,
-        # _object.operating_status,
+        _object.operating_status,
         _object.protocol_port,
         _object.subnet_id,
         _object.weight,
@@ -203,7 +203,7 @@ class TestCreatePoolMember(fakes.TestLoadBalancer):
 
     columns = (
         'address', 'admin_state_up', 'id', 'name',
-        # 'operating_status',
+        'operating_status',
         'protocol_port', 'subnet_id', 'weight')
 
     data = (
@@ -211,7 +211,7 @@ class TestCreatePoolMember(fakes.TestLoadBalancer):
         _object.is_admin_state_up,
         _object.id,
         _object.name,
-        # _object.operating_status,
+        _object.operating_status,
         _object.protocol_port,
         _object.subnet_id,
         _object.weight,
@@ -319,7 +319,7 @@ class TestUpdatePoolMember(fakes.TestLoadBalancer):
 
     columns = (
         'address', 'admin_state_up', 'id', 'name',
-        # 'operating_status',
+        'operating_status',
         'protocol_port', 'subnet_id', 'weight')
 
     data = (
@@ -327,7 +327,7 @@ class TestUpdatePoolMember(fakes.TestLoadBalancer):
         _object.is_admin_state_up,
         _object.id,
         _object.name,
-        # _object.operating_status,
+        _object.operating_status,
         _object.protocol_port,
         _object.subnet_id,
         _object.weight,
