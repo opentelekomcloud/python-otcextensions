@@ -55,7 +55,7 @@ BuildRequires: python3-openstacksdk-tests
 BuildRequires: python3-openstackclient
 BuildRequires: python3-boto3
 BuildRequires: python3-mock
-BuildRequires: python3-stestr ==3.0.0
+BuildRequires: python3-stestr
 Requires:      python3-openstacksdk >= 0.11.0
 Requires:      python3-openstackclient >= 3.12.0
 Requires:      python3-boto3 >= 1.4.6
