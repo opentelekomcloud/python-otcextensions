@@ -1,6 +1,6 @@
 - job:
     name: tox-functional-master
-    parent: tox-functional
+    parent: tox-functional-eu-de
     branches: master
 
 - job:
@@ -37,7 +37,9 @@
         - otc-tox-pep8
         - otc-tox-py38
         - otc-tox-py39
-        - tox-functional
+        - tox-functional-eu-de
+        - tox-functional-eu-nl:
+            voting: false
     check-post:
       jobs:
         - otce-upload-image
@@ -45,7 +47,7 @@
       jobs:
         - otc-tox-py38
         - otc-tox-pep8
-        - tox-functional
+        - tox-functional-eu-de
         - otce-upload-image
     periodic:
       jobs:
