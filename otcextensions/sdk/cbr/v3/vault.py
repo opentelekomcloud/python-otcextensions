@@ -13,38 +13,21 @@ from openstack import resource
 from openstack import utils
 
 
-class TagSpec (resource.Resource):
-    #: Properties
-    #: Tag key, up to 36 chars
-    key = resource.Body('key')
-    #: Tag value, up to 43 chars
-    value = resource.Body('value')
-
-
-class BindRuleSpec(resource.Resource):
+class BindRuleSpec(dict):
     #: Properties
     #: Filters automatically associated resources by tag
-    tags = resource.Body('tags', type=list, list_type=TagSpec)
+    tags = resource.Body('tags', type=list, list_type=dict)
 
 
-class VolumeSpec(resource.Resource):
-    #: Properties
-    #: Volume id
-    id = resource.Body('id')
-    #: OS type
-    os_version = resource.Body('os_version')
-
-
-class ResourceExtraInfoSpec(resource.Resource):
+class ResourceExtraInfoSpec(dict):
     #: Properties
     #: ID of the disk that is excluded from the backup
     exclude_volumes = resource.Body('exclude_volumes', type=list)
     #: Disk to be backed up
-    include_volumes = resource.Body('include_volumes', type=list,
-                                    list_type=VolumeSpec)
+    include_volumes = resource.Body('include_volumes', type=list, list_type=dict)
 
 
-class ResourceSpec(resource.Resource):
+class ResourceSpec(dict):
     #: Properties
     #: Number of backups
     backup_count = resource.Body('backup_count', type=int)
@@ -66,16 +49,7 @@ class ResourceSpec(resource.Resource):
     type = resource.Body('type')
 
 
-class BillingExtraInfoSpec(resource.Resource):
-    #: Properties
-    #: Number of items in the aplication for creating vaults in the
-    #: combination mode
-    combined_order_ecs_num = resource.Body('combined_order_ecs_num')
-    #: ID of the application for creating vaults in combination
-    combined_order_id = resource.Body('combined_order_id')
-
-
-class BillingSpec(resource.Resource):
+class BillingSpec(dict):
     #: Properties
     #: Allocated capacity in MB
     allocated = resource.Body('allocated', type=int)
@@ -92,7 +66,7 @@ class BillingSpec(resource.Resource):
     #: Redirection URL
     console_url = resource.Body('console_url')
     #: Billing extra info spec
-    extra_info = resource.Body('extra_info', type=BillingExtraInfoSpec)
+    extra_info = resource.Body('extra_info', type=dict)
     #: Scenario when an account is frozen
     frozen_scene = resource.Body('frozen_scene')
     #: Whether the fee is automatically deducted from the customers account
@@ -170,7 +144,7 @@ class Vault(resource.Resource):
     #: Associated Resources
     resources = resource.Body('resources', type=list, list_type=ResourceSpec)
     #: Tag list up to 10 key value pairs
-    tags = resource.Body('tags', type=list, list_type=TagSpec)
+    tags = resource.Body('tags', type=list, list_type=dict)
     #: User ID
     user_id = resource.Body('user_id')
 
