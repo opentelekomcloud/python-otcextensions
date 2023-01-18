@@ -13,12 +13,6 @@ from openstack import resource
 from openstack import utils
 
 
-class BindRuleSpec(resource.Resource):
-    #: Properties
-    #: Filters automatically associated resources by tag
-    tags = resource.Body('tags', type=list, list_type=dict)
-
-
 class ResourceExtraInfoSpec(resource.Resource):
     #: Properties
     #: ID of the disk that is excluded from the backup
@@ -131,7 +125,7 @@ class Vault(resource.Resource):
     #: Billing spec
     billing = resource.Body('billing', type=BillingSpec)
     #: Rules for automatic association
-    bind_rules = resource.Body('bind_rules', type=BindRuleSpec)
+    bind_rules = resource.Body('bind_rules', type=dict)
     #: Creation time
     created_at = resource.Body('created_at')
     #: Description
