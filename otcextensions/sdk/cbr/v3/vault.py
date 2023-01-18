@@ -13,21 +13,22 @@ from openstack import resource
 from openstack import utils
 
 
-class BindRuleSpec(dict):
+class BindRuleSpec(resource.Resource):
     #: Properties
     #: Filters automatically associated resources by tag
     tags = resource.Body('tags', type=list, list_type=dict)
 
 
-class ResourceExtraInfoSpec(dict):
+class ResourceExtraInfoSpec(resource.Resource):
     #: Properties
     #: ID of the disk that is excluded from the backup
     exclude_volumes = resource.Body('exclude_volumes', type=list)
     #: Disk to be backed up
-    include_volumes = resource.Body('include_volumes', type=list, list_type=dict)
+    include_volumes = resource.Body('include_volumes', type=list,
+                                    list_type=dict)
 
 
-class ResourceSpec(dict):
+class ResourceSpec(resource.Resource):
     #: Properties
     #: Number of backups
     backup_count = resource.Body('backup_count', type=int)
@@ -49,7 +50,7 @@ class ResourceSpec(dict):
     type = resource.Body('type')
 
 
-class BillingSpec(dict):
+class BillingSpec(resource.Resource):
     #: Properties
     #: Allocated capacity in MB
     allocated = resource.Body('allocated', type=int)
