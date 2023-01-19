@@ -126,12 +126,15 @@ class TestCreateCluster(fakes.TestCss):
         arglist = [
             'test-css',
             '--flavor', 'css-flavor',
+            '--datastore-version', '7.10.2',
+            '--availability-zone', 'eu-de-01,eu-de-02',
             '--router-id', 'router-uuid',
             '--network-id', 'network-uuid',
             '--security-group-id', 'sg-uuid',
             '--count', '2',
-            '--size', '60',
+            '--volume-size', '100',
             '--volume-type', 'COMMON',
+            '--cmk-id', 'cmk-uuid',
             '--https-enable',
             '--admin-pwd', 'testtest',
             '--backup-policy',
@@ -143,12 +146,15 @@ class TestCreateCluster(fakes.TestCss):
         verifylist = [
             ('name', 'test-css'),
             ('flavor', 'css-flavor'),
+            ('datastore_version', '7.10.2'),
+            ('availability_zone', 'eu-de-01,eu-de-02'),
             ('router_id', 'router-uuid'),
             ('network_id', 'network-uuid'),
             ('security_group_id', 'sg-uuid'),
             ('count', 2),
-            ('volume_size', 60),
+            ('volume_size', 100),
             ('volume_type', 'COMMON'),
+            ('cmk_id', 'cmk-uuid'),
             ('https_enable', True),
             ('admin_pwd', 'testtest'),
             ('backup_policy', [{'period': '00:00 GMT+08:00',
@@ -164,18 +170,27 @@ class TestCreateCluster(fakes.TestCss):
         columns, data = self.cmd.take_action(parsed_args)
         attrs = {
             'name': 'test-css',
+            'datastore': {
+                'version': '7.10.2',
+                'type': 'elasticsearch'
+            },
             'instanceNum': 2,
             'instance': {
+                'availability_zone': 'eu-de-01,eu-de-02',
                 'flavorRef': 'css-flavor',
                 'volume': {
                     'volume_type': 'COMMON',
-                    'size': 60
+                    'size': 100
                 },
                 'nics': {
                     'vpcId': 'router-uuid',
                     'netId': 'network-uuid',
                     'securityGroupId': 'sg-uuid'
                 }
+            },
+            'diskEncryption': {
+                'systemEncrypted': 1,
+                'systemCmkid': 'cmk-uuid'
             },
             'httpsEnable': 'true',
             'authorityEnable': True,

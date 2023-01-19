@@ -116,10 +116,19 @@ class CreateCluster(command.ShowOne):
             help=_('Cluster Name.')
         )
         parser.add_argument(
-            '--version',
-            metavar='<version>',
-            help=_('Cluster Engine version. The value can be '
-                   '6.2.3, 7.1.1 or 7.6.2.')
+            '--datastore-version',
+            metavar='<datastore_version>',
+            default='7.10.2',
+            help=_('Cluster Engine version. '
+                   'Supported Versions: 7.6.2, 7.9.3, 7.10.2. '
+                   '(default value: 7.10.2)')
+        )
+        parser.add_argument(
+            '--availability-zone',
+            metavar='<availability_zone>',
+            help=_('Separate multiple AZs with commas (,), for example, '
+                   'az1,az2. AZs must be unique. The number of nodes must be '
+                   'greater than or equal to the number of AZs.')
         )
         parser.add_argument(
             '--flavor',
@@ -131,27 +140,28 @@ class CreateCluster(command.ShowOne):
             '--count',
             metavar='<count>',
             type=int,
-            required=True,
-            help=_('Number of clusters. The value range is 1 to 32.')
+            default=1,
+            help=_('Number of clusters. The value range is 1 to 32. '
+                   '(default value: 1)')
         )
         disk_group = parser.add_argument_group('Volume Parameters')
         disk_group.add_argument(
-            '--size',
-            metavar='<size>',
-            dest='volume_size',
+            '--volume-size',
+            metavar='<volume_size>',
+            default=40,
             type=int,
-            required=True,
-            help=_('Size of the instance disk volume in GB, '
-                   'which must be a multiple of 4 and 10. ')
+            help=_('Size of the instance disk volume in GB. '
+                   '(default value: 40)')
         )
         disk_group.add_argument(
             '--volume-type',
             metavar='{' + ','.join(DISK_TYPE_CHOICES) + '}',
             type=lambda s: s.upper(),
-            required=True,
+            default='COMMON',
             dest='volume_type',
             choices=[s.upper() for s in DISK_TYPE_CHOICES],
-            help=_('Volume type. (COMMON, HIGH, ULTRAHIGH).')
+            help=_('Volume type. Supported types: COMMON, HIGH, ULTRAHIGH. '
+                   '(default value: COMMON)')
         )
         network_group = parser.add_argument_group('Network Parameters')
         network_group.add_argument(
@@ -178,9 +188,11 @@ class CreateCluster(command.ShowOne):
             help=_('Whether communication is encrypted on the cluster.')
         )
         parser.add_argument(
-            '--system-cmk-id',
-            metavar='<system_cmk_id>',
-            help=_('The system encryption is used for cluster encryption.')
+            '--cmk-id',
+            metavar='<cmk_id>',
+            help=_('Encryption Key Id. '
+                   'The system encryption is used for cluster encryption.'
+                   'The Default Master Keys cannot be used to create grants.')
         )
         parser.add_argument(
             '--admin-pwd',
@@ -238,6 +250,10 @@ class CreateCluster(command.ShowOne):
         attrs = {
             'name': parsed_args.name,
             'instanceNum': parsed_args.count,
+            'datastore': {
+                'version': parsed_args.datastore_version,
+                'type': 'elasticsearch'
+            },
             'instance': {
                 'flavorRef': parsed_args.flavor,
                 'volume': {
@@ -251,27 +267,27 @@ class CreateCluster(command.ShowOne):
                 }
             }
         }
-        version = parsed_args.version
-        if version:
-            attrs['datastore'] = {
-                'version': version,
-                'type': 'elasticsearch'
-            }
+
+        availability_zone = parsed_args.availability_zone
+        if availability_zone:
+            attrs['instance']['availability_zone'] = availability_zone
 
         if parsed_args.https_enable:
             attrs['httpsEnable'] = 'true'
-            if (version and version != '6.2.3') or not version:
-                attrs['authorityEnable'] = True
-                admin_password = parsed_args.admin_pwd
-                if not admin_password:
-                    msg = 'admin_pwd is mandatary in https_enable mode'
-                    raise exceptions.CommandError(msg)
+            attrs['authorityEnable'] = True
+            admin_password = parsed_args.admin_pwd
+            if admin_password:
                 attrs['adminPwd'] = admin_password
+            else:
+                raise exceptions.CommandError(
+                    'Following arguments is required: --admin-pwd '
+                    '(admin_pwd is mandatary in https_enable mode.)'
+                )
 
-        if parsed_args.system_cmk_id:
+        if parsed_args.cmk_id:
             attrs['diskEncryption'] = {
                 'systemEncrypted': 1,
-                'systemCmkid': parsed_args.system_cmk_id
+                'systemCmkid': parsed_args.cmk_id
             }
         backup_policy = parsed_args.backup_policy
         if backup_policy:
