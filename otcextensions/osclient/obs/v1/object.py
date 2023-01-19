@@ -84,7 +84,9 @@ class CreateObject(command.ShowOne):
                       ' is 1024'), len(obj))
             data = self.app.client_manager.obs.create_object(
                 container=parsed_args.container,
-                name=parsed_args.name or (parsed_args.name_prefix + os.path.basename(obj)),
+                name=parsed_args.name or (
+                        parsed_args.name_prefix + os.path.basename(obj)
+                ),
                 data=open(obj, 'r').read()
             )
             results.append(data)
