@@ -13,13 +13,21 @@ from openstack import resource
 from openstack import utils
 
 
+class VolumeSpec(resource.Resource):
+    #: Properties
+    #: Volume id
+    id = resource.Body('id')
+    #: OS type
+    os_version = resource.Body('os_version')
+
+
 class ResourceExtraInfoSpec(resource.Resource):
     #: Properties
     #: ID of the disk that is excluded from the backup
     exclude_volumes = resource.Body('exclude_volumes', type=list)
     #: Disk to be backed up
     include_volumes = resource.Body('include_volumes', type=list,
-                                    list_type=dict)
+                                    list_type=VolumeSpec)
 
 
 class ResourceSpec(resource.Resource):
@@ -44,6 +52,15 @@ class ResourceSpec(resource.Resource):
     type = resource.Body('type')
 
 
+class BillingExtraInfoSpec(resource.Resource):
+    #: Properties
+    #: Number of items in the aplication for creating vaults in the
+    #: combination mode
+    combined_order_ecs_num = resource.Body('combined_order_ecs_num')
+    #: ID of the application for creating vaults in combination
+    combined_order_id = resource.Body('combined_order_id')
+
+
 class BillingSpec(resource.Resource):
     #: Properties
     #: Allocated capacity in MB
@@ -61,7 +78,7 @@ class BillingSpec(resource.Resource):
     #: Redirection URL
     console_url = resource.Body('console_url')
     #: Billing extra info spec
-    extra_info = resource.Body('extra_info', type=dict)
+    extra_info = resource.Body('extra_info', type=BillingExtraInfoSpec)
     #: Scenario when an account is frozen
     frozen_scene = resource.Body('frozen_scene')
     #: Whether the fee is automatically deducted from the customers account

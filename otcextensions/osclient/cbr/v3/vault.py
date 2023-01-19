@@ -72,8 +72,8 @@ def _add_resources_to_vault_obj(obj, data, columns):
 
 
 def _add_tags_to_vault_obj(obj, data, columns):
-    data += ('\n'.join((f'value={tag.value}, key={tag.key}'
-                        for tag in obj.tags)),)
+    data += ('\n'.join((f'value={tag["value"]}, key={tag["key"]}'
+                            for tag in obj.tags)),)
     columns = columns + ('tags',)
     return data, columns
 
