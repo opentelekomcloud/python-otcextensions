@@ -14,20 +14,20 @@
 Create CSS Cluster
 """
 import openstack
-from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc-test')
-sdk.register_otc_extensions(conn)
+conn = openstack.connect(cloud='otc')
+
 
 attrs = {
     'name': 'ES-Test',
-    'instanceNum': 1,
+    'instanceNum': 3,
     'datastore': {
         'type': 'elasticsearch',
         'version': '7.6.2'
     },
     'instance': {
+        'availability_zone': 'eu-de-01',
         'flavorRef': 'css.xlarge.2',
         'volume': {
             'volume_type': 'COMMON',
