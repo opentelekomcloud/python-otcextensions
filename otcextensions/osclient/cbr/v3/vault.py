@@ -73,7 +73,7 @@ def _add_resources_to_vault_obj(obj, data, columns):
 
 def _add_tags_to_vault_obj(obj, data, columns):
     data += ('\n'.join((f'value={tag["value"]}, key={tag["key"]}'
-                            for tag in obj.tags)),)
+                        for tag in obj.tags)),)
     columns = columns + ('tags',)
     return data, columns
 
@@ -260,8 +260,9 @@ class ShowVault(command.ShowOne):
             data, self.columns = _add_tags_to_vault_obj(
                 obj, data, self.columns)
         if obj.bind_rules.get('tags'):
-            data, self.columns = _add_bind_rules_to_vault_obj(
-                obj, data, self.columns)
+            if obj.bind_rules['tags']:
+                data, self.columns = _add_bind_rules_to_vault_obj(
+                    obj, data, self.columns)
         return self.columns, data
 
 
@@ -422,6 +423,7 @@ class CreateVault(command.ShowOne):
         if parsed_args.backup_policy:
             attrs['backup_policy_id'] = parsed_args.backup_policy
         if parsed_args.bind_rule:
+            attrs['bind_rules'] = {'tags': []}
             attrs['bind_rules']['tags'] = _normalize_tags(
                 parsed_args.bind_rule)
         if parsed_args.description:
@@ -430,10 +432,6 @@ class CreateVault(command.ShowOne):
             attrs['enterprise_project_id'] = parsed_args.enterprise_project_id
         if parsed_args.auto_bind:
             attrs['auto_bind'] = parsed_args.auto_bind
-        if parsed_args.bind_rule:
-            attrs['bind_rules']['tags'] = _normalize_tags(
-                parsed_args.bind_rule
-            )
         if parsed_args.tag:
             attrs['tags'] = _normalize_tags(parsed_args.tag)
 
@@ -447,8 +445,9 @@ class CreateVault(command.ShowOne):
             data, self.columns = _add_resources_to_vault_obj(
                 obj, data, self.columns)
         if obj.bind_rules.get('tags'):
-            data, self.columns = _add_bind_rules_to_vault_obj(
-                obj, data, self.columns)
+            if obj.bind_rules['tags']:
+                data, self.columns = _add_bind_rules_to_vault_obj(
+                    obj, data, self.columns)
         if obj.tags:
             data, self.columns = _add_tags_to_vault_obj(
                 obj, data, self.columns)
@@ -578,8 +577,9 @@ class UpdateVault(command.ShowOne):
             data, self.columns = _add_resources_to_vault_obj(
                 obj, data, self.columns)
         if obj.bind_rules.get('tags'):
-            data, self.columns = _add_bind_rules_to_vault_obj(
-                obj, data, self.columns)
+            if obj.bind_rules['tags']:
+                data, self.columns = _add_bind_rules_to_vault_obj(
+                    obj, data, self.columns)
         if obj.tags:
             data, self.columns = _add_tags_to_vault_obj(
                 obj, data, self.columns)
