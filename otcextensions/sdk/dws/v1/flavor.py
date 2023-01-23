@@ -55,8 +55,8 @@ class Flavor(resource.Resource):
              allow_unknown_params=False,
              *,
              microversion=None,
-             **params
-        ):
+             **params,
+             ):
         """This method is a generator which yields resource objects.
 
         This resource object list generator handles pagination and takes query
