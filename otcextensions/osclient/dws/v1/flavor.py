@@ -10,7 +10,7 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-'''CSS ELK cluster v1 action implementations'''
+'''DWS Flavors (Node Types) action implementation'''
 import logging
 
 from osc_lib import utils
@@ -22,7 +22,7 @@ LOG = logging.getLogger(__name__)
 
 
 class ListFlavors(command.Lister):
-    _description = _('Show details of a CSS cluster')
+    _description = _('List Flavors (Node Types) of a DWS Cluster')
     columns = (
         'ID',
         'Name',

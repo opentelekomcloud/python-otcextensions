@@ -10,7 +10,7 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-'''CSS ELK cluster v1 action implementations'''
+'''DWS Snapshot action implementations'''
 import logging
 
 from osc_lib import utils
@@ -113,8 +113,8 @@ class CreateSnapshot(command.ShowOne):
             '--timeout',
             metavar='<timeout>',
             type=int,
-            default=15,
-            help=_('Timeout for the wait in minutes (Default 15 mins).'),
+            default=900,
+            help=_('Timeout for the wait in seconds (Default 900 seconds).'),
         )
         return parser
 
@@ -133,7 +133,7 @@ class CreateSnapshot(command.ShowOne):
 
         obj = client.create_snapshot(**attrs)
         if parsed_args.wait:
-            client.wait_for_snapshot(obj.id, parsed_args.timeout)
+            client.wait_for_cluster(cluster.id, wait=parsed_args.timeout)
 
         return client.get_snapshot(obj.id)
 

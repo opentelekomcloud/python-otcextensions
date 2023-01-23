@@ -81,6 +81,8 @@ class TestCreateSnapshot(fakes.TestDws):
 
     data = fakes.gen_data(_data, columns)
 
+    default_timeout = 900
+
     def setUp(self):
         super(TestCreateSnapshot, self).setUp()
 
@@ -96,14 +98,12 @@ class TestCreateSnapshot(fakes.TestDws):
             'test-snapshot',
             '--description', 'test description',
             '--wait',
-            '--timeout', '20',
         ]
         verifylist = [
             ('cluster', self._cluster.name),
             ('name', 'test-snapshot'),
             ('description', 'test description'),
             ('wait', True),
-            ('timeout', 20),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -116,7 +116,8 @@ class TestCreateSnapshot(fakes.TestDws):
             'description': 'test description',
         }
         self.client.create_snapshot.assert_called_with(**attrs)
-        self.client.wait_for_snapshot.assert_called_with(self._data.id, 20)
+        self.client.wait_for_cluster.assert_called_with(
+            self._cluster.id, wait=self.default_timeout)
         self.assertEqual(self.columns, columns)
 
 
