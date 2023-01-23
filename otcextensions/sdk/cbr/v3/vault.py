@@ -13,20 +13,6 @@ from openstack import resource
 from openstack import utils
 
 
-class TagSpec (resource.Resource):
-    #: Properties
-    #: Tag key, up to 36 chars
-    key = resource.Body('key')
-    #: Tag value, up to 43 chars
-    value = resource.Body('value')
-
-
-class BindRuleSpec(resource.Resource):
-    #: Properties
-    #: Filters automatically associated resources by tag
-    tags = resource.Body('tags', type=list, list_type=TagSpec)
-
-
 class VolumeSpec(resource.Resource):
     #: Properties
     #: Volume id
