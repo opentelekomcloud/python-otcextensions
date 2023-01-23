@@ -11,28 +11,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Create DWS Cluster.
+Get details of DWS Cluster Snapshot by name_or_id
 """
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-attrs = {
-    "name": "dws-1",
-    "node_type": "dws.m3.xlarge",
-    "number_of_node": 3,
-    "availability_zone": "eu-de-01",
-    "vpc_id": "router-uuid",
-    "subnet_id": "network-uuid",
-    "security_group_id": "security-group-uuid",
-    "port": 8000,
-    "user_name": "dbadmin",
-    "user_pwd": "Password!",
-    "public_ip": {
-        "public_bind_type": "auto_assign",
-        "eip_id": ""
-    }
-}
-result = conn.dws.create_cluster(**attrs)
-print(result)
+name_or_id = 'dws-1-snapshot-3'
+resp = conn.dws.find_snapshot(name_or_id, ignore_missing=False)
+print(resp)

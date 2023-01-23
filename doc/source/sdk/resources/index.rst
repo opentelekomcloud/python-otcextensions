@@ -21,6 +21,7 @@ Open Telekom Cloud Resources
    Dedicated Host Service (DeH) <deh/index>
    Distributed Message Service (DMS) <dms/index>
    Domain Name Service (DNS) <dns/index>
+   Data Warehouse Service (DWS) <dws/index>
    Identity Service (IAM) <identity/index>
    Key Management Service (KMS) <kms/index>
    MapReduce Service (MRS) <mrs/index>

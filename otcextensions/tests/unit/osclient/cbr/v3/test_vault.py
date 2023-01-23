@@ -72,7 +72,7 @@ class TestVault(fakes.TestCBR):
             obj.billing.charging_mode,
             obj.billing.is_auto_pay,
             obj.billing.is_auto_renew,
-            obj.bind_rules["tags"],
+            obj.bind_rules.tags,
             obj.resources,
             obj.tags,
         )
@@ -110,24 +110,7 @@ class TestVault(fakes.TestCBR):
             ('value=val-tags, key=key-tags',)
         )
 
-        data, column = vault._add_tags_to_vault_obj(obj, data, column)
-
-        self.assertEqual(data, verify_data)
-        self.assertEqual(column, verify_column)
-
-    def test_add_bind_rules_to_vault_output(self):
-        obj = fakes.FakeVault.create_one()
-
-        column = ()
-        data = ()
-        verify_column = (
-            'bind_rules',
-        )
-        verify_data = (
-            ('value=val-bind, key=key-bind',)
-        )
-
-        data, column = vault._add_bind_rules_to_vault_obj(obj, data, column)
+        data, column = vault._add_tags_to_vault_obj(obj, data, column, 'tags')
 
         self.assertEqual(data, verify_data)
         self.assertEqual(column, verify_column)
@@ -365,12 +348,14 @@ class TestShowVault(fakes.TestCBR):
             self.object,
             self.data,
             self.columns,
+            'tags'
         )
 
-        self.data, self.columns = vault._add_bind_rules_to_vault_obj(
+        self.data, self.columns = vault._add_tags_to_vault_obj(
             self.object,
             self.data,
-            self.columns
+            self.columns,
+            'bind_rules'
         )
 
         self.assertEqual(self.columns, columns)
@@ -532,16 +517,18 @@ class TestCreateVault(fakes.TestCBR):
             self.columns
         )
 
-        self.data, self.columns = vault._add_bind_rules_to_vault_obj(
+        self.data, self.columns = vault._add_tags_to_vault_obj(
             self.object,
             self.data,
-            self.columns
+            self.columns,
+            'bind_rules'
         )
 
         self.data, self.columns = vault._add_tags_to_vault_obj(
             self.object,
             self.data,
-            self.columns
+            self.columns,
+            'tags'
         )
 
         self.assertEqual(self.columns, columns)
@@ -647,16 +634,18 @@ class TestUpdateVault(fakes.TestCBR):
             self.columns
         )
 
-        self.data, self.columns = vault._add_bind_rules_to_vault_obj(
+        self.data, self.columns = vault._add_tags_to_vault_obj(
             self.object,
             self.data,
-            self.columns
+            self.columns,
+            'bind_rules'
         )
 
         self.data, self.columns = vault._add_tags_to_vault_obj(
             self.object,
             self.data,
-            self.columns
+            self.columns,
+            'tags'
         )
 
         self.assertEqual(self.columns, columns)

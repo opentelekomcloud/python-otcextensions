@@ -46,10 +46,11 @@ def _flatten_vault(obj):
         'charging_mode': obj.billing.charging_mode,
         'is_auto_pay': obj.billing.is_auto_pay,
         'is_auto_renew': obj.billing.is_auto_renew,
-        'bind_rules': obj.bind_rules["tags"],
+        'bind_rules': obj.bind_rules.tags,
         'resources': obj.resources,
         'tags': obj.tags,
     }
+
     return data
 
 
@@ -71,19 +72,14 @@ def _add_resources_to_vault_obj(obj, data, columns):
     return data, columns
 
 
-def _add_tags_to_vault_obj(obj, data, columns):
-    data += ('\n'.join((f'value={tag["value"]}, key={tag["key"]}'
-                        for tag in obj.tags)),)
-    columns = columns + ('tags',)
-    return data, columns
-
-
-def _add_bind_rules_to_vault_obj(obj, data, columns):
-    """Add associated bind rules to column and data tuples
-    """
-    data += ('\n'.join((f'value={tag["value"]}, key={tag["key"]}'
-                        for tag in obj.bind_rules['tags'])),)
-    columns = columns + ('bind_rules',)
+def _add_tags_to_vault_obj(obj, data, columns, name):
+    if name == 'bind_rules':
+        data += ('\n'.join((f'value={tag.value}, key={tag.key}'
+                            for tag in obj.bind_rules.tags)),)
+    else:
+        data += ('\n'.join((f'value={tag.value}, key={tag.key}'
+                            for tag in obj.tags)),)
+    columns = columns + (name,)
     return data, columns
 
 
@@ -202,6 +198,7 @@ class ListVaults(command.Lister):
             args['status'] = parsed_args.status
 
         data = client.vaults(**args)
+
         table = (self.columns,
                  (utils.get_dict_properties(
                      _flatten_vault(s), self.columns,
@@ -258,11 +255,10 @@ class ShowVault(command.ShowOne):
                 obj, data, self.columns)
         if obj.tags:
             data, self.columns = _add_tags_to_vault_obj(
-                obj, data, self.columns)
-        if obj.bind_rules.get('tags'):
-            if obj.bind_rules['tags']:
-                data, self.columns = _add_bind_rules_to_vault_obj(
-                    obj, data, self.columns)
+                obj, data, self.columns, 'tags')
+        if obj.bind_rules.tags:
+            data, self.columns = _add_tags_to_vault_obj(
+                obj, data, self.columns, 'bind_rules')
         return self.columns, data
 
 
@@ -317,14 +313,6 @@ class CreateVault(command.ShowOne):
             metavar='<auto_bind>',
             type=bool,
             help=_('Whether automatic association is supported.')
-        )
-        parser.add_argument(
-            '--bind-rule',
-            metavar='<bind_rule>',
-            action='append',
-            help=_('Filters automatically associated resources by tag '
-                   'in KEY=VALUE format. '
-                   'Repeat for multiple values.')
         )
         parser.add_argument(
             '--consistent-level',
@@ -388,6 +376,14 @@ class CreateVault(command.ShowOne):
             help=_('Tag to assign to the server in KEY=VALUE format. '
                    'Repeat for multiple values.')
         )
+        parser.add_argument(
+            '--bind-rule',
+            metavar='<bind_rule>',
+            action='append',
+            help=_('Filters automatically associated resources by tag '
+                   'in KEY=VALUE format. '
+                   'Repeat for multiple values.')
+        )
         return parser
 
     def take_action(self, parsed_args):
@@ -422,16 +418,16 @@ class CreateVault(command.ShowOne):
             attrs['billing']['console_url'] = parsed_args.console_url
         if parsed_args.backup_policy:
             attrs['backup_policy_id'] = parsed_args.backup_policy
-        if parsed_args.bind_rule:
-            attrs['bind_rules'] = {'tags': []}
-            attrs['bind_rules']['tags'] = _normalize_tags(
-                parsed_args.bind_rule)
         if parsed_args.description:
             attrs['description'] = parsed_args.description
         if parsed_args.enterprise_project_id:
             attrs['enterprise_project_id'] = parsed_args.enterprise_project_id
         if parsed_args.auto_bind:
             attrs['auto_bind'] = parsed_args.auto_bind
+        if parsed_args.bind_rule:
+            attrs['bind_rules']['tags'] = _normalize_tags(
+                parsed_args.bind_rule
+            )
         if parsed_args.tag:
             attrs['tags'] = _normalize_tags(parsed_args.tag)
 
@@ -444,13 +440,12 @@ class CreateVault(command.ShowOne):
         if obj.resources:
             data, self.columns = _add_resources_to_vault_obj(
                 obj, data, self.columns)
-        if obj.bind_rules.get('tags'):
-            if obj.bind_rules['tags']:
-                data, self.columns = _add_bind_rules_to_vault_obj(
-                    obj, data, self.columns)
+        if obj.bind_rules.tags:
+            data, self.columns = _add_tags_to_vault_obj(
+                obj, data, self.columns, 'bind_rules')
         if obj.tags:
             data, self.columns = _add_tags_to_vault_obj(
-                obj, data, self.columns)
+                obj, data, self.columns, 'tags')
 
         return self.columns, data
 
@@ -538,7 +533,7 @@ class UpdateVault(command.ShowOne):
 
     def take_action(self, parsed_args):
         attrs = {
-            'billing': {},
+            'billing': {}
         }
 
         if parsed_args.name:
@@ -546,7 +541,6 @@ class UpdateVault(command.ShowOne):
         if parsed_args.auto_bind:
             attrs['auto_bind'] = parsed_args.auto_bind
         if parsed_args.bind_rule:
-            attrs['bind_rules'] = {'tags': []}
             attrs['bind_rules']['tags'] = _normalize_tags(
                 parsed_args.bind_rule
             )
@@ -576,13 +570,12 @@ class UpdateVault(command.ShowOne):
         if obj.resources:
             data, self.columns = _add_resources_to_vault_obj(
                 obj, data, self.columns)
-        if obj.bind_rules.get('tags'):
-            if obj.bind_rules['tags']:
-                data, self.columns = _add_bind_rules_to_vault_obj(
-                    obj, data, self.columns)
+        if obj.bind_rules.tags:
+            data, self.columns = _add_tags_to_vault_obj(
+                obj, data, self.columns, 'bind_rules')
         if obj.tags:
             data, self.columns = _add_tags_to_vault_obj(
-                obj, data, self.columns)
+                obj, data, self.columns, 'tags')
 
         return self.columns, data
 

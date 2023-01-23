@@ -27,3 +27,8 @@ The ``Vault`` class inherits from
 .. autoclass:: otcextensions.sdk.cbr.v3.vault.VolumeSpec
    :members:
 
+.. autoclass:: otcextensions.sdk.cbr.v3.vault.BindRuleSpec
+   :members:
+
+.. autoclass:: otcextensions.sdk.cbr.v3.vault.TagSpec
+   :members:

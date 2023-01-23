@@ -11,15 +11,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Get DWS Cluster
+Get details of DWS Cluster by cluster_id or instance of Cluster class.
 """
 import openstack
-from otcextensions import sdk
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
-sdk.register_otc_extensions(conn)
 
-cluster = "cluster_id"
-
-conn.dws.get_cluster(cluster)
+cluster_id = 'cluster-uuid'
+resp = conn.dws.get_cluster(cluster_id)
+print(resp)

@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    The update contains all SDK and OpenStack Client parts for the 'Data
+    Warehouse Service' module and the unit tests.
