@@ -61,6 +61,13 @@ class CreateObject(command.ShowOne):
             help=_('Upload a file and rename it. '
                    'Can only be used when uploading a single object')
         )
+        parser.add_argument(
+            '--name-prefix',
+            metavar='<prefix>',
+            help=_('Object name prefix. '
+                   'Useful when uploading multiple objects'),
+            default=''
+        )
         return parser
 
     def take_action(self, parsed_args):
@@ -75,9 +82,10 @@ class CreateObject(command.ShowOne):
                 LOG.warning(
                     _('Object name is %s characters long, default limit'
                       ' is 1024'), len(obj))
+            prefix = parsed_args.name_prefix + os.path.basename(obj)
             data = self.app.client_manager.obs.create_object(
                 container=parsed_args.container,
-                name=os.path.basename(obj),
+                name=parsed_args.name or prefix,
                 data=open(obj, 'r').read()
             )
             results.append(data)
