@@ -50,7 +50,7 @@ class TestDws(utils.TestCommand):
 
 
 class FakeCluster(test_base.Fake):
-    """Fake one or more Nat Gateways."""
+    """Fake one or more DWS Clusters."""
     @classmethod
     def generate(cls):
         """Create a fake DWS Cluster.
@@ -144,7 +144,7 @@ class FakeCluster(test_base.Fake):
 
 
 class FakeSnapshot(test_base.Fake):
-    """Fake one or more Snapshot"""
+    """Fake one or more DWS Snapshot"""
     @classmethod
     def generate(cls):
         """Create a fake DWS Snapshot.

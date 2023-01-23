@@ -89,7 +89,6 @@ class CreateSnapshot(command.ShowOne):
         parser.add_argument(
             'name',
             metavar='<name>',
-            # required=True,
             help=_('Snapshot name, which must be unique and start with a '
                    'letter. It consists of 4 to 64 characters, which are '
                    'case-insensitive and contain letters, digits, '
