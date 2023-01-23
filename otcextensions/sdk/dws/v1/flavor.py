@@ -48,48 +48,49 @@ class Flavor(resource.Resource):
     availability_zones = resource.Computed('availability_zones')
 
     @classmethod
-    def list(
-        cls,
-        session,
-        paginated=True,
-        base_path=None,
-        allow_unknown_params=False,
-        *,
-        microversion=None,
-        **params,
-    ):
+    def list(cls,
+             session,
+             paginated=True,
+             base_path=None,
+             allow_unknown_params=False,
+             *,
+             microversion=None,
+             **params
+        ):
         """This method is a generator which yields resource objects.
+
         This resource object list generator handles pagination and takes query
         params for response filtering.
+
         :param session: The session to use for making this request.
         :type session: :class:`~keystoneauth1.adapter.Adapter`
         :param bool paginated: ``True`` if a GET to this resource returns
-            a paginated series of responses, or ``False`` if a GET returns only
-            one page of data. **When paginated is False only one page of data
-            will be returned regardless of the API's support of pagination.**
+            a paginated series of responses, or ``False``
+            if a GET returns only one page of data.
+            **When paginated is False only one
+            page of data will be returned regardless
+            of the API's support of pagination.**
         :param str base_path: Base part of the URI for listing resources, if
             different from :data:`~openstack.resource.Resource.base_path`.
         :param bool allow_unknown_params: ``True`` to accept, but discard
             unknown query parameters. This allows getting list of 'filters' and
             passing everything known to the server. ``False`` will result in
             validation exception when unknown query parameters are passed.
-        :param str microversion: API version to override the negotiated one.
         :param dict params: These keyword arguments are passed through the
             :meth:`~openstack.resource.QueryParamter._transpose` method
-            to find if any of them match expected query parameters to be sent
-            in the *params* argument to
+            to find if any of them match expected query parameters to be
+            sent in the *params* argument to
             :meth:`~keystoneauth1.adapter.Adapter.get`. They are additionally
-            checked against the :data:`~openstack.resource.Resource.base_path`
-            format string to see if any path fragments need to be filled in by
-            the contents of this argument.
-            Parameters supported as filters by the server side are passed in
-            the API call, remaining parameters are applied as filters to the
-            retrieved results.
+            checked against the
+            :data:`~openstack.resource.Resource.base_path` format string
+            to see if any path fragments need to be filled in by the contents
+            of this argument.
+
         :return: A generator of :class:`Resource` objects.
         :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
-            :data:`Resource.allow_list` is not set to ``True``.
+                 :data:`Resource.allow_list` is not set to ``True``.
         :raises: :exc:`~openstack.exceptions.InvalidResourceQuery` if query
-            contains invalid params.
+                 contains invalid params.
         """
         if not cls.allow_list:
             raise exceptions.MethodNotSupported(cls, 'list')
