@@ -142,7 +142,7 @@ class Vault(resource.Resource):
     #: Billing spec
     billing = resource.Body('billing', type=BillingSpec)
     #: Rules for automatic association
-    bind_rules = resource.Body('bind_rules', type=BindRuleSpec)
+    bind_rules = resource.Body('bind_rules', type=dict)
     #: Creation time
     created_at = resource.Body('created_at')
     #: Description
@@ -156,7 +156,7 @@ class Vault(resource.Resource):
     #: Associated Resources
     resources = resource.Body('resources', type=list, list_type=ResourceSpec)
     #: Tag list up to 10 key value pairs
-    tags = resource.Body('tags', type=list, list_type=TagSpec)
+    tags = resource.Body('tags', type=list, list_type=dict)
     #: User ID
     user_id = resource.Body('user_id')
 
