@@ -28,14 +28,10 @@ class Snapshot(resource.Resource):
     # Properties
     #: ID of the cluster for which snapshots are created.
     cluster_id = resource.Body('cluster_id')
-    #: Snapshot name.
-    name = resource.Body('name')
+    #: Time when a snapshot starts to be created.
+    created_at = resource.Body('started')
     #: Snapshot description.
     description = resource.Body('description')
-    #: Time when a snapshot starts to be created.
-    started = resource.Body('started')
-    #: Time when a snapshot is complete.
-    finished = resource.Body('finished')
     #: Snapshot size, in GB.
     size = resource.Body('size', type=float)
     #: Snapshot status:
@@ -47,6 +43,8 @@ class Snapshot(resource.Resource):
     #:  - MANUAL
     #:  - AUTOMATED
     type = resource.Body('type')
+    #: Time when a snapshot is complete.
+    updated_at = resource.Body('finished')
 
 
 class Restore(_cluster.Cluster):
@@ -65,5 +63,5 @@ class Restore(_cluster.Cluster):
     allow_commit = False
     allow_patch = False
 
-    #:
+    #: Returns `~otcextensions.sdk.dws.v1.cluster.Cluster` object.
     cluster = resource.Body('cluster', type=_cluster.Cluster)

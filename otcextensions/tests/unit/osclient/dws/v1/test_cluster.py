@@ -28,8 +28,8 @@ _COLUMNS = (
     'flavor',
     'availability_zone',
     'version',
-    'number_of_node',
-    'number_of_free_node',
+    'num_nodes',
+    'num_free_nodes',
     'user_name',
     'port',
     'private_domain',
@@ -47,10 +47,10 @@ _COLUMNS = (
     'action_progress',
     'created_at',
     'updated_at',
-    'logical_cluster_initialed',
-    'logical_cluster_mode',
-    'use_logical_cluster',
-    'maintain_window',
+    'is_logical_cluster_initialed',
+    'is_logical_cluster_mode',
+    'is_logical_cluster_enabled',
+    'maintenance_window',
     'enterprise_project_id',
 )
 
@@ -62,7 +62,7 @@ class TestListClusters(fakes.TestDws):
     column_list_headers = (
         'ID',
         'Name',
-        'Number of Node',
+        'Num Nodes',
         'Flavor',
         'Status',
         'Version',
@@ -72,7 +72,7 @@ class TestListClusters(fakes.TestDws):
     columns = (
         'id',
         'name',
-        'number_of_node',
+        'num_nodes',
         'flavor',
         'status',
         'version',
@@ -86,7 +86,7 @@ class TestListClusters(fakes.TestDws):
             (
                 s.id,
                 s.name,
-                s.number_of_node,
+                s.num_nodes,
                 s.flavor,
                 s.status,
                 s.version,
@@ -124,7 +124,8 @@ class TestListClusters(fakes.TestDws):
 
 class TestCreateCluster(fakes.TestDws):
 
-    _cluster = fakes.FakeCluster.create_one()
+    _cluster = cluster.format_response(
+        fakes.FakeCluster.create_one())
 
     columns = _COLUMNS
 
@@ -148,8 +149,8 @@ class TestCreateCluster(fakes.TestDws):
             '--router-id', 'router-uuid',
             '--network-id', 'network-uuid',
             '--security-group-id', 'sg-uuid',
-            '--count', '3',
-            '--cn-count', '2',
+            '--num-nodes', '3',
+            '--num-cn', '2',
             '--port', '9000',
             '--username', 'dbadmin',
             '--password', 'testtest',
@@ -320,7 +321,8 @@ class TestExtendCluster(fakes.TestDws):
 
 class TestShowCluster(fakes.TestDws):
 
-    _cluster = fakes.FakeCluster.create_one()
+    _cluster = cluster.format_response(
+        fakes.FakeCluster.create_one())
     columns = _COLUMNS
     data = fakes.gen_data(_cluster, columns, cluster._formatters)
 

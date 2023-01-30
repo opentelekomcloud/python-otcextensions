@@ -75,8 +75,8 @@ class TestCreateSnapshot(fakes.TestDws):
         'status',
         'size',
         'type',
-        'started',
-        'finished',
+        'created_at',
+        'updated_at',
     )
 
     data = fakes.gen_data(_data, columns)
@@ -132,8 +132,8 @@ class TestShowSnapshot(fakes.TestDws):
         'status',
         'size',
         'type',
-        'started',
-        'finished',
+        'created_at',
+        'updated_at',
     )
 
     data = fakes.gen_data(_snapshot, columns)
@@ -200,7 +200,8 @@ class TestShowSnapshot(fakes.TestDws):
 
 class TestRestoreSnapshot(fakes.TestDws):
 
-    _cluster = fakes.FakeCluster.create_one()
+    _cluster = cluster.format_response(
+        fakes.FakeCluster.create_one())
     _snapshot = fakes.FakeSnapshot.create_one()
 
     columns = (
@@ -209,8 +210,8 @@ class TestRestoreSnapshot(fakes.TestDws):
         'flavor',
         'availability_zone',
         'version',
-        'number_of_node',
-        'number_of_free_node',
+        'num_nodes',
+        'num_free_nodes',
         'user_name',
         'port',
         'private_domain',
@@ -228,10 +229,10 @@ class TestRestoreSnapshot(fakes.TestDws):
         'action_progress',
         'created_at',
         'updated_at',
-        'logical_cluster_initialed',
-        'logical_cluster_mode',
-        'use_logical_cluster',
-        'maintain_window',
+        'is_logical_cluster_initialed',
+        'is_logical_cluster_mode',
+        'is_logical_cluster_enabled',
+        'maintenance_window',
         'enterprise_project_id',
     )
 

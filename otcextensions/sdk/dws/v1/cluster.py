@@ -41,22 +41,72 @@ class Cluster(resource.Resource):
     allow_patch = True
 
     # Properties
-    #: Cluster name.
-    name = resource.Body('name')
-    #: Administrator username for logging in to a data warehouse cluster.
-    user_name = resource.Body('user_name')
-    #: Data warehouse version.
-    version = resource.Body('version')
+    #: The key indicates an ongoing task.
+    action_progress = resource.Body('action_progress', type=dict)
+    #: Availabilitu Zone of a Cluster
+    availability_zone = resource.Body('availability_zone')
+    #: Cluster creation time.
+    created_at = resource.Body('created')
+    #: Private network connection information about the cluster.
+    endpoints = resource.Body('endpoints', type=list, list_type=dict)
+    #: Enterprise project ID.
+    #: If no enterprise project is specified for a cluster,
+    #: the default enterprise project ID 0 is used.
+    enterprise_project_id = resource.Body('enterprise_project_id')
+    #: Cause of failure. If the parameter is left empty,
+    #:  the cluster is in the normal state.
+    error = resource.Body('failed_reasons', type=dict)
     #: Node Type (DWS Flavor).
     flavor = resource.Body('node_type')
     #: Node Type ID (DWS Flavor ID).
     flavor_id = resource.Body('node_type_id')
+    #: Guest Agent Version
+    guest_agent_version = resource.Body('guest_agent_version')
+    #: Whether logical_cluster has been enabled.
+    is_logical_cluster_enabled = resource.Body(
+        'use_logical_cluster', type=bool)
+    #: Whether logical_cluster has been initialed
+    is_logical_cluster_initialed = resource.Body(
+        'logical_cluster_initialed', type=bool)
+    #: Whether logical_cluster_mode is set ``true``.
+    is_logical_cluster_mode = resource.Body('logical_cluster_mode', type=bool)
+    #: The number of latest manual snapshots that
+    #:  need to be retained for a cluster.
+    keep_last_manual_snapshot = resource.Body(
+        'keep_last_manual_snapshot', type=int)
+    #: Cluster maintenance window.
+    maintenance_window = resource.Body('maintain_window', type=dict)
+    #: Network ID, which is used for configuring cluster network.
+    network_id = resource.Body('subnet_id')
     #: Nodes List.
     nodes = resource.Body('nodes', type=list)
-    #: Number of nodes in a cluster. The value ranges from 3 to 32.
-    number_of_node = resource.Body('number_of_node')
+    #: Number of deployed CNs.
+    num_cn = resource.Body('number_of_cn', type=int)
+    #: Number of events.
+    num_recent_events = resource.Body('recent_event', type=int)
     #: number_of_free_node
-    number_of_free_node = resource.Body('number_of_free_node', type=int)
+    num_free_nodes = resource.Body('number_of_free_node', type=int)
+    #: Number of nodes in a cluster. The value ranges from 3 to 32.
+    num_nodes = resource.Body('number_of_node')
+    #: Parameter group details.
+    parameter_group = resource.Body('parameter_group', type=dict)
+    #: plugins
+    plugins = resource.Body('plugins', type=list)
+    #: Service port of a cluster. The value ranges from 8000 to 30000.
+    #: The default value is 8000.
+    port = resource.Body('port')
+    #: List of private network IP addresses.
+    private_ip = resource.Body('private_ip', type=list)
+    #: Public network connection information about the cluster.
+    public_endpoints = resource.Body('public_endpoints',
+                                     type=list, list_type=dict)
+    #: Public IP address. If the parameter is not specified,
+    #:  public connection is not used by default.
+    public_ip = resource.Body('public_ip', type=PublicIP)
+    #: Cluster scale-out details.
+    resize_info = resource.Body('resize_info', type=dict)
+    #: Router ID, which is used for configuring cluster network.
+    router_id = resource.Body('vpc_id')
     #: Cluster status. The value can be one of the following:
     #:  - CREATING
     #:  - AVAILABLE
@@ -65,71 +115,20 @@ class Cluster(resource.Resource):
     status = resource.Body('status')
     #: Sub-status of clusters in the AVAILABLE state.
     sub_status = resource.Body('sub_status')
-    #: Cluster management task.
-    task_status = resource.Body('task_status')
-    #: The key indicates an ongoing task.
-    action_progress = resource.Body('action_progress')
-    #: Last modification time of a cluster.
-    updated_at = resource.Body('updated')
-    #: Number of events.
-    recent_event = resource.Body('recent_event', type=int)
     #: spec_version
     spec_version = resource.Body('spec_version')
-    #: Cluster creation time.
-    created_at = resource.Body('created')
-    #: Availabilitu Zone of a Cluster
-    availability_zone = resource.Body('availability_zone')
-    #: Service port of a cluster. The value ranges from 8000 to 30000.
-    #: The default value is 8000.
-    port = resource.Body('port')
-    #: List of private network IP addresses.
-    private_ip = resource.Body('private_ip', type=list)
-    #: Router ID, which is used for configuring cluster network.
-    router_id = resource.Body('vpc_id')
-    #: Network ID, which is used for configuring cluster network.
-    network_id = resource.Body('subnet_id')
     #: ID of a security group, which is used for configuring cluster network
     security_group_id = resource.Body('security_group_id')
-    #: Cluster maintenance window.
-    maintain_window = resource.Body('maintain_window', type=dict)
-    #: Parameter group details.
-    parameter_group = resource.Body('parameter_group', type=dict)
-    #: Public IP address. If the parameter is not specified,
-    #:  public connection is not used by default.
-    public_ip = resource.Body('public_ip', type=PublicIP)
-    floating_ip_address = resource.Computed('floating_ip_address', default='')
-    floating_ip_id = resource.Computed('floating_ip_id', default='')
-    #: Private network connection information about the cluster.
-    endpoints = resource.Body('endpoints', type=list, list_type=dict)
-    private_domain = resource.Computed('private_domain', default='', type=list)
-    #: Public network connection information about the cluster.
-    public_endpoints = resource.Body('public_endpoints',
-                                     type=list, list_type=dict)
-    public_domain = resource.Computed('public_domain', default='', type=list)
-    #: plugins
-    plugins = resource.Body('plugins', type=list)
+    #: Cluster management task.
+    task_status = resource.Body('task_status')
     #: Labels in a cluster.
     tags = resource.Body('tags', type=list, list_type=dict)
-    #: Enterprise project ID.
-    #: If no enterprise project is specified for a cluster,
-    #: the default enterprise project ID 0 is used.
-    enterprise_project_id = resource.Body('enterprise_project_id')
-    #: Cluster scale-out details.
-    resize_info = resource.Body('resize_info', type=dict)
-    #: Guest Agent Version
-    guest_agent_version = resource.Body('guest_agent_version')
-    #: use_logical_cluster
-    use_logical_cluster = resource.Body('use_logical_cluster', type=bool)
-    #: logical_cluster_initialed
-    logical_cluster_initialed = resource.Body(
-        'logical_cluster_initialed', type=bool)
-    #: logical_cluster_mode
-    logical_cluster_mode = resource.Body('logical_cluster_mode', type=bool)
-
-    #: The number of latest manual snapshots that
-    #:  need to be retained for a cluster.
-    keep_last_manual_snapshot = resource.Body(
-        'keep_last_manual_snapshot', type=int)
+    #: Administrator username for logging in to a data warehouse cluster.
+    user_name = resource.Body('user_name')
+    #: Last modification time of a cluster.
+    updated_at = resource.Body('updated')
+    #: Data warehouse version.
+    version = resource.Body('version')
 
     def _action(self, session, action, body=None):
         """Preform actions given the message body.

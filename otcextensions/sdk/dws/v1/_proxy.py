@@ -50,24 +50,7 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.dws.v1.cluster.Cluster`
         """
-        obj = self._get(
-            _cluster.Cluster, cluster
-        )
-
-        if hasattr(obj, 'public_ip') and hasattr(obj.public_ip, 'eip_address'):
-            setattr(obj, 'floating_ip_address', obj.public_ip.eip_address)
-            setattr(obj, 'floating_ip_id', obj.public_ip.eip_id)
-        if hasattr(obj, 'endpoints'):
-            private_domain = []
-            for endpoint in obj.endpoints:
-                private_domain.append(endpoint['connect_info'])
-            setattr(obj, 'private_domain', private_domain)
-        if hasattr(obj, 'public_endpoints'):
-            public_domain = []
-            for public_endpoint in obj.public_endpoints:
-                public_domain.append(public_endpoint['public_connect_info'])
-            setattr(obj, 'public_domain', public_domain)
-        return obj
+        return self._get(_cluster.Cluster, cluster)
 
     def find_cluster(self, name_or_id, ignore_missing=False):
         """Find a single cluster

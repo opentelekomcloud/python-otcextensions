@@ -127,7 +127,8 @@ EXAMPLE = {
     "use_logical_cluster": False,
     "user_name": "dbadmin",
     "version": "8.1.1.202",
-    "vpc_id": uuid.uuid4().hex
+    "vpc_id": uuid.uuid4().hex,
+    "failed_reasons": {}
 }
 
 
@@ -159,6 +160,15 @@ class TestCluster(base.TestCase):
             'public_ip',
             'updated',
             'created',
+            'failed_reasons',
+            'use_logical_cluster',
+            'logical_cluster_initialed',
+            'logical_cluster_mode',
+            'logical_cluster_mode',
+            'maintain_window',
+            'number_of_free_node',
+            'number_of_node',
+            'recent_event',
         )
 
         self.assertEqual(EXAMPLE['vpc_id'], sot.router_id)
@@ -173,6 +183,23 @@ class TestCluster(base.TestCase):
                          sot.public_ip.public_bind_type)
         self.assertEqual(EXAMPLE['created'], sot.created_at)
         self.assertEqual(EXAMPLE['updated'], sot.updated_at)
+        self.assertEqual(EXAMPLE['failed_reasons'], sot.error)
+        self.assertEqual(
+            EXAMPLE['use_logical_cluster'],
+            sot.is_logical_cluster_enabled
+        )
+        self.assertEqual(
+            EXAMPLE['logical_cluster_initialed'],
+            sot.is_logical_cluster_initialed
+        )
+        self.assertEqual(
+            EXAMPLE['logical_cluster_mode'],
+            sot.is_logical_cluster_mode
+        )
+        self.assertEqual(EXAMPLE['maintain_window'], sot.maintenance_window)
+        self.assertEqual(EXAMPLE['number_of_free_node'], sot.num_free_nodes)
+        self.assertEqual(EXAMPLE['number_of_node'], sot.num_nodes)
+        self.assertEqual(EXAMPLE['recent_event'], sot.num_recent_events)
 
         for key, value in EXAMPLE.items():
             if key not in updated_sot_attrs:

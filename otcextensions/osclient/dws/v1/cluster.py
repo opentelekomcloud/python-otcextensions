@@ -28,7 +28,7 @@ _formatters = {
     'public_ip': format_columns.DictColumn,
     'endpoints': format_columns.ListDictColumn,
     'public_endpoints': format_columns.ListDictColumn,
-    'maintain_window': format_columns.DictColumn,
+    'maintenance_window': format_columns.DictColumn,
     'parameter_group': format_columns.DictColumn,
     'private_ip': format_columns.ListColumn,
     'action_progress': format_columns.DictColumn,
@@ -59,17 +59,36 @@ def set_attributes_for_print(obj):
         yield data
 
 
+def format_response(obj):
+    if hasattr(obj, 'public_ip') and hasattr(obj.public_ip, 'eip_address'):
+        setattr(obj, 'floating_ip_address', obj.public_ip.eip_address)
+        setattr(obj, 'floating_ip_id', obj.public_ip.eip_id)
+    if hasattr(obj, 'endpoints'):
+        private_domain = []
+        for endpoint in obj.endpoints:
+            private_domain.append(endpoint['connect_info'])
+        setattr(obj, 'private_domain', private_domain)
+    if hasattr(obj, 'public_endpoints'):
+        public_domain = []
+        for public_endpoint in obj.public_endpoints:
+            public_domain.append(public_endpoint['public_connect_info'])
+        setattr(obj, 'public_domain', public_domain)
+    return obj
+
+
 def translate_response(func):
     def new(self, *args, **kwargs):
         obj = func(self, *args, **kwargs)
+        obj = format_response(obj)
+
         columns = (
             'id',
             'name',
             'flavor',
             'availability_zone',
             'version',
-            'number_of_node',
-            'number_of_free_node',
+            'num_nodes',
+            'num_free_nodes',
             'user_name',
             'port',
             'private_domain',
@@ -87,10 +106,10 @@ def translate_response(func):
             'action_progress',
             'created_at',
             'updated_at',
-            'logical_cluster_initialed',
-            'logical_cluster_mode',
-            'use_logical_cluster',
-            'maintain_window',
+            'is_logical_cluster_initialed',
+            'is_logical_cluster_mode',
+            'is_logical_cluster_enabled',
+            'maintenance_window',
             'enterprise_project_id',
         )
 
@@ -106,7 +125,7 @@ class ListClusters(command.Lister):
     columns = (
         'ID',
         'Name',
-        'Number of Node',
+        'Num Nodes',
         'Flavor',
         'Status',
         'Version',
@@ -150,8 +169,8 @@ class CreateCluster(command.ShowOne):
             help=_('Availability Zone.')
         )
         parser.add_argument(
-            '--count',
-            metavar='<count>',
+            '--num-nodes',
+            metavar='<num_nodes>',
             dest='number_of_node',
             type=int,
             default=3,
@@ -159,8 +178,8 @@ class CreateCluster(command.ShowOne):
                    'For a hybrid data warehouse (standalone), the value is 1.')
         )
         parser.add_argument(
-            '--cn-count',
-            metavar='<cn_count>',
+            '--num-cn',
+            metavar='<num_cn>',
             dest='number_of_cn',
             type=int,
             help=_('Number of deployed CNs. The value ranges from 2 to the '

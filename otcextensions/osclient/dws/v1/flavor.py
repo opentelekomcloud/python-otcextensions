@@ -21,6 +21,20 @@ from otcextensions.i18n import _
 LOG = logging.getLogger(__name__)
 
 
+def format_response(obj):
+    for detail in obj.detail:
+        if detail.type == 'mem':
+            setattr(obj, 'ram', detail.value)
+        elif detail.type == 'SSD':
+            setattr(obj, 'disk_type', 'SSD')
+            setattr(obj, 'disk_size', detail.value)
+        elif detail.type == 'availableZones':
+            setattr(obj, 'availability_zones', detail.value)
+        else:
+            setattr(obj, detail.type.lower(), detail.value)
+    return obj
+
+
 class ListFlavors(command.Lister):
     _description = _('List Flavors (Node Types) of a DWS Cluster')
     columns = (
@@ -36,5 +50,13 @@ class ListFlavors(command.Lister):
     def take_action(self, parsed_args):
         client = self.app.client_manager.dws
         data = client.flavors()
-        return (self.columns, (utils.get_item_properties(s, self.columns)
-                               for s in data))
+        return (
+            self.columns,
+            (
+                utils.get_item_properties(
+                    format_response(s),
+                    self.columns
+                )
+                for s in data
+            )
+        )

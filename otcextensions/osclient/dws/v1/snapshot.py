@@ -41,8 +41,8 @@ def translate_response(func):
             'status',
             'size',
             'type',
-            'started',
-            'finished',
+            'created_at',
+            'updated_at',
         )
 
         data = utils.get_item_properties(obj, columns)

@@ -54,8 +54,16 @@ class TestSnapshot(base.TestCase):
     def test_make_it(self):
         sot = snapshot.Snapshot(**EXAMPLE)
 
+        updated_sot_attrs = (
+            'started',
+            'finished',
+        )
+        self.assertEqual(EXAMPLE['started'], sot.created_at)
+        self.assertEqual(EXAMPLE['finished'], sot.updated_at)
+
         for key, value in EXAMPLE.items():
-            self.assertEqual(getattr(sot, key), value)
+            if key not in updated_sot_attrs:
+                self.assertEqual(getattr(sot, key), value)
 
 
 class TestRestore(base.TestCase):
