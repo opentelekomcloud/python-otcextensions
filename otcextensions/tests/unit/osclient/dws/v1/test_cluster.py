@@ -23,35 +23,42 @@ from openstackclient.tests.unit import utils as tests_utils
 
 
 _COLUMNS = (
-    'id',
-    'name',
-    'flavor',
+    'action_progress',
     'availability_zone',
-    'version',
-    'num_nodes',
+    'created_at',
+    'endpoints',
+    'enterprise_project_id',
+    'flavor',
+    'flavor_id',
+    'floating_ip',
+    'guest_agent_version',
+    'id',
+    'is_logical_cluster_enabled',
+    'is_logical_cluster_initialed',
+    'is_logical_cluster_mode',
+    'maintenance_window',
+    'name',
+    'network_id',
+    'nodes',
     'num_free_nodes',
-    'user_name',
+    'num_nodes',
+    'num_recent_events',
+    'parameter_group',
     'port',
     'private_domain',
     'private_ip',
-    'floating_ip_address',
     'public_domain',
+    'public_endpoints',
     'router_id',
-    'network_id',
     'security_group_id',
-    'recent_event',
     'spec_version',
     'status',
-    'task_status',
     'sub_status',
-    'action_progress',
-    'created_at',
+    'tags',
+    'task_status',
     'updated_at',
-    'is_logical_cluster_initialed',
-    'is_logical_cluster_mode',
-    'is_logical_cluster_enabled',
-    'maintenance_window',
-    'enterprise_project_id',
+    'user_name',
+    'version'
 )
 
 
@@ -124,8 +131,7 @@ class TestListClusters(fakes.TestDws):
 
 class TestCreateCluster(fakes.TestDws):
 
-    _cluster = cluster.format_response(
-        fakes.FakeCluster.create_one())
+    _cluster = fakes.FakeCluster.create_one()
 
     columns = _COLUMNS
 
@@ -321,8 +327,7 @@ class TestExtendCluster(fakes.TestDws):
 
 class TestShowCluster(fakes.TestDws):
 
-    _cluster = cluster.format_response(
-        fakes.FakeCluster.create_one())
+    _cluster = fakes.FakeCluster.create_one()
     columns = _COLUMNS
     data = fakes.gen_data(_cluster, columns, cluster._formatters)
 

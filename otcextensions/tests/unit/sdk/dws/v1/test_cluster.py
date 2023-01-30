@@ -176,11 +176,7 @@ class TestCluster(base.TestCase):
         self.assertEqual(EXAMPLE['node_type'], sot.flavor)
         self.assertEqual(EXAMPLE['node_type_id'], sot.flavor_id)
 
-        self.assertEqual(EXAMPLE['public_ip']['eip_id'], sot.public_ip.eip_id)
-        self.assertEqual(EXAMPLE['public_ip']['eip_address'],
-                         sot.public_ip.eip_address)
-        self.assertEqual(EXAMPLE['public_ip']['public_bind_type'],
-                         sot.public_ip.public_bind_type)
+        self.assertEqual(EXAMPLE['public_ip'], sot.floating_ip)
         self.assertEqual(EXAMPLE['created'], sot.created_at)
         self.assertEqual(EXAMPLE['updated'], sot.updated_at)
         self.assertEqual(EXAMPLE['failed_reasons'], sot.error)

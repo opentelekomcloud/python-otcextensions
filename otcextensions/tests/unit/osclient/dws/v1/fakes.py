@@ -24,6 +24,7 @@ from otcextensions.tests.unit.osclient import test_base
 from otcextensions.sdk.dws.v1 import cluster
 from otcextensions.sdk.dws.v1 import snapshot
 from otcextensions.sdk.dws.v1 import flavor
+from otcextensions.osclient.dws.v1 import flavor as flavor_osclient
 
 
 def gen_data(obj, columns, formatters=None):
@@ -201,14 +202,5 @@ class FakeFlavor(test_base.Fake):
         }
 
         obj = flavor.Flavor(**object_info)
-        for detail in obj.detail:
-            if detail.type == 'mem':
-                setattr(obj, 'ram', detail.value)
-            elif detail.type == 'SSD':
-                setattr(obj, 'disk_type', 'SSD')
-                setattr(obj, 'disk_size', detail.value)
-            elif detail.type == 'availableZones':
-                setattr(obj, 'availability_zones', detail.value)
-            else:
-                setattr(obj, detail.type.lower(), detail.value)
+        flavor_osclient._format_flavor_response(obj)
         return obj

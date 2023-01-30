@@ -15,8 +15,6 @@ import mock
 from otcextensions.osclient.dws.v1 import flavor
 from otcextensions.tests.unit.osclient.dws.v1 import fakes
 
-# from openstackclient.tests.unit import utils as tests_utils
-
 
 class TestListFlavors(fakes.TestDws):
 

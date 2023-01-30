@@ -23,6 +23,23 @@ import time
 LOG = _log.setup_logging(__name__)
 
 
+def _format_cluster_response(obj):
+    if hasattr(obj, 'endpoints'):
+        private_domain = []
+        for endpoint in obj.endpoints:
+            private_domain.append(endpoint['connect_info'])
+        setattr(obj, 'private_domain', private_domain)
+    if hasattr(obj, 'public_endpoints'):
+        public_domain = []
+        for public_endpoint in obj.public_endpoints:
+            public_domain.append(public_endpoint['public_connect_info'])
+        setattr(obj, 'public_domain', public_domain)
+    # if hasattr(obj, 'public_ip') and hasattr(obj.public_ip, 'eip_address'):
+    #     setattr(obj, 'floating_ip_address', obj.public_ip.eip_address)
+    #     setattr(obj, 'floating_ip_id', obj.public_ip.eip_id)
+    return obj
+
+
 class Proxy(proxy.Proxy):
 
     skip_discovery = True
@@ -50,7 +67,8 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.dws.v1.cluster.Cluster`
         """
-        return self._get(_cluster.Cluster, cluster)
+        obj = self._get(_cluster.Cluster, cluster)
+        return _format_cluster_response(obj)
 
     def find_cluster(self, name_or_id, ignore_missing=False):
         """Find a single cluster
@@ -65,8 +83,9 @@ class Proxy(proxy.Proxy):
         :returns:
             One :class:`~otcextensions.sdk.dws.v1.cluster.Cluster` or ``None``
         """
-        return self._find(_cluster.Cluster, name_or_id,
-                          ignore_missing=ignore_missing)
+        obj = self._find(_cluster.Cluster, name_or_id,
+                         ignore_missing=ignore_missing)
+        return _format_cluster_response(obj)
 
     def create_cluster(self, **attrs):
         """Create a cluster from attributes

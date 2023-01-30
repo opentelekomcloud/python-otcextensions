@@ -21,7 +21,7 @@ from otcextensions.i18n import _
 LOG = logging.getLogger(__name__)
 
 
-def format_response(obj):
+def _format_flavor_response(obj):
     for detail in obj.detail:
         if detail.type == 'mem':
             setattr(obj, 'ram', detail.value)
@@ -54,7 +54,7 @@ class ListFlavors(command.Lister):
             self.columns,
             (
                 utils.get_item_properties(
-                    format_response(s),
+                    _format_flavor_response(s),
                     self.columns
                 )
                 for s in data

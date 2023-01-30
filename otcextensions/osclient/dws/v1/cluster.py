@@ -25,7 +25,7 @@ LOG = logging.getLogger(__name__)
 
 
 _formatters = {
-    'public_ip': format_columns.DictColumn,
+    'floating_ip': format_columns.DictColumn,
     'endpoints': format_columns.ListDictColumn,
     'public_endpoints': format_columns.ListDictColumn,
     'maintenance_window': format_columns.DictColumn,
@@ -33,22 +33,17 @@ _formatters = {
     'private_ip': format_columns.ListColumn,
     'action_progress': format_columns.DictColumn,
     'public_domain': format_columns.ListColumn,
-    'private_domain': format_columns.ListColumn
+    'private_domain': format_columns.ListColumn,
+    'nodes': format_columns.ListDictColumn,
+    'plugins': format_columns.ListDictColumn
 }
 
 
 def _get_columns(item):
     column_map = {}
     hidden = [
-        'job_id',
         'location',
-        'nodes',
-        'plugins',
-        'public_ip',
-        'endpoints',
-        'public_endpoints',
-        'parameter_group',
-        'guest_agent_version'
+        'plugins'
     ]
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
                                                            hidden)
@@ -59,62 +54,13 @@ def set_attributes_for_print(obj):
         yield data
 
 
-def format_response(obj):
-    if hasattr(obj, 'public_ip') and hasattr(obj.public_ip, 'eip_address'):
-        setattr(obj, 'floating_ip_address', obj.public_ip.eip_address)
-        setattr(obj, 'floating_ip_id', obj.public_ip.eip_id)
-    if hasattr(obj, 'endpoints'):
-        private_domain = []
-        for endpoint in obj.endpoints:
-            private_domain.append(endpoint['connect_info'])
-        setattr(obj, 'private_domain', private_domain)
-    if hasattr(obj, 'public_endpoints'):
-        public_domain = []
-        for public_endpoint in obj.public_endpoints:
-            public_domain.append(public_endpoint['public_connect_info'])
-        setattr(obj, 'public_domain', public_domain)
-    return obj
-
-
 def translate_response(func):
     def new(self, *args, **kwargs):
         obj = func(self, *args, **kwargs)
-        obj = format_response(obj)
-
-        columns = (
-            'id',
-            'name',
-            'flavor',
-            'availability_zone',
-            'version',
-            'num_nodes',
-            'num_free_nodes',
-            'user_name',
-            'port',
-            'private_domain',
-            'private_ip',
-            'floating_ip_address',
-            'public_domain',
-            'router_id',
-            'network_id',
-            'security_group_id',
-            'recent_event',
-            'spec_version',
-            'status',
-            'task_status',
-            'sub_status',
-            'action_progress',
-            'created_at',
-            'updated_at',
-            'is_logical_cluster_initialed',
-            'is_logical_cluster_mode',
-            'is_logical_cluster_enabled',
-            'maintenance_window',
-            'enterprise_project_id',
-        )
-
+        display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns, formatters=_formatters)
-        return (columns, data)
+        return (display_columns, data)
+
     new.__name__ = func.__name__
     new.__doc__ = func.__doc__
     return new

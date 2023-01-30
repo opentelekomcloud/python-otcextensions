@@ -14,18 +14,6 @@ from openstack import resource
 from openstack import utils
 
 
-class PublicIP(resource.Resource):
-    #: Binding type of an EIP. The value can be one of the following:
-    #:  - auto_assign
-    #:  - not_use
-    #:  - bind_existing
-    public_bind_type = resource.Body('public_bind_type')
-    #: EIP ID
-    eip_id = resource.Body('eip_id')
-    #: EIP Address
-    eip_address = resource.Body('eip_address')
-
-
 class Cluster(resource.Resource):
     base_path = '/clusters'
 
@@ -60,6 +48,8 @@ class Cluster(resource.Resource):
     flavor = resource.Body('node_type')
     #: Node Type ID (DWS Flavor ID).
     flavor_id = resource.Body('node_type_id')
+    #: Floating IP details
+    floating_ip = resource.Body('public_ip', type=dict)
     #: Guest Agent Version
     guest_agent_version = resource.Body('guest_agent_version')
     #: Whether logical_cluster has been enabled.
@@ -100,9 +90,6 @@ class Cluster(resource.Resource):
     #: Public network connection information about the cluster.
     public_endpoints = resource.Body('public_endpoints',
                                      type=list, list_type=dict)
-    #: Public IP address. If the parameter is not specified,
-    #:  public connection is not used by default.
-    public_ip = resource.Body('public_ip', type=PublicIP)
     #: Cluster scale-out details.
     resize_info = resource.Body('resize_info', type=dict)
     #: Router ID, which is used for configuring cluster network.
@@ -129,6 +116,12 @@ class Cluster(resource.Resource):
     updated_at = resource.Body('updated')
     #: Data warehouse version.
     version = resource.Body('version')
+
+    # Computed Resources
+    #: Private Domain from endpoints connection_info
+    private_domain = resource.Computed('private_domain', default='')
+    #: Public Domain from public_endpoints connection_info
+    public_domain = resource.Computed('public_domain', default='')
 
     def _action(self, session, action, body=None):
         """Preform actions given the message body.
