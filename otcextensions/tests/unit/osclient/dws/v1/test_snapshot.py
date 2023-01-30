@@ -26,14 +26,14 @@ class TestListSnapshots(fakes.TestDws):
 
     objects = fakes.FakeSnapshot.create_multiple(3)
 
-    column_list_headers = ('ID', 'Name', 'Cluster Id',)
+    column_list_headers = ('ID', 'Name', 'Type', 'Cluster Id',)
 
-    columns = ('id', 'name', 'cluster_id',)
+    columns = ('id', 'name', 'type', 'cluster_id',)
 
     data = []
 
     for s in objects:
-        data.append((s.id, s.name, s.cluster_id,))
+        data.append((s.id, s.name, s.type, s.cluster_id,))
 
     def setUp(self):
         super(TestListSnapshots, self).setUp()
@@ -66,20 +66,21 @@ class TestListSnapshots(fakes.TestDws):
 class TestCreateSnapshot(fakes.TestDws):
 
     _cluster = fakes.FakeCluster.create_one()
-    _data = fakes.FakeSnapshot.create_one()
+    _snapshot = fakes.FakeSnapshot.create_one()
 
     columns = (
+        'cluster_id',
+        'created_at',
+        'description',
         'id',
         'name',
-        'cluster_id',
-        'status',
         'size',
+        'status',
         'type',
-        'created_at',
         'updated_at',
     )
 
-    data = fakes.gen_data(_data, columns)
+    data = fakes.gen_data(_snapshot, columns)
 
     default_timeout = 900
 
@@ -89,8 +90,9 @@ class TestCreateSnapshot(fakes.TestDws):
         self.cmd = snapshot.CreateSnapshot(self.app, None)
 
         self.client.find_cluster = mock.Mock(return_value=self._cluster)
-        self.client.create_snapshot = mock.Mock(return_value=self._data)
-        self.client.wait_for_snapshot = mock.Mock(return_value=True)
+        self.client.create_snapshot = mock.Mock(return_value=self._snapshot)
+        self.client.get_snapshot = mock.Mock(return_value=self._snapshot)
+        self.client.wait_for_cluster = mock.Mock(return_value=True)
 
     def test_create(self):
         arglist = [
@@ -126,14 +128,15 @@ class TestShowSnapshot(fakes.TestDws):
     _snapshot = fakes.FakeSnapshot.create_one()
 
     columns = (
+        'cluster_id',
+        'created_at',
+        'description',
         'id',
         'name',
-        'cluster_id',
-        'status',
         'size',
+        'status',
         'type',
-        'created_at',
-        'updated_at',
+        'updated_at'
     )
 
     data = fakes.gen_data(_snapshot, columns)

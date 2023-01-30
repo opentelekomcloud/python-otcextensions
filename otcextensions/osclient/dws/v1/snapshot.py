@@ -26,27 +26,22 @@ LOG = logging.getLogger(__name__)
 
 
 def _get_columns(item):
-    column_map = {
-    }
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
+    column_map = {}
+    hidden = [
+        'location',
+    ]
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
+                                                           hidden)
 
 
 def translate_response(func):
     def new(self, *args, **kwargs):
         obj = func(self, *args, **kwargs)
-        columns = (
-            'id',
-            'name',
-            'cluster_id',
-            'status',
-            'size',
-            'type',
-            'created_at',
-            'updated_at',
-        )
-
+        display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
-        return (columns, data)
+
+        return (display_columns, data)
+
     new.__name__ = func.__name__
     new.__doc__ = func.__doc__
     return new
@@ -59,6 +54,7 @@ class ListSnapshots(command.Lister):
     columns = (
         'ID',
         'Name',
+        'Type',
         'Cluster Id',
     )
 
