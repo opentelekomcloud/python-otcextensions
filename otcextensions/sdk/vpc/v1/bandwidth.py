@@ -41,6 +41,7 @@ class Bandwidth(resource.Resource):
     )
 
     # Properties
+    project_id = resource.URI('project_id')
     #: Specifies the bandwidth name.
     #: *Type: dict*
     name = resource.Body('name', type=str)
@@ -51,8 +52,6 @@ class Bandwidth(resource.Resource):
     share_type = resource.Body('share_type', type=str)
     #: Specifies the project ID.
     publicip_info = resource.Body('publicip_info', type=list, elements=PublicIPInfo)
-    #: Specifies the project ID.
-    project_id = resource.Body('project_id')
     #: Specifies the bandwidth type.
     bandwidth_type = resource.Body('bandwidth_type', type=str, default='share')
     #: Specifies that the bandwidth is billed by bandwidth.

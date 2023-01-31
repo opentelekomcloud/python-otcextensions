@@ -29,7 +29,7 @@ class Proxy(proxy.Proxy):
         :param dict attrs: Keyword arguments which will be used to assign
             a :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
         """
-        return self._create(_bandwidth.Bandwidth, **attrs)
+        return self._create(_bandwidth.Bandwidth, **attrs, project_id=self.get_project_id())
 
     def delete_bandwidth(self, bandwidth, ignore_missing=True):
         """Delete a bandwidth
