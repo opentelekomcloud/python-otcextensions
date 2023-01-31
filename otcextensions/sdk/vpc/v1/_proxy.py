@@ -12,6 +12,7 @@
 from openstack import exceptions
 from openstack import proxy
 
+from otcextensions.sdk.vpc.v1 import bandwidth as _bandwidth
 from otcextensions.sdk.vpc.v1 import peering as _peering
 from otcextensions.sdk.vpc.v1 import route as _route
 from otcextensions.sdk.vpc.v1 import subnet as _subnet
@@ -20,6 +21,32 @@ from otcextensions.sdk.vpc.v1 import vpc as _vpc
 
 class Proxy(proxy.Proxy):
     skip_discovery = True
+
+    # ======== Bandwidth ========
+    def assign_bandwidth(self, **attrs):
+        """Assign bandwidth
+
+        :param dict attrs: Keyword arguments which will be used to assign
+            a :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
+        """
+        return self._create(_bandwidth.Bandwidth, **attrs)
+
+    def delete_bandwidth(self, bandwidth, ignore_missing=True):
+        """Delete a bandwidth
+
+        :param bandwidth: key id or an instance of
+            :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the vpc peering does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent peering.
+
+        :returns: ``None``
+        """
+        return self._delete(
+            _bandwidth.Bandwidth, bandwidth,
+            ignore_missing=ignore_missing)
 
     # ======== Peering ========
     def create_peering(self, **attrs):
@@ -122,6 +149,7 @@ class Proxy(proxy.Proxy):
                 "results: status must be one of %r." % valid_status)
         peering = self._get_resource(_peering.Peering, peering)
         return peering._set_peering(self, set_status.lower())
+
 
     # ======== Route ========
     def add_route(self, **attrs):
