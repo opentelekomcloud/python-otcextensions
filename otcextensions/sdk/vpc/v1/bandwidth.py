@@ -37,9 +37,7 @@ class Bandwidth(resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'id', 'marker', 'limit', 'name', 'router_id',
-        'status', 'project_id', project_id='tenant_id',
-        router_id='vpc_id'
+        'project_id', project_id='tenant_id',
     )
 
     # Properties
