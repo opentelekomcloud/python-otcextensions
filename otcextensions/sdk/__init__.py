@@ -170,6 +170,7 @@ OTC_SERVICES = {
     },
     'vpc': {
         'service_type': 'vpc',
+        'append_project_id': True,
     },
     'waf': {
         'service_type': 'waf',
