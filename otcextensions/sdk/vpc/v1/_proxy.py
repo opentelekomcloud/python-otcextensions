@@ -29,7 +29,38 @@ class Proxy(proxy.Proxy):
         :param dict attrs: Keyword arguments which will be used to assign
             a :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
         """
-        return self._create(_bandwidth.Bandwidth, **attrs, project_id=self.get_project_id())
+        project_id = self.get_project_id()
+        return self._create(_bandwidth.Bandwidth, project_id=project_id, **attrs)
+
+    def add_eip_to_bandwidth(self, bandwidth, publicip_info):
+        """Add an EIP to a shared bandwidth.
+
+        :param bandwidth: The value can be the ID of a bandwidth
+             or a :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
+             instance.
+        :param publicip_info: List from dictionaries.
+        """
+        bandwidth = self._get_resource(_bandwidth.Bandwidth, bandwidth)
+        project_id = self.get_project_id()
+        return bandwidth.add_eip_to_bandwidth(
+            self,
+            project_id,
+            publicip_info)
+
+    def remove_eip_from_bandwidth(self, bandwidth, **attrs):
+        """Add an EIP to a shared bandwidth.
+
+        :param bandwidth: The value can be the ID of a bandwidth
+             or a :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
+             instance.
+        :param attrs:
+        """
+        bandwidth = self._get_resource(_bandwidth.Bandwidth, bandwidth)
+        project_id = self.get_project_id()
+        return bandwidth.remove_eip_from_bandwidth(
+            self,
+            project_id,
+            **attrs)
 
     def delete_bandwidth(self, bandwidth, ignore_missing=True):
         """Delete a bandwidth
@@ -44,9 +75,10 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
+        project_id = self.get_project_id()
         return self._delete(
             _bandwidth.Bandwidth, bandwidth,
-            ignore_missing=ignore_missing)
+            ignore_missing=ignore_missing, project_id=project_id)
 
     # ======== Peering ========
     def create_peering(self, **attrs):
