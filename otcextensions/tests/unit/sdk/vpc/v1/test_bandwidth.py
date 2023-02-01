@@ -76,7 +76,8 @@ class TestBandwidth(base.TestCase):
         self.assertEqual(EXAMPLE['bandwidth_type'], sot.bandwidth_type)
         self.assertEqual(EXAMPLE['charge_mode'], sot.charge_mode)
         self.assertEqual(EXAMPLE['billing_info'], sot.billing_info)
-        self.assertEqual(EXAMPLE['enterprise_project_id'], sot.enterprise_project_id)
+        self.assertEqual(EXAMPLE['enterprise_project_id'],
+                         sot.enterprise_project_id)
         self.assertEqual(EXAMPLE['status'], sot.status)
         self.assertEqual(EXAMPLE['created_at'], sot.created_at)
         self.assertEqual(EXAMPLE['updated_at'], sot.updated_at)

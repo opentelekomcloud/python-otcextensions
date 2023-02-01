@@ -30,7 +30,8 @@ class Proxy(proxy.Proxy):
             a :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
         """
         project_id = self.get_project_id()
-        return self._create(_bandwidth.Bandwidth, project_id=project_id, **attrs)
+        return self._create(_bandwidth.Bandwidth, project_id=project_id,
+                            **attrs)
 
     def add_eip_to_bandwidth(self, bandwidth, publicip_info):
         """Add an EIP to a shared bandwidth.
@@ -181,7 +182,6 @@ class Proxy(proxy.Proxy):
                 "results: status must be one of %r." % valid_status)
         peering = self._get_resource(_peering.Peering, peering)
         return peering._set_peering(self, set_status.lower())
-
 
     # ======== Route ========
     def add_route(self, **attrs):

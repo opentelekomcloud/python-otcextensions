@@ -9,7 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import exceptions
 from openstack import resource
 from openstack import utils
 
@@ -50,7 +49,8 @@ class Bandwidth(resource.Resource):
     #: Specifies whether the bandwidth is shared or dedicated.
     share_type = resource.Body('share_type', type=str)
     #: Specifies the project ID.
-    publicip_info = resource.Body('publicip_info', type=list, elements=PublicIPInfo)
+    publicip_info = resource.Body('publicip_info', type=list,
+                                  elements=PublicIPInfo)
     #: Specifies the project ID.
     project_id = resource.URI('project_id')
     #: Specifies the bandwidth type.
@@ -68,7 +68,7 @@ class Bandwidth(resource.Resource):
     #: Specifies the time (UTC) when the bandwidth is updated.
     updated_at = resource.Body('updated_at', type=str)
 
-    def add_eip_to_bandwidth(self, session, project_id, publicip_info):
+    def add_eip_to_bandwidth(self, session, publicip_info, project_id):
         """Method to add an EIP to shared bandwidth.
 
         :param session: The session to use for making this request.
