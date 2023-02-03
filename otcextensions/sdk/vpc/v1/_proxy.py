@@ -48,8 +48,8 @@ class Proxy(proxy.Proxy):
         :param bandwidth: The value can be the ID of a bandwidth
              or a :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
              instance.
-        :param publicip_info: List of :class:`~otcextensions.
-            sdk.vpc.v1.proxy.PublicInfo`
+        :param publicip_info: List of dictionaries in the format
+            {'publicip_id': id, 'publicip_type': type}
         """
         bandwidth = self._get_resource(_bandwidth.Bandwidth, bandwidth)
         project_id = self.get_project_id()
