@@ -18,6 +18,15 @@ from otcextensions.sdk.vpc.v1 import route as _route
 from otcextensions.sdk.vpc.v1 import subnet as _subnet
 from otcextensions.sdk.vpc.v1 import vpc as _vpc
 
+from dataclasses import dataclass
+from typing import List
+
+
+@dataclass
+class PublicInfo:
+  publicip_id: str
+  publicip_type: str
+
 
 class Proxy(proxy.Proxy):
     skip_discovery = True
@@ -33,13 +42,14 @@ class Proxy(proxy.Proxy):
         return self._create(_bandwidth.Bandwidth, project_id=project_id,
                             **attrs)
 
-    def add_eip_to_bandwidth(self, bandwidth, publicip_info):
+    def add_eip_to_bandwidth(self, bandwidth, publicip_info: List[PublicInfo]):
         """Add an EIP to a shared bandwidth.
 
         :param bandwidth: The value can be the ID of a bandwidth
              or a :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
              instance.
-        :param publicip_info: List from dictionaries.
+        :param publicip_info: List of :class:`~otcextensions.
+            sdk.vpc.v1.proxy.PublicInfo`
         """
         bandwidth = self._get_resource(_bandwidth.Bandwidth, bandwidth)
         project_id = self.get_project_id()
@@ -54,7 +64,8 @@ class Proxy(proxy.Proxy):
         :param bandwidth: The value can be the ID of a bandwidth
              or a :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
              instance.
-        :param attrs:
+        :param attrs: Keyword arguments to remove eip: charge_mode, size,
+            publicip_info - array of eip in the format: 'publicip_id': id
         """
         bandwidth = self._get_resource(_bandwidth.Bandwidth, bandwidth)
         project_id = self.get_project_id()
