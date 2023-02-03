@@ -11,6 +11,14 @@ member of a :class:`~openstack.connection.Connection` object.  The
 ``vpc`` member will only be added if the
 ``otcextensions.sdk.register_otc_extensions(conn)`` method is called.
 
+VPC Bandwidth Operations
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.vpc.v1._proxy.Proxy
+  :noindex:
+  :members: assign_bandwidth, add_eip_to_bandwidth, remove_eip_from_bandwidth,
+            delete_bandwidth
+
 VPC Peering Operations
 ^^^^^^^^^^^^^^^^^^^^^^
 

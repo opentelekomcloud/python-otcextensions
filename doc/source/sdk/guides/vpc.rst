@@ -4,6 +4,49 @@ Virtual Private Cloud (VPC)
 .. contents:: Table of Contents
    :local:
 
+VPC Bandwidth
+--------------
+
+Shared bandwidth allows multiple EIPs to share the same bandwidth.
+All ECSs, BMSs, and load balancers that have EIPs bound in the same region
+can share a bandwidth.
+
+Assign bandwidth
+^^^^^^^^^^^^^^^^^
+
+This interface is used to assign a shared bandwidth.
+:class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`.
+
+.. literalinclude:: ../examples/vpc/assign_bandwidth.py
+   :lines: 16-23
+
+Add eip to bandwidth
+^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to add an EIP to a shared bandwidth.
+:class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`.
+
+.. literalinclude:: ../examples/vpc/add_eip_to_bandwidth.py
+   :lines: 16-25
+
+Remove eip from bandwidth
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to remove an EIP from a shared bandwidth.
+:class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`.
+
+.. literalinclude:: ../examples/vpc/remove_eip_from_bandwidth.py
+   :lines: 16-27
+
+Delete bandwidth
+^^^^^^^^^^^^^^^^
+
+This interface is used to delete a shared bandwidth.
+:class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`.
+
+.. literalinclude:: ../examples/vpc/delete_bandwidth.py
+   :lines: 16-22
+
 VPC Peering Connection
 ----------------------
 
