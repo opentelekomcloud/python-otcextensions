@@ -24,8 +24,8 @@ from typing import List
 
 @dataclass
 class PublicInfo:
-  publicip_id: str
-  publicip_type: str
+    publicip_id: str
+    publicip_type: str
 
 
 class Proxy(proxy.Proxy):
@@ -65,7 +65,7 @@ class Proxy(proxy.Proxy):
              or a :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
              instance.
         :param attrs: Keyword arguments to remove eip: charge_mode, size,
-            publicip_info - array of eip in the format: 'publicip_id': id
+            publicip_info - array of eip in the format {'publicip_id': id}
         """
         bandwidth = self._get_resource(_bandwidth.Bandwidth, bandwidth)
         project_id = self.get_project_id()
