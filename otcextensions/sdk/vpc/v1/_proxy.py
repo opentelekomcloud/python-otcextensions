@@ -18,6 +18,15 @@ from otcextensions.sdk.vpc.v1 import route as _route
 from otcextensions.sdk.vpc.v1 import subnet as _subnet
 from otcextensions.sdk.vpc.v1 import vpc as _vpc
 
+from dataclasses import dataclass
+from typing import List
+
+
+@dataclass
+class PublicInfo:
+    publicip_id: str
+    publicip_type: str
+
 
 class Proxy(proxy.Proxy):
     skip_discovery = True
@@ -29,7 +38,41 @@ class Proxy(proxy.Proxy):
         :param dict attrs: Keyword arguments which will be used to assign
             a :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
         """
-        return self._create(_bandwidth.Bandwidth, **attrs)
+        project_id = self.get_project_id()
+        return self._create(_bandwidth.Bandwidth, project_id=project_id,
+                            **attrs)
+
+    def add_eip_to_bandwidth(self, bandwidth, publicip_info: List[PublicInfo]):
+        """Add an EIP to a shared bandwidth.
+
+        :param bandwidth: The value can be the ID of a bandwidth
+             or a :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
+             instance.
+        :param publicip_info: List of dictionaries in the format
+            {'publicip_id': id, 'publicip_type': type}
+        """
+        bandwidth = self._get_resource(_bandwidth.Bandwidth, bandwidth)
+        project_id = self.get_project_id()
+        return bandwidth.add_eip_to_bandwidth(
+            self,
+            project_id,
+            publicip_info)
+
+    def remove_eip_from_bandwidth(self, bandwidth, **attrs):
+        """Add an EIP to a shared bandwidth.
+
+        :param bandwidth: The value can be the ID of a bandwidth
+             or a :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
+             instance.
+        :param attrs: Keyword arguments to remove eip: charge_mode, size,
+            publicip_info - array of eip in the format {'publicip_id': id}
+        """
+        bandwidth = self._get_resource(_bandwidth.Bandwidth, bandwidth)
+        project_id = self.get_project_id()
+        return bandwidth.remove_eip_from_bandwidth(
+            self,
+            project_id,
+            **attrs)
 
     def delete_bandwidth(self, bandwidth, ignore_missing=True):
         """Delete a bandwidth
@@ -44,9 +87,10 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
+        project_id = self.get_project_id()
         return self._delete(
             _bandwidth.Bandwidth, bandwidth,
-            ignore_missing=ignore_missing)
+            ignore_missing=ignore_missing, project_id=project_id)
 
     # ======== Peering ========
     def create_peering(self, **attrs):
@@ -149,7 +193,6 @@ class Proxy(proxy.Proxy):
                 "results: status must be one of %r." % valid_status)
         peering = self._get_resource(_peering.Peering, peering)
         return peering._set_peering(self, set_status.lower())
-
 
     # ======== Route ========
     def add_route(self, **attrs):

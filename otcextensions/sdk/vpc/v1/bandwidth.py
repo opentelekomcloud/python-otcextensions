@@ -9,7 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import exceptions
 from openstack import resource
 from openstack import utils
 
@@ -17,6 +16,8 @@ from openstack import utils
 class PublicIPInfo(resource.Resource):
     #: Properties
     #: Specifies the ID of the EIP that uses the bandwidth.
+    ip_version = resource.Body('publicip_id', type=int)
+    #: Specifies the IP address version.
     publicip_id = resource.Body('publicip_id')
     #: Specifies the obtained EIP if only IPv4 EIPs are available.
     publicip_address = resource.Body('publicip_address')
@@ -36,11 +37,7 @@ class Bandwidth(resource.Resource):
     allow_delete = True
     allow_list = True
 
-    _query_mapping = resource.QueryParameters(
-        'id', 'marker', 'limit', 'name', 'router_id',
-        'status', 'project_id', project_id='tenant_id',
-        router_id='vpc_id'
-    )
+    _query_mapping = resource.QueryParameters()
 
     # Properties
     #: Specifies the bandwidth name.
@@ -52,9 +49,10 @@ class Bandwidth(resource.Resource):
     #: Specifies whether the bandwidth is shared or dedicated.
     share_type = resource.Body('share_type', type=str)
     #: Specifies the project ID.
-    publicip_info = resource.Body('publicip_info', type=list, elements=PublicIPInfo)
+    publicip_info = resource.Body('publicip_info', type=list,
+                                  elements=PublicIPInfo)
     #: Specifies the project ID.
-    project_id = resource.Body('project_id')
+    project_id = resource.URI('project_id')
     #: Specifies the bandwidth type.
     bandwidth_type = resource.Body('bandwidth_type', type=str, default='share')
     #: Specifies that the bandwidth is billed by bandwidth.
@@ -69,3 +67,27 @@ class Bandwidth(resource.Resource):
     created_at = resource.Body('created_at', type=str)
     #: Specifies the time (UTC) when the bandwidth is updated.
     updated_at = resource.Body('updated_at', type=str)
+
+    def add_eip_to_bandwidth(self, session, publicip_info, project_id):
+        """Method to add an EIP to shared bandwidth.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param list publicip_info: List from dictionaries which describes eips.
+        """
+        path = self.base_path % {'project_id': project_id}
+        url = utils.urljoin(path, self.id, 'insert')
+        body = {'bandwidth': {'publicip_info': publicip_info}}
+        return session.post(url, json=body)
+
+    def remove_eip_from_bandwidth(self, session, project_id, **attrs):
+        """Method to remove an EIP from shared bandwidth.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param dict attrs: Describes eip info.
+        """
+        path = self.base_path % {'project_id': project_id}
+        url = utils.urljoin(path, self.id, 'remove')
+        body = {'bandwidth': attrs}
+        return session.post(url, json=body)
