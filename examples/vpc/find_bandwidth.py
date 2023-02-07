@@ -21,4 +21,4 @@ conn = openstack.connect(cloud='test-dmd')
 
 conn.vpc.find_bandwidth(
     name_or_id="bandwidth-id"
-    )
+)

@@ -68,7 +68,8 @@ class Bandwidth(resource.Resource):
     #: Specifies the time (UTC) when the bandwidth is updated.
     updated_at = resource.Body('updated_at', type=str)
 
-    def add_eip_to_bandwidth(self, session, version, publicip_info, project_id):
+    def add_eip_to_bandwidth(self, session, version,
+                             publicip_info, project_id):
         """Method to add an EIP to shared bandwidth.
 
         :param session: The session to use for making this request.
@@ -81,7 +82,8 @@ class Bandwidth(resource.Resource):
         body = {'bandwidth': {'publicip_info': publicip_info}}
         return session.post(url, json=body)
 
-    def remove_eip_from_bandwidth(self, session, project_id, version,  **attrs):
+    def remove_eip_from_bandwidth(self, session, project_id,
+                                  version, **attrs):
         """Method to remove an EIP from shared bandwidth.
 
         :param session: The session to use for making this request.

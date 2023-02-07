@@ -61,7 +61,8 @@ class TestVPCBandwidth(TestVpcProxy):
         version = 'v2.0'
         project_id = self.proxy.get_project_id()
         self._verify(
-            'otcextensions.sdk.vpc.v1.bandwidth.Bandwidth.remove_eip_from_bandwidth',
+            'otcextensions.sdk.vpc.v1.bandwidth.Bandwidth.'
+            'remove_eip_from_bandwidth',
             self.proxy.remove_eip_from_bandwidth,
             method_args=[bandwidth],
             expected_args=[self.proxy, project_id, version],
@@ -82,7 +83,8 @@ class TestVPCBandwidth(TestVpcProxy):
 
     def test_find_bandwidth(self):
         version = 'v1'
-        base_path = _bandwidth.Bandwidth.base_path % {'version': version, 'project_id': self.proxy.get_project_id()}
+        base_path = _bandwidth.Bandwidth.base_path % {
+            'version': version, 'project_id': self.proxy.get_project_id()}
         self.verify_find(self.proxy.find_bandwidth, _bandwidth.Bandwidth,
                          expected_args=[],
                          expected_kwargs={

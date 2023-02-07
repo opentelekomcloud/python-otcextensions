@@ -22,5 +22,5 @@ conn = openstack.connect(cloud='test-dmd')
 attrs = {'name': 'new_name', 'size': '15'}
 example_bandwidth = conn.vpc.update_bandwidth(
     bandwidth="bandwidth-id", **attrs
-    )
+)
 print(example_bandwidth)
