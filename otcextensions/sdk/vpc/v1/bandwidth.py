@@ -28,7 +28,7 @@ class PublicIPInfo(resource.Resource):
 class Bandwidth(resource.Resource):
     resources_key = 'bandwidths'
     resource_key = 'bandwidth'
-    base_path = '/v2.0/%(project_id)s/bandwidths'
+    base_path = '/%(version)s/%(project_id)s/bandwidths'
 
     # capabilities
     allow_create = True

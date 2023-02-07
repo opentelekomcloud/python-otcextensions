@@ -54,7 +54,8 @@ class TestBandwidth(base.TestCase):
         sot = bandwidth.Bandwidth()
         self.assertEqual('bandwidth', sot.resource_key)
         self.assertEqual('bandwidths', sot.resources_key)
-        self.assertEqual('/%(version)s/%(project_id)s/bandwidths', sot.base_path)
+        self.assertEqual('/%(version)s/%(project_id)s/bandwidths',
+                         sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_fetch)

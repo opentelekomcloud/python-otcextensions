@@ -49,7 +49,8 @@ class TestVPCBandwidth(TestVpcProxy):
         publicip_info = 'publicip_info'
         version = 'v2.0'
         self._verify(
-            'otcextensions.sdk.vpc.v1.bandwidth.Bandwidth.add_eip_to_bandwidth',
+            'otcextensions.sdk.vpc.v1.bandwidth.Bandwidth.'
+            'add_eip_to_bandwidth',
             self.proxy.add_eip_to_bandwidth,
             method_args=[bandwidth, publicip_info],
             expected_args=[self.proxy, version, publicip_info],

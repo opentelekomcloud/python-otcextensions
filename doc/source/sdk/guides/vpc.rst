@@ -23,7 +23,7 @@ This interface is used to assign a shared bandwidth.
 Update bandwidth
 ^^^^^^^^^^^^^^^^^
 
-This interface is used to assign a shared bandwidth.
+This interface is used to update a shared bandwidth.
 :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`.
 
 .. literalinclude:: ../examples/vpc/update_bandwidth.py
@@ -32,7 +32,7 @@ This interface is used to assign a shared bandwidth.
 Find bandwidth
 ^^^^^^^^^^^^^^
 
-This interface is used to assign a shared bandwidth.
+This interface is used to find a shared bandwidth by name or id.
 :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`.
 
 .. literalinclude:: ../examples/vpc/find_bandwidth.py
