@@ -39,24 +39,68 @@ class Proxy(proxy.Proxy):
             a :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
         """
         project_id = self.get_project_id()
+        version = 'v2.0'
+        base_path = _bandwidth.Bandwidth.base_path % {'version': version, 'project_id': project_id}
         return self._create(_bandwidth.Bandwidth, project_id=project_id,
-                            **attrs)
+                            base_path=base_path, **attrs)
+
+    def find_bandwidth(self, name_or_id, ignore_missing=False):
+        """Find a single bandwidth
+
+        :param name_or_id: The name or ID of a bandwidth
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the vpc peering does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to delete a nonexistent peering.
+
+        :returns: One :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
+        """
+        project_id = self.get_project_id()
+        version = 'v1'
+        base_path = _bandwidth.Bandwidth.base_path % {'version': version, 'project_id': project_id}
+        return self._find(
+            _bandwidth.Bandwidth, name_or_id, project_id=project_id, base_path=base_path,
+            ignore_missing=ignore_missing)
+
+    def update_bandwidth(self, bandwidth, **attrs):
+        """Update a vpc peering
+
+        :param bandwidth: Either the ID of a vpc bandwidth or a
+                       :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
+                       instance.
+        :param dict attrs: The attributes to update on the vpc bandwidth
+            represented by ``bandwidth``.
+
+        :returns: The updated bandwidth
+
+        :rtype: :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
+        """
+        bandwidth = self._get_resource(_bandwidth.Bandwidth, bandwidth)
+        project_id = self.get_project_id()
+        version = 'v1'
+        return bandwidth.update_bandwidth(
+            self,
+            project_id,
+            version,
+            **attrs)
 
     def add_eip_to_bandwidth(self, bandwidth, publicip_info: List[PublicInfo]):
         """Add an EIP to a shared bandwidth.
 
         :param bandwidth: The value can be the ID of a bandwidth
-             or a :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
-             instance.
+           or a :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
+           instance.
         :param publicip_info: List of dictionaries in the format
-            {'publicip_id': id, 'publicip_type': type}
+           {'publicip_id': id, 'publicip_type': type}
         """
         bandwidth = self._get_resource(_bandwidth.Bandwidth, bandwidth)
-        project_id = self.get_project_id()
+        version = 'v2.0'
         return bandwidth.add_eip_to_bandwidth(
             self,
-            project_id,
-            publicip_info)
+            version,
+            publicip_info,
+            project_id=self.get_project_id())
 
     def remove_eip_from_bandwidth(self, bandwidth, **attrs):
         """Add an EIP to a shared bandwidth.
@@ -69,9 +113,11 @@ class Proxy(proxy.Proxy):
         """
         bandwidth = self._get_resource(_bandwidth.Bandwidth, bandwidth)
         project_id = self.get_project_id()
+        version = 'v2.0'
         return bandwidth.remove_eip_from_bandwidth(
             self,
             project_id,
+            version,
             **attrs)
 
     def delete_bandwidth(self, bandwidth, ignore_missing=True):
@@ -88,9 +134,12 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         project_id = self.get_project_id()
+        version = 'v2.0'
+        base_path = _bandwidth.Bandwidth.base_path % {'version': version, 'project_id': project_id}
         return self._delete(
             _bandwidth.Bandwidth, bandwidth,
-            ignore_missing=ignore_missing, project_id=project_id)
+            ignore_missing=ignore_missing, project_id=project_id, base_path=base_path)
+
 
     # ======== Peering ========
     def create_peering(self, **attrs):
