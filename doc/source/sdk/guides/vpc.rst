@@ -20,6 +20,24 @@ This interface is used to assign a shared bandwidth.
 .. literalinclude:: ../examples/vpc/assign_bandwidth.py
    :lines: 16-23
 
+Update bandwidth
+^^^^^^^^^^^^^^^^^
+
+This interface is used to assign a shared bandwidth.
+:class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`.
+
+.. literalinclude:: ../examples/vpc/update_bandwidth.py
+   :lines: 16-26
+
+Find bandwidth
+^^^^^^^^^^^^^^
+
+This interface is used to assign a shared bandwidth.
+:class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`.
+
+.. literalinclude:: ../examples/vpc/find_bandwidth.py
+   :lines: 16-24
+
 Add eip to bandwidth
 ^^^^^^^^^^^^^^^^^^^^^
 

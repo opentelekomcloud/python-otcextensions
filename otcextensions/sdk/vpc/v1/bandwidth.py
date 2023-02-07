@@ -68,7 +68,7 @@ class Bandwidth(resource.Resource):
     #: Specifies the time (UTC) when the bandwidth is updated.
     updated_at = resource.Body('updated_at', type=str)
 
-    def add_eip_to_bandwidth(self, session, project_id, version, publicip_info):
+    def add_eip_to_bandwidth(self, session, version, publicip_info, project_id):
         """Method to add an EIP to shared bandwidth.
 
         :param session: The session to use for making this request.

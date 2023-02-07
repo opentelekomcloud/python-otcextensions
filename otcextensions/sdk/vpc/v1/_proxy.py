@@ -40,7 +40,8 @@ class Proxy(proxy.Proxy):
         """
         project_id = self.get_project_id()
         version = 'v2.0'
-        base_path = _bandwidth.Bandwidth.base_path % {'version': version, 'project_id': project_id}
+        base_path = _bandwidth.Bandwidth.base_path % {'version': version,
+                                                      'project_id': project_id}
         return self._create(_bandwidth.Bandwidth, project_id=project_id,
                             base_path=base_path, **attrs)
 
@@ -58,9 +59,11 @@ class Proxy(proxy.Proxy):
         """
         project_id = self.get_project_id()
         version = 'v1'
-        base_path = _bandwidth.Bandwidth.base_path % {'version': version, 'project_id': project_id}
+        base_path = _bandwidth.Bandwidth.base_path % {'version': version,
+                                                      'project_id': project_id}
         return self._find(
-            _bandwidth.Bandwidth, name_or_id, project_id=project_id, base_path=base_path,
+            _bandwidth.Bandwidth, name_or_id, project_id=project_id,
+            base_path=base_path,
             ignore_missing=ignore_missing)
 
     def update_bandwidth(self, bandwidth, **attrs):
@@ -135,10 +138,12 @@ class Proxy(proxy.Proxy):
         """
         project_id = self.get_project_id()
         version = 'v2.0'
-        base_path = _bandwidth.Bandwidth.base_path % {'version': version, 'project_id': project_id}
+        base_path = _bandwidth.Bandwidth.base_path % {'version': version,
+                                                      'project_id': project_id}
         return self._delete(
             _bandwidth.Bandwidth, bandwidth,
-            ignore_missing=ignore_missing, project_id=project_id, base_path=base_path)
+            ignore_missing=ignore_missing, project_id=project_id,
+            base_path=base_path)
 
 
     # ======== Peering ========
