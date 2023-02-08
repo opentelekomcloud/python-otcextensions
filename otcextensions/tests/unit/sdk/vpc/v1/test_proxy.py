@@ -27,58 +27,72 @@ class TestVpcProxy(test_proxy_base.TestProxyBase):
 
 class TestVPCBandwidth(TestVpcProxy):
 
-    # ======== Bandwidth ========
-    def assign_bandwidth(self, **attrs):
-        """Assign bandwidth
+    def test_assign_bandwidth(self):
+        self.verify_create(self.proxy.assign_bandwidth, _bandwidth.Bandwidth,
+                           method_kwargs={'name': 'name'},
+                           expected_kwargs={
+                               'name': 'name',
+                               'project_id': self.proxy.get_project_id()
+                           })
 
-        :param dict attrs: Keyword arguments which will be used to assign
-            a :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
-        """
-        project_id = self.get_project_id()
-        return self._create(_bandwidth.Bandwidth,
-                            project_id=project_id, **attrs)
+    def test_bandwidth_delete(self):
+        self.verify_delete(
+            self.proxy.delete_bandwidth, _bandwidth.Bandwidth, True,
+            mock_method='otcextensions.sdk.vpc.v1._proxy.Proxy._delete',
+            expected_kwargs={
+                'ignore_missing': True,
+                'project_id': self.proxy.get_project_id()
+            })
 
-    def add_eip_to_bandwidth(self, bandwidth, publicip_info):
-        """Add an EIP to a shared bandwidth.
+    def test_add_eip_to_bandwidth(self):
+        bandwidth = _bandwidth.Bandwidth(id='id')
+        publicip_info = 'publicip_info'
+        version = 'v2.0'
+        self._verify(
+            'otcextensions.sdk.vpc.v1.bandwidth.Bandwidth.'
+            'add_eip_to_bandwidth',
+            self.proxy.add_eip_to_bandwidth,
+            method_args=[bandwidth, publicip_info],
+            expected_args=[self.proxy, version, publicip_info],
+            expected_kwargs={'project_id': self.proxy.get_project_id()}
+        )
 
-        :param bandwidth: The value can be the ID of a bandwidth
-             or a :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
-             instance.
-        :param publicip_info: List from dictionaries.
-        """
-        bandwidth = self._get_resource(_bandwidth.Bandwidth, bandwidth)
-        return bandwidth.add_eip_to_bandwidth(self, publicip_info,
-                                              project_id=self.get_project_id())
+    def test_remove_eip_from_bandwidth(self):
+        bandwidth = _bandwidth.Bandwidth(id='id')
+        version = 'v2.0'
+        project_id = self.proxy.get_project_id()
+        self._verify(
+            'otcextensions.sdk.vpc.v1.bandwidth.Bandwidth.'
+            'remove_eip_from_bandwidth',
+            self.proxy.remove_eip_from_bandwidth,
+            method_args=[bandwidth],
+            expected_args=[self.proxy, project_id, version],
+            expected_kwargs={}
+        )
 
-    def remove_eip_from_bandwidth(self, bandwidth, **attrs):
-        """Add an EIP to a shared bandwidth.
+    def test_update_bandwidth(self):
+        bandwidth = _bandwidth.Bandwidth(id='id')
+        version = 'v1'
+        project_id = self.proxy.get_project_id()
+        self._verify(
+            'otcextensions.sdk.vpc.v1.bandwidth.Bandwidth.update_bandwidth',
+            self.proxy.update_bandwidth,
+            method_args=[bandwidth],
+            expected_args=[self.proxy, project_id, version],
+            expected_kwargs={}
+        )
 
-        :param bandwidth: The value can be the ID of a bandwidth
-             or a :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
-             instance.
-        :param attrs:
-        """
-        bandwidth = self._get_resource(_bandwidth.Bandwidth, bandwidth)
-        attrs['project_id'] = self.get_project_id()
-        return bandwidth.remove_eip_from_bandwidth(
-            self, **attrs)
-
-    def delete_bandwidth(self, bandwidth, ignore_missing=True):
-        """Delete a bandwidth
-
-        :param bandwidth: key id or an instance of
-            :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
-        :param bool ignore_missing: When set to ``False``
-            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
-            the vpc peering does not exist.
-            When set to ``True``, no exception will be set when attempting to
-            delete a nonexistent peering.
-
-        :returns: ``None``
-        """
-        return self._delete(
-            _bandwidth.Bandwidth, bandwidth,
-            ignore_missing=ignore_missing, project_id=self.get_project_id())
+    def test_find_bandwidth(self):
+        version = 'v1'
+        base_path = _bandwidth.Bandwidth.base_path % {
+            'version': version, 'project_id': self.proxy.get_project_id()}
+        self.verify_find(self.proxy.find_bandwidth, _bandwidth.Bandwidth,
+                         expected_args=[],
+                         expected_kwargs={
+                             'project_id': self.proxy.get_project_id(),
+                             'base_path': base_path,
+                             'ignore_missing': True
+                         })
 
 
 class TestVpcPeering(TestVpcProxy):

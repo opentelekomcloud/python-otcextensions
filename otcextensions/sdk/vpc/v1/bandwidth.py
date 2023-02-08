@@ -28,7 +28,7 @@ class PublicIPInfo(resource.Resource):
 class Bandwidth(resource.Resource):
     resources_key = 'bandwidths'
     resource_key = 'bandwidth'
-    base_path = '/v2.0/%(project_id)s/bandwidths'
+    base_path = '/%(version)s/%(project_id)s/bandwidths'
 
     # capabilities
     allow_create = True
@@ -68,26 +68,41 @@ class Bandwidth(resource.Resource):
     #: Specifies the time (UTC) when the bandwidth is updated.
     updated_at = resource.Body('updated_at', type=str)
 
-    def add_eip_to_bandwidth(self, session, publicip_info, project_id):
+    def add_eip_to_bandwidth(self, session, version,
+                             publicip_info, project_id):
         """Method to add an EIP to shared bandwidth.
 
         :param session: The session to use for making this request.
         :type session: :class:`~keystoneauth1.adapter.Adapter`
         :param list publicip_info: List from dictionaries which describes eips.
         """
-        path = self.base_path % {'project_id': project_id}
+        path = self.base_path % {'project_id': project_id, 'version': version}
+        print(path)
         url = utils.urljoin(path, self.id, 'insert')
         body = {'bandwidth': {'publicip_info': publicip_info}}
         return session.post(url, json=body)
 
-    def remove_eip_from_bandwidth(self, session, project_id, **attrs):
+    def remove_eip_from_bandwidth(self, session, project_id,
+                                  version, **attrs):
         """Method to remove an EIP from shared bandwidth.
 
         :param session: The session to use for making this request.
         :type session: :class:`~keystoneauth1.adapter.Adapter`
         :param dict attrs: Describes eip info.
         """
-        path = self.base_path % {'project_id': project_id}
+        path = self.base_path % {'project_id': project_id, 'version': version}
         url = utils.urljoin(path, self.id, 'remove')
         body = {'bandwidth': attrs}
         return session.post(url, json=body)
+
+    def update_bandwidth(self, session, project_id, version, **attrs):
+        """Method to update shared bandwidth.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param kwargs attrs: Dictionary to udate bandwidth
+        """
+        path = self.base_path % {'project_id': project_id, 'version': version}
+        url = utils.urljoin(path, self.id)
+        body = {'bandwidth': attrs}
+        return session.put(url, json=body)
