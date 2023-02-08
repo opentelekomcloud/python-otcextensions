@@ -45,7 +45,7 @@ class Proxy(proxy.Proxy):
         return self._create(_bandwidth.Bandwidth, project_id=project_id,
                             base_path=base_path, **attrs)
 
-    def find_bandwidth(self, name_or_id, ignore_missing=False):
+    def find_bandwidth(self, name_or_id, ignore_missing=True):
         """Find a single bandwidth
 
         :param name_or_id: The name or ID of a bandwidth
