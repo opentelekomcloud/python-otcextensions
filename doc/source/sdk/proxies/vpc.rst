@@ -17,7 +17,7 @@ VPC Bandwidth Operations
 .. autoclass:: otcextensions.sdk.vpc.v1._proxy.Proxy
   :noindex:
   :members: assign_bandwidth, add_eip_to_bandwidth, remove_eip_from_bandwidth,
-            delete_bandwidth
+            delete_bandwidth, update_bandwidth, find_bandwidth
 
 VPC Peering Operations
 ^^^^^^^^^^^^^^^^^^^^^^
