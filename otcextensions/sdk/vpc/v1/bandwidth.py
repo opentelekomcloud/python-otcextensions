@@ -81,17 +81,7 @@ class Bandwidth(resource.Resource):
         url = utils.urljoin(path, self.id, 'insert')
         body = {'bandwidth': {'publicip_info': publicip_info}}
         response = session.post(url, json=body)
-        microversion = self._get_microversion(session, action='create')
-        self.microversion = microversion
-        has_body = (
-            self.has_body
-            if self.create_returns_body is None
-            else self.create_returns_body
-        )
-        self._translate_response(response, has_body=has_body)
-        if self.has_body and self.create_returns_body is False:
-            return self.fetch(session)
-        return self
+        return self._to_object(session, response)
 
     def remove_eip_from_bandwidth(self, session, project_id,
                                   version, **attrs):
@@ -105,17 +95,7 @@ class Bandwidth(resource.Resource):
         url = utils.urljoin(path, self.id, 'remove')
         body = {'bandwidth': attrs}
         response = session.post(url, json=body)
-        has_body = (
-            self.has_body
-            if self.create_returns_body is None
-            else self.create_returns_body
-        )
-        microversion = self._get_microversion(session, action='create')
-        self.microversion = microversion
-        self._translate_response(response, has_body=has_body)
-        if self.has_body and self.create_returns_body is False:
-            return self.fetch(session)
-        return self
+        return self._to_object(session, response)
 
     def update_bandwidth(self, session, project_id, version, **attrs):
         """Method to update shared bandwidth.
@@ -128,6 +108,9 @@ class Bandwidth(resource.Resource):
         url = utils.urljoin(path, self.id)
         body = {'bandwidth': attrs}
         response = session.put(url, json=body)
+        return self._to_object(session, response)
+
+    def _to_object(self, session, response):
         has_body = (
             self.has_body
             if self.create_returns_body is None
