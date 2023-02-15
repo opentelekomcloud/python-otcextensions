@@ -1,0 +1,4 @@
+---
+fixes:
+  - |
+    Fixes vpc bandwidth service.
