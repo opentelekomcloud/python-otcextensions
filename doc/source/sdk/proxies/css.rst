@@ -17,7 +17,8 @@ Cluster Operations
 .. autoclass:: otcextensions.sdk.css.v1._proxy.Proxy
   :noindex:
   :members: clusters, find_cluster, get_cluster, create_cluster,
-            restart_cluster, extend_cluster, delete_cluster
+            restart_cluster, extend_cluster, extend_cluster_nodes,
+            delete_cluster
 
 Cluster Snapshot Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
