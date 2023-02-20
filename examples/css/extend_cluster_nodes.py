@@ -26,4 +26,4 @@ attrs = {
         {"type": "ess-client", "nodesize": 1, "disksize": 0}
     ]
 }
-conn.css.extend_cluster(cluster_id, **attrs)
+conn.css.extend_cluster_nodes(cluster_id, **attrs)

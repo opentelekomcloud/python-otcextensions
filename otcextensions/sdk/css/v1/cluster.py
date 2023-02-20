@@ -127,7 +127,7 @@ class Cluster(resource.Resource):
 
     # Computed Properties
     #: Number of Nodes.
-    num_nodes = resource.Computed('num_nodes', type=str)
+    num_nodes = resource.Computed('num_nodes', type=int)
 
     def _action(self, session, action, body=None):
         """Preform actions given the message body.
