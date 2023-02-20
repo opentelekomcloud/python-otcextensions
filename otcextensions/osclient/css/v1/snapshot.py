@@ -17,7 +17,8 @@ from osc_lib import utils
 from osc_lib import exceptions
 from osc_lib.command import command
 from otcextensions.common import sdk_utils
-from collections import defaultdict
+
+from otcextensions.osclient.css.v1 import cluster as _cluster
 
 from otcextensions.i18n import _
 
@@ -27,13 +28,14 @@ LOG = logging.getLogger(__name__)
 def _get_columns(item):
     column_map = {
     }
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
+    hidden = ['location',]
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
+                                                           hidden)
 
 
 def translate_response(func):
     def new(self, *args, **kwargs):
         obj = func(self, *args, **kwargs)
-        delattr(obj, 'location')
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
         return (display_columns, data)
@@ -75,7 +77,7 @@ class ListSnapshots(command.Lister):
 
 
 class CreateSnapshot(command.ShowOne):
-    _description = _('Create a single CSS snapshot')
+    _description = _('Create a Manual CSS snapshot.')
     columns = ('id', 'name')
 
     def get_parser(self, prog_name):
@@ -87,7 +89,6 @@ class CreateSnapshot(command.ShowOne):
             help=_('Specify ID or Name of the CSS cluster from where '
                    'index data is to be backed up.')
         )
-
         parser.add_argument(
             'name',
             metavar='<name>',
@@ -113,8 +114,8 @@ class CreateSnapshot(command.ShowOne):
             '--timeout',
             metavar='<timeout>',
             type=int,
-            default=15,
-            help=_("Timeout for the wait in minutes. (Default 15 mins)"),
+            default=600,
+            help=_("Timeout for the wait in seconds (default: 600 seconds)."),
         )
         return parser
 
@@ -143,30 +144,6 @@ class RestoreSnapshot(command.Command):
 
     _description = _('Restore the CSS cluster using the specified snapshot')
 
-    columns = (
-        'id',
-        'name',
-        'type',
-        'version',
-        'endpoint',
-        'disk_encryption',
-        'cmk_id',
-        'error',
-        'instance',
-        'instance_count',
-        'node_count',
-        'is_disk_encrypted',
-        'is_https_enabled',
-        'progress',
-        'actions',
-        'router_id',
-        'subnet_id',
-        'security_group_id',
-        'status',
-        'created_at',
-        'updated_at'
-    )
-
     def get_parser(self, prog_name):
         parser = super(RestoreSnapshot, self).get_parser(prog_name)
         parser.add_argument(
@@ -177,7 +154,7 @@ class RestoreSnapshot(command.Command):
         parser.add_argument(
             'snapshotId',
             metavar='<snapshotId>',
-            help=_('The snapshot ID')
+            help=_('The snapshot ID.')
         )
         parser.add_argument(
             '--target-cluster',
@@ -213,11 +190,12 @@ class RestoreSnapshot(command.Command):
             '--timeout',
             metavar='<timeout>',
             type=int,
-            default=15,
-            help=_("Timeout for the wait in minutes. (Default 15 mins)"),
+            default=1200,
+            help=_("Timeout for the wait in seconds (default 1200 seconds)."),
         )
         return parser
 
+    @_cluster.translate_response
     def take_action(self, parsed_args):
         client = self.app.client_manager.css
         cluster = client.find_cluster(parsed_args.cluster)
@@ -238,16 +216,7 @@ class RestoreSnapshot(command.Command):
         if parsed_args.wait:
             client.wait_for_cluster(target_cluster.id, parsed_args.timeout)
 
-        obj = client.get_cluster(target_cluster.id)
-        setattr(obj, 'version', obj.datastore.version)
-        setattr(obj, 'type', obj.datastore.type)
-        node_count = defaultdict(int)
-        for node in obj.nodes:
-            node_count[node['type']] += 1
-        setattr(obj, 'node_count', dict(node_count))
-
-        data = utils.get_item_properties(obj, self.columns)
-        return (self.columns, data)
+        return client.get_cluster(target_cluster.id)
 
 
 class SetSnapshotPolicy(command.ShowOne):
@@ -269,17 +238,19 @@ class SetSnapshotPolicy(command.ShowOne):
         parser.add_argument(
             '--period',
             metavar='<period>',
-            required=True,
-            help=('Time when a snapshot is created every day.\n'
-                  'Time format is followed by the time zone HH:mm z.\n'
-                  'for example, 00:00 GMT+08:00 and 01:00 GMT+08:00.')
+            default='01:00 GMT+01:00',
+            help=('Time when a snapshot is created every day. '
+                  'Time format is followed by the time zone HH:mm z. '
+                  'For example, 00:00 GMT+08:00 and 01:00 GMT+08:00. '
+                  '(Default Value: 01:00 GMT+01:00)')
         )
         parser.add_argument(
             '--keep-days',
             metavar='<keep_days>',
             type=int,
-            required=True,
-            help=('Number of days that a snapshot can be retained.')
+            default=15,
+            help=('Number of days that a snapshot can be retained. '
+                  '(Default Value: 15).')
         )
         parser.add_argument(
             '--disable',
@@ -334,18 +305,18 @@ class ShowSnapshotPolicy(command.ShowOne):
         return client.get_snapshot_policy(cluster)
 
 
-class SetSnapshotConfiguration(command.ShowOne):
+class ConfigureSnapshot(command.Command):
     _description = _('Set Basic Configurations of a CSS Cluster Snapshot.')
 
     def get_parser(self, prog_name):
-        parser = super(SetSnapshotConfiguration, self).get_parser(prog_name)
+        parser = super(ConfigureSnapshot, self).get_parser(prog_name)
         parser.add_argument(
             'cluster',
             metavar='<cluster>',
             help=_('ID or Name of the cluster to which the snapshot belongs.')
         )
         parser.add_argument(
-            '--auto',
+            '--auto-configure',
             action='store_true',
             help=('Set Snapshot Configuration Automatically.')
         )
@@ -366,12 +337,10 @@ class SetSnapshotConfiguration(command.ShowOne):
         )
         return parser
 
-    @translate_response
     def take_action(self, parsed_args):
         client = self.app.client_manager.css
-        auto_setting = getattr(parsed_args, 'auto')
         attrs = {}
-        if not auto_setting:
+        if not parsed_args.auto_configure:
             if not parsed_args.bucket or not parsed_args.agency:
                 msg = ('Please provide --bucket and --agency '
                        'to set snapshot configuration')
@@ -384,9 +353,8 @@ class SetSnapshotConfiguration(command.ShowOne):
 
         cluster = client.find_cluster(parsed_args.cluster)
         client.set_snapshot_configuration(
-            cluster, auto_setting, **attrs
+            cluster, auto_configure=parsed_args.auto_configure, **attrs
         )
-        return client.get_snapshot_policy(cluster)
 
 
 class DeleteSnapshot(command.Command):
@@ -405,7 +373,6 @@ class DeleteSnapshot(command.Command):
             nargs='+',
             help=_("ID(s) of the snapshot(s) to be deleted."),
         )
-
         return parser
 
     def take_action(self, parsed_args):
@@ -428,11 +395,11 @@ class DeleteSnapshot(command.Command):
             raise exceptions.CommandError(msg)
 
 
-class DisableSnapshotFunction(command.Command):
+class DisableSnapshot(command.Command):
     _description = _('Disable the snapshot creation function.')
 
     def get_parser(self, prog_name):
-        parser = super(DisableSnapshotFunction, self).get_parser(prog_name)
+        parser = super(DisableSnapshot, self).get_parser(prog_name)
         parser.add_argument(
             'cluster',
             metavar='<cluster>',
@@ -443,4 +410,4 @@ class DisableSnapshotFunction(command.Command):
     def take_action(self, parsed_args):
         client = self.app.client_manager.css
         cluster = client.find_cluster(parsed_args.cluster)
-        client.disable_snapshot(cluster)
+        client.disable_snapshot_function(cluster)

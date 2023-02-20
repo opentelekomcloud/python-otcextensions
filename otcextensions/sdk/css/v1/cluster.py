@@ -9,61 +9,40 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from enum import Enum
+
 from openstack import exceptions
 from openstack import resource
 from openstack import utils
 
-from otcextensions.common import format as otc_format
+
+class ClusterStatus(Enum):
+    CREATING = '100'
+    AVAILABLE = '200'
+    UNAVAILABLE = '303'
+    ERROR = 'ERROR'
+
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def _missing_(cls, value):
+        return cls.ERROR
 
 
-class DatastoreSpec(resource.Resource):
-    #: Datastore version
-    version = resource.Body('version', default='6.2.3')
-    #: Engine type
-    type = resource.Body('type', default='elasticsearch')
-
-
-class NetworkSpec(resource.Resource):
-    #: Router ID (VPC id)
-    router_id = resource.Body('vpcId')
-    #: Network ID
-    network_id = resource.Body('netId')
-    #: Security group ID
-    security_group_id = resource.Body('securityGroupId')
-
-
-class InstanceSpec(resource.Resource):
-    #: Instance flavor name
-    flavor = resource.Body('flavorRef')
+class NodeSpec(resource.Resource):
+    #: Availability Zone.
+    availability_zone = resource.Body('azCode')
+    #: Node flavor
+    flavor = resource.Body('specCode')
+    #: CSS Node Type.
+    node_type = resource.Body('type')
+    #: Private IP of Cluster Node.
+    private_ip = resource.Body('ip')
+    #: Cluster Node Status
+    status = resource.Body('status')
     #: Volume object {volume_type:[COMMON, HIGH, ULTRAHIGH], size:int}
     volume = resource.Body('volume', type=dict)
-    #: Network information
-    nics = resource.Body('nics', type=NetworkSpec)
-    #: Availability zone
-    availability_zone = resource.Body('availability_zone')
-
-
-class DiskEncryption(resource.Resource):
-    #: Disk encryption flag
-    is_disk_encrypted = resource.Body('systemEncrypted',
-                                      type=otc_format.Bool_10)
-    #: KMS Key ID
-    cms_id = resource.Body('systemCmkid')
-
-
-class BackupStrategy(resource.Resource):
-    #: Time when a snapshot is created every day.
-    period = resource.Body('period')
-    #: Prefix of the name of the snapshot that is automatically created.
-    prefix = resource.Body('prefix')
-    #: Number of days for which automatically created snapshots are reserved.
-    keepday = resource.Body('keepday')
-    #: OBS bucket used for storing backup.
-    bucket = resource.Body('bucket')
-    #: Storage path of the snapshot in the OBS bucket.
-    basepath = resource.Body('basePath')
-    #: IAM agency used to access OBS.
-    agency = resource.Body('agency')
 
 
 class Cluster(resource.Resource):
@@ -74,142 +53,110 @@ class Cluster(resource.Resource):
 
     allow_create = True
     allow_list = True
-    allow_commit = True
     allow_delete = True
     allow_fetch = True
-    allow_patch = True
 
     _query_mapping = resource.QueryParameters(
-        'id', 'start', 'limit')
+        'id', 'start', 'limit'
+    )
 
     # Properties
     #: Current actions
     actions = resource.Body('actions', type=list)
-    #: KMS Key ID (read only)
-    cmk_id = resource.Body('cmkId')
+    #: Operation progress
+    action_progress = resource.Body('actionProgress', type=dict)
+    #: Automatic snapshot creation.
+    backup_strategy = resource.Body('backupStrategy', type=dict)
+    #: Bandwidth of Public IP
+    bandwidth_size = resource.Body('bandwidthSize')
+    #: KMS Key ID.
+    cmk_id = resource.Body('cmk_id')
     #: Cluster creation time
     created_at = resource.Body('created')
     #: Type of the data search engine
-    datastore = resource.Body('datastore', type=DatastoreSpec)
-    #: Disk encryption specification
-    disk_encryption = resource.Body('diskEncryption', type=DiskEncryption)
+    datastore = resource.Body('datastore', type=dict)
+    #: Disk Encryption Object. (For request body only)
+    diskEncryption = resource.Body('diskEncryption', type=dict)
+    #: Elb Whitelist Details
+    elb_whitelist = resource.Body('elbWhiteList', type=dict)
+    #: Indicates the IP address and port number of the user used to
+    #:  access the VPC.
+    endpoint = resource.Body('endpoint')
     #: Error object
     error = resource.Body('failed_reasons', type=dict)
-    #: Cluster endpoint
-    endpoint = resource.Body('endpoint')
-    #: Instance object
-    instance = resource.Body('instance', type=InstanceSpec)
-    #: Cluster nodes (read only)
-    nodes = resource.Body('instances', type=list, list_type=dict)
-    #: Number of cluster instances (1..32)
-    instance_count = resource.Body('instanceNum', type=int)
-    #: Disk encryption flag (read only)
+    #: Public IP address.
+    floating_ip = resource.Body('publicIp')
+    #: Cluster Node (request Body)
+    instance = resource.Body('instance', type=dict)
+    #: Number of cluster Nodes. The value range is 1 to 32. (request Body)
+    instanceNum = resource.Body('instanceNum', type=int)
+    #: Whether authentication is enabled.
+    #:  When authentication is enabled, httpsEnable must be set to true.
+    is_authority_enabled = resource.Body('authorityEnable', type=bool)
+    #: Whether the cluster is billed.
+    is_billed = resource.Body('period', type=bool)
+    #: Whether backup is enabled.
+    is_backup_enabled = resource.Body('backupAvailable', type=bool)
+    #: Whether Disk is Encrypted
     is_disk_encrypted = resource.Body('diskEncrypted', type=bool)
-    #: Whether communication encyption is performed on the cluster
-    is_https_enabled = resource.Body('httpsEnable', type=otc_format.BoolStr_1)
-    #: Operation progress
-    progress = resource.Body('actionProgress', type=dict)
-    #: Router ID (read only)
+    #: Communication encryption status.
+    is_https_enabled = resource.Body('httpsEnable', type=bool)
+    #: ID of the restart task.
+    job_id = resource.Body('jobId')
+    #: Network ID.
+    network_id = resource.Body('subnetId')
+    #: Cluster nodes. List of node objects.
+    nodes = resource.Body('instances', type=list, list_type=NodeSpec)
+    #: Public Kibana Response.
+    public_kibana_resp = resource.Body('publicKibanaResp')
+    #: Router ID.
     router_id = resource.Body('vpcId')
     #: Security group ID (read only)
     security_group_id = resource.Body('securityGroupId')
-    #: Cluster status:
-    #:  - 100: Cluster is being created
-    #:  - 200: Available
-    #:  - 300: Unavailable
-    status = resource.Body('status')
-    #: Subnetwork ID (read only)
-    subnet_id = resource.Body('subnetId')
+    #: Return value.
+    #:  100: The operation, such as instance creation, is in progress.
+    #:  200: The cluster is available.
+    #:  303: The cluster is unavailable.
+    status_code = resource.Body('status', type=int)
+    #: Cluster Status.
+    status = resource.Body('status', type=ClusterStatus)
+    #: Array of tags
+    tags = resource.Body('tags', type=list, list_type=dict)
     #: Cluster update time
     updated_at = resource.Body('updated')
-    #: Restart Cluster Job ID
-    jobId = resource.Body('jobId')
-    #: Array of tags
-    tags = resource.Body('tags', type=list)
-    #: Automatic snapshot creation
-    backup_strategy = resource.Body('backupStrategy', type=BackupStrategy)
+
+    # Computed Properties
+    #: Number of Nodes.
+    num_nodes = resource.Computed('num_nodes', type=str)
 
     def _action(self, session, action, body=None):
         """Preform actions given the message body.
         """
-        url = utils.urljoin(self.base_path, self.id, action)
-        return session.post(url, json=body)
+        uri = utils.urljoin('clusters', self.id, action)
+        response = session.post(uri, json=body)
+        exceptions.raise_from_response(response)
 
     def restart(self, session):
         """Restart the cluster.
         """
-        res = self._action(session, 'restart')
-        self._translate_response(res)
-        return self
+        self._action(session, 'restart')
 
     def extend(self, session, add_nodes):
-        """Extend cluster capacity.
+        """Scaling Out a Cluster with only Common Nodes.
         """
         if not 0 < add_nodes <= 32:
             raise exceptions.SDKException('CSS Cluster size can be [1..32]')
-        res = self._action(session, 'extend',
-                           {'grow': {'modifySize': add_nodes}})
-        self._translate_response(res)
-        return self
+        self._action(session, 'extend',
+                     {'grow': {'modifySize': add_nodes}})
 
-    @classmethod
-    def list(cls, session, paginated=False, base_path=None,
-             allow_unknown_params=False, **params):
 
-        if not cls.allow_list:
-            raise exceptions.MethodNotSupported(cls, "list")
-        session = cls._get_session(session)
-        microversion = cls._get_microversion(session, action='list')
+class ExtendClusterNodes(resource.Resource):
+    base_path = '/clusters/%(cluster_id)s/role_extend'
 
-        if base_path is None:
-            base_path = cls.base_path
-        params = cls._query_mapping._validate(
-            params, base_path=base_path,
-            allow_unknown_params=allow_unknown_params)
+    allow_create = True
 
-        query_params = cls._query_mapping._transpose(params, cls)
-        uri = base_path % params
+    cluster_id = resource.URI('cluster_id')
 
-        limit = query_params.get('limit')
-
-        # Track the total number of resources yielded so we can paginate
-        # swift objects
-        total_yielded = query_params.get('start', 0)
-        while uri:
-            # Copy query_params due to weird mock unittest interactions
-            response = session.get(
-                uri,
-                headers={"Accept": "application/json"},
-                params=query_params.copy(),
-                microversion=microversion)
-            exceptions.raise_from_response(response)
-            data = response.json()
-
-            # Discard any existing pagination keys
-            query_params.pop('start', None)
-            query_params.pop('limit', None)
-
-            if cls.resources_key:
-                resources = data[cls.resources_key]
-            else:
-                resources = data
-
-            if not isinstance(resources, list):
-                resources = [resources]
-
-            marker = None
-            for raw_resource in resources:
-                value = cls.existing(
-                    microversion=microversion,
-                    connection=session._get_connection(),
-                    **raw_resource)
-                marker = total_yielded + 1
-                yield value
-                total_yielded += 1
-
-            if resources and paginated:
-                uri, next_params = cls._get_next_link(
-                    uri, response, data, marker, limit, total_yielded)
-                query_params.update(next_params)
-            else:
-                return
+    # Properties
+    #: Detailed description about the cluster scale-out request.
+    grow = resource.Body('grow', type=list, list_type=dict)

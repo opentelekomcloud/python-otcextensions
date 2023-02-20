@@ -15,6 +15,7 @@ from unittest.mock import call
 
 from osc_lib import exceptions
 
+from otcextensions.osclient.css.v1 import cluster
 from otcextensions.osclient.css.v1 import snapshot
 from otcextensions.tests.unit.osclient.css.v1 import fakes
 
@@ -26,10 +27,10 @@ COLUMNS = (
     'backup_keep_days',
     'backup_path',
     'backup_period',
-    'backup_prefix',
     'bucket_name',
     'cmk_id',
-    'enable',
+    'is_enabled',
+    'prefix'
 )
 
 
@@ -113,7 +114,7 @@ class TestCreateSnapshot(fakes.TestCss):
 
     data = fakes.gen_data(_data, columns)
 
-    default_timeout = 15
+    default_timeout = 600
 
     def setUp(self):
         super(TestCreateSnapshot, self).setUp()
@@ -160,32 +161,35 @@ class TestRestoreSnapshot(fakes.TestCss):
     _cluster = fakes.FakeCluster.create_one()
 
     columns = (
-        'id',
-        'name',
-        'type',
-        'version',
-        'endpoint',
-        'disk_encryption',
+        'action_progress',
+        'actions',
+        'bandwidth_size',
         'cmk_id',
-        'error',
-        'instance',
-        'instance_count',
-        'node_count',
+        'created_at',
+        'datastore',
+        'elb_whitelist',
+        'endpoint',
+        'floating_ip',
+        'id',
+        'is_authority_enabled',
+        'is_backup_enabled',
+        'is_billed',
         'is_disk_encrypted',
         'is_https_enabled',
-        'progress',
-        'actions',
+        'name',
+        'network_id',
+        'nodes',
+        'num_nodes',
         'router_id',
-        'subnet_id',
         'security_group_id',
         'status',
-        'created_at',
+        'status_code',
+        'tags',
         'updated_at'
     )
 
-    data = fakes.gen_data(_cluster, columns)
-
-    default_timeout = 15
+    data = fakes.gen_data(_cluster, columns, cluster._formatters)
+    default_timeout = 1200
 
     def setUp(self):
         super(TestRestoreSnapshot, self).setUp()
@@ -412,39 +416,87 @@ class TestShowSnapshotPolicy(fakes.TestCss):
         self.assertEqual(self.data, data)
 
 
-class TestSetSnapshotConfiguration(fakes.TestCss):
+class TestConfigureSnapshot(fakes.TestCss):
 
     _cluster = fakes.FakeCluster.create_one()
-    _data = fakes.FakeSnapshotPolicy.create_one()
-
-    columns = COLUMNS
-
-    data = fakes.gen_data(_data, columns)
 
     def setUp(self):
-        super(TestSetSnapshotConfiguration, self).setUp()
+        super(TestConfigureSnapshot, self).setUp()
 
-        self.cmd = snapshot.SetSnapshotConfiguration(self.app, None)
-
+        self.cmd = snapshot.ConfigureSnapshot(self.app, None)
         self.client.find_cluster = mock.Mock(return_value=self._cluster)
-        self.client.get_snapshot_policy = mock.Mock(return_value=self._data)
 
-    def test_setconfiguration_auto(self):
+    def test_configure(self):
         arglist = [
             self._cluster.name,
-            '--auto'
+            '--bucket', 'test-bucket',
+            '--agency', 'test-agency',
+            '--cmk-id', 'cmk-uuid',
         ]
         verifylist = [
             ('cluster', self._cluster.name),
-            ('auto', True)
+            ('bucket', 'test-bucket'),
+            ('agency', 'test-agency'),
+            ('cmk_id', 'cmk-uuid'),
+        ]
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        attrs = {
+            'bucket': 'test-bucket',
+            'agency': 'test-agency',
+            'snapshotCmkId': 'cmk-uuid'
+        }
+        # Trigger the action
+        result = self.cmd.take_action(parsed_args)
+        self.client.set_snapshot_configuration.assert_called_with(
+            self._cluster, auto_configure=False, **attrs)
+        self.assertIsNone(result)
+
+    def test_configure_auto(self):
+        arglist = [
+            self._cluster.name,
+            '--auto-configure'
+        ]
+        verifylist = [
+            ('cluster', self._cluster.name),
+            ('auto_configure', True)
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Trigger the action
-        columns, data = self.cmd.take_action(parsed_args)
+        result = self.cmd.take_action(parsed_args)
         self.client.set_snapshot_configuration.assert_called_with(
-            self._cluster, True)
+            self._cluster, auto_configure=True)
+        self.assertIsNone(result)
 
-        self.assertEqual(self.columns, columns)
-        self.assertEqual(self.data, data)
+
+class TestDisableSnapshot(fakes.TestCss):
+
+    _cluster = fakes.FakeCluster.create_one()
+
+    def setUp(self):
+        super(TestDisableSnapshot, self).setUp()
+
+        self.client.find_cluster = mock.Mock(return_value=self._cluster)
+        self.client.disable_snapshot_function = mock.Mock(return_value=None)
+
+        # Get the command object to test
+        self.cmd = snapshot.DisableSnapshot(self.app, None)
+
+    def test_disable(self):
+        arglist = [
+            self._cluster.name,
+        ]
+
+        verifylist = [
+            ('cluster', self._cluster.name),
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        result = self.cmd.take_action(parsed_args)
+        self.client.disable_snapshot_function.assert_called_with(self._cluster)
+        self.assertIsNone(result)

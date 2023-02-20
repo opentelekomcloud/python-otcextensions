@@ -1,0 +1,4 @@
+---
+fixes:
+  - |
+    Refactored CSS sdk and osclient modules.

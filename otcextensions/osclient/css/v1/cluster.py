@@ -13,96 +13,58 @@
 '''CSS ELK cluster v1 action implementations'''
 import logging
 
-from osc_lib import utils
 from osc_lib.cli import parseractions
+from osc_lib import utils
+from osc_lib.cli import format_columns
 from osc_lib.command import command
 from osc_lib import exceptions
 from otcextensions.common import sdk_utils
-from collections import defaultdict
 
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
+
+CSS_ENGINE_VERSIONS = ('7.6.2', '7.9.3', '7.10.2')
+
 DISK_TYPE_CHOICES = ['common', 'high', 'ultrahigh']
 
 
+_formatters = {
+    'nodes': format_columns.ListDictColumn,
+    'elb_whitelist': format_columns.DictColumn,
+    'datastore': format_columns.DictColumn,
+    'tags': format_columns.ListDictColumn,
+    'action_progress': format_columns.DictColumn,
+    'actions': format_columns.ListColumn,
+}
+
+
 def _get_columns(item):
-    column_map = {
-    }
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
+    column_map = {}
+    hidden = [
+        'location',
+    ]
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
+                                                           hidden)
 
 
 def set_attributes_for_print(obj):
     for data in obj:
-        setattr(data, 'version', data.datastore.version)
-        setattr(data, 'type', data.datastore.type)
         yield data
 
 
 def translate_response(func):
     def new(self, *args, **kwargs):
         obj = func(self, *args, **kwargs)
-        setattr(obj, 'version', obj.datastore.version)
-        setattr(obj, 'type', obj.datastore.type)
-        node_count = defaultdict(int)
-        for node in obj.nodes:
-            node_count[node['type']] += 1
-        setattr(obj, 'node_count', dict(node_count))
+        setattr(obj, 'num_nodes', len(obj.nodes))
+        display_columns, columns = _get_columns(obj)
+        data = utils.get_item_properties(obj, columns, formatters=_formatters)
+        return (display_columns, data)
 
-        columns = (
-            'id',
-            'name',
-            'type',
-            'version',
-            'endpoint',
-            'disk_encryption',
-            'cmk_id',
-            'error',
-            'instance',
-            'instance_count',
-            'node_count',
-            'is_disk_encrypted',
-            'is_https_enabled',
-            'progress',
-            'actions',
-            'router_id',
-            'subnet_id',
-            'security_group_id',
-            'status',
-            'created_at',
-            'updated_at'
-        )
-        data = utils.get_item_properties(obj, columns)
-        return (columns, data)
     new.__name__ = func.__name__
     new.__doc__ = func.__doc__
     return new
-
-
-class ListClusters(command.Lister):
-    _description = _('List CSS Cluster')
-    columns = (
-        'ID',
-        'Name',
-        'Type',
-        'Version',
-        'Status',
-        'Created At'
-    )
-
-    def get_parser(self, prog_name):
-        parser = super(ListClusters, self).get_parser(prog_name)
-
-        return parser
-
-    def take_action(self, parsed_args):
-        client = self.app.client_manager.css
-        data = client.clusters()
-
-        data = set_attributes_for_print(data)
-        return (self.columns, (utils.get_item_properties(s, self.columns)
-                               for s in data))
 
 
 class CreateCluster(command.ShowOne):
@@ -118,10 +80,12 @@ class CreateCluster(command.ShowOne):
         parser.add_argument(
             '--datastore-version',
             metavar='<datastore_version>',
+            type=lambda s: s.lower(),
+            choices=CSS_ENGINE_VERSIONS,
             default='7.10.2',
-            help=_('Cluster Engine version. '
-                   'Supported Versions: 7.6.2, 7.9.3, 7.10.2. '
-                   '(default value: 7.10.2)')
+            help=_('CSS Cluster Engine Versions. Supported Versions: '
+                   '{' + ', '.join(CSS_ENGINE_VERSIONS) + '} '
+                   '(default: 7.10.2).'),
         )
         parser.add_argument(
             '--availability-zone',
@@ -137,11 +101,11 @@ class CreateCluster(command.ShowOne):
             help=_('Cluster Instance flavor.')
         )
         parser.add_argument(
-            '--count',
-            metavar='<count>',
+            '--num-nodes',
+            metavar='<num_nodes>',
             type=int,
             default=1,
-            help=_('Number of clusters. The value range is 1 to 32. '
+            help=_('Number of clusters nodes. The value range is 1 to 32. '
                    '(default value: 1)')
         )
         disk_group = parser.add_argument_group('Volume Parameters')
@@ -237,8 +201,8 @@ class CreateCluster(command.ShowOne):
             '--timeout',
             metavar='<timeout>',
             type=int,
-            default=15,
-            help=_('Timeout for the wait in minutes (Default 15 mins).'),
+            default=1200,
+            help=_('Timeout for the wait in seconds (default 1200 seconds).'),
         )
         return parser
 
@@ -249,7 +213,7 @@ class CreateCluster(command.ShowOne):
 
         attrs = {
             'name': parsed_args.name,
-            'instanceNum': parsed_args.count,
+            'instanceNum': parsed_args.num_nodes,
             'datastore': {
                 'version': parsed_args.datastore_version,
                 'type': 'elasticsearch'
@@ -307,6 +271,80 @@ class CreateCluster(command.ShowOne):
         return client.get_cluster(cluster.id)
 
 
+class ListClusters(command.Lister):
+    _description = _('List CSS Clusters.')
+    columns = (
+        'ID',
+        'Name',
+        'DataStore',
+        'Status',
+        'Created At'
+    )
+
+    def get_parser(self, prog_name):
+        parser = super(ListClusters, self).get_parser(prog_name)
+
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.css
+        data = client.clusters()
+        data = set_attributes_for_print(data)
+
+        _formatters = {
+            'DataStore': format_columns.DictColumn
+        }
+
+        return (
+            self.columns, (
+                utils.get_item_properties(
+                    s, self.columns, formatters=_formatters
+                )
+                for s in data
+            )
+        )
+
+
+class ListClusterNodes(command.Lister):
+    _description = _('List CSS Cluster Nodes.')
+    columns = (
+        'ID',
+        'Name',
+        'Private IP',
+        'Node Type',
+        'Volume',
+        'Availability Zone',
+        'Status',
+
+    )
+
+    def get_parser(self, prog_name):
+        parser = super(ListClusterNodes, self).get_parser(prog_name)
+        parser.add_argument(
+            'cluster',
+            metavar='<cluster>',
+            help=_('Cluster name or ID.')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.css
+
+        cluster = client.find_cluster(parsed_args.cluster)
+
+        _formatters = {
+            'Volume': format_columns.DictColumn
+        }
+        return (
+            self.columns, (
+                utils.get_item_properties(
+                    node, self.columns, formatters=_formatters
+                )
+                for node in cluster.nodes
+            )
+        )
+
+
 class ShowCluster(command.ShowOne):
     _description = _('Show details of a CSS cluster')
 
@@ -326,7 +364,7 @@ class ShowCluster(command.ShowOne):
         return client.find_cluster(parsed_args.cluster)
 
 
-class RestartCluster(command.ShowOne):
+class RestartCluster(command.Command):
     _description = _('Restart a CSS cluster')
 
     def get_parser(self, prog_name):
@@ -345,23 +383,68 @@ class RestartCluster(command.ShowOne):
             '--timeout',
             metavar='<timeout>',
             type=int,
-            default=10,
-            help=_("Timeout for the wait in minutes. (Default 10 mins)"),
+            default=300,
+            help=_("Timeout for the wait in seconds (default 300 seconds)."),
         )
         return parser
 
-    @translate_response
     def take_action(self, parsed_args):
         client = self.app.client_manager.css
         cluster = client.find_cluster(parsed_args.cluster)
         client.restart_cluster(cluster)
         if parsed_args.wait:
             client.wait_for_cluster(cluster.id, parsed_args.timeout)
-        return client.get_cluster(cluster.id)
 
 
-class ExtendCluster(command.ShowOne):
-    _description = _('Scaling Out a Cluster with only Common Nodes.')
+class ExtendClusterNodes(command.Command):
+    _description = _('Scaling Out a Cluster with Special Nodes.')
+
+    def get_parser(self, prog_name):
+        parser = super(ExtendClusterNodes, self).get_parser(prog_name)
+        parser.add_argument(
+            'cluster',
+            metavar='<cluster>',
+            help=_("ID or Name of the CSS cluster to be extended."),
+        )
+        parser.add_argument(
+            '--extend',
+            metavar='type=<type>,nodesize=<nodesize>,disksize=<disksize>',
+            required_keys=['type', 'nodesize', 'disksize'],
+            required=True,
+            action=parseractions.MultiKeyValueAction,
+            help=_('Extend Cluster Nodes.'
+                   'Type: ess, ess-cold, ess-master, and ess-client.\n'
+                   'For type: ess-master and ess-client disksize cannot '
+                   'be extended.\n'
+                   'Examples:\n'
+                   '--extend type=ess,disksize=60,nodesize=2 '
+                   ' --extend type=ess-master,disksize=0,nodesize=2')
+        )
+        parser.add_argument(
+            '--wait',
+            action='store_true',
+            help=('Wait for Cluster Scaling Task to complete.')
+        )
+        parser.add_argument(
+            '--timeout',
+            metavar='<timeout>',
+            type=int,
+            default=1200,
+            help=_('Timeout for the wait in seconds (default 1200 seconds).'),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.css
+        cluster = client.find_cluster(parsed_args.cluster)
+        attrs = {'grow': parsed_args.extend}
+        client.extend_cluster_nodes(cluster, **attrs)
+        if parsed_args.wait:
+            client.wait_for_cluster(cluster.id, parsed_args.timeout)
+
+
+class ExtendCluster(command.Command):
+    _description = _('Scaling Out a Cluster\'s with only Common Nodes.')
 
     def get_parser(self, prog_name):
         parser = super(ExtendCluster, self).get_parser(prog_name)
@@ -386,19 +469,17 @@ class ExtendCluster(command.ShowOne):
             '--timeout',
             metavar='<timeout>',
             type=int,
-            default=15,
-            help=_("Timeout for the wait in minutes. (Default 15 mins)"),
+            default=1200,
+            help=_("Timeout for the wait in seconds (default 1200 seconds)."),
         )
         return parser
 
-    @translate_response
     def take_action(self, parsed_args):
         client = self.app.client_manager.css
         cluster = client.find_cluster(parsed_args.cluster)
         client.extend_cluster(cluster, parsed_args.add_nodes)
         if parsed_args.wait:
             client.wait_for_cluster(cluster.id, parsed_args.timeout)
-        return client.get_cluster(cluster.id)
 
 
 class DeleteCluster(command.Command):
