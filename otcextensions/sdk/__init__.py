@@ -269,7 +269,7 @@ def get_ak_sk(conn):
         return (None, None)
 
     else:
-        return(ak, sk)
+        return ak, sk
 
 
 def extend_instance(obj, cls):

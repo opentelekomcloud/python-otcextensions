@@ -35,6 +35,7 @@ documentation of these services:
    deh
    dms
    dns
+   dws
    identity
    kms
    load_balancer
