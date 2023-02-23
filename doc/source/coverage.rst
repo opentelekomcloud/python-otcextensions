@@ -53,6 +53,12 @@ under several service tags. This may change in future.
       - X
       - X
       -
+    * - dws
+      - Data Warehouse Service
+      - X
+      - X
+      - X
+      -
     * - cts
       - Clout Trace Service
       - X
