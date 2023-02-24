@@ -19,6 +19,7 @@ Open Telekom Cloud related User Guides
    deh
    dms
    dns
+   dws
    kms
    mrs
    nat

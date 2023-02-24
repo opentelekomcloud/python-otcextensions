@@ -19,6 +19,7 @@ Service Proxies
    Dedicated Load Balancer (DLB) <vlb_v3>
    Distributed Message Service (DMS) <dms>
    Domain Name Server Service (DNS) <dns>
+   Data Warehouse Service (DWS) <dws>
    Identity Service (IAM) <identity_v3>
    Key Management Service (KMS) <kms>
    MapReduce Service (MRS) <mrs>
