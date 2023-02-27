@@ -41,17 +41,26 @@ depending on client configuration and which version of the service is
 found on remotely on the cloud.
 """
 
-# Keeping compatibility with older versions of openstacksdk
+# Workaround for openstacksdk versions<=0.100.0, where the `resource.Resource`
+#  class does not contain the _get_microversion method.
 try:
+    # Check if _get_microversion method is already defined for Resource class
     resource.Resource._get_microversion
 except AttributeError:
     @classmethod
     def _get_microversion_workaround(cls, session, action):
+        """
+        Workaround method to ensure compatibility for _get_microversion.
+        """
+        # If action is 'list', call _get_microversion_for_list method
         if action == 'list':
             cls._get_microversion_for_list(session)
+        # If action is not 'list', call _get_microversion_for method
         else:
             cls._get_microversion_for(session, action)
+    # Set _get_microversion attribute of Resource class to workaround method
     resource.Resource._get_microversion = _get_microversion_workaround
+
 
 # List OTC services here
 #   Generally it is possible to iterate over known endpoints, but some
