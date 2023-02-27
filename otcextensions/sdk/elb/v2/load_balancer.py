@@ -11,7 +11,10 @@
 # under the License.
 
 from openstack import resource
-from openstack.common import tag
+try:
+    from openstack.common import tag
+except ModuleNotFoundError:
+    from openstack import resource as tag
 
 
 class LoadBalancer(resource.Resource, tag.TagMixin):

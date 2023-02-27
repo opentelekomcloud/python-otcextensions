@@ -15,6 +15,7 @@ import os
 import openstack
 from openstack import _log
 from openstack import utils
+from openstack import resource
 
 from otcextensions.common import exc
 from otcextensions.sdk import proxy
@@ -40,6 +41,17 @@ depending on client configuration and which version of the service is
 found on remotely on the cloud.
 """
 
+# Keeping compatibility with older versions of openstacksdk
+try:
+    resource.Resource._get_microversion
+except AttributeError:
+    @classmethod
+    def _get_microversion_workaround(cls, session, action):
+        if action == 'list':
+            cls._get_microversion_for_list(session)
+        else:
+            cls._get_microversion_for(session, action)
+    resource.Resource._get_microversion = _get_microversion_workaround
 
 # List OTC services here
 #   Generally it is possible to iterate over known endpoints, but some
