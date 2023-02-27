@@ -225,12 +225,12 @@ class TestCluster(base.TestCase):
         sot._action.assert_called_with(self.sess, 'restart', {'restart': {}})
         self.assertIsNone(rt)
 
-    def test_extend(self):
+    def test_scale_out(self):
         sot = cluster.Cluster.existing(id=EXAMPLE['id'])
         sot._action = mock.Mock()
         node_count = 3
 
-        rt = sot.extend(self.sess, node_count)
+        rt = sot.scale_out(self.sess, node_count)
         sot._action.assert_called_with(
             self.sess, 'resize', {'scale_out': {'count': node_count}}
         )
@@ -246,20 +246,3 @@ class TestCluster(base.TestCase):
             self.sess, 'reset-password', {"new_password": new_password}
         )
         self.assertIsNone(rt)
-
-    def test_remove(self):
-        sot = cluster.Cluster.existing(id=EXAMPLE['id'])
-        mock_response = mock.Mock()
-        mock_response.status_code = 202
-        mock_response.json.return_value = {}
-
-        self.sess.delete.return_value = mock_response
-
-        keep_last_manual_snapshot = 0
-        sot.remove(self.sess, keep_last_manual_snapshot)
-        self.sess.delete.assert_called_once_with(
-            'clusters/%s' % sot.id,
-            json={
-                "keep_last_manual_snapshot": keep_last_manual_snapshot
-            }
-        )

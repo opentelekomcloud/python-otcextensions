@@ -17,7 +17,8 @@ Cluster Operations
 .. autoclass:: otcextensions.sdk.dws.v1._proxy.Proxy
   :noindex:
   :members: clusters, find_cluster, get_cluster, create_cluster,
-            restart_cluster, extend_cluster, reset_password, delete_cluster
+            restart_cluster, scale_out_cluster, reset_password,
+            delete_cluster
 
 Cluster Snapshot Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^

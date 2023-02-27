@@ -112,7 +112,7 @@ class Proxy(proxy.Proxy):
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return cluster.restart(self)
 
-    def extend_cluster(self, cluster, node_count):
+    def scale_out_cluster(self, cluster, node_count):
         """Scaling Out a Cluster Nodes
 
         :param cluster: key id or an instance of
@@ -123,7 +123,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.dws.v1.cluster.Cluster`
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
-        return cluster.extend(self, node_count)
+        return cluster.scale_out(self, node_count)
 
     def reset_password(self, cluster, new_password):
         """Reset the password of cluster administrator.
@@ -139,7 +139,10 @@ class Proxy(proxy.Proxy):
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return cluster.reset_password(self, new_password)
 
-    def delete_cluster(self, cluster, keep_last_manual_snapshot=0):
+    def delete_cluster(self,
+                       cluster,
+                       keep_last_manual_snapshot=0,
+                       ignore_missing=False):
         """Delete a DWS Cluster
 
         :param cluster: key id or an instance of
@@ -148,14 +151,17 @@ class Proxy(proxy.Proxy):
             snapshots that need to be retained for a cluster.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
-            the config does not exist.
+            the cluster does not exist.
             When set to ``True``, no exception will be set when attempting to
-            delete a nonexistent config.
-
+            delete a nonexistent cluster.
         :returns: None
         """
-        cluster = self._get_resource(_cluster.Cluster, cluster)
-        return cluster.remove(self, keep_last_manual_snapshot)
+        return self._delete(
+            _cluster.Cluster,
+            cluster,
+            keep_last_manual_snapshot=keep_last_manual_snapshot,
+            ignore_missing=ignore_missing
+        )
 
     # ======== Flavors ========
     def flavors(self):
@@ -256,11 +262,11 @@ class Proxy(proxy.Proxy):
         return obj
 
     def wait_for_cluster(self, cluster, interval=5, wait=1800):
-        """Wait for a Cluster to be in a particular status.
+        """Wait for a Cluster status to be `AVAILABLE`.
 
-        :param group: The value can be the ID of a cluster
+        :param cluster: The value can be the ID of a cluster
             or a :class:`~otcextensions.sdk.dws.v1.cluster.Cluster`
-            instance
+            instance.
         :param int interval:
             Number of seconds to wait before to consecutive checks.
             Default to 5.
@@ -276,15 +282,15 @@ class Proxy(proxy.Proxy):
         to = time.time() + wait
 
         task_status_list = (
-            "RESTORING",
-            "SNAPSHOTTING",
-            "GROWING",
-            "REBOOTING",
-            "SETTING_CONFIGURATION",
-            "CONFIGURING_EXT_DATASOURCE",
-            "DELETING_EXT_DATASOURCE"
+            'CONFIGURING_EXT_DATASOURCE',
+            'DELETING_EXT_DATASOURCE',
+            'GROWING',
+            'REBOOTING',
+            'REDISTRIBUTING',
+            'RESTORING',
+            'SETTING_CONFIGURATION',
+            'SNAPSHOTTING',
         )
-
         while to > time.time():
             obj = self._get(_cluster.Cluster, cluster)
             status = obj.status
@@ -315,3 +321,23 @@ class Proxy(proxy.Proxy):
                     "action_progress: {str(action_progress)}")
         raise exceptions.ResourceTimeout(
             'Wait Timed Out. Cluster action still in progress.')
+
+    def wait_for_cluster_scale_out(self, cluster, interval=5, wait=1800):
+        """Wait for a Cluster Scale Out Task to Complete.
+
+        :param cluster: The value can be the ID of a cluster
+            or a :class:`~otcextensions.sdk.dws.v1.cluster.Cluster`
+            instance.
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 5.
+        :param int wait:
+            Maximum number of seconds to wait before the change.
+            Default to 1800
+        """
+        obj = self._get(_cluster.Cluster, cluster)
+        is_snapshotting = (obj.task_status == 'SNAPSHOTTING')
+        self.wait_for_cluster(cluster, interval, wait)
+        if is_snapshotting:
+            time.sleep(60)
+            self.wait_for_cluster(cluster, interval, wait)

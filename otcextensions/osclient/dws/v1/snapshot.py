@@ -102,7 +102,7 @@ class CreateSnapshot(command.ShowOne):
         parser.add_argument(
             '--wait',
             action='store_true',
-            help=('Wait for Cluster to Restore.')
+            help=('Wait for the Cluster snapshotting task to finish.')
         )
         parser.add_argument(
             '--timeout',
@@ -223,7 +223,7 @@ class RestoreSnapshot(command.ShowOne):
         parser.add_argument(
             '--wait',
             action='store_true',
-            help=('Wait for Cluster to Restore.')
+            help=('Wait for the status of Restored cluster to be available.')
         )
         parser.add_argument(
             '--timeout',
