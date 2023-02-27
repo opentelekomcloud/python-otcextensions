@@ -149,6 +149,11 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.dws.v1.cluster.Cluster`
         :param int keep_last_manual_snapshot: The number of latest manual
             snapshots that need to be retained for a cluster.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the cluster does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent cluster.
         :returns: None
         """
         return self._delete(

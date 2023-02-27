@@ -138,10 +138,10 @@ class Cluster(resource.Resource):
             snapshots that need to be retained for a cluster.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
-            when the replication pair does not exist.
+            when the cluster does not exist.
             When set to ``True``, no exception will be set when attempting
-            to delete a nonexistent replication pair
-        :return: This :class:`Replication` instance.
+            to delete a nonexistent cluster.
+        :returns: None
         """
         body = {
             "keep_last_manual_snapshot": keep_last_manual_snapshot
@@ -154,7 +154,6 @@ class Cluster(resource.Resource):
             if ignore_missing:
                 return None
             raise
-        return self
 
     def _action(self, session, action, body=None):
         """Preform actions given the message body.
