@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    Added missing attr to dws sdk Cluster class and
+    improved delete_cluster method exception handling.

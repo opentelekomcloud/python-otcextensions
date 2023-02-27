@@ -12,6 +12,7 @@
 #
 '''DWS cluster v1 action implementations'''
 import logging
+import time
 
 from osc_lib import utils
 from osc_lib.cli import format_columns
@@ -199,7 +200,7 @@ class CreateCluster(command.ShowOne):
         parser.add_argument(
             '--wait',
             action='store_true',
-            help=('Wait for Cluster to Restart.')
+            help=('Wait for the Cluster status to be available.')
         )
         parser.add_argument(
             '--timeout',
@@ -276,7 +277,7 @@ class RestartCluster(command.Command):
         parser.add_argument(
             '--wait',
             action='store_true',
-            help=('Wait for Cluster to Restart.')
+            help=('Wait for the Cluster restart action to complete.')
         )
         parser.add_argument(
             '--timeout',
@@ -350,7 +351,7 @@ class ExtendCluster(command.Command):
         parser.add_argument(
             '--wait',
             action='store_true',
-            help=('Wait for Cluster Scaling Task to complete.')
+            help=('Wait for the Cluster Scaling Task to complete.')
         )
         parser.add_argument(
             '--timeout',
@@ -366,7 +367,12 @@ class ExtendCluster(command.Command):
         cluster = client.find_cluster(parsed_args.cluster)
         client.extend_cluster(cluster, parsed_args.add_nodes)
         if parsed_args.wait:
+            obj = client.get_cluster(cluster.id)
+            is_snapshotting = (obj.task_status == 'SNAPSHOTTING')
             client.wait_for_cluster(cluster.id, wait=parsed_args.timeout)
+            if is_snapshotting:
+                time.sleep(60)
+                client.wait_for_cluster(cluster.id, wait=parsed_args.timeout)
 
 
 class DeleteCluster(command.Command):

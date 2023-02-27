@@ -139,23 +139,24 @@ class Proxy(proxy.Proxy):
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return cluster.reset_password(self, new_password)
 
-    def delete_cluster(self, cluster, keep_last_manual_snapshot=0):
+    def delete_cluster(self,
+                       cluster,
+                       keep_last_manual_snapshot=0,
+                       ignore_missing=False):
         """Delete a DWS Cluster
 
         :param cluster: key id or an instance of
             :class:`~otcextensions.sdk.dws.v1.cluster.Cluster`
         :param int keep_last_manual_snapshot: The number of latest manual
             snapshots that need to be retained for a cluster.
-        :param bool ignore_missing: When set to ``False``
-            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
-            the config does not exist.
-            When set to ``True``, no exception will be set when attempting to
-            delete a nonexistent config.
-
         :returns: None
         """
-        cluster = self._get_resource(_cluster.Cluster, cluster)
-        return cluster.remove(self, keep_last_manual_snapshot)
+        return self._delete(
+            _cluster.Cluster,
+            cluster,
+            keep_last_manual_snapshot=keep_last_manual_snapshot,
+            ignore_missing=ignore_missing
+        )
 
     # ======== Flavors ========
     def flavors(self):
@@ -276,15 +277,15 @@ class Proxy(proxy.Proxy):
         to = time.time() + wait
 
         task_status_list = (
-            "RESTORING",
-            "SNAPSHOTTING",
-            "GROWING",
-            "REBOOTING",
-            "SETTING_CONFIGURATION",
-            "CONFIGURING_EXT_DATASOURCE",
-            "DELETING_EXT_DATASOURCE"
+            'CONFIGURING_EXT_DATASOURCE',
+            'DELETING_EXT_DATASOURCE',
+            'GROWING',
+            'REBOOTING',
+            'REDISTRIBUTING',
+            'RESTORING',
+            'SETTING_CONFIGURATION',
+            'SNAPSHOTTING',
         )
-
         while to > time.time():
             obj = self._get(_cluster.Cluster, cluster)
             status = obj.status

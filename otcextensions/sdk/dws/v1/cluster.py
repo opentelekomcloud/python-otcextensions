@@ -110,8 +110,10 @@ class Cluster(resource.Resource):
     task_status = resource.Body('task_status')
     #: Labels in a cluster.
     tags = resource.Body('tags', type=list, list_type=dict)
-    #: Administrator username for logging in to a data warehouse cluster.
+    #: Administrator username for logging in to a GaussDB(DWS) cluster.
     user_name = resource.Body('user_name')
+    #: Administrator password for logging in to a GaussDB(DWS) cluster.
+    user_pwd = resource.Body('user_pwd')
     #: Last modification time of a cluster.
     updated_at = resource.Body('updated')
     #: Data warehouse version.
@@ -122,6 +124,37 @@ class Cluster(resource.Resource):
     private_domain = resource.Computed('private_domain', default='')
     #: Public Domain from public_endpoints connection_info
     public_domain = resource.Computed('public_domain', default='')
+
+    def delete(self, session,
+               keep_last_manual_snapshot=0,
+               ignore_missing=False):
+        """Delete a DWS Cluster.
+
+        This function overrides default Resource.delete to enable params
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param int keep_last_manual_snapsho: The number of latest manual
+            snapshots that need to be retained for a cluster.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the replication pair does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to delete a nonexistent replication pair
+        :return: This :class:`Replication` instance.
+        """
+        body = {
+            "keep_last_manual_snapshot": keep_last_manual_snapshot
+        }
+        request = self._prepare_request()
+        response = session.delete(request.url, json=body)
+        try:
+            self._translate_response(response, has_body=True)
+        except exceptions.ResourceNotFound:
+            if ignore_missing:
+                return None
+            raise
+        return self
 
     def _action(self, session, action, body=None):
         """Preform actions given the message body.
@@ -146,12 +179,3 @@ class Cluster(resource.Resource):
         """
         self._action(session, 'reset-password',
                      {'new_password': new_password})
-
-    def remove(self, session, keep_last_manual_snapshot=0):
-        """Delete a DWS Cluster.
-        """
-        uri = utils.urljoin('clusters', self.id)
-        data = {
-            "keep_last_manual_snapshot": keep_last_manual_snapshot
-        }
-        return session.delete(uri, json=data)

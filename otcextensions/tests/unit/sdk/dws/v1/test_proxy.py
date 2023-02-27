@@ -55,10 +55,14 @@ class TestDwsProxy(test_proxy_base.TestProxyBase):
 
     def test_delete_cluster(self):
         self._verify(
-            'otcextensions.sdk.dws.v1.cluster.Cluster.remove',
+            "openstack.proxy.Proxy._delete",
             self.proxy.delete_cluster,
-            method_args=[_cluster.Cluster, 1],
-            expected_args=[self.proxy, 1]
+            method_args=['cluster-uuid', 0, True],
+            expected_args=[_cluster.Cluster, 'cluster-uuid'],
+            expected_kwargs={
+                'keep_last_manual_snapshot': 0,
+                'ignore_missing': True
+            }
         )
 
     def test_restart_cluster(self):
