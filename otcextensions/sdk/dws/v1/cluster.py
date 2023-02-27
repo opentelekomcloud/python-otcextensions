@@ -134,7 +134,7 @@ class Cluster(resource.Resource):
 
         :param session: The session to use for making this request.
         :type session: :class:`~keystoneauth1.adapter.Adapter`
-        :param int keep_last_manual_snapsho: The number of latest manual
+        :param int keep_last_manual_snapshot: The number of latest manual
             snapshots that need to be retained for a cluster.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
