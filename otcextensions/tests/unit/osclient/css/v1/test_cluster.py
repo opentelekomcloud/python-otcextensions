@@ -64,7 +64,7 @@ class TestListClusters(fakes.TestCss):
         'Created At',
     )
 
-    # columns = ('id', 'name', 'datastore', 'status', 'created_at')
+    columns = ('id', 'name', 'type', 'version', 'status', 'created_at')
 
     data = []
 
