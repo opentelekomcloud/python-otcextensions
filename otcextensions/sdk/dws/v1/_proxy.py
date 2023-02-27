@@ -112,7 +112,7 @@ class Proxy(proxy.Proxy):
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return cluster.restart(self)
 
-    def extend_cluster(self, cluster, node_count):
+    def scale_out_cluster(self, cluster, node_count):
         """Scaling Out a Cluster Nodes
 
         :param cluster: key id or an instance of
@@ -123,7 +123,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.dws.v1.cluster.Cluster`
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
-        return cluster.extend(self, node_count)
+        return cluster.scale_out(self, node_count)
 
     def reset_password(self, cluster, new_password):
         """Reset the password of cluster administrator.
@@ -262,11 +262,11 @@ class Proxy(proxy.Proxy):
         return obj
 
     def wait_for_cluster(self, cluster, interval=5, wait=1800):
-        """Wait for a Cluster to be in a particular status.
+        """Wait for a Cluster status to be `AVAILABLE`.
 
-        :param group: The value can be the ID of a cluster
+        :param cluster: The value can be the ID of a cluster
             or a :class:`~otcextensions.sdk.dws.v1.cluster.Cluster`
-            instance
+            instance.
         :param int interval:
             Number of seconds to wait before to consecutive checks.
             Default to 5.
@@ -321,3 +321,23 @@ class Proxy(proxy.Proxy):
                     "action_progress: {str(action_progress)}")
         raise exceptions.ResourceTimeout(
             'Wait Timed Out. Cluster action still in progress.')
+
+    def wait_for_cluster_scale_out(self, cluster, interval=5, wait=1800):
+        """Wait for a Cluster Scale Out Task to Complete.
+
+        :param cluster: The value can be the ID of a cluster
+            or a :class:`~otcextensions.sdk.dws.v1.cluster.Cluster`
+            instance.
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 5.
+        :param int wait:
+            Maximum number of seconds to wait before the change.
+            Default to 1800
+        """
+        obj = self._get(_cluster.Cluster, cluster)
+        is_snapshotting = (obj.task_status == 'SNAPSHOTTING')
+        self.wait_for_cluster(cluster, interval, wait)
+        if is_snapshotting:
+            time.sleep(60)
+            self.wait_for_cluster(cluster, interval, wait)

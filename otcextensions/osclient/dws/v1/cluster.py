@@ -12,7 +12,6 @@
 #
 '''DWS cluster v1 action implementations'''
 import logging
-import time
 
 from osc_lib import utils
 from osc_lib.cli import format_columns
@@ -331,11 +330,11 @@ class ResetPassword(command.Command):
         return client.reset_password(cluster, parsed_args.password)
 
 
-class ExtendCluster(command.Command):
+class ScaleOutCluster(command.Command):
     _description = _('Scaling Out a Cluster with only Common Nodes.')
 
     def get_parser(self, prog_name):
-        parser = super(ExtendCluster, self).get_parser(prog_name)
+        parser = super(ScaleOutCluster, self).get_parser(prog_name)
         parser.add_argument(
             'cluster',
             metavar='<cluster>',
@@ -365,14 +364,11 @@ class ExtendCluster(command.Command):
     def take_action(self, parsed_args):
         client = self.app.client_manager.dws
         cluster = client.find_cluster(parsed_args.cluster)
-        client.extend_cluster(cluster, parsed_args.add_nodes)
+        client.scale_out_cluster(cluster, parsed_args.add_nodes)
         if parsed_args.wait:
-            obj = client.get_cluster(cluster.id)
-            is_snapshotting = (obj.task_status == 'SNAPSHOTTING')
-            client.wait_for_cluster(cluster.id, wait=parsed_args.timeout)
-            if is_snapshotting:
-                time.sleep(60)
-                client.wait_for_cluster(cluster.id, wait=parsed_args.timeout)
+            client.wait_for_cluster_scale_out(
+                cluster.id, wait=parsed_args.timeout
+            )
 
 
 class DeleteCluster(command.Command):

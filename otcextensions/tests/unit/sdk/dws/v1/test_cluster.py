@@ -225,12 +225,12 @@ class TestCluster(base.TestCase):
         sot._action.assert_called_with(self.sess, 'restart', {'restart': {}})
         self.assertIsNone(rt)
 
-    def test_extend(self):
+    def test_scale_out(self):
         sot = cluster.Cluster.existing(id=EXAMPLE['id'])
         sot._action = mock.Mock()
         node_count = 3
 
-        rt = sot.extend(self.sess, node_count)
+        rt = sot.scale_out(self.sess, node_count)
         sot._action.assert_called_with(
             self.sess, 'resize', {'scale_out': {'count': node_count}}
         )

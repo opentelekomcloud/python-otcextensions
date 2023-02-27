@@ -167,7 +167,7 @@ class Cluster(resource.Resource):
         """
         self._action(session, 'restart', {"restart": {}})
 
-    def extend(self, session, node_count):
+    def scale_out(self, session, node_count):
         """Scale Out cluster Nodes.
         """
         self._action(session, 'resize',

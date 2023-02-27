@@ -73,10 +73,10 @@ class TestDwsProxy(test_proxy_base.TestProxyBase):
             expected_args=[self.proxy]
         )
 
-    def test_extend_cluster(self):
+    def test_scale_out_cluster(self):
         self._verify(
-            'otcextensions.sdk.dws.v1.cluster.Cluster.extend',
-            self.proxy.extend_cluster,
+            'otcextensions.sdk.dws.v1.cluster.Cluster.scale_out',
+            self.proxy.scale_out_cluster,
             method_args=[_cluster.Cluster, 2],
             expected_args=[self.proxy, 2]
         )

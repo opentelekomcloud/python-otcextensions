@@ -284,19 +284,19 @@ class TestClusterPasswordReset(fakes.TestDws):
         self.assertIsNone(result)
 
 
-class TestExtendCluster(fakes.TestDws):
+class TestScaleOutCluster(fakes.TestDws):
 
     _cluster = fakes.FakeCluster.create_one()
 
     default_timeout = 1800
 
     def setUp(self):
-        super(TestExtendCluster, self).setUp()
+        super(TestScaleOutCluster, self).setUp()
 
-        self.cmd = cluster.ExtendCluster(self.app, None)
+        self.cmd = cluster.ScaleOutCluster(self.app, None)
 
         self.client.find_cluster = mock.Mock(return_value=self._cluster)
-        self.client.extend_cluster = mock.Mock(return_value=None)
+        self.client.scale_out_cluster = mock.Mock(return_value=None)
         self.client.wait_for_cluster = mock.Mock(return_value=True)
 
     def test_extend(self):
@@ -318,8 +318,8 @@ class TestExtendCluster(fakes.TestDws):
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
         self.client.find_cluster.assert_called_with(self._cluster.name)
-        self.client.extend_cluster.assert_called_with(self._cluster, 2)
-        self.client.wait_for_cluster.assert_called_with(
+        self.client.scale_out_cluster.assert_called_with(self._cluster, 2)
+        self.client.wait_for_cluster_scale_out.assert_called_with(
             self._cluster.id, wait=self.default_timeout)
 
         self.assertIsNone(result)
