@@ -199,7 +199,7 @@ class CreateCluster(command.ShowOne):
         parser.add_argument(
             '--wait',
             action='store_true',
-            help=('Wait for Cluster to Restart.')
+            help=('Wait for the Cluster status to be available.')
         )
         parser.add_argument(
             '--timeout',
@@ -276,7 +276,7 @@ class RestartCluster(command.Command):
         parser.add_argument(
             '--wait',
             action='store_true',
-            help=('Wait for Cluster to Restart.')
+            help=('Wait for the Cluster restart action to complete.')
         )
         parser.add_argument(
             '--timeout',
@@ -330,11 +330,11 @@ class ResetPassword(command.Command):
         return client.reset_password(cluster, parsed_args.password)
 
 
-class ExtendCluster(command.Command):
+class ScaleOutCluster(command.Command):
     _description = _('Scaling Out a Cluster with only Common Nodes.')
 
     def get_parser(self, prog_name):
-        parser = super(ExtendCluster, self).get_parser(prog_name)
+        parser = super(ScaleOutCluster, self).get_parser(prog_name)
         parser.add_argument(
             'cluster',
             metavar='<cluster>',
@@ -350,7 +350,7 @@ class ExtendCluster(command.Command):
         parser.add_argument(
             '--wait',
             action='store_true',
-            help=('Wait for Cluster Scaling Task to complete.')
+            help=('Wait for the Cluster Scaling Task to complete.')
         )
         parser.add_argument(
             '--timeout',
@@ -364,9 +364,11 @@ class ExtendCluster(command.Command):
     def take_action(self, parsed_args):
         client = self.app.client_manager.dws
         cluster = client.find_cluster(parsed_args.cluster)
-        client.extend_cluster(cluster, parsed_args.add_nodes)
+        client.scale_out_cluster(cluster, parsed_args.add_nodes)
         if parsed_args.wait:
-            client.wait_for_cluster(cluster.id, wait=parsed_args.timeout)
+            client.wait_for_cluster_scale_out(
+                cluster.id, wait=parsed_args.timeout
+            )
 
 
 class DeleteCluster(command.Command):

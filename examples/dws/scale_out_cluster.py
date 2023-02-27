@@ -21,4 +21,4 @@ conn = openstack.connect(cloud='otc')
 
 cluster_id = 'cluster-uuid'
 add_nodes = 3
-conn.dws.extend_cluster(cluster_id, add_nodes)
+conn.dws.scale_out_cluster(cluster_id, add_nodes)

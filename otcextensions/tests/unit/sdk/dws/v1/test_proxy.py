@@ -55,10 +55,14 @@ class TestDwsProxy(test_proxy_base.TestProxyBase):
 
     def test_delete_cluster(self):
         self._verify(
-            'otcextensions.sdk.dws.v1.cluster.Cluster.remove',
+            "openstack.proxy.Proxy._delete",
             self.proxy.delete_cluster,
-            method_args=[_cluster.Cluster, 1],
-            expected_args=[self.proxy, 1]
+            method_args=['cluster-uuid', 0, True],
+            expected_args=[_cluster.Cluster, 'cluster-uuid'],
+            expected_kwargs={
+                'keep_last_manual_snapshot': 0,
+                'ignore_missing': True
+            }
         )
 
     def test_restart_cluster(self):
@@ -69,10 +73,10 @@ class TestDwsProxy(test_proxy_base.TestProxyBase):
             expected_args=[self.proxy]
         )
 
-    def test_extend_cluster(self):
+    def test_scale_out_cluster(self):
         self._verify(
-            'otcextensions.sdk.dws.v1.cluster.Cluster.extend',
-            self.proxy.extend_cluster,
+            'otcextensions.sdk.dws.v1.cluster.Cluster.scale_out',
+            self.proxy.scale_out_cluster,
             method_args=[_cluster.Cluster, 2],
             expected_args=[self.proxy, 2]
         )
