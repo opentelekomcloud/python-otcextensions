@@ -299,7 +299,7 @@ class TestScaleOutCluster(fakes.TestDws):
         self.client.scale_out_cluster = mock.Mock(return_value=None)
         self.client.wait_for_cluster = mock.Mock(return_value=True)
 
-    def test_extend(self):
+    def test_scale_out(self):
         arglist = [
             self._cluster.name,
             '--add-nodes', '2',

@@ -63,14 +63,14 @@ name_or_id or instance of Cluster class.
 .. literalinclude:: ../examples/dws/restart_cluster.py
    :lines: 16-22
 
-Extend DWS Cluster
-^^^^^^^^^^^^^^^^^^
+ScaleOut DWS Cluster
+^^^^^^^^^^^^^^^^^^^^
 
 This interface is used to scale out nodes of DWS Cluster
 by cluster name_or_id or instance of Cluster class.
 :class:`~otcextensions.sdk.dws.v1.cluster.Cluster`.
 
-.. literalinclude:: ../examples/dws/extend_cluster.py
+.. literalinclude:: ../examples/dws/scale_out_cluster.py
    :lines: 17-24
 
 Reset DWS Password
