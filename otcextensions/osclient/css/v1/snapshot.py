@@ -249,10 +249,9 @@ class SetSnapshotPolicy(command.ShowOne):
         parser.add_argument(
             '--keep-days',
             metavar='<keep_days>',
+            required=True,
             type=int,
-            default=15,
-            help=('Number of days that a snapshot can be retained. '
-                  '(Default Value: 15).')
+            help=('Number of days that a snapshot can be retained.')
         )
         parser.add_argument(
             '--disable',

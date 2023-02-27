@@ -40,6 +40,13 @@ _formatters = {
 }
 
 
+def set_attributes_for_print(obj):
+    for data in obj:
+        setattr(data, 'type', data.datastore['type'])
+        setattr(data, 'version', data.datastore['version'])
+        yield data
+
+
 def _get_columns(item):
     column_map = {}
     hidden = [
@@ -47,11 +54,6 @@ def _get_columns(item):
     ]
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
                                                            hidden)
-
-
-def set_attributes_for_print(obj):
-    for data in obj:
-        yield data
 
 
 def translate_response(func):
@@ -78,13 +80,17 @@ class CreateCluster(command.ShowOne):
             help=_('Cluster Name.')
         )
         parser.add_argument(
+            '--datastore-type',
+            metavar='<datastore_type>',
+            default='elasticsearch',
+            help=_('Cluster type. The default value is elasticsearch.'),
+        )
+        parser.add_argument(
             '--datastore-version',
             metavar='<datastore_version>',
-            type=lambda s: s.lower(),
-            choices=CSS_ENGINE_VERSIONS,
             default='7.10.2',
-            help=_('CSS Cluster Engine Versions. Supported Versions: '
-                   '{' + ', '.join(CSS_ENGINE_VERSIONS) + '} '
+            help=_('CSS Cluster Engine Versions. Supported ElasticSearch '
+                   'Versions: {' + ', '.join(CSS_ENGINE_VERSIONS) + '} '
                    '(default: 7.10.2).'),
         )
         parser.add_argument(
@@ -216,7 +222,7 @@ class CreateCluster(command.ShowOne):
             'instanceNum': parsed_args.num_nodes,
             'datastore': {
                 'version': parsed_args.datastore_version,
-                'type': 'elasticsearch'
+                'type': parsed_args.datastore_type
             },
             'instance': {
                 'flavorRef': parsed_args.flavor,
@@ -276,7 +282,8 @@ class ListClusters(command.Lister):
     columns = (
         'ID',
         'Name',
-        'DataStore',
+        'Type',
+        'Version',
         'Status',
         'Created At'
     )
@@ -289,18 +296,13 @@ class ListClusters(command.Lister):
     def take_action(self, parsed_args):
         client = self.app.client_manager.css
         data = client.clusters()
-        data = set_attributes_for_print(data)
-
-        _formatters = {
-            'DataStore': format_columns.DictColumn
-        }
 
         return (
             self.columns, (
                 utils.get_item_properties(
                     s, self.columns, formatters=_formatters
                 )
-                for s in data
+                for s in set_attributes_for_print(data)
             )
         )
 

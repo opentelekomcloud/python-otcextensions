@@ -58,7 +58,8 @@ class TestListClusters(fakes.TestCss):
     column_list_headers = (
         'ID',
         'Name',
-        'DataStore',
+        'Type',
+        'Version',
         'Status',
         'Created At',
     )
@@ -72,7 +73,8 @@ class TestListClusters(fakes.TestCss):
             (
                 s.id,
                 s.name,
-                format_columns.DictColumn(s.datastore),
+                s.datastore['type'],
+                s.datastore['version'],
                 s.status,
                 s.created_at
             )

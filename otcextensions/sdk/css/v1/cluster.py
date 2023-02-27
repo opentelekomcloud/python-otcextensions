@@ -76,7 +76,7 @@ class Cluster(resource.Resource):
     #: Type of the data search engine
     datastore = resource.Body('datastore', type=dict)
     #: Disk Encryption Object. (For request body only)
-    diskEncryption = resource.Body('diskEncryption', type=dict)
+    disk_encryption = resource.Body('diskEncryption', type=dict)
     #: Elb Whitelist Details
     elb_whitelist = resource.Body('elbWhiteList', type=dict)
     #: Indicates the IP address and port number of the user used to
@@ -89,7 +89,7 @@ class Cluster(resource.Resource):
     #: Cluster Node (request Body)
     instance = resource.Body('instance', type=dict)
     #: Number of cluster Nodes. The value range is 1 to 32. (request Body)
-    instanceNum = resource.Body('instanceNum', type=int)
+    instance_num = resource.Body('instanceNum', type=int)
     #: Whether authentication is enabled.
     #:  When authentication is enabled, httpsEnable must be set to true.
     is_authority_enabled = resource.Body('authorityEnable', type=bool)
