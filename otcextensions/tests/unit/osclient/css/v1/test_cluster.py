@@ -196,7 +196,7 @@ class TestCreateCluster(fakes.TestCss):
                 'systemEncrypted': 1,
                 'systemCmkid': 'cmk-uuid'
             },
-            'httpsEnable': 'true',
+            'httpsEnable': True,
             'authorityEnable': True,
             'adminPwd': 'testtest',
             'backupStrategy': {

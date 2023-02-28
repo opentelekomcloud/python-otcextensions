@@ -65,6 +65,9 @@ class Cluster(resource.Resource):
     actions = resource.Body('actions', type=list)
     #: Operation progress
     action_progress = resource.Body('actionProgress', type=dict)
+    #: Password of the cluster user admin in security mode. This parameter
+    #:  is mandatory only when authorityEnable is set to true.
+    admin_password = resource.Body('adminPwd')
     #: Automatic snapshot creation.
     backup_strategy = resource.Body('backupStrategy', type=dict)
     #: Bandwidth of Public IP

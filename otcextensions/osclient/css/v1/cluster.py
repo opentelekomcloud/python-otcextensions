@@ -243,7 +243,7 @@ class CreateCluster(command.ShowOne):
             attrs['instance']['availability_zone'] = availability_zone
 
         if parsed_args.https_enable:
-            attrs['httpsEnable'] = 'true'
+            attrs['httpsEnable'] = True
             attrs['authorityEnable'] = True
             admin_password = parsed_args.admin_pwd
             if admin_password:
@@ -253,6 +253,9 @@ class CreateCluster(command.ShowOne):
                     'Following arguments is required: --admin-pwd '
                     '(admin_pwd is mandatary in https_enable mode.)'
                 )
+        elif parsed_args.admin_pwd and not parsed_args.https_enable:
+            attrs['authorityEnable'] = True
+            attrs['adminPwd'] = parsed_args.admin_pwd
 
         if parsed_args.cmk_id:
             attrs['diskEncryption'] = {
