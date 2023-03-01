@@ -9,27 +9,31 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import uuid
+
 from openstack.tests.unit import base
 from otcextensions.sdk.dws.v1 import flavor
 
 
-EXAMPLE = {'id': '35d0948d-52b0-32ed-afdf-206456108d7c',
-           'detail': [{'value': '32',
-                       'type': 'vCPU'},
-                      {'value': '4000',
-                       'type': 'SSD',
-                       'unit': 'GB'},
-                      {'value': '256',
-                       'type': 'mem',
-                       'unit': 'GB'},
-                      {'value': 'eu-de-02,eu-de-01',
-                       'type': 'availableZones'}],
-           'spec_name': 'dws2.m6.8xlarge.8',
-           'vCPU': '32',
-           'disk_type': 'SSD',
-           'disk_size': '4000',
-           'mem': '256',
-           'availableZones': 'eu-de-02,eu-de-01'}
+EXAMPLE = {
+    'id': uuid.uuid4().hex,
+    'detail': [{'value': '32',
+                'type': 'vCPU'},
+               {'value': '4000',
+                'type': 'SSD',
+                'unit': 'GB'},
+               {'value': '256',
+                'type': 'mem',
+                'unit': 'GB'},
+               {'value': 'eu-de-02,eu-de-01',
+                'type': 'availableZones'}],
+    'spec_name': 'dws2.m6.8xlarge.8',
+    'vCPU': '32',
+    'disk_type': 'SSD',
+    'disk_size': '4000',
+    'mem': '256',
+    'availableZones': 'eu-de-02,eu-de-01'
+}
 
 
 class TestFlavor(base.TestCase):

@@ -175,22 +175,24 @@ class FakeFlavor(test_base.Fake):
         :return:
             A FakeResource object, with id, name and so on
         """
-        object_info = {'availabileZones': 'eu-de-02,eu-de-01',
-                       'detail': [{'value': '4',
-                                   'type': 'vCPU'},
-                                  {'value': '160',
-                                   'type': 'SSD',
-                                   'unit': 'GB'},
-                                  {'value': '32',
-                                   'type': 'mem',
-                                   'unit': 'GB'},
-                                  {'value': 'eu-de-02,eu-de-01',
-                                   'type': 'availableZones'}],
-                       'disk_size': 160,
-                       'disk_type': 'SSD',
-                       'spec_name': 'dws.m3.xlarge',
-                       'mem': 32,
-                       'vCPU': 4,
-                       'id': 'f04f994c-81ae-4669-99dc-8392d6ad9c60'}
+        object_info = {
+            'id': uuid.uuid4().hex,
+            'availabileZones': 'eu-de-02,eu-de-01',
+            'detail': [{'value': '4',
+                        'type': 'vCPU'},
+                       {'value': '160',
+                        'type': 'SSD',
+                        'unit': 'GB'},
+                       {'value': '32',
+                        'type': 'mem',
+                        'unit': 'GB'},
+                       {'value': 'eu-de-02,eu-de-01',
+                        'type': 'availableZones'}],
+            'disk_size': 160,
+            'disk_type': 'SSD',
+            'spec_name': 'dws.m3.xlarge',
+            'mem': 32,
+            'vCPU': 4,
+        }
 
         return flavor.Flavor(**object_info)
