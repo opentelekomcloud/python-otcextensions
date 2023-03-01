@@ -13,30 +13,23 @@ from openstack.tests.unit import base
 from otcextensions.sdk.dws.v1 import flavor
 
 
-EXAMPLE = {
-    "id": "uuid.uuid4().hex",
-    "spec_name": "dws.test.flavor",
-    "detail": [
-        {
-            "value": "4",
-            "type": "vCPU"
-        },
-        {
-            "value": "160",
-            "type": "SSD",
-            "unit": "GB"
-        },
-        {
-            "value": "eu-de-01,eu-de-02",
-            "type": "availableZones"
-        },
-        {
-            "value": "32",
-            "type": "mem",
-            "unit": "GB"
-        }
-    ]
-}
+EXAMPLE = {'id': '35d0948d-52b0-32ed-afdf-206456108d7c',
+           'detail': [{'value': '32',
+                       'type': 'vCPU'},
+                      {'value': '4000',
+                       'type': 'SSD',
+                       'unit': 'GB'},
+                      {'value': '256',
+                       'type': 'mem',
+                       'unit': 'GB'},
+                      {'value': 'eu-de-02,eu-de-01',
+                       'type': 'availableZones'}],
+           'spec_name': 'dws2.m6.8xlarge.8',
+           'vCPU': '32',
+           'disk_type': 'SSD',
+           'disk_size': '4000',
+           'mem': '256',
+           'availableZones': 'eu-de-02,eu-de-01'}
 
 
 class TestFlavor(base.TestCase):
@@ -57,13 +50,12 @@ class TestFlavor(base.TestCase):
 
     def test_make_it(self):
         sot = flavor.Flavor(**EXAMPLE)
+        self.assertEqual(EXAMPLE['availableZones'], sot.availability_zones)
+        self.assertEqual(EXAMPLE['detail'], sot.detail)
+        self.assertEqual(EXAMPLE['disk_type'], sot.disk_type)
+        self.assertEqual(int(EXAMPLE['disk_size']), sot.disk_size)
         self.assertEqual(EXAMPLE['id'], sot.id)
+        self.assertEqual(int(EXAMPLE['mem']), sot.ram)
         self.assertEqual(EXAMPLE['spec_name'], sot.name)
         self.assertEqual(EXAMPLE['spec_name'], sot.spec_name)
-        # self.assertEqual(EXAMPLE['detail'], sot.detail)
-
-        for detail in EXAMPLE['detail']:
-            sot = flavor.FlavorDetail(**detail)
-            self.assertEqual(detail['type'], sot.type)
-            self.assertEqual(detail['value'], sot.value)
-            self.assertEqual(detail.get('unit'), sot.unit)
+        self.assertEqual(int(EXAMPLE['vCPU']), sot.vcpu)
