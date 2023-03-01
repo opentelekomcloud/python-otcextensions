@@ -63,12 +63,22 @@ id or an instance of class
 Extend CSS Cluster
 ^^^^^^^^^^^^^^^^^^
 
-This interface is used to extend CSS cluster nodes by
+This interface is used to extend CSS cluster by
 id or an instance of class
 :class:`~otcextensions.sdk.css.v1.cluster.Cluster`.
 
 .. literalinclude:: ../examples/css/extend_cluster.py
    :lines: 17-24
+
+Extend CSS Cluster Nodes
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to extend CSS cluster nodes by
+id or an instance of class
+:class:`~otcextensions.sdk.css.v1.cluster.Cluster`.
+
+.. literalinclude:: ../examples/css/extend_cluster_nodes.py
+   :lines: 16-29
 
 Delete CSS Cluster
 ^^^^^^^^^^^^^^^^^^

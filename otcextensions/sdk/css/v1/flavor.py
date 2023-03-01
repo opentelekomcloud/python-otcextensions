@@ -21,26 +21,28 @@ class Flavor(resource.Resource):
     allow_list = True
 
     # Properties
-    #: Version. *Type: str*
-    version = resource.Body('version')
-    #: cpu count. *Type: int*
-    vcpus = resource.Body('cpu', type=int)
-    #: ram. *Type: int*
-    ram = resource.Body('ram', type=int)
-    #: region. *Type: str*
-    region = resource.Body('region')
+    #: Availability Zones. *Type: str*
+    availability_zones = resource.Body('availableAZ')
     #: Disk capacity range (min,max). *Type: str*
     disk_range = resource.Body('diskrange', type=str)
     #: ID of a flavor. *Type: ID*
     flavor_id = resource.Body('flavor_id', alternate_id=True)
+    #: ram. *Type: int*
+    ram = resource.Body('ram', type=int)
+    #: region. *Type: str*
+    region = resource.Body('region')
+    #: Instance Type.
+    type = resource.Body('type')
+    #: cpu count. *Type: int*
+    vcpus = resource.Body('cpu', type=int)
+    #: Version. *Type: str*
+    version = resource.Body('version')
 
     @classmethod
     def list(cls, session, paginated=True, base_path=None, **params):
         """This method is a generator which yields resource objects.
-
         This resource object list generator handles pagination and takes query
         params for response filtering.
-
         :param session: The session to use for making this request.
         :type session: :class:`~keystoneauth1.adapter.Adapter`
         :param bool paginated: ``True`` if a GET to this resource returns
@@ -61,7 +63,6 @@ class Flavor(resource.Resource):
             :data:`~openstack.resource.Resource.base_path` format string
             to see if any path fragments need to be filled in by the contents
             of this argument.
-
         :return: A generator of :class:`Resource` objects.
         :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
                  :data:`Resource.allow_list` is not set to ``True``.
@@ -91,6 +92,7 @@ class Flavor(resource.Resource):
         if 'versions' in data:
             for ver in data['versions']:
                 version = ver['version']
+                type = ver['type']
                 resources = ver[cls.resources_key]
 
                 if not isinstance(resources, list):
@@ -103,6 +105,7 @@ class Flavor(resource.Resource):
                         microversion=microversion,
                         connection=session._get_connection(),
                         version=version,
+                        type=type,
                         **raw_resource)
                     yield value
         else:
