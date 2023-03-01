@@ -77,7 +77,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
         """
         return self._create(
-            _cluster.Cluster, prepend_key=False, **attrs
+            _cluster.Cluster, **attrs
         )
 
     def restart_cluster(self, cluster):
@@ -85,9 +85,7 @@ class Proxy(proxy.Proxy):
 
         :param cluster: key id or an instance of
             :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
-
-        :returns: instance of
-            :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
+        :returns: ``None``
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return cluster.restart(self)
@@ -98,12 +96,23 @@ class Proxy(proxy.Proxy):
         :param cluster: key id or an instance of
             :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
         :param add_nodes: Number of common nodes to be scaled out.
-
-        :returns: instance of
-            :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
+        :returns: ``None``
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return cluster.extend(self, add_nodes)
+
+    def extend_cluster_nodes(self, cluster, **attrs):
+        """Scaling Out a Cluster with Special Nodes
+
+        :param cluster: key id or an instance of
+            :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
+        :param data: Cluster scale-out request data.
+        :returns: ``None``
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return self._create(
+            _cluster.ExtendClusterNodes, cluster_id=cluster.id, **attrs
+        )
 
     def delete_cluster(self, cluster, ignore_missing=False):
         """Delete a cluster
@@ -116,10 +125,10 @@ class Proxy(proxy.Proxy):
             the group does not exist.
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent cluster.
+        :returns: ``None``
         """
-        return self._delete(
-            _cluster.Cluster, cluster, ignore_missing=ignore_missing,
-        )
+        return self._delete(_cluster.Cluster, cluster,
+                            ignore_missing=ignore_missing)
 
     # ======== Flavors ========
     def flavors(self):
@@ -157,9 +166,8 @@ class Proxy(proxy.Proxy):
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return self._create(
             _snapshot.Snapshot,
-            cluster_id=cluster.id,
-            prepend_key=False,
-            **attrs,
+            uri_cluster_id=cluster.id,
+            **attrs
         )
 
     def delete_snapshot(self, cluster, snapshot,
@@ -180,17 +188,17 @@ class Proxy(proxy.Proxy):
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return self._delete(
             _snapshot.Snapshot, snapshot,
-            cluster_id=cluster.id,
+            uri_cluster_id=cluster.id,
             ignore_missing=ignore_missing,
         )
 
-    def set_snapshot_configuration(self, cluster, auto_setting=False,
+    def set_snapshot_configuration(self, cluster, auto_configure=False,
                                    **attrs):
         """Setting Basic Configurations of a Cluster Snapshot
 
         :param cluster: key id or an instance of
             :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
-        :param bool auto: When set to ``True``
+        :param bool auto_configure: When set to ``True``
             Basic Configurations of a Cluster Snapshot will be set
             automatically.
         :param dict attrs: Keyword arguments which will be used to create
@@ -200,9 +208,9 @@ class Proxy(proxy.Proxy):
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
         setting = 'setting'
-        if auto_setting and isinstance(auto_setting, bool):
+        if auto_configure and isinstance(auto_configure, bool):
             setting = 'auto_setting'
-            attrs['has_body'] = False
+            attrs = {'has_body': False}
         return self._create(
             _snapshot.SnapshotConfiguration,
             cluster_id=cluster.id,
@@ -210,8 +218,21 @@ class Proxy(proxy.Proxy):
             **attrs
         )
 
+    def disable_snapshot_function(self, cluster, ignore_missing=False):
+        """Disable the snapshot function of a cluster.
+
+        :param cluster: key id or an instance of
+            :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
+        :returns: ``None``
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        snapshot_config = self._get_resource(_snapshot.SnapshotConfiguration,
+                                             '',
+                                             cluster_id=cluster.id)
+        snapshot_config.disable(self)
+
     def set_snapshot_policy(self, cluster, **attrs):
-        """Set parameters related to automatic snapshot creation
+        """Set parameters related to automatic snapshot creation.
 
         :param cluster: key id or an instance of
             :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
@@ -220,7 +241,6 @@ class Proxy(proxy.Proxy):
             comprised of the properties on the Snapshot class.
         :returns: ``None``
         """
-
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return self._create(
             _snapshot.SnapshotPolicy,
@@ -243,23 +263,6 @@ class Proxy(proxy.Proxy):
             requires_id=False
         )
 
-    def disable_snapshot_function(self, cluster, ignore_missing=False):
-        """Disable the snapshot function of a cluster.
-
-        :param cluster: key id or an instance of
-            :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
-        :returns: ``None``
-        """
-
-        cluster = self._get_resource(_cluster.Cluster, cluster)
-        base_path = f'/clusters/{cluster.id}/index_snapshots'
-        return self._delete(
-            _snapshot.Snapshot,
-            base_path=base_path,
-            requires_id=False,
-            ignore_missing=ignore_missing
-        )
-
     def restore_snapshot(self, cluster, snapshot, **attrs):
         """Restore a snapshot.
 
@@ -273,11 +276,12 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
-        snapshot = self._get_resource(_snapshot.Snapshot, snapshot,
-                                      cluster_id=cluster.id)
-        return snapshot.restore(self, **attrs)
+        snapshot = self._get_resource(_snapshot.Snapshot, snapshot)
+        return snapshot.restore(self, cluster.id, **attrs)
 
     def get_certificate(self):
+        """Download the HTTPS certificate file of the server.
+        """
         split_url = urlsplit(self.get_endpoint())
         self.endpoint_override = \
             f'{split_url.scheme}://{split_url.netloc}/v1.0/'
@@ -288,18 +292,25 @@ class Proxy(proxy.Proxy):
         self.endpoint_override = None
         return resp
 
-    def wait_for_cluster(self, cluster, timeout=15):
-
-        timeout = timeout * 60
-        if not 59 < timeout <= 1800:
-            raise exceptions.SDKException('Timeout Can be [1..30] minutes.')
-        to = time.time() + timeout
-        while to > time.time():
+    def wait_for_cluster(self, cluster, timeout=1200, wait=5):
+        while timeout > 0:
             obj = self.get_cluster(cluster)
-            if not obj.actions:
+            if obj.status_code == 100:
+                pass
+            elif obj.actions == [] and obj.action_progress == {}:
                 return True
             if getattr(obj, 'error'):
                 raise exceptions.SDKException(obj.error)
-            time.sleep(5)
+            self.log.debug(
+                'Still waiting for resource %s to reach state %s, '
+                'current state is %s'
+                '\nWait Time Out remaining: %s seconds.',
+                obj.name,
+                'AVAILABLE',
+                str(obj.action_progress or obj.status),
+                str(timeout),
+            )
+            timeout = timeout - wait
+            time.sleep(wait)
         raise exceptions.SDKException(
             'Wait Timed Out. Cluster action still in progress.')

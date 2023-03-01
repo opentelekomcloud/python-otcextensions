@@ -12,8 +12,10 @@
 #
 import logging
 
-from otcextensions import sdk
+from osc_lib import utils
 
+from otcextensions import sdk
+from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
@@ -21,7 +23,6 @@ DEFAULT_API_VERSION = '1'
 API_VERSION_OPTION = 'os_css_api_version'
 API_NAME = "css"
 API_VERSIONS = {
-    "1.0": "openstack.connection.Connection",
     "1": "openstack.connection.Connection",
 }
 
@@ -31,14 +32,22 @@ def make_client(instance):
 
     conn = instance.sdk_connection
 
-    # register unconditionally, since we need to override default CES
-    sdk.register_otc_extensions(conn)
+    if getattr(conn, 'css', None) is None:
+        LOG.debug('OTC extensions are not registered. Do that now')
+        sdk.register_otc_extensions(conn)
 
-    LOG.debug('css client initialized using OpenStack OTC SDK: %s',
-              conn.ces)
+    LOG.debug('CSS client initialized using OpenStack OTC SDK: %s',
+              conn.css)
     return conn.css
 
 
 def build_option_parser(parser):
     """Hook to add global options"""
+    parser.add_argument(
+        '--os-css-api-version',
+        metavar='<css-api-version>',
+        default=utils.env('OS_CSS_API_VERSION'),
+        help=_("CSS API version, default=%s "
+               "(Env: OS_CSS_API_VERSION)") % DEFAULT_API_VERSION
+    )
     return parser

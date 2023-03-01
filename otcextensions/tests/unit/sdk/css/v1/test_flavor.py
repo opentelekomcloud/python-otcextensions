@@ -20,15 +20,18 @@ from otcextensions.sdk.css.v1 import flavor
 
 
 FAKE_ID = "68d5745e-6af2-40e4-945d-fe449be00148"
+
 EXAMPLE = {
     "versions": [{
-        "version": "6.2.3",
+        "type": "ess",
+        "version": "7.6.2",
         "flavors": [{
             "cpu": 1,
             "ram": 8,
             "name": "css.medium.8",
             "region": "eu-de",
             "diskrange": "40,640",
+            "availableAZ": "eu-de-01,eu-de-02,eu-de-03",
             "flavor_id": "6b6c0bcf-750d-4f8a-b6f5-c45a143f5198"
         }]
     }]
@@ -48,6 +51,7 @@ class TestFlavor(base.TestCase):
         sot = flavor.Flavor()
 
         self.assertEqual('/flavors', sot.base_path)
+        self.assertEqual('flavors', sot.resources_key)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_fetch)
         self.assertFalse(sot.allow_create)
@@ -77,3 +81,4 @@ class TestFlavor(base.TestCase):
 
         self.assertEqual(1, len(result))
         self.assertEqual(EXAMPLE['versions'][0]['version'], result[0].version)
+        self.assertEqual(EXAMPLE['versions'][0]['type'], result[0].type)

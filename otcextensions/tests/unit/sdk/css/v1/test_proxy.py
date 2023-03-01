@@ -60,7 +60,6 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
             self.proxy.create_cluster, _cluster.Cluster,
             method_kwargs={'x': 1, 'y': 2, 'z': 3},
             expected_kwargs={
-                'prepend_key': False,
                 'x': 1, 'y': 2, 'z': 3
             }
         )
@@ -86,10 +85,23 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
             expected_args=[self.proxy, 2]
         )
 
+    def test_extend_cluster_nodes(self):
+        self.verify_create(
+            self.proxy.extend_cluster_nodes,
+            _cluster.ExtendClusterNodes,
+            method_kwargs={
+                'cluster': 'cluster-uuid',
+                'grow': [{'x': 1, 'y': 2, 'z': 3}]
+            },
+            expected_kwargs={
+                'cluster_id': 'cluster-uuid',
+                'grow': [{'x': 1, 'y': 2, 'z': 3}]
+            },
+        )
+
     def test_flavors(self):
         self.verify_list(
-            self.proxy.flavors,
-            _flavor.Flavor,
+            self.proxy.flavors, _flavor.Flavor,
         )
 
     def test_snapshots(self):
@@ -111,8 +123,7 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
                 'x': 1, 'y': 2
             },
             expected_kwargs={
-                'cluster_id': 'cluster-uuid',
-                'prepend_key': False,
+                'uri_cluster_id': 'cluster-uuid',
                 'x': 1, 'y': 2
             }
         )
@@ -121,12 +132,22 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
         self._verify(
             "openstack.proxy.Proxy._delete",
             self.proxy.delete_snapshot,
-            method_args=['cluster-uuid', 'snapshot-uuid', True],
+            method_args=['cluster-uuid', 'snapshot-uuid', False],
             expected_args=[_snapshot.Snapshot, 'snapshot-uuid'],
             expected_kwargs={
-                'cluster_id': 'cluster-uuid',
-                'ignore_missing': True
+                'uri_cluster_id': 'cluster-uuid',
+                'ignore_missing': False
             }
+        )
+
+    def test_restore_snapshot(self):
+        self._verify(
+            'otcextensions.sdk.css.v1.snapshot.Snapshot.restore',
+            self.proxy.restore_snapshot,
+            method_args=[_cluster.Cluster, _snapshot.Snapshot],
+            method_kwargs={'a': '1', 'b': '2'},
+            expected_args=[self.proxy, _cluster.Cluster],
+            expected_kwargs={'a': '1', 'b': '2'},
         )
 
     def test_set_snapshot_configuration(self):
@@ -135,7 +156,7 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
             _snapshot.SnapshotConfiguration,
             method_kwargs={
                 'cluster': 'cluster-uuid',
-                'auto_setting': False,
+                'auto_configure': False,
                 'x': 1, 'y': 2
             },
             expected_kwargs={
@@ -143,6 +164,14 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
                 'setting': 'setting',
                 'x': 1, 'y': 2
             }
+        )
+
+    def test_disable_snapshot_function(self):
+        self._verify(
+            'otcextensions.sdk.css.v1.snapshot.SnapshotConfiguration.disable',
+            self.proxy.disable_snapshot_function,
+            method_args=['cluster-uuid'],
+            expected_args=[self.proxy]
         )
 
     def test_set_snapshot_policy(self):
@@ -167,28 +196,6 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
             expected_kwargs={
                 'cluster_id': 'cluster-uuid',
                 'requires_id': False
-            }
-        )
-
-    def test_restore_snapshot(self):
-        self._verify(
-            'otcextensions.sdk.css.v1.snapshot.Snapshot.restore',
-            self.proxy.restore_snapshot,
-            method_args=[_snapshot.Snapshot, 'snapshot-uuid'],
-            method_kwargs={'a': '1', 'b': '2'},
-            expected_args=[self.proxy],
-            expected_kwargs={'a': '1', 'b': '2'},
-        )
-
-    def test_disabled_snapshot_function(self):
-        self._verify(
-            "openstack.proxy.Proxy._delete",
-            self.proxy.disable_snapshot_function,
-            method_args=['cluster-uuid'],
-            expected_args=[_snapshot.Snapshot],
-            expected_kwargs={
-                'requires_id': False,
-                'base_path': '/clusters/cluster-uuid/index_snapshots'
             }
         )
 

@@ -11,22 +11,26 @@
 # under the License.
 #
 import uuid
-from collections import defaultdict
 # from datetime import datetime
 
 import mock
+
+from osc_lib import utils as _osc_lib_utils
 
 from openstackclient.tests.unit import utils
 from otcextensions.tests.unit.osclient import test_base
 
 from otcextensions.sdk.css.v1 import cluster
+from otcextensions.sdk.css.v1 import flavor
 from otcextensions.sdk.css.v1 import snapshot
 
 
-def gen_data(data, columns):
+def gen_data(obj, columns, formatters=None):
     """Fill expected data tuple based on columns list
     """
-    return tuple(getattr(data, attr, '') for attr in columns)
+    return _osc_lib_utils.get_item_properties(
+        obj, columns, formatters=formatters
+    )
 
 
 def gen_data_dict(data, columns):
@@ -55,43 +59,58 @@ class FakeCluster(test_base.Fake):
         """
         # Set default attributes.
         object_info = {
-            "datastore": {
-                "type": "elasticsearch",
-                "version": "7.6.2"
-            },
-            "instances": [
-                {
-                    "status": "200",
-                    "type": "ess",
-                    "id": "id-" + uuid.uuid4().hex,
-                    "name": "css-" + uuid.uuid4().hex,
-                    "specCode": "css.xlarge.2",
-                    "azCode": "eu-de-01"
-                }
-            ],
-            "updated": "2020-12-03T07:02:08",
-            "name": "name-" + uuid.uuid4().hex,
-            "created": "2020-12-03T07:02:08",
-            "id": "id-" + uuid.uuid4().hex,
-            "status": "200",
-            "endpoint": "x.x.x.x:9200",
-            "vpcId": "router-" + uuid.uuid4().hex,
-            "subnetId": "subnet-" + uuid.uuid4().hex,
-            "securityGroupId": "security-group-" + uuid.uuid4().hex,
-            "httpsEnable": True,
-            "authorityEnable": True,
-            "diskEncrypted": False,
             "actionProgress": {},
             "actions": [],
-            "tags": []
+            "authorityEnable": True,
+            "backupAvailable": True,
+            "bandwidthSize": 5,
+            "cmk_id": "cmk-uuid",
+            "created": "2023-02-08T23:31:19",
+            "datastore": {
+                "type": "elasticsearch",
+                "version": "7.10.2"
+            },
+            "diskEncrypted": False,
+            "elbWhiteList": {
+                "enableWhiteList": False,
+                "whiteList": ""
+            },
+            "endpoint": "192.168.1.67:9200",
+            "httpsEnable": True,
+            "id": uuid.uuid4().hex,
+            "instances": [
+                {
+                    "azCode": "eu-de-02",
+                    "id": uuid.uuid4().hex,
+                    "ip": "192.168.1.67",
+                    "name": "test-css-d958c4bb-ess-esn-1-1",
+                    "specCode": "css.xlarge.4",
+                    "status": "200",
+                    "type": "ess",
+                    "volume": {
+                        "size": 100,
+                        "type": "HIGH"
+                    }
+                }
+            ],
+            "name": "test-css-d958c4bb",
+            "period": False,
+            "publicIp": "1.2.3.4:9200",
+            "publicKibanaResp": None,
+            "securityGroupId": uuid.uuid4().hex,
+            "status": "200",
+            "subnetId": uuid.uuid4().hex,
+            "tags": [
+                {
+                    "key": "123",
+                    "value": "11"
+                }
+            ],
+            "updated": "2023-02-08T23:31:19",
+            "vpcId": uuid.uuid4().hex
         }
         obj = cluster.Cluster(**object_info)
-        setattr(obj, 'version', obj.datastore.version)
-        setattr(obj, 'type', obj.datastore.type)
-        node_count = defaultdict(int)
-        for node in obj.nodes:
-            node_count[node['type']] += 1
-        setattr(obj, 'node_count', dict(node_count))
+        setattr(obj, 'num_nodes', len(obj.nodes))
         return obj
 
 
@@ -155,3 +174,27 @@ class FakeSnapshotPolicy(test_base.Fake):
             "snapshotCmkId": "kms-" + uuid.uuid4().hex
         }
         return snapshot.SnapshotPolicy(**object_info)
+
+
+class FakeFlavor(test_base.Fake):
+    """Fake one or more Flavors."""
+    @classmethod
+    def generate(cls):
+        """Create a fake CSS Snapshot Policy.
+
+        :return:
+            A FakeResource object, with id, name and so on
+        """
+        # Set default attributes.
+        object_info = {
+            "type": "ess",
+            "version": "7.6.2",
+            "cpu": 1,
+            "ram": 8,
+            "name": "css.medium.8",
+            "region": "eu-de",
+            "diskrange": "40,640",
+            "availableAZ": "eu-de-01,eu-de-02,eu-de-03",
+            "flavor_id": uuid.uuid4().hex
+        }
+        return flavor.Flavor(**object_info)
