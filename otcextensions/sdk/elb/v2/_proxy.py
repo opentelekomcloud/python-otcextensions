@@ -110,6 +110,63 @@ class Proxy(_proxy.Proxy):
         return self._find(_certificate.Certificate, name_or_id,
                           ignore_missing=ignore_missing)
 
+    # ======== Load Balancer ========
+    def delete_loadbalancer(self, load_balancer, ignore_missing=True,
+                            cascade=False):
+        """Delete load balancer
+
+        :param load_balancer: Either the ID of a load_balancer
+         or a :class:`~otcextensions.sdk.elb.v2.load_balancer.LoadBalancer`
+         instance.
+
+        :returns: ``None``
+        """
+        loadbalancer = self.find_load_balancer(name_or_id=load_balancer)
+        if cascade:
+            resources = self.process_resources(loadbalancer)
+            for healthmonitor in resources['healthmonitors']:
+                self.delete_health_monitor(healthmonitor)
+            for member in resources['members']:
+                self.delete_member(
+                    member=member['member_id'],
+                    pool=member['pool_id']
+                )
+            for pool in resources['pools']:
+                self.delete_pool(pool)
+            for listener in resources['listeners']:
+                self.delete_listener(listener)
+
+        return self._delete(
+            _load_balancer.LoadBalancer, load_balancer,
+            ignore_missing=ignore_missing)
+
+    def process_resources(self, loadbalancer):
+        resources = {
+            'listeners': [],
+            'pools': [],
+            'members': [],
+            'healthmonitors': []
+        }
+        if loadbalancer.get('listeners'):
+            for listener in loadbalancer.listeners:
+                resources['listeners'].append(listener['id'])
+        if loadbalancer.get('pools'):
+            for pool in loadbalancer.pools:
+                resources['pools'].append(pool['id'])
+                find_pool = self.find_pool(name_or_id=pool['id'])
+                if find_pool.get('health_monitor_id'):
+                    resources['healthmonitors'].append(
+                        find_pool['health_monitor_id'])
+                if find_pool.get('members'):
+                    for member in find_pool['members']:
+                        resources['members'].append(
+                            {
+                                'member_id': member['id'],
+                                'pool_id': find_pool['id']
+                            }
+                        )
+        return resources
+
     # ======== Load Balancer Tag ========
     def load_balancer_tags(self, load_balancer, **query):
         """Return a generator of tags

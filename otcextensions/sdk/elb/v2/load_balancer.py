@@ -71,22 +71,3 @@ class LoadBalancer(resource.Resource, tag.TagMixin):
     vip_subnet_id = resource.Body('vip_subnet_id')
     # VIP qos policy id
     vip_qos_policy_id = resource.Body('vip_qos_policy_id')
-
-    def delete(self, session, error_message=None):
-        request = self._prepare_request()
-        headers = {
-            "Accept": ""
-        }
-
-        request.headers.update(headers)
-        params = {}
-        if (hasattr(self, 'cascade') and isinstance(self.cascade, bool)
-                and self.cascade):
-            params['cascade'] = True
-        response = session.delete(request.url,
-                                  headers=headers,
-                                  params=params)
-
-        self._translate_response(response, has_body=False,
-                                 error_message=error_message)
-        return self
