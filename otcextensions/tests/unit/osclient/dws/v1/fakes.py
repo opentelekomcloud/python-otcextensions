@@ -24,7 +24,6 @@ from otcextensions.tests.unit.osclient import test_base
 from otcextensions.sdk.dws.v1 import cluster
 from otcextensions.sdk.dws.v1 import snapshot
 from otcextensions.sdk.dws.v1 import flavor
-from otcextensions.osclient.dws.v1 import flavor as flavor_osclient
 
 
 def gen_data(obj, columns, formatters=None):
@@ -177,30 +176,23 @@ class FakeFlavor(test_base.Fake):
             A FakeResource object, with id, name and so on
         """
         object_info = {
-            "id": "uuid.uuid4().hex",
-            "spec_name": "dws.test.flavor",
-            "detail": [
-                {
-                    "value": "4",
-                    "type": "vCPU"
-                },
-                {
-                    "value": "160",
-                    "type": "SSD",
-                    "unit": "GB"
-                },
-                {
-                    "value": "eu-de-01,eu-de-02",
-                    "type": "availableZones"
-                },
-                {
-                    "value": "32",
-                    "type": "mem",
-                    "unit": "GB"
-                }
-            ]
+            'id': uuid.uuid4().hex,
+            'availabileZones': 'eu-de-02,eu-de-01',
+            'detail': [{'value': '4',
+                        'type': 'vCPU'},
+                       {'value': '160',
+                        'type': 'SSD',
+                        'unit': 'GB'},
+                       {'value': '32',
+                        'type': 'mem',
+                        'unit': 'GB'},
+                       {'value': 'eu-de-02,eu-de-01',
+                        'type': 'availableZones'}],
+            'disk_size': 160,
+            'disk_type': 'SSD',
+            'spec_name': 'dws.m3.xlarge',
+            'mem': 32,
+            'vCPU': 4,
         }
 
-        obj = flavor.Flavor(**object_info)
-        flavor_osclient._format_flavor_response(obj)
-        return obj
+        return flavor.Flavor(**object_info)
