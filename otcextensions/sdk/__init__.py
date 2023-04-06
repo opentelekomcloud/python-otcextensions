@@ -52,12 +52,9 @@ except AttributeError:
         """
         Workaround method to ensure compatibility for _get_microversion.
         """
-        # If action is 'list', call _get_microversion_for_list method
-        if action == 'list':
-            cls._get_microversion_for_list(session)
-        # If action is not 'list', call _get_microversion_for method
-        else:
-            cls._get_microversion_for(session, action)
+        if action not in ('fetch', 'commit', 'create', 'delete', 'patch', 'list'):
+            raise ValueError('Invalid action: %s' % action)
+        cls._get_microversion_for_list(session)
     # Set _get_microversion attribute of Resource class to workaround method
     resource.Resource._get_microversion = _get_microversion_workaround
 
