@@ -868,8 +868,8 @@ class Proxy(proxy.Proxy):
         """Delete an ip address group
 
         :param ip_address_group: The ip address group can be either the name or
-            a :class:`~otcextensions.sdk.vlb.v3.ip_address_group.IpAddressGroup`
-            instance
+            a :class:`~otcextensions.sdk.vlb.v3.ip_address_group.
+            IpAddressGroup` instance
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
             the ip address group does not exist.
@@ -902,8 +902,8 @@ class Proxy(proxy.Proxy):
         """Update a ip address group
 
         :param ip_address_group: The ip_address_group can be either the name or
-            a :class:`~otcextensions.sdk.vlb.v3.ip_address_group.IpAddressGroup`
-            instance
+            a :class:`~otcextensions.sdk.vlb.v3.ip_address_group.
+            IpAddressGroup` instance
         :param dict attrs: The attributes to update on the ip address group
                            represented by ``ip_address_group``.
 
@@ -918,11 +918,12 @@ class Proxy(proxy.Proxy):
                                                 ip_list):
         """Update ip addresses list in an existing ip address group
 
-        :param ip_address_group: The value can be the ID of a ip address group
-            or a :class:`~otcextensions.sdk.vlb.v3.ip_address_group.IpAddressGroup`
-            instance.
-        :param list ip_list: The list contains the IP addresses to be updated
-            in the form {"ip": "192.168.0.3", "description": " your description"}
+        :param ip_address_group: The value can be the ID of an ip address group
+            or a :class:`~otcextensions.sdk.vlb.v3.ip_address_group.
+            IpAddressGroup` instance.
+        :param list ip_list: The list contains the IP addresses to be
+            updated in the form
+            {"ip": "192.168.0.3",  "description": " your description"}
             where "description" is optional
         :returns: The results of ip address group updation
         :rtype: :class:`~otcextensions.sdk.vlb.v3.ip_address_group.
@@ -940,8 +941,8 @@ class Proxy(proxy.Proxy):
         """Delete ip addresses list from an existing ip address group
 
         :param ip_address_group: The value can be the ID of a ip address group
-            or a :class:`~otcextensions.sdk.vlb.v3.ip_address_group.IpAddressGroup`
-            instance.
+            or a :class:`~otcextensions.sdk.vlb.v3.ip_address_group.
+            IpAddressGroup` instance.
         :param list ip_list: The list contains the IP addresses to be deleted
             in the form {"ip": "192.168.0.3"}
         :returns: The results of ip address group deletion

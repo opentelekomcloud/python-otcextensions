@@ -50,7 +50,8 @@ class IpAddressGroup(resource.Resource):
         :type session: :class:`~keystoneauth1.adapter.Adapter`
         :param kwargs attrs: Dictionary to update ip address group
         """
-        url = utils.urljoin(self.base_path, self.id, '/iplist/create-or-update')
+        url = utils.urljoin(self.base_path, self.id,
+                            '/iplist/create-or-update')
         body = {
             'ipgroup': attrs
         }
