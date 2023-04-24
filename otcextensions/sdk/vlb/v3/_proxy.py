@@ -17,6 +17,7 @@ from otcextensions.sdk.vlb.v3 import availability_zone as _availability_zone
 from otcextensions.sdk.vlb.v3 import certificate as _certificate
 from otcextensions.sdk.vlb.v3 import flavor as _flavor
 from otcextensions.sdk.vlb.v3 import health_monitor as _hm
+from otcextensions.sdk.vlb.v3 import ip_address_group as _ip_address_group
 from otcextensions.sdk.vlb.v3 import l7_policy as _l7policy
 from otcextensions.sdk.vlb.v3 import l7_rule as _l7rule
 from otcextensions.sdk.vlb.v3 import listener as _listener
@@ -828,3 +829,128 @@ class Proxy(proxy.Proxy):
             attrs['rule_value'] = attrs.pop('value')
         return self._update(_l7rule.L7Rule, l7rule,
                             l7policy_id=l7policyobj.id, **attrs)
+
+    # ======== Ip address group ========
+    def create_ip_address_group(self, **attrs):
+        """Create a new ip address group from attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.vlb.v3.
+            ip_address_group.IpAddressGroup`, comprised of the properties
+            on the IpAddressGroup class.
+
+        :returns: The results of ip address group creation
+        :rtype: :class:`~otcextensions.sdk.vlb.v3.ip_address_group.
+            IpAddressGroup`
+        """
+        return self._create(_ip_address_group.IpAddressGroup, **attrs)
+
+    def get_ip_address_group(self, ip_address_group):
+        """Get an ip address group
+
+        :param ip_address_group: The value can be the name of an
+            ip_address_group or :class:`~otcextensions.sdk.vlb.v3.
+            ip_address_group.IpAddressGroup` instance.
+
+        :returns: One
+             :class:`~otcextensions.sdk.vlb.v3.ip_address_group.IpAddressGroup`
+        """
+        return self._get(_ip_address_group.IpAddressGroup, ip_address_group)
+
+    def ip_address_groups(self, **query):
+        """Retrieve a generator of an ip address group
+
+        :returns: A generator of ip address group instances
+        """
+        return self._list(_ip_address_group.IpAddressGroup, **query)
+
+    def delete_ip_address_group(self, ip_address_group, ignore_missing=True):
+        """Delete an ip address group
+
+        :param ip_address_group: The ip address group can be either the name or
+            a :class:`~otcextensions.sdk.vlb.v3.ip_address_group.IpAddressGroup`
+            instance
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the ip address group does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent ip address group.
+
+        :returns: ``None``
+        """
+        ip_address_group = self._get_resource(_ip_address_group.IpAddressGroup,
+                                              ip_address_group)
+        return self._delete(_ip_address_group.IpAddressGroup, ip_address_group,
+                            ignore_missing=ignore_missing)
+
+    def find_ip_address_group(self, name_or_id, ignore_missing=True):
+        """Find a single ip address group
+
+        :param name_or_id: The name or ID of an ip address group
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the ip address group does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to delete a nonexistent ip address group.
+
+        :returns: ``None``
+        """
+        return self._find(_ip_address_group.IpAddressGroup, name_or_id,
+                          ignore_missing=ignore_missing)
+
+    def update_ip_address_group(self, ip_address_group, **attrs):
+        """Update a ip address group
+
+        :param ip_address_group: The ip_address_group can be either the name or
+            a :class:`~otcextensions.sdk.vlb.v3.ip_address_group.IpAddressGroup`
+            instance
+        :param dict attrs: The attributes to update on the ip address group
+                           represented by ``ip_address_group``.
+
+        :returns: The updated ip_address_group
+        :rtype: :class:`~otcextensions.sdk.vlb.v3.ip_address_group.
+            IpAddressGroup`
+        """
+        return self._update(_ip_address_group.IpAddressGroup, ip_address_group,
+                            **attrs)
+
+    def update_ip_addresses_in_ip_address_group(self, ip_address_group,
+                                                ip_list):
+        """Update ip addresses list in an existing ip address group
+
+        :param ip_address_group: The value can be the ID of a ip address group
+            or a :class:`~otcextensions.sdk.vlb.v3.ip_address_group.IpAddressGroup`
+            instance.
+        :param list ip_list: The list contains the IP addresses to be updated
+            in the form {"ip": "192.168.0.3", "description": " your description"}
+            where "description" is optional
+        :returns: The results of ip address group updation
+        :rtype: :class:`~otcextensions.sdk.vlb.v3.ip_address_group.
+            IpAddressGroup`
+        """
+        ip_address_group = self._get_resource(_ip_address_group.IpAddressGroup,
+                                              ip_address_group)
+
+        return ip_address_group.update_ip_addresses(
+            self, ip_list=ip_list
+        )
+
+    def delete_ip_addresses_in_ip_address_group(self, ip_address_group,
+                                                ip_list):
+        """Delete ip addresses list from an existing ip address group
+
+        :param ip_address_group: The value can be the ID of a ip address group
+            or a :class:`~otcextensions.sdk.vlb.v3.ip_address_group.IpAddressGroup`
+            instance.
+        :param list ip_list: The list contains the IP addresses to be deleted
+            in the form {"ip": "192.168.0.3"}
+        :returns: The results of ip address group deletion
+        :rtype: :class:`~otcextensions.sdk.vlb.v3.ip_address_group.
+            IpAddressGroup`
+        """
+        ip_address_group = self._get_resource(_ip_address_group.IpAddressGroup,
+                                              ip_address_group)
+
+        return ip_address_group.delete_ip_addresses(
+            self, ip_list=ip_list
+        )
