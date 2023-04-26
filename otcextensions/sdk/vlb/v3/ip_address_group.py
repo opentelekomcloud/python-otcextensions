@@ -37,7 +37,7 @@ class IpAddressGroup(resource.Resource):
     #: Specifies the project ID of the IP address group.
     project_id = resource.Body('project_id')
     #: Specifies the IP address group name.
-    name = resource.Body('name', type=bool)
+    name = resource.Body('name', type=str)
     #: The ID of the project this load balancer is associated with.
     ip_list = resource.Body('ip_list', type=list, list_type=dict)
     #: The ID of the project this load balancer is associated with.
