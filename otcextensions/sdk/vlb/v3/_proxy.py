@@ -24,6 +24,7 @@ from otcextensions.sdk.vlb.v3 import listener as _listener
 from otcextensions.sdk.vlb.v3 import load_balancer as _lb
 from otcextensions.sdk.vlb.v3 import load_balancer_status as _lb_statuses
 from otcextensions.sdk.vlb.v3 import member as _member
+from otcextensions.sdk.vlb.v3 import security_policy as _sp
 from otcextensions.sdk.vlb.v3 import pool as _pool
 from otcextensions.sdk.vlb.v3 import quota as _quota
 
@@ -829,6 +830,87 @@ class Proxy(proxy.Proxy):
             attrs['rule_value'] = attrs.pop('value')
         return self._update(_l7rule.L7Rule, l7rule,
                             l7policy_id=l7policyobj.id, **attrs)
+
+    # ======== Security policy ========
+    def create_security_policy(self, **attrs):
+        """Create a new security policy from attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.vlb.v3.
+            security_policy.SecurityPolicy`, comprised of the properties
+            on the SecurityPolicy class.
+
+        :returns: The results of security policy creation
+        :rtype: :class:`~otcextensions.sdk.vlb.v3.security_policy.
+            SecurityPolicy`
+        """
+        return self._create(_sp.SecurityPolicy, **attrs)
+
+    def get_security_policy(self, security_policy):
+        """Get a security policy
+
+        :param security_policy: The value can be the name of an
+            security_policy or :class:`~otcextensions.sdk.vlb.v3.
+            security_policy.SecurityPolicy` instance.
+
+        :returns: One
+             :class:`~otcextensions.sdk.vlb.v3.security_policy.SecurityPolicy`
+        """
+        return self._get(_sp.SecurityPolicy, security_policy)
+
+    def security_policies(self, **query):
+        """Retrieve a generator of security policies
+
+        :returns: A generator of security policies
+        """
+        return self._list(_sp.SecurityPolicy, **query)
+
+    def update_security_policy(self, security_policy, **attrs):
+        """Update a security policy
+
+        :param security_policy: The security_policy can be either the id or
+            a :class:`~otcextensions.sdk.vlb.v3.security_policy.
+            SecurityPolicy` instance
+        :param dict attrs: The attributes to update on the security policy
+                           represented by ``security_policy``.
+
+        :returns: The updated security_policy
+        :rtype: :class:`~otcextensions.sdk.vlb.v3.security_policy.
+                SecurityPolicy`
+        """
+        return self._update(_sp.SecurityPolicy, security_policy,  **attrs)
+
+    def find_security_policy(self, name_or_id, ignore_missing=True):
+        """Find a single security policy
+
+        :param name_or_id: The name or ID of an security policy
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the security policy does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to delete a nonexistent security policy.
+
+        :returns: ``None``
+        """
+        return self._find(_sp.SecurityPolicy, name_or_id,
+                          ignore_missing=ignore_missing)
+
+    def delete_security_policy(self, security_policy, ignore_missing=True):
+        """Delete a security policy
+
+        :param security_policy: The security_policy can be either the name or a
+            :class:`~otcextensions.sdk.vlb.v3.security_policy.SecurityPolicy`
+            instance
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the security policy does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent security policy.
+
+        :returns: ``None``
+        """
+        return self._delete(_sp.SecurityPolicy, security_policy,
+                            ignore_missing=ignore_missing)
 
     # ======== Ip address group ========
     def create_ip_address_group(self, **attrs):

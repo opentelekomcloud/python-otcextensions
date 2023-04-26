@@ -27,7 +27,10 @@ EXAMPLE = {
             'description': 'ip description'
         }
     ],
-    'enterprise_project_id': 'enterprise-project-id'
+    'listeners': [{'id': "8e92b7c3-cdae-4039-aa62-c76d09a5950a"}],
+    'enterprise_project_id': 'enterprise-project-id',
+    'created_at': 'created-at',
+    'updated_at': 'updated-at'
 }
 
 
@@ -65,8 +68,11 @@ class TestIpAddressGroup(base.TestCase):
             EXAMPLE['ip_list'][0]['description'], sot.ip_list[0]['description'])
         self.assertEqual(
             EXAMPLE['project_id'], sot.project_id)
+        self.assertEqual(EXAMPLE['listeners'], sot.listeners)
         self.assertEqual(
             EXAMPLE['enterprise_project_id'], sot.enterprise_project_id)
+        self.assertEqual(EXAMPLE['created_at'], sot.created_at)
+        self.assertEqual(EXAMPLE['updated_at'], sot.updated_at)
 
     def test_get(self):
         sot = ip_address_group.IpAddressGroup.existing(id=EXAMPLE['id'])

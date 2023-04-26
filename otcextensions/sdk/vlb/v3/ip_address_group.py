@@ -32,6 +32,8 @@ class IpAddressGroup(resource.Resource):
     )
 
     # Properties
+    #: Provides the IP address group.
+    id = resource.Body('id', type=str)
     #: Provides supplementary information about the IP address group.
     description = resource.Body('description', type=str)
     #: Specifies the project ID of the IP address group.
@@ -42,6 +44,13 @@ class IpAddressGroup(resource.Resource):
     ip_list = resource.Body('ip_list', type=list, list_type=dict)
     #: The ID of the project this load balancer is associated with.
     enterprise_project_id = resource.Body('enterprise_project_id', type=str)
+    #: Lists the IDs of listeners.
+    listeners = resource.Body('listeners', type=list, list_type=dict)
+    #: Specifies the time when the ip address group was created.
+    created_at = resource.Body('created_at', type=str)
+    #: Specifies the time when the ip address group was updated.
+    updated_at = resource.Body('updated_at', type=str)
+
 
     def update_ip_addresses(self, session, **attrs):
         """Method to update ip addresses in ip address group
