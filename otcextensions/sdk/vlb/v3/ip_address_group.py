@@ -51,7 +51,6 @@ class IpAddressGroup(resource.Resource):
     #: Specifies the time when the ip address group was updated.
     updated_at = resource.Body('updated_at', type=str)
 
-
     def update_ip_addresses(self, session, **attrs):
         """Method to update ip addresses in ip address group
 

@@ -878,7 +878,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.vlb.v3.security_policy.
                 SecurityPolicy`
         """
-        return self._update(_sp.SecurityPolicy, security_policy,  **attrs)
+        return self._update(_sp.SecurityPolicy, security_policy, **attrs)
 
     def find_security_policy(self, name_or_id, ignore_missing=True):
         """Find a single security policy

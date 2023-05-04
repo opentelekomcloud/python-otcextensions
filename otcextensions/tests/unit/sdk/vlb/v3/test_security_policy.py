@@ -22,11 +22,11 @@ EXAMPLE = {
     'project_id': 'project-id',
     'name': 'name',
     'protocols': ["TLSv1.3", "TLSv1.1"],
-    'listeners': [{'id' : "8e92b7c3-cdae-4039-aa62-c76d09a5950a"}],
+    'listeners': [{'id': "8e92b7c3-cdae-4039-aa62-c76d09a5950a"}],
     'enterprise_project_id': 'enterprise-project-id',
-    'ciphers':  ["TLS_AES_128_GCM_SHA256"],
+    'ciphers': ["TLS_AES_128_GCM_SHA256"],
     'created_at': 'created-at',
-    'updated_at':'updated-at'
+    'updated_at': 'updated-at'
 }
 
 

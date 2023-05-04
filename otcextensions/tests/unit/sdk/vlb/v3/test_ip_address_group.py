@@ -65,7 +65,8 @@ class TestIpAddressGroup(base.TestCase):
         self.assertEqual(
             EXAMPLE['ip_list'][0]['ip'], sot.ip_list[0]['ip'])
         self.assertEqual(
-            EXAMPLE['ip_list'][0]['description'], sot.ip_list[0]['description'])
+            EXAMPLE['ip_list'][0]['description'],
+            sot.ip_list[0]['description'])
         self.assertEqual(
             EXAMPLE['project_id'], sot.project_id)
         self.assertEqual(EXAMPLE['listeners'], sot.listeners)
@@ -113,7 +114,8 @@ class TestIpAddressGroup(base.TestCase):
 
         self.sess.post.assert_called_once_with(
             'elb/ipgroups/%s/iplist/create-or-update' % EXAMPLE['id'],
-            json={'ipgroup': {'ip_list': [{'ip': '192.168.0.2', 'description': 'test'}]}}
+            json={'ipgroup': {'ip_list': [{'ip': '192.168.0.2',
+                                           'description': 'test'}]}}
         )
 
     def test_delete_ip_addresses(self):
@@ -129,6 +131,6 @@ class TestIpAddressGroup(base.TestCase):
         sot.delete_ip_addresses(self.sess, ip_list=[{'ip': '192.168.0.2'}])
 
         self.sess.post.assert_called_once_with(
-             'elb/ipgroups/%s/iplist/batch-delete' % EXAMPLE['id'],
+            'elb/ipgroups/%s/iplist/batch-delete' % EXAMPLE['id'],
             json={'ipgroup': {'ip_list': [{'ip': '192.168.0.2'}]}}
         )
