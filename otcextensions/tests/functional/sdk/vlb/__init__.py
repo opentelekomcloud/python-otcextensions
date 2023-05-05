@@ -30,6 +30,8 @@ class TestVlb(base.BaseFunctionalTest):
     l7rule = None
     server = None
     keypair = None
+    ip_address_group = None
+    security_policy = None
 
     _private_key = """-----BEGIN RSA PRIVATE KEY-----
 MIICXQIBAAKBgQDFPN9ojPndxSC4E1pqWQVKGHCFlXAAGBOxbGfSzXqzsoyacotu
@@ -279,6 +281,39 @@ PTtY3HPWl5ygsMsSy0Fi3xp3jmuIwzJhcQ3tcK5gC99HWp6Kw37RL8WoB8GWFU0Q
                 TestVlb.l7policy,
                 **attrs
             )
+
+    def create_ip_address_group(
+            self,
+            name='test_ip_group-' + uuid_v4,
+            description='Test',
+            **kwargs
+    ):
+        attrs = {
+            'name': name,
+            'description': description,
+            'ip_list': [{"ip": "192.168.1.123", "description": ""}],
+            **kwargs
+        }
+        if not TestVlb.ip_address_group:
+            TestVlb.ip_address_group = self.client.create_ip_address_group(
+                **attrs)
+
+    def create_security_policy(
+            self,
+            name='test_security_policy-' + uuid_v4,
+            description='Test',
+            **kwargs
+    ):
+        attrs = {
+            'name': name,
+            'description': description,
+            'protocols': ["TLSv1.2", "TLSv1", "TLSv1.3"],
+            'ciphers': ["ECDHE-ECDSA-AES128-SHA", "TLS_AES_128_GCM_SHA256"],
+            **kwargs
+        }
+        if not TestVlb.security_policy:
+            TestVlb.security_policy = self.client.create_security_policy(
+                **attrs)
 
     def create_server(
             self,
