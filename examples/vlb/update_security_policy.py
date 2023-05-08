@@ -26,5 +26,5 @@ attrs = {
     "ciphers": ["ECDHE-ECDSA-AES128-SHA", "TLS_AES_128_GCM_SHA256"]
 }
 
-security_policy = conn.vlb.ipdate_security_policy(load_balancer="name")
+security_policy = conn.vlb.ipdate_security_policy(**attrs)
 print(security_policy)

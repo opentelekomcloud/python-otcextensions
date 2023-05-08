@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Get security policy
+List ip address groups
 """
 import openstack
 from otcextensions import sdk
@@ -20,5 +20,5 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 sdk.register_otc_extensions(conn)
 
-security_policy = conn.vlb.ip_address_groups(security_policy="uuid")
-print(security_policy)
+ip_groups = conn.vlb.ip_address_groups()
+print(ip_groups)
