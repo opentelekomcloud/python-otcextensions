@@ -28,7 +28,6 @@ EXAMPLE = {
         }
     ],
     'listeners': [{'id': "8e92b7c3-cdae-4039-aa62-c76d09a5950a"}],
-    'enterprise_project_id': 'enterprise-project-id',
     'created_at': 'created-at',
     'updated_at': 'updated-at'
 }
@@ -70,8 +69,6 @@ class TestIpAddressGroup(base.TestCase):
         self.assertEqual(
             EXAMPLE['project_id'], sot.project_id)
         self.assertEqual(EXAMPLE['listeners'], sot.listeners)
-        self.assertEqual(
-            EXAMPLE['enterprise_project_id'], sot.enterprise_project_id)
         self.assertEqual(EXAMPLE['created_at'], sot.created_at)
         self.assertEqual(EXAMPLE['updated_at'], sot.updated_at)
 

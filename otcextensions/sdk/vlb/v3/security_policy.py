@@ -42,8 +42,6 @@ class SecurityPolicy(resource.Resource):
     project_id = resource.Body('project_id', type=str)
     #: Lists the TLS protocols supported by the custom security policy.
     protocols = resource.Body('protocols', type=list, list_type=str)
-    #: The ID of the project this security policy is associated with.
-    enterprise_project_id = resource.Body('enterprise_project_id', type=str)
     #: Specifies the listeners that use the custom security policies.
     listeners = resource.Body('listeners', type=list, list_type=dict)
     #: Specifies the time when the custom security policy was created.

@@ -27,8 +27,7 @@ class IpAddressGroup(resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'project_id', 'description', 'name', 'ip_list',
-        'enterprise_project_id'
+        'project_id', 'description', 'name', 'ip_list'
     )
 
     # Properties
@@ -42,8 +41,6 @@ class IpAddressGroup(resource.Resource):
     name = resource.Body('name', type=str)
     #: The ID of the project this load balancer is associated with.
     ip_list = resource.Body('ip_list', type=list, list_type=dict)
-    #: The ID of the project this load balancer is associated with.
-    enterprise_project_id = resource.Body('enterprise_project_id', type=str)
     #: Lists the IDs of listeners.
     listeners = resource.Body('listeners', type=list, list_type=dict)
     #: Specifies the time when the ip address group was created.
