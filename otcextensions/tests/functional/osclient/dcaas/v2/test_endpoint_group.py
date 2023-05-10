@@ -38,8 +38,7 @@ class TestEndpointGroup(common.DcaasTestCase):
     def test_update_endpoint_group(self):
         ep_group_name = self.EP_GROUP_NAME + '-updated'
         json_output = json.loads(self.openstack(
-            'dcaas endpoint group update '
-            '{id} --name {name} -f json'.format(
+            'dcaas endpoint group update {id} --name {name} -f json'.format(
                 id=self.EP_GROUP_ID,
                 name=ep_group_name
             )
