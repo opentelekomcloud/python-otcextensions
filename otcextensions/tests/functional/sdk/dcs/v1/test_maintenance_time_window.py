@@ -26,7 +26,7 @@ class TestMaintenanceTimeWindow(base.BaseFunctionalTest):
     def test_maintenance_time_windows(self):
         objects = list(self.dcs.maintenance_time_windows())
 
-        self.assertEqual(len(objects), 6)
+        self.assertEqual(len(objects), 24)
 
         for obj in objects:
             self.assertIsInstance(obj, dict)

@@ -44,6 +44,15 @@ HealthMonitor Operations
             get_health_monitor, health_monitors,
             delete_health_monitor, update_health_monitor
 
+IpAddressGroup Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
+  :noindex:
+  :members: find_ip_address_group, create_ip_address_group,
+            get_ip_address_group, ip_address_groups,
+            delete_ip_address_group, update_ip_address_group
+
 L7Policy Operations
 ^^^^^^^^^^^^^^^^^^^
 
@@ -101,3 +110,12 @@ Quota Operations
 .. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
   :noindex:
   :members: get_quotas
+
+Security Policy Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.vlb.v3._proxy.Proxy
+  :noindex:
+  :members: create_security_policy, get_security_policy, security_policies,
+            delete_security_policy, find_security_policy,
+            update_security_policy
