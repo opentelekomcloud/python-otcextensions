@@ -11,14 +11,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Scale Out nodes of DWS Cluster by cluster name_or_id or
- instance of Cluster class.
+List security policies
 """
 import openstack
+from otcextensions import sdk
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
+sdk.register_otc_extensions(conn)
 
-cluster_id = 'cluster-uuid'
-add_nodes = 3
-conn.dws.extend_cluster(cluster_id, add_nodes)
+security_policies = conn.vlb.security_policies()
+print(security_policies)
