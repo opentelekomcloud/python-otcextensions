@@ -11,7 +11,7 @@
 # under the License.
 from openstack import proxy
 
-from otcextensions.sdk.sfsturbo.v1 import sfs_turbo_file_system as _sfs
+from otcextensions.sdk.sfsturbo.v1 import share as _sfs
 
 
 class Proxy(proxy.Proxy):
@@ -27,7 +27,7 @@ class Proxy(proxy.Proxy):
 
         :returns: A generator of vpc objects
 
-        :rtype: :class:`~otcextensions.sdk.sfsturbo.v1.sfs_turbo_file_system.Share`
+        :rtype: :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`
         """
         query['project_id'] = self.get_project_id()
         return self._list(_sfs.Share, **query)
@@ -36,7 +36,7 @@ class Proxy(proxy.Proxy):
         """Create a new sfs turbo file system
 
         :param dict attrs: Keyword arguments which will be used to create a
-            :class:`~otcextensions.sdk.sfsturbo.v1.sfs_turbo_file_system.Share`
+            :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`
         """
         return self._create(_sfs.Share, **attrs,
                             project_id=self.get_project_id())
@@ -45,7 +45,7 @@ class Proxy(proxy.Proxy):
         """Delete a sfs turbo file system
 
         :param share: share id or an instance of
-            :class:`~otcextensions.sdk.sfsturbo.v1.sfs_turbo_file_system.Share`
+            :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`
 
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
@@ -63,9 +63,9 @@ class Proxy(proxy.Proxy):
         """Get a sfs turbo file system by id
 
         :param share: share id or an instance of
-           :class:`~otcextensions.sdk.sfsturbo.v1.sfs_turbo_file_system.Share`
+           :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`
 
-        :returns: One :class:`~otcextensions.sdk.sfsturbo.v1.sfs_turbo_file_system.Share`
+        :returns: One :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`
         """
         return self._get(_sfs.Share, share, project_id=self.get_project_id())
 
@@ -80,7 +80,7 @@ class Proxy(proxy.Proxy):
             When set to ``True``, no exception will be set when attempting
             to delete a nonexistent peering.
 
-        :returns: One :class:`~otcextensions.sdk.sfsturbo.v1.sfs_turbo_file_system.Share`
+        :returns: One :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`
         """
         return self._find(
             _sfs.Share, name_or_id,
