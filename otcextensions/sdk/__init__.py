@@ -153,7 +153,7 @@ OTC_SERVICES = {
     'sfsturbo': {
         'service_type': 'sfsturbo',
         'endpoint_service_type': 'sfsturbo',
-        # 'append_project_id': True,
+        'append_project_id': True,
     },
     'smn': {
         'service_type': 'smn',

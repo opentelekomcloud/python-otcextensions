@@ -32,5 +32,5 @@ attrs = {
     "security_group_id": "cdfde235-5c6b-46b2-80ba-19f87c8cc47d"
 }
 
-share = conn.sfsturbo.create_share(**attrs)
+share = conn.sfsturbo.find_share(name_or_id="sfs-turbo-86e5")
 print(share)
