@@ -29,7 +29,6 @@ class Proxy(proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`
         """
-        query['project_id'] = self.get_project_id()
         return self._list(_sfs.Share, **query)
 
     def create_share(self, **attrs):
@@ -38,8 +37,7 @@ class Proxy(proxy.Proxy):
         :param dict attrs: Keyword arguments which will be used to create a
             :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`
         """
-        return self._create(_sfs.Share, **attrs,
-                            project_id=self.get_project_id())
+        return self._create(_sfs.Share, **attrs)
 
     def delete_share(self, share, ignore_missing=True):
         """Delete a sfs turbo file system
@@ -56,7 +54,6 @@ class Proxy(proxy.Proxy):
         :returns: none
         """
         return self._delete(_sfs.Share, share,
-                            project_id=self.get_project_id(),
                             ignore_missing=ignore_missing)
 
     def get_share(self, share):
@@ -67,7 +64,7 @@ class Proxy(proxy.Proxy):
 
         :returns: One :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`
         """
-        return self._get(_sfs.Share, share, project_id=self.get_project_id())
+        return self._get(_sfs.Share, share)
 
     def find_share(self, name_or_id, ignore_missing=False):
         """Find a single sfs turbo file system by id
@@ -84,5 +81,4 @@ class Proxy(proxy.Proxy):
         """
         return self._find(
             _sfs.Share, name_or_id,
-            ignore_missing=ignore_missing,
-            project_id=self.get_project_id())
+            ignore_missing=ignore_missing)

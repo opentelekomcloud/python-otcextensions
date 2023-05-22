@@ -14,7 +14,7 @@ from openstack import resource
 
 class Share(resource.Resource):
 
-    base_path = '/v1/%(project_id)s/sfs-turbo/shares'
+    base_path = '/sfs-turbo/shares'
     resource_key = 'share'
     resources_key = 'shares'
 
