@@ -18,19 +18,19 @@ from otcextensions import sdk
 
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='test-terraform-47')
+conn = openstack.connect(cloud='test-terraform')
 sdk.register_otc_extensions(conn)
 
 attrs = {
     "name": "test_share_1",
     "share_proto": "NFS",
     "share_type": "STANDARD",
-    "size": 1,
+    "size": 100,
     "availability_zone": 'eu-de-01',
-    "vpc_id": "814b516f-7e4f-4252-9574-0a9de735a508",
-    "subnet_id": "151d421d-8dd2-4e34-b37c-3c2627a6bcf9",
-    "security_group_id": "cdfde235-5c6b-46b2-80ba-19f87c8cc47d"
+    "vpc_id": "019445d1-53fa-4c2f-91be-6d00008bac18",
+    "subnet_id": "6d77e947-b846-4b0a-baa0-dad83627012b",
+    "security_group_id": "33d26f6c-a807-4952-a68a-554b409063e6"
 }
 
-share = conn.sfsturbo.find_share(name_or_id="sfs-turbo-86e5")
+share = conn.sfsturbo.create_share(**attrs)
 print(share)

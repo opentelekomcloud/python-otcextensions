@@ -29,7 +29,8 @@ class Proxy(proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`
         """
-        return self._list(_sfs.Share, **query)
+        base_path = _sfs.Share.base_path + '/detail'
+        return self._list(_sfs.Share, base_path=base_path, **query)
 
     def create_share(self, **attrs):
         """Create a new sfs turbo file system
