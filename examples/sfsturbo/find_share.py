@@ -21,16 +21,5 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 sdk.register_otc_extensions(conn)
 
-attrs = {
-    "name": "test_share_1",
-    "share_proto": "NFS",
-    "share_type": "STANDARD",
-    "size": 100,
-    "availability_zone": 'eu-de-01',
-    "vpc_id": "vpc_uuid",
-    "subnet_id": "subnet_uuid",
-    "security_group_id": "security_group_uuid"
-}
-
-share = conn.sfsturbo.create_share(**attrs)
+share = conn.sfsturbo.find_share(name_or_id="share-name-or-id")
 print(share)

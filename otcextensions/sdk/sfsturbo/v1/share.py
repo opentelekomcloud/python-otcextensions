@@ -52,7 +52,7 @@ class Share(resource.Resource):
     export_location = resource.Body('export_location')
     #: Specifies the name of the SFS Turbo file system.
     #: *Type: str*
-    name = resource.URI('name')
+    name = resource.Body('name')
     #: Specifies the status of the SFS Turbo file system.
     #: *Type: str*
     status = resource.Body('instance_mode')
