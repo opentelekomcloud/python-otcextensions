@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
+from openstack import utils
 
 
 class Share(resource.Resource):
@@ -26,7 +27,7 @@ class Share(resource.Resource):
 
     #: Specifies the creation progress of the SFS Turbo file system.
     #: *Type: dict*
-    action_progress = resource.Body('action_progress', type='dict')
+    action_progress = resource.Body('action_progress', type=dict)
     #: Specifies the name of the AZ where the SFS Turbo file system is located.
     #: *Type: str*
     az_name = resource.Body('az_name')
@@ -91,3 +92,30 @@ class Share(resource.Resource):
     #: Specifies the VPC ID specified by the user.
     #: *Type: str*
     vpc_id = resource.Body('vpc_id')
+
+    def extend_capacity(self, session, extend):
+        """Method to extend the capacity of the file system
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param dict extend: Specifies the extend object.
+        """
+        url = utils.urljoin(self.base_path, self.id, 'action')
+        body = {
+            'extend': extend
+        }
+        return session.post(url, json=body)
+
+    def change_security_group(self, session, change_security_group):
+        """Method to change the security group bound to the file system.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param dict change_security_group: Specifies the change_security_group
+            object.
+        """
+        url = utils.urljoin(self.base_path, self.id, 'action')
+        body = {
+            'change_security_group': change_security_group
+        }
+        return session.post(url, json=body)

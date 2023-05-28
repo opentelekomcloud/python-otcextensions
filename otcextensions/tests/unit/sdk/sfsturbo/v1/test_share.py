@@ -15,11 +15,13 @@ from keystoneauth1 import adapter
 
 from openstack.tests.unit import base
 
-from otcextensions.sdk.sfsturbo.v1 import share
+from otcextensions.sdk.sfsturbo.v1 import share as _share
 
 
 IDENTIFIER = 'ID'
 EXAMPLE = {
+    "id": "share-id",
+    "action_progress": {},
     "az_name": "az_name",
     "avail_capacity": "avail_capacity",
     "availability_zone": "availability_zone",
@@ -48,7 +50,7 @@ class TestShare(base.TestCase):
         self.sess.put = mock.Mock()
 
     def test_basic(self):
-        sot = share.Share()
+        sot = _share.Share()
         self.assertEqual('share', sot.resource_key)
         self.assertEqual('shares', sot.resources_key)
         path = '/sfs-turbo/shares'
@@ -59,8 +61,9 @@ class TestShare(base.TestCase):
         self.assertTrue(sot.allow_delete)
 
     def test_make_it(self):
-        sot = share.Share(**EXAMPLE)
+        sot = _share.Share(**EXAMPLE)
         self.assertEqual(EXAMPLE['az_name'], sot.az_name)
+        self.assertEqual(EXAMPLE['action_progress'], sot.action_progress),
         self.assertEqual(EXAMPLE['avail_capacity'], sot.avail_capacity)
         self.assertEqual(EXAMPLE['availability_zone'], sot.availability_zone)
         self.assertEqual(EXAMPLE['created_at'], sot.created_at)
@@ -77,3 +80,39 @@ class TestShare(base.TestCase):
         self.assertEqual(EXAMPLE['pay_model'], sot.pay_model)
         self.assertEqual(EXAMPLE['version'], sot.version)
         self.assertEqual(EXAMPLE['vpc_id'], sot.vpc_id)
+
+    def test_expand_capacity(self):
+        mock_response = mock.Mock()
+        mock_response.status_code = 202
+        mock_response.headers = {}
+        mock_response.json.return_value = {}
+
+        self.sess.post.return_value = mock_response
+
+        sot = _share.Share.existing(id=EXAMPLE['id'])
+
+        sot.extend_capacity(self.sess, {'new_size': 5})
+
+        self.sess.post.assert_called_once_with(
+            'sfs-turbo/shares/%s/action' % EXAMPLE['id'],
+            json={'extend': {'new_size': 5}}
+        )
+
+    def test_change_security_group(self):
+        mock_response = mock.Mock()
+        mock_response.status_code = 202
+        mock_response.headers = {}
+        mock_response.json.return_value = {}
+
+        self.sess.post.return_value = mock_response
+
+        sot = _share.Share.existing(id=EXAMPLE['id'])
+
+        sot.change_security_group(self.sess,
+                                  {'security_group_id': 'secgroup-uuid'})
+
+        self.sess.post.assert_called_once_with(
+            'sfs-turbo/shares/%s/action' % EXAMPLE['id'],
+            json={'change_security_group': {
+                'security_group_id': 'secgroup-uuid'}}
+        )

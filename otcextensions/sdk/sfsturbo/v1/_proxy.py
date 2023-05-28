@@ -25,7 +25,7 @@ class Proxy(proxy.Proxy):
         :param dict query: Optional query parameters to be sent to limit
             the resources being returned.
 
-        :returns: A generator of vpc objects
+        :returns: A generator of share objects
 
         :rtype: :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`
         """
@@ -83,3 +83,33 @@ class Proxy(proxy.Proxy):
         return self._find(
             _sfs.Share, name_or_id,
             ignore_missing=ignore_missing)
+
+    def extend_capacity(self, share, new_size):
+        """Extend the capacity of the file system
+
+        :param share: The value can be the ID of a share
+             or a :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`
+             instance.
+        :param new_size: Specifies the new capacity (GB)
+            of the shared file system.
+        """
+        share = self._get_resource(_sfs.Share, share)
+        extend = {'new_size': new_size}
+        return share.extend_capacity(
+            self,
+            extend=extend)
+
+    def change_security_group(self, share, security_group_id):
+        """Change the security group bound to an SFS Turbo file system.
+
+        :param share: The value can be the ID of a share
+             or a :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`
+             instance.
+        :param security_group_id: Specifies the ID of the security group to be
+             modified.
+        """
+        share = self._get_resource(_sfs.Share, share)
+        change_security_group = {'security_group_id': security_group_id}
+        return share.change_security_group(
+            self,
+            change_security_group=change_security_group)

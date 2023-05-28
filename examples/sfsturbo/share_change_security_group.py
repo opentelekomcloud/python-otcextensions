@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
- Find Sfs Turbo file system by name or id
+ Change security group for Sfs Turbo file system
 """
 import openstack
 from otcextensions import sdk
@@ -21,5 +21,7 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 sdk.register_otc_extensions(conn)
 
-share = conn.sfsturbo.find_share(name_or_id="share-name-or-id")
+share = conn.sfsturbo.change_security_group(
+    share="2917184a-deeb-4238-8b61-c82e648377d1",
+    security_group_id='88a47a36-1b69-41b5-bef8-f74a2a85933f')
 print(share)
