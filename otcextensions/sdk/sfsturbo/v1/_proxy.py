@@ -12,6 +12,7 @@
 from openstack import proxy
 
 from otcextensions.sdk.sfsturbo.v1 import share as _sfs
+from otcextensions.common.exc import HTTPMethodNotAllowed
 
 
 class Proxy(proxy.Proxy):
@@ -39,6 +40,11 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`
         """
         return self._create(_sfs.Share, **attrs)
+
+    def update_share(self, **attrs):
+        """Update a new sfs turbo file system
+        """
+        raise HTTPMethodNotAllowed
 
     def delete_share(self, share, ignore_missing=True):
         """Delete a sfs turbo file system

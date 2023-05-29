@@ -104,7 +104,8 @@ class Share(resource.Resource):
         body = {
             'extend': extend
         }
-        return session.post(url, json=body)
+        response = session.post(url, json=body)
+        return self._to_object(session, response)
 
     def change_security_group(self, session, change_security_group):
         """Method to change the security group bound to the file system.
@@ -118,4 +119,18 @@ class Share(resource.Resource):
         body = {
             'change_security_group': change_security_group
         }
-        return session.post(url, json=body)
+        response = session.post(url, json=body)
+        return self._to_object(session, response)
+
+    def _to_object(self, session, response):
+        has_body = (
+            self.has_body
+            if self.create_returns_body is None
+            else self.create_returns_body
+        )
+        microversion = self._get_microversion(session, action='create')
+        self.microversion = microversion
+        self._translate_response(response, has_body=has_body)
+        if self.has_body and self.create_returns_body is False:
+            return self.fetch(session)
+        return self
