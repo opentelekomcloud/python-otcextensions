@@ -24,6 +24,7 @@ Open Telekom Cloud related User Guides
    mrs
    nat
    rds
+   sfsturbo
    smn
    vpc
    logging

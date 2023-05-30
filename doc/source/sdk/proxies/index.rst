@@ -27,6 +27,7 @@ Service Proxies
    Object Block Storage (OBS) <obs>
    Relational Database Service RDS V1 (RDSv1) <rds_v1>
    Relational Database Service RDS V3 (RDS) <rds_v3>
+   Shared File System Turbo (SFS Turbo) <sfsturbo>
    Simple Message Notification Service (SMN) <smn>
    Storage Disaster Recovery Service (SDRS) <sdrs>
    Volume Backup Service (VBS) <volume_backup>
