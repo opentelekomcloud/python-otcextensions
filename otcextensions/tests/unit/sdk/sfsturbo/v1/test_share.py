@@ -88,6 +88,7 @@ class TestShare(base.TestCase):
         mock_response.json.return_value = {}
 
         self.sess.post.return_value = mock_response
+        self.sess.default_microversion = '1'
 
         sot = _share.Share.existing(id=EXAMPLE['id'])
 
@@ -105,6 +106,7 @@ class TestShare(base.TestCase):
         mock_response.json.return_value = {}
 
         self.sess.post.return_value = mock_response
+        self.sess.default_microversion = '1'
 
         sot = _share.Share.existing(id=EXAMPLE['id'])
 
