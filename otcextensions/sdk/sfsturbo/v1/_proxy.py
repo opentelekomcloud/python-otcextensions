@@ -41,7 +41,7 @@ class Proxy(proxy.Proxy):
         """
         return self._create(_sfs.Share, **attrs)
 
-    def update_share(self, **attrs):
+    def update_share(self, share, **attrs):
         """Update a new sfs turbo file system
         """
         raise HTTPMethodNotAllowed
@@ -73,7 +73,7 @@ class Proxy(proxy.Proxy):
         """
         return self._get(_sfs.Share, share)
 
-    def find_share(self, name_or_id, ignore_missing=False):
+    def find_share(self, name_or_id, ignore_missing=True):
         """Find a single sfs turbo file system by id
 
         :param name_or_id: The name or ID of a share
