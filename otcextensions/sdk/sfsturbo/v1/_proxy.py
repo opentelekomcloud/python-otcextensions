@@ -88,7 +88,9 @@ class Proxy(proxy.Proxy):
         """
         return self._find(
             _sfs.Share, name_or_id,
-            ignore_missing=ignore_missing)
+            ignore_missing=ignore_missing,
+            list_base_path='/sfs-turbo/shares/detail',
+        )
 
     def extend_capacity(self, share, new_size):
         """Extend the capacity of the file system
