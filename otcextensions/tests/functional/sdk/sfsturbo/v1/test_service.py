@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -10,27 +9,16 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-"""
- Create Sfs Turbo file system
-"""
-import openstack
-from otcextensions import sdk
+from openstack import _log
+
+from otcextensions.tests.functional import base
+
+_logger = _log.setup_logging('openstack')
 
 
-openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-sdk.register_otc_extensions(conn)
+class TestService(base.BaseFunctionalTest):
 
-attrs = {
-    "name": "test_share_1",
-    "share_proto": "NFS",
-    "share_type": "STANDARD",
-    "size": 100,
-    "availability_zone": 'eu-de-01',
-    "vpc_id": "vpc_uuid",
-    "subnet_id": "subnet_uuid",
-    "security_group_id": "security_group_uuid"
-}
+    def test_initialize(self):
+        client = self.conn.sfsturbo
 
-share = conn.sfsturbo.create_share(**attrs)
-print(share)
+        self.assertIsNotNone(client)

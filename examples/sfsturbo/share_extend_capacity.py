@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
- Create Sfs Turbo file system
+ Expand capacity for Sfs Turbo file system
 """
 import openstack
 from otcextensions import sdk
@@ -21,16 +21,7 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 sdk.register_otc_extensions(conn)
 
-attrs = {
-    "name": "test_share_1",
-    "share_proto": "NFS",
-    "share_type": "STANDARD",
-    "size": 100,
-    "availability_zone": 'eu-de-01',
-    "vpc_id": "vpc_uuid",
-    "subnet_id": "subnet_uuid",
-    "security_group_id": "security_group_uuid"
-}
-
-share = conn.sfsturbo.create_share(**attrs)
+share = conn.sfsturbo.extend_capacity(
+    share="2917184a-deeb-4238-8b61-c82e648377d1",
+    new_size=200)
 print(share)

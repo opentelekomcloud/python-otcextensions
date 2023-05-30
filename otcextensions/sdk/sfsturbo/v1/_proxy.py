@@ -11,7 +11,8 @@
 # under the License.
 from openstack import proxy
 
-from otcextensions.sdk.sfsturbo.v1 import sfs_turbo_file_system as _sfs
+from otcextensions.sdk.sfsturbo.v1 import share as _sfs
+from otcextensions.common.exc import HTTPMethodNotAllowed
 
 
 class Proxy(proxy.Proxy):
@@ -25,27 +26,31 @@ class Proxy(proxy.Proxy):
         :param dict query: Optional query parameters to be sent to limit
             the resources being returned.
 
-        :returns: A generator of vpc objects
+        :returns: A generator of share objects
 
-        :rtype: :class:`~otcextensions.sdk.sfsturbo.v1.sfs_turbo_file_system.Share`
+        :rtype: :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`
         """
-        query['project_id'] = self.get_project_id()
-        return self._list(_sfs.Share, **query)
+        base_path = _sfs.Share.base_path + '/detail'
+        return self._list(_sfs.Share, base_path=base_path, **query)
 
     def create_share(self, **attrs):
         """Create a new sfs turbo file system
 
         :param dict attrs: Keyword arguments which will be used to create a
-            :class:`~otcextensions.sdk.sfsturbo.v1.sfs_turbo_file_system.Share`
+            :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`
         """
-        return self._create(_sfs.Share, **attrs,
-                            project_id=self.get_project_id())
+        return self._create(_sfs.Share, **attrs)
+
+    def update_share(self, **attrs):
+        """Update a new sfs turbo file system
+        """
+        raise HTTPMethodNotAllowed
 
     def delete_share(self, share, ignore_missing=True):
         """Delete a sfs turbo file system
 
         :param share: share id or an instance of
-            :class:`~otcextensions.sdk.sfsturbo.v1.sfs_turbo_file_system.Share`
+            :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`
 
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
@@ -56,18 +61,17 @@ class Proxy(proxy.Proxy):
         :returns: none
         """
         return self._delete(_sfs.Share, share,
-                            project_id=self.get_project_id(),
                             ignore_missing=ignore_missing)
 
     def get_share(self, share):
         """Get a sfs turbo file system by id
 
         :param share: share id or an instance of
-           :class:`~otcextensions.sdk.sfsturbo.v1.sfs_turbo_file_system.Share`
+           :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`
 
-        :returns: One :class:`~otcextensions.sdk.sfsturbo.v1.sfs_turbo_file_system.Share`
+        :returns: One :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`
         """
-        return self._get(_sfs.Share, share, project_id=self.get_project_id())
+        return self._get(_sfs.Share, share)
 
     def find_share(self, name_or_id, ignore_missing=False):
         """Find a single sfs turbo file system by id
@@ -80,9 +84,40 @@ class Proxy(proxy.Proxy):
             When set to ``True``, no exception will be set when attempting
             to delete a nonexistent peering.
 
-        :returns: One :class:`~otcextensions.sdk.sfsturbo.v1.sfs_turbo_file_system.Share`
+        :returns: One :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`
         """
         return self._find(
             _sfs.Share, name_or_id,
             ignore_missing=ignore_missing,
-            project_id=self.get_project_id())
+            list_base_path='/sfs-turbo/shares/detail',
+        )
+
+    def extend_capacity(self, share, new_size):
+        """Extend the capacity of the file system
+
+        :param share: The value can be the ID of a share
+             or a :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`
+             instance.
+        :param new_size: Specifies the new capacity (GB)
+            of the shared file system.
+        """
+        share = self._get_resource(_sfs.Share, share)
+        extend = {'new_size': new_size}
+        return share.extend_capacity(
+            self,
+            extend=extend)
+
+    def change_security_group(self, share, security_group_id):
+        """Change the security group bound to an SFS Turbo file system.
+
+        :param share: The value can be the ID of a share
+             or a :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`
+             instance.
+        :param security_group_id: Specifies the ID of the security group to be
+             modified.
+        """
+        share = self._get_resource(_sfs.Share, share)
+        change_security_group = {'security_group_id': security_group_id}
+        return share.change_security_group(
+            self,
+            change_security_group=change_security_group)

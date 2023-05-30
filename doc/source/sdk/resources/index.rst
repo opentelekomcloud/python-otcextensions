@@ -28,6 +28,7 @@ Open Telekom Cloud Resources
    Network Address Translation (NAT) <nat/index>
    Object Block Storage (OBS) <obs/index>
    Relational Database Service (RDS) <rds/index>
+   Shared File System Turbo (SFS Turbo) <sfsturbo/index>
    Simple Message Notification Service (SMN) <smn/index>
    Storage Disaster Recovery Service (SDRS) <sdrs/index>
    Virtual Private Cloud (VPC) <vpc/index>
