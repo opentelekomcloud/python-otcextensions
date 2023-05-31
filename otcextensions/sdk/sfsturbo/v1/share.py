@@ -56,7 +56,7 @@ class Share(resource.Resource):
     name = resource.Body('name')
     #: Specifies the status of the SFS Turbo file system.
     #: *Type: str*
-    status = resource.Body('instance_mode')
+    status = resource.Body('status')
     #: Specifies the sub-status of the SFS Turbo file system.
     #: *Type:str*
     sub_status = resource.Body('sub_status')
