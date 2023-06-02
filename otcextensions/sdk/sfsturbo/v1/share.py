@@ -9,9 +9,11 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack import _log
 from openstack import resource
 from openstack import utils
 
+LOG = _log.setup_logging(__name__)
 
 class Share(resource.Resource):
 
@@ -134,3 +136,68 @@ class Share(resource.Resource):
         if self.has_body and self.create_returns_body is False:
             return self.fetch(session)
         return self
+
+    def wait_for_extend_capacity(
+        self,
+        session,
+        new_capacity,
+        interval,
+        wait,
+        callback=None,
+    ):
+        """Wait for the capacity of the share to be extended.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param share: The resource to wait on to reach the status. The resource
+            must have a status attribute specified via ``attribute``.
+        :type resource: :class:`~openstack.resource.Resource`
+        :param status: Desired status of the resource.
+        :param list failures: Statuses that would indicate the transition
+            failed such as 'ERROR'. Defaults to ['ERROR'].
+        :param interval: Number of seconds to wait between checks.
+            Set to ``None`` to use the default interval.
+        :param wait: Maximum number of seconds to wait for transition.
+            Set to ``None`` to wait forever.
+        :param attribute: Name of the resource attribute that contains the status.
+        :param callback: A callback function. This will be called with a single
+            value, progress. This is API specific but is generally a percentage
+            value from 0-100.
+
+        :return: The updated resource.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` transition
+            to status failed to occur in wait seconds.
+        :raises: :class:`~openstack.exceptions.ResourceFailure` resource
+            transitioned to one of the failure states.
+        :raises: :class:`~AttributeError` if the resource does not have a status
+            attribute
+        """
+
+        resource = self.fetch(session, skip_cache=True)
+        current_capacity = getattr(resource, 'avail_capacity')
+        if int(float(current_capacity)) == new_capacity:
+            return self
+
+        name = "{res}:{id}".format(res=self.__class__.__name__,
+                                   id=self.id)
+        msg = "Timeout waiting for {name} to extend capacity to {new_size}".\
+            format(name=name, new_size=new_capacity)
+
+        for count in utils.iterate_timeout(
+            timeout=wait, message=msg, wait=interval
+        ):
+            resource = self.fetch(session, skip_cache=True)
+
+            current_capacity = getattr(resource, 'avail_capacity')
+            if int(float(current_capacity)) == int(float(new_capacity)):
+                return resource
+
+            LOG.debug(
+                'Still waiting for resource %s to extend capacity %s',
+                name,
+                new_capacity
+            )
+
+            if callback:
+                progress = getattr(resource, 'progress', None) or 0
+                callback(progress)

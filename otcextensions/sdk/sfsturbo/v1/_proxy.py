@@ -115,9 +115,19 @@ class Proxy(proxy.Proxy):
         :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
                  has transited to one of the failure statuses.
         """
-        failures = '300' if failures is None else failures
         return resource.wait_for_status(
             self, share, status, failures, interval, wait)
+
+    def wait_for_extend_capacity(self, share, new_capacity,
+                                 interval=5, wait=500):
+        """Wait for an share to be in a particular status.
+
+        :param failures:
+            Size that would be interpreted as failures.
+        :type failures: :py:class:`list`
+        """
+        return share.wait_for_extend_capacity(
+            self, new_capacity, interval, wait)
 
     def extend_capacity(self, share, new_size):
         """Extend the capacity of the file system

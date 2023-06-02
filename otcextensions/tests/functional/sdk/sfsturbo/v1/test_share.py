@@ -117,6 +117,7 @@ class TestShare(base.BaseFunctionalTest):
     def test_03_extend_capacity(self):
         share = self.conn.sfsturbo.extend_capacity(TestShare.share.id,
                                                    new_size=200)
+        self.conn.sfsturbo.wait_for_extend_capacity(share, new_capacity='200')
         share = self.conn.sfsturbo.get_share(share=share.id)
         self.assertEqual(share.avail_capacity, 200)
 
