@@ -9,7 +9,8 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import proxy, resource
+from openstack import proxy
+from openstack import resource
 
 from otcextensions.sdk.sfsturbo.v1 import share as _sfs
 from otcextensions.common.exc import HTTPMethodNotAllowed

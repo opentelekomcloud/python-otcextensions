@@ -15,6 +15,7 @@ from openstack import utils
 
 LOG = _log.setup_logging(__name__)
 
+
 class Share(resource.Resource):
 
     base_path = '/sfs-turbo/shares'
@@ -159,7 +160,8 @@ class Share(resource.Resource):
             Set to ``None`` to use the default interval.
         :param wait: Maximum number of seconds to wait for transition.
             Set to ``None`` to wait forever.
-        :param attribute: Name of the resource attribute that contains the status.
+        :param attribute: Name of the resource attribute that contains the
+            status.
         :param callback: A callback function. This will be called with a single
             value, progress. This is API specific but is generally a percentage
             value from 0-100.
@@ -169,8 +171,8 @@ class Share(resource.Resource):
             to status failed to occur in wait seconds.
         :raises: :class:`~openstack.exceptions.ResourceFailure` resource
             transitioned to one of the failure states.
-        :raises: :class:`~AttributeError` if the resource does not have a status
-            attribute
+        :raises: :class:`~AttributeError` if the resource does not have
+            a status attribute
         """
 
         resource = self.fetch(session, skip_cache=True)
