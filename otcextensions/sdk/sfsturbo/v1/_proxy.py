@@ -94,7 +94,7 @@ class Proxy(proxy.Proxy):
         )
 
     def wait_for_share(self, share, status='200', failures=None,
-                       interval=2, wait=350, attribute='status'):
+                       interval=5, wait=450, attribute='status'):
         """Wait for an share to be in a particular status.
 
         :param share:
@@ -119,16 +119,33 @@ class Proxy(proxy.Proxy):
         return resource.wait_for_status(
             self, share, status, failures, interval, wait)
 
-    def wait_for_extend_capacity(self, share, new_capacity,
-                                 interval=5, wait=500):
-        """Wait for an share to be in a particular status.
+    def wait_for_extend_capacity(self, share, interval=5, wait=350):
+        """Wait for extending capacity.
 
-        :param failures:
-            Size that would be interpreted as failures.
-        :type failures: :py:class:`list`
+        :param share: The value can be the
+            a :class:`~otcextensions.sdk.sfsturbo.v1.share.Share` instance.
+        :param interval: Number of seconds to wait between checks.
+            Set to ``None`` to use the default interval.
+        :param wait: Maximum number of seconds to wait for transition.
+            Set to ``None`` to wait forever.
         """
-        return share.wait_for_extend_capacity(
-            self, new_capacity, interval, wait)
+        return share.wait_for_substatus(
+            self, desired_substatus='221', failure='321',
+            interval=interval, wait=wait)
+
+    def wait_for_change_security_group(self, share, interval=5, wait=300):
+        """Wait for changing security group.
+
+        :param share: The value can be the
+            a :class:`~otcextensions.sdk.sfsturbo.v1.share.Share` instance.
+        :param interval: Number of seconds to wait between checks.
+            Set to ``None`` to use the default interval.
+        :param wait: Maximum number of seconds to wait for transition.
+            Set to ``None`` to wait forever.
+        """
+        return share.wait_for_substatus(
+            self, desired_substatus='232',
+            interval=interval, wait=wait)
 
     def extend_capacity(self, share, new_size):
         """Extend the capacity of the file system
@@ -159,3 +176,22 @@ class Proxy(proxy.Proxy):
         return share.change_security_group(
             self,
             change_security_group=change_security_group)
+
+    def wait_for_delete_share(self, share, interval=2, wait=60):
+        """Wait for the share to be deleted.
+
+        :param share:
+            The :class:`~otcextensions.sdk.sfsturbo.v1.share.Share`
+            or share ID to wait on to be deleted.
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait for the delete.
+            Default to 60.
+        :return: Method returns self on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` transition
+                 to status failed to occur in wait seconds.
+        """
+        share = self._get_resource(_sfs.Share, share)
+        return resource.wait_for_delete(self, share, interval, wait)

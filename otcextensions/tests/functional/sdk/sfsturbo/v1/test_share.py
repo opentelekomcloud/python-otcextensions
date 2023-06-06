@@ -12,6 +12,7 @@
 # under the License.
 import openstack
 import uuid
+import time
 
 from openstack import resource
 from otcextensions.tests.functional import base
@@ -63,57 +64,57 @@ class TestShare(base.BaseFunctionalTest):
                 name=secgroup_name_2)
 
             TestShare.network_info = {
-                'vpc_id': vpc.id,
-                'subnet_id': subnet.id,
-                'secgroup_id': sec_group.id,
-                'secgroup_id_2': sec_group_2.id,
+                'vpc': vpc,
+                'subnet': subnet,
+                'secgroup': sec_group,
+                'secgroup_2': sec_group_2,
             }
 
     def _destroy_network(self):
         if TestShare.network_info:
-            secgroup_id = TestShare.network_info['secgroup_id']
-            secgroup_id_2 = TestShare.network_info['secgroup_id_2']
-            subnet_id = TestShare.network_info['subnet_id']
-            vpc_id = TestShare.network_info['vpc_id']
+            secgroup = TestShare.network_info['secgroup']
+            secgroup_2 = TestShare.network_info['secgroup_2']
+            subnet = TestShare.network_info['subnet']
+            vpc = TestShare.network_info['vpc']
 
-            sot = self.conn.network.delete_security_group(
-                secgroup_id,
+            time.sleep(100)
+            self.conn.vpc.delete_subnet(
+                subnet,
                 ignore_missing=False
             )
-            self.assertIsNone(sot)
-
-            sot = self.conn.network.delete_security_group(
-                secgroup_id_2,
-                ignore_missing=False
-            )
-            self.assertIsNone(sot)
-
-            sot = self.conn.vpc.delete_subnet(
-                subnet_id,
-                ignore_missing=False
-            )
-            self.assertIsNone(sot)
-            sot = self.conn.network.delete_network(
-                vpc_id,
+            resource.wait_for_delete(self.conn.vpc, subnet, 2, 120)
+            self.conn.vpc.delete_vpc(
+                vpc,
                 ignore_missing=False
             )
 
             TestShare.network_info = None
+
+            sot = self.conn.network.delete_security_group(
+                secgroup.id,
+                ignore_missing=False
+            )
+            self.assertIsNone(sot)
+
+            sot = self.conn.network.delete_security_group(
+                secgroup_2.id,
+                ignore_missing=False
+            )
             self.assertIsNone(sot)
 
     def _create_share(self):
         share_name = 'sfsturbo-test-share-' + self.uuid_v4
         TestShare.share = self.conn.sfsturbo.create_share(
             name=share_name,
-            vpc_id=TestShare.network_info['vpc_id'],
-            subnet_id=TestShare.network_info['subnet_id'],
-            security_group_id=TestShare.network_info['secgroup_id'],
+            vpc_id=TestShare.network_info['vpc'].id,
+            subnet_id=TestShare.network_info['subnet'].id,
+            security_group_id=TestShare.network_info['secgroup'].id,
             share_proto="NFS",
             share_type="STANDARD",
             size=100,
             availability_zone="eu-de-01"
         )
-        self.conn.sfsturbo.wait_for_share(TestShare.share)
+        self.conn.sfsturbo.wait_for_share(TestShare.share, wait=600)
         self.assertIsNotNone(TestShare.share)
 
     def test_01_shares(self):
@@ -129,22 +130,24 @@ class TestShare(base.BaseFunctionalTest):
     def test_03_extend_capacity(self):
         share = self.conn.sfsturbo.extend_capacity(TestShare.share.id,
                                                    new_size=200)
-        self.conn.sfsturbo.wait_for_extend_capacity(share, new_capacity='200')
+        self.conn.sfsturbo.wait_for_extend_capacity(share, wait=400)
         share = self.conn.sfsturbo.get_share(share=share.id)
-        self.assertEqual(share.avail_capacity, 200)
+        self.assertEqual(share.avail_capacity, '200.00')
 
     def test_04_change_security_group(self):
         share = self.conn.sfsturbo.change_security_group(
             TestShare.share.id,
-            security_group_id=TestShare.network_info['secgroup_id_2'])
+            security_group_id=TestShare.network_info['secgroup_2'].id)
+        self.conn.sfsturbo.wait_for_change_security_group(share)
         share = self.conn.sfsturbo.get_share(share=share.id)
         self.assertEqual(share.security_group_id,
-                         TestShare.network_info['secgroup_id_2'])
+                         TestShare.network_info['secgroup_2'].id)
 
     def test_05_delete_share(self):
         try:
             self.conn.sfsturbo.delete_share(share=TestShare.share)
-        except openstack.exceptions.InvalidRequest:
+            self.conn.sfsturbo.wait_for_delete_share(share=TestShare.share)
+        except openstack.exceptions.ResourceNotFound:
             self._destroy_network()
             raise
         self._destroy_network()
