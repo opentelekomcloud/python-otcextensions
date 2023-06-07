@@ -9,8 +9,12 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack import _log
 from openstack import resource
 from openstack import utils
+from openstack import exceptions
+
+LOG = _log.setup_logging(__name__)
 
 
 class Share(resource.Resource):
@@ -56,7 +60,7 @@ class Share(resource.Resource):
     name = resource.Body('name')
     #: Specifies the status of the SFS Turbo file system.
     #: *Type: str*
-    status = resource.Body('instance_mode')
+    status = resource.Body('status')
     #: Specifies the sub-status of the SFS Turbo file system.
     #: *Type:str*
     sub_status = resource.Body('sub_status')
@@ -134,3 +138,66 @@ class Share(resource.Resource):
         if self.has_body and self.create_returns_body is False:
             return self.fetch(session)
         return self
+
+    def wait_for_substatus(
+        self,
+        session,
+        desired_substatus,
+        interval=5,
+        wait=350,
+        failure=None,
+        callback=None,
+    ):
+        """Wait for sub_status to reach desired state.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param int interval: Number of seconds to wait between checks.
+            Set to ``None`` to use the default interval.
+        :param int wait: Maximum number of seconds to wait for transition.
+            Set to ``None`` to wait forever.
+        :param list failure: Sub status which means failure.
+        :param callback: A callback function. This will be called with a single
+            value, progress. This is API specific but is generally a percentage
+            value from 0-100.
+
+        :return: The share object.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` transition
+            to status failed to occur in wait seconds.
+        :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
+                 has transited to one of the failure statuses.
+        """
+
+        resource = self.fetch(session, skip_cache=True)
+        current_substatus = getattr(resource, 'sub_status')
+        if current_substatus == desired_substatus:
+            return self
+
+        name = "{res}:{id}".format(res=self.__class__.__name__,
+                                   id=self.id)
+        msg = "Timeout waiting for {name} to extend capacity".\
+            format(name=name)
+
+        for count in utils.iterate_timeout(
+            timeout=wait, message=msg, wait=interval
+        ):
+            resource = self.fetch(session, skip_cache=True)
+
+            current_substatus = getattr(resource, 'sub_status')
+            if current_substatus == desired_substatus:
+                return resource
+            elif current_substatus == failure:
+                raise exceptions.ResourceFailure(
+                    "{name} transitioned to failure state {status}".format(
+                        name=name, status=failure
+                    )
+                )
+
+            LOG.debug(
+                'Still waiting for resource %s to extend capacity',
+                name
+            )
+
+            if callback:
+                progress = getattr(resource, 'progress', None) or 0
+                callback(progress)

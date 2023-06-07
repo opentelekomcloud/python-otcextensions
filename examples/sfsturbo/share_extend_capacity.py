@@ -22,6 +22,7 @@ conn = openstack.connect(cloud='otc')
 sdk.register_otc_extensions(conn)
 
 share = conn.sfsturbo.extend_capacity(
-    share="2917184a-deeb-4238-8b61-c82e648377d1",
-    new_size=200)
+    share="share-uuid",
+    new_size=500)
+conn.sfsturbo.wait_for_extend_capacity(share)
 print(share)
