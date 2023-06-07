@@ -33,4 +33,6 @@ attrs = {
 }
 
 share = conn.sfsturbo.create_share(**attrs)
+conn.sfsturbo.wait_for_share(share)
+
 print(share)

@@ -21,4 +21,5 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 sdk.register_otc_extensions(conn)
 
-conn.sfsturbo.delete_share(share="share-uuid")
+share = conn.sfsturbo.delete_share(share="share-uuid")
+conn.sfsturbo.wait_for_delete_share(share)
