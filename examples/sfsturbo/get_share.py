@@ -18,8 +18,8 @@ from otcextensions import sdk
 
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='test-terraform')
+conn = openstack.connect(cloud='otc')
 sdk.register_otc_extensions(conn)
 
-share = conn.sfsturbo.get_share(share="7a47332e-c2b0-4c3a-bf36-3263eaf037e9")
+share = conn.sfsturbo.get_share(share="share-uuid")
 print(share)

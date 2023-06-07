@@ -94,7 +94,7 @@ class Proxy(proxy.Proxy):
         )
 
     def wait_for_share(self, share, status='200', failures=None,
-                       interval=5, wait=450, attribute='status'):
+                       interval=5, wait=350, attribute='status'):
         """Wait for an share to be in a particular status.
 
         :param share:
@@ -116,6 +116,7 @@ class Proxy(proxy.Proxy):
         :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
                  has transited to one of the failure statuses.
         """
+        failures = failures or ['300', '303']
         return resource.wait_for_status(
             self, share, status, failures, interval, wait)
 

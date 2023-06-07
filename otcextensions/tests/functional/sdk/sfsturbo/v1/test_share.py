@@ -10,9 +10,11 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import os
 import openstack
 import uuid
 import time
+import fixtures
 
 from openstack import resource
 from otcextensions.tests.functional import base
@@ -22,9 +24,20 @@ _logger = openstack._log.setup_logging('openstack')
 
 class TestShare(base.BaseFunctionalTest):
 
+    TIMEOUT = int(os.environ.get('OS_TEST_TIMEOUT'))
     share = None
     uuid_v4 = uuid.uuid4().hex[:8]
     network_info = None
+
+    def setUp(self):
+        test_timeout = 15 * TestShare.TIMEOUT
+        try:
+            self.useFixture(
+                fixtures.EnvironmentVariable(
+                    'OS_TEST_TIMEOUT', str(test_timeout)))
+        except ValueError:
+            pass
+        super(TestShare, self).setUp()
 
     def _create_network(self):
         cidr = '192.168.0.0/16'

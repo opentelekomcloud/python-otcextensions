@@ -148,7 +148,7 @@ class Share(resource.Resource):
         failure=None,
         callback=None,
     ):
-        """Wait for the capacity of the share to be extended.
+        """Wait for sub_status reach desired state.
 
         :param session: The session to use for making this request.
         :type session: :class:`~keystoneauth1.adapter.Adapter`
