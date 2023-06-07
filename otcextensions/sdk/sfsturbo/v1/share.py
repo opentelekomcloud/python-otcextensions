@@ -143,20 +143,20 @@ class Share(resource.Resource):
         self,
         session,
         desired_substatus,
-        interval,
-        wait,
+        interval=5,
+        wait=350,
         failure=None,
         callback=None,
     ):
-        """Wait for sub_status reach desired state.
+        """Wait for sub_status to reach desired state.
 
         :param session: The session to use for making this request.
         :type session: :class:`~keystoneauth1.adapter.Adapter`
-        :param interval: Number of seconds to wait between checks.
+        :param int interval: Number of seconds to wait between checks.
             Set to ``None`` to use the default interval.
-        :param wait: Maximum number of seconds to wait for transition.
+        :param int wait: Maximum number of seconds to wait for transition.
             Set to ``None`` to wait forever.
-        :param failure: Sub status which means failure.
+        :param list failure: Sub status which means failure.
         :param callback: A callback function. This will be called with a single
             value, progress. This is API specific but is generally a percentage
             value from 0-100.
@@ -164,6 +164,8 @@ class Share(resource.Resource):
         :return: The share object.
         :raises: :class:`~openstack.exceptions.ResourceTimeout` transition
             to status failed to occur in wait seconds.
+        :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
+                 has transited to one of the failure statuses.
         """
 
         resource = self.fetch(session, skip_cache=True)

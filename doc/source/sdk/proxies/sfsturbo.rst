@@ -16,4 +16,6 @@ Share Operations
 
 .. autoclass:: otcextensions.sdk.sfsturbo.v1._proxy.Proxy
   :noindex:
-  :members: shares, get_share, delete_share, find_share
+  :members: shares, get_share, delete_share, find_share,
+            wait_for_share, wait_for_extend_capacity,
+            wait_for_change_security_group, wait_for_delete_share

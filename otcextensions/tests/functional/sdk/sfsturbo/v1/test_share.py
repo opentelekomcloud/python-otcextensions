@@ -127,7 +127,7 @@ class TestShare(base.BaseFunctionalTest):
             size=100,
             availability_zone="eu-de-01"
         )
-        self.conn.sfsturbo.wait_for_share(TestShare.share, wait=600)
+        self.conn.sfsturbo.wait_for_share(TestShare.share, wait=400)
         self.assertIsNotNone(TestShare.share)
 
     def test_01_shares(self):

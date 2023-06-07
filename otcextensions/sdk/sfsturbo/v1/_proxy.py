@@ -94,16 +94,15 @@ class Proxy(proxy.Proxy):
         )
 
     def wait_for_share(self, share, status='200', failures=None,
-                       interval=5, wait=350, attribute='status'):
-        """Wait for an share to be in a particular status.
+                       interval=5, wait=350):
+        """Wait for a share to be in a particular status.
 
         :param share:
             The :class:`~otcextensions.sdk.share.v1.share.Share`
             or share ID to wait on to reach the specified status.
-        :param status: Desired status.
-        :param failures:
+        :param str status: Desired status.
+        :param list failures:
             Statuses that would be interpreted as failures.
-        :type failures: :py:class:`list`
         :param int interval:
             Number of seconds to wait before to consecutive checks.
             Default to 2.
@@ -125,10 +124,14 @@ class Proxy(proxy.Proxy):
 
         :param share: The value can be the
             a :class:`~otcextensions.sdk.sfsturbo.v1.share.Share` instance.
-        :param interval: Number of seconds to wait between checks.
+        :param int nterval: Number of seconds to wait between checks.
             Set to ``None`` to use the default interval.
-        :param wait: Maximum number of seconds to wait for transition.
+        :param int wait: Maximum number of seconds to wait for transition.
             Set to ``None`` to wait forever.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` if transition
+                 to the desired status failed to occur in specified seconds.
+        :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
+                 has transited to one of the failure statuses.
         """
         return share.wait_for_substatus(
             self, desired_substatus='221', failure='321',
@@ -139,10 +142,14 @@ class Proxy(proxy.Proxy):
 
         :param share: The value can be the
             a :class:`~otcextensions.sdk.sfsturbo.v1.share.Share` instance.
-        :param interval: Number of seconds to wait between checks.
+        :param int interval: Number of seconds to wait between checks.
             Set to ``None`` to use the default interval.
-        :param wait: Maximum number of seconds to wait for transition.
+        :param int wait: Maximum number of seconds to wait for transition.
             Set to ``None`` to wait forever.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` if transition
+                 to the desired status failed to occur in specified seconds.
+        :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
+                 has transited to one of the failure statuses.
         """
         return share.wait_for_substatus(
             self, desired_substatus='232',
