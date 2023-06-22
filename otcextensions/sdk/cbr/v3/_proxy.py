@@ -10,7 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import proxy
-
+from openstack import resource
 from otcextensions.sdk.cbr.v3 import backup as _backup
 from otcextensions.sdk.cbr.v3 import checkpoint as _checkpoint
 from otcextensions.sdk.cbr.v3 import member as _member
@@ -101,8 +101,8 @@ class Proxy(proxy.Proxy):
         )
 
     # ======== Checkpoint / Restore Point ========
-
     def get_checkpoint(self, checkpoint):
+
         """Get the checkpoint by UUID.
 
         :param checkpoint: key id or an instance of
@@ -129,9 +129,37 @@ class Proxy(proxy.Proxy):
             **attrs
         )
 
-    # ======== Policy ========
+    def wait_for_checkpoint(self, checkpoint, status='available',
+                            failures=None,
+                            interval=2, wait=300, attribute='status'):
+        """Wait for an checkpoint to be in a particular status.
 
+        :param checkpoint:
+            The :class:`~otcextensions.sdk.cbr.v3.checkpoint.Checkpoint`
+            or checkpoint ID to wait on to reach the specified status.
+        :param status: Desired status.
+        :param failures:
+            Statuses that would be interpreted as failures.
+        :type failures: :py:class:`list`
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait before the change.
+            Default to 180
+        :return: The resource is returned on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` if transition
+                 to the desired status failed to occur in specified seconds.
+        :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
+                 has transited to one of the failure statuses.
+        """
+        failures = ['error'] if failures is None else failures
+        return resource.wait_for_status(
+            self, checkpoint, status, failures, interval, wait)
+
+    # ======== Policy ========
     def policies(self, **query):
+
         """Retrieve a generator of CBR policies
 
         :param dict query: Optional query parameters to be sent to limit the
