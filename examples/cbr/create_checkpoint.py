@@ -13,9 +13,12 @@
 Create CBR Checkpoint
 '''
 import openstack
+from otcextensions import sdk
+
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
+sdk.register_otc_extensions(conn)
 
 
 attrs = {
@@ -30,5 +33,6 @@ attrs = {
     },
     'vault_id': 'vault_id'
 }
-result = conn.cbr.create_checkpoint(**attrs)
-print(result)
+checkpoint = conn.cbr.create_checkpoint(**attrs)
+conn.cbr.wait_for_checkpoint(checkpoint)
+print(checkpoint)
