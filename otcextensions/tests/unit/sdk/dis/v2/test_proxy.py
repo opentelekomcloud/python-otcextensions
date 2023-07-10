@@ -11,6 +11,7 @@
 # under the License.
 
 from otcextensions.sdk.dis.v2 import _proxy
+from otcextensions.sdk.dis.v2 import stream
 
 from openstack.tests.unit import test_proxy_base
 
@@ -20,3 +21,11 @@ class TestDisProxy(test_proxy_base.TestProxyBase):
     def setUp(self):
         super(TestDisProxy, self).setUp()
         self.proxy = _proxy.Proxy(self.session)
+
+
+class TestStream(TestDisProxy):
+
+    def test_stream_create(self):
+        self.verify_create(self.proxy.create_stream, stream.Stream,
+                           method_kwargs={'name': 'id'},
+                           expected_kwargs={'name': 'id'})
