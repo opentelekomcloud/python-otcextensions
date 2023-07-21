@@ -30,7 +30,6 @@ def _flatten_loadbalancer(obj):
         'name': obj.name,
         'description': obj.description,
         'provisioning_status': obj.provisioning_status,
-        'admin_state_up': obj.is_admin_state_up,
         'provider': obj.provider,
         'operating_status': obj.operating_status,
         'vip_address': obj.vip_address,
@@ -40,19 +39,16 @@ def _flatten_loadbalancer(obj):
         'created_at': obj.created_at,
         'updated_at': obj.updated_at,
         'guaranteed': obj.guaranteed,
+        'vpc_id': obj.vpc_id,
         'ipv6_vip_address': obj.ipv6_vip_address,
         'ipv6_vip_virsubnet_id': obj.ipv6_vip_subnet_id,
         'ipv6_vip_port_id': obj.ipv6_vip_port_id,
         'availability_zone_list': obj.availability_zones,
-        'billing_info': obj.billing_info,
         'l4_flavor_id': obj.l4_flavor_id,
         'l4_scale_flavor_id': obj.l4_scale_flavor_id,
         'l7_flavor_id': obj.l7_flavor_id,
         'l7_scale_flavor_id': obj.l7_scale_flavor_id,
         'elb_virsubnet_ids': obj.network_ids,
-        # 'elb_virsubnet_type': obj.elb_virsubnet_type,
-        'ip_target_enable': obj.ip_target_enable,
-        # 'frozen_scene': obj.frozen_scene,
         'pools': obj.pools
     }
     return data
@@ -61,26 +57,54 @@ def _flatten_loadbalancer(obj):
 def _add_eips_to_load_balancer_obj(obj, data, columns):
     """Add associated eips to column and data tuples
     """
-    if obj.eips:
-        data += (obj.eips.eip_id,)
-        columns = columns + ('eip_id',)
-        data += (obj.eips.eip_address,)
-        columns = columns + ('eip_address',)
-        data += (obj.eips.ip_version,)
-        columns = columns + ('ip_version',)
+    i = 0
+    for eip in obj.eips:
+        data += (eip['eip_id'],)
+        columns = columns + ('eip_id_' + str(i + 1),)
+        data += (eip['eip_address'],)
+        columns = columns + ('eip_address_' + str(i + 1),)
+        data += (eip['ip_version'],)
+        columns = columns + ('ip_version_' + str(i + 1),)
+        i += 1
     return data, columns
 
 
 def _add_publicips_to_load_balancer_obj(obj, data, columns):
     """Add associated public ips to column and data tuples
     """
-    if obj.floating_ips:
-        data += (obj.floating_ips.publicip_id,)
-        columns = columns + ('publicip_id',)
-        data += (obj.floating_ips.publicip_address,)
-        columns = columns + ('publicip_address',)
-        data += (obj.floating_ips.ip_version,)
-        columns = columns + ('piblicip_ip_version',)
+    i = 0
+    for fip in obj.floating_ips:
+        data += (fip['publicip_id'],)
+        columns = columns + ('publicip_id_' + str(i + 1),)
+        data += (fip['publicip_address'],)
+        columns = columns + ('publicip_address_' + str(i + 1),)
+        data += (fip['ip_version'],)
+        columns = columns + ('piblicip_ip_version_' + str(i + 1),)
+        i += 1
+    return data, columns
+
+
+def _add_pools_to_load_balancer_obj(obj, data, columns):
+    """Add associated pools to column and data tuples
+    """
+    i = 0
+    for pool in obj.pools:
+        name = 'pool_id_' + str(i + 1)
+        data += (pool['id'],)
+        columns = columns + (name,)
+        i += 1
+    return data, columns
+
+
+def _add_listeners_to_load_balancer_obj(obj, data, columns):
+    """Add associated listeners to column and data tuples
+    """
+    i = 0
+    for s in obj.listeners:
+        name = 'listener_id_' + str(i + 1)
+        data += (obj.listeners[i]['id'],)
+        columns = columns + (name,)
+        i += 1
     return data, columns
 
 
@@ -135,7 +159,7 @@ class ListLoadBalancers(command.Lister):
         )
         parser.add_argument(
             '--is-page-reverse',
-            action='store_false',
+            action='store_true',
             help=_('Specifies the page direction.')
         )
         parser.add_argument(
@@ -225,12 +249,6 @@ class ListLoadBalancers(command.Lister):
             help=_('Specifies the elastic flavor that is reserved for now.')
         )
         parser.add_argument(
-            '--billing-info',
-            metavar='<billing_info>',
-            action='append',
-            help=_('Provides billing information about the load balancer.')
-        )
-        parser.add_argument(
             '--member-device-id',
             metavar='<member_device_id>',
             action='append',
@@ -294,8 +312,6 @@ class ListLoadBalancers(command.Lister):
             args['l7_flavor_id'] = parsed_args.l7_flavor_id
         if parsed_args.l7_scale_flavor_id:
             args['l7_scale_flavor_id'] = parsed_args.l7_scale_flavor_id
-        if parsed_args.billing_info:
-            args['billing_info'] = parsed_args.billing_info
         if parsed_args.member_device_id:
             args['member_device_id'] = parsed_args.member_device_id
         if parsed_args.member_address:
@@ -304,8 +320,6 @@ class ListLoadBalancers(command.Lister):
             args['publicips'] = parsed_args.publicips
         if parsed_args.ip_version:
             args['ip_version'] = parsed_args.ip_version
-        # if parsed_args.elb_virsubnet_type:
-        #     args['elb_virsubnet_type'] = parsed_args.elb_virsubnet_type
 
         data = client.load_balancers(**args)
 
@@ -325,32 +339,22 @@ class ShowLoadBalancer(command.ShowOne):
         'name',
         'description',
         'provisioning_status',
-        'admin_state_up',
         'provider',
-        'pools',
-        'listeners',
         'operating_status',
         'vip_address',
         'vip_subnet_cidr_id',
         'project_id',
         'vip_port_id',
-        'tags',
         'created_at',
         'updated_at',
         'guaranteed',
         'vpc_id',
-        'ipv6_vip_address',
-        'ipv6_vip_virsubnet_id',
-        'ipv6_vip_port_id',
         'availability_zone_list',
-        'billing_info',
         'l4_flavor_id',
         'l4_scale_flavor_id',
         'l7_flavor_id',
         'l7_scale_flavor_id',
-        'elb_virsubnet_ids',
-        'ip_target_enable',
-        'ipv6_bandwidth')
+        'elb_virsubnet_ids')
 
     def get_parser(self, prog_name):
         parser = super(ShowLoadBalancer, self).get_parser(prog_name)
@@ -377,7 +381,12 @@ class ShowLoadBalancer(command.ShowOne):
          if obj.floating_ips:
              data, self.columns = _add_publicips_to_load_balancer_obj(
                  obj, data, self.columns)
-
+         if obj.listeners:
+             data, self.columns = _add_listeners_to_load_balancer_obj(
+                 obj, data, self.columns)
+         if obj.pools:
+             data, self.columns = _add_pools_to_load_balancer_obj(
+                 obj, data, self.columns)
          return self.columns, data
 
 
@@ -387,42 +396,29 @@ class CreateLoadBalancer(command.ShowOne):
         'ID',
         'description',
         'provisioning_status',
-        'admin_state_up',
         'provider',
-        'pools',
-        'listeners',
         'operating_status',
         'vip_address',
         'vip_subnet_cidr_id',
         'name',
         'project_id',
         'vip_port_id',
-        'tags',
         'created_at',
         'updated_at',
         'guaranteed',
         'vpc_id',
-        'ipv6_vip_address',
-        'ipv6_vip_virsubnet_id',
-        'ipv6_vip_port_id',
         'availability_zone_list',
-        'enterprise_project_id',
-        'billing_info',
         'l4_flavor_id',
         'l4_scale_flavor_id',
         'l7_flavor_id',
         'l7_scale_flavor_id',
-        'elb_virsubnet_ids',
-        'elb_virsubnet_type',
-        'ip_target_enable',
-        'frozen_scene',
-        'ipv6_bandwidth'
+        'elb_virsubnet_ids'
     )
 
     def get_parser(self, prog_name):
         parser = super(CreateLoadBalancer, self).get_parser(prog_name)
         parser.add_argument(
-            'name',
+            '--name',
             metavar='<name>',
             help=_('Name of the load balancer')
         )
@@ -435,20 +431,13 @@ class CreateLoadBalancer(command.ShowOne):
             '--vip-address',
             metavar='<vip_address>',
             help=_('Specifies the virtual IP address'
-                   ' bound to the load balancer.')
+                   'bound to the load balancer.')
         )
         parser.add_argument(
             '--vip-subnet-cidr-id',
             metavar='<vip_subnet_cidr_id>',
             help=_('Specifies the ID of the IPv4 subnet'
                    ' where the load balancer works.')
-        )
-        parser.add_argument(
-            '--ipv6-vip-virsubnet-id',
-            metavar='<ipv6_vip_virsubnet_id>',
-            type=str,
-            help=_('Specifies the ID of the IPv6 subnet where'
-                   ' the load balancer works.')
         )
         parser.add_argument(
             '--provider',
@@ -460,18 +449,15 @@ class CreateLoadBalancer(command.ShowOne):
         parser.add_argument(
             '--l4-flavor-id',
             metavar='<l4_flavor_id>',
-            help=_('Specifies the ID of the Layer-4 flavor.')
+            help=_('Specifies the ID of the Layer-4 flavor.'
+                   'Specify either l4_flavor_id or l7_flavor_id or both'
+                   'l4_flavor_id and l7_flavor_id when you create'
+                   'a load balancer.')
         )
         parser.add_argument(
             '--project-id',
             metavar='<project_id>',
             help=_('Specifies the project ID.')
-        )
-        parser.add_argument(
-            '--is-guaranteed',
-            action='store_false',
-            help=_('Capacity, in GB.\n'
-                   'Ranges from 1 to 10485760.')
         )
         parser.add_argument(
             '--vpc-id',
@@ -488,15 +474,22 @@ class CreateLoadBalancer(command.ShowOne):
         )
         parser.add_argument(
             '--tag',
-            metavar='<tag>',
-            action='append',
-            help=_('Tag to assign to the server in KEY=VALUE format. '
-                   'Repeat for multiple values.')
+            metavar='key=<keyname1>,value=<value1>',
+            action=parseractions.MultiKeyValueAction,
+            dest='tags',
+            required_keys=['key', 'value'],
+            help=_('List of tags. Repeat option for '
+                   'multiple tags.\n'
+                   'Example:\n'
+                   '--tag key=mykey1,value=myvalue1')
         )
         parser.add_argument(
             '--l7-flavor-id',
             metavar='<l7_flavor_id>',
-            help=_('Specifies the ID of the Layer-7 flavor.')
+            help=_('Specifies the ID of the Layer-7 flavor.'
+                   'Specify either l4_flavor_id or l7_flavor_id or both'
+                   'l4_flavor_id and l7_flavor_id when you create'
+                   'a load balancer.')
         )
         parser.add_argument(
             '--ipv6-bandwidth',
@@ -507,17 +500,19 @@ class CreateLoadBalancer(command.ShowOne):
         )
         parser.add_argument(
             '--publicip-id',
-            metavar='<publicip_id>',
+            metavar='<publicip_ids>',
             action='append',
             help=_('Specifies the ID of the EIP the system will automatically'
                    'assign and bind to the load balancer during load balancer'
-                   ' creation. Repeat for multiple values.')
+                   'creation. Currently, only the first EIP will be bound to'
+                   'the load balancer although multiple EIP IDs can be set')
         )
         parser.add_argument(
             '--ip-version',
             metavar='<ip_version>',
             type=int,
-            help=_('Specifies the IP address version for public ip')
+            help=_('Specifies the IP address version for public ip.'
+                   'Can only be 4 (IPv4). 4 by default.')
         )
         parser.add_argument(
             '--network-type',
@@ -527,13 +522,15 @@ class CreateLoadBalancer(command.ShowOne):
                    'Mandatory for public ip.')
         )
         parser.add_argument(
-            '--billing-info',
-            metavar='<billing_info>',
-            help=_('Provides billing information about the IPv4 EIP.')
+            '--publicip-billing-info',
+            metavar='<publicip_billing_info>',
+            help=_('Provides billing information about the IPv4 EIP.'
+                   'If billing_info is not left blank, the IPv4 EIP is billed'
+                   'on a yearly/monthly basis.')
         )
         parser.add_argument(
-            '--public-ip-description',
-            metavar='<public_ip_description>',
+            '--publicip-description',
+            metavar='<publicip_description>',
             help=_('Provides supplementary information about the IPv4 EIP.')
         )
         parser.add_argument(
@@ -542,7 +539,6 @@ class CreateLoadBalancer(command.ShowOne):
                     'charge_mode=<charge_mode>,share_type=<share_type>,'
                     'billing_info=<billing_info>',
             action=parseractions.MultiKeyValueAction,
-            dest='bandwidth',
             optional_keys=['name', 'size', 'charge_mode', 'billing_info',
                            'share_type', 'billing_info', 'id'],
             help=_('Provides supplementary information about the bandwidth'
@@ -550,15 +546,12 @@ class CreateLoadBalancer(command.ShowOne):
         )
         parser.add_argument(
             '--elb-virsubnet-id',
-            metavar='<elb_virsubnet_id>',
+            metavar='<elb_virsubnet_ids>',
             action='append',
             help=_('ID of the subnet on the downstream plane.'
+                   'The subnets must be in the VPC where the load balancer'
+                   'works.'
                    'Repeat for multiple values.')
-        )
-        parser.add_argument(
-            '--is-ip-target-enable',
-            action='store_false',
-            help=_('Specifies whether to enable cross-VPC backend.')
         )
         return parser
 
@@ -567,7 +560,7 @@ class CreateLoadBalancer(command.ShowOne):
 
         attrs['availability_zone_list'] = \
             parsed_args.availability_zone_list
-        attrs['elb_virsubnet_ids'] = parsed_args.elb_virsubnet_id
+        attrs['elb_virsubnet_ids'] = parsed_args.elb_virsubnet_ids
 
         if parsed_args.name:
             attrs['name'] = parsed_args.name
@@ -577,36 +570,39 @@ class CreateLoadBalancer(command.ShowOne):
             attrs['vip_address'] = parsed_args.vip_address
         if parsed_args.vip_subnet_cidr_id:
             attrs['vip_subnet_cidr_id'] = parsed_args.vip_subnet_cidr_id
-        if parsed_args.ipv6_vip_virsubnet_id:
-            attrs['ipv6_vip_virsubnet_id'] = parsed_args.ipv6_vip_virsubnet_id
         if parsed_args.provider:
             attrs['provider'] = parsed_args.provider
         if parsed_args.l4_flavor_id:
             attrs['l4_flavor_id'] = parsed_args.l4_flavor_id
-        if parsed_args.is_guaranteed:
-            attrs['guaranteed'] = parsed_args.is_guaranteed
         if parsed_args.project_id:
             attrs['project_id'] = parsed_args.project_id
         if parsed_args.vpc_id:
             attrs['vpc_id'] = parsed_args.vpc_id
-        if parsed_args.tag:
-            attrs['tag'] = parsed_args.tag
+        if parsed_args.tags:
+            attrs['tags'] = parsed_args.tags
         if parsed_args.l7_flavor_id:
             attrs['l7_flavor_id'] = parsed_args.l7_flavor_id
         if parsed_args.ipv6_bandwidth:
-            attrs['ipv6_bandwidth'] = parsed_args.ipv6_bandwidth
-        if parsed_args.publicip_id:
-            attrs['publicip_id'] = parsed_args.publicip_id
-        if parsed_args.network_type:
-            attrs['publicip']['bandwidth'] = parsed_args.bandwidth
+            attrs['ipv6_bandwidth'] = {'id': parsed_args.ipv6_bandwidth}
+        if parsed_args.publicip_ids:
+            attrs['publicip_ids'] = parsed_args.publicip_ids
+        if (parsed_args.network_type or parsed_args.publicip_billing_info or
+            parsed_args.ip_version or parsed_args.bandwidth or
+                parsed_args.publicip_description):
+            attrs['publicip'] = {}
+            if parsed_args.bandwidth:
+                attrs['publicip']['bandwidth'] = parsed_args.bandwidth[0]
+            else:
+                attrs['publicip']['bandwidth'] = {}
+            if parsed_args.publicip_billing_info:
+                attrs['publicip']['billing_info'] =\
+                    parsed_args.publicip_billing_info
             if parsed_args.ip_version:
                 attrs['publicip']['ip_version'] = parsed_args.ip_version
             if parsed_args.network_type:
                 attrs['publicip']['network_type'] = parsed_args.network_type
-            if parsed_args.billing_info:
-                attrs['publicip']['billing_info'] = parsed_args.billing_info
-            if parsed_args.public_ip_description:
-                attrs['publicip']['description'] = parsed_args.public_ip_description
+            if parsed_args.publicip_description:
+                attrs['publicip']['description'] = parsed_args.publicip_description
 
         client = self.app.client_manager.vlb
         obj = client.create_load_balancer(**attrs)
@@ -623,6 +619,12 @@ class CreateLoadBalancer(command.ShowOne):
         if obj.floating_ips:
             data, self.columns = _add_publicips_to_load_balancer_obj(
                 obj, data, self.columns)
+        if obj.listeners:
+            data, self.columns = _add_listeners_to_load_balancer_obj(
+                obj, data, self.columns)
+        if obj.pools:
+            data, self.columns = _add_pools_to_load_balancer_obj(
+                obj, data, self.columns)
         return self.columns, data
 
 
@@ -632,10 +634,7 @@ class UpdateLoadBalancer(command.ShowOne):
         'id',
         'description',
         'provisioning_status',
-        'admin_state_up',
         'provider',
-        'pools',
-        'listeners',
         'operating_status',
         'vip_address',
         'vip_subnet_cidr_id',
@@ -650,15 +649,11 @@ class UpdateLoadBalancer(command.ShowOne):
         'ipv6_vip_virsubnet_id',
         'ipv6_vip_port_id',
         'availability_zone_list',
-        'billing_info',
         'l4_flavor_id',
         'l4_scale_flavor_id',
         'l7_flavor_id',
         'l7_scale_flavor_id',
         'elb_virsubnet_ids',
-        'elb_virsubnet_type',
-        'ip_target_enable',
-        'frozen_scene',
         'ipv6_bandwidth'
     )
 
@@ -671,55 +666,54 @@ class UpdateLoadBalancer(command.ShowOne):
         )
         parser.add_argument(
             '--name',
-            help=_('Name of the load balancer.')
-        )
-        parser.add_argument(
-            '--ipv6-vip-virsubnet-id',
-            metavar='ipv6_vip_virsubnet_id',
-            help=_('Specifies the administrative status of the load balancer.'
-                   'And the value can only be true')
+            help=_('New name of the load balancer.')
         )
         parser.add_argument(
             '--description',
             metavar='<description>',
             help=_('Provides supplementary information'
-                   ' about the load balancer.')
-        )
-        parser.add_argument(
-            '--ipv6-vip-virsubnet-id',
-            metavar='<ipv6_vip_virsubnet_id>',
-            help=_('Specifies the ID of the IPv6 subnet where'
-                   'the load balancer works.')
+                   'about the load balancer.')
         )
         parser.add_argument(
             '--vip-subnet-cidr-id',
             metavar='<vip_subnet_cidr_id>',
             help=_('Specifies the ID of the IPv4 subnet where'
-                   'the load balancer works.')
+                   'the load balancer works. The IPv4 subnet can be updated'
+                   'using vip_subnet_cidr_id, and the private IPv4 address'
+                   'of the load balancer will be changed accordingly.'
+                   'If vip_address is also specified, the IP address specified'
+                   'by it must be in the subnet specified by vip_subnet_cidr_id'
+                   'and will be used as the private IPv4 address of the'
+                   'load balancer. The IPv4 subnet must be in the VPC'
+                   'specified by vpc_id. Enter null if the private IPv4 address'
+                   'is unbound from the load balancer.')
         )
         parser.add_argument(
             '--vip-address',
             metavar='<vip_address>',
             help=_('Specifies the virtual IP address'
-                   'bound to the load balancer.')
+                   'bound to the load balancer. The IP address must be from'
+                   'the IPv4 subnet of the VPC where the load balancer works'
+                   'and IP address should not be occupied by other services.'
+                   'The IP address specified by this parameter must be in the'
+                   'subnet specified by vip_subnet_cidr_id and will be used'
+                   'as the private IPv4 address of the load balancer.')
         )
         parser.add_argument(
             '--l4-flavor-id',
             metavar='<l4_flavor_id>',
-            help=_('Specifies the ID of the Layer-4 flavor.')
+            help=_('Specifies the ID of the Layer-4 flavor.'
+                   'The value cannot be changed from null to a specific value,'
+                   'or the other way around. If you need to change the flavor,'
+                   'you must select a larger one.')
         )
         parser.add_argument(
             '--l7-flavor-id',
             metavar='<l7_flavor_id>',
-            help=_('Specifies the ID of the Layer-7 flavor.')
-        )
-        parser.add_argument(
-            '--ipv6-bandwidth',
-            metavar='<ipv6_bandwidth>',
-            action='append',
-            help=_('Specifies the ID of the bandwidth. This parameter'
-                   'is available only when you create or update'
-                   'a load balancer that has an IPv6 address bound.')
+            help=_('Specifies the ID of the Layer-7 flavor.'
+                   'The value cannot be changed from null to a specific value,'
+                   'or the other way around. If you need to change the flavor,'
+                   'you must select a larger one.')
         )
         return parser
 
@@ -730,8 +724,6 @@ class UpdateLoadBalancer(command.ShowOne):
             attrs['name'] = parsed_args.name
         if parsed_args.description:
             attrs['description'] = parsed_args.description
-        if parsed_args.ipv6_vip_virsubnet_id:
-            attrs['ipv6_vip_virsubnet_id'] = parsed_args.ipv6_vip_virsubnet_id
         if parsed_args.vip_subnet_cidr_id:
             attrs['vip_subnet_cidr_id'] = parsed_args.vip_subnet_cidr_id
         if parsed_args.vip_address:
@@ -740,8 +732,6 @@ class UpdateLoadBalancer(command.ShowOne):
             attrs['l4_flavor_id'] = parsed_args.l4_flavor_id
         if parsed_args.l7_flavor_id:
             attrs['l7_flavor_id'] = parsed_args.l7_flavor_id
-        if parsed_args.ipv6_bandwidth:
-            attrs['ipv6_bandwidth'] = parsed_args.ipv6_bandwidth
         client = self.app.client_manager.vlb
         loadbalancer = client.find_load_balancer(
             name_or_id=parsed_args.loadbalancer,
@@ -766,6 +756,12 @@ class UpdateLoadBalancer(command.ShowOne):
         if obj.floating_ips:
             data, self.columns = _add_publicips_to_load_balancer_obj(
                 obj, data, self.columns)
+        if obj.listeners:
+            data, self.columns = _add_listeners_to_load_balancer_obj(
+                obj, data, self.columns)
+        if obj.pools:
+            data, self.columns = _add_pools_to_load_balancer_obj(
+                obj, data, self.columns)
 
         return self.columns, data
 
@@ -777,7 +773,6 @@ class DeleteLoadBalancer(command.Command):
         parser = super(DeleteLoadBalancer, self).get_parser(prog_name)
         parser.add_argument(
             'loadbalancer',
-            metavar='<vault>',
             help=_('ID or name of the load balancer')
         )
         return parser

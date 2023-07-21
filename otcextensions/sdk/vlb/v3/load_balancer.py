@@ -32,43 +32,36 @@ class LoadBalancer(resource.Resource):
         'vip_address', 'vip_network_id',
         'vip_port_id', 'vip_subnet_id',
         'vip_qos_policy_id',
-        is_admin_state_up='admin_state_up',
         availability_zones='availability_zone_list',
     )
 
     # Properties
     #: Name of the target Octavia availability zone
     availability_zones = resource.Body('availability_zone_list', type=list)
-    #: Billing information about the load balancer.
-    billing_info = resource.Body('billing_info')
     #: Timestamp when the load balancer was created
     created_at = resource.Body('created_at')
     #: The load balancer description
     description = resource.Body('description')
     #: EIP bound to the load balancer.
-    eips = resource.Body('eips', type=list)
+    eips = resource.Body('eips', type=list, list_type=dict)
     #: The load balancer flavor ID
     flavor_id = resource.Body('flavor_id')
     #: Specifies whether the load balancer is a dedicated load balancer.
     guaranteed = resource.Body('guaranteed')
-    #: The administrative state of the load balancer *Type: bool*
-    is_admin_state_up = resource.Body('admin_state_up', type=bool)
     #: The Layer-4 flavor.
     l4_flavor_id = resource.Body('l4_flavor_id')
     #: Reserved Layer 4 flavor.
     l4_scale_flavor_id = resource.Body('l4_scale_flavor_id')
     #: Specifies the Layer-7 flavor.
     l7_flavor_id = resource.Body('l7_flavor_id')
-    #: Operating status of the forwarding policy added to the listener
-    l7policies = resource.Body('l7policies', type=list)
     #: Reserved Layer 7 flavor.
     l7_scale_flavor_id = resource.Body('l7_scale_flavor_id')
     #: List of listeners associated with this load balancer
-    listeners = resource.Body('listeners', type=list)
+    listeners = resource.Body('listeners', type=list, list_type=dict)
     #: Operating status of the load balancer
     operating_status = resource.Body('operating_status')
     #: List of pools associated with this load balancer
-    pools = resource.Body('pools', type=list)
+    pools = resource.Body('pools', type=list, list_type=dict)
     #: The ID of the project this load balancer is associated with.
     project_id = resource.Body('project_id')
     #: Provider name for the load balancer.
@@ -76,7 +69,7 @@ class LoadBalancer(resource.Resource):
     #: The provisioning status of this load balancer
     provisioning_status = resource.Body('provisioning_status')
     #: Tags added to the load balancer
-    tags = resource.Body('tags', type=list)
+    tags = resource.Body('tags', type=list, list_type=dict)
     #: Timestamp when the load balancer was last updated
     updated_at = resource.Body('updated_at')
     #: VIP address of load balancer
@@ -90,8 +83,6 @@ class LoadBalancer(resource.Resource):
     # VIP qos policy id
     vip_qos_policy_id = resource.Body('vip_qos_policy_id')
 
-    #: FIP
-    floating_ip = resource.Body('publicip', type=list, list_type=dict)
     #: Assigned FIPs
     floating_ips = resource.Body('publicips', type=list, list_type=dict)
     #: Specifies whether to enable cross-VPC backend.

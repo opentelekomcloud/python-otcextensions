@@ -10,7 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import exceptions
-from openstack import proxy
+from openstack import proxy, resource
 
 from otcextensions.sdk.vpc.v1 import bandwidth as _bandwidth
 from otcextensions.sdk.vpc.v1 import peering as _peering
@@ -144,6 +144,25 @@ class Proxy(proxy.Proxy):
             _bandwidth.Bandwidth, bandwidth,
             ignore_missing=ignore_missing, project_id=project_id,
             base_path=base_path)
+
+    def wait_for_delete_bandwidth(self, bandwidth, interval=2, wait=60):
+        """Wait for the bandwidth to be deleted.
+
+        :param bandwidth:
+            The :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
+            or group ID to wait on to be deleted.
+        :param int interval:
+            Number of seconds to wait before to consecutive checks.
+            Default to 2.
+        :param int wait:
+            Maximum number of seconds to wait for the delete.
+            Default to 60.
+        :return: Method returns self on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` transition
+                 to status failed to occur in wait seconds.
+        """
+        group = self._get_resource(_bandwidth.Bandwidth, bandwidth)
+        return resource.wait_for_delete(self, group, interval, wait)
 
     # ======== Peering ========
     def create_peering(self, **attrs):
