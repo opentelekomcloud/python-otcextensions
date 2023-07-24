@@ -44,9 +44,14 @@ def _get_columns(item):
                                                            hidden)
 
 
+STREAM_TYPE_CHOICES = ('COMMON', 'ADVANCED',)
+DATA_TYPE_CHOICES = ('BLOB',)
+COMPRESSION_FORMAT_CHOICES = ('snappy', 'gzip', 'zip',)
+
+
 class ListStreams(command.Lister):
 
-    _description = _("List Dis Stream.")
+    _description = _("List Dis Streams.")
     display_columns = (
         'Name',
         'Stream Type',
@@ -101,20 +106,20 @@ class ListStreams(command.Lister):
 
 
 class ShowStream(command.ShowOne):
-    _description = _("Show DIS Stream details")
+    _description = _("Show DIS Stream details.")
 
     def get_parser(self, prog_name):
         parser = super(ShowStream, self).get_parser(prog_name)
         parser.add_argument(
-            'stream',
-            metavar='<stream>',
+            'streamName',
+            metavar='<streamName>',
             help=_("Specifies the name of the DIS Stream."),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.dis
-        obj = client.get_stream(parsed_args.stream)
+        obj = client.get_stream(parsed_args.streamName)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns, formatters=_formatters)
@@ -128,9 +133,9 @@ class CreateStream(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(CreateStream, self).get_parser(prog_name)
         parser.add_argument(
-            'name',
-            metavar='<name>',
-            help=_("Specifies the name of the DIS Stream."),
+            'streamName',
+            metavar='<streamName>',
+            help=_("Specify the name of the DIS Stream."),
         )
         parser.add_argument(
             '--partition-count',
@@ -140,9 +145,13 @@ class CreateStream(command.ShowOne):
             help=_("Number of partitions. Partitions are the base throughput "
                    "unit of the DIS stream."),
         )
+
         parser.add_argument(
             '--stream-type',
-            metavar='<stream_type>',
+            dest='stream_type',
+            metavar='{' + ','.join(STREAM_TYPE_CHOICES) + '}',
+            type=lambda s: s.upper(),
+            choices=STREAM_TYPE_CHOICES,
             help=_("Stream type. Supported Types:"
                    "\nCOMMON: a common stream with a bandwidth of 1 MB/s."
                    "\nADVANCED: an advanced stream with a bandwidth of 5 MB/s."
@@ -150,7 +159,10 @@ class CreateStream(command.ShowOne):
         )
         parser.add_argument(
             '--data-type',
-            metavar='<data_type>',
+            dest='data_type',
+            metavar='{' + ','.join(DATA_TYPE_CHOICES) + '}',
+            type=lambda s: s.upper(),
+            choices=DATA_TYPE_CHOICES,
             help=_("Source data type. Supported Types:"
                    "\nBLOB: a collection of binary data stored as a single "
                    "entity in a database management system."
@@ -190,7 +202,10 @@ class CreateStream(command.ShowOne):
         )
         parser.add_argument(
             '--compression-format',
-            metavar='<compression_format>',
+            dest='compression_format',
+            metavar='{' + ','.join(COMPRESSION_FORMAT_CHOICES) + '}',
+            type=lambda s: s.lower(),
+            choices=COMPRESSION_FORMAT_CHOICES,
             help=_("Data compression type. The following types are available:"
                     "\nsnappy"
                     "\ngzip"
@@ -232,7 +247,6 @@ class CreateStream(command.ShowOne):
         client = self.app.client_manager.dis
 
         args_list = (
-            'name',
             'partition_count',
             'stream_type',
             'data_type',
@@ -243,7 +257,9 @@ class CreateStream(command.ShowOne):
             'tags',
             'sys_tags',
         )
-        attrs = {}
+        attrs = {
+            'name': parsed_args.streamName
+        }
         for arg in args_list:
             val = getattr(parsed_args, arg)
             if val:
@@ -278,8 +294,8 @@ class UpdateStreamPartition(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(UpdateStreamPartition, self).get_parser(prog_name)
         parser.add_argument(
-            'stream',
-            metavar='<stream>',
+            'streamName',
+            metavar='<streamName>',
             help=_("Specifies the Name of the DIS Stream."),
         )
         parser.add_argument(
@@ -297,13 +313,9 @@ class UpdateStreamPartition(command.ShowOne):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.dis
-        attrs = {'stream_name': parsed_args.stream}
-        if parsed_args.partition_count:
-            attrs.update(target_partition_count=parsed_args.partition_count)
+        obj = client.update_stream_partition(
+            parsed_args.streamName, parsed_args.partition_count)
 
-        obj = client.update_stream_partition(parsed_args.stream, **attrs)
-
-        # display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, self.columns)
 
         return (self.display_columns, data)
@@ -316,8 +328,8 @@ class DeleteStream(command.Command):
     def get_parser(self, prog_name):
         parser = super(DeleteStream, self).get_parser(prog_name)
         parser.add_argument(
-            'stream',
-            metavar='<stream>',
+            'streamName',
+            metavar='<streamName>',
             nargs='+',
             help=_("Name of Dis Stream(s) to delete."),
         )
@@ -326,16 +338,16 @@ class DeleteStream(command.Command):
     def take_action(self, parsed_args):
         client = self.app.client_manager.dis
         result = 0
-        for stream in parsed_args.stream:
+        for stream_name in parsed_args.streamName:
             try:
-                client.delete_stream(stream)
+                client.delete_stream(stream_name)
             except Exception as e:
                 result += 1
                 LOG.error(_("Failed to delete Dis Stream with "
-                          "name '%(stream)s': %(e)s"),
-                          {'stream': stream, 'e': e})
+                          "name '%(stream_name)s': %(e)s"),
+                          {'stream_name': stream_name, 'e': e})
         if result > 0:
-            total = len(parsed_args.stream)
+            total = len(parsed_args.streamName)
             msg = (_("%(result)s of %(total)s DIS Stream(s) failed "
                    "to delete.") % {'result': result, 'total': total})
             raise exceptions.CommandError(msg)

@@ -10,7 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 # import six
-from openstack import exceptions
+# from openstack import exceptions
 from openstack import resource
 from openstack import utils
 
@@ -33,17 +33,14 @@ class Data(resource.Resource):
     resources_key = 'records'
 
     _query_mapping = resource.QueryParameters(
-        'stream-name', 'partition-id', 'cursor-type',
-        'starting-sequence-number', 'timestamp', 'stream_id',
+        # 'stream-name', 'partition-id', 'cursor-type',
+        # 'starting-sequence-number', 'timestamp', 'stream_id',
+        'partition-cursor', 'max_fetch_bytes',
     )
 
     allow_create = True
     allow_fetch = True
     allow_list = True
-
-    _query_mapping = resource.QueryParameters(
-        'partition-cursor', 'max_fetch_bytes',
-    )
 
     # Properties
     #: Partition key set when data is being uploaded.
@@ -77,72 +74,3 @@ class Data(resource.Resource):
         res = session.get(uri, params=params)
         self._translate_response(res)
         return self
-
-    @classmethod
-    def list(cls, session, paginated=True, base_path=None,
-             allow_unknown_params=False, **params):
-
-        if not cls.allow_list:
-            raise exceptions.MethodNotSupported(cls, "list")
-        session = cls._get_session(session)
-        microversion = cls._get_microversion(session, action='list')
-
-        if base_path is None:
-            base_path = cls.base_path
-        params = cls._query_mapping._validate(
-            params, base_path=base_path,
-            allow_unknown_params=allow_unknown_params)
-
-        query_params = cls._query_mapping._transpose(params, cls)
-        uri = base_path % params
-
-        limit = query_params.get('limit')
-
-        while uri:
-            # Copy query_params due to weird mock unittest interactions
-            response = session.get(
-                uri,
-                headers={"Accept": "application/json"},
-                params=query_params.copy(),
-                microversion=microversion)
-            exceptions.raise_from_response(response)
-            data = response.json()
-            # Discard any existing pagination keys
-            query_params.pop('start_stream_name', None)
-            query_params.pop('limit', None)
-
-            if cls.resources_key:
-                resources = data[cls.resources_key]
-            else:
-                resources = data
-
-            if not isinstance(resources, list):
-                resources = [resources]
-
-            for raw_resource in resources:
-                value = cls.existing(
-                    microversion=microversion,
-                    connection=session._get_connection(),
-                    **raw_resource)
-                yield value
-
-            if resources and paginated:
-                uri, next_params = cls._get_next_link(
-                    uri, response, data, limit)
-                query_params.update(next_params)
-            else:
-                return
-
-    @classmethod
-    def _get_next_link(cls, uri, response, data, limit):
-        # RDS service pagination. Returns query for the next page
-        next_link = None
-        params = {}
-        if 'has_more_streams' in data and data['has_more_streams']:
-            next_link = uri
-            params['start_stream_name'] = data['stream_names'][-1]
-            params['limit'] = limit
-        else:
-            next_link = None
-        query_params = cls._query_mapping._transpose(params, cls)
-        return next_link, query_params

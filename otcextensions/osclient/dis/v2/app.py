@@ -121,13 +121,13 @@ class ListAppConsumptions(command.Lister):
     def get_parser(self, prog_name):
         parser = super(ListAppConsumptions, self).get_parser(prog_name)
         parser.add_argument(
-            'stream',
-            metavar='<stream>',
+            'streamName',
+            metavar='<streaName>',
             help=_("Name of the stream to be queried."),
         )
         parser.add_argument(
-            'app',
-            metavar='<app>',
+            'appName',
+            metavar='<appName>',
             help=_("Name of the app to be queried."),
         )
         parser.add_argument(
@@ -138,7 +138,7 @@ class ListAppConsumptions(command.Lister):
                    "\nDefault: 10"),
         )
         parser.add_argument(
-            '--start_partition_id',
+            '--start-partition-id',
             metavar='<start_partition_id>',
             help=_("Name of the partition to start the partition list "
                    "with. The returned partition list does not contain "
@@ -166,8 +166,8 @@ class ListAppConsumptions(command.Lister):
             if val:
                 attrs[arg] = val
 
-        data = client.app_consumptions(parsed_args.stream,
-                                       parsed_args.app,
+        data = client.app_consumptions(parsed_args.streamName,
+                                       parsed_args.appName,
                                        **attrs)
 
         return (
@@ -186,15 +186,15 @@ class ShowApp(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(ShowApp, self).get_parser(prog_name)
         parser.add_argument(
-            'app',
-            metavar='<app>',
+            'appName',
+            metavar='<appName>',
             help=_("Name of the app to be queried."),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.dis
-        obj = client.get_app(parsed_args.app)
+        obj = client.get_app(parsed_args.appName)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns, formatters=_formatters)
@@ -208,9 +208,9 @@ class CreateApp(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(CreateApp, self).get_parser(prog_name)
         parser.add_argument(
-            'name',
-            metavar='<name>',
-            help=_("Specifies the name of the DIS Stream."),
+            'appName',
+            metavar='<appName>',
+            help=_("Specifies the name of the App."),
         )
         return parser
 
@@ -218,7 +218,7 @@ class CreateApp(command.ShowOne):
         client = self.app.client_manager.dis
 
         attrs = {
-            'app_name': parsed_args.name
+            'app_name': parsed_args.appName
         }
 
         obj = client.create_app(**attrs)
@@ -236,8 +236,8 @@ class DeleteApp(command.Command):
     def get_parser(self, prog_name):
         parser = super(DeleteApp, self).get_parser(prog_name)
         parser.add_argument(
-            'app',
-            metavar='<app>',
+            'appName',
+            metavar='<appName>',
             nargs='+',
             help=_("Name of Dis App(s) to delete."),
         )
@@ -246,16 +246,16 @@ class DeleteApp(command.Command):
     def take_action(self, parsed_args):
         client = self.app.client_manager.dis
         result = 0
-        for app in parsed_args.app:
+        for app_name in parsed_args.appName:
             try:
-                client.delete_app(app)
+                client.delete_app(app_name)
             except Exception as e:
                 result += 1
                 LOG.error(_("Failed to delete App with "
-                          "name '%(app)s': %(e)s"),
-                          {'app': app, 'e': e})
+                          "name '%(app_name)s': %(e)s"),
+                          {'app_name': app_name, 'e': e})
         if result > 0:
-            total = len(parsed_args.app)
+            total = len(parsed_args.appName)
             msg = (_("%(result)s of %(total)s DIS App(s) failed "
                    "to delete.") % {'result': result, 'total': total})
             raise exceptions.CommandError(msg)

@@ -47,6 +47,21 @@ def _get_columns(item):
                                                            hidden)
 
 
+CONSUMER_STRATEGY_CHOICES = ('LATEST', 'TRIM_HORIZON',)
+
+
+PARTITION_FORMAT_CHOICES = (
+    'yyyy',
+    'yyyy/MM',
+    'yyyy/MM/dd',
+    'yyyy/MM/dd/HH',
+    'yyyy/MM/dd/HH/mm',
+)
+
+
+RECORD_DELIMITER_CHOICES = (',', ';', '|', '\\n',)
+
+
 class ListDumpTasks(command.Lister):
 
     _description = _("List Dump Tasks.")
@@ -154,7 +169,10 @@ class CreateDumpTask(command.ShowOne):
         )
         parser.add_argument(
             '--consumer-strategy',
-            metavar='<consumer_strategy>',
+            dest='consumer_strategy',
+            metavar='{' + ','.join(CONSUMER_STRATEGY_CHOICES) + '}',
+            type=lambda s: s.upper(),
+            choices=CONSUMER_STRATEGY_CHOICES,
             help=_("Offset."
                    "\nLATEST: Maximum offset, indicating that the latest "
                    "data will be extracted."
@@ -171,21 +189,18 @@ class CreateDumpTask(command.ShowOne):
         )
         parser.add_argument(
             '--partition-format',
-            metavar='<partition_format>',
+            dest='partition_format',
+            metavar='{' + ','.join(PARTITION_FORMAT_CHOICES) + '}',
+            choices=PARTITION_FORMAT_CHOICES,
             help=_("Directory structure of the object file written into OBS. "
                    "The directory structure is in the format of yyyy/MM/dd/"
                    "HH/mm (time at which the dump task was created). "
                    "\nN/A: Leave this parameter empty, indicating that the "
-                   "date and time directory is not used."
-                   "\nyyyy: year"
-                   "\nyyyy/MM: year/month"
-                   "\nyyyy/MM/dd: year/month/day"
-                   "\nyyyy/MM/dd/HH: year/month/day/hour"
-                   "\nyyyy/MM/dd/HH/mm: year/month/day/hour/minute."),
+                   "date and time directory is not used."),
         )
         parser.add_argument(
-            '--obs_bucket_path',
-            metavar='<destrination_type>',
+            '--obs-bucket-path',
+            metavar='<obs_bucket_path>',
             required=True,
             help=_("Name of the OBS bucket used to store data from the "
                    "DIS stream."),
@@ -198,14 +213,11 @@ class CreateDumpTask(command.ShowOne):
         )
         parser.add_argument(
             '--record-delimiter',
-            metavar='<record_delimiter>',
+            dest='record_delimiter',
+            metavar='{' + ','.join(RECORD_DELIMITER_CHOICES) + '}',
+            choices=RECORD_DELIMITER_CHOICES,
             help=_("Delimiter for the dump file, which is used to separate "
                    "the user data that is written into the dump file. "
-                   "Value range:"
-                   "\nComma (,), which is the default value"
-                   "\nSemicolon (;)"
-                   "\nVertical bar (|)"
-                   "\nNewline character (\\n)"
                    "Default: \\n"),
         )
 

@@ -66,6 +66,8 @@ class ObsDestinationSpec(resource.Resource):
     #: Delimiter for the dump file, which is used to separate the
     #:  user data that is written into the dump file.
     record_delimiter = resource.Body('record_delimiter')
+    #: Retry Duration
+    retry_duration = resource.Body('retry_duration', type=int)
     #: Name of the dump task.
     task_name = resource.Body('task_name')
 
@@ -97,12 +99,10 @@ class DumpTask(resource.Resource):
     last_transfer_timestamp = resource.Body('last_transfer_timestamp')
     #: Parameter list of OBS to which data in the DIS stream will be dumped.
     obs_destination_descriptor = resource.Body('obs_destination_descriptor',
-                                               type=dict,
-                                               dict_type=ObsDestinationSpec)
+                                               type=ObsDestinationSpec)
     #: Parameter list of OBS to which data in the DIS stream will be dumped.
     obs_destination_description = resource.Body('obs_destination_description',
-                                                type=dict,
-                                                dict_type=ObsDestinationSpec)
+                                                type=ObsDestinationSpec)
     #: List of partition dump details.
     partitions = resource.Body('partitions', type=list, list_type=dict)
     #: Dump task status. Possible values:
@@ -114,7 +114,7 @@ class DumpTask(resource.Resource):
     #: \nABNORMAL: The dump task is abnormal.
     status = resource.Body('state')
     #: ID of the stream to which the dump task belongs.
-    stream_id = resource.Body('stream_id')
+    stream_id = resource.Body('streamId')
     #: Name of the stream to which the dump task belongs.
     stream_name = resource.Body('stream_name')
     #: ID of the dump task.

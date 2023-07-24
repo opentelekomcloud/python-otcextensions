@@ -9,7 +9,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+
+import csv
+import base64
+import binascii
+from pathlib import Path
+
 from openstack import proxy
+from openstack import exceptions
 from otcextensions.sdk.dis.v2 import app as _app
 from otcextensions.sdk.dis.v2 import checkpoint as _checkpoint
 from otcextensions.sdk.dis.v2 import data as _data
@@ -61,10 +68,10 @@ class Proxy(proxy.Proxy):
         """
         return self._create(_stream.Stream, **attrs)
 
-    def delete_stream(self, stream, ignore_missing=False):
+    def delete_stream(self, stream_name, ignore_missing=False):
         """Delete a DIS stream.
 
-        :param stream: The value can be the name of a DIS stream.
+        :param stream_name: Name of a DIS stream.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
             the stream does not exist.
@@ -73,19 +80,23 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._delete(_stream.Stream, stream,
+        return self._delete(_stream.Stream, stream_name,
                             ignore_missing=ignore_missing)
 
-    def update_stream_partition(self, stream, **attrs):
-        """Update a DIS stream
+    def update_stream_partition(self, stream_name, count):
+        """Update a DIS stream partition count.
 
-        :param stream: The value can be the name of a DIS stream.
-        :param dict attrs: The attributes to update on the stream represented
-            by ``stream``.
+        :param stream_name: Name of a DIS stream.
+        :param count: Number of the target partitions.
 
         :returns: ``None``
         """
-        return self._update(_stream.Stream, stream, **attrs)
+        attrs = {
+            'stream_name': stream_name,
+            'target_partition_count': count
+        }
+
+        return self._update(_stream.Stream, stream_name, **attrs)
 
     # ======== App ========
     def create_app(self, **attrs):
@@ -112,18 +123,18 @@ class Proxy(proxy.Proxy):
             params.update(paginated=False)
         return self._list(_app.App, **params)
 
-    def get_app(self, app):
+    def get_app(self, app_name):
         """Query details of a DIS App.
 
-        :param app: Name of the app to be queried.
+        :param app_name: Name of the app to be queried.
         :returns: One :class:`~otcextensions.sdk.dis.v2.app.App`
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
             when no resource can be found.
         """
-        return self._get(_app.App, app)
+        return self._get(_app.App, app_name)
 
     def app_consumptions(self, stream_name, app_name, **params):
-        """List all Streams.
+        """List partition consuming state list.
 
         :param stream_name: Name of the stream.
         :param app_name: Name of the app to be queried.
@@ -139,10 +150,10 @@ class Proxy(proxy.Proxy):
         return self._list(_app.AppConsumption, app_name=app_name,
                           stream_name=stream_name, **params)
 
-    def delete_app(self, app, ignore_missing=False):
+    def delete_app(self, app_name, ignore_missing=False):
         """Delete a DIS App.
 
-        :param app: The value can be the name of a DIS app.
+        :param app_name: The value can be the name of a DIS app.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
             the app does not exist.
@@ -151,11 +162,11 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._delete(_app.App, app, ignore_missing=ignore_missing)
+        return self._delete(_app.App, app_name, ignore_missing=ignore_missing)
 
     # ======== Stream ========
-    def add_checkpoint(self, **attrs):
-        """Add a Checkpoint from attributes
+    def create_checkpoint(self, **attrs):
+        """Add a Checkpoint from attributes.
 
         :param dict attrs: Keyword arguments which will be used to submit
             a :class:`~otcextensions.sdk.dis.v2.checkpoint.Checkpoint`,
@@ -168,7 +179,7 @@ class Proxy(proxy.Proxy):
 
     def get_checkpoint(self, stream_name, app_name,
                        partition_id, checkpoint_type='LAST_READ'):
-        """Query details of a DIS stream
+        """Query details of a Checkpoint.
 
         :param stream_name: Name of the stream to which the checkpoint belongs.
         :param app_name: Name of the app associated with the checkpoint.
@@ -184,14 +195,12 @@ class Proxy(proxy.Proxy):
             'partition_id': partition_id,
             'checkpoint_type': checkpoint_type
         }
-        # return self._get(
-        #    _checkpoint.Checkpoint, requires_id=False, params=params)
         obj = self._get_resource(_checkpoint.Checkpoint, None)
         return obj.get_checkpoint(self, **params)
 
     def delete_checkpoint(self, stream_name, app_name,
                           partition_id=None, checkpoint_type='LAST_READ'):
-        """Delete a CheckPoint Checkpoint
+        """Delete a Checkpoint.
 
         :param stream_name: Name of the stream to which the checkpoint belongs.
         :param app_name: Name of the app associated with the checkpoint.
@@ -208,20 +217,94 @@ class Proxy(proxy.Proxy):
         if partition_id:
             params.update(partition_id=partition_id)
 
-        # return self._delete(
-        #    _checkpoint.Checkpoint, requires_id=False, params=params)
-
         obj = self._get_resource(_checkpoint.Checkpoint, None)
         return obj.delete_checkpoint(self, **params)
 
     # ======== Data Management ========
-    def upload_data(self, **attrs):
-        return self._create(_data.Data, **attrs)
+    def upload_data(self, stream_name, stream_id=None,
+                    data_file=None, records=[]):
+        """upload data to DIS stream.
 
-    def download_data(self, **params):
+        :param stream_name: Name of the stream.
+        :param dict attrs: Keyword arguments comprised
+            of the properties on the Streams class.
+        :returns: ``None``
+        """
+        records_data = []
+        if data_file:
+            with Path(data_file).open('r') as csv_content:
+                header = next(csv.reader(csv_content, delimiter=','))
+                if 'data' not in header:
+                    raise exceptions.SDKException(
+                        f'data column is missing in the header of {data_file}'
+                    )
+                reader = csv.DictReader(csv_content, header, delimiter=',')
+
+                for record in reader:
+                    data = record.get('data')
+                    if data and data != '':
+                        try:
+                            base64.b64decode(data, validate=True)
+                        except binascii.Error:
+                            record['data'] = base64.b64encode(
+                                data.encode('ascii')).decode('ascii')
+                    else:
+                        raise exceptions.SDKException(
+                            'Data File contains empty data!'
+                        )
+                    records_data.append(record)
+        else:
+            for record in records:
+                data = record.get('data')
+                if data and data != '':
+                    try:
+                        base64.b64decode(data, validate=True)
+                    except binascii.Error:
+                        record['data'] = base64.b64encode(
+                            data.encode('ascii')).decode('ascii')
+                else:
+                    raise exceptions.SDKException(
+                        'data is missing in the attributes'
+                    )
+                records_data.append(record)
+
+        request_attrs = {
+            'stream_name': stream_name,
+            'records': records_data
+        }
+        if stream_id:
+            request_attrs.append(stream_id=stream_id)
+        return self._create(_data.Data, **request_attrs)
+
+    def download_data(self, partititon_cursor,
+                      max_fetch_bytes=None, output_file=None):
+        """Download data from a DIS stream.
+
+        :param partititon_cursor: Data cursor, which needs to be
+            obtained through the API for obtaining data cursors.
+        :param max_fetch_bytes: Maximum number of bytes
+            that can be obtained for each request.
+
+        :returns: a generator of
+            (:class:`~otcextensions.sdk.dis.v2.data.Data`) instances
+        """
+        params = {'partition-cursor': partititon_cursor}
+        if max_fetch_bytes:
+            params.update(max_fetch_bytes=max_fetch_bytes)
         return self._list(_data.Data, **params)
 
-    def get_data_cursor(self, **params):
+    def get_data_cursor(self, stream_name, partition_id, **params):
+        """Query data cursor.
+
+        :param stream_name: Name of the stream.
+        :param partititon_id: Partition ID of the stream.
+        :param dict params: Optional query parameters.
+
+        :returns: `partition_cursor`.
+        :rtype: :class:`~otcextensions.sdk.dis.v2.data.Data`
+        """
+        params['stream-name'] = stream_name
+        params['partition-id'] = partition_id
         obj = _data.Data('')
         return obj.get_data_cursor(self, **params)
 
@@ -242,7 +325,7 @@ class Proxy(proxy.Proxy):
         )
 
     def dump_tasks(self, stream_name):
-        """List Dump Tasks.
+        """List Dump tasks.
 
         :param stream_name: Name of the stream.
         :returns: a generator of
@@ -250,7 +333,7 @@ class Proxy(proxy.Proxy):
         """
         return self._list(_dump_task.DumpTask, uri_stream_name=stream_name)
 
-    def delete_dump_task(self, stream_name, task_name):
+    def delete_dump_task(self, stream_name, task_name, ignore_missing=False):
         """Delete Dump Task.
 
         :param stream_name: Name of the stream.
@@ -259,7 +342,8 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         return self._delete(_dump_task.DumpTask, task_name,
-                            uri_stream_name=stream_name)
+                            uri_stream_name=stream_name,
+                            ignore_missing=ignore_missing)
 
     def get_dump_task(self, stream_name, task_name):
         """Query Dump Task details.
@@ -274,9 +358,21 @@ class Proxy(proxy.Proxy):
                          uri_stream_name=stream_name)
 
     def start_dump_task(self, stream_name, *task_id):
+        """Start dump tasks in batches.
+
+        :param stream_name: Name of the stream.
+        :param *task_id: Dump task ID(s).
+        :returns: ``None``
+        """
         obj = _dump_task.DumpTask()
         return obj._action(self, stream_name, 'start', *task_id)
 
     def pause_dump_task(self, stream_name, *task_id):
+        """Start dump tasks in batches.
+
+        :param stream_name: Name of the stream.
+        :param *task_id: Dump task ID(s).
+        :returns: ``None``
+        """
         obj = _dump_task.DumpTask()
         return obj._action(self, stream_name, 'stop', *task_id)

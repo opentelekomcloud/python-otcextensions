@@ -21,6 +21,8 @@ from openstackclient.tests.unit import utils
 from otcextensions.tests.unit.osclient import test_base
 from otcextensions.sdk.dis.v2 import stream
 from otcextensions.sdk.dis.v2 import app
+from otcextensions.sdk.dis.v2 import checkpoint
+from otcextensions.sdk.dis.v2 import dump_task
 
 
 def gen_data(obj, columns, formatters=None):
@@ -109,3 +111,71 @@ class FakeApp(test_base.Fake):
         }
 
         return app.App(**object_info)
+
+
+class FakeCheckpoint(test_base.Fake):
+    """Fake one or more Dis Checkpoints."""
+    @classmethod
+    def generate(cls):
+        """Create a fake DIS Checkpoint.
+
+        :return:
+            A FakeResource object, with id, name and so on
+        """
+        # Set default attributes.
+        object_info = {
+            "sequence_number": "newstram",
+            "metadata": ""
+        }
+        return checkpoint.Checkpoint(**object_info)
+
+
+class FakeDumpTask(test_base.Fake):
+    """Fake one or more Dis Apps."""
+    @classmethod
+    def generate(cls):
+        """Create a fake DIS App.
+
+        :return:
+            A FakeResource object, with id, name and so on
+        """
+        # Set default attributes.
+        object_info = {
+            "create_time": 1689377676849,
+            "destination_type": "OBS",
+            "exception_strategy": "ignoreAndBackup",
+            "last_transfer_timestamp": 1689377695587,
+            "obs_destination_description": {
+                "agency_name": "dis_admin_agency",
+                "consumer_strategy": "LATEST",
+                "deliver_time_interval": 300,
+                "destination_file_type": "text",
+                "obs_bucket_path": "test-bucket-abcdef",
+                "record_delimiter": "\n",
+                "retry_duration": 0
+            },
+            "partitions": [
+                {
+                    "discard": 0,
+                    "last_transfer_offset": 0,
+                    "last_transfer_timestamp": 1689377695587,
+                    "partitionId": "shardId-0000000000",
+                    "state": "RUNNING"
+                },
+                {
+                    "discard": 0,
+                    "last_transfer_offset": 0,
+                    "last_transfer_timestamp": 1689377695587,
+                    "partitionId": "shardId-0000000001",
+                    "state": "RUNNING"
+                }
+            ],
+            "state": "RUNNING",
+            "streamId": "bxdSOIEYPwJdSlAqq5z",
+            "stream_id": "bxdSOIEYPwJdSlAqq5z",
+            "stream_name": "test-dis",
+            "task_id": "lJ4Ts5ObPd2UOpcRj3K",
+            "task_name": "test-dump-task"
+        }
+
+        return dump_task.DumpTask(**object_info)

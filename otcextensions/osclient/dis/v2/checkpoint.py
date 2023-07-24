@@ -36,21 +36,22 @@ def _get_columns(item):
                                                            hidden)
 
 
+CHECKPOINT_TYPE_CHOICES = ('LAST_READ',)
+
+
 class ShowCheckpoint(command.ShowOne):
     _description = _("Querying Checkpoint Details.")
 
     def get_parser(self, prog_name):
         parser = super(ShowCheckpoint, self).get_parser(prog_name)
         parser.add_argument(
-            '--stream-name',
-            metavar='<stream_name>',
-            required=True,
+            'streamName',
+            metavar='<streamName>',
             help=_("Name of the stream to which the checkpoint belongs."),
         )
         parser.add_argument(
-            '--app-name',
-            metavar='<app_name>',
-            required=True,
+            'appName',
+            metavar='<appName>',
             help=_("Name of the app associated with the checkpoint."),
         )
         parser.add_argument(
@@ -62,8 +63,11 @@ class ShowCheckpoint(command.ShowOne):
         )
         parser.add_argument(
             '--checkpoint-type',
-            metavar='<checkpoint_type>',
+            dest='checkpoint_type',
+            metavar='{' + ','.join(CHECKPOINT_TYPE_CHOICES) + '}',
             default='LAST_READ',
+            type=lambda s: s.upper(),
+            choices=CHECKPOINT_TYPE_CHOICES,
             help=_("Type of the checkpoint."
                    "\nLAST_READ: Only sequence numbers are recorded in"
                    "databases."
@@ -75,8 +79,8 @@ class ShowCheckpoint(command.ShowOne):
         client = self.app.client_manager.dis
 
         params = {
-            'stream_name': parsed_args.stream_name,
-            'app_name': parsed_args.app_name,
+            'stream_name': parsed_args.streamName,
+            'app_name': parsed_args.appName,
             'partition_id': parsed_args.partition_id,
             'checkpoint_type': parsed_args.checkpoint_type
         }
@@ -95,15 +99,13 @@ class CreateCheckpoint(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(CreateCheckpoint, self).get_parser(prog_name)
         parser.add_argument(
-            '--stream-name',
-            metavar='<stream_name>',
-            required=True,
+            'streamName',
+            metavar='<streamName>',
             help=_("Name of the stream to which the checkpoint belongs."),
         )
         parser.add_argument(
-            '--app-name',
-            metavar='<app_name>',
-            required=True,
+            'appName',
+            metavar='<appName>',
             help=_("Name of the app associated with the checkpoint."),
         )
         parser.add_argument(
@@ -127,10 +129,14 @@ class CreateCheckpoint(command.ShowOne):
                    "The metadata information can contain a maximum of "
                    "1,000 characters."),
         )
+
         parser.add_argument(
             '--checkpoint-type',
-            metavar='<checkpoint_type>',
+            dest='checkpoint_type',
+            metavar='{' + ','.join(CHECKPOINT_TYPE_CHOICES) + '}',
             default='LAST_READ',
+            type=lambda s: s.upper(),
+            choices=CHECKPOINT_TYPE_CHOICES,
             help=_("Type of the checkpoint."
                    "\nLAST_READ: Only sequence numbers are recorded in"
                    "databases."
@@ -142,8 +148,8 @@ class CreateCheckpoint(command.ShowOne):
         client = self.app.client_manager.dis
 
         attrs = {
-            'stream_name': parsed_args.stream_name,
-            'app_name': parsed_args.app_name,
+            'stream_name': parsed_args.streamName,
+            'app_name': parsed_args.appName,
             'partition_id': parsed_args.partition_id,
             'sequence_number': parsed_args.sequence_number,
             'checkpoint_type': parsed_args.checkpoint_type
@@ -151,7 +157,7 @@ class CreateCheckpoint(command.ShowOne):
         if parsed_args.metadata:
             attrs.update(metadata=parsed_args.metadata)
 
-        obj = client.add_checkpoint(**attrs)
+        obj = client.create_checkpoint(**attrs)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
@@ -165,15 +171,13 @@ class DeleteCheckpoint(command.Command):
     def get_parser(self, prog_name):
         parser = super(DeleteCheckpoint, self).get_parser(prog_name)
         parser.add_argument(
-            '--stream-name',
-            metavar='<stream_name>',
-            required=True,
+            'streamName',
+            metavar='<streamName>',
             help=_("Name of the stream to which the checkpoint belongs."),
         )
         parser.add_argument(
-            '--app-name',
-            metavar='<app_name>',
-            required=True,
+            'appName',
+            metavar='<appName>',
             help=_("Name of the app associated with the checkpoint."),
         )
         parser.add_argument(
@@ -184,8 +188,11 @@ class DeleteCheckpoint(command.Command):
         )
         parser.add_argument(
             '--checkpoint-type',
-            metavar='<checkpoint_type>',
+            dest='checkpoint_type',
+            metavar='{' + ','.join(CHECKPOINT_TYPE_CHOICES) + '}',
             default='LAST_READ',
+            type=lambda s: s.upper(),
+            choices=CHECKPOINT_TYPE_CHOICES,
             help=_("Type of the checkpoint."
                    "\nLAST_READ: Only sequence numbers are recorded in"
                    "databases."
@@ -197,8 +204,8 @@ class DeleteCheckpoint(command.Command):
         client = self.app.client_manager.dis
 
         params = {
-            'stream_name': parsed_args.stream_name,
-            'app_name': parsed_args.app_name,
+            'stream_name': parsed_args.streamName,
+            'app_name': parsed_args.appName,
             'checkpoint_type': parsed_args.checkpoint_type
         }
         if parsed_args.partition_id:

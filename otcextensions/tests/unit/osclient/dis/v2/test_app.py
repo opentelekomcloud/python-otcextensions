@@ -120,7 +120,7 @@ class TestCreateApp(fakes.TestDis):
             'test-app',
         ]
         verifylist = [
-            ('name', 'test-app'),
+            ('appName', 'test-app'),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -174,7 +174,7 @@ class TestShowApp(fakes.TestDis):
         ]
 
         verifylist = [
-            ('app', self._data.name),
+            ('appName', self._data.name),
         ]
 
         # Verify cm is triggered with default parameters
@@ -193,7 +193,7 @@ class TestShowApp(fakes.TestDis):
         ]
 
         verifylist = [
-            ('app', 'unexist_dis_app'),
+            ('appName', 'unexist_dis_app'),
         ]
 
         # Verify cm is triggered with default parameters
@@ -230,7 +230,7 @@ class TestDeleteApp(fakes.TestDis):
         ]
 
         verifylist = [
-            ('app', [self._data[0].name]),
+            ('appName', [self._data[0].name]),
         ]
 
         # Verify cm is triggered with default parameters
@@ -248,7 +248,7 @@ class TestDeleteApp(fakes.TestDis):
             arglist.append(dis_app.name)
 
         verifylist = [
-            ('app', arglist),
+            ('appName', arglist),
         ]
 
         # Verify cm is triggered with default parameters
@@ -269,7 +269,7 @@ class TestDeleteApp(fakes.TestDis):
             'unexist_dis_app',
         ]
         verifylist = [
-            ('app', arglist),
+            ('appName', arglist),
         ]
 
         # Verify cm is triggered with default parameters

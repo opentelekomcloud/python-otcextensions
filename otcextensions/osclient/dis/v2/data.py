@@ -12,6 +12,7 @@
 #
 """DIS Data v2 action implementations"""
 import logging
+from pathlib import Path
 
 from osc_lib import utils
 # from osc_lib import exceptions
@@ -28,7 +29,7 @@ LOG = logging.getLogger(__name__)
 
 _formatters = {
     'timestamp': dis_utils.UnixTimestampFormatter,
-    # 'records': dis_utils.YamlFormat,
+    'records': dis_utils.YamlFormat,
 }
 
 
@@ -40,6 +41,12 @@ def _get_columns(item):
     ]
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
                                                            hidden)
+
+
+DATA_FILE_TEMPATE = """data,partition_id,partitition_key,explicit_hash_key
+TXkgRGF0YQo=,1,2
+My string data,2
+MyData"""
 
 
 CURSOR_TYPE_CHOICES = (
@@ -93,13 +100,9 @@ class DownloadData(command.Lister):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.dis
-        attrs = {
-            'partition-cursor': parsed_args.partition_cursor
-        }
-        if parsed_args.max_fetch_bytes:
-            attrs.update(max_fetch_bytes=parsed_args.max_fetch_bytes)
 
-        data = client.download_data(**attrs)
+        data = client.download_data(parsed_args.partition_cursor,
+                                    parsed_args.max_fetch_bytes)
 
         return (
             self.display_columns,
@@ -117,14 +120,13 @@ class ShowDataCursor(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(ShowDataCursor, self).get_parser(prog_name)
         parser.add_argument(
-            'stream',
-            metavar='<stream>',
+            'streamName',
+            metavar='<streamName>',
             help=_("Name of the stream."),
         )
         parser.add_argument(
             '--partition-id',
             metavar='<partition_id>',
-            dest='partition-id',
             required=True,
             help=_("Partition ID of the stream."),
         )
@@ -160,32 +162,32 @@ class ShowDataCursor(command.ShowOne):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.dis
-        attrs = {
-            'stream-name': parsed_args.stream
-        }
-        for arg in ('partition-id', 'cursor-type',
+        params = {}
+        for arg in ('cursor-type',
                     'starting-sequence-number',
                     'timestamp', 'stream-id',):
             val = getattr(parsed_args, arg)
             if val:
-                attrs[arg] = val
+                params[arg] = val
 
-        obj = client.get_data_cursor(**attrs)
+        obj = client.get_data_cursor(parsed_args.streamName,
+                                     parsed_args.partition_id,
+                                     **params)
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
 
         return (display_columns, data)
 
 
-class UploadData(command.Command):
+class UploadData(command.ShowOne):
     _description = _("upload data to DIS streams.")
 
     def get_parser(self, prog_name):
         parser = super(UploadData, self).get_parser(prog_name)
         parser.add_argument(
-            'stream',
-            metavar='<stream>',
-            help=_("Specifies the name of the DIS Stream."),
+            'streamName',
+            metavar='<streamName>',
+            help=_("Name of the Stream."),
         )
         parser.add_argument(
             '--stream-id',
@@ -220,29 +222,55 @@ class UploadData(command.Command):
                    "it will be preferentially used. If partition_id is "
                    "not passed, partition_key will be used."),
         )
+        parser.add_argument(
+            '--data-file',
+            metavar='<data_file>',
+            help=_('Data file path in CSV format.\n'
+                   'To get template of a data file run this command:\n'
+                   'openstack dis data file template'),
+        )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.dis
 
-        records = {}
-        for arg in ('data', 'explicit_hash_key',
-                    'partition_id', 'partition_key',):
-            val = getattr(parsed_args, arg)
-            if val:
-                records[arg] = val
-
         attrs = {
-            'stream_name': parsed_args.stream,
-            'records': [records]
+            'stream_name': parsed_args.streamName,
+            'stream_id': parsed_args.stream_id
         }
+        if parsed_args.data_file:
+            attrs['data_file'] = parsed_args.data_file
 
-        if parsed_args.stream_id:
-            attrs.update(stream_id=parsed_args.stream_id)
+        else:
+            records = {}
+            for arg in ('data', 'explicit_hash_key',
+                        'partition_id', 'partition_key',):
+                val = getattr(parsed_args, arg)
+                if val:
+                    records[arg] = val
+            attrs['records'] = [records]
 
         obj = client.upload_data(**attrs)
 
         display_columns, columns = _get_columns(obj)
-        data = utils.get_item_properties(obj, columns)
+        data = utils.get_item_properties(obj, columns, formatters=_formatters)
 
         return (display_columns, data)
+
+
+class DataFileTemplate(command.Command):
+    _description = _("Print Data File Template.")
+
+    def get_parser(self, prog_name):
+        parser = super(DataFileTemplate, self).get_parser(prog_name)
+        parser.add_argument(
+            '--output-file',
+            metavar='<output_file>',
+            required=True,
+            help=_('Output File to generate the template.'),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        with Path(parsed_args.output_file).open('w') as out_file:
+            out_file.write(DATA_FILE_TEMPATE)

@@ -134,12 +134,12 @@ class TestCreateStream(fakes.TestDis):
         arglist = [
             'test-stream',
             '--partition-count', '2',
-            '--stream-type', '3',
-            '--data-type', '4',
+            '--stream-type', 'COMMON',
+            '--data-type', 'BLOB',
             '--data-duration', '5',
             '--autoscale-min-count', '6',
             '--autoscale-max-count', '7',
-            '--compression-format', '8',
+            '--compression-format', 'gzip',
             '--tag', 'key=k1,value=v1',
             '--tag', 'key=k2,value=v2',
             '--sys-tag', 'key=sysk1,value=sysv1',
@@ -147,14 +147,14 @@ class TestCreateStream(fakes.TestDis):
             '--autoscale',
         ]
         verifylist = [
-            ('name', 'test-stream'),
+            ('streamName', 'test-stream'),
             ('partition_count', 2),
-            ('stream_type', '3'),
-            ('data_type', '4'),
+            ('stream_type', 'COMMON'),
+            ('data_type', 'BLOB'),
             ('data_duration', 5),
             ('auto_scale_min_partition_count', 6),
             ('auto_scale_max_partition_count', 7),
-            ('compression_format', '8'),
+            ('compression_format', 'gzip'),
             ('tags', [{'key': 'k1', 'value': 'v1'},
                       {'key': 'k2', 'value': 'v2'}]),
             ('sys_tags', [{'key': 'sysk1', 'value': 'sysv1'},
@@ -168,12 +168,12 @@ class TestCreateStream(fakes.TestDis):
         attrs.update(
             name='test-stream',
             partition_count=2,
-            stream_type='3',
-            data_type='4',
+            stream_type='COMMON',
+            data_type='BLOB',
             data_duration=5,
             auto_scale_min_partition_count=6,
             auto_scale_max_partition_count=7,
-            compression_format='8',
+            compression_format='gzip',
             tags=[{'key': 'k1', 'value': 'v1'}, {'key': 'k2', 'value': 'v2'}],
             sys_tags=[{'key': 'sysk1', 'value': 'sysv1'},
                       {'key': 'sysk2', 'value': 'sysv2'}],
@@ -228,7 +228,7 @@ class TestUpdateStreamPartition(fakes.TestDis):
             '--partition-count', '2',
         ]
         verifylist = [
-            ('stream', self._data.name),
+            ('streamName', self._data.name),
             ('partition_count', 2),
         ]
         # Verify cm is triggereg with default parameters
@@ -238,9 +238,7 @@ class TestUpdateStreamPartition(fakes.TestDis):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.update_stream_partition.assert_called_with(
-            'test-dis-stream',
-            stream_name='test-dis-stream',
-            target_partition_count=2
+            'test-dis-stream', 2
         )
         self.assertEqual(self.display_columns, columns)
 
@@ -291,7 +289,7 @@ class TestShowStream(fakes.TestDis):
         ]
 
         verifylist = [
-            ('stream', self._data.name),
+            ('streamName', self._data.name),
         ]
 
         # Verify cm is triggered with default parameters
@@ -310,7 +308,7 @@ class TestShowStream(fakes.TestDis):
         ]
 
         verifylist = [
-            ('stream', 'unexist_dis_stream'),
+            ('streamName', 'unexist_dis_stream'),
         ]
 
         # Verify cm is triggered with default parameters
@@ -347,7 +345,7 @@ class TestDeleteStream(fakes.TestDis):
         ]
 
         verifylist = [
-            ('stream', [self._data[0].name]),
+            ('streamName', [self._data[0].name]),
         ]
 
         # Verify cm is triggered with default parameters
@@ -365,7 +363,7 @@ class TestDeleteStream(fakes.TestDis):
             arglist.append(dis_stream.name)
 
         verifylist = [
-            ('stream', arglist),
+            ('streamName', arglist),
         ]
 
         # Verify cm is triggered with default parameters
@@ -386,7 +384,7 @@ class TestDeleteStream(fakes.TestDis):
             'unexist_dis_stream',
         ]
         verifylist = [
-            ('stream', arglist),
+            ('streamName', arglist),
         ]
 
         # Verify cm is triggered with default parameters
