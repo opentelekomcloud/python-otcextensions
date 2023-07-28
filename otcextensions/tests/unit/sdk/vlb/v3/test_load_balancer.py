@@ -15,30 +15,42 @@ from openstack.tests.unit import base
 from otcextensions.sdk.vlb.v3 import load_balancer
 
 EXAMPLE = {
-    'name': 'example',
-    'description': 'example',
-    'vip_subnet_cidr_id': 'subnet_id',
-    'vpc_id': 'router_id',
-    'elb_virsubnet_ids': 'network_id',
-    'admin_state_up': True,
-    'guaranteed': True,
-    'provider': 'vlb',
     'availability_zone_list': ['eu-nl-01'],
-    'publicip': {
-        "network_type": "5_bgp",
-        "billing_info": "",
-        "bandwidth": {
-            "size": 2,
-            "share_type": "PER",
-            "charge_mode": "traffic",
-            "name": "elbv3_eip_traffic"
-        }
-    },
-    'ip_target_enable': True,
-    'tags': [{
-        "key": "test",
-        "value": "api"
+    'created_at': 'created_at',
+    'description': 'description',
+    'deletion_protection_enable': True,
+    'eips': [{
+        'eip_id': 'eip_id',
+        'eip_address': 'eip_address',
+        'ip_version': 'ip_version'
     }],
+    'publicips': [{
+        'eip_id': 'eip_id',
+        'eip_address': 'eip_address',
+        'ip_version': 'ip_version'
+    }],
+    'guaranteed': True,
+    'admin_state_up': True,
+    'ip_target_enable': True,
+    'l4_flavor_id': 'l4_flavor_id',
+    'l7_flavor_id': 'l7_flavor_id',
+    'listeners': [{'id': 'lstnr_id_1'}, {'id': 'lstnr_id_2'}],
+    'elb_virsubnet_ids': ['uuid1', 'uuid2'],
+    'elb_virsubnet_type': 'subnet_type',
+    'operating_status': 'operating_status',
+    'pools': [{'id': 'pool_id_1'}, {'id': 'pool_id_2'}],
+    'project_id': 'project_id',
+    'provider': 'provider',
+    'provisioning_status': 'provisioning_status',
+    'tags': [{
+        "key": "key1",
+        "value": "value1"
+    }],
+    'updated_at': 'updated_at',
+    'vip_address': 'vip_address',
+    'vip_port_id': 'vip_port_id',
+    'vip_subnet_cidr_id': 'vip_subnet_id',
+    'vpc_id': 'vpc_id',
 }
 
 
@@ -56,8 +68,30 @@ class TestLoadBalancer(base.TestCase):
 
     def test_make_it(self):
         sot = load_balancer.LoadBalancer(**EXAMPLE)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(
-            EXAMPLE['availability_zone_list'],
-            sot.availability_zones)
-        self.assertEqual(EXAMPLE['publicip'], sot.floating_ip[0])
+        self.assertEqual(EXAMPLE['availability_zone_list'],
+                         sot.availability_zones)
+        self.assertEqual(EXAMPLE['created_at'], sot.created_at)
+        self.assertEqual(EXAMPLE['description'], sot.description)
+        self.assertEqual(EXAMPLE['deletion_protection_enable'], sot.deletion_protection_enable)
+        self.assertEqual(EXAMPLE['eips'], sot.eips)
+        self.assertEqual(EXAMPLE['publicips'], sot.floating_ips)
+        self.assertEqual(EXAMPLE['guaranteed'], sot.is_guaranteed)
+        self.assertEqual(EXAMPLE['admin_state_up'], sot.is_admin_state_up)
+        self.assertEqual(EXAMPLE['ip_target_enable'], sot.ip_target_enable)
+        self.assertEqual(EXAMPLE['l4_flavor_id'], sot.l4_flavor_id)
+        self.assertEqual(EXAMPLE['l7_flavor_id'], sot.l7_flavor_id)
+        self.assertEqual(EXAMPLE['listeners'], sot.listeners)
+        self.assertEqual(EXAMPLE['elb_virsubnet_ids'], sot.network_ids)
+        self.assertEqual(EXAMPLE['elb_virsubnet_type'], sot.subnet_type)
+        self.assertEqual(EXAMPLE['operating_status'], sot.operating_status)
+        self.assertEqual(EXAMPLE['pools'], sot.pools)
+        self.assertEqual(EXAMPLE['project_id'], sot.project_id)
+        self.assertEqual(EXAMPLE['provider'], sot.provider)
+        self.assertEqual(EXAMPLE['provisioning_status'], sot.provisioning_status)
+        self.assertEqual(EXAMPLE['tags'], sot.tags)
+        self.assertEqual(EXAMPLE['updated_at'], sot.updated_at)
+
+        self.assertEqual(EXAMPLE['vip_address'], sot.vip_address)
+        self.assertEqual(EXAMPLE['vip_port_id'], sot.vip_port_id)
+        self.assertEqual(EXAMPLE['vip_subnet_cidr_id'], sot.vip_subnet_id)
+        self.assertEqual(EXAMPLE['vpc_id'], sot.vpc_id)
