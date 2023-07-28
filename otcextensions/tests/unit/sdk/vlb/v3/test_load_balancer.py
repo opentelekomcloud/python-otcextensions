@@ -29,8 +29,21 @@ EXAMPLE = {
         'eip_address': 'eip_address',
         'ip_version': 'ip_version'
     }],
+    'publicip': [{
+        'network_type': '5_bgp',
+        'billing_info': 'billing-info',
+        'description': 'description',
+        'ip_version': 4,
+        'bandwidth': {
+            'size': 2,
+            'share_type': 'share-type',
+            'charge_mode': 'charge-mode',
+            'name': 'name',
+            'billing_info': 'billing-info',
+            'id': 'id'
+        }
+    }],
     'guaranteed': True,
-    'admin_state_up': True,
     'ip_target_enable': True,
     'l4_flavor_id': 'l4_flavor_id',
     'l7_flavor_id': 'l7_flavor_id',
@@ -72,11 +85,12 @@ class TestLoadBalancer(base.TestCase):
                          sot.availability_zones)
         self.assertEqual(EXAMPLE['created_at'], sot.created_at)
         self.assertEqual(EXAMPLE['description'], sot.description)
-        self.assertEqual(EXAMPLE['deletion_protection_enable'], sot.deletion_protection_enable)
+        self.assertEqual(EXAMPLE['deletion_protection_enable'],
+                         sot.deletion_protection_enable)
         self.assertEqual(EXAMPLE['eips'], sot.eips)
         self.assertEqual(EXAMPLE['publicips'], sot.floating_ips)
+        self.assertEqual(EXAMPLE['publicip'], sot.floating_ip)
         self.assertEqual(EXAMPLE['guaranteed'], sot.is_guaranteed)
-        self.assertEqual(EXAMPLE['admin_state_up'], sot.is_admin_state_up)
         self.assertEqual(EXAMPLE['ip_target_enable'], sot.ip_target_enable)
         self.assertEqual(EXAMPLE['l4_flavor_id'], sot.l4_flavor_id)
         self.assertEqual(EXAMPLE['l7_flavor_id'], sot.l7_flavor_id)
@@ -87,7 +101,8 @@ class TestLoadBalancer(base.TestCase):
         self.assertEqual(EXAMPLE['pools'], sot.pools)
         self.assertEqual(EXAMPLE['project_id'], sot.project_id)
         self.assertEqual(EXAMPLE['provider'], sot.provider)
-        self.assertEqual(EXAMPLE['provisioning_status'], sot.provisioning_status)
+        self.assertEqual(EXAMPLE['provisioning_status'],
+                         sot.provisioning_status)
         self.assertEqual(EXAMPLE['tags'], sot.tags)
         self.assertEqual(EXAMPLE['updated_at'], sot.updated_at)
 

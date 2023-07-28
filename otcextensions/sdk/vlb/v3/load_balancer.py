@@ -46,7 +46,9 @@ class LoadBalancer(resource.Resource):
     deletion_protection_enable = resource.Body('deletion_protection_enable',
                                                type=bool)
     #: EIP bound to the load balancer.
-    eips = resource.Body('eips', type=list, elements=dict)
+    eips = resource.Body('eips', type=list)
+    #: FIP
+    floating_ip = resource.Body('publicip', type=list, list_type=dict)
     #: Assigned FIPs
     floating_ips = resource.Body('publicips', type=list, list_type=dict)
     #: Specifies whether the load balancer is a dedicated load balancer.

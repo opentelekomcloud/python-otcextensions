@@ -26,8 +26,9 @@ class Listener(resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'protocol_port', 'protocol', 'description', 'default_tls_container_ref',
-        'client_ca_tls_container_ref', 'connection_limit', 'default_pool_id',
+        'protocol_port', 'protocol', 'description',
+        'default_tls_container_ref', 'client_ca_tls_container_ref',
+        'connection_limit', 'default_pool_id',
         'id', 'name', 'http2_enable', 'loadbalancer_id', 'tls_ciphers_policy',
         'member_address', 'member_device_id', 'enable_member_retry',
         'member_timeout', 'client_timeout', 'keepalive_timeout',
@@ -61,7 +62,7 @@ class Listener(resource.Resource):
     #: *Type: list of dicts which contain the load balancer IDs*
     load_balancers = resource.Body('loadbalancers', type=list, elements=dict)
     #: Specifies the ID of the load balancer that the listener is added to.
-    load_balancer_id = resource.Body('loadbalancer')
+    loadbalancer_id = resource.Body('loadbalancer_id')
     #: Specifies the IP address group associated with the listener.
     ipgroup = resource.Body('ipgroup', type=dict)
     #: Name of the listener.
@@ -90,8 +91,8 @@ class Listener(resource.Resource):
     tags = resource.Body('tags', type=list)
     #: Specifies whether to pass source IP addresses of the clients to
     # backend servers.
-    transparent_client_ip_enable = resource.Body('transparent_client_ip_enable',
-                                                 type=bool)
+    transparent_client_ip_enable = resource.Body(
+        'transparent_client_ip_enable', type=bool)
     #: Specifies the security policy that will be used by the listener.
     tls_ciphers_policy = resource.Body('tls_ciphers_policy')
     #: Timestamp when the listener was last updated.

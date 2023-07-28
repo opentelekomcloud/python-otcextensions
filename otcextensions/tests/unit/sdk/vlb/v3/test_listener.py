@@ -26,7 +26,7 @@ EXAMPLE = {
     'http2_enable': True,
     'insert_headers': {'X-Forwarded-ELB-IP': True},
     'loadbalancers': [{'id': 'lb-uuid1'}, {'id': 'lb-uuid2'}],
-    'load_balancer_id': 'load_balancer_id',
+    'loadbalancer_id': 'loadbalancer_id',
     'ipgroup': {'ipgroup_id': 'ipgroup-id',
                 'enable_ipgroup': True,
                 'type': 'type'},
@@ -78,7 +78,7 @@ class TestListener(base.TestCase):
                          sot.enhance_l7policy)
         self.assertEqual(EXAMPLE['http2_enable'], sot.http2_enable)
         self.assertEqual(EXAMPLE['insert_headers'], sot.insert_headers)
-        self.assertEqual(EXAMPLE['load_balancer_id'], sot.load_balancer_id)
+        self.assertEqual(EXAMPLE['loadbalancer_id'], sot.loadbalancer_id)
         self.assertEqual(EXAMPLE['loadbalancers'], sot.load_balancers)
         self.assertEqual(EXAMPLE['ipgroup'], sot.ipgroup)
         self.assertEqual(EXAMPLE['name'], sot.name)

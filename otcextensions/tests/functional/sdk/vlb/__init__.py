@@ -82,7 +82,6 @@ PTtY3HPWl5ygsMsSy0Fi3xp3jmuIwzJhcQ3tcK5gC99HWp6Kw37RL8WoB8GWFU0Q
             tags: list = None,
             name='sdk-vlb-test-lb-' + uuid_v4,
             description='test',
-            admin_state_up=True,
             guaranteed=True,
             provider='vlb',
             ip_target_enable=True,
@@ -93,8 +92,7 @@ PTtY3HPWl5ygsMsSy0Fi3xp3jmuIwzJhcQ3tcK5gC99HWp6Kw37RL8WoB8GWFU0Q
             'description': description,
             'vip_subnet_cidr_id': TestVlb.network['subnet_id'],
             'vpc_id': TestVlb.network['router_id'],
-            'elb_virsubnet_ids': [TestVlb.network['network_id']],
-            'admin_state_up': admin_state_up,
+            'elb_virsubnet_ids': [TestVlb.network['subnet_id']],
             'guaranteed': guaranteed,
             'provider': provider,
             'availability_zone_list': az_list,
@@ -104,7 +102,7 @@ PTtY3HPWl5ygsMsSy0Fi3xp3jmuIwzJhcQ3tcK5gC99HWp6Kw37RL8WoB8GWFU0Q
             **kwargs
         }
         if not az_list:
-            attrs['availability_zone_list'] = ['eu-nl-01']
+            attrs['availability_zone_list'] = ['eu-de-01']
         if not publicip:
             attrs['publicip'] = {
                 "network_type": "5_bgp",
@@ -126,7 +124,6 @@ PTtY3HPWl5ygsMsSy0Fi3xp3jmuIwzJhcQ3tcK5gC99HWp6Kw37RL8WoB8GWFU0Q
 
     def create_listener(
             self,
-            admin_state_up=True,
             insert_headers: dict = None,
             name='sdk-vlb-test-lis-' + uuid_v4,
             protocol_port=80,
@@ -140,7 +137,6 @@ PTtY3HPWl5ygsMsSy0Fi3xp3jmuIwzJhcQ3tcK5gC99HWp6Kw37RL8WoB8GWFU0Q
             'protocol': protocol,
             'insert_headers': insert_headers,
             'name': name,
-            'admin_state_up': admin_state_up,
             'tags': tags,
             **kwargs
         }
