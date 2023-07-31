@@ -44,6 +44,8 @@ class Listener(resource.Resource):
     client_timeout = resource.Body('client_timeout', type=int)
     #: Timestamp when the load balancer was created
     created_at = resource.Body('created_at')
+    #: Specifies the maximum number of connections.
+    connection_limit = resource.Body('connection_limit')
     #: The listener description
     description = resource.Body('description')
     #: Specifies the ID of the default backend server group.
@@ -58,6 +60,8 @@ class Listener(resource.Resource):
     http2_enable = resource.Body('http2_enable', type=bool)
     #: Dictionary of additional headers insertion into HTTP header.
     insert_headers = resource.Body('insert_headers', type=dict)
+    #: Specifies the administrative status of the listener.
+    is_admin_state_up = resource.Body('admin_state_up', type=bool)
     #: List of load balancers associated with this listener.
     #: *Type: list of dicts which contain the load balancer IDs*
     load_balancers = resource.Body('loadbalancers', type=list, elements=dict)

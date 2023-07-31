@@ -15,9 +15,11 @@ from openstack.tests.unit import base
 from otcextensions.sdk.vlb.v3 import listener
 
 EXAMPLE = {
+    'admin_state_up': True,
     'client_ca_tls_container_ref': 'client-ca-tls-container-ref',
     'client_timeout': 80,
     'created_at': 'created-at',
+    'connection_timeout': 80,
     'description': 'description',
     'default_pool_id': 'default-pool-id',
     'default_tls_container_ref': 'default-tls-container-ref',
@@ -63,10 +65,13 @@ class TestListener(base.TestCase):
 
     def test_make_it(self):
         sot = listener.Listener(**EXAMPLE)
+        self.assertEqual(EXAMPLE['admin_state_up'],
+                         sot.is_admin_state_up)
         self.assertEqual(EXAMPLE['client_ca_tls_container_ref'],
                          sot.client_ca_tls_container_ref)
         self.assertEqual(EXAMPLE['client_timeout'], sot.client_timeout)
         self.assertEqual(EXAMPLE['created_at'], sot.created_at)
+        self.assertEqual(EXAMPLE['connection_timeout'], sot.connection_timeout)
         self.assertEqual(EXAMPLE['description'], sot.description)
         self.assertEqual(EXAMPLE['default_pool_id'], sot.default_pool_id)
         self.assertEqual(EXAMPLE['created_at'], sot.created_at)
