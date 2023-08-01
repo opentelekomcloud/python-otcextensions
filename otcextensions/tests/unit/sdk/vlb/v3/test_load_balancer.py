@@ -106,7 +106,7 @@ class TestLoadBalancer(base.TestCase):
         self.assertEqual(EXAMPLE['tags'], sot.tags)
         self.assertEqual(EXAMPLE['updated_at'], sot.updated_at)
 
-        self.assertEqual(EXAMPLE['vip_address'], sot.vip_address)
-        self.assertEqual(EXAMPLE['vip_port_id'], sot.vip_port_id)
-        self.assertEqual(EXAMPLE['vip_subnet_cidr_id'], sot.vip_subnet_id)
+        self.assertEqual(EXAMPLE['vip_address'], sot.ip_address)
+        self.assertEqual(EXAMPLE['vip_port_id'], sot.port_id)
+        self.assertEqual(EXAMPLE['vip_subnet_cidr_id'], sot.subnet_id)
         self.assertEqual(EXAMPLE['vpc_id'], sot.vpc_id)

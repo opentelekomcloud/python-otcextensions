@@ -30,10 +30,7 @@ class Listener(resource.Resource):
         'default_tls_container_ref', 'client_ca_tls_container_ref',
         'connection_limit', 'default_pool_id',
         'id', 'name', 'http2_enable', 'loadbalancer_id', 'tls_ciphers_policy',
-        'member_address', 'member_device_id', 'enable_member_retry',
-        'member_timeout', 'client_timeout', 'keepalive_timeout',
-        'transparent_client_ip_enable', 'enhance_l7policy_enable',
-        'member_instance_id'
+        'sni_container_refs', 'admin_state_up', 'tls_container_id'
     )
 
     # Properties

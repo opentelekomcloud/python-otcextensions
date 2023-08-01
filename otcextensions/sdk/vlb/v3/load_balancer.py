@@ -26,13 +26,18 @@ class LoadBalancer(resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'availability_zone_list', 'description',
-        'name', 'project_id', 'provider',
-        'provisioning_status', 'operating_status',
-        'vip_address', 'vip_network_id',
-        'vip_port_id', 'vip_subnet_id',
+        'availability_zone_list', 'id', 'description',
+        'name', 'publicips', 'provisioning_status',
+        'operating_status', 'guaranteed',
+        'vip_address', 'ip_version',
+        'deletion_protection_enable', 'subnet_type',
+        'vip_port_id', 'vip_subnet_cidr_id',
+        'l4_flavor_id', 'l7_flavor_id', 'member_device_id',
         is_admin_state_up='admin_state_up',
         availability_zones='availability_zone_list',
+        floating_ips='publicips', is_guaranteed='guaranteed',
+        ip_address='vip_address', port_id='vip_port_id',
+        subnet_id='vip_subnet_cidr_id'
     )
 
     # Properties
@@ -83,11 +88,12 @@ class LoadBalancer(resource.Resource):
     tags = resource.Body('tags', type=list)
     #: Timestamp when the load balancer was last updated
     updated_at = resource.Body('updated_at')
-    #: VIP address of load balancer
-    vip_address = resource.Body('vip_address')
-    #: VIP port ID
-    vip_port_id = resource.Body('vip_port_id')
+    #: Specifies the private IP address of the load balancer.
+    ip_address = resource.Body('vip_address')
+    #: Specifies the ID of the port bound to the private IPv4 address
+    # of the load balancer.
+    port_id = resource.Body('vip_port_id')
     #: VIP subnet ID
-    vip_subnet_id = resource.Body('vip_subnet_cidr_id')
+    subnet_id = resource.Body('vip_subnet_cidr_id')
     #: Router id
     vpc_id = resource.Body('vpc_id')
