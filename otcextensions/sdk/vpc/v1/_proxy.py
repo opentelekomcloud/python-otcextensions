@@ -145,30 +145,6 @@ class Proxy(proxy.Proxy):
             ignore_missing=ignore_missing, project_id=project_id,
             base_path=base_path)
 
-    def wait_for_delete_bandwidth(self, bandwidth, interval=2, wait=60):
-        """Wait for the bandwidth to be deleted.
-
-        :param bandwidth:
-            The :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`
-            or group ID to wait on to be deleted.
-        :param int interval:
-            Number of seconds to wait before to consecutive checks.
-            Default to 2.
-        :param int wait:
-            Maximum number of seconds to wait for the delete.
-            Default to 60.
-        :return: Method returns self on success.
-        :raises: :class:`~openstack.exceptions.ResourceTimeout` transition
-                 to status failed to occur in wait seconds.
-        """
-        project_id = self.get_project_id()
-        version = 'v2.0'
-        base_path = _bandwidth.Bandwidth.base_path % {'version': version,
-                                                      'project_id': project_id}
-        bandwidth = self._get_resource(_bandwidth.Bandwidth, bandwidth)
-        return _bandwidth.wait_for_delete(self, bandwidth, interval,
-                                          wait, base_path)
-
     # ======== Peering ========
     def create_peering(self, **attrs):
         """Create a new vpc peering from attributes
