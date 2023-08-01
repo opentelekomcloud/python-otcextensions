@@ -36,6 +36,8 @@ class Pool(resource.Resource):
     # Properties
     #: Description.
     description = resource.Body('description')
+    #: Specifies the time when a backend server group was created.
+    created_at = resource.Body('created_at')
     #: Specifies the ID of the health check configured
     #: for the backend server group.
     healthmonitor_id = resource.Body('healthmonitor_id')
@@ -50,14 +52,19 @@ class Pool(resource.Resource):
     #: backend server group.
     listener_id = resource.Body('listener_id')
     #: Lists the listeners associated with the backend server group.
-    listeners = resource.Body('listeners', type=list)
+    listeners = resource.Body('listeners', type=list, elements=dict)
     #: Specifies the ID of the associated load balancer.
     loadbalancer_id = resource.Body('loadbalancer_id')
     #: Lists the IDs of load balancers associated with the
     #: backend server group.
-    loadbalancers = resource.Body('loadbalancers', type=list)
+    loadbalancers = resource.Body('loadbalancers', type=list, elements=dict)
     #: Lists the backend servers in the backend server group.
-    members = resource.Body('members', type=list)
+    members = resource.Body('members', type=list, elements=dict)
+    #: Specifies whether to enable removal protection.
+    member_deletion_protection_enable = resource.Body(
+        'member_deletion_protection_enable', type=bool)
+    #: Specifies the backend server group name.
+    name = resource.Body('name')
     #: Specifies the project ID.
     project_id = resource.Body('project_id')
     #: Specifies the protocol used by the backend server group
@@ -67,3 +74,9 @@ class Pool(resource.Resource):
     session_persistence = resource.Body('session_persistence', type=dict)
     #: Specifies whether to enable slow start.
     slow_start = resource.Body('slow_start', type=dict)
+    #: Specifies the time when when a backend server group was updated.
+    updated_at = resource.Body('updated_at')
+    #: Specifies the ID of the VPC where the backend server group works.
+    vpc_id = resource.Body('vpc_id')
+    #: Specifies the type of the backend server group.
+    type = resource.Body('type')

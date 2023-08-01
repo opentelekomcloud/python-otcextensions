@@ -15,9 +15,22 @@ from openstack.tests.unit import base
 from otcextensions.sdk.vlb.v3 import member
 
 EXAMPLE = {
-    'protocol_port': 80,
+    'pool_id': 'pool-id',
+    'address': 'address',
+    'created_at': 'created-at',
+    'ip_version': 'ip-version',
+    'instance_id': 'instance-id',
+    'admin_state_up': True,
     'name': 'name',
-    'address': '192.168.1.3',
+    'member_type': 'member-type',
+    'subnet_cidr_id': 'subnet-cidr-id',
+    'operating_status': 'operating-status',
+    'project_id': 'project-id',
+    'protocol_port': 80,
+    'status': [],
+    'subnet_id': 'subnet-id',
+    'weight': 1,
+    'updated_at': 'updated-at'
 }
 
 
@@ -35,6 +48,19 @@ class TestLoadBalancer(base.TestCase):
 
     def test_make_it(self):
         sot = member.Member(**EXAMPLE)
-        self.assertEqual(EXAMPLE['name'], sot.name)
+        self.assertEqual(EXAMPLE['pool_id'], sot.pool_id)
         self.assertEqual(EXAMPLE['address'], sot.address)
+        self.assertEqual(EXAMPLE['created_at'], sot.created_at)
+        self.assertEqual(EXAMPLE['ip_version'], sot.ip_version)
+        self.assertEqual(EXAMPLE['instance_id'], sot.instance_id)
+        self.assertEqual(EXAMPLE['admin_state_up'], sot.is_admin_state_up)
+        self.assertEqual(EXAMPLE['name'], sot.name)
+        self.assertEqual(EXAMPLE['member_type'], sot.member_type)
+        self.assertEqual(EXAMPLE['subnet_cidr_id'], sot.subnet_cidr_id)
+        self.assertEqual(EXAMPLE['operating_status'], sot.operating_status)
+        self.assertEqual(EXAMPLE['project_id'], sot.project_id)
         self.assertEqual(EXAMPLE['protocol_port'], sot.protocol_port)
+        self.assertEqual(EXAMPLE['status'], sot.status)
+        self.assertEqual(EXAMPLE['subnet_id'], sot.subnet_id)
+        self.assertEqual(EXAMPLE['weight'], sot.weight)
+        self.assertEqual(EXAMPLE['updated_at'], sot.updated_at)
