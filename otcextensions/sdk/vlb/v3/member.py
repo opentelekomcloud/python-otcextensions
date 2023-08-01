@@ -35,7 +35,7 @@ class Member(resource.Resource):
 
     # Properties
     #: Specifies the ID of the backend server group.
-    pool_id = resource.URI('pool_id')
+    id = resource.URI('id')
     #: Specifies the IP address of the backend server.
     address = resource.Body('address')
     #: Specifies the time when a backend server was added.
@@ -52,7 +52,7 @@ class Member(resource.Resource):
     member_type = resource.Body('member_type')
     #: Specifies the ID of the IPv4 or IPv6 subnet where the backend server
     # resides.
-    subnet_cidr_id = resource.Body('subnet_cidr_id')
+    subnet_id = resource.Body('subnet_cidr_id')
     #: Specifies the operating status of the backend server.
     operating_status = resource.Body('operating_status')
     #: Specifies the project ID.
@@ -62,8 +62,6 @@ class Member(resource.Resource):
     #: Specifies the health status of the backend server if listener_id is
     # specified.
     status = resource.Body('status', type=list, elements=dict)
-    #: Specifies the ID of the subnet where the backend server works.
-    subnet_id = resource.Body('subnet_id')
     #: Specifies the weight of the backend server.
     weight = resource.Body('weight', type=int)
     #: Specifies the time when a backend server was updated.

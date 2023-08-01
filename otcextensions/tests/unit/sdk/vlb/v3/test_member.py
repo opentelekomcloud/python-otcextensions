@@ -28,7 +28,6 @@ EXAMPLE = {
     'project_id': 'project-id',
     'protocol_port': 80,
     'status': [],
-    'subnet_id': 'subnet-id',
     'weight': 1,
     'updated_at': 'updated-at'
 }
@@ -56,11 +55,10 @@ class TestLoadBalancer(base.TestCase):
         self.assertEqual(EXAMPLE['admin_state_up'], sot.is_admin_state_up)
         self.assertEqual(EXAMPLE['name'], sot.name)
         self.assertEqual(EXAMPLE['member_type'], sot.member_type)
-        self.assertEqual(EXAMPLE['subnet_cidr_id'], sot.subnet_cidr_id)
+        self.assertEqual(EXAMPLE['subnet_id'], sot.subnet_cidr_id)
         self.assertEqual(EXAMPLE['operating_status'], sot.operating_status)
         self.assertEqual(EXAMPLE['project_id'], sot.project_id)
         self.assertEqual(EXAMPLE['protocol_port'], sot.protocol_port)
         self.assertEqual(EXAMPLE['status'], sot.status)
-        self.assertEqual(EXAMPLE['subnet_id'], sot.subnet_id)
         self.assertEqual(EXAMPLE['weight'], sot.weight)
         self.assertEqual(EXAMPLE['updated_at'], sot.updated_at)

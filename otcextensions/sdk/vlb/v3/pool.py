@@ -28,8 +28,9 @@ class Pool(resource.Resource):
     _query_mapping = resource.QueryParameters(
         'admin_state_up', 'description', 'healthmonitor_id',
         'id', 'name', 'loadbalancer_id', 'protocol',
-        'lb_algorithm', 'enterprise_project_id',
-        'ip_version', 'member_address', 'member_device_id',
+        'lb_algorithm', 'member_deletion_protection_enable',
+        'listener_id', 'member_instance_id', 'member_device_id',
+        'ip_version', 'member_address',
         is_admin_state_up='admin_state_up'
     )
 
