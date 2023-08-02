@@ -26,7 +26,7 @@ class SecurityPolicy(resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'project_id', 'id'
+        'id', 'description', 'protocols', 'ciphers'
     )
 
     # Properties

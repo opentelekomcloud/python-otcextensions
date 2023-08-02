@@ -40,7 +40,5 @@ class Flavor(resource.Resource):
     shared = resource.Body('shared', type=bool)
     #: Specifies the project ID.
     project_id = resource.Body('project_id')
-    #: Specifies the request ID.
-    request_id = resource.Body('request_id')
     #: Specifies the flavor type.
     type = resource.Body('type')

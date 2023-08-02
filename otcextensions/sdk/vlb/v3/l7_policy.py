@@ -37,31 +37,41 @@ class L7Policy(resource.Resource):
     # Properties
     #: Specifies where requests will be forwarded.
     action = resource.Body('action')
+    #: Specifies the time when the forwarding policy was added.
+    created_at = resource.Body('created_at')
     #: Provides supplementary information about the forwarding policy.
     description = resource.Body('description')
-    #: Specifies the configuration of the page that will be returned.
-    fixed_response_config = resource.Body('fixed_response_config', type=dict)
     #: Specifies the administrative status of the forwarding policy.
     is_admin_state_up = resource.Body('admin_state_up', type=bool)
     #: Specifies the ID of the listener to which the forwarding policy is
     #: added.
     listener_id = resource.Body('listener_id')
+    #: Specifies the forwarding policy name.
+    name = resource.Body('name')
     #: Specifies the forwarding policy priority.
     priority = resource.Body('priority', type=int)
     #: Specifies the ID of the project where the forwarding policy is used.
     project_id = resource.Body('project_id')
     #: Specifies the provisioning status of the forwarding policy.
     provisioning_status = resource.Body('provisioning_status')
-    #: Specifies the forwarding policy priority.
-    position = resource.Body('position', type=int)
-    #: Specifies the ID of the listener to which requests are redirected.
-    redirect_listener_id = resource.Body('redirect_listener_id')
     #: Specifies the ID of the backend server group that requests are
     #: forwarded to.
     redirect_pool_id = resource.Body('redirect_pool_id')
+    #: Specifies the forwarding policy priority.
+    position = resource.Body('position', type=int)
+    # #: Specifies the configuration of the backend server group that
+    # # the requests are forwarded to.
+    # redirect_pools_config = resource.Body('redirect_pools_config', tyr=list,
+    #                                       elements=dict)
+    #: Specifies the ID of the listener to which requests are redirected.
+    redirect_listener_id = resource.Body('redirect_listener_id')
     #: Specifies the URL to which requests are forwarded.
     redirect_url = resource.Body('redirect_url')
     #: Lists the forwarding rules in the forwarding policy.
     rules = resource.Body('rules', type=list)
     #: Specifies the URL to which requests are forwarded.
     redirect_url_config = resource.Body('redirect_url_config', type=dict)
+    #: Specifies the configuration of the page that will be returned.
+    fixed_response_config = resource.Body('fixed_response_config', type=dict)
+    #: Specifies the time when the forwarding policy was updated.
+    updated_at = resource.Body('updated_at')
