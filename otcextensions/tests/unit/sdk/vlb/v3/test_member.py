@@ -15,7 +15,6 @@ from openstack.tests.unit import base
 from otcextensions.sdk.vlb.v3 import member
 
 EXAMPLE = {
-    'pool_id': 'pool-id',
     'address': 'address',
     'created_at': 'created-at',
     'ip_version': 'ip-version',
@@ -23,12 +22,12 @@ EXAMPLE = {
     'admin_state_up': True,
     'name': 'name',
     'member_type': 'member-type',
-    'subnet_cidr_id': 'subnet-cidr-id',
+    'subnet_cidr_id': 'subnet-id',
     'operating_status': 'operating-status',
     'project_id': 'project-id',
     'protocol_port': 80,
     'status': [],
-    'weight': 1,
+    'weight': 5,
     'updated_at': 'updated-at'
 }
 
@@ -47,7 +46,6 @@ class TestLoadBalancer(base.TestCase):
 
     def test_make_it(self):
         sot = member.Member(**EXAMPLE)
-        self.assertEqual(EXAMPLE['pool_id'], sot.pool_id)
         self.assertEqual(EXAMPLE['address'], sot.address)
         self.assertEqual(EXAMPLE['created_at'], sot.created_at)
         self.assertEqual(EXAMPLE['ip_version'], sot.ip_version)

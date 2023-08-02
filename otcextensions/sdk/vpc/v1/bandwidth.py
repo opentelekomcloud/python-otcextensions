@@ -37,7 +37,7 @@ class Bandwidth(resource.Resource):
     allow_delete = True
     allow_list = True
 
-    _query_mapping = resource.QueryParameters('id')
+    _query_mapping = resource.QueryParameters()
 
     # Properties
     #: Specifies the bandwidth name.

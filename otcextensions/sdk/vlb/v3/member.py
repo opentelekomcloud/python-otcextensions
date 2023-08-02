@@ -34,8 +34,6 @@ class Member(resource.Resource):
     )
 
     # Properties
-    #: Specifies the ID of the backend server group.
-    id = resource.URI('id')
     #: Specifies the IP address of the backend server.
     address = resource.Body('address')
     #: Specifies the time when a backend server was added.
