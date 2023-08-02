@@ -15,12 +15,22 @@ from openstack.tests.unit import base
 from otcextensions.sdk.vlb.v3 import health_monitor
 
 EXAMPLE = {
-    'type': 'type',
-    'timeout': 60,
     'delay': 5,
-    'max_retries': 3,
-    'admin_state_up': True,
+    'domain_name': 'domain-name',
+    'expected_codes': 'expected-codes',
+    'http_method': 'http_method',
+    'admin_state_up': 'admin-state-up',
+    'max_retries': 5,
+    'max_retries_down': 5,
     'monitor_port': 80,
+    'pool_id': 'pool-id',
+    'pools': [{'id': 'uuid1'}, {'id': 'uuid2'}],
+    'project_id': 'project-id',
+    'timeout': 20,
+    'type': 'type',
+    'url_path': 'url-path',
+    'created_at': 'created-at',
+    'updated_at': 'updated-at',
 }
 
 
@@ -38,7 +48,19 @@ class TestLoadBalancer(base.TestCase):
 
     def test_make_it(self):
         sot = health_monitor.HealthMonitor(**EXAMPLE)
-        self.assertEqual(EXAMPLE['type'], sot.type)
         self.assertEqual(EXAMPLE['delay'], sot.delay)
+        self.assertEqual(EXAMPLE['domain_name'], sot.domain_name)
+        self.assertEqual(EXAMPLE['expected_codes'], sot.expected_codes)
+        self.assertEqual(EXAMPLE['http_method'], sot.http_method)
+        self.assertEqual(EXAMPLE['admin_state_up'], sot.is_admin_state_up)
         self.assertEqual(EXAMPLE['max_retries'], sot.max_retries)
+        self.assertEqual(EXAMPLE['max_retries_down'], sot.max_retries_down)
         self.assertEqual(EXAMPLE['monitor_port'], sot.monitor_port)
+        self.assertEqual(EXAMPLE['pool_id'], sot.pool_id)
+        self.assertEqual(EXAMPLE['pools'], sot.pools)
+        self.assertEqual(EXAMPLE['project_id'], sot.project_id)
+        self.assertEqual(EXAMPLE['timeout'], sot.timeout)
+        self.assertEqual(EXAMPLE['type'], sot.type)
+        self.assertEqual(EXAMPLE['url_path'], sot.url_path)
+        self.assertEqual(EXAMPLE['created_at'], sot.created_at)
+        self.assertEqual(EXAMPLE['updated_at'], sot.updated_at)

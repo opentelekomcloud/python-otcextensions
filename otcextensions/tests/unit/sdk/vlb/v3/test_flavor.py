@@ -16,7 +16,13 @@ from otcextensions.sdk.vlb.v3 import flavor
 
 EXAMPLE = {
     'id': 'id',
-    'name': 'L4_flavor.elb.s2.medium',
+    'info': {},
+    'flavor_sold_out': True,
+    'name': 'name',
+    'shared': True,
+    'project_id': 'project-id',
+    'request_id': 'request-id',
+    'type': 'type-id',
 }
 
 
