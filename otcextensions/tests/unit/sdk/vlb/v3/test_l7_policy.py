@@ -18,7 +18,7 @@ EXAMPLE = {
     'action': 'action',
     'created_at': 'created-at',
     'description': 'description',
-    'admin_state_up': 'admin-state-up',
+    'admin_state_up': True,
     'listener_id': 'listener-id',
     'name': 'name',
     'priority': 1,

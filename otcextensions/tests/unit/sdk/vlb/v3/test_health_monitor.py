@@ -19,7 +19,7 @@ EXAMPLE = {
     'domain_name': 'domain-name',
     'expected_codes': 'expected-codes',
     'http_method': 'http_method',
-    'admin_state_up': 'admin-state-up',
+    'admin_state_up': True,
     'max_retries': 5,
     'max_retries_down': 5,
     'monitor_port': 80,
