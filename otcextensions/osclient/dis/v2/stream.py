@@ -38,7 +38,6 @@ def _get_columns(item):
     column_map = {}
     hidden = [
         'location',
-        'stream_id',
     ]
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
                                                            hidden)
@@ -120,6 +119,7 @@ class ShowStream(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.dis
         obj = client.get_stream(parsed_args.streamName)
+        obj.id = obj.stream_id
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns, formatters=_formatters)
