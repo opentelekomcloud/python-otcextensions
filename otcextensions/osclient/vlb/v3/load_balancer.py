@@ -168,7 +168,8 @@ class ListLoadBalancers(command.Lister):
         )
         parser.add_argument(
             '--description',
-            help=_('Provides supplementary information about the load balancer')
+            help=_('Provides supplementary information about the'
+                   'load balancer')
         )
         parser.add_argument(
             '--provisioning-status',
@@ -191,7 +192,8 @@ class ListLoadBalancers(command.Lister):
         parser.add_argument(
             '--vpc-id',
             metavar='<vpc_id>',
-            help=_('Specifies the ID of the VPC where the load balancer works.')
+            help=_('Specifies the ID of the VPC where the load'
+                   'balancer works.')
         )
         parser.add_argument(
             '--port-id',
@@ -276,7 +278,8 @@ class ListLoadBalancers(command.Lister):
 
         args_list = ['id', 'name', 'marker', 'limit', 'page_reverse',
                      'description', 'provisioning_status', 'operating_status',
-                     'guaranteed', 'vpc_id', 'vip_port_id', 'eips', 'publicips',
+                     'guaranteed', 'vpc_id', 'vip_port_id', 'eips',
+                     'publicips',
                      'vip_address', 'vip_subnet_cidr_id',
                      'availability_zone_list', 'l4_flavor_id', 'l7_flavor_id',
                      'member_device_id', 'member_address', 'ip_version',
@@ -330,31 +333,31 @@ class ShowLoadBalancer(command.ShowOne):
         return parser
 
     def take_action(self, parsed_args):
-         client = self.app.client_manager.vlb
+        client = self.app.client_manager.vlb
 
-         obj = client.find_load_balancer(
-             name_or_id=parsed_args.loadbalancer,
-             ignore_missing=False
-         )
+        obj = client.find_load_balancer(
+            name_or_id=parsed_args.loadbalancer,
+            ignore_missing=False
+        )
 
-         data = utils.get_dict_properties(
-             _flatten_loadbalancer(obj), self.columns)
-         if obj.eips:
-             data, self.columns = _add_eips_to_load_balancer_obj(
-                 obj, data, self.columns)
-         if obj.floating_ips:
-             data, self.columns = _add_publicips_to_load_balancer_obj(
-                 obj, data, self.columns)
-         if obj.listeners:
-             data, self.columns = _add_listeners_to_load_balancer_obj(
-                 obj, data, self.columns)
-         if obj.pools:
-             data, self.columns = _add_pools_to_load_balancer_obj(
-                 obj, data, self.columns)
-         if obj.tags:
-             data, self.columns = _add_tags_to_load_balancer_obj(
-                 obj, data, self.columns)
-         return self.columns, data
+        data = utils.get_dict_properties(
+            _flatten_loadbalancer(obj), self.columns)
+        if obj.eips:
+            data, self.columns = _add_eips_to_load_balancer_obj(
+                obj, data, self.columns)
+        if obj.floating_ips:
+            data, self.columns = _add_publicips_to_load_balancer_obj(
+                obj, data, self.columns)
+        if obj.listeners:
+            data, self.columns = _add_listeners_to_load_balancer_obj(
+                obj, data, self.columns)
+        if obj.pools:
+            data, self.columns = _add_pools_to_load_balancer_obj(
+                obj, data, self.columns)
+        if obj.tags:
+            data, self.columns = _add_tags_to_load_balancer_obj(
+                obj, data, self.columns)
+        return self.columns, data
 
 
 class CreateLoadBalancer(command.ShowOne):
@@ -430,7 +433,8 @@ class CreateLoadBalancer(command.ShowOne):
         parser.add_argument(
             '--vpc-id',
             metavar='<vpc_id>',
-            help=_('Specifies the ID of the VPC where the load balancer works.')
+            help=_('Specifies the ID of the VPC where the load balancer'
+                   'works.')
         )
         parser.add_argument(
             '--availability-zone',
@@ -545,9 +549,9 @@ class CreateLoadBalancer(command.ShowOne):
             attrs['deletion_protection_enable'] =\
                 parsed_args.deletion_protection_enable
 
-        if (parsed_args.network_type or parsed_args.publicip_billing_info or
-            parsed_args.ip_version or parsed_args.bandwidth or
-                parsed_args.publicip_description):
+        if (parsed_args.network_type or parsed_args.publicip_billing_info
+                or parsed_args.ip_version or parsed_args.bandwidth
+                or parsed_args.publicip_description):
             attrs['publicip'] = {}
             if parsed_args.bandwidth:
                 attrs['publicip']['bandwidth'] = parsed_args.bandwidth[0]
@@ -635,11 +639,12 @@ class UpdateLoadBalancer(command.ShowOne):
                    'using vip_subnet_cidr_id, and the private IPv4 address'
                    'of the load balancer will be changed accordingly.'
                    'If vip_address is also specified, the IP address specified'
-                   'by it must be in the subnet specified by vip_subnet_cidr_id'
-                   'and will be used as the private IPv4 address of the'
-                   'load balancer. The IPv4 subnet must be in the VPC'
-                   'specified by vpc_id. Enter null if the private IPv4 address'
-                   'is unbound from the load balancer.')
+                   'by it must be in the subnet specified by'
+                   'vip_subnet_cidr_id and will be used as the private'
+                   'IPv4 address of the load balancer. The IPv4 subnet'
+                   'must be in the VPC'
+                   'specified by vpc_id. Enter null if the private IPv4'
+                   'address is unbound from the load balancer.')
         )
         parser.add_argument(
             '--ip-address',
