@@ -65,8 +65,12 @@ class HealthMonitor(resource.Resource):
     project_id = resource.Body('project_id')
     #: Specifies the maximum time required for waiting for a response
     #: from the health check, in seconds.
-    timeout = resource.Body('timeout')
+    timeout = resource.Body('timeout', type=int)
     #: Specifies the health check protocol.
     type = resource.Body('type')
     #: Specifies the HTTP request path for the health check.
     url_path = resource.Body('url_path')
+    #: Specifies the time when the health check was configured.
+    created_at = resource.Body('created_at')
+    #: Specifies the time when the health check was updated.
+    updated_at = resource.Body('updated_at')
