@@ -16,7 +16,12 @@ from otcextensions.sdk.vlb.v3 import flavor
 
 EXAMPLE = {
     'id': 'id',
-    'name': 'L4_flavor.elb.s2.medium',
+    'info': {},
+    'flavor_sold_out': True,
+    'name': 'name',
+    'shared': True,
+    'project_id': 'project-id',
+    'type': 'type-id',
 }
 
 
@@ -34,5 +39,10 @@ class TestLoadBalancer(base.TestCase):
 
     def test_make_it(self):
         sot = flavor.Flavor(**EXAMPLE)
-        self.assertEqual(EXAMPLE['name'], sot.name)
         self.assertEqual(EXAMPLE['id'], sot.id)
+        self.assertEqual(EXAMPLE['info'], sot.info)
+        self.assertEqual(EXAMPLE['flavor_sold_out'], sot.flavor_sold_out)
+        self.assertEqual(EXAMPLE['name'], sot.name)
+        self.assertEqual(EXAMPLE['shared'], sot.shared)
+        self.assertEqual(EXAMPLE['project_id'], sot.project_id)
+        self.assertEqual(EXAMPLE['type'], sot.type)
