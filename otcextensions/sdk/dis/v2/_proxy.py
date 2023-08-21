@@ -16,7 +16,7 @@ import binascii
 from pathlib import Path
 
 from openstack import proxy
-from openstack import exceptions
+# from openstack import exceptions
 from otcextensions.sdk.dis.v2 import app as _app
 from otcextensions.sdk.dis.v2 import checkpoint as _checkpoint
 from otcextensions.sdk.dis.v2 import data as _data
@@ -222,50 +222,48 @@ class Proxy(proxy.Proxy):
 
     # ======== Data Management ========
     def upload_data(self, stream_name, stream_id=None,
-                    data_file=None, records=[]):
-        """upload data to DIS stream.
+                    records=None, filename=None):
+        """Upload data to DIS stream.
 
         :param stream_name: Name of the stream.
-        :param dict attrs: Keyword arguments comprised
-            of the properties on the Streams class.
-        :returns: ``None``
+        :param stream_id: Optional stream ID.
+        :param records: List of records (if filename is not used).
+        :param filename: Path to the CSV file.
+
+        :returns: The results of uploaded data.
+        :rtype: :class:`~otcextensions.sdk.dis.v2.data.Data`
         """
+        def encode_data(data):
+            try:
+                base64.b64decode(data, validate=True)
+                return data
+            except binascii.Error:
+                return base64.b64encode(data.encode('ascii')).decode('ascii')
+
+        records = records if records else []
         records_data = []
-        if data_file:
-            with Path(data_file).open('r') as csv_content:
+        if filename:
+            with Path(filename).open('r') as csv_content:
                 header = next(csv.reader(csv_content, delimiter=','))
                 if 'data' not in header:
-                    raise exceptions.SDKException(
-                        f'data column is missing in the header of {data_file}'
+                    raise ValueError(
+                        f'data column is missing in the header of {filename}'
                     )
                 reader = csv.DictReader(csv_content, header, delimiter=',')
-
                 for record in reader:
                     data = record.get('data')
                     if data and data != '':
-                        try:
-                            base64.b64decode(data, validate=True)
-                        except binascii.Error:
-                            record['data'] = base64.b64encode(
-                                data.encode('ascii')).decode('ascii')
+                        record['data'] = encode_data(data)
                     else:
-                        raise exceptions.SDKException(
-                            'Data File contains empty data!'
-                        )
+                        raise ValueError('Data File contains empty data!')
                     records_data.append(record)
         else:
             for record in records:
                 data = record.get('data')
                 if data and data != '':
-                    try:
-                        base64.b64decode(data, validate=True)
-                    except binascii.Error:
-                        record['data'] = base64.b64encode(
-                            data.encode('ascii')).decode('ascii')
+                    record['data'] = encode_data(data)
                 else:
-                    raise exceptions.SDKException(
-                        'data is missing in the attributes'
-                    )
+                    raise ValueError('data is missing in the attributes')
                 records_data.append(record)
 
         request_attrs = {
@@ -277,13 +275,14 @@ class Proxy(proxy.Proxy):
         return self._create(_data.Data, **request_attrs)
 
     def download_data(self, partititon_cursor,
-                      max_fetch_bytes=None, output_file=None):
+                      max_fetch_bytes=None, filename=None):
         """Download data from a DIS stream.
 
         :param partititon_cursor: Data cursor, which needs to be
             obtained through the API for obtaining data cursors.
         :param max_fetch_bytes: Maximum number of bytes
             that can be obtained for each request.
+        :param filename: Path to the CSV file.
 
         :returns: a generator of
             (:class:`~otcextensions.sdk.dis.v2.data.Data`) instances
@@ -291,7 +290,25 @@ class Proxy(proxy.Proxy):
         params = {'partition-cursor': partititon_cursor}
         if max_fetch_bytes:
             params.update(max_fetch_bytes=max_fetch_bytes)
-        return self._list(_data.Data, **params)
+        data = self._list(_data.Data, **params)
+        if filename:
+            columns = (
+                'sequence_number',
+                'data',
+                'timestamp',
+                'timestamp_type',
+            )
+            with open(filename, 'w', encoding='UTF8', newline='') as f:
+                writer = csv.writer(f)
+                # write the header
+                writer.writerow(columns)
+                # write multiple rows
+                writer.writerows(
+                    (s.sequence_number, s.data, s.timestamp,
+                        s.timestamp_type) for s in data
+                )
+        else:
+            return data
 
     def get_data_cursor(self, stream_name, partition_id, **params):
         """Query data cursor.
@@ -361,17 +378,17 @@ class Proxy(proxy.Proxy):
         """Start dump tasks in batches.
 
         :param stream_name: Name of the stream.
-        :param *task_id: Dump task ID(s).
+        :param task_id: Dump task ID(s).
         :returns: ``None``
         """
         obj = _dump_task.DumpTask()
         return obj._action(self, stream_name, 'start', *task_id)
 
     def pause_dump_task(self, stream_name, *task_id):
-        """Start dump tasks in batches.
+        """Pause dump tasks in batches.
 
         :param stream_name: Name of the stream.
-        :param *task_id: Dump task ID(s).
+        :param task_id: Dump task ID(s).
         :returns: ``None``
         """
         obj = _dump_task.DumpTask()

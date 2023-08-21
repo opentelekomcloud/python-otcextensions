@@ -157,7 +157,7 @@ class Stream(resource.Resource):
 
     @classmethod
     def _get_next_link(cls, uri, response, data, limit):
-        # RDS service pagination. Returns query for the next page
+        # DIS service pagination. Returns query for the next page
         next_link = None
         params = {}
         if 'has_more_streams' in data and data['has_more_streams']:

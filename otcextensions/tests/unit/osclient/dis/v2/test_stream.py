@@ -260,6 +260,7 @@ class TestShowStream(fakes.TestDis):
         'readable_partition_count',
         'retention_period',
         'status',
+        'stream_id',
         'stream_type',
         'updated_at',
         'writable_partition_count'

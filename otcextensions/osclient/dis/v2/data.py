@@ -44,7 +44,7 @@ def _get_columns(item):
 
 
 DATA_FILE_TEMPATE = """data,partition_id,partitition_key,explicit_hash_key
-TXkgRGF0YQo=,1,2
+TXkgRGF0YQo=,1,2,12345678
 My string data,2
 MyData"""
 
@@ -96,14 +96,23 @@ class DownloadData(command.Lister):
                    "\nNote: If the value is less than the size of a single "
                    "record in the partition, the record cannot be obtained."),
         )
+        parser.add_argument(
+            '--filename',
+            metavar='<filename>',
+            help=_('To save data to a file.\n'
+                   'Note: File exentension should be `csv`'),
+        )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.dis
 
         data = client.download_data(parsed_args.partition_cursor,
-                                    parsed_args.max_fetch_bytes)
+                                    parsed_args.max_fetch_bytes,
+                                    parsed_args.filename)
 
+        if parsed_args.filename:
+            return (self.display_columns, ())
         return (
             self.display_columns,
             (
@@ -223,8 +232,8 @@ class UploadData(command.ShowOne):
                    "not passed, partition_key will be used."),
         )
         parser.add_argument(
-            '--data-file',
-            metavar='<data_file>',
+            '--filename',
+            metavar='<filename>',
             help=_('Data file path in CSV format.\n'
                    'To get template of a data file run this command:\n'
                    'openstack dis data file template'),
@@ -238,8 +247,8 @@ class UploadData(command.ShowOne):
             'stream_name': parsed_args.streamName,
             'stream_id': parsed_args.stream_id
         }
-        if parsed_args.data_file:
-            attrs['data_file'] = parsed_args.data_file
+        if parsed_args.filename:
+            attrs['filename'] = parsed_args.filename
 
         else:
             records = {}
@@ -264,10 +273,10 @@ class DataFileTemplate(command.Command):
     def get_parser(self, prog_name):
         parser = super(DataFileTemplate, self).get_parser(prog_name)
         parser.add_argument(
-            '--output-file',
-            metavar='<output_file>',
+            '--filename',
+            metavar='<filename>',
             required=True,
-            help=_('Output File to generate the template.'),
+            help=_('FileName to generate the template.'),
         )
         return parser
 

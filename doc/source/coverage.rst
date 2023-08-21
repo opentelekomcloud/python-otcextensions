@@ -53,19 +53,13 @@ under several service tags. This may change in future.
       - X
       - X
       -
-    * - dws
-      - Data Warehouse Service
-      - X
-      - X
-      - X
-      -
     * - cts
       - Clout Trace Service
       - X
       - X
       - X
       -
-    * - dts
+    * - dcs
       - Distributed Cache Service
       - X
       - X
@@ -73,6 +67,12 @@ under several service tags. This may change in future.
       -
     * - deh
       - Dedicated Host
+      - X
+      - X
+      - X
+      -
+    * - dis
+      - Data Ingestion Service
       - X
       - X
       - X
@@ -85,6 +85,12 @@ under several service tags. This may change in future.
       -
     * - dns
       - Domain Name Service
+      - X
+      - X
+      - X
+      -
+    * - dws
+      - Data Warehouse Service
       - X
       - X
       - X
