@@ -33,13 +33,14 @@ def _flatten_loadbalancer(obj):
         'provider': obj.provider,
         'operating_status': obj.operating_status,
         'ip_address': obj.ip_address,
+        'is_admin_state_up': obj.is_admin_state_up,
         'subnet_id': obj.subnet_id,
         'subnet_type': obj.subnet_type,
         'project_id': obj.project_id,
         'port_id': obj.port_id,
         'created_at': obj.created_at,
         'updated_at': obj.updated_at,
-        'guaranteed': obj.is_guaranteed,
+        'is_guaranteed': obj.is_guaranteed,
         'vpc_id': obj.vpc_id,
         'availability_zone_list': obj.availability_zones,
         'l4_flavor_id': obj.l4_flavor_id,
@@ -76,7 +77,7 @@ def _add_publicips_to_load_balancer_obj(obj, data, columns):
         data += (fip['publicip_address'],)
         columns = columns + ('publicip_address_' + str(i + 1),)
         data += (fip['ip_version'],)
-        columns = columns + ('piblicip_ip_version_' + str(i + 1),)
+        columns = columns + ('publicip_ip_version_' + str(i + 1),)
         i += 1
     return data, columns
 
