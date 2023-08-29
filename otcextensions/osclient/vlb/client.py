@@ -20,8 +20,8 @@ from otcextensions import sdk
 LOG = logging.getLogger(__name__)
 
 DEFAULT_API_VERSION = '3'
-API_VERSION_OPTION = 'os_elb_api_version'
-API_NAME = "elb"
+API_VERSION_OPTION = 'os_vlb_api_version'
+API_NAME = "vlb"
 API_VERSIONS = {
     "3": "openstack.connection.Connection"
 }
@@ -36,7 +36,7 @@ def make_client(instance):
         LOG.debug('OTC extensions are not registered. Do that now')
         sdk.register_otc_extensions(conn)
 
-    LOG.debug('ELB client initialized using OpenStack OTC SDK: %s',
+    LOG.debug('DLB client initialized using OpenStack OTC SDK: %s',
               conn.vlb)
     return conn.vlb
 
@@ -44,10 +44,10 @@ def make_client(instance):
 def build_option_parser(parser):
     """Hook to add global options"""
     parser.add_argument(
-        '--os-elb-api-version',
-        metavar='<elb-api-version>',
-        default=utils.env('OS_ELB_API_VERSION'),
-        help=("ELB API version, default=%s "
-              "(Env: OS_ELB_API_VERSION)") % DEFAULT_API_VERSION
+        '--os-vlb-api-version',
+        metavar='<vlb-api-version>',
+        default=utils.env('OS_VLB_API_VERSION'),
+        help=("DLB API version, default=%s "
+              "(Env: OS_VLB_API_VERSION)") % DEFAULT_API_VERSION
     )
     return parser
