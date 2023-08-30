@@ -1,181 +1,198 @@
-Cloud Search Service (CSS)
-==========================
+Data Ingestion Service (DIS)
+============================
 
-Cloud Search Service is a fully hosted distributed search service
-powered on Elasticsearch. It is fully compatible with Elasticsearch
-APIs and provides users with structured and unstructured data search,
-statistics, and report capabilities.
+Data Ingestion Service (DIS) addresses the challenge of transmitting
+data from outside the cloud to inside the cloud. DIS builds data intake
+streams for custom applications capable of processing or analyzing streaming
+data. DIS continuously captures, transmits, and stores terabytes of data from
+hundreds of thousands of sources every hour, such as logs, social media feeds,
+website clickstreams, and location-tracking events.
 
 .. contents:: Table of Contents
    :local:
 
-CSS Cluster
------------
+DIS Stream
+----------
 
-List CSS Clusters
-^^^^^^^^^^^^^^^^^
-
-This interface is used to query an CSS cluster list..
-:class:`~otcextensions.sdk.css.v1.cluster.Cluster`.
-
-.. literalinclude:: ../examples/css/list_clusters.py
-   :lines: 16-22
-
-Create CSS Cluster
-^^^^^^^^^^^^^^^^^^
-
-This interface is used to create a CSS cluster with
-parameters.
-:class:`~otcextensions.sdk.css.v1.cluster.Cluster`.
-
-.. literalinclude:: ../examples/css/create_cluster.py
-   :lines: 16-44
-
-Get CSS Cluster
-^^^^^^^^^^^^^^^
-
-This interface is used to get a CSS cluster by ID
-or an instance of class
-:class:`~otcextensions.sdk.css.v1.cluster.Cluster`.
-
-.. literalinclude:: ../examples/css/get_cluster.py
-   :lines: 16-23
-
-Find CSS Cluster
+List DIS Streams
 ^^^^^^^^^^^^^^^^
 
-This interface is used to find a CSS cluster by id or name.
-:class:`~otcextensions.sdk.css.v1.cluster.Cluster`.
+This interface is used to query DIS stream list.
+:class:`~otcextensions.sdk.dis.v2.stream.Stream`.
 
-.. literalinclude:: ../examples/css/find_cluster.py
+.. literalinclude:: ../examples/dis/list_streams.py
+   :lines: 16-22
+
+Create DIS Stream
+^^^^^^^^^^^^^^^^^^
+
+This interface is used to create a DIS stream with
+parameters.
+:class:`~otcextensions.sdk.dis.v2.stream.Stream`.
+
+.. literalinclude:: ../examples/dis/create_stream.py
+   :lines: 16-27
+
+Get DIS Stream
+^^^^^^^^^^^^^^^
+
+This interface is used to get a DIS stream by
+stream name.
+:class:`~otcextensions.sdk.dis.v2.stream.Stream`.
+
+.. literalinclude:: ../examples/dis/get_stream.py
+   :lines: 16-23
+
+Delete DIS Stream
+^^^^^^^^^^^^^^^^^^
+
+This interface is used to delete a DIS Stream by
+Stream name.
+:class:`~otcextensions.sdk.dis.v2.stream.Stream`.
+
+.. literalinclude:: ../examples/dis/delete_stream.py
+   :lines: 16-22
+
+Update DIS Stream Partition Count
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to update partition count
+of an existing DIS stream.
+:class:`~otcextensions.sdk.dis.v2.stream.Stream`.
+
+.. literalinclude:: ../examples/dis/update_stream_partition.py
    :lines: 16-24
 
-Restart CSS Cluster
+
+DIS Consumption App
+-------------------
+
+
+List Consumption Apps
+^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to query list of DIS consumption apps.
+:class:`~otcextensions.sdk.dis.v2.app.App`.
+
+.. literalinclude:: ../examples/dis/list_apps.py
+   :lines: 16-22
+
+Get Consumption App
 ^^^^^^^^^^^^^^^^^^^
 
-This interface is used to restart a CSS cluster by
-id or an instance of class
-:class:`~otcextensions.sdk.css.v1.cluster.Cluster`.
+This interface is used to query consumption app
+by app name..
+:class:`~otcextensions.sdk.dis.v2.stream.Stream`.
 
-.. literalinclude:: ../examples/css/restart_cluster.py
-   :lines: 16-22
-
-Extend CSS Cluster
-^^^^^^^^^^^^^^^^^^
-
-This interface is used to extend CSS cluster by
-id or an instance of class
-:class:`~otcextensions.sdk.css.v1.cluster.Cluster`.
-
-.. literalinclude:: ../examples/css/extend_cluster.py
-   :lines: 17-24
-
-Extend CSS Cluster Nodes
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-This interface is used to extend CSS cluster nodes by
-id or an instance of class
-:class:`~otcextensions.sdk.css.v1.cluster.Cluster`.
-
-.. literalinclude:: ../examples/css/extend_cluster_nodes.py
-   :lines: 16-29
-
-Delete CSS Cluster
-^^^^^^^^^^^^^^^^^^
-
-This interface is used to delete a CSS Cluster by ID
-or an instance of class
-:class:`~otcextensions.sdk.css.v1.cluster.Cluster`.
-
-.. literalinclude:: ../examples/css/delete_cluster.py
-   :lines: 16-22
-
-
-CSS Cluster Snapshot
---------------------
-
-The SNAT function translates a private IP address to a public IP
-address by binding EIPs to servers in a VPC, providing secure and
-efficient access to the Internet.
-
-List Snapshots
-^^^^^^^^^^^^^^
-
-This interface is used to query all snapshots of a cluster
-by id or an instance of cluster class.
-:class:`~otcextensions.sdk.css.v1.snapshot.Snapshot`.
-
-.. literalinclude:: ../examples/css/list_snapshots.py
+.. literalinclude:: ../examples/dis/get_app.py
    :lines: 16-23
 
-Create Snapshot
+Create Consumption App
+^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to create a consumption app
+with provided parameters.
+:class:`~otcextensions.sdk.dis.v2.app.App`.
+
+.. literalinclude:: ../examples/dis/create_app.py
+   :lines: 16-25
+
+Delete Consumption App
+^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to delete a consumption app by
+app name.
+:class:`~otcextensions.sdk.dis.v2.app.App`.
+
+.. literalinclude:: ../examples/dis/delete_app.py
+   :lines: 16-22
+
+List App Consumptions
+^^^^^^^^^^^^^^^^^^^^^
+
+This interface is list of app consumptions..
+:class:`~otcextensions.sdk.dis.v2.app.App`.
+
+.. literalinclude:: ../examples/dis/list_app_consumptions.py
+   :lines: 16-25
+
+DIS Dump Task
+-------------
+
+List Dump Tasks
 ^^^^^^^^^^^^^^^
 
-This interface is used to manually create a snapshot
-by id or an instance of cluster class.
-:class:`~otcextensions.sdk.css.v1.snapshot.Snapshot`.
+This interface is used to query list of DIS Dump Tasks.
+:class:`~otcextensions.sdk.dis.v2.dump_task.DumpTask`.
 
-.. literalinclude:: ../examples/css/create_snapshot.py
-   :lines: 16-29
+.. literalinclude:: ../examples/dis/list_dump_tasks.py
+   :lines: 16-24
 
-Restore Snapshot
+Create Dump Task
 ^^^^^^^^^^^^^^^^
 
-This interface is used to restore a snapshot with
-indices to a target cluster.
-:class:`~otcextensions.sdk.css.v1.snapshot.Snapshot`.
+This interface is used to create a DIS Dump Task with
+parameters.
+:class:`~otcextensions.sdk.dis.v2.dump_task.DumpTask`.
 
-.. literalinclude:: ../examples/css/restore_snapshot.py
-   :lines: 16-29
+.. literalinclude:: ../examples/dis/create_dump_task.py
+   :lines: 16-37
 
-Delete Snapshot
+Get Dump Task
+^^^^^^^^^^^^^
+
+This interface is used to get a DIS Stream Dump Task by
+task name.
+:class:`~otcextensions.sdk.dis.v2.dump_task.DumpTask`.
+
+.. literalinclude:: ../examples/dis/get_dump_task.py
+   :lines: 16-24
+
+Delete Dump Task
+^^^^^^^^^^^^^^^^
+
+This interface is used to delete a DIS Stream dump task by
+task name.
+:class:`~otcextensions.sdk.dis.v2.dump_task.DumpTask`.
+
+.. literalinclude:: ../examples/dis/delete_dump_task.py
+   :lines: 16-23
+
+Start Dump Task
 ^^^^^^^^^^^^^^^
 
-This interface is used to delete a manually created
-snapshot of a cluster. This interface requires id or
-an instance of cluster class and id of the snapshot.
-:class:`~otcextensions.sdk.css.v1.snapshot.Snapshot`.
+This interface is used to start DIS Stream dump task.
+:class:`~otcextensions.sdk.dis.v2.dump_task.DumpTask`.
 
-.. literalinclude:: ../examples/css/delete_snapshot.py
+.. literalinclude:: ../examples/dis/start_dump_task.py
    :lines: 16-23
 
-Set Snapshot Policy
-^^^^^^^^^^^^^^^^^^^
+Pause Dump Task
+^^^^^^^^^^^^^^^
 
-This interface is used to set parameters related to
-automatic snapshot creation for a cluster.
-:class:`~otcextensions.sdk.css.v1.snapshot.SnapshotPolicy`.
+This interface is used to pause DIS Stream dump task.
+:class:`~otcextensions.sdk.dis.v2.dump_task.DumpTask`.
 
-.. literalinclude:: ../examples/css/set_snapshot_policy.py
-   :lines: 16-30
-
-Get Snapshot Policy
-^^^^^^^^^^^^^^^^^^^
-
-This interface is used to query the automatic snapshot
-creation policy for a cluster.
-:class:`~otcextensions.sdk.css.v1.snapshot.SnapshotPolicy`.
-
-.. literalinclude:: ../examples/css/get_snapshot_policy.py
+.. literalinclude:: ../examples/dis/pause_dump_task.py
    :lines: 16-23
 
-Set Snapshot Configuration
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Data Management
+---------------
 
-This interface is used to set basic configurations for a
-cluster snapshot, including configuring OBS buckets and
-IAM agency.
-:class:`~otcextensions.sdk.css.v1.snapshot.SnapshotConfiguration`.
+Upload Data
+^^^^^^^^^^^
 
-.. literalinclude:: ../examples/css/set_snapshot_configuration.py
-   :lines: 16-31
+This interface is used to upload data to DIS Stream.
+:class:`~otcextensions.sdk.dis.v2.data.Data`.
 
-Disable Snapshot Function
-^^^^^^^^^^^^^^^^^^^^^^^^^
+.. literalinclude:: ../examples/dis/upload_data.py
+   :lines: 16-33
 
-This interface is used to disable the snapshot function
-for a cluster.
-:class:`~otcextensions.sdk.css.v1.snapshot.Snapshot`.
+Download Data
+^^^^^^^^^^^^^
 
-.. literalinclude:: ../examples/css/disable_snapshot_function.py
-   :lines: 16-22
+This interface is used to download data from DIS Stream.
+:class:`~otcextensions.sdk.dis.v2.data.Data`.
+
+.. literalinclude:: ../examples/dis/download_data.py
+   :lines: 16-27

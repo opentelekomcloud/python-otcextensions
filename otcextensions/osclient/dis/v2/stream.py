@@ -20,17 +20,16 @@ from osc_lib.command import command
 
 from otcextensions.i18n import _
 from otcextensions.common import sdk_utils
-
-from otcextensions.osclient.dis.v2 import dis_utils
+from otcextensions.common import cli_utils
 
 
 LOG = logging.getLogger(__name__)
 
 
 _formatters = {
-    'partitions': dis_utils.YamlFormat,
-    'created_at': dis_utils.UnixTimestampFormatter,
-    'updated_at': dis_utils.UnixTimestampFormatter,
+    'partitions': cli_utils.YamlFormat,
+    'created_at': cli_utils.UnixTimestampFormatter,
+    'updated_at': cli_utils.UnixTimestampFormatter,
 }
 
 

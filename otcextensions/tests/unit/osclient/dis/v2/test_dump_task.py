@@ -16,7 +16,7 @@ from unittest.mock import call
 from osc_lib import exceptions
 
 from otcextensions.osclient.dis.v2 import dump_task
-from otcextensions.osclient.dis.v2 import dis_utils
+from otcextensions.common import cli_utils
 from otcextensions.tests.unit.osclient.dis.v2 import fakes
 
 from openstackclient.tests.unit import utils as tests_utils
@@ -49,7 +49,7 @@ class TestListDumpTasks(fakes.TestDis):
             s.task_name,
             s.task_id,
             s.destination_type,
-            dis_utils.UnixTimestampFormatter(s.created_at),
+            cli_utils.UnixTimestampFormatter(s.created_at),
             s.status
         ))
 

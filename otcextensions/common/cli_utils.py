@@ -12,67 +12,9 @@
 #
 '''ModelArts devenv v1 action implementations'''
 import yaml
-# import json
-# import math
 import datetime
-# import textwrap
 
-from osc_lib import utils
 from cliff import columns as cliff_columns
-
-
-class literal(str):
-    pass
-
-
-def literal_presenter(dumper, data):
-    return dumper.represent_scalar("tag:yaml.org,2002:str", data, style=">")
-
-
-yaml.add_representer(literal, literal_presenter)
-
-
-def scrub_dict(d):
-    new_dict = {}
-    for k, v in d.items():
-        if isinstance(v, dict):
-            v = scrub_dict(v)
-        if v not in (u'', None, {}):
-            new_dict[k] = v
-    return new_dict
-
-
-def wrap_text(s):
-    length = 100
-    if isinstance(s, str) and len(s) >= length:
-        return '\n'.join([s[i:i + length] for i in range(0, len(s), length)])
-    return s
-
-
-class CustomListDictColumn(cliff_columns.FormattableColumn):
-    def human_readable(self):
-        def flatten_dict(d, parent_key='', sep='.'):
-            items = []
-            for k, v in d.items():
-                new_key = f"{parent_key}{sep}{k}" if parent_key else k
-                if isinstance(v, dict):
-                    items.extend(flatten_dict(v, new_key, sep=sep).items())
-                elif v is not None:  # Skip if value is None
-                    items.append((new_key, v))
-            return dict(items)
-
-        flattened = {}
-        for i in self._value:
-            flattened.update(flatten_dict(i))
-        data = [{k: v} for k, v in flattened.items()]
-        data.append({})
-
-        return utils.format_list_of_dicts(data)
-
-
-class WrapText(cliff_columns.FormattableColumn):
-    def human_readable(self):
-        return wrap_text(self._value)
 
 
 class UnixTimestampFormatter(cliff_columns.FormattableColumn):

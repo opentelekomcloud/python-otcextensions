@@ -20,19 +20,18 @@ from osc_lib.command import command
 
 from otcextensions.i18n import _
 from otcextensions.common import sdk_utils
-
-from otcextensions.osclient.dis.v2 import dis_utils
+from otcextensions.common import cli_utils
 
 
 LOG = logging.getLogger(__name__)
 
 
 _formatters = {
-    'obs_destination_descriptor': dis_utils.YamlFormat,
-    'obs_destination_description': dis_utils.YamlFormat,
-    'partitions': dis_utils.YamlFormat,
-    'created_at': dis_utils.UnixTimestampFormatter,
-    'last_transfer_timestamp': dis_utils.UnixTimestampFormatter,
+    'obs_destination_descriptor': cli_utils.YamlFormat,
+    'obs_destination_description': cli_utils.YamlFormat,
+    'partitions': cli_utils.YamlFormat,
+    'created_at': cli_utils.UnixTimestampFormatter,
+    'last_transfer_timestamp': cli_utils.UnixTimestampFormatter,
 }
 
 

@@ -17,7 +17,7 @@ from osc_lib import exceptions
 
 from otcextensions.osclient.dis.v2 import app
 from otcextensions.sdk.dis.v2 import app as sdk_app
-from otcextensions.osclient.dis.v2 import dis_utils
+from otcextensions.common import cli_utils
 from otcextensions.tests.unit.osclient.dis.v2 import fakes
 
 from openstackclient.tests.unit import utils as tests_utils
@@ -45,7 +45,7 @@ class TestListApps(fakes.TestDis):
         data.append((
             s.name,
             s.id,
-            dis_utils.UnixTimestampFormatter(s.created_at),
+            cli_utils.UnixTimestampFormatter(s.created_at),
         ))
 
     def setUp(self):
