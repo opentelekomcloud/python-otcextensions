@@ -188,6 +188,15 @@ This interface is used to upload data to DIS Stream.
 .. literalinclude:: ../examples/dis/upload_data.py
    :lines: 16-33
 
+Obtain Data Cursor
+^^^^^^^^^^^^^^^^^^
+
+This interface is query Data Cursor by stream parameters.
+:class:`~otcextensions.sdk.dis.v2.data.Data`.
+
+.. literalinclude:: ../examples/dis/get_data_cursor.py
+   :lines: 16-25
+
 Download Data
 ^^^^^^^^^^^^^
 

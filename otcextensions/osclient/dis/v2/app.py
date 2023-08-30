@@ -230,7 +230,7 @@ class CreateApp(command.ShowOne):
 
 class DeleteApp(command.Command):
 
-    _description = _("Deletes App.")
+    _description = _("Delete Consumption App(s).")
 
     def get_parser(self, prog_name):
         parser = super(DeleteApp, self).get_parser(prog_name)

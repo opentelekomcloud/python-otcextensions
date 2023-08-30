@@ -288,12 +288,12 @@ class DeleteDumpTask(command.Command):
                 client.delete_dump_task(parsed_args.streamName, task_name)
             except Exception as e:
                 result += 1
-                LOG.error(_("Failed to delete Dis Stream with "
-                          "name '%(stream)s': %(e)s"),
-                          {'stream': task_name, 'e': e})
+                LOG.error(_("Failed to delete dump task with "
+                          "name '%(task_name)s': %(e)s"),
+                          {'task_name': task_name, 'e': e})
         if result > 0:
             total = len(parsed_args.taskName)
-            msg = (_("%(result)s of %(total)s DIS Stream(s) failed "
+            msg = (_("%(result)s of %(total)s dump task(s) failed "
                    "to delete.") % {'result': result, 'total': total})
             raise exceptions.CommandError(msg)
 

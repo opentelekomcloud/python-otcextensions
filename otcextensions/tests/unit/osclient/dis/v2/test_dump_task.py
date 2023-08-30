@@ -318,7 +318,7 @@ class TestDeleteDumpTask(fakes.TestDis):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         delete_mock_result = [None, exceptions.CommandError]
-        self.client.find_gateway = (
+        self.client.delete_dump_task = (
             mock.Mock(side_effect=delete_mock_result)
         )
         # Trigger the action
@@ -326,7 +326,7 @@ class TestDeleteDumpTask(fakes.TestDis):
             self.cmd.take_action(parsed_args)
         except Exception as e:
             self.assertEqual(
-                '1 of 2 DIS DumpTask(s) failed to delete.', str(e))
+                '1 of 2 dump task(s) failed to delete.', str(e))
 
         calls = [
             call(self._data[0].stream_name, self._data[0].task_name),
@@ -337,13 +337,10 @@ class TestDeleteDumpTask(fakes.TestDis):
 
 class TestStartDumpTask(fakes.TestDis):
 
-    default_timeout = 300
-
     def setUp(self):
         super(TestStartDumpTask, self).setUp()
         self.cmd = dump_task.StartDumpTask(self.app, None)
         self.client.start_dump_task = mock.Mock(return_value=None)
-        # self.client.wait_for_cluster = mock.Mock(return_value=True)
 
     def test_restart(self):
 
@@ -355,7 +352,6 @@ class TestStartDumpTask(fakes.TestDis):
         verifylist = [
             ('streamName', 'test-stream'),
             ('taskId', ['test-dump-taskId']),
-            # ('wait', True),
         ]
 
         # Verify cm is triggered with default parameters
@@ -367,20 +363,15 @@ class TestStartDumpTask(fakes.TestDis):
             'test-stream',
             ['test-dump-taskId']
         )
-        # self.client.wait_for_cluster.assert_called_with(
-        #     self._data.id, self.default_timeout)
         self.assertIsNone(result)
 
 
 class TestPauseDumpTask(fakes.TestDis):
 
-    default_timeout = 300
-
     def setUp(self):
         super(TestPauseDumpTask, self).setUp()
         self.cmd = dump_task.PauseDumpTask(self.app, None)
         self.client.pause_dump_task = mock.Mock(return_value=None)
-        # self.client.wait_for_action = mock.Mock(return_value=True)
 
     def test_restart(self):
 
@@ -392,7 +383,6 @@ class TestPauseDumpTask(fakes.TestDis):
         verifylist = [
             ('streamName', 'test-stream'),
             ('taskId', ['test-dump-taskId']),
-            # ('wait', True),
         ]
 
         # Verify cm is triggered with default parameters
@@ -404,6 +394,4 @@ class TestPauseDumpTask(fakes.TestDis):
             'test-stream',
             ['test-dump-taskId']
         )
-        # self.client.wait_for_cluster.assert_called_with(
-        #     self._data.id, self.default_timeout)
         self.assertIsNone(result)

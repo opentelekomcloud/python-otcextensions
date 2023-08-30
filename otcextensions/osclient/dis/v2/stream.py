@@ -225,21 +225,6 @@ class CreateStream(command.ShowOne):
                    'characters. Only digits, letters, hyphens (-) and '
                    'underscores (_) are allowed.'),
         )
-        parser.add_argument(
-            '--sys-tag',
-            action=parseractions.MultiKeyValueAction,
-            metavar='key=<key>,value=<value>',
-            required_keys=['key', 'value'],
-            dest='sys_tags',
-            help=_('Add Tag(s) to Stream enterprise projects.\n'
-                   'key=<key>: Tag key. The value can contain 1 to 36 '
-                   'characters. Only digits, letters, hyphens (-) and '
-                   'underscores (_) are allowed.\n'
-                   'value=<value>: Tag value. The value can contain 0 to 43 '
-                   'characters. Only digits, letters, hyphens (-) and '
-                   'underscores (_) are allowed.'),
-        )
-
         return parser
 
     def take_action(self, parsed_args):
@@ -254,7 +239,6 @@ class CreateStream(command.ShowOne):
             'auto_scale_max_partition_count',
             'compression_format',
             'tags',
-            'sys_tags',
         )
         attrs = {
             'name': parsed_args.streamName

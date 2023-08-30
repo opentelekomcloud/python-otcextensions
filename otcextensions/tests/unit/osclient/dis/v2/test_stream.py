@@ -121,7 +121,6 @@ class TestCreateStream(fakes.TestDis):
         'name',
         'partition_count',
         'stream_type',
-        'sys_tags',
         'tags'
     )
 
@@ -142,8 +141,6 @@ class TestCreateStream(fakes.TestDis):
             '--compression-format', 'gzip',
             '--tag', 'key=k1,value=v1',
             '--tag', 'key=k2,value=v2',
-            '--sys-tag', 'key=sysk1,value=sysv1',
-            '--sys-tag', 'key=sysk2,value=sysv2',
             '--autoscale',
         ]
         verifylist = [
@@ -157,8 +154,6 @@ class TestCreateStream(fakes.TestDis):
             ('compression_format', 'gzip'),
             ('tags', [{'key': 'k1', 'value': 'v1'},
                       {'key': 'k2', 'value': 'v2'}]),
-            ('sys_tags', [{'key': 'sysk1', 'value': 'sysv1'},
-                          {'key': 'sysk2', 'value': 'sysv2'}]),
             ('autoscale', True),
         ]
         # Verify cm is triggereg with default parameters
@@ -175,8 +170,6 @@ class TestCreateStream(fakes.TestDis):
             auto_scale_max_partition_count=7,
             compression_format='gzip',
             tags=[{'key': 'k1', 'value': 'v1'}, {'key': 'k2', 'value': 'v2'}],
-            sys_tags=[{'key': 'sysk1', 'value': 'sysv1'},
-                      {'key': 'sysk2', 'value': 'sysv2'}],
             auto_scale_enabled=True
         )
 
