@@ -102,8 +102,7 @@ class CreateLoadBalancer(command.ShowOne):
     _description = _('Create a load balancer')
     columns = (
         'id', 'name', 'description', 'provisioning_status',
-        'operating_status', 'is_admin_state_up',
-        'provider', 'pool_ids', 'listener_ids',
+        'operating_status', 'provider', 'pool_ids', 'listener_ids',
         'vip_address', 'vip_subnet_id', 'vip_port_id')
 
     def get_parser(self, prog_name):
