@@ -35,8 +35,11 @@ def _flatten_listener(obj):
         'http2_enable': obj.http2_enable,
         'id': obj.id,
         'insert_headers': obj.insert_headers,
+        'is_admin_state_up': obj.is_admin_state_up,
         'name': obj.name,
         'project_id': obj.project_id,
+        'security_policy_id': obj.security_policy_id,
+        'sni_match_algo': obj.sni_match_algo,
         'protocol': obj.protocol,
         'protocol_port': obj.protocol_port,
         'sni_container_refs': obj.sni_container_refs,
@@ -48,7 +51,7 @@ def _flatten_listener(obj):
         'client_timeout': obj.client_timeout,
         'member_timeout': obj.member_timeout,
         'ipgroup': obj.ipgroup,
-        'transparent_client_ip_enable': obj.transparent_ip,
+        'transparent_client_ip_enable': obj.transparent_client_ip_enable,
         'enhance_l7policy_enable': obj.enhance_l7policy
     }
     return data
@@ -89,7 +92,7 @@ def _normalize_tags(tags):
 
 class ListListeners(command.Lister):
     _description = _('List listeners')
-    columns = ('ID', 'Name')
+    columns = ('ID', 'Name', 'provisioning_status')
 
     def get_parser(self, prog_name):
         parser = super(ListListeners, self).get_parser(prog_name)
@@ -278,9 +281,27 @@ class ListListeners(command.Lister):
 class ShowListener(command.ShowOne):
     _description = _('Shows details of a listener')
     columns = (
-        'id',
+        'ID',
         'name',
+        'client_ca_tls_container_ref',
+        'provisioning_status',
+        'connection_limit',
+        'created_at',
+        'default_pool_id',
+        'default_tls_container_ref',
         'description',
+        'http2_enable',
+        'project_id',
+        'protocol',
+        'protocol_port',
+        'sni_container_refs',
+        'updated_at',
+        'tls_ciphers_policy',
+        'enable_member_retry',
+        'keepalive_timeout',
+        'client_timeout',
+        'member_timeout',
+        'transparent_client_ip_enable'
         )
 
     def get_parser(self, prog_name):
@@ -416,6 +437,15 @@ class CreateListener(command.ShowOne):
                    'returned if the listener protocol is not HTTPS.')
         )
         parser.add_argument(
+            '--sni-match-algo',
+            metavar='<sni_match_algo>',
+            help=_('Specifies how wildcard domain name matches with the SNI'
+                   'certificates used by the listener.'
+                   'longest_suffix indicates longest suffix match.'
+                   'wildcard indicates wildcard match.'
+                   'The default value is wildcard.')
+        )
+        parser.add_argument(
             '--tag',
             action='append',
             metavar='<tags>',
@@ -430,9 +460,14 @@ class CreateListener(command.ShowOne):
                    'HTTPS listeners. The default value is tls-1-0.')
         )
         parser.add_argument(
+            '--security-policy-id',
+            metavar='<security_policy_id>',
+            help=_('Specifies the ID of the custom security policy.')
+        )
+        parser.add_argument(
             '--disable-member-retry',
             metavar='<disable_member_retry>',
-            action='story_false',
+            action='story_false', #default enable=true
             help=_('Specifies whether to enable health check retries for'
                    'backend servers. This parameter is available only for'
                    'HTTP and HTTPS listeners.')
@@ -470,8 +505,8 @@ class CreateListener(command.ShowOne):
         )
         parser.add_argument(
             '--disable-ipgroup',
-            metavar='<enable_ipgroup>',
-            action='store_true',
+            metavar='<disable_ipgroup>',
+            action='store_false', #default enable true
             help=_('Specifies whether to enable access control.')
         )
         parser.add_argument(
@@ -479,6 +514,14 @@ class CreateListener(command.ShowOne):
             metavar='<ipgroup_type>',
             help=_('Specifies how access to the listener is controlled.'
                    'Can be black and white.')
+        )
+        parser.add_argument(
+            '--enable-enhance_l7policy',
+            metavar='<enable_enhance_l7policy>',
+            action='store_true',  #default false
+            help=_('Specifies whether to enable advanced forwarding.'
+                   'If advanced forwarding is enabled, more flexible'
+                   'forwarding policies and rules are supported.')
         )
         return parser
 
