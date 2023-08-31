@@ -390,7 +390,7 @@ class CreateListener(command.ShowOne):
         parser.add_argument(
             '--http2-enable',
             metavar='http2_enable',
-            type=bool,
+            action='store_true',
             help=_('Specifies whether to use HTTP/2. This parameter'
                    'is available only for HTTPS listeners. If you configure'
                    'this parameter for other types of listeners, it will not'
@@ -467,7 +467,7 @@ class CreateListener(command.ShowOne):
         parser.add_argument(
             '--disable-member-retry',
             metavar='<disable_member_retry>',
-            action='story_false', #default enable=true
+            action='story_true',
             help=_('Specifies whether to enable health check retries for'
                    'backend servers. This parameter is available only for'
                    'HTTP and HTTPS listeners.')
@@ -506,7 +506,7 @@ class CreateListener(command.ShowOne):
         parser.add_argument(
             '--disable-ipgroup',
             metavar='<disable_ipgroup>',
-            action='store_false', #default enable true
+            action='store_true', #default enable true
             help=_('Specifies whether to enable access control.')
         )
         parser.add_argument(
@@ -530,6 +530,7 @@ class CreateListener(command.ShowOne):
 
         attrs['protocol'] = parsed_args.protocol
         attrs['protocol_port'] = parsed_args.protocol_port
+        attrs['loadbalancer_id'] = parsed_args.loadbalancer_id
 
         if parsed_args.name:
             attrs['name'] = parsed_args.name
@@ -544,20 +545,22 @@ class CreateListener(command.ShowOne):
         if parsed_args.description:
             attrs['description'] = parsed_args.description
         if parsed_args.http2_enable:
-            attrs['http2_enable'] = parsed_args.http2_enable
+            attrs['http2_enable'] = True
         if parsed_args.insert_headers:
             attrs['insert_headers'] = parsed_args.insert_headers
-        if parsed_args.loadbalancer_id:
-            attrs['loadbalancer_id'] = parsed_args.loadbalancer_id
         if parsed_args.project_id:
             attrs['project_id'] = parsed_args.project_id
         if parsed_args.sni_container_refs:
             attrs['sni_container_refs'] = parsed_args.sni_container_refs
+        if parsed_args.sni_match_algo:
+            attrs['sni_match_algo'] = parsed_args.sni_match_algo
         if parsed_args.tags:
             attrs['tags'] = parsed_args.tags
         if parsed_args.tls_ciphers_policy:
             attrs['tls_ciphers_policy'] = parsed_args.tls_ciphers_policy
-        if parsed_args.disable_member_retry is not None:
+        if parsed_args.security_policy_id:
+            attrs['security_policy_id'] = parsed_args.security_policy_id
+        if parsed_args.disable_member_retry is True:
             attrs['enable_member_retry'] = False
         if parsed_args.keepalive_timeout:
             attrs['keepalive_timeout'] = parsed_args.keepalive_timeout
@@ -565,10 +568,12 @@ class CreateListener(command.ShowOne):
             attrs['client_timeout'] = parsed_args.client_timeout
         if parsed_args.member_timeout:
             attrs['member_timeout'] = parsed_args.member_timeout
+        if parsed_args.enable_enhance_l7policy:
+            attrs['enable_enhance_l7policy'] = True
         if parsed_args.ipgroup_id:
             attrs['ipgroup'] = {'ipgroup_id': parsed_args.ipgroup_id}
-            if parsed_args.enable_ipgroup:
-                attrs['ipgroup']['enable_ipgroup'] = parsed_args.enable_ipgroup
+            if parsed_args.disable_ipgroup is True:
+                attrs['ipgroup']['enable_ipgroup'] = False
             if parsed_args.ipgroup_type:
                 attrs['ipgroup']['type'] = parsed_args.ipgroup_type
 
@@ -650,7 +655,7 @@ class UpdateListener(command.ShowOne):
         parser.add_argument(
             '--http2-enable',
             metavar='http2_enable',
-            type=bool,
+            type='store_true',
             help=_('Specifies whether to use HTTP/2. This parameter'
                    'is available only for HTTPS listeners. If you configure'
                    'this parameter for other types of listeners, it will not'
@@ -663,11 +668,6 @@ class UpdateListener(command.ShowOne):
             help=_('insert_headers')
         )
         parser.add_argument(
-            '--project-id',
-            metavar='project_id',
-            help=_('Specifies the project ID.')
-        )
-        parser.add_argument(
             '--sni-container-refs',
             action='append',
             dest='sni_container_refs',
@@ -675,6 +675,13 @@ class UpdateListener(command.ShowOne):
                    'with domain names) used by the listener.'
                    'This parameter will be ignored and an empty array will be'
                    'returned if the listener protocol is not HTTPS.')
+        )
+        parser.add_argument(
+            '--sni-match-algo',
+            metavar='<sni_match_algo>',
+            help=_('Specifies how wildcard domain name matches with the SNI'
+                   'certificates used by the listener. longest_suffix indicates'
+                   'longest suffix match. wildcard indicates wildcard match.')
         )
         parser.add_argument(
             '--tls-ciphers-policy',
@@ -685,9 +692,14 @@ class UpdateListener(command.ShowOne):
                    'HTTPS listeners. The default value is tls-1-0.')
         )
         parser.add_argument(
+            '--security-policy-id',
+            metavar='<security_policy_id>',
+            help=_('Specifies the ID of the custom security policy.')
+        )
+        parser.add_argument(
             '--disable-member-retry',
             metavar='<disable_member_retry>',
-            action='story_false',
+            action='story_true',
             help=_('Specifies whether to enable health check retries for'
                    'backend servers. This parameter is available only for'
                    'HTTP and HTTPS listeners.')
@@ -735,6 +747,14 @@ class UpdateListener(command.ShowOne):
             help=_('Specifies how access to the listener is controlled.'
                    'Can be black and white.')
         )
+        parser.add_argument(
+            '--enable-enhance_l7policy',
+            metavar='<enable_enhance_l7policy>',
+            action='store_true',  #default false
+            help=_('Specifies whether to enable advanced forwarding.'
+                   'If advanced forwarding is enabled, more flexible'
+                   'forwarding policies and rules are supported.')
+        )
         return parser
 
     def take_action(self, parsed_args):
@@ -752,15 +772,19 @@ class UpdateListener(command.ShowOne):
                 parsed_args.default_tls_container_ref
         if parsed_args.description:
             attrs['description'] = parsed_args.description
-        if parsed_args.http2_enable:
-            attrs['http2_enable'] = parsed_args.http2_enable
+        if parsed_args.http2_enable is True:
+            attrs['http2_enable'] = True
         if parsed_args.insert_headers:
             attrs['insert_headers'] = parsed_args.insert_headers
         if parsed_args.sni_container_refs:
             attrs['sni_container_refs'] = parsed_args.sni_container_refs
+        if parsed_args.sni_match_algo:
+            attrs['sni_match_algo'] = parsed_args.sni_match_algo
         if parsed_args.tls_ciphers_policy:
             attrs['tls_ciphers_policy'] = parsed_args.tls_ciphers_policy
-        if parsed_args.disable_member_retry is not None:
+        if parsed_args.security_policy_id:
+            attrs['security_policy_id'] = parsed_args.security_policy_id
+        if parsed_args.disable_member_retry is True:
             attrs['enable_member_retry'] = False
         if parsed_args.keepalive_timeout:
             attrs['keepalive_timeout'] = parsed_args.keepalive_timeout
