@@ -25,6 +25,7 @@ Open Telekom Cloud Resources
    Identity Service (IAM) <identity/index>
    Key Management Service (KMS) <kms/index>
    MapReduce Service (MRS) <mrs/index>
+   Modelarts Service (Modelarts) <modelarts/index>
    Network Address Translation (NAT) <nat/index>
    Object Block Storage (OBS) <obs/index>
    Relational Database Service (RDS) <rds/index>
