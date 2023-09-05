@@ -389,7 +389,6 @@ class CreateListener(command.ShowOne):
         )
         parser.add_argument(
             '--http2-enable',
-            metavar='http2_enable',
             action='store_true',
             help=_('Specifies whether to use HTTP/2. This parameter'
                    'is available only for HTTPS listeners. If you configure'
@@ -466,8 +465,7 @@ class CreateListener(command.ShowOne):
         )
         parser.add_argument(
             '--disable-member-retry',
-            metavar='<disable_member_retry>',
-            action='story_true',
+            action='store_true',
             help=_('Specifies whether to enable health check retries for'
                    'backend servers. This parameter is available only for'
                    'HTTP and HTTPS listeners.')
@@ -505,7 +503,6 @@ class CreateListener(command.ShowOne):
         )
         parser.add_argument(
             '--disable-ipgroup',
-            metavar='<disable_ipgroup>',
             action='store_true', #default enable true
             help=_('Specifies whether to enable access control.')
         )
@@ -517,7 +514,6 @@ class CreateListener(command.ShowOne):
         )
         parser.add_argument(
             '--enable-enhance_l7policy',
-            metavar='<enable_enhance_l7policy>',
             action='store_true',  #default false
             help=_('Specifies whether to enable advanced forwarding.'
                    'If advanced forwarding is enabled, more flexible'
@@ -654,7 +650,6 @@ class UpdateListener(command.ShowOne):
         )
         parser.add_argument(
             '--http2-enable',
-            metavar='http2_enable',
             type='store_true',
             help=_('Specifies whether to use HTTP/2. This parameter'
                    'is available only for HTTPS listeners. If you configure'
@@ -698,7 +693,6 @@ class UpdateListener(command.ShowOne):
         )
         parser.add_argument(
             '--disable-member-retry',
-            metavar='<disable_member_retry>',
             action='story_true',
             help=_('Specifies whether to enable health check retries for'
                    'backend servers. This parameter is available only for'
@@ -737,7 +731,6 @@ class UpdateListener(command.ShowOne):
         )
         parser.add_argument(
             '--disable-ipgroup',
-            metavar='<enable_ipgroup>',
             action='store_true',
             help=_('Specifies whether to enable access control.')
         )
@@ -749,7 +742,6 @@ class UpdateListener(command.ShowOne):
         )
         parser.add_argument(
             '--enable-enhance_l7policy',
-            metavar='<enable_enhance_l7policy>',
             action='store_true',  #default false
             help=_('Specifies whether to enable advanced forwarding.'
                    'If advanced forwarding is enabled, more flexible'
@@ -797,8 +789,8 @@ class UpdateListener(command.ShowOne):
             attrs['ipgroup'] = {}
             if parsed_args.ipgroup_id:
                 attrs['ipgroup']['ipgroup_id'] = parsed_args.ipgroup_id
-            if parsed_args.enable_ipgroup:
-                attrs['ipgroup']['enable_ipgroup'] = parsed_args.enable_ipgroup
+            if parsed_args.disable_ipgroup is True:
+                attrs['ipgroup']['enable_ipgroup'] = False
             if parsed_args.ipgroup_type:
                 attrs['ipgroup']['type'] = parsed_args.ipgroup_type
 
