@@ -36,7 +36,7 @@ def make_client(instance):
         LOG.debug('OTC extensions are not registered. Do that now')
         sdk.register_otc_extensions(conn)
 
-    LOG.debug('VLB client initialized using OpenStack OTC SDK: %s',
+    LOG.debug('DLB client initialized using OpenStack OTC SDK: %s',
               conn.vlb)
     return conn.vlb
 
@@ -47,7 +47,7 @@ def build_option_parser(parser):
         '--os-vlb-api-version',
         metavar='<vlb-api-version>',
         default=utils.env('OS_VLB_API_VERSION'),
-        help=("VLB API version, default=%s "
+        help=("DLB API version, default=%s "
               "(Env: OS_VLB_API_VERSION)") % DEFAULT_API_VERSION
     )
     return parser
