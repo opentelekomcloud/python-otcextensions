@@ -20,10 +20,10 @@
 
 - job:
     name: otce-upload-image
-    parent: otcinfra-upload-image
+    parent: otcinfra-upload-image-quay
     provides: otce-container-image
     vars: *otce_image_vars
-    nodeset: ubuntu-jammy
+    nodeset: ubuntu-focal
 
 - project:
     merge-mode: squash-merge
