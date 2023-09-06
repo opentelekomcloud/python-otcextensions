@@ -20,7 +20,7 @@
 
 - job:
     name: otce-upload-image
-    parent: otcinfra-upload-image-quay
+    parent: otcinfra-upload-image
     provides: otce-container-image
     vars: *otce_image_vars
     nodeset: ubuntu-jammy
