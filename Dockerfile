@@ -11,13 +11,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM docker.io/opendevorg/python-builder:3.7 as builder
+FROM docker.io/opendevorg/python-builder:3.9 as builder
 
 COPY . /tmp/src
 RUN echo "python-openstackclient" >> /tmp/src/requirements.txt
 RUN assemble
 
-FROM docker.io/opendevorg/python-base:3.7
+FROM docker.io/opendevorg/python-base:3.9
 
 COPY --from=builder /output/ /output
 RUN /output/install-from-bindep

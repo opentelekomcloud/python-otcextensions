@@ -17,6 +17,7 @@ Open Telekom Cloud related User Guides
    dcaas
    dcs
    deh
+   dis
    dms
    dns
    dws

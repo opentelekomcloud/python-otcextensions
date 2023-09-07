@@ -33,6 +33,7 @@ documentation of these services:
    dcs
    dcaas
    deh
+   dis
    dms
    dns
    dws
