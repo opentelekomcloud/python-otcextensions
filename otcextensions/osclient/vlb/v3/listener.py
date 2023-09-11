@@ -301,7 +301,7 @@ class ShowListener(command.ShowOne):
         'client_timeout',
         'member_timeout',
         'transparent_client_ip_enable'
-        )
+    )
 
     def get_parser(self, prog_name):
         parser = super(ShowListener, self).get_parser(prog_name)
@@ -313,20 +313,20 @@ class ShowListener(command.ShowOne):
         return parser
 
     def take_action(self, parsed_args):
-         client = self.app.client_manager.vlb
+        client = self.app.client_manager.vlb
 
-         obj = client.find_listener(
-             name_or_id=parsed_args.listener,
-             ignore_missing=False
-         )
+        obj = client.find_listener(
+            name_or_id=parsed_args.listener,
+            ignore_missing=False
+        )
 
-         data = utils.get_dict_properties(
-             _flatten_listener(obj), self.columns)
-         if obj.load_balancers:
-             data, self.columns = _add_loadbalancers_to_listener_obj(
-                 obj, data, self.columns)
+        data = utils.get_dict_properties(
+            _flatten_listener(obj), self.columns)
+        if obj.load_balancers:
+            data, self.columns = _add_loadbalancers_to_listener_obj(
+                obj, data, self.columns)
 
-         return self.columns, data
+        return self.columns, data
 
 
 class CreateListener(command.ShowOne):
@@ -445,9 +445,14 @@ class CreateListener(command.ShowOne):
         )
         parser.add_argument(
             '--tag',
-            action='append',
-            metavar='<tags>',
-            help=_('Lists the tags.')
+            metavar='key=<keyname1>,value=<value1>',
+            action=parseractions.MultiKeyValueAction,
+            dest='tags',
+            required_keys=['key', 'value'],
+            help=_('List of tags. Repeat option for '
+                   'multiple tags.\n'
+                   'Example:\n'
+                   '--tag key=mykey1,value=myvalue1')
         )
         parser.add_argument(
             '--tls-ciphers-policy',
@@ -502,7 +507,8 @@ class CreateListener(command.ShowOne):
         )
         parser.add_argument(
             '--disable-ipgroup',
-            action='store_true', #default enable true
+            # default enable true
+            action='store_true',
             help=_('Specifies whether to enable access control.')
         )
         parser.add_argument(
@@ -513,7 +519,8 @@ class CreateListener(command.ShowOne):
         )
         parser.add_argument(
             '--enable-enhance_l7policy',
-            action='store_true',  #default false
+            # default false
+            action='store_true',
             help=_('Specifies whether to enable advanced forwarding.'
                    'If advanced forwarding is enabled, more flexible'
                    'forwarding policies and rules are supported.')
@@ -581,7 +588,7 @@ class CreateListener(command.ShowOne):
         if obj.tags:
             data, self.columns = _add_tags_to_listener_obj(
                 obj, data, self.columns)
-        if obj.loadbalancers:
+        if obj.load_balancers:
             data, self.columns = _add_loadbalancers_to_listener_obj(
                 obj, data, self.columns)
         return self.columns, data
@@ -674,8 +681,9 @@ class UpdateListener(command.ShowOne):
             '--sni-match-algo',
             metavar='<sni_match_algo>',
             help=_('Specifies how wildcard domain name matches with the SNI'
-                   'certificates used by the listener. longest_suffix indicates'
-                   'longest suffix match. wildcard indicates wildcard match.')
+                   'certificates used by the listener. longest_suffix '
+                   'indicates longest suffix match. wildcard indicates'
+                   'wildcard match.')
         )
         parser.add_argument(
             '--tls-ciphers-policy',
@@ -741,7 +749,8 @@ class UpdateListener(command.ShowOne):
         )
         parser.add_argument(
             '--enable-enhance_l7policy',
-            action='store_true',  #default false
+            # default false
+            action='store_true',
             help=_('Specifies whether to enable advanced forwarding.'
                    'If advanced forwarding is enabled, more flexible'
                    'forwarding policies and rules are supported.')
@@ -819,7 +828,7 @@ class DeleteListener(command.Command):
         return parser
 
     def take_action(self, parsed_args):
-        client = self.app.client_manager.cbr
+        client = self.app.client_manager.vlb
 
         listener = client.find_listener(
             name_or_id=parsed_args.listener,

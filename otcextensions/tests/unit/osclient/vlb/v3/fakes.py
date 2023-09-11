@@ -14,7 +14,8 @@ import uuid
 
 import mock
 
-from otcextensions.sdk.vlb.v3 import load_balancer, listener
+from otcextensions.sdk.vlb.v3 import listener
+from otcextensions.sdk.vlb.v3 import load_balancer
 from otcextensions.tests.unit.osclient import test_base
 
 
@@ -124,14 +125,14 @@ def generate_ipgroup():
     """Generate random list of vault UUIDs"""
     ipgroup = {"ipgroup_id": "ipgroup-uuid",
                "enable_ipgroup": True,
-               "type":  "ipgroup-type"}
+               "type": "ipgroup-type"}
     return ipgroup
 
 
 def generate_loadbalancers_list():
     """Generate random list of loadbalancers UUIDs"""
     loadbalancers = [{"id": 'loadbalancer-id-1'},
-             {"id": 'loadbalancer-id-2'}]
+                     {"id": 'loadbalancer-id-2'}]
     return loadbalancers
 
 
