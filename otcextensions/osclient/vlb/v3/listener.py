@@ -43,7 +43,6 @@ def _flatten_listener(obj):
         'protocol': obj.protocol,
         'protocol_port': obj.protocol_port,
         'sni_container_refs': obj.sni_container_refs,
-        'tags': obj.tags,
         'updated_at': obj.updated_at,
         'tls_ciphers_policy': obj.tls_ciphers_policy,
         'enable_member_retry': obj.enable_member_retry,
@@ -62,7 +61,7 @@ def _add_loadbalancers_to_listener_obj(obj, data, columns):
     """
     i = 0
     for lb in obj.load_balancers:
-        name = 'loadbalancers_id_' + str(i + 1)
+        name = 'loadbalancer_id_' + str(i + 1)
         data += (lb['id'],)
         columns = columns + (name,)
         i += 1

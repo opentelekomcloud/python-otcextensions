@@ -14,7 +14,7 @@ import uuid
 
 import mock
 
-from otcextensions.sdk.vlb.v3 import load_balancer
+from otcextensions.sdk.vlb.v3 import load_balancer, listener
 from otcextensions.tests.unit.osclient import test_base
 
 
@@ -128,6 +128,13 @@ def generate_ipgroup():
     return ipgroup
 
 
+def generate_loadbalancers_list():
+    """Generate random list of loadbalancers UUIDs"""
+    loadbalancers = [{"id": 'loadbalancer-id-1'},
+             {"id": 'loadbalancer-id-2'}]
+    return loadbalancers
+
+
 class FakeListener(test_base.Fake):
     """Fake one or more listener"""
 
@@ -145,8 +152,7 @@ class FakeListener(test_base.Fake):
             "http2_enable": True,
             "insert_headers": {},
             "is_admin_state_up": True,
-            "load_balancers": uuid.uuid4().hex,
-            "loadbalancer_id": generate_listeners_list(),
+            "load_balancers": generate_loadbalancers_list(),
             "ipgroup": generate_ipgroup(),
             "name": uuid.uuid4().hex,
             "keepalive_timeout": 10,
