@@ -12,14 +12,15 @@ Service Proxies
    Cloud Eye Service (CES) <ces>
    Cloud Search Service (CSS) <css>
    Cloud Trace Service (CTS) <cts>
-   Direct Connect (DCAAS) <dcaas>
-   Distributed Cache Service (DCS) <dcs>
-   Document Database Service (DDS) <dds_v3>
+   Data Ingestion Service (DIS) <dis>
+   Data Warehouse Service (DWS) <dws>
    Dedicated Host Service (DeH) <deh>
    Dedicated Load Balancer (DLB) <vlb_v3>
+   Direct Connect (DCAAS) <dcaas>
+   Distributed Cache Service (DCS) <dcs>
    Distributed Message Service (DMS) <dms>
+   Document Database Service (DDS) <dds_v3>
    Domain Name Server Service (DNS) <dns>
-   Data Warehouse Service (DWS) <dws>
    Identity Service (IAM) <identity_v3>
    Key Management Service (KMS) <kms>
    MapReduce Service (MRS) <mrs>
