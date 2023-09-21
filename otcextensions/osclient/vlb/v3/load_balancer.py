@@ -279,9 +279,8 @@ class ListLoadBalancers(command.Lister):
 
         args_list = ['id', 'name', 'marker', 'limit', 'page_reverse',
                      'description', 'provisioning_status', 'operating_status',
-                     'guaranteed', 'vpc_id', 'vip_port_id', 'eips',
-                     'publicips',
-                     'vip_address', 'vip_subnet_cidr_id',
+                     'guaranteed', 'vpc_id', 'vip_port_id',
+                     'eips', 'publicips', 'vip_address', 'vip_subnet_cidr_id',
                      'availability_zone_list', 'l4_flavor_id', 'l7_flavor_id',
                      'member_device_id', 'member_address', 'ip_version',
                      'elb_virsubnet_type', 'deletion_protection_enable']

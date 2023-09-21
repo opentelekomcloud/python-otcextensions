@@ -14,6 +14,7 @@ import uuid
 
 import mock
 
+from otcextensions.sdk.vlb.v3 import listener
 from otcextensions.sdk.vlb.v3 import load_balancer
 from otcextensions.tests.unit.osclient import test_base
 
@@ -117,4 +118,57 @@ class FakeLoadBalancer(test_base.Fake):
         }
 
         obj = load_balancer.LoadBalancer.existing(**object_info)
+        return obj
+
+
+def generate_ipgroup():
+    """Generate random list of vault UUIDs"""
+    ipgroup = {"ipgroup_id": "ipgroup-uuid",
+               "enable_ipgroup": True,
+               "type": "ipgroup-type"}
+    return ipgroup
+
+
+def generate_loadbalancers_list():
+    """Generate random list of loadbalancers UUIDs"""
+    loadbalancers = [{"id": 'loadbalancer-id-1'},
+                     {"id": 'loadbalancer-id-2'}]
+    return loadbalancers
+
+
+class FakeListener(test_base.Fake):
+    """Fake one or more listener"""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            "client_ca_tls_container_ref": uuid.uuid4().hex,
+            "client_timeout": uuid.uuid4().hex,
+            "created_at": uuid.uuid4().hex,
+            "connection_limit": 10,
+            "default_pool_id": uuid.uuid4().hex,
+            "default_tls_container_ref": uuid.uuid4().hex,
+            "enable_member_retry": True,
+            "enhance_l7policy": True,
+            "http2_enable": True,
+            "insert_headers": {},
+            "is_admin_state_up": True,
+            "load_balancers": generate_loadbalancers_list(),
+            "ipgroup": generate_ipgroup(),
+            "name": uuid.uuid4().hex,
+            "keepalive_timeout": 10,
+            "member_timeout": 10,
+            "protocol": uuid.uuid4().hex,
+            "protocol_port": uuid.uuid4().hex,
+            "project_id": uuid.uuid4().hex,
+            "security_policy_id": uuid.uuid4().hex,
+            "sni_container_refs": [],
+            "sni_match_algo": uuid.uuid4().hex,
+            "tags": generate_tags_list(),
+            "transparent_client_ip_enable": True,
+            "tls_ciphers_policy": uuid.uuid4().hex,
+            "updated_at": uuid.uuid4().hex,
+        }
+
+        obj = listener.Listener.existing(**object_info)
         return obj
