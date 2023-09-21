@@ -42,7 +42,7 @@ class Listener(resource.Resource):
     #: Timestamp when the load balancer was created
     created_at = resource.Body('created_at')
     #: Specifies the maximum number of connections.
-    connection_limit = resource.Body('connection_limit')
+    connection_limit = resource.Body('connection_limit', type=int)
     #: The listener description
     description = resource.Body('description')
     #: Specifies the ID of the default backend server group.
