@@ -60,10 +60,13 @@ class Proxy(sdk_proxy.Proxy):
         """Override to return mapped endpoint if override and region are set
 
         """
-        region_name = getattr(self, 'region_name', 'eu-ch2')
+        region_name = getattr(self, 'region_name', 'eu-de')
+        if region_name == 'eu-ch2':
+            self.CONTAINER_ENDPOINT = \
+                'https://%(container)s.obs.%(region_name)s.sc.otc.t-systems.com'
         endpoint = self.CONTAINER_ENDPOINT % {
             'container': container,
-            'region_name': 'eu-ch2'
+            'region_name': region_name
         }
         return endpoint
 
@@ -78,16 +81,14 @@ class Proxy(sdk_proxy.Proxy):
             if not (ak and sk):
                 self.log.error('Cannot obtain AK/SK from config')
                 return None
-            print("AAAAJKJJJJDJDJJJJJJJJ")
-            print(ak)
-            region = getattr(self, 'region_name', 'eu-ch2')
+            region = getattr(self, 'region_name', 'eu-de')
             if not host:
                 host = self.get_endpoint()
             auth = ak_auth.AKRequestsAuth(
                 access_key=ak,
                 secret_access_key=sk,
                 host=host,
-                region='eu-ch2',
+                region=region,
                 service='s3'
             )
             setattr(self, '_ak_auth', auth)
