@@ -9,6 +9,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from unittest.mock import MagicMock
 
 from openstack.tests.unit import test_proxy_base
 
@@ -32,6 +33,7 @@ class TestObsProxy(test_proxy_base.TestProxyBase):
             service='OBS')
         self.proxy._ak_auth = self._ak_auth
         self.proxy.region_name = 'regio'
+        self.proxy.get_container_endpoint = MagicMock(return_value='https://container.obs.regio.otc.t-systems.com')
 
     def test_containers(self):
         self.verify_list(
@@ -47,11 +49,11 @@ class TestObsProxy(test_proxy_base.TestProxyBase):
             self.proxy.create_container, _container.Container,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
             method_kwargs={
-                'name': 'nm'
+                'name': 'container'
             },
             expected_kwargs={
-                'name': 'nm',
-                'endpoint_override': 'https://nm.obs.regio.otc.t-systems.com',
+                'name': 'container',
+                'endpoint_override': 'https://container.obs.regio.otc.t-systems.com',
                 'requests_auth': self._ak_auth
             }
         )
@@ -63,7 +65,7 @@ class TestObsProxy(test_proxy_base.TestProxyBase):
             ignore_missing=True,
             mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
             expected_kwargs={
-                'endpoint_override': 'https://resource_id.obs.regio.'
+                'endpoint_override': 'https://container.obs.regio.'
                                      'otc.t-systems.com',
                 'ignore_missing': True,
                 'requests_auth': self._ak_auth
@@ -147,11 +149,11 @@ class TestObsProxy(test_proxy_base.TestProxyBase):
             'otcextensions.sdk.obs.v1.obj.Object.download',
             self.proxy.download_object,
             method_args=[{}],
-            method_kwargs={'container': 'cont'},
+            method_kwargs={'container': 'container'},
             expected_args=[self.proxy],
             expected_kwargs={
                 'filename': '-',
-                'endpoint_override': 'https://cont.obs.regio.'
+                'endpoint_override': 'https://container.obs.regio.'
                                      'otc.t-systems.com',
                 'requests_auth': self._ak_auth
             }
@@ -175,11 +177,11 @@ class TestObsProxy(test_proxy_base.TestProxyBase):
             "otcextensions.sdk.sdk_proxy.Proxy._head",
             self.proxy.get_object_metadata,
             method_args=['object'],
-            method_kwargs={'container': 'cont'},
+            method_kwargs={'container': 'container'},
             expected_args=[_obj.Object, 'object'],
             expected_kwargs={
-                'container': 'cont',
-                'endpoint_override': 'https://cont.obs.regio.'
+                'container': 'container',
+                'endpoint_override': 'https://container.obs.regio.'
                                      'otc.t-systems.com',
                 'requests_auth': self._ak_auth
             })
