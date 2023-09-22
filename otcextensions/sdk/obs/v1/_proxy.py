@@ -11,11 +11,13 @@
 # under the License.
 import os
 from urllib import parse
+from urllib.parse import urlsplit
 
 from openstack import exceptions
 from urllib3.exceptions import LocationParseError
 
 from otcextensions.common import utils
+from otcextensions.common.utils import extract_region_from_url
 from otcextensions.sdk import ak_auth
 from otcextensions.sdk import sdk_proxy
 from otcextensions.sdk.obs.v1 import container as _container
@@ -60,12 +62,10 @@ class Proxy(sdk_proxy.Proxy):
         """Override to return mapped endpoint if override and region are set
 
         """
-        region_name = getattr(self, 'region_name', 'eu-de')
-        endpoint = self.CONTAINER_ENDPOINT % {
-            'container': container,
-            'region_name': region_name
-        }
-        return endpoint
+        split_url = urlsplit(self.get_endpoint())
+
+        return f'{split_url.scheme}://%(container)s.{split_url.netloc}' % \
+               {'container': container}
 
     def _get_req_auth(self, host=None):
         auth = getattr(self, '_ak_auth', None)
@@ -78,10 +78,9 @@ class Proxy(sdk_proxy.Proxy):
             if not (ak and sk):
                 self.log.error('Cannot obtain AK/SK from config')
                 return None
-            region = getattr(self, 'region_name', 'eu-de')
+            region = extract_region_from_url(self.get_endpoint())
             if not host:
                 host = self.get_endpoint()
-
             auth = ak_auth.AKRequestsAuth(
                 access_key=ak,
                 secret_access_key=sk,
@@ -136,10 +135,11 @@ class Proxy(sdk_proxy.Proxy):
         """
         container = attrs.get('name', None)
         endpoint = self.get_container_endpoint(container)
+        request_auth = self._get_req_auth(endpoint)
         return self._create(
             _container.Container,
             endpoint_override=endpoint,
-            requests_auth=self._get_req_auth(endpoint),
+            requests_auth=request_auth,
             # prepend_key=False,
             **attrs)
 

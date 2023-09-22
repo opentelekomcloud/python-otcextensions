@@ -14,6 +14,7 @@ import mock
 from keystoneauth1 import adapter
 
 from openstack.tests.unit import base
+from otcextensions.sdk import ak_auth
 
 from otcextensions.sdk.obs.v1 import container
 
@@ -87,17 +88,23 @@ class TestContainer(base.TestCase):
         mock_response = mock.Mock()
         mock_response.status_code = 200
         mock_response.content = ''
-
+        auth = ak_auth.AKRequestsAuth(
+            access_key='test-ak',
+            secret_access_key='test-sk',
+            host='http://test-sk',
+            region='',
+            service='s3'
+        )
         self.sess.put.return_value = mock_response
 
         sot.create(
             self.sess,
             endpoint_override='epo',
-            requests_auth=2)
+            requests_auth=auth)
 
         self.sess.put.assert_called_once_with(
             '/',
             data=None,
             endpoint_override='epo',
-            requests_auth=2
+            requests_auth=auth
         )

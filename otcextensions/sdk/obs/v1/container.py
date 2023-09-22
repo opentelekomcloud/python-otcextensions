@@ -149,7 +149,13 @@ class Container(_base.BaseResource):
             request_headers=request.headers,
             additional_headers=headers,
             requests_auth=requests_auth)
-
+        # hack for nl, strange that optional parameter
+        # LocationConstraint is required there
+        if requests_auth.aws_region == 'eu-nl':
+            request.body = '''<CreateBucketConfiguration>
+                <LocationConstraint>{region}</LocationConstraint>
+                </CreateBucketConfiguration>
+            '''.format(region=requests_auth.aws_region)
         response = session.put(request.url,
                                data=request.body, **req_args)
 

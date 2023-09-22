@@ -39,8 +39,6 @@ class TestContainer(base.BaseFunctionalTest):
             name=self.object_name,
             data=self.data
         )
-        self.addCleanup(self.client.delete_object, self.object)
-        self.addCleanup(self.client.delete_container, self.container)
 
     def test_01_get_object(self):
         object = self.client.get_object(
@@ -56,3 +54,5 @@ class TestContainer(base.BaseFunctionalTest):
         )
         self.assertIsNotNone(object)
         self.assertIsNotNone(object.etag)
+        self.client.delete_object(self.object)
+        self.client.delete_container(self.container)

@@ -23,10 +23,12 @@ import hashlib
 import os
 # import re
 # import sys
+import re
 import threading
 
 # import uuid
 #
+from urllib.parse import urlsplit
 
 if os.name == 'nt':
     pass
@@ -121,3 +123,13 @@ def _get_file_segments(endpoint, filename, file_size, segment_size):
             endpoint=endpoint, index=index + 1)
         segments[name] = segment
     return segments
+
+
+def extract_region_from_url(url):
+    parsed_url = urlsplit(url)
+    hostname = parsed_url.hostname
+    match = re.search(r'eu-[^.]+', hostname)
+
+    if match:
+        return match.group()
+    return
