@@ -33,7 +33,9 @@ class TestObsProxy(test_proxy_base.TestProxyBase):
             service='OBS')
         self.proxy._ak_auth = self._ak_auth
         self.proxy.region_name = 'regio'
-        self.proxy.get_container_endpoint = MagicMock(return_value='https://container.obs.regio.otc.t-systems.com')
+        self.proxy.get_container_endpoint = MagicMock(
+            return_value='https://container.obs.regio.otc.t-systems.com'
+        )
 
     def test_containers(self):
         self.verify_list(
@@ -53,7 +55,8 @@ class TestObsProxy(test_proxy_base.TestProxyBase):
             },
             expected_kwargs={
                 'name': 'container',
-                'endpoint_override': 'https://container.obs.regio.otc.t-systems.com',
+                'endpoint_override':
+                    'https://container.obs.regio.otc.t-systems.com',
                 'requests_auth': self._ak_auth
             }
         )
