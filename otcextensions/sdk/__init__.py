@@ -159,6 +159,11 @@ OTC_SERVICES = {
         'service_type': 'smn',
         'append_project_id': True
     },
+    's3': {
+        'service_type': 's3',
+        'endpoint_service_type': 'object',
+        'set_endpoint_override': True
+    },
     'vlb': {
         'service_type': 'vlb',
         'endpoint_service_type': 'elbv3',
