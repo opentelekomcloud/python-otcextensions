@@ -147,19 +147,6 @@ class Proxy(sdk_proxy.Proxy):
         )
         return response
 
-    def objects(self, **query):
-        """Obtain Container objects for this account.
-
-        :param kwargs query: Optional query parameters to be sent to limit
-                                 the resources being returned.
-
-        :returns: List of containers
-        """
-        region_name = 'eu-ch2'
-        s3_client = self.get_boto3_client(region_name)
-        buckets = s3_client.list_buckets()
-        return buckets
-
     def get_object(self, container, key, region):
         """Copy an object.
 
@@ -174,11 +161,13 @@ class Proxy(sdk_proxy.Proxy):
         )
         return response
 
-    def delete_container(self, name, region):
-        """Delete a container
+    def delete_object(self, container, key, region):
+        """Delete a object
 
+        :param container: Container name
+        :param key: Key of the object to delete.
         :returns: ``None``
         """
         s3_client = self.get_boto3_client(region)
-        response = s3_client.delete_bucket(Bucket=name)
+        response = s3_client.delete_object(Bucket=container, Key=key)
         return response
