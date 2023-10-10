@@ -14,6 +14,7 @@ import os
 from urllib.parse import urlsplit
 
 from otcextensions.sdk import sdk_proxy
+from otcextensions.sdk.s3.v1.container import Container
 
 
 class Proxy(sdk_proxy.Proxy):
@@ -64,110 +65,143 @@ class Proxy(sdk_proxy.Proxy):
         buckets = s3_client.list_buckets()
         return buckets
 
-    def create_container(self, name, region_name):
+    def create_container(self, container_name, region, **kwargs):
         """Create a new container from attributes
 
-        :param name: Bucket to create
+        :param container_name: Bucket to create
         :param region: String region to create bucket in, e.g., 'eu-de'
+        :param kwargs: Could be ACL, GrantFullControl, GrantRead,
+            GrantReadACP, GrantWrite, GrantWrite, ObjectLockEnabledForBucket,
+            ObjectOwnership
         :returns: The results of container creation
         """
-        s3_client = self.get_boto3_client(region_name)
-        location = {'LocationConstraint': region_name}
-        bucket = s3_client.create_bucket(Bucket=name,
-                                         CreateBucketConfiguration=location)
-        return bucket
+        s3_client = self.get_boto3_client(region)
+        location = {'LocationConstraint': region}
+        response = s3_client.create_bucket(Bucket=container_name,
+                                           CreateBucketConfiguration=location,
+                                           **kwargs)
+        if response.get('ResponseMetadata'):
+            if response.get('ResponseMetadata').get('HTTPStatusCode', None) == 200:
+                container = Container.new()
+                return container._translate_response(response)
+        return response
 
-    def delete_container(self, name, region):
+    def get_container(self, container_name, region, **kwargs):
+        """Get container
+
+        :param container_name: Bucket to get
+        :param region: Region , e.g., 'eu-de'
+        :param kwargs: Additional params
+        :returns: The result of container get
+        """
+        s3_client = self.get_boto3_client(region)
+        response = s3_client.head_bucket(Bucket=container_name,
+                                         **kwargs)
+        if response.get('ResponseMetadata'):
+            if response.get('ResponseMetadata').get('HTTPStatusCode', None) == 200:
+                container = Container.new()
+                return container._translate_response(response)
+        return response
+
+    def delete_container(self, container_name, region):
         """Delete a container
 
         :returns: ``None``
         """
         s3_client = self.get_boto3_client(region)
-        response = s3_client.delete_bucket(Bucket=name)
+        response = s3_client.delete_bucket(Bucket=container_name)
+        if response.get('ResponseMetadata'):
+            if response.get('ResponseMetadata').get('HTTPStatusCode', None) == 204:
+                container = Container.new()
+                return container._translate_response(response)
         return response
 
-    # ======== Objects ========
+    def get_container_acl(self, container_name, region, **kwargs):
+        """Get bucket acl
 
-    def objects(self, container, region):
-        """Copy an object.
-
-        :param container: Container name
-        :param key: Key of the object to get.
+        :param container_name: Bucket to create
+        :param kwargs: Could be ExpectedBucketOwner- the account ID of the
+            expected bucket owner.
+        :param region: String region to create bucket in, e.g., 'eu-de'
+        :returns: The results of container creation
         """
-
         s3_client = self.get_boto3_client(region)
-        response = s3_client.list_objects(
-            Bucket=container
-        )
+        response = s3_client.get_bucket_acl(Bucket=container_name, **kwargs)
+        if response.get('ResponseMetadata'):
+            if response.get('ResponseMetadata').get('HTTPStatusCode', None) == 200:
+                container = Container.new()
+                return container._translate_response(response)
         return response
 
-    def upload_object(self, container, file_name, region, object_name=None):
-        """Upload a file to an S3 bucket
+    def put_container_acl(self, container_name, region,
+                          **kwargs):
+        """Put acl to bucket
 
-        :param file_name: File to upload
-        :param container: container to upload to
-        :param object_name: S3 object name. If not specified then file_name is used
-        :return: True if file was uploaded, else False
+        :param container_name: Bucket to create
+        :param acl: The canned ACL to apply to the bucket
+        :param access_control_policy: Contains the elements that set the ACL
+            permissions for an object per grantee.
+        :param region: String region to create bucket in, e.g., 'eu-de'
+        :param kwargs: Could be ACL, AccessControlPolicy, ChecksumAlgorithm,
+            GrantFullControl, GrantRead, GrantReadACP, GrantWrite,
+            GrantWriteACP, ExpectedBucketOwner
+        :returns: The results of container creation
         """
-
-        if object_name is None:
-            object_name = os.path.basename(file_name)
-
         s3_client = self.get_boto3_client(region)
-        response = s3_client.upload_file(file_name, container, object_name)
+        bucket = s3_client.put_bucket_acl(Bucket=container_name,
+                                          **kwargs)
+        return bucket
+
+    def put_container_policy(self, container_name, policy, region, **kwargs):
+        """Apply policy to container
+
+        :param container_name: Bucket name
+        :param region: String region to create bucket in, e.g., 'eu-de'
+        :param policy: The bucket policy as a JSON document.
+        :param kwargs: Can be ChecksumAlgorithm, ConfirmRemoveSelfBucketAccess,
+            ExpectedBucketOwner
+        :returns: The results of operation
+        """
+        s3_client = self.get_boto3_client(region)
+        response = s3_client.put_bucket_policy(Bucket=container_name,
+                                               Policy=policy,
+                                               **kwargs)
+        if response.get('ResponseMetadata'):
+            if response.get('ResponseMetadata').get('HTTPStatusCode', None) == 200:
+                container = Container.new()
+                return container._translate_response(response)
         return response
 
-    def download_object(self, file_name, container, region, object_name=None):
-        """Upload a file to an S3 bucket
+    def get_container_policy(self, container_name, region, **kwargs):
+        """Get policy to container
 
-        :param file_name: File to upload
-        :param container: container to upload to
-        :param object_name: S3 object name. If not specified then file_name is used
-        :return: True if file was uploaded, else False
+        :param container_name: Bucket name
+        :param region: String region to create bucket in, e.g., 'eu-de'
+        :param kwargs: Can only be ExpectedBucketOwner
+        :returns: The results of operation
         """
-
         s3_client = self.get_boto3_client(region)
-        with open('FILE_NAME', 'wb') as f:
-            s3_client.download_fileobj('BUCKET_NAME', 'OBJECT_NAME', f)
-        return
-
-    def copy_object(self, container, copy_source, key, region):
-        """Copy an object.
-
-        :param container: Container name
-        :param copy_source: The name of the source bucket.
-        :param key: The key of the destination object.
-        """
-
-        s3_client = self.get_boto3_client(region)
-        response = s3_client.copy_object(
-            Bucket=container,
-            CopySource=copy_source,
-            Key=key,
-        )
+        response = s3_client.get_bucket_policy(Bucket=container_name,
+                                               **kwargs)
+        if response.get('ResponseMetadata'):
+            if response.get('ResponseMetadata').get('HTTPStatusCode', None) == 200:
+                container = Container.new()
+                return container._translate_response(response)
         return response
 
-    def get_object(self, container, key, region):
-        """Copy an object.
+    def delete_container_policy(self, container_name, region, **kwargs):
+        """Delete policy to container
 
-        :param container: Container name
-        :param key: Key of the object to get.
-        """
-
-        s3_client = self.get_boto3_client(region)
-        response = s3_client.get_object(
-            Bucket=container,
-            Key=key,
-        )
-        return response
-
-    def delete_object(self, container, key, region):
-        """Delete a object
-
-        :param container: Container name
-        :param key: Key of the object to delete.
-        :returns: ``None``
+        :param container_name: Bucket name
+        :param region: String region to create bucket in, e.g., 'eu-de'
+        :param kwargs: Can only be ExpectedBucketOwner
+        :returns: The results of operation
         """
         s3_client = self.get_boto3_client(region)
-        response = s3_client.delete_object(Bucket=container, Key=key)
+        response = s3_client.delete_bucket_policy(Bucket=container_name,
+                                               **kwargs)
+        if response.get('ResponseMetadata'):
+            if response.get('ResponseMetadata').get('HTTPStatusCode', None) == 204:
+                container = Container.new()
+                return container._translate_response(response)
         return response
