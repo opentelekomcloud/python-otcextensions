@@ -63,4 +63,10 @@ class Container(_base.BaseResource):
         dict.update(self, self.to_dict())
         return self
 
-
+    def _translate_container_response(self, container):
+        body_attrs = {}
+        body_attrs['name'] = container.get('Name', None)
+        body_attrs['creation_date'] = container.get('CreationDate', None)
+        self._body.attributes.update(body_attrs)
+        dict.update(self, self.to_dict())
+        return self

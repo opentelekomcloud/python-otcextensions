@@ -62,8 +62,11 @@ class Proxy(sdk_proxy.Proxy):
         """
         region_name = 'eu-ch2'
         s3_client = self.get_boto3_client(region_name)
-        buckets = s3_client.list_buckets()
-        return buckets
+        response = s3_client.list_buckets()
+        buckets = response.get('Buckets')
+        for bucket in buckets:
+            container = Container.new()
+            yield container._translate_container_response(bucket)
 
     def create_container(self, container_name, region, **kwargs):
         """Create a new container from attributes
@@ -148,9 +151,13 @@ class Proxy(sdk_proxy.Proxy):
         :returns: The results of container creation
         """
         s3_client = self.get_boto3_client(region)
-        bucket = s3_client.put_bucket_acl(Bucket=container_name,
+        response = s3_client.put_bucket_acl(Bucket=container_name,
                                           **kwargs)
-        return bucket
+        if response.get('ResponseMetadata'):
+            if response.get('ResponseMetadata').get('HTTPStatusCode', None) == 200:
+                container = Container.new()
+                return container._translate_response(response)
+        return response
 
     def put_container_policy(self, container_name, policy, region, **kwargs):
         """Apply policy to container
