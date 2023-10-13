@@ -12,7 +12,6 @@
 # under the License.
 
 from openstack import _log
-from openstack import resource
 
 from otcextensions.sdk.obs.v1 import _base
 

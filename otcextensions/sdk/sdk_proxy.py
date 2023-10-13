@@ -129,8 +129,10 @@ class Proxy(os_proxy.Proxy):
             requests_auth=requests_auth
         )
 
-    def _create(self, resource_type, endpoint_override=None, headers=None,
-                requests_auth=None,  prepend_key=True, **attrs):
+    def _create(self, resource_type,
+                endpoint_override=None, headers=None, requests_auth=None,
+                prepend_key=True,
+                **attrs):
         """Create a resource from attributes
 
         :param resource_type: The type of resource to create.

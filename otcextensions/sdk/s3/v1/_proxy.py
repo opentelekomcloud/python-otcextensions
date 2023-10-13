@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import boto3
-import os
 from urllib.parse import urlsplit
 
 from otcextensions.sdk import sdk_proxy
@@ -84,7 +83,8 @@ class Proxy(sdk_proxy.Proxy):
                                            CreateBucketConfiguration=location,
                                            **kwargs)
         if response.get('ResponseMetadata'):
-            if response.get('ResponseMetadata').get('HTTPStatusCode', None) == 200:
+            if response.get('ResponseMetadata').get('HTTPStatusCode',
+                                                    None) == 200:
                 container = Container.new()
                 return container._translate_response(response)
         return response
@@ -101,7 +101,8 @@ class Proxy(sdk_proxy.Proxy):
         response = s3_client.head_bucket(Bucket=container_name,
                                          **kwargs)
         if response.get('ResponseMetadata'):
-            if response.get('ResponseMetadata').get('HTTPStatusCode', None) == 200:
+            if response.get('ResponseMetadata').get('HTTPStatusCode',
+                                                    None) == 200:
                 container = Container.new()
                 return container._translate_response(response)
         return response
@@ -114,7 +115,8 @@ class Proxy(sdk_proxy.Proxy):
         s3_client = self.get_boto3_client(region)
         response = s3_client.delete_bucket(Bucket=container_name)
         if response.get('ResponseMetadata'):
-            if response.get('ResponseMetadata').get('HTTPStatusCode', None) == 204:
+            if response.get('ResponseMetadata').get('HTTPStatusCode',
+                                                    None) == 204:
                 container = Container.new()
                 return container._translate_response(response)
         return response
@@ -131,7 +133,8 @@ class Proxy(sdk_proxy.Proxy):
         s3_client = self.get_boto3_client(region)
         response = s3_client.get_bucket_acl(Bucket=container_name, **kwargs)
         if response.get('ResponseMetadata'):
-            if response.get('ResponseMetadata').get('HTTPStatusCode', None) == 200:
+            if response.get('ResponseMetadata').get('HTTPStatusCode',
+                                                    None) == 200:
                 container = Container.new()
                 return container._translate_response(response)
         return response
@@ -154,7 +157,8 @@ class Proxy(sdk_proxy.Proxy):
         response = s3_client.put_bucket_acl(Bucket=container_name,
                                           **kwargs)
         if response.get('ResponseMetadata'):
-            if response.get('ResponseMetadata').get('HTTPStatusCode', None) == 200:
+            if response.get('ResponseMetadata').get('HTTPStatusCode',
+                                                    None) == 200:
                 container = Container.new()
                 return container._translate_response(response)
         return response
@@ -174,7 +178,8 @@ class Proxy(sdk_proxy.Proxy):
                                                Policy=policy,
                                                **kwargs)
         if response.get('ResponseMetadata'):
-            if response.get('ResponseMetadata').get('HTTPStatusCode', None) == 200:
+            if response.get('ResponseMetadata').get('HTTPStatusCode',
+                                                    None) == 200:
                 container = Container.new()
                 return container._translate_response(response)
         return response
@@ -191,7 +196,8 @@ class Proxy(sdk_proxy.Proxy):
         response = s3_client.get_bucket_policy(Bucket=container_name,
                                                **kwargs)
         if response.get('ResponseMetadata'):
-            if response.get('ResponseMetadata').get('HTTPStatusCode', None) == 200:
+            if response.get('ResponseMetadata').get('HTTPStatusCode',
+                                                    None) == 200:
                 container = Container.new()
                 return container._translate_response(response)
         return response
@@ -208,7 +214,8 @@ class Proxy(sdk_proxy.Proxy):
         response = s3_client.delete_bucket_policy(Bucket=container_name,
                                                **kwargs)
         if response.get('ResponseMetadata'):
-            if response.get('ResponseMetadata').get('HTTPStatusCode', None) == 204:
+            if response.get('ResponseMetadata').get('HTTPStatusCode',
+                                                    None) == 204:
                 container = Container.new()
                 return container._translate_response(response)
         return response
