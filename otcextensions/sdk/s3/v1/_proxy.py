@@ -155,7 +155,7 @@ class Proxy(sdk_proxy.Proxy):
         """
         s3_client = self.get_boto3_client(region)
         response = s3_client.put_bucket_acl(Bucket=container_name,
-                                          **kwargs)
+                                            **kwargs)
         if response.get('ResponseMetadata'):
             if response.get('ResponseMetadata').get('HTTPStatusCode',
                                                     None) == 200:
@@ -212,7 +212,7 @@ class Proxy(sdk_proxy.Proxy):
         """
         s3_client = self.get_boto3_client(region)
         response = s3_client.delete_bucket_policy(Bucket=container_name,
-                                               **kwargs)
+                                                  **kwargs)
         if response.get('ResponseMetadata'):
             if response.get('ResponseMetadata').get('HTTPStatusCode',
                                                     None) == 204:
