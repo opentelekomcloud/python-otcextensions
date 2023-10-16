@@ -51,7 +51,7 @@ class Proxy(sdk_proxy.Proxy):
 
     # ======== Containers ========
 
-    def containers(self, region,  **query):
+    def containers(self, region, **query):
         """Obtain Container objects for this account.
 
         :param kwargs query: Optional query parameters to be sent to limit
