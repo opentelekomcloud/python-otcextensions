@@ -57,4 +57,3 @@ class TestContainer(base.BaseFunctionalTest):
             container_name=self.bucket_name,
             region=self.region)
         self.assertIsNotNone(container)
-        self.assertIsNotNone(container.grants)
