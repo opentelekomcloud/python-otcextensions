@@ -51,7 +51,7 @@ class Proxy(sdk_proxy.Proxy):
 
     # ======== Containers ========
 
-    def containers(self, **query):
+    def containers(self, region,  **query):
         """Obtain Container objects for this account.
 
         :param kwargs query: Optional query parameters to be sent to limit
@@ -59,8 +59,7 @@ class Proxy(sdk_proxy.Proxy):
 
         :returns: List of containers
         """
-        region_name = 'eu-ch2'
-        s3_client = self.get_boto3_client(region_name)
+        s3_client = self.get_boto3_client(region)
         response = s3_client.list_buckets()
         buckets = response.get('Buckets')
         for bucket in buckets:
