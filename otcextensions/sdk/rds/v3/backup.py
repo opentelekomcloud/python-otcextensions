@@ -95,13 +95,13 @@ class Backup(_base.Resource):
         """
         if not self.allow_fetch:
             raise exceptions.MethodNotSupported(self, "fetch")
-            
+
         # Create request parameters
         request_params = {
             'instance_id': self.instance_id,
             'backup_id': self.id
         }
-        
+
         # Merge with additional params if provided
         request_params.update(params)
 
