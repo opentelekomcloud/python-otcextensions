@@ -95,11 +95,16 @@ class Backup(_base.Resource):
         """
         if not self.allow_fetch:
             raise exceptions.MethodNotSupported(self, "fetch")
-
-        params = {
+            
+        # Create request parameters
+        request_params = {
             'instance_id': self.instance_id,
             'backup_id': self.id
         }
+        
+        # Merge with additional params if provided
+        request_params.update(params)
+
         query_params = self._query_mapping._transpose(params, self)
         url = utils.urljoin(self.base_path) % params
 
