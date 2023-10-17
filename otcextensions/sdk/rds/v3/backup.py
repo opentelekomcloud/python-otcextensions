@@ -105,8 +105,8 @@ class Backup(_base.Resource):
         # Merge with additional params if provided
         request_params.update(params)
 
-        query_params = self._query_mapping._transpose(params, self)
-        url = utils.urljoin(self.base_path) % params
+        query_params = self._query_mapping._transpose(request_params, self)
+        url = utils.urljoin(self.base_path) % request_params
 
         session = self._get_session(session)
         microversion = self._get_microversion(session, action='fetch')
