@@ -40,8 +40,9 @@ without further installation or configuration.
 So effectively, using a package manager like pip it is sufficient to
 install the packages like this:
 
-.. code-block: console
-   $ pip install openstackclcient otcextensions
+.. code-block::
+
+  $ pip install openstackclient otcextensions
 
 Other packaging methods may or may not have these dependencies built
 in already.
