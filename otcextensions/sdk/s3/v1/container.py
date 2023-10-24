@@ -45,6 +45,7 @@ class Container(_base.BaseResource):
     location = None
 
     def _translate_response(self, response, has_body=None, error_message=None):
+
         body_attrs = {}
         if response.get("Grants"):
             body_attrs['grants'] = response.get("Grants")
@@ -58,6 +59,7 @@ class Container(_base.BaseResource):
         body_attrs['location'] = location
         if location:
             body_attrs['name'] = location.split("/")[1]
+        self._body.clean()
         self._body.attributes.update(body_attrs)
         dict.update(self, self.to_dict())
         return self

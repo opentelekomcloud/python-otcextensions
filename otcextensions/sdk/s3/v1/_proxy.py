@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import boto3
+import os
 from urllib.parse import urlsplit
 
 from otcextensions.sdk import sdk_proxy
@@ -187,7 +188,7 @@ class Proxy(sdk_proxy.Proxy):
         """Get policy to container
 
         :param container_name: Bucket name
-        :param region: String region to create bucket in, e.g., 'eu-de'
+        :param region: String region in, e.g., 'eu-de'
         :param kwargs: Can only be ExpectedBucketOwner
         :returns: The results of operation
         """
@@ -205,7 +206,7 @@ class Proxy(sdk_proxy.Proxy):
         """Delete policy to container
 
         :param container_name: Bucket name
-        :param region: String region to create bucket in, e.g., 'eu-de'
+        :param region: String region, e.g., 'eu-de'
         :param kwargs: Can only be ExpectedBucketOwner
         :returns: The results of operation
         """
@@ -217,4 +218,135 @@ class Proxy(sdk_proxy.Proxy):
                                                     None) == 204:
                 container = Container.new()
                 return container._translate_response(response)
+        return response
+
+    # ======== Objects ========
+
+    def objects(self, container_name, region, **kwargs):
+        """List objects.
+
+        :param container_name: Container name
+        :param region: String region, e.g., 'eu-de'
+        :param kwargs: Additional params
+        """
+
+        s3_client = self.get_boto3_client(region)
+        response = s3_client.list_objects(
+            Bucket=container_name, **kwargs
+        )
+        return response
+
+    def upload_object(self, container_name, file_name, region,
+                      key=None, **kwargs):
+        """Upload a file to an S3 bucket
+
+        :param container_name: Container name to upload to
+        :param file_name: File to upload
+        :param region: String region, e.g., 'eu-de'
+        :param key: S3 object name. If not specified then file_name is used
+        :param kwargs: Additional parameters
+        :return: True if file was uploaded, else False
+        """
+
+        if key is None:
+            key = os.path.basename(file_name)
+
+        s3_client = self.get_boto3_client(region)
+        response = s3_client.upload_file(Fileobj=file_name,
+                                         Bucket=container_name,
+                                         Key=key, **kwargs)
+        return response
+
+    def download_object(self, file_name, container_name, region,
+                        key=None):
+        """Upload a file to an S3 bucket
+
+        :param file_name: A file-like object to download into.
+        :param container_name: Container name to download from.
+        :param key: S3 object name to download.
+        :return: True if file was uploaded, else False
+        """
+
+        s3_client = self.get_boto3_client(region)
+        with open(file_name, 'wb') as f:
+            s3_client.download_fileobj(container_name, key, f)
+        return
+
+    def copy_object(self, container_name, copy_source, key, region, acl=None,
+                    **kwargs):
+        """Copy an object.
+
+        :param container_name: Container name
+        :param copy_source: The name of the source bucket.
+        :param key: The key of the destination object.
+        :param kwargs: Can be CacheControl, ChecksumAlgorithm,
+            ChecksumAlgorithm, ContentEncoding, ContentLanguage, ContentType,
+            CopySourceIfMatch, CopySourceIfModifiedSince,
+            CopySourceIfNoneMatch, CopySourceIfUnmodifiedSince, Expires,
+            GrantFullControl, GrantRead, GrantReadACP, GrantWriteACP,
+            Metadata and etc
+        """
+
+        if acl:
+            kwargs['ACL'] = acl
+        s3_client = self.get_boto3_client(region)
+        response = s3_client.copy_object(
+            Bucket=container_name,
+            CopySource=copy_source,
+            Key=key,
+            **kwargs
+        )
+        return response
+
+    def upload_part_copy(self, container_name, copy_source,
+                         key, part_number, upload_id, region, **kwargs):
+        """Uploads a part by copying data from an existing object as data
+            source.
+
+        :param container_name: Container name
+        :param copy_source: The name of the source bucket.
+        :param key: The key of the destination object.
+        :param part_number: Part number of part being copied.
+        :param upload_id: Upload ID identifying the multipart upload whose
+            part is being copied.
+        :param kwargs: Additional parameters.
+        """
+
+        s3_client = self.get_boto3_client(region)
+        response = s3_client.upload_part_copy(
+            Bucket=container_name,
+            CopySource=copy_source,
+            PartNumber=part_number,
+            UploadId=upload_id,
+            Key=key,
+            **kwargs
+        )
+        return response
+
+    def get_object(self, container_name, key, region, **kwargs):
+        """Copy an object.
+
+        :param container_name: Container name
+        :param key: Key of the object to get.
+        :param kwargs: Additional parameters.
+        """
+
+        s3_client = self.get_boto3_client(region)
+        response = s3_client.get_object(
+            Bucket=container_name,
+            Key=key,
+            **kwargs
+        )
+        return response
+
+    def delete_object(self, container_name, key, region, **kwargs):
+        """Delete a object
+
+        :param container_name: Container name
+        :param key: Key of the object to delete.
+        :param kwargs: Additional parameters.
+        :returns: ``None``
+        """
+        s3_client = self.get_boto3_client(region)
+        response = s3_client.delete_object(Bucket=container_name, Key=key)
         return response
