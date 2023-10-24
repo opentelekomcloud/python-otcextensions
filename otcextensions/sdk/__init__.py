@@ -73,6 +73,9 @@ OTC_SERVICES = {
     'css': {
         'service_type': 'css',
     },
+    'dataarts': {
+        'service_type': 'dataarts'
+    },
     'dcaas': {
         'service_type': 'dcaas',
         'append_project_id': False,
