@@ -9,14 +9,15 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import service_description
+from openstack import _log
+from otcextensions.tests.functional import base
 
-from otcextensions.sdk.dataarts.v1 import _proxy
+_logger = _log.setup_logging('openstack')
 
 
-class DataartsService(service_description.ServiceDescription):
-    """The DataArts service."""
+class TestService(base.BaseFunctionalTest):
 
-    supported_versions = {
-        '1': _proxy.Proxy
-    }
+    def test_initialize(self):
+        client = self.conn.dataarts
+
+        self.assertIsNotNone(client)
