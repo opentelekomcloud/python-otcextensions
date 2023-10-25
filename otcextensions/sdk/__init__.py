@@ -55,6 +55,9 @@ OTC_SERVICES = {
         'endpoint_service_type': 'as',
         'append_project_id': True,
     },
+    'bms': {
+        'service_type': 'bms'
+    },
     'cbr': {
         'service_type': 'cbr',
         'append_project_id': True,
