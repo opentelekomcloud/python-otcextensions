@@ -33,7 +33,7 @@ class ExtendInfo(resource.Resource):
     encrypted = resource.Body('encrypted', type=bool)
     #: Whether the backup is an incremental backup
     incremental = resource.Body('incremental', type=bool)
-    #: ID list of images created using backups
+    #: ID list of images created via backups
     os_images_data = resource.Body('os_images_data')
     progress = resource.Body('progress')
     #: Snapshot ID of the disk backup
