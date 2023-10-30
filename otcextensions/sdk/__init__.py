@@ -106,6 +106,9 @@ OTC_SERVICES = {
         'service_type': 'dns',
         'replace_system': True,
     },
+    'dli': {
+        'service_type': 'dli',
+    },
     'dws': {
         'service_type': 'dws',
         'endpoint_service_type': 'dwsv1'
@@ -131,6 +134,9 @@ OTC_SERVICES = {
     'mrs': {
         'service_type': 'mrs',
         'append_project_id': True,
+    },
+    'modelarts': {
+        'service_type': 'modelarts'
     },
     'nat': {
         'service_type': 'nat',
