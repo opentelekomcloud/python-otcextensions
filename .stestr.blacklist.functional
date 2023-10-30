@@ -1,5 +1,6 @@
 otcextensions.tests.functional.osclient.dcaas
 otcextensions.tests.functional.osclient.obs*
+otcextensions.tests.functional.osclient.dns*
 otcextensions.tests.functional.osclient.rds.v3.test_instance*
 otcextensions.tests.functional.osclient.volume_backup*
 otcextensions.tests.functional.osclient.nat*

@@ -9,14 +9,16 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import service_description
+from openstack import _log
 
-from otcextensions.sdk.modelarts.v2 import _proxy
+from otcextensions.tests.functional import base
+
+_logger = _log.setup_logging('openstack')
 
 
-class ModelartsService(service_description.ServiceDescription):
-    """The ModelartsService service."""
+class TestService(base.BaseFunctionalTest):
 
-    supported_versions = {
-        '2': _proxy.Proxy
-    }
+    def test_initialize(self):
+        client = self.conn.dli
+
+        self.assertIsNotNone(client)
