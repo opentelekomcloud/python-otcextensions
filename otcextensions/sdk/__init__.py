@@ -132,6 +132,9 @@ OTC_SERVICES = {
         'service_type': 'mrs',
         'append_project_id': True,
     },
+    'rts': {
+        'service_type': 'rts'
+    },
     'nat': {
         'service_type': 'nat',
     },
@@ -161,6 +164,9 @@ OTC_SERVICES = {
     'smn': {
         'service_type': 'smn',
         'append_project_id': True
+    },
+    'tms': {
+        'service_type': 'tms'
     },
     'vlb': {
         'service_type': 'vlb',
