@@ -11,12 +11,12 @@
 # under the License.
 from openstack import service_description
 
-from otcextensions.sdk.modelarts.v1 import _proxy
+from otcextensions.sdk.modelarts.v2 import _proxy
 
 
 class ModelArtsService(service_description.ServiceDescription):
     """The ModelArts service."""
 
     supported_versions = {
-        '1': _proxy.Proxy
+        '2': _proxy.Proxy
     }

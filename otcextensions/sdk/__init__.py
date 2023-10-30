@@ -136,7 +136,8 @@ OTC_SERVICES = {
         'append_project_id': True,
     },
     'modelarts': {
-        'service_type': 'modelarts'
+        'service_type': 'modelarts',
+        'endpoint_service_type': 'modelartsv2'
     },
     'nat': {
         'service_type': 'nat',

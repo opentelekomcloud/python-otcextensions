@@ -15,7 +15,7 @@ from otcextensions.sdk.dli.v1 import _proxy
 
 
 class DliService(service_description.ServiceDescription):
-    """The Data Lake Insight service."""
+    """The DLI service."""
 
     supported_versions = {
         '1': _proxy.Proxy
