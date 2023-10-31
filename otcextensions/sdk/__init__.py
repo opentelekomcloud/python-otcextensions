@@ -133,7 +133,8 @@ OTC_SERVICES = {
         'append_project_id': True,
     },
     'rts': {
-        'service_type': 'rts'
+        'service_type': 'rts',
+        'endpoint_service_type': 'orchestration'
     },
     'nat': {
         'service_type': 'nat',
