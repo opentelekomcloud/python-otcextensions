@@ -11,12 +11,14 @@
 # under the License.
 from openstack import service_description
 
-from otcextensions.sdk.dli.v1 import _proxy
+from otcextensions.sdk.dli.v1 import _proxy as _proxy_v1
+from otcextensions.sdk.dli.v2 import _proxy as _proxy_v2
 
 
 class DliService(service_description.ServiceDescription):
     """The DLI service."""
 
     supported_versions = {
-        '1': _proxy.Proxy
+        '1': _proxy_v1.Proxy,
+        '2': _proxy_v2.Proxy
     }
