@@ -18,23 +18,23 @@ from osc_lib.command import command
 from osc_lib import exceptions
 
 from otcextensions.common import sdk_utils
+from otcextensions.common import cli_utils
 from otcextensions.i18n import _
-from otcextensions.osclient.modelarts.v1 import modelarts_utils
 
 
 LOG = logging.getLogger(__name__)
 
 
 _formatters = {
-    'input_params': modelarts_utils.YamlFormat,
-    'output_params': modelarts_utils.YamlFormat,
-    'dependencies': modelarts_utils.YamlFormat,
-    'model_metrics': modelarts_utils.YamlFormat,
-    'specification': modelarts_utils.YamlFormat,
-    'apis': modelarts_utils.YamlFormat,
-    'config': modelarts_utils.YamlFormat,
-    'install_type': modelarts_utils.YamlFormat,
-    'created_at': modelarts_utils.UnixTimestampFormatter
+    'input_params': cli_utils.YamlFormat,
+    'output_params': cli_utils.YamlFormat,
+    'dependencies': cli_utils.YamlFormat,
+    'model_metrics': cli_utils.YamlFormat,
+    'specification': cli_utils.YamlFormat,
+    'apis': cli_utils.YamlFormat,
+    'config': cli_utils.YamlFormat,
+    'install_type': cli_utils.YamlFormat,
+    'created_at': cli_utils.UnixTimestampFormatter
 }
 
 

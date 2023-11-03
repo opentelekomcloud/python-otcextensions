@@ -19,8 +19,8 @@ from osc_lib.command import command
 from osc_lib import exceptions
 
 from otcextensions.common import sdk_utils
+from otcextensions.common import cli_utils
 from otcextensions.i18n import _
-from otcextensions.osclient.modelarts.v1 import modelarts_utils
 
 
 LOG = logging.getLogger(__name__)
@@ -34,12 +34,12 @@ DEVENV_PROFILE_ID_MAP = {
 
 
 _formatters = {
-    'user': modelarts_utils.YamlFormat,
-    'flavor_details': modelarts_utils.YamlFormat,
-    'spec': modelarts_utils.YamlFormat,
-    'profile': modelarts_utils.YamlFormat,
-    'created_at': modelarts_utils.UnixTimestampFormatter,
-    'updated_at': modelarts_utils.UnixTimestampFormatter,
+    'user': cli_utils.YamlFormat,
+    'flavor_details': cli_utils.YamlFormat,
+    'spec': cli_utils.YamlFormat,
+    'profile': cli_utils.YamlFormat,
+    'created_at': cli_utils.UnixTimestampFormatter,
+    'updated_at': cli_utils.UnixTimestampFormatter,
 }
 
 
@@ -167,7 +167,7 @@ class ListDevEnvInstances(command.Lister):
         data = client.devenv_instances(**query_params)
 
         formatters = {
-            'Created At': modelarts_utils.UnixTimestampFormatter,
+            'Created At': cli_utils.UnixTimestampFormatter,
         }
 
         return (

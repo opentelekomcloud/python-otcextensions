@@ -18,7 +18,7 @@ from osc_lib import exceptions
 
 from otcextensions.osclient.modelarts.v1 import devenv
 from otcextensions.tests.unit.osclient.modelarts.v1 import fakes
-from otcextensions.osclient.modelarts.v1 import modelarts_utils
+from otcextensions.common import cli_utils
 
 from openstackclient.tests.unit import utils as tests_utils
 
@@ -64,7 +64,7 @@ class TestListDevenvInstances(fakes.TestModelarts):
                 s.id,
                 s.name,
                 s.status,
-                modelarts_utils.UnixTimestampFormatter(s.created_at),
+                cli_utils.UnixTimestampFormatter(s.created_at),
             )
         )
 
