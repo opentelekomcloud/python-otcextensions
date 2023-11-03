@@ -26,6 +26,7 @@ class TestQuota(base.TestAs):
     def test_list(self):
         expected_types = ['scaling_Group', 'scaling_Config',
                           'scaling_Policy', 'scaling_Instance',
+                          'load_balance',
                           'bandwidth_scaling_policy']
         objects = list(self.auto_scaling.quotas())
 
