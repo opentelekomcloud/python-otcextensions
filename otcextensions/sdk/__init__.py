@@ -142,6 +142,10 @@ OTC_SERVICES = {
         'service_type': 'modelarts',
         'endpoint_service_type': 'modelartsv2'
     },
+    'rts': {
+        'service_type': 'rts',
+        'endpoint_service_type': 'orchestration'
+    },
     'nat': {
         'service_type': 'nat',
     },
@@ -171,6 +175,9 @@ OTC_SERVICES = {
     'smn': {
         'service_type': 'smn',
         'append_project_id': True
+    },
+    'tms': {
+        'service_type': 'tms'
     },
     'vlb': {
         'service_type': 'vlb',
