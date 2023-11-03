@@ -34,7 +34,6 @@ class Server(server.Server):
         :param session: The session to use for making this request.
         :param tag: The tag as a string.
         """
-        session = self._connection.ecs
         url = utils.urljoin('servers', self.id,
                             'tags', 'action')
         body = {
@@ -57,7 +56,6 @@ class Server(server.Server):
         :param session: The session to use for making this request.
         :param tag: The tag as a string.
         """
-        session = self._connection.ecs
         url = utils.urljoin('servers', self.id,
                             'tags', 'action')
         body = {
