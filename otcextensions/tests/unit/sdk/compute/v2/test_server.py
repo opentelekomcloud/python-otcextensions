@@ -56,8 +56,7 @@ class TestServer(base.TestCase):
             "action": "create",
             "tags": [{'key': 'a', 'value': 'b'}]
         }
-        self.sot._connection.ecs.post.assert_called_with(
-            url, json=body)
+        self.sess.post.assert_called_with(url, json=body)
 
     def test_remove_tag(self):
         # Let the translate pass through, that portion is tested elsewhere
@@ -72,5 +71,4 @@ class TestServer(base.TestCase):
             "action": "delete",
             "tags": [{'key': 'a', 'value': 'b'}]
         }
-        self.sot._connection.ecs.post.assert_called_with(
-            url, json=body)
+        self.sess.post.assert_called_with(url, json=body)
