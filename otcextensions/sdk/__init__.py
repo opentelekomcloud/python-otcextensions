@@ -198,7 +198,7 @@ OTC_SERVICES = {
     },
     'wafd': {
         'service_type': 'wafd',
-        'endpoint_service_type': 'premium-waf '
+        'endpoint_service_type': 'premium-waf'
     }
 }
 
