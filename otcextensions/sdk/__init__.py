@@ -132,7 +132,9 @@ OTC_SERVICES = {
         'append_project_id': True,
     },
     'lts': {
-        'service_type': 'lts'
+        'service_type': 'lts',
+        'endpoint_service_type': 'ltsv2',
+        'append_project_id': True,
     },
     'mrs': {
         'service_type': 'mrs',
