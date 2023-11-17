@@ -195,6 +195,10 @@ OTC_SERVICES = {
     'waf': {
         'service_type': 'waf',
         # 'set_endpoint_override': True
+    },
+    'wafd': {
+        'service_type': 'wafd',
+        'endpoint_service_type': 'premium-waf '
     }
 }
 
