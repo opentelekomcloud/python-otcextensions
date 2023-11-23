@@ -17,7 +17,6 @@ from otcextensions.sdk.dws.v1 import _proxy
 
 class DwsService(service_description.ServiceDescription):
     """The DWS service."""
-
     supported_versions = {
         '1': _proxy.Proxy
     }

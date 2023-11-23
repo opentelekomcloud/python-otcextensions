@@ -12,7 +12,7 @@
 import ast
 import typing as ty
 
-from openstack import resource
+from openstack import exceptions, resource
 from openstack import utils
 
 
@@ -113,7 +113,7 @@ class Group(resource.Resource):
         resp = session.post(url, json=query)
         return ast.literal_eval(resp._content.decode('utf-8'))
 
-    def delete_stream(self, session, log_stream_id):
+    def delete_stream(self, session, log_stream_id, ignore_missing):
         """Method to add several share members to a backup
 
         :param session: The session to use for making this request.
@@ -121,6 +121,11 @@ class Group(resource.Resource):
         :param list members: List of target project IDs to which the backup
             is shared
         """
-        url = utils.urljoin(self.base_path, self.id, '/streams/', log_stream_id)
-        session.delete(url)
-        return
+        url = utils.urljoin(self.base_path, self.id, '/streams/',
+                            log_stream_id)
+        resp = session.delete(url)
+        if resp.status_code == 404:
+            if not ignore_missing:
+                raise exceptions.NotFoundException(
+                    str(ast.literal_eval(resp._content.decode('utf-8'))))
+        return None
