@@ -21,3 +21,4 @@ otcextensions.tests.functional.sdk.obs*
 otcextensions.tests.functional.sdk.cts.v1.test_tracker*
 otcextensions.tests.functional.sdk.auto_scaling.v1.test_group*
 otcextensions.tests.functional.sdk.sfsturbo*
+tests.functional.osclient.vpc.v1.test_peering*
