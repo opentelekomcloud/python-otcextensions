@@ -200,6 +200,11 @@ OTC_SERVICES = {
         'service_type': 'vpcep',
         'append_project_id': True,
     },
+    'vpn': {
+        'service_type': 'vpn',
+        'endpoint_service_type': 'vpc2.0',
+        'append_project_id': True,
+    },
     'waf': {
         'service_type': 'waf',
         # 'set_endpoint_override': True
