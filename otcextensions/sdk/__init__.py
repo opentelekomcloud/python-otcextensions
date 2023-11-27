@@ -142,8 +142,12 @@ OTC_SERVICES = {
         'service_type': 'mrs',
         'append_project_id': True,
     },
-    'modelarts': {
-        'service_type': 'modelarts',
+    'modelartsv1': {
+        'service_type': 'modelartsv1',
+        'endpoint_service_type': 'modelartsv1'
+    },
+    'modelartsv2': {
+        'service_type': 'modelartsv2',
         'endpoint_service_type': 'modelartsv2'
     },
     'rts': {
