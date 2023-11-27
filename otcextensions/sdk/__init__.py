@@ -76,6 +76,10 @@ OTC_SERVICES = {
     'css': {
         'service_type': 'css',
     },
+    'csbs': {
+        'service_type': 'csbs',
+        'endpoint_service_type': 'data-protect'
+    },
     'dataarts': {
         'service_type': 'dataarts',
     },
@@ -190,6 +194,10 @@ OTC_SERVICES = {
     },
     'vpc': {
         'service_type': 'vpc',
+        'append_project_id': True,
+    },
+    'vpcep': {
+        'service_type': 'vpcep',
         'append_project_id': True,
     },
     'waf': {
