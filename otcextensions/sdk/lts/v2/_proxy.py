@@ -70,10 +70,12 @@ class Proxy(proxy.Proxy):
             the group does not exist.
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent log group.
+        :returns:  None
         """
-        return self._delete(
-            _group.Group, group, ignore_missing=ignore_missing,
+        self._delete(
+            _group.Group, group, ignore_missing=ignore_missing
         )
+        return None
 
     # ======== Stream ========
     def streams(self, log_group):
@@ -122,5 +124,5 @@ class Proxy(proxy.Proxy):
         log_group = self._get_resource(_group.Group, log_group)
         log_stream = self._get_resource(_stream.Stream, log_stream)
         log_group.delete_stream(self, log_stream_id=log_stream.id,
-                                ignore_missing=ignore_missing)
+                                            ignore_missing=ignore_missing)
         return None

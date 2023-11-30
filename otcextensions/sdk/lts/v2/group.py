@@ -61,46 +61,6 @@ class Group(resource.Resource):
             )
         return body
 
-    def commit(
-        self,
-        session,
-        prepend_key=True,
-        has_body=True,
-        retry_on_conflict=None,
-        base_path=None,
-        *,
-        microversion=None,
-        **kwargs,
-    ):
-        # The id cannot be dirty for an commit
-        self._body._dirty.discard("id")
-
-        # Only try to update if we actually have anything to commit.
-        if not self.requires_commit:
-            return self
-
-        # Avoid providing patch unconditionally to avoid breaking subclasses
-        # without it.
-        if self.commit_jsonpatch:
-            kwargs['patch'] = True
-
-        request = self._prepare_request(
-            prepend_key=prepend_key,
-            base_path=base_path,
-            **kwargs,
-        )
-        if microversion is None:
-            microversion = self._get_microversion(session, action='commit')
-
-        return self._commit(
-            session,
-            request,
-            "POST",
-            microversion,
-            has_body=has_body,
-            retry_on_conflict=retry_on_conflict,
-        )
-
     def create_stream(self, session, query):
         """Method to add several share members to a backup
 
