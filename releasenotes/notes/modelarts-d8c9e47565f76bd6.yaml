@@ -1,0 +1,6 @@
+---
+---
+features:
+  - |
+    The update contains SDK and OpenStack Client parts for the 'ModelArts
+    Service' DevEnv and Model modules and the unit tests.
