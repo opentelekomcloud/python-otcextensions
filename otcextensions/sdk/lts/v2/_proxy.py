@@ -123,5 +123,5 @@ class Proxy(proxy.Proxy):
         log_group = self._get_resource(_group.Group, log_group)
         log_stream = self._get_resource(_stream.Stream, log_stream)
         log_group.delete_stream(self, log_stream_id=log_stream.id,
-                                ignore_missing=ignore_missing)
+                                            ignore_missing=ignore_missing)
         return None
