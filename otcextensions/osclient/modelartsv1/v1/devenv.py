@@ -144,7 +144,7 @@ class ListDevEnvInstances(command.Lister):
         return parser
 
     def take_action(self, parsed_args):
-        client = self.app.client_manager.modelarts
+        client = self.app.client_manager.modelartsv1
         args_list = (
             'de_type',
             'provision_type',
@@ -192,7 +192,7 @@ class ShowDevEnvInstance(command.ShowOne):
 
     @translate_response
     def take_action(self, parsed_args):
-        client = self.app.client_manager.modelarts
+        client = self.app.client_manager.modelartsv1
 
         return client.find_devenv_instance(parsed_args.instance)
 
@@ -327,7 +327,7 @@ class CreateDevEnvInstance(command.ShowOne):
 
     @translate_response
     def take_action(self, parsed_args):
-        client = self.app.client_manager.modelarts
+        client = self.app.client_manager.modelartsv1
 
         profile_id = DEVENV_PROFILE_ID_MAP[parsed_args.profile_id]
 
@@ -400,7 +400,7 @@ class StartDevEnvInstance(command.ShowOne):
 
     @translate_response
     def take_action(self, parsed_args):
-        client = self.app.client_manager.modelarts
+        client = self.app.client_manager.modelartsv1
 
         instance = client.find_devenv_instance(
             parsed_args.instance, ignore_missing=False)
@@ -421,7 +421,7 @@ class StopDevEnvInstance(command.ShowOne):
 
     @translate_response
     def take_action(self, parsed_args):
-        client = self.app.client_manager.modelarts
+        client = self.app.client_manager.modelartsv1
 
         instance = client.find_devenv_instance(
             parsed_args.instance, ignore_missing=False)
@@ -442,7 +442,7 @@ class DeleteDevEnvInstance(command.Command):
         return parser
 
     def take_action(self, parsed_args):
-        client = self.app.client_manager.modelarts
+        client = self.app.client_manager.modelartsv1
         result = 0
         for name_or_id in parsed_args.instance:
             try:

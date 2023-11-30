@@ -19,9 +19,9 @@ from osc_lib import utils as _osc_lib_utils
 from openstackclient.tests.unit import utils
 from otcextensions.tests.unit.osclient import test_base
 
-from otcextensions.sdk.modelarts.v1 import devenv
-from otcextensions.sdk.modelarts.v1 import model
-from otcextensions.tests.unit.sdk.modelarts.v1 import examples
+from otcextensions.sdk.modelartsv1.v1 import devenv
+from otcextensions.sdk.modelartsv1.v1 import model
+from otcextensions.tests.unit.sdk.modelartsv1.v1 import examples
 
 
 def gen_data(obj, columns, formatters=None):
@@ -42,9 +42,9 @@ class TestModelarts(utils.TestCommand):
     def setUp(self):
         super(TestModelarts, self).setUp()
 
-        self.app.client_manager.modelarts = mock.Mock()
+        self.app.client_manager.modelartsv1 = mock.Mock()
 
-        self.client = self.app.client_manager.modelarts
+        self.client = self.app.client_manager.modelartsv1
 
 
 class FakeDevenv(test_base.Fake):

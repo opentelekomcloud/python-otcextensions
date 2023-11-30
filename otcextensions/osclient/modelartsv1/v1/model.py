@@ -73,7 +73,7 @@ class DeleteModel(command.Command):
         return parser
 
     def take_action(self, parsed_args):
-        client = self.app.client_manager.modelarts
+        client = self.app.client_manager.modelartsv1
         result = 0
         for name_or_id in parsed_args.model:
             try:
@@ -245,7 +245,7 @@ class CreateModel(command.ShowOne):
 
     def take_action(self, parsed_args):
 
-        client = self.app.client_manager.modelarts
+        client = self.app.client_manager.modelartsv1
         attrs = {'model_name': parsed_args.name}
 
         args_list = (
@@ -282,7 +282,7 @@ class CreateModel(command.ShowOne):
 
 
 class ShowModel(command.ShowOne):
-    _description = _('Show details of a modelarts model')
+    _description = _('Show details of a modelartsv1 model')
 
     def get_parser(self, prog_name):
         parser = super(ShowModel, self).get_parser(prog_name)
@@ -296,7 +296,7 @@ class ShowModel(command.ShowOne):
     @translate_response
     def take_action(self, parsed_args):
 
-        client = self.app.client_manager.modelarts
+        client = self.app.client_manager.modelartsv1
         data = client.find_model(parsed_args.model)
         if not data.image_address:
             data = client.get_model(data.id)
@@ -384,7 +384,7 @@ class ListModels(command.Lister):
         return parser
 
     def take_action(self, parsed_args):
-        client = self.app.client_manager.modelarts
+        client = self.app.client_manager.modelartsv1
         args_list = (
             'name',
             'model_version',

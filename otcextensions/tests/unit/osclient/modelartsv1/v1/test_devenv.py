@@ -16,8 +16,8 @@ from unittest.mock import call
 from osc_lib import exceptions
 # from osc_lib.cli import format_columns
 
-from otcextensions.osclient.modelarts.v1 import devenv
-from otcextensions.tests.unit.osclient.modelarts.v1 import fakes
+from otcextensions.osclient.modelartsv1.v1 import devenv
+from otcextensions.tests.unit.osclient.modelartsv1.v1 import fakes
 from otcextensions.common import cli_utils
 
 from openstackclient.tests.unit import utils as tests_utils

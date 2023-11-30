@@ -15,9 +15,9 @@ from keystoneauth1 import adapter
 import mock
 
 from openstack.tests.unit import base
-from otcextensions.sdk.modelarts.v1 import devenv
+from otcextensions.sdk.modelartsv1.v1 import devenv
 
-from otcextensions.tests.unit.sdk.modelarts.v1.examples \
+from otcextensions.tests.unit.sdk.modelartsv1.v1.examples \
     import EXAMPLE_DEVENV as EXAMPLE
 
 

@@ -21,25 +21,24 @@ LOG = logging.getLogger(__name__)
 
 DEFAULT_API_VERSION = '1'
 API_VERSION_OPTION = 'os_modelarts_api_version'
-API_NAME = "modelarts"
+API_NAME = "modelartsv1"
 API_VERSIONS = {
     "1": "openstack.connection.Connection",
-    "2": "openstack.connection.Connection"
 }
 
 
 def make_client(instance):
-    """Returns a nat proxy"""
+    """Returns a modelartsv1 proxy"""
 
     conn = instance.sdk_connection
 
-    if getattr(conn, 'modelarts', None) is None:
+    if getattr(conn, 'modelartsv1', None) is None:
         LOG.debug('OTC extensions are not registered. Do that now')
         sdk.register_otc_extensions(conn)
 
     LOG.debug('ModelArts client initialized using OpenStack OTC SDK: %s',
-              conn.modelarts)
-    return conn.modelarts
+              conn.modelartsv1)
+    return conn.modelartsv1
 
 
 def build_option_parser(parser):

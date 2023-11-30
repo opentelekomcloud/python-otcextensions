@@ -22,9 +22,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from otcextensions.sdk.modelarts.v1 import _proxy
-from otcextensions.sdk.modelarts.v1 import devenv
-from otcextensions.sdk.modelarts.v1 import model
+from otcextensions.sdk.modelartsv1.v1 import _proxy
+from otcextensions.sdk.modelartsv1.v1 import devenv
+from otcextensions.sdk.modelartsv1.v1 import model
 
 from openstack.tests.unit import test_proxy_base
 
@@ -113,7 +113,7 @@ class TestDevenv(TestModelartsProxy):
 
     def test_start_devenv_instance(self):
         self._verify(
-            'otcextensions.sdk.modelarts.v1.devenv.Devenv.start',
+            'otcextensions.sdk.modelartsv1.v1.devenv.Devenv.start',
             self.proxy.start_devenv_instance,
             method_args=["val"],
             expected_args=[self.proxy]
@@ -121,7 +121,7 @@ class TestDevenv(TestModelartsProxy):
 
     def test_stop_devenv_instance(self):
         self._verify(
-            'otcextensions.sdk.modelarts.v1.devenv.Devenv.stop',
+            'otcextensions.sdk.modelartsv1.v1.devenv.Devenv.stop',
             self.proxy.stop_devenv_instance,
             method_args=["val"],
             expected_args=[self.proxy]

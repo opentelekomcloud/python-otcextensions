@@ -15,8 +15,8 @@ from unittest.mock import call
 
 from osc_lib import exceptions
 
-from otcextensions.osclient.modelarts.v1 import model
-from otcextensions.tests.unit.osclient.modelarts.v1 import fakes
+from otcextensions.osclient.modelartsv1.v1 import model
+from otcextensions.tests.unit.osclient.modelartsv1.v1 import fakes
 
 from openstackclient.tests.unit import utils as tests_utils
 

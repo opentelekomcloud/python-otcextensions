@@ -15,7 +15,7 @@ from openstack import exceptions
 from openstack import resource
 from openstack import utils
 
-from otcextensions.sdk.modelarts.v1 import _base
+from otcextensions.sdk.modelartsv1.v1 import _base
 
 
 class Spec(resource.Resource):
