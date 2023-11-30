@@ -12,7 +12,8 @@
 import ast
 import typing as ty
 
-from openstack import exceptions, resource
+from openstack import exceptions
+from openstack import resource
 from openstack import utils
 
 
