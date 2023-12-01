@@ -43,3 +43,11 @@ class TestGroup(base.BaseFunctionalTest):
     def test_list(self):
         objects = list(self.lts.groups())
         self.assertGreaterEqual(len(objects), 0)
+
+    def test_update(self):
+        attrs = {
+            'ttl_in_days': 7
+        }
+        log_group = self.lts.update_group(group=self.log_group.id,
+                                          **attrs)
+        self.assertEqual(log_group.ttl_in_days, 7)

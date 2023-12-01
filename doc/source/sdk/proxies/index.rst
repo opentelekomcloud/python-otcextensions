@@ -23,6 +23,7 @@ Service Proxies
    Domain Name Server Service (DNS) <dns>
    Identity Service (IAM) <identity_v3>
    Key Management Service (KMS) <kms>
+   Log Tank Service (LTS) <lts>
    MapReduce Service (MRS) <mrs>
    Network Address Translation (NAT) <nat>
    Object Block Storage (OBS) <obs>

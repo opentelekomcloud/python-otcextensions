@@ -25,6 +25,7 @@ Open Telekom Cloud Resources
    Domain Name Service (DNS) <dns/index>
    Identity Service (IAM) <identity/index>
    Key Management Service (KMS) <kms/index>
+   Log Tank Service (LTS) <lts/index>
    MapReduce Service (MRS) <mrs/index>
    Network Address Translation (NAT) <nat/index>
    Object Block Storage (OBS) <obs/index>
