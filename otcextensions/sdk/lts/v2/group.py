@@ -112,7 +112,8 @@ class Group(resource.Resource):
         """
         url = utils.urljoin(self.base_path, self.id, '/streams')
         resp = session.post(url, json=query)
-        return ast.literal_eval(resp._content.decode('utf-8'))
+        self._translate_response(resp)
+        return self
 
     def delete_stream(self, session, log_stream_id, ignore_missing):
         """Method to add several share members to a backup

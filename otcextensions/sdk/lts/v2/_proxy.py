@@ -107,8 +107,7 @@ class Proxy(proxy.Proxy):
         """
         log_group = self._get_resource(_group.Group, log_group)
         response = log_group.create_stream(self, query=query)
-        stream = _stream.Stream.new(**response)
-        return stream
+        return response
 
     def delete_stream(self, log_group, log_stream, ignore_missing=True):
         """Delete log stream from log group
