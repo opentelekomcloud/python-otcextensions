@@ -11,8 +11,8 @@
 # under the License.
 from openstack import proxy
 
-from otcextensions.sdk.cts.v1 import tracker as _tracker
-from otcextensions.sdk.cts.v1 import trace as _trace
+from otcextensions.sdk.ctsv2.v2 import tracker as _tracker
+from otcextensions.sdk.ctsv2.v2 import trace as _trace
 
 
 class Proxy(proxy.Proxy):
