@@ -72,6 +72,15 @@ OTC_SERVICES = {
     },
     'cts': {
         'service_type': 'cts',
+        'endpoint_service_type': 'cts'
+    },
+    'ctsv2': {
+        'service_type': 'ctsv2',
+        'endpoint_service_type': 'ctsv2'
+    },
+    'ctsv3': {
+        'service_type': 'ctsv3',
+        'endpoint_service_type': 'ctsv3'
     },
     'css': {
         'service_type': 'css',
