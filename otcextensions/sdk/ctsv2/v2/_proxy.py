@@ -11,7 +11,7 @@
 # under the License.
 from openstack import proxy
 
-from otcextensions.sdk.ctsv2.v2 import tracker as _tracker
+from otcextensions.sdk.cts.v1 import tracker as _tracker
 from otcextensions.sdk.ctsv2.v2 import trace as _trace
 
 
@@ -32,54 +32,3 @@ class Proxy(proxy.Proxy):
             tracker = self._get_resource(_tracker.Tracker, {'name': tracker})
         query['limit'] = limit
         return self._list(_trace.Trace, tracker_name=tracker.name, **query)
-
-    def get_tracker(self, tracker):
-        """Get detail about a given tracker
-
-        :param tracker: The tracker id, name or an tracker of
-            :class:`~otcextensions.sdk.cts.v1.tracker.Tracker`
-        :returns: one object of class
-            :class:`~otcextensions.sdk.dcs.v1.tracker.Tracker`
-        """
-        return self._get(_tracker.Tracker, tracker, requires_id=False)
-
-    def create_tracker(self, **kwargs):
-        """Create a tracker
-
-        :param dict kwargs: Keyword arguments which will be used to overwrite a
-            :class:`~otcextensions.sdk.dcs.v1.tracker.Tracker`
-        """
-        return self._create(_tracker.Tracker, **kwargs)
-
-    def update_tracker(self, tracker, **attrs):
-        """Update tracker with attributes
-
-        :param tracker: The value can be the ID of an tracker
-            or a :class:`~otcextensions.sdk.dcs.v1.tracker.tracker`
-            tracker.
-        :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.dcs.v1.tracker.tracker`,
-            comprised of the properties on the tracker class.
-        :returns: The updated tracker
-        :rtype: :class:`~otcextensions.sdk.dcs.v1.tracker.tracker`
-        """
-        return self._update(_tracker.Tracker, tracker, **attrs)
-
-    def delete_tracker(self, tracker='system', ignore_missing=True):
-        """Delete a tracker
-
-        :param tracker: The value can be the ID of a tracker or a
-            :class:`~otcextensions.sdk.cts.v2.tracker.Tracker`
-            instance
-        :param bool ignore_missing: When set to ``False``
-            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
-            the backup_policy does not exist.
-            When set to ``True``, no exception will be set when attempting to
-            delete a nonexistent backup_policy.
-
-        :returns: tracker been deleted
-        :rtype:
-            :class:`~otcextensions.sdk.cts.v2.tracker.Tracker`
-        """
-        tracker = self._get_resource(_tracker.Tracker, tracker)
-        return tracker._delete_tracker(self, tracker.id)
