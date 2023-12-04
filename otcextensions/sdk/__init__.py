@@ -116,6 +116,9 @@ OTC_SERVICES = {
     'dli': {
         'service_type': 'dli',
     },
+    'drs': {
+        'service_type': 'drs',
+    },
     'dws': {
         'service_type': 'dws',
         'endpoint_service_type': 'dwsv1'
