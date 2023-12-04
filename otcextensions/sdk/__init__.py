@@ -200,6 +200,10 @@ OTC_SERVICES = {
         'service_type': 'vpc',
         'append_project_id': True,
     },
+    'vpcv1': {
+        'service_type': 'vpc',
+        'append_project_id': True,
+    },
     'vpcep': {
         'service_type': 'vpcep',
         'append_project_id': True,
