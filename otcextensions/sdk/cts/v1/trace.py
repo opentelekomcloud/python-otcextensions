@@ -77,8 +77,9 @@ class Trace(resource.Resource):
     @classmethod
     def _get_next_link(cls, uri, response, data, marker, limit, total_yielded):
         next_link = None
+        marker = data['meta_data'].get('marker', None)
         params = {}
-        if limit:
+        if limit and marker:
             next_link = uri
             params['next'] = marker
             params['limit'] = limit
