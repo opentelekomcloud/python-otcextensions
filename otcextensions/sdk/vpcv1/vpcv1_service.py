@@ -18,7 +18,7 @@ from openstack import service_description
 from otcextensions.sdk.vpcv1.v1 import _proxy
 
 
-class VpcService(service_description.ServiceDescription):
+class Vpcv1Service(service_description.ServiceDescription):
     """The VPC service."""
 
     supported_versions = {
