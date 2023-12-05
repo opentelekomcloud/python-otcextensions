@@ -12,11 +12,11 @@
 from openstack import exceptions
 from openstack import proxy
 
-from otcextensions.sdk.vpc.v1 import bandwidth as _bandwidth
-from otcextensions.sdk.vpc.v1 import peering as _peering
-from otcextensions.sdk.vpc.v1 import route as _route
-from otcextensions.sdk.vpc.v1 import subnet as _subnet
-from otcextensions.sdk.vpc.v1 import vpc as _vpc
+from otcextensions.sdk.vpcv1.v1 import bandwidth as _bandwidth
+from otcextensions.sdk.vpcv1.v1 import peering as _peering
+from otcextensions.sdk.vpcv1.v1 import route as _route
+from otcextensions.sdk.vpcv1.v1 import subnet as _subnet
+from otcextensions.sdk.vpcv1.v1 import vpc as _vpc
 
 from dataclasses import dataclass
 from typing import List

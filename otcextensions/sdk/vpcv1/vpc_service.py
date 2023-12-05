@@ -15,7 +15,7 @@ from urllib.parse import urlparse
 from openstack import exceptions
 from openstack import service_description
 
-from otcextensions.sdk.vpc.v1 import _proxy
+from otcextensions.sdk.vpcv1.v1 import _proxy
 
 
 class VpcService(service_description.ServiceDescription):
