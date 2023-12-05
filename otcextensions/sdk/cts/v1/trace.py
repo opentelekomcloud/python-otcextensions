@@ -73,14 +73,3 @@ class Trace(resource.Resource):
     type = resource.Body('trace_type')
     #: trace user information
     user = resource.Body('user')
-
-    @classmethod
-    def _get_next_link(cls, uri, response, data, marker, limit, total_yielded):
-        next_link = None
-        marker = data['meta_data'].get('marker', None)
-        params = {}
-        if limit and marker:
-            next_link = uri
-            params['next'] = marker
-            params['limit'] = limit
-        return next_link, params
