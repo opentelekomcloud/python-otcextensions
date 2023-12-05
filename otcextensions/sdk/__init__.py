@@ -157,6 +157,9 @@ OTC_SERVICES = {
         'service_type': 'rts',
         'endpoint_service_type': 'orchestration'
     },
+    'rms': {
+        'service_type': 'rms'
+    },
     'nat': {
         'service_type': 'nat',
     },
@@ -186,10 +189,6 @@ OTC_SERVICES = {
     'smn': {
         'service_type': 'smn',
         'append_project_id': True
-    },
-    'swr': {
-        'service_type': 'swr',
-        'endpoint_service_type': 'swr'
     },
     'swrv2': {
         'service_type': 'swrv2',
