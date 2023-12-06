@@ -27,7 +27,6 @@ class TestCTSProxy(test_proxy_base.TestProxyBase):
         self.verify_list(
             self.proxy.traces, _trace.Trace,
             expected_kwargs={
-                'limit': 50,
                 'tracker_name': 'system'
             }
         )
