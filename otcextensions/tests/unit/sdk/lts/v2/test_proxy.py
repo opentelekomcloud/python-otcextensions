@@ -56,16 +56,11 @@ class TestStream(TestLtsProxy):
 
     def test_stream_create(self):
         fake_stream = {
-            'id': 'id',
-            'creation_time': 'creation-time',
-            'name': 'name',
-            'log_group_id': 'log_group_id',
-            'filter_count': 5,
-            'tag': 'tag',
+            'log_stream_id': 'log_stream_id',
         }
         self._verify('otcextensions.sdk.lts.v2.group.Group.create_stream',
                      self.proxy.create_stream,
-                     expected_result=fake_stream,
+                     expected_result=_stream.Stream.new(**fake_stream),
                      method_result=_stream.Stream.new(**fake_stream),
                      expected_args=[self.proxy],
                      method_kwargs={'log_group': 'log-group-id',

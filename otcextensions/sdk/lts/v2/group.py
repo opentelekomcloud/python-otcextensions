@@ -16,6 +16,8 @@ from openstack import exceptions
 from openstack import resource
 from openstack import utils
 
+from otcextensions.sdk.lts.v2 import stream as _stream
+
 
 class Group(resource.Resource):
     resource_key = 'log_groups'
@@ -103,25 +105,26 @@ class Group(resource.Resource):
         )
 
     def create_stream(self, session, query):
-        """Method to add several share members to a backup
+        """Method to create a stream in log group
 
         :param session: The session to use for making this request.
         :type session: :class:`~keystoneauth1.adapter.Adapter`
-        :param list members: List of target project IDs to which the backup
-            is shared
+        :param dict query: Additional parameters to create stream
         """
         url = utils.urljoin(self.base_path, self.id, '/streams')
         resp = session.post(url, json=query)
-        self._translate_response(resp)
-        return self
+        stream = _stream.Stream()
+        stream._translate_response(resp)
+        return stream
 
     def delete_stream(self, session, log_stream_id, ignore_missing):
-        """Method to add several share members to a backup
+        """Method to delete stream from log group
 
         :param session: The session to use for making this request.
         :type session: :class:`~keystoneauth1.adapter.Adapter`
-        :param list members: List of target project IDs to which the backup
-            is shared
+        :param str log_stream_id: Id of the stream to be deleted
+        :param bool ignore_missing: Should it be deleted
+         if doesn't exist or not
         """
         url = utils.urljoin(self.base_path, self.id, '/streams/',
                             log_stream_id)
