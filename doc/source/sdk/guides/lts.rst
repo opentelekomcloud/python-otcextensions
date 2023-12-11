@@ -21,7 +21,7 @@ Up to 100 log groups can be created in your account.
 Groups
 ^^^^^^
 
-This interface is used to ge a list of groups.
+This interface is used to get a list of groups.
 :class:`~otcextensions.sdk.lts.v2.group.Group`.
 
 .. literalinclude:: ../examples/lts/list_log_group.py
@@ -89,4 +89,4 @@ This interface is used to delete a stream.
 :class:`~otcextensions.sdk.lts.v2.stream.Stream`.
 
 .. literalinclude:: ../examples/lts/delete_log_stream.py
-   :lines: 16-29
+   :lines: 16-24

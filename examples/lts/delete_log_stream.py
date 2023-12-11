@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Add one or more CBR share member to a CBR backup
+Delete log stream from log group
 """
 import openstack
 from otcextensions import sdk
@@ -20,10 +20,5 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 sdk.register_otc_extensions(conn)
 
-attrs = {
-    'log_group': 'log-group-uuid',
-    'log_stream_name': 'log-stream-uuid',
-    'ttl_in_days': 5
-}
 log_stream = conn.lts.delete_stream(log_group='log-group-uuid',
                                     log_stream='log-stream-uuid')

@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Add one or more CBR share member to a CBR backup
+Get all log streams in log group
 """
 import openstack
 from otcextensions import sdk
