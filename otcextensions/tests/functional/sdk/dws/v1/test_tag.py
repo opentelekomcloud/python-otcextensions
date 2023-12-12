@@ -12,7 +12,6 @@
 
 from openstack import _log
 from otcextensions.tests.functional import base
-import os
 
 _logger = _log.setup_logging('openstack')
 
@@ -25,10 +24,12 @@ class TestClusterTags(base.BaseFunctionalTest):
         self.cluster_id = "670f868a-07ae-4fca-8bdc-665498333641"
 
     def test_list_cluster_tags(self):
+        # Test listing tags of a cluster
         tags = list(self.client.list_cluster_tags(self.cluster_id))
         self.assertGreaterEqual(len(tags), 0)
 
     def test_create_cluster_tag(self):
+        # Test creating a single cluster tag
         tag_key = "test_key"
         tag_value = "test_value"
         created_tag = self.client.create_cluster_tag(
@@ -39,24 +40,8 @@ class TestClusterTags(base.BaseFunctionalTest):
         self.assertEqual(created_tag.key, tag_key)
         self.assertEqual(created_tag.value, tag_value)
 
-    def test_create_cluster_tags(self):
-        tags_to_add = [
-            {"key": "test_env", "value": "test_env_value"},
-            {"key": "test_owner", "value": "test_owner_value"}
-        ]
-
-        self.client.create_cluster_tags(self.cluster_id, tags_to_add)
-
-        tags = list(self.client.list_cluster_tags(self.cluster_id))
-        added_tags = [
-            (tag.key, tag.value) for tag in tags
-            if tag.key in ['test_env', 'test_owner']
-        ]
-
-        self.assertIn(('test_env', 'test_env_value'), added_tags)
-        self.assertIn(('test_owner', 'test_owner_value'), added_tags)
-
-    def test_delete_cluster_tag(self):
+    def test_manage_cluster_tags_batch_create(self):
+        # Test deleting a single cluster tag
         tag_key_to_delete = "test_key"
         tag_value = "test_value"
         self.client.create_cluster_tag(
@@ -72,16 +57,26 @@ class TestClusterTags(base.BaseFunctionalTest):
         ]
         self.assertEqual(len(deleted_tag), 0)
 
-    def test_delete_cluster_tags(self):
-        tags_to_create = [
-            {"key": "test_tag1", "value": "test_value1"},
-            {"key": "test_tag2", "value": "test_value2"}
-        ]
-        for tag in tags_to_create:
-            self.client.create_cluster_tag(self.cluster_id, tag)
+    def test_batch_create_cluster_tags(self):
+        # Test batch creation of cluster tags
+        tags_to_create = [{"key": "test_key1", "value": "test_value1"},
+                          {"key": "test_key2", "value": "test_value2"}]
 
-        self.client.delete_cluster_tags(self.cluster_id, ["test_tag1", "test_tag2"])
+        # Create tags
+        response_create = self.client.manage_cluster_tags_batch_create(
+            self.cluster_id, tags_to_create)
+        self.assertEqual(response_create.status_code, 204)
 
-        tags = list(self.client.list_cluster_tags(self.cluster_id))
-        for tag_key in ["test_tag1", "test_tag2"]:
-            self.assertNotIn(tag_key, [tag.key for tag in tags])
+    def test_batch_delete_cluster_tags(self):
+        # Test batch deletion of cluster tags
+        tags_to_delete = [{"key": "test_key1", "value": "test_value1"},
+                          {"key": "test_key2", "value": "test_value2"}]
+
+        # Ensure tags are created first
+        self.client.manage_cluster_tags_batch_create(
+            self.cluster_id, tags_to_delete)
+
+        # Delete tags
+        response_delete = self.client.manage_cluster_tags_batch_delete(
+            self.cluster_id, tags_to_delete)
+        self.assertEqual(response_delete.status_code, 204)

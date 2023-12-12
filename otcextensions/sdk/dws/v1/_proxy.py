@@ -366,19 +366,6 @@ class Proxy(proxy.Proxy):
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return self._create(_tag.Tag, cluster_id=cluster.id, **tag)
 
-    def create_cluster_tags(self, cluster, tags):
-        """
-        Batch add tags to a DWS cluster.
-
-        :param cluster: Key id or an instance of
-                        `otcextensions.sdk.dws.v1.cluster.Cluster`.
-        :param tags: List of dictionaries with 'key' and 'value'.
-        :returns: None
-        """
-        cluster = self._get_resource(_cluster.Cluster, cluster)
-        for tag in tags:
-            self._create(_tag.Tag, cluster_id=cluster.id, **tag)
-
     def delete_cluster_tag(self, cluster, tag_key, ignore_missing=True):
         """
         Delete a single tag from a DWS cluster.
@@ -392,26 +379,29 @@ class Proxy(proxy.Proxy):
                                to delete a nonexistent tag.
         :returns: None
         """
-        cluster_obj = self._get_resource(_cluster.Cluster, cluster)
-        tag_obj = _tag.Tag.existing(key=tag_key, cluster_id=cluster_obj.id)
-        self._delete(_tag.Tag, tag_obj.key, cluster_id=cluster_obj.id,
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        tag_obj = _tag.Tag.existing(key=tag_key, cluster_id=cluster.id)
+        self._delete(_tag.Tag, tag_obj.key, cluster_id=cluster.id,
                      ignore_missing=ignore_missing)
 
-    def delete_cluster_tags(self, cluster, tag_keys, ignore_missing=True):
+    def manage_cluster_tags_batch_create(self, cluster, tags):
         """
-        Batch delete tags from a DWS cluster.
+        Batch addition of tags for a cluster.
+        :param cluster: Cluster ID or an instance of `otcextensions.sdk.dws.v1.cluster.Cluster`.
+        :param tags: List of dictionaries of tags to add.
+        :return: Response object.
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        project_id = self.session.get_project_id()
+        return _tag.Tag.manage_tags_batch(self.session, project_id, cluster.id, tags, 'create')
 
-        :param cluster: The cluster can be either the ID of a cluster or
-                        `otcextensions.sdk.dws.v1.cluster.Cluster` instance.
-        :param tag_keys: List of tag keys to be deleted.
-        :param ignore_missing: When False, `openstack.exceptions.ResourceNotFound`
-                               will be raised when a tag does not exist.
-                               When True, no exception will be set when attempting
-                               to delete nonexistent tags.
-        :returns: None
+    def manage_cluster_tags_batch_delete(self, cluster, tags):
         """
-        cluster_obj = self._get_resource(_cluster.Cluster, cluster)
-        for tag_key in tag_keys:
-            tag_obj = _tag.Tag.existing(key=tag_key, cluster_id=cluster_obj.id)
-            self._delete(_tag.Tag, tag_obj.key, cluster_id=cluster_obj.id,
-                         ignore_missing=ignore_missing)
+        Batch deletion of tags from a cluster.
+        :param cluster: Cluster ID or an instance of `otcextensions.sdk.dws.v1.cluster.Cluster`.
+        :param tags: List of dictionaries of tags to delete.
+        :return: Response object.
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        project_id = self.session.get_project_id()
+        return _tag.Tag.manage_tags_batch(self.session, project_id, cluster.id, tags, 'delete')

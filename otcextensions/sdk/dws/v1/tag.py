@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
+from openstack import utils
 
 
 class Tag(resource.Resource):
@@ -30,3 +31,13 @@ class Tag(resource.Resource):
     # Properties
     key = resource.Body('key')
     value = resource.Body('value')
+
+    @classmethod
+    def manage_tags_batch(cls, session, project_id, cluster_id, tags, action):
+        """
+        Manage tags in batch for a cluster (create or delete).
+        """
+        full_url = f"https://dws.eu-de.otc.t-systems.com/v1.0/{project_id}/clusters/{cluster_id}/tags/action"
+        print(full_url)
+        body = {'action': action, 'tags': tags}
+        return session.post(full_url, json=body)
