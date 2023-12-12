@@ -392,8 +392,8 @@ class Proxy(proxy.Proxy):
         :return: Response object.
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
-        project_id = self.session.get_project_id()
-        return _tag.Tag.manage_tags_batch(self.session, project_id, cluster.id, tags, 'create')
+        obj = _tag.Tag()
+        return obj.manage_tags_batch(self, cluster.id, tags, 'create')
 
     def manage_cluster_tags_batch_delete(self, cluster, tags):
         """
@@ -404,4 +404,4 @@ class Proxy(proxy.Proxy):
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
         project_id = self.session.get_project_id()
-        return _tag.Tag.manage_tags_batch(self.session, project_id, cluster.id, tags, 'delete')
+        return _tag.Tag._manage_tags_batch(self.session, project_id, cluster.id, tags, 'delete')
