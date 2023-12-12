@@ -32,12 +32,11 @@ class Tag(resource.Resource):
     key = resource.Body('key')
     value = resource.Body('value')
 
-    @classmethod
-    def manage_tags_batch(cls, session, project_id, cluster_id, tags, action):
+    def manage_tags_batch(self, session, cluster_id, tags, action):
         """
         Manage tags in batch for a cluster (create or delete).
         """
-        full_url = f"https://dws.eu-de.otc.t-systems.com/v1.0/{project_id}/clusters/{cluster_id}/tags/action"
-        print(full_url)
+        uri = utils.urljoin('clusters', cluster_id, 'tags/action')
+
         body = {'action': action, 'tags': tags}
-        return session.post(full_url, json=body)
+        return session.post(uri, json=body)
