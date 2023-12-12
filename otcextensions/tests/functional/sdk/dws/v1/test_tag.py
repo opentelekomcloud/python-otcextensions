@@ -21,8 +21,6 @@ class TestClusterTags(base.BaseFunctionalTest):
 
     def setUp(self):
         super(TestClusterTags, self).setUp()
-        if os.getenv("OS_DWS_CLUSTER_ID") is None:
-            TestClusterTags.skipTest(self, 'OS_DWS_CLUSTER_ID necessary for this test')
         self.client = self.conn.dws
         self.cluster_id = "670f868a-07ae-4fca-8bdc-665498333641"
 
