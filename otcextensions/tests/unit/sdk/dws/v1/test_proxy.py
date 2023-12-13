@@ -16,6 +16,7 @@ from otcextensions.sdk.dws.v1 import _proxy
 from otcextensions.sdk.dws.v1 import cluster as _cluster
 from otcextensions.sdk.dws.v1 import snapshot as _snapshot
 from otcextensions.sdk.dws.v1 import flavor as _flavor
+from otcextensions.sdk.dws.v1 import tag as _tag
 
 from openstack.tests.unit import test_proxy_base
 
@@ -142,4 +143,45 @@ class TestDwsProxy(test_proxy_base.TestProxyBase):
         self.verify_list(
             self.proxy.flavors,
             _flavor.Flavor,
+        )
+
+    def test_list_cluster_tags(self):
+        self.verify_list(
+            self.proxy.list_cluster_tags,
+            _tag.Tag,
+            method_args=["test_cluster_id"],
+            expected_kwargs={'cluster_id': 'test_cluster_id'}
+        )
+
+    def test_create_cluster_tag(self):
+        self.verify_create(
+            self.proxy.create_cluster_tag,
+            _tag.Tag,
+            method_args=['test_cluster_id', {'key': 'key1', 'value': 'value1'}],
+            expected_kwargs={'cluster_id': 'test_cluster_id', 'key': 'key1', 'value': 'value1'}
+        )
+
+    def test_delete_cluster_tag(self):
+        self.verify_delete(
+            self.proxy.delete_cluster_tag,
+            _tag.Tag,
+            method_args=['test_cluster_id', 'key1'],
+            expected_kwargs={'cluster_id': 'test_cluster_id', 'ignore_missing': True}
+        )
+
+    # Tests for batch operations
+    def test_cluster_tags_batch_create(self):
+        self.verify_create(
+            self.proxy.cluster_tags_batch_create,
+            _tag.Tag,
+            method_args=['test_cluster_id', [{'key': 'key1', 'value': 'value1'}, {'key': 'key2', 'value': 'value2'}]],
+            expected_kwargs={'cluster_id': 'test_cluster_id', 'tags': [{'key': 'key1', 'value': 'value1'}, {'key': 'key2', 'value': 'value2'}]}
+        )
+
+    def test_cluster_tags_batch_delete(self):
+        self.verify_delete(
+            self.proxy.cluster_tags_batch_delete,
+            _tag.Tag,
+            method_args=['test_cluster_id', [{'key': 'key1'}, {'key': 'key2'}]],
+            expected_kwargs={'cluster_id': 'test_cluster_id', 'tags': [{'key': 'key1'}, {'key': 'key2'}]}
         )
