@@ -11,6 +11,8 @@
 # under the License.
 
 from otcextensions.sdk.lts.v2 import _proxy
+from otcextensions.sdk.lts.v2 import group as _group
+from otcextensions.sdk.lts.v2 import stream as _stream
 
 from openstack.tests.unit import test_proxy_base
 
@@ -20,3 +22,62 @@ class TestLtsProxy(test_proxy_base.TestProxyBase):
     def setUp(self):
         super(TestLtsProxy, self).setUp()
         self.proxy = _proxy.Proxy(self.session)
+
+
+class TestGroup(TestLtsProxy):
+
+    def test_groups(self):
+        self.verify_list(self.proxy.groups, _group.Group)
+
+    def test_group_create(self):
+        self.verify_create(self.proxy.create_group,
+                           _group.Group,
+                           method_kwargs={'log_group_name': 'log-group-name',
+                                          'ttl_in_days': 5},
+                           expected_kwargs={'log_group_name': 'log-group-name',
+                                            'ttl_in_days': 5})
+
+    def test_group_delete(self):
+        self.verify_delete(self.proxy.delete_group,
+                           _group.Group, True)
+
+
+class TestStream(TestLtsProxy):
+
+    def test_streams(self):
+        group = _group.Group(id='id-group')
+        self.verify_list(
+            self.proxy.streams,
+            _stream.Stream,
+            method_args=[group],
+            expected_kwargs={'log_group_id': group.id},
+            expected_args=[]
+        )
+
+    def test_stream_create(self):
+        fake_stream = {
+            'log_stream_id': 'log_stream_id',
+        }
+        self._verify('otcextensions.sdk.lts.v2.group.Group.create_stream',
+                     self.proxy.create_stream,
+                     expected_result=_stream.Stream.new(**fake_stream),
+                     method_result=_stream.Stream.new(**fake_stream),
+                     expected_args=[self.proxy],
+                     method_kwargs={'log_group': 'log-group-id',
+                                    'log_stream_name': 'log-stream-name'},
+                     expected_kwargs={
+                         'query': {'log_stream_name': 'log-stream-name'}})
+
+    def test_stream_delete(self):
+        group = _group.Group(id='id-group')
+        stream = _stream.Stream(id='id-stream')
+        self._verify(
+            'otcextensions.sdk.lts.v2.group.Group.delete_stream',
+            self.proxy.delete_stream,
+            method_args=[group, stream, True],
+            method_kwargs={},
+            expected_args=[self.proxy],
+            expected_kwargs={
+                'log_stream_id': stream.id,
+                'ignore_missing': True}
+        )
