@@ -174,15 +174,18 @@ class TestDwsProxy(test_proxy_base.TestProxyBase):
             _tag.Tag,
             method_args=['test_cluster_id', 'key1'],
             method_kwargs={},
-            expected_kwargs={'cluster_id': 'test_cluster_id', 'ignore_missing': True},
+            expected_kwargs={
+                'cluster_id': 'test_cluster_id',
+                'ignore_missing': True
+            },
             expected_args=['key1']
         )
 
     # Tests for batch operations
-    def test_cluster_tags_batch_create(self):
+    def test_batch_create_cluster_tags(self):
         self._verify(
             'otcextensions.sdk.dws.v1.tag.Tag.manage_tags_batch',
-            self.proxy.cluster_tags_batch_create,
+            self.proxy.batch_create_cluster_tags,
             method_args=[
                 'test_cluster_id',
                 [
@@ -202,10 +205,10 @@ class TestDwsProxy(test_proxy_base.TestProxyBase):
             expected_kwargs={}
         )
 
-    def test_cluster_tags_batch_delete(self):
+    def test_batch_delete_cluster_tags(self):
         self._verify(
             'otcextensions.sdk.dws.v1.tag.Tag.manage_tags_batch',
-            self.proxy.cluster_tags_batch_delete,
+            self.proxy.batch_delete_cluster_tags,
             method_args=[
                 'test_cluster_id',
                 [

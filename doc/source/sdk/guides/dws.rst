@@ -173,3 +173,46 @@ supported by DWS Cluster.
 
 .. literalinclude:: ../examples/dws/list_flavors.py
    :lines: 16-22
+
+DWS Cluster Tags
+----------------
+
+List Cluster Tags
+^^^^^^^^^^^^^^^^^
+
+This interface is used to list all tags for a specified DWS cluster.
+
+.. literalinclude:: ../examples/dws/list_cluster_tag.py
+   :lines: 16-24
+
+Create Cluster Tag
+^^^^^^^^^^^^^^^^^^
+
+This interface is used to create a new tag for a specified DWS cluster.
+
+.. literalinclude:: ../examples/dws/create_cluster_tag.py
+   :lines: 16-25
+
+Delete Cluster Tag
+^^^^^^^^^^^^^^^^^^
+
+This interface is used to delete a tag from a specified DWS cluster.
+
+.. literalinclude:: ../examples/dws/delete_cluster_tag.py
+   :lines: 16-24
+
+Batch Create Cluster Tags
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to batch create tags for a specified DWS cluster.
+
+.. literalinclude:: ../examples/dws/batch_create_cluster_tags.py
+   :lines: 16-28
+
+Batch Delete Cluster Tags
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This interface is used to batch delete tags from a specified DWS cluster.
+
+.. literalinclude:: ../examples/dws/batch_delete_cluster_tags.py
+   :lines: 16-27

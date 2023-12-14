@@ -18,7 +18,9 @@ Cluster Operations
   :noindex:
   :members: clusters, find_cluster, get_cluster, create_cluster,
             restart_cluster, scale_out_cluster, reset_password,
-            delete_cluster
+            delete_cluster, list_cluster_tags, create_cluster_tag,
+            delete_cluster_tag, batch_create_cluster_tags,
+            batch_delete_cluster_tags
 
 Cluster Snapshot Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^

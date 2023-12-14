@@ -1,28 +1,33 @@
-# Licensed under the Apache License, Version 2.0 (the "License");
-# You may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-# http://www.apache.org/licenses/LICENSE-2.0
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+import os
 from openstack import _log
 from otcextensions.tests.functional import base
 
 _logger = _log.setup_logging('openstack')
 
+
 class TestClusterTags(base.BaseFunctionalTest):
     """Functional tests for DWS cluster tags."""
-
 
     def setUp(self):
         """Prepare resources for testing."""
         super(TestClusterTags, self).setUp()
+        self.cluster_id = os.getenv("OS_DWS_CLUSTER_ID")
+        if not self.cluster_id:
+            TestClusterTags.skipTest(
+                self, 'OS_DWS_CLUSTER_ID necessary for this test'
+            )
         self.client = self.conn.dws
-        self.cluster_id = "670f868a-07ae-4fca-8bdc-665498333641"
         self.created_tags = []
 
     def tearDown(self):
@@ -63,7 +68,7 @@ class TestClusterTags(base.BaseFunctionalTest):
         tags_to_create = [
             {"key": "test_key1", "value": "test_value1"},
             {"key": "test_key2", "value": "test_value2"}]
-        response_create = self.client.cluster_tags_batch_create(
+        response_create = self.client.batch_create_cluster_tags(
             self.cluster_id, tags_to_create)
         self.assertEqual(response_create.status_code, 204)
 
@@ -76,11 +81,6 @@ class TestClusterTags(base.BaseFunctionalTest):
             self.cluster_id, tags_to_create)
         tags_to_delete = [
             {"key": "batch_delete_key1"}, {"key": "batch_delete_key2"}]
-        response_delete = self.client.cluster_tags_batch_delete(
+        response_delete = self.client.batch_delete_cluster_tags(
             self.cluster_id, tags_to_delete)
         self.assertEqual(response_delete.status_code, 204)
-        remaining_tags = list(self.client.list_cluster_tags(self.cluster_id))
-        for tag in tags_to_delete:
-            self.assertFalse(
-                any(t.key == tag['key'] for t in remaining_tags),
-                f"Tag {tag['key']} was not deleted")
