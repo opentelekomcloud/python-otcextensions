@@ -375,9 +375,9 @@ class Proxy(proxy.Proxy):
         :param tag_key: The key of the tag to be deleted.
         :param ignore_missing: When False,
             `openstack.exceptions.ResourceNotFound`
-             will be raised when the tag does not exist.
-             When True, no exception will be set when attempting
-             to delete a nonexistent tag.
+            will be raised when the tag does not exist.
+            When True, no exception will be set when attempting
+            to delete a nonexistent tag.
         :returns: None
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
