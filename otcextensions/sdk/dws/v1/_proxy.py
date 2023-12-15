@@ -343,7 +343,7 @@ class Proxy(proxy.Proxy):
             time.sleep(60)
             self.wait_for_cluster(cluster, interval, wait)
 
-    def list_cluster_tags(self, cluster):
+    def cluster_tags(self, cluster):
         """
         List tags for a DWS cluster.
 
@@ -394,7 +394,8 @@ class Proxy(proxy.Proxy):
         :param cluster: Cluster ID or an instance of
             `otcextensions.sdk.dws.v1.cluster.Cluster`.
         :param tags: List of dictionaries of tags to add.
-        :return: Response object.
+        :return: A list of created
+            `otcextensions.sdk.dws.v1.tag.Tag` instances.
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return _tag.Tag().manage_tags_batch(self, cluster.id, tags, 'create')
@@ -406,7 +407,8 @@ class Proxy(proxy.Proxy):
         :param cluster: Cluster ID or an instance of
             `otcextensions.sdk.dws.v1.cluster.Cluster`.
         :param tags: List of dictionaries of tags to delete.
-        :return: Response object.
+        :return: A list of deleted
+            `otcextensions.sdk.dws.v1.tag.Tag` instances.
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return _tag.Tag().manage_tags_batch(self, cluster.id, tags, 'delete')

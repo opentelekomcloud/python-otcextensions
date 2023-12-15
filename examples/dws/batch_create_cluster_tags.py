@@ -14,9 +14,11 @@
 Batch create tags for a specified DWS cluster.
 """
 import openstack
+from otcextensions import sdk
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
+sdk.register_otc_extensions(conn)
 
 cluster_id = 'cluster-uuid'
 tags_to_create = [
@@ -24,5 +26,5 @@ tags_to_create = [
     {'key': 'key2', 'value': 'value2'}
 ]
 
-result = conn.dws.cluster_tags_batch_create(cluster_id, tags_to_create)
+result = conn.dws.batch_create_cluster_tags(cluster_id, tags_to_create)
 print(result)

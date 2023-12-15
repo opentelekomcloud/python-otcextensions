@@ -145,9 +145,9 @@ class TestDwsProxy(test_proxy_base.TestProxyBase):
             _flavor.Flavor,
         )
 
-    def test_list_cluster_tags(self):
+    def test_cluster_tags(self):
         self.verify_list(
-            self.proxy.list_cluster_tags,
+            self.proxy.cluster_tags,
             _tag.Tag,
             method_args=["test_cluster_id"],
             expected_kwargs={'cluster_id': 'test_cluster_id'},

@@ -11,9 +11,11 @@
 # under the License.
 from openstack import resource
 from openstack import utils
+from openstack import exceptions
 
 
 class Tag(resource.Resource):
+
     base_path = '/clusters/%(cluster_id)s/tags'
 
     # Properties
@@ -36,7 +38,25 @@ class Tag(resource.Resource):
         """
         Manage tags in batch for a cluster (create or delete).
         """
+        self.last_tags_sent = tags
         uri = utils.urljoin('clusters', cluster_id, 'tags/action')
-
         body = {'action': action, 'tags': tags}
-        return session.post(uri, json=body)
+        response = session.post(uri, json=body)
+        return self._translate_response(response)
+
+    def _translate_response(self, response, has_body=None, error_message=None):
+        """
+        Translates the server response into Tag objects.
+        """
+        if has_body is None:
+            has_body = self.has_body
+        exceptions.raise_from_response(response, error_message=error_message)
+        tags_list = []
+        if has_body and response.status_code == 204:
+            if hasattr(self, 'last_tags_sent'):
+                tags_list = [
+                    Tag.existing(
+                        **tag_data
+                    ) for tag_data in self.last_tags_sent
+                ]
+        return tags_list

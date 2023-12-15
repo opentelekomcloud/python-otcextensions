@@ -37,10 +37,17 @@ class TestClusterTags(base.BaseFunctionalTest):
         self.created_tags.clear()
         super(TestClusterTags, self).tearDown()
 
-    def test_list_cluster_tags(self):
-        """Test listing all tags of a cluster."""
-        tags = list(self.client.list_cluster_tags(self.cluster_id))
-        self.assertGreaterEqual(len(tags), 0)
+    def test_cluster_tags(self):
+        """Test creating, listing, and deleting a tag."""
+        tag_key = "test_key"
+        tag_value = "test_value"
+        self.client.create_cluster_tag(
+            self.cluster_id, {"key": tag_key, "value": tag_value})
+        self.created_tags.append(tag_key)
+
+        tags = list(self.client.cluster_tags(self.cluster_id))
+        self.assertIn(tag_key, [tag.key for tag in tags])
+        self.assertGreaterEqual(len(tags), 1)
 
     def test_create_cluster_tag(self):
         """Test creating a single tag for a cluster."""
@@ -60,27 +67,35 @@ class TestClusterTags(base.BaseFunctionalTest):
         self.client.create_cluster_tag(
             self.cluster_id, {"key": tag_key, "value": tag_value})
         self.client.delete_cluster_tag(self.cluster_id, tag_key)
-        tags = list(self.client.list_cluster_tags(self.cluster_id))
+        tags = list(self.client.cluster_tags(self.cluster_id))
         self.assertFalse(any(tag.key == tag_key for tag in tags))
 
     def test_batch_create_cluster_tags(self):
         """Test batch creation of multiple tags for a cluster."""
         tags_to_create = [
             {"key": "test_key1", "value": "test_value1"},
-            {"key": "test_key2", "value": "test_value2"}]
-        response_create = self.client.batch_create_cluster_tags(
+            {"key": "test_key2", "value": "test_value2"}
+        ]
+        created_tags = self.client.batch_create_cluster_tags(
             self.cluster_id, tags_to_create)
-        self.assertEqual(response_create.status_code, 204)
+        self.assertIsInstance(created_tags, list)
+        for tag in created_tags:
+            self.assertIn(tag.key, [t["key"] for t in tags_to_create])
+            self.created_tags.append(tag.key)
 
     def test_batch_delete_cluster_tags(self):
         """Test batch deletion of multiple tags from a cluster."""
         tags_to_create = [
             {"key": "batch_delete_key1", "value": "value1"},
-            {"key": "batch_delete_key2", "value": "value2"}]
-        self.client.cluster_tags_batch_create(
-            self.cluster_id, tags_to_create)
+            {"key": "batch_delete_key2", "value": "value2"}
+        ]
+        self.client.batch_create_cluster_tags(self.cluster_id, tags_to_create)
         tags_to_delete = [
-            {"key": "batch_delete_key1"}, {"key": "batch_delete_key2"}]
-        response_delete = self.client.batch_delete_cluster_tags(
+            {"key": "batch_delete_key1"},
+            {"key": "batch_delete_key2"}
+        ]
+        deleted_tags = self.client.batch_delete_cluster_tags(
             self.cluster_id, tags_to_delete)
-        self.assertEqual(response_delete.status_code, 204)
+        self.assertIsInstance(deleted_tags, list)
+        for tag in deleted_tags:
+            self.assertIn(tag.key, [t["key"] for t in tags_to_delete])

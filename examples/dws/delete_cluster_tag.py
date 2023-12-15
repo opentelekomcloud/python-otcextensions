@@ -14,9 +14,11 @@
 Delete a tag from a specified DWS cluster.
 """
 import openstack
+from otcextensions import sdk
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
+sdk.register_otc_extensions(conn)
 
 cluster_id = 'cluster-uuid'
 tag_key = "example_key"

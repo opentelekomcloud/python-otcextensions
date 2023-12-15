@@ -20,6 +20,8 @@ class TestTag(base.TestCase):
         super(TestTag, self).setUp()
         self.cluster_id = "example_cluster_id"
         self.proxy = mock.Mock()
+        self.mock_response = mock.Mock()
+        self.mock_response.status_code = 204
 
     def test_basic(self):
         sot = tag.Tag()
@@ -45,6 +47,7 @@ class TestTag(base.TestCase):
             {"key": "key2", "value": "value2"}
         ]
         tag_instance = tag.Tag()
+        self.proxy.post.return_value = self.mock_response
         tag_instance.manage_tags_batch(
             self.proxy, self.cluster_id, tags, 'create'
         )
@@ -56,6 +59,7 @@ class TestTag(base.TestCase):
     def test_batch_delete_cluster_tags(self):
         tags = [{"key": "key1"}, {"key": "key2"}]
         tag_instance = tag.Tag()
+        self.proxy.post.return_value = self.mock_response
         tag_instance.manage_tags_batch(
             self.proxy, self.cluster_id, tags, 'delete'
         )
