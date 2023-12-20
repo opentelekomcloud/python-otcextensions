@@ -7,3 +7,4 @@ DWS Resources
    v1/cluster
    v1/snapshot
    v1/flavor
+   v1/tag
