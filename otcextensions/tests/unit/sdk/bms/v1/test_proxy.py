@@ -25,17 +25,27 @@ class TestExtractName(TestBMSProxy):
     def test_extract_name(self):
 
         self.assertEqual(
+            [],
+            self.proxy._extract_name(
+                '/v1',
+                project_id='7ed5f793b8354ea9b27a849f17af4733')
+        )
+
+        self.assertEqual(
             ['flavors'],
             self.proxy._extract_name(
-                '/v1/7ed5f793b8354ea9b27a849f17af4733/flavors', project_id='7ed5f793b8354ea9b27a849f17af4733')
+                '/v1/7ed5f793b8354ea9b27a849f17af4733/flavors',
+                project_id='7ed5f793b8354ea9b27a849f17af4733')
         )
         self.assertEqual(
-            ['flavors', 'detail'],
+            ['detail'],
             self.proxy._extract_name(
-                '/v1/7ed5f793b8354ea9b27a849f17af4733/flavors/detail', project_id='7ed5f793b8354ea9b27a849f17af4733')
+                '/v1/7ed5f793b8354ea9b27a849f17af4733/detail',
+                project_id='7ed5f793b8354ea9b27a849f17af4733')
         )
         self.assertEqual(
             ['limits'],
             self.proxy._extract_name(
-                '/v1/7ed5f793b8354ea9b27a849f17af4733/limits', project_id='7ed5f793b8354ea9b27a849f17af4733')
+                '/v1/7ed5f793b8354ea9b27a849f17af4733/limits',
+                project_id='7ed5f793b8354ea9b27a849f17af4733')
         )

@@ -27,15 +27,12 @@ class Proxy(proxy.Proxy):
 
         # Split url into parts and exclude potential project_id in some urls
         url_parts = [
-            x for x in path.split('/') if (
-                    x != project_id
-                    and (
-                            not project_id
-                            or (project_id and x != project_id)
-                    ))
+            x for x in path.split('/') if x != project_id
         ]
         # exclude version
-        url_parts = list(filter(lambda x: not any(c.isdigit() for c in x[1:]) and (x[0].lower() != 'v'), url_parts))
+        url_parts = list(filter(lambda x: not any(
+            c.isdigit() for c in x[1:]) and (
+                x[0].lower() != 'v'), url_parts))
 
         # Strip out anything that's empty or None
         return [part for part in url_parts if part]
