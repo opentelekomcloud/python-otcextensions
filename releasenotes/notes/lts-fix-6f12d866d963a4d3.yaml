@@ -1,0 +1,3 @@
+---
+fixes:
+  - Fix list function for lts stream.
