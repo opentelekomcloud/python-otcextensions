@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -10,11 +11,23 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-from openstack import service_description
-from otcextensions.sdk.modelartsv1.v1 import _proxy as _proxy_v1
+"""Create a devenv instance from attributes."""
+import openstack
 
+openstack.enable_logging(True)
+conn = openstack.connect(cloud="otc")
 
-class Modelartsv1Service(service_description.ServiceDescription):
-    """The ModelartsService v1 service."""
+attrs = {
+    "name": "notebook-d115",
+    "flavor": "modelarts.vm.cpu.2u",
+    "spec": {
+        "storage": {
+            "location": {"path": "/test-bucket/notebooks/"},
+            "type": "obs",
+        }
+    },
+    "profile_id": "Multi-Engine 1.0 (python3)-cpu",
+}
 
-    supported_versions = {"1": _proxy_v1.Proxy}
+devenv_instance = conn.modelartsv1.create_devenv_instance(**attrs)
+print(devenv_instance)
