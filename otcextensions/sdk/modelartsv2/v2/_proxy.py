@@ -233,9 +233,9 @@ class Proxy(proxy.Proxy):
         """
         return self._create(
             _dataset_synchronization_task.SynchronizeDataset,
-            prepend_key=False,
             **attrs,
         )
+    #         return self._create(_dataset_synchronization_task.SynchronizeDataset, prepend_key=False,   **attrs,        )
 
     def show_dataset_export_task(self, task_id, **attrs):
         """Get the dataset export task by dataset id

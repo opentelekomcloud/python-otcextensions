@@ -30,6 +30,8 @@ from otcextensions.sdk.modelartsv1.v1 import \
     trainingjob_version as _trainingjob_version
 from otcextensions.sdk.modelartsv1.v1 import \
     visualization_job as _visualization_job
+from otcextensions.sdk.modelartsv1.v1 import \
+    service_configuration_update as _service_configuration_update
 
 
 class Proxy(proxy.Proxy):
@@ -263,6 +265,18 @@ class Proxy(proxy.Proxy):
         return self._find(
             _service.Service, name_or_id, ignore_missing=ignore_missing
         )
+
+    def update_service_configurations(self, service_id, **attrs):
+        """Get the dataset by id
+
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.datasets.Datasets`
+
+        :returns: instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.datasets.Datasets`
+        """
+        return self._update(_service_configuration_update.ServiceConfigurationUpdate, service_id, **attrs)
+
 
     # Training Job Management
 
