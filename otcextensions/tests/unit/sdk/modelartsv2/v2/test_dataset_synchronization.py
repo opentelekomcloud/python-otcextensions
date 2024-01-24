@@ -22,7 +22,8 @@ class TestDatasetSynchronization(base.TestCase):
         self.sess = mock.Mock(spec=adapter.Adapter)
 
     def test_basic(self):
-        sot = dataset_synchronization_task.DatasetSample()
+        sot = dataset_synchronization_task.SynchronizeDataset()
+        dataset_id = "dataset-uuid"
 
         self.assertEqual(
             "/datasets/%(dataset_id)s/sync-data",
@@ -32,10 +33,12 @@ class TestDatasetSynchronization(base.TestCase):
         self.assertTrue(sot.allow_create)
 
     def test_show_snychronization_task(self):
+        sot = dataset_synchronization_task.DatasetSynchronizationTask()
+
         dataset_id = "dataset-uuid"
         self.assertEqual(
-            "/datasets/%(dataset_id)s/sync-data",
+            "/datasets/%(dataset_id)s/sync-data/status",
             sot.base_path,
         )
-        self.assertTrue(sot.allow_fetch)
+        self.assertTrue(sot.allow_list)
 

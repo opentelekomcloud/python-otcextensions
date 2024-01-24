@@ -93,7 +93,8 @@ class CustomSpec(resource.Resource):
 
 
 class ServiceConfigurationUpdate(resource.Resource):
-    base_path = "/services/%(service_id)s"
+    base_path = "/services"
+    resources_key = "services"
 
     allow_create = True
     allow_list = True
@@ -101,7 +102,7 @@ class ServiceConfigurationUpdate(resource.Resource):
     allow_delete = True
     allow_fetch = True
     allow_patch = True
-    service_id = resource.URI("service_id", type=str)
+    service_id = resource.Body("service_id", type=str, alternate_id=True)
 
     #: Service description, which contains a maximum of 100 characters
     description = resource.Body('description', type=str)

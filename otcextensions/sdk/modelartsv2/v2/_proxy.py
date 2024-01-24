@@ -211,18 +211,17 @@ class Proxy(proxy.Proxy):
         """
         return self._get(_dataset_version.DatasetVersion, version_id, **attrs)
 
-    def list_dataset_synchronization_task(self, **attrs):
-        """List all Datasets.
+    def get_dataset_synchronization_status(self, dataset_id):
+        """List all datasets.
 
         :returns: a generator of
             (:class:`~otcextensions.sdk.modelartsv2.v2.\
                     dataset_sync.DatasetSync`) instances
         """
-        return self._list(
-            _dataset_synchronization_task.DatasetSynchronizationTask, **attrs
-        )
+        return self._get(
+            _dataset_synchronization_task.DatasetSynchronizationTask,"status", datasetId=dataset_id )
 
-    def synchronize_dataset(self, **attrs):
+    def synchronize_dataset(self, dataset_id):
         """Create a dataset from attributes
 
         :param dict attrs: Keyword arguments which will be used to create
@@ -232,9 +231,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.modelartsv2.v2.datasets.Datasets`
         """
         return self._create(
-            _dataset_synchronization_task.SynchronizeDataset,
-            **attrs,
-        )
+            _dataset_synchronization_task.DatasetSynchronizationTask, datasetId=dataset_id)
     #         return self._create(_dataset_synchronization_task.SynchronizeDataset, prepend_key=False,   **attrs,        )
 
     def show_dataset_export_task(self, task_id, **attrs):

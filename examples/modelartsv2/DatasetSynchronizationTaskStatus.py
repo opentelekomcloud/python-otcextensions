@@ -17,7 +17,14 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
 dataset_id = "heZw7Oh7Ha0eiFIzkm8"
-response = conn.modelartsv2.list_dataset_synchronization_task(dataset_id)
+response = conn.modelartsv2.get_dataset_synchronization_status(dataset_id)
+"""
+for instance in conn.modelartsv2.list_dataset_synchronization_task(dataset_id):
+    print(instance)
+
+
+
 print(response)
-
-
+for x in list(response):
+    print(x)
+"""

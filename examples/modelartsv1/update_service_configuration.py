@@ -16,17 +16,11 @@ import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
-alma = {
+attr = {
     "description": "aha",
-    "status": "running",
-    "config": [{
-        "model_id": "xxxx",
-        "weight": "100",
-        "specification": "modelarts.vm.cpu.2u",
-        "instance_count": 1
-    }]
+    "status": "running"
 }
 service_id = "281fc022-f0dd-4adc-abbd-97273ca5f4fd"
-response = conn.modelartsv1.update_service_configurations(service_id, **alma)
+response = conn.modelartsv1.update_service_configurations(service_id, **attr)
 print(response)
 

@@ -21,7 +21,7 @@ from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
-class UpdateServiceConfigurations(command.ShowOne):
+class UpdateServiceConfigurations(command.Command):
     _description = _('This API is used to update configurations of a model service.')
 
     def get_parser(self, prog_name):
@@ -29,12 +29,14 @@ class UpdateServiceConfigurations(command.ShowOne):
             parser.add_argument('--service_id', metavar='<service_id>', required=True, type=str, help=_('Service ID'))
             parser.add_argument('--description', metavar='<description>', required=False, type=str, help=_('Service description, which contains a maximum of 100 characters'))
             parser.add_argument('--status', metavar='<status>', required=False, type=str, help=_('Service status'))
+            """
             parser.add_argument('--config', metavar='<config>', required=False, type=dict, help=_('Service configuration'))
             parser.add_argument('--schedule', metavar='<schedule>', required=False, type=dict, help=_('Service scheduling configuration, which can be configured only for real-time services'))
             parser.add_argument('--additional_properties', metavar='<additional_properties>', required=False, type=dict, help=_('Additional service attribute, which facilitates service management'))
-            """
+            
             parser.add_argument('--model_id', metavar='<model_id>', required=True, type=str, help=_('Model ID'))
             parser.add_argument('--weight', metavar='<weight>', required=True, type=int, help=_('Traffic weight allocated to a model'))
+            
             parser.add_argument('--specification', metavar='<specification>', required=True, type=str, help=_('Resource specifications'))
             parser.add_argument('--custom_spec', metavar='<custom_spec>', required=False, type=dict, help=_('Custom specifications'))
             parser.add_argument('--instance_count', metavar='<instance_count>', required=True, type=int, help=_('Number of instances for deploying a model'))
@@ -59,14 +61,14 @@ class UpdateServiceConfigurations(command.ShowOne):
     def take_action(self, parsed_args):      
         client = self.app.client_manager.modelartsv1
         attrs = {}
-        args_list = ['description', 'status', 'config', 'schedule', 'additional_properties']
+        args_list = ['service_id', 'description', 'status'] #, 'config', 'schedule', 'additional_properties','model_id', 'weight']
         for arg in args_list:
             val = getattr(parsed_args, arg)
             if val:
                 attrs[arg] = val
 
         #data = 
-        client.update_service_configurations(service_id=parsed_args.service_id)
+        client.update_service_configurations(**attrs) #service_id=parsed_args.service_id)
         #display_columns, columns = _get_columns(data)
         #data = utils.get_item_properties(data, columns, formatters=_formatters)
 
