@@ -50,7 +50,7 @@ _COLUMNS = (
 )
 
 
-class TestListTrainingJobs(fakes.TestModelarts):
+class TestListTrainingJobs(fakes.TestModelartsv1):
     objects = fakes.FakeTrainingJob.create_multiple(3)
 
     column_list_headers = ("Job Id", "Job Name", "Created At")
@@ -94,7 +94,7 @@ class TestListTrainingJobs(fakes.TestModelarts):
         self.assertEqual(self.data, list(data))
 
 
-class TestCreateTrainingJob(fakes.TestModelarts):
+class TestCreateTrainingJob(fakes.TestModelartsv1):
     _trainingjob = fakes.FakeTrainingJob.create_one()
     columns = _COLUMNS
     data = fakes.gen_data(_trainingjob, columns, trainingjob._formatters)
@@ -170,7 +170,7 @@ class TestCreateTrainingJob(fakes.TestModelarts):
         # self.assertEqual(self.data, data)
 
 
-class TestDeleteTrainingJob(fakes.TestModelarts):
+class TestDeleteTrainingJob(fakes.TestModelartsv1):
     def setUp(self):
         super(TestDeleteTrainingJob, self).setUp()
 

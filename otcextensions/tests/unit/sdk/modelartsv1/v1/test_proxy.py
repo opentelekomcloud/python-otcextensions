@@ -24,16 +24,30 @@ class TestModelartsV1Proxy(test_proxy_base.TestProxyBase):
 
 class TestModel(TestModelartsV1Proxy):
     def test_models(self):
-        self.verify_list(self.proxy.models, model.Model)
+        self.verify_list(
+            self.proxy.models,
+            model.Model,
+        )
 
     def test_get_model(self):
-        self.verify_get(self.proxy.get_model, model.Model)
+        self.verify_get(
+            self.proxy.get_model,
+            model.Model,
+        )
 
     def test_find_model(self):
-        self.verify_find(self.proxy.find_model, model.Model, False)
+        self.verify_find(
+            self.proxy.find_model,
+            model.Model,
+            False,
+        )
 
     def test_find_model_ignore(self):
-        self.verify_find(self.proxy.find_model, model.Model, True)
+        self.verify_find(
+            self.proxy.find_model,
+            model.Model,
+            True,
+        )
 
     def test_create_model(self):
         self.verify_create(
@@ -44,11 +58,17 @@ class TestModel(TestModelartsV1Proxy):
         )
 
     def test_delete_model(self):
-        self.verify_delete(self.proxy.delete_model, model.Model, False)
+        self.verify_delete(
+            self.proxy.delete_model,
+            model.Model,
+            False,
+        )
 
     def test_delete_model_ignore(self):
         self.verify_delete(
-            self.proxy.delete_devenv_instance, devenv.Devenv, True
+            self.proxy.delete_devenv_instance,
+            devenv.Devenv,
+            True,
         )
 
 
@@ -62,7 +82,10 @@ class TestDevenv(TestModelartsV1Proxy):
         )
 
     def test_get_devenv_instance(self):
-        self.verify_get(self.proxy.get_devenv_instance, devenv.Devenv)
+        self.verify_get(
+            self.proxy.get_devenv_instance,
+            devenv.Devenv,
+        )
 
     def test_find_devenv_instance(self):
         self.verify_find(
@@ -90,12 +113,16 @@ class TestDevenv(TestModelartsV1Proxy):
 
     def test_delete_devenv_instance(self):
         self.verify_delete(
-            self.proxy.delete_devenv_instance, devenv.Devenv, False
+            self.proxy.delete_devenv_instance,
+            devenv.Devenv,
+            False,
         )
 
     def test_delete_devenv_instance_ignore(self):
         self.verify_delete(
-            self.proxy.delete_devenv_instance, devenv.Devenv, True
+            self.proxy.delete_devenv_instance,
+            devenv.Devenv,
+            True,
         )
 
     def test_start_devenv_instance(self):

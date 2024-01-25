@@ -69,7 +69,7 @@ _COLUMNS = (
 )
 
 
-class TestListTrainingJobVersions(fakes.TestModelarts):
+class TestListTrainingJobVersions(fakes.TestModelartsv1):
     objects = fakes.FakeTrainingJobVersion.create_multiple(3)
     column_list_headers = ("Version Id", "Version Name")
 
@@ -109,7 +109,7 @@ class TestListTrainingJobVersions(fakes.TestModelarts):
 
 
 """
-class TestCreateTrainingJobVersion(fakes.TestModelarts):
+class TestCreateTrainingJobVersion(fakes.TestModelartsv1):
 
     _trainingjob_version = fakes.FakeTrainingJobVersion.create_one()
     columns = _COLUMNS
@@ -153,7 +153,7 @@ class TestCreateTrainingJobVersion(fakes.TestModelarts):
         self.assertEqual(self.data, data)
 
 
-class TestShowTrainingJobVersion(fakes.TestModelarts):
+class TestShowTrainingJobVersion(fakes.TestModelartsv1):
 
     _trainingjob_version = fakes.FakeTrainingJobVersion.create_one()
     columns = _COLUMNS
@@ -222,7 +222,7 @@ class TestShowTrainingJobVersion(fakes.TestModelarts):
         self.client.find_trainingjob_version.assert_called_with('unexist_ma_trainingjob_version')
 
 
-class TestDeleteTrainingJobVersion(fakes.TestModelarts):
+class TestDeleteTrainingJobVersion(fakes.TestModelartsv1):
 
     _trainingjobversion = fakes.FakeTrainingJobVersion.create_multiple(2)
 

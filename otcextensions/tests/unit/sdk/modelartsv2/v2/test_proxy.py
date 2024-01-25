@@ -12,7 +12,7 @@
 #
 from openstack.tests.unit import test_proxy_base
 from otcextensions.sdk.modelartsv2.v2 import _proxy
-from otcextensions.sdk.modelartsv2.v2 import dataset_sample
+from otcextensions.sdk.modelartsv2.v2 import dataset
 
 
 class TestModelartsV2Proxy(test_proxy_base.TestProxyBase):
@@ -21,11 +21,51 @@ class TestModelartsV2Proxy(test_proxy_base.TestProxyBase):
         self.proxy = _proxy.Proxy(self.session)
 
 
+class TestDataset(TestModelartsV2Proxy):
+    def test_datasets(self):
+        self.verify_list(
+            self.proxy.datasets,
+            dataset.Dataset,
+            method_kwargs={"limit": 10},
+            expected_kwargs={"limit": 10},
+        )
+
+    def test_get_dataset(self):
+        self.verify_get(
+            self.proxy.get_dataset,
+            dataset.Dataset,
+            method_args=["dataset-uuid"],
+            expected_args=["dataset-uuid"],
+        )
+
+    def test_create_dataset(self):
+        self.verify_create(
+            self.proxy.create_dataset,
+            dataset.Dataset,
+            method_kwargs={"arg1": "val1", "arg2": "val2"},
+            expected_kwargs={"arg1": "val1", "arg2": "val2"},
+        )
+
+    def test_delete_dataset(self):
+        self.verify_delete(
+            self.proxy.delete_dataset,
+            dataset.Dataset,
+            False,
+        )
+
+    def test_delete_dataset_ignore(self):
+        self.verify_delete(
+            self.proxy.delete_dataset,
+            dataset.Dataset,
+            True,
+        )
+
+
 class TestDatasetSample(TestModelartsV2Proxy):
     def test_dataset_samples(self):
         self.verify_list(
             self.proxy.dataset_samples,
-            dataset_sample.DatasetSample,
+            dataset.Sample,
             method_args=["dataset-uuid"],
             expected_args=[],
             method_kwargs={"limit": 10},
@@ -35,7 +75,7 @@ class TestDatasetSample(TestModelartsV2Proxy):
     def test_get_dataset_sample(self):
         self.verify_get(
             self.proxy.get_dataset_sample,
-            dataset_sample.DatasetSample,
+            dataset.Sample,
             method_args=["dataset-uuid", "sample-uuid"],
             expected_args=["sample-uuid"],
             expected_kwargs={"dataset_id": "dataset-uuid"},
@@ -44,7 +84,7 @@ class TestDatasetSample(TestModelartsV2Proxy):
     def test_add_dataset_samples(self):
         self.verify_create(
             self.proxy.add_dataset_samples,
-            dataset_sample.DatasetSample,
+            dataset.Sample,
             method_args=["dataset-uuid"],
             expected_args=[],
             method_kwargs={"a": "b"},
@@ -52,20 +92,18 @@ class TestDatasetSample(TestModelartsV2Proxy):
         )
 
     def test_delete_dataset_samples(self):
-        self._verify(
-            (
-                "otcextensions.sdk.modelartsv2.v2.dataset_sample."
-                "DatasetSample.delete_samples"
-            ),
+        self.verify_create(
             self.proxy.delete_dataset_samples,
-            method_args=[
-                "dataset-uuid",
-                ["sample1-uuid", "sample2-uuid"],
-            ],
-            method_kwargs={"delete_source": True},
-            expected_kwargs={"delete_source": True},
-            expected_args=[
-                self.proxy,
-                ["sample1-uuid", "sample2-uuid"],
-            ],
+            dataset.DeleteSample,
+            method_args=["dataset-uuid"],
+            expected_args=[],
+            method_kwargs={
+                "samples": ["s1-uuid", "s2-uuid"],
+                "delete_source": False,
+            },
+            expected_kwargs={
+                "dataset_id": "dataset-uuid",
+                "samples": ["s1-uuid", "s2-uuid"],
+                "delete_source": False,
+            },
         )

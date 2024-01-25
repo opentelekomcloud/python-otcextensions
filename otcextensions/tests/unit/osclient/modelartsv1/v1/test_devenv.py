@@ -37,7 +37,7 @@ _COLUMNS = (
 )
 
 
-class TestListDevenvInstances(fakes.TestModelarts):
+class TestListDevenvInstances(fakes.TestModelartsv1):
     objects = fakes.FakeDevenv.create_multiple(3)
 
     column_list_headers = ("ID", "Name", "status", "Created At")
@@ -148,7 +148,7 @@ class TestListDevenvInstances(fakes.TestModelarts):
         )
 
 
-class TestCreateDevEnvInstance(fakes.TestModelarts):
+class TestCreateDevEnvInstance(fakes.TestModelartsv1):
     _data = fakes.FakeDevenv.create_one()
 
     columns = _COLUMNS
@@ -243,7 +243,7 @@ class TestCreateDevEnvInstance(fakes.TestModelarts):
         self.assertEqual(self.data, data)
 
 
-class TestStartDevEnvInstance(fakes.TestModelarts):
+class TestStartDevEnvInstance(fakes.TestModelartsv1):
     _devenv = fakes.FakeDevenv.create_one()
     columns = _COLUMNS
     data = fakes.gen_data(_devenv, columns, devenv._formatters)
@@ -278,7 +278,7 @@ class TestStartDevEnvInstance(fakes.TestModelarts):
         self.client.start_devenv_instance.assert_called_with(self._devenv.id)
 
 
-class TestStopDevEnvInstance(fakes.TestModelarts):
+class TestStopDevEnvInstance(fakes.TestModelartsv1):
     _devenv = fakes.FakeDevenv.create_one()
     columns = _COLUMNS
     data = fakes.gen_data(_devenv, columns, devenv._formatters)
@@ -311,7 +311,7 @@ class TestStopDevEnvInstance(fakes.TestModelarts):
         self.client.stop_devenv_instance.assert_called_with(self._devenv.id)
 
 
-class TestShowDevEnvInstance(fakes.TestModelarts):
+class TestShowDevEnvInstance(fakes.TestModelartsv1):
     _devenv = fakes.FakeDevenv.create_one()
     columns = _COLUMNS
     data = fakes.gen_data(_devenv, columns, devenv._formatters)
@@ -383,7 +383,7 @@ class TestShowDevEnvInstance(fakes.TestModelarts):
         )
 
 
-class TestDeleteDevEnvInstance(fakes.TestModelarts):
+class TestDeleteDevEnvInstance(fakes.TestModelartsv1):
     _devenv = fakes.FakeDevenv.create_multiple(2)
 
     def setUp(self):

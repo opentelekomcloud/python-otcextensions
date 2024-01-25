@@ -11,18 +11,9 @@
 # under the License.
 #
 from openstack import proxy
-from otcextensions.sdk.modelartsv1.v1 import clusters as _clusters
 from otcextensions.sdk.modelartsv1.v1 import devenv as _devenv
 from otcextensions.sdk.modelartsv1.v1 import model as _model
 from otcextensions.sdk.modelartsv1.v1 import service as _service
-from otcextensions.sdk.modelartsv1.v1 import \
-    service_deployment_specification as _service_deployment_specification
-from otcextensions.sdk.modelartsv1.v1 import \
-    service_event_log as _service_event_log
-from otcextensions.sdk.modelartsv1.v1 import \
-    service_monitor_info as _service_monitor_info
-from otcextensions.sdk.modelartsv1.v1 import \
-    service_update_log as _service_update_log
 from otcextensions.sdk.modelartsv1.v1 import trainingjob as _trainingjob
 from otcextensions.sdk.modelartsv1.v1 import \
     trainingjob_config as _trainingjob_config
@@ -30,8 +21,6 @@ from otcextensions.sdk.modelartsv1.v1 import \
     trainingjob_version as _trainingjob_version
 from otcextensions.sdk.modelartsv1.v1 import \
     visualization_job as _visualization_job
-from otcextensions.sdk.modelartsv1.v1 import \
-    service_configuration_update as _service_configuration_update
 
 
 class Proxy(proxy.Proxy):
@@ -218,7 +207,7 @@ class Proxy(proxy.Proxy):
             a :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`,
             comprised of the properties on the Service class.
         :returns: The result of service creation.
-        :rtype: :class:`~otcextensions.sdk.modelartsv1.v1.services.Services`
+        :rtype: :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
         """
         return self._create(_service.Service, prepend_key=False, **attrs)
 
@@ -248,6 +237,17 @@ class Proxy(proxy.Proxy):
         """
         return self._get(_service.Service, service)
 
+    def update_service(self, service_id, **attrs):
+        """Update a Service Configurations.
+
+        :param service_id: Service ID.
+        :param dict attrs: Keyword arguments which will be used to update
+            a :class:`~otcextensions.sdk.modelartsv1.v1.service.UpdateService`,
+            comprised of the properties on the Service class.
+
+        """
+        return self._update(_service.ServiceUpdate, service_id, **attrs)
+
     def find_service(self, name_or_id, ignore_missing=False):
         """Find a single service
 
@@ -266,17 +266,53 @@ class Proxy(proxy.Proxy):
             _service.Service, name_or_id, ignore_missing=ignore_missing
         )
 
-    def update_service_configurations(self, service_id, **attrs):
-        """Get the dataset by id
+    def service_logs(self, service_id, **params):
+        """List update logs of a real-time service.
 
-        :param dataset: key id or an instance of
-            :class:`~otcextensions.sdk.modelartsv2.v2.datasets.Datasets`
-
-        :returns: instance of
-            :class:`~otcextensions.sdk.modelartsv2.v2.datasets.Datasets`
+        :returns: a generator of
+            :class:`~otcextensions.sdk.modelartsv1.v1.service.Log`
+            instances
         """
-        return self._update(_service_configuration_update.ServiceConfigurationUpdate, service_id, **attrs)
+        return self._list(_service.Log, service_id=service_id, **params)
 
+    def service_events(self, service_id, **params):
+        """List events logs of a service.
+
+        :returns: a generator of
+            :class:`~otcextensions.sdk.modelartsv1.v1.service.Event`
+            instances
+        """
+        return self._list(
+            _service.Event, service_id=service_id, paginated=False, **params
+        )
+
+    def service_monitors(self, service_id, **params):
+        """List a service monitoring informations.
+
+        :returns: a generator of
+            :class:`~otcextensions.sdk.modelartsv1.v1.service.Monitor`
+            instances
+        """
+        return self._list(_service.Monitor, service_id=service_id, **params)
+
+    def service_deployment_specifications(self, **params):
+        """List all specifications for a service deployment.
+
+        :returns: a generator of
+            :class:`~otcextensions.sdk.modelartsv1.v1.service.Specification`
+            instances
+        """
+        return self._list(_service.Specification, **params)
+
+    def service_resource_pools(self, **params):
+        """List all dedicated resource pools (clusters) available
+        for a service deployment.
+
+        :returns: a generator of
+            :class:`~otcextensions.sdk.modelartsv1.v1.service.Cluster`
+            instances
+        """
+        return self._list(_service.Cluster, **params)
 
     # Training Job Management
 
@@ -377,7 +413,7 @@ class Proxy(proxy.Proxy):
             _trainingjob_version.TrainingJobVersion,
             jobId=job_id,
             prepend_key=False,
-            **attrs
+            **attrs,
         )
 
     def delete_trainingjob_version(self, version_id, *attrs):
@@ -516,44 +552,3 @@ class Proxy(proxy.Proxy):
             _visualization_job.VisualizationJob, visualization_job
         )
         return visjob.stop(self)
-
-    def service_monitoring_info(self, **attrs):
-        """List all service monitoring information.
-
-        :returns: a generator of
-            (:class:`~otcextensions.sdk.modelartsv1.v1.service_monitoring_info.\
-                ServiceMonitoringInfo`) instances
-        """
-        return self._list(
-            _service_monitor_info.ServiceMonitoringInformation, **attrs
-        )
-
-    def service_event_logs(self, **attrs):
-        """List all service event logs.
-
-        :returns: a generator of
-            (:class:`~otcextensions.sdk.modelartsv1.v1.service_event_logs.\
-                ServiceEventLogs`) instances
-        """
-        return self._list(_service_event_log.ServiceEventLog, **attrs)
-
-    def service_update_logs(self, **attrs):
-        """List all service update logs.
-
-        :returns: a generator of
-            (:class:`~otcextensions.sdk.modelartsv1.v1.service_update_logs.\
-                ServiceUpdateLogs`) instances
-        """
-        return self._list(_service_update_log.ServiceUpdateLog, **attrs)
-
-    def service_deploy_specs(self):
-        """List all service update logs.
-
-        :returns: a generator of
-            (:class:`~otcextensions.sdk.modelartsv1.v1.clusters.\
-                ServiceDeploySpecs`) instances
-        """
-        return self._list(_service_deployment_specification.ServiceUpdateLogs)
-
-    def dedic_res_pools(self):
-        return self._list(_clusters.DedicatedResourcePool)

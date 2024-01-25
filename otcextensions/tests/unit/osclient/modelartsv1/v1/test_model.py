@@ -48,7 +48,7 @@ _COLUMNS = (
 )
 
 
-class TestListModels(fakes.TestModelarts):
+class TestListModels(fakes.TestModelartsv1):
     objects = fakes.FakeModel.create_multiple(3)
 
     column_list_headers = ("Id", "Name", "Version", "Model Size")
@@ -93,7 +93,7 @@ class TestListModels(fakes.TestModelarts):
         self.assertEqual(self.data, list(data))
 
 
-class TestCreateModel(fakes.TestModelarts):
+class TestCreateModel(fakes.TestModelartsv1):
     _model = fakes.FakeModel.create_one()
     columns = _COLUMNS
     data = fakes.gen_data(_model, columns, model._formatters)
@@ -140,7 +140,7 @@ class TestCreateModel(fakes.TestModelarts):
         self.assertEqual(self.data, data)
 
 
-class TestShowModel(fakes.TestModelarts):
+class TestShowModel(fakes.TestModelartsv1):
     _model = fakes.FakeModel.create_one()
     columns = _COLUMNS
     data = fakes.gen_data(_model, columns, model._formatters)
@@ -203,7 +203,7 @@ class TestShowModel(fakes.TestModelarts):
         self.client.find_model.assert_called_with("unexist_ma_model")
 
 
-class TestDeleteModel(fakes.TestModelarts):
+class TestDeleteModel(fakes.TestModelartsv1):
     _model = fakes.FakeModel.create_multiple(2)
 
     def setUp(self):
