@@ -201,8 +201,8 @@ OTC_SERVICES = {
         'service_type': 'smn',
         'append_project_id': True
     },
-    'swrv2': {
-        'service_type': 'swrv2',
+    'swr': {
+        'service_type': 'swr',
         'endpoint_service_type': 'swrv2'
     },
     'tms': {
