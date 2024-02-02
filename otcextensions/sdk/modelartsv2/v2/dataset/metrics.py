@@ -24,4 +24,15 @@ class Metrics(resource.Resource):
     dataset_id = resource.URI("dataset_id")
 
     # Properties
-    #:
+    #: End time of the monitoring information.
+    end_time = resource.Body("end_time", type=float)
+    #: Start time of the monitoring information.
+    start_time = resource.Body("start_time", type=float)
+    #: ID of a team labeling task.
+    workforce_task_id = resource.Body("workforce_task_id", type=str)
+
+
+
+
+
+

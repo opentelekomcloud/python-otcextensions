@@ -255,6 +255,7 @@ class Dataset(resource.Resource):
     allow_list = True
     allow_delete = True
     allow_fetch = True
+    allow_commit = True
 
     _query_mapping = resource.QueryParameters(
         "check_running_task",

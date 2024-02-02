@@ -119,6 +119,22 @@ class Proxy(proxy.Proxy):
             requires_id=False,
         )
 
+    # ======== Dataset Monitoring Data ========
+    
+    def get_dataset_metrics(self, dataset_id):
+        """Query Dataset metrics
+
+        :param dataset_id: Dataset ID.
+
+        :returns:
+            One :class:`~otcextensions.sdk.modelartsv2.v2.dataset.MonitoringData`
+        """
+        return self._get(
+            _dataset.Metrics,
+            dataset_id=dataset_id,
+            requires_id=False,
+        )
+
     # ======== Dataset Label Management ========
 
     def dataset_labels(self, dataset_id, **params):

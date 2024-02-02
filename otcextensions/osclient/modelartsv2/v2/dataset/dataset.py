@@ -480,7 +480,7 @@ class UpdateDataset(command.ShowOne):
             if getattr(parsed_args, arg):
                 attrs[arg] = getattr(parsed_args, arg)
 
-        dataset = client.show_dataset(
+        dataset = client.get_dataset(
             dataset=parsed_args.datasetId,
         )
 

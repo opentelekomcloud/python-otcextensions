@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -10,25 +11,22 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-from .dataset import Dataset
-from .export_task import ExportTask
-from .import_task import ImportTask
-from .label import Label
-from .sample import DeleteSample
-from .sample import Sample
-from .statistics import Statistics
-from .sync import Sync
-from .version import DatasetVersion
-from .metrics import Metrics
-__all__ = (
-    "Dataset",
-    "DatasetVersion",
-    "ExportTask",
-    "ImportTask",
-    "Label",
-    "DeleteSample",
-    "Sample",
-    "Statistics",
-    "Sync",
-    "Metrics"
-)
+"""Modify a Dataset."""
+import openstack
+
+openstack.enable_logging(True)
+conn = openstack.connect(cloud="otc")
+
+dataset_id = "qOI24kz47Jpx6IdGGx8"
+attrs = {
+  "dataset_id" : "gfghHSokody6AJigS5A",
+  "description" : "just a test",
+  "add_tags" : [ {
+    "name" : "Bee",
+    "type" : 0,
+    "property" : {
+      "@modelarts:color" : "#3399ff"
+    }
+  } ]
+}
+conn.modelartsv2.modify_dataset(dataset_id, **attrs)
