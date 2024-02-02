@@ -33,6 +33,7 @@ Open Telekom Cloud Resources
    Shared File System Turbo (SFS Turbo) <sfsturbo/index>
    Simple Message Notification Service (SMN) <smn/index>
    Storage Disaster Recovery Service (SDRS) <sdrs/index>
+   Software Repository for Containers Service (SWR) <swr/index>
    Virtual Private Cloud (VPC) <vpc/index>
    Web Application Firewall (WAF) <waf/index>
 

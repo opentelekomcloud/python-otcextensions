@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -9,10 +10,16 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+"""
+Get one swr organization
+"""
+import openstack
+from otcextensions import sdk
 
-from openstack import proxy
+openstack.enable_logging(True)
+conn = openstack.connect(cloud='otc')
+sdk.register_otc_extensions(conn)
 
-
-class Proxy(proxy.Proxy):
-
-    skip_discovery = True
+org_name = 'swr_org'
+org = conn.swr.get_organization(org_name)
+print(org)

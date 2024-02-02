@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -9,14 +10,15 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import service_description
+"""
+Get all organizations
+"""
+import openstack
+from otcextensions import sdk
 
-from otcextensions.sdk.swrv2.v2 import _proxy
+openstack.enable_logging(True)
+conn = openstack.connect(cloud='otc')
+sdk.register_otc_extensions(conn)
 
-
-class Swrv2Service(service_description.ServiceDescription):
-    """The SWR v2 service."""
-
-    supported_versions = {
-        '2': _proxy.Proxy
-    }
+for org in conn.swr.organizations():
+    print(org)
