@@ -20,7 +20,8 @@ from .sample import DeleteSamples
 from .sample import ListSamples
 from .sample import ShowSample
 from .statistics import Statistics
-
+from .synchronization import SynchronizeDataset
+from .synchronization import DatasetSyncStatus
 __all__ = (
     "CreateDataset",
     "DeleteDataset",
@@ -32,4 +33,6 @@ __all__ = (
     "ListSamples",
     "ShowSample",
     "Statistics",
+    "SynchronizeDataset",
+    "DatasetSyncStatus",
 )

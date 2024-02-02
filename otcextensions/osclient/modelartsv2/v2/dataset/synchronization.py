@@ -16,24 +16,21 @@ import logging
 from osc_lib import utils
 from osc_lib.command import command
 from otcextensions.common import sdk_utils
+from otcextensions.common import cli_utils
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
-
-def _flatten_output(obj):
-    data = {
-        "status": obj.status,
-        "dataset_id": obj.dataset_id,
-        "error_code": obj.error_code,
-        "error_msg": obj.error_msg,
-    }
-    return data
+_formatters = {
+    "create_time": cli_utils.UnixTimestampFormatter,
+}
 
 
 def _get_columns(item):
     column_map = {}
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
+    hidden = ["location"]
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(
+        item, column_map, hidden)
 
 
 class SynchronizeDataset(command.Command):
@@ -42,9 +39,8 @@ class SynchronizeDataset(command.Command):
     def get_parser(self, prog_name):
         parser = super(SynchronizeDataset, self).get_parser(prog_name)
         parser.add_argument(
-            "--dataset_id",
-            metavar="<dataset_id>",
-            required=True,
+            "datasetId",
+            metavar="<datasetId>",
             help=_("Dataset ID."),
         )
 
@@ -55,45 +51,30 @@ class SynchronizeDataset(command.Command):
 
         attrs = {}
 
-        if parsed_args.dataset_id:
-            attrs["dataset_id"] = parsed_args.dataset_id
+        if parsed_args.datasetId:
+            attrs["datasetId"] = parsed_args.datasetId
 
         client.synchronize_dataset(**attrs)
 
-
-class ListDatasetSynchronizationTasks(command.Lister):
-    _description = _(
-        "This API is used to query the execution status "
-        "of a dataset synchronization task."
-    )
-    columns = ("status", "dataset_id", "error_code", "error_msg")
-
-    table_columns = ("status", "dataset_id" "error_code", "error_msg")
+class DatasetSyncStatus(command.ShowOne):
+    _description = _("Show details of a Modelarts Dataset.")
 
     def get_parser(self, prog_name):
-        parser = super(ListDatasetSynchronizationTasks, self).get_parser(
-            prog_name
-        )
+        parser = super(DatasetSyncStatus, self).get_parser(prog_name)
         parser.add_argument(
-            "--dataset_id",
-            metavar="<dataset_id>",
-            help=_("ID of the dataset to delete."),
+            "datasetId",
+            metavar="<datasetId>",
+            help=_("Dataset ID/Name."),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
 
-        query = {}
-        if parsed_args.dataset_id:
-            query["dataset_id"] = parsed_args.dataset_id
-        data = client.list_dataset_synchronization_task(**query)
+        data = client.get_dataset_sync_status(parsed_args.datasetId)
 
-        table = (
-            self.columns,
-            (
-                utils.get_dict_properties(_flatten_output(s), self.columns)
-                for s in data
-            ),
-        )
-        return table
+        display_columns, columns = _get_columns(data)
+        data = utils.get_item_properties(data, columns, formatters=_formatters)
+
+        return display_columns, data
+
