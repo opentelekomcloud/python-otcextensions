@@ -11,12 +11,36 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-"""Delete a dataset version."""
+"""Create a service from attributes."""
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
-dataset_id = "heZw7Oh7Ha0eiFIzkm8"
-version_id = "bG6plbxw8g3il6mL4VH"
-conn.modelartsv2.delete_dataset_version(dataset_id, version_id)
+attrs = {
+  "service_name": "mnist",
+  "description": "mnist service",
+  "infer_type": "real-time",
+  "config": [
+    {
+      "model_id": "xxxmodel-idxxx",
+      "weight": "70",
+      "specification": "modelarts.vm.cpu.2u",
+      "instance_count": 1,
+      "envs":
+      {
+          "model_name": "mxnet-model-1",
+          "load_epoch": "0"
+      }
+    },
+    {
+      "model_id": "xxxxxx",
+      "weight": "30",
+      "specification": "modelarts.vm.cpu.2u",
+      "instance_count": 1
+    }
+  ]
+}
+
+service = conn.modelartsv1.create_service(**attrs)
+print(service)

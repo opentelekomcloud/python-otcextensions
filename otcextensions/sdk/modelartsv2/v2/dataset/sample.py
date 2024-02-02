@@ -156,3 +156,23 @@ class DeleteSample(resource.Resource):
     #: \ntrue: The operation is successful.
     #: \nfalse: The operation is failed.
     success = resource.Body("success", type=bool)
+
+
+class GetSampleSearchCondition(resource.Resource):
+    base_path = "/datasets/%(dataset_id)s/data-annotations/search-condition"
+
+    # Capabilities
+    allow_list = True
+    allow_fetch = True
+
+    #: Dataset ID.
+    dataset_id = resource.URI("dataset_id")
+
+    # Properties
+    #: List of labeling team members.
+    labelers = resource.Body("labelers", type=list, list_type=str)
+    #: Label list.
+    labels= resource.Body("labels", type=list, list_type=dict)
+    #: Attribute key-value pair of a dataset.
+    metadata = resource.Body("metadata", type=dict)
+

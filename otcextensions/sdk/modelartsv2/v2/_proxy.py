@@ -289,11 +289,23 @@ class Proxy(proxy.Proxy):
 
         :param dataset_id: Dataset ID.
         :param sample_id: key id or an instance of
-            :class:`~otcextensions.sdk.modelartsv2.v2.dataset_sample.DatasetSample`
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.sample.Sample`
         :returns: instance of
-            :class:`~otcextensions.sdk.modelartsv2.v2.dataset_sample.DatasetSample`
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.sample.Sample`
         """
         return self._get(_dataset.Sample, sample_id, dataset_id=dataset_id)
+
+    def get_sample_search_condition(self, dataset_id, **attrs):
+        """Get the Dataset Sample Search Condition
+
+        :param dataset_id: Dataset ID.
+        :param sample_id: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.sample.GetSampleSearchCondition`
+        :returns: instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.sample.GetSampleSearchCondition`
+        """
+        return self._get(_dataset.GetSampleSearchCondition, dataset_id=dataset_id, **attrs)
+
 
     # ======== Dataset Import Task Management ========
 

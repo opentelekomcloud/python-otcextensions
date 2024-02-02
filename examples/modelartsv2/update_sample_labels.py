@@ -10,13 +10,26 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-#
-"""Delete a dataset version."""
+"""Update sample labels."""
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
-dataset_id = "heZw7Oh7Ha0eiFIzkm8"
-version_id = "bG6plbxw8g3il6mL4VH"
-conn.modelartsv2.delete_dataset_version(dataset_id, version_id)
+dataset_id = "QWgyNuIgMcSvpUlc6Cu"
+attrs = {
+  "samples" : [ {
+    "sample_id" : "8b583c44bf249f8ba43ea42c92920221",
+    "labels" : [ {
+      "name" : "yunbao"
+    } ]
+  }, {
+    "sample_id" : "b5fe3039879660a2e6bf18166e247f68",
+    "labels" : [ {
+      "name" : "yunbao"
+    } ]
+  } ]
+        }
+response = conn.modelartsv2.update_dataset_labels(dataset_id, **attrs)
+print(response)
+

@@ -10,13 +10,30 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-#
-"""Delete a dataset version."""
+"""Show sample search condition."""
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
-dataset_id = "heZw7Oh7Ha0eiFIzkm8"
-version_id = "bG6plbxw8g3il6mL4VH"
-conn.modelartsv2.delete_dataset_version(dataset_id, version_id)
+dataset_id = "QWgyNuIgMcSvpUlc6Cu"
+attrs = {
+    "labels" : [ {
+    "name" : "Cat",
+    "type" : 0,
+    "property" : {
+      "@modelarts:color" : "#3399ff"
+    }
+  }, {
+    "name" : "Rabbit",
+    "type" : 0,
+    "property" : {
+      "@modelarts:color" : "#3399ff"
+    }
+  } ],
+  "metadata" : { },
+  "labelers" : [ "human/test_123/test_123", "human/xxx@xxx.com", "human/xxx@xxx.com" ]
+  }
+response = conn.modelartsv2.get_sample_search_condition(dataset_id, **attrs)
+print(response)
+

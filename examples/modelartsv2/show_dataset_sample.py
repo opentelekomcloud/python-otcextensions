@@ -10,13 +10,13 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-#
-"""Delete a dataset version."""
+"""Show dataset sample."""
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
-dataset_id = "heZw7Oh7Ha0eiFIzkm8"
-version_id = "bG6plbxw8g3il6mL4VH"
-conn.modelartsv2.delete_dataset_version(dataset_id, version_id)
+dataset_id = "QWgyNuIgMcSvpUlc6Cu"
+sample_id  = "bd183d0142e94747bf57acf742e7fa49"
+response = conn.modelartsv2.get_dataset_sample(dataset_id, sample_id)
+print(response)

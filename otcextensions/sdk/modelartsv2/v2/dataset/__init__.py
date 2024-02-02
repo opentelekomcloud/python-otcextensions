@@ -16,6 +16,7 @@ from .import_task import ImportTask
 from .label import Label
 from .sample import DeleteSample
 from .sample import Sample
+from .sample import GetSampleSearchCondition
 from .statistics import Statistics
 from .sync import Sync
 from .version import DatasetVersion
@@ -28,6 +29,7 @@ __all__ = (
     "Label",
     "DeleteSample",
     "Sample",
+    "GetSampleSearchCondition",
     "Statistics",
     "Sync",
     "Metrics"

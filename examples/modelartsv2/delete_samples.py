@@ -11,12 +11,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-"""Delete a dataset version."""
+"""Delete Samples in Batches."""
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
+dataset_id = "6ZQSY2loMn9bAUpsZzp"
+attrs = {
+  "samples" : [ "9cb9bc9b34bf53b6ec9a84998b1711bf", "9ea63ef78d8c9037c9bcb12b477821bf" ]
+        }
 
-dataset_id = "heZw7Oh7Ha0eiFIzkm8"
-version_id = "bG6plbxw8g3il6mL4VH"
-conn.modelartsv2.delete_dataset_version(dataset_id, version_id)
+dataset_sample = conn.modelartsv2.delete_dataset_samples(dataset_id, **attrs)
+print(dataset_sample)

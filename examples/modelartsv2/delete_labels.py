@@ -11,12 +11,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-"""Delete a dataset version."""
+"""Delete Labels in Batches."""
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
+dataset_id = "6ZQSY2loMn9bAUpsZzp"
+attrs = {
+    "labels" : [ {
+    "name" : "strawberry"
+  } ]
+        }
 
-dataset_id = "heZw7Oh7Ha0eiFIzkm8"
-version_id = "bG6plbxw8g3il6mL4VH"
-conn.modelartsv2.delete_dataset_version(dataset_id, version_id)
+dataset_label = conn.modelartsv2.delete_dataset_labels(dataset_id, **attrs)
+print(dataset_label)

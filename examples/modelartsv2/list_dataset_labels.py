@@ -11,12 +11,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-"""Delete a dataset version."""
+"""List all Dataset Labels."""
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
-
 dataset_id = "heZw7Oh7Ha0eiFIzkm8"
-version_id = "bG6plbxw8g3il6mL4VH"
-conn.modelartsv2.delete_dataset_version(dataset_id, version_id)
+
+for label in conn.modelartsv2.dataset_labels(dataset_id):
+    print(label)
+
