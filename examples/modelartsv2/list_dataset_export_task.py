@@ -11,12 +11,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-"""List all Dataset Import Tasks."""
+"""List all Dataset Export Tasks."""
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 dataset_id = "heZw7Oh7Ha0eiFIzkm8"
 
-dataset_import_tasks = conn.modelartsv2.dataset_import_tasks(dataset_id)
-print(len(list(dataset_import_tasks)))
+for task in conn.modelartsv2.dataset_export_tasks(dataset_id):
+    print(task)
+
