@@ -236,7 +236,7 @@ class ShowDatasetImportTask(command.ShowOne):
         if parsed_args.task_id:
             query["task_id"] = parsed_args.task_id
 
-        obj = client.show_dataset_import_task(**query)
+        obj = client.get_dataset_import_task(**query)
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
 

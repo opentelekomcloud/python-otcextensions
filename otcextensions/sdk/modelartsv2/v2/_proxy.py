@@ -171,16 +171,16 @@ class Proxy(proxy.Proxy):
 
     # ======== Dataset Version Management ========
 
-    def dataset_version(self, **attrs):
+    def dataset_versions(self, dataset_id):
         """List all dataset versions.
 
         :returns: a generator of
             (:class:`~otcextensions.sdk.modelartsv2.v2.\
                 dataset_version.DatasetVersion`) instances
         """
-        return self._list(_dataset.DatasetVersion, **attrs)
+        return self._list(_dataset.DatasetVersion, dataset_id=dataset_id)
 
-    def create_dataset_version(self, **attrs):
+    def create_dataset_version(self, dataset_id, **attrs):
         """Create a dataset from attributes
 
         :param dict attrs: Keyword arguments which will be used to create
@@ -191,10 +191,10 @@ class Proxy(proxy.Proxy):
             dataset.DatasetVersion`
         """
         return self._create(
-            _dataset.DatasetVersion, prepend_key=False, **attrs
+            _dataset.DatasetVersion, dataset_id=dataset_id, prepend_key=False, **attrs
         )
 
-    def delete_dataset_version(self, version_id, **kwargs):
+    def delete_dataset_version(self, dataset_id, version_id, **kwargs):
         """Delete a dataset version
 
         :param version_id: ID of a dataset version
@@ -204,7 +204,7 @@ class Proxy(proxy.Proxy):
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent dataset.
         """
-        return self._delete(_dataset.DatasetVersion, version_id, **kwargs)
+        return self._delete(_dataset.DatasetVersion, version_id, dataset_id=dataset_id, **kwargs)
 
     def show_dataset_version(self, version_id, **attrs):
         """Get the dataset version by version id
@@ -281,16 +281,16 @@ class Proxy(proxy.Proxy):
 
     # ======== Dataset Import Task Management ========
 
-    def dataset_import_tasks(self, **attrs):
+    def dataset_import_tasks(self, dataset_id):
         """List all dataset export tasks.
 
         :returns: a generator of
             (:class:`~otcextensions.sdk.modelartsv2.v2.\
                     dataset.ImportTask`) instances.
         """
-        return self._list(_dataset.ImportTask, **attrs)
+        return self._list(_dataset.ImportTask, dataset_id=dataset_id)
 
-    def create_dataset_import_task(self, **attrs):
+    def create_dataset_import_task(self, dataset_id, **attrs):
         """Create a data import task from attributes
 
         :param dict attrs: Keyword arguments which will be used to create
@@ -301,9 +301,9 @@ class Proxy(proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.modelartsv2.v2.dataset.ImportTask`
         """
-        return self._create(_dataset.ImportTask, prepend_key=False, **attrs)
+        return self._create(_dataset.ImportTask, dataset_id=dataset_id, prepend_key=False, **attrs)
 
-    def get_dataset_import_task(self, task_id, **attrs):
+    def get_dataset_import_task(self, dataset_id, task_id):
         """Get the data import task by dataset id
 
          :param dataset_id: key id or an instance of
@@ -312,11 +312,11 @@ class Proxy(proxy.Proxy):
          :returns: instance of :class:`~otcextensions.sdk.modelartsv2.v2.\
                 dataset.ImportTask`
          """
-        return self._get(_dataset.ImportTask, task_id, **attrs)
+        return self._get(_dataset.ImportTask, task_id, dataset_id=dataset_id) 
 
     # ======== Dataset Export Task Management ========
 
-    def show_dataset_export_task(self, task_id, **attrs):
+    def get_dataset_export_task(self, dataset_id, task_id):
         """Get the dataset export task by dataset id
 
           :param dataset_id: key id or an instance of
@@ -325,18 +325,18 @@ class Proxy(proxy.Proxy):
           :returns: instance of :class:`~otcextensions.sdk.modelartsv2.v2.\
                 dataset.ExportTask`
           """
-        return self._get(_dataset.ExportTask, task_id, **attrs)
+        return self._get(_dataset.ExportTask, task_id, dataset_id=dataset_id)
 
-    def dataset_export_tasks(self, **attrs):
+    def dataset_export_tasks(self, dataset_id):
         """List all dataset export tasks.
 
         :returns: a generator of
             (:class:`~otcextensions.sdk.modelartsv2.v2.\
                     dataset.ExportTask`) instances
         """
-        return self._list(_dataset.ExportTask, **attrs)
+        return self._list(_dataset.ExportTask, dataset_id=dataset_id)
 
-    def create_dataset_export_task(self, **attrs):
+    def create_dataset_export_task(self, dataset_id, **attrs):
         """Create a data import task from attributes
 
         :param dict attrs: Keyword arguments which will be used to create
@@ -347,7 +347,7 @@ class Proxy(proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.modelartsv2.v2.dataset.ExportTask`
         """
-        return self._create(_dataset.ExportTask, prepend_key=False, **attrs)
+        return self._create(_dataset.ExportTask, dataset_id=dataset_id, prepend_key=False, **attrs)
 
     # ======== Dataset Synchronization Task Management ========
 
