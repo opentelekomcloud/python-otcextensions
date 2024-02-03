@@ -23,6 +23,7 @@ Service Proxies
    Domain Name Server Service (DNS) <dns>
    Identity Service (IAM) <identity_v3>
    Key Management Service (KMS) <kms>
+   Log Tank Service (LTS) <lts>
    MapReduce Service (MRS) <mrs>
    Network Address Translation (NAT) <nat>
    Object Block Storage (OBS) <obs>
@@ -31,6 +32,7 @@ Service Proxies
    Shared File System Turbo (SFS Turbo) <sfsturbo>
    Simple Message Notification Service (SMN) <smn>
    Storage Disaster Recovery Service (SDRS) <sdrs>
+   Software Repository for Containers Service (SWR) <swr>
    Volume Backup Service (VBS) <volume_backup>
    Virtual Private Cloud (VPC) <vpc>
    Web Application Firewall (WAF) <waf>

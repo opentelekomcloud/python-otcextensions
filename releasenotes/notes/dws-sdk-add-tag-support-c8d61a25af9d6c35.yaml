@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    Add DWS v1 SDK support for the following cluster tag operations: list, create, delete, batch create, batch delete

@@ -25,6 +25,7 @@ Open Telekom Cloud Resources
    Domain Name Service (DNS) <dns/index>
    Identity Service (IAM) <identity/index>
    Key Management Service (KMS) <kms/index>
+   Log Tank Service (LTS) <lts/index>
    MapReduce Service (MRS) <mrs/index>
    Network Address Translation (NAT) <nat/index>
    Object Block Storage (OBS) <obs/index>
@@ -32,6 +33,7 @@ Open Telekom Cloud Resources
    Shared File System Turbo (SFS Turbo) <sfsturbo/index>
    Simple Message Notification Service (SMN) <smn/index>
    Storage Disaster Recovery Service (SDRS) <sdrs/index>
+   Software Repository for Containers Service (SWR) <swr/index>
    Virtual Private Cloud (VPC) <vpc/index>
    Web Application Firewall (WAF) <waf/index>
 

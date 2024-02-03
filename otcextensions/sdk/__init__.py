@@ -55,6 +55,9 @@ OTC_SERVICES = {
         'endpoint_service_type': 'as',
         'append_project_id': True,
     },
+    'bms': {
+        'service_type': 'bms'
+    },
     'cbr': {
         'service_type': 'cbr',
         'append_project_id': True,
@@ -69,9 +72,25 @@ OTC_SERVICES = {
     },
     'cts': {
         'service_type': 'cts',
+        'endpoint_service_type': 'cts'
+    },
+    'ctsv2': {
+        'service_type': 'ctsv2',
+        'endpoint_service_type': 'ctsv2'
+    },
+    'ctsv3': {
+        'service_type': 'ctsv3',
+        'endpoint_service_type': 'ctsv3'
     },
     'css': {
         'service_type': 'css',
+    },
+    'csbs': {
+        'service_type': 'csbs',
+        'endpoint_service_type': 'data-protect'
+    },
+    'dataarts': {
+        'service_type': 'dataarts',
     },
     'dcaas': {
         'service_type': 'dcaas',
@@ -103,6 +122,12 @@ OTC_SERVICES = {
         'service_type': 'dns',
         'replace_system': True,
     },
+    'dli': {
+        'service_type': 'dli',
+    },
+    'drs': {
+        'service_type': 'drs',
+    },
     'dws': {
         'service_type': 'dws',
         'endpoint_service_type': 'dwsv1'
@@ -123,11 +148,28 @@ OTC_SERVICES = {
         'append_project_id': True,
     },
     'lts': {
-        'service_type': 'lts'
+        'service_type': 'lts',
+        'endpoint_service_type': 'ltsv2',
+        'append_project_id': True,
     },
     'mrs': {
         'service_type': 'mrs',
         'append_project_id': True,
+    },
+    'modelartsv1': {
+        'service_type': 'modelartsv1',
+        'endpoint_service_type': 'modelartsv1'
+    },
+    'modelartsv2': {
+        'service_type': 'modelartsv2',
+        'endpoint_service_type': 'modelartsv2'
+    },
+    'rts': {
+        'service_type': 'rts',
+        'endpoint_service_type': 'orchestration'
+    },
+    'rms': {
+        'service_type': 'rms'
     },
     'nat': {
         'service_type': 'nat',
@@ -163,6 +205,12 @@ OTC_SERVICES = {
         'service_type': 's3',
         'endpoint_service_type': 'object',
         'set_endpoint_override': True
+    'swr': {
+        'service_type': 'swr',
+        'endpoint_service_type': 'swrv2'
+    },
+    'tms': {
+        'service_type': 'tms'
     },
     'vlb': {
         'service_type': 'vlb',
@@ -177,9 +225,22 @@ OTC_SERVICES = {
         'service_type': 'vpc',
         'append_project_id': True,
     },
+    'vpcep': {
+        'service_type': 'vpcep',
+        'append_project_id': True,
+    },
+    'vpn': {
+        'service_type': 'vpn',
+        'endpoint_service_type': 'vpc2.0',
+        'append_project_id': True,
+    },
     'waf': {
         'service_type': 'waf',
         # 'set_endpoint_override': True
+    },
+    'wafd': {
+        'service_type': 'wafd',
+        'endpoint_service_type': 'premium-waf'
     }
 }
 

@@ -16,6 +16,7 @@ from otcextensions.sdk.dws.v1 import _proxy
 from otcextensions.sdk.dws.v1 import cluster as _cluster
 from otcextensions.sdk.dws.v1 import snapshot as _snapshot
 from otcextensions.sdk.dws.v1 import flavor as _flavor
+from otcextensions.sdk.dws.v1 import tag as _tag
 
 from openstack.tests.unit import test_proxy_base
 
@@ -142,4 +143,84 @@ class TestDwsProxy(test_proxy_base.TestProxyBase):
         self.verify_list(
             self.proxy.flavors,
             _flavor.Flavor,
+        )
+
+    def test_cluster_tags(self):
+        self.verify_list(
+            self.proxy.cluster_tags,
+            _tag.Tag,
+            method_args=["test_cluster_id"],
+            expected_kwargs={'cluster_id': 'test_cluster_id'},
+            expected_args=[]
+        )
+
+    def test_create_cluster_tag(self):
+        tag = {'key': 'key1', 'value': 'value1'}
+        self.verify_create(
+            self.proxy.create_cluster_tag,
+            _tag.Tag,
+            method_args=['test_cluster_id', tag],
+            method_kwargs={},
+            expected_kwargs={
+                'cluster_id': 'test_cluster_id',
+                'key': 'key1', 'value': 'value1'
+            },
+            expected_args=[]
+        )
+
+    def test_delete_cluster_tag(self):
+        self.verify_delete(
+            self.proxy.delete_cluster_tag,
+            _tag.Tag,
+            method_args=['test_cluster_id', 'key1'],
+            method_kwargs={},
+            expected_kwargs={
+                'cluster_id': 'test_cluster_id',
+                'ignore_missing': True
+            },
+            expected_args=['key1']
+        )
+
+    # Tests for batch operations
+    def test_batch_create_cluster_tags(self):
+        self._verify(
+            'otcextensions.sdk.dws.v1.tag.Tag.manage_tags_batch',
+            self.proxy.batch_create_cluster_tags,
+            method_args=[
+                'test_cluster_id',
+                [
+                    {'key': 'key1', 'value': 'value1'},
+                    {'key': 'key2', 'value': 'value2'}
+                ]
+            ],
+            expected_args=[
+                self.proxy,
+                'test_cluster_id',
+                [
+                    {'key': 'key1', 'value': 'value1'},
+                    {'key': 'key2', 'value': 'value2'}
+                ],
+                'create'
+            ],
+            expected_kwargs={}
+        )
+
+    def test_batch_delete_cluster_tags(self):
+        self._verify(
+            'otcextensions.sdk.dws.v1.tag.Tag.manage_tags_batch',
+            self.proxy.batch_delete_cluster_tags,
+            method_args=[
+                'test_cluster_id',
+                [
+                    {'key': 'key1'},
+                    {'key': 'key2'}
+                ]
+            ],
+            expected_args=[
+                self.proxy,
+                'test_cluster_id',
+                [{'key': 'key1'}, {'key': 'key2'}],
+                'delete'
+            ],
+            expected_kwargs={}
         )
