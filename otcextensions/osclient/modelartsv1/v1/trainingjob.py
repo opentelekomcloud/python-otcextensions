@@ -287,14 +287,6 @@ class CreateTrainingJob(command.ShowOne):
         return display_columns, data
 
 
-class ListBuiltinAlgorithms:
-    pass
-
-
-class ObtainTrainingJobLogName:
-    pass
-
-
 class ModifyTrainingJobDescription(command.ShowOne):
     _description = _("Modify details of a MA TrainingJobDescription")
 

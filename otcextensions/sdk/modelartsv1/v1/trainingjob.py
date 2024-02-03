@@ -20,7 +20,7 @@ class TrainingJob(resource.Resource):
 
     allow_create = True
     allow_list = True
-    allow_commit = False
+    allow_commit = True
     allow_delete = True
     allow_fetch = True
     allow_patch = True
