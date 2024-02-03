@@ -47,6 +47,23 @@ class TrainingJobVersionId(resource.Resource):
     #: Timestamp when a training job is created
 
 
+class GetLogfileName(resource.Resource):
+    base_path = "/training-jobs/%(jobId)s/versions/%(versionId)s/log/file_names"
+
+    resources_key = "versions"
+    allow_create = True
+    allow_list = True
+    allow_commit = False
+    allow_delete = True
+    allow_fetch = True
+    allow_patch = True
+
+    #: ID of a training job
+    jobId = resource.URI("jobId", type=int)
+    #: Version ID of a training job
+    versionId = resource.URI("versionId", type=int)
+
+
 class TrainingJobVersionLogs(resource.Resource):
     base_path = "/training-jobs/%(jobId)s/versions/%(versionId)s/aom-log"
 
