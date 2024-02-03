@@ -11,21 +11,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-"""Update configurations of a service."""
+"""Querying Supported Service Deployment Specifications"""
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
-attr = {
-    "description": "aha",
-    "status": "running",
-    "config": [{
-        "model_id": "model-id",
-        "weight": "100",
-        "specification": "modelarts.vm.high.p3",
-        "instance_count": 1
-    }]
-}
-service_id = "service_id"
-response = conn.modelartsv1.update_service(service_id, **attr)
-print(response)
+
+for spec in conn.modelartsv1.service_deployment_specifications():
+    print(spec)
+
