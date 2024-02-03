@@ -374,7 +374,7 @@ class Proxy(proxy.Proxy):
             _trainingjob.TrainingJob, name_or_id, ignore_missing=ignore_missing
         )
 
-    def show_trainingjob_version(self, version_id, **attrs):
+    def show_trainingjob_version(self, job_id, version_id):
         """Get the trainjob version by id
 
         :param version_id: key id or an instance of
@@ -384,7 +384,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_version.TrainjobVersion`
         """
         return self._get(
-            _trainingjob_version.TrainingJobVersion, version_id, **attrs
+            _trainingjob_version.TrainingJobVersion, jobId=job_id, version_id=version_id
         )
 
     def modify_trainingjob_description(self, job_id, **attrs):
@@ -416,14 +416,28 @@ class Proxy(proxy.Proxy):
             **attrs,
         )
 
-    def delete_trainingjob_version(self, version_id, *attrs):
+    def delete_trainingjob_version(self, job_id, version_id):
         """Delete a training job version
 
         :param version_id: Thie value can be the id of a training job version
         """
         return self._delete(
-            _trainingjob_version.TrainingJobVersion, version_id, **attrs
+            _trainingjob_version.TrainingJobVersion, versionId=version_id, jobId=job_id
         )
+
+    def list_trainingjob_version_logs(self, job_id, version_id):
+        """Get the trainjob version by id
+
+        :param version_id: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_version.TrainjobVersion`
+
+        :returns: instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_version.TrainjobVersion`
+        """
+        return self._list(
+            _trainingjob_version.TrainingJobVersionLogs, jobId=job_id, versionId=version_id
+        )
+
 
     def trainingjob_configuration(self, **attrs):
         """List all Training Job Configurations.

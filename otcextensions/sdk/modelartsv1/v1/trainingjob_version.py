@@ -13,8 +13,8 @@
 from openstack import resource
 
 
-class TrainingJobVersion(resource.Resource):
-    base_path = "/training-jobs/%(jobId)s/versions"
+class TrainingJobVersionId(resource.Resource):
+    base_path = "/training-jobs/%(jobId)s/versions/%(versionId)s"
 
     resources_key = "versions"
     allow_create = True
@@ -38,12 +38,80 @@ class TrainingJobVersion(resource.Resource):
     # This parameter is not included when the API call succeeds.
     error_code = resource.Body("error_code", type=bool)
     #: ID of a training job
-    jobId = resource.URI("jobId", type=str)
+    jobId = resource.URI("jobId", type=float)
     # job_id = resource.URI('job_id', type=str)
     #: Name of a training job
     job_name = resource.Body("job_name", type=str)
     #: Version ID of a training job
-    version_id = resource.Body("version_id", type=int, alternate_id=True)
+    versionId = resource.URI("versionId", type=float) #, alternate_id=True)
+    #: Timestamp when a training job is created
+
+
+class TrainingJobVersionLogs(resource.Resource):
+    base_path = "/training-jobs/%(jobId)s/versions/%(versionId)s/aom-log"
+
+    resources_key = "versions"
+    allow_create = True
+    allow_list = True
+    allow_commit = False
+    allow_delete = True
+    allow_fetch = True
+    allow_patch = True
+
+    config = resource.Body("config", type=dict)
+
+    #: Status of a training job. For details about the job statuses,
+    #:  see Job Statuses.
+    status = resource.Body("status", type=int)
+    #: Whether the request is successful
+    is_success = resource.Body("is_success", type=bool)
+    #: Error message of a failed API call. This parameter is not included
+    #:  when the API call succeeds.
+    error_msg = resource.Body("error_msg", type=bool)
+    #: Error code of a failed API call. For details, see Error Code.
+    # This parameter is not included when the API call succeeds.
+    error_code = resource.Body("error_code", type=bool)
+    #: ID of a training job
+    jobId = resource.URI("jobId", type=float)
+    # job_id = resource.URI('job_id', type=str)
+    #: Name of a training job
+    job_name = resource.Body("job_name", type=str)
+    #: Version ID of a training job
+    versionId = resource.URI("versionId", type=float) #, alternate_id=True)
+    #: Timestamp when a training job is created
+
+
+class TrainingJobVersion(resource.Resource):
+    base_path = "/training-jobs/%(jobId)s/versions/"
+
+    resources_key = "versions"
+    allow_create = True
+    allow_list = True
+    allow_commit = False
+    allow_delete = True
+    allow_fetch = True
+    allow_patch = True
+
+    config = resource.Body("config", type=dict)
+
+    #: Status of a training job. For details about the job statuses,
+    #:  see Job Statuses.
+    status = resource.Body("status", type=int)
+    #: Whether the request is successful
+    is_success = resource.Body("is_success", type=bool)
+    #: Error message of a failed API call. This parameter is not included
+    #:  when the API call succeeds.
+    error_msg = resource.Body("error_msg", type=bool)
+    #: Error code of a failed API call. For details, see Error Code.
+    # This parameter is not included when the API call succeeds.
+    error_code = resource.Body("error_code", type=bool)
+    #: ID of a training job
+    jobId = resource.URI("jobId", type=float)
+    # job_id = resource.URI('job_id', type=str)
+    #: Name of a training job
+    job_name = resource.Body("job_name", type=str)
+    #: Version ID of a training job
+    version_id = resource.URI("versionId", type=float, alternate_id=True)
     #: Timestamp when a training job is created
     created_at = resource.Body("create_time", type=float)
     #: Charged resource ID of a training job
@@ -88,9 +156,7 @@ class TrainingJobVersion(resource.Resource):
     user_image_url = resource.Body("user_image_url", type=str)
     user_command = resource.Body("user_command", type=str)
     model_id = resource.Body("model_id", type=int)
-    # dict) #list, list_type=dict)
     model_metric_list = resource.Body("model_metric_list", type=str)
-    # dict) #list, list_type=dict)
     system_metric_list = resource.Body("system_metric_list", type=str)
     dataset_name = resource.Body("dataset_name", type=str)
     dataset_version_name = resource.Body("dataset_version_name", type=str)
