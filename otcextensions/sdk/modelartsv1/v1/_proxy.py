@@ -22,7 +22,10 @@ from otcextensions.sdk.modelartsv1.v1 import \
 from otcextensions.sdk.modelartsv1.v1 import \
     visualization_job as _visualization_job
 from otcextensions.sdk.modelartsv1.v1 import \
-        builtin_algorithms as _builtin_algorithms
+    builtin_algorithms as _builtin_algorithms
+from otcextensions.sdk.modelartsv1.v1 import \
+    job_resource_specifications as _job_resource_specifications
+
 
 class Proxy(proxy.Proxy):
     skip_discovery = True
@@ -453,6 +456,18 @@ class Proxy(proxy.Proxy):
             _trainingjob_version.GetLogfileName, jobId=job_id, versionId=version_id
         )
 
+    def stop_traningjob_version(self, job_id, version_id):
+        """Stop a Devenv instance.
+
+        :param instance: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.devenv.Devenv`
+
+        :returns: instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.devenv.Devenv`
+        """
+        trainingjob_version = self._get_resource(_trainingjob_version.TrainingJobVersion, job_id, version_id)
+        return trainingjob_version.stop(self)
+
     def trainingjob_configuration(self, **attrs):
         """List all Training Job Configurations.
 
@@ -560,7 +575,7 @@ class Proxy(proxy.Proxy):
             delete a nonexistent Visualization Job.
         """
         return self._delete(
-            _visualization_job.VisualizationJob,
+            _visualization_job.VisualizationJobId,
             visualization_job,
             ignore_missing=ignore_missing,
         )
@@ -577,19 +592,54 @@ class Proxy(proxy.Proxy):
                 VisualizationJobs`
         """
         return self._get(
-            _visualization_job.VisualizationJob, visualization_job
+            _visualization_job.VisualizationJobId, visualization_job
         )
+
+    def modify_visualizationjob_description(self, job_id, **attrs):
+        """Get the dataset by id
+
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelarts.v2.datasets.Datasets`
+
+        :returns: instance of
+            :class:`~otcextensions.sdk.modelarts.v2.datasets.Datasets`
+        """
+        return self._update(_visualization_job.VisualizationJobId, job_id, **attrs)
 
     def stop_visualizationjob(self, visualization_job):
         """Stop a VisualizationJob
 
         :param instance: key id or an instance of
-            :class:`~otcextensions.sdk.modelartsv1.v1.devenv.Devenv`
+            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_jobs`
 
         :returns: instance of
-            :class:`~otcextensions.sdk.modelartsv1.v1.devenv.Devenv`
+            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_jobs`
         """
         visjob = self._get_resource(
-            _visualization_job.VisualizationJob, visualization_job
+            _visualization_job.VisualizationJobStop, visualization_job
         )
         return visjob.stop(self)
+
+    def restart_visualizationjob(self, visualization_job):
+        """Restart a VisualizationJob
+
+        :param instance: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_jobs`
+
+        :returns: instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_jobs`
+        """
+        visjob = self._get_resource(
+            _visualization_job.VisualizationJobRestart, visualization_job
+        )
+        return visjob.restart(self)
+
+    def job_resource_specifications(self):
+        """List all JobResourceSpecifications .
+
+        :returns: a generator of :class:
+          `~otcextensions.sdk.modelartsv1.v1._job_resource_specifications.JobResourceSpecifications`
+          instances
+        """
+        return self._list(_job_resource_specifications.JobResourceSpecifications)
+

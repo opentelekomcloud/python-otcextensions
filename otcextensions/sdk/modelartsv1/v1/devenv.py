@@ -163,7 +163,7 @@ class Devenv(_base.Resource):
     workspace_id = resource.Body("workspace_id")
 
     def _action(self, session, action):
-        """Preform actions given the message body."""
+        """Perform actions given the message body."""
         url = utils.urljoin(self.base_path, self.id, "action")
         body = {"action": action}
         headers = {

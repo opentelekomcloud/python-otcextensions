@@ -10,7 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
+from openstack import exceptions
 from openstack import resource
+from openstack import utils
+from otcextensions.sdk.modelartsv1.v1 import _base
 
 
 class TrainingJob(resource.Resource):
@@ -155,3 +158,20 @@ class TrainingJob(resource.Resource):
     #: Storage volume that can be used by a training job.
     volumes = resource.Body("volumes", type=list)
     config = resource.Body("config", type=dict)
+
+    def _action(self, session, action):
+        """Preform actions given the message body."""
+        url = utils.urljoin(self.base_path, self.id, "action")
+        body = {"action": action}
+        headers = {
+            "Accept": "application/json",
+            "Content-type": "application/json",
+        }
+        response = session.post(url, json=body, headers=headers)
+        self._translate_response(response)
+        return self
+
+    def stop(self, session):
+        """Stop the Training Job."""
+        return self._action(session, "stop")
+
