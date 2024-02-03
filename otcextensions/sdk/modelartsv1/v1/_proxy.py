@@ -25,6 +25,8 @@ from otcextensions.sdk.modelartsv1.v1 import \
     builtin_algorithms as _builtin_algorithms
 from otcextensions.sdk.modelartsv1.v1 import \
     job_resource_specifications as _job_resource_specifications
+from otcextensions.sdk.modelartsv1.v1 import \
+    job_engine_specifications as _job_engine_specifications
 
 
 class Proxy(proxy.Proxy):
@@ -642,4 +644,13 @@ class Proxy(proxy.Proxy):
           instances
         """
         return self._list(_job_resource_specifications.JobResourceSpecifications)
+
+    def job_engine_specifications(self):
+        """List all JobResourceSpecifications .
+
+        :returns: a generator of :class:
+          `~otcextensions.sdk.modelartsv1.v1._job_resource_specifications.JobResourceSpecifications`
+          instances
+        """
+        return self._list(_job_engine_specifications.JobEngineSpecifications)
 
