@@ -38,12 +38,12 @@ class TrainingJobVersionId(resource.Resource):
     # This parameter is not included when the API call succeeds.
     error_code = resource.Body("error_code", type=bool)
     #: ID of a training job
-    jobId = resource.URI("jobId", type=float)
+    jobId = resource.URI("jobId", type=int)
     # job_id = resource.URI('job_id', type=str)
     #: Name of a training job
     job_name = resource.Body("job_name", type=str)
     #: Version ID of a training job
-    versionId = resource.URI("versionId", type=float) #, alternate_id=True)
+    versionId = resource.URI("versionId", type=int)
     #: Timestamp when a training job is created
 
 
@@ -72,12 +72,12 @@ class TrainingJobVersionLogs(resource.Resource):
     # This parameter is not included when the API call succeeds.
     error_code = resource.Body("error_code", type=bool)
     #: ID of a training job
-    jobId = resource.URI("jobId", type=float)
+    jobId = resource.URI("jobId", type=int)
     # job_id = resource.URI('job_id', type=str)
     #: Name of a training job
     job_name = resource.Body("job_name", type=str)
     #: Version ID of a training job
-    versionId = resource.URI("versionId", type=float) #, alternate_id=True)
+    versionId = resource.URI("versionId", type=int)
     #: Timestamp when a training job is created
 
 
@@ -106,14 +106,14 @@ class TrainingJobVersion(resource.Resource):
     # This parameter is not included when the API call succeeds.
     error_code = resource.Body("error_code", type=bool)
     #: ID of a training job
-    jobId = resource.URI("jobId", type=float)
+    jobId = resource.URI("jobId", type=int)
     # job_id = resource.URI('job_id', type=str)
     #: Name of a training job
     job_name = resource.Body("job_name", type=str)
     #: Version ID of a training job
-    version_id = resource.URI("versionId", type=float, alternate_id=True)
+    version_id = resource.URI("versionId", type=int, alternate_id=True)
     #: Timestamp when a training job is created
-    created_at = resource.Body("create_time", type=float)
+    created_at = resource.Body("create_time", type=int)
     #: Charged resource ID of a training job
     resource_id = resource.Body("resource_id", type=str)
     #: Version name of a training job
@@ -121,7 +121,7 @@ class TrainingJobVersion(resource.Resource):
     #: Description of a training job
     job_desc = resource.Body("job_desc", type=str)
     #: Number of versions of a training job
-    version_count = resource.Body("version_count", type=float)
+    version_count = resource.Body("version_count", type=int)
     #: Version parameters of a training job. For details,
     #:  see the sample response.
     versions = resource.Body("versions", type=list, list_type=dict)
@@ -140,7 +140,7 @@ class TrainingJobVersion(resource.Resource):
     app_url = resource.Body("app_url", type=str)
     boot_file_url = resource.Body("boot_file_url", type=str)
     parameter = resource.Body("parameter", type=list, list_type=dict)
-    duration = resource.Body("duration", type=float)
+    duration = resource.Body("duration", type=int)
     spec_id = resource.Body("spec_id", type=int)
     core = resource.Body("core", type=int)
     cpu = resource.Body("cpu", type=int)
@@ -161,7 +161,7 @@ class TrainingJobVersion(resource.Resource):
     dataset_name = resource.Body("dataset_name", type=str)
     dataset_version_name = resource.Body("dataset_version_name", type=str)
     spec_code = resource.Body("spec_code", type=str)
-    start_time = resource.Body("start_time", type=float)
+    start_time = resource.Body("start_time", type=int)
     volumes = resource.Body("volumes", type=list, list_type=dict)
     pool_id = resource.Body("pool_id", type=str)
     pool_name = resource.Body("pool_name", type=str)

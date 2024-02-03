@@ -49,7 +49,7 @@ class TrainingJob(resource.Resource):
     version_name = resource.Body("version_name", type=str)
     status = resource.Body("status", type=str)
     #: Training job running duration, in milliseconds
-    duration = resource.Body("duration", type=float)
+    duration = resource.Body("duration", type=int)
     #: Total number of created jobs
     job_total_count = resource.Body("job_total_count", type=int)
     #: Number of training jobs that can be created
@@ -68,13 +68,13 @@ class TrainingJob(resource.Resource):
     #: Description of a training job
     job_desc = resource.Body("job_desc", type=str)
     #: Name of the previous version of a training job
-    pre_version_id = resource.Body("pre_version_id", type=float)
+    pre_version_id = resource.Body("pre_version_id", type=int)
     #: Model metrics of a training job. For details, see Table 5.
     model_metric_list = resource.Body("model_metric_list", type=str)
     #: System monitoring metrics of a training job. For details, see Table 6.
     system_metric_list = resource.Body("system_metric_list", type=dict)
     #: start_time
-    start_time = resource.Body("start_time", type=float)
+    start_time = resource.Body("start_time", type=int)
     #: Total number of the queried training job configurations.
     config_total_count = resource.Body("config_total_count", type=int)
     #: configs parameters
@@ -90,7 +90,7 @@ class TrainingJob(resource.Resource):
     #: Boot file of a training job
     boot_file_url = resource.Body("boot_file_url", type=str)
     #: Model ID of a training job
-    model_id = resource.Body("model_id", type=float)
+    model_id = resource.Body("model_id", type=int)
     #: Running parameters of a training job. It is a collection of
     #:  label-value pairs. This parameter is a container environment
     #:  variable when a job uses a custom image.
