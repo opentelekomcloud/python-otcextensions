@@ -21,7 +21,8 @@ from otcextensions.sdk.modelartsv1.v1 import \
     trainingjob_version as _trainingjob_version
 from otcextensions.sdk.modelartsv1.v1 import \
     visualization_job as _visualization_job
-
+from otcextensions.sdk.modelartsv1.v1 import \
+        builtin_algorithms as _builtin_algorithms
 
 class Proxy(proxy.Proxy):
     skip_discovery = True
@@ -490,6 +491,19 @@ class Proxy(proxy.Proxy):
         """
         return self._get(
             _trainingjob_config.TrainjobConfig, trainingjob_config
+        )
+
+    def show_builtin_algorithms(self):
+        """Get the Training Job Configuration by id
+
+        :param trainjob_config: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_config.TrainjobConfigs`
+
+        :returns: instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_config.TrainjobConfigs`
+        """
+        return self._get(
+            _builtin_algorithms.BuiltinAlgorithms
         )
 
     # Visualization Job Management

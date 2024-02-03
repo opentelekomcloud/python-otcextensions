@@ -82,7 +82,7 @@ class TrainingJobVersionLogs(resource.Resource):
 
 
 class TrainingJobVersion(resource.Resource):
-    base_path = "/training-jobs/%(jobId)s/versions/"
+    base_path = "/training-jobs/%(jobId)s/versions"
 
     resources_key = "versions"
     allow_create = True
