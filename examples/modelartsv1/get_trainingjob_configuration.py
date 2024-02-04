@@ -18,5 +18,5 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
 config_name = "aefsd"
-response = conn.modelartsv1.show_trainingjob_conf(config_name)
+response = conn.modelartsv1.show_trainingjob_configuration(config_name)
 print(response)

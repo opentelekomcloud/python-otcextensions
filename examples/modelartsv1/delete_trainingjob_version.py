@@ -17,7 +17,7 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
-job_id = 8742
-version_id = 10063
+job_id = 0
+version_id = 0
 response = conn.modelartsv1.delete_trainingjob_version(job_id, version_id)
 print(response)

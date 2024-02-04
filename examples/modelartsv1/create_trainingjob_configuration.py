@@ -41,5 +41,5 @@ attrs = {
     "log_url": "/usr/log/"
 }
 
-trainingjob_conf = conn.modelartsv1.create_trainingjob_config(**attrs)
+trainingjob_conf = conn.modelartsv1.create_trainingjob_configuration(**attrs)
 print(trainingjob_conf)

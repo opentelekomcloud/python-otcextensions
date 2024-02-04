@@ -18,5 +18,5 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
 config_name = "name"
-response = conn.modelartsv1.delete_trainingjob_config(config_name)
+response = conn.modelartsv1.delete_trainingjob_configuration(config_name)
 print(response)
