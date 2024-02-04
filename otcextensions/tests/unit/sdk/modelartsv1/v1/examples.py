@@ -238,7 +238,18 @@ EXAMPLE_TRAINING_JOB = {
     "resource_id": "jobafd08896",
 }
 
+EXAMPLE_TRAINING_JOB_CONFIGURATION = {
+    "config_name": "testConfig",
+    "config_desc": "This is config",
+    "create_time": 1524189990635,
+    "engine_type": 1,
+    "engine_name": "TensorFlow",
+    "engine_id": 1,
+    "engine_version": "TF-1.4.0-python2.7",
+    "user_image_url": "100.125.5.235:20202/jobmng/custom-cpu-base:1.0",
+    "user_command": "bash -x /home/work/run_train.sh python /home/work/user-job-dir/app/mnist/mnist_softmax.py --data_url /home/work/user-job-dir/app/mnist_data"
 
+}
 EXAMPLE_VISUALIZATION_JOB = {
     "duration": 33000,
     "service_url": "https://XXX/model197/",

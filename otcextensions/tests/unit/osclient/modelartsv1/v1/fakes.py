@@ -21,6 +21,7 @@ from otcextensions.sdk.modelartsv1.v1 import model
 from otcextensions.sdk.modelartsv1.v1 import service
 from otcextensions.sdk.modelartsv1.v1 import trainingjob
 from otcextensions.sdk.modelartsv1.v1 import trainingjob_version
+from otcextensions.sdk.modelartsv1.v1 import trainingjob_configuration
 from otcextensions.sdk.modelartsv1.v1 import visualization_job
 from otcextensions.tests.unit.osclient import test_base
 from otcextensions.tests.unit.sdk.modelartsv1.v1 import examples
@@ -251,6 +252,21 @@ class FakeTrainingJobVersion(test_base.Fake):
 
         return trainingjob_version.TrainingJobVersion(
             **examples.EXAMPLE_TRAINING_JOB_VERSION
+        )
+
+class FakeTrainingJobConfiguration(test_base.Fake):
+    """Fake one or more Modelarts training job configuration."""
+
+    @classmethod
+    def generate(cls):
+        """Create a fake Modelarts training job configuration.
+
+        :return:
+            A FakeResource object, with id, name and so on
+        """
+
+        return trainingjob_configuration.TrainingJobConfiguration(
+            **examples.EXAMPLE_TRAINING_JOB_CONFIGURATION
         )
 
 

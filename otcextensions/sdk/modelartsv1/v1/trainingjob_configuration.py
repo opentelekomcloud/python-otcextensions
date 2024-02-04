@@ -92,7 +92,7 @@ class Config(resource.Resource):
 
     #base_path = "/training-job-configs/%(config_name)s"
 
-class TrainingjobConfig(resource.Resource):
+class TrainingJobConfiguration(resource.Resource):
     base_path = "/training-job-configs"
 
     resources_key = ""

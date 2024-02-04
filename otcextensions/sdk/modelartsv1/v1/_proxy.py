@@ -16,7 +16,7 @@ from otcextensions.sdk.modelartsv1.v1 import model as _model
 from otcextensions.sdk.modelartsv1.v1 import service as _service
 from otcextensions.sdk.modelartsv1.v1 import trainingjob as _trainingjob
 from otcextensions.sdk.modelartsv1.v1 import \
-    trainingjob_config as _trainingjob_config
+    trainingjob_configuration as _trainingjob_configuration
 from otcextensions.sdk.modelartsv1.v1 import \
     trainingjob_version as _trainingjob_version
 from otcextensions.sdk.modelartsv1.v1 import \
@@ -474,7 +474,7 @@ class Proxy(proxy.Proxy):
             (:class:`~otcextensions.sdk.modelartsv1.v1.trainjob_configs.\
                 TrainjobConfigs`) instances
         """
-        return self._list(_trainingjob_config.TrainingjobConfig, **attrs)
+        return self._list(_trainingjob_configuration.TrainingjobConfiguration, **attrs)
 
     def create_trainingjob_configuration(self, **attrs):
         """Create a Training Job Configuration from attributes
@@ -488,7 +488,7 @@ class Proxy(proxy.Proxy):
             TrainjobConfigs`
         """
         return self._create(
-            _trainingjob_config.TrainingjobConfig, prepend_key=False, **attrs
+            _trainingjob_configuration.TrainingjobConfiguration, prepend_key=False, **attrs
         )
 
     def delete_trainingjob_configuration(self, config_name):
@@ -502,12 +502,12 @@ class Proxy(proxy.Proxy):
             delete a nonexistent Training Job Configuration.
         """
         return self._delete(
-            _trainingjob_config.TrainingjobConfig,
+            _trainingjob_configuration.TrainingjobConfiguration,
             config_name,
             ignore_missing=True,
         )
 
-    def show_trainingjob_configuration(self, trainingjob_config):
+    def show_trainingjob_configuration(self, trainingjob_configuration):
         """Get the Training Job Configuration by id
 
         :param trainjob_config: key id or an instance of
@@ -517,7 +517,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_config.TrainjobConfigs`
         """
         return self._get(
-            _trainingjob_config.TrainingjobConfig, trainingjob_config
+            _trainingjob_configuration.TrainingjobConfiguration, trainingjob_configuration
         )
 
     def modify_trainingjob_configuration(self, config_name, **attrs):
@@ -530,7 +530,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelarts.v2.datasets.Datasets`
         """
         
-        return self._update(_trainingjob_config.TrainingjobConfig, config_name, **attrs)
+        return self._update(_trainingjob_configuration.TrainingjobConfiguration, config_name, **attrs)
 
 
     def show_builtin_algorithms(self):
