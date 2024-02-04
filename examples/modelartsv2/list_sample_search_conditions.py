@@ -34,6 +34,6 @@ attrs = {
   "metadata" : { },
   "labelers" : [ "human/test_123/test_123", "human/xxx@xxx.com", "human/xxx@xxx.com" ]
   }
-response = conn.modelartsv2.get_sample_search_condition(dataset_id, **attrs)
-print(response)
+for item in conn.modelartsv2.get_sample_search_condition(dataset_id, **attrs):
+    print(item)
 

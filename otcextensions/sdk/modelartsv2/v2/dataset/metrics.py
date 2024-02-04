@@ -14,7 +14,7 @@ from openstack import resource
 
 
 class Metrics(resource.Resource):
-    base_path = "/datasets/%(dataset_id)s//metrics"
+    base_path = "/datasets/%(dataset_id)s/metrics"
 
     resource_key = "metrics"
 

@@ -444,7 +444,7 @@ class Proxy(proxy.Proxy):
             _trainingjob_version.TrainingJobVersionLogs, jobId=job_id, versionId=version_id
         )
 
-    def show_trainingjob_version_logfile_name(self, job_id, version_id):
+    def list_trainingjob_version_logfile_names(self, job_id, version_id):
         """Get the trainjob version by id
 
         :param version_id: key id or an instance of
@@ -453,10 +453,7 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_version.TrainjobVersion`
         """
-        return self._get(_trainingjob_version.GetLogfileName, versionId=version_id, jobId=job_id)
-        return self._get(
-            _trainingjob_version.GetLogfileName, jobId=job_id, versionId=version_id
-        )
+        return self._list(_trainingjob_version.GetLogfileName, versionId=version_id, jobId=job_id)
 
     def stop_traningjob_version(self, job_id, version_id):
         """Stop a Devenv instance.

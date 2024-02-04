@@ -129,7 +129,7 @@ class Proxy(proxy.Proxy):
         :returns:
             One :class:`~otcextensions.sdk.modelartsv2.v2.dataset.MonitoringData`
         """
-        return self._get(
+        return self._list(
             _dataset.Metrics,
             dataset_id=dataset_id,
             requires_id=False,
@@ -304,7 +304,7 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.modelartsv2.v2.dataset.sample.GetSampleSearchCondition`
         """
-        return self._get(_dataset.GetSampleSearchCondition, dataset_id=dataset_id, **attrs)
+        return self._list(_dataset.GetSampleSearchCondition, dataset_id=dataset_id, **attrs)
 
 
     # ======== Dataset Import Task Management ========

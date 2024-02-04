@@ -17,7 +17,7 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
-job_id = 8742
-version_id = 10063
-response = conn.modelartsv1.show_trainingjob_version_logfile_name(job_id, version_id)
-print(response)
+job_id = 0
+version_id = 0
+for response in conn.modelartsv1.list_trainingjob_version_logfile_names(job_id, version_id):
+    print(response)

@@ -18,4 +18,5 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
 dataset_id = "qOI24kz47Jpx6IdGGx8"
-conn.modelartsv2.get_dataset_metrics(dataset_id)
+response = conn.modelartsv2.get_dataset_metrics(dataset_id)
+print(response)
