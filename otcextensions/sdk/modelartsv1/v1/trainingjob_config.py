@@ -90,6 +90,8 @@ class Config(resource.Resource):
     user_command = resource.Body("user_command", type=str)
 
 
+    #base_path = "/training-job-configs/%(config_name)s"
+
 class TrainingjobConfig(resource.Resource):
     base_path = "/training-job-configs"
 

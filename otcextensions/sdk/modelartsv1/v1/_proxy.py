@@ -520,8 +520,21 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_config.TrainjobConfigs`
         """
         return self._get(
-            _trainingjob_config.TrainjobConfig, trainingjob_config
+            _trainingjob_config.TrainingjobConfig, trainingjob_config
         )
+
+    def modify_trainingjob_conf(self, config_name, **attrs):
+        """Get the dataset by id
+
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelarts.v2.datasets.Datasets`
+
+        :returns: instance of
+            :class:`~otcextensions.sdk.modelarts.v2.datasets.Datasets`
+        """
+        
+        return self._update(_trainingjob_config.TrainingjobConfig, config_name, **attrs)
+
 
     def show_builtin_algorithms(self):
         """Get the Training Job Configuration by id
