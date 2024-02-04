@@ -427,6 +427,11 @@ class Proxy(proxy.Proxy):
 
         :param version_id: Thie value can be the id of a training job version
         """
+        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>yjob_id version_id", job_id, version_id)
+        if str(job_id) == "0":
+            job_id=str(job_id)
+        if str(version_id) == "0":
+            version_id=str(version_id)
         return self._delete(
             _trainingjob_version.TrainingJobVersion, version_id, jobId=job_id
         )
