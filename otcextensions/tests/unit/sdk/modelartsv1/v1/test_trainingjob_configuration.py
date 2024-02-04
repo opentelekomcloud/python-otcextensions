@@ -21,7 +21,7 @@ class TestTrainingjobConfiguration(base.TestCase):
         super(TestTrainingjobConfiguration, self).setUp()
 
     def test_basic(self):
-        sot = trainingjob_config.TrainingJobConfig()
+        sot = trainingjob_configuration.TrainingJobConfiguration()
 
         self.assertEqual("/training-job-configs", sot.base_path)
         self.assertEqual(None, sot.resource_key)
@@ -35,7 +35,7 @@ class TestTrainingjobConfiguration(base.TestCase):
 
     def test_make_it(self):
         updated_sot_attrs = ["create_time"]
-        sot = trainingjob_config.TrainingJobConfig(**EXAMPLE)
+        sot = trainingjob_configuration.TrainingJobConfiguration(**EXAMPLE)
         self.assertEqual(EXAMPLE["create_time"], sot.created_at)
 
         for key, value in EXAMPLE.items():

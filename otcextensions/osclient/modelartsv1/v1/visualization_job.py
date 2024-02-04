@@ -10,16 +10,22 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-"""ModelArts model v1 action implementations"""
+"""ModelArts visualization job v1 action implementations"""
 import logging
 
 from osc_lib import utils
 from osc_lib.command import command
 from otcextensions.common import sdk_utils
+from otcextensions.common import cli_utils
 from otcextensions.i18n import _
+from osc_lib.cli import parseractions
 
 LOG = logging.getLogger(__name__)
 
+_formatters = {
+    "create_time": cli_utils.UnixTimestampFormatter,
+}
+#     "config": cli_utils.YamlFormat}
 
 def _flatten_output(obj):
     data = {
@@ -108,8 +114,7 @@ class CreateVisualizationJob(command.ShowOne):
         obj = client.create_visjob(**attrs)
 
         display_columns, columns = _get_columns(obj)
-        data = utils.get_item_properties(obj, columns)
-
+        data = utils.get_item_properties(obj, columns, formatters=_formatters)
         return (display_columns, data)
 
 
@@ -220,7 +225,7 @@ class ListVisualizationJobs(command.Lister):
     _description = _(
         "Query the visualization jobs that meet the search criteria."
     )
-    columns = ("job_id", "job_name")
+    columns = ("job_id", "job_name", "created_at")
 
     def get_parser(self, prog_name):
         parser = super(ListVisualizationJobs, self).get_parser(prog_name)
@@ -232,11 +237,12 @@ class ListVisualizationJobs(command.Lister):
         query = {}
 
         data = client.visualization_jobs(**query)
+        _formatters = {"Created At": cli_utils.UnixTimestampFormatter}
 
         table = (
             self.columns,
             (
-                utils.get_dict_properties(_flatten_output(s), self.columns)
+                utils.get_dict_properties(_flatten_output(s), self.columns, formatters=_formatters)
                 for s in data
             ),
         )

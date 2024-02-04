@@ -53,15 +53,14 @@ _COLUMNS = (
 class TestListTrainingJobConfigurations(fakes.TestModelartsv1):
     objects = fakes.FakeTrainingJobConfiguration.create_multiple(3)
 
-    column_list_headers = ("Job Id", "Job Name", "Created At")
+    column_list_headers = ("Job Name", "Created At")
 
     data = []
 
     for s in objects:
         data.append(
             (
-                s.job_id,
-                s.job_name,
+                s.config_name,
                 cli_utils.UnixTimestampFormatter(s.created_at),
             )
         )
@@ -95,14 +94,14 @@ class TestListTrainingJobConfigurations(fakes.TestModelartsv1):
 
 
 class TestCreateTrainingJobConfiguration(fakes.TestModelartsv1):
-    _trainingjob = fakes.FakeTrainingJobConfiguration.create_one()
+    _trainingjob_configuration = fakes.FakeTrainingJobConfiguration.create_one()
     columns = _COLUMNS
     data = fakes.gen_data(_trainingjob_configuration, columns, trainingjob_configuration._formatters)
 
     def setUp(self):
         super(TestCreateTrainingJobConfiguration, self).setUp()
 
-        self.cmd = trainingjob.CreateTrainingJobConfiguration(self.app, None)
+        self.cmd = trainingjob_configuration.CreateTrainingJobConfiguration(self.app, None)
 
         self.client.create_trainingjob_configuration = mock.Mock(
             return_value=self._trainingjob_configuration
@@ -110,21 +109,21 @@ class TestCreateTrainingJobConfiguration(fakes.TestModelartsv1):
 
     def test_create(self):
         arglist = [
-            "--job-name",
-            "test-trainingjob",
-            "--job-desc",
+            "--config-name",
+            "test-trainingjob-configuration",
+            "--config-desc",
             "1",
-            "--workspace-id",
-            "2",
             "--worker-server-num",
-            "3",
+            "2",
             "--app-url",
-            "4",
+            "3",
             "--boot-file-url",
-            "5",
+            "4",
             "--log-url",
-            "6",
+            "5",
             "--data-url",
+            "6",
+            "--train-url",
             "7",
             "--dataset-id",
             "8",
@@ -138,22 +137,31 @@ class TestCreateTrainingJobConfiguration(fakes.TestModelartsv1):
             "12",
             "--model-id",
             "13",
+            "--parameter",
+            "14",
+            "--user-image-url",
+             "15",
+            "--user-command"
+            "16"
         ]
         verifylist = [
-            ("job_name", "test-trainingjob"),
-            ("job_desc", "1"),
-            ("workspace_id", "2"),
-            ("worker_server_num", 3),
-            ("app_url", "4"),
-            ("boot_file_url", "5"),
-            ("log_url", "6"),
-            ("data_url", "7"),
+            ("config_name", "test-trainingjob-configuration"),
+            ("config_desc", "1"),
+            ("worker_server_num", 2),
+            ("app_url", "3"),
+            ("boot_file_url", "4"),
+            ("log_url", "5"),
+            ("data_url", "6")
+            ("train_url", "7"),
             ("dataset_id", "8"),
             ("dataset_version_id", "9"),
             ("data_source", "10"),
             ("spec_id", 11),
             ("engine_id", 12),
             ("model_id", 13),
+            ("parameter", 14),
+            ("user_image_url", 15),
+            ("user_command", 16) 
         ]
         # Verify cm is triggereg with default parameters
         self.check_parser(self.cmd, arglist, verifylist)
@@ -178,10 +186,10 @@ class TestDeleteTrainingJobConfiguration(fakes.TestModelartsv1):
         self.client.delete_trainingjob_configuration = mock.Mock(return_value=None)
 
     def test_delete(self):
-        arglist = ["test_jobid"]
+        arglist = ["test_config_name"]
 
         verifylist = [
-            ("jobId", "test_jobid"),
+            ("config_name", "test_config_name"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -189,5 +197,5 @@ class TestDeleteTrainingJobConfiguration(fakes.TestModelartsv1):
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
-        self.client.delete_trainingjob_configuration.assert_called_with(job_id="test_jobid")
+        self.client.delete_trainingjob_configuration.assert_called_with(job_id="test_config_name")
         self.assertIsNone(result)

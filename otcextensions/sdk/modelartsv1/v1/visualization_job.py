@@ -37,7 +37,7 @@ class VisualizationJob(resource.Resource):
     #: Name of a training job
     job_name = resource.Body("job_name", type=str)
     #: Timestamp when a training job is created
-    create_time = resource.Body("create_time", type=float)
+    created_at = resource.Body("create_time", type=float)
 
     #: Total number of the queried visualization jobs
     job_total_count = resource.Body("job_total_count", type=int)

@@ -16,10 +16,15 @@ import logging
 from osc_lib import utils
 from osc_lib.command import command
 from otcextensions.common import sdk_utils
+from otcextensions.common import cli_utils
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
+_formatters = {
+    "create_time": cli_utils.UnixTimestampFormatter,
+}
+#     "config": cli_utils.YamlFormat}
 
 def _flatten_output(obj):
     data = {
@@ -312,8 +317,7 @@ class ShowTrainingJobConfiguration(command.ShowOne):
 class ModifyTrainingJobConfiguration:
     pass
 
-
-class ListTrainingJobConfiguration(command.Lister):
+class ListTrainingJobConfigurations(command.Lister):
     _description = _(
         "This API is used to query the created training "
         "job configurations that meet the search criteria."
@@ -323,7 +327,7 @@ class ListTrainingJobConfiguration(command.Lister):
     table_columns = "is_success"
 
     def get_parser(self, prog_name):
-        parser = super(ListTrainingJobConfiguration, self).get_parser(
+        parser = super(ListTrainingJobConfigurations, self).get_parser(
             prog_name
         )
         return parser

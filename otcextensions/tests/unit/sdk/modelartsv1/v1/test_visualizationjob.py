@@ -28,7 +28,7 @@ class TestVisualizationJob(base.TestCase):
         self.assertEqual(None, sot.resources_key)
 
         self.assertTrue(sot.allow_list)
-        self.assertTrue(sot.allow_fetch)
+        self.assertFalse(sot.allow_fetch)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_delete)
         self.assertFalse(sot.allow_commit)

@@ -13,40 +13,6 @@
 from openstack import resource
 
 
-class TrainingJobVersionId(resource.Resource):
-    base_path = "/training-jobs/%(jobId)s/versions/%(versionId)s"
-
-    resources_key = "versions"
-    allow_create = True
-    allow_list = True
-    allow_commit = False
-    allow_delete = True
-    allow_fetch = True
-    allow_patch = True
-
-    config = resource.Body("config", type=dict)
-
-    #: Status of a training job. For details about the job statuses,
-    #:  see Job Statuses.
-    status = resource.Body("status", type=int)
-    #: Whether the request is successful
-    is_success = resource.Body("is_success", type=bool)
-    #: Error message of a failed API call. This parameter is not included
-    #:  when the API call succeeds.
-    error_msg = resource.Body("error_msg", type=bool)
-    #: Error code of a failed API call. For details, see Error Code.
-    # This parameter is not included when the API call succeeds.
-    error_code = resource.Body("error_code", type=bool)
-    #: ID of a training job
-    jobId = resource.URI("jobId", type=int)
-    # job_id = resource.URI('job_id', type=str)
-    #: Name of a training job
-    job_name = resource.Body("job_name", type=str)
-    #: Version ID of a training job
-    versionId = resource.URI("versionId", type=int)
-    #: Timestamp when a training job is created
-
-
 class GetLogfileName(resource.Resource):
     base_path = "/training-jobs/%(jobId)s/versions/%(versionId)s/log/file-names"
 

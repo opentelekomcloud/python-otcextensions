@@ -69,7 +69,7 @@ class TestListVisualizationJobs(fakes.TestModelartsv1):
     def setUp(self):
         super(TestListVisualizationJobs, self).setUp()
 
-        self.cmd = trainingjob.ListVisualizationJobs(self.app, None)
+        self.cmd = visualization_job.ListVisualizationJobs(self.app, None)
 
         self.client.visualizationjobs = mock.Mock()
         self.client.api_mock = self.client.visualizationjobs
@@ -94,66 +94,54 @@ class TestListVisualizationJobs(fakes.TestModelartsv1):
         self.assertEqual(self.data, list(data))
 
 
-class TestCreateTrainingJob(fakes.TestModelartsv1):
-    _trainingjob = fakes.FakeVisualizationJob.create_one()
+class TestCreateVisualizationJob(fakes.TestModelartsv1):
+    _visualization_job = fakes.FakeVisualizationJob.create_one()
     columns = _COLUMNS
-    data = fakes.gen_data(_visualizationjob, columns, visualizationjob._formatters)
+    data = fakes.gen_data(_visualization_job, columns, visualization_job._formatters)
 
     def setUp(self):
         super(TestCreateVisualizationJob, self).setUp()
 
-        self.cmd = trainingjob.CreateVisualizationJob(self.app, None)
+        self.cmd = visualization_job.CreateVisualizationJob(self.app, None)
 
         self.client.create_visualizationjob = mock.Mock(
-            return_value=self._visualizationjob
+            return_value=self._visualization_job
         )
 
     def test_create(self):
         arglist = [
             "--job-name",
-            "test-trainingjob",
+            "test-visualizationjob",
             "--job-desc",
             "1",
-            "--workspace-id",
+            "--train-url",
             "2",
-            "--worker-server-num",
+            "--job-type",
             "3",
-            "--app-url",
+            "--flavor",
             "4",
-            "--boot-file-url",
+            "--schedule",
             "5",
-            "--log-url",
+            "--code",
             "6",
-            "--data-url",
+            "--type",
             "7",
-            "--dataset-id",
+            "--time-unit",
             "8",
-            "--dataset-version-id",
+            "--duration",
             "9",
-            "--data-source",
-            "10",
-            "--spec-id",
-            "11",
-            "--engine-id",
-            "12",
-            "--model-id",
-            "13",
         ]
         verifylist = [
             ("job_name", "test-trainingjob"),
             ("job_desc", "1"),
-            ("workspace_id", "2"),
-            ("worker_server_num", 3),
-            ("app_url", "4"),
-            ("boot_file_url", "5"),
-            ("log_url", "6"),
-            ("data_url", "7"),
-            ("dataset_id", "8"),
-            ("dataset_version_id", "9"),
-            ("data_source", "10"),
-            ("spec_id", 11),
-            ("engine_id", 12),
-            ("model_id", 13),
+            ("train_url", "2"),
+            ("job_type", 3),
+            ("flavor", "4"),
+            ("schedule", "5"),
+            ("code", "6"),
+            ("type", "7"),
+            ("time_unit", "8"),
+            ("duration", "9"),
         ]
         # Verify cm is triggereg with default parameters
         self.check_parser(self.cmd, arglist, verifylist)
@@ -174,7 +162,7 @@ class TestDeleteVisualizationJob(fakes.TestModelartsv1):
     def setUp(self):
         super(TestDeleteVisualizationJob, self).setUp()
 
-        self.cmd = viusalizationjob.DeleteVisualizationJob(self.app, None)
+        self.cmd = visualization_job.DeleteVisualizationJob(self.app, None)
         self.client.delete_visualizationjob = mock.Mock(return_value=None)
 
     def test_delete(self):

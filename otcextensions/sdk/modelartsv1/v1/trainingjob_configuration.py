@@ -173,7 +173,7 @@ class TrainingJobConfiguration(resource.Resource):
     #: Only NFS is supported. Example value: nfs
     nas_type = resource.Body("nas_type", type=str)
     #: Time when a training job parameter configuration is created
-    create_time = resource.Body("create_time", type=float)
+    created_at = resource.Body("create_time", type=float)
     #: CPU memory of the resource specifications
     cpu = resource.Body("cpu", type=str)
     #: Dataset of a training job
