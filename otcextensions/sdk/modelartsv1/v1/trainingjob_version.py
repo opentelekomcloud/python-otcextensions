@@ -48,9 +48,9 @@ class TrainingJobVersionId(resource.Resource):
 
 
 class GetLogfileName(resource.Resource):
-    base_path = "/training-jobs/%(jobId)s/versions/%(versionId)s/log/file_names"
+    base_path = "/training-jobs/%(jobId)s/versions/%(versionId)s/log/file-names"
 
-    resources_key = "versions"
+    #resources_key = "versions"
     allow_create = True
     allow_list = True
     allow_commit = False
@@ -128,7 +128,7 @@ class TrainingJobVersion(resource.Resource):
     #: Name of a training job
     job_name = resource.Body("job_name", type=str)
     #: Version ID of a training job
-    version_id = resource.URI("versionId", type=int, alternate_id=True)
+    version_id = resource.Body("versionId", type=int, alternate_id=True)
     #: Timestamp when a training job is created
     created_at = resource.Body("create_time", type=int)
     #: Charged resource ID of a training job

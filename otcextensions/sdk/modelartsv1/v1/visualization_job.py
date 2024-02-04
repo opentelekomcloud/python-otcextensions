@@ -22,6 +22,7 @@ class VisualizationJob(resource.Resource):
 
     allow_create = True
     allow_list = True
+    allow_commit = True
 
     #: Whether the request is successful
     is_success = resource.Body("is_success", type=bool)
@@ -72,42 +73,3 @@ class VisualizationJobStop(resource.Resource):
 class VisualizationJobRestart(resource.Resource):
     base_path = "/visualization-jobs/{job_id}/restart"
     jobId = resource.URI("jobId")
-
-
-class VisualizationJobId(resource.Resource):
-    base_path = "/visualization-jobs/{job_id}"
-
-    # Capabilities
-    allow_fetch = True
-    allow_delete = True
-    allow_patch = True
-    allow_commit = True
-
-    #: Dataset ID
-    jobId = resource.URI("jobId")
-   #: Error message of a failed API call. This parameter is not
-    #:  included when the API call succeeds.
-    error_msg = resource.Body("error_msg", type=str)
-    #: Error code of a failed API call. For details, see Error Code.
-    # This parameter is not included when the API call succeeds.
-    error_code = resource.Body("error_code", type=str)
-    #: Name of a training job
-    job_name = resource.Body("job_name", type=str)
-    #: Charged resource ID of a visualization job
-    resource_id = resource.Body("resource_id", type=str)
-    #: Endpoint of a visualization job
-    service_url = resource.Body("service_url", type=str)
-    #: ID of a training job
-    job_id = resource.Body("job_id", type=str)
-    #: Auto stop duration. The value ranges from 0 to 2
-    duration = resource.Body("duration", type=int)
-    #: Description of a visualization job
-    job_desc = resource.Body("job_desc", type=str)
-    #: Remaining auto stop duration
-    remaining_duration = resource.Body("remaining_duration", type=float)
-    #: Status of a visualization job. For details about the job statuses,
-    #:  see Job Statuses.
-    status = resource.Body("status", type=bytes)
-    #: Path for storing visualization job logs
-    train_url = resource.Body("train_url", type=str)
-

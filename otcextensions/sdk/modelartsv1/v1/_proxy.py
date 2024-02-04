@@ -428,9 +428,8 @@ class Proxy(proxy.Proxy):
         :param version_id: Thie value can be the id of a training job version
         """
         return self._delete(
-            _trainingjob_version.TrainingJobVersion, versionId=version_id, jobId=job_id
+            _trainingjob_version.TrainingJobVersion, version_id, jobId=job_id
         )
-
   
     def list_trainingjob_version_logs(self, job_id, version_id):
         """Get the trainjob version by id
@@ -454,6 +453,7 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_version.TrainjobVersion`
         """
+        return self._get(_trainingjob_version.GetLogfileName, versionId=version_id, jobId=job_id)
         return self._get(
             _trainingjob_version.GetLogfileName, jobId=job_id, versionId=version_id
         )
@@ -479,7 +479,7 @@ class Proxy(proxy.Proxy):
         """
         return self._list(_trainingjob_config.TrainingjobConfig, **attrs)
 
-    def create_trainingjob_config(self, **attrs):
+    def create_trainingjob_configuration(self, **attrs):
         """Create a Training Job Configuration from attributes
 
         :param dict attrs: Keyword arguments which will be used to create
@@ -494,7 +494,7 @@ class Proxy(proxy.Proxy):
             _trainingjob_config.TrainingjobConfig, prepend_key=False, **attrs
         )
 
-    def delete_trainingjob_config(self, config_name):
+    def delete_trainingjob_configuration(self, config_name):
         """Delete a Training Job Configuration
 
         :param trainjob_config: Thie value can be the id of a trainjob_configs
@@ -510,7 +510,7 @@ class Proxy(proxy.Proxy):
             ignore_missing=True,
         )
 
-    def show_trainingjob_conf(self, trainingjob_config):
+    def show_trainingjob_configuration(self, trainingjob_config):
         """Get the Training Job Configuration by id
 
         :param trainjob_config: key id or an instance of
@@ -523,7 +523,7 @@ class Proxy(proxy.Proxy):
             _trainingjob_config.TrainingjobConfig, trainingjob_config
         )
 
-    def modify_trainingjob_conf(self, config_name, **attrs):
+    def modify_trainingjob_configuration(self, config_name, **attrs):
         """Get the dataset by id
 
         :param dataset: key id or an instance of
@@ -619,7 +619,7 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.modelarts.v2.datasets.Datasets`
         """
-        return self._update(_visualization_job.VisualizationJobId, job_id, **attrs)
+        return self._update(_visualization_job.VisualizationJob,job_id, **attrs)
 
     def stop_visualizationjob(self, visualization_job):
         """Stop a VisualizationJob
