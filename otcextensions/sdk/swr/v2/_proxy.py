@@ -32,7 +32,7 @@ class Proxy(proxy.Proxy):
         # exclude version
         url_parts = list(filter(lambda x: not any(
             c.isdigit() for c in x[1:]) and (
-                x[0].lower() != 'v'), url_parts))
+                                                  x[0].lower() != 'v'), url_parts))
 
         # Strip out anything that's empty or None
         return [part for part in url_parts if part]
@@ -65,21 +65,21 @@ class Proxy(proxy.Proxy):
         """
         return self._list(_organization.Organization, **query)
 
-    def delete_organization(self, organization, ignore_missing=True):
+    def delete_organization(self, namespace, ignore_missing=True):
         """Delete an organization
 
-        :param organization: The organization can be either the name or a
+        :param namespace: The namespace can be either the name or a
             :class:`~otcextensions.sdk.swr.v2.organization.Organization`
             instance
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
             the load balancer does not exist.
             When set to ``True``, no exception will be set when attempting to
-            delete a nonexistent load balancer.
+            delete a nonexistent organization.
 
         :returns: ``None``
         """
-        return self._delete(_organization.Organization, organization,
+        return self._delete(_organization.Organization, namespace,
                             ignore_missing=ignore_missing)
 
     def find_organization(self, name_or_id, ignore_missing=True):
@@ -90,9 +90,60 @@ class Proxy(proxy.Proxy):
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
             when the organization does not exist.
             When set to ``True``, no exception will be set when attempting
-            to delete a nonexistent load balancer.
+            to delete a nonexistent organization.
 
         :returns: ``None``
         """
         return self._find(_organization.Organization, name_or_id,
                           ignore_missing=ignore_missing)
+
+    def create_organization_permissions(self, **attrs):
+        """Create a new organization from attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.swr.v2.
+            organization.Organization`, comprised of the properties on the
+            Organization class.
+
+        :returns: The results of organization creation
+        :rtype: :class:`~otcextensions.sdk.swr.v2.organization.Permission`
+        """
+        return self._create(_organization.Permission, **attrs)
+
+    def organization_permissions(self, namespace, **query):
+        """Retrieve a generator of organization permissions
+
+        :returns: A generator of organization permissions instances
+        """
+        return self._list(_organization.Permission,
+                          namespace=namespace, **query)
+
+    def delete_organization_permissions(self, namespace, user_ids, ignore_missing=True):
+        """Delete an organization permissions
+
+        :param user_ids: ID array of users whose permissions need to be deleted.
+        :param namespace: The namespace can be either the name or a
+            :class:`~otcextensions.sdk.swr.v2.organization.Organization`
+            instance
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the load balancer does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent organization.
+
+        :returns: ``None``
+        """
+        permission = self._get_resource(_organization.Permission, namespace)
+        return permission._delete_permissions(self, user_ids)
+
+    def update_organization_permissions(self, **attrs):
+        """Update an organization permissions
+
+        :param dict attrs: The attributes to update on the permissions
+         represented by ``permissions``.
+
+        :returns: The updated permissions.
+
+        :rtype: :class:`~otcextensions.sdk.swr.v2.organization.Permission`
+        """
+        return self._update(_organization.Permission, **attrs)

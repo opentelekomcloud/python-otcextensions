@@ -22,10 +22,19 @@ class TestOrganization(TestSwr):
         super(TestOrganization, self).setUp()
 
         self.org_name = "sdk-swr-org-" + uuid.uuid4().hex
+        self.permission = [
+            {
+                "user_id": "5a23ecb3999b458d92d51d524bb7fb4b",
+                "user_name": "pgubina",
+                "auth": 1
+            }
+        ]
         self.org = self.client.create_organization(
-            organization=self.org_name
+            namespace=self.org_name
         )
-
+        self.org_perm = self.client.create_organization_permissions(
+            namespace=self.org_name, permissions=self.permission
+        )
         self.addCleanup(self.conn.swr.delete_organization, self.org_name)
 
     def test_list_organizations(self):
@@ -34,11 +43,34 @@ class TestOrganization(TestSwr):
         self.assertGreaterEqual(len(orgs), 0)
 
     def test_get_organization(self):
-        o = self.client.get_organization(self.org.organization)
-        self.assertEqual(self.org.organization, o.name)
+        o = self.client.get_organization(self.org.namespace)
+        self.assertEqual(self.org.namespace, o.name)
         self.assertEqual(7, o.auth)
 
     def test_find_organization(self):
         o = self.client.find_organization(self.org_name)
-        self.assertEqual(self.org.organization, o.name)
+        self.assertEqual(self.org.namespace, o.name)
         self.assertEqual(7, o.auth)
+
+    def test_organization_permissions(self):
+        o = list(self.client.organization_permissions(self.org.namespace))
+        self.assertEqual(self.org.namespace, o[0].name)
+
+    def test_update_organization_permissions(self):
+        o = self.client.update_organization_permissions(
+            namespace=self.org_name, permissions=[
+                {
+                    "user_id": "5a23ecb3999b458d92d51d524bb7fb4b",
+                    "user_name": "pgubina",
+                    "auth": 3
+                }
+            ]
+        )
+        self.assertEqual(3, o.permissions[0]['auth'])
+
+    def test_delete_organization_permissions(self):
+        orgs = self.client.delete_organization_permissions(
+            self.org.namespace,
+            [self.org_perm.permissions[0]['user_id']]
+        )
+        self.assertEqual(orgs, None)
