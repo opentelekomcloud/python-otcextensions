@@ -20,4 +20,4 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 sdk.register_otc_extensions(conn)
 
-log_group = conn.swr.delete_organization('org_name')
+org = conn.swr.delete_organization('org_name')

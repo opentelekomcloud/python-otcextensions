@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Create new organization
+Update exist organization permissions
 """
 import openstack
 from otcextensions import sdk
@@ -21,6 +21,14 @@ conn = openstack.connect(cloud='otc')
 sdk.register_otc_extensions(conn)
 
 attrs = {
-    'organization': 'new_org',
+    'namespace': 'test',
+    'permissions': [
+        {
+            "user_id": "5a23ecb3999b458d92d51d524bb7fb4c",
+            "user_name": "test",
+            "auth": 3
+        }
+    ],
 }
-org = conn.swr.create_organization(**attrs)
+
+perm = conn.swr.update_organization_permissions(**attrs)

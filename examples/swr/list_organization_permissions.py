@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Create new organization
+Get all organizations
 """
 import openstack
 from otcextensions import sdk
@@ -20,7 +20,5 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 sdk.register_otc_extensions(conn)
 
-attrs = {
-    'organization': 'new_org',
-}
-org = conn.swr.create_organization(**attrs)
+for perm in conn.swr.organization_permissions():
+    print(perm)
