@@ -151,7 +151,7 @@ class TestCreateTrainingJobConfiguration(fakes.TestModelartsv1):
             ("app_url", "3"),
             ("boot_file_url", "4"),
             ("log_url", "5"),
-            ("data_url", "6")
+            ("data_url", "6"),
             ("train_url", "7"),
             ("dataset_id", "8"),
             ("dataset_version_id", "9"),

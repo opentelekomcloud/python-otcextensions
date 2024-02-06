@@ -54,7 +54,7 @@ class SynchronizeDataset(command.Command):
         if parsed_args.datasetId:
             attrs["datasetId"] = parsed_args.datasetId
 
-        client.synchronize_dataset(**attrs)
+        client.sync_dataset(**attrs)
 
 class DatasetSyncStatus(command.ShowOne):
     _description = _("Show details of a Modelarts Dataset.")

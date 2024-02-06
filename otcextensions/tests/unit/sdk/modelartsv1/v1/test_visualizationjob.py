@@ -28,10 +28,10 @@ class TestVisualizationJob(base.TestCase):
         self.assertEqual(None, sot.resources_key)
 
         self.assertTrue(sot.allow_list)
-        self.assertFalse(sot.allow_fetch)
+        self.assertTrue(sot.allow_fetch)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_delete)
-        self.assertFalse(sot.allow_commit)
+        self.assertTrue(sot.allow_commit)
 
     def test_make_it(self):
         updated_sot_attrs = ["create_time"]

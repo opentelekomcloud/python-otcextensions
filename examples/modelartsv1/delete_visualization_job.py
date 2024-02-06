@@ -11,12 +11,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-"""Deleting a Visalization Job."""
+"""Deleting a Visualization Job."""
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
-job_id = 0
+job_id = 3432
 response = conn.modelartsv1.delete_visualizationjob(job_id)
 print(response)

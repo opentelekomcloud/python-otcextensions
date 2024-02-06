@@ -23,6 +23,8 @@ class VisualizationJob(resource.Resource):
     allow_create = True
     allow_list = True
     allow_commit = True
+    allow_delete = True
+    allow_fetch = True
 
     #: Whether the request is successful
     is_success = resource.Body("is_success", type=bool)
@@ -33,7 +35,7 @@ class VisualizationJob(resource.Resource):
     # This parameter is not included when the API call succeeds.
     error_code = resource.Body("error_code", type=str)
     #: ID of a training job
-    job_id = resource.Body("job_id", type=str)
+    job_id = resource.Body("job_id", type=int)
     #: Name of a training job
     job_name = resource.Body("job_name", type=str)
     #: Timestamp when a training job is created

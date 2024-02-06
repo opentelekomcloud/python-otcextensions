@@ -26,6 +26,11 @@ attr = {
         "instance_count": 1
     }]
 }
-service_id = "service_id"
-response = conn.modelartsv1.update_service(service_id, **attr)
+attr1 = {
+    "description": "aha",
+    "status": "running",
+}
+
+service_id = "281fc022-f0dd-4adc-abbd-97273ca5f4fd"
+response = conn.modelartsv1.update_service(service_id, **attr1)
 print(response)

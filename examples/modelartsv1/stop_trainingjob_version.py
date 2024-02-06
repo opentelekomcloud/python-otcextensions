@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-"""Stopping a Training Job."""
+"""Stopping a Training Job Version."""
 import openstack
 
 openstack.enable_logging(True)

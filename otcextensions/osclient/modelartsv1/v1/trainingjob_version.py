@@ -238,7 +238,7 @@ class CreateTrainingJobVersion(command.ShowOne):
 
 
 class ShowTrainingJobVersion(command.ShowOne):
-    _description = _("Show details of a modelarts Training Job")
+    _description = _("Show details of a modelarts Training Job Version")
 
     def get_parser(self, prog_name):
         parser = super(ShowTrainingJobVersion, self).get_parser(prog_name)
@@ -267,26 +267,6 @@ class ShowTrainingJobVersion(command.ShowOne):
         data = utils.get_item_properties(obj, columns)
 
         return display_columns, data
-
-
-class QueryBuiltInAlgo:
-    pass
-
-
-class ObtainTrainingJobLogName:
-    pass
-
-
-class ModifyTrainingJobDescription:
-    pass
-
-
-class StopTrainingJob:
-    pass
-
-
-class ListTrainingJobLogs:
-    pass
 
 
 class ListTrainingJobVersions(command.Lister):

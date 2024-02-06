@@ -97,7 +97,7 @@ class TestDatasetSync(fakes.TestModelartsv2):
     def setUp(self):
         super(TestDatasetSync, self).setUp()
 
-        self.client.synchronize_dataset = mock.Mock(return_value=None)
+        self.client.sync_dataset = mock.Mock(return_value=None)
 
         # Get the command object to test
         self.cmd = dataset.SynchronizeDataset(self.app, None)
@@ -116,6 +116,6 @@ class TestDatasetSync(fakes.TestModelartsv2):
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
-        self.client.synchronize_dataset.assert_called_with(datasetId="dataset-id")
+        self.client.sync_dataset.assert_called_with(datasetId="dataset-id")
         self.assertIsNone(result)
 

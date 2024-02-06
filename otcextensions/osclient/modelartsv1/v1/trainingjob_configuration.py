@@ -201,12 +201,6 @@ class CreateTrainingJobConfiguration(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--dataset_id",
-            metavar="<dataset_id>",
-            required=True,
-            help=_("Dataset ID of a training job."),
-        )
-        parser.add_argument(
             "--dataset_version",
             metavar="<dataset_version>",
             required=True,
@@ -219,15 +213,6 @@ class CreateTrainingJobConfiguration(command.ShowOne):
             help=_(
                 "Dataset type. The value can be obs or dataset. OBS and "
                 "dataset cannot be used at the same time."
-            ),
-        )
-        parser.add_argument(
-            "--data_url",
-            metavar="<data_url>",
-            required=True,
-            help=_(
-                "OBS bucket path. This parameter cannot be used together "
-                "with dataset_id or dataset_version."
             ),
         )
         return parser
@@ -313,9 +298,6 @@ class ShowTrainingJobConfiguration(command.ShowOne):
 
         return (display_columns, data)
 
-
-class ModifyTrainingJobConfiguration:
-    pass
 
 class ListTrainingJobConfigurations(command.Lister):
     _description = _(

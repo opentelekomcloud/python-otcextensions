@@ -478,7 +478,7 @@ class Proxy(proxy.Proxy):
             (:class:`~otcextensions.sdk.modelartsv1.v1.trainjob_configs.\
                 TrainjobConfigs`) instances
         """
-        return self._list(_trainingjob_configuration.TrainingjobConfiguration, **attrs)
+        return self._list(_trainingjob_configuration.TrainingJobConfiguration, **attrs)
 
     def create_trainingjob_configuration(self, **attrs):
         """Create a Training Job Configuration from attributes
@@ -492,7 +492,7 @@ class Proxy(proxy.Proxy):
             TrainjobConfigs`
         """
         return self._create(
-            _trainingjob_configuration.TrainingjobConfiguration, prepend_key=False, **attrs
+            _trainingjob_configuration.TrainingJobConfiguration, prepend_key=False, **attrs
         )
 
     def delete_trainingjob_configuration(self, config_name):
@@ -506,7 +506,7 @@ class Proxy(proxy.Proxy):
             delete a nonexistent Training Job Configuration.
         """
         return self._delete(
-            _trainingjob_configuration.TrainingjobConfiguration,
+            _trainingjob_configuration.TrainingJobConfiguration,
             config_name,
             ignore_missing=True,
         )
@@ -521,7 +521,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_config.TrainjobConfigs`
         """
         return self._get(
-            _trainingjob_configuration.TrainingjobConfiguration, trainingjob_configuration
+            _trainingjob_configuration.TrainingJobConfiguration, trainingjob_configuration
         )
 
     def modify_trainingjob_configuration(self, config_name, **attrs):
@@ -534,7 +534,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelarts.v2.datasets.Datasets`
         """
         
-        return self._update(_trainingjob_configuration.TrainingjobConfiguration, config_name, **attrs)
+        return self._update(_trainingjob_configuration.TrainingJobConfiguration, config_name, **attrs)
 
 
     def show_builtin_algorithms(self):
@@ -591,7 +591,7 @@ class Proxy(proxy.Proxy):
             delete a nonexistent Visualization Job.
         """
         return self._delete(
-            _visualization_job.VisualizationJobId,
+            _visualization_job.VisualizationJob,
             visualization_job,
             ignore_missing=ignore_missing,
         )
@@ -608,7 +608,7 @@ class Proxy(proxy.Proxy):
                 VisualizationJobs`
         """
         return self._get(
-            _visualization_job.VisualizationJobId, visualization_job
+            _visualization_job.VisualizationJob, visualization_job
         )
 
     def modify_visualizationjob_description(self, job_id, **attrs):

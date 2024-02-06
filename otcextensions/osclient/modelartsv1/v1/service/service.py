@@ -368,6 +368,16 @@ class UpdateService(command.Command):
     def get_parser(self, prog_name):
         parser = super(UpdateService, self).get_parser(prog_name)
         parser.add_argument(
+            "--service_id",
+            metavar="<service_id>",
+            help=_(
+                "Service description, which contains a maximum of 100 "
+                "characters. If this parameter is not set, the service "
+                "description is not updated."
+            ),
+        )
+
+        parser.add_argument(
             "--description",
             metavar="<description>",
             help=_(
@@ -415,6 +425,8 @@ class UpdateService(command.Command):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
         attrs = {}
+        #if parsed_args.service_id:
+        #    attrs["service_id"] = parsed_args.service_id
         if parsed_args.description:
             attrs["description"] = parsed_args.description
         if parsed_args.status:
@@ -425,7 +437,7 @@ class UpdateService(command.Command):
             attrs["schedule"] = parsed_args.schedule
         if parsed_args.additional_properties:
             attrs["additional_properties"] = parsed_args.additional_properties
-        client.update_config(**attrs)
+        client.update_service(parsed_args.service_id, **attrs)
 
 
 class ShowService(command.ShowOne):

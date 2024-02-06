@@ -379,14 +379,14 @@ class Proxy(proxy.Proxy):
 
     # ======== Dataset Synchronization Task Management ========
 
-    def sync_dataset(self, dataset_id):
+    def sync_dataset(self, **attrs):
         """Synchronize samples and labeling information
             from the input dataset path to the dataset.
 
         :param dataset_id: Dataset ID.
         :returns: None
         """
-        return self._create(_dataset.Sync, datasetId=dataset_id)
+        return self._create(_dataset.Sync, **attrs) #datasetId=dataset_id)
 
     def get_dataset_sync_status(self, dataset_id):
         """Query Dataset sync task status
