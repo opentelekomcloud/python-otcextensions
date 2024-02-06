@@ -68,6 +68,15 @@ class TestOrganizationPermissions(base.TestCase):
     def test_make_it(self):
         sot = organization.Permission(**EXAMPLE_PERMISSION)
         self.assertEqual(EXAMPLE_PERMISSION['namespace'], sot.namespace)
-        self.assertEqual(EXAMPLE_PERMISSION['permissions'][0]["user_id"], sot.permissions[0].user_id)
-        self.assertEqual(EXAMPLE_PERMISSION['permissions'][0]["auth"], sot.permissions[0].auth)
-        self.assertEqual(EXAMPLE_PERMISSION['permissions'][0]["user_name"], sot.permissions[0].user_name)
+        self.assertEqual(
+            EXAMPLE_PERMISSION['permissions'][0]["user_id"],
+            sot.permissions[0].user_id
+        )
+        self.assertEqual(
+            EXAMPLE_PERMISSION['permissions'][0]["auth"],
+            sot.permissions[0].auth
+        )
+        self.assertEqual(
+            EXAMPLE_PERMISSION['permissions'][0]["user_name"],
+            sot.permissions[0].user_name
+        )

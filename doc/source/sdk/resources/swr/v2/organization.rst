@@ -13,7 +13,7 @@ The ``Organization`` class inherits from
    :members:
 
 The Organization Permission Class
-----------------------
+---------------------------------
 
 The ``Permission`` class inherits from
 :class:`~otcextensions.sdk.sdk_resource.Resource`.
