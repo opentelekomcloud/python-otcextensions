@@ -101,7 +101,7 @@ class Permission(resource.Resource):
     namespace = resource.URI('namespace')
     #: Information required for creating organization permissions.
     #: *Type:list*
-    permissions = resource.Body('permissions', type=list, list_type=dict)
+    permissions = resource.Body('permissions', type=list, list_type=Auth)
     #: Permission ID
     #: *Type:int*
     id = resource.Body('id', type=int)

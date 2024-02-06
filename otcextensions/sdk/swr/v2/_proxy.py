@@ -32,7 +32,7 @@ class Proxy(proxy.Proxy):
         # exclude version
         url_parts = list(filter(lambda x: not any(
             c.isdigit() for c in x[1:]) and (
-                                                  x[0].lower() != 'v'), url_parts))
+                x[0].lower() != 'v'), url_parts))
 
         # Strip out anything that's empty or None
         return [part for part in url_parts if part]
@@ -118,12 +118,14 @@ class Proxy(proxy.Proxy):
         return self._list(_organization.Permission,
                           namespace=namespace, **query)
 
-    def delete_organization_permissions(self, namespace, user_ids, ignore_missing=True):
+    def delete_organization_permissions(
+            self, namespace, user_ids, ignore_missing=True
+    ):
         """Delete an organization permissions
 
-        :param user_ids: ID array of users whose permissions need to be deleted.
+        :param user_ids: Users IDs whose permissions need to be deleted.
         :param namespace: The namespace can be either the name or a
-            :class:`~otcextensions.sdk.swr.v2.organization.Organization`
+            :class:`~otcextensions.sdk.swr.v2.organization.Permission`
             instance
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when

@@ -21,7 +21,7 @@ class TestSwrProxy(test_proxy_base.TestProxyBase):
         self.proxy = _proxy.Proxy(self.session)
 
 
-class TestSwrOrganzation(TestSwrProxy):
+class TestSwrOrganization(TestSwrProxy):
     def test_organization_create(self):
         self.verify_create(self.proxy.create_organization,
                            organization.Organization,
@@ -39,6 +39,64 @@ class TestSwrOrganzation(TestSwrProxy):
     def test_organizations(self):
         self.verify_list(self.proxy.organizations,
                          organization.Organization)
+
+
+class TestSwrOrganzationPermissions(TestSwrProxy):
+    def test_organization_permission_create(self):
+        self.verify_create(self.proxy.create_organization_permissions,
+                           organization.Permission,
+                           method_kwargs={'name': 'id'},
+                           expected_kwargs={'name': 'id'})
+
+    def test_organization_permission_delete(self):
+        self._verify(
+            mock_method='otcextensions.sdk.swr.v2.organization.Permission.'
+                        '_delete_permissions',
+            test_method=self.proxy.delete_organization_permissions,
+            method_kwargs={
+                'namespace': 'space',
+                'user_ids': ['resource_id'],
+            },
+            expected_args=[self.proxy, ['resource_id']]),
+
+    def test_organization_permission_update(self):
+        self.verify_update(self.proxy.update_organization_permissions,
+                           organization.Permission,
+                           method_kwargs={
+                               'namespace': 'id',
+                               'permissions': [
+                                   {
+                                       'user_id': '123',
+                                       'user_name': 'test',
+                                       'auth': 1
+                                   }
+                               ],
+                           },
+                           method_args=[],
+                           expected_kwargs={
+                               'namespace': 'id',
+                               'permissions': [
+                                   {
+                                       'user_id': '123',
+                                       'user_name': 'test',
+                                       'auth': 1
+                                   }
+                               ],
+                           })
+
+    def test_organization_permissions(self):
+        self.verify_list(self.proxy.organization_permissions,
+                         organization.Permission,
+                         method_kwargs={
+                             'namespace': 'id',
+                             'permissions': [
+                                 {
+                                     'user_id': '123',
+                                     'user_name': 'test',
+                                     'auth': 1
+                                 }
+                             ],
+                         })
 
 
 class TestExtractName(TestSwrProxy):
