@@ -254,6 +254,9 @@ class Object(_base.BaseResource):
             requires_id=True,
             prepend_key=prepend_key)
 
+        if self.id[-1] == "/":
+            request.url += "/"
+
         req_args = self._prepare_override_args(
             endpoint_override=endpoint_override,
             request_headers=request.headers,
@@ -265,6 +268,36 @@ class Object(_base.BaseResource):
             data=self.data,
             **req_args)
         self._translate_response(response)
+        return self
+
+    def delete(self, session, error_message=None,
+               endpoint_override=None, headers=None,
+               requests_auth=None, params=None):
+
+        if not self.allow_delete:
+            raise exceptions.MethodNotSupported(self, "delete")
+
+        request = self._prepare_request()
+        if self.id[-1] == "/":
+            request.url += "/"
+
+        session = self._get_session(session)
+
+        delete_args = self._prepare_override_args(
+            endpoint_override=endpoint_override,
+            request_headers=request.headers,
+            additional_headers=headers,
+            requests_auth=requests_auth)
+        if params:
+            delete_args['params'] = params
+
+        response = session.delete(request.url,
+                                  **delete_args)
+        kwargs = {}
+        if error_message:
+            kwargs['error_message'] = error_message
+
+        self._translate_response(response, has_body=False, **kwargs)
         return self
 
     def download(self, session, filename=None,

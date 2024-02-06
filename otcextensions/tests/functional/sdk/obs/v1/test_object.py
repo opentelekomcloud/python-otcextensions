@@ -22,6 +22,7 @@ class TestContainer(base.BaseFunctionalTest):
     uuid_v4 = uuid.uuid4().hex[:8]
     bucket_name = 'obs-test-' + uuid_v4
     object_name = f'obs{uuid_v4}.object'
+    folder_name = f'folder{uuid_v4}/'
     data = str(uuid.uuid4())
     container = None
     object = None
@@ -39,6 +40,10 @@ class TestContainer(base.BaseFunctionalTest):
             name=self.object_name,
             data=self.data
         )
+        self.folder = self.client.create_object(
+            container=self.container,
+            name=self.folder_name
+        )
 
     def test_01_get_object(self):
         object = self.client.get_object(
@@ -52,7 +57,9 @@ class TestContainer(base.BaseFunctionalTest):
             self.object_name,
             container=self.container
         )
+
         self.assertIsNotNone(object)
         self.assertIsNotNone(object.etag)
         self.client.delete_object(self.object)
+        self.client.delete_object(self.folder)
         self.client.delete_container(self.container)

@@ -362,6 +362,14 @@ class Proxy(sdk_proxy.Proxy):
         container = self._get_container_name(container=container)
         endpoint = self.get_container_endpoint(container)
 
+        # folder logic
+        if data is None and name[-1] == "/":
+            return self._create(_obj.Object, container=container,
+                                name=name,
+                                endpoint_override=endpoint,
+                                requests_auth=self._get_req_auth(endpoint),
+                                **headers)
+
         if data is not None:
             self.log.debug(
                 "uploading data to %(endpoint)s",
