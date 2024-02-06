@@ -299,6 +299,39 @@ class ShowTrainingJobConfiguration(command.ShowOne):
         return (display_columns, data)
 
 
+class UpdateTrainingJobConfiguration(command.Command):
+    _description = _("Update Training Job Configuration")
+
+    def get_parser(self, prog_name):
+        parser = super(UpdateTrainingJobConfiguration, self).get_parser(prog_name)
+        parser.add_argument(
+            "--config_name",
+            metavar="<config_name>",
+            help=_(
+                "Service description, which contains a maximum of 100 "
+                "characters. If this parameter is not set, the service "
+                "description is not updated."
+            ),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.modelartsv1
+        attrs = {}
+        #if parsed_args.service_id:
+        #    attrs["service_id"] = parsed_args.service_id
+        """
+        if parsed_args.description:
+            attrs["description"] = parsed_args.description
+        if parsed_args.enable:
+            attrs["enable"] = parsed_args.enable
+        if parsed_args.duration:
+            attrs["duration"] = parsed_args.duration
+        if parsed_args.prompt:
+            attrs["prompt"] = parsed_args.prompt
+        """
+        client.modify_trainingjob_configuration(parsed_args.config_name, **attrs)
+
 class ListTrainingJobConfigurations(command.Lister):
     _description = _(
         "This API is used to query the created training "

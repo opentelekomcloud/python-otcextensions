@@ -447,6 +447,70 @@ class StopDevEnvInstance(command.ShowOne):
         return client.stop_devenv_instance(instance.id)
 
 
+class UpdateDevenvDesc(command.Command):
+    _description = _("Update Devenv Description")
+
+    def get_parser(self, prog_name):
+        parser = super(UpdateDevenvDesc, self).get_parser(prog_name)
+        parser.add_argument(
+            "--instance_id",
+            metavar="<instance_id>",
+            help=_(
+                "Service description, which contains a maximum of 100 "
+                "characters. If this parameter is not set, the service "
+                "description is not updated."
+            ),
+        )
+        parser.add_argument(
+            "--description",
+            metavar="<description>",
+            help=_(
+                "Additional service attribute, which facilitates service "
+                "management."
+            ),
+        )
+        parser.add_argument(
+            "--enable",
+            metavar="<enable>",
+            help=_(
+                "Additional service attribute, which facilitates service "
+                "management."
+            ),
+        )
+        parser.add_argument(
+            "--duration",
+            metavar="<duration>",
+            help=_(
+                "Additional service attribute, which facilitates service "
+                "management."
+            ),
+        )
+        parser.add_argument(
+            "--prompt",
+            metavar="<prompt>",
+            help=_(
+                "Additional service attribute, which facilitates service "
+                "management."
+            ),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.modelartsv1
+        attrs = {}
+        #if parsed_args.service_id:
+        #    attrs["service_id"] = parsed_args.service_id
+        if parsed_args.description:
+            attrs["description"] = parsed_args.description
+        if parsed_args.enable:
+            attrs["enable"] = parsed_args.enable
+        if parsed_args.duration:
+            attrs["duration"] = parsed_args.duration
+        if parsed_args.prompt:
+            attrs["prompt"] = parsed_args.prompt
+        client.update_devenv(parsed_args.instance_id, **attrs)
+
+
 class DeleteDevEnvInstance(command.Command):
     _description = _("Delete DevEnviron Instance(s)")
 

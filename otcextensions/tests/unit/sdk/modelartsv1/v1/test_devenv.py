@@ -46,7 +46,7 @@ class TestDevenv(base.TestCase):
         self.assertTrue(sot.allow_fetch)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_delete)
-        self.assertFalse(sot.allow_commit)
+        self.assertTrue(sot.allow_commit)
 
     def test_create_sot(self):
         updated_sot_attrs = []

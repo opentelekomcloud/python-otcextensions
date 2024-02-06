@@ -172,6 +172,17 @@ class Proxy(proxy.Proxy):
             de_type="Notebook",
         )
 
+    def update_devenv(self, devenv_id, **attrs):
+        """Update a Service Configurations.
+
+        :param service_id: Service ID.
+        :param dict attrs: Keyword arguments which will be used to update
+            a :class:`~otcextensions.sdk.modelartsv1.v1.service.UpdateService`,
+            comprised of the properties on the Service class.
+
+        """
+        return self._update(_devenv.Devenv, devenv_id, **attrs)
+
     def start_devenv_instance(self, instance):
         """Start a Devenv instance.
 

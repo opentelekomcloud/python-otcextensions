@@ -11,21 +11,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-"""Update configurations of a service."""
+"""Modifying the Description of a Development Environment Instance."""
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 attr = {
     "description": "aha",
-    "status": "running",
-    "config": [{
-        "model_id": "model-id",
-        "weight": "100",
-        "specification": "modelarts.vm.high.p3",
-        "instance_count": 1
-    }]
 }
-service_id = "281fc022-f0dd-4adc-abbd-97273ca5f4fd"
-response = conn.modelartsv1.update_service(service_id, **attr)
+
+devenv_id = "DE-12c340b2-6434-11ed-98da-0255c0a8005d"
+response = conn.modelartsv1.update_devenv(devenv_id, **attr)
 print(response)
