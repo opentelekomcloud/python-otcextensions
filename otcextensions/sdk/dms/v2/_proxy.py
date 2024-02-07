@@ -9,17 +9,9 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
-from openstack import service_description
-
-from otcextensions.sdk.dms.v1 import _proxy as _proxy_v1
-from otcextensions.sdk.dms.v2 import _proxy as _proxy_v2
+from openstack import proxy
 
 
-class DmsService(service_description.ServiceDescription):
-    """The DMS service."""
+class Proxy(proxy.Proxy):
 
-    supported_versions = {
-        '1': _proxy_v1.Proxy,
-        '2': _proxy_v2.Proxy
-    }
+    skip_discovery = True
