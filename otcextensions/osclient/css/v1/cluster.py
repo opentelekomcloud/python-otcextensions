@@ -25,7 +25,7 @@ from otcextensions.i18n import _
 LOG = logging.getLogger(__name__)
 
 
-CSS_ENGINE_VERSIONS = ('7.6.2', '7.9.3', '7.10.2')
+CSS_ENGINE_VERSIONS = ('7.6.2', '7.9.3', '7.10.2', 'Opensearch_1.3.6')
 
 DISK_TYPE_CHOICES = ['common', 'high', 'ultrahigh']
 
