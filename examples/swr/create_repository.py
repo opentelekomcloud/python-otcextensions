@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Create new organization
+Create new repository
 """
 import openstack
 from otcextensions import sdk
@@ -22,5 +22,9 @@ sdk.register_otc_extensions(conn)
 
 attrs = {
     'namespace': 'new_org',
+    'repository': 'new_repo',
+    'category': 'linux',
+    'description': 'this is example test repository',
+    'is_public': True,
 }
-org = conn.swr.create_organization(**attrs)
+repo = conn.swr.create_repository(**attrs)

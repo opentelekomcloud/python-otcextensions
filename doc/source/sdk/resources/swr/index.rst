@@ -8,3 +8,4 @@ SWR v2
    :maxdepth: 1
 
    v2/organization
+   v2/repository

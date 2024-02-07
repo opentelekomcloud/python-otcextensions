@@ -13,6 +13,7 @@ from urllib import parse
 
 from openstack import proxy
 from otcextensions.sdk.swr.v2 import organization as _organization
+from otcextensions.sdk.swr.v2 import repository as _repository
 
 
 class Proxy(proxy.Proxy):
@@ -32,7 +33,7 @@ class Proxy(proxy.Proxy):
         # exclude version
         url_parts = list(filter(lambda x: not any(
             c.isdigit() for c in x[1:]) and (
-                x[0].lower() != 'v'), url_parts))
+                                                  x[0].lower() != 'v'), url_parts))
 
         # Strip out anything that's empty or None
         return [part for part in url_parts if part]
@@ -51,7 +52,7 @@ class Proxy(proxy.Proxy):
         return self._create(_organization.Organization, **attrs)
 
     def get_organization(self, *attrs):
-        """Get a organization
+        """Get an organization
 
         :returns: One
              :class:`~otcextensions.sdk.swr.v2.organization.Organization`
@@ -79,7 +80,8 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._delete(_organization.Organization, namespace,
+        orgobj = self._get_resource(_organization.Organization, namespace)
+        return self._delete(_organization.Organization, orgobj.id,
                             ignore_missing=ignore_missing)
 
     def find_organization(self, name_or_id, ignore_missing=True):
@@ -131,7 +133,7 @@ class Proxy(proxy.Proxy):
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
             the load balancer does not exist.
             When set to ``True``, no exception will be set when attempting to
-            delete a nonexistent organization.
+            delete a nonexistent permission.
 
         :returns: ``None``
         """
@@ -149,3 +151,72 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.swr.v2.organization.Permission`
         """
         return self._update(_organization.Permission, **attrs)
+
+    def create_repository(self, **attrs):
+        """Create a new image repository from attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.swr.v2.
+            repository.Repository`, comprised of the properties on the
+            Repository class.
+
+        :returns: The results of organization creation
+        :rtype: :class:`~otcextensions.sdk.swr.v2.repository.Repository`
+        """
+        return self._create(_repository.Repository, **attrs)
+
+    def delete_repository(
+            self, namespace, repository, ignore_missing=True
+    ):
+        """Delete a repository
+
+        :param repository: Image repository name need to be deleted.
+        :param namespace: The namespace can be either the name or a
+            :class:`~otcextensions.sdk.swr.v2.repository.Repository`
+            instance
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the load balancer does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent repository.
+
+        :returns: ``None``
+        """
+        orgobj = self._get_resource(_organization.Organization, namespace)
+        repotype = _repository.Repository
+        repotype.requires_id = True
+        self._delete(repotype, repository,
+                     ignore_missing=ignore_missing, namespace=orgobj.id)
+
+    def get_repository(self, namespace, repository):
+        """Get a repository
+
+        :returns: One
+             :class:`~otcextensions.sdk.swr.v2.repository.Repository`
+        """
+        orgobj = self._get_resource(_organization.Organization, namespace)
+        return self._get(_repository.Repository, repository,
+                         namespace=orgobj.id)
+
+    def repositories(self, **query):
+        """Retrieve a generator of repositories
+
+        :returns: A generator of repositories instances
+        """
+        base_path = '/manage/repos'
+        return self._list(_repository.Repository, base_path=base_path, **query)
+
+    def update_repository(self, **attrs):
+        """Update a repository
+
+        :param dict attrs: The attributes to update on the repository
+         represented by ``repository``.
+
+        :returns: The updated repository.
+
+        :rtype: :class:`~otcextensions.sdk.swr.v2.repository.Repository`
+        """
+        base_path = f'/manage/namespaces/%(namespace)s/repos/{attrs["repository"]}'
+        repotype = _repository.Repository
+        repotype.requires_id = False
+        return self._update(repotype, base_path=base_path, **attrs)

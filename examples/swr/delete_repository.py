@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Create new organization
+Delete repository
 """
 import openstack
 from otcextensions import sdk
@@ -20,7 +20,4 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 sdk.register_otc_extensions(conn)
 
-attrs = {
-    'namespace': 'new_org',
-}
-org = conn.swr.create_organization(**attrs)
+repo = conn.swr.delete_repository('org_name', 'repo_name')

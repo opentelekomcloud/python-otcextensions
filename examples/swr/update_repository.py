@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Create new organization
+Update exist repository
 """
 import openstack
 from otcextensions import sdk
@@ -21,6 +21,11 @@ conn = openstack.connect(cloud='otc')
 sdk.register_otc_extensions(conn)
 
 attrs = {
-    'namespace': 'new_org',
+    'namespace': 'org_name',
+    'repository': 'repo_name',
+    'category': 'windows',
+    'description': 'desc',
+    'is_public': False,
 }
-org = conn.swr.create_organization(**attrs)
+
+repo = conn.swr.update_repository(**attrs)

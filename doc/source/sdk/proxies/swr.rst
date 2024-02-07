@@ -27,3 +27,11 @@ Organization Permissions Operations
   :noindex:
   :members: create_organization_permissions, organization_permissions,
             delete_organization_permissions, update_organization_permissions
+
+Repository Operations
+^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.swr.v2._proxy.Proxy
+  :noindex:
+  :members: create_repository, delete_repository, get_repository,
+            repositories, update_repository
