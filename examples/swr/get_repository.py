@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Create new organization
+Get one swr repository
 """
 import openstack
 from otcextensions import sdk
@@ -20,7 +20,10 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 sdk.register_otc_extensions(conn)
 
-attrs = {
-    'namespace': 'new_org',
-}
-org = conn.swr.create_organization(**attrs)
+org_name = 'swr_org'
+repo_name = 'swr_repo'
+repo = conn.swr.get_repository(
+    namespace=org_name,
+    repository=repo_name
+)
+print(repo)

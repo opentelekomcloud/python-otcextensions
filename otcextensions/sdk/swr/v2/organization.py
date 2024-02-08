@@ -45,28 +45,6 @@ class Organization(resource.Resource):
     #: *Type:int*
     auth = resource.Body('auth', type=int)
 
-    def delete(self, session, error_message=None):
-        """Delete the remote resource based on this instance.
-
-        :param session: The session to use for making this request.
-        :type session: :class:`~keystoneauth1.adapter.Adapter`
-
-        :return: This :class:`Resource` instance.
-        :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
-                 :data:`Resource.allow_commit` is not set to ``True``.
-        :raises: :exc:`~openstack.exceptions.ResourceNotFound` if
-                 the resource was not found.
-        """
-        if self.id is None and self.namespace is not None:
-            self.id = self.namespace
-        response = self._raw_delete(session)
-        kwargs = {}
-        if error_message:
-            kwargs['error_message'] = error_message
-
-        self._translate_response(response, has_body=True, **kwargs)
-        return self
-
 
 class Auth(resource.Resource):
     #: Properties
@@ -91,7 +69,6 @@ class Permission(resource.Resource):
     allow_fetch = True
     allow_list = True
 
-    requires_id = False
     commit_method = "PATCH"
 
     _query_mapping = resource.QueryParameters(namespace='namespace')

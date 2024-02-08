@@ -13,6 +13,7 @@ from openstack.tests.unit import test_proxy_base
 
 from otcextensions.sdk.swr.v2 import _proxy
 from otcextensions.sdk.swr.v2 import organization
+from otcextensions.sdk.swr.v2 import repository
 
 
 class TestSwrProxy(test_proxy_base.TestProxyBase):
@@ -97,6 +98,38 @@ class TestSwrOrganzationPermissions(TestSwrProxy):
                                  }
                              ],
                          })
+
+
+class TestSwrRepository(TestSwrProxy):
+    def test_repository_create(self):
+        self.verify_create(self.proxy.create_repository,
+                           repository.Repository,
+                           method_kwargs={'name': 'id'},
+                           expected_kwargs={'name': 'id'})
+
+    def test_repository_delete(self):
+        self.verify_delete(self.proxy.delete_repository,
+                           repository.Repository, True,
+                           method_kwargs={
+                               'repository': 'resource_id'
+                           },
+                           expected_kwargs={
+                               'namespace': 'resource_id'
+                           })
+
+    def test_repository_get(self):
+        self.verify_get(self.proxy.get_repository,
+                        repository.Repository,
+                        method_kwargs={
+                            'repository': 'resource_id'
+                        },
+                        expected_kwargs={
+                            'namespace': 'resource_id'
+                        })
+
+    def test_repositories(self):
+        self.verify_list(self.proxy.repositories,
+                         repository.Repository)
 
 
 class TestExtractName(TestSwrProxy):
