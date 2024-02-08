@@ -131,6 +131,7 @@ class TestSwrRepository(TestSwrProxy):
         self.verify_list(self.proxy.repositories,
                          repository.Repository)
 
+
 class TestExtractName(TestSwrProxy):
 
     def test_extract_name(self):

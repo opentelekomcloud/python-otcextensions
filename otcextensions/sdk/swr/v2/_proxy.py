@@ -216,7 +216,7 @@ class Proxy(proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.swr.v2.repository.Repository`
         """
-        base_path = f'/manage/namespaces/%(namespace)s/repos/{attrs["repository"]}'
+        bp = f'/manage/namespaces/%(namespace)s/repos/{attrs["repository"]}'
         repotype = _repository.Repository
         repotype.requires_id = False
-        return self._update(repotype, base_path=base_path, **attrs)
+        return self._update(repotype, base_path=bp, **attrs)
