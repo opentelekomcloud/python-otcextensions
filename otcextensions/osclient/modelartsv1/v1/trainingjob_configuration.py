@@ -50,15 +50,15 @@ class DeleteTrainingJobConfiguration(command.Command):
             prog_name
         )
         parser.add_argument(
-            "--config_name",
-            metavar="<config_name>",
+            "configName",
+            metavar="<configName>",
             help=_("Name of a training job configuration"),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
-        client.delete_trainjob_config(config_name=parsed_args.config_name)
+        client.delete_trainingjob_configuration(config_name=parsed_args.configName)
 
 
 class CreateTrainingJobConfiguration(command.ShowOne):
@@ -71,7 +71,7 @@ class CreateTrainingJobConfiguration(command.ShowOne):
             prog_name
         )
         parser.add_argument(
-            "--config_name",
+            "--config-name",
             metavar="<config_name>",
             required=True,
             help=_(
@@ -81,7 +81,7 @@ class CreateTrainingJobConfiguration(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--config_desc",
+            "--config-desc",
             metavar="<config_desc>",
             help=_(
                 "Description of a training job configuration. The value "
@@ -90,13 +90,13 @@ class CreateTrainingJobConfiguration(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--worker_server_num",
+            "--worker-server-num",
             metavar="<worker_server_num>",
             required=True,
             help=_("Number of workers in a training job."),
         )
         parser.add_argument(
-            "--app_url",
+            "--app-url",
             metavar="<app_url>",
             required=True,
             help=_(
@@ -104,7 +104,7 @@ class CreateTrainingJobConfiguration(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--boot_file_url",
+            "--boot-file-url",
             metavar="<boot_file_url>",
             required=True,
             help=_(
@@ -113,7 +113,7 @@ class CreateTrainingJobConfiguration(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--model_id",
+            "--model-id",
             metavar="<model_id>",
             help=_(
                 "Model ID of a training job. After setting model_id, "
@@ -130,7 +130,7 @@ class CreateTrainingJobConfiguration(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--spec_id",
+            "--spec-id",
             metavar="<spec_id>",
             required=True,
             help=_(
@@ -139,31 +139,31 @@ class CreateTrainingJobConfiguration(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--data_url",
+            "--data-url",
             metavar="<data_url>",
             required=True,
             help=_("data_url"),
         )
         parser.add_argument(
-            "--dataset_id",
+            "--dataset-id",
             metavar="<dataset_id>",
             required=True,
             help=_("Dataset ID of a training job."),
         )
         parser.add_argument(
-            "--dataset_version_id",
+            "--dataset-version-id",
             metavar="<dataset_version_id>",
             required=True,
             help=_("Dataset version ID of a training job."),
         )
         parser.add_argument(
-            "--data_source",
+            "--data-source",
             metavar="<data_source>",
             required=True,
             help=_(" "),
         )
         parser.add_argument(
-            "--engine_id",
+            "--engine-id",
             metavar="<engine_id>",
             required=True,
             help=_(
@@ -172,7 +172,7 @@ class CreateTrainingJobConfiguration(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--train_url",
+            "--train-url",
             metavar="<train_url>",
             help=_(
                 "OBS URL of the output file of a training job. "
@@ -180,7 +180,7 @@ class CreateTrainingJobConfiguration(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--log_url",
+            "--log-url",
             metavar="<property>",
             help=_(
                 "OBS URL of the logs of a training job. "
@@ -188,12 +188,12 @@ class CreateTrainingJobConfiguration(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--user_image_url",
+            "--user-image-url",
             metavar="<user_image_url>",
             help=_("SWR URL of a custom image used by a training job."),
         )
         parser.add_argument(
-            "--user_command",
+            "--user-command",
             metavar="<user_command>",
             help=_(
                 "Boot command used to start the container of a custom "
@@ -201,7 +201,7 @@ class CreateTrainingJobConfiguration(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--dataset_version",
+            "--dataset-version",
             metavar="<dataset_version>",
             required=True,
             help=_("Dataset version ID of a training job."),
@@ -339,8 +339,6 @@ class ListTrainingJobConfigurations(command.Lister):
     )
     columns = ("is_success", "config_total_count", "configs")
 
-    table_columns = "is_success"
-
     def get_parser(self, prog_name):
         parser = super(ListTrainingJobConfigurations, self).get_parser(
             prog_name
@@ -351,7 +349,7 @@ class ListTrainingJobConfigurations(command.Lister):
         client = self.app.client_manager.modelartsv1
 
         query = {}
-        data = client.trainingjob_configuration(**query)
+        data = client.trainingjob_configurations(**query)
 
         table = (
             self.columns,

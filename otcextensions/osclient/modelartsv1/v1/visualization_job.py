@@ -51,15 +51,15 @@ class DeleteVisualizationJob(command.Command):
     def get_parser(self, prog_name):
         parser = super(DeleteVisualizationJob, self).get_parser(prog_name)
         parser.add_argument(
-            "--job_id",
-            metavar="<job_id>",
+            "jobId",
+            metavar="<jobId>",
             help=_("Name of the visualization job to delete."),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
-        client.delete_visjob(visualization_job=parsed_args.job_id)
+        client.delete_visualizationjob(job_id=parsed_args.jobId)
 
 
 class CreateVisualizationJob(command.ShowOne):
@@ -69,7 +69,7 @@ class CreateVisualizationJob(command.ShowOne):
         parser = super(CreateVisualizationJob, self).get_parser(prog_name)
 
         parser.add_argument(
-            "--job_name",
+            "--job-name",
             metavar="<job_name>",
             required=True,
             help=_(
@@ -79,7 +79,7 @@ class CreateVisualizationJob(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--job_desc",
+            "--job-desc",
             metavar="<job_desc>",
             required=False,
             help=_(
@@ -89,12 +89,33 @@ class CreateVisualizationJob(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--train_url",
+            "--train-url",
             metavar="<train_url>",
             required=True,
             help=_("OBS path"),
         )
+        parser.add_argument('--job-type', metavar='<job_type>', required=False, type=str, help=_('Type of a visualization job'))
 
+        parser.add_argument('--flavor', metavar='<flavor>', required=False, type=str, help=_('Specifications when a visualization job is created'))
+        """
+        parser.add_argument(
+            '--schedule',
+            metavar='type=<type>,time_unit=<time_unit>,duration=<duration>',
+            required_keys=['type', 'time_unit', 'duration'],
+            dest='schedule',
+            action=parseractions.MultiKeyValueAction,
+            help=_('Automatic backup creation policy.'
+                   'This function is enabled by default.'
+                   'The following keys are required:\n'
+                   'period=<period>: Time when a snapshot is created '
+                   'every day.\n'
+                   'prefix=<prefix>: Prefix of the name of the snapshot '
+                   'that is automatically created.\n'
+                   'keepday=<keepday>: Number of days for which automatically '
+                   'created snapshots are reserved. Value range: 1 to 90.'),
+        )
+        """
+        parser.add_argument('--schedule_duration', metavar='<schedule_duration>', required=True, type=int, help=_('Resource specification code of a visualization job'))
         return parser
 
     def take_action(self, parsed_args):
@@ -111,7 +132,16 @@ class CreateVisualizationJob(command.ShowOne):
         if parsed_args.train_url:
             attrs["train_url"] = parsed_args.train_url
 
-        obj = client.create_visjob(**attrs)
+        if parsed_args.job_type:
+            attrs["job_type"] = parsed_args.job_type
+
+        if parsed_args.flavor:
+            attrs["flavor"] = {"code": parsed_args.flavor}
+
+        if parsed_args.schedule_duration:
+            attrs["schedule"] = {"type": "stop", "time_unit": "HOURS","duration": parsed_args.schedule_duration}
+
+        obj = client.create_visualization_job(**attrs)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns, formatters=_formatters)
@@ -225,7 +255,7 @@ class ListVisualizationJobs(command.Lister):
     _description = _(
         "Query the visualization jobs that meet the search criteria."
     )
-    columns = ("job_id", "job_name", "created_at")
+    columns = ('Job Id', 'Job Name', 'Created At')
 
     def get_parser(self, prog_name):
         parser = super(ListVisualizationJobs, self).get_parser(prog_name)
@@ -233,17 +263,19 @@ class ListVisualizationJobs(command.Lister):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
+        query_params = {}
+        args_list = []
+        for arg in args_list:
+            val = getattr(parsed_args, arg)
+            if val:
+                query_params[arg] = val
 
-        query = {}
-
-        data = client.visualization_jobs(**query)
+        data = client.visualization_jobs(**query_params)
         _formatters = {"Created At": cli_utils.UnixTimestampFormatter}
 
         table = (
             self.columns,
-            (
-                utils.get_dict_properties(_flatten_output(s), self.columns, formatters=_formatters)
-                for s in data
-            ),
+            (utils.get_dict_properties(s, self.columns, formatters=_formatters) for s in data),
         )
         return table
+

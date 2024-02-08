@@ -482,7 +482,7 @@ class Proxy(proxy.Proxy):
         trainingjob_version = self._get_resource(_trainingjob_version.TrainingJobVersion, job_id, version_id)
         return trainingjob_version.stop(self)
 
-    def trainingjob_configuration(self, **attrs):
+    def trainingjob_configurations(self, **attrs):
         """List all Training Job Configurations.
 
         :returns: a generator of
@@ -572,7 +572,7 @@ class Proxy(proxy.Proxy):
         """
         return self._list(_visualization_job.VisualizationJob)
 
-    def create_visualizationjob(self, **attrs):
+    def create_visualization_job(self, **attrs):
         """Create a Visualization Job from attributes
 
         :param dict attrs: Keyword arguments which will be used to create a
@@ -590,7 +590,7 @@ class Proxy(proxy.Proxy):
             _visualization_job.VisualizationJob, prepend_key=False, **attrs
         )
 
-    def delete_visualizationjob(self, visualization_job, ignore_missing=False):
+    def delete_visualizationjob(self, job_id, ignore_missing=False):
         """Delete a Visualization Job
 
         :param visualization_job: Thie value can be the name of a
@@ -603,7 +603,7 @@ class Proxy(proxy.Proxy):
         """
         return self._delete(
             _visualization_job.VisualizationJob,
-            visualization_job,
+            job_id,
             ignore_missing=ignore_missing,
         )
 

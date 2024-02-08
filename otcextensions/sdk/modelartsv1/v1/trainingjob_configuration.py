@@ -95,9 +95,6 @@ class Config(resource.Resource):
 class TrainingJobConfiguration(resource.Resource):
     base_path = "/training-job-configs"
 
-    resources_key = ""
-    resource_key = ""
-
     allow_create = True
     allow_list = True
     allow_commit = True

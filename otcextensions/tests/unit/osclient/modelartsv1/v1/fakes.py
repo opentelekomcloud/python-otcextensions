@@ -280,9 +280,26 @@ class FakeVisualizationJob(test_base.Fake):
         :return:
             A FakeResource object, with id, name and so on
         """
+        object_info={         "job_id": 1,
+            "job_name": "visualization-job",
+            "status": 1,
+            "create_time": 15099239923,
+            "resource_id": "4787c885-e18d-4ef1-aa12-c4ed0c364b27",
+            "duration": 1502323,
+            "job_desc": "This is a visualization job",
+            "service_url": "https://XXX/modelarts/tensoarbod/xxxx/111",
+            "train_url": "/obs/name/" ,
+            "schedule": [
+            {
+            "type": "stop",
+            "timeUnit": "HOURS",
+            "duration": 1
+        }
+    ],
+    "remaining_duration": None}
 
         return visualization_job.VisualizationJob(
-            **examples.EXAMPLE_VISUALIZATION_JOB
+            **object_info
         )
 
 

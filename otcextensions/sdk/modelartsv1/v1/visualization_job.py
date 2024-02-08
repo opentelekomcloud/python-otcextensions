@@ -18,7 +18,7 @@ from otcextensions.sdk.modelartsv1.v1 import _base
 
 class VisualizationJob(resource.Resource):
     base_path = "/visualization-jobs"
-    # resource_key = 'jobs'
+    resources_key = 'jobs'
 
     allow_create = True
     allow_list = True
@@ -62,7 +62,7 @@ class VisualizationJob(resource.Resource):
     remaining_duration = resource.Body("remaining_duration", type=float)
     #: Status of a visualization job. For details about the job statuses,
     #:  see Job Statuses.
-    status = resource.Body("status", type=bytes)
+    status = resource.Body("status", type=int)
     #: Path for storing visualization job logs
     train_url = resource.Body("train_url", type=str)
 

@@ -53,15 +53,16 @@ _COLUMNS = (
 class TestListTrainingJobConfigurations(fakes.TestModelartsv1):
     objects = fakes.FakeTrainingJobConfiguration.create_multiple(3)
 
-    column_list_headers = ("Job Name", "Created At")
+    column_list_headers = ("is_success", "config_total_count", "configs")
 
     data = []
 
     for s in objects:
         data.append(
             (
-                s.config_name,
-                cli_utils.UnixTimestampFormatter(s.created_at),
+                s.is_success,
+                s.config_total_count,
+                s.configs,
             )
         )
 
@@ -141,13 +142,17 @@ class TestCreateTrainingJobConfiguration(fakes.TestModelartsv1):
             "14",
             "--user-image-url",
              "15",
-            "--user-command"
-            "16"
+            "--user-command",
+            "16",
+            "--dataset-version",
+            "17",
+            "--type",
+            "18"
         ]
         verifylist = [
             ("config_name", "test-trainingjob-configuration"),
             ("config_desc", "1"),
-            ("worker_server_num", 2),
+            ("worker_server_num", "2"),
             ("app_url", "3"),
             ("boot_file_url", "4"),
             ("log_url", "5"),
@@ -156,12 +161,14 @@ class TestCreateTrainingJobConfiguration(fakes.TestModelartsv1):
             ("dataset_id", "8"),
             ("dataset_version_id", "9"),
             ("data_source", "10"),
-            ("spec_id", 11),
-            ("engine_id", 12),
-            ("model_id", 13),
-            ("parameter", 14),
-            ("user_image_url", 15),
-            ("user_command", 16) 
+            ("spec_id", "11"),
+            ("engine_id", "12"),
+            ("model_id", "13"),
+            ("parameter", "14"),
+            ("user_image_url", "15"),
+            ("user_command", "16"),
+            ("dataset_version", "17"),
+            ("type", "18")
         ]
         # Verify cm is triggereg with default parameters
         self.check_parser(self.cmd, arglist, verifylist)
@@ -189,7 +196,7 @@ class TestDeleteTrainingJobConfiguration(fakes.TestModelartsv1):
         arglist = ["test_config_name"]
 
         verifylist = [
-            ("config_name", "test_config_name"),
+            ("configName", "test_config_name"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -197,5 +204,5 @@ class TestDeleteTrainingJobConfiguration(fakes.TestModelartsv1):
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
-        self.client.delete_trainingjob_configuration.assert_called_with(job_id="test_config_name")
+        self.client.delete_trainingjob_configuration.assert_called_with(config_name="test_config_name")
         self.assertIsNone(result)

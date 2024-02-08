@@ -24,35 +24,19 @@ from otcextensions.tests.unit.osclient.modelartsv1.v1 import fakes
 
 
 _COLUMNS = (
-    "access_address",
-    "additional_properties",
-    "cluster_id",
-    "config",
-    "failed_times",
-    "infer_type",
-    "invocation_times",
-    "is_free",
-    "is_shared",
-    "operation_time",
-    "owner",
-    "progress",
-    "project",
-    "publish_at",
-    "schedule",
-    "service_id",
-    "service_name",
-    "shared_count",
-    "status",
-    "tenant",
-    "transition_at",
-    "update_time",
-    "workspace_id",
-)
+'created_at',
+ 'duration',
+ 'job_desc',
+ 'job_id',
+ 'job_name',
+ 'resource_id',
+ 'service_url',
+ 'status',
+ 'train_url')
 
 
 class TestListVisualizationJobs(fakes.TestModelartsv1):
     objects = fakes.FakeVisualizationJob.create_multiple(3)
-
     column_list_headers = ("Job Id", "Job Name", "Created At")
 
     data = []
@@ -65,14 +49,16 @@ class TestListVisualizationJobs(fakes.TestModelartsv1):
                 cli_utils.UnixTimestampFormatter(s.created_at),
             )
         )
+    print(">>>data", data)
+
 
     def setUp(self):
         super(TestListVisualizationJobs, self).setUp()
 
         self.cmd = visualization_job.ListVisualizationJobs(self.app, None)
 
-        self.client.visualizationjobs = mock.Mock()
-        self.client.api_mock = self.client.visualizationjobs
+        self.client.visualization_jobs = mock.Mock()
+        self.client.api_mock = self.client.visualization_jobs
 
     def test_list(self):
         arglist = []
@@ -104,7 +90,7 @@ class TestCreateVisualizationJob(fakes.TestModelartsv1):
 
         self.cmd = visualization_job.CreateVisualizationJob(self.app, None)
 
-        self.client.create_visualizationjob = mock.Mock(
+        self.client.create_visualization_job = mock.Mock(
             return_value=self._visualization_job
         )
 
@@ -118,44 +104,31 @@ class TestCreateVisualizationJob(fakes.TestModelartsv1):
             "2",
             "--job-type",
             "3",
-            "--flavor",
+            '--flavor',
             "4",
-            "--schedule",
+            "--schedule_duration",
             "5",
-            "--code",
-            "6",
-            "--type",
-            "7",
-            "--time-unit",
-            "8",
-            "--duration",
-            "9",
         ]
         verifylist = [
-            ("job_name", "test-trainingjob"),
+            ("job_name", "test-visualizationjob"),
             ("job_desc", "1"),
             ("train_url", "2"),
-            ("job_type", 3),
+            ("job_type", "3"),
             ("flavor", "4"),
-            ("schedule", "5"),
-            ("code", "6"),
-            ("type", "7"),
-            ("time_unit", "8"),
-            ("duration", "9"),
+            ("schedule_duration", 5),
         ]
         # Verify cm is triggereg with default parameters
         self.check_parser(self.cmd, arglist, verifylist)
-        # parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Trigger the action
-        # columns, data = self.cmd.take_action(parsed_args)
-        # attrs = {}
-        # self.client.create_trainingjob.assert_called_with(**attrs)
-        # self.client.wait_for_cluster.assert_called_with(
+        columns, data = self.cmd.take_action(parsed_args)
+        self.client.create_visualization_job.assert_called_with(job_name='test-visualizationjob', job_desc='1', train_url='2', job_type='3', flavor={'code': '4'}, schedule={'type': 'stop', 'time_unit': 'HOURS', 'duration': 5})
+        #self.client.wait_for_cluster.assert_called_with(
         #    self._cluster.id, wait=self.default_timeout)
         # self.client.find_model.assert_called_with(self._model.id)
-        # self.assertEqual(self.columns, columns)
-        # self.assertEqual(self.data, data)
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
 
 
 class TestDeleteVisualizationJob(fakes.TestModelartsv1):
