@@ -12,6 +12,9 @@
 
 from openstack import resource
 
+from otcextensions.sdk.swr.v2.organization import Auth
+from otcextensions.sdk.swr.v2 import _base
+
 
 class Repository(resource.Resource):
     base_path = '/manage/namespaces/%(namespace)s/repos'
@@ -106,3 +109,39 @@ class Repository(resource.Resource):
     #: Total number of records
     #: *Type:int*
     total_range = resource.Body('total_range')
+
+
+class Permission(_base.Resource):
+    base_path = '/manage/namespaces/%(namespace)s/repos/%(repository)s/access'
+
+    # capabilities
+    allow_create = True
+    allow_delete = True
+    allow_list = True
+    allow_commit = True
+
+    commit_method = "PATCH"
+
+    requires_id = False
+
+    #: Organization namespace
+    #: *Type:str*
+    namespace = resource.URI('namespace')
+    #: Image repository name
+    #: *Type:str*
+    repository = resource.URI('repository')
+    #: Information required for creating image permissions.
+    #: *Type:list*
+    permissions = resource.Body('permissions', type=list, list_type=Auth)
+    #: Permission ID
+    #: *Type:int*
+    id = resource.Body('id')
+    #: Image name
+    #: *Type:str*
+    name = resource.Body('name')
+    #: Permissions of the current user
+    #: *Type:dict*
+    self_auth = resource.Body('self_auth', type=dict)
+    #: Permissions of other users
+    #: *Type:dict*
+    others_auths = resource.Body('others_auths', type=list)

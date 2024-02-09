@@ -9,9 +9,8 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import typing as ty
 from openstack import resource
-from openstack import exceptions
+from otcextensions.sdk.swr.v2 import _base
 
 
 class Organization(resource.Resource):
@@ -59,7 +58,7 @@ class Auth(resource.Resource):
     auth = resource.Body('auth', type=int)
 
 
-class Permission(resource.Resource):
+class Permission(_base.Resource):
     base_path = '/manage/namespaces/%(namespace)s/access'
 
     # capabilities
@@ -70,6 +69,8 @@ class Permission(resource.Resource):
     allow_list = True
 
     commit_method = "PATCH"
+
+    requires_id = False
 
     _query_mapping = resource.QueryParameters(namespace='namespace')
 
@@ -94,36 +95,3 @@ class Permission(resource.Resource):
     #: Permissions of other users
     #: *Type:dict*
     others_auths = resource.Body('others_auths', type=list)
-
-    def _prepare_request_body(
-            self,
-            patch,
-            prepend_key,
-            *,
-            resource_request_key=None,
-    ):
-        body: ty.Union[ty.Dict[str, ty.Any], ty.List[ty.Any]]
-        if not self._store_unknown_attrs_as_properties:
-            # Default case
-            body = self._body.dirty
-        else:
-            body = self._unpack_properties_to_resource_root(
-                self._body.dirty
-            )
-
-        if prepend_key:
-            if resource_request_key is not None:
-                body = {resource_request_key: body}
-            elif self.resource_key is not None:
-                body = {self.resource_key: body}
-        if 'permissions' in body:
-            return body['permissions']
-        return body
-
-    def _delete_permissions(self, session, user_ids):
-        """Delete Organization permissions
-        """
-        url = self.base_path % {'namespace': self.id}
-        response = session.delete(url, json=user_ids)
-        exceptions.raise_from_response(response)
-        return None

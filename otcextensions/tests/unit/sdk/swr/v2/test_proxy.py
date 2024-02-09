@@ -51,14 +51,18 @@ class TestSwrOrganzationPermissions(TestSwrProxy):
 
     def test_organization_permission_delete(self):
         self._verify(
-            mock_method='otcextensions.sdk.swr.v2.organization.Permission.'
-                        '_delete_permissions',
+            mock_method='otcextensions.sdk.swr.v2._base.Resource.'
+                        '_delete',
             test_method=self.proxy.delete_organization_permissions,
             method_kwargs={
                 'namespace': 'space',
                 'user_ids': ['resource_id'],
             },
-            expected_args=[self.proxy, ['resource_id']]),
+            expected_args=[
+                self.proxy,
+                ['resource_id'],
+                '/manage/namespaces/space/access'
+            ]),
 
     def test_organization_permission_update(self):
         self.verify_update(self.proxy.update_organization_permissions,
@@ -130,6 +134,89 @@ class TestSwrRepository(TestSwrProxy):
     def test_repositories(self):
         self.verify_list(self.proxy.repositories,
                          repository.Repository)
+
+
+class TestSwrRepositoryPermissions(TestSwrProxy):
+    def test_repository_permission_create(self):
+        self.verify_create(self.proxy.create_repository_permissions,
+                           repository.Permission,
+                           method_kwargs={
+                               'namespace': 'id',
+                               'permissions': [
+                                   {
+                                       'user_id': '123',
+                                       'user_name': 'test',
+                                       'auth': 1
+                                   }
+                               ],
+                           },
+                           method_args=[],
+                           expected_kwargs={
+                               'namespace': 'id',
+                               'permissions': [
+                                   {
+                                       'user_id': '123',
+                                       'user_name': 'test',
+                                       'auth': 1
+                                   }
+                               ],
+                           })
+
+    def test_repository_permission_delete(self):
+        self._verify(
+            mock_method='otcextensions.sdk.swr.v2._base.Resource.'
+                        '_delete',
+            test_method=self.proxy.delete_repository_permissions,
+            method_kwargs={
+                'namespace': 'space',
+                'repository': 'repo',
+                'user_ids': ['resource_id'],
+            },
+            expected_args=[
+                self.proxy,
+                ['resource_id'],
+                '/manage/namespaces/space/repos/repo/access'
+            ]),
+
+    def test_repository_permission_update(self):
+        self.verify_update(self.proxy.update_repository_permissions,
+                           repository.Permission,
+                           method_kwargs={
+                               'namespace': 'id',
+                               'permissions': [
+                                   {
+                                       'user_id': '123',
+                                       'user_name': 'test',
+                                       'auth': 1
+                                   }
+                               ],
+                           },
+                           method_args=[],
+                           expected_kwargs={
+                               'namespace': 'id',
+                               'permissions': [
+                                   {
+                                       'user_id': '123',
+                                       'user_name': 'test',
+                                       'auth': 1
+                                   }
+                               ],
+                           })
+
+    def test_repository_permissions(self):
+        self.verify_list(self.proxy.repository_permissions,
+                         repository.Permission,
+                         method_kwargs={
+                             'namespace': 'id',
+                             'repository': 'repo',
+                             'permissions': [
+                                 {
+                                     'user_id': '123',
+                                     'user_name': 'test',
+                                     'auth': 1
+                                 }
+                             ],
+                         })
 
 
 class TestExtractName(TestSwrProxy):
