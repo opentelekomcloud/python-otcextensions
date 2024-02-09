@@ -22,6 +22,18 @@ EXAMPLE = {
     'is_public': False,
 }
 
+EXAMPLE_PERMISSION = {
+    'permissions': [
+        {
+            'user_id': '5a23ecb3999b458d92d51d524bb7fb4b',
+            'user_name': 'test',
+            'auth': 1
+        }
+    ],
+    'namespace': 'test_create_org_v2',
+    'repository': 'repo_name',
+}
+
 
 class TestRepository(base.TestCase):
 
@@ -42,3 +54,31 @@ class TestRepository(base.TestCase):
         self.assertEqual(EXAMPLE['category'], sot.category)
         self.assertEqual(EXAMPLE['description'], sot.description)
         self.assertEqual(EXAMPLE['is_public'], sot.is_public)
+
+
+class TestRepositoryPermissions(base.TestCase):
+
+    def test_basic(self):
+        sot = repository.Permission()
+        path = '/manage/namespaces/%(namespace)s/repos/%(repository)s/access'
+        self.assertEqual(path, sot.base_path)
+        self.assertTrue(sot.allow_list)
+        self.assertTrue(sot.allow_create)
+        self.assertTrue(sot.allow_delete)
+        self.assertTrue(sot.allow_commit)
+
+    def test_make_it(self):
+        sot = repository.Permission(**EXAMPLE_PERMISSION)
+        self.assertEqual(EXAMPLE_PERMISSION['namespace'], sot.namespace)
+        self.assertEqual(
+            EXAMPLE_PERMISSION['permissions'][0]['user_id'],
+            sot.permissions[0].user_id
+        )
+        self.assertEqual(
+            EXAMPLE_PERMISSION['permissions'][0]['auth'],
+            sot.permissions[0].auth
+        )
+        self.assertEqual(
+            EXAMPLE_PERMISSION['permissions'][0]['user_name'],
+            sot.permissions[0].user_name
+        )

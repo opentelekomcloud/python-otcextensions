@@ -12,6 +12,7 @@
 from urllib import parse
 
 from openstack import proxy
+from otcextensions.sdk.swr.v2 import _base
 from otcextensions.sdk.swr.v2 import organization as _organization
 from otcextensions.sdk.swr.v2 import repository as _repository
 
@@ -137,8 +138,9 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        permission = self._get_resource(_organization.Permission, namespace)
-        return permission._delete_permissions(self, user_ids)
+        base_path = f'/manage/namespaces/{namespace}/access'
+        res = self._get_resource(_base.Resource, namespace)
+        return res._delete(self, user_ids, base_path)
 
     def update_organization_permissions(self, **attrs):
         """Update an organization permissions
@@ -220,3 +222,62 @@ class Proxy(proxy.Proxy):
         repotype = _repository.Repository
         repotype.requires_id = False
         return self._update(repotype, base_path=bp, **attrs)
+
+    def create_repository_permissions(self, **attrs):
+        """Create a new repository permissions from attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.swr.v2.
+            repository.Permission`, comprised of the properties on the
+            Permission class.
+
+        :returns: The results of repository permission creation
+        :rtype: :class:`~otcextensions.sdk.swr.v2.repository.Permission`
+        """
+        return self._create(_repository.Permission, **attrs)
+
+    def repository_permissions(self, namespace, repository, **query):
+        """Retrieve a generator of repository permissions
+
+        :returns: A generator of repository permissions instances
+        """
+        return self._list(_repository.Permission,
+                          namespace=namespace,
+                          repository=repository,
+                          **query)
+
+    def delete_repository_permissions(
+            self, namespace, repository, user_ids, ignore_missing=True
+    ):
+        """Delete a repository permissions
+
+        :param repository: The repository can be either the name or a
+            :class:`~otcextensions.sdk.swr.v2.repository.Permission`
+            instance
+        :param user_ids: Users IDs whose permissions need to be deleted.
+        :param namespace: The namespace can be either the name or a
+            :class:`~otcextensions.sdk.swr.v2.organization.Permission`
+            instance
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the load balancer does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent permission.
+
+        :returns: ``None``
+        """
+        bp = f'/manage/namespaces/{namespace}/repos/{repository}/access'
+        res = self._get_resource(_base.Resource, namespace)
+        return res._delete(self, user_ids, bp)
+
+    def update_repository_permissions(self, **attrs):
+        """Update a repository permissions
+
+        :param dict attrs: The attributes to update on the permissions
+         represented by ``permissions``.
+
+        :returns: The updated permissions.
+
+        :rtype: :class:`~otcextensions.sdk.swr.v2.repository.Permission`
+        """
+        return self._update(_repository.Permission, **attrs)

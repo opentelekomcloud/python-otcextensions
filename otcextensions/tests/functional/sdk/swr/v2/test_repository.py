@@ -9,6 +9,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import os
 import uuid
 
 from otcextensions.tests.functional.sdk.swr import TestSwr
@@ -31,9 +32,28 @@ class TestRepository(TestSwr):
             description='this is a acc test repository',
             is_public=True,
         )
+        if os.getenv("OS_SWR_PERMISSIONS_RUN"):
+            self.permission = [
+                {
+                    "user_id": "5a23ecb3999b458d92d51d524bb7fb4b",
+                    "user_name": "pgubina",
+                    "auth": 1
+                }
+            ]
+            self.repo_perm = self.client.create_repository_permissions(
+                namespace=self.org_name,
+                repository=self.repo_name,
+                permissions=self.permission
+            )
 
     def tearDown(self):
         super(TestRepository, self).tearDown()
+        if os.getenv("OS_SWR_PERMISSIONS_RUN"):
+            self.client.delete_repository_permissions(
+                namespace=self.org.namespace,
+                repository=self.repo.repository,
+                user_ids=[self.repo_perm.permissions[0].user_id]
+            )
         self.conn.swr.delete_repository(
             self.org_name,
             self.repo_name
@@ -65,3 +85,25 @@ class TestRepository(TestSwr):
             description=desc,
         )
         self.assertEqual(desc, updated.description)
+
+    def test_repository_permissions(self):
+        o = list(self.client.repository_permissions(
+            self.org.namespace,
+            self.repo.repository
+        ))
+        self.assertEqual(self.org.namespace, o[0].namespace)
+
+    def test_update_repository_permissions(self):
+        if os.getenv("OS_SWR_PERMISSIONS_RUN"):
+            o = self.client.update_repository_permissions(
+                namespace=self.org_name,
+                repository=self.repo_name,
+                permissions=[
+                    {
+                        "user_id": "5a23ecb3999b458d92d51d524bb7fb4b",
+                        "user_name": "pgubina",
+                        "auth": 3
+                    }
+                ]
+            )
+            self.assertEqual(3, o.permissions[0].auth)
