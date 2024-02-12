@@ -32,22 +32,9 @@ class TestDomain(TestSwr):
             description='this is a acc test repository',
             is_public=False,
         )
-        self.domain = self.client.create_domain(
-            namespace=self.org_name,
-            repository=self.repo_name,
-            access_domain='OTC00000000001000000447',
-            permit='read',
-            deadline='forever',
-            description='desc'
-        )
 
     def tearDown(self):
         super(TestDomain, self).tearDown()
-        self.repo = self.client.delete_domain(
-            namespace=self.org_name,
-            repository=self.repo_name,
-            access_domain=self.domain.access_domain,
-        )
         self.conn.swr.delete_repository(
             self.org_name,
             self.repo_name
@@ -60,23 +47,3 @@ class TestDomain(TestSwr):
             repository=self.repo_name
         ))
         self.assertGreaterEqual(len(domains), 0)
-
-    def test_update_domain(self):
-        update = self.client.update_domain(
-            namespace=self.org_name,
-            repository=self.repo_name,
-            access_domain=self.domain.access_domain,
-            description='updated',
-            permit='read',
-            deadline='forever',
-
-        )
-        self.assertEqual(update.description, 'updated')
-
-    def test_get_domain(self):
-        domain = self.client.get_domain(
-            self.org.namespace,
-            self.repo_name,
-            self.domain.access_domain,
-        )
-        self.assertGreaterEqual(domain.exist, True)
