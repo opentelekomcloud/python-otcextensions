@@ -14,6 +14,7 @@ from openstack.tests.unit import test_proxy_base
 from otcextensions.sdk.swr.v2 import _proxy
 from otcextensions.sdk.swr.v2 import organization
 from otcextensions.sdk.swr.v2 import repository
+from otcextensions.sdk.swr.v2 import domain
 
 
 class TestSwrProxy(test_proxy_base.TestProxyBase):
@@ -217,6 +218,70 @@ class TestSwrRepositoryPermissions(TestSwrProxy):
                                  }
                              ],
                          })
+
+
+class TestSwrDomain(TestSwrProxy):
+    def test_domain_create(self):
+        self.verify_create(self.proxy.create_domain,
+                           domain.Domain,
+                           method_kwargs={'name': 'id'},
+                           expected_kwargs={'name': 'id'})
+
+    def test_domain_update(self):
+        self.verify_update(self.proxy.update_domain,
+                           domain.Domain,
+                           method_args=[],
+                           method_kwargs={
+                               'namespace': 'space',
+                               'repository': 'repo',
+                               'access_domain': 'domain',
+                               'description': 'updated',
+                               'permit': 'read',
+                               'deadline': 'forever'},
+                           expected_kwargs={
+                               'namespace': 'space',
+                               'repository': 'repo',
+                               'access_domain': 'domain',
+                               'id': 'domain',
+                               'description': 'updated',
+                               'permit': 'read',
+                               'deadline': 'forever'})
+
+    def test_domain_delete(self):
+        self.verify_delete(self.proxy.delete_domain,
+                           domain.Domain,
+                           ignore_missing=True,
+                           method_kwargs={
+                               'namespace': 'space',
+                               'repository': 'resource_id',
+                               'access_domain': 'domain',
+                           },
+                           expected_kwargs={
+                               'repository': 'resource_id',
+                               'id': 'domain',
+                               'ignore_missing': True,
+                               'namespace': 'space'
+                           },
+                           method_args=[])
+
+    def test_domain_get(self):
+        self.verify_get(self.proxy.get_domain,
+                        domain.Domain,
+                        method_kwargs={
+                            'namespace': 'resource_id',
+                            'repository': 'repo',
+                            'access_domain': 'domain'
+                        },
+                        expected_kwargs={
+                            'repository': 'repo',
+                            'id': 'domain',
+                            'namespace': 'resource_id'
+                        },
+                        method_args=[])
+
+    def test_domains(self):
+        self.verify_list(self.proxy.domains,
+                         domain.Domain)
 
 
 class TestExtractName(TestSwrProxy):

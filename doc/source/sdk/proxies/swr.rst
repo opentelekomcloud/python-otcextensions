@@ -43,3 +43,11 @@ Repository Permissions Operations
   :noindex:
   :members: create_repository_permissions, repository_permissions,
             delete_repository_permissions, update_repository_permissions
+
+Domain Operations
+^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.swr.v2._proxy.Proxy
+  :noindex:
+  :members: create_domain, delete_domain, domains,
+            update_domain, get_domain

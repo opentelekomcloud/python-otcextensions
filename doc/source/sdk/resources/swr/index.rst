@@ -9,3 +9,4 @@ SWR v2
 
    v2/organization
    v2/repository
+   v2/domain

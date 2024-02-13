@@ -15,6 +15,7 @@ from openstack import proxy
 from otcextensions.sdk.swr.v2 import _base
 from otcextensions.sdk.swr.v2 import organization as _organization
 from otcextensions.sdk.swr.v2 import repository as _repository
+from otcextensions.sdk.swr.v2 import domain as _domain
 
 
 class Proxy(proxy.Proxy):
@@ -281,3 +282,67 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.swr.v2.repository.Permission`
         """
         return self._update(_repository.Permission, **attrs)
+
+    def create_domain(self, **attrs):
+        """Create a new image repository from attributes
+
+        :param dict attrs: Keyword arguments which will be used to create
+            a :class:`~otcextensions.sdk.swr.v2.
+            domain.Domain`, comprised of the properties on the
+            Repository class.
+
+        :returns: The results of organization creation
+        :rtype: :class:`~otcextensions.sdk.swr.v2.domain.Domain`
+        """
+        return self._create(_domain.Domain, **attrs)
+
+    def delete_domain(
+            self, namespace, repository, access_domain, ignore_missing=True
+    ):
+        """Delete a domain
+
+        :param access_domain: Name of the account need to be deleted.
+        :param repository: Image repository name.
+        :param namespace: Organization name.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the load balancer does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent repository.
+
+        :returns: ``None``
+        """
+        self._delete(_domain.Domain, repository=repository,
+                     id=access_domain,
+                     ignore_missing=ignore_missing,
+                     namespace=namespace)
+
+    def domains(self, **query):
+        """Retrieve a generator of domains
+
+        :returns: A generator of domain instances
+        """
+        return self._list(_domain.Domain, **query)
+
+    def update_domain(self, **attrs):
+        """Update a domain
+
+        :param dict attrs: The attributes to update on the domain
+         represented by ``permissions``.
+
+        :returns: The updated domain.
+
+        :rtype: :class:`~otcextensions.sdk.swr.v2.domain.Domain`
+        """
+        return self._update(_domain.Domain, id=attrs['access_domain'], **attrs)
+
+    def get_domain(self, namespace, repository, access_domain):
+        """Get a domain
+
+        :returns: One
+             :class:`~otcextensions.sdk.swr.v2.domain.Domain`
+        """
+        return self._get(_domain.Domain,
+                         repository=repository,
+                         id=access_domain,
+                         namespace=namespace)
