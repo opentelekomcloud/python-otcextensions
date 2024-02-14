@@ -18,7 +18,7 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 dataset_id = "heZw7Oh7Ha0eiFIzkm8"
 attrs = {
-    "version_name": "V0fsfsfs04",
+    "version_name": "V0fsdsfs04",
     "version_format": "Default",
     "description": "",
     "clear_hard_property": True,

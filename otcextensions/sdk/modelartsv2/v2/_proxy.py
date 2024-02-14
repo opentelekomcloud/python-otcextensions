@@ -170,7 +170,7 @@ class Proxy(proxy.Proxy):
         """
         return self._update(_dataset.Dataset, dataset_id, **attrs)
 
-    def delete_dataset_labels(self, dataset_id, *labels, delete_source=False):
+    def delete_dataset_labels(self, dataset_id, delete_source=False, **labels):
         """Delete dataset labels.
 
         :param dataset_id: Dataset ID.
@@ -181,7 +181,7 @@ class Proxy(proxy.Proxy):
         obj = _dataset.Label(dataset_id=dataset_id)
         return obj.delete_labels(
             self,
-            *labels,
+            **labels,
             delete_source=delete_source,
         )
 
@@ -222,7 +222,7 @@ class Proxy(proxy.Proxy):
         """
         return self._delete(_dataset.DatasetVersion, version_id, dataset_id=dataset_id, **kwargs)
 
-    def show_dataset_version(self, version_id, **attrs):
+    def show_dataset_version(self, version_id, dataset_id):
         """Get the dataset version by version id
 
         :param version_id: key id or an instance of
@@ -231,7 +231,7 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.modelartsv2.v2.dataset.DatasetVersion`
         """
-        return self._get(_dataset.DatasetVersion, version_id, **attrs)
+        return self._get(_dataset.DatasetVersion, version_id, dataset_id=dataset_id)
 
     # ======== Dataset Sample Management ========
 

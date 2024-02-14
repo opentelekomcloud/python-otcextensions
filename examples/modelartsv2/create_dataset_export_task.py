@@ -18,7 +18,7 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 dataset_id = "heZw7Oh7Ha0eiFIzkm8"
 attrs = {
-    "path": "s3://test-obs-bucket",
+    "path": "s3://fkukucsk/",
     "export_type": 3,
     "export_params": {
         "sample_state": "",

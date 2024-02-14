@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-"""Create a devenv instance from attributes."""
+"""Create a dataset from attributes."""
 import openstack
 
 openstack.enable_logging(True)
@@ -23,11 +23,11 @@ attrs = {
     "data_sources": [
         {
             "data_type": 0,
-            "data_path": "/modelarts-data-test/dataset/input/",
+            "data_path": "/fkukucsk/outp/",
         }
     ],
     "description": "",
-    "work_path": "/modelarts-data-test/dataset/output/",
+    "work_path": "/fkukucsk/outpd/",
     "work_path_type": 0,
     "ai_project": "",
 }

@@ -19,7 +19,7 @@ conn = openstack.connect(cloud="otc")
 dataset_id = "heZw7Oh7Ha0eiFIzkm8"
 attrs = {
     "import_type": "manifest",
-    "import_path": "s3://test-obs-bucket",
+    "import_path": "s3://fkukucsk",
     "included_tags": ["cat", "rabbit", "Cat", "Rabbit"],
     "import_annotations": False,
     "difficult_only": False,

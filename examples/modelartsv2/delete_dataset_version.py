@@ -16,7 +16,6 @@ import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
-
-dataset_id = "heZw7Oh7Ha0eiFIzkm8"
-version_id = "bG6plbxw8g3il6mL4VH"
+version_id="Ob7cz74RLHAyKwbJSTc"
+dataset_id="heZw7Oh7Ha0eiFIzkm8"
 conn.modelartsv2.delete_dataset_version(dataset_id, version_id)
