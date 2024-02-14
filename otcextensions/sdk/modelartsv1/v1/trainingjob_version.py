@@ -14,9 +14,11 @@ from openstack import resource
 
 
 class GetLogfileName(resource.Resource):
-    base_path = "/training-jobs/%(jobId)s/versions/%(versionId)s/log/file-names"
+    base_path = (
+        "/training-jobs/%(jobId)s/versions/%(versionId)s/log/file-names"
+    )
 
-    #resources_key = "versions"
+    # resources_key = "versions"
     allow_create = True
     allow_list = True
     allow_commit = False

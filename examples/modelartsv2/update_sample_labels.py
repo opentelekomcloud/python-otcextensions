@@ -18,18 +18,16 @@ conn = openstack.connect(cloud="otc")
 
 dataset_id = "QWgyNuIgMcSvpUlc6Cu"
 attrs = {
-  "samples" : [ {
-    "sample_id" : "8b583c44bf249f8ba43ea42c92920221",
-    "labels" : [ {
-      "name" : "yunbao"
-    } ]
-  }, {
-    "sample_id" : "b5fe3039879660a2e6bf18166e247f68",
-    "labels" : [ {
-      "name" : "yunbao"
-    } ]
-  } ]
-        }
+    "samples": [
+        {
+            "sample_id": "8b583c44bf249f8ba43ea42c92920221",
+            "labels": [{"name": "yunbao"}],
+        },
+        {
+            "sample_id": "b5fe3039879660a2e6bf18166e247f68",
+            "labels": [{"name": "yunbao"}],
+        },
+    ]
+}
 response = conn.modelartsv2.update_dataset_labels(dataset_id, **attrs)
 print(response)
-

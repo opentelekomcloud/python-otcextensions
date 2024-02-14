@@ -19,5 +19,7 @@ conn = openstack.connect(cloud="otc")
 
 job_id = 0
 version_id = 0
-for response in conn.modelartsv1.list_trainingjob_version_logfile_names(job_id, version_id):
+for response in conn.modelartsv1.list_trainingjob_version_logfile_names(
+    job_id, version_id
+):
     print(response)

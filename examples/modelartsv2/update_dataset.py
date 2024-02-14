@@ -19,14 +19,14 @@ conn = openstack.connect(cloud="otc")
 
 dataset_id = "qOI24kz47Jpx6IdGGx8"
 attrs = {
-  "dataset_id" : "gfghHSokody6AJigS5A",
-  "description" : "just a test",
-  "add_tags" : [ {
-    "name" : "Bee",
-    "type" : 0,
-    "property" : {
-      "@modelarts:color" : "#3399ff"
-    }
-  } ]
+    "dataset_id": "gfghHSokody6AJigS5A",
+    "description": "just a test",
+    "add_tags": [
+        {
+            "name": "Bee",
+            "type": 0,
+            "property": {"@modelarts:color": "#3399ff"},
+        }
+    ],
 }
 conn.modelartsv2.modify_dataset(dataset_id, **attrs)

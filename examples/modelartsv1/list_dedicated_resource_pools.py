@@ -19,4 +19,3 @@ conn = openstack.connect(cloud="otc")
 
 for pool in conn.modelartsv1.service_resource_pools():
     print(pool)
-

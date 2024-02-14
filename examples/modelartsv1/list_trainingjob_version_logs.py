@@ -18,5 +18,7 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 job_id = 10063
 version_id = 232
-for trainingjob_version_log in conn.modelartsv1.list_trainingjob_version_logs(job_id, version_id):
+for trainingjob_version_log in conn.modelartsv1.list_trainingjob_version_logs(
+    job_id, version_id
+):
     print(trainingjob_version_log)

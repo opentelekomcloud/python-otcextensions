@@ -89,8 +89,8 @@ class Config(resource.Resource):
     #:  custom image of a training job.
     user_command = resource.Body("user_command", type=str)
 
+    # base_path = "/training-job-configs/%(config_name)s"
 
-    #base_path = "/training-job-configs/%(config_name)s"
 
 class TrainingJobConfiguration(resource.Resource):
     base_path = "/training-job-configs"

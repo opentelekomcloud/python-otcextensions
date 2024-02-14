@@ -13,45 +13,45 @@
 from openstack import resource
 
 
-class Model():
+class Model:
     #: Model ID
-    model_id = resource.Body('model_id', type=int)
+    model_id = resource.Body("model_id", type=int)
 
     #: Model name
-    model_name = resource.Body('model_name', type=str)
+    model_name = resource.Body("model_name", type=str)
 
     #: Model usage
-    model_usage = resource.Body('model_usage', type=int)
+    model_usage = resource.Body("model_usage", type=int)
 
     #: Model precision
-    model_precision = resource.Body('model_precision', type=str)
+    model_precision = resource.Body("model_precision", type=str)
 
     #: Model size, in bytes
-    model_size = resource.Body('model_size', type=float)
+    model_size = resource.Body("model_size", type=float)
 
     #: Model training dataset
-    model_train_dataset = resource.Body('model_train_dataset', type=str)
+    model_train_dataset = resource.Body("model_train_dataset", type=str)
 
     #: Dataset format required by a model
-    model_dataset_format = resource.Body('model_dataset_format', type=str)
+    model_dataset_format = resource.Body("model_dataset_format", type=str)
 
     #: URL of the model description
-    model_description_url = resource.Body('model_description_url', type=str)
+    model_description_url = resource.Body("model_description_url", type=str)
 
     #: Running parameters of a model
-    parameter = resource.Body('parameter', type=str)
+    parameter = resource.Body("parameter", type=str)
 
     #: Time when a model is created
-    create_time = resource.Body('create_time', type=int)
+    create_time = resource.Body("create_time", type=int)
 
     #: Engine ID of a model
-    engine_id = resource.Body('engine_id', type=float)
+    engine_id = resource.Body("engine_id", type=float)
 
     #: Engine name of a model
-    engine_name = resource.Body('engine_name', type=str)
+    engine_name = resource.Body("engine_name", type=str)
 
     #: Engine version of a model
-    engine_version = resource.Body('engine_version', type=str)
+    engine_version = resource.Body("engine_version", type=str)
 
 
 class BuiltinAlgorithms(resource.Resource):
@@ -66,32 +66,31 @@ class BuiltinAlgorithms(resource.Resource):
     allow_patch = True
 
     #: Number of job parameters displayed on each page
-    per_page = resource.Body('per_page', type=int)
+    per_page = resource.Body("per_page", type=int)
 
     #: Index of the page to be queried
-    page = resource.Body('page', type=int)
+    page = resource.Body("page", type=int)
 
     #: Sorting mode of the query
-    sortBy = resource.Body('sortBy', type=str)
+    sortBy = resource.Body("sortBy", type=str)
 
     #: Sorting order
-    order = resource.Body('order', type=str)
+    order = resource.Body("order", type=str)
 
     #: Search content, for example, a parameter name
-    search_content = resource.Body('search_content', type=str)
+    search_content = resource.Body("search_content", type=str)
 
     #: Whether the request is successful
-    is_success = resource.Body('is_success', type=bool)
+    is_success = resource.Body("is_success", type=bool)
 
     #: Error message of a failed API call
-    error_message = resource.Body('error_message', type=str)
+    error_message = resource.Body("error_message", type=str)
 
     #: Error code of a failed API call
-    error_code = resource.Body('error_code', type=str)
+    error_code = resource.Body("error_code", type=str)
 
     #: Number of models
-    model_total_count = resource.Body('model_total_count', type=int)
+    model_total_count = resource.Body("model_total_count", type=int)
 
     #: Model parameter list
-    models = resource.Body('models', type=list, list_type=Model)
-
+    models = resource.Body("models", type=list, list_type=Model)

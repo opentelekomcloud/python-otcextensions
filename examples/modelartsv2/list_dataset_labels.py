@@ -20,4 +20,3 @@ dataset_id = "heZw7Oh7Ha0eiFIzkm8"
 
 for label in conn.modelartsv2.dataset_labels(dataset_id):
     print(label)
-

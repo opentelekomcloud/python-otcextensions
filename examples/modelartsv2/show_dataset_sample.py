@@ -17,6 +17,6 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
 dataset_id = "QWgyNuIgMcSvpUlc6Cu"
-sample_id  = "bd183d0142e94747bf57acf742e7fa49"
+sample_id = "bd183d0142e94747bf57acf742e7fa49"
 response = conn.modelartsv2.get_dataset_sample(dataset_id, sample_id)
 print(response)

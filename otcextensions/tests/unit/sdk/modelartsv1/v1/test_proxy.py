@@ -14,6 +14,7 @@ from openstack.tests.unit import test_proxy_base
 from otcextensions.sdk.modelartsv1.v1 import _proxy
 from otcextensions.sdk.modelartsv1.v1 import devenv
 from otcextensions.sdk.modelartsv1.v1 import model
+from otcextensions.sdk.modelartsv1.v1 import service
 
 
 class TestModelartsV1Proxy(test_proxy_base.TestProxyBase):
@@ -125,6 +126,12 @@ class TestDevenv(TestModelartsV1Proxy):
             True,
         )
 
+    def test_update_devenv_instance(self):
+        self.verify_update(
+            self.proxy.update_devenv_instance,
+            devenv.Devenv,
+        )
+
     def test_start_devenv_instance(self):
         self._verify(
             "otcextensions.sdk.modelartsv1.v1.devenv.Devenv.start",
@@ -139,4 +146,48 @@ class TestDevenv(TestModelartsV1Proxy):
             self.proxy.stop_devenv_instance,
             method_args=["val"],
             expected_args=[self.proxy],
+        )
+
+
+class TestService(TestModelartsV1Proxy):
+    def test_services(self):
+        self.verify_list(
+            self.proxy.services,
+            service.Service,
+            method_kwargs={"limit": 10},
+            expected_kwargs={"limit": 10, "paginated": False},
+        )
+
+    def test_get_service(self):
+        self.verify_get(
+            self.proxy.get_service,
+            service.Service,
+        )
+
+    def test_create_service(self):
+        self.verify_create(
+            self.proxy.create_service,
+            service.Service,
+            method_kwargs={"a": "b"},
+            expected_kwargs={"prepend_key": False, "a": "b"},
+        )
+
+    def test_delete_service(self):
+        self.verify_delete(
+            self.proxy.delete_service,
+            service.Service,
+            False,
+        )
+
+    def test_delete_service_ignore(self):
+        self.verify_delete(
+            self.proxy.delete_service,
+            service.Service,
+            True,
+        )
+
+    def test_update_service(self):
+        self.verify_update(
+            self.proxy.update_service,
+            service.Service,
         )

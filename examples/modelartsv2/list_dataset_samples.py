@@ -20,4 +20,3 @@ dataset_id = "heZw7Oh7Ha0eiFIzkm8"
 
 for sample in conn.modelartsv2.dataset_samples(dataset_id):
     print(sample)
-

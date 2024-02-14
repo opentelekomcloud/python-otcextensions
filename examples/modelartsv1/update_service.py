@@ -19,12 +19,14 @@ conn = openstack.connect(cloud="otc")
 attr = {
     "description": "aha",
     "status": "running",
-    "config": [{
-        "model_id": "model-id",
-        "weight": "100",
-        "specification": "modelarts.vm.high.p3",
-        "instance_count": 1
-    }]
+    "config": [
+        {
+            "model_id": "model-id",
+            "weight": "100",
+            "specification": "modelarts.vm.high.p3",
+            "instance_count": 1,
+        }
+    ],
 }
 service_id = "281fc022-f0dd-4adc-abbd-97273ca5f4fd"
 response = conn.modelartsv1.update_service(service_id, **attr)

@@ -18,16 +18,16 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 attrs = {
     "workspace_id": "0",
-    "dataset_name": "dataset-vpruthi",
+    "dataset_name": "dataset-test",
     "dataset_type": 0,
     "data_sources": [
         {
             "data_type": 0,
-            "data_path": "/modelarts-data-vpruthi/dataset/input/",
+            "data_path": "/modelarts-data-test/dataset/input/",
         }
     ],
     "description": "",
-    "work_path": "/modelarts-data-vpruthi/dataset/output/",
+    "work_path": "/modelarts-data-test/dataset/output/",
     "work_path_type": 0,
     "ai_project": "",
 }

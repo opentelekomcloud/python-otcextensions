@@ -17,11 +17,7 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 dataset_id = "6ZQSY2loMn9bAUpsZzp"
-attrs = {
-    "labels" : [ {
-    "name" : "strawberry"
-  } ]
-        }
+attrs = {"labels": [{"name": "strawberry"}]}
 
 dataset_label = conn.modelartsv2.delete_dataset_labels(dataset_id, **attrs)
 print(dataset_label)

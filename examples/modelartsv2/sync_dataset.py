@@ -15,8 +15,6 @@ import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
-attrs = {
-        "datasetId": "heZw7Oh7Ha0eiFIzkm8"
-}
-response = conn.modelartsv2.sync_dataset(**attrs) #dataset_id)
+attrs = {"datasetId": "heZw7Oh7Ha0eiFIzkm8"}
+response = conn.modelartsv2.sync_dataset(**attrs)  # dataset_id)
 print(response)

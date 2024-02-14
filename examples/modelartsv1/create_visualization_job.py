@@ -26,9 +26,9 @@ attrs = {
         {
             "type": "stop",
             "time_unit": "HOURS",
-            "duration": 1
+            "duration": 1,
         }
-    ]
+    ],
 }
 
 visjob = conn.modelartsv1.create_visualizationjob(**attrs)

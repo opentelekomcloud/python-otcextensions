@@ -17,6 +17,6 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
 dataset_id = "QWgyNuIgMcSvpUlc6Cu"
-version_id  = "bG6plbxw8g3il6mL4VH"
+version_id = "bG6plbxw8g3il6mL4VH"
 response = conn.modelartsv2.get_dataset_export_task(dataset_id, version_id)
 print(response)

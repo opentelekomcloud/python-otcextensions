@@ -20,4 +20,3 @@ dataset_id = "heZw7Oh7Ha0eiFIzkm8"
 
 for version in conn.modelartsv2.dataset_versions(dataset_id):
     print(version)
-

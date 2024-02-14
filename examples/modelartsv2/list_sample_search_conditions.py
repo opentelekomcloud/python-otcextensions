@@ -18,22 +18,24 @@ conn = openstack.connect(cloud="otc")
 
 dataset_id = "QWgyNuIgMcSvpUlc6Cu"
 attrs = {
-    "labels" : [ {
-    "name" : "Cat",
-    "type" : 0,
-    "property" : {
-      "@modelarts:color" : "#3399ff"
-    }
-  }, {
-    "name" : "Rabbit",
-    "type" : 0,
-    "property" : {
-      "@modelarts:color" : "#3399ff"
-    }
-  } ],
-  "metadata" : { },
-  "labelers" : [ "human/test_123/test_123", "human/xxx@xxx.com", "human/xxx@xxx.com" ]
-  }
+    "labels": [
+        {
+            "name": "Cat",
+            "type": 0,
+            "property": {"@modelarts:color": "#3399ff"},
+        },
+        {
+            "name": "Rabbit",
+            "type": 0,
+            "property": {"@modelarts:color": "#3399ff"},
+        },
+    ],
+    "metadata": {},
+    "labelers": [
+        "human/test_123/test_123",
+        "human/xxx@xxx.com",
+        "human/xxx@xxx.com",
+    ],
+}
 for item in conn.modelartsv2.get_sample_search_condition(dataset_id, **attrs):
     print(item)
-

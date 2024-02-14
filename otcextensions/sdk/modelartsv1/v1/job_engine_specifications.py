@@ -1,4 +1,3 @@
-
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -14,7 +13,6 @@
 from openstack import resource
 
 
-
 class JobEngineSpecifications(resource.Resource):
     base_path = "job/ai-engine"
     resources_key = "specs"
@@ -22,4 +20,4 @@ class JobEngineSpecifications(resource.Resource):
     allow_list = True
 
     #: Job type
-    job_type = resource.Body('job_type', type=str)
+    job_type = resource.Body("job_type", type=str)

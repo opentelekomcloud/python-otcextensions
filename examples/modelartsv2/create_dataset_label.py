@@ -18,13 +18,15 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 dataset_id = "heZw7Oh7Ha0eiFIzkm8"
 attrs = {
-  "labels" : [ {
-    "name" : "Cat",
-    "property" : {
-      "@modelarts:color" : "#3399ff",
-      "@modelarts:default_shape" : "bndbox"
-    }
-  } ]
+    "labels": [
+        {
+            "name": "Cat",
+            "property": {
+                "@modelarts:color": "#3399ff",
+                "@modelarts:default_shape": "bndbox",
+            },
+        }
+    ]
 }
 
 dataset_label = conn.modelartsv2.create_dataset_label(dataset_id, **attrs)

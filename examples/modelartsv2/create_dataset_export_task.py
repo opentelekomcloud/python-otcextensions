@@ -18,12 +18,12 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 dataset_id = "heZw7Oh7Ha0eiFIzkm8"
 attrs = {
-  "path" : "s3://fkukucsk",
-  "export_type" : 3,
-  "export_params" : {
-    "sample_state" : "",
-    "export_dest" : "DIR"
-  }
+    "path": "s3://test-obs-bucket",
+    "export_type": 3,
+    "export_params": {
+        "sample_state": "",
+        "export_dest": "DIR",
+    },
 }
 
 dataset = conn.modelartsv2.create_dataset_export_task(dataset_id, **attrs)

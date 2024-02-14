@@ -18,14 +18,15 @@ conn = openstack.connect(cloud="otc")
 
 dataset_id = "QWgyNuIgMcSvpUlc6Cu"
 attrs = {
-  "labels" : [ {
-    "name" : "Cat",
-    "property" : {
-      "@modelarts:color" : "#8a1524",
-      "@modelarts:rename_to" : "pussycat"
-    }
-  } ]
+    "labels": [
+        {
+            "name": "Cat",
+            "property": {
+                "@modelarts:color": "#8a1524",
+                "@modelarts:rename_to": "pussycat",
+            },
         }
+    ]
+}
 response = conn.modelartsv2.update_dataset_labels(dataset_id, **attrs)
 print(response)
-

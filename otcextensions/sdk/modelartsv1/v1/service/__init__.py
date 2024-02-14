@@ -16,7 +16,6 @@ from .log import Log
 from .monitor import Monitor
 from .service import Service
 from .specification import Specification
-from .update_config import ServiceUpdate
 
 __all__ = (
     "Cluster",
@@ -25,5 +24,4 @@ __all__ = (
     "Service",
     "Specification",
     "Log",
-    "ServiceUpdate",
 )

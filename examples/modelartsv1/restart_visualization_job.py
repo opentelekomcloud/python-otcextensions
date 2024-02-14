@@ -17,6 +17,6 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
-job_id = ""
+job_id = "1234"
 response = conn.modelartsv1.restart_visualizationjob(job_id)
 print(response)

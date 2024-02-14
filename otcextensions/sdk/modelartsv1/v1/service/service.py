@@ -16,45 +16,117 @@ from openstack import exceptions
 from openstack import resource
 
 
+class CustomSpec(resource.Resource):
+    #: Number of required CPUs
+    cpu = resource.Body("cpu", type=float)
+    #: Required memory capacity, in MB
+    memory = resource.Body("memory", type=int)
+    #: Number of GPUs, which can be decimals.
+    gpu_p4 = resource.Body("gpu_p4", type=float)
+
+
+class ConfigSpec(resource.Resource):
+
+    # Properties
+    #: Additional model deployment attribute
+    additional_properties = resource.Body("additional_properties", type=dict)
+    #: ID of a dedicated resource pool
+    cluster_id = resource.Body("cluster_id")
+    #: Custom specifications
+    custom_spec = resource.Body("custom_spec", type=CustomSpec)
+    #: OBS path of the output data of a batch job
+    dest_path = resource.Body("dest_path")
+    #: (Optional) Environment variable key-value pair
+    #:  required for running a model
+    envs = resource.Body("envs", type=dict)
+    #: Task finished time, in milliseconds
+    finished_time = resource.Body("finished_time")
+    #: Number of instances for deploying a model
+    instance_count = resource.Body("instance_count", type=int)
+    #: Mapping type of the input data
+    mapping_type = resource.Body("mapping_type")
+    #: Mapping between input parameters and CSV data
+    mapping_rule = resource.Body("mapping_rule", type=dict)
+    #: Model ID
+    model_id = resource.Body("model_id")
+    #: Model name
+    model_name = resource.Body("model_name")
+    #: Model version
+    model_version = resource.Body("model_version")
+    #: Inference API called in a batch job, which
+    #:  is a REST API in the model image
+    req_uri = resource.Body("req_uri")
+    #: Whether auto scaling is enabled
+    scaling = resource.Body("scaling", type=bool)
+    #: Model source. This parameter is returned when a model is
+    #:  created through ExeML. The value is auto.
+    source_type = resource.Body("source_type")
+    #: Resource flavor
+    specification = resource.Body("specification")
+    #: Data source type
+    src_type = resource.Body("src_type")
+    #: OBS path of the input data of a batch job
+    src_path = resource.Body("src_path")
+    #: Task start time, in milliseconds
+    start_time = resource.Body("start_time", type=int)
+    #: Model status
+    status = resource.Body("status")
+    #: Whether a model supports online debugging
+    support_debug = resource.Body("support_debug", type=bool)
+    #: Traffic weight allocated to a model
+    weight = resource.Body("weight")
+
+
+class ScheduleSpec(resource.Resource):
+    #: Scheduling type
+    type = resource.Body("type")
+    #: Scheduling time unit
+    time_unit = resource.Body("time_unit")
+    #: Value that maps to the time unit
+    duration = resource.Body("duration", type=int)
+
+
 class Service(resource.Resource):
+
     base_path = "/services"
     resources_key = "services"
 
+    # capabilities
     allow_create = True
     allow_list = True
-    allow_commit = False
+    allow_commit = True
     allow_delete = True
     allow_fetch = True
 
     _query_mapping = resource.QueryParameters(
+        "cluster_id",
+        "infer_type",
+        "limit",
+        "model_id",
+        "offset",
+        "order",
         "service_id",
         "service_name",
-        "model_id",
-        "cluster_id",
-        "workspace_id",
-        "infer_type",
-        "status",
-        "offset",
-        "limit",
         "sort_by",
-        "order",
+        "status",
+        "workspace_id",
     )
 
-    #: Properties
-    #: Additional service attribute.
+    # Properties
+    #: Additional service attribute, which facilitates service management.
     additional_properties = resource.Body("additional_properties", type=dict)
     #: Access address of an inference request. This parameter is
     #:  returned when infer_type is set to real-time.
     access_address = resource.Body("access_address")
     #: Request address of the user-defined domain name. This
     #:  parameter is returned after the domain name is bound.
-    bind_access_address = resource.Body("bind_access_address", type=str)
+    bind_access_address = resource.Body("bind_access_address")
     #: ID of a dedicated cluster. This parameter is left blank by default,
     #:  indicating that no dedicated cluster is used.
     cluster_id = resource.Body("cluster_id")
     #: Model running configuration. If infer_type is batch,
     #:  you can configure only one model.
-    config = resource.Body("config", type=list, list_type=dict)
+    config = resource.Body("config", type=list, list_type=ConfigSpec)
     #: Online debugging address of a real-time service.
     #:  This parameter exists only when the model supports online
     #:  debugging and there is only one instance.
@@ -99,7 +171,7 @@ class Service(resource.Resource):
     router_id = resource.Body("vpc_id")
     #: Service scheduling configuration, which can be configured only
     #:  for real-time services. By default, this parameter is not used.
-    schedule = resource.Body("schedule", type=list, list_type=dict)
+    schedule = resource.Body("schedule", type=list, list_type=ScheduleSpec)
     #: Security group. By default, this parameter is left blank.
     #:  This parameter is mandatory when router_id is configured.
     security_group_id = resource.Body("security_group_id")

@@ -18,10 +18,10 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 dataset_id = "heZw7Oh7Ha0eiFIzkm8"
 attrs = {
-  "version_name" : "V0fsfsfs04",
-  "version_format" : "Default",
-  "description" : "",
-  "clear_hard_property" : True
+    "version_name": "V0fsfsfs04",
+    "version_format": "Default",
+    "description": "",
+    "clear_hard_property": True,
 }
 
 dataset_version = conn.modelartsv2.create_dataset_version(dataset_id, **attrs)

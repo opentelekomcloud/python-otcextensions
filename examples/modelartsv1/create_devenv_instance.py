@@ -22,7 +22,9 @@ attrs = {
     "flavor": "modelarts.vm.cpu.2u",
     "spec": {
         "storage": {
-            "location": {"path": "/test-bucket/notebooks/"},
+            "location": {
+                "path": "/test-bucket/notebooks/",
+            },
             "type": "obs",
         }
     },

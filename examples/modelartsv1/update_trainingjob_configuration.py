@@ -24,20 +24,22 @@ attr = {
     "parameter": [
         {
             "label": "learning_rate",
-            "value": 0.01
+            "value": 0.01,
         },
         {
             "key": "batch_size",
-            "value": 32
-        }
+            "value": 32,
+        },
     ],
     "spec_id": 1,
     "dataset_id": "38277e62-9e59-48f4-8d89-c8cf41622c24",
     "dataset_version_id": "2ff0d6ba-c480-45ae-be41-09a8369bfc90",
     "engine_id": 1,
     "train_url": "/usr/train/",
-    "log_url": "/usr/log/"
-        }
+    "log_url": "/usr/log/",
+}
 config_name = "dads"
-response = conn.modelartsv1.modify_trainingjob_configuration(config_name, **attr)
+response = conn.modelartsv1.modify_trainingjob_configuration(
+    config_name, **attr
+)
 print(response)

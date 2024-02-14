@@ -19,4 +19,3 @@ conn = openstack.connect(cloud="otc")
 
 for spec in conn.modelartsv1.service_deployment_specifications():
     print(spec)
-

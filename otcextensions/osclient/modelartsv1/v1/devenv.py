@@ -40,6 +40,7 @@ _formatters = {
     "updated_at": cli_utils.UnixTimestampFormatter,
 }
 
+AUTO_STOP_CHOICES = ("enable", "disable",)
 
 def _get_columns(item):
     column_map = {}
@@ -192,7 +193,7 @@ class ShowDevEnvInstance(command.ShowOne):
         parser.add_argument(
             "instance",
             metavar="<instance>",
-            help=_("DevEnv Instance name or ID."),
+            help=_("DevEnv Instance ID."),
         )
         return parser
 
@@ -447,19 +448,15 @@ class StopDevEnvInstance(command.ShowOne):
         return client.stop_devenv_instance(instance.id)
 
 
-class UpdateDevenvDesc(command.Command):
+class UpdateDevenvInstance(command.ShowOne):
     _description = _("Update Devenv Description")
 
     def get_parser(self, prog_name):
-        parser = super(UpdateDevenvDesc, self).get_parser(prog_name)
+        parser = super(UpdateDevenvInstance, self).get_parser(prog_name)
         parser.add_argument(
-            "--instance_id",
-            metavar="<instance_id>",
-            help=_(
-                "Service description, which contains a maximum of 100 "
-                "characters. If this parameter is not set, the service "
-                "description is not updated."
-            ),
+            "instance",
+            metavar="<instance>",
+            help=_("DevEnv Instance ID."),
         )
         parser.add_argument(
             "--description",
@@ -470,45 +467,68 @@ class UpdateDevenvDesc(command.Command):
             ),
         )
         parser.add_argument(
-            "--enable",
-            metavar="<enable>",
-            help=_(
-                "Additional service attribute, which facilitates service "
-                "management."
-            ),
+            "--auto-stop",
+            metavar="{" + ",".join(AUTO_STOP_CHOICES) + "}",
+            type=lambda s: s.lower(),
+            choices=AUTO_STOP_CHOICES,
+            help=_("Whether to enable or disable the auto stop function."),
         )
         parser.add_argument(
             "--duration",
             metavar="<duration>",
+            type=int,
             help=_(
-                "Additional service attribute, which facilitates service "
-                "management."
+                "Running duration, in seconds. The value ranges from "
+                "3,600 to 86,400. This parameter is mandatory when "
+                "auto_stop is enabled."
             ),
         )
         parser.add_argument(
             "--prompt",
-            metavar="<prompt>",
+            metavar="{" + ",".join(AUTO_STOP_CHOICES) + "}",
+            type=lambda s: s.lower(),
+            choices=AUTO_STOP_CHOICES,
             help=_(
-                "Additional service attribute, which facilitates service "
-                "management."
+                "Whether to disable a display prompt again for auto_stop. "
+                "This parameter is provided for the console to determine "
+                "whether to display a prompt again."
             ),
         )
         return parser
 
+    @translate_response
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
-        attrs = {}
-        #if parsed_args.service_id:
-        #    attrs["service_id"] = parsed_args.service_id
-        if parsed_args.description:
-            attrs["description"] = parsed_args.description
-        if parsed_args.enable:
-            attrs["enable"] = parsed_args.enable
+        attrs = {'auto_stop': {}}
+        auto_stop = parsed_args.auto_stop
+        prompt = parsed_args.prompt
+
+        if auto_stop:
+            if auto_stop == 'enable':
+                attrs['auto_stop'].update(enable=True)
+                if not parsed_args.duration:
+                    raise exceptions.CommandError(
+                        "--duration is mandatory when --auto-stop is set."
+                    )
+            elif auto_stop == 'disable':
+                attrs['auto_stop'].update(enable=False)
+
+        if prompt:
+            if prompt == 'enable':
+                attrs['auto_stop'].update(prompt=True)
+            elif prompt == 'disable':
+                attrs['auto_stop'].update(prompt=False)
+
         if parsed_args.duration:
-            attrs["duration"] = parsed_args.duration
-        if parsed_args.prompt:
-            attrs["prompt"] = parsed_args.prompt
-        client.update_devenv(parsed_args.instance_id, **attrs)
+            attrs['auto_stop'].update(duration=parsed_args.duration)
+
+        if parsed_args.description:
+            attrs.update(description=parsed_args.description)
+
+        if not attrs['auto_stop']:
+            del attrs['auto_stop']
+
+        return client.update_devenv_instance(parsed_args.instance, **attrs)
 
 
 class DeleteDevEnvInstance(command.Command):

@@ -11,7 +11,13 @@
 # under the License.
 #
 from openstack import proxy
+from otcextensions.sdk.modelartsv1.v1 import \
+    builtin_algorithms as _builtin_algorithms
 from otcextensions.sdk.modelartsv1.v1 import devenv as _devenv
+from otcextensions.sdk.modelartsv1.v1 import \
+    job_engine_specifications as _job_engine_specifications
+from otcextensions.sdk.modelartsv1.v1 import \
+    job_resource_specifications as _job_resource_specifications
 from otcextensions.sdk.modelartsv1.v1 import model as _model
 from otcextensions.sdk.modelartsv1.v1 import service as _service
 from otcextensions.sdk.modelartsv1.v1 import trainingjob as _trainingjob
@@ -21,12 +27,6 @@ from otcextensions.sdk.modelartsv1.v1 import \
     trainingjob_version as _trainingjob_version
 from otcextensions.sdk.modelartsv1.v1 import \
     visualization_job as _visualization_job
-from otcextensions.sdk.modelartsv1.v1 import \
-    builtin_algorithms as _builtin_algorithms
-from otcextensions.sdk.modelartsv1.v1 import \
-    job_resource_specifications as _job_resource_specifications
-from otcextensions.sdk.modelartsv1.v1 import \
-    job_engine_specifications as _job_engine_specifications
 
 
 class Proxy(proxy.Proxy):
@@ -106,6 +106,8 @@ class Proxy(proxy.Proxy):
     def devenv_instances(self, **params):
         """List all Devenv Instances.
 
+        :param dict params: Optional query parameters to be sent to limit
+            the instances being returned.
         :returns: a generator of
             :class:`~otcextensions.sdk.modelartsv1.v1.devenv.Devenv` instances.
         """
@@ -172,16 +174,17 @@ class Proxy(proxy.Proxy):
             de_type="Notebook",
         )
 
-    def update_devenv(self, devenv_id, **attrs):
-        """Update a Service Configurations.
+    def update_devenv_instance(self, instance, **attrs):
+        """Update a Devenv Instance Configurations.
 
-        :param service_id: Service ID.
+        :param instance: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.devenv.Devenv`
         :param dict attrs: Keyword arguments which will be used to update
-            a :class:`~otcextensions.sdk.modelartsv1.v1.service.UpdateService`,
-            comprised of the properties on the Service class.
+            a :class:`~otcextensions.sdk.modelartsv1.v1.devenv.Devenv`,
+            comprised of the properties on the Devenv class.
 
         """
-        return self._update(_devenv.Devenv, devenv_id, **attrs)
+        return self._update(_devenv.Devenv, instance, **attrs)
 
     def start_devenv_instance(self, instance):
         """Start a Devenv instance.
@@ -208,14 +211,17 @@ class Proxy(proxy.Proxy):
 
     # Service Management
 
-    def services(self, **attrs):
+    def services(self, **params):
         """List all Services.
+
+        :param dict params: Optional query parameters to be sent to limit
+            the services being returned.
 
         :returns: a generator of
             :class:`~otcextensions.sdk.modelartsv1.v1.services.Services`
             instances
         """
-        return self._list(_service.Service)
+        return self._list(_service.Service, paginated=False, **params)
 
     def create_service(self, **attrs):
         """Deploy a model from attributes
@@ -254,16 +260,17 @@ class Proxy(proxy.Proxy):
         """
         return self._get(_service.Service, service)
 
-    def update_service(self, service_id, **attrs):
+    def update_service(self, service, **attrs):
         """Update a Service Configurations.
 
-        :param service_id: Service ID.
+        :param service: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
         :param dict attrs: Keyword arguments which will be used to update
-            a :class:`~otcextensions.sdk.modelartsv1.v1.service.UpdateService`,
+            a :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`,
             comprised of the properties on the Service class.
 
         """
-        return self._update(_service.ServiceUpdate, service_id, **attrs)
+        return self._update(_service.Service, service, **attrs)
 
     def find_service(self, name_or_id, ignore_missing=False):
         """Find a single service
@@ -300,7 +307,10 @@ class Proxy(proxy.Proxy):
             instances
         """
         return self._list(
-            _service.Event, service_id=service_id, paginated=False, **params
+            _service.Event,
+            service_id=service_id,
+            paginated=False,
+            **params,
         )
 
     def service_monitors(self, service_id, **params):
@@ -401,7 +411,9 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_version.TrainjobVersion`
         """
         return self._get(
-            _trainingjob_version.TrainingJobVersion, jobId=job_id, version_id=version_id
+            _trainingjob_version.TrainingJobVersion,
+            jobId=job_id,
+            version_id=version_id,
         )
 
     def modify_trainingjob_description(self, job_id, **attrs):
@@ -439,13 +451,13 @@ class Proxy(proxy.Proxy):
         :param version_id: Thie value can be the id of a training job version
         """
         if str(job_id) == "0":
-            job_id=str(job_id)
+            job_id = str(job_id)
         if str(version_id) == "0":
-            version_id=str(version_id)
+            version_id = str(version_id)
         return self._delete(
             _trainingjob_version.TrainingJobVersion, version_id, jobId=job_id
         )
-  
+
     def list_trainingjob_version_logs(self, job_id, version_id):
         """Get the trainjob version by id
 
@@ -456,7 +468,9 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_version.TrainjobVersion`
         """
         return self._list(
-            _trainingjob_version.TrainingJobVersionLogs, jobId=job_id, versionId=version_id
+            _trainingjob_version.TrainingJobVersionLogs,
+            jobId=job_id,
+            versionId=version_id,
         )
 
     def list_trainingjob_version_logfile_names(self, job_id, version_id):
@@ -468,7 +482,11 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_version.TrainjobVersion`
         """
-        return self._list(_trainingjob_version.GetLogfileName, versionId=version_id, jobId=job_id)
+        return self._list(
+            _trainingjob_version.GetLogfileName,
+            versionId=version_id,
+            jobId=job_id,
+        )
 
     def stop_traningjob_version(self, job_id, version_id):
         """Stop a Devenv instance.
@@ -479,7 +497,9 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.modelartsv1.v1.devenv.Devenv`
         """
-        trainingjob_version = self._get_resource(_trainingjob_version.TrainingJobVersion, job_id, version_id)
+        trainingjob_version = self._get_resource(
+            _trainingjob_version.TrainingJobVersion, job_id, version_id
+        )
         return trainingjob_version.stop(self)
 
     def trainingjob_configurations(self, **attrs):
@@ -489,7 +509,9 @@ class Proxy(proxy.Proxy):
             (:class:`~otcextensions.sdk.modelartsv1.v1.trainjob_configs.\
                 TrainjobConfigs`) instances
         """
-        return self._list(_trainingjob_configuration.TrainingJobConfiguration, **attrs)
+        return self._list(
+            _trainingjob_configuration.TrainingJobConfiguration, **attrs
+        )
 
     def create_trainingjob_configuration(self, **attrs):
         """Create a Training Job Configuration from attributes
@@ -503,7 +525,9 @@ class Proxy(proxy.Proxy):
             TrainjobConfigs`
         """
         return self._create(
-            _trainingjob_configuration.TrainingJobConfiguration, prepend_key=False, **attrs
+            _trainingjob_configuration.TrainingJobConfiguration,
+            prepend_key=False,
+            **attrs,
         )
 
     def delete_trainingjob_configuration(self, config_name):
@@ -532,7 +556,8 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_config.TrainjobConfigs`
         """
         return self._get(
-            _trainingjob_configuration.TrainingJobConfiguration, trainingjob_configuration
+            _trainingjob_configuration.TrainingJobConfiguration,
+            trainingjob_configuration,
         )
 
     def modify_trainingjob_configuration(self, config_name, **attrs):
@@ -544,9 +569,12 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.modelarts.v2.datasets.Datasets`
         """
-        
-        return self._update(_trainingjob_configuration.TrainingJobConfiguration, config_name, **attrs)
 
+        return self._update(
+            _trainingjob_configuration.TrainingJobConfiguration,
+            config_name,
+            **attrs,
+        )
 
     def show_builtin_algorithms(self):
         """Get the Training Job Configuration by id
@@ -557,9 +585,7 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_config.TrainjobConfigs`
         """
-        return self._get(
-            _builtin_algorithms.BuiltinAlgorithms
-        )
+        return self._get(_builtin_algorithms.BuiltinAlgorithms)
 
     # Visualization Job Management
 
@@ -631,7 +657,9 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.modelarts.v2.datasets.Datasets`
         """
-        return self._update(_visualization_job.VisualizationJob,job_id, **attrs)
+        return self._update(
+            _visualization_job.VisualizationJob, job_id, **attrs
+        )
 
     def stop_visualizationjob(self, visualization_job):
         """Stop a VisualizationJob
@@ -668,7 +696,9 @@ class Proxy(proxy.Proxy):
           `~otcextensions.sdk.modelartsv1.v1._job_resource_specifications.JobResourceSpecifications`
           instances
         """
-        return self._list(_job_resource_specifications.JobResourceSpecifications)
+        return self._list(
+            _job_resource_specifications.JobResourceSpecifications
+        )
 
     def job_engine_specifications(self):
         """List all JobResourceSpecifications .
@@ -678,4 +708,3 @@ class Proxy(proxy.Proxy):
           instances
         """
         return self._list(_job_engine_specifications.JobEngineSpecifications)
-

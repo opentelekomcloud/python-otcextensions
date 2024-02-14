@@ -18,8 +18,11 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 dataset_id = "6ZQSY2loMn9bAUpsZzp"
 attrs = {
-  "samples" : [ "9cb9bc9b34bf53b6ec9a84998b1711bf", "9ea63ef78d8c9037c9bcb12b477821bf" ]
-        }
+    "samples": [
+        "9cb9bc9b34bf53b6ec9a84998b1711bf",
+        "9ea63ef78d8c9037c9bcb12b477821bf",
+    ]
+}
 
 dataset_sample = conn.modelartsv2.delete_dataset_samples(dataset_id, **attrs)
 print(dataset_sample)

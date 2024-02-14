@@ -10,15 +10,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-from openstack import exceptions
 from openstack import resource
-from openstack import utils
 from otcextensions.sdk.modelartsv1.v1 import _base
 
 
 class VisualizationJob(resource.Resource):
     base_path = "/visualization-jobs"
-    resources_key = 'jobs'
+    resources_key = "jobs"
 
     allow_create = True
     allow_list = True

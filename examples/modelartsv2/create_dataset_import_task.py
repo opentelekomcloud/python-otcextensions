@@ -18,12 +18,12 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 dataset_id = "heZw7Oh7Ha0eiFIzkm8"
 attrs = {
-  "import_type" : "manifest",
-  "import_path" : "s3://fkukucsk",
-  "included_tags" : [ "cat", "rabbit", "Cat", "Rabbit" ],
-  "import_annotations" : False,
-  "difficult_only" : False
-        }
+    "import_type": "manifest",
+    "import_path": "s3://test-obs-bucket",
+    "included_tags": ["cat", "rabbit", "Cat", "Rabbit"],
+    "import_annotations": False,
+    "difficult_only": False,
+}
 
 dataset = conn.modelartsv2.create_dataset_import_task(dataset_id, **attrs)
 print(dataset)

@@ -20,6 +20,6 @@ attr = {
     "description": "aha",
 }
 
-devenv_id = "DE-12c340b2-6434-11ed-98da-0255c0a8005d"
-response = conn.modelartsv1.update_devenv(devenv_id, **attr)
+instance_id = "DE-12c340b2-6434-11ed-98da-0255c0a8005d"
+response = conn.modelartsv1.update_devenv_instance(instance_id, **attr)
 print(response)

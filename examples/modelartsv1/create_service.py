@@ -18,28 +18,27 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
 attrs = {
-  "service_name": "mnist",
-  "description": "mnist service",
-  "infer_type": "real-time",
-  "config": [
-    {
-      "model_id": "xxxmodel-idxxx",
-      "weight": "70",
-      "specification": "modelarts.vm.cpu.2u",
-      "instance_count": 1,
-      "envs":
-      {
-          "model_name": "mxnet-model-1",
-          "load_epoch": "0"
-      }
-    },
-    {
-      "model_id": "xxxxxx",
-      "weight": "30",
-      "specification": "modelarts.vm.cpu.2u",
-      "instance_count": 1
-    }
-  ]
+    "service_name": "mnist",
+    "description": "mnist service",
+    "infer_type": "real-time",
+    "config": [
+        {
+            "model_id": "xxxmodel-idxxx",
+            "weight": "70",
+            "specification": "modelarts.vm.cpu.2u",
+            "instance_count": 1,
+            "envs": {
+                "model_name": "mxnet-model-1",
+                "load_epoch": "0",
+            },
+        },
+        {
+            "model_id": "xxxxxx",
+            "weight": "30",
+            "specification": "modelarts.vm.cpu.2u",
+            "instance_count": 1,
+        },
+    ],
 }
 
 service = conn.modelartsv1.create_service(**attrs)
