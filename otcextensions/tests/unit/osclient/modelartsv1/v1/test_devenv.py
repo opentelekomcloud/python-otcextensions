@@ -59,7 +59,7 @@ class TestListDevenvInstances(fakes.TestModelartsv1):
     def setUp(self):
         super(TestListDevenvInstances, self).setUp()
 
-        self.cmd = devenv.ListDevEnvInstances(self.app, None)
+        self.cmd = devenv.ListDevenvInstances(self.app, None)
 
         self.client.devenv_instances = mock.Mock()
         self.client.api_mock = self.client.devenv_instances
@@ -148,7 +148,7 @@ class TestListDevenvInstances(fakes.TestModelartsv1):
         )
 
 
-class TestCreateDevEnvInstance(fakes.TestModelartsv1):
+class TestCreateDevenvInstance(fakes.TestModelartsv1):
     _data = fakes.FakeDevenv.create_one()
 
     columns = _COLUMNS
@@ -158,9 +158,9 @@ class TestCreateDevEnvInstance(fakes.TestModelartsv1):
     default_timeout = 1800
 
     def setUp(self):
-        super(TestCreateDevEnvInstance, self).setUp()
+        super(TestCreateDevenvInstance, self).setUp()
 
-        self.cmd = devenv.CreateDevEnvInstance(self.app, None)
+        self.cmd = devenv.CreateDevenvInstance(self.app, None)
 
         self.client.create_devenv_instance = mock.Mock(return_value=self._data)
 
@@ -243,15 +243,70 @@ class TestCreateDevEnvInstance(fakes.TestModelartsv1):
         self.assertEqual(self.data, data)
 
 
-class TestStartDevEnvInstance(fakes.TestModelartsv1):
+class TestUpdateDevenvInstance(fakes.TestModelartsv1):
+    _data = fakes.FakeDevenv.create_one()
+
+    columns = _COLUMNS
+
+    data = fakes.gen_data(_data, columns, devenv._formatters)
+
+    default_timeout = 1800
+
+    def setUp(self):
+        super(TestUpdateDevenvInstance, self).setUp()
+
+        self.cmd = devenv.UpdateDevenvInstance(self.app, None)
+
+        self.client.update_devenv_instance = mock.Mock(return_value=self._data)
+
+    def test_create(self):
+        arglist = [
+            "devenv-instance-id",
+            "--description",
+            "New Description",
+            "--auto-stop",
+            "enable",
+            "--duration",
+            "3600",
+            "--prompt",
+            "disable",
+        ]
+        verifylist = [
+            ("instance", "devenv-instance-id"),
+            ("description", "New Description"),
+            ("auto_stop", "enable"),
+            ("duration", 3600),
+            ("prompt", "disable"),
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+        attrs = {
+            "auto_stop": {
+                "enable": True,
+                "prompt": False,
+                "duration": 3600,
+            },
+            "description": "New Description",
+        }
+        self.client.update_devenv_instance.assert_called_with(
+            "devenv-instance-id", **attrs
+        )
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
+
+
+class TestStartDevenvInstance(fakes.TestModelartsv1):
     _devenv = fakes.FakeDevenv.create_one()
     columns = _COLUMNS
     data = fakes.gen_data(_devenv, columns, devenv._formatters)
 
     def setUp(self):
-        super(TestStartDevEnvInstance, self).setUp()
+        super(TestStartDevenvInstance, self).setUp()
 
-        self.cmd = devenv.StartDevEnvInstance(self.app, None)
+        self.cmd = devenv.StartDevenvInstance(self.app, None)
 
         self.client.find_devenv_instance = mock.Mock(return_value=self._devenv)
         self.client.start_devenv_instance = mock.Mock(
@@ -278,15 +333,15 @@ class TestStartDevEnvInstance(fakes.TestModelartsv1):
         self.client.start_devenv_instance.assert_called_with(self._devenv.id)
 
 
-class TestStopDevEnvInstance(fakes.TestModelartsv1):
+class TestStopDevenvInstance(fakes.TestModelartsv1):
     _devenv = fakes.FakeDevenv.create_one()
     columns = _COLUMNS
     data = fakes.gen_data(_devenv, columns, devenv._formatters)
 
     def setUp(self):
-        super(TestStopDevEnvInstance, self).setUp()
+        super(TestStopDevenvInstance, self).setUp()
 
-        self.cmd = devenv.StopDevEnvInstance(self.app, None)
+        self.cmd = devenv.StopDevenvInstance(self.app, None)
 
         self.client.find_devenv_instance = mock.Mock(return_value=self._devenv)
         self.client.stop_devenv_instance = mock.Mock(return_value=self._devenv)
@@ -311,15 +366,15 @@ class TestStopDevEnvInstance(fakes.TestModelartsv1):
         self.client.stop_devenv_instance.assert_called_with(self._devenv.id)
 
 
-class TestShowDevEnvInstance(fakes.TestModelartsv1):
+class TestShowDevenvInstance(fakes.TestModelartsv1):
     _devenv = fakes.FakeDevenv.create_one()
     columns = _COLUMNS
     data = fakes.gen_data(_devenv, columns, devenv._formatters)
 
     def setUp(self):
-        super(TestShowDevEnvInstance, self).setUp()
+        super(TestShowDevenvInstance, self).setUp()
 
-        self.cmd = devenv.ShowDevEnvInstance(self.app, None)
+        self.cmd = devenv.ShowDevenvInstance(self.app, None)
 
         self.client.find_devenv_instance = mock.Mock(return_value=self._devenv)
 
@@ -383,11 +438,11 @@ class TestShowDevEnvInstance(fakes.TestModelartsv1):
         )
 
 
-class TestDeleteDevEnvInstance(fakes.TestModelartsv1):
+class TestDeleteDevenvInstance(fakes.TestModelartsv1):
     _devenv = fakes.FakeDevenv.create_multiple(2)
 
     def setUp(self):
-        super(TestDeleteDevEnvInstance, self).setUp()
+        super(TestDeleteDevenvInstance, self).setUp()
 
         self.client.find_devenv_instance = mock.Mock(
             return_value=self._devenv[0]
@@ -395,7 +450,7 @@ class TestDeleteDevEnvInstance(fakes.TestModelartsv1):
         self.client.delete_devenv_instance = mock.Mock(return_value=None)
 
         # Get the command object to test
-        self.cmd = devenv.DeleteDevEnvInstance(self.app, None)
+        self.cmd = devenv.DeleteDevenvInstance(self.app, None)
 
     def test_delete(self):
         arglist = [
@@ -471,7 +526,7 @@ class TestDeleteDevEnvInstance(fakes.TestModelartsv1):
             self.cmd.take_action(parsed_args)
         except Exception as e:
             self.assertEqual(
-                "1 of 2 DevEnv Instance(s) failed to delete.", str(e)
+                "1 of 2 Devenv Instance(s) failed to delete.", str(e)
             )
 
         self.client.delete_devenv_instance.assert_any_call(self._devenv[0].id)

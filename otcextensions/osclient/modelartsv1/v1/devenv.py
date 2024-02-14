@@ -32,15 +32,20 @@ DEVENV_PROFILE_ID_MAP = {
 
 
 _formatters = {
-    "user": cli_utils.YamlFormat,
-    "flavor_details": cli_utils.YamlFormat,
-    "spec": cli_utils.YamlFormat,
-    "profile": cli_utils.YamlFormat,
+    "auto_stop": cli_utils.YamlFormat,
     "created_at": cli_utils.UnixTimestampFormatter,
+    "flavor_details": cli_utils.YamlFormat,
+    "profile": cli_utils.YamlFormat,
+    "spec": cli_utils.YamlFormat,
     "updated_at": cli_utils.UnixTimestampFormatter,
+    "user": cli_utils.YamlFormat,
 }
 
-AUTO_STOP_CHOICES = ("enable", "disable",)
+AUTO_STOP_CHOICES = (
+    "enable",
+    "disable",
+)
+
 
 def _get_columns(item):
     column_map = {}
@@ -62,8 +67,8 @@ def translate_response(func):
     return new
 
 
-class ListDevEnvInstances(command.Lister):
-    _description = _("List DevEnv Instances.")
+class ListDevenvInstances(command.Lister):
+    _description = _("List Devenv Instances.")
     columns = (
         "ID",
         "Name",
@@ -72,7 +77,7 @@ class ListDevEnvInstances(command.Lister):
     )
 
     def get_parser(self, prog_name):
-        parser = super(ListDevEnvInstances, self).get_parser(prog_name)
+        parser = super(ListDevenvInstances, self).get_parser(prog_name)
         parser.add_argument(
             "--de-type",
             metavar="<de_type>",
@@ -90,7 +95,7 @@ class ListDevEnvInstances(command.Lister):
         parser.add_argument(
             "--status",
             metavar="<status>",
-            help=_("Filter DevEnv Instances by status."),
+            help=_("Filter Devenv Instances by status."),
         )
         parser.add_argument(
             "--sort-by",
@@ -185,15 +190,15 @@ class ListDevEnvInstances(command.Lister):
         )
 
 
-class ShowDevEnvInstance(command.ShowOne):
-    _description = _("Show details of a DevEnviron Instance.")
+class ShowDevenvInstance(command.ShowOne):
+    _description = _("Show details of a Devenv Instance.")
 
     def get_parser(self, prog_name):
-        parser = super(ShowDevEnvInstance, self).get_parser(prog_name)
+        parser = super(ShowDevenvInstance, self).get_parser(prog_name)
         parser.add_argument(
             "instance",
             metavar="<instance>",
-            help=_("DevEnv Instance ID."),
+            help=_("Devenv Instance ID."),
         )
         return parser
 
@@ -204,11 +209,11 @@ class ShowDevEnvInstance(command.ShowOne):
         return client.find_devenv_instance(parsed_args.instance)
 
 
-class CreateDevEnvInstance(command.ShowOne):
-    _description = _("Create a Dev Environment Instance.")
+class CreateDevenvInstance(command.ShowOne):
+    _description = _("Create a Devenv Instance.")
 
     def get_parser(self, prog_name):
-        parser = super(CreateDevEnvInstance, self).get_parser(prog_name)
+        parser = super(CreateDevenvInstance, self).get_parser(prog_name)
         parser.add_argument(
             "name",
             metavar="<name>",
@@ -404,15 +409,15 @@ class CreateDevEnvInstance(command.ShowOne):
         return client.create_devenv_instance(**attrs)
 
 
-class StartDevEnvInstance(command.ShowOne):
-    _description = _("Start a DevEnviron Instance.")
+class StartDevenvInstance(command.ShowOne):
+    _description = _("Start a Devenv Instance.")
 
     def get_parser(self, prog_name):
-        parser = super(StartDevEnvInstance, self).get_parser(prog_name)
+        parser = super(StartDevenvInstance, self).get_parser(prog_name)
         parser.add_argument(
             "instance",
             metavar="<instance>",
-            help=_("DevEnv Instance name or ID."),
+            help=_("Devenv Instance name or ID."),
         )
         return parser
 
@@ -426,15 +431,15 @@ class StartDevEnvInstance(command.ShowOne):
         return client.start_devenv_instance(instance.id)
 
 
-class StopDevEnvInstance(command.ShowOne):
-    _description = _("Start a DevEnviron Instance.")
+class StopDevenvInstance(command.ShowOne):
+    _description = _("Start a Devenv Instance.")
 
     def get_parser(self, prog_name):
-        parser = super(StopDevEnvInstance, self).get_parser(prog_name)
+        parser = super(StopDevenvInstance, self).get_parser(prog_name)
         parser.add_argument(
             "instance",
             metavar="<instance>",
-            help=_("DevEnv Instance name or ID."),
+            help=_("Devenv Instance name or ID."),
         )
         return parser
 
@@ -456,7 +461,7 @@ class UpdateDevenvInstance(command.ShowOne):
         parser.add_argument(
             "instance",
             metavar="<instance>",
-            help=_("DevEnv Instance ID."),
+            help=_("Devenv Instance ID."),
         )
         parser.add_argument(
             "--description",
@@ -499,48 +504,47 @@ class UpdateDevenvInstance(command.ShowOne):
     @translate_response
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
-        attrs = {'auto_stop': {}}
+        attrs = {"auto_stop": {}}
         auto_stop = parsed_args.auto_stop
         prompt = parsed_args.prompt
 
         if auto_stop:
-            if auto_stop == 'enable':
-                attrs['auto_stop'].update(enable=True)
+            if auto_stop == "enable":
+                attrs["auto_stop"].update(enable=True)
                 if not parsed_args.duration:
                     raise exceptions.CommandError(
                         "--duration is mandatory when --auto-stop is set."
                     )
-            elif auto_stop == 'disable':
-                attrs['auto_stop'].update(enable=False)
+            elif auto_stop == "disable":
+                attrs["auto_stop"].update(enable=False)
 
         if prompt:
-            if prompt == 'enable':
-                attrs['auto_stop'].update(prompt=True)
-            elif prompt == 'disable':
-                attrs['auto_stop'].update(prompt=False)
+            if prompt == "enable":
+                attrs["auto_stop"].update(prompt=True)
+            elif prompt == "disable":
+                attrs["auto_stop"].update(prompt=False)
 
         if parsed_args.duration:
-            attrs['auto_stop'].update(duration=parsed_args.duration)
+            attrs["auto_stop"].update(duration=parsed_args.duration)
 
         if parsed_args.description:
             attrs.update(description=parsed_args.description)
 
-        if not attrs['auto_stop']:
-            del attrs['auto_stop']
-
+        if not attrs["auto_stop"]:
+            del attrs["auto_stop"]
         return client.update_devenv_instance(parsed_args.instance, **attrs)
 
 
-class DeleteDevEnvInstance(command.Command):
-    _description = _("Delete DevEnviron Instance(s)")
+class DeleteDevenvInstance(command.Command):
+    _description = _("Delete Devenv Instance(s)")
 
     def get_parser(self, prog_name):
-        parser = super(DeleteDevEnvInstance, self).get_parser(prog_name)
+        parser = super(DeleteDevenvInstance, self).get_parser(prog_name)
         parser.add_argument(
             "instance",
             metavar="<instance>",
             nargs="+",
-            help=_("ID or Name of the DevEnviron Instance(s) to be deleted."),
+            help=_("ID or Name of the Devenv Instance(s) to be deleted."),
         )
         return parser
 
@@ -557,7 +561,7 @@ class DeleteDevEnvInstance(command.Command):
                 result += 1
                 LOG.error(
                     _(
-                        "Failed to delete DevEnv Instance(s) with "
+                        "Failed to delete Devenv Instance(s) with "
                         "ID or Name '%(instance)s': %(e)s"
                     ),
                     {"instance": name_or_id, "e": e},
@@ -565,7 +569,7 @@ class DeleteDevEnvInstance(command.Command):
         if result > 0:
             total = len(parsed_args.instance)
             msg = _(
-                "%(result)s of %(total)s DevEnv Instance(s) failed "
+                "%(result)s of %(total)s Devenv Instance(s) failed "
                 "to delete."
             ) % {"result": result, "total": total}
             raise exceptions.CommandError(msg)

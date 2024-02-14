@@ -123,6 +123,8 @@ class Devenv(_base.Resource):
     ai_project = resource.Body("ai_project", type=dict)
     #: AI project ID.
     ai_project_id = resource.Body("ai_project_id")
+    #: Auto stop parameters.
+    auto_stop = resource.Body("auto_stop", type=dict)
     #: Time when an instance is created.
     created_at = resource.Body("creation_timestamp", type=str)
     #: Current status of an instance.
