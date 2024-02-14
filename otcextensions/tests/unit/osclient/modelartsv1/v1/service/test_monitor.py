@@ -77,8 +77,7 @@ class TestMonitors(fakes.TestModelartsv1):
     def test_list_args(self):
         arglist = [
             "service-id",
-            "--node-id",
-            "123",
+            "--node-id", "123",
         ]
 
         verifylist = [

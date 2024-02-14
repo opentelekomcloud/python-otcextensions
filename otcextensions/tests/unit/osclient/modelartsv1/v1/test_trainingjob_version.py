@@ -14,14 +14,6 @@ import mock
 from otcextensions.osclient.modelartsv1.v1 import trainingjob_version
 from otcextensions.tests.unit.osclient.modelartsv1.v1 import fakes
 
-# from unittest.mock import call
-
-# from osc_lib import exceptions
-# from osc_lib.cli import format_columns
-
-# from openstackclient.tests.unit import utils as tests_utils
-
-
 _COLUMNS = (
     "is_success",
     "job_id",

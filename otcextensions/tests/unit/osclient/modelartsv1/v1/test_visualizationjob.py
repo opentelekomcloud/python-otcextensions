@@ -11,7 +11,6 @@
 # under the License.
 #
 import mock
-
 # from openstackclient.tests.unit import utils as tests_utils
 from otcextensions.common import cli_utils
 from otcextensions.osclient.modelartsv1.v1 import visualization_job
@@ -24,15 +23,16 @@ from otcextensions.tests.unit.osclient.modelartsv1.v1 import fakes
 
 
 _COLUMNS = (
-'created_at',
- 'duration',
- 'job_desc',
- 'job_id',
- 'job_name',
- 'resource_id',
- 'service_url',
- 'status',
- 'train_url')
+    "created_at",
+    "duration",
+    "job_desc",
+    "job_id",
+    "job_name",
+    "resource_id",
+    "service_url",
+    "status",
+    "train_url",
+)
 
 
 class TestListVisualizationJobs(fakes.TestModelartsv1):
@@ -50,7 +50,6 @@ class TestListVisualizationJobs(fakes.TestModelartsv1):
             )
         )
     print(">>>data", data)
-
 
     def setUp(self):
         super(TestListVisualizationJobs, self).setUp()
@@ -83,7 +82,9 @@ class TestListVisualizationJobs(fakes.TestModelartsv1):
 class TestCreateVisualizationJob(fakes.TestModelartsv1):
     _visualization_job = fakes.FakeVisualizationJob.create_one()
     columns = _COLUMNS
-    data = fakes.gen_data(_visualization_job, columns, visualization_job._formatters)
+    data = fakes.gen_data(
+        _visualization_job, columns, visualization_job._formatters
+    )
 
     def setUp(self):
         super(TestCreateVisualizationJob, self).setUp()
@@ -96,18 +97,12 @@ class TestCreateVisualizationJob(fakes.TestModelartsv1):
 
     def test_create(self):
         arglist = [
-            "--job-name",
-            "test-visualizationjob",
-            "--job-desc",
-            "1",
-            "--train-url",
-            "2",
-            "--job-type",
-            "3",
-            '--flavor',
-            "4",
-            "--schedule_duration",
-            "5",
+            "--job-name", "test-visualizationjob",
+            "--job-desc", "1",
+            "--train-url", "2",
+            "--job-type", "3",
+            "--flavor", "4",
+            "--schedule_duration", "5",
         ]
         verifylist = [
             ("job_name", "test-visualizationjob"),
@@ -123,8 +118,15 @@ class TestCreateVisualizationJob(fakes.TestModelartsv1):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.create_visualization_job.assert_called_with(job_name='test-visualizationjob', job_desc='1', train_url='2', job_type='3', flavor={'code': '4'}, schedule={'type': 'stop', 'time_unit': 'HOURS', 'duration': 5})
-        #self.client.wait_for_cluster.assert_called_with(
+        self.client.create_visualization_job.assert_called_with(
+            job_name="test-visualizationjob",
+            job_desc="1",
+            train_url="2",
+            job_type="3",
+            flavor={"code": "4"},
+            schedule={"type": "stop", "time_unit": "HOURS", "duration": 5},
+        )
+        # self.client.wait_for_cluster.assert_called_with(
         #    self._cluster.id, wait=self.default_timeout)
         # self.client.find_model.assert_called_with(self._model.id)
         self.assertEqual(self.columns, columns)
@@ -150,5 +152,7 @@ class TestDeleteVisualizationJob(fakes.TestModelartsv1):
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
-        self.client.delete_visualizationjob.assert_called_with(job_id="test_jobid")
+        self.client.delete_visualizationjob.assert_called_with(
+            job_id="test_jobid"
+        )
         self.assertIsNone(result)

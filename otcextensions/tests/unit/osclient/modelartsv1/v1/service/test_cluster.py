@@ -77,18 +77,12 @@ class TestClusters(fakes.TestModelartsv1):
 
     def test_list_args(self):
         arglist = [
-            "--cluster-name",
-            "1",
-            "--limit",
-            "2",
-            "--offset",
-            "3",
-            "--order",
-            "asc",
-            "--sort-by",
-            "cluster_name",
-            "--status",
-            "6",
+            "--cluster-name", "1",
+            "--limit", "2",
+            "--offset", "3",
+            "--order", "asc",
+            "--sort-by", "cluster_name",
+            "--status", "6",
         ]
 
         verifylist = [

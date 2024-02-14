@@ -45,7 +45,7 @@ _COLUMNS = (
 )
 
 
-class TestListService(fakes.TestModelartsv1):
+class TestListServices(fakes.TestModelartsv1):
     objects = fakes.FakeService.create_multiple(3)
 
     column_list_headers = (
@@ -61,9 +61,9 @@ class TestListService(fakes.TestModelartsv1):
         data.append((s.service_id, s.service_name, s.infer_type, s.status))
 
     def setUp(self):
-        super(TestListService, self).setUp()
+        super(TestListServices, self).setUp()
 
-        self.cmd = service.ListService(self.app, None)
+        self.cmd = service.ListServices(self.app, None)
 
         self.client.services = mock.Mock()
         self.client.api_mock = self.client.services

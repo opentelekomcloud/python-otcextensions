@@ -15,10 +15,9 @@ import logging
 
 from osc_lib import utils
 from osc_lib.command import command
-from otcextensions.common import sdk_utils
 from otcextensions.common import cli_utils
+from otcextensions.common import sdk_utils
 from otcextensions.i18n import _
-from osc_lib.cli import parseractions
 
 LOG = logging.getLogger(__name__)
 
@@ -26,6 +25,7 @@ _formatters = {
     "create_time": cli_utils.UnixTimestampFormatter,
 }
 #     "config": cli_utils.YamlFormat}
+
 
 def _flatten_output(obj):
     data = {
@@ -94,9 +94,21 @@ class CreateVisualizationJob(command.ShowOne):
             required=True,
             help=_("OBS path"),
         )
-        parser.add_argument('--job-type', metavar='<job_type>', required=False, type=str, help=_('Type of a visualization job'))
+        parser.add_argument(
+            "--job-type",
+            metavar="<job_type>",
+            required=False,
+            type=str,
+            help=_("Type of a visualization job"),
+        )
 
-        parser.add_argument('--flavor', metavar='<flavor>', required=False, type=str, help=_('Specifications when a visualization job is created'))
+        parser.add_argument(
+            "--flavor",
+            metavar="<flavor>",
+            required=False,
+            type=str,
+            help=_("Specifications when a visualization job is created"),
+        )
         """
         parser.add_argument(
             '--schedule',
@@ -115,7 +127,13 @@ class CreateVisualizationJob(command.ShowOne):
                    'created snapshots are reserved. Value range: 1 to 90.'),
         )
         """
-        parser.add_argument('--schedule_duration', metavar='<schedule_duration>', required=True, type=int, help=_('Resource specification code of a visualization job'))
+        parser.add_argument(
+            "--schedule_duration",
+            metavar="<schedule_duration>",
+            required=True,
+            type=int,
+            help=_("Resource specification code of a visualization job"),
+        )
         return parser
 
     def take_action(self, parsed_args):
@@ -139,7 +157,11 @@ class CreateVisualizationJob(command.ShowOne):
             attrs["flavor"] = {"code": parsed_args.flavor}
 
         if parsed_args.schedule_duration:
-            attrs["schedule"] = {"type": "stop", "time_unit": "HOURS","duration": parsed_args.schedule_duration}
+            attrs["schedule"] = {
+                "type": "stop",
+                "time_unit": "HOURS",
+                "duration": parsed_args.schedule_duration,
+            }
 
         obj = client.create_visualization_job(**attrs)
 
@@ -255,7 +277,7 @@ class ListVisualizationJobs(command.Lister):
     _description = _(
         "Query the visualization jobs that meet the search criteria."
     )
-    columns = ('Job Id', 'Job Name', 'Created At')
+    columns = ("Job Id", "Job Name", "Created At")
 
     def get_parser(self, prog_name):
         parser = super(ListVisualizationJobs, self).get_parser(prog_name)
@@ -275,7 +297,11 @@ class ListVisualizationJobs(command.Lister):
 
         table = (
             self.columns,
-            (utils.get_dict_properties(s, self.columns, formatters=_formatters) for s in data),
+            (
+                utils.get_dict_properties(
+                    s, self.columns, formatters=_formatters
+                )
+                for s in data
+            ),
         )
         return table
-

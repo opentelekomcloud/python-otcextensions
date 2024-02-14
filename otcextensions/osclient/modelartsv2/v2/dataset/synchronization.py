@@ -15,8 +15,8 @@ import logging
 
 from osc_lib import utils
 from osc_lib.command import command
-from otcextensions.common import sdk_utils
 from otcextensions.common import cli_utils
+from otcextensions.common import sdk_utils
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
@@ -30,7 +30,8 @@ def _get_columns(item):
     column_map = {}
     hidden = ["location"]
     return sdk_utils.get_osc_show_columns_for_sdk_resource(
-        item, column_map, hidden)
+        item, column_map, hidden
+    )
 
 
 class SynchronizeDataset(command.Command):
@@ -56,6 +57,7 @@ class SynchronizeDataset(command.Command):
 
         client.sync_dataset(**attrs)
 
+
 class DatasetSyncStatus(command.ShowOne):
     _description = _("Show details of a Modelarts Dataset.")
 
@@ -77,4 +79,3 @@ class DatasetSyncStatus(command.ShowOne):
         data = utils.get_item_properties(data, columns, formatters=_formatters)
 
         return display_columns, data
-

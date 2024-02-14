@@ -15,8 +15,8 @@ import logging
 
 from osc_lib import utils
 from osc_lib.command import command
-from otcextensions.common import sdk_utils
 from otcextensions.common import cli_utils
+from otcextensions.common import sdk_utils
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
@@ -25,6 +25,7 @@ _formatters = {
     "create_time": cli_utils.UnixTimestampFormatter,
 }
 #     "config": cli_utils.YamlFormat}
+
 
 def _flatten_output(obj):
     data = {
@@ -58,7 +59,9 @@ class DeleteTrainingJobConfiguration(command.Command):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
-        client.delete_trainingjob_configuration(config_name=parsed_args.configName)
+        client.delete_trainingjob_configuration(
+            config_name=parsed_args.configName
+        )
 
 
 class CreateTrainingJobConfiguration(command.ShowOne):
@@ -303,7 +306,9 @@ class UpdateTrainingJobConfiguration(command.Command):
     _description = _("Update Training Job Configuration")
 
     def get_parser(self, prog_name):
-        parser = super(UpdateTrainingJobConfiguration, self).get_parser(prog_name)
+        parser = super(UpdateTrainingJobConfiguration, self).get_parser(
+            prog_name
+        )
         parser.add_argument(
             "--config_name",
             metavar="<config_name>",
@@ -318,7 +323,7 @@ class UpdateTrainingJobConfiguration(command.Command):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
         attrs = {}
-        #if parsed_args.service_id:
+        # if parsed_args.service_id:
         #    attrs["service_id"] = parsed_args.service_id
         """
         if parsed_args.description:
@@ -330,7 +335,10 @@ class UpdateTrainingJobConfiguration(command.Command):
         if parsed_args.prompt:
             attrs["prompt"] = parsed_args.prompt
         """
-        client.modify_trainingjob_configuration(parsed_args.config_name, **attrs)
+        client.modify_trainingjob_configuration(
+            parsed_args.config_name, **attrs
+        )
+
 
 class ListTrainingJobConfigurations(command.Lister):
     _description = _(

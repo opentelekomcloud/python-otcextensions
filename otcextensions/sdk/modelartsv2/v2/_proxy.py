@@ -120,14 +120,14 @@ class Proxy(proxy.Proxy):
         )
 
     # ======== Dataset Monitoring Data ========
-    
+
     def get_dataset_metrics(self, dataset_id):
         """Query Dataset metrics
 
         :param dataset_id: Dataset ID.
 
         :returns:
-            One :class:`~otcextensions.sdk.modelartsv2.v2.dataset.MonitoringData`
+            One :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Metrics`
         """
         return self._list(
             _dataset.Metrics,
@@ -207,7 +207,10 @@ class Proxy(proxy.Proxy):
             dataset.DatasetVersion`
         """
         return self._create(
-            _dataset.DatasetVersion, dataset_id=dataset_id, prepend_key=False, **attrs
+            _dataset.DatasetVersion,
+            dataset_id=dataset_id,
+            prepend_key=False,
+            **attrs,
         )
 
     def delete_dataset_version(self, dataset_id, version_id, **kwargs):
@@ -220,7 +223,12 @@ class Proxy(proxy.Proxy):
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent dataset.
         """
-        return self._delete(_dataset.DatasetVersion, version_id, dataset_id=dataset_id, **kwargs)
+        return self._delete(
+            _dataset.DatasetVersion,
+            version_id,
+            dataset_id=dataset_id,
+            **kwargs,
+        )
 
     def show_dataset_version(self, version_id, dataset_id):
         """Get the dataset version by version id
@@ -231,7 +239,9 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.modelartsv2.v2.dataset.DatasetVersion`
         """
-        return self._get(_dataset.DatasetVersion, version_id, dataset_id=dataset_id)
+        return self._get(
+            _dataset.DatasetVersion, version_id, dataset_id=dataset_id
+        )
 
     # ======== Dataset Sample Management ========
 
@@ -304,8 +314,9 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.modelartsv2.v2.dataset.sample.GetSampleSearchCondition`
         """
-        return self._list(_dataset.GetSampleSearchCondition, dataset_id=dataset_id, **attrs)
-
+        return self._list(
+            _dataset.GetSampleSearchCondition, dataset_id=dataset_id, **attrs
+        )
 
     # ======== Dataset Import Task Management ========
 
@@ -329,7 +340,12 @@ class Proxy(proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.modelartsv2.v2.dataset.ImportTask`
         """
-        return self._create(_dataset.ImportTask, dataset_id=dataset_id, prepend_key=False, **attrs)
+        return self._create(
+            _dataset.ImportTask,
+            dataset_id=dataset_id,
+            prepend_key=False,
+            **attrs,
+        )
 
     def get_dataset_import_task(self, dataset_id, task_id):
         """Get the data import task by dataset id
@@ -340,7 +356,7 @@ class Proxy(proxy.Proxy):
          :returns: instance of :class:`~otcextensions.sdk.modelartsv2.v2.\
                 dataset.ImportTask`
          """
-        return self._get(_dataset.ImportTask, task_id, dataset_id=dataset_id) 
+        return self._get(_dataset.ImportTask, task_id, dataset_id=dataset_id)
 
     # ======== Dataset Export Task Management ========
 
@@ -375,18 +391,23 @@ class Proxy(proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.modelartsv2.v2.dataset.ExportTask`
         """
-        return self._create(_dataset.ExportTask, dataset_id=dataset_id, prepend_key=False, **attrs)
+        return self._create(
+            _dataset.ExportTask,
+            dataset_id=dataset_id,
+            prepend_key=False,
+            **attrs,
+        )
 
     # ======== Dataset Synchronization Task Management ========
 
-    def sync_dataset(self, **attrs):
+    def sync_dataset(self, dataset_id):
         """Synchronize samples and labeling information
             from the input dataset path to the dataset.
 
         :param dataset_id: Dataset ID.
         :returns: None
         """
-        return self._create(_dataset.Sync, **attrs) #datasetId=dataset_id)
+        return self._create(_dataset.Sync, datasetId=dataset_id)
 
     def get_dataset_sync_status(self, dataset_id):
         """Query Dataset sync task status

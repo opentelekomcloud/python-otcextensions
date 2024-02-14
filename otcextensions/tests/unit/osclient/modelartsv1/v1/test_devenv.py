@@ -87,26 +87,16 @@ class TestListDevenvInstances(fakes.TestModelartsv1):
 
     def test_list_args(self):
         arglist = [
-            "--de-type",
-            "1",
-            "--provision-type",
-            "2",
-            "--status",
-            "3",
-            "--sort-by",
-            "4",
-            "--order",
-            "5",
-            "--offset",
-            "6",
-            "--limit",
-            "7",
-            "--workspace-id",
-            "8",
-            "--ai-project-id",
-            "9",
-            "--pool-id",
-            "10",
+            "--de-type", "1",
+            "--provision-type", "2",
+            "--status", "3",
+            "--sort-by", "4",
+            "--order", "5",
+            "--offset", "6",
+            "--limit", "7",
+            "--workspace-id", "8",
+            "--ai-project-id", "9",
+            "--pool-id", "10",
             "--show-self",
         ]
 
@@ -150,11 +140,8 @@ class TestListDevenvInstances(fakes.TestModelartsv1):
 
 class TestCreateDevenvInstance(fakes.TestModelartsv1):
     _data = fakes.FakeDevenv.create_one()
-
     columns = _COLUMNS
-
     data = fakes.gen_data(_data, columns, devenv._formatters)
-
     default_timeout = 1800
 
     def setUp(self):
@@ -167,38 +154,22 @@ class TestCreateDevenvInstance(fakes.TestModelartsv1):
     def test_create(self):
         arglist = [
             "test-devenv",
-            "--profile-id",
-            "1",
-            "--description",
-            "2",
-            "--flavor",
-            "3",
-            "--ai-project-id",
-            "4",
-            "--workspace-id",
-            "5",
-            "--storage-type",
-            "6",
-            "--storage-path",
-            "7",
-            "--extended-storage-type",
-            "8",
-            "--extended-storage-path",
-            "9",
-            "--autostop-duration",
-            "10",
-            "--autostop-prompt",
-            False,
-            "--pool-id",
-            "11",
-            "--pool-type",
-            "12",
-            "--pool-name",
-            "13",
-            "--annotation",
-            "key1=value1",
-            "--annotation",
-            "key2=value2",
+            "--profile-id", "1",
+            "--description", "2",
+            "--flavor", "3",
+            "--ai-project-id", "4",
+            "--workspace-id", "5",
+            "--storage-type", "6",
+            "--storage-path", "7",
+            "--extended-storage-type", "8",
+            "--extended-storage-path", "9",
+            "--autostop-duration", "10",
+            "--autostop-prompt", False,
+            "--pool-id", "11",
+            "--pool-type", "12",
+            "--pool-name", "13",
+            "--annotation", "key1=value1",
+            "--annotation", "key2=value2",
         ]
         verifylist = [
             ("name", "test-devenv"),
@@ -259,17 +230,13 @@ class TestUpdateDevenvInstance(fakes.TestModelartsv1):
 
         self.client.update_devenv_instance = mock.Mock(return_value=self._data)
 
-    def test_create(self):
+    def test_update(self):
         arglist = [
             "devenv-instance-id",
-            "--description",
-            "New Description",
-            "--auto-stop",
-            "enable",
-            "--duration",
-            "3600",
-            "--prompt",
-            "disable",
+            "--description", "New Description",
+            "--auto-stop", "enable",
+            "--duration", "3600",
+            "--prompt", "disable",
         ]
         verifylist = [
             ("instance", "devenv-instance-id"),

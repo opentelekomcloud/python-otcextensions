@@ -10,22 +10,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-from unittest.mock import call
-
 import mock
 from openstackclient.tests.unit import utils as tests_utils
 from osc_lib import exceptions
-from otcextensions.common import cli_utils
 from otcextensions.osclient.modelartsv2.v2 import dataset
 from otcextensions.tests.unit.osclient.modelartsv2.v2.dataset import fakes
 
 
-
 class TestDatasetSyncStatus(fakes.TestModelartsv2):
-    columns = (
-        "dataset_id",
-        "status"
-    )
+    columns = ("dataset_id", "status")
 
     object = fakes.FakeDatasetSync.create_one()
 
@@ -36,7 +29,9 @@ class TestDatasetSyncStatus(fakes.TestModelartsv2):
 
         self.cmd = dataset.DatasetSyncStatus(self.app, None)
 
-        self.client.get_dataset_sync_status = mock.Mock(return_value=self.object)
+        self.client.get_dataset_sync_status = mock.Mock(
+            return_value=self.object
+        )
 
     def test_show_no_options(self):
         arglist = []
@@ -84,14 +79,19 @@ class TestDatasetSyncStatus(fakes.TestModelartsv2):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         get_mock_result = exceptions.CommandError("Resource Not Found")
-        self.client.get_dataset_sync_status = mock.Mock(side_effect=get_mock_result)
+        self.client.get_dataset_sync_status = mock.Mock(
+            side_effect=get_mock_result
+        )
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
             self.assertEqual("Resource Not Found", str(e))
-        self.client.get_dataset_sync_status.assert_called_with("nonexisting-dataset-id")
+        self.client.get_dataset_sync_status.assert_called_with(
+            "nonexisting-dataset-id"
+        )
+
 
 class TestDatasetSync(fakes.TestModelartsv2):
     def setUp(self):
@@ -118,4 +118,3 @@ class TestDatasetSync(fakes.TestModelartsv2):
         result = self.cmd.take_action(parsed_args)
         self.client.sync_dataset.assert_called_with(datasetId="dataset-id")
         self.assertIsNone(result)
-

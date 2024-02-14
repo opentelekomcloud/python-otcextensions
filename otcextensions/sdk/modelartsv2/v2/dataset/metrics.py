@@ -30,9 +30,3 @@ class Metrics(resource.Resource):
     start_time = resource.Body("start_time", type=float)
     #: ID of a team labeling task.
     workforce_task_id = resource.Body("workforce_task_id", type=str)
-
-
-
-
-
-

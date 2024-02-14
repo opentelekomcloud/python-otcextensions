@@ -20,8 +20,8 @@ from otcextensions.sdk.modelartsv1.v1 import devenv
 from otcextensions.sdk.modelartsv1.v1 import model
 from otcextensions.sdk.modelartsv1.v1 import service
 from otcextensions.sdk.modelartsv1.v1 import trainingjob
-from otcextensions.sdk.modelartsv1.v1 import trainingjob_version
 from otcextensions.sdk.modelartsv1.v1 import trainingjob_configuration
+from otcextensions.sdk.modelartsv1.v1 import trainingjob_version
 from otcextensions.sdk.modelartsv1.v1 import visualization_job
 from otcextensions.tests.unit.osclient import test_base
 from otcextensions.tests.unit.sdk.modelartsv1.v1 import examples
@@ -254,6 +254,7 @@ class FakeTrainingJobVersion(test_base.Fake):
             **examples.EXAMPLE_TRAINING_JOB_VERSION
         )
 
+
 class FakeTrainingJobConfiguration(test_base.Fake):
     """Fake one or more Modelarts training job configuration."""
 
@@ -280,7 +281,8 @@ class FakeVisualizationJob(test_base.Fake):
         :return:
             A FakeResource object, with id, name and so on
         """
-        object_info={         "job_id": 1,
+        object_info = {
+            "job_id": 1,
             "job_name": "visualization-job",
             "status": 1,
             "create_time": 15099239923,
@@ -288,19 +290,12 @@ class FakeVisualizationJob(test_base.Fake):
             "duration": 1502323,
             "job_desc": "This is a visualization job",
             "service_url": "https://XXX/modelarts/tensoarbod/xxxx/111",
-            "train_url": "/obs/name/" ,
-            "schedule": [
-            {
-            "type": "stop",
-            "timeUnit": "HOURS",
-            "duration": 1
+            "train_url": "/obs/name/",
+            "schedule": [{"type": "stop", "timeUnit": "HOURS", "duration": 1}],
+            "remaining_duration": None,
         }
-    ],
-    "remaining_duration": None}
 
-        return visualization_job.VisualizationJob(
-            **object_info
-        )
+        return visualization_job.VisualizationJob(**object_info)
 
 
 class FakeTrainingJob(test_base.Fake):

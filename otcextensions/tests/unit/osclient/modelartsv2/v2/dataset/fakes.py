@@ -201,15 +201,15 @@ class FakeDeleteSample(test_base.Fake):
         }
         return dataset.DeleteSample(**object_info)
 
+
 class FakeDatasetSync(test_base.Fake):
     """Fake dataset sample delete response."""
 
     @classmethod
     def generate(cls):
         object_info = {
-  "status" : "COMPLETED",
-  "dataset_id" : "gfghHSokody6AJigS5A"
-                }
+            "status": "COMPLETED",
+            "dataset_id": "gfghHSokody6AJigS5A",
+        }
 
         return dataset.Sync(**object_info)
-

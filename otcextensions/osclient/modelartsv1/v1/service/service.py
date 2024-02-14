@@ -15,6 +15,7 @@ import logging
 
 from osc_lib import exceptions
 from osc_lib import utils
+from osc_lib.cli import parseractions
 from osc_lib.command import command
 from otcextensions.common import cli_utils
 from otcextensions.common import sdk_utils
@@ -55,7 +56,7 @@ def _get_columns(item):
     )
 
 
-class ListService(command.Lister):
+class ListServices(command.Lister):
     _description = _("Get properties of a service")
     columns = (
         "Service Id",
@@ -65,7 +66,7 @@ class ListService(command.Lister):
     )
 
     def get_parser(self, prog_name):
-        parser = super(ListService, self).get_parser(prog_name)
+        parser = super(ListServices, self).get_parser(prog_name)
         parser.add_argument(
             "--cluster-id",
             metavar="<cluster_id>",
@@ -172,10 +173,8 @@ class CreateService(command.ShowOne):
             "name",
             metavar="<name>",
             help=_(
-                "Service name. The value can contain 1 to 64 visible "
-                "characters, including Chinese characters. Only letters, "
-                "Chinese characters, digits, hyphens (-), and "
-                "underscores (_) are allowed."
+                "Service name. Enter 1 to 64 characters. Only letters, "
+                "digits, hyphens (-), and underscores (_) are allowed."
             ),
         )
         parser.add_argument(
@@ -188,25 +187,16 @@ class CreateService(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--workspace-id",
-            metavar="<workspace_id>",
-            required=False,
-            help=_(
-                "ID of the workspace to which a service belongs. "
-                "The default value is 0, indicating the default workspace."
-            ),
-        )
-        parser.add_argument(
             "--infer-type",
-            metavar="<infer_type>",
-            default="real-time",
+            metavar="{" + ",".join(INFER_TYPE_CHOICES) + "}",
+            type=lambda s: s.lower(),
+            choices=INFER_TYPE_CHOICES,
             required=True,
-            help=_("Inference mode. The value can be real-time, batch."),
+            help=_("Inference mode."),
         )
         parser.add_argument(
             "--router-id",
             dest="vpc_id",
-            required=False,
             help=_(
                 "ID of the VPC to which a real-time service instance "
                 "is deployed. By default, this parameter is left blank."
@@ -215,7 +205,6 @@ class CreateService(command.ShowOne):
         parser.add_argument(
             "--network-id",
             dest="subnet_network_id",
-            required=False,
             help=_(
                 "ID of a subnet. By default, this parameter is left "
                 "blank. This parameter is mandatory when vpc_id is "
@@ -226,7 +215,6 @@ class CreateService(command.ShowOne):
         parser.add_argument(
             "--security-group-id",
             metavar="<security_group_id>",
-            required=False,
             help=_(
                 "A security group is a virtual firewall that provides "
                 "secure network access control policies for service "
@@ -234,44 +222,24 @@ class CreateService(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--cluster_id",
+            "--cluster-id",
             metavar="<cluster_id>",
             required=False,
             help=_(
-                "ID of a dedicated cluster. This parameter is left blank "
-                "by default, indicating that no dedicated cluster is "
-                "used. When using the dedicated cluster to deploy "
-                "services, ensure that the cluster status is normal."
+                "ID of a dedicated resource pool. If this parameter "
+                "is set --router-id doesnt take effecr."
             ),
         )
         parser.add_argument(
-            "--config",
-            metavar="<config>",
+            "--model-id",
+            metavar="<model_id>",
             required=True,
-            help=_(
-                "Model running configuration. If infer_type is batch, "
-                "you can configure only one model.  If you upload "
-                "multiple models, the first model is used for creating "
-                "a service by default. "
-            ),
-        )
-        parser.add_argument(
-            "--schedule",
-            metavar="<schedule>",
-            required=False,
-            help=_(
-                "Service scheduling configuration, which can be "
-                "configured only for real-time services. By default, "
-                "this parameter is not used. "
-            ),
-        )
-        parser.add_argument(
-            "--model_id", metavar="<model_id>", help=_("Model ID")
+            help=_("Model ID"),
         )
         parser.add_argument(
             "--weight",
             metavar="<weight>",
-            required=False,
+            type=int,
             help=_(
                 "Traffic weight allocated to a model. This parameter "
                 "is mandatory only when infer_type is set to real-time. "
@@ -281,78 +249,159 @@ class CreateService(command.ShowOne):
         parser.add_argument(
             "--specification",
             metavar="<specification>",
+            required=True,
             help=_(
                 "Resource specifications. Select specifications based on "
                 "service requirements."
             ),
         )
         parser.add_argument(
-            "--instance_count",
+            "--instance-count",
             metavar="<instance_count>",
-            required=False,
+            required=True,
+            type=int,
             help=_(
                 "Number of instances deployed in a model The value must "
                 "be greater than 0."
             ),
         )
         parser.add_argument(
-            "--type",
-            metavar="<type>",
-            required=False,
+            "--env",
+            action=parseractions.MultiKeyValueAction,
+            metavar="key=<key>,value=<value>",
+            required_keys=["key", "value"],
+            dest="envs",
             help=_(
-                "Scheduling type. Currently, only the value stop "
-                "is supported."
+                "Environment variable key-value pair required "
+                "for running a model."
             ),
         )
         parser.add_argument(
-            "--time_unit",
-            metavar="<time_unit>",
-            required=False,
+            "--schedule",
+            metavar="type=<type>,time_unit=<time_unit>,duration=<duration>",
+            required_keys=["type", "time_unit", "duration"],
+            dest="schedule",
+            action=parseractions.MultiKeyValueAction,
             help=_(
-                "Scheduling time unit. Possible values are as follows: "
-                "DAYS HOURS MINUTES"
+                "Service scheduling configuration, which can be "
+                "configured only for real-time services."
             ),
         )
         parser.add_argument(
-            "--duration",
-            metavar="<duration>",
-            required=False,
+            "--custom-spec",
+            metavar="cpu=<cpu>,memory=<memory>,gpu_p4=<gpu_p4>",
+            required_keys=["cpu", "memory"],
+            dest="custom_spec",
+            action=parseractions.MultiKeyValueAction,
             help=_(
-                "Value that maps to the time unit. For example, "
-                "if the task stops after two hours, set time_unit "
-                "to HOURS and duration to 2."
+                "Custom specifications. Set this parameter when "
+                "you use a dedicated resource pool."
             ),
         )
-
+        parser.add_argument(
+            "--src-type",
+            metavar="<src_type>",
+            required=True,
+            type=int,
+            help=_("Data source type."),
+        )
+        parser.add_argument(
+            "--src-path",
+            metavar="<src_path>",
+            help=_("OBS path of the input data of a batch job."),
+        )
+        parser.add_argument(
+            "--dest-path",
+            metavar="<dest_path>",
+            help=_("OBS path of the output data of a batch job."),
+        )
+        parser.add_argument(
+            "--req-uri",
+            metavar="<dest_path>",
+            help=_(
+                "API URI from the model config.json file for inference. "
+                "If a ModelArts built-in inference image is used, the "
+                "value of this parameter is /"
+            ),
+        )
+        parser.add_argument(
+            "--mapping-type",
+            metavar="{file, csv}",
+            type=lambda s: s.lower(),
+            choices=["file", "csv"],
+            help=_("Mapping type of the input data."),
+        )
+        parser.add_argument(
+            "--mapping-rule",
+            metavar="<mapping_rule>",
+            help=_(
+                "Mapping between input parameters and CSV data. This "
+                "parameter is mandatory only when mapping_type is set to csv."
+            ),
+        )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
-        attrs = {"service_name": parsed_args.name}
-
+        attrs = {
+            "service_name": parsed_args.name,
+            "infer_type": parsed_args.infer_type,
+            "config": [
+                {
+                    "model_id": parsed_args.model_id,
+                    "specification": parsed_args.specification,
+                    "instance_count": parsed_args.instance_count,
+                }
+            ],
+        }
         args_list = (
             "description",
-            "infer_type",
             "workspace_id",
             "vpc_id",
             "subnet_network_id",
             "security_group_id",
             "cluster_id",
-            "config",
             "schedule",
-            "type",
-            "time_unit",
-            "duration",
-            "instance_count",
-            "model_id",
-            "weight",
-            "specification",
         )
-
         for arg in args_list:
             val = getattr(parsed_args, arg)
             if val:
                 attrs[arg] = val
+
+        if parsed_args.envs:
+            attrs["config"][0]["envs"] = parsed_args.envs
+
+        if parsed_args.infer_type == "real-time":
+            for arg in ("src_path", "dest_path", "req_uri", "mapping_type"):
+                val = getattr(parsed_args, arg)
+                if val:
+                    attrs["config"][0][arg] = val
+                else:
+                    raise exceptions.CommandError(
+                        f"For real-time service {arg} arg is required."
+                    )
+            if parsed_args.src_type:
+                attrs["config"][0]["src_type"] = parsed_args.src_type
+            custom_spec = parsed_args.custom_spec
+            if custom_spec:
+                if len(custom_spec) > 1:
+                    msg = "--custom-spec option cannot be repeated"
+                    raise exceptions.CommandError(msg)
+                else:
+                    custom_spec = custom_spec[0]
+                    for key, val in custom_spec.items():
+                        if key == "memory":
+                            custom_spec[key] = int(val)
+                        else:
+                            custom_spec[key] = float(val)
+                    attrs["config"][0].update(custom_spec=custom_spec)
+        elif parsed_args.infer_type == "batch":
+            if parsed_args.weight:
+                attrs["config"][0]["weight"] = parsed_args.weight
+            else:
+                raise exceptions.CommandError(
+                    "For batch service weight is required."
+                )
 
         data = client.create_service(**attrs)
         _formatters = {}
@@ -425,7 +474,7 @@ class UpdateService(command.Command):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
         attrs = {}
-        #if parsed_args.service_id:
+        # if parsed_args.service_id:
         #    attrs["service_id"] = parsed_args.service_id
         if parsed_args.description:
             attrs["description"] = parsed_args.description

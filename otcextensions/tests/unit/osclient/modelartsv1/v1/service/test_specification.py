@@ -75,8 +75,7 @@ class TestSpecifications(fakes.TestModelartsv1):
     def test_list_args(self):
         arglist = [
             "--is-personal-cluster",
-            "--infer-type",
-            "real-time",
+            "--infer-type", "real-time",
         ]
 
         verifylist = [

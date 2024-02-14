@@ -11,17 +11,8 @@
 # under the License.
 #
 import mock
-
-# from openstackclient.tests.unit import utils as tests_utils
-from otcextensions.common import cli_utils
 from otcextensions.osclient.modelartsv1.v1 import trainingjob_configuration
 from otcextensions.tests.unit.osclient.modelartsv1.v1 import fakes
-
-# from unittest.mock import call
-
-# from osc_lib import exceptions
-# from osc_lib.cli import format_columns
-
 
 _COLUMNS = (
     "access_address",
@@ -69,7 +60,9 @@ class TestListTrainingJobConfigurations(fakes.TestModelartsv1):
     def setUp(self):
         super(TestListTrainingJobConfigurations, self).setUp()
 
-        self.cmd = trainingjob_configuration.ListTrainingJobConfigurations(self.app, None)
+        self.cmd = trainingjob_configuration.ListTrainingJobConfigurations(
+            self.app, None
+        )
 
         self.client.trainingjob_configurations = mock.Mock()
         self.client.api_mock = self.client.trainingjob_configurations
@@ -95,14 +88,22 @@ class TestListTrainingJobConfigurations(fakes.TestModelartsv1):
 
 
 class TestCreateTrainingJobConfiguration(fakes.TestModelartsv1):
-    _trainingjob_configuration = fakes.FakeTrainingJobConfiguration.create_one()
+    _trainingjob_configuration = (
+        fakes.FakeTrainingJobConfiguration.create_one()
+    )
     columns = _COLUMNS
-    data = fakes.gen_data(_trainingjob_configuration, columns, trainingjob_configuration._formatters)
+    data = fakes.gen_data(
+        _trainingjob_configuration,
+        columns,
+        trainingjob_configuration._formatters,
+    )
 
     def setUp(self):
         super(TestCreateTrainingJobConfiguration, self).setUp()
 
-        self.cmd = trainingjob_configuration.CreateTrainingJobConfiguration(self.app, None)
+        self.cmd = trainingjob_configuration.CreateTrainingJobConfiguration(
+            self.app, None
+        )
 
         self.client.create_trainingjob_configuration = mock.Mock(
             return_value=self._trainingjob_configuration
@@ -110,44 +111,25 @@ class TestCreateTrainingJobConfiguration(fakes.TestModelartsv1):
 
     def test_create(self):
         arglist = [
-            "--config-name",
-            "test-trainingjob-configuration",
-            "--config-desc",
-            "1",
-            "--worker-server-num",
-            "2",
-            "--app-url",
-            "3",
-            "--boot-file-url",
-            "4",
-            "--log-url",
-            "5",
-            "--data-url",
-            "6",
-            "--train-url",
-            "7",
-            "--dataset-id",
-            "8",
-            "--dataset-version-id",
-            "9",
-            "--data-source",
-            "10",
-            "--spec-id",
-            "11",
-            "--engine-id",
-            "12",
-            "--model-id",
-            "13",
-            "--parameter",
-            "14",
-            "--user-image-url",
-             "15",
-            "--user-command",
-            "16",
-            "--dataset-version",
-            "17",
-            "--type",
-            "18"
+            "--config-name", "test-trainingjob-configuration",
+            "--config-desc", "1",
+            "--worker-server-num", "2",
+            "--app-url", "3",
+            "--boot-file-url", "4",
+            "--log-url", "5",
+            "--data-url", "6",
+            "--train-url", "7",
+            "--dataset-id", "8",
+            "--dataset-version-id", "9",
+            "--data-source", "10",
+            "--spec-id", "11",
+            "--engine-id", "12",
+            "--model-id", "13",
+            "--parameter", "14",
+            "--user-image-url", "15",
+            "--user-command", "16",
+            "--dataset-version", "17",
+            "--type", "18",
         ]
         verifylist = [
             ("config_name", "test-trainingjob-configuration"),
@@ -168,7 +150,7 @@ class TestCreateTrainingJobConfiguration(fakes.TestModelartsv1):
             ("user_image_url", "15"),
             ("user_command", "16"),
             ("dataset_version", "17"),
-            ("type", "18")
+            ("type", "18"),
         ]
         # Verify cm is triggereg with default parameters
         self.check_parser(self.cmd, arglist, verifylist)
@@ -189,8 +171,12 @@ class TestDeleteTrainingJobConfiguration(fakes.TestModelartsv1):
     def setUp(self):
         super(TestDeleteTrainingJobConfiguration, self).setUp()
 
-        self.cmd = trainingjob_configuration.DeleteTrainingJobConfiguration(self.app, None)
-        self.client.delete_trainingjob_configuration = mock.Mock(return_value=None)
+        self.cmd = trainingjob_configuration.DeleteTrainingJobConfiguration(
+            self.app, None
+        )
+        self.client.delete_trainingjob_configuration = mock.Mock(
+            return_value=None
+        )
 
     def test_delete(self):
         arglist = ["test_config_name"]
@@ -204,5 +190,7 @@ class TestDeleteTrainingJobConfiguration(fakes.TestModelartsv1):
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
-        self.client.delete_trainingjob_configuration.assert_called_with(config_name="test_config_name")
+        self.client.delete_trainingjob_configuration.assert_called_with(
+            config_name="test_config_name"
+        )
         self.assertIsNone(result)

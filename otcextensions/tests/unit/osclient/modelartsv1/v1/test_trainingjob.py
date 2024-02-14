@@ -11,17 +11,9 @@
 # under the License.
 #
 import mock
-
-# from openstackclient.tests.unit import utils as tests_utils
 from otcextensions.common import cli_utils
 from otcextensions.osclient.modelartsv1.v1 import trainingjob
 from otcextensions.tests.unit.osclient.modelartsv1.v1 import fakes
-
-# from unittest.mock import call
-
-# from osc_lib import exceptions
-# from osc_lib.cli import format_columns
-
 
 _COLUMNS = (
     "access_address",
@@ -110,34 +102,20 @@ class TestCreateTrainingJob(fakes.TestModelartsv1):
 
     def test_create(self):
         arglist = [
-            "--job-name",
-            "test-trainingjob",
-            "--job-desc",
-            "1",
-            "--workspace-id",
-            "2",
-            "--worker-server-num",
-            "3",
-            "--app-url",
-            "4",
-            "--boot-file-url",
-            "5",
-            "--log-url",
-            "6",
-            "--data-url",
-            "7",
-            "--dataset-id",
-            "8",
-            "--dataset-version-id",
-            "9",
-            "--data-source",
-            "10",
-            "--spec-id",
-            "11",
-            "--engine-id",
-            "12",
-            "--model-id",
-            "13",
+            "--job-name", "test-trainingjob",
+            "--job-desc", "1",
+            "--workspace-id", "2",
+            "--worker-server-num", "3",
+            "--app-url", "4",
+            "--boot-file-url", "5",
+            "--log-url", "6",
+            "--data-url", "7",
+            "--dataset-id", "8",
+            "--dataset-version-id", "9",
+            "--data-source", "10",
+            "--spec-id", "11",
+            "--engine-id", "12",
+            "--model-id", "13",
         ]
         verifylist = [
             ("job_name", "test-trainingjob"),

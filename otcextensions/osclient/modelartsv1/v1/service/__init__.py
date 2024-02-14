@@ -16,7 +16,7 @@ from .log import Logs
 from .monitor import Monitors
 from .service import CreateService
 from .service import DeleteService
-from .service import ListService
+from .service import ListServices
 from .service import ShowService
 from .service import UpdateService
 from .specification import Specifications
@@ -28,7 +28,7 @@ __all__ = (
     "Monitors",
     "CreateService",
     "DeleteService",
-    "ListService",
+    "ListServices",
     "ShowService",
     "UpdateService",
     "Specifications",

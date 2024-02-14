@@ -62,7 +62,8 @@ attrs = {
         }
     ],
     "model_algorithm": "object_detection",
-    "model_metrics": '{"f1":0.52381,"recall":0.666667,"precision":0.466667,"accuracy":0.625}',
+    "model_metrics": '{"f1":0.52381,"recall":0.666667,\
+        "precision":0.466667,"accuracy":0.625}',
     "apis": [
         {
             "url": "/v1/xxx/image",

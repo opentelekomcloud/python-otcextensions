@@ -247,8 +247,11 @@ EXAMPLE_TRAINING_JOB_CONFIGURATION = {
     "engine_id": 1,
     "engine_version": "TF-1.4.0-python2.7",
     "user_image_url": "100.125.5.235:20202/jobmng/custom-cpu-base:1.0",
-    "user_command": "bash -x /home/work/run_train.sh python /home/work/user-job-dir/app/mnist/mnist_softmax.py --data_url /home/work/user-job-dir/app/mnist_data"
-
+    "user_command": (
+        "bash -x /home/work/run_train.sh "
+        "python /home/work/user-job-dir/app/mnist/mnist_softmax.py "
+        "--data_url /home/work/user-job-dir/app/mnist_data"
+    ),
 }
 EXAMPLE_VISUALIZATION_JOB = {
     "duration": 33000,

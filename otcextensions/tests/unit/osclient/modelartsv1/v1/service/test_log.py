@@ -70,8 +70,7 @@ class TestLogs(fakes.TestModelartsv1):
     def test_list_args(self):
         arglist = [
             "service-id",
-            "--update-time",
-            "123",
+            "--update-time", "123",
         ]
 
         verifylist = [

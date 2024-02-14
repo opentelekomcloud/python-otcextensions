@@ -68,20 +68,13 @@ class TestEvents(fakes.TestModelartsv1):
     def test_list_args(self):
         arglist = [
             "service-id",
-            "--event-type",
-            "normal",
-            "--limit",
-            "10",
-            "--offset",
-            "2",
-            "--order",
-            "asc",
-            "--sort-by",
-            "occur_time",
-            "--start-time",
-            "123",
-            "--end-time",
-            "567",
+            "--event-type", "normal",
+            "--limit", "10",
+            "--offset", "2",
+            "--order", "asc",
+            "--sort-by", "occur_time",
+            "--start-time", "123",
+            "--end-time", "567",
         ]
 
         verifylist = [

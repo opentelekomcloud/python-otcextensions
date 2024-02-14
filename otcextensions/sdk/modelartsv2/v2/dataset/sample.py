@@ -172,7 +172,6 @@ class GetSampleSearchCondition(resource.Resource):
     #: List of labeling team members.
     labelers = resource.Body("labelers", type=list, list_type=str)
     #: Label list.
-    labels= resource.Body("labels", type=list, list_type=dict)
+    labels = resource.Body("labels", type=list, list_type=dict)
     #: Attribute key-value pair of a dataset.
     metadata = resource.Body("metadata", type=dict)
-
