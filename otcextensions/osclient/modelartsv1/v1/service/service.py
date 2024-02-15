@@ -169,6 +169,7 @@ class CreateService(command.ShowOne):
 
     def get_parser(self, prog_name):
         parser = super(CreateService, self).get_parser(prog_name)
+
         parser.add_argument(
             "name",
             metavar="<name>",
@@ -194,16 +195,21 @@ class CreateService(command.ShowOne):
             required=True,
             help=_("Inference mode."),
         )
-        parser.add_argument(
+
+        network_group = parser.add_argument_group("network arguments")
+        parser._action_groups.insert(2, parser._action_groups.pop())
+        network_group.add_argument(
             "--router-id",
+            metavar="<router_id>",
             dest="vpc_id",
             help=_(
                 "ID of the VPC to which a real-time service instance "
                 "is deployed. By default, this parameter is left blank."
             ),
         )
-        parser.add_argument(
+        network_group.add_argument(
             "--network-id",
+            metavar="<network_id>",
             dest="subnet_network_id",
             help=_(
                 "ID of a subnet. By default, this parameter is left "
@@ -212,7 +218,7 @@ class CreateService(command.ShowOne):
                 "subnet details on the VPC management console "
             ),
         )
-        parser.add_argument(
+        network_group.add_argument(
             "--security-group-id",
             metavar="<security_group_id>",
             help=_(
@@ -231,52 +237,6 @@ class CreateService(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--model-id",
-            metavar="<model_id>",
-            required=True,
-            help=_("Model ID"),
-        )
-        parser.add_argument(
-            "--weight",
-            metavar="<weight>",
-            type=int,
-            help=_(
-                "Traffic weight allocated to a model. This parameter "
-                "is mandatory only when infer_type is set to real-time. "
-                "The sum of the weights must be 100."
-            ),
-        )
-        parser.add_argument(
-            "--specification",
-            metavar="<specification>",
-            required=True,
-            help=_(
-                "Resource specifications. Select specifications based on "
-                "service requirements."
-            ),
-        )
-        parser.add_argument(
-            "--instance-count",
-            metavar="<instance_count>",
-            required=True,
-            type=int,
-            help=_(
-                "Number of instances deployed in a model The value must "
-                "be greater than 0."
-            ),
-        )
-        parser.add_argument(
-            "--env",
-            action=parseractions.MultiKeyValueAction,
-            metavar="key=<key>,value=<value>",
-            required_keys=["key", "value"],
-            dest="envs",
-            help=_(
-                "Environment variable key-value pair required "
-                "for running a model."
-            ),
-        )
-        parser.add_argument(
             "--schedule",
             metavar="type=<type>,time_unit=<time_unit>,duration=<duration>",
             required_keys=["type", "time_unit", "duration"],
@@ -288,6 +248,58 @@ class CreateService(command.ShowOne):
             ),
         )
         parser.add_argument(
+            "--workspace-id",
+            metavar="<workspace_id>",
+            help=_("Workspace ID."),
+        )
+
+        config_group = parser.add_argument_group('config arguments')
+        parser._action_groups.insert(3, parser._action_groups.pop())
+        config_group.add_argument(
+            "--model-id",
+            metavar="<model_id>",
+            required=True,
+            help=_("Model ID"),
+        )
+        config_group.add_argument(
+            "--weight",
+            metavar="<weight>",
+            type=int,
+            help=_(
+                "Traffic weight allocated to a model. This parameter "
+                "is mandatory only when infer_type is set to real-time. "
+                "The sum of the weights must be 100."
+            ),
+        )
+        config_group.add_argument(
+            "--specification",
+            metavar="<specification>",
+            required=True,
+            help=_(
+                "Resource specifications. Select specifications based on "
+                "service requirements."
+            ),
+        )
+        config_group.add_argument(
+            "--instance-count",
+            metavar="<instance_count>",
+            required=True,
+            type=int,
+            help=_(
+                "Number of instances deployed in a model The value must "
+                "be greater than 0."
+            ),
+        )
+        config_group.add_argument(
+            "--env",
+            action=parseractions.KeyValueAction,
+            dest="envs",
+            help=_(
+                "Environment variable key=ENV_VAR value=Value pair required "
+                "for running a model."
+            ),
+        )
+        config_group.add_argument(
             "--custom-spec",
             metavar="cpu=<cpu>,memory=<memory>,gpu_p4=<gpu_p4>",
             required_keys=["cpu", "memory"],
@@ -298,24 +310,22 @@ class CreateService(command.ShowOne):
                 "you use a dedicated resource pool."
             ),
         )
-        parser.add_argument(
+        config_group.add_argument(
             "--src-type",
             metavar="<src_type>",
-            required=True,
-            type=int,
             help=_("Data source type."),
         )
-        parser.add_argument(
+        config_group.add_argument(
             "--src-path",
             metavar="<src_path>",
             help=_("OBS path of the input data of a batch job."),
         )
-        parser.add_argument(
+        config_group.add_argument(
             "--dest-path",
             metavar="<dest_path>",
             help=_("OBS path of the output data of a batch job."),
         )
-        parser.add_argument(
+        config_group.add_argument(
             "--req-uri",
             metavar="<dest_path>",
             help=_(
@@ -324,14 +334,14 @@ class CreateService(command.ShowOne):
                 "value of this parameter is /"
             ),
         )
-        parser.add_argument(
+        config_group.add_argument(
             "--mapping-type",
             metavar="{file, csv}",
             type=lambda s: s.lower(),
             choices=["file", "csv"],
             help=_("Mapping type of the input data."),
         )
-        parser.add_argument(
+        config_group.add_argument(
             "--mapping-rule",
             metavar="<mapping_rule>",
             help=_(
@@ -369,7 +379,7 @@ class CreateService(command.ShowOne):
                 attrs[arg] = val
 
         if parsed_args.envs:
-            attrs["config"][0]["envs"] = parsed_args.envs
+            attrs["config"][0].update(envs=parsed_args.envs)
 
         if parsed_args.infer_type == "real-time":
             for arg in ("src_path", "dest_path", "req_uri", "mapping_type"):
@@ -378,8 +388,11 @@ class CreateService(command.ShowOne):
                     attrs["config"][0][arg] = val
                 else:
                     raise exceptions.CommandError(
-                        f"For real-time service {arg} arg is required."
+                        f"For real-time service --{arg.replace('_', '-')} "
+                        "argument is required."
                     )
+            if parsed_args.mapping_rule:
+                attrs["config"][0]["mapping_rule"] = parsed_args.mapping_rule
             if parsed_args.src_type:
                 attrs["config"][0]["src_type"] = parsed_args.src_type
             custom_spec = parsed_args.custom_spec
@@ -395,12 +408,13 @@ class CreateService(command.ShowOne):
                         else:
                             custom_spec[key] = float(val)
                     attrs["config"][0].update(custom_spec=custom_spec)
+
         elif parsed_args.infer_type == "batch":
             if parsed_args.weight:
                 attrs["config"][0]["weight"] = parsed_args.weight
             else:
                 raise exceptions.CommandError(
-                    "For batch service weight is required."
+                    "For batch service --weight argument is required."
                 )
 
         data = client.create_service(**attrs)

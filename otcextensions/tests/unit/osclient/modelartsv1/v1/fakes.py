@@ -91,7 +91,6 @@ class FakeService(test_base.Fake):
         :return:
             A FakeResource object, with id, name and so on
         """
-
         return service.Service(**examples.EXAMPLE_SERVICE)
 
 
