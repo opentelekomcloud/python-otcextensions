@@ -253,7 +253,7 @@ class ListDatasetVersions(command.Lister):
         query = {}
         if parsed_args.dataset_id:
             query["dataset_id"] = parsed_args.dataset_id
-        data = client.dataset_version(**query)
+        data = client.dataset_versions(**query)
 
         table = (
             self.columns,

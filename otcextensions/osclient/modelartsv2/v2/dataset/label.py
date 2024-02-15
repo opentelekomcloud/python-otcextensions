@@ -216,7 +216,7 @@ class ListLabels(command.Lister):
         query = {}
         if parsed_args.dataset_id:
             query["dataset_id"] = parsed_args.dataset_id
-        data = client.labels(**query)
+        data = client.dataset_labels(**query)
 
         table = (
             self.columns,

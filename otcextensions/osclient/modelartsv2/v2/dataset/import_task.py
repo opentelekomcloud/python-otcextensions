@@ -192,17 +192,12 @@ class CreateDatasetImportTask(command.ShowOne):
             attrs["name"] = parsed_args.name
         if parsed_args.type:
             attrs["type"] = parsed_args.type
-        if parsed_args.property:
-            attrs["property"] = parsed_args.property
         if parsed_args.label_properties:
             label_properties = {}
             for item in parsed_args.label_properties:
                 label_properties[item["key"]] = item["value"]
             attrs["label_properties"] = label_properties
         print("******", attrs)
-        import sys
-
-        sys.exit(1)
         obj = client.create_dataset_import_task(**attrs)
 
         display_columns, columns = _get_columns(obj)

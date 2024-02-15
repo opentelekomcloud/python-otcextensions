@@ -49,13 +49,7 @@ class SynchronizeDataset(command.Command):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
-
-        attrs = {}
-
-        if parsed_args.datasetId:
-            attrs["datasetId"] = parsed_args.datasetId
-
-        client.sync_dataset(**attrs)
+        client.sync_dataset(parsed_args.datasetId)
 
 
 class DatasetSyncStatus(command.ShowOne):
