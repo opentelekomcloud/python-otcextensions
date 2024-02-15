@@ -143,7 +143,9 @@ class TestListServices(fakes.TestModelartsv1):
 class TestCreateService(fakes.TestModelartsv1):
     _service = fakes.FakeService.create_one()
     columns = _COLUMNS
-    data = fakes.gen_data(_service, columns)
+    data = fakes.gen_data(_service, columns, service.service._formatters)
+
+    default_timeout = 1200
 
     def setUp(self):
         super(TestCreateService, self).setUp()
@@ -151,11 +153,13 @@ class TestCreateService(fakes.TestModelartsv1):
         self.cmd = service.CreateService(self.app, None)
 
         self.client.create_service = mock.Mock(return_value=self._service)
+        self.client.get_service = mock.Mock(return_value=self._service)
+        self.client.wait_for_service = mock.Mock(return_value=True)
 
-    def test_create_realtime(self):
+    def test_create_batch(self):
         arglist = [
             "test-service",
-            "--infer-type", "real-time",
+            "--infer-type", "batch",
             "--router-id", "1",
             "--network-id", "2",
             "--security-group-id", "3",
@@ -168,10 +172,11 @@ class TestCreateService(fakes.TestModelartsv1):
             "--mapping-type", "csv",
             "--env", "VAR1=value1",
             "--env", "VAR2=value2",
+            "--wait",
         ]
         verifylist = [
             ("name", "test-service"),
-            ("infer_type", "real-time"),
+            ("infer_type", "batch"),
             ("vpc_id", "1"),
             ("subnet_network_id", "2"),
             ("security_group_id", "3"),
@@ -183,6 +188,7 @@ class TestCreateService(fakes.TestModelartsv1):
             ("req_uri", "9"),
             ("mapping_type", "csv"),
             ("envs", {"VAR1": "value1", "VAR2": "value2"}),
+            ("wait", True),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -191,7 +197,7 @@ class TestCreateService(fakes.TestModelartsv1):
         columns, data = self.cmd.take_action(parsed_args)
         attrs = {
             "service_name": "test-service",
-            "infer_type": "real-time",
+            "infer_type": "batch",
             "config": [
                 {
                     "model_id": "4",
@@ -209,13 +215,16 @@ class TestCreateService(fakes.TestModelartsv1):
             "security_group_id": "3",
         }
         self.client.create_service.assert_called_with(**attrs)
+        self.client.wait_for_service.assert_called_with(
+            self._service.id, self.default_timeout)
+        self.client.get_service.assert_called_with(self._service.id)
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
 
-    def test_create_batch(self):
+    def test_create_realtime(self):
         arglist = [
             "test-service",
-            "--infer-type", "batch",
+            "--infer-type", "real-time",
             "--router-id", "1",
             "--network-id", "2",
             "--security-group-id", "3",
@@ -225,10 +234,11 @@ class TestCreateService(fakes.TestModelartsv1):
             "--weight", "7",
             "--env", "VAR1=value1",
             "--env", "VAR2=value2",
+            "--wait",
         ]
         verifylist = [
             ("name", "test-service"),
-            ("infer_type", "batch"),
+            ("infer_type", "real-time"),
             ("vpc_id", "1"),
             ("subnet_network_id", "2"),
             ("security_group_id", "3"),
@@ -237,6 +247,7 @@ class TestCreateService(fakes.TestModelartsv1):
             ("instance_count", 6),
             ("weight", 7),
             ("envs", {"VAR1": "value1", "VAR2": "value2"}),
+            ("wait", True),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -245,7 +256,7 @@ class TestCreateService(fakes.TestModelartsv1):
         columns, data = self.cmd.take_action(parsed_args)
         attrs = {
             "service_name": "test-service",
-            "infer_type": "batch",
+            "infer_type": "real-time",
             "config": [
                 {
                     "model_id": "4",
@@ -260,6 +271,9 @@ class TestCreateService(fakes.TestModelartsv1):
             "security_group_id": "3",
         }
         self.client.create_service.assert_called_with(**attrs)
+        self.client.wait_for_service.assert_called_with(
+            self._service.id, self.default_timeout)
+        self.client.get_service.assert_called_with(self._service.id)
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
 

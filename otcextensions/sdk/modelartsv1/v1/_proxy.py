@@ -10,6 +10,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
+import time
+
+from openstack import exceptions
 from openstack import proxy
 from otcextensions.sdk.modelartsv1.v1 import \
     builtin_algorithms as _builtin_algorithms
@@ -340,6 +343,21 @@ class Proxy(proxy.Proxy):
             instances
         """
         return self._list(_service.Cluster, **params)
+
+    def wait_for_service(self, service, timeout=1200, wait=5):
+        while timeout > 0:
+            obj = self.get_service(service)
+            status = obj.status.lower()
+            if status == 'deploying':
+                pass
+            elif status in ["running", 'finished']:
+                return True
+            else:
+                raise exceptions.SDKException(obj.error_msg)
+            timeout = timeout - wait
+            time.sleep(wait)
+        raise exceptions.SDKException(
+            f"Wait Timed Out. service status is: {status}")
 
     # Training Job Management
 

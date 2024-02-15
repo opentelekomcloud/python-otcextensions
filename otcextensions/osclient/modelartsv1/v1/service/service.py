@@ -292,11 +292,13 @@ class CreateService(command.ShowOne):
         )
         config_group.add_argument(
             "--env",
+            metavar="<env>",
             action=parseractions.KeyValueAction,
             dest="envs",
             help=_(
-                "Environment variable key=ENV_VAR value=Value pair required "
-                "for running a model."
+                "Environment variable key-value pair required "
+                "for running a model.\n"
+                "Example: --env VAR1=value1 --env VAR2=value2"
             ),
         )
         config_group.add_argument(
@@ -349,6 +351,19 @@ class CreateService(command.ShowOne):
                 "parameter is mandatory only when mapping_type is set to csv."
             ),
         )
+        parser.add_argument(
+            '--wait',
+            action='store_true',
+            help=('Wait for service deployment.')
+        )
+        parser.add_argument(
+            '--timeout',
+            metavar='<timeout>',
+            type=int,
+            default=1200,
+            help=_('Timeout for the wait in seconds (default 1200 seconds).'),
+        )
+
         return parser
 
     def take_action(self, parsed_args):
@@ -381,14 +396,14 @@ class CreateService(command.ShowOne):
         if parsed_args.envs:
             attrs["config"][0].update(envs=parsed_args.envs)
 
-        if parsed_args.infer_type == "real-time":
+        if parsed_args.infer_type == "batch":
             for arg in ("src_path", "dest_path", "req_uri", "mapping_type"):
                 val = getattr(parsed_args, arg)
                 if val:
                     attrs["config"][0][arg] = val
                 else:
                     raise exceptions.CommandError(
-                        f"For real-time service --{arg.replace('_', '-')} "
+                        f"For batch infer_type --{arg.replace('_', '-')} "
                         "argument is required."
                     )
             if parsed_args.mapping_rule:
@@ -409,16 +424,19 @@ class CreateService(command.ShowOne):
                             custom_spec[key] = float(val)
                     attrs["config"][0].update(custom_spec=custom_spec)
 
-        elif parsed_args.infer_type == "batch":
+        elif parsed_args.infer_type == "real-time":
             if parsed_args.weight:
                 attrs["config"][0]["weight"] = parsed_args.weight
             else:
                 raise exceptions.CommandError(
-                    "For batch service --weight argument is required."
+                    "For real-time infer_type --weight argument is required."
                 )
 
-        data = client.create_service(**attrs)
-        _formatters = {}
+        service = client.create_service(**attrs)
+        if parsed_args.wait:
+            client.wait_for_service(service.id, parsed_args.timeout)
+
+        data = client.get_service(service.id)
         display_columns, columns = _get_columns(data)
         data = utils.get_item_properties(data, columns, formatters=_formatters)
 
