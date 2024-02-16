@@ -217,7 +217,7 @@ class CreateDataset(command.ShowOne):
         return parser
 
     def take_action(self, parsed_args):
-        client = self.app.client_manager.modelartsv2.v2
+        client = self.app.client_manager.modelartsv2
 
         attrs = {
             "dataset_name": parsed_args.name,

@@ -116,5 +116,5 @@ class TestDatasetSync(fakes.TestModelartsv2):
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
-        self.client.sync_dataset.assert_called_with(datasetId="dataset-id")
+        self.client.sync_dataset.assert_called_with('dataset-id')
         self.assertIsNone(result)

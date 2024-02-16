@@ -49,7 +49,6 @@ class TestListVisualizationJobs(fakes.TestModelartsv1):
                 cli_utils.UnixTimestampFormatter(s.created_at),
             )
         )
-    print(">>>data", data)
 
     def setUp(self):
         super(TestListVisualizationJobs, self).setUp()
