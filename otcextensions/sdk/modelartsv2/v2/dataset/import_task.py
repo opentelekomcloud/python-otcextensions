@@ -152,7 +152,7 @@ class ImportTask(resource.Resource):
     allow_create = True
     allow_list = True
     allow_commit = False
-    allow_delete = True
+    allow_delete = False
     allow_fetch = True
     allow_patch = True
 

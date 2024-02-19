@@ -213,3 +213,27 @@ class FakeDatasetSync(test_base.Fake):
         }
 
         return dataset.Sync(**object_info)
+
+
+class FakeDatasetImportTask(test_base.Fake):
+    """Fake dataset export task response."""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            "task_id": "xxx-export-task-id",
+        }
+        return dataset.ImportTask(**object_info)
+
+
+class FakeDatasetExportTask(test_base.Fake):
+    """Fake dataset export task response."""
+
+    @classmethod
+    def generate(cls):
+        object_info = {
+            "task_id": "xxx-export-task-id",
+            "export_path": "dasdas"
+        }
+        return dataset.ExportTask(**object_info)
+

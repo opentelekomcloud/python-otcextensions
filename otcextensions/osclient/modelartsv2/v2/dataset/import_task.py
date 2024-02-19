@@ -197,7 +197,6 @@ class CreateDatasetImportTask(command.ShowOne):
             for item in parsed_args.label_properties:
                 label_properties[item["key"]] = item["value"]
             attrs["label_properties"] = label_properties
-        print("******", attrs)
         obj = client.create_dataset_import_task(**attrs)
 
         display_columns, columns = _get_columns(obj)

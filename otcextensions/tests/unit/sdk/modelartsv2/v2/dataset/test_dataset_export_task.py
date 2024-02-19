@@ -28,7 +28,7 @@ class TestDatasetExportTask(base.TestCase):
         super(TestDatasetExportTask, self).setUp()
 
     def test_basic(self):
-        sot = export_task.DatasetExportTask()
+        sot = dataset.ExportTask()
 
         self.assertEqual("/datasets/%(dataset_id)s/export-tasks", sot.base_path)
         self.assertEqual(None, sot.resource_key)
@@ -42,7 +42,7 @@ class TestDatasetExportTask(base.TestCase):
 
     def test_make_it(self):
         updated_sot_attrs = []
-        sot = export_task.DatasetExportTask(**EXAMPLE)
+        sot = dataset.ExportTask(**EXAMPLE)
 
         for key, value in EXAMPLE.items():
             if key not in updated_sot_attrs:

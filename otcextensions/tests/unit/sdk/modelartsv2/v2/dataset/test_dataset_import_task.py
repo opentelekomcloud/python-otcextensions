@@ -27,7 +27,7 @@ class TestDatasetImportTask(base.TestCase):
         super(TestDatasetImportTask, self).setUp()
 
     def test_basic(self):
-        sot = dataset.DatasetImportTask()
+        sot = dataset.ImportTask()
 
         self.assertEqual("/datasets/%(dataset_id)s/import-tasks", sot.base_path)
         self.assertEqual(None, sot.resource_key)
@@ -41,7 +41,7 @@ class TestDatasetImportTask(base.TestCase):
 
     def test_make_it(self):
         updated_sot_attrs = []
-        sot = dataset.DatasetImportTask(**EXAMPLE)
+        sot = dataset.ImportTask(**EXAMPLE)
 
         for key, value in EXAMPLE.items():
             if key not in updated_sot_attrs:
