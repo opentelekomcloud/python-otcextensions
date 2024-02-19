@@ -17,5 +17,5 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
-for trainingjob_conf in conn.modelartsv1.trainingjob_configuration():
+for trainingjob_conf in conn.modelartsv1.trainingjob_configurations():
     print(trainingjob_conf)
