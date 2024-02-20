@@ -20,6 +20,12 @@ from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
+EXPORT_TYPE_CHOICES_MAP = {
+     0: "labeled",
+     1: "unlabeled",
+     2: "all",
+     4: "conditional search"
+     }
 
 def _flatten_output(obj):
     data = {"export_tasks": obj.export_tasks}
@@ -48,7 +54,7 @@ class CreateDatasetExportTask(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--version_id",
+            "--version-id",
             metavar="<version_id>",
             help=_(
                 "Dataset type. Possible values: "
@@ -64,7 +70,7 @@ class CreateDatasetExportTask(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--data_sources",
+            "--data-sources",
             metavar="<data_sources>",
             help=_(
                 "Quantity of the partitions into which data records in "
@@ -75,14 +81,13 @@ class CreateDatasetExportTask(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--work_path",
+            "--work-path",
             metavar="<work_path>",
             help=_("Type of the source data."),
         )
         parser.add_argument(
-            "--work_path_type",
+            "--work-path-type",
             metavar="<work_path_type>",
-            action="append",
             help=_(
                 "Source data structure that defines JOSN and CSV formats. "
                 "It is described in the syntax of Avro. "
@@ -113,7 +118,7 @@ class CreateDatasetExportTask(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--import_annotations",
+            "--import-annotations",
             metavar="<import_annotations>",
             help=_(
                 "Whether to synchronize the labels in the input path when "
@@ -124,7 +129,7 @@ class CreateDatasetExportTask(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--label_format",
+            "--label-format",
             metavar="<label_format>",
             help=_(
                 "Label format information. This parameter is used only "
@@ -132,7 +137,7 @@ class CreateDatasetExportTask(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--workspace_id",
+            "--workspace-id",
             metavar="<workspace_id>",
             help=_(
                 "Workspace ID. If no workspace is created, the default "
@@ -141,13 +146,13 @@ class CreateDatasetExportTask(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--data_type",
+            "--data-type",
             default=0,
             metavar="<data_type>",
             help=_("Data source type. Possible values are as follows: OBS"),
         )
         parser.add_argument(
-            "--data_path",
+            "--data-path",
             metavar="<data_path>",
             # required=True,
             help=_(
@@ -185,12 +190,12 @@ class CreateDatasetExportTask(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--label_type",
+            "--label-type",
             metavar="<label_type>",
             help=_("Label format. The default value is 1."),
         )
         parser.add_argument(
-            "--text_sample_separator",
+            "--text-sample-separator",
             metavar="<text_sample_separator>",
             help=_(
                 "Separator between the text and label. By default, "
@@ -199,7 +204,7 @@ class CreateDatasetExportTask(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--text_label_separator",
+            "--text-label-separator",
             metavar="<text_label_separator>",
             help=_(
                 "Separator between labels. By default, the comma (,) is "
@@ -207,10 +212,10 @@ class CreateDatasetExportTask(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--dataset_id", metavar="<dataset_id>", help=_("Dataset ID ")
+            "--dataset-id", metavar="<dataset_id>", help=_("Dataset ID ")
         )
         parser.add_argument(
-            "--error_code",
+            "--error-code",
             metavar="<text_label_separator>",
             help=_(
                 "Error code of a failed API call. For details, see "
@@ -219,7 +224,7 @@ class CreateDatasetExportTask(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--error_msg",
+            "--error-msg",
             metavar="<error_msg>",
             help=_(
                 "Error message of a failed API call. This parameter "
@@ -294,11 +299,11 @@ class ShowDatasetExportTask(command.ShowOne):
         parser = super(ShowDatasetExportTask, self).get_parser(prog_name)
 
         parser.add_argument(
-            "--dataset_id", metavar="<dataset_id>", help=_("Enter dataset id")
+            "datasetId", metavar="<dataset_id>", help=_("Enter dataset id")
         )
 
         parser.add_argument(
-            "--task_id", metavar="<task_id>", help=_("Enter task id")
+            "taskId", metavar="<task_id>", help=_("Enter task id")
         )
         return parser
 
@@ -306,13 +311,13 @@ class ShowDatasetExportTask(command.ShowOne):
         client = self.app.client_manager.modelartsv2
         query = {}
 
-        if parsed_args.dataset_id:
-            query["dataset_id"] = parsed_args.dataset_id
+        if parsed_args.datasetId:
+            query["dataset_id"] = parsed_args.datasetId
 
-        if parsed_args.task_id:
-            query["task_id"] = parsed_args.task_id
+        if parsed_args.taskId:
+            query["task_id"] = parsed_args.taskId
 
-        obj = client.show_dataset_export_task(**query)
+        obj = client.get_dataset_export_task(**query)
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
 
@@ -326,18 +331,53 @@ class ListDatasetExportTasks(command.Lister):
     def get_parser(self, prog_name):
         parser = super(ListDatasetExportTasks, self).get_parser(prog_name)
         parser.add_argument(
-            "--dataset_id",
+            "datasetId",
             metavar="<dataset_id>",
             help=_("Name of the dataset to delete."),
         )
+        parser.add_argument(
+            "--limit",
+            metavar="<limit>",
+            type=int,
+            help=_(
+                "Maximum number of records returned on each "
+                "page. The default value is 10."
+            ),
+        )
+        parser.add_argument(
+            "--offset",
+            metavar="<offset>",
+            type=int,
+            help=_("Start page of the paging list. The default value is 0."),
+        )
+        parser.add_argument(
+             "--export-type",
+             choices=list(EXPORT_TYPE_CHOICES_MAP.keys()),
+             type=int,
+             help=_(
+                 "Export type. The options are as follows:\n"
+                 + "\n".join(
+                     [
+                         f"{key}: {value}"
+                         for key, value in EXPORT_TYPE_CHOICES_MAP.items()
+                     ]
+                 )
+             ),
+         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
 
         query = {}
-        if parsed_args.dataset_id:
-            query["dataset_id"] = parsed_args.dataset_id
+        if parsed_args.datasetId:
+            query["dataset_id"] = parsed_args.datasetId
+        if parsed_args.limit:
+            query["limit"] = parsed_args.limit
+        if parsed_args.offset:
+            query["offset"] = parsed_args.offset
+        if parsed_args.export_type or str(parsed_args.export_type) == "0":
+            query["export_type"] = parsed_args.export_type
         data = client.dataset_export_tasks(**query)
         return (
             self.columns,

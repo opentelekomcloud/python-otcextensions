@@ -23,8 +23,10 @@ from .statistics import Statistics
 from .metrics import Metrics
 from .synchronization import SynchronizeDataset
 from .synchronization import DatasetSyncStatus
+from .import_task import CreateDatasetImportTask
 from .import_task import ListDatasetImportTasks
 from .import_task import ShowDatasetImportTask
+from .export_task import CreateDatasetExportTask
 from .export_task import ListDatasetExportTasks
 from .export_task import ShowDatasetExportTask
 
@@ -42,8 +44,10 @@ __all__ = (
     "Metrics",
     "SynchronizeDataset",
     "DatasetSyncStatus",
+    "CreateDatasetImportTask",
     "ListDatasetImportTasks",
     "ShowDatasetImportTask",
+    "CreateDatasetExportTask",
     "ListDatasetExportTasks",
     "ShowDatasetExportTask",
 )

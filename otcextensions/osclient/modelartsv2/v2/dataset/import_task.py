@@ -45,13 +45,13 @@ class CreateDatasetImportTask(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(CreateDatasetImportTask, self).get_parser(prog_name)
         parser.add_argument(
-            "--dataset_id",
+            "--dataset-id",
             metavar="<dataset_id>",
             required=True,
             help=_("Dataset ID."),
         )
         parser.add_argument(
-            "--import_path",
+            "--import-path",
             metavar="<import_path>",
             required=True,
             help=_(
@@ -61,7 +61,7 @@ class CreateDatasetImportTask(command.ShowOne):
             ),
         )
         parser.add_argument(
-            "--import_annotations",
+            "--import-annotations",
             metavar="<import_annotations>",
             help=_("Whether to import labels. Default value: true"),
         )
@@ -212,11 +212,11 @@ class ShowDatasetImportTask(command.ShowOne):
         parser = super(ShowDatasetImportTask, self).get_parser(prog_name)
 
         parser.add_argument(
-            "--dataset_id", metavar="<dataset_id>", help=_("Enter dataset id")
+            "datasetId", metavar="<dataset_id>", help=_("Enter dataset id")
         )
 
         parser.add_argument(
-            "--task_id", metavar="<task_id>", help=_("Enter task id")
+            "taskId", metavar="<task_id>", help=_("Enter task id")
         )
         return parser
 
@@ -224,11 +224,11 @@ class ShowDatasetImportTask(command.ShowOne):
         client = self.app.client_manager.modelartsv2
         query = {}
 
-        if parsed_args.dataset_id:
-            query["dataset_id"] = parsed_args.dataset_id
+        if parsed_args.datasetId:
+            query["dataset_id"] = parsed_args.datasetId
 
-        if parsed_args.task_id:
-            query["task_id"] = parsed_args.task_id
+        if parsed_args.taskId:
+            query["task_id"] = parsed_args.taskId
 
         obj = client.get_dataset_import_task(**query)
         display_columns, columns = _get_columns(obj)
@@ -246,18 +246,39 @@ class ListDatasetImportTasks(command.Lister):
     def get_parser(self, prog_name):
         parser = super(ListDatasetImportTasks, self).get_parser(prog_name)
         parser.add_argument(
-            "--dataset_id",
+            "datasetId",
             metavar="<dataset_id>",
             help=_("Name of the dataset to delete."),
         )
+        parser.add_argument(
+            "--limit",
+            metavar="<limit>",
+            type=int,
+            help=_(
+                "Maximum number of records returned on each "
+                "page. The default value is 10."
+            ),
+        )
+        parser.add_argument(
+            "--offset",
+            metavar="<offset>",
+            type=int,
+            help=_("Start page of the paging list. The default value is 0."),
+        )
+
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
 
         query = {}
-        if parsed_args.dataset_id:
-            query["dataset_id"] = parsed_args.dataset_id
+        if parsed_args.datasetId:
+            query["dataset_id"] = parsed_args.datasetId
+        if parsed_args.limit:
+            query["limit"] = parsed_args.limit
+        if parsed_args.offset:
+            query["offset"] = parsed_args.offset
+
         data = client.dataset_import_tasks(**query)
 
         table = (
