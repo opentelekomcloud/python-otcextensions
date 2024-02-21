@@ -16,6 +16,7 @@ import logging
 from osc_lib import utils
 from osc_lib.command import command
 from otcextensions.common import sdk_utils
+from otcextensions.common import cli_utils
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
@@ -320,10 +321,11 @@ class ShowDatasetExportTask(command.ShowOne):
 
         if parsed_args.taskId:
             query["task_id"] = parsed_args.taskId
-
+        
+        formatters = {"export_params": cli_utils.YamlFormat}
         obj = client.get_dataset_export_task(**query)
         display_columns, columns = _get_columns(obj)
-        data = utils.get_item_properties(obj, columns)
+        data = utils.get_item_properties(obj, columns, formatters=formatters)
 
         return (display_columns, data)
 

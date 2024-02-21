@@ -418,6 +418,7 @@ class Proxy(proxy.Proxy):
 
         :param job_id: Thie value can be the id of a training job
         """
+        job_id = str(job_id)
         return self._delete(_trainingjob.TrainingJob, job_id)
 
     def find_trainingjob(self, name_or_id, ignore_missing=False):

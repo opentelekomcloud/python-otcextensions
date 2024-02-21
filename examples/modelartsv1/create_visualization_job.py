@@ -31,5 +31,5 @@ attrs = {
     ],
 }
 
-visjob = conn.modelartsv1.create_visualizationjob(**attrs)
+visjob = conn.modelartsv1.create_visualization_job(**attrs)
 print(visjob)

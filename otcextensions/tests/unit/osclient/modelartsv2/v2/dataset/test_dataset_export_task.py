@@ -13,6 +13,7 @@
 
 import mock
 from openstackclient.tests.unit import utils as tests_utils
+from otcextensions.common import cli_utils
 from otcextensions.osclient.modelartsv2.v2 import dataset
 from otcextensions.tests.unit.osclient.modelartsv2.v2.dataset import fakes
 
@@ -190,6 +191,7 @@ class TestCreateDataExportTask(fakes.TestModelartsv2):
             "text_label_separator": "17",
             "dataset_id": "0",
             "error_code": "19",
+            "path": "1"
         }
         self.client.create_dataset_export_task.assert_called_with(**attrs)
         self.assertEqual(self.columns, columns)
@@ -197,6 +199,7 @@ class TestCreateDataExportTask(fakes.TestModelartsv2):
 
 
 class TestShowDatasetExportTask(fakes.TestModelartsv2):
+    formatters = {"export_params": cli_utils.YamlFormat}
     columns = (
         "create_time",
         "export_format",
@@ -210,7 +213,7 @@ class TestShowDatasetExportTask(fakes.TestModelartsv2):
 
     object = fakes.FakeDatasetExportTask.create_one()
 
-    data = fakes.gen_data(object, columns)
+    data = fakes.gen_data(object, columns, formatters)
 
     def setUp(self):
         super(TestShowDatasetExportTask, self).setUp()
