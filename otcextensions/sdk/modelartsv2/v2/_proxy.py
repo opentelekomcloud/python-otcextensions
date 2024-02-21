@@ -10,8 +10,51 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
+import base64
+# import io
+import os
+# from pathlib import Path
+
+from openstack import exceptions
 from openstack import proxy
 from otcextensions.sdk.modelartsv2.v2 import dataset as _dataset
+
+# from PIL import Image
+
+
+def get_directory_size(dir_path, file_type=None):
+    total_size = 0
+    # Add more file types as needed
+    # file_types = {
+    #     "image": [".jpg", ".jpeg", ".png", ".gif", ".bmp"],
+    #     "text": [".txt", ".doc", ".docx", ".pdf"],
+    #     "speech": [".mp3", ".wav", ".ogg"],
+    #     "table": [".csv", ".xls", ".xlsx"],
+    #     "video": [".mp4", ".avi", ".mkv", ".mov"],
+    # }
+    if not os.path.isdir(dir_path):
+        raise exceptions.SDKException(
+            f"Error: {dir_path} is not a valid directory."
+        )
+    files = [
+        os.path.join(dir_path, f)
+        for f in os.listdir(dir_path)
+        if os.path.isfile(os.path.join(dir_path, f))
+    ]
+    if not files:
+        raise exceptions.SDKException(f"The directory {dir_path} is empty.")
+    for file_name in files:
+        file_path = os.path.join(dir_path, file_name)
+        # _, file_extension = os.path.splitext(file_path)
+        # if file_extension.lower() in file_types[file_type]:
+        #     total_size += os.path.getsize(file_path)
+        total_size += os.path.getsize(file_path)
+    if total_size == 0:
+        raise exceptions.SDKException(
+            "Directory is empty"
+            # f"No files found of type {str(file_types[file_type])}"
+        )
+    return total_size, files
 
 
 class Proxy(proxy.Proxy):
@@ -259,7 +302,16 @@ class Proxy(proxy.Proxy):
             _dataset.Sample, dataset_id=dataset_id, **params, paginated=False
         )
 
-    def add_dataset_samples(self, dataset_id, **attrs):
+    def add_dataset_samples(
+        self,
+        dataset_id,
+        directory_path=None,
+        file_path=None,
+        sample_type=None,
+        labels=[],
+        metadata={},
+        data_source={},
+    ):
         """Upload samples to a dataset.
 
         :param dataset_id: Dataset ID.
@@ -271,10 +323,60 @@ class Proxy(proxy.Proxy):
         :returns: The result after uploading the dataset samples.
 
         :rtype: :class:`~otcextensions.sdk.modelartsv2.v2.\
-                dataset_sample.DatasetSample`
+                dataset.CreateSample`
         """
+        if file_path:
+            file_size = os.path.getsize(file_path) / (1024 * 1024)
+            if file_size > 7.5:
+                raise exceptions.SDKException("File size is > 7.5 Mb")
+            files = [file_path]
+            # with Image.open(file_path) as image:
+            #     with io.BytesIO() as byte_stream:
+            #         image.save(byte_stream, format="JPEG")
+            #         image_bytes = byte_stream.getvalue()
+            # sample = {
+            #     "name": os.path.split(file_path)[1],
+            #     "data": base64.b64encode(image_bytes).decode("utf-8"),
+            # }
 
-        return self._create(_dataset.Sample, dataset_id=dataset_id, **attrs)
+        if not file_path and directory_path:
+            _, files = get_directory_size(directory_path)
+            # size, files = get_directory_size(directory_path)
+            # if size / (1024 * 1024) > 7.5:
+            #     raise exceptions.SDKException("Files size is > 7.5 Mb")
+
+        count = 0
+        samples = []
+        files_size = 0
+        for file_path in files:
+            sample = {}
+            count = count + 1
+            files_size = files_size + os.path.getsize(file_path) / (
+                1024 * 1024
+            )
+            if files_size > 7.5:
+                break
+            print("Files_Size after count: ", count, " ", files_size)
+            with open(file_path, "rb") as file:
+                sample = {
+                    "name": os.path.split(file_path)[1],
+                    "data": base64.b64encode(file.read()).decode(),
+                }
+            if labels:
+                sample.update(labels=labels)
+            if data_source:
+                sample.update(data_source=data_source)
+            if sample_type:
+                sample.update(sample_type=sample_type)
+            if metadata:
+                sample.update(metadata=metadata)
+            samples.append(sample)
+        attrs = {}
+        if samples:
+            attrs.update(samples=samples)
+        return self._create(
+            _dataset.CreateSample, dataset_id=dataset_id, **attrs
+        )
 
     def delete_dataset_samples(
         self, dataset_id, samples=[], delete_source=False

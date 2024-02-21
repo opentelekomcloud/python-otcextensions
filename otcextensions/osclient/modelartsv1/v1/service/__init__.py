@@ -13,11 +13,13 @@
 from .cluster import Clusters
 from .event import Events
 from .log import Logs
-from .monitor import Monitors
+from .monitor import Monitor
 from .service import CreateService
 from .service import DeleteService
 from .service import ListServices
 from .service import ShowService
+from .service import StartService
+from .service import StopService
 from .service import UpdateService
 from .specification import Specifications
 
@@ -25,11 +27,13 @@ __all__ = (
     "Clusters",
     "Events",
     "Logs",
-    "Monitors",
+    "Monitor",
     "CreateService",
     "DeleteService",
     "ListServices",
     "ShowService",
+    "StartService",
+    "StopService",
     "UpdateService",
     "Specifications",
 )

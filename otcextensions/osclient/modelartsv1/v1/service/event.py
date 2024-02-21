@@ -33,9 +33,9 @@ class Events(command.Lister):
         parser = super(Events, self).get_parser(prog_name)
 
         parser.add_argument(
-            "serviceId",
-            metavar="<serviceId>",
-            help=_("Service ID."),
+            "service",
+            metavar="<service>",
+            help=_("Service ID or Name."),
         )
         parser.add_argument(
             "--event-type",
@@ -115,7 +115,8 @@ class Events(command.Lister):
             if val or str(val) == "0":
                 query_params[arg] = val
 
-        data = client.service_events(parsed_args.serviceId, **query_params)
+        service = client.find_service(parsed_args.service)
+        data = client.service_events(service.id, **query_params)
 
         formatters = {
             "Occur Time": cli_utils.UnixTimestampFormatter,

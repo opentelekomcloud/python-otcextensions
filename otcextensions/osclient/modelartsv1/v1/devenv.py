@@ -23,13 +23,28 @@ from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
+SORT_ORDER_CHOICES = ["asc", "desc"]
+
+STATUS_CHOICES = [
+    "CREATING",
+    "CREATE_FAILED",
+    "STARTING",
+    "RESTARTING",
+    "START_FAILED",
+    "RUNNING",
+    "STOPPING",
+    "STOPPED",
+    "UNAVAILABLE",
+    "DELETED",
+    "RESIZING",
+    "RESIZE_FAILED",
+]
 
 DEVENV_PROFILE_ID_MAP = {
     1: "Multi-Engine 1.0 (python3)-cpu",
     2: "Multi-Engine 1.0 (python3)-gpu",
     3: "Multi-Engine 2.0 (python3)",
 }
-
 
 _formatters = {
     "auto_stop": cli_utils.YamlFormat,
@@ -95,12 +110,16 @@ class ListDevenvInstances(command.Lister):
         parser.add_argument(
             "--status",
             metavar="<status>",
+            type=lambda s: s.upper(),
+            choices=STATUS_CHOICES,
             help=_("Filter Devenv Instances by status."),
         )
         parser.add_argument(
             "--sort-by",
             metavar="<sort_by>",
             dest="sortby",
+            type=lambda s: s.lower(),
+            choices=["name", "creation_timestamp"],
             help=_(
                 "Classification standard. The value can be name "
                 "or creation_timestamp. By default list is sorted by name."
@@ -108,11 +127,10 @@ class ListDevenvInstances(command.Lister):
         )
         parser.add_argument(
             "--order",
-            metavar="<order>",
-            help=_(
-                "Sorting mode. The value can be asc or desc. "
-                "By default sorting is in asc order."
-            ),
+            metavar="{" + ",".join(SORT_ORDER_CHOICES) + "}",
+            type=lambda s: s.lower(),
+            choices=SORT_ORDER_CHOICES,
+            help=_("Sorting order. Default value: asc"),
         )
         parser.add_argument(
             "--offset",
@@ -230,10 +248,12 @@ class CreateDevenvInstance(command.ShowOne):
             type=int,
             help=_(
                 "Configuration ID. The options are as follows:\n"
-                "1: Multi-Engine 1.0 (python3)-cpu\n"
-                "2: Multi-Engine 1.0 (python3)-gpu\n"
-                "3: Multi-Engine 2.0 (python3)\n"
-                "Please provide your choice 1, 2 or 3."
+                + "\n".join(
+                    [
+                        f"{key}: {value}"
+                        for key, value in DEVENV_PROFILE_ID_MAP.items()
+                    ]
+                )
             ),
         )
         parser.add_argument(
@@ -284,6 +304,7 @@ class CreateDevenvInstance(command.ShowOne):
                 "pools."
             ),
         )
+        parser._action_groups.insert(2, parser._action_groups.pop())
         extended_storage_group.add_argument(
             "--extended-storage-type",
             metavar="<extended_storage_type>",
@@ -302,6 +323,7 @@ class CreateDevenvInstance(command.ShowOne):
         )
 
         autostop_group = parser.add_argument_group("AutoStop Parameters")
+        parser._action_groups.insert(3, parser._action_groups.pop())
         autostop_group.add_argument(
             "--autostop-duration",
             metavar="<autostop_duration>",
@@ -325,14 +347,21 @@ class CreateDevenvInstance(command.ShowOne):
         )
 
         pool_group = parser.add_argument_group("Resource pool Parameters")
+        parser._action_groups.insert(4, parser._action_groups.pop())
         pool_group.add_argument(
-            "--pool-id", metavar="<pool_id>", help=_("Resource pool ID.")
+            "--pool-id",
+            metavar="<pool_id>",
+            help=_("Resource pool ID."),
         )
         pool_group.add_argument(
-            "--pool-type", metavar="<pool_type>", help=_("Resource pool Type.")
+            "--pool-type",
+            metavar="<pool_type>",
+            help=_("Resource pool Type."),
         )
         pool_group.add_argument(
-            "--pool-name", metavar="<pool_name>", help=_("Resource pool Name.")
+            "--pool-name",
+            metavar="<pool_name>",
+            help=_("Resource pool Name."),
         )
 
         parser.add_argument(

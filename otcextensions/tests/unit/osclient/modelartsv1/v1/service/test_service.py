@@ -29,6 +29,7 @@ _COLUMNS = (
     "invocation_times",
     "is_free",
     "is_shared",
+    "name",
     "operation_time",
     "owner",
     "progress",
@@ -289,7 +290,7 @@ class TestShowService(fakes.TestModelartsv1):
         self.cmd = service.ShowService(self.app, None)
 
         self.client.find_service = mock.Mock(return_value=self._service)
-        # self.client.get_model = mock.Mock(return_value=self._model)
+        self.client.get_service = mock.Mock(return_value=self._service)
 
     def test_show_no_options(self):
         arglist = []
@@ -307,25 +308,26 @@ class TestShowService(fakes.TestModelartsv1):
 
     def test_show(self):
         arglist = [
-            self._service.id,
+            self._service.name,
         ]
 
-        verifylist = [("service", self._service.id)]
+        verifylist = [("service", self._service.name)]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.find_service.assert_called_with(self._service.id)
+        self.client.find_service.assert_called_with(self._service.name)
+        self.client.get_service.assert_called_with(self._service.id)
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
 
     def test_show_non_existent(self):
-        arglist = ["unexist_ma_service"]
+        arglist = ["nonexisting_service"]
 
-        verifylist = [("service", "unexist_ma_service")]
+        verifylist = [("service", "nonexisting_service")]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -338,7 +340,166 @@ class TestShowService(fakes.TestModelartsv1):
             self.cmd.take_action(parsed_args)
         except Exception as e:
             self.assertEqual("Resource Not Found", str(e))
-        self.client.find_service.assert_called_with("unexist_ma_service")
+        self.client.find_service.assert_called_with("nonexisting_service")
+
+
+class TestUpdateService(fakes.TestModelartsv1):
+    _service = fakes.FakeService.create_one()
+    columns = _COLUMNS
+    data = fakes.gen_data(_service, columns, service.service._formatters)
+
+    default_timeout = 1200
+
+    def setUp(self):
+        super(TestUpdateService, self).setUp()
+
+        self.cmd = service.UpdateService(self.app, None)
+
+        self.client.find_service = mock.Mock(return_value=self._service)
+        self.client.get_service = mock.Mock(return_value=self._service)
+        self.client.update_service = mock.Mock(return_value=self._service)
+        self.client.wait_for_service = mock.Mock(return_value=True)
+
+    def test_update(self):
+        arglist = [
+            self._service.name,
+            "--schedule", "type=1,time_unit=2,duration=3",
+            "--additional-property", "key1=value1",
+            "--additional-property", "key2=value2",
+            "--model-id", "model-id",
+            "--weight", "2",
+            "--specification", "3",
+            "--instance-count", "1",
+            "--env", "key1=value1",
+            "--custom-spec", "cpu=2,memory=8",
+            "--src-type", "5",
+            "--src-path", "6",
+            "--dest-path", "7",
+            "--req-uri", "8",
+            "--mapping-type", "file",
+            "--mapping-rule", "9",
+            "--wait",
+        ]
+        verifylist = [
+            ("service", self._service.name),
+            ("schedule", [{"type": "1", "time_unit": "2", "duration": "3"}]),
+            ("additional_properties", {"key1": "value1", "key2": "value2"}),
+            ("model_id", "model-id"),
+            ("weight", 2),
+            ("specification", "3"),
+            ("instance_count", 1),
+            ("envs", {"key1": "value1"}),
+            ("custom_spec", [{"cpu": "2", "memory": "8"}]),
+            ("src_type", "5"),
+            ("src_path", "6"),
+            ("dest_path", "7"),
+            ("req_uri", "8"),
+            ("mapping_type", "file"),
+            ("mapping_rule", "9"),
+            ("wait", True),
+            ("timeout", self.default_timeout),
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+        attrs = {
+            "schedule": [
+                {
+                    "type": "1",
+                    "time_unit": "2",
+                    "duration": "3",
+                }
+            ],
+            "additional_properties": {
+                "key1": "value1",
+                "key2": "value2",
+            },
+            "config": [
+                {
+                    "model_id": "model-id",
+                    "specification": "3",
+                    "instance_count": 1,
+                    "envs": {
+                        "key1": "value1",
+                    },
+                    "weight": 2,
+                    "custom_spec": {
+                        "cpu": 2.0,
+                        "memory": 8,
+                    },
+                }
+            ],
+        }
+
+        self.client.update_service.assert_called_with(
+            self._service.id, **attrs
+        )
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
+
+
+class TestStartService(fakes.TestModelartsv1):
+    _service = fakes.FakeService.create_one()
+    columns = _COLUMNS
+    data = fakes.gen_data(_service, columns, service.service._formatters)
+
+    def setUp(self):
+        super(TestStartService, self).setUp()
+
+        self.cmd = service.StartService(self.app, None)
+
+        self.client.find_service = mock.Mock(return_value=self._service)
+        self.client.start_service = mock.Mock(return_value=None)
+
+    def test_start(self):
+        arglist = [
+            self._service.id,
+        ]
+
+        verifylist = [
+            ("service", self._service.id),
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        self.cmd.take_action(parsed_args)
+        self.client.find_service.assert_called_with(self._service.id)
+        self.client.start_service.assert_called_with(self._service)
+
+
+class TestStopService(fakes.TestModelartsv1):
+    _service = fakes.FakeService.create_one()
+    columns = _COLUMNS
+    data = fakes.gen_data(_service, columns, service.service._formatters)
+
+    def setUp(self):
+        super(TestStopService, self).setUp()
+
+        self.cmd = service.StopService(self.app, None)
+
+        self.client.find_service = mock.Mock(return_value=self._service)
+        self.client.stop_service = mock.Mock(return_value=None)
+
+    def test_start(self):
+        arglist = [
+            self._service.id,
+        ]
+
+        verifylist = [
+            ("service", self._service.id),
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        self.cmd.take_action(parsed_args)
+        self.client.find_service.assert_called_with(self._service.id)
+        self.client.stop_service.assert_called_with(self._service)
 
 
 class TestDeleteService(fakes.TestModelartsv1):

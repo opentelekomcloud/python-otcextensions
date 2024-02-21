@@ -275,6 +275,23 @@ class Proxy(proxy.Proxy):
         """
         return self._update(_service.Service, service, **attrs)
 
+    def stop_service(self, service):
+        """Stop a Service.
+
+        :param service: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
+
+        """
+        return self._update(_service.Service, service, status="stopped")
+
+    def start_service(self, service):
+        """Start a Service.
+
+        :param service: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
+        """
+        return self._update(_service.Service, service, status="running")
+
     def find_service(self, name_or_id, ignore_missing=False):
         """Find a single service
 
@@ -316,7 +333,7 @@ class Proxy(proxy.Proxy):
             **params,
         )
 
-    def service_monitors(self, service_id, **params):
+    def service_monitor(self, service_id, **params):
         """List a service monitoring informations.
 
         :returns: a generator of
@@ -348,16 +365,17 @@ class Proxy(proxy.Proxy):
         while timeout > 0:
             obj = self.get_service(service)
             status = obj.status.lower()
-            if status == 'deploying':
+            if status == "deploying":
                 pass
-            elif status in ["running", 'finished']:
+            elif status in ["running", "finished"]:
                 return True
             else:
                 raise exceptions.SDKException(obj.error_msg)
             timeout = timeout - wait
             time.sleep(wait)
         raise exceptions.SDKException(
-            f"Wait Timed Out. service status is: {status}")
+            f"Wait Timed Out. service status is: {status}"
+        )
 
     # Training Job Management
 
@@ -455,7 +473,6 @@ class Proxy(proxy.Proxy):
         :returns: The results of trainjobs creation
         :rtype: :class:`~otcextensions.sdk.modelartsv1.v1.trainjob.Trainjob`
         """
-        print("****************", attrs)
         return self._create(
             _trainingjob_version.TrainingJobVersion,
             jobId=job_id,

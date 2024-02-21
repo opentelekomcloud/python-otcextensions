@@ -172,6 +172,22 @@ class TestService(TestModelartsV1Proxy):
             expected_kwargs={"prepend_key": False, "a": "b"},
         )
 
+    def test_start_service(self):
+        self.verify_update(
+            self.proxy.update_service,
+            service.Service,
+            method_kwargs={"status": "running"},
+            expected_kwargs={"status": "running"}
+        )
+
+    def test_stop_service(self):
+        self.verify_update(
+            self.proxy.update_service,
+            service.Service,
+            method_kwargs={"status": "stopped"},
+            expected_kwargs={"status": "stopped"}
+        )
+
     def test_delete_service(self):
         self.verify_delete(
             self.proxy.delete_service,

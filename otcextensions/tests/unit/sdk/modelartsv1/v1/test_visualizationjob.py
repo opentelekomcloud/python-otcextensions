@@ -40,5 +40,4 @@ class TestVisualizationJob(base.TestCase):
 
         for key, value in EXAMPLE.items():
             if key not in updated_sot_attrs:
-                print("key", key, "\nvalue:", value)
                 self.assertEqual(getattr(sot, key), value)

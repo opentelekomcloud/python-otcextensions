@@ -21,11 +21,12 @@ from otcextensions.i18n import _
 LOG = logging.getLogger(__name__)
 
 EXPORT_TYPE_CHOICES_MAP = {
-     0: "labeled",
-     1: "unlabeled",
-     2: "all",
-     4: "conditional search"
-     }
+    0: "labeled",
+    1: "unlabeled",
+    2: "all",
+    4: "conditional search",
+}
+
 
 def _flatten_output(obj):
     data = {"export_tasks": obj.export_tasks}
@@ -351,19 +352,19 @@ class ListDatasetExportTasks(command.Lister):
             help=_("Start page of the paging list. The default value is 0."),
         )
         parser.add_argument(
-             "--export-type",
-             choices=list(EXPORT_TYPE_CHOICES_MAP.keys()),
-             type=int,
-             help=_(
-                 "Export type. The options are as follows:\n"
-                 + "\n".join(
-                     [
-                         f"{key}: {value}"
-                         for key, value in EXPORT_TYPE_CHOICES_MAP.items()
-                     ]
-                 )
-             ),
-         )
+            "--export-type",
+            choices=list(EXPORT_TYPE_CHOICES_MAP.keys()),
+            type=int,
+            help=_(
+                "Export type. The options are as follows:\n"
+                + "\n".join(
+                    [
+                        f"{key}: {value}"
+                        for key, value in EXPORT_TYPE_CHOICES_MAP.items()
+                    ]
+                )
+            ),
+        )
         return parser
 
     def take_action(self, parsed_args):

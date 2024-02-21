@@ -18,6 +18,81 @@ from otcextensions.osclient.modelartsv2.v2 import dataset
 from otcextensions.tests.unit.osclient.modelartsv2.v2.dataset import fakes
 
 
+class TestSampleAdd(fakes.TestModelartsv2):
+    columns = (
+        "Success",
+        "Results",
+    )
+    _sample = fakes.FakeSample.create_one()
+    formatters = {
+        "Results": cli_utils.YamlFormat,
+    }
+
+    data = fakes.gen_data(_sample, columns, formatters)
+
+    def setUp(self):
+        super(TestSampleAdd, self).setUp()
+
+        self.cmd = dataset.AddSamples(self.app, None)
+
+        self.client.add_dataset_samples = mock.Mock(return_value=self._sample)
+
+    def test_create(self):
+        arglist = [
+            "dataset-id",
+            "--file-path", "1",
+            "--directory-path", "2",
+            "--encoding", "UTF-8",
+            "--metadata", "k1=v1",
+            "--metadata", "k2=v2",
+            "--sample-type", "0",
+            "--data-source-path", "3",
+            "--data-source-type", "0",
+            "--data-source-info", "port=1,input=2",
+            "--schema-map", "src_name=a,dest_name=b",
+            "--label", "name=1,type=2",
+            "--data-with-column-header",
+            "--to-be-confirmed",
+        ]
+        verifylist = [
+            ("datasetId", "dataset-id"),
+            ("file_path", "1"),
+            ("directory_path", "2"),
+            ("encoding", "UTF-8"),
+            ("metadata", {"k1": "v1", "k2": "v2"}),
+            ("sample_type", 0),
+            ("data_source_path", "3"),
+            ("data_source_type", 0),
+            ("data_source_info", [{"port": "1", "input": "2"}]),
+            ("schema_map", [{"src_name": "a", "dest_name": "b"}]),
+            ("labels", [{"name": "1", "type": "2"}]),
+            ("data_with_column_header", True),
+            ("to_be_confirmed", True),
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+        self.client.add_dataset_samples.assert_called_with(
+            "dataset-id",
+            file_path="1",
+            directory_path="2",
+            encoding="UTF-8",
+            sample_type=0,
+            metadata={"k1": "v1", "k2": "v2"},
+            labels=[{"name": "1", "type": "2"}],
+            data_source={
+                "data_path": "3",
+                "schema_map": [{"src_name": "a", "dest_name": "b"}],
+                "source_info": {"port": "1", "input": "2"},
+                "with_column_header": True,
+            },
+        )
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
+
+
 class TestListSamples(fakes.TestModelartsv2):
     objects = fakes.FakeSample.create_multiple(3)
 
@@ -75,7 +150,7 @@ class TestListSamples(fakes.TestModelartsv2):
             "--email", "1",
             "--high-score", "2",
             "--label-name", "3",
-            "--label-type", "4",
+            "--label-type", "1",
             "--limit", "5",
             "--locale", "6",
             "--low-score", "7",
@@ -94,7 +169,7 @@ class TestListSamples(fakes.TestModelartsv2):
             ("email", "1"),
             ("high_score", "2"),
             ("label_name", "3"),
-            ("label_type", "4"),
+            ("label_type", 1),
             ("limit", 5),
             ("locale", "6"),
             ("low_score", "7"),
@@ -122,7 +197,7 @@ class TestListSamples(fakes.TestModelartsv2):
             email="1",
             high_score="2",
             label_name="3",
-            label_type="4",
+            label_type=1,
             limit=5,
             locale="6",
             low_score="7",

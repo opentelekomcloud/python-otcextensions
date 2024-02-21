@@ -30,7 +30,7 @@ def set_attributes_for_print(monitors):
         yield monitor
 
 
-class Monitors(command.Lister):
+class Monitor(command.Lister):
     _description = _("Get Monitoring Information of a Service.")
     columns = (
         "Model Id",
@@ -44,12 +44,12 @@ class Monitors(command.Lister):
     )
 
     def get_parser(self, prog_name):
-        parser = super(Monitors, self).get_parser(prog_name)
+        parser = super(Monitor, self).get_parser(prog_name)
 
         parser.add_argument(
-            "serviceId",
-            metavar="<serviceId>",
-            help=_("Service ID."),
+            "service",
+            metavar="<service>",
+            help=_("Service ID or Name."),
         )
         parser.add_argument(
             "--node-id",
@@ -67,7 +67,8 @@ class Monitors(command.Lister):
         if parsed_args.node_id:
             query_params["node_id"] = parsed_args.node_id
 
-        data = client.service_monitors(parsed_args.serviceId, **query_params)
+        service = client.find_service(parsed_args.service)
+        data = client.service_monitor(service.id, **query_params)
 
         if data:
             data = set_attributes_for_print(data)

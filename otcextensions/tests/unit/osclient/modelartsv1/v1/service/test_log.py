@@ -17,6 +17,7 @@ from otcextensions.tests.unit.osclient.modelartsv1.v1 import fakes
 
 
 class TestLogs(fakes.TestModelartsv1):
+    _service = fakes.FakeService.create_one()
     objects = fakes.FakeServiceLog.create_multiple(3)
 
     column_list_headers = (
@@ -43,14 +44,15 @@ class TestLogs(fakes.TestModelartsv1):
 
         self.cmd = service.Logs(self.app, None)
 
+        self.client.find_service = mock.Mock(return_value=self._service)
         self.client.service_logs = mock.Mock()
         self.client.api_mock = self.client.service_logs
 
     def test_list(self):
-        arglist = ["service-id"]
+        arglist = [self._service.name]
 
         verifylist = [
-            ("serviceId", "service-id"),
+            ("service", self._service.name),
         ]
 
         # Verify cm is triggered with default parameters
@@ -62,19 +64,20 @@ class TestLogs(fakes.TestModelartsv1):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.api_mock.assert_called_with("service-id")
+        self.client.find_service.assert_called_with(self._service.name)
+        self.client.api_mock.assert_called_with(self._service.id)
 
         self.assertEqual(self.column_list_headers, columns)
         self.assertEqual(self.data, list(data))
 
     def test_list_args(self):
         arglist = [
-            "service-id",
+            self._service.name,
             "--update-time", "123",
         ]
 
         verifylist = [
-            ("serviceId", "service-id"),
+            ("service", self._service.name),
             ("update_time", 123),
         ]
 
@@ -88,6 +91,6 @@ class TestLogs(fakes.TestModelartsv1):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_with(
-            "service-id",
+            self._service.id,
             update_time=123,
         )

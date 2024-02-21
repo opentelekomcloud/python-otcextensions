@@ -15,7 +15,8 @@ from otcextensions.osclient.modelartsv1.v1 import service
 from otcextensions.tests.unit.osclient.modelartsv1.v1 import fakes
 
 
-class TestMonitors(fakes.TestModelartsv1):
+class TestMonitor(fakes.TestModelartsv1):
+    _service = fakes.FakeService.create_one()
     objects = fakes.FakeServiceMonitor.create_multiple(3)
 
     column_list_headers = (
@@ -46,18 +47,19 @@ class TestMonitors(fakes.TestModelartsv1):
         )
 
     def setUp(self):
-        super(TestMonitors, self).setUp()
+        super(TestMonitor, self).setUp()
 
-        self.cmd = service.Monitors(self.app, None)
+        self.cmd = service.Monitor(self.app, None)
 
-        self.client.service_monitors = mock.Mock()
-        self.client.api_mock = self.client.service_monitors
+        self.client.find_service = mock.Mock(return_value=self._service)
+        self.client.service_monitor = mock.Mock()
+        self.client.api_mock = self.client.service_monitor
 
     def test_list(self):
-        arglist = ["service-id"]
+        arglist = [self._service.name]
 
         verifylist = [
-            ("serviceId", "service-id"),
+            ("service", self._service.name),
         ]
 
         # Verify cm is triggered with default parameters
@@ -69,19 +71,20 @@ class TestMonitors(fakes.TestModelartsv1):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.api_mock.assert_called_with("service-id")
+        self.client.find_service.assert_called_with(self._service.name)
+        self.client.api_mock.assert_called_with(self._service.id)
 
         self.assertEqual(self.column_list_headers, columns)
         self.assertEqual(self.data, list(data))
 
     def test_list_args(self):
         arglist = [
-            "service-id",
+            self._service.name,
             "--node-id", "123",
         ]
 
         verifylist = [
-            ("serviceId", "service-id"),
+            ("service", self._service.name),
             ("node_id", "123"),
         ]
 
@@ -95,6 +98,6 @@ class TestMonitors(fakes.TestModelartsv1):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_with(
-            "service-id",
+            self._service.id,
             node_id="123",
         )

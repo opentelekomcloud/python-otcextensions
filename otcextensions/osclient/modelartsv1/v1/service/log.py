@@ -34,9 +34,9 @@ class Logs(command.Lister):
         parser = super(Logs, self).get_parser(prog_name)
 
         parser.add_argument(
-            "serviceId",
-            metavar="<serviceId>",
-            help=_("Service ID."),
+            "service",
+            metavar="<service>",
+            help=_("Service ID or Name."),
         )
         parser.add_argument(
             "--update-time",
@@ -56,7 +56,8 @@ class Logs(command.Lister):
         if parsed_args.update_time:
             query_params["update_time"] = parsed_args.update_time
 
-        data = client.service_logs(parsed_args.serviceId, **query_params)
+        service = client.find_service(parsed_args.service)
+        data = client.service_logs(service.id, **query_params)
 
         formatters = {
             "Update Time": cli_utils.UnixTimestampFormatter,

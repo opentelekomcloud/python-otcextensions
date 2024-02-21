@@ -14,12 +14,9 @@ from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv2.v2 import dataset
 
 EXAMPLE = {
-  "path" : "/test-obs/daoChu/",
-  "export_type" : 3,
-  "export_params" : {
-    "sample_state" : "",
-    "export_dest" : "DIR"
-  }
+    "path": "/test-obs/daoChu/",
+    "export_type": 3,
+    "export_params": {"sample_state": "", "export_dest": "DIR"},
 }
 
 
@@ -30,7 +27,9 @@ class TestDatasetExportTask(base.TestCase):
     def test_basic(self):
         sot = dataset.ExportTask()
 
-        self.assertEqual("/datasets/%(dataset_id)s/export-tasks", sot.base_path)
+        self.assertEqual(
+            "/datasets/%(dataset_id)s/export-tasks", sot.base_path
+        )
         self.assertEqual(None, sot.resource_key)
         self.assertEqual("export_tasks", sot.resources_key)
 

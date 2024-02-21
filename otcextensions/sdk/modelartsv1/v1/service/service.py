@@ -154,6 +154,8 @@ class Service(resource.Resource):
     is_free = resource.Body("is_free", type=bool)
     #: Whether a service is subscribed.
     is_shared = resource.Body("is_shared", type=bool)
+    #: Service Name.
+    name = resource.Body('name', alias='service_name')
     #: Network ID.
     network_id = resource.Body("subnet_network_id")
     #: Operation time of a request.

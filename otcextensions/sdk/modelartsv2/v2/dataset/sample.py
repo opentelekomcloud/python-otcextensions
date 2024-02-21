@@ -136,6 +136,19 @@ class Sample(resource.Resource):
     worker_id = resource.Body("worker_id")
 
 
+class CreateSample(resource.Resource):
+    base_path = "/datasets/%(dataset_id)s/data-annotations/samples"
+
+    # Capabilities
+    allow_create = True
+
+    #: Dataset ID.
+    dataset_id = resource.URI("dataset_id")
+    samples = resource.Body("samples", type=list, list_type=dict)
+    success = resource.Body("success", type=bool)
+    results = resource.Body("results", type=list, list_type=dict)
+
+
 class DeleteSample(resource.Resource):
     base_path = "/datasets/%(dataset_id)s/data-annotations/samples/delete"
 

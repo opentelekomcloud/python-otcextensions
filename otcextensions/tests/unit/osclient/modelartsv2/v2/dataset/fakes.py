@@ -221,24 +221,24 @@ class FakeDatasetImportTask(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-  "status" : "COMPLETED",
-  "task_id" : "gfghHSokody6AJigS5A_RHJ1zOkIoI3Nzwxj8nh",
-  "dataset_id" : "gfghHSokody6AJigS5A",
-  "import_path" : "obs://test-obs/daoLu_images/cat-rabbit/",
-  "import_type" : 0,
-  "total_sample_count" : 20,
-  "imported_sample_count" : 20,
-  "annotated_sample_count" : 20,
-  "total_sub_sample_count" : 0,
-  "imported_sub_sample_count" : 0,
-  "total_file_size" : 0,
-  "finished_file_count" : 0,
-  "finished_file_size" : 0,
-  "total_file_count" : 0,
-  "update_ms" : 1606114833955,
-  "create_time" : 1606114833874,
-  "elapsed_time" : 2
-                }
+            "status": "COMPLETED",
+            "task_id": "gfghHSokody6AJigS5A_RHJ1zOkIoI3Nzwxj8nh",
+            "dataset_id": "gfghHSokody6AJigS5A",
+            "import_path": "obs://test-obs/daoLu_images/cat-rabbit/",
+            "import_type": 0,
+            "total_sample_count": 20,
+            "imported_sample_count": 20,
+            "annotated_sample_count": 20,
+            "total_sub_sample_count": 0,
+            "imported_sub_sample_count": 0,
+            "total_file_size": 0,
+            "finished_file_count": 0,
+            "finished_file_size": 0,
+            "total_file_count": 0,
+            "update_ms": 1606114833955,
+            "create_time": 1606114833874,
+            "elapsed_time": 2,
+        }
         return dataset.ImportTask(**object_info)
 
 
@@ -248,23 +248,22 @@ class FakeDatasetExportTask(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-  "task_id" : "TZMuy7OKbClkGCAc3gb",
-  "path" : "/test-obs/daoChu/",
-  "export_type" : 3,
-  "version_format" : "Default",
-  "export_format" : 2,
-  "export_params" : {
-    "sample_state" : "",
-    "export_dest" : "DIR",
-    "clear_hard_property" : True,
-    "clear_difficult" : False,
-    "train_sample_ratio" : 1.0,
-    "ratio_sample_usage" : False
-  },
-  "status" : "RUNNING",
-  "progress" : 0.0,
-  "create_time" : 1606103424662,
-  "update_time" : 1606103494124
+            "task_id": "TZMuy7OKbClkGCAc3gb",
+            "path": "/test-obs/daoChu/",
+            "export_type": 3,
+            "version_format": "Default",
+            "export_format": 2,
+            "export_params": {
+                "sample_state": "",
+                "export_dest": "DIR",
+                "clear_hard_property": True,
+                "clear_difficult": False,
+                "train_sample_ratio": 1.0,
+                "ratio_sample_usage": False,
+            },
+            "status": "RUNNING",
+            "progress": 0.0,
+            "create_time": 1606103424662,
+            "update_time": 1606103494124,
         }
         return dataset.ExportTask(**object_info)
-

@@ -10,6 +10,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
+import base64
+import os
+
 from openstack.tests.unit import test_proxy_base
 from otcextensions.sdk.modelartsv2.v2 import _proxy
 from otcextensions.sdk.modelartsv2.v2 import dataset
@@ -82,13 +85,25 @@ class TestDatasetSample(TestModelartsV2Proxy):
         )
 
     def test_add_dataset_samples(self):
+        dirname = os.path.dirname(__file__)
+        file_path = os.path.join(dirname, "8710109684_e2c5ef6aeb_n.jpg")
+        with open(file_path, "rb") as file:
+            sample = {
+                "name": "8710109684_e2c5ef6aeb_n.jpg",
+                "data": base64.b64encode(file.read()).decode(),
+            }
         self.verify_create(
             self.proxy.add_dataset_samples,
-            dataset.Sample,
+            dataset.CreateSample,
             method_args=["dataset-uuid"],
             expected_args=[],
-            method_kwargs={"a": "b"},
-            expected_kwargs={"dataset_id": "dataset-uuid", "a": "b"},
+            method_kwargs={
+                "file_path": file_path,
+            },
+            expected_kwargs={
+                "dataset_id": "dataset-uuid",
+                "samples": [sample],
+            },
         )
 
     def test_delete_dataset_samples(self):

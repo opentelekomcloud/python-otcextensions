@@ -14,24 +14,25 @@ from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv2.v2 import dataset
 
 EXAMPLE = {
-  "status" : "COMPLETED",
-  "task_id" : "gfghHSokody6AJigS5A_RHJ1zOkIoI3Nzwxj8nh",
-  "dataset_id" : "gfghHSokody6AJigS5A",
-  "import_path" : "obs://test-obs/daoLu_images/cat-rabbit/",
-  "import_type" : 0,
-  "total_sample_count" : 20,
-  "imported_sample_count" : 20,
-  "annotated_sample_count" : 20,
-  "total_sub_sample_count" : 0,
-  "imported_sub_sample_count" : 0,
-  "total_file_size" : 0,
-  "finished_file_count" : 0,
-  "finished_file_size" : 0,
-  "total_file_count" : 0,
-  "update_ms" : 1606114833955,
-  "create_time" : 1606114833874,
-  "elapsed_time" : 2
+    "status": "COMPLETED",
+    "task_id": "gfghHSokody6AJigS5A_RHJ1zOkIoI3Nzwxj8nh",
+    "dataset_id": "gfghHSokody6AJigS5A",
+    "import_path": "obs://test-obs/daoLu_images/cat-rabbit/",
+    "import_type": 0,
+    "total_sample_count": 20,
+    "imported_sample_count": 20,
+    "annotated_sample_count": 20,
+    "total_sub_sample_count": 0,
+    "imported_sub_sample_count": 0,
+    "total_file_size": 0,
+    "finished_file_count": 0,
+    "finished_file_size": 0,
+    "total_file_count": 0,
+    "update_ms": 1606114833955,
+    "create_time": 1606114833874,
+    "elapsed_time": 2,
 }
+
 
 class TestDatasetImportTask(base.TestCase):
     def setUp(self):
@@ -40,7 +41,9 @@ class TestDatasetImportTask(base.TestCase):
     def test_basic(self):
         sot = dataset.ImportTask()
 
-        self.assertEqual("/datasets/%(dataset_id)s/import-tasks", sot.base_path)
+        self.assertEqual(
+            "/datasets/%(dataset_id)s/import-tasks", sot.base_path
+        )
         self.assertEqual(None, sot.resource_key)
         self.assertEqual("import_tasks", sot.resources_key)
 
