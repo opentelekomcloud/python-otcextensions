@@ -310,7 +310,7 @@ class UpdateTrainingJobConfiguration(command.Command):
             prog_name
         )
         parser.add_argument(
-            "--config_name",
+            "--config-name",
             metavar="<config_name>",
             help=_(
                 "Service description, which contains a maximum of 100 "
@@ -318,23 +318,179 @@ class UpdateTrainingJobConfiguration(command.Command):
                 "description is not updated."
             ),
         )
+        parser.add_argument(
+            "--config-desc",
+            metavar="<config_desc>",
+            required=False,
+            type=str,
+            help=_("Description of a training job configuration"),
+        )
+        parser.add_argument(
+            "--worker-server-num",
+            metavar="<worker_server_num>",
+            required=True,
+            type=int,
+            help=_("Number of workers in a training job"),
+        )
+        parser.add_argument(
+            "--app-url",
+            metavar="<app_url>",
+            required=True,
+            type=str,
+            help=_("Code directory of a training job, for example, /usr/app/"),
+        )
+        parser.add_argument(
+            "--boot-file-url",
+            metavar="<boot_file_url>",
+            required=True,
+            type=str,
+            help=_(
+                "Boot file of a training job, which needs to be stored in the code directory, for example, /usr/app/boot"
+            ),
+        )
+        parser.add_argument(
+            "--model-id",
+            metavar="<model_id>",
+            required=True,
+            type=int,
+            help=_("Model ID of a training job"),
+        )
+        parser.add_argument(
+            "--spec-id",
+            metavar="<spec_id>",
+            required=True,
+            type=int,
+            help=_(
+                "ID of the resource specifications selected for a training job"
+            ),
+        )
+        parser.add_argument(
+            "--data-url",
+            metavar="<data_url>",
+            required=False,
+            type=str,
+            help=_(
+                "OBS URL of the dataset required by a training job, for example, /usr/data/"
+            ),
+        )
+        parser.add_argument(
+            "--dataset-id",
+            metavar="<dataset_id>",
+            required=False,
+            type=str,
+            help=_("Dataset ID of a training job"),
+        )
+        parser.add_argument(
+            "--dataset-version-id",
+            metavar="<dataset_version_id>",
+            required=False,
+            type=str,
+            help=_("Dataset version ID of a training job"),
+        )
+        parser.add_argument(
+            "--engine-id",
+            metavar="<engine_id>",
+            required=True,
+            type=int,
+            help=_("ID of the engine selected for a training job"),
+        )
+        parser.add_argument(
+            "--train-url",
+            metavar="<train_url>",
+            required=False,
+            type=str,
+            help=_("OBS URL of the output file of a training job"),
+        )
+        parser.add_argument(
+            "--log-url",
+            metavar="<log_url>",
+            required=False,
+            type=str,
+            help=_("OBS URL of the logs of a training job"),
+        )
+        parser.add_argument(
+            "--user-image-url",
+            metavar="<user_image_url>",
+            required=False,
+            type=str,
+            help=_("SWR URL of a custom image used by a training job"),
+        )
+        parser.add_argument(
+            "--user-command",
+            metavar="<user_command>",
+            required=False,
+            type=str,
+            help=_(
+                "Boot command used to start the container of a custom image of a training job"
+            ),
+        )
+        parser.add_argument(
+            "--dataset-version",
+            metavar="<dataset_version>",
+            required=False,
+            type=str,
+            help=_("Dataset version ID of a training job"),
+        )
+        parser.add_argument(
+            "--type",
+            metavar="<type>",
+            required=False,
+            type=str,
+            help=_("Dataset type"),
+        )
+        parser.add_argument(
+            "--data-url",
+            metavar="<data_url>",
+            required=False,
+            type=str,
+            help=_("OBS bucket path"),
+        )
+        parser.add_argument(
+            "--label",
+            metavar="<label>",
+            required=False,
+            type=str,
+            help=_("Parameter name"),
+        )
+        parser.add_argument(
+            "--value",
+            metavar="<value>",
+            required=False,
+            type=str,
+            help=_("Parameter value"),
+        )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
         attrs = {}
-        # if parsed_args.service_id:
-        #    attrs["service_id"] = parsed_args.service_id
-        """
-        if parsed_args.description:
-            attrs["description"] = parsed_args.description
-        if parsed_args.enable:
-            attrs["enable"] = parsed_args.enable
-        if parsed_args.duration:
-            attrs["duration"] = parsed_args.duration
-        if parsed_args.prompt:
-            attrs["prompt"] = parsed_args.prompt
-        """
+        args_list = [
+            "config_name",
+            "config_desc",
+            "worker_server_num",
+            "app_url",
+            "boot_file_url",
+            "model_id",
+            "spec_id",
+            "data_url",
+            "dataset_id",
+            "dataset_version_id",
+            "engine_id",
+            "train_url",
+            "log_url",
+            "user_image_url",
+            "user_command",
+            "dataset_version",
+            "type",
+            "data_url",
+            "label",
+            "value",
+        ]
+        for arg in args_list:
+            val = getattr(parsed_args, arg)
+            if val:
+                attrs[arg] = val
+
         client.modify_trainingjob_configuration(
             parsed_args.config_name, **attrs
         )
