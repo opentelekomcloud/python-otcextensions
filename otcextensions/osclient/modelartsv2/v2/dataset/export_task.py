@@ -27,15 +27,16 @@ EXPORT_TYPE_CHOICES_MAP = {
     4: "conditional search",
 }
 
+def _get_columns(item):
+    column_map = {}
+    hidden = ["location"]
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(
+        item, column_map, hidden)
+
 
 def _flatten_output(obj):
     data = {"export_tasks": obj.export_tasks}
     return data
-
-
-def _get_columns(item):
-    column_map = {}
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
 class CreateDatasetExportTask(command.ShowOne):
@@ -284,7 +285,9 @@ class CreateDatasetExportTask(command.ShowOne):
             attrs["error_code"] = parsed_args.error_code
         if parsed_args.error_msg:
             attrs["error_msg"] = parsed_args.error_msg
-
+        if parsed_args.path:
+            attrs["path"] = parsed_args.path
+        print("**attrs", attrs)
         obj = client.create_dataset_export_task(**attrs)
 
         display_columns, columns = _get_columns(obj)
