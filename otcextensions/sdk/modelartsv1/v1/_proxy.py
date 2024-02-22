@@ -684,7 +684,7 @@ class Proxy(proxy.Proxy):
             _visualization_job.VisualizationJob, visualization_job
         )
 
-    def modify_visualizationjob_description(self, job_id, **attrs):
+    def update_visualizationjob_description(self, **attrs):
         """Get the dataset by id
 
         :param dataset: key id or an instance of
@@ -694,7 +694,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelarts.v2.datasets.Datasets`
         """
         return self._update(
-            _visualization_job.VisualizationJob, job_id, **attrs
+            _visualization_job.VisualizationJob, **attrs
         )
 
     def stop_visualizationjob(self, visualization_job):

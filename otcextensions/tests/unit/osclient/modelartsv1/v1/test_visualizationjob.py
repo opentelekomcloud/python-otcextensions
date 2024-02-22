@@ -157,7 +157,7 @@ class TestUpdateVisualizationJob(fakes.TestModelartsv1):
 
     def test_update(self):
         arglist = ["job-id", "--job-desc", "New Description"]
-        verifylist = [("job_id", "job-id"), ("job_desc", "New Description")]
+        verifylist = [("jobId", "job-id"), ("job_desc", "New Description")]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 

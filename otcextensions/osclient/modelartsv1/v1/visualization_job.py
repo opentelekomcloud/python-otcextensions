@@ -177,22 +177,30 @@ class UpdateVisualizationJob(command.ShowOne):
         parser = super(UpdateVisualizationJob, self).get_parser(prog_name)
 
         parser.add_argument(
-            "--job-id",
+            "jobId",
             metavar="<job_id>",
             required=True,
             help=_("ID of a visualization job"),
         )
+        parser.add_argument(
+            "--job-desc",
+            metavar="<job_desc>",
+            required=True,
+            help=_("ID of a visualization job"),
+        )
+
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
 
         attrs = {}
+        #if parsed_args.job_id:
+        #    attrs["job_id"] = parsed_args.job_id
+        if parsed_args.job_desc:
+            attrs["job_desc"] = parsed_args.job_desc
 
-        if parsed_args.job_id:
-            attrs["job_id"] = parsed_args.job_id
-
-        obj = client.modify_visjob_desc(**attrs)
+        obj = client.update_visualizationjob_description(parsed_args.job_id, **attrs)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
