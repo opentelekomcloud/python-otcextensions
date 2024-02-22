@@ -135,17 +135,29 @@ class TestCreateTrainingJob(fakes.TestModelartsv1):
         ]
         # Verify cm is triggereg with default parameters
         self.check_parser(self.cmd, arglist, verifylist)
-        # parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Trigger the action
-        # columns, data = self.cmd.take_action(parsed_args)
-        # attrs = {}
-        # self.client.create_trainingjob.assert_called_with(**attrs)
+        columns, data = self.cmd.take_action(parsed_args)
+        attrs = {
+        "job_name": "visualization-job",
+        "job_desc": "this is a visualization job",
+        "train_url": "/obs/name/",
+        "job_type": "mindinsight",
+        "schedule": [
+            {
+                "type": "stop",
+                "time_unit": "HOURS",
+                "duration": 1
+            }
+            ]
+        }
+        self.client.create_trainingjob.assert_called_with(**attrs)
         # self.client.wait_for_cluster.assert_called_with(
         #    self._cluster.id, wait=self.default_timeout)
         # self.client.find_model.assert_called_with(self._model.id)
-        # self.assertEqual(self.columns, columns)
-        # self.assertEqual(self.data, data)
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
 
 
 class TestDeleteTrainingJob(fakes.TestModelartsv1):

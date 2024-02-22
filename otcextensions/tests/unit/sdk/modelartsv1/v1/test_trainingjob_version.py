@@ -38,16 +38,13 @@ class TestTrainingJobVersion(base.TestCase):
 
     def test_make_it(self):
         EXAMPLE2 = copy.deepcopy(EXAMPLE)
-        print("EXAMPLE_CREATE TIME\n\n", EXAMPLE["create_time"])
         updated_sot_attrs = ["create_time"]
         sot = trainingjob_version.TrainingJobVersion()
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.json.return_value = EXAMPLE2
         sot._translate_response(mock_response)
-        print("sot\n\n", EXAMPLE["create_time"], sot.created_at)
         self.assertEqual(EXAMPLE["create_time"], sot.created_at)
         for key, value in EXAMPLE.items():
             if key not in updated_sot_attrs:
-                print("key", key, "\nvalue:", value)
                 self.assertEqual(getattr(sot, key), value)

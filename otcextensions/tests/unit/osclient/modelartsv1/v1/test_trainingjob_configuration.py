@@ -154,17 +154,40 @@ class TestCreateTrainingJobConfiguration(fakes.TestModelartsv1):
         ]
         # Verify cm is triggereg with default parameters
         self.check_parser(self.cmd, arglist, verifylist)
-        # parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Trigger the action
-        # columns, data = self.cmd.take_action(parsed_args)
-        # attrs = {}
-        # self.client.create_trainingjob.assert_called_with(**attrs)
+        columns, data = self.cmd.take_action(parsed_args)
+        attrs = {
+        
+        "config_name": "testConfig",
+        "config_desc": "This is config",
+        "worker_server_num": 1,
+        "app_url": "/usr/app/",
+        "boot_file_url": "/usr/app/boot.py",
+        "parameter": [
+            {
+                "label": "learning_rate",
+                "value": "0.01"
+            },
+            {
+                "label": "batch_size",
+                "value": "32"
+            }
+        ],
+        "spec_id": 1,
+        "dataset_id": "38277e62-9e59-48f4-8d89-c8cf41622c24",
+        "dataset_version_id": "2ff0d6ba-c480-45ae-be41-09a8369bfc90",
+        "engine_id": 1,
+        "train_url": "/usr/train/",
+        "log_url": "/usr/log/"
+        }
+        self.client.create_trainingjob_configuration.assert_called_with(**attrs)
         # self.client.wait_for_cluster.assert_called_with(
         #    self._cluster.id, wait=self.default_timeout)
         # self.client.find_model.assert_called_with(self._model.id)
-        # self.assertEqual(self.columns, columns)
-        # self.assertEqual(self.data, data)
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
 
 
 class TestDeleteTrainingJobConfiguration(fakes.TestModelartsv1):

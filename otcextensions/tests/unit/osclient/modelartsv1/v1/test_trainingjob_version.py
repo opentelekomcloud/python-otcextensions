@@ -100,7 +100,7 @@ class TestListTrainingJobVersions(fakes.TestModelartsv1):
         self.assertEqual(self.data, list(data))
 
 
-"""
+
 class TestCreateTrainingJobVersion(fakes.TestModelartsv1):
 
     _trainingjob_version = fakes.FakeTrainingJobVersion.create_one()
@@ -305,4 +305,4 @@ class TestDeleteTrainingJobVersion(fakes.TestModelartsv1):
             )
 
         self.client.delete_trainingjobversion.assert_any_call(self._trainingjobversion[0].id)
-"""
+

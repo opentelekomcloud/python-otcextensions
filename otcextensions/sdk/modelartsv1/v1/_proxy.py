@@ -399,7 +399,7 @@ class Proxy(proxy.Proxy):
             _trainingjob_version.TrainingJobVersion, jobId=job_id, **attrs
         )
 
-    def create_training_job(self, **attrs):
+    def create_trainingjob(self, **attrs):
         """Create a training job from attributes
 
         :param dict attrs: Keyword arguments which will be used to create
