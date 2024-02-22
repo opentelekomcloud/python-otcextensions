@@ -170,14 +170,14 @@ class CreateVisualizationJob(command.ShowOne):
         return (display_columns, data)
 
 
-class ModifyVisualizationJob(command.ShowOne):
+class UpdateVisualizationJob(command.ShowOne):
     _description = _("Modify Visualization Job Description")
 
     def get_parser(self, prog_name):
-        parser = super(ModifyVisualizationJob, self).get_parser(prog_name)
+        parser = super(UpdateVisualizationJob, self).get_parser(prog_name)
 
         parser.add_argument(
-            "--job_id",
+            "--job-id",
             metavar="<job_id>",
             required=True,
             help=_("ID of a visualization job"),

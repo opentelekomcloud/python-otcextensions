@@ -111,25 +111,44 @@ class TestCreateTrainingJobConfiguration(fakes.TestModelartsv1):
 
     def test_create(self):
         arglist = [
-            "--config-name", "test-trainingjob-configuration",
-            "--config-desc", "1",
-            "--worker-server-num", "2",
-            "--app-url", "3",
-            "--boot-file-url", "4",
-            "--log-url", "5",
-            "--data-url", "6",
-            "--train-url", "7",
-            "--dataset-id", "8",
-            "--dataset-version-id", "9",
-            "--data-source", "10",
-            "--spec-id", "11",
-            "--engine-id", "12",
-            "--model-id", "13",
-            "--parameter", "14",
-            "--user-image-url", "15",
-            "--user-command", "16",
-            "--dataset-version", "17",
-            "--type", "18",
+            "--config-name",
+            "test-trainingjob-configuration",
+            "--config-desc",
+            "1",
+            "--worker-server-num",
+            "2",
+            "--app-url",
+            "3",
+            "--boot-file-url",
+            "4",
+            "--log-url",
+            "5",
+            "--data-url",
+            "6",
+            "--train-url",
+            "7",
+            "--dataset-id",
+            "8",
+            "--dataset-version-id",
+            "9",
+            "--data-source",
+            "10",
+            "--spec-id",
+            "11",
+            "--engine-id",
+            "12",
+            "--model-id",
+            "13",
+            "--parameter",
+            "14",
+            "--user-image-url",
+            "15",
+            "--user-command",
+            "16",
+            "--dataset-version",
+            "17",
+            "--type",
+            "18",
         ]
         verifylist = [
             ("config_name", "test-trainingjob-configuration"),
@@ -159,33 +178,129 @@ class TestCreateTrainingJobConfiguration(fakes.TestModelartsv1):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
         attrs = {
-        
-        "config_name": "testConfig",
-        "config_desc": "This is config",
-        "worker_server_num": 1,
-        "app_url": "/usr/app/",
-        "boot_file_url": "/usr/app/boot.py",
-        "parameter": [
-            {
-                "label": "learning_rate",
-                "value": "0.01"
-            },
-            {
-                "label": "batch_size",
-                "value": "32"
-            }
-        ],
-        "spec_id": 1,
-        "dataset_id": "38277e62-9e59-48f4-8d89-c8cf41622c24",
-        "dataset_version_id": "2ff0d6ba-c480-45ae-be41-09a8369bfc90",
-        "engine_id": 1,
-        "train_url": "/usr/train/",
-        "log_url": "/usr/log/"
+            "config_name": "testConfig",
+            "config_desc": "This is config",
+            "worker_server_num": 1,
+            "app_url": "/usr/app/",
+            "boot_file_url": "/usr/app/boot.py",
+            "parameter": [
+                {"label": "learning_rate", "value": "0.01"},
+                {"label": "batch_size", "value": "32"},
+            ],
+            "spec_id": 1,
+            "dataset_id": "38277e62-9e59-48f4-8d89-c8cf41622c24",
+            "dataset_version_id": "2ff0d6ba-c480-45ae-be41-09a8369bfc90",
+            "engine_id": 1,
+            "train_url": "/usr/train/",
+            "log_url": "/usr/log/",
         }
-        self.client.create_trainingjob_configuration.assert_called_with(**attrs)
+        self.client.create_trainingjob_configuration.assert_called_with(
+            **attrs
+        )
         # self.client.wait_for_cluster.assert_called_with(
         #    self._cluster.id, wait=self.default_timeout)
         # self.client.find_model.assert_called_with(self._model.id)
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
+
+
+class TestUpdateTrainingJobConfiguration(fakes.TestModelartsv1):
+    _data = fakes.FakeTrainingJobConfiguration.create_one()
+
+    columns = _COLUMNS
+
+    data = fakes.gen_data(_data, columns)
+
+    def setUp(self):
+        super(TestUpdateTrainingJobConfiguration, self).setUp()
+
+        self.cmd = trainingjob_configuration.UpdateTrainingJobConfiguration(
+            self.app, None
+        )
+
+        self.client.update_trainingjob_configuration = mock.Mock(
+            return_value=self._data
+        )
+
+    def test_update(self):
+        arglist = [
+            "config-name",
+            "--config-desc",
+            "New Description",
+            "--worker-server-num",
+            "1",
+            "--app-url",
+            "2",
+            "--boot-file-url",
+            "3",
+            "--model-id",
+            "4",
+            "--parameter",
+            "5",
+            "--spec-id",
+            "6",
+            "--data-url",
+            "7",
+            "--dataset-id",
+            "8",
+            "--dataset-version-id",
+            "9",
+            "--data-source",
+            "10",
+            "--engine-id",
+            "11",
+            "--train-url",
+            "12",
+            "--log-url",
+            "13",
+            "--user-image-url",
+            "14",
+            "--user-command",
+            "15",
+        ]
+        verifylist = [
+            ("config_name", "config-name"),
+            ("config_desc", "New Description"),
+            ("worker_server_num", "1"),
+            ("app_url", "2"),
+            ("boot_file_url", "3"),
+            ("model_id", "4"),
+            ("parameter", "5"),
+            ("spec_id", "6"),
+            ("data_url", "7"),
+            ("dataset_id", "8"),
+            ("dataset_version_id", "9"),
+            ("data_source", "10"),
+            ("engine_id", "11"),
+            ("train_url", "12"),
+            ("log_url", "13"),
+            ("user_image_url", "14"),
+            ("user_command", "15"),
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+        attrs = {
+            "config_desc": "This is config",
+            "worker_server_num": 1,
+            "app_url": "/usr/app/",
+            "boot_file_url": "/usr/app/boot.py",
+            "parameter": [
+                {"label": "learning_rate", "value": 0.01},
+                {"key": "batch_size", "value": 32},
+            ],
+            "spec_id": 1,
+            "dataset_id": "38277e62-9e59-48f4-8d89-c8cf41622c24",
+            "dataset_version_id": "2ff0d6ba-c480-45ae-be41-09a8369bfc90",
+            "engine_id": 1,
+            "train_url": "/usr/train/",
+            "log_url": "/usr/log/",
+        }
+        self.client.update_trainingjob.assert_called_with(
+            "config-name", **attrs
+        )
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
 

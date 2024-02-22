@@ -287,11 +287,11 @@ class CreateTrainingJob(command.ShowOne):
         return display_columns, data
 
 
-class ModifyTrainingJobDescription(command.ShowOne):
+class UpdateTrainingJobDescription(command.ShowOne):
     _description = _("Modify details of a MA TrainingJobDescription")
 
     def get_parser(self, prog_name):
-        parser = super(ModifyTrainingJobDescription, self).get_parser(
+        parser = super(UpdateTrainingJobDescription, self).get_parser(
             prog_name
         )
         parser.add_argument("jobId", metavar="<jobId>", help=_("Enter job id"))
@@ -347,10 +347,6 @@ class StopTrainingJob(command.ShowOne):
             parsed_args.job_id, parsed_args.version_id, ignore_missing=False
         )
         return client.stop_training_job(job.id)
-
-
-class ListTrainingJobLogs:
-    pass
 
 
 class ListTrainingJobs(command.Lister):

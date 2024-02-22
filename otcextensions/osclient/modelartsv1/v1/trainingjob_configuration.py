@@ -264,8 +264,6 @@ class CreateTrainingJobConfiguration(command.ShowOne):
             attrs["dataset_version"] = parsed_args.dataset_version
         if parsed_args.type:
             attrs["type"] = parsed_args.type
-        if parsed_args.data_url:
-            attrs["data_url"] = parsed_args.data_url
 
         obj = client.create_trainjobconf(**attrs)
 
@@ -437,13 +435,6 @@ class UpdateTrainingJobConfiguration(command.Command):
             required=False,
             type=str,
             help=_("Dataset type"),
-        )
-        parser.add_argument(
-            "--data-url",
-            metavar="<data_url>",
-            required=False,
-            type=str,
-            help=_("OBS bucket path"),
         )
         parser.add_argument(
             "--label",

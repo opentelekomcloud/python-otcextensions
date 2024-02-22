@@ -102,20 +102,34 @@ class TestCreateTrainingJob(fakes.TestModelartsv1):
 
     def test_create(self):
         arglist = [
-            "--job-name", "test-trainingjob",
-            "--job-desc", "1",
-            "--workspace-id", "2",
-            "--worker-server-num", "3",
-            "--app-url", "4",
-            "--boot-file-url", "5",
-            "--log-url", "6",
-            "--data-url", "7",
-            "--dataset-id", "8",
-            "--dataset-version-id", "9",
-            "--data-source", "10",
-            "--spec-id", "11",
-            "--engine-id", "12",
-            "--model-id", "13",
+            "--job-name",
+            "test-trainingjob",
+            "--job-desc",
+            "1",
+            "--workspace-id",
+            "2",
+            "--worker-server-num",
+            "3",
+            "--app-url",
+            "4",
+            "--boot-file-url",
+            "5",
+            "--log-url",
+            "6",
+            "--data-url",
+            "7",
+            "--dataset-id",
+            "8",
+            "--dataset-version-id",
+            "9",
+            "--data-source",
+            "10",
+            "--spec-id",
+            "11",
+            "--engine-id",
+            "12",
+            "--model-id",
+            "13",
         ]
         verifylist = [
             ("job_name", "test-trainingjob"),
@@ -140,22 +154,55 @@ class TestCreateTrainingJob(fakes.TestModelartsv1):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
         attrs = {
-        "job_name": "visualization-job",
-        "job_desc": "this is a visualization job",
-        "train_url": "/obs/name/",
-        "job_type": "mindinsight",
-        "schedule": [
-            {
-                "type": "stop",
-                "time_unit": "HOURS",
-                "duration": 1
-            }
-            ]
+            "job_name": "visualization-job",
+            "job_desc": "this is a visualization job",
+            "train_url": "/obs/name/",
+            "job_type": "mindinsight",
+            "schedule": [
+                {"type": "stop", "time_unit": "HOURS", "duration": 1}
+            ],
         }
         self.client.create_trainingjob.assert_called_with(**attrs)
         # self.client.wait_for_cluster.assert_called_with(
         #    self._cluster.id, wait=self.default_timeout)
         # self.client.find_model.assert_called_with(self._model.id)
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
+
+
+class TestUpdateTrainingJob(fakes.TestModelartsv1):
+    _data = fakes.FakeTrainingJob.create_one()
+
+    columns = _COLUMNS
+
+    data = fakes.gen_data(_data, columns)
+
+    def setUp(self):
+        super(TestUpdateTrainingJob, self).setUp()
+
+        self.cmd = trainingjob.UpdateTrainingJobDescription(self.app, None)
+
+        self.client.update_trainingjob = mock.Mock(return_value=self._data)
+
+    def test_update(self):
+        arglist = [
+            "job-id",
+            "--description",
+            "New Description",
+        ]
+        verifylist = [
+            ("jobId", "job-id"),
+            ("description", "New Description"),
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+        attrs = {"description": "New Description"}
+        self.client.update_trainingjob.assert_called_with(
+            "trainingjob-id", **attrs
+        )
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
 

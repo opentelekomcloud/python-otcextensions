@@ -11,6 +11,7 @@
 # under the License.
 #
 import mock
+
 # from openstackclient.tests.unit import utils as tests_utils
 from otcextensions.common import cli_utils
 from otcextensions.osclient.modelartsv1.v1 import visualization_job
@@ -96,12 +97,18 @@ class TestCreateVisualizationJob(fakes.TestModelartsv1):
 
     def test_create(self):
         arglist = [
-            "--job-name", "test-visualizationjob",
-            "--job-desc", "1",
-            "--train-url", "2",
-            "--job-type", "3",
-            "--flavor", "4",
-            "--schedule_duration", "5",
+            "--job-name",
+            "test-visualizationjob",
+            "--job-desc",
+            "1",
+            "--train-url",
+            "2",
+            "--job-type",
+            "3",
+            "--flavor",
+            "4",
+            "--schedule_duration",
+            "5",
         ]
         verifylist = [
             ("job_name", "test-visualizationjob"),
@@ -128,6 +135,36 @@ class TestCreateVisualizationJob(fakes.TestModelartsv1):
         # self.client.wait_for_cluster.assert_called_with(
         #    self._cluster.id, wait=self.default_timeout)
         # self.client.find_model.assert_called_with(self._model.id)
+        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.data, data)
+
+
+class TestUpdateVisualizationJob(fakes.TestModelartsv1):
+    _data = fakes.FakeVisualizationJob.create_one()
+
+    columns = _COLUMNS
+
+    data = fakes.gen_data(_data, columns)
+
+    def setUp(self):
+        super(TestUpdateVisualizationJob, self).setUp()
+
+        self.cmd = visualization_job.UpdateVisualizationJob(self.app, None)
+
+        self.client.update_visualization_job = mock.Mock(
+            return_value=self._data
+        )
+
+    def test_update(self):
+        arglist = ["job-id", "--job-desc", "New Description"]
+        verifylist = [("job_id", "job-id"), ("job_desc", "New Description")]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+        attrs = {"job_desc": "This is a ModelArts job"}
+        self.client.update_trainingjob.assert_called_with("job-id", **attrs)
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
 

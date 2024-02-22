@@ -13,6 +13,7 @@
 import mock
 from otcextensions.osclient.modelartsv1.v1 import trainingjob_version
 from otcextensions.tests.unit.osclient.modelartsv1.v1 import fakes
+from openstackclient.tests.unit import utils as tests_utils
 
 _COLUMNS = (
     "is_success",
@@ -100,32 +101,35 @@ class TestListTrainingJobVersions(fakes.TestModelartsv1):
         self.assertEqual(self.data, list(data))
 
 
-
 class TestCreateTrainingJobVersion(fakes.TestModelartsv1):
 
     _trainingjob_version = fakes.FakeTrainingJobVersion.create_one()
     columns = _COLUMNS
-    data = fakes.gen_data(_trainingjob_version, columns,
-                          trainingjob_version._formatters)
+    data = fakes.gen_data(
+        _trainingjob_version, columns, trainingjob_version._formatters
+    )
 
     def setUp(self):
         super(TestCreateTrainingJobVersion, self).setUp()
 
         self.cmd = trainingjob_version.CreateTrainingJobVersion(self.app, None)
 
-        self.client.create_trainingjob_version = \
-            mock.Mock(return_value=self._trainingjob_version)
+        self.client.create_trainingjob_version = mock.Mock(
+            return_value=self._trainingjob_version
+        )
 
     def test_create(self):
         arglist = [
-            'test-trainingjobversion',
-            '--infer-type', 'https://models.obs.xxxx.com/mnist',
-            '--config', 'TensorFlow',
+            "test-trainingjobversion",
+            "--infer-type",
+            "https://models.obs.xxxx.com/mnist",
+            "--config",
+            "TensorFlow",
         ]
         verifylist = [
-            ('name', 'test-service'),
-            ('infer_type', 'https://models.obs.xxxx.com/mnist'),
-            ('config', 'TensorFlow')
+            ("name", "test-service"),
+            ("infer_type", "https://models.obs.xxxx.com/mnist"),
+            ("config", "TensorFlow"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -133,9 +137,9 @@ class TestCreateTrainingJobVersion(fakes.TestModelartsv1):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
         attrs = {
-            'trainingjob_version_name': 'test-trainingjob_version',
-            'infer_type': 'https://models.obs.xxxx.com/mnist',
-            'config': 'TensorFlow'
+            "trainingjob_version_name": "test-trainingjob_version",
+            "infer_type": "https://models.obs.xxxx.com/mnist",
+            "config": "TensorFlow",
         }
         self.client.create_trainingjob_version.assert_called_with(**attrs)
         # self.client.wait_for_cluster.assert_called_with(
@@ -149,17 +153,19 @@ class TestShowTrainingJobVersion(fakes.TestModelartsv1):
 
     _trainingjob_version = fakes.FakeTrainingJobVersion.create_one()
     columns = _COLUMNS
-    data = fakes.gen_data(_trainingjob_version, columns,
-                          trainingjob_version._formatters)
+    data = fakes.gen_data(
+        _trainingjob_version, columns, trainingjob_version._formatters
+    )
 
     def setUp(self):
         super(TestShowTrainingJobVersion, self).setUp()
 
         self.cmd = trainingjob_version.ShowTrainingJobVersion(self.app, None)
 
-        self.client.find_trainingjob_version = \
-            mock.Mock(return_value=self._trainingjob_version)
-        #self.client.get_model = mock.Mock(return_value=self._model)
+        self.client.find_trainingjob_version = mock.Mock(
+            return_value=self._trainingjob_version
+        )
+        # self.client.get_model = mock.Mock(return_value=self._model)
 
     def test_show_no_options(self):
         arglist = []
@@ -167,51 +173,56 @@ class TestShowTrainingJobVersion(fakes.TestModelartsv1):
 
         # Testing that a call without the required argument will fail and
         # throw a "ParserExecption"
-        self.assertRaises(tests_utils.ParserException,
-                          self.check_parser, self.cmd, arglist, verifylist)
+        self.assertRaises(
+            tests_utils.ParserException,
+            self.check_parser,
+            self.cmd,
+            arglist,
+            verifylist,
+        )
 
     def test_show(self):
         arglist = [
             self._trainingjob_version.id,
         ]
 
-        verifylist = [
-            ('trainingjob_version', self._trainingjob_version.id)
-        ]
+        verifylist = [("trainingjob_version", self._trainingjob_version.id)]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.find_trainingjob_version.assert_called_with(self._trainingjob_version.id)
+        self.client.find_trainingjob_version.assert_called_with(
+            self._trainingjob_version.id
+        )
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
 
     def test_show_non_existent(self):
-        arglist = [
-            'unexist_ma_trainingjob_version'
-        ]
+        arglist = ["unexist_ma_trainingjob_version"]
 
         verifylist = [
-            ('trainingjob_version', 'unexist_ma_trainingjob_version')
+            ("trainingjob_version", "unexist_ma_trainingjob_version")
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        find_mock_result = exceptions.CommandError('Resource Not Found')
-        self.client.find_trainingjob_version = (
-            mock.Mock(side_effect=find_mock_result)
+        find_mock_result = exceptions.CommandError("Resource Not Found")
+        self.client.find_trainingjob_version = mock.Mock(
+            side_effect=find_mock_result
         )
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual('Resource Not Found', str(e))
-        self.client.find_trainingjob_version.assert_called_with('unexist_ma_trainingjob_version')
+            self.assertEqual("Resource Not Found", str(e))
+        self.client.find_trainingjob_version.assert_called_with(
+            "unexist_ma_trainingjob_version"
+        )
 
 
 class TestDeleteTrainingJobVersion(fakes.TestModelartsv1):
@@ -221,8 +232,9 @@ class TestDeleteTrainingJobVersion(fakes.TestModelartsv1):
     def setUp(self):
         super(TestDeleteTrainingJobVersion, self).setUp()
 
-        self.client.find_trainingjobversion = \
-            mock.Mock(return_value=self._trainingjobversion[0])
+        self.client.find_trainingjobversion = mock.Mock(
+            return_value=self._trainingjobversion[0]
+        )
         self.client.delete_trainingjobversion = mock.Mock(return_value=None)
 
         # Get the command object to test
@@ -234,7 +246,7 @@ class TestDeleteTrainingJobVersion(fakes.TestModelartsv1):
         ]
 
         verifylist = [
-            ('trainingjobversion', arglist),
+            ("trainingjobversion", arglist),
         ]
 
         # Verify cm is triggered with default parameters
@@ -243,8 +255,11 @@ class TestDeleteTrainingJobVersion(fakes.TestModelartsv1):
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
         self.client.find_trainingjobversion.assert_called_with(
-            self._trainingjobversion[0].name, ignore_missing=False)
-        self.client.delete_trainingjobversion.assert_called_with(self._trainingjobversion[0].id)
+            self._trainingjobversion[0].name, ignore_missing=False
+        )
+        self.client.delete_trainingjobversion.assert_called_with(
+            self._trainingjobversion[0].id
+        )
         self.assertIsNone(result)
 
     def test_multiple_delete(self):
@@ -253,15 +268,14 @@ class TestDeleteTrainingJobVersion(fakes.TestModelartsv1):
         for ma_trainingjobversion in self._trainingjobversion:
             arglist.append(ma_trainingjobversion.name)
 
-        verifylist = [
-            ('trainingjobversion', arglist)]
+        verifylist = [("trainingjobversion", arglist)]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         find_mock_results = self._trainingjobversion
-        self.client.find_trainingjobversion = (
-            mock.Mock(side_effect=find_mock_results)
+        self.client.find_trainingjobversion = mock.Mock(
+            side_effect=find_mock_results
         )
 
         # Trigger the action
@@ -271,7 +285,8 @@ class TestDeleteTrainingJobVersion(fakes.TestModelartsv1):
         delete_calls = []
         for ma_trainingjobversion in self._trainingjobversion:
             find_calls.append(
-                call(ma_trainingjobversion.name, ignore_missing=False))
+                call(ma_trainingjobversion.name, ignore_missing=False)
+            )
             delete_calls.append(call(ma_trainingjobversion.id))
         self.client.find_trainingjobversion.assert_has_calls(find_calls)
         self.client.delete_trainingjobversion.assert_has_calls(delete_calls)
@@ -280,19 +295,19 @@ class TestDeleteTrainingJobVersion(fakes.TestModelartsv1):
     def test_multiple_delete_with_exception(self):
         arglist = [
             self._trainingjobversion[0].id,
-            'unexist_ma_trainingjobversion',
+            "unexist_ma_trainingjobversion",
         ]
-        verifylist = [
-            ('trainingjobversion', arglist)
-        ]
+        verifylist = [("trainingjobversion", arglist)]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        find_mock_results = [self._trainingjobversion[0],
-                             exceptions.CommandError]
-        self.client.find_trainingjobversion = (
-            mock.Mock(side_effect=find_mock_results)
+        find_mock_results = [
+            self._trainingjobversion[0],
+            exceptions.CommandError,
+        ]
+        self.client.find_trainingjobversion = mock.Mock(
+            side_effect=find_mock_results
         )
 
         # Trigger the action
@@ -300,9 +315,9 @@ class TestDeleteTrainingJobVersion(fakes.TestModelartsv1):
             self.cmd.take_action(parsed_args)
         except Exception as e:
             self.assertEqual(
-                '1 of 2 Training Job Version(s) failed to delete.',
-                str(e)
+                "1 of 2 Training Job Version(s) failed to delete.", str(e)
             )
 
-        self.client.delete_trainingjobversion.assert_any_call(self._trainingjobversion[0].id)
-
+        self.client.delete_trainingjobversion.assert_any_call(
+            self._trainingjobversion[0].id
+        )
