@@ -182,7 +182,7 @@ class TestUpdateTrainingJob(fakes.TestModelartsv1):
 
         self.cmd = trainingjob.UpdateTrainingJobDescription(self.app, None)
 
-        self.client.update_trainingjob = mock.Mock(return_value=self._data)
+        self.client.update_trainingjob_description = mock.Mock(return_value=self._data)
 
     def test_update(self):
         arglist = [
@@ -200,7 +200,7 @@ class TestUpdateTrainingJob(fakes.TestModelartsv1):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
         attrs = {"description": "New Description"}
-        self.client.update_trainingjob.assert_called_with(
+        self.client.update_trainingjob_description.assert_called_with(
             "trainingjob-id", **attrs
         )
         self.assertEqual(self.columns, columns)

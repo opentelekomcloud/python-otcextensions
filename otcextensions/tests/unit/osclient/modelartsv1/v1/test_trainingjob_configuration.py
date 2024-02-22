@@ -224,6 +224,7 @@ class TestUpdateTrainingJobConfiguration(fakes.TestModelartsv1):
 
     def test_update(self):
         arglist = [
+            "--config-name",
             "config-name",
             "--config-desc",
             "New Description",

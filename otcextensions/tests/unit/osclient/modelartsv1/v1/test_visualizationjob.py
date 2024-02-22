@@ -27,7 +27,6 @@ _COLUMNS = (
     "created_at",
     "duration",
     "job_desc",
-    "job_id",
     "job_name",
     "resource_id",
     "service_url",
@@ -45,7 +44,7 @@ class TestListVisualizationJobs(fakes.TestModelartsv1):
     for s in objects:
         data.append(
             (
-                s.job_id,
+                s.jobId,
                 s.job_name,
                 cli_utils.UnixTimestampFormatter(s.created_at),
             )
@@ -151,7 +150,7 @@ class TestUpdateVisualizationJob(fakes.TestModelartsv1):
 
         self.cmd = visualization_job.UpdateVisualizationJob(self.app, None)
 
-        self.client.update_visualization_job = mock.Mock(
+        self.client.update_visualizationjob_description = mock.Mock(
             return_value=self._data
         )
 
@@ -163,8 +162,8 @@ class TestUpdateVisualizationJob(fakes.TestModelartsv1):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        attrs = {"job_desc": "This is a ModelArts job"}
-        self.client.update_trainingjob.assert_called_with("job-id", **attrs)
+        attrs = {"job_desc": "New Description"}
+        self.client.update_visualizationjob_description.assert_called_with("job-id", **attrs)
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
 

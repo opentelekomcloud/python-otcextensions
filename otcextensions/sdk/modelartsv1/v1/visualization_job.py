@@ -32,7 +32,7 @@ class VisualizationJob(resource.Resource):
     # This parameter is not included when the API call succeeds.
     error_code = resource.Body("error_code", type=str)
     #: ID of a training job
-    job_id = resource.Body("job_id", type=int)
+    jobId = resource.Body("jobId", type=int)
     #: Name of a training job
     job_name = resource.Body("job_name", type=str)
     #: Timestamp when a training job is created

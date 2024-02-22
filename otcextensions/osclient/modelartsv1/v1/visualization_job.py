@@ -179,14 +179,13 @@ class UpdateVisualizationJob(command.ShowOne):
         parser.add_argument(
             "jobId",
             metavar="<job_id>",
-            required=True,
             help=_("ID of a visualization job"),
         )
         parser.add_argument(
             "--job-desc",
             metavar="<job_desc>",
             required=True,
-            help=_("ID of a visualization job"),
+            help=_("Description of a visualization job"),
         )
 
         return parser
@@ -200,7 +199,7 @@ class UpdateVisualizationJob(command.ShowOne):
         if parsed_args.job_desc:
             attrs["job_desc"] = parsed_args.job_desc
 
-        obj = client.update_visualizationjob_description(parsed_args.job_id, **attrs)
+        obj = client.update_visualizationjob_description(parsed_args.jobId, **attrs)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)

@@ -259,7 +259,7 @@ EXAMPLE_VISUALIZATION_JOB = {
     "job_name": "apiTest-11",
     "create_time": 1565149736000,
     "train_url": "/wph-test/zl-test/Flowers-Set/ApiTest/",
-    "job_id": 197,
+    "jobId": 197,
     "job_desc": "ModelArts API Dialtest",
     "resource_id": uuid.uuid4().hex,
     "remaining_duration": None,

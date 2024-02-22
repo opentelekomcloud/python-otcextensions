@@ -453,7 +453,7 @@ class Proxy(proxy.Proxy):
             version_id=version_id,
         )
 
-    def modify_trainingjob_description(self, job_id, **attrs):
+    def update_trainingjob_description(self, job_id, **attrs):
         """Get the dataset by id
 
         :param dataset: key id or an instance of
