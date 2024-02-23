@@ -53,7 +53,7 @@ used or only ``one`` Cloud-connection is defined.
    # Creates cloud connection
    # Parameter cloud='otc' is optional for env variables or single
    # clouds.yaml entry.
-   conn = openstack.connect(cloud='otc')
+   conn = openstack.connect(cloud='otc', vendor_hook="otcextensions.sdk:load")
 
    for server in conn.compute.servers():
        print(server)
@@ -89,7 +89,7 @@ in your account.
    import openstack
 
    # openstack.enable_logging(True)
-   conn = openstack.connect()
+   conn = openstack.connect(vendor_hook="otcextensions.sdk:load")
 
    for cluster in conn.cce.clusters():
        print(cluster)
