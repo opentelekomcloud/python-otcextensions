@@ -21,12 +21,12 @@ packages.
 Documentation
 -------------
 
-`Documentation Overview <http://python-otcextensions.readthedocs.io/en/latest/>`_
+`Documentation Overview <https://docs.otc.t-systems.com/python-otcextensions/>`_
 
 Installation
 ------------
 
-`Installation Page <https://python-otcextensions.readthedocs.io/en/latest/install/index.html>`_
+`Installation Page <https://docs.otc.t-systems.com/python-otcextensions/install/index.html>`_
 
 The OTC Extensions are hosted as the package `otcextensions` on PyPI
 and can be installed by pip as
@@ -44,7 +44,7 @@ documentation.
 Configuration
 -------------
 
-`Configuration Page <https://python-otcextensions.readthedocs.io/en/latest/install/configuration.html>`_
+`Configuration Page <https://docs.otc.t-systems.com/python-otcextensions/install/configuration.html>`_
 
 Acessing the Open Telekom Cloud APIs requires authentication and
 authorization. For both there are several options available:
@@ -131,22 +131,22 @@ https://developer.openstack.org/sdks/python/openstacksdk/users/config
 OTC Extensions CLI Usage
 ------------------------
 
-`OTCE CLI Command Overview <https://python-otcextensions.readthedocs.io/en/latest/cli/index.html>`_
+`OTCE CLI Command Overview <https://docs.otc.t-systems.com/python-otcextensions/cli/index.html>`_
 
 OTC Extensions SDK Guides
 -------------------------
 
-`OTCE SDK Guides <https://python-otcextensions.readthedocs.io/en/latest/sdk/guides/index.html>`_
+`OTCE SDK Guides <https://docs.otc.t-systems.com/python-otcextensions/sdk/guides/index.html>`_
 
 Contributing
 ------------
 
-* `Contribution Page <https://python-otcextensions.readthedocs.io/en/latest/contributor/index.html>`_
+* `Contribution Page <https://docs.otc.t-systems.com/python-otcextensions/contributor/index.html>`_
 
 Further Links
 -------------
 
-* `Release Notes <https://docs.otc-service.com/releasenotes/python-otcextensions/>`_
+* `Release Notes <https://docs.otc.t-systems.com/releasenotes/otcdocstheme/>`_
 * `Issue Tracker <https://github.com/OpenTelekomCloud/python-otcextensions/issues>`_
 
-.. _instructions: http://python-otcextensions.readthedocs.io/en/latest/install/
+.. _instructions: https://docs.otc.t-systems.com/python-otcextensions/install/index.html
