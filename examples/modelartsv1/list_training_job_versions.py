@@ -11,12 +11,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-"""Update description of a training job."""
+"""List all Training Job Versions"""
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
-attr = {"job_desc": "This is a ModelArts job"}
-job_id = 9446
-response = conn.modelartsv1.modify_trainingjob_description(job_id, **attr)
-print(response)
+job_id = "10063"
+for trainingjob_version in conn.modelartsv1.training_job_versions(job_id):
+    print(trainingjob_version)

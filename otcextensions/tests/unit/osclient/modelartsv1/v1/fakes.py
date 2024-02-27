@@ -19,9 +19,7 @@ from osc_lib import utils as _osc_lib_utils
 from otcextensions.sdk.modelartsv1.v1 import devenv
 from otcextensions.sdk.modelartsv1.v1 import model
 from otcextensions.sdk.modelartsv1.v1 import service
-from otcextensions.sdk.modelartsv1.v1 import trainingjob
-from otcextensions.sdk.modelartsv1.v1 import trainingjob_configuration
-from otcextensions.sdk.modelartsv1.v1 import trainingjob_version
+from otcextensions.sdk.modelartsv1.v1 import training_job
 from otcextensions.sdk.modelartsv1.v1 import visualization_job
 from otcextensions.tests.unit.osclient import test_base
 from otcextensions.tests.unit.sdk.modelartsv1.v1 import examples
@@ -238,38 +236,6 @@ class FakeServiceCluster(test_base.Fake):
         return cluster
 
 
-class FakeTrainingJobVersion(test_base.Fake):
-    """Fake one or more Modelarts training job version."""
-
-    @classmethod
-    def generate(cls):
-        """Create a fake Modelarts training job version.
-
-        :return:
-            A FakeResource object, with id, name and so on
-        """
-
-        return trainingjob_version.TrainingJobVersion(
-            **examples.EXAMPLE_TRAINING_JOB_VERSION
-        )
-
-
-class FakeTrainingJobConfiguration(test_base.Fake):
-    """Fake one or more Modelarts training job configuration."""
-
-    @classmethod
-    def generate(cls):
-        """Create a fake Modelarts training job configuration.
-
-        :return:
-            A FakeResource object, with id, name and so on
-        """
-
-        return trainingjob_configuration.TrainingJobConfiguration(
-            **examples.EXAMPLE_TRAINING_JOB_CONFIGURATION
-        )
-
-
 class FakeVisualizationJob(test_base.Fake):
     """Fake one or more Modelarts visualization job."""
 
@@ -307,5 +273,98 @@ class FakeTrainingJob(test_base.Fake):
         :return:
             A FakeResource object, with id, name and so on
         """
+        object_info = {
+            "is_success": True,
+            "job_id": "10",
+            "job_name": "TestModelArtsJob",
+            "status": "1",
+            "create_time": "1524189990635",
+            "version_id": "10",
+            "version_name": "V0001",
+            "resource_id": "jobafd08896",
+        }
 
-        return trainingjob.TrainingJob(**examples.EXAMPLE_TRAINING_JOB)
+        return training_job.TrainingJob(**object_info)
+
+
+class FakeTrainingJobVersion(test_base.Fake):
+    """Fake one or more Modelarts training job version."""
+
+    @classmethod
+    def generate(cls):
+        """Create a fake Modelarts training job version.
+
+        :return:
+            A FakeResource object, with id, name and so on
+        """
+
+        return training_job.TrainingJobVersion(
+            **examples.EXAMPLE_TRAINING_JOB_VERSION
+        )
+
+
+class FakeTrainingJobConfig(test_base.Fake):
+    """Fake one or more Modelarts training job configuration."""
+
+    @classmethod
+    def generate(cls):
+        """Create a fake Modelarts training job configuration.
+
+        :return:
+            A FakeResource object, with id, name and so on
+        """
+        object_info = {
+            "spec_code": "modelarts.vm.gpu.v100",
+            "user_image_url": "100.125.5.235:20202/jobmng/custom-cpu-base:1.0",
+            "user_command": "bash -x /home/work/run_train.sh python \
+                /home/work/user-job-dir/app/mnist/mnist_softmax.py \
+                --data_url /home/work/user-job-dir/app/mnist_data",
+            "dataset_version_id": "2ff0d6ba-c480-45ae-be41-09a8369bfc90",
+            "engine_name": "TensorFlow",
+            "is_success": True,
+            "nas_mount_path": "/home/work/nas",
+            "worker_server_num": 1,
+            "nas_share_addr": "192.168.8.150:/",
+            "train_url": "/test/minst/train_out/out1/",
+            "nas_type": "nfs",
+            "spec_id": 4,
+            "parameter": [{"label": "learning_rate", "value": 0.01}],
+            "log_url": "/usr/log/",
+            "config_name": "config123",
+            "app_url": "/usr/app/",
+            "create_time": 1559045426000,
+            "dataset_id": "38277e62-9e59-48f4-8d89-c8cf41622c24",
+            "volumes": [
+                {
+                    "nfs": {
+                        "id": "43b37236-9afa-4855-8174-32254b9562e7",
+                        "src_path": "192.168.8.150:/",
+                        "dest_path": "/home/work/nas",
+                        "read_only": False,
+                    }
+                },
+                {
+                    "host_path": {
+                        "src_path": "/root/work",
+                        "dest_path": "/home/mind",
+                        "read_only": False,
+                    }
+                },
+            ],
+            "cpu": "64",
+            "model_id": 4,
+            "boot_file_url": "/usr/app/boot.py",
+            "dataset_name": "dataset-test",
+            "pool_id": "pool9928813f",
+            "config_desc": "This is a config desc test",
+            "gpu_num": 1,
+            "data_source": [{"type": "obs", "data_url": "/test/minst/data/"}],
+            "pool_name": "p100",
+            "dataset_version_name": "dataset-version-test",
+            "core": "8",
+            "engine_type": 1,
+            "engine_id": 3,
+            "engine_version": "TF-1.8.0-python2.7",
+            "data_url": "/test/minst/data/",
+        }
+        return training_job.TrainingJobConfig(**object_info)

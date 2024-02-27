@@ -25,7 +25,7 @@ class TestVisualizationJob(base.TestCase):
 
         self.assertEqual("/visualization-jobs", sot.base_path)
         self.assertEqual(None, sot.resource_key)
-        self.assertEqual('jobs', sot.resources_key)
+        self.assertEqual("jobs", sot.resources_key)
 
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_fetch)

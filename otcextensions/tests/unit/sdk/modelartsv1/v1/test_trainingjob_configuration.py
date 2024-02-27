@@ -11,21 +11,21 @@
 # under the License.
 #
 from openstack.tests.unit import base
-from otcextensions.sdk.modelartsv1.v1 import trainingjob_configuration
+from otcextensions.sdk.modelartsv1.v1 import training_job
 from otcextensions.tests.unit.sdk.modelartsv1.v1.examples import \
     EXAMPLE_TRAINING_JOB_CONFIGURATION as EXAMPLE
 
 
-class TestTrainingjobConfiguration(base.TestCase):
+class TestTrainingjobConfig(base.TestCase):
     def setUp(self):
-        super(TestTrainingjobConfiguration, self).setUp()
+        super(TestTrainingjobConfig, self).setUp()
 
     def test_basic(self):
-        sot = trainingjob_configuration.TrainingJobConfiguration()
+        sot = training_job.TrainingJobConfig()
 
         self.assertEqual("/training-job-configs", sot.base_path)
         self.assertEqual(None, sot.resource_key)
-        self.assertEqual(None, sot.resources_key)
+        self.assertEqual("configs", sot.resources_key)
 
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_fetch)
@@ -35,7 +35,7 @@ class TestTrainingjobConfiguration(base.TestCase):
 
     def test_make_it(self):
         updated_sot_attrs = ["create_time"]
-        sot = trainingjob_configuration.TrainingJobConfiguration(**EXAMPLE)
+        sot = training_job.TrainingJobConfig(**EXAMPLE)
         self.assertEqual(EXAMPLE["create_time"], sot.created_at)
 
         for key, value in EXAMPLE.items():

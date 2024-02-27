@@ -154,9 +154,9 @@ class CreateDatasetVersion(command.ShowOne):
         if parsed_args.export_images:
             attrs["export_images"] = parsed_args.export_images
         if parsed_args.train_evaluate_sample_ratio:
-            attrs[
-                "train_evaluate_sample_ratio"
-            ] = parsed_args.train_evaluate_sample_ratio
+            attrs["train_evaluate_sample_ratio"] = (
+                parsed_args.train_evaluate_sample_ratio
+            )
         if parsed_args.clear_hard_property:
             attrs["clear_hard_property"] = parsed_args.clear_hard_property
         if parsed_args.description:

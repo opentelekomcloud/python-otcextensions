@@ -15,6 +15,7 @@ from otcextensions.sdk.modelartsv1.v1 import _proxy
 from otcextensions.sdk.modelartsv1.v1 import devenv
 from otcextensions.sdk.modelartsv1.v1 import model
 from otcextensions.sdk.modelartsv1.v1 import service
+from otcextensions.sdk.modelartsv1.v1 import training_job
 
 
 class TestModelartsV1Proxy(test_proxy_base.TestProxyBase):
@@ -177,7 +178,7 @@ class TestService(TestModelartsV1Proxy):
             self.proxy.update_service,
             service.Service,
             method_kwargs={"status": "running"},
-            expected_kwargs={"status": "running"}
+            expected_kwargs={"status": "running"},
         )
 
     def test_stop_service(self):
@@ -185,7 +186,7 @@ class TestService(TestModelartsV1Proxy):
             self.proxy.update_service,
             service.Service,
             method_kwargs={"status": "stopped"},
-            expected_kwargs={"status": "stopped"}
+            expected_kwargs={"status": "stopped"},
         )
 
     def test_delete_service(self):
@@ -206,4 +207,130 @@ class TestService(TestModelartsV1Proxy):
         self.verify_update(
             self.proxy.update_service,
             service.Service,
+        )
+
+
+class TestTrainingJob(TestModelartsV1Proxy):
+    def test_training_jobs(self):
+        self.verify_list(
+            self.proxy.training_jobs,
+            training_job.TrainingJob,
+        )
+
+    def test_create_training_job(self):
+        self.verify_create(
+            self.proxy.create_training_job,
+            training_job.TrainingJob,
+        )
+
+    def test_update_training_job(self):
+        trainingjob_instance = training_job.TrainingJob()
+        description = "test description"
+        self._verify(
+            "openstack.proxy.Proxy._update",
+            self.proxy.update_training_job,
+            method_args=[trainingjob_instance, description],
+            expected_args=[training_job.TrainingJob, trainingjob_instance],
+            expected_kwargs={"job_desc": description},
+        )
+
+    def test_delete_training_job(self):
+        self.verify_delete(
+            self.proxy.delete_training_job,
+            training_job.TrainingJob,
+            False,
+        )
+
+    def test_delete_training_job_ignore(self):
+        self.verify_delete(
+            self.proxy.delete_training_job,
+            training_job.TrainingJob,
+            True,
+        )
+
+
+class TestTrainingJobVersion(TestModelartsV1Proxy):
+    def test_training_job_versions(self):
+        self.verify_list(
+            self.proxy.training_job_versions,
+            training_job.TrainingJobVersion,
+            method_kwargs={"job_id": "job-id"},
+            expected_kwargs={"jobId": "job-id"},
+        )
+
+    def test_create_training_job_version(self):
+        self.verify_create(
+            self.proxy.create_training_job_version,
+            training_job.TrainingJobVersion,
+            method_kwargs={"job_id": "job-id"},
+            expected_kwargs={"jobId": "job-id"},
+        )
+
+    def test_get_training_job_version(self):
+        self.verify_get(
+            self.proxy.get_training_job_version,
+            training_job.TrainingJobVersion,
+            method_args=["job-id", "version-id"],
+            expected_args=["version-id"],
+            expected_kwargs={"jobId": "job-id"},
+        )
+
+    def test_delete_training_job_version(self):
+        self.verify_delete(
+            self.proxy.delete_training_job_version,
+            training_job.TrainingJobVersion,
+            False,
+            method_args=["job-id", "version-id"],
+            expected_args=["version-id"],
+            expected_kwargs={"jobId": "job-id"},
+        )
+
+    def test_delete_training_job_version_ignore(self):
+        self.verify_delete(
+            self.proxy.delete_training_job_version,
+            training_job.TrainingJobVersion,
+            True,
+            method_args=["job-id", "version-id"],
+            expected_args=["version-id"],
+            expected_kwargs={"jobId": "job-id"},
+        )
+
+
+class TestTrainingJobConfig(TestModelartsV1Proxy):
+    def test_training_job_configs(self):
+        self.verify_list(
+            self.proxy.training_job_configs,
+            training_job.TrainingJobConfig,
+        )
+
+    def test_create_training_job_config(self):
+        self.verify_create(
+            self.proxy.create_training_job_config,
+            training_job.TrainingJobConfig,
+        )
+
+    def test_get_training_job_config(self):
+        self.verify_get(
+            self.proxy.get_training_job_config,
+            training_job.TrainingJobConfig,
+        )
+
+    def test_update_training_job_config(self):
+        self.verify_update(
+            self.proxy.update_training_job_config,
+            training_job.TrainingJobConfig,
+        )
+
+    def test_delete_training_job_config(self):
+        self.verify_delete(
+            self.proxy.delete_training_job_config,
+            training_job.TrainingJobConfig,
+            False,
+        )
+
+    def test_delete_training_job_config_ignore(self):
+        self.verify_delete(
+            self.proxy.delete_training_job_config,
+            training_job.TrainingJobConfig,
+            True,
         )

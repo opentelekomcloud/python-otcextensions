@@ -44,5 +44,5 @@ attrs = {
     },
 }
 
-trainingjob = conn.modelartsv1.create_trainingjob(**attrs)
+trainingjob = conn.modelartsv1.create_training_job(**attrs)
 print(trainingjob)

@@ -163,7 +163,9 @@ class TestUpdateVisualizationJob(fakes.TestModelartsv1):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
         attrs = {"job_desc": "New Description"}
-        self.client.update_visualizationjob_description.assert_called_with("job-id", **attrs)
+        self.client.update_visualizationjob_description.assert_called_with(
+            "job-id", **attrs
+        )
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
 

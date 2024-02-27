@@ -194,12 +194,14 @@ class UpdateVisualizationJob(command.ShowOne):
         client = self.app.client_manager.modelartsv1
 
         attrs = {}
-        #if parsed_args.job_id:
+        # if parsed_args.job_id:
         #    attrs["job_id"] = parsed_args.job_id
         if parsed_args.job_desc:
             attrs["job_desc"] = parsed_args.job_desc
 
-        obj = client.update_visualizationjob_description(parsed_args.jobId, **attrs)
+        obj = client.update_visualizationjob_description(
+            parsed_args.jobId, **attrs
+        )
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)

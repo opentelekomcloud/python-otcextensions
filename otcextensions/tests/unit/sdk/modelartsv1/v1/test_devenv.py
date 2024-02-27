@@ -17,6 +17,7 @@ from otcextensions.sdk.modelartsv1.v1 import devenv
 from otcextensions.tests.unit.sdk.modelartsv1.v1.examples import \
     EXAMPLE_DEVENV as EXAMPLE
 
+
 EXAMPLE_CREATE = {
     "name": "notebook-d115",
     "description": "",

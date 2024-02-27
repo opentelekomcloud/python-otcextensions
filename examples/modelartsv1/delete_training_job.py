@@ -11,13 +11,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-"""Querying the Details About a Training Job Version."""
+"""Deleting a Training Job."""
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
-job_id = 8742
-version_id = 10063
-response = conn.modelartsv1.show_trainingjob_version(job_id, version_id)
+job_id = 123
+response = conn.modelartsv1.delete_training_job(job_id)
 print(response)

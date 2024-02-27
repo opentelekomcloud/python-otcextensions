@@ -16,7 +16,11 @@ import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
-attr = {"job_desc": "This is a ModelArts job"}
-#job_id = 9446
-response = conn.modelartsv1.modify_visualizationjob_description(job_id, **attr)
+attr = {
+    "job_desc": "This is a ModelArts job"
+}
+job_id = 9446
+response = conn.modelartsv1.modify_visualizationjob_description(
+    job_id, **attr
+)
 print(response)

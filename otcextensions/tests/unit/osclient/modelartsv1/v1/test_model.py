@@ -108,9 +108,12 @@ class TestCreateModel(fakes.TestModelartsv1):
     def test_create(self):
         arglist = [
             "test-model",
-            "--model-version", "1.0.0",
-            "--source-location", "https://models.obs.xxxx.com/mnist",
-            "--model-type", "TensorFlow",
+            "--model-version",
+            "1.0.0",
+            "--source-location",
+            "https://models.obs.xxxx.com/mnist",
+            "--model-type",
+            "TensorFlow",
         ]
         verifylist = [
             ("name", "test-model"),
