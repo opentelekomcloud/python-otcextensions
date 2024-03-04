@@ -12,7 +12,9 @@
 #
 """ModelArts visualization job v1 action implementations"""
 import logging
+from cliff import columns as cliff_columns
 
+from osc_lib import exceptions
 from osc_lib import utils
 from osc_lib.command import command
 from otcextensions.common import cli_utils
@@ -21,45 +23,155 @@ from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
+
 _formatters = {
-    "create_time": cli_utils.UnixTimestampFormatter,
+    "created_at": cli_utils.UnixTimestampFormatter,
+    "config": cli_utils.YamlFormat,
 }
-#     "config": cli_utils.YamlFormat}
-
-
-def _flatten_output(obj):
-    data = {
-        "quotas": obj.quotas,
-        "is_success": obj.is_success,
-        "job_total_count": obj.job_total_count,
-        "job_count_limit": obj.job_count_limit,
-        "jobs": obj.jobs,
-        "error_code": obj.error_code,
-        "error_msg": obj.error_msg,
-    }
-    return data
 
 
 def _get_columns(item):
     column_map = {}
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
+    hidden = ["location"]
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(
+        item, column_map, hidden
+    )
 
 
-class DeleteVisualizationJob(command.Command):
-    _description = _("Delete ModelArts Visualization Job")
+class JobStatus(cliff_columns.FormattableColumn):
+    CHOICES_MAP = {
+        0: "UNKNOWN",
+        1: "INIT",
+        2: "IMAGE_CREATING",
+        3: "IMAGE_FAILED",
+        4: "SUBMIT_TRYING",
+        5: "SUBMIT_FAILED",
+        6: "DELETE_FAILED",
+        7: "WAITING",
+        8: "RUNNING",
+        9: "KILLING",
+        10: "COMPLETED",
+        11: "FAILED",
+        12: "KILLED",
+        13: "CANCELED",
+        14: "LOST",
+        15: "SCALING",
+        16: "SUBMIT_MODEL_FAILED",
+        17: "DEPLOY_SERVICE_FAILED",
+        18: "CHECK_INIT",
+        19: "CHECK_RUNNING",
+        20: "RUNNING_COMPLETED",
+        21: "CHECK_FAILED",
+    }
+    STR = "\n".join(f"{key}: {value}" for key, value in CHOICES_MAP.items())
+
+    def human_readable(self):
+        return self.CHOICES_MAP.get(self._value, str(self._value))
+
+
+class ListVisualizationJobs(command.Lister):
+    _description = _(
+        "Query the visualization jobs that meet the search criteria."
+    )
+    columns = (
+        "Job Id",
+        "Job Name",
+        "Created At",
+    )
 
     def get_parser(self, prog_name):
-        parser = super(DeleteVisualizationJob, self).get_parser(prog_name)
+        parser = super(ListVisualizationJobs, self).get_parser(prog_name)
+
+        sort_by_choices = [
+            "job_id",
+            "job_name",
+            "job_desc",
+            "status",
+            "create_time",
+        ]
+
         parser.add_argument(
-            "jobId",
-            metavar="<jobId>",
-            help=_("Name of the visualization job to delete."),
+            "--limit",
+            metavar="<limit>",
+            type=int,
+            help=_(
+                "Number of jobs displayed on each page. The value "
+                "range is [1, 1000]. Default value: 10."
+            ),
+        )
+        parser.add_argument(
+            "--offset",
+            metavar="<offset>",
+            type=int,
+            help=_("Index of the page to be queried. Default value: 1"),
+        )
+        parser.add_argument(
+            "--status",
+            choices=list(JobStatus.CHOICES_MAP.keys()),
+            type=int,
+            help=_(
+                "Job status. The options are as follows:\n" + JobStatus.STR
+            ),
+        )
+        parser.add_argument(
+            "--sort-by",
+            metavar="{" + ",".join(sort_by_choices) + "}",
+            type=lambda s: s.lower(),
+            choices=sort_by_choices,
+            help=_("Sorting field. Default value: job_name"),
+        )
+        parser.add_argument(
+            "--order",
+            metavar="{asc, desc}",
+            type=lambda s: s.lower(),
+            choices=["asc", "desc"],
+            help=_("Sorting order. Default value: desc"),
+        )
+        parser.add_argument(
+            "--search-content",
+            metavar="<search_content>",
+            help=_("Search content, for example, a training job name."),
+        )
+        parser.add_argument(
+            "--workspace-id",
+            metavar="<workspace_id>",
+            help=_("Workspace ID."),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
-        client.delete_visualizationjob(job_id=parsed_args.jobId)
+
+        attrs_list = (
+            "limit",
+            "offset",
+            "status",
+            "sort_by",
+            "order",
+            "search_content",
+            "workspace_id",
+        )
+        query_params = {}
+        for arg in attrs_list:
+            val = getattr(parsed_args, arg)
+            if val or str(val) == "0":
+                query_params[arg] = val
+
+        data = client.visualization_jobs(**query_params)
+        _formatters = {
+            "Created At": cli_utils.UnixTimestampFormatter,
+            "Status": JobStatus,
+        }
+        table = (
+            self.columns,
+            (
+                utils.get_dict_properties(
+                    s, self.columns, formatters=_formatters
+                )
+                for s in data
+            ),
+        )
+        return table
 
 
 class CreateVisualizationJob(command.ShowOne):
@@ -69,24 +181,15 @@ class CreateVisualizationJob(command.ShowOne):
         parser = super(CreateVisualizationJob, self).get_parser(prog_name)
 
         parser.add_argument(
-            "--job-name",
-            metavar="<job_name>",
-            required=True,
-            help=_(
-                "Name of a visualization job. The value is a string of "
-                "1 to 20 characters consisting of only digits, letters, "
-                "underscores (_), and hyphens (-).phens (-)."
-            ),
+            "name",
+            metavar="<name>",
+            help=_("Name of a visualization job."),
         )
         parser.add_argument(
-            "--job-desc",
-            metavar="<job_desc>",
-            required=False,
-            help=_(
-                "Description of a visualization job. The value is a "
-                "string of 0 to 256 characters. By default, this "
-                "parameter is left blank."
-            ),
+            "--description",
+            metavar="<description>",
+            dest="job_desc",
+            help=_("Description of a visualization job."),
         )
         parser.add_argument(
             "--train-url",
@@ -97,76 +200,70 @@ class CreateVisualizationJob(command.ShowOne):
         parser.add_argument(
             "--job-type",
             metavar="<job_type>",
-            required=False,
-            type=str,
             help=_("Type of a visualization job"),
         )
-
         parser.add_argument(
             "--flavor",
             metavar="<flavor>",
-            required=False,
-            type=str,
-            help=_("Specifications when a visualization job is created"),
+            help=_("Specifications when a visualization job is created."),
         )
-        """
         parser.add_argument(
-            '--schedule',
-            metavar='type=<type>,time_unit=<time_unit>,duration=<duration>',
-            required_keys=['type', 'time_unit', 'duration'],
-            dest='schedule',
-            action=parseractions.MultiKeyValueAction,
-            help=_('Automatic backup creation policy.'
-                   'This function is enabled by default.'
-                   'The following keys are required:\n'
-                   'period=<period>: Time when a snapshot is created '
-                   'every day.\n'
-                   'prefix=<prefix>: Prefix of the name of the snapshot '
-                   'that is automatically created.\n'
-                   'keepday=<keepday>: Number of days for which automatically '
-                   'created snapshots are reserved. Value range: 1 to 90.'),
-        )
-        """
-        parser.add_argument(
-            "--schedule_duration",
-            metavar="<schedule_duration>",
-            required=True,
+            "--auto-stop-duration",
+            metavar="<auto_stop_duration>",
             type=int,
-            help=_("Resource specification code of a visualization job"),
+            help=_("Auto stop duration. The value ranges from 0 to 24."),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
 
-        attrs = {}
-
-        if parsed_args.job_name:
-            attrs["job_name"] = parsed_args.job_name
+        attrs = {
+            "job_name": parsed_args.name,
+            "train_url": parsed_args.train_url,
+        }
 
         if parsed_args.job_desc:
             attrs["job_desc"] = parsed_args.job_desc
-
-        if parsed_args.train_url:
-            attrs["train_url"] = parsed_args.train_url
-
         if parsed_args.job_type:
             attrs["job_type"] = parsed_args.job_type
-
         if parsed_args.flavor:
             attrs["flavor"] = {"code": parsed_args.flavor}
 
-        if parsed_args.schedule_duration:
+        if parsed_args.auto_stop_duration:
             attrs["schedule"] = {
                 "type": "stop",
                 "time_unit": "HOURS",
-                "duration": parsed_args.schedule_duration,
+                "duration": parsed_args.auto_stop_duration,
             }
 
         obj = client.create_visualization_job(**attrs)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns, formatters=_formatters)
+        return (display_columns, data)
+
+
+class ShowVisualizationJob(command.ShowOne):
+    _description = _("Show details of a visualization job")
+
+    def get_parser(self, prog_name):
+        parser = super(ShowVisualizationJob, self).get_parser(prog_name)
+        parser.add_argument(
+            "jobId",
+            metavar="<jobId>",
+            help=_("ID of a visualization job"),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.modelartsv1
+
+        data = client.get_visualization_job(parsed_args.jobId)
+
+        display_columns, columns = _get_columns(data)
+        data = utils.get_item_properties(data, columns)
+
         return (display_columns, data)
 
 
@@ -178,12 +275,12 @@ class UpdateVisualizationJob(command.ShowOne):
 
         parser.add_argument(
             "jobId",
-            metavar="<job_id>",
+            metavar="<jobId>",
             help=_("ID of a visualization job"),
         )
         parser.add_argument(
-            "--job-desc",
-            metavar="<job_desc>",
+            "--description",
+            metavar="<description>",
             required=True,
             help=_("Description of a visualization job"),
         )
@@ -193,14 +290,8 @@ class UpdateVisualizationJob(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
 
-        attrs = {}
-        # if parsed_args.job_id:
-        #    attrs["job_id"] = parsed_args.job_id
-        if parsed_args.job_desc:
-            attrs["job_desc"] = parsed_args.job_desc
-
-        obj = client.update_visualizationjob_description(
-            parsed_args.jobId, **attrs
+        obj = client.update_visualization_job(
+            parsed_args.jobId, parsed_args.description
         )
 
         display_columns, columns = _get_columns(obj)
@@ -215,9 +306,8 @@ class StopVisualizationJob(command.ShowOne):
         parser = super(StopVisualizationJob, self).get_parser(prog_name)
 
         parser.add_argument(
-            "--job_id",
-            metavar="<job_id>",
-            required=True,
+            "jobId",
+            metavar="<jobId>",
             help=_("ID of a visualization job"),
         )
         return parser
@@ -225,12 +315,7 @@ class StopVisualizationJob(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
 
-        attrs = {}
-
-        if parsed_args.job_id:
-            attrs["job_id"] = parsed_args.job_id
-
-        obj = client.stop_visjob(**attrs)
+        obj = client.stop_visualization_job(parsed_args.jobId)
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
         return (display_columns, data)
@@ -242,16 +327,16 @@ class RestartVisualizationJob(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(RestartVisualizationJob, self).get_parser(prog_name)
         parser.add_argument(
-            "job_id", metavar="<job_id>", help=_("ID of a visualization job")
+            "jobId",
+            metavar="<jobId>",
+            help=_("ID of a visualization job"),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.css
 
-        data = client.restart_cluster(
-            cluster=parsed_args.cluster,
-        )
+        data = client.restart_visualization_job(parsed_args.jobId)
 
         display_columns, columns = _get_columns(data)
         data = utils.get_item_properties(data, columns)
@@ -259,58 +344,42 @@ class RestartVisualizationJob(command.ShowOne):
         return (display_columns, data)
 
 
-class ShowVisualizationJob(command.ShowOne):
-    _description = _("Show details of a visualization job")
+class DeleteVisualizationJob(command.Command):
+    _description = _("Delete ModelArts visualization Job(s)")
 
     def get_parser(self, prog_name):
-        parser = super(ShowVisualizationJob, self).get_parser(prog_name)
+        parser = super(DeleteVisualizationJob, self).get_parser(prog_name)
         parser.add_argument(
-            "--job_id", metavar="<job_id>", help=_("ID of a visualization job")
+            "jobId",
+            metavar="<JobId>",
+            nargs="+",
+            type=int,
+            help=_("ID of the ModelArts visualization job(s) to be deleted."),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
-
-        data = client.show_visjob(
-            visualization_job=parsed_args.job_id,
-        )
-
-        display_columns, columns = _get_columns(data)
-        data = utils.get_item_properties(data, columns)
-
-        return (display_columns, data)
-
-
-class ListVisualizationJobs(command.Lister):
-    _description = _(
-        "Query the visualization jobs that meet the search criteria."
-    )
-    columns = ("Job Id", "Job Name", "Created At")
-
-    def get_parser(self, prog_name):
-        parser = super(ListVisualizationJobs, self).get_parser(prog_name)
-        return parser
-
-    def take_action(self, parsed_args):
-        client = self.app.client_manager.modelartsv1
-        query_params = {}
-        args_list = []
-        for arg in args_list:
-            val = getattr(parsed_args, arg)
-            if val:
-                query_params[arg] = val
-
-        data = client.visualization_jobs(**query_params)
-        _formatters = {"Created At": cli_utils.UnixTimestampFormatter}
-
-        table = (
-            self.columns,
-            (
-                utils.get_dict_properties(
-                    s, self.columns, formatters=_formatters
+        result = 0
+        for job_id in parsed_args.jobId:
+            try:
+                client.delete_visualization_job(job_id)
+            except Exception as e:
+                result += 1
+                LOG.error(
+                    _(
+                        "Failed to delete visualization job(s) with "
+                        "ID '%(job_id)s': %(e)s"
+                    ),
+                    {"job_id": job_id, "e": e},
                 )
-                for s in data
-            ),
-        )
-        return table
+        if result > 0:
+            total = len(parsed_args.jobId)
+            msg = _(
+                "%(result)s of %(total)s visualization job(s) failed "
+                "to delete."
+            ) % {
+                "result": result,
+                "total": total,
+            }
+            raise exceptions.CommandError(msg)

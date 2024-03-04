@@ -16,10 +16,18 @@ from unittest.mock import MagicMock
 import mock
 from openstackclient.tests.unit import utils
 from osc_lib import utils as _osc_lib_utils
+
 from otcextensions.sdk.modelartsv1.v1 import devenv
 from otcextensions.sdk.modelartsv1.v1 import model
 from otcextensions.sdk.modelartsv1.v1 import service
+from otcextensions.sdk.modelartsv1.v1 import service_cluster
+from otcextensions.sdk.modelartsv1.v1 import service_event
+from otcextensions.sdk.modelartsv1.v1 import service_flavor
+from otcextensions.sdk.modelartsv1.v1 import service_log
+from otcextensions.sdk.modelartsv1.v1 import service_monitor
 from otcextensions.sdk.modelartsv1.v1 import training_job
+from otcextensions.sdk.modelartsv1.v1 import training_job_config
+from otcextensions.sdk.modelartsv1.v1 import training_job_version
 from otcextensions.sdk.modelartsv1.v1 import visualization_job
 from otcextensions.tests.unit.osclient import test_base
 from otcextensions.tests.unit.sdk.modelartsv1.v1 import examples
@@ -122,7 +130,7 @@ class FakeServiceLog(test_base.Fake):
             "result": "RUNNING",
             "cluster_id": "2c9080f86d37da64016d381fe5940002",
         }
-        return service.Log(**object_info)
+        return service_log.ServiceLog(**object_info)
 
 
 class FakeServiceEvent(test_base.Fake):
@@ -140,7 +148,7 @@ class FakeServiceEvent(test_base.Fake):
             "event_type": "normal",
             "event_info": "start to deploy service",
         }
-        return service.Event(**object_info)
+        return service_event.ServiceEvent(**object_info)
 
 
 class FakeServiceSpecification(test_base.Fake):
@@ -162,7 +170,7 @@ class FakeServiceSpecification(test_base.Fake):
             "over_quota": False,
             "extend_params": 1,
         }
-        return service.Specification(**object_info)
+        return service_flavor.ServiceFlavor(**object_info)
 
 
 class FakeServiceMonitor(test_base.Fake):
@@ -188,7 +196,7 @@ class FakeServiceMonitor(test_base.Fake):
             "gpu_usage": 0.6,
             "gpu_total": 1,
         }
-        monitor = service.Monitor(**object_info)
+        monitor = service_monitor.ServiceMonitor(**object_info)
         monitor.cpu_core = f"{monitor.cpu_core_usage}/{monitor.cpu_core_total}"
         monitor.cpu_memory = (
             f"{monitor.cpu_memory_usage}/{monitor.cpu_memory_total}"
@@ -227,7 +235,7 @@ class FakeServiceCluster(test_base.Fake):
             },
             "services_count": {"realtime_count": 0, "batch_count": 0},
         }
-        cluster = service.Cluster(**object_info)
+        cluster = service_cluster.ServiceCluster(**object_info)
         cluster.allocatable_resources = {
             "cpu_cores": cluster.allocatable_cpu_cores,
             "memory": cluster.allocatable_memory,
@@ -298,7 +306,7 @@ class FakeTrainingJobVersion(test_base.Fake):
             A FakeResource object, with id, name and so on
         """
 
-        return training_job.TrainingJobVersion(
+        return training_job_version.TrainingJobVersion(
             **examples.EXAMPLE_TRAINING_JOB_VERSION
         )
 
@@ -367,4 +375,4 @@ class FakeTrainingJobConfig(test_base.Fake):
             "engine_version": "TF-1.8.0-python2.7",
             "data_url": "/test/minst/data/",
         }
-        return training_job.TrainingJobConfig(**object_info)
+        return training_job_config.TrainingJobConfig(**object_info)

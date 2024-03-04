@@ -11,13 +11,14 @@
 # under the License.
 #
 from unittest.mock import call
+
 import mock
-from osc_lib import exceptions
 from openstackclient.tests.unit import utils as tests_utils
-from otcextensions.osclient.modelartsv1.v1 import training_job
-from otcextensions.tests.unit.osclient.modelartsv1.v1 import fakes
+from osc_lib import exceptions
 
 from otcextensions.common import cli_utils
+from otcextensions.osclient.modelartsv1.v1 import training_job_config
+from otcextensions.tests.unit.osclient.modelartsv1.v1 import fakes
 
 _COLUMNS = (
     "app_url",
@@ -83,7 +84,7 @@ class TestListTrainingJobConfigs(fakes.TestModelartsv1):
     def setUp(self):
         super(TestListTrainingJobConfigs, self).setUp()
 
-        self.cmd = training_job.ListTrainingJobConfigs(self.app, None)
+        self.cmd = training_job_config.ListTrainingJobConfigs(self.app, None)
 
         self.client.training_job_configs = mock.Mock()
         self.client.api_mock = self.client.training_job_configs
@@ -155,12 +156,14 @@ class TestCreateTrainingJobConfig(fakes.TestModelartsv1):
     _data = fakes.FakeTrainingJobConfig.create_one()
     columns = _COLUMNS
 
-    data = fakes.gen_data(_data, columns, formatters=training_job._formatters)
+    data = fakes.gen_data(
+        _data, columns, formatters=training_job_config._formatters
+    )
 
     def setUp(self):
         super(TestCreateTrainingJobConfig, self).setUp()
 
-        self.cmd = training_job.CreateTrainingJobConfig(self.app, None)
+        self.cmd = training_job_config.CreateTrainingJobConfig(self.app, None)
 
         self.client.create_training_job_config = mock.Mock(
             return_value=self._data
@@ -253,12 +256,12 @@ class TestCreateTrainingJobConfig(fakes.TestModelartsv1):
 class TestShowTrainingJobConfig(fakes.TestModelartsv1):
     _data = fakes.FakeTrainingJobConfig.create_one()
     columns = _COLUMNS
-    data = fakes.gen_data(_data, columns, training_job._formatters)
+    data = fakes.gen_data(_data, columns, training_job_config._formatters)
 
     def setUp(self):
         super(TestShowTrainingJobConfig, self).setUp()
 
-        self.cmd = training_job.ShowTrainingJobConfig(self.app, None)
+        self.cmd = training_job_config.ShowTrainingJobConfig(self.app, None)
 
         self.client.get_training_job_config = mock.Mock(
             return_value=self._data
@@ -332,7 +335,7 @@ class TestDeleteTrainingJobConfig(fakes.TestModelartsv1):
         self.client.delete_training_job_config = mock.Mock(return_value=None)
 
         # Get the command object to test
-        self.cmd = training_job.DeleteTrainingJobConfig(self.app, None)
+        self.cmd = training_job_config.DeleteTrainingJobConfig(self.app, None)
 
     def test_delete(self):
         arglist = ["test-config"]

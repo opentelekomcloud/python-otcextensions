@@ -12,6 +12,7 @@
 #
 from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv1.v1 import training_job
+from otcextensions.sdk.modelartsv1.v1 import training_job_version
 
 
 EXAMPLE = {
@@ -204,11 +205,11 @@ class TestTrainingJobVersion(base.TestCase):
         super(TestTrainingJobVersion, self).setUp()
 
     def test_basic(self):
-        sot = training_job.TrainingJobVersion()
+        sot = training_job_version.TrainingJobVersion()
 
         self.assertEqual("/training-jobs/%(jobId)s/versions", sot.base_path)
-        self.assertEqual(None, sot.resource_key)
         self.assertEqual("versions", sot.resources_key)
+        self.assertEqual(None, sot.resource_key)
 
         self.assertTrue(sot.allow_fetch)
         self.assertTrue(sot.allow_list)
@@ -224,7 +225,7 @@ class TestTrainingJobVersion(base.TestCase):
             "system_metric_list",
         ]
 
-        sot = training_job.TrainingJobVersion(**EXAMPLE)
+        sot = training_job_version.TrainingJobVersion(**EXAMPLE)
 
         for key, value in EXAMPLE.items():
             if key not in updated_sot_attrs:

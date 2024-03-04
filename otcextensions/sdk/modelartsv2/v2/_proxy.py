@@ -13,11 +13,26 @@
 import base64
 # import io
 import os
-# from pathlib import Path
 
 from openstack import exceptions
 from openstack import proxy
 from otcextensions.sdk.modelartsv2.v2 import dataset as _dataset
+from otcextensions.sdk.modelartsv2.v2 import \
+    dataset_export_task as _dataset_export_task
+from otcextensions.sdk.modelartsv2.v2 import \
+    dataset_import_task as _dataset_import_task
+from otcextensions.sdk.modelartsv2.v2 import dataset_label as _dataset_label
+from otcextensions.sdk.modelartsv2.v2 import \
+    dataset_metrics as _dataset_metrics
+from otcextensions.sdk.modelartsv2.v2 import dataset_sample as _dataset_sample
+from otcextensions.sdk.modelartsv2.v2 import \
+    dataset_statistics as _dataset_statistics
+from otcextensions.sdk.modelartsv2.v2 import dataset_sync as _dataset_sync
+from otcextensions.sdk.modelartsv2.v2 import \
+    dataset_version as _dataset_version
+
+# from pathlib import Path
+
 
 # from PIL import Image
 
@@ -157,8 +172,8 @@ class Proxy(proxy.Proxy):
             One :class:`~otcextensions.sdk.nat.v2.dataset.Statistics`
         """
         return self._get(
-            _dataset.Statistics,
-            dataset_id=dataset_id,
+            _dataset_statistics.DatasetStatistics,
+            datasetId=dataset_id,
             requires_id=False,
         )
 
@@ -173,8 +188,8 @@ class Proxy(proxy.Proxy):
             One :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Metrics`
         """
         return self._list(
-            _dataset.Metrics,
-            dataset_id=dataset_id,
+            _dataset_metrics.DatasetMetrics,
+            datasetId=dataset_id,
             requires_id=False,
         )
 
@@ -187,10 +202,12 @@ class Proxy(proxy.Proxy):
         :param dict params: Optional query parameters to be sent to limit
             the instances being returned.
         :returns: a generator of
-            (:class:`~otcextensions.sdk.modelartsv2.v2.dataset.Label`)
+            (:class:`~otcextensions.sdk.modelartsv2.v2.dataset_label.DatasetLabel`)
             instances.
         """
-        return self._list(_dataset.Label, dataset_id=dataset_id, **params)
+        return self._list(
+            _dataset_label.DatasetLabel, datasetId=dataset_id, **params
+        )
 
     def create_dataset_label(self, dataset_id, **attrs):
         """Create a daraset label from attributes
@@ -201,7 +218,9 @@ class Proxy(proxy.Proxy):
         :returns: The results of label creation
         :rtype: :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Label`
         """
-        return self._create(_dataset.Label, dataset_id=dataset_id, **attrs)
+        return self._create(
+            _dataset_label.DatasetLabel, datasetId=dataset_id, **attrs
+        )
 
     def update_dataset_labels(self, dataset_id, **attrs):
         """Modify a dataset labels in batches.
@@ -211,7 +230,9 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
         """
-        return self._update(_dataset.Dataset, dataset_id, **attrs)
+        return self._update(
+            _dataset_label.DatasetLabel, datasetId=dataset_id, **attrs
+        )
 
     def delete_dataset_labels(self, dataset_id, delete_source=False, **labels):
         """Delete dataset labels.
@@ -221,7 +242,7 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        obj = _dataset.Label(dataset_id=dataset_id)
+        obj = _dataset_label.DatasetLabel(datasetId=dataset_id)
         return obj.delete_labels(
             self,
             **labels,
@@ -237,7 +258,9 @@ class Proxy(proxy.Proxy):
             (:class:`~otcextensions.sdk.modelartsv2.v2.\
                 dataset_version.DatasetVersion`) instances
         """
-        return self._list(_dataset.DatasetVersion, dataset_id=dataset_id)
+        return self._list(
+            _dataset_version.DatasetVersion, datasetId=dataset_id
+        )
 
     def create_dataset_version(self, dataset_id, **attrs):
         """Create a dataset from attributes
@@ -250,9 +273,8 @@ class Proxy(proxy.Proxy):
             dataset.DatasetVersion`
         """
         return self._create(
-            _dataset.DatasetVersion,
-            dataset_id=dataset_id,
-            prepend_key=False,
+            _dataset_version.DatasetVersion,
+            datasetId=dataset_id,
             **attrs,
         )
 
@@ -267,9 +289,9 @@ class Proxy(proxy.Proxy):
             delete a nonexistent dataset.
         """
         return self._delete(
-            _dataset.DatasetVersion,
+            _dataset.Version,
             version_id,
-            dataset_id=dataset_id,
+            datasetId=dataset_id,
             **kwargs,
         )
 
@@ -283,7 +305,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelartsv2.v2.dataset.DatasetVersion`
         """
         return self._get(
-            _dataset.DatasetVersion, version_id, dataset_id=dataset_id
+            _dataset_version.DatasetVersion, version_id, datasetId=dataset_id
         )
 
     # ======== Dataset Sample Management ========
@@ -296,10 +318,13 @@ class Proxy(proxy.Proxy):
             the instances being returned.
         :returns: a generator of
             (:class:`~otcextensions.sdk.modelartsv2.v2\
-                    .dataset_sample.DatasetSample`) instances
+                    .dataset.DatasetSample`) instances
         """
         return self._list(
-            _dataset.Sample, dataset_id=dataset_id, **params, paginated=False
+            _dataset_sample.DatasetSample,
+            datasetId=dataset_id,
+            **params,
+            paginated=False,
         )
 
     def add_dataset_samples(
@@ -375,7 +400,7 @@ class Proxy(proxy.Proxy):
         if samples:
             attrs.update(samples=samples)
         return self._create(
-            _dataset.CreateSample, dataset_id=dataset_id, **attrs
+            _dataset_sample.DatasetSample, datasetId=dataset_id, **attrs
         )
 
     def delete_dataset_samples(
@@ -388,12 +413,11 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        attrs = {
-            "samples": samples,
-            "delete_source": delete_source,
-        }
-        return self._create(
-            _dataset.DeleteSample, dataset_id=dataset_id, **attrs
+        dataset_sample = self._get_resource(
+            _dataset_sample.DatasetSample, None
+        )
+        return dataset_sample.delete_samples(
+            self, dataset_id, samples, delete_source
         )
 
     def get_dataset_sample(self, dataset_id, sample_id):
@@ -405,20 +429,22 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.modelartsv2.v2.dataset.sample.Sample`
         """
-        return self._get(_dataset.Sample, sample_id, dataset_id=dataset_id)
+        return self._get(
+            _dataset_sample.DatasetSample, sample_id, datasetId=dataset_id
+        )
 
-    def get_sample_search_condition(self, dataset_id, **attrs):
+    def get_dataset_sample_search_condition(self, dataset_id):
         """Get the Dataset Sample Search Condition
 
         :param dataset_id: Dataset ID.
-        :param sample_id: key id or an instance of
-            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.sample.GetSampleSearchCondition`
+
         :returns: instance of
-            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.sample.GetSampleSearchCondition`
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset_sample.DatasetSample`
         """
-        return self._list(
-            _dataset.GetSampleSearchCondition, dataset_id=dataset_id, **attrs
+        dataset_sample = self._get_resource(
+            _dataset_sample.DatasetSample, None
         )
+        return dataset_sample.get_sample_search_condition(self, dataset_id)
 
     # ======== Dataset Import Task Management ========
 
@@ -429,7 +455,9 @@ class Proxy(proxy.Proxy):
             (:class:`~otcextensions.sdk.modelartsv2.v2.\
                     dataset.ImportTask`) instances.
         """
-        return self._list(_dataset.ImportTask, dataset_id=dataset_id)
+        return self._list(
+            _dataset_import_task.DatasetImportTask, datasetId=dataset_id
+        )
 
     def create_dataset_import_task(self, dataset_id, **attrs):
         """Create a data import task from attributes
@@ -443,8 +471,8 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.modelartsv2.v2.dataset.ImportTask`
         """
         return self._create(
-            _dataset.ImportTask,
-            dataset_id=dataset_id,
+            _dataset_import_task.DatasetImportTask,
+            datasetId=dataset_id,
             prepend_key=False,
             **attrs,
         )
@@ -458,7 +486,11 @@ class Proxy(proxy.Proxy):
          :returns: instance of :class:`~otcextensions.sdk.modelartsv2.v2.\
                 dataset.ImportTask`
          """
-        return self._get(_dataset.ImportTask, task_id, dataset_id=dataset_id)
+        return self._get(
+            _dataset_import_task.DatasetImportTask,
+            task_id,
+            datasetId=dataset_id,
+        )
 
     # ======== Dataset Export Task Management ========
 
@@ -471,7 +503,11 @@ class Proxy(proxy.Proxy):
           :returns: instance of :class:`~otcextensions.sdk.modelartsv2.v2.\
                 dataset.ExportTask`
           """
-        return self._get(_dataset.ExportTask, task_id, dataset_id=dataset_id)
+        return self._get(
+            _dataset_export_task.DatasetExportTask,
+            task_id,
+            datasetId=dataset_id,
+        )
 
     def dataset_export_tasks(self, dataset_id):
         """List all dataset export tasks.
@@ -480,7 +516,9 @@ class Proxy(proxy.Proxy):
             (:class:`~otcextensions.sdk.modelartsv2.v2.\
                     dataset.ExportTask`) instances
         """
-        return self._list(_dataset.ExportTask, dataset_id=dataset_id)
+        return self._list(
+            _dataset_export_task.DatasetExportTask, datasetId=dataset_id
+        )
 
     def create_dataset_export_task(self, dataset_id, **attrs):
         """Create a data import task from attributes
@@ -494,22 +532,21 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.modelartsv2.v2.dataset.ExportTask`
         """
         return self._create(
-            _dataset.ExportTask,
-            dataset_id=dataset_id,
-            prepend_key=False,
+            _dataset_export_task.DatasetExportTask,
+            datasetId=dataset_id,
             **attrs,
         )
 
     # ======== Dataset Synchronization Task Management ========
 
-    def sync_dataset(self, dataset_id):
+    def dataset_sync(self, dataset_id):
         """Synchronize samples and labeling information
             from the input dataset path to the dataset.
 
         :param dataset_id: Dataset ID.
         :returns: None
         """
-        return self._create(_dataset.Sync, datasetId=dataset_id)
+        return self._create(_dataset_sync.DatasetSync, datasetId=dataset_id)
 
     def get_dataset_sync_status(self, dataset_id):
         """Query Dataset sync task status
@@ -519,4 +556,6 @@ class Proxy(proxy.Proxy):
         :returns:
             One :class:`~otcextensions.sdk.nat.v2.dataset.Sync`
         """
-        return self._get(_dataset.Sync, "status", datasetId=dataset_id)
+        return self._get(
+            _dataset_sync.DatasetSync, "status", datasetId=dataset_id
+        )

@@ -11,64 +11,96 @@
 # under the License.
 #
 from openstack import resource
+from openstack import utils
+
+
+class ScheduleSpec(resource.Resource):
+    #: Auto stop duration.
+    duration = resource.Body('duration', type=int)
+    #: Unit of auto stop duration.
+    time_unit = resource.Body('time_unit')
+    #: Set this parameter to stop.
+    type = resource.Body('type')
+
+
+class FlavorSpec(resource.Resource):
+    #: Resource specification code of a visualization job.
+    code = resource.Body('code')
 
 
 class VisualizationJob(resource.Resource):
     base_path = "/visualization-jobs"
+
     resources_key = "jobs"
 
+    # capabilities
     allow_create = True
     allow_list = True
     allow_commit = True
     allow_delete = True
     allow_fetch = True
 
+    _query_mapping = resource.QueryParameters(
+        "order",
+        "offset",
+        "limit",
+        "search_content",
+        "sort_by",
+        "status",
+        offset="page",
+        limit="per_page",
+    )
+
+    # Parameters
+    #: Time when a visualization job is created, in timestamp format.
+    created_at = resource.Body('create_time', type=int)
+    #: Visualization job running duration, in milliseconds.
+    duration = resource.Body('duration', type=int)
+    #: Error code of a failed API call.
+    error_code = resource.Body('error_code')
+    #: Error message of a failed API call.
+    error_message = resource.Body('error_message')
+    #: Specifications when a visualization job is created.
+    flavor = resource.Body('flavor', type=FlavorSpec)
     #: Whether the request is successful
     is_success = resource.Body("is_success", type=bool)
-    #: Error message of a failed API call. This parameter is not
-    #:  included when the API call succeeds.
-    error_msg = resource.Body("error_msg", type=str)
-    #: Error code of a failed API call. For details, see Error Code.
-    # This parameter is not included when the API call succeeds.
-    error_code = resource.Body("error_code", type=str)
-    #: ID of a training job
-    jobId = resource.Body("jobId", type=int)
-    #: Name of a training job
-    job_name = resource.Body("job_name", type=str)
-    #: Timestamp when a training job is created
-    created_at = resource.Body("create_time", type=float)
-
-    #: Total number of the queried visualization jobs
-    job_total_count = resource.Body("job_total_count", type=int)
-    #: Number of visualization jobs that can be created
-    job_count_limit = resource.Body("job_count_limit", type=int)
-    #: Visualization job attributes
-    # jobs = resource.Body('jobs', type=str) #type=list, list_type=Job)
-    jobs = resource.Body("jobs", type=list, list_type=dict)
-    #: Maximum number of training jobs
-    quotas = resource.Body("quotas", type=int)
-    #: Charged resource ID of a visualization job
-    resource_id = resource.Body("resource_id", type=str)
-    #: Endpoint of a visualization job
-    service_url = resource.Body("service_url", type=str)
-    #: Auto stop duration. The value ranges from 0 to 2
-    duration = resource.Body("duration", type=int)
-    #: Description of a visualization job
-    job_desc = resource.Body("job_desc", type=str)
+    #: Description of a visualization job.
+    job_desc = resource.Body('job_desc')
+    #: ID of a visualization job.
+    job_id = resource.Body('job_id', type=int, alternate_id=True)
+    #: Name of a visualization job.
+    job_name = resource.Body('job_name')
+    #: Type of a visualization job.
+    job_type = resource.Body('job_type')
+    #: Name of a visualization job.
+    name = resource.Body('name', alias='job_name')
     #: Remaining auto stop duration
     remaining_duration = resource.Body("remaining_duration", type=float)
-    #: Status of a visualization job. For details about the job statuses,
-    #:  see Job Statuses.
-    status = resource.Body("status", type=int)
-    #: Path for storing visualization job logs
-    train_url = resource.Body("train_url", type=str)
+    #: Charged resource ID of a visualization job.
+    resource_id = resource.Body('resource_id')
+    #: Auto stop setting.
+    schedule = resource.Body('schedule', type=ScheduleSpec)
+    #: Endpoint of a visualization job.
+    service_url = resource.Body('service_url')
+    #: Status of a visualization job.
+    status = resource.Body('status', type=int)
+    #: OBS path of the visualization job output file.
+    train_url = resource.Body('train_url')
 
+    def _action(self, session, action, body=None):
+        """Preform actions given the message body.
+        """
+        uri = utils.urljoin('visualization-jobs', self.id, action)
+        response = session.post(uri, json=body)
+        self._translate_response(response)
+        return self
 
-class VisualizationJobStop(resource.Resource):
-    base_path = "/visualization-jobs/{job_id}/stop"
-    jobId = resource.URI("jobId")
+    def restart(self, session):
+        """Restart the Visualization job.
+        """
+        self._action(session, 'restart')
 
-
-class VisualizationJobRestart(resource.Resource):
-    base_path = "/visualization-jobs/{job_id}/restart"
-    jobId = resource.URI("jobId")
+    def stop(self, session):
+        """Restart the Visualization job.
+        """
+        self._action(session, 'stop')

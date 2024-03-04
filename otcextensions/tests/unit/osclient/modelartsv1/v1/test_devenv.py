@@ -15,6 +15,7 @@ from unittest.mock import call
 import mock
 from openstackclient.tests.unit import utils as tests_utils
 from osc_lib import exceptions
+
 from otcextensions.common import cli_utils
 from otcextensions.osclient.modelartsv1.v1 import devenv
 from otcextensions.tests.unit.osclient.modelartsv1.v1 import fakes

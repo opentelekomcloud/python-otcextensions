@@ -13,7 +13,6 @@
 from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv1.v1 import training_job
 
-
 EXAMPLE_CREATE = {
     "job_name": "TestModelArtsJob3",
     "job_desc": "This is a ModelArts job",

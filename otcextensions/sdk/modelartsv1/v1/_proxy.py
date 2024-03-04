@@ -14,16 +14,23 @@ import time
 
 from openstack import exceptions
 from openstack import proxy
-from otcextensions.sdk.modelartsv1.v1 import \
-    builtin_algorithms as _builtin_algorithms
 from otcextensions.sdk.modelartsv1.v1 import devenv as _devenv
-from otcextensions.sdk.modelartsv1.v1 import \
-    job_engine_specifications as _job_engine_specifications
-from otcextensions.sdk.modelartsv1.v1 import \
-    job_resource_specifications as _job_resource_specifications
 from otcextensions.sdk.modelartsv1.v1 import model as _model
 from otcextensions.sdk.modelartsv1.v1 import service as _service
+from otcextensions.sdk.modelartsv1.v1 import \
+    service_cluster as _service_cluster
+from otcextensions.sdk.modelartsv1.v1 import service_event as _service_event
+from otcextensions.sdk.modelartsv1.v1 import service_flavor as _service_flavor
+from otcextensions.sdk.modelartsv1.v1 import service_log as _service_log
+from otcextensions.sdk.modelartsv1.v1 import \
+    service_monitor as _service_monitor
 from otcextensions.sdk.modelartsv1.v1 import training_job as _training_job
+from otcextensions.sdk.modelartsv1.v1 import \
+    training_job_config as _training_job_config
+from otcextensions.sdk.modelartsv1.v1 import \
+    training_job_version as _training_job_version
+from otcextensions.sdk.modelartsv1.v1 import \
+    training_job_flavor as _training_job_flavor
 from otcextensions.sdk.modelartsv1.v1 import \
     visualization_job as _visualization_job
 
@@ -313,21 +320,23 @@ class Proxy(proxy.Proxy):
         """List update logs of a real-time service.
 
         :returns: a generator of
-            :class:`~otcextensions.sdk.modelartsv1.v1.service.Log`
+            :class:`~otcextensions.sdk.modelartsv1.v1.service_log.ServiceLog`
             instances
         """
-        return self._list(_service.Log, service_id=service_id, **params)
+        return self._list(
+            _service_log.ServiceLog, serviceId=service_id, **params
+        )
 
     def service_events(self, service_id, **params):
         """List events logs of a service.
 
         :returns: a generator of
-            :class:`~otcextensions.sdk.modelartsv1.v1.service.Event`
+            :class:`~otcextensions.sdk.modelartsv1.v1.service_event.ServiceEvent`
             instances
         """
         return self._list(
-            _service.Event,
-            service_id=service_id,
+            _service_event.ServiceEvent,
+            serviceId=service_id,
             paginated=False,
             **params,
         )
@@ -336,29 +345,31 @@ class Proxy(proxy.Proxy):
         """List a service monitoring informations.
 
         :returns: a generator of
-            :class:`~otcextensions.sdk.modelartsv1.v1.service.Monitor`
+            :class:`~otcextensions.sdk.modelartsv1.v1.service_monitor.ServiceMonitor`
             instances
         """
-        return self._list(_service.Monitor, service_id=service_id, **params)
+        return self._list(
+            _service_monitor.ServiceMonitor, serviceId=service_id, **params
+        )
 
-    def service_deployment_specifications(self, **params):
-        """List all specifications for a service deployment.
+    def service_flavors(self, **params):
+        """List all flavors for a service deployment.
 
         :returns: a generator of
-            :class:`~otcextensions.sdk.modelartsv1.v1.service.Specification`
+            :class:`~otcextensions.sdk.modelartsv1.v1.service_flavor.ServiceFlavor`
             instances
         """
-        return self._list(_service.Specification, **params)
+        return self._list(_service_flavor.ServiceFlavor, **params)
 
-    def service_resource_pools(self, **params):
+    def service_clusters(self, **params):
         """List all dedicated resource pools (clusters) available
         for a service deployment.
 
         :returns: a generator of
-            :class:`~otcextensions.sdk.modelartsv1.v1.service.Cluster`
+            :class:`~otcextensions.sdk.modelartsv1.v1.service_cluster.ServiceCluster`
             instances
         """
-        return self._list(_service.Cluster, **params)
+        return self._list(_service_cluster.ServiceCluster, **params)
 
     def wait_for_service(self, service, timeout=1200, wait=5):
         while timeout > 0:
@@ -463,7 +474,7 @@ class Proxy(proxy.Proxy):
                     TrainingJobVersion` instances
         """
         return self._list(
-            _training_job.TrainingJobVersion, jobId=job_id, **attrs
+            _training_job_version.TrainingJobVersion, jobId=job_id, **attrs
         )
 
     def get_training_job_version(self, job_id, version_id):
@@ -476,7 +487,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelartsv1.v1.training_job.TrainingJobVersion`
         """
         return self._get(
-            _training_job.TrainingJobVersion,
+            _training_job_version.TrainingJobVersion,
             version_id,
             jobId=job_id,
         )
@@ -493,7 +504,7 @@ class Proxy(proxy.Proxy):
             TrainingJobVersion`
         """
         return self._create(
-            _training_job.TrainingJobVersion,
+            _training_job_version.TrainingJobVersion,
             jobId=job_id,
             **attrs,
         )
@@ -506,11 +517,24 @@ class Proxy(proxy.Proxy):
         :param version_id: Thie value can be the id of a training job version
         """
         return self._delete(
-            _training_job.TrainingJobVersion,
+            _training_job_version.TrainingJobVersion,
             version_id,
             jobId=job_id,
             ignore_missing=ignore_missing,
         )
+
+    def training_job_flavors(self, **params):
+        """List all flavors available for running a training job.
+
+        :param dict params: Optional query parameters to be sent to limit
+            the training job flavors being returned.
+
+        :returns: a generator of
+            :class:`~otcextensions.sdk.modelartsv1.v1.training_job_flavor.\
+                TrainingJobFlavor` instances.
+        """
+        return self._list(_training_job_flavor.TrainingJobFlavor, **params)
+
 
     # def list_trainingjob_version_logs(self, job_id, version_id):
     #     """Get the trainjob version by id
@@ -552,7 +576,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelartsv1.v1.devenv.Devenv`
         """
         obj = self._get_resource(
-            _training_job.TrainingJobVersion, job_id, version_id
+            _training_job_version.TrainingJobVersion, job_id, version_id
         )
         return obj.stop(self)
 
@@ -563,7 +587,7 @@ class Proxy(proxy.Proxy):
             (:class:`~otcextensions.sdk.modelartsv1.v1.trainjob_configs.\
                 TrainjobConfigs`) instances
         """
-        return self._list(_training_job.TrainingJobConfig, **params)
+        return self._list(_training_job_config.TrainingJobConfig, **params)
 
     def create_training_job_config(self, **attrs):
         """Create a Training Job Configuration from attributes.
@@ -576,7 +600,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.modelartsv1.v1.training_job.\
             TrainingJobConfig`
         """
-        return self._create(_training_job.TrainingJobConfig, **attrs)
+        return self._create(_training_job_config.TrainingJobConfig, **attrs)
 
     def delete_training_job_config(self, config_name, ignore_missing=False):
         """Delete Training Job Configuration.
@@ -590,7 +614,7 @@ class Proxy(proxy.Proxy):
             delete a nonexistent Training Job Configuration.
         """
         return self._delete(
-            _training_job.TrainingJobConfig,
+            _training_job_config.TrainingJobConfig,
             config_name,
             ignore_missing=ignore_missing,
         )
@@ -603,7 +627,7 @@ class Proxy(proxy.Proxy):
         :returns: instance of :class:`~otcextensions.sdk.modelartsv1.v1.\
             training_job.TrainingJobConfig`
         """
-        return self._get(_training_job.TrainingJobConfig, config_name)
+        return self._get(_training_job_config.TrainingJobConfig, config_name)
 
     def update_training_job_config(self, config_name, **attrs):
         """Update training job configuration.
@@ -614,30 +638,30 @@ class Proxy(proxy.Proxy):
                 TrainingJobConfig`, comprised of the properties on the class.
         """
         return self._update(
-            _training_job.TrainingJobConfig, config_name, **attrs
+            _training_job_config.TrainingJobConfig, config_name, **attrs
         )
 
-    def show_builtin_algorithms(self):
-        """Get the Training Job Configuration by id
+    # def show_builtin_algorithms(self):
+    #    """Get the Training Job Configuration by id
 
-        :param trainjob_config: key id or an instance of
-            :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_config.TrainjobConfigs`
+    #    :param trainjob_config: key id or an instance of
+    #        :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_config.TrainjobConfigs`
 
-        :returns: instance of
-            :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_config.TrainjobConfigs`
-        """
-        return self._get(_builtin_algorithms.BuiltinAlgorithms)
+    #    :returns: instance of
+    #        :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_config.TrainjobConfigs`
+    #    """
+    #    return self._get(_builtin_algorithms.BuiltinAlgorithms)
 
     # Visualization Job Management
 
-    def visualization_jobs(self):
+    def visualization_jobs(self, **params):
         """List all Visualization Job.
 
         :returns: a generator of :class:
           `~otcextensions.sdk.modelartsv1.v1.visualization_job.VisualizationJob`
           instances
         """
-        return self._list(_visualization_job.VisualizationJob)
+        return self._list(_visualization_job.VisualizationJob, **params)
 
     def create_visualization_job(self, **attrs):
         """Create a Visualization Job from attributes
@@ -653,11 +677,9 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelartsv1.v1.visualization_job.\
                 VisualizationJob`
         """
-        return self._create(
-            _visualization_job.VisualizationJob, prepend_key=False, **attrs
-        )
+        return self._create(_visualization_job.VisualizationJob, **attrs)
 
-    def delete_visualizationjob(self, job_id, ignore_missing=False):
+    def delete_visualization_job(self, job_id, ignore_missing=False):
         """Delete a Visualization Job
 
         :param visualization_job: Thie value can be the name of a
@@ -674,7 +696,7 @@ class Proxy(proxy.Proxy):
             ignore_missing=ignore_missing,
         )
 
-    def show_visualizationjob(self, visualization_job):
+    def get_visualization_job(self, job_id):
         """Get the Visualization Job by id
 
         :param visualization_job: key id or an instance of
@@ -682,68 +704,57 @@ class Proxy(proxy.Proxy):
                 VisualizationJobs`
 
         :returns: instance of
-            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_jobs.\
-                VisualizationJobs`
+            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_job.\
+                VisualizationJob`
         """
-        return self._get(
-            _visualization_job.VisualizationJob, visualization_job
-        )
+        return self._get(_visualization_job.VisualizationJob, job_id)
 
-    def update_visualizationjob_description(self, **attrs):
-        """Get the dataset by id
+    def update_visualization_job(self, job_id, description):
+        """Update visualization job description.
 
-        :param dataset: key id or an instance of
-            :class:`~otcextensions.sdk.modelarts.v2.datasets.Datasets`
+        :param job_id : key id or an instance of
+            :class:`~otcextensions.sdk.modelarts.v2.visualization_job.\
+                VisualizationJob`
+
+        :param description: Description of a visualization job.
 
         :returns: instance of
-            :class:`~otcextensions.sdk.modelarts.v2.datasets.Datasets`
+            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_job.\
+                VisualizationJob`
         """
-        return self._update(_visualization_job.VisualizationJob, **attrs)
+        return self._update(
+            _visualization_job.VisualizationJob,
+            job_id,
+            job_desc=description,
+        )
 
-    def stop_visualizationjob(self, visualization_job):
+    def stop_visualization_job(self, job_id):
         """Stop a VisualizationJob
 
         :param instance: key id or an instance of
             :class:`~otcextensions.sdk.modelartsv1.v1.visualization_jobs`
 
         :returns: instance of
-            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_jobs`
+            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_job.\
+                VisualizationJob`
         """
-        visjob = self._get_resource(
-            _visualization_job.VisualizationJobStop, visualization_job
+        visualization_job = self._get_resource(
+            _visualization_job.VisualizationJob, job_id
         )
-        return visjob.stop(self)
+        return visualization_job.stop(self)
 
-    def restart_visualizationjob(self, visualization_job):
+    def restart_visualization_job(self, job_id):
         """Restart a VisualizationJob
 
-        :param instance: key id or an instance of
-            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_jobs`
+        :param job_id : key id or an instance of
+            :class:`~otcextensions.sdk.modelarts.v2.visualization_job.\
+                VisualizationJob`
 
         :returns: instance of
-            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_jobs`
+            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_job.\
+                VisualizationJob`
         """
-        visjob = self._get_resource(
-            _visualization_job.VisualizationJobRestart, visualization_job
+        visualization_job = self._get_resource(
+            _visualization_job.VisualizationJob, job_id
         )
-        return visjob.restart(self)
-
-    def job_resource_specifications(self):
-        """List all JobResourceSpecifications .
-
-        :returns: a generator of :class:
-          `~otcextensions.sdk.modelartsv1.v1._job_resource_specifications.JobResourceSpecifications`
-          instances
-        """
-        return self._list(
-            _job_resource_specifications.JobResourceSpecifications
-        )
-
-    def job_engine_specifications(self):
-        """List all JobResourceSpecifications .
-
-        :returns: a generator of :class:
-          `~otcextensions.sdk.modelartsv1.v1._job_resource_specifications.JobResourceSpecifications`
-          instances
-        """
-        return self._list(_job_engine_specifications.JobEngineSpecifications)
+        return visualization_job.restart(self)

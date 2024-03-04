@@ -11,7 +11,6 @@
 # under the License.
 #
 from openstack import resource
-from openstack import utils
 
 
 class ParameterSpec(resource.Resource):
@@ -265,78 +264,3 @@ class TrainingJob(ConfigSpec):
     job_name = resource.Body("job_name")
     #: Workspace where a job resides.
     workspace_id = resource.Body("workspace_id")
-
-
-class TrainingJobVersion(ConfigSpec):
-    base_path = "/training-jobs/%(jobId)s/versions"
-
-    resources_key = "versions"
-
-    # capabilities
-    allow_create = True
-    allow_delete = True
-    allow_fetch = True
-    allow_list = True
-
-    _query_mapping = resource.QueryParameters(
-        "limit",
-        "offset",
-        limit="per_page",
-        offset="page",
-    )
-
-    #: Job ID
-    jobId = resource.URI("jobId")
-
-    #: Parameters for creating a training job For details, see Table 3.
-    config = resource.Body("config", type=ConfigSpec)
-    #: Description of a training job.
-    job_desc = resource.Body("job_desc")
-
-    def _action(self, session, action):
-        """Preform actions given the message body."""
-        url = utils.urljoin(self.base_path, self.id, "action")
-        body = {"action": action}
-        headers = {
-            "Accept": "application/json",
-            "Content-type": "application/json",
-        }
-        response = session.post(url, json=body, headers=headers)
-        self._translate_response(response)
-        return self
-
-    def stop(self, session):
-        """Stop the Training Job."""
-        return self._action(session, "stop")
-
-
-class TrainingJobConfig(ConfigSpec):
-    base_path = "/training-job-configs"
-
-    resources_key = "configs"
-
-    _query_mapping = resource.QueryParameters(
-        "config_type",
-        "limit",
-        "order",
-        "offset",
-        "search_content",
-        "sort_by",
-        limit="per_page",
-        offset="page",
-        sort_by="sortBy",
-    )
-
-    # capabilities
-    allow_create = True
-    allow_commit = True
-    allow_delete = True
-    allow_fetch = True
-    allow_list = True
-
-    #: Name of a training job configuration.
-    config_name = resource.Body("config_name")
-    #: Description of a training job configuration.
-    config_desc = resource.Body("config_desc")
-    #: Name of a training job configuration.
-    name = resource.Body("name", alias="config_name")

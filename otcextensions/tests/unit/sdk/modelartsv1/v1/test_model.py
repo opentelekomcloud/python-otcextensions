@@ -10,33 +10,89 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-import copy
-import json
-from unittest.mock import MagicMock
-
 from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv1.v1 import model
-from otcextensions.tests.unit.sdk.modelartsv1.v1.examples import EXAMPLE_MODEL
 
-
-def _translate_response(body):
-    for key in (
-        "model_metrics",
-        "config",
-        "apis",
-        "output_params",
-        "input_params",
-    ):
-        if key in body:
-            if isinstance(body[key], str):
-                body[key] = json.loads(body[key])
-            elif key in ("output_params", "input_params") and isinstance(
-                body[key], list
-            ):
-                for param in body[key]:
-                    if isinstance(param.get("param_desc"), str):
-                        param["param_desc"] = json.loads(param["param_desc"])
-    return body
+EXAMPLE = {
+    "source_location": "swr.eu-de.otc.t-systems.com/.../mnist2:latest",
+    "image_address": "swr.eu-de.otc.t-systems.com/...",
+    "input_params": [
+        {
+            "url": "/",
+            "method": "post",
+            "protocol": "http",
+            "param_name": "images",
+            "param_type": "file",
+            "param_desc": '{\n    "type": "file"\n}',
+        }
+    ],
+    "output_params": [
+        {
+            "url": "/",
+            "method": "post",
+            "protocol": "http",
+            "param_name": "predicted_label",
+            "param_type": "string",
+            "param_desc": '{\n    "type": "string"\n}',
+        }
+    ],
+    "source_job_id": "5338",
+    "source_job_version": "6420",
+    "model_metrics": '{"f1":0.0,"recall":0.0,"precision":0.0,"accuracy":0.0}',
+    "model_algorithm": "image_classification",
+    "apis": [
+        {
+            "protocol": "http",
+            "method": "post",
+            "url": "/",
+            "input_params": {
+                "type": "object",
+                "properties": {"images": {"type": "file"}},
+            },
+            "output_params": {
+                "required": ["predicted_label", "scores"],
+                "type": "object",
+                "properties": {
+                    "predicted_label": {"type": "string"},
+                    "scores": {
+                        "items": {
+                            "minItems": 2.0,
+                            "items": [{"type": "string"}, {"type": "number"}],
+                            "type": "array",
+                            "maxItems": 2.0,
+                        },
+                        "type": "array",
+                    },
+                },
+            },
+            "id": 0.0,
+            "content_type": "multipart/form-data",
+        }
+    ],
+    "model_labels": [],
+    "labels_map": {"labels": []},
+    "model_docs": [],
+    "config": "{....config....}",
+    "model_id": "model-id",
+    "model_name": "model-43db",
+    "model_version": "0.0.1",
+    "model_type": "Image",
+    "model_size": 2128636885,
+    "model_status": "published",
+    "tenant": "tenant-id",
+    "project": "project-id",
+    "owner": "owner-id",
+    "create_at": 1658754813936,
+    "workspace_id": "0",
+    "ai_project": "default-ai-project",
+    "install_type": ["real-time", "batch"],
+    "model_source": "custom",
+    "tunable": False,
+    "market_flag": False,
+    "publishable_flag": True,
+    "specification": {},
+    "runtime": "python2.7",
+}
 
 
 class TestModel(base.TestCase):
@@ -47,7 +103,6 @@ class TestModel(base.TestCase):
         sot = model.Model()
 
         self.assertEqual("/models", sot.base_path)
-        # self.assertEqual('model', sot.resource_key)
         self.assertEqual("models", sot.resources_key)
 
         self.assertTrue(sot.allow_list)
@@ -55,6 +110,8 @@ class TestModel(base.TestCase):
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_delete)
         self.assertFalse(sot.allow_commit)
+        self.assertFalse(sot.allow_patch)
+
         self.assertDictEqual(
             {
                 "description": "description",
@@ -75,33 +132,36 @@ class TestModel(base.TestCase):
         )
 
     def test_make_it(self):
-        EXAMPLE2 = copy.deepcopy(EXAMPLE_MODEL)
-        EXAMPLE = copy.deepcopy(EXAMPLE_MODEL)
-        sot = model.Model()
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = EXAMPLE2
-        sot._translate_response(mock_response)
+        sot = model.Model(**EXAMPLE)
 
-        updated_sot_attrs = (
-            "create_at",
-            "model_name",
-            "model_status",
-            "model_version",
-            "owner",
-            "project",
-            "tenant",
-        )
-
-        EXAMPLE = _translate_response(EXAMPLE)
-        self.assertEqual(EXAMPLE["create_at"], sot.created_at)
-        self.assertEqual(EXAMPLE["model_name"], sot.name)
-        self.assertEqual(EXAMPLE["model_status"], sot.status)
-        self.assertEqual(EXAMPLE["model_version"], sot.version)
-        self.assertEqual(EXAMPLE["owner"], sot.owner_id)
-        self.assertEqual(EXAMPLE["project"], sot.project_id)
-        self.assertEqual(EXAMPLE["tenant"], sot.tenant_id)
+        updated_sot_attrs = {
+            "create_at": "created_at",
+            "model_name": "name",
+            "model_status": "status",
+            "model_version": "version",
+            "owner": "owner_id",
+            "project": "project_id",
+            "tenant": "tenant_id",
+            "tunable": "is_tunable",
+            "market_flag": "is_subscribed",
+            "publishable_flag": "is_publishable",
+        }
 
         for key, value in EXAMPLE.items():
-            if key not in updated_sot_attrs:
+            if key in updated_sot_attrs.keys():
+                for k1, v1 in updated_sot_attrs.items():
+                    self.assertEqual(getattr(sot, v1), EXAMPLE[k1])
+            elif key in ("input_params", "output_params"):
+                for param in value:
+                    sot_param = model.ParamsSpec(**param)
+                    for k2, v2 in param.items():
+                        self.assertEqual(getattr(sot_param, k2), v2)
+
+            elif key == "specification":
+                sot_specification = model.SpecificationSpec(**value)
+                for k3, v3 in value.items():
+                    self.assertEqual(getattr(sot_specification, k3), v3)
+            elif key == "apis":
+                pass
+            else:
                 self.assertEqual(getattr(sot, key), value)

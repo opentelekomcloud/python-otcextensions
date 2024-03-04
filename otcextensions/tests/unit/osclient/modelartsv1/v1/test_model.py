@@ -15,6 +15,7 @@ from unittest.mock import call
 import mock
 from openstackclient.tests.unit import utils as tests_utils
 from osc_lib import exceptions
+
 from otcextensions.osclient.modelartsv1.v1 import model
 from otcextensions.tests.unit.osclient.modelartsv1.v1 import fakes
 
@@ -32,8 +33,11 @@ _COLUMNS = (
     "model_id",
     "model_labels",
     "model_metrics",
+    "model_name",
     "model_size",
+    "model_status",
     "model_type",
+    "model_version",
     "name",
     "output_params",
     "owner_id",

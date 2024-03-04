@@ -14,6 +14,7 @@ from unittest.mock import call
 
 import mock
 from osc_lib import exceptions
+
 from otcextensions.common import cli_utils
 from otcextensions.osclient.modelartsv1.v1 import training_job
 from otcextensions.tests.unit.osclient.modelartsv1.v1 import fakes

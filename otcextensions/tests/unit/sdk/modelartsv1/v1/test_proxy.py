@@ -15,7 +15,15 @@ from otcextensions.sdk.modelartsv1.v1 import _proxy
 from otcextensions.sdk.modelartsv1.v1 import devenv
 from otcextensions.sdk.modelartsv1.v1 import model
 from otcextensions.sdk.modelartsv1.v1 import service
+from otcextensions.sdk.modelartsv1.v1 import service_log
+from otcextensions.sdk.modelartsv1.v1 import service_event
+from otcextensions.sdk.modelartsv1.v1 import service_monitor
+from otcextensions.sdk.modelartsv1.v1 import service_flavor
+from otcextensions.sdk.modelartsv1.v1 import service_cluster
 from otcextensions.sdk.modelartsv1.v1 import training_job
+from otcextensions.sdk.modelartsv1.v1 import training_job_config
+from otcextensions.sdk.modelartsv1.v1 import training_job_version
+from otcextensions.sdk.modelartsv1.v1 import visualization_job
 
 
 class TestModelartsV1Proxy(test_proxy_base.TestProxyBase):
@@ -210,6 +218,52 @@ class TestService(TestModelartsV1Proxy):
         )
 
 
+class TestServiceLog(TestModelartsV1Proxy):
+    def test_service_logs(self):
+        self.verify_list(
+            self.proxy.service_logs,
+            service_log.ServiceLog,
+            method_kwargs={"service_id": "service-id"},
+            expected_kwargs={"serviceId": "service-id"},
+        )
+
+
+class TestServiceEvent(TestModelartsV1Proxy):
+    def test_service_events(self):
+        self.verify_list(
+            self.proxy.service_events,
+            service_event.ServiceEvent,
+            method_kwargs={"service_id": "service-id"},
+            expected_kwargs={"serviceId": "service-id"},
+        )
+
+
+class TestServiceMonitor(TestModelartsV1Proxy):
+    def test_service_monitor(self):
+        self.verify_list(
+            self.proxy.service_monitor,
+            service_monitor.ServiceMonitor,
+            method_kwargs={"service_id": "service-id"},
+            expected_kwargs={"serviceId": "service-id"},
+        )
+
+
+class TestServiceFlavor(TestModelartsV1Proxy):
+    def test_service_flavors(self):
+        self.verify_list(
+            self.proxy.service_flavors,
+            service_flavor.ServiceFlavor,
+        )
+
+
+class TestServiceCluster(TestModelartsV1Proxy):
+    def test_service_clusters(self):
+        self.verify_list(
+            self.proxy.service_clusters,
+            service_cluster.ServiceCluster,
+        )
+
+
 class TestTrainingJob(TestModelartsV1Proxy):
     def test_training_jobs(self):
         self.verify_list(
@@ -253,7 +307,7 @@ class TestTrainingJobVersion(TestModelartsV1Proxy):
     def test_training_job_versions(self):
         self.verify_list(
             self.proxy.training_job_versions,
-            training_job.TrainingJobVersion,
+            training_job_version.TrainingJobVersion,
             method_kwargs={"job_id": "job-id"},
             expected_kwargs={"jobId": "job-id"},
         )
@@ -261,7 +315,7 @@ class TestTrainingJobVersion(TestModelartsV1Proxy):
     def test_create_training_job_version(self):
         self.verify_create(
             self.proxy.create_training_job_version,
-            training_job.TrainingJobVersion,
+            training_job_version.TrainingJobVersion,
             method_kwargs={"job_id": "job-id"},
             expected_kwargs={"jobId": "job-id"},
         )
@@ -269,7 +323,7 @@ class TestTrainingJobVersion(TestModelartsV1Proxy):
     def test_get_training_job_version(self):
         self.verify_get(
             self.proxy.get_training_job_version,
-            training_job.TrainingJobVersion,
+            training_job_version.TrainingJobVersion,
             method_args=["job-id", "version-id"],
             expected_args=["version-id"],
             expected_kwargs={"jobId": "job-id"},
@@ -278,7 +332,7 @@ class TestTrainingJobVersion(TestModelartsV1Proxy):
     def test_delete_training_job_version(self):
         self.verify_delete(
             self.proxy.delete_training_job_version,
-            training_job.TrainingJobVersion,
+            training_job_version.TrainingJobVersion,
             False,
             method_args=["job-id", "version-id"],
             expected_args=["version-id"],
@@ -288,7 +342,7 @@ class TestTrainingJobVersion(TestModelartsV1Proxy):
     def test_delete_training_job_version_ignore(self):
         self.verify_delete(
             self.proxy.delete_training_job_version,
-            training_job.TrainingJobVersion,
+            training_job_version.TrainingJobVersion,
             True,
             method_args=["job-id", "version-id"],
             expected_args=["version-id"],
@@ -300,37 +354,97 @@ class TestTrainingJobConfig(TestModelartsV1Proxy):
     def test_training_job_configs(self):
         self.verify_list(
             self.proxy.training_job_configs,
-            training_job.TrainingJobConfig,
+            training_job_config.TrainingJobConfig,
         )
 
     def test_create_training_job_config(self):
         self.verify_create(
             self.proxy.create_training_job_config,
-            training_job.TrainingJobConfig,
+            training_job_config.TrainingJobConfig,
         )
 
     def test_get_training_job_config(self):
         self.verify_get(
             self.proxy.get_training_job_config,
-            training_job.TrainingJobConfig,
+            training_job_config.TrainingJobConfig,
         )
 
     def test_update_training_job_config(self):
         self.verify_update(
             self.proxy.update_training_job_config,
-            training_job.TrainingJobConfig,
+            training_job_config.TrainingJobConfig,
         )
 
     def test_delete_training_job_config(self):
         self.verify_delete(
             self.proxy.delete_training_job_config,
-            training_job.TrainingJobConfig,
+            training_job_config.TrainingJobConfig,
             False,
         )
 
     def test_delete_training_job_config_ignore(self):
         self.verify_delete(
             self.proxy.delete_training_job_config,
-            training_job.TrainingJobConfig,
+            training_job_config.TrainingJobConfig,
             True,
+        )
+
+
+class TestVisualizationJob(TestModelartsV1Proxy):
+    def test_visualization_jobs(self):
+        self.verify_list(
+            self.proxy.visualization_jobs,
+            visualization_job.VisualizationJob,
+        )
+
+    def test_create_visualization_job(self):
+        self.verify_create(
+            self.proxy.create_visualization_job,
+            visualization_job.VisualizationJob,
+        )
+
+    def test_update_visualization_job(self):
+        visualizationjob_instance = visualization_job.VisualizationJob()
+        description = "test description"
+        self._verify(
+            "openstack.proxy.Proxy._update",
+            self.proxy.update_visualization_job,
+            method_args=[visualizationjob_instance, description],
+            expected_args=[
+                visualization_job.VisualizationJob,
+                visualizationjob_instance,
+            ],
+            expected_kwargs={"job_desc": description},
+        )
+
+    def test_delete_visualization_job(self):
+        self.verify_delete(
+            self.proxy.delete_visualization_job,
+            visualization_job.VisualizationJob,
+            False,
+        )
+
+    def test_delete_visualization_job_ignore(self):
+        self.verify_delete(
+            self.proxy.delete_visualization_job,
+            visualization_job.VisualizationJob,
+            True,
+        )
+
+    def test_restart_visualization_job(self):
+        self._verify(
+            ("otcextensions.sdk.modelartsv1.v1.visualization_job."
+             "VisualizationJob.restart"),
+            self.proxy.restart_visualization_job,
+            method_args=["val"],
+            expected_args=[self.proxy],
+        )
+
+    def test_stop_visualization_job(self):
+        self._verify(
+            ("otcextensions.sdk.modelartsv1.v1.visualization_job."
+             "VisualizationJob.stop"),
+            self.proxy.stop_visualization_job,
+            method_args=["val"],
+            expected_args=[self.proxy],
         )

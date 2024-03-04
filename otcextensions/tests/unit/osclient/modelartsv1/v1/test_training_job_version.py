@@ -11,11 +11,11 @@
 # under the License.
 #
 import mock
-
 from openstackclient.tests.unit import utils as tests_utils
 from osc_lib import exceptions
+
 from otcextensions.common import cli_utils
-from otcextensions.osclient.modelartsv1.v1 import training_job
+from otcextensions.osclient.modelartsv1.v1 import training_job_version
 from otcextensions.tests.unit.osclient.modelartsv1.v1 import fakes
 
 _COLUMNS = (
@@ -75,7 +75,7 @@ class TestListTrainingJobVersions(fakes.TestModelartsv1):
             (
                 s.version_id,
                 s.version_name,
-                training_job.JobStatus(s.status),
+                training_job_version.JobStatus(s.status),
                 cli_utils.UnixTimestampFormatter(s.created_at),
                 cli_utils.UnixTimestampFormatter(s.started_at),
                 s.duration,
@@ -85,7 +85,7 @@ class TestListTrainingJobVersions(fakes.TestModelartsv1):
     def setUp(self):
         super(TestListTrainingJobVersions, self).setUp()
 
-        self.cmd = training_job.ListTrainingJobVersions(self.app, None)
+        self.cmd = training_job_version.ListTrainingJobVersions(self.app, None)
 
         self.client.training_job_versionss = mock.Mock()
         self.client.api_mock = self.client.training_job_versions
@@ -144,12 +144,14 @@ class TestCreateTrainingJobVersion(fakes.TestModelartsv1):
     _data = fakes.FakeTrainingJobVersion.create_one()
     columns = _COLUMNS
 
-    data = fakes.gen_data(_data, columns, training_job._formatters)
+    data = fakes.gen_data(_data, columns, training_job_version._formatters)
 
     def setUp(self):
         super(TestCreateTrainingJobVersion, self).setUp()
 
-        self.cmd = training_job.CreateTrainingJobVersion(self.app, None)
+        self.cmd = training_job_version.CreateTrainingJobVersion(
+            self.app, None
+        )
 
         self.client.create_training_job_version = mock.Mock(
             return_value=self._data
@@ -252,12 +254,12 @@ class TestShowTrainingJobVersion(fakes.TestModelartsv1):
 
     _data = fakes.FakeTrainingJobVersion.create_one()
     columns = _COLUMNS
-    data = fakes.gen_data(_data, columns, training_job._formatters)
+    data = fakes.gen_data(_data, columns, training_job_version._formatters)
 
     def setUp(self):
         super(TestShowTrainingJobVersion, self).setUp()
 
-        self.cmd = training_job.ShowTrainingJobVersion(self.app, None)
+        self.cmd = training_job_version.ShowTrainingJobVersion(self.app, None)
 
         self.client.get_training_job_version = mock.Mock(
             return_value=self._data
@@ -333,7 +335,9 @@ class TestDeleteTrainingJobVersion(fakes.TestModelartsv1):
         self.client.delete_training_job_version = mock.Mock(return_value=None)
 
         # Get the command object to test
-        self.cmd = training_job.DeleteTrainingJobVersion(self.app, None)
+        self.cmd = training_job_version.DeleteTrainingJobVersion(
+            self.app, None
+        )
 
     def test_delete(self):
         arglist = [self.job_id, self.version_id]
