@@ -19,5 +19,5 @@ conn = openstack.connect(cloud="otc")
 
 job_id = 8742
 version_id = 10063
-response = conn.modelartsv1.stop_traningjob_version(job_id, version_id)
+response = conn.modelartsv1.stop_training_job(job_id, version_id)
 print(response)

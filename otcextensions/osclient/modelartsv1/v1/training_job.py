@@ -436,29 +436,31 @@ class UpdateTrainingJob(command.ShowOne):
 
 
 class StopTrainingJob(command.ShowOne):
-    _description = _("Stop a Training Job.")
+    _description = _("Stop Training Job")
 
     def get_parser(self, prog_name):
         parser = super(StopTrainingJob, self).get_parser(prog_name)
+
         parser.add_argument(
-            "--job-id",
-            metavar="<job_id>",
-            help=_("DevEnv Instance name or ID."),
+            "jobId",
+            metavar="<jobId>",
+            help=_("ID of a training job"),
         )
         parser.add_argument(
-            "--version-id",
-            metavar="<version_id>",
-            help=_("DevEnv Instance name or ID."),
+            "versionId",
+            metavar="<versionId>",
+            help=_("ID of a training job version"),
         )
+
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
 
-        job = client.find_training_job(
-            parsed_args.job_id, parsed_args.version_id, ignore_missing=False
-        )
-        return client.stop_training_job(job.id)
+        obj = client.stop_training_job(parsed_args.jobId, parsed_args.versionId)
+        display_columns, columns = _get_columns(obj)
+        data = utils.get_item_properties(obj, columns)
+        return (display_columns, data)
 
 
 class DeleteTrainingJob(command.Command):

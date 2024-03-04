@@ -566,7 +566,7 @@ class Proxy(proxy.Proxy):
     #         jobId=job_id,
     #     )
 
-    def stop_traningjob_version(self, job_id, version_id):
+    def stop_training_job(self, job_id, version_id):
         """Stop a Devenv instance.
 
         :param instance: key id or an instance of
@@ -576,9 +576,9 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelartsv1.v1.devenv.Devenv`
         """
         obj = self._get_resource(
-            _training_job_version.TrainingJobVersion, job_id, version_id
+            _training_job_version.TrainingJobVersion, job_id
         )
-        return obj.stop(self)
+        return obj.stop(self, version_id)
 
     def training_job_configs(self, **params):
         """List all Training Job Configurations.

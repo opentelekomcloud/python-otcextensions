@@ -42,18 +42,10 @@ class TrainingJobVersion(ConfigSpec):
     #: Description of a training job.
     job_desc = resource.Body("job_desc")
 
-    def _action(self, session, action):
-        """Preform actions given the message body."""
-        url = utils.urljoin(self.base_path, self.id, "action")
-        body = {"action": action}
-        headers = {
-            "Accept": "application/json",
-            "Content-type": "application/json",
-        }
-        response = session.post(url, json=body, headers=headers)
+    def stop(self, session, version_id):
+        """Preform actions given the message body.
+        """
+        uri = utils.urljoin('training-jobs', self.id, "versions", version_id, "stop")
+        response = session.post(uri, json=None)
         self._translate_response(response)
         return self
-
-    def stop(self, session):
-        """Stop the Training Job."""
-        return self._action(session, "stop")
