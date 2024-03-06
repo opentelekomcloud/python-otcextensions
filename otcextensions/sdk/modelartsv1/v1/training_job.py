@@ -11,6 +11,7 @@
 # under the License.
 #
 from openstack import resource
+from openstack import utils
 
 
 class ParameterSpec(resource.Resource):
@@ -264,3 +265,12 @@ class TrainingJob(ConfigSpec):
     job_name = resource.Body("job_name")
     #: Workspace where a job resides.
     workspace_id = resource.Body("workspace_id")
+
+    def stop(self, session, version_id):
+        """Preform actions given the message body."""
+        uri = utils.urljoin(
+            "training-jobs", self.id, "versions", version_id, "stop"
+        )
+        response = session.post(uri, json=None)
+        self._translate_response(response)
+        return self

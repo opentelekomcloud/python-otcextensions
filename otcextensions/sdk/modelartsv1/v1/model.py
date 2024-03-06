@@ -15,6 +15,7 @@ import json
 from openstack import exceptions
 from openstack import resource
 
+from otcextensions.sdk.modelartsv1.v1 import _base
 
 class SpecificationSpec(resource.Resource):
     #: Minimum CPU.
@@ -137,7 +138,7 @@ class ParamsSpec(resource.Resource):
     url = resource.Body("url")
 
 
-class Model(resource.Resource):
+class Model(_base.Resource):
     base_path = "/models"
 
     resources_key = "models"

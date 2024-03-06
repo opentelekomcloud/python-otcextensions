@@ -13,7 +13,7 @@
 from openstack import resource
 
 
-class TrainingJobFlavor(resource.Resource):
+class JobFlavor(resource.Resource):
     base_path = "/job/resource-specs"
 
     resources_key = "specs"

@@ -27,8 +27,6 @@ INFER_TYPE_CHOICES = ["real-time", "batch"]
 
 SORT_BY_CHOICES = ["publish_at", "service_name"]
 
-SORT_ORDER_CHOICES = ["asc", "desc"]
-
 STATUS_CHOICES = [
     "running",
     "deploying",
@@ -98,9 +96,9 @@ class ListServices(command.Lister):
         )
         parser.add_argument(
             "--order",
-            metavar="{" + ",".join(SORT_ORDER_CHOICES) + "}",
+            metavar="{asc, desc}",
             type=lambda s: s.lower(),
-            choices=SORT_ORDER_CHOICES,
+            choices=["asc", "desc"],
             help=_("Sorting order. Default value: desc"),
         )
         parser.add_argument(
@@ -109,15 +107,15 @@ class ListServices(command.Lister):
             help=_("Service ID."),
         )
         parser.add_argument(
-            "--service-name",
-            metavar="<service_name>",
+            "--name",
+            metavar="<name>",
             help=_("Service Name."),
         )
         parser.add_argument(
             "--sort-by",
-            metavar="{" + ",".join(SORT_BY_CHOICES) + "}",
+            metavar="{publish_at, service_name}",
             type=lambda s: s.lower(),
-            choices=SORT_BY_CHOICES,
+            choices=["publish_at", "service_name"],
             help=_("Sorting field. Default value: publish_at"),
         )
         parser.add_argument(
@@ -145,7 +143,7 @@ class ListServices(command.Lister):
             "offset",
             "order",
             "service_id",
-            "service_name",
+            "name",
             "sort_by",
             "status",
             "workspace_id",

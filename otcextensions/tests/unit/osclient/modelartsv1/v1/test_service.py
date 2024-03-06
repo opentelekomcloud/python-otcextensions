@@ -60,7 +60,9 @@ class TestListServices(fakes.TestModelartsv1):
     data = []
 
     for s in objects:
-        data.append((s.service_id, s.service_name, s.infer_type, s.status))
+        data.append(
+            (s.service_id, s.service_name, s.infer_type, s.status)
+        )
 
     def setUp(self):
         super(TestListServices, self).setUp()
@@ -105,7 +107,7 @@ class TestListServices(fakes.TestModelartsv1):
             "asc",
             "--service-id",
             "1",
-            "--service-name",
+            "--name",
             "2",
             "--sort-by",
             "service_name",
@@ -123,7 +125,7 @@ class TestListServices(fakes.TestModelartsv1):
             ("offset", 6),
             ("order", "asc"),
             ("service_id", "1"),
-            ("service_name", "2"),
+            ("name", "2"),
             ("sort_by", "service_name"),
             ("status", "running"),
             ("workspace_id", "5"),
@@ -143,10 +145,10 @@ class TestListServices(fakes.TestModelartsv1):
             infer_type="real-time",
             limit=7,
             model_id="3",
+            name="2",
             offset=6,
             order="asc",
             service_id="1",
-            service_name="2",
             sort_by="service_name",
             status="running",
             workspace_id="5",
@@ -165,8 +167,12 @@ class TestCreateService(fakes.TestModelartsv1):
 
         self.cmd = service.CreateService(self.app, None)
 
-        self.client.create_service = mock.Mock(return_value=self._service)
-        self.client.get_service = mock.Mock(return_value=self._service)
+        self.client.create_service = mock.Mock(
+            return_value=self._service
+        )
+        self.client.get_service = mock.Mock(
+            return_value=self._service
+        )
         self.client.wait_for_service = mock.Mock(return_value=True)
 
     def test_create_batch(self):
@@ -326,8 +332,12 @@ class TestShowService(fakes.TestModelartsv1):
 
         self.cmd = service.ShowService(self.app, None)
 
-        self.client.find_service = mock.Mock(return_value=self._service)
-        self.client.get_service = mock.Mock(return_value=self._service)
+        self.client.find_service = mock.Mock(
+            return_value=self._service
+        )
+        self.client.get_service = mock.Mock(
+            return_value=self._service
+        )
 
     def test_show_no_options(self):
         arglist = []
@@ -355,7 +365,9 @@ class TestShowService(fakes.TestModelartsv1):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.find_service.assert_called_with(self._service.name)
+        self.client.find_service.assert_called_with(
+            self._service.name
+        )
         self.client.get_service.assert_called_with(self._service.id)
 
         self.assertEqual(self.columns, columns)
@@ -369,15 +381,21 @@ class TestShowService(fakes.TestModelartsv1):
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        find_mock_result = exceptions.CommandError("Resource Not Found")
-        self.client.find_service = mock.Mock(side_effect=find_mock_result)
+        find_mock_result = exceptions.CommandError(
+            "Resource Not Found"
+        )
+        self.client.find_service = mock.Mock(
+            side_effect=find_mock_result
+        )
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
             self.assertEqual("Resource Not Found", str(e))
-        self.client.find_service.assert_called_with("nonexisting_service")
+        self.client.find_service.assert_called_with(
+            "nonexisting_service"
+        )
 
 
 class TestUpdateService(fakes.TestModelartsv1):
@@ -392,9 +410,15 @@ class TestUpdateService(fakes.TestModelartsv1):
 
         self.cmd = service.UpdateService(self.app, None)
 
-        self.client.find_service = mock.Mock(return_value=self._service)
-        self.client.get_service = mock.Mock(return_value=self._service)
-        self.client.update_service = mock.Mock(return_value=self._service)
+        self.client.find_service = mock.Mock(
+            return_value=self._service
+        )
+        self.client.get_service = mock.Mock(
+            return_value=self._service
+        )
+        self.client.update_service = mock.Mock(
+            return_value=self._service
+        )
         self.client.wait_for_service = mock.Mock(return_value=True)
 
     def test_update(self):
@@ -434,8 +458,14 @@ class TestUpdateService(fakes.TestModelartsv1):
         ]
         verifylist = [
             ("service", self._service.name),
-            ("schedule", [{"type": "1", "time_unit": "2", "duration": "3"}]),
-            ("additional_properties", {"key1": "value1", "key2": "value2"}),
+            (
+                "schedule",
+                [{"type": "1", "time_unit": "2", "duration": "3"}],
+            ),
+            (
+                "additional_properties",
+                {"key1": "value1", "key2": "value2"},
+            ),
             ("model_id", "model-id"),
             ("weight", 2),
             ("specification", "3"),
@@ -502,7 +532,9 @@ class TestStartService(fakes.TestModelartsv1):
 
         self.cmd = service.StartService(self.app, None)
 
-        self.client.find_service = mock.Mock(return_value=self._service)
+        self.client.find_service = mock.Mock(
+            return_value=self._service
+        )
         self.client.start_service = mock.Mock(return_value=None)
 
     def test_start(self):
@@ -533,7 +565,9 @@ class TestStopService(fakes.TestModelartsv1):
 
         self.cmd = service.StopService(self.app, None)
 
-        self.client.find_service = mock.Mock(return_value=self._service)
+        self.client.find_service = mock.Mock(
+            return_value=self._service
+        )
         self.client.stop_service = mock.Mock(return_value=None)
 
     def test_start(self):
@@ -560,7 +594,9 @@ class TestDeleteService(fakes.TestModelartsv1):
     def setUp(self):
         super(TestDeleteService, self).setUp()
 
-        self.client.find_service = mock.Mock(return_value=self._service[0])
+        self.client.find_service = mock.Mock(
+            return_value=self._service[0]
+        )
         self.client.delete_service = mock.Mock(return_value=None)
 
         # Get the command object to test
@@ -583,7 +619,9 @@ class TestDeleteService(fakes.TestModelartsv1):
         self.client.find_service.assert_called_with(
             self._service[0].name, ignore_missing=False
         )
-        self.client.delete_service.assert_called_with(self._service[0].id)
+        self.client.delete_service.assert_called_with(
+            self._service[0].id
+        )
         self.assertIsNone(result)
 
     def test_multiple_delete(self):
@@ -598,7 +636,9 @@ class TestDeleteService(fakes.TestModelartsv1):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         find_mock_results = self._service
-        self.client.find_service = mock.Mock(side_effect=find_mock_results)
+        self.client.find_service = mock.Mock(
+            side_effect=find_mock_results
+        )
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
@@ -606,7 +646,9 @@ class TestDeleteService(fakes.TestModelartsv1):
         find_calls = []
         delete_calls = []
         for ma_service in self._service:
-            find_calls.append(call(ma_service.name, ignore_missing=False))
+            find_calls.append(
+                call(ma_service.name, ignore_missing=False)
+            )
             delete_calls.append(call(ma_service.id))
         self.client.find_service.assert_has_calls(find_calls)
         self.client.delete_service.assert_has_calls(delete_calls)
@@ -622,13 +664,22 @@ class TestDeleteService(fakes.TestModelartsv1):
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        find_mock_results = [self._service[0], exceptions.CommandError]
-        self.client.find_service = mock.Mock(side_effect=find_mock_results)
+        find_mock_results = [
+            self._service[0],
+            exceptions.CommandError,
+        ]
+        self.client.find_service = mock.Mock(
+            side_effect=find_mock_results
+        )
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual("1 of 2 Service(s) failed to delete.", str(e))
+            self.assertEqual(
+                "1 of 2 Service(s) failed to delete.", str(e)
+            )
 
-        self.client.delete_service.assert_any_call(self._service[0].id)
+        self.client.delete_service.assert_any_call(
+            self._service[0].id
+        )

@@ -45,7 +45,9 @@ class TestServiceLogs(fakes.TestModelartsv1):
 
         self.cmd = service_log.ServiceLogs(self.app, None)
 
-        self.client.find_service = mock.Mock(return_value=self._service)
+        self.client.find_service = mock.Mock(
+            return_value=self._service
+        )
         self.client.service_logs = mock.Mock()
         self.client.api_mock = self.client.service_logs
 
@@ -65,7 +67,9 @@ class TestServiceLogs(fakes.TestModelartsv1):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_service.assert_called_with(self._service.name)
+        self.client.find_service.assert_called_with(
+            self._service.name
+        )
         self.client.api_mock.assert_called_with(self._service.id)
 
         self.assertEqual(self.column_list_headers, columns)

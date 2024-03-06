@@ -12,7 +12,10 @@
 #
 from openstack.tests.unit import test_proxy_base
 from otcextensions.sdk.modelartsv1.v1 import _proxy
+from otcextensions.sdk.modelartsv1.v1 import builtin_model
 from otcextensions.sdk.modelartsv1.v1 import devenv
+from otcextensions.sdk.modelartsv1.v1 import job_engine
+from otcextensions.sdk.modelartsv1.v1 import job_flavor
 from otcextensions.sdk.modelartsv1.v1 import model
 from otcextensions.sdk.modelartsv1.v1 import service
 from otcextensions.sdk.modelartsv1.v1 import service_log
@@ -30,6 +33,14 @@ class TestModelartsV1Proxy(test_proxy_base.TestProxyBase):
     def setUp(self):
         super(TestModelartsV1Proxy, self).setUp()
         self.proxy = _proxy.Proxy(self.session)
+
+
+class TestBuiltInModel(TestModelartsV1Proxy):
+    def test_builtin_models(self):
+        self.verify_list(
+            self.proxy.builtin_models,
+            builtin_model.BuiltInModel,
+        )
 
 
 class TestModel(TestModelartsV1Proxy):
@@ -218,6 +229,22 @@ class TestService(TestModelartsV1Proxy):
         )
 
 
+class TestJobFlavor(TestModelartsV1Proxy):
+    def test_job_flavors(self):
+        self.verify_list(
+            self.proxy.job_flavors,
+            job_flavor.JobFlavor,
+        )
+
+
+class TestJobEngine(TestModelartsV1Proxy):
+    def test_job_engines(self):
+        self.verify_list(
+            self.proxy.job_engines,
+            job_engine.JobEngine,
+        )
+
+
 class TestServiceLog(TestModelartsV1Proxy):
     def test_service_logs(self):
         self.verify_list(
@@ -349,6 +376,14 @@ class TestTrainingJobVersion(TestModelartsV1Proxy):
             expected_kwargs={"jobId": "job-id"},
         )
 
+    def test_stop_training_job(self):
+        self._verify(
+            "otcextensions.sdk.modelartsv1.v1.training_job.TrainingJob.stop",
+            self.proxy.stop_training_job,
+            method_args=["job-id", "version-id"],
+            expected_args=[self.proxy, "version-id"],
+        )
+
 
 class TestTrainingJobConfig(TestModelartsV1Proxy):
     def test_training_job_configs(self):
@@ -442,8 +477,7 @@ class TestVisualizationJob(TestModelartsV1Proxy):
 
     def test_stop_visualization_job(self):
         self._verify(
-            ("otcextensions.sdk.modelartsv1.v1.visualization_job."
-             "VisualizationJob.stop"),
+            "otcextensions.sdk.modelartsv1.v1.visualization_job.VisualizationJob.stop", # noqa
             self.proxy.stop_visualization_job,
             method_args=["val"],
             expected_args=[self.proxy],

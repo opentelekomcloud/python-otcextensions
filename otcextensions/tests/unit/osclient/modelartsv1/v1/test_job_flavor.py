@@ -12,23 +12,20 @@
 #
 import mock
 
-from otcextensions.osclient.modelartsv1.v1 import service_monitor
+from otcextensions.osclient.modelartsv1.v1 import job_flavor
 from otcextensions.tests.unit.osclient.modelartsv1.v1 import fakes
 
 
-class TestServiceMonitor(fakes.TestModelartsv1):
-    _service = fakes.FakeService.create_one()
-    objects = fakes.FakeServiceMonitor.create_multiple(3)
+class TestListJobFlavors(fakes.TestModelartsv1):
+    objects = fakes.FakeJobFlavor.create_multiple(3)
 
     column_list_headers = (
-        "Model Id",
-        "Model Name",
-        "Model Version",
-        "Invocation Times",
-        "Failed Times",
-        "CPU Core",
-        "CPU Memory",
-        "GPU",
+        "Spec Id",
+        "Spec Code",
+        "Core",
+        "CPU",
+        "GPU Num",
+        "GPU Type",
     )
 
     data = []
@@ -36,34 +33,27 @@ class TestServiceMonitor(fakes.TestModelartsv1):
     for s in objects:
         data.append(
             (
-                s.model_id,
-                s.model_name,
-                s.model_version,
-                s.invocation_times,
-                s.failed_times,
-                s.cpu_core,
-                s.cpu_memory,
-                s.gpu,
+                s.spec_id,
+                s.spec_code,
+                s.core,
+                s.cpu,
+                s.gpu_num,
+                s.gpu_type,
             )
         )
 
     def setUp(self):
-        super(TestServiceMonitor, self).setUp()
+        super(TestListJobFlavors, self).setUp()
 
-        self.cmd = service_monitor.ServiceMonitor(self.app, None)
+        self.cmd = job_flavor.ListJobFlavors(self.app, None)
 
-        self.client.find_service = mock.Mock(
-            return_value=self._service
-        )
-        self.client.service_monitor = mock.Mock()
-        self.client.api_mock = self.client.service_monitor
+        self.client.job_flavors = mock.Mock()
+        self.client.api_mock = self.client.job_flavors
 
     def test_list(self):
-        arglist = [self._service.name]
+        arglist = []
 
-        verifylist = [
-            ("service", self._service.name),
-        ]
+        verifylist = []
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -74,24 +64,25 @@ class TestServiceMonitor(fakes.TestModelartsv1):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_service.assert_called_with(
-            self._service.name
-        )
-        self.client.api_mock.assert_called_with(self._service.id)
+        self.client.api_mock.assert_called_with()
 
         self.assertEqual(self.column_list_headers, columns)
         self.assertEqual(self.data, list(data))
 
     def test_list_args(self):
         arglist = [
-            self._service.name,
-            "--node-id",
-            "123",
+            "--job-type",
+            "inference",
+            "--engine-id",
+            "1",
+            "--project-type",
+            "2",
         ]
 
         verifylist = [
-            ("service", self._service.name),
-            ("node_id", "123"),
+            ("job_type", "inference"),
+            ("engine_id", 1),
+            ("project_type", 2),
         ]
 
         # Verify cm is triggered with default parameters
@@ -104,6 +95,7 @@ class TestServiceMonitor(fakes.TestModelartsv1):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_with(
-            self._service.id,
-            node_id="123",
+            job_type="inference",
+            engine_id=1,
+            project_type=2,
         )

@@ -14,7 +14,10 @@ import time
 
 from openstack import exceptions
 from openstack import proxy
+from otcextensions.sdk.modelartsv1.v1 import builtin_model as _builtin_model
 from otcextensions.sdk.modelartsv1.v1 import devenv as _devenv
+from otcextensions.sdk.modelartsv1.v1 import job_engine as _job_engine
+from otcextensions.sdk.modelartsv1.v1 import job_flavor as _job_flavor
 from otcextensions.sdk.modelartsv1.v1 import model as _model
 from otcextensions.sdk.modelartsv1.v1 import service as _service
 from otcextensions.sdk.modelartsv1.v1 import \
@@ -30,8 +33,6 @@ from otcextensions.sdk.modelartsv1.v1 import \
 from otcextensions.sdk.modelartsv1.v1 import \
     training_job_version as _training_job_version
 from otcextensions.sdk.modelartsv1.v1 import \
-    training_job_flavor as _training_job_flavor
-from otcextensions.sdk.modelartsv1.v1 import \
     visualization_job as _visualization_job
 
 
@@ -45,6 +46,39 @@ class Proxy(proxy.Proxy):
             "Content-type": "application/json",
         }
 
+    # ======== BuiltIn Model Management ========
+    def builtin_models(self, **params):
+        """List all BuiltIn Models.
+
+        :param dict params: Optional query parameters to be sent to limit
+            the models being returned.
+
+        :returns: a generator of
+            :class:`~otcextensions.sdk.modelartsv1.v1.built_in_model.BuiltInModel`
+            instances
+        """
+        return self._list(_builtin_model.BuiltInModel, **params)
+
+    def find_builtin_model(self, name_or_id, ignore_missing=False):
+        """Find a single model
+
+        :param name_or_id: The name or ID of a ModelArts model
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            if the model does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to find a nonexistent cluster.
+
+        :returns:
+            One :class:`~otcextensions.sdk.modelartsv1.v1.model.Model`
+            or ``None``
+        """
+        return self._find(
+            _builtin_model.BuiltInModel,
+            name_or_id,
+            ignore_missing=ignore_missing,
+        )
+
     # ======== Model Management ========
 
     def models(self, **params):
@@ -54,7 +88,7 @@ class Proxy(proxy.Proxy):
             the models being returned.
 
         :returns: a generator of
-            :class:`~otcextensions.sdk.modelartsv1.v1.models.Model` instances
+            :class:`~otcextensions.sdk.modelartsv1.v1.model.Model` instances
         """
         return self._list(_model.Model, **params)
 
@@ -387,6 +421,16 @@ class Proxy(proxy.Proxy):
             f"Wait Timed Out. service status is: {status}"
         )
 
+    def stop_training_job(self, job_id, version_id):
+        """Stop a Training Job.
+
+        :param job_id: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.training_job.TrainingJob`
+
+        """
+        obj = self._get_resource(_training_job.TrainingJob, job_id)
+        return obj.stop(self, version_id)
+
     # Training Job Management
 
     def training_jobs(self, **params):
@@ -463,6 +507,8 @@ class Proxy(proxy.Proxy):
             ignore_missing=ignore_missing,
         )
 
+    # Training Job Version Management
+
     def training_job_versions(self, job_id, **attrs):
         """List versions of a training job.
 
@@ -523,18 +569,29 @@ class Proxy(proxy.Proxy):
             ignore_missing=ignore_missing,
         )
 
-    def training_job_flavors(self, **params):
-        """List all flavors available for running a training job.
+    def job_flavors(self, **params):
+        """List all flavors available for running a job.
 
         :param dict params: Optional query parameters to be sent to limit
-            the training job flavors being returned.
+            the job flavors being returned.
 
         :returns: a generator of
-            :class:`~otcextensions.sdk.modelartsv1.v1.training_job_flavor.\
-                TrainingJobFlavor` instances.
+            :class:`~otcextensions.sdk.modelartsv1.v1.job_flavor.JobFlavor`
+            instances.
         """
-        return self._list(_training_job_flavor.TrainingJobFlavor, **params)
+        return self._list(_job_flavor.JobFlavor, **params)
 
+    def job_engines(self, **params):
+        """List all engines available for running a job.
+
+        :param dict params: Optional query parameters to be sent to limit
+            the job engines being returned.
+
+        :returns: a generator of
+            :class:`~otcextensions.sdk.modelartsv1.v1.job_engine.JobEngine`
+            instances.
+        """
+        return self._list(_job_engine.JobEngine, **params)
 
     # def list_trainingjob_version_logs(self, job_id, version_id):
     #     """Get the trainjob version by id
@@ -566,19 +623,7 @@ class Proxy(proxy.Proxy):
     #         jobId=job_id,
     #     )
 
-    def stop_training_job(self, job_id, version_id):
-        """Stop a Devenv instance.
-
-        :param instance: key id or an instance of
-            :class:`~otcextensions.sdk.modelartsv1.v1.devenv.Devenv`
-
-        :returns: instance of
-            :class:`~otcextensions.sdk.modelartsv1.v1.devenv.Devenv`
-        """
-        obj = self._get_resource(
-            _training_job_version.TrainingJobVersion, job_id
-        )
-        return obj.stop(self, version_id)
+    # Training Job Config Management
 
     def training_job_configs(self, **params):
         """List all Training Job Configurations.

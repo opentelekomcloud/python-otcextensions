@@ -140,13 +140,14 @@ class Service(resource.Resource):
         "infer_type",
         "limit",
         "model_id",
+        "name",
         "offset",
         "order",
         "service_id",
-        "service_name",
         "sort_by",
         "status",
         "workspace_id",
+        name="service_name",
     )
 
     # Properties

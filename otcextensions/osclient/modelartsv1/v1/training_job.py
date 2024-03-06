@@ -457,7 +457,9 @@ class StopTrainingJob(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
 
-        obj = client.stop_training_job(parsed_args.jobId, parsed_args.versionId)
+        obj = client.stop_training_job(
+            parsed_args.jobId, parsed_args.versionId
+        )
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)
         return (display_columns, data)

@@ -22,42 +22,24 @@ LOG = logging.getLogger(__name__)
 INFER_TYPE_CHOICES = ["real-time", "batch"]
 
 
-class ListTrainingJobFlavors(command.Lister):
-    _description = _("List Training job resource Specifications.")
+class ListJobEngines(command.Lister):
+    _description = _("List job engine Specifications.")
     columns = (
-        "Spec Id",
-        "Spec Code",
-        "Core",
-        "CPU",
-        "GPU Num",
-        "GPU Type",
+        "Engine Id",
+        "Engine Name",
+        "Engine Type",
+        "Engine Version",
     )
 
     def get_parser(self, prog_name):
-        parser = super(ListTrainingJobFlavors, self).get_parser(prog_name)
+        parser = super(ListJobEngines, self).get_parser(prog_name)
         parser.add_argument(
             "--job-type",
-            metavar="{train, infer_type}",
+            metavar="{train, inference}",
             type=lambda s: s.lower(),
             choices=["train", "inference"],
             help=_(
                 "Job Type."
-            ),
-        )
-        parser.add_argument(
-            "--engine-id",
-            metavar="<engine_id>",
-            type=int,
-            help=_(
-                "Engine ID of a job. Default value: 0"
-            ),
-        )
-        parser.add_argument(
-            "--project-id",
-            metavar="<project_id>",
-            type=int,
-            help=_(
-                "Project type. Default value: 0"
             ),
         )
         return parser
@@ -65,8 +47,10 @@ class ListTrainingJobFlavors(command.Lister):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
         query_params = {}
+        if parsed_args.job_type:
+            query_params["job_type"] = parsed_args.job_type
 
-        data = client.training_job_flavors(**query_params)
+        data = client.job_engines(**query_params)
 
         return (
             self.columns,

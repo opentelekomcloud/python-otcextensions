@@ -94,18 +94,15 @@ class TestService(base.TestCase):
         self.assertTrue(sot.allow_commit)
         self.assertDictEqual(
             {
-                "cluster_id": "cluster_id",
-                "infer_type": "infer_type",
                 "limit": "limit",
                 "marker": "marker",
+                "cluster_id": "cluster_id",
+                "infer_type": "infer_type",
                 "model_id": "model_id",
-                "model_id": "model_id",
+                "name": "service_name",
                 "offset": "offset",
                 "order": "order",
                 "service_id": "service_id",
-                "service_id": "service_id",
-                "service_name": "service_name",
-                "service_name": "service_name",
                 "sort_by": "sort_by",
                 "status": "status",
                 "workspace_id": "workspace_id",

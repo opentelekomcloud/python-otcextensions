@@ -17,7 +17,10 @@ import mock
 from openstackclient.tests.unit import utils
 from osc_lib import utils as _osc_lib_utils
 
+from otcextensions.sdk.modelartsv1.v1 import builtin_model
 from otcextensions.sdk.modelartsv1.v1 import devenv
+from otcextensions.sdk.modelartsv1.v1 import job_engine
+from otcextensions.sdk.modelartsv1.v1 import job_flavor
 from otcextensions.sdk.modelartsv1.v1 import model
 from otcextensions.sdk.modelartsv1.v1 import service
 from otcextensions.sdk.modelartsv1.v1 import service_cluster
@@ -54,6 +57,40 @@ class TestModelartsv1(utils.TestCommand):
         self.client = self.app.client_manager.modelartsv1
 
 
+class FakeBuiltInModel(test_base.Fake):
+    """Fake one or more Modelarts built-in model."""
+
+    @classmethod
+    def generate(cls):
+        """Create a fake Modelarts built-in model.
+
+        :return:
+            A FakeResource object, with id, name and so on
+        """
+        object_info = {
+            "model_id": 4,
+            "model_name": "ResNet_v2_50",
+            "model_usage": 1,
+            "model_precision": "75.55%(top1), 92.6%(top5)",
+            "model_size": 102503801,
+            "model_train_dataset": "ImageNet, 1,000 classes...",
+            "model_dataset_format": "shape: [H>=32, W>=32, C>=1]; type: int8",
+            "model_description_url": "https://github.com/..../resnet.py",
+            "parameter": [
+                {
+                    "label": "batch_size",
+                    "value": "4",
+                    "required": True,
+                }
+            ],
+            "create_time": 1522218780025,
+            "engine_id": 501,
+            "engine_name": "MXNet",
+            "engine_version": "MXNet-1.2.1-python2.7",
+        }
+        return builtin_model.BuiltInModel(**object_info)
+
+
 class FakeDevenv(test_base.Fake):
     """Fake one or more Modelarts devenv."""
 
@@ -85,6 +122,53 @@ class FakeModel(test_base.Fake):
         sot._translate_response(mock_response)
 
         return sot  # model.Model(**examples.EXAMPLE_MODEL)
+
+
+class FakeJobFlavor(test_base.Fake):
+    """Fake one or more Modelarts model."""
+
+    @classmethod
+    def generate(cls):
+        """Create a fake Modelarts model.
+
+        :return:
+            A FakeResource object, with id, name and so on
+        """
+        object_info = {
+            "spec_id": 44,
+            "core": "8",
+            "cpu": "32",
+            "gpu_num": 0,
+            "gpu_type": "",
+            "spec_code": "modelarts.vm.cpu.8u",
+            "unit_num": 1,
+            "max_num": 1,
+            "storage": "",
+            "interface_type": 1,
+            "no_resource": False,
+        }
+
+        return job_flavor.JobFlavor(**object_info)
+
+
+class FakeJobEngine(test_base.Fake):
+    """Fake one or more Modelarts model."""
+
+    @classmethod
+    def generate(cls):
+        """Create a fake job resource engine.
+
+        :return:
+            A FakeResource object, with id, name and so on
+        """
+        object_info = {
+            "engine_type": 4,
+            "engine_name": "Caffe",
+            "engine_id": 8,
+            "engine_version": "Caffe-1.0.0-python2.7",
+        }
+
+        return job_engine.JobEngine(**object_info)
 
 
 class FakeService(test_base.Fake):
