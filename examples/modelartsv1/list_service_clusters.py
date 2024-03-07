@@ -17,5 +17,5 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
-for pool in conn.modelartsv1.service_resource_pools():
+for pool in conn.modelartsv1.service_clusters():
     print(pool)

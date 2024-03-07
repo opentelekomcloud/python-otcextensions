@@ -11,13 +11,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-"""Deleting a Version of a Training Job."""
+"""Querying Service Monitoring Information"""
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
-job_id = 120
-version_id = 120
-response = conn.modelartsv1.delete_training_job_version(job_id, version_id)
-print(response)
+service_id = "fb923e36-a239-40f1-ba62-116a50f53f56"
+for monitor in conn.modelartsv1.service_monitor(service_id):
+    print(monitor)

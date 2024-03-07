@@ -18,5 +18,5 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
 job_id = 3432
-response = conn.modelartsv1.delete_visualizationjob(job_id)
+response = conn.modelartsv1.delete_visualization_job(job_id)
 print(response)

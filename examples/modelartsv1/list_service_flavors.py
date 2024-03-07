@@ -17,5 +17,5 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
-for spec in conn.modelartsv1.service_deployment_specifications():
+for spec in conn.modelartsv1.service_flavors():
     print(spec)

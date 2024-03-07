@@ -11,12 +11,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-"""Querying Service Monitoring Information"""
+"""Update description of a visualization job."""
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
-
-service_id = "fb923e36-a239-40f1-ba62-116a50f53f56"
-for monitor in conn.modelartsv1.service_monitors(service_id):
-    print(monitor)
+new_description = "This is a ModelArts job"
+job_id = 9446
+response = conn.modelartsv1.update_visualization_job(
+    job_id, new_description
+)
+print(response)

@@ -18,5 +18,5 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
 visjob_id = 54
-response = conn.modelartsv1.show_visualizationjob(visjob_id)
+response = conn.modelartsv1.get_visualization_job(visjob_id)
 print(response)
