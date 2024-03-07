@@ -24,7 +24,7 @@ class ResponseSpec(resource.Resource):
 
 
 class DatasetLabel(LabelSpec):
-    base_path = "/datasets/%{datasetId}s/data-annotations/labels"
+    base_path = "datasets/%(datasetId)s/data-annotations/labels"
 
     resources_key = "labels"
 
@@ -33,6 +33,7 @@ class DatasetLabel(LabelSpec):
     allow_list = True
     allow_delete = True
     allow_fetch = True
+    allow_commit = True
 
     #: Dataset ID.
     datasetId = resource.URI("datasetId")
@@ -48,3 +49,11 @@ class DatasetLabel(LabelSpec):
     results = resource.Body("results", type=list, list_type=ResponseSpec)
     #: Check whether the operation is successful.
     success = resource.Body("success", type=bool)
+
+    def update_labels(self, session, labels=[]):
+        """Preform actions given the message body."""
+        uri = self.base_path % self._uri.attributes
+        body = {"labels": labels}
+        response = session.put(uri, json=body)
+        self._translate_response(response)
+        return self

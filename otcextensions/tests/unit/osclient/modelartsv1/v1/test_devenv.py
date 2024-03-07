@@ -160,9 +160,7 @@ class TestCreateDevenvInstance(fakes.TestModelartsv1):
 
         self.cmd = devenv.CreateDevenvInstance(self.app, None)
 
-        self.client.create_devenv_instance = mock.Mock(
-            return_value=self._data
-        )
+        self.client.create_devenv_instance = mock.Mock(return_value=self._data)
 
     def test_create(self):
         arglist = [
@@ -260,9 +258,7 @@ class TestUpdateDevenvInstance(fakes.TestModelartsv1):
 
         self.cmd = devenv.UpdateDevenvInstance(self.app, None)
 
-        self.client.update_devenv_instance = mock.Mock(
-            return_value=self._data
-        )
+        self.client.update_devenv_instance = mock.Mock(return_value=self._data)
 
     def test_update(self):
         arglist = [
@@ -313,9 +309,7 @@ class TestStartDevenvInstance(fakes.TestModelartsv1):
 
         self.cmd = devenv.StartDevenvInstance(self.app, None)
 
-        self.client.find_devenv_instance = mock.Mock(
-            return_value=self._devenv
-        )
+        self.client.find_devenv_instance = mock.Mock(return_value=self._devenv)
         self.client.start_devenv_instance = mock.Mock(
             return_value=self._devenv
         )
@@ -337,9 +331,7 @@ class TestStartDevenvInstance(fakes.TestModelartsv1):
         self.client.find_devenv_instance.assert_called_with(
             self._devenv.id, ignore_missing=False
         )
-        self.client.start_devenv_instance.assert_called_with(
-            self._devenv.id
-        )
+        self.client.start_devenv_instance.assert_called_with(self._devenv.id)
 
 
 class TestStopDevenvInstance(fakes.TestModelartsv1):
@@ -352,12 +344,8 @@ class TestStopDevenvInstance(fakes.TestModelartsv1):
 
         self.cmd = devenv.StopDevenvInstance(self.app, None)
 
-        self.client.find_devenv_instance = mock.Mock(
-            return_value=self._devenv
-        )
-        self.client.stop_devenv_instance = mock.Mock(
-            return_value=self._devenv
-        )
+        self.client.find_devenv_instance = mock.Mock(return_value=self._devenv)
+        self.client.stop_devenv_instance = mock.Mock(return_value=self._devenv)
 
     def test_start(self):
         arglist = [
@@ -376,9 +364,7 @@ class TestStopDevenvInstance(fakes.TestModelartsv1):
         self.client.find_devenv_instance.assert_called_with(
             self._devenv.id, ignore_missing=False
         )
-        self.client.stop_devenv_instance.assert_called_with(
-            self._devenv.id
-        )
+        self.client.stop_devenv_instance.assert_called_with(self._devenv.id)
 
 
 class TestShowDevenvInstance(fakes.TestModelartsv1):
@@ -391,9 +377,7 @@ class TestShowDevenvInstance(fakes.TestModelartsv1):
 
         self.cmd = devenv.ShowDevenvInstance(self.app, None)
 
-        self.client.find_devenv_instance = mock.Mock(
-            return_value=self._devenv
-        )
+        self.client.find_devenv_instance = mock.Mock(return_value=self._devenv)
 
     def test_show_no_options(self):
         arglist = []
@@ -423,9 +407,7 @@ class TestShowDevenvInstance(fakes.TestModelartsv1):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.find_devenv_instance.assert_called_with(
-            self._devenv.id
-        )
+        self.client.find_devenv_instance.assert_called_with(self._devenv.id)
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -442,9 +424,7 @@ class TestShowDevenvInstance(fakes.TestModelartsv1):
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        find_mock_result = exceptions.CommandError(
-            "Resource Not Found"
-        )
+        find_mock_result = exceptions.CommandError("Resource Not Found")
         self.client.find_devenv_instance = mock.Mock(
             side_effect=find_mock_result
         )
@@ -468,9 +448,7 @@ class TestDeleteDevenvInstance(fakes.TestModelartsv1):
         self.client.find_devenv_instance = mock.Mock(
             return_value=self._devenv[0]
         )
-        self.client.delete_devenv_instance = mock.Mock(
-            return_value=None
-        )
+        self.client.delete_devenv_instance = mock.Mock(return_value=None)
 
         # Get the command object to test
         self.cmd = devenv.DeleteDevenvInstance(self.app, None)
@@ -521,14 +499,10 @@ class TestDeleteDevenvInstance(fakes.TestModelartsv1):
         find_calls = []
         delete_calls = []
         for instance in self._devenv:
-            find_calls.append(
-                call(instance.name, ignore_missing=False)
-            )
+            find_calls.append(call(instance.name, ignore_missing=False))
             delete_calls.append(call(instance.id))
         self.client.find_devenv_instance.assert_has_calls(find_calls)
-        self.client.delete_devenv_instance.assert_has_calls(
-            delete_calls
-        )
+        self.client.delete_devenv_instance.assert_has_calls(delete_calls)
         self.assertIsNone(result)
 
     def test_multiple_delete_with_exception(self):
@@ -556,6 +530,4 @@ class TestDeleteDevenvInstance(fakes.TestModelartsv1):
                 "1 of 2 Devenv Instance(s) failed to delete.", str(e)
             )
 
-        self.client.delete_devenv_instance.assert_any_call(
-            self._devenv[0].id
-        )
+        self.client.delete_devenv_instance.assert_any_call(self._devenv[0].id)

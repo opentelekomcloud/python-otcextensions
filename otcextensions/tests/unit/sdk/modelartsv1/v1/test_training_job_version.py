@@ -14,7 +14,6 @@ from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv1.v1 import training_job
 from otcextensions.sdk.modelartsv1.v1 import training_job_version
 
-
 EXAMPLE = {
     "job_id": 9275,
     "job_name": "matt-billing-retest-001",

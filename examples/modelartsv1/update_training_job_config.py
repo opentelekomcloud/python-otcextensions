@@ -39,7 +39,5 @@ attr = {
     "log_url": "/usr/log/",
 }
 config_name = "dads"
-response = conn.modelartsv1.update_training_job_config(
-    config_name, **attr
-)
+response = conn.modelartsv1.update_training_job_config(config_name, **attr)
 print(response)

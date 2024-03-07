@@ -268,12 +268,3 @@ class DatasetSample(SampleSpec):
         exceptions.raise_from_response(response)
         self._translate_response(response)
         return self
-
-    def get_sample_search_condition(self, session, dataset_id):
-        uri = utils.urljoin(
-            "/datasets", dataset_id, "data-annotations/search-condition"
-        )
-        response = session.get(uri)
-        exceptions.raise_from_response(response)
-        self._translate_response(response)
-        return self

@@ -19,7 +19,7 @@ class DatasetStatistics(resource.Resource):
     allow_fetch = True
 
     #: Dataset ID.
-    datasetId = resource.URI("dataset_id")
+    datasetId = resource.URI("datasetId")
 
     # Properties
     #: Path for storing data of a dataset.

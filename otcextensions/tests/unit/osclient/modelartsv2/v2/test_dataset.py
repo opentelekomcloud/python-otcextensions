@@ -21,49 +21,49 @@ from otcextensions.osclient.modelartsv2.v2 import dataset
 from otcextensions.tests.unit.osclient.modelartsv2.v2 import fakes
 
 _COLUMNS = (
-    'ai_project',
-    'annotated_sample_count',
-    'content_labeling',
-    'create_time',
-    'data_format',
-    'data_sources',
-    'data_update_time',
-    'dataset_format',
-    'dataset_id',
-    'dataset_name',
-    'dataset_type',
-    'dataset_version',
-    'dataset_version_count',
-    'deleted_sample_count',
-    'deletion_stats',
-    'description',
-    'enterprise_project_id',
-    'feature_supports',
-    'id',
-    'import_data',
-    'inner_annotation_path',
-    'inner_data_path',
-    'inner_log_path',
-    'inner_task_path',
-    'inner_temp_path',
-    'inner_work_path',
-    'label_task_count',
-    'labels',
-    'managed',
-    'name',
-    'next_version_num',
-    'status',
-    'total_sample_count',
-    'unconfirmed_sample_count',
-    'update_time',
-    'work_path',
-    'work_path_type',
-    'workforce_task_count',
-    'workspace_id',
+    "ai_project",
+    "annotated_sample_count",
+    "content_labeling",
+    "create_time",
+    "data_format",
+    "data_sources",
+    "data_update_time",
+    "dataset_format",
+    "dataset_id",
+    "dataset_name",
+    "dataset_type",
+    "dataset_version",
+    "dataset_version_count",
+    "deleted_sample_count",
+    "deletion_stats",
+    "description",
+    "enterprise_project_id",
+    "feature_supports",
+    "id",
+    "import_data",
+    "inner_annotation_path",
+    "inner_data_path",
+    "inner_log_path",
+    "inner_task_path",
+    "inner_temp_path",
+    "inner_work_path",
+    "label_task_count",
+    "labels",
+    "managed",
+    "name",
+    "next_version_num",
+    "status",
+    "total_sample_count",
+    "unconfirmed_sample_count",
+    "update_time",
+    "work_path",
+    "work_path_type",
+    "workforce_task_count",
+    "workspace_id",
 )
 
 
-class TestListDataset(fakes.TestModelartsv2):
+class TestListDatasets(fakes.TestModelartsv2):
     objects = fakes.FakeDataset.create_multiple(3)
 
     column_list_headers = (
@@ -92,9 +92,9 @@ class TestListDataset(fakes.TestModelartsv2):
         )
 
     def setUp(self):
-        super(TestListDataset, self).setUp()
+        super(TestListDatasets, self).setUp()
 
-        self.cmd = dataset.ListDataset(self.app, None)
+        self.cmd = dataset.ListDatasets(self.app, None)
 
         self.client.datasets = mock.Mock()
         self.client.api_mock = self.client.datasets
@@ -205,7 +205,7 @@ class TestShowDataset(fakes.TestModelartsv2):
 
         self.cmd = dataset.ShowDataset(self.app, None)
 
-        self.client.get_dataset = mock.Mock(return_value=self.object)
+        self.client.find_dataset = mock.Mock(return_value=self.object)
 
     def test_show_no_options(self):
         arglist = []
@@ -227,7 +227,7 @@ class TestShowDataset(fakes.TestModelartsv2):
         ]
 
         verifylist = [
-            ("datasetId", "dataset-id"),
+            ("dataset", "dataset-id"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -235,7 +235,7 @@ class TestShowDataset(fakes.TestModelartsv2):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.get_dataset.assert_called_with("dataset-id")
+        self.client.find_dataset.assert_called_with("dataset-id")
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -246,27 +246,30 @@ class TestShowDataset(fakes.TestModelartsv2):
         ]
 
         verifylist = [
-            ("datasetId", "nonexisting-dataset-id"),
+            ("dataset", "nonexisting-dataset-id"),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         get_mock_result = exceptions.CommandError("Resource Not Found")
-        self.client.get_dataset = mock.Mock(side_effect=get_mock_result)
+        self.client.find_dataset = mock.Mock(side_effect=get_mock_result)
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
             self.assertEqual("Resource Not Found", str(e))
-        self.client.get_dataset.assert_called_with("nonexisting-dataset-id")
+        self.client.find_dataset.assert_called_with("nonexisting-dataset-id")
 
 
 class TestDeleteDataset(fakes.TestModelartsv2):
+    _data = fakes.FakeDataset.create_one()
+
     def setUp(self):
         super(TestDeleteDataset, self).setUp()
 
+        self.client.find_dataset = mock.Mock(return_value=self._data)
         self.client.delete_dataset = mock.Mock(return_value=None)
 
         # Get the command object to test
@@ -274,11 +277,11 @@ class TestDeleteDataset(fakes.TestModelartsv2):
 
     def test_delete(self):
         arglist = [
-            "dataset-id",
+            "dataset-name",
         ]
 
         verifylist = [
-            ("datasetId", ["dataset-id"]),
+            ("dataset", ["dataset-name"]),
         ]
 
         # Verify cm is triggered with default parameters
@@ -286,7 +289,8 @@ class TestDeleteDataset(fakes.TestModelartsv2):
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
-        self.client.delete_dataset.assert_called_with("dataset-id")
+        self.client.find_dataset.assert_called_with("dataset-name")
+        self.client.delete_dataset.assert_called_with(self._data.id)
         self.assertIsNone(result)
 
     def test_multiple_delete(self):
@@ -296,7 +300,7 @@ class TestDeleteDataset(fakes.TestModelartsv2):
         ]
 
         verifylist = [
-            ("datasetId", ["dataset1-id", "dataset2-id"]),
+            ("dataset", ["dataset1-id", "dataset2-id"]),
         ]
 
         # Verify cm is triggered with default parameters
@@ -305,7 +309,7 @@ class TestDeleteDataset(fakes.TestModelartsv2):
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
 
-        delete_calls = [call("dataset1-id"), call("dataset2-id")]
+        delete_calls = [call(self._data.id), call(self._data.id)]
         self.client.delete_dataset.assert_has_calls(delete_calls)
         self.assertIsNone(result)
 
@@ -316,7 +320,7 @@ class TestDeleteDataset(fakes.TestModelartsv2):
         ]
 
         verifylist = [
-            ("datasetId", ["dataset-id", "nonexisting-dataset-id"]),
+            ("dataset", ["dataset-id", "nonexisting-dataset-id"]),
         ]
 
         # Verify cm is triggered with default parameters

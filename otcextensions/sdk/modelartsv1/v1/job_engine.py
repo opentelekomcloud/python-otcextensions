@@ -27,13 +27,13 @@ class JobEngine(resource.Resource):
 
     # Properties
     #: ID of the engine selected for a training job.
-    engine_id = resource.Body('engine_id', type=int)
+    engine_id = resource.Body("engine_id", type=int)
     #: Name of the engine selected for a training job.
-    engine_name = resource.Body('engine_name')
+    engine_name = resource.Body("engine_name")
     #: Engine type of a training job1: TensorFlow5: Spark_MLlib6: Scikit
     #:  Learn9: XGBoost-Sklearn10: PyTorch17: MindSpore-GPU.
-    engine_type = resource.Body('engine_type', type=int)
+    engine_type = resource.Body("engine_type", type=int)
     #: Version of the engine selected for a training job.
-    engine_version = resource.Body('engine_version')
+    engine_version = resource.Body("engine_version")
     #: Whether the request is successful.
-    is_success = resource.Body('is_success', type=bool)
+    is_success = resource.Body("is_success", type=bool)

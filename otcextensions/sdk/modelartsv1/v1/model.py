@@ -15,7 +15,6 @@ import json
 from openstack import exceptions
 from openstack import resource
 
-from otcextensions.sdk.modelartsv1.v1 import _base
 
 class SpecificationSpec(resource.Resource):
     #: Minimum CPU.
@@ -138,10 +137,12 @@ class ParamsSpec(resource.Resource):
     url = resource.Body("url")
 
 
-class Model(_base.Resource):
+class Model(resource.Resource):
     base_path = "/models"
 
     resources_key = "models"
+
+    paginated = False
 
     # capabilities
     allow_create = True
@@ -157,6 +158,7 @@ class Model(_base.Resource):
         "not_model_type",
         "description",
         "offset",
+        "marker",
         "limit",
         "sort_by",
         "order",

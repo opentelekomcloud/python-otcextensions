@@ -11,7 +11,6 @@
 # under the License.
 #
 import base64
-# import io
 import os
 
 from openstack import exceptions
@@ -22,8 +21,6 @@ from otcextensions.sdk.modelartsv2.v2 import \
 from otcextensions.sdk.modelartsv2.v2 import \
     dataset_import_task as _dataset_import_task
 from otcextensions.sdk.modelartsv2.v2 import dataset_label as _dataset_label
-from otcextensions.sdk.modelartsv2.v2 import \
-    dataset_metrics as _dataset_metrics
 from otcextensions.sdk.modelartsv2.v2 import dataset_sample as _dataset_sample
 from otcextensions.sdk.modelartsv2.v2 import \
     dataset_statistics as _dataset_statistics
@@ -116,27 +113,27 @@ class Proxy(proxy.Proxy):
         """
         return self._get(_dataset.Dataset, dataset)
 
-    # def find_dataset(self, name_or_id, ignore_missing=False):
-    #     """Find a dataset by name or id.
+    def find_dataset(self, name_or_id, ignore_missing=False):
+        """Find a dataset by name or id.
 
-    #     :param name_or_id: The name or ID of a dataset
-    #     :param bool ignore_missing: When set to ``False``
-    #         :class:`~openstack.exceptions.ResourceNotFound` will be raised
-    #         when the dataset does not exist.
-    #         When set to ``True``, no exception will be set when attempting
-    #         to find a nonexistent dataset.
+        :param name_or_id: The name or ID of a dataset
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            when the dataset does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to find a nonexistent dataset.
 
-    #     :returns:
-    #         One :class:`~otcextensions.sdk.nat.v2.dataset.Dataset`
-    #           or ``None``
-    #     """
-    #     return self._find(
-    #         _dataset.Dataset,
-    #         name_or_id,
-    #         ignore_missing=ignore_missing,
-    #     )
+        :returns:
+            One :class:`~otcextensions.sdk.nat.v2.dataset.Dataset`
+              or ``None``
+        """
+        return self._find(
+            _dataset.Dataset,
+            name_or_id,
+            ignore_missing=ignore_missing,
+        )
 
-    def modify_dataset(self, dataset, **attrs):
+    def update_dataset(self, dataset, **attrs):
         """Get the dataset by id
 
         :param dataset: key id or an instance of
@@ -169,26 +166,11 @@ class Proxy(proxy.Proxy):
         :param dataset_id: Dataset ID.
 
         :returns:
-            One :class:`~otcextensions.sdk.nat.v2.dataset.Statistics`
+            (One :class:`~otcextensions.sdk.modelartsv2.v2.\
+                dataset_statistics.DatasetStatistics`)
         """
         return self._get(
             _dataset_statistics.DatasetStatistics,
-            datasetId=dataset_id,
-            requires_id=False,
-        )
-
-    # ======== Dataset Monitoring Data ========
-
-    def get_dataset_metrics(self, dataset_id):
-        """Query Dataset metrics
-
-        :param dataset_id: Dataset ID.
-
-        :returns:
-            One :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Metrics`
-        """
-        return self._list(
-            _dataset_metrics.DatasetMetrics,
             datasetId=dataset_id,
             requires_id=False,
         )
@@ -230,9 +212,10 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
         """
-        return self._update(
-            _dataset_label.DatasetLabel, datasetId=dataset_id, **attrs
+        obj = self._get_resource(
+            _dataset_label.DatasetLabel, None, datasetId=dataset_id
         )
+        return obj.update_labels(self, attrs.get("labels"))
 
     def delete_dataset_labels(self, dataset_id, delete_source=False, **labels):
         """Delete dataset labels.
@@ -295,7 +278,7 @@ class Proxy(proxy.Proxy):
             **kwargs,
         )
 
-    def show_dataset_version(self, version_id, dataset_id):
+    def get_dataset_version(self, version_id, dataset_id):
         """Get the dataset version by version id
 
         :param version_id: key id or an instance of
@@ -381,7 +364,7 @@ class Proxy(proxy.Proxy):
             )
             if files_size > 7.5:
                 break
-            print("Files_Size after count: ", count, " ", files_size)
+            # print("Files_Size after count: ", count, " ", files_size)
             with open(file_path, "rb") as file:
                 sample = {
                     "name": os.path.split(file_path)[1],
@@ -432,19 +415,6 @@ class Proxy(proxy.Proxy):
         return self._get(
             _dataset_sample.DatasetSample, sample_id, datasetId=dataset_id
         )
-
-    def get_dataset_sample_search_condition(self, dataset_id):
-        """Get the Dataset Sample Search Condition
-
-        :param dataset_id: Dataset ID.
-
-        :returns: instance of
-            :class:`~otcextensions.sdk.modelartsv2.v2.dataset_sample.DatasetSample`
-        """
-        dataset_sample = self._get_resource(
-            _dataset_sample.DatasetSample, None
-        )
-        return dataset_sample.get_sample_search_condition(self, dataset_id)
 
     # ======== Dataset Import Task Management ========
 

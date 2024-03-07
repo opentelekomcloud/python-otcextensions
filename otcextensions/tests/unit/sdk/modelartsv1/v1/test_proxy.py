@@ -18,11 +18,11 @@ from otcextensions.sdk.modelartsv1.v1 import job_engine
 from otcextensions.sdk.modelartsv1.v1 import job_flavor
 from otcextensions.sdk.modelartsv1.v1 import model
 from otcextensions.sdk.modelartsv1.v1 import service
-from otcextensions.sdk.modelartsv1.v1 import service_log
-from otcextensions.sdk.modelartsv1.v1 import service_event
-from otcextensions.sdk.modelartsv1.v1 import service_monitor
-from otcextensions.sdk.modelartsv1.v1 import service_flavor
 from otcextensions.sdk.modelartsv1.v1 import service_cluster
+from otcextensions.sdk.modelartsv1.v1 import service_event
+from otcextensions.sdk.modelartsv1.v1 import service_flavor
+from otcextensions.sdk.modelartsv1.v1 import service_log
+from otcextensions.sdk.modelartsv1.v1 import service_monitor
 from otcextensions.sdk.modelartsv1.v1 import training_job
 from otcextensions.sdk.modelartsv1.v1 import training_job_config
 from otcextensions.sdk.modelartsv1.v1 import training_job_version
@@ -48,6 +48,7 @@ class TestModel(TestModelartsV1Proxy):
         self.verify_list(
             self.proxy.models,
             model.Model,
+            expected_kwargs={"paginated": False},
         )
 
     def test_get_model(self):
@@ -468,8 +469,10 @@ class TestVisualizationJob(TestModelartsV1Proxy):
 
     def test_restart_visualization_job(self):
         self._verify(
-            ("otcextensions.sdk.modelartsv1.v1.visualization_job."
-             "VisualizationJob.restart"),
+            (
+                "otcextensions.sdk.modelartsv1.v1.visualization_job."
+                "VisualizationJob.restart"
+            ),
             self.proxy.restart_visualization_job,
             method_args=["val"],
             expected_args=[self.proxy],
@@ -477,7 +480,7 @@ class TestVisualizationJob(TestModelartsV1Proxy):
 
     def test_stop_visualization_job(self):
         self._verify(
-            "otcextensions.sdk.modelartsv1.v1.visualization_job.VisualizationJob.stop", # noqa
+            "otcextensions.sdk.modelartsv1.v1.visualization_job.VisualizationJob.stop",  # noqa
             self.proxy.stop_visualization_job,
             method_args=["val"],
             expected_args=[self.proxy],

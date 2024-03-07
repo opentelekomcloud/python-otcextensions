@@ -42,6 +42,12 @@ class TestDataset(TestModelartsV2Proxy):
             expected_args=["dataset-uuid"],
         )
 
+    def test_find_dataset(self):
+        self.verify_find(
+            self.proxy.find_dataset,
+            dataset.Dataset,
+        )
+
     def test_create_dataset(self):
         self.verify_create(
             self.proxy.create_dataset,

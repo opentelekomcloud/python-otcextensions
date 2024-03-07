@@ -11,7 +11,6 @@
 # under the License.
 #
 from openstack import resource
-
 from otcextensions.sdk.modelartsv1.v1.training_job import ConfigSpec
 
 

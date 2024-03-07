@@ -196,12 +196,8 @@ class TestShowModel(fakes.TestModelartsv1):
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        find_mock_result = exceptions.CommandError(
-            "Resource Not Found"
-        )
-        self.client.find_model = mock.Mock(
-            side_effect=find_mock_result
-        )
+        find_mock_result = exceptions.CommandError("Resource Not Found")
+        self.client.find_model = mock.Mock(side_effect=find_mock_result)
 
         # Trigger the action
         try:
@@ -217,9 +213,7 @@ class TestDeleteModel(fakes.TestModelartsv1):
     def setUp(self):
         super(TestDeleteModel, self).setUp()
 
-        self.client.find_model = mock.Mock(
-            return_value=self._model[0]
-        )
+        self.client.find_model = mock.Mock(return_value=self._model[0])
         self.client.delete_model = mock.Mock(return_value=None)
 
         # Get the command object to test
@@ -257,9 +251,7 @@ class TestDeleteModel(fakes.TestModelartsv1):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         find_mock_results = self._model
-        self.client.find_model = mock.Mock(
-            side_effect=find_mock_results
-        )
+        self.client.find_model = mock.Mock(side_effect=find_mock_results)
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
@@ -267,9 +259,7 @@ class TestDeleteModel(fakes.TestModelartsv1):
         find_calls = []
         delete_calls = []
         for ma_model in self._model:
-            find_calls.append(
-                call(ma_model.name, ignore_missing=False)
-            )
+            find_calls.append(call(ma_model.name, ignore_missing=False))
             delete_calls.append(call(ma_model.id))
         self.client.find_model.assert_has_calls(find_calls)
         self.client.delete_model.assert_has_calls(delete_calls)
@@ -286,16 +276,12 @@ class TestDeleteModel(fakes.TestModelartsv1):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         find_mock_results = [self._model[0], exceptions.CommandError]
-        self.client.find_model = mock.Mock(
-            side_effect=find_mock_results
-        )
+        self.client.find_model = mock.Mock(side_effect=find_mock_results)
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual(
-                "1 of 2 Model(s) failed to delete.", str(e)
-            )
+            self.assertEqual("1 of 2 Model(s) failed to delete.", str(e))
 
         self.client.delete_model.assert_any_call(self._model[0].id)

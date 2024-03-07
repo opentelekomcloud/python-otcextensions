@@ -24,48 +24,6 @@ from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
-SORT_BY_CHOICES = ["create_time", "dataset_name"]
-
-SORT_ORDER_CHOICES = ["asc", "desc"]
-
-
-DATASET_TYPES_VALUE_MAP = {
-    0: "image classification",
-    1: "object detection",
-    100: "text classification",
-    101: "named entity recognition",
-    102: "text triplet",
-    200: "sound classification",
-    201: "speech content",
-    202: "speech paragraph labeling",
-    400: "table dataset",
-    600: "video labeling",
-    900: "custom format",
-}
-
-DATASET_STATUS_VALUE_MAP = {
-    0: "creating dataset",
-    1: "normal dataset",
-    2: "deleting dataset",
-    3: "deleted dataset",
-    4: "abnormal dataset",
-    5: "synchronizing dataset",
-    6: "releasing dataset",
-    7: "dataset in version switching",
-    8: "importing dataset",
-}
-
-RUNNING_TASK_VALUES_MAP = {
-    0: "auto labeling",
-    1: "pre-labeling",
-    2: "export",
-    3: "version switch",
-    4: "manifest file export",
-    5: "manifest file import",
-    6: "version publishing",
-    7: "auto grouping",
-    10: "one-click model deployment (default value)",
-}
 
 VERSION_FORMAT_VALUES_MAP = {
     0: "default format",
@@ -74,14 +32,58 @@ VERSION_FORMAT_VALUES_MAP = {
 }
 
 
+class RunningTaskType:
+    CHOICES_MAP = {
+        0: "auto labeling",
+        1: "pre-labeling",
+        2: "export",
+        3: "version switch",
+        4: "manifest file export",
+        5: "manifest file import",
+        6: "version publishing",
+        7: "auto grouping",
+        10: "one-click model deployment (default value)",
+    }
+    STR = "\n".join(f"{key}: {value}" for key, value in CHOICES_MAP.items())
+
+
 class DatasetType(cliff_columns.FormattableColumn):
+    CHOICES_MAP = {
+        0: "image classification",
+        1: "object detection",
+        100: "text classification",
+        101: "named entity recognition",
+        102: "text triplet",
+        200: "sound classification",
+        201: "speech content",
+        202: "speech paragraph labeling",
+        400: "table dataset",
+        600: "video labeling",
+        900: "custom format",
+    }
+    STR = "\n".join(f"{key}: {value}" for key, value in CHOICES_MAP.items())
+
     def human_readable(self):
-        return DATASET_TYPES_VALUE_MAP.get(self._value, str(self._value))
+        return self.CHOICES_MAP.get(self._value, str(self._value))
 
 
 class DatasetStatus(cliff_columns.FormattableColumn):
+    CHOICES_MAP = {
+        0: "creating dataset",
+        1: "normal dataset",
+        2: "deleting dataset",
+        3: "deleted dataset",
+        4: "abnormal dataset",
+        5: "synchronizing dataset",
+        6: "releasing dataset",
+        7: "dataset in version switching",
+        8: "importing dataset",
+    }
+
+    STR = "\n".join(f"{key}: {value}" for key, value in CHOICES_MAP.items())
+
     def human_readable(self):
-        return DATASET_STATUS_VALUE_MAP.get(self._value, str(self._value))
+        return self.CHOICES_MAP.get(self._value, str(self._value))
 
 
 _formatters = {
@@ -101,7 +103,7 @@ def _get_columns(item):
 
 
 class CreateDataset(command.ShowOne):
-    _description = _("Create a ModelArts dataset")
+    _description = _("Create a modelarts dataset")
 
     def get_parser(self, prog_name):
         parser = super(CreateDataset, self).get_parser(prog_name)
@@ -113,18 +115,10 @@ class CreateDataset(command.ShowOne):
         parser.add_argument(
             "--dataset-type",
             metavar="<dataset_type>",
-            choices=list(DATASET_TYPES_VALUE_MAP.keys()),
+            choices=list(DatasetType.CHOICES_MAP.keys()),
             type=int,
             required=True,
-            help=(
-                "Dataset type. Possible values:\n"
-                + "\n".join(
-                    [
-                        f"{key}: {value}"
-                        for key, value in DATASET_TYPES_VALUE_MAP.items()
-                    ]
-                )
-            ),
+            help=("Dataset type. Possible values:\n" + DatasetType.STR),
         )
         parser.add_argument(
             "--data-source",
@@ -246,7 +240,7 @@ class CreateDataset(command.ShowOne):
         return (display_columns, data)
 
 
-class ListDataset(command.Lister):
+class ListDatasets(command.Lister):
     _description = _("Get List of Modelarts Datasets.")
     columns = (
         "Dataset Id",
@@ -259,7 +253,7 @@ class ListDataset(command.Lister):
     )
 
     def get_parser(self, prog_name):
-        parser = super(ListDataset, self).get_parser(prog_name)
+        parser = super(ListDatasets, self).get_parser(prog_name)
         parser.add_argument(
             "--check-running-task",
             action="store_true",
@@ -276,17 +270,9 @@ class ListDataset(command.Lister):
         parser.add_argument(
             "--dataset-type",
             metavar="<dataset_type>",
-            choices=list(DATASET_TYPES_VALUE_MAP.keys()),
+            choices=list(DatasetType.CHOICES_MAP.keys()),
             type=int,
-            help=(
-                "Dataset type. Possible values:\n"
-                + "\n".join(
-                    [
-                        f"{key}: {value}"
-                        for key, value in DATASET_TYPES_VALUE_MAP.items()
-                    ]
-                )
-            ),
+            help=("Dataset type. Possible values:\n" + DatasetType.STR),
         )
         parser.add_argument(
             "--file-preview",
@@ -310,25 +296,20 @@ class ListDataset(command.Lister):
         )
         parser.add_argument(
             "--order",
-            metavar="{" + ",".join(SORT_ORDER_CHOICES) + "}",
+            metavar="{asc, desc}",
             type=lambda s: s.lower(),
-            choices=SORT_ORDER_CHOICES,
+            choices=["asc", "desc"],
             help=_("Sorting order. Default value: desc"),
         )
         parser.add_argument(
             "--running-task-type",
             metavar="<running_task_type>",
-            choices=list(RUNNING_TASK_VALUES_MAP.keys()),
+            choices=list(RunningTaskType.CHOICES_MAP.keys()),
             type=int,
             help=_(
                 "Type of the running tasks (including initialization tasks) "
                 "to be detected. The options are as follows:\n"
-                + "\n".join(
-                    [
-                        f"{key}: {value}"
-                        for key, value in RUNNING_TASK_VALUES_MAP.items()
-                    ]
-                )
+                + RunningTaskType.STR
             ),
         )
         parser.add_argument(
@@ -338,9 +319,9 @@ class ListDataset(command.Lister):
         )
         parser.add_argument(
             "--sort-by",
-            metavar="{" + ",".join(SORT_BY_CHOICES) + "}",
+            metavar="{create_time, dataset_name}",
             type=lambda s: s.lower(),
-            choices=SORT_BY_CHOICES,
+            choices=["create_time", "dataset_name"],
             help=_("Sorting field. Default value: publish_at"),
         )
         parser.add_argument(
@@ -437,16 +418,16 @@ class ShowDataset(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(ShowDataset, self).get_parser(prog_name)
         parser.add_argument(
-            "datasetId",
-            metavar="<datasetId>",
-            help=_("Dataset ID/Name."),
+            "dataset",
+            metavar="<dataset>",
+            help=_("Dataset Id or name."),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
 
-        data = client.get_dataset(parsed_args.datasetId)
+        data = client.find_dataset(parsed_args.dataset)
 
         display_columns, columns = _get_columns(data)
         data = utils.get_item_properties(data, columns, formatters=_formatters)
@@ -455,19 +436,19 @@ class ShowDataset(command.ShowOne):
 
 
 class UpdateDataset(command.ShowOne):
-    _description = _("Modify details of a Modelarts Dataset.")
+    _description = _("Modify details of a modelarts Dataset.")
 
     def get_parser(self, prog_name):
         parser = super(UpdateDataset, self).get_parser(prog_name)
         parser.add_argument(
-            "datasetId",
-            metavar="<datasetId>",
-            help=_("Enter Dataset ID."),
+            "dataset",
+            metavar="<dataset>",
+            help=_("Name or Id of the dataset."),
         )
         parser.add_argument(
             "--description",
             metavar="<description>",
-            help=_("Enter description"),
+            help=_("Enter description."),
         )
         return parser
 
@@ -480,12 +461,9 @@ class UpdateDataset(command.ShowOne):
             if getattr(parsed_args, arg):
                 attrs[arg] = getattr(parsed_args, arg)
 
-        dataset = client.get_dataset(
-            dataset=parsed_args.datasetId,
-        )
+        dataset = client.find_dataset(parsed_args.dataset)
 
-        # dataset = client.find_dataset(parsed_args.datasetId)
-        data = client.modify_dataset(dataset.id, **attrs)
+        data = client.update_dataset(dataset.id, **attrs)
 
         display_columns, columns = _get_columns(data)
         data = utils.get_item_properties(data, columns)
@@ -499,30 +477,31 @@ class DeleteDataset(command.Command):
     def get_parser(self, prog_name):
         parser = super(DeleteDataset, self).get_parser(prog_name)
         parser.add_argument(
-            "datasetId",
-            metavar="<datasetId>",
+            "dataset",
+            metavar="<dataset>",
             nargs="+",
-            help=_("ID of the dataset(s) to be deleted."),
+            help=_("Name or Id of the dataset(s) to be deleted."),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
         result = 0
-        for dataset_id in parsed_args.datasetId:
+        for name_or_id in parsed_args.dataset:
             try:
-                client.delete_dataset(dataset_id)
+                dataset = client.find_dataset(name_or_id)
+                client.delete_dataset(dataset.id)
             except Exception as e:
                 result += 1
                 LOG.error(
                     _(
                         "Failed to delete dataset with "
-                        "ID '%(dataset_id)s': %(e)s"
+                        "name or Id '%(name_or_id)s': %(e)s"
                     ),
-                    {"dataset_id": dataset_id, "e": e},
+                    {"name_or_id": name_or_id, "e": e},
                 )
         if result > 0:
-            total = len(parsed_args.datasetId)
+            total = len(parsed_args.dataset)
             msg = _(
                 "%(result)s of %(total)s Dataset(s) failed " "to delete."
             ) % {"result": result, "total": total}

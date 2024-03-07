@@ -58,9 +58,7 @@ class TestListVisualizationJobs(fakes.TestModelartsv1):
     def setUp(self):
         super(TestListVisualizationJobs, self).setUp()
 
-        self.cmd = visualization_job.ListVisualizationJobs(
-            self.app, None
-        )
+        self.cmd = visualization_job.ListVisualizationJobs(self.app, None)
 
         self.client.visualization_jobs = mock.Mock()
         self.client.api_mock = self.client.visualization_jobs
@@ -136,16 +134,12 @@ class TestCreateVisualizationJob(fakes.TestModelartsv1):
     _data = fakes.FakeVisualizationJob.create_one()
     columns = _COLUMNS
 
-    data = fakes.gen_data(
-        _data, columns, visualization_job._formatters
-    )
+    data = fakes.gen_data(_data, columns, visualization_job._formatters)
 
     def setUp(self):
         super(TestCreateVisualizationJob, self).setUp()
 
-        self.cmd = visualization_job.CreateVisualizationJob(
-            self.app, None
-        )
+        self.cmd = visualization_job.CreateVisualizationJob(self.app, None)
 
         self.client.create_visualization_job = mock.Mock(
             return_value=self._data
@@ -191,9 +185,7 @@ class TestCreateVisualizationJob(fakes.TestModelartsv1):
                 "duration": 5,
             },
         }
-        self.client.create_visualization_job.assert_called_with(
-            **attrs
-        )
+        self.client.create_visualization_job.assert_called_with(**attrs)
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
 
@@ -208,9 +200,7 @@ class TestUpdateVisualizationJob(fakes.TestModelartsv1):
     def setUp(self):
         super(TestUpdateVisualizationJob, self).setUp()
 
-        self.cmd = visualization_job.UpdateVisualizationJob(
-            self.app, None
-        )
+        self.cmd = visualization_job.UpdateVisualizationJob(self.app, None)
 
         self.client.update_visualization_job = mock.Mock(
             return_value=self._data
@@ -242,14 +232,10 @@ class TestDeleteVisualizationJob(fakes.TestModelartsv1):
     def setUp(self):
         super(TestDeleteVisualizationJob, self).setUp()
 
-        self.client.delete_visualization_job = mock.Mock(
-            return_value=None
-        )
+        self.client.delete_visualization_job = mock.Mock(return_value=None)
 
         # Get the command object to test
-        self.cmd = visualization_job.DeleteVisualizationJob(
-            self.app, None
-        )
+        self.cmd = visualization_job.DeleteVisualizationJob(self.app, None)
 
     def test_delete(self):
         arglist = ["123"]
@@ -283,9 +269,7 @@ class TestDeleteVisualizationJob(fakes.TestModelartsv1):
         result = self.cmd.take_action(parsed_args)
 
         delete_calls = [call(1234), call(9876)]
-        self.client.delete_visualization_job.assert_has_calls(
-            delete_calls
-        )
+        self.client.delete_visualization_job.assert_has_calls(delete_calls)
         self.assertIsNone(result)
 
     def test_multiple_delete_with_exception(self):

@@ -146,9 +146,7 @@ class TestCreateTrainingJob(fakes.TestModelartsv1):
 
         self.cmd = training_job.CreateTrainingJob(self.app, None)
 
-        self.client.create_training_job = mock.Mock(
-            return_value=self._data
-        )
+        self.client.create_training_job = mock.Mock(return_value=self._data)
 
     def test_create(self):
         arglist = [
@@ -297,9 +295,7 @@ class TestUpdateTrainingJob(fakes.TestModelartsv1):
 
         self.cmd = training_job.UpdateTrainingJob(self.app, None)
 
-        self.client.update_training_job = mock.Mock(
-            return_value=self._data
-        )
+        self.client.update_training_job = mock.Mock(return_value=self._data)
 
     def test_update(self):
         arglist = [

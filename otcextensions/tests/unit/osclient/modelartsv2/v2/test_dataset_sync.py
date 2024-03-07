@@ -23,7 +23,10 @@ class TestDatasetSyncStatus(fakes.TestModelartsv2):
 
     object = fakes.FakeDatasetSync.create_one()
 
-    data = fakes.gen_data(object, columns,)
+    data = fakes.gen_data(
+        object,
+        columns,
+    )
 
     def setUp(self):
         super(TestDatasetSyncStatus, self).setUp()
@@ -117,5 +120,5 @@ class TestDatasetSync(fakes.TestModelartsv2):
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
-        self.client.dataset_sync.assert_called_with('dataset-id')
+        self.client.dataset_sync.assert_called_with("dataset-id")
         self.assertIsNone(result)

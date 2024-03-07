@@ -13,7 +13,6 @@
 from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv1.v1 import builtin_model
 
-
 EXAMPLE = {
     "model_id": 4,
     "model_name": "ResNet_v2_50",

@@ -205,9 +205,7 @@ class ShowDatasetVersion(command.ShowOne):
 
 class ListDatasetVersions(command.Lister):
     _description = _("This API is used to query the Dataset Version list.")
-    columns = ("total_number", "versions")
-
-    table_columns = ("total_number", "versions")
+    columns = ("Version Id", "Version Name", "Version Format", "Status")
 
     def get_parser(self, prog_name):
         parser = super(ListDatasetVersions, self).get_parser(prog_name)
@@ -255,11 +253,13 @@ class ListDatasetVersions(command.Lister):
             query["dataset_id"] = parsed_args.dataset_id
         data = client.dataset_versions(**query)
 
-        table = (
+        formatters = {}
+        return (
             self.columns,
             (
-                utils.get_dict_properties(_flatten_output(s), self.columns)
+                utils.get_item_properties(
+                    s, self.columns, formatters=formatters
+                )
                 for s in data
             ),
         )
-        return table

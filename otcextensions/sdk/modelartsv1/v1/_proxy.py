@@ -90,6 +90,7 @@ class Proxy(proxy.Proxy):
         :returns: a generator of
             :class:`~otcextensions.sdk.modelartsv1.v1.model.Model` instances
         """
+        params["paginated"] = False
         return self._list(_model.Model, **params)
 
     def create_model(self, **attrs):
@@ -154,8 +155,7 @@ class Proxy(proxy.Proxy):
         :returns: a generator of
             :class:`~otcextensions.sdk.modelartsv1.v1.devenv.Devenv` instances.
         """
-        if params.get("limit"):
-            params.update(paginated=False)
+        params["paginated"] = False
         return self._list(_devenv.Devenv, **params)
 
     def create_devenv_instance(self, **attrs):
@@ -264,7 +264,8 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelartsv1.v1.services.Services`
             instances
         """
-        return self._list(_service.Service, paginated=False, **params)
+        params["paginated"] = False
+        return self._list(_service.Service, **params)
 
     def create_service(self, **attrs):
         """Deploy a model from attributes

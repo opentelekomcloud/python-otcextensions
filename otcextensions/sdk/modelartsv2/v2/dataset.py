@@ -11,6 +11,7 @@
 # under the License.
 #
 from openstack import resource
+from otcextensions.sdk.modelartsv2.v2 import _base
 
 
 class WorkerSpec(resource.Resource):
@@ -307,9 +308,9 @@ class DataSourceSpec(resource.Resource):
     with_column_header = resource.Body("with_column_header", type=bool)
 
 
-class Dataset(resource.Resource):
+class Dataset(_base.Resource):
     base_path = "/datasets"
-
+    resources_count_key = "total_number"
     resources_key = "datasets"
 
     # capabilities

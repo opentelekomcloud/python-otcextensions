@@ -85,9 +85,7 @@ class TestListTrainingJobVersions(fakes.TestModelartsv1):
     def setUp(self):
         super(TestListTrainingJobVersions, self).setUp()
 
-        self.cmd = training_job_version.ListTrainingJobVersions(
-            self.app, None
-        )
+        self.cmd = training_job_version.ListTrainingJobVersions(self.app, None)
 
         self.client.training_job_versionss = mock.Mock()
         self.client.api_mock = self.client.training_job_versions
@@ -137,9 +135,7 @@ class TestListTrainingJobVersions(fakes.TestModelartsv1):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.api_mock.assert_called_with(
-            self.job_id, limit=1, offset=2
-        )
+        self.client.api_mock.assert_called_with(self.job_id, limit=1, offset=2)
 
 
 class TestCreateTrainingJobVersion(fakes.TestModelartsv1):
@@ -148,9 +144,7 @@ class TestCreateTrainingJobVersion(fakes.TestModelartsv1):
     _data = fakes.FakeTrainingJobVersion.create_one()
     columns = _COLUMNS
 
-    data = fakes.gen_data(
-        _data, columns, training_job_version._formatters
-    )
+    data = fakes.gen_data(_data, columns, training_job_version._formatters)
 
     def setUp(self):
         super(TestCreateTrainingJobVersion, self).setUp()
@@ -260,16 +254,12 @@ class TestShowTrainingJobVersion(fakes.TestModelartsv1):
 
     _data = fakes.FakeTrainingJobVersion.create_one()
     columns = _COLUMNS
-    data = fakes.gen_data(
-        _data, columns, training_job_version._formatters
-    )
+    data = fakes.gen_data(_data, columns, training_job_version._formatters)
 
     def setUp(self):
         super(TestShowTrainingJobVersion, self).setUp()
 
-        self.cmd = training_job_version.ShowTrainingJobVersion(
-            self.app, None
-        )
+        self.cmd = training_job_version.ShowTrainingJobVersion(self.app, None)
 
         self.client.get_training_job_version = mock.Mock(
             return_value=self._data
@@ -342,9 +332,7 @@ class TestDeleteTrainingJobVersion(fakes.TestModelartsv1):
     def setUp(self):
         super(TestDeleteTrainingJobVersion, self).setUp()
 
-        self.client.delete_training_job_version = mock.Mock(
-            return_value=None
-        )
+        self.client.delete_training_job_version = mock.Mock(return_value=None)
 
         # Get the command object to test
         self.cmd = training_job_version.DeleteTrainingJobVersion(

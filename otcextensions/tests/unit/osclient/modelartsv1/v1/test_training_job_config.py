@@ -84,9 +84,7 @@ class TestListTrainingJobConfigs(fakes.TestModelartsv1):
     def setUp(self):
         super(TestListTrainingJobConfigs, self).setUp()
 
-        self.cmd = training_job_config.ListTrainingJobConfigs(
-            self.app, None
-        )
+        self.cmd = training_job_config.ListTrainingJobConfigs(self.app, None)
 
         self.client.training_job_configs = mock.Mock()
         self.client.api_mock = self.client.training_job_configs
@@ -165,9 +163,7 @@ class TestCreateTrainingJobConfig(fakes.TestModelartsv1):
     def setUp(self):
         super(TestCreateTrainingJobConfig, self).setUp()
 
-        self.cmd = training_job_config.CreateTrainingJobConfig(
-            self.app, None
-        )
+        self.cmd = training_job_config.CreateTrainingJobConfig(self.app, None)
 
         self.client.create_training_job_config = mock.Mock(
             return_value=self._data
@@ -252,9 +248,7 @@ class TestCreateTrainingJobConfig(fakes.TestModelartsv1):
             "train_url": "14",
             "log_url": "6",
         }
-        self.client.create_training_job_config.assert_called_with(
-            **attrs
-        )
+        self.client.create_training_job_config.assert_called_with(**attrs)
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
 
@@ -262,16 +256,12 @@ class TestCreateTrainingJobConfig(fakes.TestModelartsv1):
 class TestShowTrainingJobConfig(fakes.TestModelartsv1):
     _data = fakes.FakeTrainingJobConfig.create_one()
     columns = _COLUMNS
-    data = fakes.gen_data(
-        _data, columns, training_job_config._formatters
-    )
+    data = fakes.gen_data(_data, columns, training_job_config._formatters)
 
     def setUp(self):
         super(TestShowTrainingJobConfig, self).setUp()
 
-        self.cmd = training_job_config.ShowTrainingJobConfig(
-            self.app, None
-        )
+        self.cmd = training_job_config.ShowTrainingJobConfig(self.app, None)
 
         self.client.get_training_job_config = mock.Mock(
             return_value=self._data
@@ -342,14 +332,10 @@ class TestDeleteTrainingJobConfig(fakes.TestModelartsv1):
     def setUp(self):
         super(TestDeleteTrainingJobConfig, self).setUp()
 
-        self.client.delete_training_job_config = mock.Mock(
-            return_value=None
-        )
+        self.client.delete_training_job_config = mock.Mock(return_value=None)
 
         # Get the command object to test
-        self.cmd = training_job_config.DeleteTrainingJobConfig(
-            self.app, None
-        )
+        self.cmd = training_job_config.DeleteTrainingJobConfig(self.app, None)
 
     def test_delete(self):
         arglist = ["test-config"]
@@ -385,9 +371,7 @@ class TestDeleteTrainingJobConfig(fakes.TestModelartsv1):
         result = self.cmd.take_action(parsed_args)
 
         delete_calls = [call("test-config1"), call("test-config2")]
-        self.client.delete_training_job_config.assert_has_calls(
-            delete_calls
-        )
+        self.client.delete_training_job_config.assert_has_calls(delete_calls)
         self.assertIsNone(result)
 
     def test_multiple_delete_with_exception(self):

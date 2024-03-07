@@ -16,5 +16,6 @@ import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
+
 for dataset in conn.modelartsv2.datasets():
     print(dataset)

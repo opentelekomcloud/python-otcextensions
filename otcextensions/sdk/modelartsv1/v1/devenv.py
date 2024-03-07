@@ -13,7 +13,6 @@
 from openstack import exceptions
 from openstack import resource
 from openstack import utils
-from otcextensions.sdk.modelartsv1.v1 import _base
 
 
 class CredentialSpec(resource.Resource):
@@ -226,7 +225,7 @@ class ProfileSpec(resource.Resource):
     provision = resource.Body("provision", type=ProvisionSpec)
 
 
-class Devenv(_base.Resource):
+class Devenv(resource.Resource):
     base_path = "/demanager/instances"
 
     resources_key = "instances"

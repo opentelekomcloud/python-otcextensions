@@ -29,24 +29,24 @@ class JobFlavor(resource.Resource):
 
     # Properties
     #: Number of cores of the resource specifications.
-    core = resource.Body('core')
+    core = resource.Body("core")
     #: CPU memory of the resource specifications.
-    cpu = resource.Body('cpu')
+    cpu = resource.Body("cpu")
     #: Number of GPUs of the resource specifications.
-    gpu_num = resource.Body('gpu_num', type=int)
+    gpu_num = resource.Body("gpu_num", type=int)
     #: GPU type of the resource specifications.
-    gpu_type = resource.Body('gpu_type')
+    gpu_type = resource.Body("gpu_type")
     #: Interface type.
-    interface_type = resource.Body('interface_type', type=int)
+    interface_type = resource.Body("interface_type", type=int)
     #: Maximum number of nodes that can be selected.
-    max_num = resource.Body('max_num', type=int)
+    max_num = resource.Body("max_num", type=int)
     #: Whether the resources of the selected specifications are sufficient.
-    no_resource = resource.Body('no_resource', type=bool)
+    no_resource = resource.Body("no_resource", type=bool)
     #: Type of the resource specifications.
-    spec_code = resource.Body('spec_code')
+    spec_code = resource.Body("spec_code")
     #: ID of the resource specifications.
-    spec_id = resource.Body('spec_id', type=int)
+    spec_id = resource.Body("spec_id", type=int)
     #: SSD size of a resource flavor.
-    storage = resource.Body('storage')
+    storage = resource.Body("storage")
     #: Number of pricing units.
-    unit_num = resource.Body('unit_num', type=int)
+    unit_num = resource.Body("unit_num", type=int)

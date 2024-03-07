@@ -29,4 +29,4 @@ attrs = {
         }
     ],
 }
-conn.modelartsv2.modify_dataset(dataset_id, **attrs)
+conn.modelartsv2.update_dataset(dataset_id, **attrs)
