@@ -118,6 +118,10 @@ OTC_SERVICES = {
         'endpoint_service_type': 'dms',
         'append_project_id': True,
     },
+    'dmsv2': {
+        'service_type': 'dmsv2',
+        'endpoint_service_type': 'dmsv2',
+    },
     'dns': {
         'service_type': 'dns',
         'replace_system': True,
