@@ -13,13 +13,11 @@
 from openstack import service_description
 
 from otcextensions.sdk.dms.v1 import _proxy as _proxy_v1
-from otcextensions.sdk.dms.v2 import _proxy as _proxy_v2
 
 
 class DmsService(service_description.ServiceDescription):
     """The DMS service."""
 
     supported_versions = {
-        '1': _proxy_v1.Proxy,
-        '2': _proxy_v2.Proxy
+        '1': _proxy_v1.Proxy
     }
