@@ -34,6 +34,15 @@ class TestDatasetImportTask(base.TestCase):
         self.assertFalse(sot.allow_delete)
         self.assertFalse(sot.allow_commit)
 
+        self.assertDictEqual(
+            {
+                "limit": "limit",
+                "marker": "marker",
+                "offset": "offset",
+            },
+            sot._query_mapping._mapping,
+        )
+
     def test_make_it(self):
         sot = dataset_import_task.DatasetImportTask(**EXAMPLE)
 

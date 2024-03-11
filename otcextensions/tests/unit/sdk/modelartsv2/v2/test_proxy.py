@@ -16,7 +16,13 @@ import os
 from openstack.tests.unit import test_proxy_base
 from otcextensions.sdk.modelartsv2.v2 import _proxy
 from otcextensions.sdk.modelartsv2.v2 import dataset
+from otcextensions.sdk.modelartsv2.v2 import dataset_export_task
+from otcextensions.sdk.modelartsv2.v2 import dataset_import_task
+from otcextensions.sdk.modelartsv2.v2 import dataset_label
 from otcextensions.sdk.modelartsv2.v2 import dataset_sample
+from otcextensions.sdk.modelartsv2.v2 import dataset_statistics
+from otcextensions.sdk.modelartsv2.v2 import dataset_sync
+from otcextensions.sdk.modelartsv2.v2 import dataset_version
 
 
 class TestModelartsV2Proxy(test_proxy_base.TestProxyBase):
@@ -113,19 +119,197 @@ class TestDatasetSample(TestModelartsV2Proxy):
             },
         )
 
-    # def test_delete_dataset_samples(self):
-    #    self.verify_create(
-    #        self.proxy.delete_dataset_samples,
-    #        dataset.DeleteSample,
-    #        method_args=["dataset-uuid"],
-    #        expected_args=[],
-    #        method_kwargs={
-    #            "samples": ["s1-uuid", "s2-uuid"],
-    #            "delete_source": False,
-    #        },
-    #        expected_kwargs={
-    #            "dataset_id": "dataset-uuid",
-    #            "samples": ["s1-uuid", "s2-uuid"],
-    #            "delete_source": False,
-    #        },
-    #    )
+    def test_delete_dataset_samples(self):
+        self._verify(
+            "otcextensions.sdk.modelartsv2.v2.dataset_sample.DatasetSample.delete_samples",  # noqa
+            self.proxy.delete_dataset_samples,
+            method_args=["dataset-id"],
+            method_kwargs={
+                "samples": ["s1-uuid", "s2-uuid"],
+                "delete_source": False,
+            },
+            expected_args=[
+                self.proxy,
+                "dataset-id",
+                ["s1-uuid", "s2-uuid"],
+                False,
+            ],
+        )
+
+
+class TestDatasetLabel(TestModelartsV2Proxy):
+    def test_dataset_labels(self):
+        self.verify_list(
+            self.proxy.dataset_labels,
+            dataset_label.DatasetLabel,
+            method_kwargs={"dataset_id": "dataset-id"},
+            expected_kwargs={"datasetId": "dataset-id"},
+        )
+
+    def test_create_dataset_label(self):
+        self.verify_create(
+            self.proxy.create_dataset_label,
+            dataset_label.DatasetLabel,
+            method_kwargs={
+                "dataset_id": "dataset-id",
+                "arg1": "val1",
+                "arg2": "val2",
+            },
+            expected_kwargs={
+                "datasetId": "dataset-id",
+                "arg1": "val1",
+                "arg2": "val2",
+            },
+        )
+
+    def test_update_dataset_labels(self):
+        self._verify(
+            "otcextensions.sdk.modelartsv2.v2.dataset_label.DatasetLabel.update_labels",  # noqa
+            self.proxy.update_dataset_labels,
+            method_args=["dataset-id"],
+            method_kwargs={
+                "labels": [{"name": "cat"}, {"name": "pussycat"}],
+            },
+            expected_args=[
+                self.proxy,
+                [{"name": "cat"}, {"name": "pussycat"}],
+            ],
+        )
+
+    def test_delete_dataset_labels(self):
+        self._verify(
+            "otcextensions.sdk.modelartsv2.v2.dataset_label.DatasetLabel.delete_labels",  # noqa
+            self.proxy.delete_dataset_labels,
+            method_args=["dataset-id"],
+            method_kwargs={
+                "labels": [{"name": "cat"}, {"name": "pussycat"}],
+                "delete_policy": 0,
+            },
+            expected_args=[
+                self.proxy,
+                [{"name": "cat"}, {"name": "pussycat"}],
+                0,
+            ],
+        )
+
+
+class TestDatasetExportTask(TestModelartsV2Proxy):
+    def test_dataset_export_tasks(self):
+        self.verify_list(
+            self.proxy.dataset_export_tasks,
+            dataset_export_task.DatasetExportTask,
+            method_kwargs={"dataset_id": "dataset-id"},
+            expected_kwargs={"datasetId": "dataset-id"},
+        )
+
+    def test_get_dataset_export_task(self):
+        self.verify_get(
+            self.proxy.get_dataset_export_task,
+            dataset_export_task.DatasetExportTask,
+            method_args=["dataset-id", "task-id"],
+            expected_args=["task-id"],
+            expected_kwargs={"datasetId": "dataset-id"},
+        )
+
+    def test_create_dataset_export_task(self):
+        self.verify_create(
+            self.proxy.create_dataset_export_task,
+            dataset_export_task.DatasetExportTask,
+            method_kwargs={"dataset_id": "dataset-id"},
+            expected_kwargs={"datasetId": "dataset-id"},
+        )
+
+
+class TestDatasetImportTask(TestModelartsV2Proxy):
+    def test_dataset_import_tasks(self):
+        self.verify_list(
+            self.proxy.dataset_import_tasks,
+            dataset_import_task.DatasetImportTask,
+            method_kwargs={"dataset_id": "dataset-id"},
+            expected_kwargs={"datasetId": "dataset-id"},
+        )
+
+    def test_get_dataset_export_task(self):
+        self.verify_get(
+            self.proxy.get_dataset_import_task,
+            dataset_import_task.DatasetImportTask,
+            method_args=["dataset-id", "task-id"],
+            expected_args=["task-id"],
+            expected_kwargs={"datasetId": "dataset-id"},
+        )
+
+    def test_create_dataset_import_task(self):
+        self.verify_create(
+            self.proxy.create_dataset_import_task,
+            dataset_import_task.DatasetImportTask,
+            method_kwargs={"dataset_id": "dataset-id"},
+            expected_kwargs={"datasetId": "dataset-id"},
+        )
+
+
+class TestDatasetVersion(TestModelartsV2Proxy):
+    def test_dataset_versions(self):
+        self.verify_list(
+            self.proxy.dataset_versions,
+            dataset_version.DatasetVersion,
+            method_kwargs={"dataset_id": "dataset-id"},
+            expected_kwargs={"datasetId": "dataset-id"},
+        )
+
+    def test_get_dataset_version(self):
+        self.verify_get(
+            self.proxy.get_dataset_version,
+            dataset_version.DatasetVersion,
+            method_args=["dataset-id", "version-id"],
+            expected_args=["version-id"],
+            expected_kwargs={"datasetId": "dataset-id"},
+        )
+
+    def test_create_dataset_version(self):
+        self.verify_create(
+            self.proxy.create_dataset_version,
+            dataset_version.DatasetVersion,
+            method_kwargs={"dataset_id": "dataset-id"},
+            expected_kwargs={"datasetId": "dataset-id"},
+        )
+
+    def test_delete_dataset_version(self):
+        self.verify_delete(
+            self.proxy.delete_dataset_version,
+            dataset_version.DatasetVersion,
+            False,
+            method_args=["dataset-id", "version-id"],
+            expected_args=["version-id"],
+            expected_kwargs={"datasetId": "dataset-id"},
+        )
+
+
+class TestDatasetStatistics(TestModelartsV2Proxy):
+    def test_get_dataset_statistics(self):
+        self.verify_get(
+            self.proxy.get_dataset_statistics,
+            dataset_statistics.DatasetStatistics,
+            method_args=[],
+            method_kwargs={"dataset_id": "id"},
+            expected_kwargs={"datasetId": "id", "requires_id": False},
+        )
+
+
+class TestDatasetSync(TestModelartsV2Proxy):
+    def test_get_dataset_sync_status(self):
+        self.verify_get(
+            self.proxy.get_dataset_sync_status,
+            dataset_sync.DatasetSync,
+            method_args=[],
+            expected_args=["status"],
+            method_kwargs={"dataset_id": "dataset-id"},
+            expected_kwargs={"datasetId": "dataset-id"},
+        )
+
+    def test_dataset_sync(self):
+        self.verify_create(
+            self.proxy.dataset_sync,
+            dataset_sync.DatasetSync,
+            method_kwargs={"dataset_id": "dataset-id"},
+            expected_kwargs={"datasetId": "dataset-id"},
+        )

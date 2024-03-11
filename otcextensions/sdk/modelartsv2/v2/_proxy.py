@@ -28,46 +28,6 @@ from otcextensions.sdk.modelartsv2.v2 import dataset_sync as _dataset_sync
 from otcextensions.sdk.modelartsv2.v2 import \
     dataset_version as _dataset_version
 
-# from pathlib import Path
-
-
-# from PIL import Image
-
-
-def get_directory_size(dir_path, file_type=None):
-    total_size = 0
-    # Add more file types as needed
-    # file_types = {
-    #     "image": [".jpg", ".jpeg", ".png", ".gif", ".bmp"],
-    #     "text": [".txt", ".doc", ".docx", ".pdf"],
-    #     "speech": [".mp3", ".wav", ".ogg"],
-    #     "table": [".csv", ".xls", ".xlsx"],
-    #     "video": [".mp4", ".avi", ".mkv", ".mov"],
-    # }
-    if not os.path.isdir(dir_path):
-        raise exceptions.SDKException(
-            f"Error: {dir_path} is not a valid directory."
-        )
-    files = [
-        os.path.join(dir_path, f)
-        for f in os.listdir(dir_path)
-        if os.path.isfile(os.path.join(dir_path, f))
-    ]
-    if not files:
-        raise exceptions.SDKException(f"The directory {dir_path} is empty.")
-    for file_name in files:
-        file_path = os.path.join(dir_path, file_name)
-        # _, file_extension = os.path.splitext(file_path)
-        # if file_extension.lower() in file_types[file_type]:
-        #     total_size += os.path.getsize(file_path)
-        total_size += os.path.getsize(file_path)
-    if total_size == 0:
-        raise exceptions.SDKException(
-            "Directory is empty"
-            # f"No files found of type {str(file_types[file_type])}"
-        )
-    return total_size, files
-
 
 class Proxy(proxy.Proxy):
     skip_discovery = True
@@ -96,8 +56,8 @@ class Proxy(proxy.Proxy):
 
         :param dict attrs: Keyword arguments which will be used to create
             a :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`,
-            comprised of the properties on the Datasets class.
-        :returns: The results of dataset creation
+            comprised of the properties on the Dataset class.
+        :returns: The result of dataset creation.
         :rtype: :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
         """
         return self._create(_dataset.Dataset, **attrs)
@@ -192,7 +152,7 @@ class Proxy(proxy.Proxy):
         )
 
     def create_dataset_label(self, dataset_id, **attrs):
-        """Create a daraset label from attributes
+        """Create a dataset label from attributes
 
         :param dict attrs: Keyword arguments which will be used to create
             a :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Label`,
@@ -204,7 +164,7 @@ class Proxy(proxy.Proxy):
             _dataset_label.DatasetLabel, datasetId=dataset_id, **attrs
         )
 
-    def update_dataset_labels(self, dataset_id, **attrs):
+    def update_dataset_labels(self, dataset_id, labels=[], **attrs):
         """Modify a dataset labels in batches.
 
         :param dataset_id: Dataset ID.
@@ -215,9 +175,12 @@ class Proxy(proxy.Proxy):
         obj = self._get_resource(
             _dataset_label.DatasetLabel, None, datasetId=dataset_id
         )
-        return obj.update_labels(self, attrs.get("labels"))
+        labels = labels or attrs.get("labels")
+        return obj.update_labels(self, labels)
 
-    def delete_dataset_labels(self, dataset_id, delete_source=False, **labels):
+    def delete_dataset_labels(
+        self, dataset_id, labels=[], delete_policy=None, **attrs
+    ):
         """Delete dataset labels.
 
         :param dataset_id: Dataset ID.
@@ -225,12 +188,11 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        obj = _dataset_label.DatasetLabel(datasetId=dataset_id)
-        return obj.delete_labels(
-            self,
-            **labels,
-            delete_source=delete_source,
+        obj = self._get_resource(
+            _dataset_label.DatasetLabel, None, datasetId=dataset_id
         )
+        labels = labels or attrs.get("labels")
+        return obj.delete_labels(self, labels, delete_policy)
 
     # ======== Dataset Version Management ========
 
@@ -261,23 +223,6 @@ class Proxy(proxy.Proxy):
             **attrs,
         )
 
-    def delete_dataset_version(self, dataset_id, version_id, **kwargs):
-        """Delete a dataset version
-
-        :param version_id: ID of a dataset version
-        :param bool ignore_missing: When set to ``False``
-            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
-            the group does not exist.
-            When set to ``True``, no exception will be set when attempting to
-            delete a nonexistent dataset.
-        """
-        return self._delete(
-            _dataset.Version,
-            version_id,
-            datasetId=dataset_id,
-            **kwargs,
-        )
-
     def get_dataset_version(self, dataset_id, version_id):
         """Get the dataset version by version id
 
@@ -290,6 +235,25 @@ class Proxy(proxy.Proxy):
         """
         return self._get(
             _dataset_version.DatasetVersion, version_id, datasetId=dataset_id
+        )
+
+    def delete_dataset_version(
+        self, dataset_id, version_id, ignore_missing=False
+    ):
+        """Delete a dataset version
+
+        :param version_id: ID of a dataset version
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the group does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent dataset.
+        """
+        return self._delete(
+            _dataset_version.DatasetVersion,
+            version_id,
+            datasetId=dataset_id,
+            ignore_missing=ignore_missing,
         )
 
     # ======== Dataset Sample Management ========
@@ -334,6 +298,29 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.modelartsv2.v2.\
                 dataset.CreateSample`
         """
+
+        def get_directory_size(dir_path, file_type=None):
+            total_size = 0
+            if not os.path.isdir(dir_path):
+                raise exceptions.SDKException(
+                    f"Error: {dir_path} is not a valid directory."
+                )
+            files = [
+                os.path.join(dir_path, f)
+                for f in os.listdir(dir_path)
+                if os.path.isfile(os.path.join(dir_path, f))
+            ]
+            if not files:
+                raise exceptions.SDKException(
+                    f"The directory {dir_path} is empty."
+                )
+            for file_name in files:
+                file_path = os.path.join(dir_path, file_name)
+                total_size += os.path.getsize(file_path)
+            if total_size == 0:
+                raise exceptions.SDKException("Directory is empty")
+            return total_size, files
+
         if file_path:
             file_size = os.path.getsize(file_path) / (1024 * 1024)
             if file_size > 7.5:
@@ -365,7 +352,6 @@ class Proxy(proxy.Proxy):
             )
             if files_size > 7.5:
                 break
-            # print("Files_Size after count: ", count, " ", files_size)
             with open(file_path, "rb") as file:
                 sample = {
                     "name": os.path.split(file_path)[1],
@@ -420,7 +406,7 @@ class Proxy(proxy.Proxy):
     # ======== Dataset Import Task Management ========
 
     def dataset_import_tasks(self, dataset_id):
-        """List all dataset export tasks.
+        """List all dataset import tasks.
 
         :returns: a generator of
             (:class:`~otcextensions.sdk.modelartsv2.v2.\
@@ -444,7 +430,6 @@ class Proxy(proxy.Proxy):
         return self._create(
             _dataset_import_task.DatasetImportTask,
             datasetId=dataset_id,
-            prepend_key=False,
             **attrs,
         )
 
@@ -464,21 +449,6 @@ class Proxy(proxy.Proxy):
         )
 
     # ======== Dataset Export Task Management ========
-
-    def get_dataset_export_task(self, dataset_id, task_id):
-        """Get the dataset export task by dataset id
-
-          :param dataset_id: key id or an instance of
-              :class:`~otcextensions.sdk.modelartsv2.v2.dataset.ExportTask`
-
-          :returns: instance of :class:`~otcextensions.sdk.modelartsv2.v2.\
-                dataset.ExportTask`
-          """
-        return self._get(
-            _dataset_export_task.DatasetExportTask,
-            task_id,
-            datasetId=dataset_id,
-        )
 
     def dataset_export_tasks(self, dataset_id):
         """List all dataset export tasks.
@@ -506,6 +476,21 @@ class Proxy(proxy.Proxy):
             _dataset_export_task.DatasetExportTask,
             datasetId=dataset_id,
             **attrs,
+        )
+
+    def get_dataset_export_task(self, dataset_id, task_id):
+        """Get the dataset export task by dataset id
+
+          :param dataset_id: key id or an instance of
+              :class:`~otcextensions.sdk.modelartsv2.v2.dataset.ExportTask`
+
+          :returns: instance of :class:`~otcextensions.sdk.modelartsv2.v2.\
+                dataset.ExportTask`
+          """
+        return self._get(
+            _dataset_export_task.DatasetExportTask,
+            task_id,
+            datasetId=dataset_id,
         )
 
     # ======== Dataset Synchronization Task Management ========

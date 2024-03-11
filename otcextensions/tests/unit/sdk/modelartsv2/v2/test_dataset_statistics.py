@@ -36,6 +36,17 @@ class TestDatasetStatistics(base.TestCase):
         self.assertFalse(sot.allow_delete)
         self.assertFalse(sot.allow_commit)
 
+        self.assertDictEqual(
+            {
+                "email": "email",
+                "limit": "limit",
+                "locale": "locale",
+                "marker": "marker",
+                "sample_state": "sample_state",
+            },
+            sot._query_mapping._mapping,
+        )
+
     def test_make_it(self):
         updated_sot_attrs = ("data_spliting_enable",)
         sot = dataset_statistics.DatasetStatistics(**EXAMPLE)

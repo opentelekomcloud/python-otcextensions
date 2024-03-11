@@ -35,6 +35,16 @@ class TestDatasetExportTask(base.TestCase):
         self.assertFalse(sot.allow_delete)
         self.assertFalse(sot.allow_commit)
 
+        self.assertDictEqual(
+            {
+                "export_type": "export_type",
+                "limit": "limit",
+                "marker": "marker",
+                "offset": "offset",
+            },
+            sot._query_mapping._mapping,
+        )
+
     def test_make_it(self):
         sot = dataset_export_task.DatasetExportTask(**EXAMPLE)
         assert_attributes_equal(self, sot, EXAMPLE)

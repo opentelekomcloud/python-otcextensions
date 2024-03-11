@@ -10,6 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
+import mock
+from keystoneauth1 import adapter
+
+from openstack import utils
 from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv2.v2 import dataset_sample
 from otcextensions.tests.unit.sdk.modelartsv2.v2 import examples
@@ -18,9 +22,10 @@ from otcextensions.tests.unit.utils import assert_attributes_equal
 EXAMPLE = examples.DATASET_SAMPLE
 
 
-class TestSample(base.TestCase):
+class TestDatasetSample(base.TestCase):
     def setUp(self):
-        super(TestSample, self).setUp()
+        super(TestDatasetSample, self).setUp()
+        self.sess = mock.Mock(spec=adapter.Adapter)
 
     def test_basic(self):
         sot = dataset_sample.DatasetSample()
@@ -68,3 +73,23 @@ class TestSample(base.TestCase):
                 pass
             else:
                 assert_attributes_equal(self, getattr(sot, key), value)
+
+    def test_delete_samples(self):
+        dataset_id = "dataset-id"
+        samples = ["sample1-id", "sample2-id"]
+        sot = dataset_sample.DatasetSample()
+        response = mock.Mock()
+        response.status_code = 200
+        response.json.return_value = {"success": True}
+        response.headers = {}
+        self.sess.post.return_value = response
+        rt = sot.delete_samples(self.sess, dataset_id, samples, True)
+        json_body = {
+            "samples": ["sample1-id", "sample2-id"],
+            "delete_source": True,
+        }
+        url = utils.urljoin(
+            sot.base_path % {"datasetId": dataset_id}, "delete"
+        )
+        self.sess.post.assert_called_with(url, json=json_body)
+        self.assertEqual(rt, sot)

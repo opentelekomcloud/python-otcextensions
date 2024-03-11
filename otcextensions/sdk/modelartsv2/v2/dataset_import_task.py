@@ -32,6 +32,11 @@ class DatasetImportTask(resource.Resource):
 
     resources_key = "import_tasks"
 
+    _query_mapping = resource.QueryParameters(
+        "limit",
+        "offset",
+    )
+
     allow_create = True
     allow_list = True
     allow_fetch = True

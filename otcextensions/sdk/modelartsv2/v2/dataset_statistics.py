@@ -16,7 +16,14 @@ from openstack import resource
 class DatasetStatistics(resource.Resource):
     base_path = "/datasets/%(datasetId)s/data-annotations/stats"
 
+    # capabilities
     allow_fetch = True
+
+    _query_mapping = resource.QueryParameters(
+        "email",
+        "locale",
+        "sample_state",
+    )
 
     #: Dataset ID.
     datasetId = resource.URI("datasetId")

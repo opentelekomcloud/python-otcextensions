@@ -179,6 +179,12 @@ class DatasetExportTask(resource.Resource):
 
     resources_key = "export_tasks"
 
+    _query_mapping = resource.QueryParameters(
+        "export_type",
+        "limit",
+        "offset",
+    )
+
     # capabilities
     allow_create = True
     allow_list = True

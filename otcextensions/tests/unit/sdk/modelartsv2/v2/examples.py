@@ -125,6 +125,14 @@ DATASET_IMPORT_TASK = {
 }
 
 
+DATASET_LABEL = {
+    "name": "Cat",
+    "property": {
+        "@modelarts:color": "#3399ff",
+        "@modelarts:default_shape": "bndbox",
+    },
+}
+
 DATASET_SAMPLE = {
     "annotated_by": "human/OTC-EU-DE-000000000010000XXXXXX/dummy",
     "labels": [
