@@ -12,27 +12,10 @@
 #
 from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv1.v1 import service_cluster
+from otcextensions.tests.unit.sdk.modelartsv1.v1 import examples
+from otcextensions.tests.unit.utils import assert_attributes_equal
 
-EXAMPLE = {
-    "cluster_id": "cluster-uuid",
-    "cluster_name": "pool-a1cf",
-    "tenant": "tenant-uuid",
-    "project": "project-uuid",
-    "owner": "owner-uuid",
-    "created_at": 1658743383618,
-    "status": "running",
-    "allocatable_cpu_cores": 7.06,
-    "allocatable_memory": 27307.0,
-    "allocatable_gpus": 0.0,
-    "charging_mode": "postpaid",
-    "max_node_count": 50,
-    "nodes": {
-        "specification": "modelarts.vm.cpu.8ud",
-        "count": 1,
-        "available_count": 1,
-    },
-    "services_count": {"realtime_count": 0, "batch_count": 0},
-}
+EXAMPLE = examples.SERVICE_CLUSTER
 
 
 class TestServiceCluster(base.TestCase):
@@ -68,11 +51,4 @@ class TestServiceCluster(base.TestCase):
 
     def test_make_it(self):
         sot = service_cluster.ServiceCluster(**EXAMPLE)
-
-        for key, value in EXAMPLE.items():
-            if key != "nodes":
-                self.assertEqual(getattr(sot, key), value)
-
-        sot_nodes = service_cluster.NodeSpec(**EXAMPLE["nodes"])
-        for key, value in EXAMPLE["nodes"].items():
-            self.assertEqual(getattr(sot_nodes, key), value)
+        assert_attributes_equal(self, sot, EXAMPLE)

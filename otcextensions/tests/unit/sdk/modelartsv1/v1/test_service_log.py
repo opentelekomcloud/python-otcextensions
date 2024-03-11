@@ -12,27 +12,9 @@
 #
 from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv1.v1 import service_log
+from otcextensions.tests.unit.sdk.modelartsv1.v1 import examples
 
-EXAMPLE = {
-    "config": [
-        {
-            "model_id": "f565ac47-6239-4e8c-b2dc-0665dc52e302",
-            "model_name": "model-demo",
-            "model_version": "0.0.1",
-            "specification": "modelarts.vm.cpu.2u",
-            "custom_spec": {},
-            "weight": 100,
-            "instance_count": 1,
-            "scaling": False,
-            "envs": {},
-            "cluster_id": "2c9080f86d37da64016d381fe5940002",
-        }
-    ],
-    "extend_config": [],
-    "update_time": 1586250930708,
-    "result": "RUNNING",
-    "cluster_id": "2c9080f86d37da64016d381fe5940002",
-}
+EXAMPLE = examples.SERVICE_LOG
 
 
 class TestLog(base.TestCase):

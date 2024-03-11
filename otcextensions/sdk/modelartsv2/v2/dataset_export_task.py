@@ -77,6 +77,8 @@ class SearchConditionSpec(resource.Resource):
 
 
 class ExportParamsSpec(resource.Resource):
+    #: Whether to clear difficult.
+    clear_difficult = resource.Body("clear_difficult", type=bool)
     #: Whether to clear hard example attributes.
     clear_hard_property = resource.Body("clear_hard_property", type=bool)
     #: Format of the dataset version to which data is exported.

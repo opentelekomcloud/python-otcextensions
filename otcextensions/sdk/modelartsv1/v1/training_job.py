@@ -159,7 +159,7 @@ class ConfigSpec(resource.Resource):
     #: Description of a training job.
     job_desc = resource.Body("job_desc")
     #: ID of a training job.
-    job_id = resource.Body("job_id", type=int, alternate_id=True)
+    job_id = resource.Body("job_id", type=int)
     #: Name of a training job.
     job_name = resource.Body("job_name")
     #: Training job type.
@@ -261,8 +261,12 @@ class TrainingJob(ConfigSpec):
     config = resource.Body("config", type=ConfigSpec)
     #: Description of a training job.
     job_desc = resource.Body("job_desc")
+    #: ID of a training job.
+    job_id = resource.Body("job_id", type=int, alternate_id=True)
     #: Training job name.
     job_name = resource.Body("job_name")
+    #: User Info.
+    user = resource.Body("user", type=dict)
     #: Workspace where a job resides.
     workspace_id = resource.Body("workspace_id")
 

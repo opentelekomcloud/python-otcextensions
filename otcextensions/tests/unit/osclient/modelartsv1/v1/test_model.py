@@ -20,6 +20,7 @@ from otcextensions.osclient.modelartsv1.v1 import model
 from otcextensions.tests.unit.osclient.modelartsv1.v1 import fakes
 
 _COLUMNS = (
+    "ai_project",
     "apis",
     "config",
     "created_at",
@@ -29,12 +30,15 @@ _COLUMNS = (
     "image_address",
     "input_params",
     "install_type",
-    "labels_map",
+    "is_publishable",
+    "is_subscribed",
+    "is_tunable",
+    "model_algorithm",
     "model_id",
-    "model_labels",
     "model_metrics",
     "model_name",
     "model_size",
+    "model_source",
     "model_status",
     "model_type",
     "model_version",
@@ -44,6 +48,7 @@ _COLUMNS = (
     "project_id",
     "runtime",
     "source_location",
+    "source_type",
     "specification",
     "status",
     "tenant_id",

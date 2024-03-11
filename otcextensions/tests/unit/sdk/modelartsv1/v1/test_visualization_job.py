@@ -15,20 +15,9 @@ from keystoneauth1 import adapter
 
 from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv1.v1 import visualization_job
+from otcextensions.tests.unit.sdk.modelartsv1.v1 import examples
 
-EXAMPLE = {
-    "duration": 33000,
-    "service_url": "https://...",
-    "job_name": "apiTest-11",
-    "create_time": 1565149736000,
-    "train_url": "/wph-test/zl-test/Flowers-Set/ApiTest/",
-    "job_id": 197,
-    "job_desc": "ModelArts API Dialtest",
-    "resource_id": "e17dd874-b5e0-4e9b-aaf0-22b045ad8571",
-    "remaining_duration": None,
-    "is_success": True,
-    "status": 7,
-}
+EXAMPLE = examples.VISUALIZATION_JOB
 
 
 class TestVisualizationJob(base.TestCase):

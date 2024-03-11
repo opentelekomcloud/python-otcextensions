@@ -40,6 +40,8 @@ class HealthSpec(resource.Resource):
 class OutputParamsSpec(resource.Resource):
     #: Properties of an object element in JSON Schema.
     properties = resource.Body("properties", type=dict)
+    # Required.
+    required = resource.Body("required", type=list)
     #: Type in JSON Schema, which can be object.
     type = resource.Body("type")
 
@@ -52,6 +54,8 @@ class InputParamsSpec(resource.Resource):
 
 
 class ApisSpec(resource.Resource):
+    #: Content Type.
+    content_type = resource.Body("content_type")
     #: Input parameters in apis, described in JSON Schema format.
     input_params = resource.Body("input_params", type=InputParamsSpec)
     #: Request method.

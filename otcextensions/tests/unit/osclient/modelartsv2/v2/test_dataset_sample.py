@@ -37,6 +37,7 @@ class TestAddDatasetSamples(fakes.TestModelartsv2):
         "Success",
         "Results",
     )
+    _dataset = fakes.FakeDataset.create_one()
     _sample = fakes.FakeDatasetSample.create_one()
     formatters = {
         "Results": cli_utils.YamlFormat,
@@ -49,6 +50,7 @@ class TestAddDatasetSamples(fakes.TestModelartsv2):
 
         self.cmd = dataset_sample.AddDatasetSamples(self.app, None)
 
+        self.client.find_dataset = mock.Mock(return_value=self._dataset)
         self.client.add_dataset_samples = mock.Mock(return_value=self._sample)
 
     def test_create(self):
@@ -80,7 +82,7 @@ class TestAddDatasetSamples(fakes.TestModelartsv2):
             "--to-be-confirmed",
         ]
         verifylist = [
-            ("datasetId", "dataset-id"),
+            ("dataset", "dataset-id"),
             ("file_path", "1"),
             ("directory_path", "2"),
             ("encoding", "UTF-8"),
@@ -99,8 +101,9 @@ class TestAddDatasetSamples(fakes.TestModelartsv2):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
+        self.client.find_dataset.assert_called_with("dataset-id")
         self.client.add_dataset_samples.assert_called_with(
-            "dataset-id",
+            self._dataset.id,
             file_path="1",
             directory_path="2",
             encoding="UTF-8",
@@ -119,6 +122,7 @@ class TestAddDatasetSamples(fakes.TestModelartsv2):
 
 
 class TestListDatasetSamples(fakes.TestModelartsv2):
+    dataset = fakes.FakeDataset.create_one()
     objects = fakes.FakeDatasetSample.create_multiple(3)
 
     column_list_headers = (
@@ -145,14 +149,15 @@ class TestListDatasetSamples(fakes.TestModelartsv2):
 
         self.cmd = dataset_sample.ListDatasetSamples(self.app, None)
 
+        self.client.find_dataset = mock.Mock(return_value=self.dataset)
         self.client.dataset_samples = mock.Mock()
         self.client.api_mock = self.client.dataset_samples
 
     def test_list(self):
-        arglist = ["dataset-uuid"]
+        arglist = ["dataset-name"]
 
         verifylist = [
-            ("datasetId", "dataset-uuid"),
+            ("dataset", "dataset-name"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -164,14 +169,15 @@ class TestListDatasetSamples(fakes.TestModelartsv2):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.api_mock.assert_called_with("dataset-uuid")
+        self.client.find_dataset.assert_called_with("dataset-name")
+        self.client.api_mock.assert_called_with(self.dataset.id)
 
         self.assertEqual(self.column_list_headers, columns)
         self.assertEqual(self.data, list(data))
 
     def test_list_args(self):
         arglist = [
-            "dataset-uuid",
+            "dataset-name",
             "--email",
             "1",
             "--high-score",
@@ -204,7 +210,7 @@ class TestListDatasetSamples(fakes.TestModelartsv2):
         ]
 
         verifylist = [
-            ("datasetId", "dataset-uuid"),
+            ("dataset", "dataset-name"),
             ("email", "1"),
             ("high_score", "2"),
             ("label_name", "3"),
@@ -232,7 +238,7 @@ class TestListDatasetSamples(fakes.TestModelartsv2):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_with(
-            "dataset-uuid",
+            self.dataset.id,
             email="1",
             high_score="2",
             label_name="3",
@@ -253,6 +259,7 @@ class TestListDatasetSamples(fakes.TestModelartsv2):
 
 class TestShowDatasetSample(fakes.TestModelartsv2):
     columns = _COLUMNS
+    dataset = fakes.FakeDataset.create_one()
     _data = fakes.FakeDatasetSample.create_one()
 
     data = fakes.gen_data(_data, columns, dataset_sample._formatters)
@@ -262,6 +269,7 @@ class TestShowDatasetSample(fakes.TestModelartsv2):
 
         self.cmd = dataset_sample.ShowDatasetSample(self.app, None)
 
+        self.client.find_dataset = mock.Mock(return_value=self.dataset)
         self.client.get_dataset_sample = mock.Mock(return_value=self._data)
 
     def test_show_no_options(self):
@@ -280,12 +288,12 @@ class TestShowDatasetSample(fakes.TestModelartsv2):
 
     def test_show(self):
         arglist = [
-            "dataset-id",
+            "dataset-name",
             "sample-id",
         ]
 
         verifylist = [
-            ("datasetId", "dataset-id"),
+            ("dataset", "dataset-name"),
             ("sampleId", "sample-id"),
         ]
 
@@ -294,8 +302,9 @@ class TestShowDatasetSample(fakes.TestModelartsv2):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
+        self.client.find_dataset.assert_called_with("dataset-name")
         self.client.get_dataset_sample.assert_called_with(
-            "dataset-id", "sample-id"
+            self.dataset.id, "sample-id"
         )
 
         self.assertEqual(self.columns, columns)
@@ -303,12 +312,12 @@ class TestShowDatasetSample(fakes.TestModelartsv2):
 
     def test_show_non_existent(self):
         arglist = [
-            "dataset-id",
+            "dataset-name",
             "nonexisting-sample-id",
         ]
 
         verifylist = [
-            ("datasetId", "dataset-id"),
+            ("dataset", "dataset-name"),
             ("sampleId", "nonexisting-sample-id"),
         ]
 
@@ -329,60 +338,9 @@ class TestShowDatasetSample(fakes.TestModelartsv2):
         )
 
 
-class TestDatasetSampleSearchCondition(fakes.TestModelartsv2):
-    columns = _COLUMNS
-
-    _data = fakes.FakeDatasetSample.create_one()
-
-    data = fakes.gen_data(_data, columns, dataset_sample._formatters)
-
-    def setUp(self):
-        super(TestDatasetSampleSearchCondition, self).setUp()
-
-        self.cmd = dataset_sample.DatasetSampleSearchCondition(self.app, None)
-
-        self.client.get_dataset_sample_search_condition = mock.Mock(
-            return_value=self._data
-        )
-
-    def test_show_no_options(self):
-        arglist = []
-        verifylist = []
-
-        # Testing that a call without the required argument will fail and
-        # throw a "ParserExecption"
-        self.assertRaises(
-            tests_utils.ParserException,
-            self.check_parser,
-            self.cmd,
-            arglist,
-            verifylist,
-        )
-
-    def test_show(self):
-        arglist = [
-            "dataset-id",
-        ]
-
-        verifylist = [
-            ("datasetId", "dataset-id"),
-        ]
-
-        # Verify cm is triggered with default parameters
-        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-
-        # Trigger the action
-        columns, data = self.cmd.take_action(parsed_args)
-        self.client.get_dataset_sample_search_condition.assert_called_with(
-            "dataset-id"
-        )
-
-        self.assertEqual(self.columns, columns)
-        self.assertEqual(self.data, data)
-
-
 class TestDeleteDatasetSample(fakes.TestModelartsv2):
     columns = ("results", "success")
+    dataset = fakes.FakeDataset.create_one()
     _data = fakes.FakeDatasetSampleResp.create_one()
     formatters = {
         "results": cli_utils.YamlFormat,
@@ -392,6 +350,7 @@ class TestDeleteDatasetSample(fakes.TestModelartsv2):
     def setUp(self):
         super(TestDeleteDatasetSample, self).setUp()
 
+        self.client.find_dataset = mock.Mock(return_value=self.dataset)
         self.client.delete_dataset_samples = mock.Mock(return_value=self._data)
 
         # Get the command object to test
@@ -399,14 +358,14 @@ class TestDeleteDatasetSample(fakes.TestModelartsv2):
 
     def test_delete(self):
         arglist = [
-            "dataset-id",
+            "dataset-name",
             "sample1-id",
             "sample2-id",
             "--delete-source",
         ]
 
         verifylist = [
-            ("datasetId", "dataset-id"),
+            ("dataset", "dataset-name"),
             ("sampleId", ["sample1-id", "sample2-id"]),
             ("delete_source", True),
         ]
@@ -416,8 +375,9 @@ class TestDeleteDatasetSample(fakes.TestModelartsv2):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
+        self.client.find_dataset.assert_called_with("dataset-name")
         self.client.delete_dataset_samples.assert_called_with(
-            "dataset-id", ["sample1-id", "sample2-id"], True
+            self.dataset.id, ["sample1-id", "sample2-id"], True
         )
 
         self.assertEqual(self.columns, columns)

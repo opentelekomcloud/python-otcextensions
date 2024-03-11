@@ -43,38 +43,57 @@ SAMPLE_STATE_CHOICES = [
     "auto_annotation",
 ]
 
-SAMPLE_TYPE_CHOICES_MAP = {
-    0: "Image",
-    1: "Text",
-    2: "Speech",
-    4: "Table",
-    6: "Video",
-    9: "Custom_Format",
-}
 
-LABEL_TYPE_CHOICES_MAP = {
-    0: "image classification",
-    1: "object detection",
-    100: "text classification",
-    101: "named entity recognition",
-    102: "text triplet",
-    200: "sound classification",
-    201: "speech content",
-    202: "speech paragraph labeling",
-    400: "table dataset",
-    600: "video labeling",
-    900: "custom format",
-}
+class SampleType(cliff_columns.FormattableColumn):
+    CHOICES_MAP = {
+        0: "Image",
+        1: "Text",
+        2: "Speech",
+        4: "Table",
+        6: "Video",
+        9: "Custom_Format",
+    }
+    STR = "\n".join(f"{key}: {value}" for key, value in CHOICES_MAP.items())
 
-DATASOURCE_TYPE_CHOICES_MAP = {
-    0: "OBS bucket (default value)",
-    1: "GaussDB(DWS)",
-    2: "DLI",
-    3: "RDS",
-    4: "MRS",
-    5: "AI Gallery",
-    6: "Inference service",
-}
+    def human_readable(self):
+        return self.CHOICES_MAP.get(self._value, str(self._value))
+
+
+class LabelType(cliff_columns.FormattableColumn):
+    CHOICES_MAP = {
+        0: "image classification",
+        1: "object detection",
+        100: "text classification",
+        101: "named entity recognition",
+        102: "text triplet",
+        200: "sound classification",
+        201: "speech content",
+        202: "speech paragraph labeling",
+        400: "table dataset",
+        600: "video labeling",
+        900: "custom format",
+    }
+    STR = "\n".join(f"{key}: {value}" for key, value in CHOICES_MAP.items())
+
+    def human_readable(self):
+        return self.CHOICES_MAP.get(self._value, str(self._value))
+
+
+class DataSourceType(cliff_columns.FormattableColumn):
+    CHOICES_MAP = {
+        0: "OBS bucket (default value)",
+        1: "GaussDB(DWS)",
+        2: "DLI",
+        3: "RDS",
+        4: "MRS",
+        5: "AI Gallery",
+        6: "Inference service",
+    }
+    STR = "\n".join(f"{key}: {value}" for key, value in CHOICES_MAP.items())
+
+    def human_readable(self):
+        return self.CHOICES_MAP.get(self._value, str(self._value))
+
 
 DATASOURCE_KEYS_MAP = {
     "cluster_id": "ID of a MRS cluster",
@@ -125,11 +144,6 @@ LABEL_KEYS_MAP = {
 }
 
 
-class SampleType(cliff_columns.FormattableColumn):
-    def human_readable(self):
-        return SAMPLE_TYPE_CHOICES_MAP.get(self._value, str(self._value))
-
-
 _formatters = {
     "labels": cli_utils.YamlFormat,
     "sample_time": cli_utils.UnixTimestampFormatter,
@@ -158,9 +172,9 @@ class AddDatasetSamples(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(AddDatasetSamples, self).get_parser(prog_name)
         parser.add_argument(
-            "datasetId",
-            metavar="<datasetId>",
-            help=_("Dataset ID."),
+            "dataset",
+            metavar="<dataset>",
+            help=_("Dataset Id or name."),
         )
         parser.add_argument(
             "--file-path",
@@ -211,16 +225,11 @@ class AddDatasetSamples(command.ShowOne):
 
         parser.add_argument(
             "--sample-type",
-            choices=list(SAMPLE_TYPE_CHOICES_MAP.keys()),
+            choices=list(SampleType.CHOICES_MAP.keys()),
             type=int,
             help=_(
                 "Sample type. The options are as follows:\n"
-                + "\n".join(
-                    [
-                        f"{key}: {value}"
-                        for key, value in SAMPLE_TYPE_CHOICES_MAP.items()
-                    ]
-                )
+                + SampleType.STR
             ),
         )
         parser.add_argument(
@@ -230,16 +239,11 @@ class AddDatasetSamples(command.ShowOne):
         )
         parser.add_argument(
             "--data-source-type",
-            choices=list(DATASOURCE_TYPE_CHOICES_MAP.keys()),
+            choices=list(DataSourceType.CHOICES_MAP.keys()),
             type=int,
             help=_(
                 "Data source type. The options are as follows:\n"
-                + "\n".join(
-                    [
-                        f"{key}: {value}"
-                        for key, value in DATASOURCE_TYPE_CHOICES_MAP.items()
-                    ]
-                )
+                + DataSourceType.STR
             ),
         )
         parser.add_argument(
@@ -316,6 +320,7 @@ class AddDatasetSamples(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
 
+        dataset = client.find_dataset(parsed_args.dataset)
         sample = {}
         for arg in (
             # "name",
@@ -349,15 +354,7 @@ class AddDatasetSamples(command.ShowOne):
         if data_source:
             sample.update(data_source=data_source)
 
-        # attrs = {}
-
-        # if parsed_args.to_be_confirmed:
-        #     attrs["final_annotation"] = True
-        # if sample:
-        #     attrs["samples"] = [sample]
-        # if not attrs:
-        #     raise exceptions.CommandError("ERROR: No sample data provided.")
-        data = client.add_dataset_samples(parsed_args.datasetId, **sample)
+        data = client.add_dataset_samples(dataset.id, **sample)
 
         formatters = {
             "results": cli_utils.YamlFormat,
@@ -382,9 +379,9 @@ class ListDatasetSamples(command.Lister):
     def get_parser(self, prog_name):
         parser = super(ListDatasetSamples, self).get_parser(prog_name)
         parser.add_argument(
-            "datasetId",
-            metavar="<datasetId>",
-            help=_("Dataset ID."),
+            "dataset",
+            metavar="<dataset>",
+            help=_("Dataset Id or name."),
         )
         parser.add_argument(
             "--email",
@@ -403,16 +400,11 @@ class ListDatasetSamples(command.Lister):
         )
         parser.add_argument(
             "--label-type",
-            choices=list(LABEL_TYPE_CHOICES_MAP.keys()),
+            choices=list(LabelType.CHOICES_MAP.keys()),
             type=int,
             help=_(
                 "Labeling type. The options are as follows:"
-                + "\n".join(
-                    [
-                        f"{key}: {value}"
-                        for key, value in LABEL_TYPE_CHOICES_MAP.items()
-                    ]
-                )
+                + LabelType.STR
             ),
         )
         parser.add_argument(
@@ -446,9 +438,9 @@ class ListDatasetSamples(command.Lister):
         )
         parser.add_argument(
             "--order",
-            metavar="{" + ",".join(SORT_ORDER_CHOICES) + "}",
+            metavar="{asc, desc}",
             type=lambda s: s.lower(),
-            choices=SORT_ORDER_CHOICES,
+            choices=["asc", "desc"],
             help=_("Sorting order. Default value: desc"),
         )
         parser.add_argument(
@@ -473,16 +465,11 @@ class ListDatasetSamples(command.Lister):
         )
         parser.add_argument(
             "--sample-type",
-            choices=list(SAMPLE_TYPE_CHOICES_MAP.keys()),
+            choices=list(SampleType.CHOICES_MAP.keys()),
             type=int,
             help=_(
                 "Sample type. The options are as follows:"
-                + "\n".join(
-                    [
-                        f"{key}: {value}"
-                        for key, value in SAMPLE_TYPE_CHOICES_MAP.items()
-                    ]
-                )
+                + SampleType.STR
             ),
         )
         parser.add_argument(
@@ -528,7 +515,8 @@ class ListDatasetSamples(command.Lister):
             if val or str(val) == "0":
                 query_params[arg] = val
 
-        data = client.dataset_samples(parsed_args.datasetId, **query_params)
+        dataset = client.find_dataset(parsed_args.dataset)
+        data = client.dataset_samples(dataset.id, **query_params)
 
         formatters = {
             "Sample Type": SampleType,
@@ -553,9 +541,9 @@ class ShowDatasetSample(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(ShowDatasetSample, self).get_parser(prog_name)
         parser.add_argument(
-            "datasetId",
-            metavar="<datasetId>",
-            help=_("Dataset ID."),
+            "dataset",
+            metavar="<dataset>",
+            help=_("Dataset Id or name."),
         )
         parser.add_argument(
             "sampleId",
@@ -566,33 +554,10 @@ class ShowDatasetSample(command.ShowOne):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
+        dataset = client.find_dataset(parsed_args.dataset)
         obj = client.get_dataset_sample(
-            parsed_args.datasetId, parsed_args.sampleId
+            dataset.id, parsed_args.sampleId
         )
-
-        display_columns, columns = _get_columns(obj)
-        data = utils.get_item_properties(obj, columns, formatters=_formatters)
-
-        return (display_columns, data)
-
-
-class DatasetSampleSearchCondition(command.ShowOne):
-    _description = _("Show dataset sample search conditions")
-
-    def get_parser(self, prog_name):
-        parser = super(DatasetSampleSearchCondition, self).get_parser(
-            prog_name
-        )
-        parser.add_argument(
-            "datasetId",
-            metavar="<datasetId>",
-            help=_("Dataset ID."),
-        )
-        return parser
-
-    def take_action(self, parsed_args):
-        client = self.app.client_manager.modelartsv2
-        obj = client.get_dataset_sample_search_condition(parsed_args.datasetId)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns, formatters=_formatters)
@@ -608,9 +573,9 @@ class DeleteDatasetSamples(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(DeleteDatasetSamples, self).get_parser(prog_name)
         parser.add_argument(
-            "datasetId",
-            metavar="<datasetId>",
-            help=_("Dataset ID."),
+            "dataset",
+            metavar="<dataset>",
+            help=_("Dataset Id or name."),
         )
         parser.add_argument(
             "sampleId",
@@ -631,8 +596,9 @@ class DeleteDatasetSamples(command.ShowOne):
         if parsed_args.delete_source:
             delete_source = parsed_args.delete_source
 
+        dataset = client.find_dataset(parsed_args.dataset)
         obj = client.delete_dataset_samples(
-            parsed_args.datasetId, parsed_args.sampleId, delete_source
+            dataset.id, parsed_args.sampleId, delete_source
         )
         formatters = {
             "results": cli_utils.YamlFormat,

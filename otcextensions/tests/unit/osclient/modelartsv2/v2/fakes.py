@@ -20,7 +20,9 @@ from otcextensions.sdk.modelartsv2.v2 import dataset_import_task
 from otcextensions.sdk.modelartsv2.v2 import dataset_sample
 from otcextensions.sdk.modelartsv2.v2 import dataset_statistics
 from otcextensions.sdk.modelartsv2.v2 import dataset_sync
+from otcextensions.sdk.modelartsv2.v2 import dataset_version
 from otcextensions.tests.unit.osclient import test_base
+from otcextensions.tests.unit.sdk.modelartsv2.v2 import examples
 
 
 def gen_data(obj, columns, formatters=None):
@@ -33,9 +35,7 @@ def gen_data(obj, columns, formatters=None):
 class TestModelartsv2(utils.TestCommand):
     def setUp(self):
         super(TestModelartsv2, self).setUp()
-
         self.app.client_manager.modelartsv2 = mock.Mock()
-
         self.client = self.app.client_manager.modelartsv2
 
 
@@ -49,79 +49,20 @@ class FakeDataset(test_base.Fake):
         :return:
             A FakeResource object, with id, name and so on
         """
-        object_info = {
-            "dataset_id": "dataset-id",
-            "dataset_name": "dataset-name",
-            "dataset_type": 0,
-            "data_format": "Default",
-            "next_version_num": 1,
-            "status": 1,
-            "data_sources": [
-                {
-                    "data_type": 0,
-                    "data_path": "/test-bucket/dataset/flowers/",
-                }
-            ],
-            "create_time": 1704447736382,
-            "update_time": 1704447736382,
-            "description": "",
-            "total_sample_count": 154,
-            "annotated_sample_count": 153,
-            "unconfirmed_sample_count": 0,
-            "deleted_sample_count": 79,
-            "work_path": "/test-bucket/output/",
-            "inner_work_path": "/test-bucket/output/tmp-path/",
-            "inner_annotation_path": "/test-bucket/output/tmp-path/anotation/",
-            "inner_data_path": "/test-bucket//output/tmp-path/data/",
-            "inner_log_path": "/test-bucket/output/tmp-path/logs/",
-            "inner_temp_path": "/test-bucket/output/tmp-path/temp/",
-            "inner_task_path": "/test-bucket//output/tmp-path/task/",
-            "work_path_type": 0,
-            "workspace_id": "0",
-            "enterprise_project_id": "0",
-            "workforce_task_count": 0,
-            "feature_supports": ["0"],
-            "managed": False,
-            "import_data": False,
-            "ai_project": "default-ai-project",
-            "label_task_count": 1,
-            "dataset_format": 0,
-            "deletion_stats": {"default": 79},
-            "dataset_version_count": 0,
-            "dataset_version": "v1",
-            "content_labeling": True,
-            "data_update_time": 1709252826342,
-            "labels": [
-                {
-                    "name": "flower",
-                    "type": 0,
-                    "property": {
-                        "@modelarts:color": "#266b5e",
-                        "@modelarts:shortcut": "",
-                    },
-                    "attributes": [],
-                },
-                {
-                    "name": "dandelion",
-                    "type": 0,
-                    "property": {
-                        "@modelarts:color": "#1a0135",
-                        "@modelarts:shortcut": "",
-                    },
-                    "attributes": [],
-                },
-                {
-                    "name": "rose",
-                    "type": 0,
-                    "property": {
-                        "@modelarts:color": "",
-                        "@modelarts:shortcut": "",
-                    },
-                    "attributes": [],
-                },
-            ],
-        }
-        return dataset.Dataset(**object_info)
+        return dataset.Dataset(**examples.DATASET)
+
+
+class FakeDatasetVersion(test_base.Fake):
+    """Fake one or more Modelarts dataset."""
+
+    @classmethod
+    def generate(cls):
+        """Create a fake dataset sample.
+
+        :return:
+            A FakeResource object, with id, name and so on
+        """
+        return dataset_version.DatasetVersion(**examples.DATASET_VERSION)
 
 
 class FakeDatasetStatistics(test_base.Fake):
@@ -134,42 +75,9 @@ class FakeDatasetStatistics(test_base.Fake):
         :return:
             A FakeResource object, with id, name and so on
         """
-        object_info = {
-            "label_stats": [
-                {
-                    "name": "daisy",
-                    "type": 0,
-                    "property": {"@modelarts:color": "#266b5e"},
-                    "count": 0,
-                    "sample_count": 0,
-                },
-                {
-                    "name": "dandelion",
-                    "type": 0,
-                    "property": {"@modelarts:color": "#1a0135"},
-                    "count": 0,
-                    "sample_count": 0,
-                },
-            ],
-            "sample_stats": {
-                "un_annotation": 500,
-                "all": 500,
-                "total": 500,
-                "deleted": 0,
-                "manual_annotation": 0,
-                "auto_annotation": 0,
-                "lefted": 500,
-            },
-            "key_sample_stats": {
-                "total": 500,
-                "non_key_sample": 500,
-                "key_sample": 0,
-            },
-            "deletion_stats": {},
-            "metadata_stats": {},
-            "data_spliting_enable": False,
-        }
-        return dataset_statistics.DatasetStatistics(**object_info)
+        return dataset_statistics.DatasetStatistics(
+            **examples.DATASET_STATISTICS
+        )
 
 
 class FakeDatasetSample(test_base.Fake):
@@ -182,28 +90,7 @@ class FakeDatasetSample(test_base.Fake):
         :return:
             A FakeResource object, with id, name and so on
         """
-        object_info = {
-            "annotated_by": "human/OTC-EU-DE-000000000010000XXXXXX/dummy",
-            "labels": [
-                {
-                    "name": "Tomato_healthy",
-                    "property": {},
-                    "type": 0,
-                },
-            ],
-            "sample_type": 0,
-            "source": "https://dummydummy/testdata",
-            "preview": "https://dummydummy/test",
-            "sample_id": "000500f237d4c078ca64f2fd99da9828",
-            "sample_status": "MANUAL_ANNOTATION",
-            "sample_time": 1694457754000,
-            "metadata": {
-                "@modelarts:import_origin": 0,
-                "@modelarts:size": [256, 256, 3],
-                "@modelarts:source_image_info": "https://dummydummy/test",
-            },
-        }
-        return dataset_sample.DatasetSample(**object_info)
+        return dataset_sample.DatasetSample(**examples.DATASET_SAMPLE)
 
 
 class FakeDatasetSampleResp(test_base.Fake):
@@ -245,26 +132,9 @@ class FakeDatasetImportTask(test_base.Fake):
 
     @classmethod
     def generate(cls):
-        object_info = {
-            "status": "COMPLETED",
-            "task_id": "gfghHSokody6AJigS5A_RHJ1zOkIoI3Nzwxj8nh",
-            "dataset_id": "gfghHSokody6AJigS5A",
-            "import_path": "obs://test-obs/daoLu_images/cat-rabbit/",
-            "import_type": 0,
-            "total_sample_count": 20,
-            "imported_sample_count": 20,
-            "annotated_sample_count": 20,
-            "total_sub_sample_count": 0,
-            "imported_sub_sample_count": 0,
-            "total_file_size": 0,
-            "finished_file_count": 0,
-            "finished_file_size": 0,
-            "total_file_count": 0,
-            "update_ms": 1606114833955,
-            "create_time": 1606114833874,
-            "elapsed_time": 2,
-        }
-        return dataset_import_task.DatasetImportTask(**object_info)
+        return dataset_import_task.DatasetImportTask(
+            **examples.DATASET_IMPORT_TASK
+        )
 
 
 class FakeDatasetExportTask(test_base.Fake):
@@ -272,23 +142,6 @@ class FakeDatasetExportTask(test_base.Fake):
 
     @classmethod
     def generate(cls):
-        object_info = {
-            "task_id": "TZMuy7OKbClkGCAc3gb",
-            "path": "/test-obs/daoChu/",
-            "export_type": 3,
-            "version_format": "Default",
-            "export_format": 2,
-            "export_params": {
-                "sample_state": "",
-                "export_dest": "DIR",
-                "clear_hard_property": True,
-                "clear_difficult": False,
-                "train_sample_ratio": 1.0,
-                "ratio_sample_usage": False,
-            },
-            "status": "RUNNING",
-            "progress": 0.0,
-            "create_time": 1606103424662,
-            "update_time": 1606103494124,
-        }
-        return dataset_export_task.DatasetExportTask(**object_info)
+        return dataset_export_task.DatasetExportTask(
+            **examples.DATASET_EXPORT_TASK
+        )

@@ -12,20 +12,9 @@
 #
 from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv1.v1 import service_monitor
+from otcextensions.tests.unit.sdk.modelartsv1.v1 import examples
 
-EXAMPLE = {
-    "model_id": "xxxx",
-    "model_name": "minst",
-    "model_version": "1.0.0",
-    "invocation_times": 50,
-    "failed_times": 1,
-    "cpu_core_usage": 2.4,
-    "cpu_core_total": 4,
-    "cpu_memory_usage": 2011,
-    "cpu_memory_total": 8192,
-    "gpu_usage": 0.6,
-    "gpu_total": 1,
-}
+EXAMPLE = examples.SERVICE_MONITOR
 
 
 class TestServiceMonitor(base.TestCase):
@@ -54,9 +43,7 @@ class TestServiceMonitor(base.TestCase):
         )
 
     def test_make_it(self):
-        updated_sot_attrs = ()
         sot = service_monitor.ServiceMonitor(**EXAMPLE)
 
         for key, value in EXAMPLE.items():
-            if key not in updated_sot_attrs:
-                self.assertEqual(getattr(sot, key), value)
+            self.assertEqual(getattr(sot, key), value)

@@ -12,42 +12,9 @@
 #
 from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv2.v2 import dataset_statistics
+from otcextensions.tests.unit.sdk.modelartsv2.v2 import examples
 
-EXAMPLE = {
-    "label_stats": [
-        {
-            "name": "daisy",
-            "type": 0,
-            "property": {"@modelarts:color": "#266b5e"},
-            "count": 0,
-            "sample_count": 0,
-        },
-        {
-            "name": "dandelion",
-            "type": 0,
-            "property": {"@modelarts:color": "#1a0135"},
-            "count": 0,
-            "sample_count": 0,
-        },
-    ],
-    "sample_stats": {
-        "un_annotation": 500,
-        "all": 500,
-        "total": 500,
-        "deleted": 0,
-        "manual_annotation": 0,
-        "auto_annotation": 0,
-        "lefted": 500,
-    },
-    "key_sample_stats": {
-        "total": 500,
-        "non_key_sample": 500,
-        "key_sample": 0,
-    },
-    "deletion_stats": {},
-    "metadata_stats": {},
-    "data_spliting_enable": False,
-}
+EXAMPLE = examples.DATASET_STATISTICS
 
 
 class TestDatasetStatistics(base.TestCase):

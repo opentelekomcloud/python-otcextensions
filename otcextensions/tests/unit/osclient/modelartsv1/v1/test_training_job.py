@@ -21,14 +21,16 @@ from otcextensions.tests.unit.osclient.modelartsv1.v1 import fakes
 
 _COLUMNS = (
     "created_at",
-    "is_success",
+    "duration",
+    "id",
+    "job_desc",
     "job_id",
     "job_name",
     "name",
-    "resource_id",
     "status",
+    "user",
+    "version_count",
     "version_id",
-    "version_name",
 )
 
 

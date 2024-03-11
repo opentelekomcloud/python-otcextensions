@@ -12,12 +12,9 @@
 #
 from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv1.v1 import service_event
+from otcextensions.tests.unit.sdk.modelartsv1.v1 import examples
 
-EXAMPLE = {
-    "occur_time": 1562597251764,
-    "event_type": "normal",
-    "event_info": "start to deploy service",
-}
+EXAMPLE = examples.SERVICE_EVENT
 
 
 class TestEvent(base.TestCase):

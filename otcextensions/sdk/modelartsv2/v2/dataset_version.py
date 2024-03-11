@@ -27,3 +27,11 @@ class DatasetVersion(DatasetVersionSpec):
 
     #: Dataset ID.
     datasetId = resource.URI("datasetId")
+
+    _query_mapping = resource.QueryParameters(
+        "status",
+        "train_evaluate_ratio",
+        "version_format",
+    )
+
+    version_id = resource.Body("version_id", alternate_id=True)

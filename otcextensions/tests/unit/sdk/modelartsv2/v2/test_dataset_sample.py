@@ -12,42 +12,10 @@
 #
 from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv2.v2 import dataset_sample
+from otcextensions.tests.unit.sdk.modelartsv2.v2 import examples
+from otcextensions.tests.unit.utils import assert_attributes_equal
 
-EXAMPLE = {
-    "annotated_by": "human/OTC-EU-DE-000000000010000XXXXXX/dummy",
-    "labels": [
-        {
-            "name": "Tomato_healthy",
-            "property": {},
-            "type": 0,
-        },
-    ],
-    #    "metadata": {
-    #        "@modelarts:import_origin": 0,
-    #        "@modelarts:size": [256, 256, 3],
-    #        "@modelarts:source_image_info": "https://dummydummy/test",
-    #    },
-    #    "preview": "https://dummydummy/test",
-    #    "sample_id": "000500f237d4c078ca64f2fd99da9828",
-    #    "sample_status": "MANUAL_ANNOTATION",
-    #    "sample_time": 1694457754000,
-    #    "sample_type": 0,
-    #    "source": "https://dummydummy/testdata",
-}
-
-DELETE_SAMPLES_RESP = {
-    "success": False,
-    "results": [
-        {
-            "success": False,
-            "error_code": "ModelArts.4420",
-            "error_msg": "Sample not found. [sample-id]",
-        },
-        {
-            "success": True,
-        },
-    ],
-}
+EXAMPLE = examples.DATASET_SAMPLE
 
 
 class TestSample(base.TestCase):
@@ -93,11 +61,10 @@ class TestSample(base.TestCase):
         )
 
     def test_make_it(self):
-        updated_sot_attrs = [
-            "labels",
-        ]
         sot = dataset_sample.DatasetSample(**EXAMPLE)
-
+        self.assertEqual(sot.id, EXAMPLE["sample_id"])
         for key, value in EXAMPLE.items():
-            if key not in updated_sot_attrs:
-                self.assertEqual(getattr(sot, key), value)
+            if key == "metadata":
+                pass
+            else:
+                assert_attributes_equal(self, getattr(sot, key), value)

@@ -11,31 +11,31 @@
 # under the License.
 #
 from openstack.tests.unit import base
-from otcextensions.sdk.modelartsv2.v2 import dataset_import_task
-from otcextensions.tests.unit.sdk.modelartsv2.v2 import examples
+from otcextensions.sdk.modelartsv1.v1 import job_flavor
+from otcextensions.tests.unit.sdk.modelartsv1.v1 import examples
+from otcextensions.tests.unit.utils import assert_attributes_equal
 
-EXAMPLE = examples.DATASET_IMPORT_TASK
+EXAMPLE = examples.JOB_FLAVOR
 
 
-class TestDatasetImportTask(base.TestCase):
+class TestJobFlavor(base.TestCase):
     def setUp(self):
-        super(TestDatasetImportTask, self).setUp()
+        super(TestJobFlavor, self).setUp()
 
     def test_basic(self):
-        sot = dataset_import_task.DatasetImportTask()
+        sot = job_flavor.JobFlavor()
 
-        self.assertEqual("/datasets/%(datasetId)s/import-tasks", sot.base_path)
+        self.assertEqual("/job/resource-specs", sot.base_path)
+        self.assertEqual("specs", sot.resources_key)
         self.assertEqual(None, sot.resource_key)
-        self.assertEqual("import_tasks", sot.resources_key)
 
         self.assertTrue(sot.allow_list)
-        self.assertTrue(sot.allow_fetch)
-        self.assertTrue(sot.allow_create)
+        self.assertFalse(sot.allow_fetch)
+        self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_delete)
         self.assertFalse(sot.allow_commit)
+        self.assertFalse(sot.allow_patch)
 
     def test_make_it(self):
-        sot = dataset_import_task.DatasetImportTask(**EXAMPLE)
-
-        for key, value in EXAMPLE.items():
-            self.assertEqual(getattr(sot, key), value)
+        sot = job_flavor.JobFlavor(**EXAMPLE)
+        assert_attributes_equal(self, sot, EXAMPLE)

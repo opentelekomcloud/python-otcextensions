@@ -12,47 +12,11 @@
 #
 from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv1.v1 import service
+from otcextensions.tests.unit.sdk.modelartsv1.v1 import examples
+from otcextensions.tests.unit.utils import assert_attributes_equal
 
-EXAMPLE = {
-    "access_address": "https://access_address",
-    "additional_properties": {},
-    "config": [
-        {
-            "model_id": "model-uuid",
-            "model_name": "model-name",
-            "model_version": "0.0.1",
-            "source_type": "auto",
-            "specification": "modelarts.vm.high.p3",
-            "custom_spec": {},
-            "status": "ready",
-            "weight": 100,
-            "instance_count": 1,
-            "scaling": False,
-            "envs": {},
-            "additional_properties": {},
-            "support_debug": False,
-        }
-    ],
-    "description": "Created by Exeml project(name: exeML-aqi).",
-    "failed_times": 3,
-    "infer_type": "real-time",
-    "invocation_times": 5,
-    "is_free": False,
-    "is_shared": False,
-    "operation_time": 1705621491068,
-    "owner": "owner-uuid",
-    "progress": 100,
-    "project": "project-uuid",
-    "publish_at": 1691908601470,
-    "service_id": "service-uuid",
-    "service_name": "exeML-aqi_ExeML_1691908601350529540",
-    "shared_count": 0,
-    "status": "running",
-    "tenant": "tenant-uuid",
-    "transition_at": 1696333731658,
-    "update_time": 1691908601470,
-    "workspace_id": "0",
-}
+EXAMPLE = examples.SERVICE
+
 
 EXAMPLE_CREATE = {
     "config": [
@@ -111,32 +75,9 @@ class TestService(base.TestCase):
         )
 
     def test_make_it(self):
-        updated_sot_attrs = ("config",)
         sot = service.Service(**EXAMPLE)
-        for key, value in EXAMPLE.items():
-            if key not in updated_sot_attrs:
-                self.assertEqual(getattr(sot, key), value)
-
-        config_spec = EXAMPLE["config"][0]
-        sot_config = service.ConfigSpec(**config_spec)
-        for key, value in config_spec.items():
-            if key != "custom_spec":
-                self.assertEqual(getattr(sot_config, key), value)
-
-        custom_spec = EXAMPLE["config"][0]["custom_spec"]
-        sot_custom_spec = service.CustomSpec(**custom_spec)
-        for key, value in custom_spec.items():
-            self.assertEqual(getattr(sot_custom_spec, key), value)
+        assert_attributes_equal(self, sot, EXAMPLE)
 
     def test_create_sot(self):
         sot = service.Service(**EXAMPLE_CREATE)
-
-        for key, value in EXAMPLE_CREATE.items():
-            if key != "config":
-                self.assertEqual(getattr(sot, key), value)
-
-        for config in EXAMPLE_CREATE["config"]:
-            sot_config = service.ConfigSpec(**config)
-            for key, value in config.items():
-                if key != "custom_spec":
-                    self.assertEqual(getattr(sot_config, key), value)
+        assert_attributes_equal(self, sot, EXAMPLE_CREATE)

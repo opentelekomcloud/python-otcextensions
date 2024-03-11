@@ -12,11 +12,15 @@
 #
 from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv1.v1 import training_job
+from otcextensions.tests.unit.sdk.modelartsv1.v1 import examples
+from otcextensions.tests.unit.utils import assert_attributes_equal
+
+EXAMPLE = examples.TRAINING_JOB
 
 EXAMPLE_CREATE = {
     "job_name": "TestModelArtsJob3",
     "job_desc": "This is a ModelArts job",
-    "workspace_id": "af261af2218841ec960b01ab3cf1a5fa",
+    "workspace_id": "0",
     "config": {
         "worker_server_num": 1,
         "app_url": "/usr/app/",
@@ -25,8 +29,8 @@ EXAMPLE_CREATE = {
             {"label": "learning_rate", "value": "0.01"},
             {"label": "batch_size", "value": "32"},
         ],
-        "dataset_id": "38277e62-9e59-48f4-8d89-c8cf41622c24",
-        "dataset_version_id": "2ff0d6ba-c480-45ae-be41-09a8369bfc90",
+        "dataset_id": "dataset-id",
+        "dataset_version_id": "version-id",
         "spec_id": 1,
         "engine_id": 1,
         "train_url": "/usr/train/",
@@ -34,7 +38,7 @@ EXAMPLE_CREATE = {
         "volumes": [
             {
                 "nfs": {
-                    "id": "43b37236-9afa-4855-8174-32254b9562e7",
+                    "id": "nfs-id",
                     "src_path": "192.168.8.150:/",
                     "dest_path": "/home/work/nas",
                     "read_only": False,
@@ -69,43 +73,15 @@ class TestTrainingjob(base.TestCase):
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_fetch)
 
-    # def test_make_it(self):
-    #    updated_sot_attrs = ["create_time"]
-    #    sot = training_job.TrainingJob(**EXAMPLE)
-    #    self.assertEqual(EXAMPLE["create_time"], sot.created_at)
+    def test_make_it(self):
+        sot = training_job.TrainingJob(**EXAMPLE)
+        self.assertEqual(sot.id, EXAMPLE["job_id"])
+        for key, value in EXAMPLE.items():
+            if key == "create_time":
+                self.assertEqual(sot.created_at, EXAMPLE[key])
+            else:
+                assert_attributes_equal(self, getattr(sot, key), value)
 
-    #    for key, value in EXAMPLE.items():
-    #        if key not in updated_sot_attrs:
-    #            self.assertEqual(getattr(sot, key), value)
-
-    def test_make_create(self):
+    def test_create_sot(self):
         sot = training_job.TrainingJob(**EXAMPLE_CREATE)
-
-        for key, value in EXAMPLE_CREATE.items():
-            if key not in ["config"]:
-                self.assertEqual(getattr(sot, key), value)
-
-        config = EXAMPLE_CREATE["config"]
-        sot_config = training_job.ConfigSpec(**config)
-        for key, value in config.items():
-            if key not in ["parameter", "volumes"]:
-                self.assertEqual(getattr(sot_config, key), value)
-
-        config_parameter = EXAMPLE_CREATE["config"]["parameter"][0]
-        sot_config_parameter = training_job.ParameterSpec(**config_parameter)
-        for key, value in config_parameter.items():
-            self.assertEqual(getattr(sot_config_parameter, key), value)
-
-        config_volume_nfs = EXAMPLE_CREATE["config"]["volumes"][0]["nfs"]
-        sot_config_volume_nfs = training_job.NfsSpec(**config_volume_nfs)
-        for key, value in config_volume_nfs.items():
-            self.assertEqual(getattr(sot_config_volume_nfs, key), value)
-
-        config_volume_hostpath = EXAMPLE_CREATE["config"]["volumes"][1][
-            "host_path"
-        ]
-        sot_config_volume_hostpath = training_job.HostPathSpec(
-            **config_volume_hostpath
-        )
-        for key, value in config_volume_hostpath.items():
-            self.assertEqual(getattr(sot_config_volume_hostpath, key), value)
+        assert_attributes_equal(self, sot, EXAMPLE_CREATE)

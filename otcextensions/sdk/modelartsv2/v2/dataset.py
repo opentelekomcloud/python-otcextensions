@@ -154,7 +154,7 @@ class DatasetVersionSpec(resource.Resource):
     #: Status code of a preprocessing task such as rotation and cropping.
     code = resource.Body("code")
     #: Time when a version is created.
-    create_time = resource.Body("create_time", type=int)
+    created_at = resource.Body("create_time", type=int)
     #: Whether to crop the image.
     crop = resource.Body("crop", type=bool)
     #: Path for storing cropped files.

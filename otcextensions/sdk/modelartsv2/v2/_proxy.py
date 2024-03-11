@@ -278,9 +278,10 @@ class Proxy(proxy.Proxy):
             **kwargs,
         )
 
-    def get_dataset_version(self, version_id, dataset_id):
+    def get_dataset_version(self, dataset_id, version_id):
         """Get the dataset version by version id
 
+        :param dataset_id: Dataset ID.
         :param version_id: key id or an instance of
             :class:`~otcextensions.sdk.modelartsv2.v2.dataset.DatasetVersion`
 

@@ -12,16 +12,9 @@
 #
 from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv1.v1 import service_flavor
+from otcextensions.tests.unit.sdk.modelartsv1.v1 import examples
 
-EXAMPLE = {
-    "specification": "modelarts.vm.gpu.v100",
-    "billing_spec": "modelarts.vm.gpu.v100",
-    "is_open": True,
-    "spec_status": "normal",
-    "is_free": False,
-    "over_quota": False,
-    "extend_params": 1,
-}
+EXAMPLE = examples.SERVICE_FLAVOR
 
 
 class TestServiceFlavor(base.TestCase):

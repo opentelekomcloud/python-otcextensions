@@ -12,8 +12,10 @@
 #
 from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv1.v1 import training_job_config
-from otcextensions.tests.unit.sdk.modelartsv1.v1.examples import \
-    EXAMPLE_TRAINING_JOB_CONFIGURATION as EXAMPLE
+from otcextensions.tests.unit.sdk.modelartsv1.v1 import examples
+from otcextensions.tests.unit.utils import assert_attributes_equal
+
+EXAMPLE = examples.TRAINING_JOB_CONFIG
 
 
 class TestTrainingjobConfig(base.TestCase):
@@ -34,10 +36,10 @@ class TestTrainingjobConfig(base.TestCase):
         self.assertTrue(sot.allow_commit)
 
     def test_make_it(self):
-        updated_sot_attrs = ["create_time"]
         sot = training_job_config.TrainingJobConfig(**EXAMPLE)
-        self.assertEqual(EXAMPLE["create_time"], sot.created_at)
 
         for key, value in EXAMPLE.items():
-            if key not in updated_sot_attrs:
-                self.assertEqual(getattr(sot, key), value)
+            if key == "create_time":
+                self.assertEqual(sot.created_at, EXAMPLE[key])
+            else:
+                assert_attributes_equal(self, getattr(sot, key), value)

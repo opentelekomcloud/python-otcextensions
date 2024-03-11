@@ -12,15 +12,10 @@
 #
 from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv2.v2 import dataset_export_task
+from otcextensions.tests.unit.sdk.modelartsv2.v2 import examples
+from otcextensions.tests.unit.utils import assert_attributes_equal
 
-EXAMPLE = {
-    "path": "/test-obs/daoChu/",
-    "export_type": 3,
-    "export_params": {
-        "sample_state": "",
-        "export_dest": "DIR",
-    },
-}
+EXAMPLE = examples.DATASET_EXPORT_TASK
 
 
 class TestDatasetExportTask(base.TestCase):
@@ -41,18 +36,5 @@ class TestDatasetExportTask(base.TestCase):
         self.assertFalse(sot.allow_commit)
 
     def test_make_it(self):
-        updated_sot_attrs = ["export_params"]
         sot = dataset_export_task.DatasetExportTask(**EXAMPLE)
-
-        for key, value in EXAMPLE.items():
-            if key not in updated_sot_attrs:
-                self.assertEqual(getattr(sot, key), value)
-
-        self.assertEqual(
-            sot.export_params.sample_state,
-            EXAMPLE["export_params"]["sample_state"],
-        )
-        self.assertEqual(
-            sot.export_params.export_dest,
-            EXAMPLE["export_params"]["export_dest"],
-        )
+        assert_attributes_equal(self, sot, EXAMPLE)

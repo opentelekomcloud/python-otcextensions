@@ -73,6 +73,8 @@ class LocationSpec(resource.Resource):
     path = resource.Body("path")
     #: If type is set to obs, this parameter does not need to be set.
     volume_size = resource.Body("volume_size", type=int)
+    #: Volume stotage unit.
+    volume_unit = resource.Body("volume_unit")
 
 
 class StorageSpec(resource.Resource):
@@ -139,6 +141,8 @@ class FlavorDetailsSpec(resource.Resource):
     name = resource.Body("name")
     #: Parameters that describing flavor.
     params = resource.Body("params", type=dict)
+    #: Parameters that describing flavor.
+    params_extends = resource.Body("params_extends", type=dict)
     #: Promotion type.
     promo_type = resource.Body("promo_type")
     #: Left queuing time, in secondsThis parameter is mandatory when
@@ -202,6 +206,8 @@ class ProvisionSpecSpec(resource.Resource):
 
 
 class ProvisionSpec(resource.Resource):
+    #: Provision annotations.
+    annotations = resource.Body("annotations", type=dict)
     #: Deployment details.
     spec = resource.Body("spec", type=ProvisionSpecSpec)
     #: Deployment type.
