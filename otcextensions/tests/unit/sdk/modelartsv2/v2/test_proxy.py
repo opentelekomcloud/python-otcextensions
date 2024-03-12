@@ -142,7 +142,7 @@ class TestDatasetLabel(TestModelartsV2Proxy):
         self.verify_list(
             self.proxy.dataset_labels,
             dataset_label.DatasetLabel,
-            method_kwargs={"dataset_id": "dataset-id"},
+            method_kwargs={"dataset": "dataset-id"},
             expected_kwargs={"datasetId": "dataset-id"},
         )
 
@@ -151,7 +151,7 @@ class TestDatasetLabel(TestModelartsV2Proxy):
             self.proxy.create_dataset_label,
             dataset_label.DatasetLabel,
             method_kwargs={
-                "dataset_id": "dataset-id",
+                "dataset": "dataset-id",
                 "arg1": "val1",
                 "arg2": "val2",
             },
@@ -198,7 +198,7 @@ class TestDatasetExportTask(TestModelartsV2Proxy):
         self.verify_list(
             self.proxy.dataset_export_tasks,
             dataset_export_task.DatasetExportTask,
-            method_kwargs={"dataset_id": "dataset-id"},
+            method_kwargs={"dataset": "dataset-id"},
             expected_kwargs={"datasetId": "dataset-id"},
         )
 
@@ -215,7 +215,7 @@ class TestDatasetExportTask(TestModelartsV2Proxy):
         self.verify_create(
             self.proxy.create_dataset_export_task,
             dataset_export_task.DatasetExportTask,
-            method_kwargs={"dataset_id": "dataset-id"},
+            method_kwargs={"dataset": "dataset-id"},
             expected_kwargs={"datasetId": "dataset-id"},
         )
 
@@ -225,7 +225,7 @@ class TestDatasetImportTask(TestModelartsV2Proxy):
         self.verify_list(
             self.proxy.dataset_import_tasks,
             dataset_import_task.DatasetImportTask,
-            method_kwargs={"dataset_id": "dataset-id"},
+            method_kwargs={"dataset": "dataset-id"},
             expected_kwargs={"datasetId": "dataset-id"},
         )
 
@@ -242,7 +242,7 @@ class TestDatasetImportTask(TestModelartsV2Proxy):
         self.verify_create(
             self.proxy.create_dataset_import_task,
             dataset_import_task.DatasetImportTask,
-            method_kwargs={"dataset_id": "dataset-id"},
+            method_kwargs={"dataset": "dataset-id"},
             expected_kwargs={"datasetId": "dataset-id"},
         )
 
@@ -252,7 +252,7 @@ class TestDatasetVersion(TestModelartsV2Proxy):
         self.verify_list(
             self.proxy.dataset_versions,
             dataset_version.DatasetVersion,
-            method_kwargs={"dataset_id": "dataset-id"},
+            method_kwargs={"dataset": "dataset-id"},
             expected_kwargs={"datasetId": "dataset-id"},
         )
 
@@ -269,7 +269,7 @@ class TestDatasetVersion(TestModelartsV2Proxy):
         self.verify_create(
             self.proxy.create_dataset_version,
             dataset_version.DatasetVersion,
-            method_kwargs={"dataset_id": "dataset-id"},
+            method_kwargs={"dataset": "dataset-id"},
             expected_kwargs={"datasetId": "dataset-id"},
         )
 
@@ -290,8 +290,8 @@ class TestDatasetStatistics(TestModelartsV2Proxy):
             self.proxy.get_dataset_statistics,
             dataset_statistics.DatasetStatistics,
             method_args=[],
-            method_kwargs={"dataset_id": "id"},
-            expected_kwargs={"datasetId": "id", "requires_id": False},
+            method_kwargs={"dataset": "dataset-id"},
+            expected_kwargs={"datasetId": "dataset-id", "requires_id": False},
         )
 
 
@@ -302,7 +302,7 @@ class TestDatasetSync(TestModelartsV2Proxy):
             dataset_sync.DatasetSync,
             method_args=[],
             expected_args=["status"],
-            method_kwargs={"dataset_id": "dataset-id"},
+            method_kwargs={"dataset": "dataset-id"},
             expected_kwargs={"datasetId": "dataset-id"},
         )
 
@@ -310,6 +310,6 @@ class TestDatasetSync(TestModelartsV2Proxy):
         self.verify_create(
             self.proxy.dataset_sync,
             dataset_sync.DatasetSync,
-            method_kwargs={"dataset_id": "dataset-id"},
+            method_kwargs={"dataset": "dataset-id"},
             expected_kwargs={"datasetId": "dataset-id"},
         )

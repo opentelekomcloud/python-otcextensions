@@ -51,7 +51,7 @@ class Proxy(proxy.Proxy):
         """List all BuiltIn Models.
 
         :param dict params: Optional query parameters to be sent to limit
-            the models being returned.
+            the built-in models being returned.
 
         :returns: a generator of
             :class:`~otcextensions.sdk.modelartsv1.v1.built_in_model.BuiltInModel`
@@ -62,7 +62,7 @@ class Proxy(proxy.Proxy):
     def find_builtin_model(self, name_or_id, ignore_missing=False):
         """Find a single model
 
-        :param name_or_id: The name or ID of a ModelArts model
+        :param name_or_id: The name or ID of a ModelArts built-in model
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
             if the model does not exist.
@@ -70,8 +70,7 @@ class Proxy(proxy.Proxy):
             to find a nonexistent cluster.
 
         :returns:
-            One :class:`~otcextensions.sdk.modelartsv1.v1.model.Model`
-            or ``None``
+            One :class:`~otcextensions.sdk.modelartsv1.v1.built_in_model.BuiltInModel` or ``None``  # noqa: E501
         """
         return self._find(
             _builtin_model.BuiltInModel,
@@ -105,7 +104,7 @@ class Proxy(proxy.Proxy):
         return self._create(_model.Model, prepend_key=False, **attrs)
 
     def get_model(self, model):
-        """Get the model by id
+        """Get details of a model by Id.
 
         :param model: key id or an instance of
             :class:`~otcextensions.sdk.modelartsv1.v1.model.Model`
@@ -118,7 +117,7 @@ class Proxy(proxy.Proxy):
     def find_model(self, name_or_id, ignore_missing=False):
         """Find a single model
 
-        :param name_or_id: The name or ID of a ModelArts model
+        :param name_or_id: The name or ID of a modelarts model.
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised
             if the model does not exist.
@@ -234,6 +233,7 @@ class Proxy(proxy.Proxy):
 
         :param instance: key id or an instance of
             :class:`~otcextensions.sdk.modelartsv1.v1.devenv.Devenv`
+
         :returns: instance of
             :class:`~otcextensions.sdk.modelartsv1.v1.devenv.Devenv`
         """
@@ -261,25 +261,27 @@ class Proxy(proxy.Proxy):
             the services being returned.
 
         :returns: a generator of
-            :class:`~otcextensions.sdk.modelartsv1.v1.services.Services`
+            :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
             instances
         """
         params["paginated"] = False
         return self._list(_service.Service, **params)
 
     def create_service(self, **attrs):
-        """Deploy a model from attributes
+        """Deploy a modelarts service from attributes.
 
         :param dict attrs: Keyword arguments which will be used to create
             a :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`,
             comprised of the properties on the Service class.
+
         :returns: The result of service creation.
         :rtype: :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
         """
-        return self._create(_service.Service, prepend_key=False, **attrs)
+        return self._create(_service.Service, **attrs)
 
     def delete_service(self, service, ignore_missing=False):
-        """Delete a service
+        """Delete a modelarts service.
+
         :param service: key id or an instance of
             :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
         :param bool ignore_missing: When set to ``False``
@@ -287,6 +289,7 @@ class Proxy(proxy.Proxy):
             the service does not exist.
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent service.
+
         :returns: ``None``
         """
         return self._delete(
@@ -294,7 +297,7 @@ class Proxy(proxy.Proxy):
         )
 
     def get_service(self, service):
-        """Get the service by UUID
+        """Get details of a modelarts service.
 
         :param service: key id or an instance of
             :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
@@ -303,35 +306,6 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
         """
         return self._get(_service.Service, service)
-
-    def update_service(self, service, **attrs):
-        """Update a Service Configurations.
-
-        :param service: key id or an instance of
-            :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
-        :param dict attrs: Keyword arguments which will be used to update
-            a :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`,
-            comprised of the properties on the Service class.
-
-        """
-        return self._update(_service.Service, service, **attrs)
-
-    def stop_service(self, service):
-        """Stop a Service.
-
-        :param service: key id or an instance of
-            :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
-
-        """
-        return self._update(_service.Service, service, status="stopped")
-
-    def start_service(self, service):
-        """Start a Service.
-
-        :param service: key id or an instance of
-            :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
-        """
-        return self._update(_service.Service, service, status="running")
 
     def find_service(self, name_or_id, ignore_missing=False):
         """Find a single service
@@ -343,48 +317,111 @@ class Proxy(proxy.Proxy):
             When set to ``True``, no exception will be set when attempting
             to find a nonexistent service.
 
-        :returns:
-            One :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
-            or ``None``
+        :returns: instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
         """
         return self._find(
             _service.Service, name_or_id, ignore_missing=ignore_missing
         )
 
-    def service_logs(self, service_id, **params):
+    def update_service(self, service, **attrs):
+        """Update a Service Configurations.
+
+        :param service: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
+        :param dict attrs: Keyword arguments which will be used to update
+            a :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`,
+            comprised of the properties on the Service class.
+
+        :returns: instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
+        """
+        return self._update(_service.Service, service, **attrs)
+
+    def stop_service(self, service):
+        """Stop a Service.
+
+        :param service: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
+
+        :returns: instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
+        """
+        return self._update(_service.Service, service, status="stopped")
+
+    def start_service(self, service):
+        """Start a Service.
+
+        :param service: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
+
+        :returns: instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
+        """
+        return self._update(_service.Service, service, status="running")
+
+    def wait_for_service(self, service, timeout=1200, wait=5):
+        while timeout > 0:
+            obj = self.get_service(service)
+            status = obj.status.lower()
+            if status == "deploying":
+                pass
+            elif status in ["running", "finished"]:
+                return True
+            else:
+                raise exceptions.SDKException(obj.error_msg)
+            timeout = timeout - wait
+            time.sleep(wait)
+        raise exceptions.SDKException(
+            f"Wait Timed Out. service status is: {status}"
+        )
+
+    def service_logs(self, service, **params):
         """List update logs of a real-time service.
+
+        :param service: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
 
         :returns: a generator of
             :class:`~otcextensions.sdk.modelartsv1.v1.service_log.ServiceLog`
             instances
         """
+        service = self._get_resource(_service.Service, service)
         return self._list(
-            _service_log.ServiceLog, serviceId=service_id, **params
+            _service_log.ServiceLog, serviceId=service.id, **params
         )
 
-    def service_events(self, service_id, **params):
+    def service_events(self, service, **params):
         """List events logs of a service.
+
+        :param service: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
 
         :returns: a generator of
             :class:`~otcextensions.sdk.modelartsv1.v1.service_event.ServiceEvent`
             instances
         """
+        service = self._get_resource(_service.Service, service)
         return self._list(
             _service_event.ServiceEvent,
-            serviceId=service_id,
+            serviceId=service.id,
             paginated=False,
             **params,
         )
 
-    def service_monitor(self, service_id, **params):
+    def service_monitor(self, service, **params):
         """List a service monitoring informations.
+
+        :param service: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
 
         :returns: a generator of
             :class:`~otcextensions.sdk.modelartsv1.v1.service_monitor.ServiceMonitor`
             instances
         """
+        service = self._get_resource(_service.Service, service)
         return self._list(
-            _service_monitor.ServiceMonitor, serviceId=service_id, **params
+            _service_monitor.ServiceMonitor, serviceId=service.id, **params
         )
 
     def service_flavors(self, **params):
@@ -405,32 +442,6 @@ class Proxy(proxy.Proxy):
             instances
         """
         return self._list(_service_cluster.ServiceCluster, **params)
-
-    def wait_for_service(self, service, timeout=1200, wait=5):
-        while timeout > 0:
-            obj = self.get_service(service)
-            status = obj.status.lower()
-            if status == "deploying":
-                pass
-            elif status in ["running", "finished"]:
-                return True
-            else:
-                raise exceptions.SDKException(obj.error_msg)
-            timeout = timeout - wait
-            time.sleep(wait)
-        raise exceptions.SDKException(
-            f"Wait Timed Out. service status is: {status}"
-        )
-
-    def stop_training_job(self, job_id, version_id):
-        """Stop a Training Job.
-
-        :param job_id: key id or an instance of
-            :class:`~otcextensions.sdk.modelartsv1.v1.training_job.TrainingJob`
-
-        """
-        obj = self._get_resource(_training_job.TrainingJob, job_id)
-        return obj.stop(self, version_id)
 
     # Training Job Management
 
@@ -460,25 +471,25 @@ class Proxy(proxy.Proxy):
         """
         return self._create(_training_job.TrainingJob, **attrs)
 
-    # def find_training_job(self, name_or_id, ignore_missing=False):
-    #     """Find a single trainjob
+    def find_training_job(self, name_or_id, ignore_missing=False):
+        """Find a single training job by name or Id.
 
-    #     :param name_or_id: The name or ID of a ModelArts trainjob
-    #     :param bool ignore_missing: When set to ``False``
-    #         :class:`~openstack.exceptions.ResourceNotFound` will be raised
-    #         if the trainjob does not exist.
-    #         When set to ``True``, no exception will be set when attempting
-    #         to find a nonexistent trainjob.
+        :param name_or_id: The name or ID of a modelarts training job
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            if the trainjob does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to find a nonexistent trainjob.
 
-    #     :returns: One :class:
-    #       `~otcextensions.sdk.modelartsv1.v1.training_job.TrainingJob`
-    #       or ``None``
-    #     """
-    #     return self._find(
-    #         _training_job.TrainingJob,
-    #         name_or_id,
-    #         ignore_missing=ignore_missing,
-    #     )
+        :returns: One :class:
+          `~otcextensions.sdk.modelartsv1.v1.training_job.TrainingJob`
+          or ``None``
+        """
+        return self._find(
+            _training_job.TrainingJob,
+            name_or_id,
+            ignore_missing=ignore_missing,
+        )
 
     def update_training_job(self, job_id, description):
         """Update training job description.
@@ -507,6 +518,42 @@ class Proxy(proxy.Proxy):
             job_id,
             ignore_missing=ignore_missing,
         )
+
+    def stop_training_job(self, job_id, version_id):
+        """Stop a Training Job.
+
+        :param job_id: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.training_job.TrainingJob`
+        :param version_id: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.training_job.TrainingJobVersion`
+
+        """
+        training_job = self._get_resource(_training_job.TrainingJob, job_id)
+        return training_job.stop(self, version_id)
+
+    def job_flavors(self, **params):
+        """List all flavors available for running a job.
+
+        :param dict params: Optional query parameters to be sent to limit
+            the job flavors being returned.
+
+        :returns: a generator of
+            :class:`~otcextensions.sdk.modelartsv1.v1.job_flavor.JobFlavor`
+            instances.
+        """
+        return self._list(_job_flavor.JobFlavor, **params)
+
+    def job_engines(self, **params):
+        """List all engines available for running a job.
+
+        :param dict params: Optional query parameters to be sent to limit
+            the job engines being returned.
+
+        :returns: a generator of
+            :class:`~otcextensions.sdk.modelartsv1.v1.job_engine.JobEngine`
+            instances.
+        """
+        return self._list(_job_engine.JobEngine, **params)
 
     # Training Job Version Management
 
@@ -570,81 +617,25 @@ class Proxy(proxy.Proxy):
             ignore_missing=ignore_missing,
         )
 
-    def job_flavors(self, **params):
-        """List all flavors available for running a job.
-
-        :param dict params: Optional query parameters to be sent to limit
-            the job flavors being returned.
-
-        :returns: a generator of
-            :class:`~otcextensions.sdk.modelartsv1.v1.job_flavor.JobFlavor`
-            instances.
-        """
-        return self._list(_job_flavor.JobFlavor, **params)
-
-    def job_engines(self, **params):
-        """List all engines available for running a job.
-
-        :param dict params: Optional query parameters to be sent to limit
-            the job engines being returned.
-
-        :returns: a generator of
-            :class:`~otcextensions.sdk.modelartsv1.v1.job_engine.JobEngine`
-            instances.
-        """
-        return self._list(_job_engine.JobEngine, **params)
-
-    # def list_trainingjob_version_logs(self, job_id, version_id):
-    #     """Get the trainjob version by id
-
-    #     :param version_id: key id or an instance of
-    #         :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_version.TrainjobVersion`
-
-    #     :returns: instance of
-    #         :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_version.TrainjobVersion`
-    #     """
-    #     return self._list(
-    #         _trainingjob_version.TrainingJobVersionLogs,
-    #         jobId=job_id,
-    #         versionId=version_id,
-    #     )
-
-    # def list_trainingjob_version_logfile_names(self, job_id, version_id):
-    #     """Get the trainjob version by id
-
-    #     :param version_id: key id or an instance of
-    #         :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_version.TrainjobVersion`
-
-    #     :returns: instance of
-    #         :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_version.TrainjobVersion`
-    #     """
-    #     return self._list(
-    #         _trainingjob_version.GetLogfileName,
-    #         versionId=version_id,
-    #         jobId=job_id,
-    #     )
-
     # Training Job Config Management
 
     def training_job_configs(self, **params):
         """List all Training Job Configurations.
 
         :returns: a generator of
-            (:class:`~otcextensions.sdk.modelartsv1.v1.trainjob_configs.\
-                TrainjobConfigs`) instances
+            (:class:`~otcextensions.sdk.modelartsv1.v1.training_job_config.TrainingjobConfig`) instances. # noqa: E501
         """
         return self._list(_training_job_config.TrainingJobConfig, **params)
 
     def create_training_job_config(self, **attrs):
         """Create a Training Job Configuration from attributes.
 
-        :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_configs.\
-                TrainjobConfigs`, comprised of the properties on the
-                Training Job Configuration class.
-        :returns: The results of Training Job Configuration creation
-        :rtype: :class:`~otcextensions.sdk.modelartsv1.v1.training_job.\
-            TrainingJobConfig`
+        :param dict attrs: Keyword arguments which will be used to create a
+            :class:`~otcextensions.sdk.modelartsv1.v1.training_job_config.TrainingjobConfig`,
+            comprised of the properties on the TrainingJobConfig class.
+
+        :returns: The results of Training Job Configuration creation.
+        :rtype: :class:`~otcextensions.sdk.modelartsv1.v1.training_job.TrainingJobConfig` # noqa: E501
         """
         return self._create(_training_job_config.TrainingJobConfig, **attrs)
 
@@ -670,8 +661,8 @@ class Proxy(proxy.Proxy):
 
         :param config_name: Name of a training job configuration.
 
-        :returns: instance of :class:`~otcextensions.sdk.modelartsv1.v1.\
-            training_job.TrainingJobConfig`
+        :returns: instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.training_job_config.TrainingJobConfig` # noqa: E501
         """
         return self._get(_training_job_config.TrainingJobConfig, config_name)
 
@@ -679,33 +670,21 @@ class Proxy(proxy.Proxy):
         """Update training job configuration.
 
         :param config_name: Name of a training job configuration.
-        :param dict attrs: Keyword arguments which will be used to update
-            a :class:`~otcextensions.sdk.modelartsv1.v1.training_job.\
-                TrainingJobConfig`, comprised of the properties on the class.
+        :param dict attrs: Keyword arguments which will be used to update a
+            :class:`~otcextensions.sdk.modelartsv1.v1.training_job_config.TrainingJobConfig`, # noqa: E501
+            comprised of the properties on the class.
         """
         return self._update(
             _training_job_config.TrainingJobConfig, config_name, **attrs
         )
 
-    # def show_builtin_algorithms(self):
-    #    """Get the Training Job Configuration by id
-
-    #    :param trainjob_config: key id or an instance of
-    #        :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_config.TrainjobConfigs`
-
-    #    :returns: instance of
-    #        :class:`~otcextensions.sdk.modelartsv1.v1.trainjob_config.TrainjobConfigs`
-    #    """
-    #    return self._get(_builtin_algorithms.BuiltinAlgorithms)
-
     # Visualization Job Management
 
     def visualization_jobs(self, **params):
-        """List all Visualization Job.
+        """List all Visualization Jobs.
 
         :returns: a generator of :class:
-          `~otcextensions.sdk.modelartsv1.v1.visualization_job.VisualizationJob`
-          instances
+          `~otcextensions.sdk.modelartsv1.v1.visualization_job.VisualizationJob` instances. # noqa: E501
         """
         return self._list(_visualization_job.VisualizationJob, **params)
 
@@ -713,60 +692,36 @@ class Proxy(proxy.Proxy):
         """Create a Visualization Job from attributes
 
         :param dict attrs: Keyword arguments which will be used to create a
-            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_job.\
-                VisualizationJob` comprised of the properties on
-                the Visualization Job class.
+            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_job.VisualizationJob` # noqa: E501
+            comprised of the properties on the Visualization Job class.
 
         :returns: The results of Visualization Job creation
 
         :rtype:
-            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_job.\
-                VisualizationJob`
+            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_job.VisualizationJob` # noqa: E501
         """
         return self._create(_visualization_job.VisualizationJob, **attrs)
 
-    def delete_visualization_job(self, job_id, ignore_missing=False):
-        """Delete a Visualization Job
-
-        :param visualization_job: Thie value can be the name of a
-            Visualization Job
-        :param bool ignore_missing: When set to ``False``
-            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
-            the group does not exist.
-            When set to ``True``, no exception will be set when attempting to
-            delete a nonexistent Visualization Job.
-        """
-        return self._delete(
-            _visualization_job.VisualizationJob,
-            job_id,
-            ignore_missing=ignore_missing,
-        )
-
     def get_visualization_job(self, job_id):
-        """Get the Visualization Job by id
+        """Get details of a Visualization Job.
 
-        :param visualization_job: key id or an instance of
-            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_jobs.\
-                VisualizationJobs`
+        :param job_id: visualization job id or an instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_job.VisualizationJob` # noqa: E501
 
         :returns: instance of
-            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_job.\
-                VisualizationJob`
+            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_job.VisualizationJob` # noqa: E501
         """
         return self._get(_visualization_job.VisualizationJob, job_id)
 
     def update_visualization_job(self, job_id, description):
         """Update visualization job description.
 
-        :param job_id : key id or an instance of
-            :class:`~otcextensions.sdk.modelarts.v2.visualization_job.\
-                VisualizationJob`
-
-        :param description: Description of a visualization job.
+        :param job_id : visualization job id or an instance of
+            :class:`~otcextensions.sdk.modelarts.v2.visualization_job.VisualizationJob` # noqa: E501
+        :param description: Description of a visualization job to update.
 
         :returns: instance of
-            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_job.\
-                VisualizationJob`
+            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_job.VisualizationJob` # noqa: E501
         """
         return self._update(
             _visualization_job.VisualizationJob,
@@ -774,15 +729,33 @@ class Proxy(proxy.Proxy):
             job_desc=description,
         )
 
-    def stop_visualization_job(self, job_id):
-        """Stop a VisualizationJob
+    def delete_visualization_job(self, job_id, ignore_missing=False):
+        """Delete a Visualization Job
 
-        :param instance: key id or an instance of
-            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_jobs`
+        :param job_id: visualization job id or an instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_job.VisualizationJob` # noqa: E501
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the group does not exist.
+            When set to ``True``, no exception will be set when attempting to
+            delete a nonexistent Visualization Job.
+
+        returns: ``None``
+        """
+        return self._delete(
+            _visualization_job.VisualizationJob,
+            job_id,
+            ignore_missing=ignore_missing,
+        )
+
+    def stop_visualization_job(self, job_id):
+        """Stop a Visualization Job.
+
+        :param job_id : visualization job id or an instance of
+            :class:`~otcextensions.sdk.modelarts.v2.visualization_job.VisualizationJob` # noqa: E501
 
         :returns: instance of
-            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_job.\
-                VisualizationJob`
+            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_job.VisualizationJob` # noqa: E501
         """
         visualization_job = self._get_resource(
             _visualization_job.VisualizationJob, job_id
@@ -790,15 +763,13 @@ class Proxy(proxy.Proxy):
         return visualization_job.stop(self)
 
     def restart_visualization_job(self, job_id):
-        """Restart a VisualizationJob
+        """Restart a Visualization Job.
 
-        :param job_id : key id or an instance of
-            :class:`~otcextensions.sdk.modelarts.v2.visualization_job.\
-                VisualizationJob`
+        :param job_id : visualization job id or an instance of
+            :class:`~otcextensions.sdk.modelarts.v2.visualization_job.VisualizationJob` # noqa: E501
 
         :returns: instance of
-            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_job.\
-                VisualizationJob`
+            :class:`~otcextensions.sdk.modelartsv1.v1.visualization_job.VisualizationJob` # noqa: E501
         """
         visualization_job = self._get_resource(
             _visualization_job.VisualizationJob, job_id

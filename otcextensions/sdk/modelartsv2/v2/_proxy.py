@@ -43,6 +43,8 @@ class Proxy(proxy.Proxy):
     def datasets(self, **params):
         """List all Datasets.
 
+        :param dict params: Optional query parameters to be sent to limit
+            the datasets being returned.
         :returns: a generator of
             (:class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`)
             instances.
@@ -83,9 +85,8 @@ class Proxy(proxy.Proxy):
             When set to ``True``, no exception will be set when attempting
             to find a nonexistent dataset.
 
-        :returns:
-            One :class:`~otcextensions.sdk.nat.v2.dataset.Dataset`
-              or ``None``
+        :returns: instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
         """
         return self._find(
             _dataset.Dataset,
@@ -94,10 +95,13 @@ class Proxy(proxy.Proxy):
         )
 
     def update_dataset(self, dataset, **attrs):
-        """Get the dataset by id
+        """Get details of a dataset.
 
         :param dataset: key id or an instance of
             :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
+        :param dict attrs: Keyword arguments which will be used to update
+            a :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`,
+            comprised of the properties on the Dataset class.
 
         :returns: instance of
             :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
@@ -107,12 +111,15 @@ class Proxy(proxy.Proxy):
     def delete_dataset(self, dataset, ignore_missing=False):
         """Delete a dataset.
 
-        :param dataset: Thie value can be the name of a dataset
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
             the dataset does not exist.
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent dataset.
+
+        returns: ``None``
         """
         return self._delete(
             _dataset.Dataset, dataset, ignore_missing=ignore_missing
@@ -120,164 +127,195 @@ class Proxy(proxy.Proxy):
 
     # ======== Dataset Statistics ========
 
-    def get_dataset_statistics(self, dataset_id):
-        """Query Dataset statistics
+    def get_dataset_statistics(self, dataset):
+        """Query Dataset statistics.
 
-        :param dataset_id: Dataset ID.
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
 
         :returns:
-            (One :class:`~otcextensions.sdk.modelartsv2.v2.\
-                dataset_statistics.DatasetStatistics`)
+            (One :class:`~otcextensions.sdk.modelartsv2.v2.dataset_statistics.DatasetStatistics`) # noqa: E501
         """
+        dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._get(
             _dataset_statistics.DatasetStatistics,
-            datasetId=dataset_id,
+            datasetId=dataset.id,
             requires_id=False,
         )
 
     # ======== Dataset Label Management ========
 
-    def dataset_labels(self, dataset_id, **params):
+    def dataset_labels(self, dataset, **params):
         """List all Labels in a dataset.
 
-        :param dataset_id: Dataset ID.
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
         :param dict params: Optional query parameters to be sent to limit
             the instances being returned.
+
         :returns: a generator of
-            (:class:`~otcextensions.sdk.modelartsv2.v2.dataset_label.DatasetLabel`)
-            instances.
+            (:class:`~otcextensions.sdk.modelartsv2.v2.dataset_label.DatasetLabel`) instances. # noqa: E501
         """
+        dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._list(
-            _dataset_label.DatasetLabel, datasetId=dataset_id, **params
+            _dataset_label.DatasetLabel, datasetId=dataset.id, **params
         )
 
-    def create_dataset_label(self, dataset_id, **attrs):
-        """Create a dataset label from attributes
+    def create_dataset_label(self, dataset, **attrs):
+        """Create a dataset label from attributes.
 
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
         :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Label`,
-            comprised of the properties on the Labels class.
+            a :class:`~otcextensions.sdk.modelartsv2.v2.dataset_label.DatasetLabel`, # noqa: E501
+            comprised of the properties on the DatasetLabel class.
         :returns: The results of label creation
-        :rtype: :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Label`
+        :rtype: :class:`~otcextensions.sdk.modelartsv2.v2.dataset_label.DatasetLabel` # noqa: E501
         """
+        dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._create(
-            _dataset_label.DatasetLabel, datasetId=dataset_id, **attrs
+            _dataset_label.DatasetLabel, datasetId=dataset.id, **attrs
         )
 
-    def update_dataset_labels(self, dataset_id, labels=[], **attrs):
-        """Modify a dataset labels in batches.
+    def update_dataset_labels(self, dataset, labels=[], **attrs):
+        """Modify dataset labels in batches.
 
-        :param dataset_id: Dataset ID.
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
+        :param labels: List of Labels to update.
+        :param dict attrs: Keyword arguments which will be used to update
+            a :class:`~otcextensions.sdk.modelartsv2.v2.dataset_label.DatasetLabel`, # noqa: E501
+            comprised of the properties on the DatasetLabel class.
 
         :returns: instance of
-            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset_label.DatasetLabel`
         """
+        dataset = self._get_resource(_dataset.Dataset, dataset)
         obj = self._get_resource(
-            _dataset_label.DatasetLabel, None, datasetId=dataset_id
+            _dataset_label.DatasetLabel, None, datasetId=dataset.id
         )
         labels = labels or attrs.get("labels")
         return obj.update_labels(self, labels)
 
     def delete_dataset_labels(
-        self, dataset_id, labels=[], delete_policy=None, **attrs
+        self, dataset, labels=[], delete_policy=None, **attrs
     ):
-        """Delete dataset labels.
+        """Delete dataset labels in batches.
 
-        :param dataset_id: Dataset ID.
-        :param labels: List of labels ID(s) to delete.
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
+        :param labels: List of labels dict to delete.
+        :param dict attrs: Keyword arguments which will be used to delete a
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset_label.DatasetLabel`, # noqa: E501
+            comprised of the properties on the DatasetLabel class.
 
         :returns: ``None``
         """
+        dataset = self._get_resource(_dataset.Dataset, dataset)
         obj = self._get_resource(
-            _dataset_label.DatasetLabel, None, datasetId=dataset_id
+            _dataset_label.DatasetLabel, None, datasetId=dataset.id
         )
         labels = labels or attrs.get("labels")
         return obj.delete_labels(self, labels, delete_policy)
 
     # ======== Dataset Version Management ========
 
-    def dataset_versions(self, dataset_id):
-        """List all dataset versions.
+    def dataset_versions(self, dataset, **params):
+        """List all versions of a dataset.
 
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
         :returns: a generator of
-            (:class:`~otcextensions.sdk.modelartsv2.v2.\
-                dataset_version.DatasetVersion`) instances
+            (:class:`~otcextensions.sdk.modelartsv2.v2.dataset_version.DatasetVersion`) instances. # noqa: E501
         """
+        dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._list(
-            _dataset_version.DatasetVersion, datasetId=dataset_id
+            _dataset_version.DatasetVersion, datasetId=dataset.id
         )
 
-    def create_dataset_version(self, dataset_id, **attrs):
-        """Create a dataset from attributes
+    def create_dataset_version(self, dataset, **attrs):
+        """Create a dataset version from attributes.
 
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
         :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.modelartsv2.v2.datasets.Datasets`,
-            comprised of the properties on the Datasets class.
+            a :class:`~otcextensions.sdk.modelartsv2.v2.dataset_version.DatasetVersion`,
+            comprised of the properties on the DatasetVersion class.
+
         :returns: The results of dataset creation
-        :rtype: :class:`~otcextensions.sdk.modelartsv2.v2.\
-            dataset.DatasetVersion`
+        :rtype: :class:`~otcextensions.sdk.modelartsv2.v2.dataset_version.DatasetVersion` # noqa: E501
         """
+        dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._create(
             _dataset_version.DatasetVersion,
-            datasetId=dataset_id,
+            datasetId=dataset.id,
             **attrs,
         )
 
-    def get_dataset_version(self, dataset_id, version_id):
-        """Get the dataset version by version id
+    def get_dataset_version(self, dataset, dataset_version):
+        """Get details of a dataset version.
 
-        :param dataset_id: Dataset ID.
-        :param version_id: key id or an instance of
-            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.DatasetVersion`
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
+        :param dataset_version: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset_version.DatasetVersion`
 
         :returns: instance of
-            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.DatasetVersion`
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset_version.DatasetVersion`
         """
+        dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._get(
-            _dataset_version.DatasetVersion, version_id, datasetId=dataset_id
+            _dataset_version.DatasetVersion,
+            dataset_version,
+            datasetId=dataset.id,
         )
 
     def delete_dataset_version(
-        self, dataset_id, version_id, ignore_missing=False
+        self, dataset, dataset_version, ignore_missing=False
     ):
         """Delete a dataset version
 
-        :param version_id: ID of a dataset version
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
+        :param dataset_version: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset_version.DatasetVersion`
         :param bool ignore_missing: When set to ``False``
             :class:`~openstack.exceptions.ResourceNotFound` will be raised when
             the group does not exist.
             When set to ``True``, no exception will be set when attempting to
             delete a nonexistent dataset.
         """
+        dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._delete(
             _dataset_version.DatasetVersion,
-            version_id,
-            datasetId=dataset_id,
+            dataset_version,
+            datasetId=dataset.id,
             ignore_missing=ignore_missing,
         )
 
     # ======== Dataset Sample Management ========
 
-    def dataset_samples(self, dataset_id, **params):
-        """List all Dataset Samples in a Dataset.
+    def dataset_samples(self, dataset, **params):
+        """List all samples in a Dataset.
 
-        :param dataset_id: Dataset ID.
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
         :param dict params: Optional query parameters to be sent to limit
-            the instances being returned.
+            the dataset samples being returned.
         :returns: a generator of
-            (:class:`~otcextensions.sdk.modelartsv2.v2\
-                    .dataset.DatasetSample`) instances
+            (:class:`~otcextensions.sdk.modelartsv2.v2.dataset_sample.DatasetSample`) instances. # noqa: E501
         """
+        dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._list(
             _dataset_sample.DatasetSample,
-            datasetId=dataset_id,
+            datasetId=dataset.id,
             **params,
             paginated=False,
         )
 
     def add_dataset_samples(
         self,
-        dataset_id,
+        dataset,
         directory_path=None,
         file_path=None,
         sample_type=None,
@@ -287,16 +325,14 @@ class Proxy(proxy.Proxy):
     ):
         """Upload samples to a dataset.
 
-        :param dataset_id: Dataset ID.
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
         :param dict attrs: Keyword arguments which will be used to create
-            upload samples to a dataset and obtain instance of.
-            a :class:`~otcextensions.sdk.modelartsv2.v2.\
-                    dataset_sample.DatasetSample`,
+            upload samples to a dataset and obtain instance of a
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset_sample.DatasetSample` # noqa: E501
 
         :returns: The result after uploading the dataset samples.
-
-        :rtype: :class:`~otcextensions.sdk.modelartsv2.v2.\
-                dataset.CreateSample`
+        :rtype: :class:`~otcextensions.sdk.modelartsv2.v2.dataset_sample.DatasetSample` # noqa: E501
         """
 
         def get_directory_size(dir_path, file_type=None):
@@ -369,149 +405,186 @@ class Proxy(proxy.Proxy):
         attrs = {}
         if samples:
             attrs.update(samples=samples)
+        dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._create(
-            _dataset_sample.DatasetSample, datasetId=dataset_id, **attrs
+            _dataset_sample.DatasetSample, datasetId=dataset.id, **attrs
         )
 
-    def delete_dataset_samples(
-        self, dataset_id, samples=[], delete_source=False
-    ):
+    def delete_dataset_samples(self, dataset, samples=[], delete_source=False):
         """Delete dataset samples.
 
-        :param dataset_id: Dataset ID.
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
         :param samples: List of sample ID(s) to delete.
+        :param bool delete_source: When set to ``True``
+            sample source files will be also deleted.
 
         :returns: ``None``
         """
+        dataset = self._get_resource(_dataset.Dataset, dataset)
         dataset_sample = self._get_resource(
             _dataset_sample.DatasetSample, None
         )
         return dataset_sample.delete_samples(
-            self, dataset_id, samples, delete_source
+            self, dataset.id, samples, delete_source
         )
 
-    def get_dataset_sample(self, dataset_id, sample_id):
-        """Get the Dataset Sample
+    def get_dataset_sample(self, dataset, dataset_sample):
+        """Get details of the Dataset Sample.
 
-        :param dataset_id: Dataset ID.
-        :param sample_id: key id or an instance of
-            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.sample.Sample`
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
+        :param dataset_sample: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset_sample.DatasetSample`
+
         :returns: instance of
-            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.sample.Sample`
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset_sample.DatasetSample`
         """
+        dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._get(
-            _dataset_sample.DatasetSample, sample_id, datasetId=dataset_id
+            _dataset_sample.DatasetSample, dataset_sample, datasetId=dataset.id
         )
 
     # ======== Dataset Import Task Management ========
 
-    def dataset_import_tasks(self, dataset_id):
+    def dataset_import_tasks(self, dataset, **params):
         """List all dataset import tasks.
 
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
+        :param dict params: Optional query parameters to be sent to limit
+            the dataset import tasks being returned.
+
         :returns: a generator of
-            (:class:`~otcextensions.sdk.modelartsv2.v2.\
-                    dataset.ImportTask`) instances.
+            (:class:`~otcextensions.sdk.modelartsv2.v2.dataset_import_task.DatasetImportTask`) instances. # noqa: E501
         """
+        dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._list(
-            _dataset_import_task.DatasetImportTask, datasetId=dataset_id
+            _dataset_import_task.DatasetImportTask,
+            datasetId=dataset.id,
+            **params,
         )
 
-    def create_dataset_import_task(self, dataset_id, **attrs):
+    def create_dataset_import_task(self, dataset, **attrs):
         """Create a data import task from attributes
 
-        :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.modelartsv2.v2.dataset.ImportTask`,
-            comprised of the properties on the ImportTask class.
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
+        :param dict attrs: Keyword arguments which will be used to create a
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset_import_task.DatasetImportTask`, # noqa: E501
+            comprised of the properties on the DatasetImportTask class.
 
         :returns: The results of dataset import task.
-
-        :rtype: :class:`~otcextensions.sdk.modelartsv2.v2.dataset.ImportTask`
+        :rtype:
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset_import_task.DatasetImportTask` # noqa: E501
         """
+        dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._create(
             _dataset_import_task.DatasetImportTask,
-            datasetId=dataset_id,
+            datasetId=dataset.id,
             **attrs,
         )
 
-    def get_dataset_import_task(self, dataset_id, task_id):
+    def get_dataset_import_task(self, dataset, import_task):
         """Get the data import task by dataset id
 
-         :param dataset_id: key id or an instance of
-             :class:`~otcextensions.sdk.modelartsv2.v2.dataset.ImportTask`
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
+        :param import_task: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset_import_task.DatasetImportTask` # noqa: E501
 
-         :returns: instance of :class:`~otcextensions.sdk.modelartsv2.v2.\
-                dataset.ImportTask`
-         """
+        :returns: instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset_import_task.DatasetImportTask` # noqa: E501
+        """
+        dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._get(
             _dataset_import_task.DatasetImportTask,
-            task_id,
-            datasetId=dataset_id,
+            import_task,
+            datasetId=dataset.id,
         )
 
     # ======== Dataset Export Task Management ========
 
-    def dataset_export_tasks(self, dataset_id):
+    def dataset_export_tasks(self, dataset, **params):
         """List all dataset export tasks.
 
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
+        :param dict params: Optional query parameters to be sent to limit
+            the dataset export tasks being returned.
+
         :returns: a generator of
-            (:class:`~otcextensions.sdk.modelartsv2.v2.\
-                    dataset.ExportTask`) instances
+            (:class:`~otcextensions.sdk.modelartsv2.v2.dataset_export_task.DatasetExportTask`) instances. # noqa: E501
         """
+        dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._list(
-            _dataset_export_task.DatasetExportTask, datasetId=dataset_id
+            _dataset_export_task.DatasetExportTask,
+            datasetId=dataset.id,
+            **params,
         )
 
-    def create_dataset_export_task(self, dataset_id, **attrs):
-        """Create a data import task from attributes
+    def create_dataset_export_task(self, dataset, **attrs):
+        """Create a data import task from attributes.
 
-        :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.modelartsv2.v2.dataset.ExportTask`,
-            comprised of the properties on the ExportTask class.
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
+        :param dict attrs: Keyword arguments which will be used to create a
+            (:class:`~otcextensions.sdk.modelartsv2.v2.dataset_export_task.DatasetExportTask`)
+            comprised of the properties on the DatasetExportTask class.
 
         :returns: The results of dataset export task.
-
-        :rtype: :class:`~otcextensions.sdk.modelartsv2.v2.dataset.ExportTask`
+        :rtype: :class:`~otcextensions.sdk.modelartsv2.v2.dataset_export_task.DatasetExportTask` # noqa: E501
         """
+        dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._create(
             _dataset_export_task.DatasetExportTask,
-            datasetId=dataset_id,
+            datasetId=dataset.id,
             **attrs,
         )
 
-    def get_dataset_export_task(self, dataset_id, task_id):
-        """Get the dataset export task by dataset id
+    def get_dataset_export_task(self, dataset, export_task):
+        """Get details of a dataset export task.
 
-          :param dataset_id: key id or an instance of
-              :class:`~otcextensions.sdk.modelartsv2.v2.dataset.ExportTask`
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
+        :param export_task: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset_export_task.DatasetExportTask` # noqa: E501
 
-          :returns: instance of :class:`~otcextensions.sdk.modelartsv2.v2.\
-                dataset.ExportTask`
-          """
+        :returns: instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset_export_task.DatasetExportTask` # noqa: E501
+        """
+        dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._get(
             _dataset_export_task.DatasetExportTask,
-            task_id,
-            datasetId=dataset_id,
+            export_task,
+            datasetId=dataset.id,
         )
 
     # ======== Dataset Synchronization Task Management ========
 
-    def dataset_sync(self, dataset_id):
+    def dataset_sync(self, dataset):
         """Synchronize samples and labeling information
             from the input dataset path to the dataset.
 
-        :param dataset_id: Dataset ID.
-        :returns: None
-        """
-        return self._create(_dataset_sync.DatasetSync, datasetId=dataset_id)
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
 
-    def get_dataset_sync_status(self, dataset_id):
+        :returns: instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset_sync.DatasetSync`
+        """
+        dataset = self._get_resource(_dataset.Dataset, dataset)
+        return self._create(_dataset_sync.DatasetSync, datasetId=dataset.id)
+
+    def get_dataset_sync_status(self, dataset):
         """Query Dataset sync task status
 
-        :param dataset_id: Dataset ID.
+        :param dataset: key id or an instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset.Dataset`
 
-        :returns:
-            One :class:`~otcextensions.sdk.nat.v2.dataset.Sync`
+        :returns: instance of
+            :class:`~otcextensions.sdk.modelartsv2.v2.dataset_sync.DatasetSync`
         """
+        dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._get(
-            _dataset_sync.DatasetSync, "status", datasetId=dataset_id
+            _dataset_sync.DatasetSync, "status", datasetId=dataset.id
         )

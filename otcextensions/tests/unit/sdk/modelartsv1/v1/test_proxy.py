@@ -190,7 +190,7 @@ class TestService(TestModelartsV1Proxy):
             self.proxy.create_service,
             service.Service,
             method_kwargs={"a": "b"},
-            expected_kwargs={"prepend_key": False, "a": "b"},
+            expected_kwargs={"a": "b"},
         )
 
     def test_start_service(self):
@@ -251,7 +251,7 @@ class TestServiceLog(TestModelartsV1Proxy):
         self.verify_list(
             self.proxy.service_logs,
             service_log.ServiceLog,
-            method_kwargs={"service_id": "service-id"},
+            method_kwargs={"service": "service-id"},
             expected_kwargs={"serviceId": "service-id"},
         )
 
@@ -261,7 +261,7 @@ class TestServiceEvent(TestModelartsV1Proxy):
         self.verify_list(
             self.proxy.service_events,
             service_event.ServiceEvent,
-            method_kwargs={"service_id": "service-id"},
+            method_kwargs={"service": "service-id"},
             expected_kwargs={"serviceId": "service-id"},
         )
 
@@ -271,7 +271,7 @@ class TestServiceMonitor(TestModelartsV1Proxy):
         self.verify_list(
             self.proxy.service_monitor,
             service_monitor.ServiceMonitor,
-            method_kwargs={"service_id": "service-id"},
+            method_kwargs={"service": "service-id"},
             expected_kwargs={"serviceId": "service-id"},
         )
 
