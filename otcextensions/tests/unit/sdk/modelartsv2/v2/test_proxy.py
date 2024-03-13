@@ -164,7 +164,7 @@ class TestDatasetLabel(TestModelartsV2Proxy):
 
     def test_update_dataset_labels(self):
         self._verify(
-            "otcextensions.sdk.modelartsv2.v2.dataset_label.DatasetLabel.update_labels",  # noqa
+            "otcextensions.sdk.modelartsv2.v2.dataset_label.DatasetLabel.update_labels",  # noqa: E501
             self.proxy.update_dataset_labels,
             method_args=["dataset-id"],
             method_kwargs={
@@ -178,7 +178,7 @@ class TestDatasetLabel(TestModelartsV2Proxy):
 
     def test_delete_dataset_labels(self):
         self._verify(
-            "otcextensions.sdk.modelartsv2.v2.dataset_label.DatasetLabel.delete_labels",  # noqa
+            "otcextensions.sdk.modelartsv2.v2.dataset_label.DatasetLabel.delete_labels",  # noqa: E501
             self.proxy.delete_dataset_labels,
             method_args=["dataset-id"],
             method_kwargs={

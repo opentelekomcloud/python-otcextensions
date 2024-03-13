@@ -343,6 +343,45 @@ class TestShowTrainingJobVersion(fakes.TestModelartsv1):
         )
 
 
+class TestStopTrainingJobVersion(fakes.TestModelartsv1):
+
+    job_id = "123"
+    version_id = "2"
+
+    _data = fakes.FakeTrainingJobVersion.create_one()
+    columns = _COLUMNS
+    data = fakes.gen_data(_data, columns, training_job_version._formatters)
+
+    def setUp(self):
+        super(TestStopTrainingJobVersion, self).setUp()
+
+        self.cmd = training_job_version.StopTrainingJobVersion(self.app, None)
+
+        self.client.stop_training_job_version = mock.Mock(
+            return_value=self._data
+        )
+
+    def test_start(self):
+        arglist = [
+            self.job_id,
+            self.version_id,
+        ]
+
+        verifylist = [
+            ("jobId", self.job_id),
+            ("versionId", self.version_id),
+        ]
+
+        # Verify cm is triggered with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Trigger the action
+        self.cmd.take_action(parsed_args)
+        self.client.stop_training_job_version.assert_called_with(
+            self.job_id, self.version_id
+        )
+
+
 class TestDeleteTrainingJobVersion(fakes.TestModelartsv1):
 
     job_id = "123"

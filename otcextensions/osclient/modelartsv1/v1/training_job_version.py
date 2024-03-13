@@ -335,6 +335,36 @@ class ShowTrainingJobVersion(command.ShowOne):
         return display_columns, data
 
 
+class StopTrainingJobVersion(command.ShowOne):
+    _description = _("Stop Training Job Version.")
+
+    def get_parser(self, prog_name):
+        parser = super(StopTrainingJobVersion, self).get_parser(prog_name)
+
+        parser.add_argument(
+            "jobId",
+            metavar="<jobId>",
+            help=_("ID of a training job"),
+        )
+        parser.add_argument(
+            "versionId",
+            metavar="<versionId>",
+            help=_("ID of a training job version"),
+        )
+
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.modelartsv1
+
+        obj = client.stop_training_job_version(
+            parsed_args.jobId, parsed_args.versionId
+        )
+        display_columns, columns = _get_columns(obj)
+        data = utils.get_item_properties(obj, columns)
+        return (display_columns, data)
+
+
 class DeleteTrainingJobVersion(command.Command):
     _description = _("Delete ModelArts training job version.")
 

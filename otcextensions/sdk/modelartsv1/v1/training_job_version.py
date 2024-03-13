@@ -11,6 +11,7 @@
 # under the License.
 #
 from openstack import resource
+from openstack import utils
 from otcextensions.sdk.modelartsv1.v1.training_job import ConfigSpec
 
 
@@ -41,3 +42,12 @@ class TrainingJobVersion(ConfigSpec):
     job_desc = resource.Body("job_desc")
     #: Version ID of a training job.
     version_id = resource.Body("version_id", type=int, alternate_id=True)
+
+    def stop(self, session):
+        """Preform actions given the message body."""
+        uri = utils.urljoin(
+            self.base_path % self._uri.attributes, self.id, "stop"
+        )
+        response = session.post(uri, json=None)
+        self._translate_response(response)
+        return self

@@ -336,7 +336,7 @@ class TestTrainingJobVersion(TestModelartsV1Proxy):
         self.verify_list(
             self.proxy.training_job_versions,
             training_job_version.TrainingJobVersion,
-            method_kwargs={"job_id": "job-id"},
+            method_kwargs={"training_job": "job-id"},
             expected_kwargs={"jobId": "job-id"},
         )
 
@@ -344,7 +344,7 @@ class TestTrainingJobVersion(TestModelartsV1Proxy):
         self.verify_create(
             self.proxy.create_training_job_version,
             training_job_version.TrainingJobVersion,
-            method_kwargs={"job_id": "job-id"},
+            method_kwargs={"training_job": "job-id"},
             expected_kwargs={"jobId": "job-id"},
         )
 
@@ -377,12 +377,12 @@ class TestTrainingJobVersion(TestModelartsV1Proxy):
             expected_kwargs={"jobId": "job-id"},
         )
 
-    def test_stop_training_job(self):
+    def test_stop_training_job_version(self):
         self._verify(
-            "otcextensions.sdk.modelartsv1.v1.training_job.TrainingJob.stop",
-            self.proxy.stop_training_job,
+            "otcextensions.sdk.modelartsv1.v1.training_job_version.TrainingJobVersion.stop",  # noqa: E501
+            self.proxy.stop_training_job_version,
             method_args=["job-id", "version-id"],
-            expected_args=[self.proxy, "version-id"],
+            expected_args=[self.proxy],
         )
 
 
@@ -480,7 +480,7 @@ class TestVisualizationJob(TestModelartsV1Proxy):
 
     def test_stop_visualization_job(self):
         self._verify(
-            "otcextensions.sdk.modelartsv1.v1.visualization_job.VisualizationJob.stop",  # noqa
+            "otcextensions.sdk.modelartsv1.v1.visualization_job.VisualizationJob.stop",  # noqa: E501
             self.proxy.stop_visualization_job,
             method_args=["val"],
             expected_args=[self.proxy],
