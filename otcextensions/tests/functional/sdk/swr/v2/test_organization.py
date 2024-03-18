@@ -31,7 +31,7 @@ class TestOrganization(TestSwr):
                 {
                     "user_id": "5a23ecb3999b458d92d51d524bb7fb4b",
                     "user_name": "pgubina",
-                    "auth": 1
+                    "user_auth": 1
                 }
             ]
             self.org_perm = self.client.create_organization_permissions(
@@ -47,12 +47,12 @@ class TestOrganization(TestSwr):
     def test_get_organization(self):
         o = self.client.get_organization(self.org.namespace)
         self.assertEqual(self.org.namespace, o.name)
-        self.assertEqual(7, o.auth)
+        self.assertEqual(7, o.user_auth)
 
     def test_find_organization(self):
         o = self.client.find_organization(self.org_name)
         self.assertEqual(self.org.namespace, o.name)
-        self.assertEqual(7, o.auth)
+        self.assertEqual(7, o.user_auth)
 
     def test_organization_permissions(self):
         o = list(self.client.organization_permissions(self.org.namespace))
@@ -65,11 +65,11 @@ class TestOrganization(TestSwr):
                     {
                         "user_id": "5a23ecb3999b458d92d51d524bb7fb4b",
                         "user_name": "pgubina",
-                        "auth": 3
+                        "user_auth": 3
                     }
                 ]
             )
-            self.assertEqual(3, o.permissions[0].auth)
+            self.assertEqual(3, o.permissions[0].user_auth)
 
     def test_delete_organization_permissions(self):
         if os.getenv("OS_SWR_PERMISSIONS_RUN"):

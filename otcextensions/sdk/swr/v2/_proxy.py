@@ -18,6 +18,12 @@ from otcextensions.sdk.swr.v2 import repository as _repository
 from otcextensions.sdk.swr.v2 import domain as _domain
 
 
+def update_permissions_attrs(attrs):
+    for permission in attrs.get('permissions', []):
+        permission['auth'] = permission.pop('user_auth', None)
+    return attrs
+
+
 class Proxy(proxy.Proxy):
     skip_discovery = True
 
@@ -35,7 +41,7 @@ class Proxy(proxy.Proxy):
         # exclude version
         url_parts = list(filter(lambda x: not any(
             c.isdigit() for c in x[1:]) and (
-                x[0].lower() != 'v'), url_parts))
+                                                  x[0].lower() != 'v'), url_parts))
 
         # Strip out anything that's empty or None
         return [part for part in url_parts if part]
@@ -112,6 +118,7 @@ class Proxy(proxy.Proxy):
         :returns: The results of organization creation
         :rtype: :class:`~otcextensions.sdk.swr.v2.organization.Permission`
         """
+        attrs = update_permissions_attrs(attrs)
         return self._create(_organization.Permission, **attrs)
 
     def organization_permissions(self, namespace, **query):
@@ -153,6 +160,7 @@ class Proxy(proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.swr.v2.organization.Permission`
         """
+        attrs = update_permissions_attrs(attrs)
         return self._update(_organization.Permission, **attrs)
 
     def create_repository(self, **attrs):
@@ -235,6 +243,7 @@ class Proxy(proxy.Proxy):
         :returns: The results of repository permission creation
         :rtype: :class:`~otcextensions.sdk.swr.v2.repository.Permission`
         """
+        attrs = update_permissions_attrs(attrs)
         return self._create(_repository.Permission, **attrs)
 
     def repository_permissions(self, namespace, repository, **query):
@@ -281,6 +290,7 @@ class Proxy(proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.swr.v2.repository.Permission`
         """
+        attrs = update_permissions_attrs(attrs)
         return self._update(_repository.Permission, **attrs)
 
     def create_domain(self, **attrs):
