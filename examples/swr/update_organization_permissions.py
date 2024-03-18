@@ -26,7 +26,7 @@ attrs = {
         {
             "user_id": "5a23ecb3999b458d92d51d524bb7fb4c",
             "user_name": "test",
-            "auth": 3
+            "user_auth": 3
         }
     ],
 }

@@ -42,7 +42,7 @@ class Organization(resource.Resource):
     #: 3: Write
     #: 1: Read
     #: *Type:int*
-    auth = resource.Body('auth', type=int)
+    user_auth = resource.Body('auth', type=int)
 
 
 class Auth(resource.Resource):
@@ -55,7 +55,7 @@ class Auth(resource.Resource):
     #: 7: Manage
     #: 3: Write
     #: 1: Read
-    auth = resource.Body('auth', type=int)
+    user_auth = resource.Body('auth', type=int)
 
 
 class Permission(_base.Resource):

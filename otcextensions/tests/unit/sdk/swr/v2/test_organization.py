@@ -18,7 +18,7 @@ EXAMPLE = {
     "namespace": "test_create_org_v2",
     "id": 21,
     "creator_name": "anton",
-    "auth": 7,
+    "user_auth": 7,
 }
 
 EXAMPLE_PERMISSION = {
@@ -26,7 +26,7 @@ EXAMPLE_PERMISSION = {
         {
             "user_id": "5a23ecb3999b458d92d51d524bb7fb4b",
             "user_name": "test",
-            "auth": 1
+            "user_auth": 1
         }
     ],
     "namespace": "test_create_org_v2"
@@ -50,7 +50,7 @@ class TestOrganization(base.TestCase):
         self.assertEqual(EXAMPLE['id'], sot.id)
         self.assertEqual(EXAMPLE['namespace'], sot.namespace)
         self.assertEqual(EXAMPLE['creator_name'], sot.creator_name)
-        self.assertEqual(EXAMPLE['auth'], sot.auth)
+        self.assertEqual(EXAMPLE['user_auth'], sot.user_auth)
 
 
 class TestOrganizationPermissions(base.TestCase):
@@ -73,8 +73,8 @@ class TestOrganizationPermissions(base.TestCase):
             sot.permissions[0].user_id
         )
         self.assertEqual(
-            EXAMPLE_PERMISSION['permissions'][0]["auth"],
-            sot.permissions[0].auth
+            EXAMPLE_PERMISSION['permissions'][0]["user_auth"],
+            sot.permissions[0].user_auth
         )
         self.assertEqual(
             EXAMPLE_PERMISSION['permissions'][0]["user_name"],
