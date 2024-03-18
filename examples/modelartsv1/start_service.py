@@ -11,13 +11,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-"""Delete a model."""
+"""Start a service."""
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
-name_or_id = "mnist-model-1234"
-model = conn.modelartsv1.find_model(name_or_id, ignore_missing=False)
+name_or_id = "test-service"
+service = conn.modelartsv1.find_service(name_or_id)
 
-conn.modelartsv1.delete_model(model)
+response = conn.modelartsv1.start_service(service)
+print(response)

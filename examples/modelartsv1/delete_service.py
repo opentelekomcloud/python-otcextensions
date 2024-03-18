@@ -17,5 +17,7 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 
-service_id = "service_id"
-conn.modelartsv1.delete_service(service_id, ignore_missing=False)
+name_or_id = "test-service"
+service = conn.modelartsv1.find_service(name_or_id, ignore_missing=False)
+
+conn.modelartsv1.delete_service(service)

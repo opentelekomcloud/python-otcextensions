@@ -346,17 +346,6 @@ class Proxy(proxy.Proxy):
         """
         return self._update(_service.Service, service, **attrs)
 
-    def stop_service(self, service):
-        """Stop a Service.
-
-        :param service: service id or an instance of
-            :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
-
-        :returns: instance of
-            :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
-        """
-        return self._update(_service.Service, service, status="stopped")
-
     def start_service(self, service):
         """Start a Service.
 
@@ -367,6 +356,17 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
         """
         return self._update(_service.Service, service, status="running")
+
+    def stop_service(self, service):
+        """Stop a Service.
+
+        :param service: service id or an instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
+
+        :returns: instance of
+            :class:`~otcextensions.sdk.modelartsv1.v1.service.Service`
+        """
+        return self._update(_service.Service, service, status="stopped")
 
     def wait_for_service(self, service, timeout=1200, wait=5):
         while timeout > 0:
