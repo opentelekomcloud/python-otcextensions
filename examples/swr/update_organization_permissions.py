@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -9,15 +10,25 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+"""
+Update exist organization permissions
+"""
+import openstack
+from otcextensions import sdk
 
-from openstack import service_description
+openstack.enable_logging(True)
+conn = openstack.connect(cloud='otc')
+sdk.register_otc_extensions(conn)
 
-from otcextensions.sdk.dms.v1 import _proxy as _proxy_v1
+attrs = {
+    'namespace': 'test',
+    'permissions': [
+        {
+            "user_id": "5a23ecb3999b458d92d51d524bb7fb4c",
+            "user_name": "test",
+            "auth": 3
+        }
+    ],
+}
 
-
-class DmsService(service_description.ServiceDescription):
-    """The DMS service."""
-
-    supported_versions = {
-        '1': _proxy_v1.Proxy
-    }
+perm = conn.swr.update_organization_permissions(**attrs)

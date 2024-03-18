@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    SDK OBS can use generated temporary ak/sk/token with
+    env variables S3_SECURITY_TOKEN | OS_SECURITY_TOKEN

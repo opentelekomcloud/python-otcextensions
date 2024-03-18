@@ -118,6 +118,10 @@ OTC_SERVICES = {
         'endpoint_service_type': 'dms',
         'append_project_id': True,
     },
+    'dmsv2': {
+        'service_type': 'dmsv2',
+        'endpoint_service_type': 'dmsv2',
+    },
     'dns': {
         'service_type': 'dns',
         'replace_system': True,
@@ -201,8 +205,8 @@ OTC_SERVICES = {
         'service_type': 'smn',
         'append_project_id': True
     },
-    'swrv2': {
-        'service_type': 'swrv2',
+    'swr': {
+        'service_type': 'swr',
         'endpoint_service_type': 'swrv2'
     },
     'tms': {
@@ -319,11 +323,14 @@ def get_ak_sk(conn):
 
     ak = config.get('access_key', config.get('ak'))
     sk = config.get('secret_key', config.get('sk'))
+    token = config.get('security_token', config.get('token'))
 
     if not ak:
         ak = os.getenv('OS_ACCESS_KEY', os.getenv('S3_ACCESS_KEY_ID'))
     if not sk:
         sk = os.getenv('OS_SECRET_KEY', os.getenv('S3_SECRET_ACCESS_KEY'))
+    if not token:
+        token = os.getenv('OS_SECURITY_TOKEN', os.getenv('S3_SECURITY_TOKEN'))
 
     if not (ak and sk):
         _logger.error('AK/SK pair is not configured in the connection, '
@@ -331,7 +338,10 @@ def get_ak_sk(conn):
         return (None, None)
 
     else:
-        return ak, sk
+        if not token:
+            return ak, sk
+        else:
+            return ak, sk, token
 
 
 def extend_instance(obj, cls):

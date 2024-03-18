@@ -72,22 +72,30 @@ class Proxy(sdk_proxy.Proxy):
         if not auth:
             ak = None
             sk = None
+            token = None
             conn = self.session._sdk_connection
             if hasattr(conn, 'get_ak_sk'):
-                (ak, sk) = conn.get_ak_sk(conn)
+                aksk = conn.get_ak_sk(conn)
+                if len(aksk) == 2:
+                    (ak, sk) = aksk
+                elif len(aksk) == 3:
+                    (ak, sk, token) = aksk
             if not (ak and sk):
                 self.log.error('Cannot obtain AK/SK from config')
                 return None
             region = extract_region_from_url(self.get_endpoint())
             if not host:
                 host = self.get_endpoint()
-            auth = ak_auth.AKRequestsAuth(
-                access_key=ak,
-                secret_access_key=sk,
-                host=host,
-                region=region,
-                service='s3'
-            )
+            auth_params = {
+                "access_key": ak,
+                "secret_access_key": sk,
+                "host": host,
+                "region": region,
+                "service": "s3"
+            }
+            if token:
+                auth_params["token"] = token
+            auth = ak_auth.AKRequestsAuth(**auth_params)
             setattr(self, '_ak_auth', auth)
         return auth
 
@@ -361,6 +369,14 @@ class Proxy(sdk_proxy.Proxy):
 
         container = self._get_container_name(container=container)
         endpoint = self.get_container_endpoint(container)
+
+        # folder logic
+        if data is None and name[-1] == "/":
+            return self._create(_obj.Object, container=container,
+                                name=name,
+                                endpoint_override=endpoint,
+                                requests_auth=self._get_req_auth(endpoint),
+                                **headers)
 
         if data is not None:
             self.log.debug(

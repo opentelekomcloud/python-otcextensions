@@ -9,15 +9,11 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
-from openstack import service_description
-
-from otcextensions.sdk.dms.v1 import _proxy as _proxy_v1
+from otcextensions.tests.functional import base
 
 
-class DmsService(service_description.ServiceDescription):
-    """The DMS service."""
+class TestSwr(base.BaseFunctionalTest):
 
-    supported_versions = {
-        '1': _proxy_v1.Proxy
-    }
+    def setUp(self):
+        super(TestSwr, self).setUp()
+        self.client = self.conn.swr

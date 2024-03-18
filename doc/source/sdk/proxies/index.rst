@@ -33,6 +33,7 @@ Service Proxies
    Shared File System Turbo (SFS Turbo) <sfsturbo>
    Simple Message Notification Service (SMN) <smn>
    Storage Disaster Recovery Service (SDRS) <sdrs>
+   Software Repository for Containers Service (SWR) <swr>
    Volume Backup Service (VBS) <volume_backup>
    Virtual Private Cloud (VPC) <vpc>
    Web Application Firewall (WAF) <waf>

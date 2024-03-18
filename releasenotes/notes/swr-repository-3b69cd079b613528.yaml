@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    Add SWR v2 Repository SDK support for the following operations: list, create, delete, update, get
