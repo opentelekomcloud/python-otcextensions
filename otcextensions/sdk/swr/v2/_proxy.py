@@ -41,7 +41,7 @@ class Proxy(proxy.Proxy):
         # exclude version
         url_parts = list(filter(lambda x: not any(
             c.isdigit() for c in x[1:]) and (
-                                                  x[0].lower() != 'v'), url_parts))
+                x[0].lower() != 'v'), url_parts))
 
         # Strip out anything that's empty or None
         return [part for part in url_parts if part]
