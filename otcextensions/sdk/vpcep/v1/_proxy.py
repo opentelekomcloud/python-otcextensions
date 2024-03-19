@@ -9,14 +9,10 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import exceptions
-from openstack import proxy
-
-from otcextensions.sdk.vpcep.v1 import vpc_endpoint as _vpc_endpoint
-
 from dataclasses import dataclass
-from typing import List
 
+from openstack import proxy
+from otcextensions.sdk.vpcep.v1 import vpc_endpoint as _vpc_endpoint
 
 @dataclass
 class PublicInfo:
@@ -71,12 +67,13 @@ class Proxy(proxy.Proxy):
         """Get details of a single vpc endpoint
 
         :param vpc_endpoint: The value can be the ID of a vpc endpoint or a
-                        :class:`~otcextensions.sdk.vpc.v1.vpc_endpoint.VpcEndpoint`
-                        instance.
+            :class:`~otcextensions.sdk.vpc.v1.vpc_endpoint.VpcEndpoint`
+            instance.
 
         :returns: One :class:`~otcextensions.sdk.vpc.v1.vpc_endpoint.VpcEndpoint`
 
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
                  when no resource can be found.
         """
-        return self._get(_vpc_endpoint.VpcEndpoint, vpc_endpoint, project_id=self.get_project_id())
+        return self._get(_vpc_endpoint.VpcEndpoint, vpc_endpoint,
+                         project_id=self.get_project_id())

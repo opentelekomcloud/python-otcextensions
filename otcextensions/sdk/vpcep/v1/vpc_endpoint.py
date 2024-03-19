@@ -50,7 +50,9 @@ class VpcEndpoint(resource.Resource):
     #: Specifies the project id.
     project_id = resource.URI('project_id')
     #: Specifies if whitelist is enabled.
-    enable_whitelist = resource.Body('enable_whitelist', type=bool, default=False)
+    enable_whitelist = resource.Body('enable_whitelist',
+                                     type=bool,
+                                     default=False)
     #: Specifies the whitelist.
     whitelist = resource.Body('whitelist', type=list)
     #: Specifies if dns is enabled.
