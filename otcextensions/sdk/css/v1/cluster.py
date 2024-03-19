@@ -9,25 +9,12 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from enum import Enum
-
+#
 from openstack import exceptions
 from openstack import resource
 from openstack import utils
 
-
-class ClusterStatus(Enum):
-    CREATING = '100'
-    AVAILABLE = '200'
-    UNAVAILABLE = '303'
-    ERROR = 'ERROR'
-
-    def __str__(self):
-        return self.name
-
-    @classmethod
-    def _missing_(cls, value):
-        return cls.ERROR
+STATUS_MAP = {"100": "CREATING", "200": "AVAILABLE", "303": "UNAVAILABLE"}
 
 
 class NodeSpec(resource.Resource):
@@ -56,9 +43,7 @@ class Cluster(resource.Resource):
     allow_delete = True
     allow_fetch = True
 
-    _query_mapping = resource.QueryParameters(
-        'id', 'start', 'limit'
-    )
+    _query_mapping = resource.QueryParameters('id', 'start', 'limit')
 
     # Properties
     #: Current actions
@@ -122,7 +107,7 @@ class Cluster(resource.Resource):
     #:  303: The cluster is unavailable.
     status_code = resource.Body('status', type=int)
     #: Cluster Status.
-    status = resource.Body('status', type=ClusterStatus)
+    status = resource.Body('status')
     #: Array of tags
     tags = resource.Body('tags', type=list, list_type=dict)
     #: Cluster update time
@@ -133,24 +118,104 @@ class Cluster(resource.Resource):
     num_nodes = resource.Computed('num_nodes', type=int)
 
     def _action(self, session, action, body=None):
-        """Preform actions given the message body.
-        """
+        """Preform actions given the message body."""
         uri = utils.urljoin('clusters', self.id, action)
         response = session.post(uri, json=body)
         exceptions.raise_from_response(response)
 
     def restart(self, session):
-        """Restart the cluster.
-        """
+        """Restart the cluster."""
         self._action(session, 'restart')
 
     def extend(self, session, add_nodes):
-        """Scaling Out a Cluster with only Common Nodes.
-        """
+        """Scaling Out a Cluster with only Common Nodes."""
         if not 0 < add_nodes <= 32:
             raise exceptions.SDKException('CSS Cluster size can be [1..32]')
-        self._action(session, 'extend',
-                     {'grow': {'modifySize': add_nodes}})
+        self._action(session, 'extend', {'grow': {'modifySize': add_nodes}})
+
+    @classmethod
+    def existing(cls, connection=None, **kwargs):
+        """Create an instance of an existing remote resource.
+
+        When creating the instance set the ``_synchronized`` parameter
+        of :class:`Resource` to ``True`` to indicate that it represents the
+        state of an existing server-side resource. As such, all attributes
+        passed in ``**kwargs`` are considered "clean", such that an immediate
+        :meth:`update` call would not generate a body of attributes to be
+        modified on the server.
+
+        :param dict kwargs: Each of the named arguments will be set as
+            attributes on the resulting Resource object.
+        """
+        if "status" in kwargs.keys():
+            kwargs["status"] = STATUS_MAP.get(str(kwargs["status"]), "ERROR")
+        return cls(_synchronized=True, connection=connection, **kwargs)
+
+    def _translate_response(
+        self,
+        response,
+        has_body=None,
+        error_message=None,
+        *,
+        resource_response_key=None,
+    ):
+        """Given a KSA response, inflate this instance with its data
+
+        DELETE operations don't return a body, so only try to work
+        with a body when has_body is True.
+
+        This method updates attributes that correspond to headers
+        and body on this instance and clears the dirty set.
+        """
+        if has_body is None:
+            has_body = self.has_body
+
+        exceptions.raise_from_response(response, error_message=error_message)
+
+        if has_body:
+            try:
+                body = response.json()
+                if resource_response_key and resource_response_key in body:
+                    body = body[resource_response_key]
+                elif self.resource_key and self.resource_key in body:
+                    body = body[self.resource_key]
+
+                # Do not allow keys called "self" through. Glance chose
+                # to name a key "self", so we need to pop it out because
+                # we can't send it through cls.existing and into the
+                # Resource initializer. "self" is already the first
+                # argument and is practically a reserved word.
+                body.pop("self", None)
+
+                if "status" in body.keys():
+                    body["status"] = STATUS_MAP.get(
+                        str(body["status"]), "ERROR"
+                    )
+
+                body_attrs = self._consume_body_attrs(body)
+                if self._allow_unknown_attrs_in_body:
+                    body_attrs.update(body)
+                    self._unknown_attrs_in_body.update(body)
+                elif self._store_unknown_attrs_as_properties:
+                    body_attrs = self._pack_attrs_under_properties(
+                        body_attrs, body
+                    )
+
+                self._body.attributes.update(body_attrs)
+                self._body.clean()
+                if self.commit_jsonpatch or self.allow_patch:
+                    # We need the original body to compare against
+                    self._original_body = body_attrs.copy()
+            except ValueError:
+                # Server returned not parse-able response (202, 204, etc)
+                # Do simply nothing
+                pass
+
+        headers = self._consume_header_attrs(response.headers)
+        self._header.attributes.update(headers)
+        self._header.clean()
+        self._update_location()
+        dict.update(self, self.to_dict())
 
 
 class ExtendClusterNodes(resource.Resource):
