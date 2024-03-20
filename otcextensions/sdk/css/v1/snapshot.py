@@ -12,7 +12,6 @@
 from openstack import exceptions
 from openstack import resource
 from openstack import utils
-
 from otcextensions.common import format as otc_format
 
 
@@ -82,14 +81,15 @@ class Snapshot(resource.Resource):
     def create(self, session, base_path=None):
         # This overrides the default behavior of resource creation because
         # backup create doesn't accept resource_key in its request.
-        return super(Snapshot, self).create(session, prepend_key=False,
-                                            base_path=base_path)
+        return super(Snapshot, self).create(
+            session, prepend_key=False, base_path=base_path
+        )
 
     def restore(self, session, cluster_id, **body):
-        """Restoring a Snapshot.
-        """
-        uri = utils.urljoin('clusters', cluster_id,
-                            'index_snapshot', self.id, 'restore')
+        """Restoring a Snapshot."""
+        uri = utils.urljoin(
+            'clusters', cluster_id, 'index_snapshot', self.id, 'restore'
+        )
         response = session.post(uri, json=body)
         exceptions.raise_from_response(response)
 
@@ -146,8 +146,7 @@ class SnapshotConfiguration(resource.Resource):
     cmk_id = resource.Body('snapshotCmkId')
 
     def disable(self, session):
-        """Disable Snapshot Function.
-        """
+        """Disable Snapshot Function."""
         uri = utils.urljoin('clusters', self.cluster_id, 'index_snapshots')
         response = session.delete(uri)
         exceptions.raise_from_response(response)

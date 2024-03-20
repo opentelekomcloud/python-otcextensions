@@ -85,7 +85,8 @@ class Flavor(resource.Resource):
             uri,
             headers={"Accept": "application/json"},
             params=query_params.copy(),
-            microversion=microversion)
+            microversion=microversion,
+        )
         exceptions.raise_from_response(response)
         data = response.json()
 
@@ -106,7 +107,8 @@ class Flavor(resource.Resource):
                         connection=session._get_connection(),
                         version=version,
                         type=type,
-                        **raw_resource)
+                        **raw_resource
+                    )
                     yield value
         else:
             return

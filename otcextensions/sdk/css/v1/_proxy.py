@@ -9,15 +9,15 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import time
+from urllib.parse import urlsplit
+
 from openstack import exceptions
 from openstack import proxy
+from otcextensions.sdk.css.v1 import cert as _cert
 from otcextensions.sdk.css.v1 import cluster as _cluster
 from otcextensions.sdk.css.v1 import flavor as _flavor
 from otcextensions.sdk.css.v1 import snapshot as _snapshot
-from otcextensions.sdk.css.v1 import cert as _cert
-
-from urllib.parse import urlsplit
-import time
 
 
 class Proxy(proxy.Proxy):
@@ -26,8 +26,10 @@ class Proxy(proxy.Proxy):
 
     def __init__(self, session, *args, **kwargs):
         super(Proxy, self).__init__(session=session, *args, **kwargs)
-        self.additional_headers = {"Accept": "application/json",
-                                   "Content-type": "application/json"}
+        self.additional_headers = {
+            "Accept": "application/json",
+            "Content-type": "application/json",
+        }
 
     # ======== Cluster ========
     def clusters(self, **query):
@@ -47,9 +49,7 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
         """
-        return self._get(
-            _cluster.Cluster, cluster
-        )
+        return self._get(_cluster.Cluster, cluster)
 
     def find_cluster(self, name_or_id, ignore_missing=False):
         """Find a single cluster
@@ -64,8 +64,9 @@ class Proxy(proxy.Proxy):
         :returns:
             One :class:`~otcextensions.sdk.css.v1.cluster.Cluster` or ``None``
         """
-        return self._find(_cluster.Cluster, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(
+            _cluster.Cluster, name_or_id, ignore_missing=ignore_missing
+        )
 
     def create_cluster(self, **attrs):
         """Create a cluster from attributes
@@ -76,9 +77,7 @@ class Proxy(proxy.Proxy):
         :returns: The results of cluster creation
         :rtype: :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
         """
-        return self._create(
-            _cluster.Cluster, **attrs
-        )
+        return self._create(_cluster.Cluster, **attrs)
 
     def restart_cluster(self, cluster):
         """Get the cluster by UUID
@@ -127,8 +126,9 @@ class Proxy(proxy.Proxy):
             delete a nonexistent cluster.
         :returns: ``None``
         """
-        return self._delete(_cluster.Cluster, cluster,
-                            ignore_missing=ignore_missing)
+        return self._delete(
+            _cluster.Cluster, cluster, ignore_missing=ignore_missing
+        )
 
     # ======== Flavors ========
     def flavors(self):
@@ -165,13 +165,10 @@ class Proxy(proxy.Proxy):
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return self._create(
-            _snapshot.Snapshot,
-            uri_cluster_id=cluster.id,
-            **attrs
+            _snapshot.Snapshot, uri_cluster_id=cluster.id, **attrs
         )
 
-    def delete_snapshot(self, cluster, snapshot,
-                        ignore_missing=False):
+    def delete_snapshot(self, cluster, snapshot, ignore_missing=False):
         """Delete a snapshot
 
         :param cluster: key id or an instance of
@@ -187,13 +184,15 @@ class Proxy(proxy.Proxy):
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return self._delete(
-            _snapshot.Snapshot, snapshot,
+            _snapshot.Snapshot,
+            snapshot,
             uri_cluster_id=cluster.id,
             ignore_missing=ignore_missing,
         )
 
-    def set_snapshot_configuration(self, cluster, auto_configure=False,
-                                   **attrs):
+    def set_snapshot_configuration(
+        self, cluster, auto_configure=False, **attrs
+    ):
         """Setting Basic Configurations of a Cluster Snapshot
 
         :param cluster: key id or an instance of
@@ -215,7 +214,7 @@ class Proxy(proxy.Proxy):
             _snapshot.SnapshotConfiguration,
             cluster_id=cluster.id,
             setting=setting,
-            **attrs
+            **attrs,
         )
 
     def disable_snapshot_function(self, cluster, ignore_missing=False):
@@ -226,9 +225,9 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
-        snapshot_config = self._get_resource(_snapshot.SnapshotConfiguration,
-                                             '',
-                                             cluster_id=cluster.id)
+        snapshot_config = self._get_resource(
+            _snapshot.SnapshotConfiguration, '', cluster_id=cluster.id
+        )
         snapshot_config.disable(self)
 
     def set_snapshot_policy(self, cluster, **attrs):
@@ -243,9 +242,7 @@ class Proxy(proxy.Proxy):
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return self._create(
-            _snapshot.SnapshotPolicy,
-            cluster_id=cluster.id,
-            **attrs
+            _snapshot.SnapshotPolicy, cluster_id=cluster.id, **attrs
         )
 
     def get_snapshot_policy(self, cluster):
@@ -258,9 +255,7 @@ class Proxy(proxy.Proxy):
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return self._get(
-            _snapshot.SnapshotPolicy,
-            cluster_id=cluster.id,
-            requires_id=False
+            _snapshot.SnapshotPolicy, cluster_id=cluster.id, requires_id=False
         )
 
     def restore_snapshot(self, cluster, snapshot, **attrs):
@@ -280,11 +275,11 @@ class Proxy(proxy.Proxy):
         return snapshot.restore(self, cluster.id, **attrs)
 
     def get_certificate(self):
-        """Download the HTTPS certificate file of the server.
-        """
+        """Download the HTTPS certificate file of the server."""
         split_url = urlsplit(self.get_endpoint())
-        self.endpoint_override = \
+        self.endpoint_override = (
             f'{split_url.scheme}://{split_url.netloc}/v1.0/'
+        )
         resp = self._get(
             _cert.Cert,
             requires_id=False,
@@ -313,4 +308,5 @@ class Proxy(proxy.Proxy):
             timeout = timeout - wait
             time.sleep(wait)
         raise exceptions.SDKException(
-            'Wait Timed Out. Cluster action still in progress.')
+            'Wait Timed Out. Cluster action still in progress.'
+        )
