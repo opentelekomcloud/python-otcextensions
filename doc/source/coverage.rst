@@ -107,6 +107,12 @@ under several service tags. This may change in future.
       - X
       -
       -
+    * - modelarts
+      - ModelArts Service
+      - X
+      - X
+      - X
+      -
     * - nat
       - Network Address Translation
       - X

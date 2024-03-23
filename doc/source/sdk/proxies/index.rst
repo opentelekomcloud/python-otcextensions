@@ -25,6 +25,7 @@ Service Proxies
    Key Management Service (KMS) <kms>
    Log Tank Service (LTS) <lts>
    MapReduce Service (MRS) <mrs>
+   Modelarts Service (ModelArts) <modelarts>
    Network Address Translation (NAT) <nat>
    Object Block Storage (OBS) <obs>
    Relational Database Service RDS V1 (RDSv1) <rds_v1>

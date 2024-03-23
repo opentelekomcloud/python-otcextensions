@@ -9,14 +9,12 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+#
 from openstack import service_description
-
 from otcextensions.sdk.modelartsv2.v2 import _proxy as _proxy_v2
 
 
 class Modelartsv2Service(service_description.ServiceDescription):
     """The ModelartsService v2 service."""
 
-    supported_versions = {
-        '2': _proxy_v2.Proxy
-    }
+    supported_versions = {"2": _proxy_v2.Proxy}

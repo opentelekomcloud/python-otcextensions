@@ -40,6 +40,7 @@ documentation of these services:
    identity
    kms
    load_balancer
+   modelarts
    nat
    obs
    rds_v3

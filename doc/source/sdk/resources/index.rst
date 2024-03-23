@@ -27,6 +27,7 @@ Open Telekom Cloud Resources
    Key Management Service (KMS) <kms/index>
    Log Tank Service (LTS) <lts/index>
    MapReduce Service (MRS) <mrs/index>
+   ModelArts Service (MA) <modelarts/index>
    Network Address Translation (NAT) <nat/index>
    Object Block Storage (OBS) <obs/index>
    Relational Database Service (RDS) <rds/index>
