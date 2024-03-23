@@ -11,6 +11,7 @@
 # under the License.
 #
 
+
 def assert_attributes_equal(test_case, sot, data):
     if isinstance(data, dict):
         try:

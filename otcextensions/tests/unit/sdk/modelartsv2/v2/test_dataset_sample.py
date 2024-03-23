@@ -17,7 +17,7 @@ from openstack import utils
 from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv2.v2 import dataset_sample
 from otcextensions.tests.unit.sdk.modelartsv2.v2 import examples
-from otcextensions.tests.unit.utils import assert_attributes_equal
+from otcextensions.tests.unit.sdk.utils import assert_attributes_equal
 
 EXAMPLE = examples.DATASET_SAMPLE
 

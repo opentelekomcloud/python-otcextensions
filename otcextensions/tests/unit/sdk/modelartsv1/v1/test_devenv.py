@@ -16,7 +16,7 @@ from keystoneauth1 import adapter
 from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv1.v1 import devenv
 from otcextensions.tests.unit.sdk.modelartsv1.v1 import examples
-from otcextensions.tests.unit.utils import assert_attributes_equal
+from otcextensions.tests.unit.sdk.utils import assert_attributes_equal
 
 EXAMPLE = examples.DEVENV
 
@@ -65,8 +65,9 @@ class TestDevenv(base.TestCase):
 
         for key, value in EXAMPLE.items():
             if key in updated_sot_attrs.keys():
-                for k1, v1 in updated_sot_attrs.items():
-                    self.assertEqual(getattr(sot, v1), EXAMPLE[k1])
+                self.assertEqual(
+                    getattr(sot, updated_sot_attrs[key]), EXAMPLE[key]
+                )
             else:
                 assert_attributes_equal(self, getattr(sot, key), value)
 

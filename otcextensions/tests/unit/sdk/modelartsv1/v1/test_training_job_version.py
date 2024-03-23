@@ -13,7 +13,7 @@
 from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv1.v1 import training_job_version
 from otcextensions.tests.unit.sdk.modelartsv1.v1 import examples
-from otcextensions.tests.unit.utils import assert_attributes_equal
+from otcextensions.tests.unit.sdk.utils import assert_attributes_equal
 
 EXAMPLE = examples.TRAINING_JOB_VERSION
 
@@ -36,12 +36,6 @@ class TestTrainingJobVersion(base.TestCase):
         self.assertFalse(sot.allow_commit)
 
     def test_make_it(self):
-        updated_sot_attrs = [
-            "create_time",
-            "start_time",
-            "system_metric_list",
-        ]
-
         sot = training_job_version.TrainingJobVersion(**EXAMPLE)
 
         for key, value in EXAMPLE.items():

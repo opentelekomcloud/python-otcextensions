@@ -15,6 +15,7 @@ import logging
 
 from osc_lib import utils
 from osc_lib.command import command
+
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
@@ -38,9 +39,7 @@ class ListJobEngines(command.Lister):
             metavar="{train, inference}",
             type=lambda s: s.lower(),
             choices=["train", "inference"],
-            help=_(
-                "Job Type."
-            ),
+            help=_("Job Type."),
         )
         return parser
 

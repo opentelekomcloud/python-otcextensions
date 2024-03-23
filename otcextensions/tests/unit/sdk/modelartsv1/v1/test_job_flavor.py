@@ -13,7 +13,7 @@
 from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv1.v1 import job_flavor
 from otcextensions.tests.unit.sdk.modelartsv1.v1 import examples
-from otcextensions.tests.unit.utils import assert_attributes_equal
+from otcextensions.tests.unit.sdk.utils import assert_attributes_equal
 
 EXAMPLE = examples.JOB_FLAVOR
 

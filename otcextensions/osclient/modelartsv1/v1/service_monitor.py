@@ -15,6 +15,7 @@ import logging
 
 from osc_lib import utils
 from osc_lib.command import command
+
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)

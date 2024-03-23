@@ -13,6 +13,7 @@
 from openstack.tests.unit import base
 from otcextensions.sdk.modelartsv1.v1 import service_log
 from otcextensions.tests.unit.sdk.modelartsv1.v1 import examples
+from otcextensions.tests.unit.sdk.utils import assert_attributes_equal
 
 EXAMPLE = examples.SERVICE_LOG
 
@@ -44,17 +45,4 @@ class TestLog(base.TestCase):
 
     def test_make_it(self):
         sot = service_log.ServiceLog(**EXAMPLE)
-
-        for key, value in EXAMPLE.items():
-            if key != "config":
-                self.assertEqual(getattr(sot, key), value)
-
-        for config in EXAMPLE["config"]:
-            sot_config = service_log.ConfigSpec(**config)
-            for key, value in config.items():
-                if key == "custom_spec":
-                    self.assertEqual(
-                        sot.config[0].custom_spec, sot_config.custom_spec
-                    )
-                else:
-                    self.assertEqual(getattr(sot_config, key), value)
+        assert_attributes_equal(self, sot, EXAMPLE)

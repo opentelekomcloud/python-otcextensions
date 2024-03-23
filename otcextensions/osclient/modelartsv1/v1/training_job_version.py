@@ -12,11 +12,12 @@
 #
 """ModelArts training job v1 action implementations"""
 import logging
-from cliff import columns as cliff_columns
 
+from cliff import columns as cliff_columns
 from osc_lib import utils
 from osc_lib.cli import parseractions
 from osc_lib.command import command
+
 from otcextensions.common import cli_utils
 from otcextensions.common import sdk_utils
 from otcextensions.i18n import _

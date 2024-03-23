@@ -19,6 +19,7 @@ from osc_lib import exceptions
 from osc_lib import utils
 from osc_lib.cli import parseractions
 from osc_lib.command import command
+
 from otcextensions.common import cli_utils
 from otcextensions.common import sdk_utils
 from otcextensions.i18n import _
@@ -228,8 +229,7 @@ class AddDatasetSamples(command.ShowOne):
             choices=list(SampleType.CHOICES_MAP.keys()),
             type=int,
             help=_(
-                "Sample type. The options are as follows:\n"
-                + SampleType.STR
+                "Sample type. The options are as follows:\n" + SampleType.STR
             ),
         )
         parser.add_argument(
@@ -403,8 +403,7 @@ class ListDatasetSamples(command.Lister):
             choices=list(LabelType.CHOICES_MAP.keys()),
             type=int,
             help=_(
-                "Labeling type. The options are as follows:"
-                + LabelType.STR
+                "Labeling type. The options are as follows:" + LabelType.STR
             ),
         )
         parser.add_argument(
@@ -468,8 +467,7 @@ class ListDatasetSamples(command.Lister):
             choices=list(SampleType.CHOICES_MAP.keys()),
             type=int,
             help=_(
-                "Sample type. The options are as follows:"
-                + SampleType.STR
+                "Sample type. The options are as follows:" + SampleType.STR
             ),
         )
         parser.add_argument(
@@ -555,9 +553,7 @@ class ShowDatasetSample(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
         dataset = client.find_dataset(parsed_args.dataset)
-        obj = client.get_dataset_sample(
-            dataset.id, parsed_args.sampleId
-        )
+        obj = client.get_dataset_sample(dataset.id, parsed_args.sampleId)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns, formatters=_formatters)

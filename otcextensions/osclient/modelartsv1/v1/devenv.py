@@ -17,6 +17,7 @@ from osc_lib import exceptions
 from osc_lib import utils
 from osc_lib.cli import parseractions
 from osc_lib.command import command
+
 from otcextensions.common import cli_utils
 from otcextensions.common import sdk_utils
 from otcextensions.i18n import _

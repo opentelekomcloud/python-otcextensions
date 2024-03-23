@@ -48,12 +48,13 @@ class TestDatasetStatistics(base.TestCase):
         )
 
     def test_make_it(self):
-        updated_sot_attrs = ("data_spliting_enable",)
         sot = dataset_statistics.DatasetStatistics(**EXAMPLE)
-        self.assertEqual(
-            EXAMPLE["data_spliting_enable"], sot.is_data_spliting_enabled
-        )
 
         for key, value in EXAMPLE.items():
-            if key not in updated_sot_attrs:
+            if key == "data_spliting_enable":
+                self.assertEqual(
+                    EXAMPLE["data_spliting_enable"],
+                    sot.is_data_spliting_enabled,
+                )
+            else:
                 self.assertEqual(getattr(sot, key), value)

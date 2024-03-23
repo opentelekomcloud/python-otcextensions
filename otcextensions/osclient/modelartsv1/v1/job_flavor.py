@@ -16,6 +16,7 @@ import logging
 from cliff import columns as cliff_columns
 from osc_lib import utils
 from osc_lib.command import command
+
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
