@@ -134,8 +134,8 @@ class Container(_base.BaseResource):
 
         return
 
-    def create(self, session, prepend_key=True,
-               endpoint_override=None, headers=None, requests_auth=None):
+    def create(self, session, prepend_key=True, endpoint_override=None,
+               headers=None, requests_auth=None):
 
         if not self.allow_create:
             raise exceptions.MethodNotSupported(self, "create")
