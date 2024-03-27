@@ -10,12 +10,21 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-from openstack import service_description
+"""Create VPC Endpoint Service."""
+import openstack
 
-from otcextensions.sdk.vpcep.v1 import _proxy
+openstack.enable_logging(True)
+conn = openstack.connect(cloud='otc')
 
+attrs = {
+    'port_id': 'port-id',
+    'vpc_id': 'router-id',
+    'service_name': 'test-service',
+    'approval_enabled': False,
+    'service_type': 'interface',
+    'server_type': 'VM',
+    'ports': [{'client_port': 8080, 'server_port': 90, 'protocol': 'TCP'}],
+}
 
-class VpcepService(service_description.ServiceDescription):
-    """The VPCEP service."""
-
-    supported_versions = {'1': _proxy.Proxy}
+endpoint_service = conn.vpcep.create_service(**attrs)
+print(endpoint_service)

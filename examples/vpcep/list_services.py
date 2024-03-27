@@ -10,12 +10,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-from openstack import service_description
+"""List endpoint services."""
+import openstack
 
-from otcextensions.sdk.vpcep.v1 import _proxy
+openstack.enable_logging(True)
+conn = openstack.connect(cloud='otc')
 
-
-class VpcepService(service_description.ServiceDescription):
-    """The VPCEP service."""
-
-    supported_versions = {'1': _proxy.Proxy}
+endpoint_services = conn.vpcep.services()
+print(list(endpoint_services))
