@@ -29,6 +29,7 @@ Open Telekom Cloud related User Guides
    sfsturbo
    smn
    vpc
+   vpcep
    logging
 
 .. _user_guides:

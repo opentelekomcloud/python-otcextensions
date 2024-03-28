@@ -47,3 +47,4 @@ documentation of these services:
    smn
    volume_backup
    vpc
+   vpcep

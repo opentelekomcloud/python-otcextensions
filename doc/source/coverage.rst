@@ -137,3 +137,9 @@ under several service tags. This may change in future.
       - X
       - X
       -
+    * - vpcep
+      - VPC Endpoint Service
+      - X
+      - X
+      - X
+      -

@@ -10,12 +10,18 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-from openstack import service_description
+"""Manage endpoint service whitelist."""
+import openstack
 
-from otcextensions.sdk.vpcep.v1 import _proxy
+openstack.enable_logging(True)
+conn = openstack.connect(cloud='otc')
 
+name_or_id = 'xyz'
+action = 'add'
+domains = ['domain1-id', 'domain2-id']
 
-class VpcepService(service_description.ServiceDescription):
-    """The VPCEP service."""
-
-    supported_versions = {'1': _proxy.Proxy}
+endpoint_service = conn.vpcep.find_service(name_or_id)
+whitelist = conn.vpcep.service_whitelist(
+    endpoint_service, action, domains
+)
+print(list(whitelist))
