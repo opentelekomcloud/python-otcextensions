@@ -23,7 +23,7 @@ Service Operations
 
 .. autoclass:: otcextensions.sdk.vpcep.v1._proxy.Proxy
   :noindex:
-  :members: service, create_service, get_service, find_service, delete_service
+  :members: services, create_service, get_service, find_service, delete_service
 
 Service Connection Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

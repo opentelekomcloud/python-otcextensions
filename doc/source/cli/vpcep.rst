@@ -10,7 +10,7 @@ For help on a specific `vpcep` command, enter:
 
    $ openstack vpcep help SUBCOMMAND
 
-.. _endpoint:
+.. _vpcep_endpoint:
 
 Vpcep Endpoint Operations
 -------------------------
@@ -18,7 +18,7 @@ Vpcep Endpoint Operations
 .. autoprogram-cliff:: openstack.vpcep.v1
    :command: vpcep endpoint *
 
-.. _service:
+.. _vpcep_service:
 
 Vpcep Service Operations
 ------------------------
@@ -26,7 +26,7 @@ Vpcep Service Operations
 .. autoprogram-cliff:: openstack.vpcep.v1
    :command: vpcep service *
 
-.. _quota:
+.. _vpcep_quota:
 
 Vpcep Quota Operations
 ----------------------
