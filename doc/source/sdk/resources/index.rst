@@ -35,6 +35,7 @@ Open Telekom Cloud Resources
    Storage Disaster Recovery Service (SDRS) <sdrs/index>
    Software Repository for Containers Service (SWR) <swr/index>
    Virtual Private Cloud (VPC) <vpc/index>
+   VPC Endpoint (VPCEP) <vpcep/index>
    Web Application Firewall (WAF) <waf/index>
 
 Every resource which is used within the proxy methods have own attributes.
