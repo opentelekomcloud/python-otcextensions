@@ -47,7 +47,7 @@ def _get_columns(item):
 class ListEndpoints(command.Lister):
 
     _description = _('List VPC Endpoints.')
-    columns = ('Id', 'Endpoint Service Name', 'Status', 'Enable status')
+    columns = ('Id', 'Endpoint Service Name', 'Status', 'Is Enabled')
 
     def get_parser(self, prog_name):
         parser = super(ListEndpoints, self).get_parser(prog_name)

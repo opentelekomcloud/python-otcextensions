@@ -94,6 +94,7 @@ class FakeEndpoint(test_base.Fake):
             'status': 'creating',
             'vpc_id': 'vpc-id-' + uuid.uuid4().hex,
             'enable_dns': False,
+            'is_enabled': True,
             'endpoint_service_name': 'vpcep-' + uuid.uuid4().hex,
             'endpoint_service_id': 'ep-service-id-' + uuid.uuid4().hex,
             'project_id': 'project-id-' + uuid.uuid4().hex,

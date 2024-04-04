@@ -28,14 +28,14 @@ class TestListEndpoints(fakes.TestVpcep):
         'Id',
         'Endpoint Service Name',
         'Status',
-        'Enable status',
+        'Is Enabled',
     )
 
     columns = (
         'id',
         'endpoint_service_name',
         'status',
-        'enable_status',
+        'is_enabled',
     )
 
     data = []
@@ -46,7 +46,7 @@ class TestListEndpoints(fakes.TestVpcep):
                 s.id,
                 s.endpoint_service_name,
                 s.status,
-                s.enable_status,
+                s.is_enabled,
             )
         )
 
@@ -131,6 +131,7 @@ class TestCreateEndpoint(fakes.TestVpcep):
         'endpoint_service_name',
         'id',
         'is_dns_enabled',
+        'is_enabled',
         'is_whitelist_enabled',
         'marker_id',
         'project_id',
@@ -223,6 +224,7 @@ class TestShowEndpoint(fakes.TestVpcep):
         'endpoint_service_name',
         'id',
         'is_dns_enabled',
+        'is_enabled',
         'is_whitelist_enabled',
         'marker_id',
         'project_id',

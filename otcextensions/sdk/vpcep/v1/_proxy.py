@@ -198,7 +198,7 @@ class Proxy(proxy.Proxy):
 
         :param service: The service can be either the ID or a
             :class:`~otcextensions.sdk.vpcep.service.Service` instance.
-        :param action: action can be ``receive`` or ``reject``.
+        :param action: action can be ``accept`` or ``reject``.
         :param endpoints: List of VPC Endpoints Id.
 
         :returns: A generator of connection objects.

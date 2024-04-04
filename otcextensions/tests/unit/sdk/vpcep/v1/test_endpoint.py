@@ -81,12 +81,17 @@ class TestEndpoint(base.TestCase):
             'routetables': 'route_tables',
             'vpc_id': 'router_id',
             'subnet_id': 'network_id',
+            'enable_status': 'is_enabled',
         }
+        if 'enable_status' in EXAMPLE.keys():
+            enable_status = EXAMPLE['enable_status']
+            EXAMPLE['enable_status'] = (
+                True if enable_status == 'enable' else False
+            )
+
         sot = endpoint.Endpoint(**EXAMPLE)
         for key, value in EXAMPLE.items():
             if key in updated_sot_attrs.keys():
-                self.assertEqual(
-                    getattr(sot, updated_sot_attrs[key]), EXAMPLE[key]
-                )
+                self.assertEqual(getattr(sot, updated_sot_attrs[key]), value)
             else:
                 assert_attributes_equal(self, getattr(sot, key), value)
