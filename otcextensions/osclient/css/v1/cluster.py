@@ -13,13 +13,13 @@
 '''CSS ELK cluster v1 action implementations'''
 import logging
 
-from osc_lib.cli import parseractions
+from osc_lib import exceptions
 from osc_lib import utils
 from osc_lib.cli import format_columns
+from osc_lib.cli import parseractions
 from osc_lib.command import command
-from osc_lib import exceptions
-from otcextensions.common import sdk_utils
 
+from otcextensions.common import sdk_utils
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
@@ -52,8 +52,9 @@ def _get_columns(item):
     hidden = [
         'location',
     ]
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
-                                                           hidden)
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(
+        item, column_map, hidden
+    )
 
 
 def translate_response(func):
@@ -74,11 +75,7 @@ class CreateCluster(command.ShowOne):
 
     def get_parser(self, prog_name):
         parser = super(CreateCluster, self).get_parser(prog_name)
-        parser.add_argument(
-            'name',
-            metavar='<name>',
-            help=_('Cluster Name.')
-        )
+        parser.add_argument('name', metavar='<name>', help=_('Cluster Name.'))
         parser.add_argument(
             '--datastore-type',
             metavar='<datastore_type>',
@@ -89,30 +86,36 @@ class CreateCluster(command.ShowOne):
             '--datastore-version',
             metavar='<datastore_version>',
             default='7.10.2',
-            help=_('CSS Cluster Engine Versions. Supported ElasticSearch '
-                   'Versions: {' + ', '.join(CSS_ENGINE_VERSIONS) + '} '
-                   '(default: 7.10.2).'),
+            help=_(
+                'CSS Cluster Engine Versions. Supported ElasticSearch '
+                'Versions: {' + ', '.join(CSS_ENGINE_VERSIONS) + '} '
+                '(default: 7.10.2).'
+            ),
         )
         parser.add_argument(
             '--availability-zone',
             metavar='<availability_zone>',
-            help=_('Separate multiple AZs with commas (,), for example, '
-                   'az1,az2. AZs must be unique. The number of nodes must be '
-                   'greater than or equal to the number of AZs.')
+            help=_(
+                'Separate multiple AZs with commas (,), for example, '
+                'az1,az2. AZs must be unique. The number of nodes must be '
+                'greater than or equal to the number of AZs.'
+            ),
         )
         parser.add_argument(
             '--flavor',
             metavar='<flavor>',
             required=True,
-            help=_('Cluster Instance flavor.')
+            help=_('Cluster Instance flavor.'),
         )
         parser.add_argument(
             '--num-nodes',
             metavar='<num_nodes>',
             type=int,
             default=1,
-            help=_('Number of clusters nodes. The value range is 1 to 32. '
-                   '(default value: 1)')
+            help=_(
+                'Number of clusters nodes. The value range is 1 to 32. '
+                '(default value: 1)'
+            ),
         )
         disk_group = parser.add_argument_group('Volume Parameters')
         disk_group.add_argument(
@@ -120,8 +123,10 @@ class CreateCluster(command.ShowOne):
             metavar='<volume_size>',
             default=40,
             type=int,
-            help=_('Size of the instance disk volume in GB. '
-                   '(default value: 40)')
+            help=_(
+                'Size of the instance disk volume in GB. '
+                '(default value: 40)'
+            ),
         )
         disk_group.add_argument(
             '--volume-type',
@@ -130,44 +135,48 @@ class CreateCluster(command.ShowOne):
             default='COMMON',
             dest='volume_type',
             choices=[s.upper() for s in DISK_TYPE_CHOICES],
-            help=_('Volume type. Supported types: COMMON, HIGH, ULTRAHIGH. '
-                   '(default value: COMMON)')
+            help=_(
+                'Volume type. Supported types: COMMON, HIGH, ULTRAHIGH. '
+                '(default value: COMMON)'
+            ),
         )
         network_group = parser.add_argument_group('Network Parameters')
         network_group.add_argument(
             '--router-id',
             metavar='<router_id>',
             required=True,
-            help=_('Router ID.')
+            help=_('Router ID.'),
         )
         network_group.add_argument(
             '--network-id',
             metavar='<network_id>',
             required=True,
-            help=_('Network ID.')
+            help=_('Network ID.'),
         )
         network_group.add_argument(
             '--security-group-id',
             metavar='<security_group_id>',
             required=True,
-            help=_('Security group ID.')
+            help=_('Security group ID.'),
         )
         parser.add_argument(
             '--https-enable',
             action='store_true',
-            help=_('Whether communication is encrypted on the cluster.')
+            help=_('Whether communication is encrypted on the cluster.'),
         )
         parser.add_argument(
             '--cmk-id',
             metavar='<cmk_id>',
-            help=_('Encryption Key Id. '
-                   'The system encryption is used for cluster encryption.'
-                   'The Default Master Keys cannot be used to create grants.')
+            help=_(
+                'Encryption Key Id. '
+                'The system encryption is used for cluster encryption.'
+                'The Default Master Keys cannot be used to create grants.'
+            ),
         )
         parser.add_argument(
             '--admin-pwd',
             metavar='<admin_pwd>',
-            help=_('Password of the cluster user admin in security mode.')
+            help=_('Password of the cluster user admin in security mode.'),
         )
         parser.add_argument(
             '--backup-policy',
@@ -175,15 +184,17 @@ class CreateCluster(command.ShowOne):
             required_keys=['period', 'prefix', 'keepday'],
             dest='backup_policy',
             action=parseractions.MultiKeyValueAction,
-            help=_('Automatic backup creation policy.'
-                   'This function is enabled by default.'
-                   'The following keys are required:\n'
-                   'period=<period>: Time when a snapshot is created '
-                   'every day.\n'
-                   'prefix=<prefix>: Prefix of the name of the snapshot '
-                   'that is automatically created.\n'
-                   'keepday=<keepday>: Number of days for which automatically '
-                   'created snapshots are reserved. Value range: 1 to 90.'),
+            help=_(
+                'Automatic backup creation policy.'
+                'This function is enabled by default.'
+                'The following keys are required:\n'
+                'period=<period>: Time when a snapshot is created '
+                'every day.\n'
+                'prefix=<prefix>: Prefix of the name of the snapshot '
+                'that is automatically created.\n'
+                'keepday=<keepday>: Number of days for which automatically '
+                'created snapshots are reserved. Value range: 1 to 90.'
+            ),
         )
         parser.add_argument(
             '--tag',
@@ -191,17 +202,19 @@ class CreateCluster(command.ShowOne):
             metavar='key=<key>,value=<value>',
             required_keys=['key', 'value'],
             dest='tags',
-            help=_('key=<key>: Tag key. The value can contain 1 to 36 '
-                   'characters. Only digits, letters, hyphens (-) and '
-                   'underscores (_) are allowed.\n'
-                   'value=<value>: Tag value. The value can contain 0 to 43 '
-                   'characters. Only digits, letters, hyphens (-) and '
-                   'underscores (_) are allowed.'),
+            help=_(
+                'key=<key>: Tag key. The value can contain 1 to 36 '
+                'characters. Only digits, letters, hyphens (-) and '
+                'underscores (_) are allowed.\n'
+                'value=<value>: Tag value. The value can contain 0 to 43 '
+                'characters. Only digits, letters, hyphens (-) and '
+                'underscores (_) are allowed.'
+            ),
         )
         parser.add_argument(
             '--wait',
             action='store_true',
-            help=('Wait for Cluster to Restart.')
+            help=('Wait for Cluster to Restart.'),
         )
         parser.add_argument(
             '--timeout',
@@ -222,20 +235,20 @@ class CreateCluster(command.ShowOne):
             'instanceNum': parsed_args.num_nodes,
             'datastore': {
                 'version': parsed_args.datastore_version,
-                'type': parsed_args.datastore_type
+                'type': parsed_args.datastore_type,
             },
             'instance': {
                 'flavorRef': parsed_args.flavor,
                 'volume': {
                     'volume_type': parsed_args.volume_type,
-                    'size': parsed_args.volume_size
+                    'size': parsed_args.volume_size,
                 },
                 'nics': {
                     'vpcId': parsed_args.router_id,
                     'netId': parsed_args.network_id,
-                    'securityGroupId': parsed_args.security_group_id
-                }
-            }
+                    'securityGroupId': parsed_args.security_group_id,
+                },
+            },
         }
 
         availability_zone = parsed_args.availability_zone
@@ -260,7 +273,7 @@ class CreateCluster(command.ShowOne):
         if parsed_args.cmk_id:
             attrs['diskEncryption'] = {
                 'systemEncrypted': 1,
-                'systemCmkid': parsed_args.cmk_id
+                'systemCmkid': parsed_args.cmk_id,
             }
         backup_policy = parsed_args.backup_policy
         if backup_policy:
@@ -288,7 +301,7 @@ class ListClusters(command.Lister):
         'Type',
         'Version',
         'Status',
-        'Created At'
+        'Created At',
     )
 
     def get_parser(self, prog_name):
@@ -301,12 +314,13 @@ class ListClusters(command.Lister):
         data = client.clusters()
 
         return (
-            self.columns, (
+            self.columns,
+            (
                 utils.get_item_properties(
                     s, self.columns, formatters=_formatters
                 )
                 for s in set_attributes_for_print(data)
-            )
+            ),
         )
 
 
@@ -320,15 +334,12 @@ class ListClusterNodes(command.Lister):
         'Volume',
         'Availability Zone',
         'Status',
-
     )
 
     def get_parser(self, prog_name):
         parser = super(ListClusterNodes, self).get_parser(prog_name)
         parser.add_argument(
-            'cluster',
-            metavar='<cluster>',
-            help=_('Cluster name or ID.')
+            'cluster', metavar='<cluster>', help=_('Cluster name or ID.')
         )
         return parser
 
@@ -337,16 +348,15 @@ class ListClusterNodes(command.Lister):
 
         cluster = client.find_cluster(parsed_args.cluster)
 
-        _formatters = {
-            'Volume': format_columns.DictColumn
-        }
+        _formatters = {'Volume': format_columns.DictColumn}
         return (
-            self.columns, (
+            self.columns,
+            (
                 utils.get_item_properties(
                     node, self.columns, formatters=_formatters
                 )
                 for node in cluster.nodes
-            )
+            ),
         )
 
 
@@ -356,9 +366,7 @@ class ShowCluster(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(ShowCluster, self).get_parser(prog_name)
         parser.add_argument(
-            'cluster',
-            metavar='<cluster>',
-            help=_('Cluster name or ID.')
+            'cluster', metavar='<cluster>', help=_('Cluster name or ID.')
         )
         return parser
 
@@ -382,7 +390,7 @@ class RestartCluster(command.Command):
         parser.add_argument(
             '--wait',
             action='store_true',
-            help=('Wait for Cluster to Restart.')
+            help=('Wait for Cluster to Restart.'),
         )
         parser.add_argument(
             '--timeout',
@@ -417,18 +425,20 @@ class ExtendClusterNodes(command.Command):
             required_keys=['type', 'nodesize', 'disksize'],
             required=True,
             action=parseractions.MultiKeyValueAction,
-            help=_('Extend Cluster Nodes.'
-                   'Type: ess, ess-cold, ess-master, and ess-client.\n'
-                   'For type: ess-master and ess-client disksize cannot '
-                   'be extended.\n'
-                   'Examples:\n'
-                   '--extend type=ess,disksize=60,nodesize=2 '
-                   ' --extend type=ess-master,disksize=0,nodesize=2')
+            help=_(
+                'Extend Cluster Nodes.'
+                'Type: ess, ess-cold, ess-master, and ess-client.\n'
+                'For type: ess-master and ess-client disksize cannot '
+                'be extended.\n'
+                'Examples:\n'
+                '--extend type=ess,disksize=60,nodesize=2 '
+                ' --extend type=ess-master,disksize=0,nodesize=2'
+            ),
         )
         parser.add_argument(
             '--wait',
             action='store_true',
-            help=('Wait for Cluster Scaling Task to complete.')
+            help=('Wait for Cluster Scaling Task to complete.'),
         )
         parser.add_argument(
             '--timeout',
@@ -468,7 +478,7 @@ class ExtendCluster(command.Command):
         parser.add_argument(
             '--wait',
             action='store_true',
-            help=('Wait for Cluster Scaling Task to complete.')
+            help=('Wait for Cluster Scaling Task to complete.'),
         )
         parser.add_argument(
             '--timeout',
@@ -509,11 +519,16 @@ class DeleteCluster(command.Command):
                 client.delete_cluster(cluster.id)
             except Exception as e:
                 result += 1
-                LOG.error(_("Failed to delete cluster(s) with "
-                          "ID or Name '%(cluster)s': %(e)s"),
-                          {'cluster': name_or_id, 'e': e})
+                LOG.error(
+                    _(
+                        "Failed to delete cluster(s) with "
+                        "ID or Name '%(cluster)s': %(e)s"
+                    ),
+                    {'cluster': name_or_id, 'e': e},
+                )
         if result > 0:
             total = len(parsed_args.cluster)
-            msg = (_("%(result)s of %(total)s Cluster(s) failed "
-                   "to delete.") % {'result': result, 'total': total})
+            msg = _(
+                "%(result)s of %(total)s Cluster(s) failed " "to delete."
+            ) % {'result': result, 'total': total}
             raise exceptions.CommandError(msg)

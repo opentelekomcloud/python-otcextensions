@@ -74,7 +74,7 @@ class TestSwrOrganzationPermissions(TestSwrProxy):
                                    {
                                        'user_id': '123',
                                        'user_name': 'test',
-                                       'auth': 1
+                                       'user_auth': 1
                                    }
                                ],
                            },
@@ -147,7 +147,7 @@ class TestSwrRepositoryPermissions(TestSwrProxy):
                                    {
                                        'user_id': '123',
                                        'user_name': 'test',
-                                       'auth': 1
+                                       'user_auth': 1
                                    }
                                ],
                            },
@@ -188,7 +188,7 @@ class TestSwrRepositoryPermissions(TestSwrProxy):
                                    {
                                        'user_id': '123',
                                        'user_name': 'test',
-                                       'auth': 1
+                                       'user_auth': 1
                                    }
                                ],
                            },

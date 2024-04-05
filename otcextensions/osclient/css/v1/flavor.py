@@ -22,7 +22,12 @@ LOG = logging.getLogger(__name__)
 
 CSS_ENGINE_VERSIONS = ('7.6.2', '7.9.3', '7.10.2')
 
-CSS_NODE_TYPES = ('ess', 'ess-master', 'ess-client', 'ess-cold',)
+CSS_NODE_TYPES = (
+    'ess',
+    'ess-master',
+    'ess-client',
+    'ess-cold',
+)
 
 
 class ListFlavors(command.Lister):
@@ -46,16 +51,20 @@ class ListFlavors(command.Lister):
             metavar='<datastore_version>',
             type=lambda s: s.lower(),
             choices=CSS_ENGINE_VERSIONS,
-            help=_('CSS Cluster Engine Versions. Supported Versions: '
-                   '{' + ', '.join(CSS_ENGINE_VERSIONS) + '}'),
+            help=_(
+                'CSS Cluster Engine Versions. Supported Versions: '
+                '{' + ', '.join(CSS_ENGINE_VERSIONS) + '}'
+            ),
         )
         parser.add_argument(
             '--node-type',
             metavar='<node_type>',
             type=lambda s: s.lower(),
             choices=CSS_NODE_TYPES,
-            help=_('Specify Cluster Node Type. Supported Types: '
-                   '{' + ', '.join(CSS_NODE_TYPES) + '}'),
+            help=_(
+                'Specify Cluster Node Type. Supported Types: '
+                '{' + ', '.join(CSS_NODE_TYPES) + '}'
+            ),
         )
 
         return parser
@@ -68,9 +77,11 @@ class ListFlavors(command.Lister):
         datastore_version = parsed_args.datastore_version
 
         return (
-            self.columns, (utils.get_item_properties(
-                s, self.columns) for s in data if (
-                not node_type or s.type == node_type) and (
-                not datastore_version or s.version == datastore_version)
-            )
+            self.columns,
+            (
+                utils.get_item_properties(s, self.columns)
+                for s in data
+                if (not node_type or s.type == node_type)
+                and (not datastore_version or s.version == datastore_version)
+            ),
         )

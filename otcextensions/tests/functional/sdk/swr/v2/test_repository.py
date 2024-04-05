@@ -37,7 +37,7 @@ class TestRepository(TestSwr):
                 {
                     "user_id": "5a23ecb3999b458d92d51d524bb7fb4b",
                     "user_name": "pgubina",
-                    "auth": 1
+                    "user_auth": 1
                 }
             ]
             self.repo_perm = self.client.create_repository_permissions(
@@ -102,8 +102,8 @@ class TestRepository(TestSwr):
                     {
                         "user_id": "5a23ecb3999b458d92d51d524bb7fb4b",
                         "user_name": "pgubina",
-                        "auth": 3
+                        "user_auth": 3
                     }
                 ]
             )
-            self.assertEqual(3, o.permissions[0].auth)
+            self.assertEqual(3, o.permissions[0].user_auth)

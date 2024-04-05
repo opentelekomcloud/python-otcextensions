@@ -9,14 +9,13 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+#
 from openstack import service_description
 
-from otcextensions.sdk.lts.v2 import _proxy
+from otcextensions.sdk.vpcep.v1 import _proxy
 
 
 class VpcepService(service_description.ServiceDescription):
-    """The Vpcep service."""
+    """The VPCEP service."""
 
-    supported_versions = {
-        '1': _proxy.Proxy
-    }
+    supported_versions = {'1': _proxy.Proxy}

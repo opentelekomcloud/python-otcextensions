@@ -36,6 +36,7 @@ Service Proxies
    Software Repository for Containers Service (SWR) <swr>
    Volume Backup Service (VBS) <volume_backup>
    Virtual Private Cloud (VPC) <vpc>
+   VPC Endpoint (VPCEP) <vpcep>
    Web Application Firewall (WAF) <waf>
 
 .. _service-proxies:

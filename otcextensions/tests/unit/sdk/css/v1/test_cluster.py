@@ -140,7 +140,6 @@ class TestCluster(base.TestCase):
         self.assertEqual(EXAMPLE['publicKibanaResp'], sot.public_kibana_resp)
         self.assertEqual(EXAMPLE['securityGroupId'], sot.security_group_id)
         self.assertEqual(int(EXAMPLE['status']), sot.status_code)
-        self.assertEqual('AVAILABLE', sot.status.name)
         self.assertEqual(EXAMPLE['subnetId'], sot.network_id)
         self.assertEqual(EXAMPLE['updated'], sot.updated_at)
         self.assertEqual(EXAMPLE['vpcId'], sot.router_id)

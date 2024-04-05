@@ -11,21 +11,20 @@
 #   under the License.
 #
 '''CSS ELK cluster v1 action implementations'''
-import logging
 import base64
+import logging
 
 from osc_lib import utils
 from osc_lib.command import command
-from otcextensions.common import sdk_utils
 
+from otcextensions.common import sdk_utils
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
 
 def _get_columns(item):
-    column_map = {
-    }
+    column_map = {}
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
@@ -38,8 +37,10 @@ class DownloadCert(command.Command):
             '--out',
             metavar='<out>',
             required=True,
-            help=_('Name of the output file where certificate will be saved.\n'
-                   'Note: the file will be overwritten if it already exists')
+            help=_(
+                'Name of the output file where certificate will be saved.\n'
+                'Note: the file will be overwritten if it already exists'
+            ),
         )
 
     def take_action(self, parsed_args):
