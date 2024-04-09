@@ -24,6 +24,6 @@ class TestPredefinedTag(base.BaseFunctionalTest):
         self.tms = self.conn.tms
 
     def test_tags_list(self):
-        tags = list(self.conn.tms.predefined_tags())
+        tags = list(self.tms.predefined_tags())
 
         self.assertGreaterEqual(len(tags), 0)
