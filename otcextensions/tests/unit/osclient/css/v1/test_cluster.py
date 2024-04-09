@@ -151,7 +151,11 @@ class TestCreateCluster(fakes.TestCss):
             '--admin-pwd',
             'testtest',
             '--backup-policy',
-            'period=00:00 GMT+08:00,keepday=7,prefix=snapshot',
+            (
+                'period=00:00 GMT+08:00,keepday=7,prefix=snapshot,'
+                'bucket=css-backup-bucket,agency=obs_css_agency,'
+                'basepath=obs_path'
+            ),
             '--tag',
             'key=key1,value=value1',
             '--tag',
@@ -179,6 +183,9 @@ class TestCreateCluster(fakes.TestCss):
                         'period': '00:00 GMT+08:00',
                         'keepday': '7',
                         'prefix': 'snapshot',
+                        'bucket': 'css-backup-bucket',
+                        'agency': 'obs_css_agency',
+                        'basepath': 'obs_path',
                     }
                 ],
             ),
@@ -221,6 +228,9 @@ class TestCreateCluster(fakes.TestCss):
                 'period': '00:00 GMT+08:00',
                 'keepday': 7,
                 'prefix': 'snapshot',
+                'bucket': 'css-backup-bucket',
+                'agency': 'obs_css_agency',
+                'basePath': 'obs_path',
             },
             'tags': [
                 {'key': 'key1', 'value': 'value1'},
