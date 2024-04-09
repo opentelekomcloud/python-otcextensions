@@ -19,6 +19,5 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
 name_or_id = 'css-test-1'
-resp = conn.css.find_cluster(
-    name_or_id, ignore_missing=False)
+resp = conn.css.find_cluster(name_or_id, ignore_missing=False)
 print(resp)

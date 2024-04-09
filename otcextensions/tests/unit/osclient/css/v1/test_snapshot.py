@@ -10,9 +10,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-import mock
 from unittest.mock import call
 
+import mock
 from osc_lib import exceptions
 
 from otcextensions.osclient.css.v1 import cluster
@@ -30,7 +30,7 @@ COLUMNS = (
     'bucket_name',
     'cmk_id',
     'is_enabled',
-    'prefix'
+    'prefix',
 )
 
 
@@ -56,7 +56,7 @@ class TestListSnapshots(fakes.TestCss):
         'backup_method',
         'bucket_name',
         'created_at',
-        'backup_keep_days'
+        'backup_keep_days',
     )
 
     data = []
@@ -129,9 +129,11 @@ class TestCreateSnapshot(fakes.TestCss):
         arglist = [
             self._cluster.name,
             'test-snapshot',
-            '--indices', '1',
-            '--description', '2',
-            '--wait'
+            '--indices',
+            '1',
+            '--description',
+            '2',
+            '--wait',
         ]
         verifylist = [
             ('cluster', self._cluster.name),
@@ -152,7 +154,8 @@ class TestCreateSnapshot(fakes.TestCss):
         }
         self.client.create_snapshot.assert_called_with(self._cluster, **attrs)
         self.client.wait_for_cluster.assert_called_with(
-            self._cluster.id, self.default_timeout)
+            self._cluster.id, self.default_timeout
+        )
         self.assertEqual(self.columns, columns)
 
 
@@ -168,7 +171,8 @@ class TestRestoreSnapshot(fakes.TestCss):
         'created_at',
         'datastore',
         'elb_whitelist',
-        'endpoint',
+        'endpoints',
+        'enterprise_project_id',
         'floating_ip',
         'id',
         'is_authority_enabled',
@@ -179,13 +183,12 @@ class TestRestoreSnapshot(fakes.TestCss):
         'name',
         'network_id',
         'nodes',
-        'num_nodes',
         'router_id',
         'security_group_id',
         'status',
         'status_code',
         'tags',
-        'updated_at'
+        'updated_at',
     )
 
     data = fakes.gen_data(_cluster, columns, cluster._formatters)
@@ -205,11 +208,15 @@ class TestRestoreSnapshot(fakes.TestCss):
         arglist = [
             self._cluster.name,
             'snapshot-uuid',
-            '--target-cluster', self._cluster.name,
-            '--indices', '1',
-            '--rename-replacement', '2',
-            '--rename-pattern', '3',
-            '--wait'
+            '--target-cluster',
+            self._cluster.name,
+            '--indices',
+            '1',
+            '--rename-replacement',
+            '2',
+            '--rename-pattern',
+            '3',
+            '--wait',
         ]
         verifylist = [
             ('cluster', self._cluster.name),
@@ -232,9 +239,11 @@ class TestRestoreSnapshot(fakes.TestCss):
             'renamePattern': '3',
         }
         self.client.restore_snapshot.assert_called_with(
-            self._cluster, 'snapshot-uuid', **attrs)
+            self._cluster, 'snapshot-uuid', **attrs
+        )
         self.client.wait_for_cluster.assert_called_with(
-            self._cluster.id, self.default_timeout)
+            self._cluster.id, self.default_timeout
+        )
         self.assertEqual(self.columns, columns)
 
 
@@ -269,7 +278,8 @@ class TestDeleteSnapshot(fakes.TestCss):
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
         self.client.delete_snapshot.assert_called_with(
-            self._cluster, self._data[0].id, ignore_missing=False)
+            self._cluster, self._data[0].id, ignore_missing=False
+        )
         self.assertIsNone(result)
 
     def test_multiple_delete(self):
@@ -293,8 +303,9 @@ class TestDeleteSnapshot(fakes.TestCss):
 
         calls = []
         for css_snapshot in self._data:
-            calls.append(call(self._cluster, css_snapshot.id,
-                              ignore_missing=False))
+            calls.append(
+                call(self._cluster, css_snapshot.id, ignore_missing=False)
+            )
         self.client.delete_snapshot.assert_has_calls(calls)
         self.assertIsNone(result)
 
@@ -313,8 +324,8 @@ class TestDeleteSnapshot(fakes.TestCss):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         delete_mock_results = [None, exceptions.CommandError]
-        self.client.delete_snapshot = (
-            mock.Mock(side_effect=delete_mock_results)
+        self.client.delete_snapshot = mock.Mock(
+            side_effect=delete_mock_results
         )
 
         # Trigger the action
@@ -324,7 +335,8 @@ class TestDeleteSnapshot(fakes.TestCss):
             self.assertEqual('1 of 2 Snapshot(s) failed to delete.', str(e))
 
         self.client.delete_snapshot.assert_any_call(
-            self._cluster, self._data[0].id, ignore_missing=False)
+            self._cluster, self._data[0].id, ignore_missing=False
+        )
 
 
 class TestSetSnapshotPolicy(fakes.TestCss):
@@ -348,11 +360,14 @@ class TestSetSnapshotPolicy(fakes.TestCss):
     def test_setpolicy(self):
         arglist = [
             self._cluster.name,
-            '--name-prefix', '1',
-            '--keep-days', '2',
-            '--period', '3',
+            '--name-prefix',
+            '1',
+            '--keep-days',
+            '2',
+            '--period',
+            '3',
             '--disable',
-            '--delete-auto'
+            '--delete-auto',
         ]
         verifylist = [
             ('cluster', self._cluster.name),
@@ -375,7 +390,8 @@ class TestSetSnapshotPolicy(fakes.TestCss):
             "deleteAuto": 'true',
         }
         self.client.set_snapshot_policy.assert_called_with(
-            self._cluster, **attrs)
+            self._cluster, **attrs
+        )
         self.client.get_snapshot_policy.assert_called_with(self._cluster)
 
         self.assertEqual(self.columns, columns)
@@ -429,9 +445,12 @@ class TestConfigureSnapshot(fakes.TestCss):
     def test_configure(self):
         arglist = [
             self._cluster.name,
-            '--bucket', 'test-bucket',
-            '--agency', 'test-agency',
-            '--cmk-id', 'cmk-uuid',
+            '--bucket',
+            'test-bucket',
+            '--agency',
+            'test-agency',
+            '--cmk-id',
+            'cmk-uuid',
         ]
         verifylist = [
             ('cluster', self._cluster.name),
@@ -444,22 +463,20 @@ class TestConfigureSnapshot(fakes.TestCss):
         attrs = {
             'bucket': 'test-bucket',
             'agency': 'test-agency',
-            'snapshotCmkId': 'cmk-uuid'
+            'snapshotCmkId': 'cmk-uuid',
         }
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
         self.client.set_snapshot_configuration.assert_called_with(
-            self._cluster, auto_configure=False, **attrs)
+            self._cluster, auto_configure=False, **attrs
+        )
         self.assertIsNone(result)
 
     def test_configure_auto(self):
-        arglist = [
-            self._cluster.name,
-            '--auto-configure'
-        ]
+        arglist = [self._cluster.name, '--auto-configure']
         verifylist = [
             ('cluster', self._cluster.name),
-            ('auto_configure', True)
+            ('auto_configure', True),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -467,7 +484,8 @@ class TestConfigureSnapshot(fakes.TestCss):
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
         self.client.set_snapshot_configuration.assert_called_with(
-            self._cluster, auto_configure=True)
+            self._cluster, auto_configure=True
+        )
         self.assertIsNone(result)
 
 
@@ -498,5 +516,7 @@ class TestDisableSnapshot(fakes.TestCss):
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
-        self.client.disable_snapshot_function.assert_called_with(self._cluster)
+        self.client.disable_snapshot_function.assert_called_with(
+            self._cluster
+        )
         self.assertIsNone(result)

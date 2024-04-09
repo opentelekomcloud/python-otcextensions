@@ -14,22 +14,116 @@ from openstack import exceptions
 from openstack import resource
 from openstack import utils
 
+
 STATUS_MAP = {"100": "CREATING", "200": "AVAILABLE", "303": "UNAVAILABLE"}
 
 
+class FailedReasonSpec(resource.Resource):
+    #: Error code.
+    error_code = resource.Body('errorCode')
+    #: Error details.
+    error_msg = resource.Body('errorMsg')
+
+
+class TagSpec(resource.Resource):
+    #: Tag key.
+    key = resource.Body('key')
+    #: Tag value.
+    value = resource.Body('value')
+
+
+class WhiteListSpec(resource.Resource):
+    #: Whether the network access control is enabled.
+    is_whitelist_enabled = resource.Body('enableWhiteList', type=bool)
+    #: Whitelist for public network access.
+    whitelist = resource.Body('whiteList')
+
+
+class KibanaRespSpec(resource.Resource):
+    #: Bandwidth range.
+    eip_size = resource.Body('eipSize', type=int)
+    #: Kibana public network access information.
+    elb_whitelist_resp = resource.Body('elbWhiteListResp', type=WhiteListSpec)
+    #: Specifies the IP address for accessing Kibana.
+    public_kibana_ip = resource.Body('publicKibanaIp')
+
+
+class NicsSpec(resource.Resource):
+    #: Subnet ID.
+    network_id = resource.Body('netId')
+    #: Security group ID.
+    security_group_id = resource.Body('securityGroupId')
+    #: VPC ID, which is used for configuring cluster network.
+    router_id = resource.Body('vpcId')
+
+
+class VolumeSpec(resource.Resource):
+    #: Volume size.
+    size = resource.Body('size', type=int)
+    #: Volume type.
+    type = resource.Body('type')
+    #: Volume type.
+    volume_type = resource.Body('volume_type')
+
+
 class NodeSpec(resource.Resource):
-    #: Availability Zone.
+    #: AZ of a node.
     availability_zone = resource.Body('azCode')
-    #: Node flavor
+    #: Instance ID.
+    id = resource.Body('id')
+    #: Instance IP address.
+    ip = resource.Body('ip')
+    #: Instance name.
+    name = resource.Body('name')
+    #: Node specifications.
     flavor = resource.Body('specCode')
-    #: CSS Node Type.
-    node_type = resource.Body('type')
-    #: Private IP of Cluster Node.
-    private_ip = resource.Body('ip')
-    #: Cluster Node Status
+    #: Node status value.
     status = resource.Body('status')
-    #: Volume object {volume_type:[COMMON, HIGH, ULTRAHIGH], size:int}
-    volume = resource.Body('volume', type=dict)
+    #: Type of the current node.
+    type = resource.Body('type')
+    #: Instance disk information.
+    volume = resource.Body('volume', type=VolumeSpec)
+
+
+class InstanceSpec(resource.Resource):
+    #: Availability zone (AZ).
+    availability_zone = resource.Body('availability_zone')
+    #: Instance flavor name.
+    flavor = resource.Body('flavorRef')
+    #: Subnet information.
+    nics = resource.Body('nics', type=NicsSpec)
+    #: Information about the volume.
+    volume = resource.Body('volume', type=VolumeSpec)
+
+
+class DiskEncryptionSpec(resource.Resource):
+    #: Key ID.
+    system_cmkid = resource.Body('systemCmkid')
+    #: Value 1 indicates encryption is performed, and value 0 indicates
+    #:  encryption is not performed.
+    system_encrypted = resource.Body('systemEncrypted')
+
+
+class DatastoreSpec(resource.Resource):
+    #: Engine type.
+    type = resource.Body('type')
+    #: Whether security mode is supported.
+    version = resource.Body('version')
+
+
+class BackupStrategySpec(resource.Resource):
+    #: IAM agency used to access OBS.
+    agency = resource.Body('agency')
+    #: Storage path of the snapshot in the OBS bucket.
+    base_path = resource.Body('basePath')
+    #: OBS bucket used for storing backup.
+    bucket = resource.Body('bucket')
+    #: Number of days for which automatically created snapshots are reserved.
+    keepday = resource.Body('keepday', type=int)
+    #: Time when a snapshot is created every day.
+    period = resource.Body('period')
+    #: Prefix of the name of the snapshot that is automatically created.
+    prefix = resource.Body('prefix')
 
 
 class Cluster(resource.Resource):
@@ -38,84 +132,84 @@ class Cluster(resource.Resource):
     resources_key = 'clusters'
     resource_key = 'cluster'
 
+    # capabilities
     allow_create = True
     allow_list = True
     allow_delete = True
     allow_fetch = True
 
-    _query_mapping = resource.QueryParameters('id', 'start', 'limit')
+    _query_mapping = resource.QueryParameters('start', 'limit')
 
     # Properties
-    #: Current actions
-    actions = resource.Body('actions', type=list)
-    #: Operation progress
+    #: Cluster behavior progress, which shows the progress of cluster creation
+    #:  and scaling in percentage.
     action_progress = resource.Body('actionProgress', type=dict)
-    #: Password of the cluster user admin in security mode. This parameter
-    #:  is mandatory only when authorityEnable is set to true.
-    admin_password = resource.Body('adminPwd')
+    #: Current behavior of a cluster.
+    actions = resource.Body('actions', type=list)
+    #: Password of the cluster user admin in security mode.
+    admin_pwd = resource.Body('adminPwd')
     #: Automatic snapshot creation.
-    backup_strategy = resource.Body('backupStrategy', type=dict)
-    #: Bandwidth of Public IP
-    bandwidth_size = resource.Body('bandwidthSize')
+    backup_strategy = resource.Body('backupStrategy', type=BackupStrategySpec)
+    #: Public network bandwidth.
+    bandwidth_size = resource.Body('bandwidthSize', type=int)
     #: KMS Key ID.
     cmk_id = resource.Body('cmk_id')
-    #: Cluster creation time
+    #: Cluster creation time.
     created_at = resource.Body('created')
-    #: Type of the data search engine
-    datastore = resource.Body('datastore', type=dict)
-    #: Disk Encryption Object. (For request body only)
-    disk_encryption = resource.Body('diskEncryption', type=dict)
-    #: Elb Whitelist Details
-    elb_whitelist = resource.Body('elbWhiteList', type=dict)
-    #: Indicates the IP address and port number of the user used to
-    #:  access the VPC.
-    endpoint = resource.Body('endpoint')
+    #: Type of the data search engine.
+    datastore = resource.Body('datastore', type=DatastoreSpec)
+    #: Whether disks are encrypted.
+    disk_encryption = resource.Body('diskEncryption', type=DiskEncryptionSpec)
+    #: Public network access information.
+    elb_whitelist = resource.Body('elbWhiteList', type=WhiteListSpec)
+    #: IP address and port number of the user used to access the VPC.
+    endpoints = resource.Body('endpoint', type=list)
+    #: ID of the enterprise project that a cluster belongs to.
+    enterprise_project_id = resource.Body('enterpriseProjectId')
     #: Error object
-    error = resource.Body('failed_reasons', type=dict)
-    #: Public IP address.
+    error = resource.Body('failed_reasons', type=FailedReasonSpec)
+    #: Public IP address information.
     floating_ip = resource.Body('publicIp')
-    #: Cluster Node (request Body)
-    instance = resource.Body('instance', type=dict)
-    #: Number of cluster Nodes. The value range is 1 to 32. (request Body)
+    #: Cluster ID.
+    id = resource.Body('id')
+    #: Instance.
+    instance = resource.Body('instance', type=InstanceSpec)
+    #: Number of clusters.
     instance_num = resource.Body('instanceNum', type=int)
-    #: Whether authentication is enabled.
-    #:  When authentication is enabled, httpsEnable must be set to true.
+    #: Whether to enable authentication.
     is_authority_enabled = resource.Body('authorityEnable', type=bool)
-    #: Whether the cluster is billed.
-    is_billed = resource.Body('period', type=bool)
-    #: Whether backup is enabled.
+    #: Whether cluster is billed.
+    is_billed = resource.Body('period')
+    #: Whether the snapshot function is enabled.
     is_backup_enabled = resource.Body('backupAvailable', type=bool)
-    #: Whether Disk is Encrypted
+    #: Whether disks are encrypted.
     is_disk_encrypted = resource.Body('diskEncrypted', type=bool)
     #: Communication encryption status.
     is_https_enabled = resource.Body('httpsEnable', type=bool)
-    #: ID of the restart task.
-    job_id = resource.Body('jobId')
     #: Network ID.
     network_id = resource.Body('subnetId')
-    #: Cluster nodes. List of node objects.
+    #: List of node objects.
     nodes = resource.Body('instances', type=list, list_type=NodeSpec)
-    #: Public Kibana Response.
-    public_kibana_resp = resource.Body('publicKibanaResp')
-    #: Router ID.
+    #: Cluster name.
+    name = resource.Body('name')
+    #: Kibana public network access information.
+    public_kibana_resp = resource.Body(
+        'publicKibanaResp', type=KibanaRespSpec
+    )
+    #: Router (VPC) ID.
     router_id = resource.Body('vpcId')
-    #: Security group ID (read only)
+    #: Security group ID.
     security_group_id = resource.Body('securityGroupId')
-    #: Return value.
-    #:  100: The operation, such as instance creation, is in progress.
-    #:  200: The cluster is available.
-    #:  303: The cluster is unavailable.
-    status_code = resource.Body('status', type=int)
-    #: Cluster Status.
+    #: Cluster status.
     status = resource.Body('status')
-    #: Array of tags
-    tags = resource.Body('tags', type=list, list_type=dict)
-    #: Cluster update time
+    #: Cluster status code.
+    status_code = resource.Body('status_code', type=int)
+    #: Cluster tags.
+    tags = resource.Body('tags', type=list, list_type=TagSpec)
+    #: Last modification time of a cluster.
     updated_at = resource.Body('updated')
-
-    # Computed Properties
-    #: Number of Nodes.
-    num_nodes = resource.Computed('num_nodes', type=int)
+    #: Endpoint IP address.
+    vpcep_ip = resource.Body('vpcepIp')
 
     def _action(self, session, action, body=None):
         """Preform actions given the message body."""
@@ -148,7 +242,10 @@ class Cluster(resource.Resource):
             attributes on the resulting Resource object.
         """
         if "status" in kwargs.keys():
+            kwargs["status_code"] = kwargs["status"]
             kwargs["status"] = STATUS_MAP.get(str(kwargs["status"]), "ERROR")
+        if kwargs.get("endpoint"):
+            kwargs["endpoint"] = kwargs["endpoint"].split(",")
         return cls(_synchronized=True, connection=connection, **kwargs)
 
     def _translate_response(
@@ -188,10 +285,12 @@ class Cluster(resource.Resource):
                 body.pop("self", None)
 
                 if "status" in body.keys():
+                    body["status_code"] = body["status"]
                     body["status"] = STATUS_MAP.get(
                         str(body["status"]), "ERROR"
                     )
-
+                if body.get("endpoint"):
+                    body["endpoint"] = body["endpoint"].split(",")
                 body_attrs = self._consume_body_attrs(body)
                 if self._allow_unknown_attrs_in_body:
                     body_attrs.update(body)

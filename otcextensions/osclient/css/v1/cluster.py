@@ -19,6 +19,7 @@ from osc_lib.cli import format_columns
 from osc_lib.cli import parseractions
 from osc_lib.command import command
 
+from otcextensions.common import cli_utils
 from otcextensions.common import sdk_utils
 from otcextensions.i18n import _
 
@@ -31,12 +32,13 @@ DISK_TYPE_CHOICES = ['common', 'high', 'ultrahigh']
 
 
 _formatters = {
-    'nodes': format_columns.ListDictColumn,
-    'elb_whitelist': format_columns.DictColumn,
-    'datastore': format_columns.DictColumn,
-    'tags': format_columns.ListDictColumn,
+    'nodes': cli_utils.YamlFormat,
+    'elb_whitelist': cli_utils.YamlFormat,
+    'datastore': cli_utils.YamlFormat,
+    'tags': cli_utils.YamlFormat,
     'action_progress': format_columns.DictColumn,
     'actions': format_columns.ListColumn,
+    'endpoints': cli_utils.YamlFormat,
 }
 
 
@@ -289,7 +291,9 @@ class CreateCluster(command.ShowOne):
 
         cluster = client.create_cluster(**attrs)
         if parsed_args.wait:
-            client.wait_for_cluster(cluster.id, parsed_args.timeout)
+            client.wait_for_cluster(
+                cluster.id, parsed_args.timeout, print_status=True
+            )
         return client.get_cluster(cluster.id)
 
 
@@ -329,8 +333,8 @@ class ListClusterNodes(command.Lister):
     columns = (
         'ID',
         'Name',
-        'Private IP',
-        'Node Type',
+        'IP',
+        'Type',
         'Volume',
         'Availability Zone',
         'Status',
@@ -348,7 +352,7 @@ class ListClusterNodes(command.Lister):
 
         cluster = client.find_cluster(parsed_args.cluster)
 
-        _formatters = {'Volume': format_columns.DictColumn}
+        _formatters = {'Volume': cli_utils.YamlFormat}
         return (
             self.columns,
             (
@@ -403,7 +407,9 @@ class RestartCluster(command.Command):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.css
-        cluster = client.find_cluster(parsed_args.cluster)
+        cluster = client.find_cluster(
+            parsed_args.cluster, ignore_missing=False
+        )
         client.restart_cluster(cluster)
         if parsed_args.wait:
             client.wait_for_cluster(cluster.id, parsed_args.timeout)
@@ -516,7 +522,7 @@ class DeleteCluster(command.Command):
         for name_or_id in parsed_args.cluster:
             try:
                 cluster = client.find_cluster(name_or_id, ignore_missing=False)
-                client.delete_cluster(cluster.id)
+                client.delete_cluster(cluster, ignore_missing=False)
             except Exception as e:
                 result += 1
                 LOG.error(

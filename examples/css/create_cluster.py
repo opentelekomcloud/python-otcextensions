@@ -18,44 +18,38 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
-
 attrs = {
-    'name': 'ES-Test',
+    'name': 'test-cluster',
+    'datastore': {'type': 'elasticsearch', 'version': '7.10.2'},
     'instanceNum': 3,
-    'datastore': {
-        'type': 'elasticsearch',
-        'version': '7.6.2'
+    'httpsEnable': False,
+    'diskEncryption': {
+        'systemEncrypted': '0',
     },
     'instance': {
         'availability_zone': 'eu-de-01',
         'flavorRef': 'css.xlarge.2',
-        'volume': {
-            'volume_type': 'COMMON',
-            'size': 100
-        },
-
+        'volume': {'volume_type': 'COMMON', 'size': 100},
         'nics': {
-            'vpcId': 'vpcId',
-            'netId': 'netId',
-            'securityGroupId': 'securityGroupId'
-        }
+            "vpcId": "router-id",
+            "netId": "network-id",
+            "securityGroupId": "security-group-id",
+        },
     },
-    'httpsEnable': 'false',
-    'diskEncryption': {
-        'systemEncrypted': '0',
-    },
-    'tags': [{'key': "key0", 'value': "value0"},
-             {'key': "key1", 'value': "value1"},
-             {'key': "key2", 'value': "value2"},
-             {'key': "key3", 'value': "value3"}],
+    'tags': [
+        {'key': "key0", 'value': "value0"},
+        {'key': "key1", 'value': "value1"},
+    ],
     'backupStrategy': {
         'period': "00:00 GMT+03:00",
         'prefix': 'backup',
         'keepday': 1,
         'bucket': 'css-test-0',
         'agency': 'test-css',
-        'basePath': 'css'
+        'basePath': 'css',
     },
 }
-result = conn.css.create_cluster(**attrs)
+cluster = conn.css.create_cluster(**attrs)
+conn.css.wait_for_cluster(cluster)
+result = conn.css.get_cluster(cluster)
 print(result)

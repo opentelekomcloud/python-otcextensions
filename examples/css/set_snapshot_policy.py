@@ -22,7 +22,7 @@ attrs = {
     "prefix": "snapshot",
     "period": "16:00 GMT+08:00",
     "keepday": 7,
-    "enable": "true"
+    "enable": "true",
 }
 
 cluster_id = 'cluster-uuid'

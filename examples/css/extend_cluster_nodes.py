@@ -23,7 +23,7 @@ attrs = {
     "grow": [
         {"type": "ess-master", "nodesize": 2, "disksize": 0},
         {"type": "ess", "nodesize": 0, "disksize": 60},
-        {"type": "ess-client", "nodesize": 1, "disksize": 0}
+        {"type": "ess-client", "nodesize": 1, "disksize": 0},
     ]
 }
 conn.css.extend_cluster_nodes(cluster_id, **attrs)
