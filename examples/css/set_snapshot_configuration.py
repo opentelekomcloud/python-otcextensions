@@ -26,6 +26,6 @@ conn.css.set_snapshot_configuration(cluster_id, auto_setting=True)
 # Set Cluster Snapshot Configuration with custom bucket & agency.
 attrs = {
     "bucket": "css-backup-1626212749424",
-    "agency": "css_obs_agency"
+    "agency": "css_obs_agency",
 }
 conn.css.set_snapshot_configuration(cluster_id, **attrs)

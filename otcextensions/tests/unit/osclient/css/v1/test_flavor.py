@@ -39,7 +39,7 @@ class TestListFlavors(fakes.TestCss):
         'availability_zones',
         'disk_range',
         'vcpus',
-        'ram'
+        'ram',
     )
 
     data = []
@@ -87,8 +87,10 @@ class TestListFlavors(fakes.TestCss):
 
     def test_list_args(self):
         arglist = [
-            '--datastore-version', '7.6.2',
-            '--node-type', 'ess',
+            '--datastore-version',
+            '7.6.2',
+            '--node-type',
+            'ess',
         ]
 
         verifylist = [

@@ -32,27 +32,35 @@ class UnixTimestampFormatter(cliff_columns.FormattableColumn):
             self._value = self._value / 1000
         timestamp = datetime.datetime.fromtimestamp(self._value)
         timezone_offset = datetime.timezone(
-            datetime.timedelta(hours=gmt_offset))
+            datetime.timedelta(hours=gmt_offset)
+        )
         timestamp_gmt = timestamp.astimezone(timezone_offset)
 
         # Format the timestamp as a string with the timezone offset
         timezone_offset_str = timestamp_gmt.strftime('%z')
-        timezone_offset_formatted = \
+        timezone_offset_formatted = (
             f'GMT{timezone_offset_str[:3]}:{timezone_offset_str[3:]}'
-        return timestamp_gmt.strftime(
-            '%Y-%m-%d %H:%M:%S ') + timezone_offset_formatted
+        )
+        return (
+            timestamp_gmt.strftime('%Y-%m-%d %H:%M:%S ')
+            + timezone_offset_formatted
+        )
         # Format GMT+1 timestamp as string
 
 
 class YamlFormat(cliff_columns.FormattableColumn):
     def remove_null_values(self, data):
         if isinstance(data, dict):
-            if 'record_delimiter' in data.keys() and \
-                    '\n' in data['record_delimiter']:
+            if (
+                'record_delimiter' in data.keys()
+                and '\n' in data['record_delimiter']
+            ):
                 data['record_delimiter'] = '\\n'
             return {
-                k: self.remove_null_values(v) for k,
-                v in data.items() if v is not None}
+                k: self.remove_null_values(v)
+                for k, v in data.items()
+                if v is not None
+            }
         elif isinstance(data, list):
             return [self.remove_null_values(v) for v in data if v is not None]
         else:
@@ -61,6 +69,6 @@ class YamlFormat(cliff_columns.FormattableColumn):
     def human_readable(self):
         data = self._value
         if type(data) not in (dict, list):
-            data = self._value.to_dict(original_names=True, computed=False)
+            data = self._value.to_dict(computed=False)
         data = self.remove_null_values(data)
         return yaml.dump(data, width=100)

@@ -95,7 +95,9 @@ class CreateSnapshot(command.ShowOne):
                 'index data is to be backed up.'
             ),
         )
-        parser.add_argument('name', metavar='<name>', help=_('Snapshot name.'))
+        parser.add_argument(
+            'name', metavar='<name>', help=_('Snapshot name.')
+        )
         parser.add_argument(
             '--description',
             metavar='<description>',
@@ -234,7 +236,9 @@ class SetSnapshotPolicy(command.ShowOne):
         parser.add_argument(
             'cluster',
             metavar='<cluster>',
-            help=_('ID or Name of the cluster to which the snapshot belongs.'),
+            help=_(
+                'ID or Name of the cluster to which the snapshot belongs.'
+            ),
         )
         parser.add_argument(
             '--name-prefix',
@@ -305,7 +309,9 @@ class ShowSnapshotPolicy(command.ShowOne):
         parser.add_argument(
             'cluster',
             metavar='<cluster>',
-            help=_('ID or Name of the cluster to which the snapshot belongs.'),
+            help=_(
+                'ID or Name of the cluster to which the snapshot belongs.'
+            ),
         )
         return parser
 
@@ -325,7 +331,9 @@ class ConfigureSnapshot(command.Command):
         parser.add_argument(
             'cluster',
             metavar='<cluster>',
-            help=_('ID or Name of the cluster to which the snapshot belongs.'),
+            help=_(
+                'ID or Name of the cluster to which the snapshot belongs.'
+            ),
         )
         parser.add_argument(
             '--auto-configure',
@@ -379,7 +387,9 @@ class DeleteSnapshot(command.Command):
         parser.add_argument(
             'cluster',
             metavar='<cluster>',
-            help=_('ID or Name of the cluster to which the snapshot belongs.'),
+            help=_(
+                'ID or Name of the cluster to which the snapshot belongs.'
+            ),
         )
         parser.add_argument(
             'snapshot',
@@ -423,7 +433,9 @@ class DisableSnapshot(command.Command):
         parser.add_argument(
             'cluster',
             metavar='<cluster>',
-            help=_('ID or Name of the cluster to which the snapshot belongs.'),
+            help=_(
+                'ID or Name of the cluster to which the snapshot belongs.'
+            ),
         )
         return parser
 

@@ -51,7 +51,7 @@ class Proxy(proxy.Proxy):
         """
         return self._get(_cluster.Cluster, cluster)
 
-    def find_cluster(self, name_or_id, ignore_missing=False):
+    def find_cluster(self, name_or_id, ignore_missing=True):
         """Find a single cluster
 
         :param name_or_id: The name or ID of a CSS cluster
@@ -113,7 +113,7 @@ class Proxy(proxy.Proxy):
             _cluster.ExtendClusterNodes, cluster_id=cluster.id, **attrs
         )
 
-    def delete_cluster(self, cluster, ignore_missing=False):
+    def delete_cluster(self, cluster, ignore_missing=True):
         """Delete a cluster
 
         :param cluster: The value can be the ID of a cluster
@@ -168,7 +168,7 @@ class Proxy(proxy.Proxy):
             _snapshot.Snapshot, uri_cluster_id=cluster.id, **attrs
         )
 
-    def delete_snapshot(self, cluster, snapshot, ignore_missing=False):
+    def delete_snapshot(self, cluster, snapshot, ignore_missing=True):
         """Delete a snapshot
 
         :param cluster: key id or an instance of
@@ -287,7 +287,10 @@ class Proxy(proxy.Proxy):
         self.endpoint_override = None
         return resp
 
-    def wait_for_cluster(self, cluster, timeout=1200, wait=5):
+    def wait_for_cluster(
+        self, cluster, timeout=1200, wait=5, print_status=False
+    ):
+        org_timeout = timeout
         while timeout > 0:
             obj = self.get_cluster(cluster)
             if obj.status_code == 100:
@@ -305,8 +308,17 @@ class Proxy(proxy.Proxy):
                 str(obj.action_progress or obj.status),
                 str(timeout),
             )
-            timeout = timeout - wait
+            if print_status:
+                dots = '.' * round(100 - ((timeout / org_timeout) * 100))
+                print(
+                    'CSS Cluster progress: '
+                    + str(obj.action_progress or obj.status)
+                    + ' '
+                    + dots,
+                    end='\r',
+                )
             time.sleep(wait)
+            timeout = timeout - wait
         raise exceptions.SDKException(
             'Wait Timed Out. Cluster action still in progress.'
         )
