@@ -23,7 +23,53 @@ class TestPredefinedTag(base.BaseFunctionalTest):
         super(TestPredefinedTag, self).setUp()
         self.tms = self.conn.tms
 
+    def test_create_tag(self):
+        attrs = {
+            'key': 'key2',
+            'value': 'value2'
+        }
+        self.tms.create_predefined_tag(**attrs)
+        attrs = {
+            'key': 'key1',
+            'value': 'value1'
+        }
+        self.tms.create_predefined_tag(**attrs)
+
+    def test_update_tag(self):
+        attrs = {
+            "new_tag": {
+                "key": "check_this",
+                "value": "mate"},
+            "old_tag": {
+                'key': 'key1',
+                'value': 'value1'
+            }
+        }
+        value = {
+            'key': 'key1'
+        }
+        self.tms.update_predefined_tag(**attrs)
+
+    def test_delete_tag(self):
+        attrs = {
+            'key': 'key2',
+            'value': 'value2'
+        }
+        self.tms.delete_predefined_tag(**attrs)
+
     def test_tags_list(self):
         tags = list(self.tms.predefined_tags())
-
         self.assertGreaterEqual(len(tags), 0)
+
+    def test_clear_tags(self):
+        attrs = {
+            "key": "check_this",
+            "value": "mate"
+        }
+        self.tms.delete_predefined_tag(**attrs)
+        attrs = {
+            'key': 'key1',
+            'value': 'value1'
+        }
+        self.tms.delete_predefined_tag(**attrs)
+

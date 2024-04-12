@@ -12,6 +12,7 @@
 
 from openstack import resource
 from openstack import utils
+from openstack import exceptions
 
 
 class PredefinedTag(resource.Resource):
@@ -25,13 +26,16 @@ class PredefinedTag(resource.Resource):
     marker = resource.Body('marker')
     total_count = resource.Body('total_count')
     tags = resource.Body('tags', type=list)
+    action = resource.Body('action')
+    old_tag = resource.Body('old_tag', type=dict)
+    new_tag = resource.Body('new_tag', type=dict)
 
     #: Allow to create operation for this resource.
     allow_create = True
     #: Allow get operation for this resource.
     allow_fetch = False
     #: Allow update operation for this resource.
-    allow_commit = False
+    allow_commit = True
     #: Allow to delete operation for this resource.
     allow_delete = True
     #: Allow list operation for this resource.
@@ -48,3 +52,39 @@ class PredefinedTag(resource.Resource):
     commit_method = "PUT"
     #: Method for creating a resource (POST, PUT)
     create_method = "POST"
+
+    requires_id = False
+
+    def _action(self, session, request_body):
+        url = utils.urljoin(self.base_path, 'action')
+        response = session.post(url, json=request_body)
+        exceptions.raise_from_response(response)
+
+    def add_tag(self, session, key, value):
+        request_body = {
+            "action": "create",
+            "tags": [{
+                "key": key,
+                "value": value
+            }]
+        }
+        self._action(session, request_body)
+
+    def delete_tag(self, session, key, value):
+        request_body = {
+            "action": "delete",
+            "tags": [{
+                "key": key,
+                "value": value
+            }]
+        }
+        self._action(session, request_body)
+
+    def _prepare_request_body(
+        self,
+        patch,
+        prepend_key,
+        *,
+        resource_request_key=None,
+    ):
+        return self._body.dirty

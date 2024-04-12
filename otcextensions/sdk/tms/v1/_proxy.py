@@ -34,3 +34,33 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.tms.v1.predefined_tag.PredefinedTag` instances
         """
         return self._list(_predefined_tag.PredefinedTag, **query)
+
+    def create_predefined_tag(self, **attrs):
+        """Create a new predefined tag with attrs
+
+        :param dict attrs: Keyword arguments which will be used to create a
+            :class:`~otcextensions.sdk.tms.v1.predefined_tag.PredefinedTag`
+        """
+        tag = _predefined_tag.PredefinedTag()
+        return tag.add_tag(self, **attrs)
+
+    def delete_predefined_tag(self, **attrs):
+        """Delete a new predefined tag with attrs
+
+        :param dict attrs: Keyword arguments which will be used to delete a
+            :class:`~otcextensions.sdk.tms.v1.predefined_tag.PredefinedTag`
+        """
+        tag = _predefined_tag.PredefinedTag()
+        return tag.delete_tag(self, **attrs)
+
+    def update_predefined_tag(self, **attrs):
+        """Update a predefined tag
+
+        :param dict attrs: The attributes to update on the predefined tag
+
+        :returns: The updated tag.
+
+        :rtype: :class:`~otcextensions.sdk.tms.v1.predefined_tag.PredefinedTag`
+        """
+        return self._update(_predefined_tag.PredefinedTag,
+                            **attrs)
