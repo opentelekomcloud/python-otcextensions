@@ -19,24 +19,24 @@ from osc_lib.cli import format_columns
 from osc_lib.cli import parseractions
 from osc_lib.command import command
 
+from otcextensions.common import cli_utils
 from otcextensions.common import sdk_utils
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
 
-CSS_ENGINE_VERSIONS = ('7.6.2', '7.9.3', '7.10.2', 'Opensearch_1.3.6')
-
 DISK_TYPE_CHOICES = ['common', 'high', 'ultrahigh']
 
 
 _formatters = {
-    'nodes': format_columns.ListDictColumn,
-    'elb_whitelist': format_columns.DictColumn,
-    'datastore': format_columns.DictColumn,
-    'tags': format_columns.ListDictColumn,
+    'nodes': cli_utils.YamlFormat,
+    'elb_whitelist': cli_utils.YamlFormat,
+    'datastore': cli_utils.YamlFormat,
+    'tags': cli_utils.YamlFormat,
     'action_progress': format_columns.DictColumn,
     'actions': format_columns.ListColumn,
+    'endpoints': cli_utils.YamlFormat,
 }
 
 
@@ -78,18 +78,28 @@ class CreateCluster(command.ShowOne):
         parser.add_argument('name', metavar='<name>', help=_('Cluster Name.'))
         parser.add_argument(
             '--datastore-type',
-            metavar='<datastore_type>',
+            metavar='{elasticsearch, opensearch}',
+            choices=['elasticsearch', 'opensearch'],
+            type=lambda s: s.lower(),
             default='elasticsearch',
-            help=_('Cluster type. The default value is elasticsearch.'),
+            help=_(
+                'Cluster type. Values:\n'
+                '- elasticsearch\n'
+                '- opensearch\n'
+                'The default value is elasticsearch.'
+            ),
         )
         parser.add_argument(
             '--datastore-version',
             metavar='<datastore_version>',
             default='7.10.2',
             help=_(
-                'CSS Cluster Engine Versions. Supported ElasticSearch '
-                'Versions: {' + ', '.join(CSS_ENGINE_VERSIONS) + '} '
-                '(default: 7.10.2).'
+                'CSS Cluster Engine Versions.\n'
+                'If datastore_type is `elasticsearch` supported versions: '
+                '(7.6.2, 7.9.3, 7.10.2)\n'
+                'If datastore_type is `opensearch` supported versions: '
+                '(1.3.6)\n'
+                '(default datastore_version: 7.10.2).'
             ),
         )
         parser.add_argument(
@@ -182,18 +192,24 @@ class CreateCluster(command.ShowOne):
             '--backup-policy',
             metavar='period=<period>,prefix=<prefix>,keepday=<keepday>',
             required_keys=['period', 'prefix', 'keepday'],
+            optional_keys=['bucket', 'agency', 'basepath'],
             dest='backup_policy',
             action=parseractions.MultiKeyValueAction,
             help=_(
-                'Automatic backup creation policy.'
-                'This function is enabled by default.'
+                'Automatic backup creation policy. '
+                'This function is enabled by default.\n'
                 'The following keys are required:\n'
                 'period=<period>: Time when a snapshot is created '
                 'every day.\n'
                 'prefix=<prefix>: Prefix of the name of the snapshot '
                 'that is automatically created.\n'
                 'keepday=<keepday>: Number of days for which automatically '
-                'created snapshots are reserved. Value range: 1 to 90.'
+                'created snapshots are reserved. Value range: 1 to 90.\n'
+                'Optional Keys:\n'
+                'bucket=<bucket>: OBS bucket used for storing backup.\n'
+                'basepath=<basepath>: Storage path of the snapshot in '
+                'the OBS bucket.\n'
+                'agency=<agency>: IAM agency used to access OBS.'
             ),
         )
         parser.add_argument(
@@ -283,13 +299,18 @@ class CreateCluster(command.ShowOne):
             else:
                 backup_policy = backup_policy[0]
                 backup_policy['keepday'] = int(backup_policy['keepday'])
+                if backup_policy.get('basepath'):
+                    backup_policy['basePath'] = backup_policy['basepath']
+                    del backup_policy['basepath']
                 attrs['backupStrategy'] = backup_policy
         if parsed_args.tags:
             attrs['tags'] = parsed_args.tags
 
         cluster = client.create_cluster(**attrs)
         if parsed_args.wait:
-            client.wait_for_cluster(cluster.id, parsed_args.timeout)
+            client.wait_for_cluster(
+                cluster.id, parsed_args.timeout, print_status=True
+            )
         return client.get_cluster(cluster.id)
 
 
@@ -329,8 +350,8 @@ class ListClusterNodes(command.Lister):
     columns = (
         'ID',
         'Name',
-        'Private IP',
-        'Node Type',
+        'IP',
+        'Type',
         'Volume',
         'Availability Zone',
         'Status',
@@ -348,7 +369,7 @@ class ListClusterNodes(command.Lister):
 
         cluster = client.find_cluster(parsed_args.cluster)
 
-        _formatters = {'Volume': format_columns.DictColumn}
+        _formatters = {'Volume': cli_utils.YamlFormat}
         return (
             self.columns,
             (
@@ -403,7 +424,9 @@ class RestartCluster(command.Command):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.css
-        cluster = client.find_cluster(parsed_args.cluster)
+        cluster = client.find_cluster(
+            parsed_args.cluster, ignore_missing=False
+        )
         client.restart_cluster(cluster)
         if parsed_args.wait:
             client.wait_for_cluster(cluster.id, parsed_args.timeout)
@@ -516,7 +539,7 @@ class DeleteCluster(command.Command):
         for name_or_id in parsed_args.cluster:
             try:
                 cluster = client.find_cluster(name_or_id, ignore_missing=False)
-                client.delete_cluster(cluster.id)
+                client.delete_cluster(cluster, ignore_missing=False)
             except Exception as e:
                 result += 1
                 LOG.error(

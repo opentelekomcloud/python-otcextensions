@@ -9,74 +9,99 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import uuid
+
+import mock
 from keystoneauth1 import adapter
 
-import uuid
-import mock
-
 from openstack.tests.unit import base
-
 from otcextensions.sdk.css.v1 import cluster
+from otcextensions.tests.unit.sdk.utils import assert_attributes_equal
 
+
+CLUSTER_ID = uuid.uuid4().hex
 
 EXAMPLE = {
-    "actionProgress": {},
-    "actions": [],
-    "authorityEnable": True,
-    "backupAvailable": True,
-    "backupStrategy": {
-        "period": "00:00 GMT+03:00",
-        "prefix": "backup",
-        "keepday": 1,
-        "bucket": "css-test-0",
-        "agency": "test-css",
-        "basePath": "css"
-    },
-    "bandwidthSize": 5,
-    "cmk_id": uuid.uuid4().hex,
-    "created": "2023-02-08T23:31:19",
-    "datastore": {
-        "type": "elasticsearch",
-        "version": "7.10.2"
-    },
-    "diskEncrypted": False,
-    "elbWhiteList": {
-        "enableWhiteList": False,
-        "whiteList": ""
-    },
-    "endpoint": "192.168.1.67:9200",
-    "httpsEnable": True,
-    "id": uuid.uuid4().hex,
-    "instances": [
-        {
-            "azCode": "eu-de-02",
-            "id": uuid.uuid4().hex,
-            "ip": "192.168.1.67",
-            "name": "test-css-d958c4bb-ess-esn-1-1",
-            "specCode": "css.xlarge.4",
-            "status": "200",
-            "type": "ess",
-            "volume": {
-                "size": 100,
-                "type": "HIGH"
-            }
-        }
+    'actionProgress': {},
+    'actions': [],
+    'authorityEnable': False,
+    'backupAvailable': False,
+    'bandwidthSize': 0,
+    'created': '2024-04-02T23:23:31',
+    'cmk_id': 'cmk-id',
+    'datastore': {'type': 'elasticsearch', 'version': '7.10.2'},
+    'diskEncrypted': False,
+    'elbWhiteList': {'whiteList': '', 'enableWhiteList': False},
+    'endpoint': [
+        '192.168.0.194:9200',
+        '192.168.0.12:9200',
+        '192.168.0.66:9200',
     ],
-    "name": "test-css-d958c4bb",
-    "period": False,
-    "publicIp": "1.2.3.4:9200",
-    "publicKibanaResp": None,
-    "securityGroupId": uuid.uuid4().hex,
-    "status": "200",
-    "subnetId": uuid.uuid4().hex,
-    "tags": [
+    'enterpriseProjectId': '0',
+    'httpsEnable': False,
+    'id': CLUSTER_ID,
+    'instances': [
         {
-            "key": "123",
-            "value": "11"
-        }
+            'azCode': 'eu-de-01',
+            'id': 'node-id',
+            'ip': '192.168.0.194',
+            'name': 'test-cluster-ess-esn-1-1',
+            'specCode': 'css.xlarge.2',
+            'status': '200',
+            'type': 'ess',
+            'volume': {
+                'type': 'COMMON',
+                'size': 100,
+            },
+        },
     ],
-    "updated": "2023-02-08T23:31:19",
-    "vpcId": uuid.uuid4().hex
+    'name': 'test-cluster',
+    'period': False,
+    'publicIp': None,
+    'publicKibanaResp': None,
+    'securityGroupId': 'sg-id',
+    'status': '200',
+    'subnetId': 'network-id',
+    'tags': [
+        {'key': 'key0', 'value': 'value0'},
+        {'key': 'key1', 'value': 'value1'},
+    ],
+    'updated': '2024-04-03T10:37:44',
+    'vpcId': 'router-id',
+}
+
+
+EXAMPLE_CREATE = {
+    'name': 'test-cluster',
+    'datastore': {'type': 'elasticsearch', 'version': '7.10.2'},
+    'instanceNum': 3,
+    'httpsEnable': False,
+    'diskEncryption': {
+        'systemEncrypted': '1',
+        'systemCmkid': 'cmk-id',
+    },
+    'instance': {
+        'availability_zone': 'eu-de-01',
+        'flavorRef': 'css.xlarge.2',
+        'volume': {'volume_type': 'COMMON', 'size': 100},
+        'nics': {
+            "vpcId": "vpc-id",
+            "netId": "net-id",
+            "securityGroupId": "sg-id",
+        },
+    },
+    'tags': [
+        {'key': "key0", 'value': "value0"},
+        {'key': "key1", 'value': "value1"},
+    ],
+    'backupStrategy': {
+        'period': "00:00 GMT+03:00",
+        'prefix': 'backup',
+        'keepday': 1,
+        'bucket': 'css-test-0',
+        'agency': 'test-css',
+        'basePath': 'css',
+    },
 }
 
 
@@ -98,73 +123,106 @@ class TestCluster(base.TestCase):
         self.assertTrue(sot.allow_delete)
         self.assertFalse(sot.allow_commit)
         self.assertFalse(sot.allow_patch)
-        self.assertDictEqual({'id': 'id',
-                              'start': 'start',
-                              'limit': 'limit',
-                              'marker': 'marker'},
-                             sot._query_mapping._mapping)
+        self.assertDictEqual(
+            {'start': 'start', 'limit': 'limit', 'marker': 'marker'},
+            sot._query_mapping._mapping,
+        )
 
     def test_make_it(self):
         sot = cluster.Cluster(**EXAMPLE)
-        updated_sot_attrs = (
-            'actionProgress',
-            'authorityEnable',
-            'backupAvailable',
-            'backupStrategy',
-            'bandwidthSize',
-            'created',
-            'diskEncrypted',
-            'httpsEnable',
-            'instances',
-            'period',
-            'publicIp',
-            'publicKibanaResp',
-            'securityGroupId',
-            'status',
-            'subnetId',
-            'updated',
-            'vpcId',
-            'elbWhiteList',
-        )
+        updated_sot_attrs = {
+            'actionProgress': 'action_progress',
+            'authorityEnable': 'is_authority_enabled',
+            'backupAvailable': 'is_backup_enabled',
+            'backupStrategy': 'backup_strategy',
+            'bandwidthSize': 'bandwidth_size',
+            'created': 'created_at',
+            'diskEncrypted': 'is_disk_encrypted',
+            'httpsEnable': 'is_https_enabled',
+            'period': 'is_billed',
+            'publicIp': 'floating_ip',
+            'publicKibanaResp': 'public_kibana_resp',
+            'securityGroupId': 'security_group_id',
+            'subnetId': 'network_id',
+            'updated': 'updated_at',
+            'vpcId': 'router_id',
+            'endpoint': 'endpoints',
+            'enterpriseProjectId': 'enterprise_project_id',
+            'diskEncryption': 'disk_encryption',
+        }
 
-        self.assertEqual(EXAMPLE['actionProgress'], sot.action_progress)
-        self.assertEqual(EXAMPLE['authorityEnable'], sot.is_authority_enabled)
-        self.assertEqual(EXAMPLE['backupAvailable'], sot.is_backup_enabled)
-        self.assertEqual(EXAMPLE['backupStrategy'], sot.backup_strategy)
-        self.assertEqual(EXAMPLE['bandwidthSize'], sot.bandwidth_size)
-        self.assertEqual(EXAMPLE['created'], sot.created_at)
-        self.assertEqual(EXAMPLE['diskEncrypted'], sot.is_disk_encrypted)
-        self.assertEqual(EXAMPLE['httpsEnable'], sot.is_https_enabled)
-        self.assertEqual(EXAMPLE['period'], sot.is_billed)
-        self.assertEqual(EXAMPLE['publicIp'], sot.floating_ip)
-        self.assertEqual(EXAMPLE['publicKibanaResp'], sot.public_kibana_resp)
-        self.assertEqual(EXAMPLE['securityGroupId'], sot.security_group_id)
-        self.assertEqual(int(EXAMPLE['status']), sot.status_code)
-        self.assertEqual(EXAMPLE['subnetId'], sot.network_id)
-        self.assertEqual(EXAMPLE['updated'], sot.updated_at)
-        self.assertEqual(EXAMPLE['vpcId'], sot.router_id)
-        self.assertEqual(EXAMPLE['elbWhiteList'], sot.elb_whitelist)
+        for key, value in EXAMPLE.items():
+            if key in updated_sot_attrs.keys():
+                self.assertEqual(getattr(sot, updated_sot_attrs[key]), value)
+            elif key == 'instances':
+                pass
+            elif key == 'elbWhiteList':
+                self.assertEqual(
+                    sot.elb_whitelist.is_whitelist_enabled,
+                    value['enableWhiteList'],
+                )
+                self.assertEqual(
+                    sot.elb_whitelist.whitelist, value['whiteList']
+                )
+            else:
+                assert_attributes_equal(self, getattr(sot, key), value)
 
         for i in range(len(sot.nodes)):
             instance = EXAMPLE['instances'][i]
-            sot_instance = sot.nodes[i]
             self.assertEqual(
-                instance['azCode'], sot_instance.availability_zone
+                instance['azCode'], sot.nodes[i].availability_zone
             )
-            self.assertEqual(instance['id'], sot_instance.id)
-            self.assertEqual(instance['ip'], sot_instance.private_ip)
-            self.assertEqual(instance['name'], sot_instance.name)
-            self.assertEqual(instance['specCode'], sot_instance.flavor)
-            self.assertEqual(instance['status'], sot_instance.status)
-            self.assertEqual(instance['type'], sot_instance.node_type)
-            self.assertEqual(instance['volume'], sot_instance.volume)
+            self.assertEqual(sot.nodes[i].id, instance['id'])
+            self.assertEqual(sot.nodes[i].ip, instance['ip'])
+            self.assertEqual(sot.nodes[i].name, instance['name'])
+            self.assertEqual(sot.nodes[i].flavor, instance['specCode'])
+            self.assertEqual(sot.nodes[i].status, instance['status'])
+            self.assertEqual(sot.nodes[i].type, instance['type'])
+            assert_attributes_equal(
+                self, sot.nodes[i].volume, instance['volume']
+            )
 
-        for key, value in EXAMPLE.items():
-            if key not in updated_sot_attrs:
-                self.assertEqual(getattr(sot, key), value)
+    def test_create_sot(self):
+        updated_sot_attrs = {
+            'instanceNum': 'instance_num',
+            'httpsEnable': 'is_https_enabled',
+        }
+        sot = cluster.Cluster(**EXAMPLE_CREATE)
+        for key, value in EXAMPLE_CREATE.items():
+            if key in updated_sot_attrs.keys():
+                self.assertEqual(getattr(sot, updated_sot_attrs[key]), value)
+            elif key == 'diskEncryption':
+                self.assertEqual(
+                    sot.disk_encryption.system_encrypted,
+                    value['systemEncrypted'],
+                )
+                self.assertEqual(
+                    sot.disk_encryption.system_cmkid, value['systemCmkid']
+                )
+            elif key == 'instance':
+                self.assertEqual(
+                    sot.instance.nics.network_id, value['nics']['netId']
+                )
+                self.assertEqual(
+                    sot.instance.nics.router_id, value['nics']['vpcId']
+                )
+                self.assertEqual(
+                    sot.instance.nics.security_group_id,
+                    value['nics']['securityGroupId'],
+                )
+                self.assertEqual(sot.instance.flavor, value.pop('flavorRef'))
+                del value['nics']
+                assert_attributes_equal(self, sot.instance, value)
+            elif key == 'backupStrategy':
+                self.assertEqual(
+                    sot.backup_strategy.base_path, value.pop('basePath')
+                )
+                assert_attributes_equal(self, sot.backup_strategy, value)
+            else:
+                assert_attributes_equal(self, getattr(sot, key), value)
 
     def test_action(self):
-        sot = cluster.Cluster.existing(id=EXAMPLE['id'])
+        sot = cluster.Cluster.existing(id=CLUSTER_ID)
         action = "restart"
         json_body = {"restart": {}}
         response = mock.Mock()
@@ -174,13 +232,13 @@ class TestCluster(base.TestCase):
 
         rt = sot._action(self.sess, action, json_body)
         self.sess.post.assert_called_with(
-            'clusters/%s/restart' % sot.id,
-            json=json_body)
+            'clusters/%s/restart' % sot.id, json=json_body
+        )
 
         self.assertIsNone(rt)
 
     def test_restart(self):
-        sot = cluster.Cluster.existing(id=EXAMPLE['id'])
+        sot = cluster.Cluster.existing(id=CLUSTER_ID)
         sot._action = mock.Mock()
 
         rt = sot.restart(self.sess)
@@ -188,7 +246,7 @@ class TestCluster(base.TestCase):
         self.assertIsNone(rt)
 
     def test_extend(self):
-        sot = cluster.Cluster.existing(id=EXAMPLE['id'])
+        sot = cluster.Cluster.existing(id=CLUSTER_ID)
         sot._action = mock.Mock()
         node_count = 3
 
@@ -221,7 +279,7 @@ class TestExtendClusterNodes(base.TestCase):
         request = {
             "grow": [
                 {"type": "ess-master", "nodesize": 2, "disksize": 0},
-                {"type": "ess", "nodesize": 0, "disksize": 60}
+                {"type": "ess", "nodesize": 0, "disksize": 60},
             ]
         }
         sot = cluster.ExtendClusterNodes(**request)

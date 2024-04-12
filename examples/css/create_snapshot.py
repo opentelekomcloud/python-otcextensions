@@ -22,7 +22,7 @@ cluster_id = 'cluster-uuid'
 attrs = {
     "name": "snapshot_001",
     "indices": "myindex1,myindex2",
-    "description": ""
+    "description": "",
 }
 
 result = conn.css.create_snapshot(cluster_id, **attrs)

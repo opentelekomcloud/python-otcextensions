@@ -29,7 +29,7 @@ parameters.
 :class:`~otcextensions.sdk.css.v1.cluster.Cluster`.
 
 .. literalinclude:: ../examples/css/create_cluster.py
-   :lines: 16-44
+   :lines: 16-55
 
 Get CSS Cluster
 ^^^^^^^^^^^^^^^
@@ -48,7 +48,7 @@ This interface is used to find a CSS cluster by id or name.
 :class:`~otcextensions.sdk.css.v1.cluster.Cluster`.
 
 .. literalinclude:: ../examples/css/find_cluster.py
-   :lines: 16-24
+   :lines: 16-23
 
 Restart CSS Cluster
 ^^^^^^^^^^^^^^^^^^^

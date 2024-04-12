@@ -20,7 +20,7 @@ conn = openstack.connect(cloud='otc')
 
 attrs = {
     "targetCluster": "target-cluster-uuid",
-    "indices": "myindex1,myindex2"
+    "indices": "myindex1,myindex2",
 }
 
 cluster_id = 'cluster-uuid'

@@ -1,0 +1,7 @@
+---
+upgrade:
+  - |
+    upgraded otcextensions.sdk.css.v1.Cluster class.
+fixes:
+  - |
+    Fixed css sdk wait_for_cluster method.

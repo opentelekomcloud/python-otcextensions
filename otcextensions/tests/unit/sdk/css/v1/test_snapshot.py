@@ -9,23 +9,18 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import uuid
+
+import mock
 from keystoneauth1 import adapter
 
-import uuid
-import mock
-
-from openstack.tests.unit import base
 from openstack import utils
-
+from openstack.tests.unit import base
 from otcextensions.sdk.css.v1 import snapshot
-
 
 EXAMPLE = {
     "created": "2018-03-07T07:34:47",
-    "datastore": {
-        "type": "elasticsearch",
-        "version": "7.6.2"
-    },
+    "datastore": {"type": "elasticsearch", "version": "7.6.2"},
     "description": "",
     "id": uuid.uuid4().hex,
     "clusterId": uuid.uuid4().hex,
@@ -45,7 +40,7 @@ EXAMPLE = {
     "restoreStatus": "success",
     "startTime": 1520408087099,
     "endTime": 1520408412219,
-    "bucketName": "obs-b8ed"
+    "bucketName": "obs-b8ed",
 }
 
 EXAMPLE_POLICY = {
@@ -57,7 +52,7 @@ EXAMPLE_POLICY = {
     "agency": "usearch",
     "enable": "true",
     "indeices": "*",
-    "snapshotCmkId": uuid.uuid4().hex
+    "snapshotCmkId": uuid.uuid4().hex,
 }
 
 
@@ -71,7 +66,8 @@ class TestSnapshot(base.TestCase):
         sot = snapshot.Snapshot()
 
         self.assertEqual(
-            '/clusters/%(uri_cluster_id)s/index_snapshot', sot.base_path)
+            '/clusters/%(uri_cluster_id)s/index_snapshot', sot.base_path
+        )
         self.assertEqual('backup', sot.resource_key)
         self.assertEqual('backups', sot.resources_key)
         self.assertTrue(sot.allow_list)
@@ -105,7 +101,8 @@ class TestSnapshot(base.TestCase):
         self.assertEqual(EXAMPLE['backupMethod'], sot.backup_method)
         self.assertEqual(EXAMPLE['backupPeriod'], sot.backup_period)
         self.assertEqual(
-            EXAMPLE['backupExpectedStartTime'], sot.backup_start_time)
+            EXAMPLE['backupExpectedStartTime'], sot.backup_start_time
+        )
         self.assertEqual(EXAMPLE['backupKeepDay'], sot.backup_keep_days)
         self.assertEqual(EXAMPLE['created'], sot.created_at)
         self.assertEqual(EXAMPLE['updated'], sot.updated_at)
@@ -124,7 +121,7 @@ class TestSnapshot(base.TestCase):
         cluster_id = uuid.uuid4().hex
         json_body = {
             "targetCluster": uuid.uuid4().hex,
-            "indices": "myindex1,myindex2"
+            "indices": "myindex1,myindex2",
         }
         response = mock.Mock()
         response.status_code = 201
@@ -132,8 +129,9 @@ class TestSnapshot(base.TestCase):
         self.sess.post.return_value = response
 
         rt = sot.restore(self.sess, cluster_id, **json_body)
-        uri = utils.urljoin('clusters', cluster_id,
-                            'index_snapshot', sot.id, 'restore')
+        uri = utils.urljoin(
+            'clusters', cluster_id, 'index_snapshot', sot.id, 'restore'
+        )
         self.sess.post.assert_called_with(uri, json=json_body)
 
         self.assertIsNone(rt)
@@ -148,7 +146,8 @@ class TestSnapshotPolicy(base.TestCase):
         sot = snapshot.SnapshotPolicy()
 
         self.assertEqual(
-            '/clusters/%(cluster_id)s/index_snapshot/policy', sot.base_path)
+            '/clusters/%(cluster_id)s/index_snapshot/policy', sot.base_path
+        )
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_fetch)
         self.assertFalse(sot.allow_list)
@@ -178,7 +177,7 @@ class TestSnapshotConfiguration(base.TestCase):
 
         self.assertEqual(
             '/clusters/%(cluster_id)s/index_snapshot/%(setting)s',
-            sot.base_path
+            sot.base_path,
         )
         self.assertTrue(sot.allow_create)
         self.assertFalse(sot.allow_list)
@@ -187,7 +186,9 @@ class TestSnapshotConfiguration(base.TestCase):
         self.assertFalse(sot.allow_commit)
 
     def test_disable(self):
-        sot = snapshot.SnapshotConfiguration.existing(cluster_id=EXAMPLE['id'])
+        sot = snapshot.SnapshotConfiguration.existing(
+            cluster_id=EXAMPLE['id']
+        )
         response = mock.Mock()
         response.status_code = 200
         response.headers = {}
