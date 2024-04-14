@@ -137,7 +137,9 @@ class ShowBuiltInModel(command.ShowOne):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
-        data = client.find_builtin_model(parsed_args.name)
+        data = client.find_builtin_model(
+            parsed_args.name, ignore_missing=False
+        )
 
         display_columns, columns = _get_columns(data)
 

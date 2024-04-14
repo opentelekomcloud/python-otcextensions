@@ -236,7 +236,9 @@ class TestShowDataset(fakes.TestModelartsv2):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.find_dataset.assert_called_with("dataset-id")
+        self.client.find_dataset.assert_called_with(
+            "dataset-id", ignore_missing=False
+        )
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -261,7 +263,9 @@ class TestShowDataset(fakes.TestModelartsv2):
             self.cmd.take_action(parsed_args)
         except Exception as e:
             self.assertEqual("Resource Not Found", str(e))
-        self.client.find_dataset.assert_called_with("nonexisting-dataset-id")
+        self.client.find_dataset.assert_called_with(
+            "nonexisting-dataset-id", ignore_missing=False
+        )
 
 
 class TestDeleteDataset(fakes.TestModelartsv2):
@@ -290,7 +294,9 @@ class TestDeleteDataset(fakes.TestModelartsv2):
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
-        self.client.find_dataset.assert_called_with("dataset-name")
+        self.client.find_dataset.assert_called_with(
+            "dataset-name", ignore_missing=False
+        )
         self.client.delete_dataset.assert_called_with(self._data.id)
         self.assertIsNone(result)
 

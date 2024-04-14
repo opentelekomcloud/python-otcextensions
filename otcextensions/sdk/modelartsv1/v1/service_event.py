@@ -14,14 +14,11 @@ from openstack import resource
 
 
 class ServiceEvent(resource.Resource):
-    base_path = "/services/%(serviceId)s/events"
+    base_path = "/services/%(service_id)s/events"
 
     resources_key = "events"
 
     allow_list = True
-
-    #: Service ID.
-    service_id = resource.URI("service_id")
 
     _query_mapping = resource.QueryParameters(
         "event_type",
@@ -32,9 +29,6 @@ class ServiceEvent(resource.Resource):
         "sort_by",
         "order",
     )
-
-    #: Service ID.
-    serviceId = resource.URI("serviceId")
 
     # Properties
     #: Event information, including service operation records, key
@@ -47,6 +41,6 @@ class ServiceEvent(resource.Resource):
     #:  current time and '1970.1.1 0:0:0 UTC'.
     occur_time = resource.Body("occur_time", type=int)
     #: Service ID.
-    service_id = resource.Body("service_id")
+    service_id = resource.URI("service_id")
     #: Service name.
     service_name = resource.Body("service_name")

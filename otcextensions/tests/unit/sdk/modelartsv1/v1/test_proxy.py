@@ -252,7 +252,7 @@ class TestServiceLog(TestModelartsV1Proxy):
             self.proxy.service_logs,
             service_log.ServiceLog,
             method_kwargs={"service": "service-id"},
-            expected_kwargs={"serviceId": "service-id"},
+            expected_kwargs={"service_id": "service-id"},
         )
 
 
@@ -262,7 +262,7 @@ class TestServiceEvent(TestModelartsV1Proxy):
             self.proxy.service_events,
             service_event.ServiceEvent,
             method_kwargs={"service": "service-id"},
-            expected_kwargs={"serviceId": "service-id"},
+            expected_kwargs={"service_id": "service-id"},
         )
 
 
@@ -272,7 +272,7 @@ class TestServiceMonitor(TestModelartsV1Proxy):
             self.proxy.service_monitor,
             service_monitor.ServiceMonitor,
             method_kwargs={"service": "service-id"},
-            expected_kwargs={"serviceId": "service-id"},
+            expected_kwargs={"service_id": "service-id"},
         )
 
 
@@ -337,7 +337,7 @@ class TestTrainingJobVersion(TestModelartsV1Proxy):
             self.proxy.training_job_versions,
             training_job_version.TrainingJobVersion,
             method_kwargs={"training_job": "job-id"},
-            expected_kwargs={"jobId": "job-id"},
+            expected_kwargs={"job_id": "job-id"},
         )
 
     def test_create_training_job_version(self):
@@ -345,7 +345,7 @@ class TestTrainingJobVersion(TestModelartsV1Proxy):
             self.proxy.create_training_job_version,
             training_job_version.TrainingJobVersion,
             method_kwargs={"training_job": "job-id"},
-            expected_kwargs={"jobId": "job-id"},
+            expected_kwargs={"job_id": "job-id"},
         )
 
     def test_get_training_job_version(self):
@@ -354,7 +354,7 @@ class TestTrainingJobVersion(TestModelartsV1Proxy):
             training_job_version.TrainingJobVersion,
             method_args=["job-id", "version-id"],
             expected_args=["version-id"],
-            expected_kwargs={"jobId": "job-id"},
+            expected_kwargs={"job_id": "job-id"},
         )
 
     def test_delete_training_job_version(self):
@@ -364,7 +364,7 @@ class TestTrainingJobVersion(TestModelartsV1Proxy):
             False,
             method_args=["job-id", "version-id"],
             expected_args=["version-id"],
-            expected_kwargs={"jobId": "job-id"},
+            expected_kwargs={"job_id": "job-id"},
         )
 
     def test_delete_training_job_version_ignore(self):
@@ -374,7 +374,7 @@ class TestTrainingJobVersion(TestModelartsV1Proxy):
             True,
             method_args=["job-id", "version-id"],
             expected_args=["version-id"],
-            expected_kwargs={"jobId": "job-id"},
+            expected_kwargs={"job_id": "job-id"},
         )
 
     def test_stop_training_job_version(self):

@@ -334,7 +334,7 @@ class ShowModel(command.ShowOne):
     @translate_response
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
-        data = client.find_model(parsed_args.model)
+        data = client.find_model(parsed_args.model, ignore_missing=False)
         if not data.image_address:
             data = client.get_model(data.id)
         return data

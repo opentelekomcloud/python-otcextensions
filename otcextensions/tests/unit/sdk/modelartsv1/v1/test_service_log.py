@@ -25,7 +25,7 @@ class TestLog(base.TestCase):
     def test_basic(self):
         sot = service_log.ServiceLog()
 
-        self.assertEqual("/services/%(serviceId)s/logs", sot.base_path)
+        self.assertEqual("/services/%(service_id)s/logs", sot.base_path)
         self.assertEqual("logs", sot.resources_key)
         self.assertEqual(None, sot.resource_key)
 

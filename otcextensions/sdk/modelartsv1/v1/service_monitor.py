@@ -14,7 +14,7 @@ from openstack import resource
 
 
 class ServiceMonitor(resource.Resource):
-    base_path = "/services/%(serviceId)s/monitor"
+    base_path = "/services/%(service_id)s/monitor"
 
     resources_key = "monitors"
 
@@ -23,9 +23,6 @@ class ServiceMonitor(resource.Resource):
     _query_mapping = resource.QueryParameters(
         "node_id",
     )
-
-    #: Service ID.
-    serviceId = resource.URI("serviceId")
 
     # Properties
     #: Model ID.
@@ -50,3 +47,5 @@ class ServiceMonitor(resource.Resource):
     gpu_usage = resource.Body("gpu_usage", type=float)
     #: Total number of GPUs.
     gpu_total = resource.Body("gpu_total", type=float)
+    #: Service ID.
+    service_id = resource.URI("service_id")

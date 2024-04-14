@@ -25,7 +25,7 @@ class ResponseSpec(resource.Resource):
 
 
 class DatasetLabel(LabelSpec):
-    base_path = "/datasets/%(datasetId)s/data-annotations/labels"
+    base_path = "/datasets/%(dataset_id)s/data-annotations/labels"
 
     resources_key = "labels"
 
@@ -37,12 +37,11 @@ class DatasetLabel(LabelSpec):
     allow_create = True
     allow_list = True
 
+    # Properties
     #: Dataset ID.
-    datasetId = resource.URI("datasetId")
-
+    dataset_id = resource.URI("dataset_id")
     #: List of labels to be created.
     labels = resource.Body("labels", type=list, list_type=LabelSpec)
-
     #: Error code.
     error_code = resource.Body("error_code")
     #: Error message.

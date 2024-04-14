@@ -25,8 +25,8 @@ class SearchLabelSpec(resource.Resource):
     name = resource.Body("name")
     #: Operation type between multiple attributes.
     op = resource.Body("op")
-    #: Check the document. Label attribute, which is in the Object
-    #:  format and stores any key-value pairs.
+    #: Label attribute, which is in the Object format and
+    #:  stores any key-value pairs.
     property = resource.Body("property", type=dict)
     #: Label type.
     type = resource.Body("type", type=int)
@@ -111,71 +111,8 @@ class ExportParamsSpec(resource.Resource):
     train_sample_ratio = resource.Body("train_sample_ratio")
 
 
-class SearchPropSpec(resource.Resource):
-    #: Relationship between attribute values.
-    op = resource.Body("op")
-    #: Search criteria of an attribute.
-    props = resource.Body("props", type=dict)
-
-
-class SearchLabelSpec(resource.Resource):
-    #: Label name.
-    name = resource.Body("name")
-    #: Operation type between multiple attributes.
-    op = resource.Body("op")
-    #: Label attribute, which is in the Object format and
-    #:  stores any key-value pairs.
-    property = resource.Body("property", type=dict)
-    #: Label type.
-    type = resource.Body("type", type=int)
-
-
-class SearchLabelsSpec(resource.Resource):
-    #: List of label search criteria.
-    labels = resource.Body("labels", type=list, list_type=SearchLabelSpec)
-    #: If you want to search for multiple labels, op must be specified.
-    op = resource.Body("op")
-
-
-class SearchConditionSpec(resource.Resource):
-    #: Filter by coefficient of difficulty.
-    coefficient = resource.Body("coefficient")
-    #: A frame in the video.
-    frame_in_video = resource.Body("frame_in_video", type=int)
-    #: Whether a sample is a hard sample.
-    hard = resource.Body("hard")
-    #: Filter by data source.
-    import_origin = resource.Body("import_origin")
-    #: CT dosage, filtered by dosage.
-    kvp = resource.Body("kvp")
-    #: Label search criteria.
-    label_list = resource.Body("label_list", type=SearchLabelsSpec)
-    #: Labeler.
-    labeler = resource.Body("labeler")
-    #: Search by sample attribute.
-    metadata = resource.Body("metadata", type=SearchPropSpec)
-    #: Parent sample ID.
-    parent_sample_id = resource.Body("parent_sample_id")
-    #: Directory where data samples are stored (the directory must end with a
-    #:  slash (/)).
-    sample_dir = resource.Body("sample_dir")
-    #: Search by sample name, including the file name extension.
-    sample_name = resource.Body("sample_name")
-    #: When a sample is added to the dataset, an index is created based on the
-    #:  last modification time (accurate to day) of the sample on OBS.
-    sample_time = resource.Body("sample_time")
-    #: Search by confidence.
-    score = resource.Body("score")
-    #: DICOM layer thickness.
-    slice_thickness = resource.Body("slice_thickness")
-    #: DICOM scanning time.
-    study_date = resource.Body("study_date")
-    #: A time point in the video.
-    time_in_video = resource.Body("time_in_video")
-
-
 class DatasetExportTask(resource.Resource):
-    base_path = "/datasets/%(datasetId)s/export-tasks"
+    base_path = "/datasets/%(uri_dataset_id)s/export-tasks"
 
     resources_key = "export_tasks"
 
@@ -190,15 +127,15 @@ class DatasetExportTask(resource.Resource):
     allow_list = True
     allow_fetch = True
 
-    #: Dataset ID.
-    datasetId = resource.URI("datasetId")
-
+    # Properties
     #: Labeling format.
     annotation_format = resource.Body("annotation_format")
     #: Time when a task is created.
-    create_time = resource.Body("create_time", type=int)
+    created_at = resource.Body("create_time", type=int)
     #: Dataset ID.
     dataset_id = resource.Body("dataset_id")
+    #: Dataset ID.
+    uri_dataset_id = resource.URI("uri_dataset_id")
     #: Dataset type.
     dataset_type = resource.Body("dataset_type", type=int)
     #: Error code.
@@ -230,7 +167,7 @@ class DatasetExportTask(resource.Resource):
     #: Total number of samples.
     total_sample_count = resource.Body("total_sample_count", type=int)
     #: Time when a task is updated.
-    update_time = resource.Body("update_time", type=int)
+    updated_at = resource.Body("update_time", type=int)
     #: Format of a dataset version.
     version_format = resource.Body("version_format")
     #: Dataset version ID.

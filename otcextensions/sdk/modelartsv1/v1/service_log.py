@@ -26,7 +26,7 @@ class ResultSpec(resource.Resource):
 
 
 class ServiceLog(resource.Resource):
-    base_path = "/services/%(serviceId)s/logs"
+    base_path = "/services/%(service_id)s/logs"
 
     resources_key = "logs"
 
@@ -35,9 +35,6 @@ class ServiceLog(resource.Resource):
     _query_mapping = resource.QueryParameters(
         "update_time",
     )
-
-    #: Service ID.
-    serviceId = resource.URI("serviceId")
 
     # Properties
     #: ID of a dedicated resource pool.
@@ -56,6 +53,8 @@ class ServiceLog(resource.Resource):
     result_detail = resource.Body(
         "result_detail", type=list, list_type=ResultSpec
     )
+    #: Service ID.
+    service_id = resource.URI("service_id")
     #: Number of nodes that are successfully operated. This parameter
     #:  is returned when infer_type is set to edge.
     success_num = resource.Body("success_num", type=int)

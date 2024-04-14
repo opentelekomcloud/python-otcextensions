@@ -68,7 +68,9 @@ class ServiceMonitor(command.Lister):
         if parsed_args.node_id:
             query_params["node_id"] = parsed_args.node_id
 
-        service = client.find_service(parsed_args.service)
+        service = client.find_service(
+            parsed_args.service, ignore_missing=False
+        )
         data = client.service_monitor(service.id, **query_params)
 
         if data:

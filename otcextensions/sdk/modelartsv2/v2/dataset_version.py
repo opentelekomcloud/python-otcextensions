@@ -15,7 +15,7 @@ from otcextensions.sdk.modelartsv2.v2.dataset import DatasetVersionSpec
 
 
 class DatasetVersion(DatasetVersionSpec):
-    base_path = "/datasets/%(datasetId)s/versions"
+    base_path = "/datasets/%(dataset_id)s/versions"
 
     resources_key = "versions"
 
@@ -25,13 +25,13 @@ class DatasetVersion(DatasetVersionSpec):
     allow_delete = True
     allow_fetch = True
 
-    #: Dataset ID.
-    datasetId = resource.URI("datasetId")
-
     _query_mapping = resource.QueryParameters(
         "status",
         "train_evaluate_ratio",
         "version_format",
     )
 
+    #: Dataset Version ID.
     version_id = resource.Body("version_id", alternate_id=True)
+    #: Dataset ID.
+    dataset_id = resource.URI("dataset_id")

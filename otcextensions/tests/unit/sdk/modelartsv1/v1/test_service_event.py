@@ -24,7 +24,7 @@ class TestEvent(base.TestCase):
     def test_basic(self):
         sot = service_event.ServiceEvent()
 
-        self.assertEqual("/services/%(serviceId)s/events", sot.base_path)
+        self.assertEqual("/services/%(service_id)s/events", sot.base_path)
         self.assertEqual("events", sot.resources_key)
         self.assertEqual(None, sot.resource_key)
 

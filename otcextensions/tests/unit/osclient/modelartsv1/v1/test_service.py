@@ -355,7 +355,9 @@ class TestShowService(fakes.TestModelartsv1):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.find_service.assert_called_with(self._service.name)
+        self.client.find_service.assert_called_with(
+            self._service.name, ignore_missing=False
+        )
         self.client.get_service.assert_called_with(self._service.id)
 
         self.assertEqual(self.columns, columns)
@@ -377,7 +379,9 @@ class TestShowService(fakes.TestModelartsv1):
             self.cmd.take_action(parsed_args)
         except Exception as e:
             self.assertEqual("Resource Not Found", str(e))
-        self.client.find_service.assert_called_with("nonexisting_service")
+        self.client.find_service.assert_called_with(
+            "nonexisting_service", ignore_missing=False
+        )
 
 
 class TestUpdateService(fakes.TestModelartsv1):
@@ -525,7 +529,9 @@ class TestStartService(fakes.TestModelartsv1):
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
-        self.client.find_service.assert_called_with(self._service.id)
+        self.client.find_service.assert_called_with(
+            self._service.id, ignore_missing=False
+        )
         self.client.start_service.assert_called_with(self._service)
 
 
@@ -556,7 +562,9 @@ class TestStopService(fakes.TestModelartsv1):
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
-        self.client.find_service.assert_called_with(self._service.id)
+        self.client.find_service.assert_called_with(
+            self._service.id, ignore_missing=False
+        )
         self.client.stop_service.assert_called_with(self._service)
 
 

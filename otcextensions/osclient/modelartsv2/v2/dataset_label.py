@@ -52,7 +52,9 @@ class ListDatasetLabels(command.Lister):
         params = {}
         if parsed_args.version_id:
             params["version_id"] = parsed_args.version_id
-        dataset = client.find_dataset(parsed_args.dataset)
+        dataset = client.find_dataset(
+            parsed_args.dataset, ignore_missing=False
+        )
         data = client.dataset_labels(dataset.id, **params)
 
         formatters = {}

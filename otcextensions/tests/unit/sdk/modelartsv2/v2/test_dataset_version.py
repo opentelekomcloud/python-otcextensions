@@ -32,7 +32,7 @@ class TestDataset(base.TestCase):
     def test_basic(self):
         sot = dataset_version.DatasetVersion()
 
-        self.assertEqual("/datasets/%(datasetId)s/versions", sot.base_path)
+        self.assertEqual("/datasets/%(dataset_id)s/versions", sot.base_path)
         self.assertEqual("versions", sot.resources_key)
         self.assertEqual(None, sot.resource_key)
 

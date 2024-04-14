@@ -16,7 +16,7 @@ from otcextensions.sdk.modelartsv1.v1.training_job import ConfigSpec
 
 
 class TrainingJobVersion(ConfigSpec):
-    base_path = "/training-jobs/%(jobId)s/versions"
+    base_path = "/training-jobs/%(job_id)s/versions"
 
     resources_key = "versions"
 
@@ -33,13 +33,13 @@ class TrainingJobVersion(ConfigSpec):
         offset="page",
     )
 
+    # Properties
     #: Job ID
-    jobId = resource.URI("jobId")
-
+    job_id = resource.URI("job_id")
     #: Parameters for creating a training job For details, see Table 3.
     config = resource.Body("config", type=ConfigSpec)
     #: Description of a training job.
-    job_desc = resource.Body("job_desc")
+    job_description = resource.Body("job_desc")
     #: Version ID of a training job.
     version_id = resource.Body("version_id", type=int, alternate_id=True)
 

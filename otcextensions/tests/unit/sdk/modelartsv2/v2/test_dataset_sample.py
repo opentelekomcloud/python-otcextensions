@@ -31,7 +31,7 @@ class TestDatasetSample(base.TestCase):
         sot = dataset_sample.DatasetSample()
 
         self.assertEqual(
-            "/datasets/%(datasetId)s/data-annotations/samples",
+            "/datasets/%(dataset_id)s/data-annotations/samples",
             sot.base_path,
         )
         self.assertEqual(None, sot.resource_key)
@@ -89,7 +89,7 @@ class TestDatasetSample(base.TestCase):
             "delete_source": True,
         }
         url = utils.urljoin(
-            sot.base_path % {"datasetId": dataset_id}, "delete"
+            sot.base_path % {"dataset_id": dataset_id}, "delete"
         )
         self.sess.post.assert_called_with(url, json=json_body)
         self.assertEqual(rt, sot)

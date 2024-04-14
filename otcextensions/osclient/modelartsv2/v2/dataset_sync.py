@@ -23,7 +23,7 @@ from otcextensions.i18n import _
 LOG = logging.getLogger(__name__)
 
 _formatters = {
-    "create_time": cli_utils.UnixTimestampFormatter,
+    "created_at": cli_utils.UnixTimestampFormatter,
 }
 
 
@@ -41,16 +41,19 @@ class DatasetSync(command.Command):
     def get_parser(self, prog_name):
         parser = super(DatasetSync, self).get_parser(prog_name)
         parser.add_argument(
-            "datasetId",
-            metavar="<datasetId>",
-            help=_("Dataset ID."),
+            "dataset",
+            metavar="<dataset>",
+            help=_("Dataset Id or name."),
         )
 
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
-        client.dataset_sync(parsed_args.datasetId)
+        dataset = client.find_dataset(
+            parsed_args.dataset, ignore_missing=False
+        )
+        client.dataset_sync(dataset)
 
 
 class DatasetSyncStatus(command.ShowOne):
@@ -59,16 +62,19 @@ class DatasetSyncStatus(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(DatasetSyncStatus, self).get_parser(prog_name)
         parser.add_argument(
-            "datasetId",
-            metavar="<datasetId>",
-            help=_("Dataset ID/Name."),
+            "dataset",
+            metavar="<dataset>",
+            help=_("Dataset Id or name."),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
 
-        data = client.get_dataset_sync_status(parsed_args.datasetId)
+        dataset = client.find_dataset(
+            parsed_args.dataset, ignore_missing=False
+        )
+        data = client.get_dataset_sync_status(dataset)
 
         display_columns, columns = _get_columns(data)
         data = utils.get_item_properties(data, columns, formatters=_formatters)

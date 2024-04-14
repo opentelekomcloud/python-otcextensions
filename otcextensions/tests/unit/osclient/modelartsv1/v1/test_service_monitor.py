@@ -72,7 +72,9 @@ class TestServiceMonitor(fakes.TestModelartsv1):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_service.assert_called_with(self._service.name)
+        self.client.find_service.assert_called_with(
+            self._service.name, ignore_missing=False
+        )
         self.client.api_mock.assert_called_with(self._service.id)
 
         self.assertEqual(self.column_list_headers, columns)

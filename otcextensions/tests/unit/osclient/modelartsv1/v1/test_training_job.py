@@ -23,7 +23,7 @@ _COLUMNS = (
     "created_at",
     "duration",
     "id",
-    "job_desc",
+    "job_description",
     "job_id",
     "job_name",
     "name",

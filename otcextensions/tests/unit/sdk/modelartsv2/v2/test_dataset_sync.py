@@ -22,7 +22,7 @@ class TestDatasetSync(base.TestCase):
         sot = dataset_sync.DatasetSync()
 
         self.assertEqual(
-            "/datasets/%(datasetId)s/sync-data",
+            "/datasets/%(uri_dataset_id)s/sync-data",
             sot.base_path,
         )
 

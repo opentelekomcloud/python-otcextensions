@@ -58,7 +58,7 @@ class Proxy(proxy.Proxy):
         """
         return self._list(_builtin_model.BuiltInModel, **params)
 
-    def find_builtin_model(self, name_or_id, ignore_missing=False):
+    def find_builtin_model(self, name_or_id, ignore_missing=True):
         """Find a single built-in model.
 
         :param name_or_id: The name or ID of a built-in model
@@ -114,7 +114,7 @@ class Proxy(proxy.Proxy):
         """
         return self._get(_model.Model, model)
 
-    def find_model(self, name_or_id, ignore_missing=False):
+    def find_model(self, name_or_id, ignore_missing=True):
         """Find a single model.
 
         :param name_or_id: The name or ID of a model.
@@ -315,7 +315,7 @@ class Proxy(proxy.Proxy):
         """
         return self._get(_service.Service, service)
 
-    def find_service(self, name_or_id, ignore_missing=False):
+    def find_service(self, name_or_id, ignore_missing=True):
         """Find a single service
 
         :param name_or_id: The name or ID of a ModelArts service
@@ -398,7 +398,7 @@ class Proxy(proxy.Proxy):
         """
         service = self._get_resource(_service.Service, service)
         return self._list(
-            _service_log.ServiceLog, serviceId=service.id, **params
+            _service_log.ServiceLog, service_id=service.id, **params
         )
 
     def service_events(self, service, **params):
@@ -416,7 +416,7 @@ class Proxy(proxy.Proxy):
         service = self._get_resource(_service.Service, service)
         return self._list(
             _service_event.ServiceEvent,
-            serviceId=service.id,
+            service_id=service.id,
             paginated=False,
             **params,
         )
@@ -433,7 +433,7 @@ class Proxy(proxy.Proxy):
         """
         service = self._get_resource(_service.Service, service)
         return self._list(
-            _service_monitor.ServiceMonitor, serviceId=service.id, **params
+            _service_monitor.ServiceMonitor, service_id=service.id, **params
         )
 
     def service_flavors(self, **params):
@@ -486,7 +486,7 @@ class Proxy(proxy.Proxy):
         """
         return self._create(_training_job.TrainingJob, **attrs)
 
-    def find_training_job(self, name_or_id, ignore_missing=False):
+    def find_training_job(self, name_or_id, ignore_missing=True):
         """Find a single training job by name or Id.
 
         :param name_or_id: The name or ID of a modelarts training job
@@ -584,7 +584,7 @@ class Proxy(proxy.Proxy):
         )
         return self._list(
             _training_job_version.TrainingJobVersion,
-            jobId=training_job.id,
+            job_id=training_job.id,
             **attrs,
         )
 
@@ -607,7 +607,7 @@ class Proxy(proxy.Proxy):
         return self._get(
             _training_job_version.TrainingJobVersion,
             version,
-            jobId=training_job.id,
+            job_id=training_job.id,
         )
 
     def create_training_job_version(self, training_job, **attrs):
@@ -628,7 +628,7 @@ class Proxy(proxy.Proxy):
         )
         return self._create(
             _training_job_version.TrainingJobVersion,
-            jobId=training_job.id,
+            job_id=training_job.id,
             **attrs,
         )
 
@@ -656,7 +656,7 @@ class Proxy(proxy.Proxy):
         return self._delete(
             _training_job_version.TrainingJobVersion,
             version,
-            jobId=training_job.id,
+            job_id=training_job.id,
             ignore_missing=ignore_missing,
         )
 
@@ -678,7 +678,7 @@ class Proxy(proxy.Proxy):
         training_job_version = self._get_resource(
             _training_job_version.TrainingJobVersion,
             version,
-            jobId=training_job.id,
+            job_id=training_job.id,
         )
         return training_job_version.stop(self)
 

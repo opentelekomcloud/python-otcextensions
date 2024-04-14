@@ -235,7 +235,6 @@ class Devenv(resource.Resource):
     base_path = "/demanager/instances"
 
     resources_key = "instances"
-    # resource_key = '' #'instances'
 
     _query_mapping = resource.QueryParameters(
         "de_type",

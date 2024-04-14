@@ -14,7 +14,7 @@ from openstack import resource
 
 
 class DatasetStatistics(resource.Resource):
-    base_path = "/datasets/%(datasetId)s/data-annotations/stats"
+    base_path = "/datasets/%(dataset_id)s/data-annotations/stats"
 
     # capabilities
     allow_fetch = True
@@ -25,12 +25,11 @@ class DatasetStatistics(resource.Resource):
         "sample_state",
     )
 
-    #: Dataset ID.
-    datasetId = resource.URI("datasetId")
-
     # Properties
     #: Path for storing data of a dataset.
     data_path = resource.Body("data_path")
+    #: Dataset ID.
+    dataset_id = resource.URI("dataset_id")
     #: Deletion Stats.
     deletion_stats = resource.Body("deletion_stats", type=dict)
     #: Label statistics grouped by labeling type.

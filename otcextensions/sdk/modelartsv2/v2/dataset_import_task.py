@@ -28,7 +28,7 @@ class FileCopyProgressSpec(resource.Resource):
 
 
 class DatasetImportTask(resource.Resource):
-    base_path = "/datasets/%(datasetId)s/import-tasks"
+    base_path = "/datasets/%(uri_dataset_id)s/import-tasks"
 
     resources_key = "import_tasks"
 
@@ -42,20 +42,19 @@ class DatasetImportTask(resource.Resource):
     allow_fetch = True
     allow_patch = True
 
-    #: Dataset ID.
-    datasetId = resource.URI("datasetId")
-
     # Properties
     #: Number of labeled samples.
     annotated_sample_count = resource.Body("annotated_sample_count", type=int)
     #: Format of the labeling information.
     annotation_format = resource.Body("annotation_format")
     #: Time when a task is created.
-    create_time = resource.Body("create_time", type=int)
+    created_at = resource.Body("create_time", type=int)
     #: Data source.
     data_source = resource.Body("data_source", type=DataSourceSpec)
     #: Dataset ID.
     dataset_id = resource.Body("dataset_id")
+    #: Dataset ID.
+    uri_dataset_id = resource.URI("uri_dataset_id")
     #: Whether to import only hard examples.
     difficult_only = resource.Body("difficult_only", type=bool)
     #: Task running time, in seconds.
@@ -123,6 +122,6 @@ class DatasetImportTask(resource.Resource):
         "unconfirmed_sample_count", type=int
     )
     #: Time when a task is updated.
-    update_ms = resource.Body("update_ms", type=int)
+    updated_at = resource.Body("update_ms", type=int)
     #: Whether the first row in the file is a column name.
     with_column_header = resource.Body("with_column_header", type=bool)

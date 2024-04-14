@@ -24,7 +24,7 @@ class TestServiceMonitor(base.TestCase):
     def test_basic(self):
         sot = service_monitor.ServiceMonitor()
 
-        self.assertEqual("/services/%(serviceId)s/monitor", sot.base_path)
+        self.assertEqual("/services/%(service_id)s/monitor", sot.base_path)
         self.assertEqual("monitors", sot.resources_key)
         self.assertEqual(None, sot.resource_key)
 

@@ -156,7 +156,7 @@ class ConfigSpec(resource.Resource):
     #: Whether training job is in Zombie to state.
     is_zombie = resource.Body("is_zombie", type=bool)
     #: Description of a training job.
-    job_desc = resource.Body("job_desc")
+    job_description = resource.Body("job_desc")
     #: ID of a training job.
     job_id = resource.Body("job_id", type=int)
     #: Name of a training job.
@@ -256,10 +256,9 @@ class TrainingJob(ConfigSpec):
         sort_by="sortBy",
     )
 
+    # Properties
     #: Parameters for creating a training job.
     config = resource.Body("config", type=ConfigSpec)
-    #: Description of a training job.
-    job_desc = resource.Body("job_desc")
     #: ID of a training job.
     job_id = resource.Body("job_id", type=int, alternate_id=True)
     #: Training job name.

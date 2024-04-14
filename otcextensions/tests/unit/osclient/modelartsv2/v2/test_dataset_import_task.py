@@ -13,13 +13,14 @@
 
 import mock
 from openstackclient.tests.unit import utils as tests_utils
+from otcextensions.common import cli_utils
 
 from otcextensions.osclient.modelartsv2.v2 import dataset_import_task
 from otcextensions.tests.unit.osclient.modelartsv2.v2 import fakes
 
 _COLUMNS = (
     "annotated_sample_count",
-    "create_time",
+    "created_at",
     "dataset_id",
     "elapsed_time",
     "finished_file_count",
@@ -35,17 +36,18 @@ _COLUMNS = (
     "total_file_size",
     "total_sample_count",
     "total_sub_sample_count",
-    "update_ms",
+    "updated_at",
 )
 
 
-class TestDatasetImportTask(fakes.TestModelartsv2):
+class TestListDatasetImportTask(fakes.TestModelartsv2):
+    _dataset = fakes.FakeDataset.create_one()
     objects = fakes.FakeDatasetImportTask.create_multiple(3)
 
     column_list_headers = (
-        "task_id",
-        "dataset_id",
-        "import_path",
+        "Task Id",
+        "Created At",
+        "Status",
     )
 
     data = []
@@ -54,24 +56,25 @@ class TestDatasetImportTask(fakes.TestModelartsv2):
         data.append(
             (
                 s.task_id,
-                s.dataset_id,
-                s.import_path,
+                cli_utils.UnixTimestampFormatter(s.created_at),
+                s.status,
             )
         )
 
     def setUp(self):
-        super(TestDatasetImportTask, self).setUp()
+        super(TestListDatasetImportTask, self).setUp()
 
         self.cmd = dataset_import_task.ListDatasetImportTasks(self.app, None)
 
+        self.client.find_dataset = mock.Mock(return_value=self._dataset)
         self.client.dataset_import_tasks = mock.Mock()
         self.client.api_mock = self.client.dataset_import_tasks
 
     def test_list(self):
-        arglist = ["dataset-uuid"]
+        arglist = ["dataset-id"]
 
         verifylist = [
-            ("datasetId", "dataset-uuid"),
+            ("dataset", "dataset-id"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -83,14 +86,17 @@ class TestDatasetImportTask(fakes.TestModelartsv2):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.api_mock.assert_called_with(dataset_id="dataset-uuid")
+        self.client.find_dataset.assert_called_with(
+            "dataset-id", ignore_missing=False
+        )
+        self.client.api_mock.assert_called_with(self._dataset)
 
         self.assertEqual(self.column_list_headers, columns)
         self.assertEqual(self.data, list(data))
 
     def test_list_args(self):
         arglist = [
-            "dataset-uuid",
+            "dataset-id",
             "--limit",
             "1",
             "--offset",
@@ -98,7 +104,7 @@ class TestDatasetImportTask(fakes.TestModelartsv2):
         ]
 
         verifylist = [
-            ("datasetId", "dataset-uuid"),
+            ("dataset", "dataset-id"),
             ("limit", 1),
             ("offset", 2),
         ]
@@ -112,107 +118,31 @@ class TestDatasetImportTask(fakes.TestModelartsv2):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
+        self.client.find_dataset.assert_called_with(
+            "dataset-id", ignore_missing=False
+        )
         self.client.api_mock.assert_called_with(
-            dataset_id="dataset-uuid", limit=1, offset=2
+            self._dataset, limit=1, offset=2
         )
-
-
-class TestCreateDataImportTask(fakes.TestModelartsv2):
-    _data = fakes.FakeDatasetImportTask.create_one()
-    columns = _COLUMNS
-    data = fakes.gen_data(_data, columns)
-
-    def setUp(self):
-        super(TestCreateDataImportTask, self).setUp()
-
-        self.cmd = dataset_import_task.CreateDatasetImportTask(self.app, None)
-
-        self.client.create_dataset_import_task = mock.Mock(
-            return_value=self._data
-        )
-
-    def test_create(self):
-        arglist = [
-            "--dataset-id",
-            "0",
-            "--import-path",
-            "1",
-            "--import-annotations",
-            "2",
-            "--import-type",
-            "3",
-            "--import-folder",
-            "4",
-            "--final-annotation",
-            "5",
-            "--difficult-only",
-            "6",
-            "--included-labels",
-            "7",
-            "--included-tags",
-            "8",
-            "--type",
-            "9",
-            "--label-property",
-            "key=1,value=2",
-            "--label-type",
-            "11",
-            "--text-label-separator",
-            "12",
-            "--text-sample-separator",
-            "13",
-        ]
-        verifylist = [
-            ("dataset_id", "0"),
-            ("import_path", "1"),
-            ("import_annotations", "2"),
-            ("import_type", "3"),
-            ("import_folder", "4"),
-            ("final_annotation", "5"),
-            ("difficult_only", "6"),
-            ("included_labels", "7"),
-            ("included_tags", "8"),
-            ("type", "9"),
-            ("label_properties", [{"key": "1", "value": "2"}]),
-            ("label_type", "11"),
-            ("text_label_separator", "12"),
-            ("text_sample_separator", "13"),
-        ]
-        # Verify cm is triggereg with default parameters
-        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-
-        # Trigger the action
-        columns, data = self.cmd.take_action(parsed_args)
-        attrs = {
-            "dataset_id": "0",
-            "import_path": "1",
-            "import_annotations": "2",
-            "import_type": "3",
-            "import_folder": "4",
-            "final_annotation": "5",
-            "difficult_only": "6",
-            "included_labels": "7",
-            "included_tags": "8",
-            "type": "9",
-            "label_properties": {"1": "2"},
-        }
-        self.client.create_dataset_import_task.assert_called_with(**attrs)
-        self.assertEqual(self.columns, columns)
-        self.assertEqual(self.data, data)
 
 
 class TestShowDatasetImportTask(fakes.TestModelartsv2):
+    _dataset = fakes.FakeDataset.create_one()
     columns = _COLUMNS
-
     object = fakes.FakeDatasetImportTask.create_one()
 
-    data = fakes.gen_data(object, columns)
+    formatters = {
+        "created_at": cli_utils.UnixTimestampFormatter,
+        "updated_at": cli_utils.UnixTimestampFormatter,
+    }
+    data = fakes.gen_data(object, columns, formatters)
 
     def setUp(self):
         super(TestShowDatasetImportTask, self).setUp()
 
         self.cmd = dataset_import_task.ShowDatasetImportTask(self.app, None)
 
+        self.client.find_dataset = mock.Mock(return_value=self._dataset)
         self.client.get_dataset_import_task = mock.Mock(
             return_value=self.object
         )
@@ -235,7 +165,7 @@ class TestShowDatasetImportTask(fakes.TestModelartsv2):
         arglist = ["dataset-id", "task-id"]
 
         verifylist = [
-            ("datasetId", "dataset-id"),
+            ("dataset", "dataset-id"),
             ("taskId", "task-id"),
         ]
 
@@ -244,11 +174,13 @@ class TestShowDatasetImportTask(fakes.TestModelartsv2):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        attrs = {
-            "dataset_id": "dataset-id",
-            "task_id": "task-id",
-        }
-        self.client.get_dataset_import_task.assert_called_with(**attrs)
+
+        self.client.find_dataset.assert_called_with(
+            "dataset-id", ignore_missing=False
+        )
+        self.client.get_dataset_import_task.assert_called_with(
+            self._dataset, "task-id"
+        )
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)

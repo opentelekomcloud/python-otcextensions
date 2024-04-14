@@ -610,7 +610,9 @@ class UpdateService(command.ShowOne):
             if val:
                 config[arg] = val
 
-        service = client.find_service(parsed_args.service)
+        service = client.find_service(
+            parsed_args.service, ignore_missing=False
+        )
         if service.infer_type == "real-time":
             for arg in ("weight", "cluster_id"):
                 val = getattr(parsed_args, arg)
@@ -677,7 +679,9 @@ class ShowService(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
 
-        service = client.find_service(parsed_args.service)
+        service = client.find_service(
+            parsed_args.service, ignore_missing=False
+        )
         data = client.get_service(service.id)
 
         display_columns, columns = _get_columns(data)
@@ -701,7 +705,7 @@ class StartService(command.Command):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
 
-        obj = client.find_service(parsed_args.service)
+        obj = client.find_service(parsed_args.service, ignore_missing=False)
         client.start_service(obj)
 
 
@@ -720,7 +724,7 @@ class StopService(command.Command):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
 
-        obj = client.find_service(parsed_args.service)
+        obj = client.find_service(parsed_args.service, ignore_missing=False)
         client.stop_service(obj)
 
 

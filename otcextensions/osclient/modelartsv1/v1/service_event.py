@@ -116,7 +116,9 @@ class ServiceEvents(command.Lister):
             if val or str(val) == "0":
                 query_params[arg] = val
 
-        service = client.find_service(parsed_args.service)
+        service = client.find_service(
+            parsed_args.service, ignore_missing=False
+        )
         data = client.service_events(service.id, **query_params)
 
         formatters = {

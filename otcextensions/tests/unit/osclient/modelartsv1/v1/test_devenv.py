@@ -407,7 +407,9 @@ class TestShowDevenvInstance(fakes.TestModelartsv1):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.find_devenv_instance.assert_called_with(self._devenv.id)
+        self.client.find_devenv_instance.assert_called_with(
+            self._devenv.id, ignore_missing=False
+        )
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -435,7 +437,7 @@ class TestShowDevenvInstance(fakes.TestModelartsv1):
         except Exception as e:
             self.assertEqual("Resource Not Found", str(e))
         self.client.find_devenv_instance.assert_called_with(
-            "unexist_devenv_instance"
+            "unexist_devenv_instance", ignore_missing=False
         )
 
 

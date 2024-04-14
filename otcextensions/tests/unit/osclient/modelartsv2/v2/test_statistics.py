@@ -19,6 +19,7 @@ from otcextensions.tests.unit.osclient.modelartsv2.v2 import fakes
 
 
 class TestDatasetStatistics(fakes.TestModelartsv2):
+    _dataset = fakes.FakeDataset.create_one()
     columns = (
         "deletion_stats",
         "is_data_spliting_enabled",
@@ -37,6 +38,7 @@ class TestDatasetStatistics(fakes.TestModelartsv2):
 
         self.cmd = dataset_statistics.DatasetStatistics(self.app, None)
 
+        self.client.find_dataset = mock.Mock(return_value=self._dataset)
         self.client.get_dataset_statistics = mock.Mock(
             return_value=self.object
         )
@@ -61,7 +63,7 @@ class TestDatasetStatistics(fakes.TestModelartsv2):
         ]
 
         verifylist = [
-            ("datasetId", "dataset-id"),
+            ("dataset", "dataset-id"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -69,7 +71,7 @@ class TestDatasetStatistics(fakes.TestModelartsv2):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.get_dataset_statistics.assert_called_with("dataset-id")
+        self.client.get_dataset_statistics.assert_called_with(self._dataset)
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -80,22 +82,20 @@ class TestDatasetStatistics(fakes.TestModelartsv2):
         ]
 
         verifylist = [
-            ("datasetId", "nonexisting-dataset-id"),
+            ("dataset", "nonexisting-dataset-id"),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         get_mock_result = exceptions.CommandError("Resource Not Found")
-        self.client.get_dataset_statistics = mock.Mock(
-            side_effect=get_mock_result
-        )
+        self.client.find_dataset = mock.Mock(side_effect=get_mock_result)
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
             self.assertEqual("Resource Not Found", str(e))
-        self.client.get_dataset_statistics.assert_called_with(
-            "nonexisting-dataset-id"
+        self.client.find_dataset.assert_called_with(
+            "nonexisting-dataset-id", ignore_missing=False
         )

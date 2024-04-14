@@ -428,7 +428,7 @@ class ShowDataset(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
 
-        data = client.find_dataset(parsed_args.dataset)
+        data = client.find_dataset(parsed_args.dataset, ignore_missing=False)
 
         display_columns, columns = _get_columns(data)
         data = utils.get_item_properties(data, columns, formatters=_formatters)
@@ -462,7 +462,9 @@ class UpdateDataset(command.ShowOne):
             if getattr(parsed_args, arg):
                 attrs[arg] = getattr(parsed_args, arg)
 
-        dataset = client.find_dataset(parsed_args.dataset)
+        dataset = client.find_dataset(
+            parsed_args.dataset, ignore_missing=False
+        )
 
         data = client.update_dataset(dataset.id, **attrs)
 
@@ -490,7 +492,7 @@ class DeleteDataset(command.Command):
         result = 0
         for name_or_id in parsed_args.dataset:
             try:
-                dataset = client.find_dataset(name_or_id)
+                dataset = client.find_dataset(name_or_id, ignore_missing=False)
                 client.delete_dataset(dataset.id)
             except Exception as e:
                 result += 1

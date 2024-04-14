@@ -225,7 +225,9 @@ class ShowDevenvInstance(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
 
-        return client.find_devenv_instance(parsed_args.instance)
+        return client.find_devenv_instance(
+            parsed_args.instance, ignore_missing=False
+        )
 
 
 class CreateDevenvInstance(command.ShowOne):

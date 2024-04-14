@@ -57,7 +57,9 @@ class ServiceLogs(command.Lister):
         if parsed_args.update_time:
             query_params["update_time"] = parsed_args.update_time
 
-        service = client.find_service(parsed_args.service)
+        service = client.find_service(
+            parsed_args.service, ignore_missing=False
+        )
         data = client.service_logs(service.id, **query_params)
 
         formatters = {

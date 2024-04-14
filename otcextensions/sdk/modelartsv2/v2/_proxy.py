@@ -77,7 +77,7 @@ class Proxy(proxy.Proxy):
         """
         return self._get(_dataset.Dataset, dataset)
 
-    def find_dataset(self, name_or_id, ignore_missing=False):
+    def find_dataset(self, name_or_id, ignore_missing=True):
         """Find a dataset by name or id.
 
         :param name_or_id: The name or ID of a dataset.
@@ -141,7 +141,7 @@ class Proxy(proxy.Proxy):
         dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._get(
             _dataset_statistics.DatasetStatistics,
-            datasetId=dataset.id,
+            uri_dataset_id=dataset.id,
             requires_id=False,
         )
 
@@ -160,7 +160,7 @@ class Proxy(proxy.Proxy):
         """
         dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._list(
-            _dataset_label.DatasetLabel, datasetId=dataset.id, **params
+            _dataset_label.DatasetLabel, uri_dataset_id=dataset.id, **params
         )
 
     def create_dataset_label(self, dataset, **attrs):
@@ -179,7 +179,7 @@ class Proxy(proxy.Proxy):
         """
         dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._create(
-            _dataset_label.DatasetLabel, datasetId=dataset.id, **attrs
+            _dataset_label.DatasetLabel, uri_dataset_id=dataset.id, **attrs
         )
 
     def update_dataset_labels(self, dataset, labels=[], **attrs):
@@ -198,7 +198,7 @@ class Proxy(proxy.Proxy):
         """
         dataset = self._get_resource(_dataset.Dataset, dataset)
         obj = self._get_resource(
-            _dataset_label.DatasetLabel, None, datasetId=dataset.id
+            _dataset_label.DatasetLabel, None, uri_dataset_id=dataset.id
         )
         labels = labels or attrs.get("labels")
         return obj.update_labels(self, labels)
@@ -220,7 +220,7 @@ class Proxy(proxy.Proxy):
         """
         dataset = self._get_resource(_dataset.Dataset, dataset)
         obj = self._get_resource(
-            _dataset_label.DatasetLabel, None, datasetId=dataset.id
+            _dataset_label.DatasetLabel, None, uri_dataset_id=dataset.id
         )
         labels = labels or attrs.get("labels")
         return obj.delete_labels(self, labels, delete_policy)
@@ -238,7 +238,7 @@ class Proxy(proxy.Proxy):
         """
         dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._list(
-            _dataset_version.DatasetVersion, datasetId=dataset.id
+            _dataset_version.DatasetVersion, uri_dataset_id=dataset.id
         )
 
     def create_dataset_version(self, dataset, **attrs):
@@ -258,7 +258,7 @@ class Proxy(proxy.Proxy):
         dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._create(
             _dataset_version.DatasetVersion,
-            datasetId=dataset.id,
+            uri_dataset_id=dataset.id,
             **attrs,
         )
 
@@ -277,7 +277,7 @@ class Proxy(proxy.Proxy):
         return self._get(
             _dataset_version.DatasetVersion,
             dataset_version,
-            datasetId=dataset.id,
+            uri_dataset_id=dataset.id,
         )
 
     def delete_dataset_version(
@@ -301,7 +301,7 @@ class Proxy(proxy.Proxy):
         return self._delete(
             _dataset_version.DatasetVersion,
             dataset_version,
-            datasetId=dataset.id,
+            uri_dataset_id=dataset.id,
             ignore_missing=ignore_missing,
         )
 
@@ -320,7 +320,7 @@ class Proxy(proxy.Proxy):
         dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._list(
             _dataset_sample.DatasetSample,
-            datasetId=dataset.id,
+            uri_dataset_id=dataset.id,
             **params,
             paginated=False,
         )
@@ -420,7 +420,7 @@ class Proxy(proxy.Proxy):
             attrs.update(samples=samples)
         dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._create(
-            _dataset_sample.DatasetSample, datasetId=dataset.id, **attrs
+            _dataset_sample.DatasetSample, uri_dataset_id=dataset.id, **attrs
         )
 
     def delete_dataset_samples(self, dataset, samples=[], delete_source=False):
@@ -455,7 +455,9 @@ class Proxy(proxy.Proxy):
         """
         dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._get(
-            _dataset_sample.DatasetSample, dataset_sample, datasetId=dataset.id
+            _dataset_sample.DatasetSample,
+            dataset_sample,
+            uri_dataset_id=dataset.id,
         )
 
     # ======== Dataset Import Task Management ========
@@ -474,7 +476,7 @@ class Proxy(proxy.Proxy):
         dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._list(
             _dataset_import_task.DatasetImportTask,
-            datasetId=dataset.id,
+            uri_dataset_id=dataset.id,
             **params,
         )
 
@@ -495,7 +497,7 @@ class Proxy(proxy.Proxy):
         dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._create(
             _dataset_import_task.DatasetImportTask,
-            datasetId=dataset.id,
+            uri_dataset_id=dataset.id,
             **attrs,
         )
 
@@ -515,7 +517,7 @@ class Proxy(proxy.Proxy):
         return self._get(
             _dataset_import_task.DatasetImportTask,
             import_task,
-            datasetId=dataset.id,
+            uri_dataset_id=dataset.id,
         )
 
     # ======== Dataset Export Task Management ========
@@ -535,7 +537,7 @@ class Proxy(proxy.Proxy):
         dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._list(
             _dataset_export_task.DatasetExportTask,
-            datasetId=dataset.id,
+            uri_dataset_id=dataset.id,
             **params,
         )
 
@@ -556,7 +558,7 @@ class Proxy(proxy.Proxy):
         dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._create(
             _dataset_export_task.DatasetExportTask,
-            datasetId=dataset.id,
+            uri_dataset_id=dataset.id,
             **attrs,
         )
 
@@ -577,7 +579,7 @@ class Proxy(proxy.Proxy):
         return self._get(
             _dataset_export_task.DatasetExportTask,
             export_task,
-            datasetId=dataset.id,
+            uri_dataset_id=dataset.id,
         )
 
     # ======== Dataset Synchronization Task Management ========
@@ -593,7 +595,9 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.modelartsv2.v2.dataset_sync.DatasetSync`.
         """
         dataset = self._get_resource(_dataset.Dataset, dataset)
-        return self._create(_dataset_sync.DatasetSync, datasetId=dataset.id)
+        return self._create(
+            _dataset_sync.DatasetSync, uri_dataset_id=dataset.id
+        )
 
     def get_dataset_sync_status(self, dataset):
         """Query Dataset sync task status.
@@ -606,5 +610,5 @@ class Proxy(proxy.Proxy):
         """
         dataset = self._get_resource(_dataset.Dataset, dataset)
         return self._get(
-            _dataset_sync.DatasetSync, "status", datasetId=dataset.id
+            _dataset_sync.DatasetSync, "status", uri_dataset_id=dataset.id
         )

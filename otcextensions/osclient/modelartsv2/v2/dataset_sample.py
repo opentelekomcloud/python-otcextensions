@@ -320,7 +320,9 @@ class AddDatasetSamples(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
 
-        dataset = client.find_dataset(parsed_args.dataset)
+        dataset = client.find_dataset(
+            parsed_args.dataset, ignore_missing=False
+        )
         sample = {}
         for arg in (
             # "name",
@@ -513,7 +515,9 @@ class ListDatasetSamples(command.Lister):
             if val or str(val) == "0":
                 query_params[arg] = val
 
-        dataset = client.find_dataset(parsed_args.dataset)
+        dataset = client.find_dataset(
+            parsed_args.dataset, ignore_missing=False
+        )
         data = client.dataset_samples(dataset.id, **query_params)
 
         formatters = {
@@ -521,7 +525,7 @@ class ListDatasetSamples(command.Lister):
             "Sample Time": cli_utils.UnixTimestampFormatter,
         }
 
-        table = (
+        return (
             self.columns,
             (
                 utils.get_dict_properties(
@@ -530,7 +534,6 @@ class ListDatasetSamples(command.Lister):
                 for s in data
             ),
         )
-        return table
 
 
 class ShowDatasetSample(command.ShowOne):
@@ -552,7 +555,9 @@ class ShowDatasetSample(command.ShowOne):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
-        dataset = client.find_dataset(parsed_args.dataset)
+        dataset = client.find_dataset(
+            parsed_args.dataset, ignore_missing=False
+        )
         obj = client.get_dataset_sample(dataset.id, parsed_args.sampleId)
 
         display_columns, columns = _get_columns(obj)
@@ -592,7 +597,9 @@ class DeleteDatasetSamples(command.ShowOne):
         if parsed_args.delete_source:
             delete_source = parsed_args.delete_source
 
-        dataset = client.find_dataset(parsed_args.dataset)
+        dataset = client.find_dataset(
+            parsed_args.dataset, ignore_missing=False
+        )
         obj = client.delete_dataset_samples(
             dataset.id, parsed_args.sampleId, delete_source
         )

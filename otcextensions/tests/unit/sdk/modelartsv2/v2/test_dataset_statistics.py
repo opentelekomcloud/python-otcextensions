@@ -25,7 +25,7 @@ class TestDatasetStatistics(base.TestCase):
         sot = dataset_statistics.DatasetStatistics()
 
         self.assertEqual(
-            "/datasets/%(datasetId)s/data-annotations/stats", sot.base_path
+            "/datasets/%(dataset_id)s/data-annotations/stats", sot.base_path
         )
         self.assertEqual(None, sot.resource_key)
         self.assertEqual(None, sot.resources_key)

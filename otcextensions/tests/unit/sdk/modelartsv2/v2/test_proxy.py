@@ -85,7 +85,7 @@ class TestDatasetSample(TestModelartsV2Proxy):
             method_args=["dataset-uuid"],
             expected_args=[],
             method_kwargs={"limit": 10},
-            expected_kwargs={"datasetId": "dataset-uuid", "limit": 10},
+            expected_kwargs={"uri_dataset_id": "dataset-uuid", "limit": 10},
         )
 
     def test_get_dataset_sample(self):
@@ -94,7 +94,7 @@ class TestDatasetSample(TestModelartsV2Proxy):
             dataset_sample.DatasetSample,
             method_args=["dataset-uuid", "sample-uuid"],
             expected_args=["sample-uuid"],
-            expected_kwargs={"datasetId": "dataset-uuid"},
+            expected_kwargs={"uri_dataset_id": "dataset-uuid"},
         )
 
     def test_add_dataset_samples(self):
@@ -114,7 +114,7 @@ class TestDatasetSample(TestModelartsV2Proxy):
                 "file_path": file_path,
             },
             expected_kwargs={
-                "datasetId": "dataset-uuid",
+                "uri_dataset_id": "dataset-uuid",
                 "samples": [sample],
             },
         )
@@ -143,7 +143,7 @@ class TestDatasetLabel(TestModelartsV2Proxy):
             self.proxy.dataset_labels,
             dataset_label.DatasetLabel,
             method_kwargs={"dataset": "dataset-id"},
-            expected_kwargs={"datasetId": "dataset-id"},
+            expected_kwargs={"uri_dataset_id": "dataset-id"},
         )
 
     def test_create_dataset_label(self):
@@ -156,7 +156,7 @@ class TestDatasetLabel(TestModelartsV2Proxy):
                 "arg2": "val2",
             },
             expected_kwargs={
-                "datasetId": "dataset-id",
+                "uri_dataset_id": "dataset-id",
                 "arg1": "val1",
                 "arg2": "val2",
             },
@@ -199,7 +199,7 @@ class TestDatasetExportTask(TestModelartsV2Proxy):
             self.proxy.dataset_export_tasks,
             dataset_export_task.DatasetExportTask,
             method_kwargs={"dataset": "dataset-id"},
-            expected_kwargs={"datasetId": "dataset-id"},
+            expected_kwargs={"uri_dataset_id": "dataset-id"},
         )
 
     def test_get_dataset_export_task(self):
@@ -208,7 +208,7 @@ class TestDatasetExportTask(TestModelartsV2Proxy):
             dataset_export_task.DatasetExportTask,
             method_args=["dataset-id", "task-id"],
             expected_args=["task-id"],
-            expected_kwargs={"datasetId": "dataset-id"},
+            expected_kwargs={"uri_dataset_id": "dataset-id"},
         )
 
     def test_create_dataset_export_task(self):
@@ -216,7 +216,7 @@ class TestDatasetExportTask(TestModelartsV2Proxy):
             self.proxy.create_dataset_export_task,
             dataset_export_task.DatasetExportTask,
             method_kwargs={"dataset": "dataset-id"},
-            expected_kwargs={"datasetId": "dataset-id"},
+            expected_kwargs={"uri_dataset_id": "dataset-id"},
         )
 
 
@@ -226,7 +226,7 @@ class TestDatasetImportTask(TestModelartsV2Proxy):
             self.proxy.dataset_import_tasks,
             dataset_import_task.DatasetImportTask,
             method_kwargs={"dataset": "dataset-id"},
-            expected_kwargs={"datasetId": "dataset-id"},
+            expected_kwargs={"uri_dataset_id": "dataset-id"},
         )
 
     def test_get_dataset_export_task(self):
@@ -235,7 +235,7 @@ class TestDatasetImportTask(TestModelartsV2Proxy):
             dataset_import_task.DatasetImportTask,
             method_args=["dataset-id", "task-id"],
             expected_args=["task-id"],
-            expected_kwargs={"datasetId": "dataset-id"},
+            expected_kwargs={"uri_dataset_id": "dataset-id"},
         )
 
     def test_create_dataset_import_task(self):
@@ -243,7 +243,7 @@ class TestDatasetImportTask(TestModelartsV2Proxy):
             self.proxy.create_dataset_import_task,
             dataset_import_task.DatasetImportTask,
             method_kwargs={"dataset": "dataset-id"},
-            expected_kwargs={"datasetId": "dataset-id"},
+            expected_kwargs={"uri_dataset_id": "dataset-id"},
         )
 
 
@@ -253,7 +253,7 @@ class TestDatasetVersion(TestModelartsV2Proxy):
             self.proxy.dataset_versions,
             dataset_version.DatasetVersion,
             method_kwargs={"dataset": "dataset-id"},
-            expected_kwargs={"datasetId": "dataset-id"},
+            expected_kwargs={"uri_dataset_id": "dataset-id"},
         )
 
     def test_get_dataset_version(self):
@@ -262,7 +262,7 @@ class TestDatasetVersion(TestModelartsV2Proxy):
             dataset_version.DatasetVersion,
             method_args=["dataset-id", "version-id"],
             expected_args=["version-id"],
-            expected_kwargs={"datasetId": "dataset-id"},
+            expected_kwargs={"uri_dataset_id": "dataset-id"},
         )
 
     def test_create_dataset_version(self):
@@ -270,7 +270,7 @@ class TestDatasetVersion(TestModelartsV2Proxy):
             self.proxy.create_dataset_version,
             dataset_version.DatasetVersion,
             method_kwargs={"dataset": "dataset-id"},
-            expected_kwargs={"datasetId": "dataset-id"},
+            expected_kwargs={"uri_dataset_id": "dataset-id"},
         )
 
     def test_delete_dataset_version(self):
@@ -280,7 +280,7 @@ class TestDatasetVersion(TestModelartsV2Proxy):
             False,
             method_args=["dataset-id", "version-id"],
             expected_args=["version-id"],
-            expected_kwargs={"datasetId": "dataset-id"},
+            expected_kwargs={"uri_dataset_id": "dataset-id"},
         )
 
 
@@ -291,7 +291,10 @@ class TestDatasetStatistics(TestModelartsV2Proxy):
             dataset_statistics.DatasetStatistics,
             method_args=[],
             method_kwargs={"dataset": "dataset-id"},
-            expected_kwargs={"datasetId": "dataset-id", "requires_id": False},
+            expected_kwargs={
+                "uri_dataset_id": "dataset-id",
+                "requires_id": False
+            },
         )
 
 
@@ -303,7 +306,7 @@ class TestDatasetSync(TestModelartsV2Proxy):
             method_args=[],
             expected_args=["status"],
             method_kwargs={"dataset": "dataset-id"},
-            expected_kwargs={"datasetId": "dataset-id"},
+            expected_kwargs={"uri_dataset_id": "dataset-id"},
         )
 
     def test_dataset_sync(self):
@@ -311,5 +314,5 @@ class TestDatasetSync(TestModelartsV2Proxy):
             self.proxy.dataset_sync,
             dataset_sync.DatasetSync,
             method_kwargs={"dataset": "dataset-id"},
-            expected_kwargs={"datasetId": "dataset-id"},
+            expected_kwargs={"uri_dataset_id": "dataset-id"},
         )

@@ -105,7 +105,9 @@ class ListDatasetVersions(command.Lister):
             if val or str(val) == "0":
                 query_params[arg] = val
 
-        dataset = client.find_dataset(parsed_args.dataset)
+        dataset = client.find_dataset(
+            parsed_args.dataset, ignore_missing=False
+        )
         data = client.dataset_versions(dataset.id, **query_params)
 
         formatters = {
@@ -199,7 +201,9 @@ class CreateDatasetVersion(command.ShowOne):
         client = self.app.client_manager.modelartsv2
 
         attrs = {}
-        dataset = client.find_dataset(parsed_args.dataset)
+        dataset = client.find_dataset(
+            parsed_args.dataset, ignore_missing=False
+        )
         if parsed_args.version_name:
             attrs["version_name"] = parsed_args.version_name
         if parsed_args.version_format:
@@ -247,7 +251,9 @@ class ShowDatasetVersion(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
 
-        dataset = client.find_dataset(parsed_args.dataset)
+        dataset = client.find_dataset(
+            parsed_args.dataset, ignore_missing=False
+        )
         obj = client.get_dataset_version(dataset.id, parsed_args.versionId)
 
         formatters = {
@@ -282,6 +288,8 @@ class DeleteDatasetVersion(command.Command):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
-        dataset = client.find_dataset(parsed_args.dataset)
+        dataset = client.find_dataset(
+            parsed_args.dataset, ignore_missing=False
+        )
 
         client.delete_dataset_version(dataset.id, parsed_args.versionId)

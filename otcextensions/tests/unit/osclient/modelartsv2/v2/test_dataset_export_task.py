@@ -19,28 +19,28 @@ from otcextensions.osclient.modelartsv2.v2 import dataset_export_task
 from otcextensions.tests.unit.osclient.modelartsv2.v2 import fakes
 
 _COLUMNS = (
-    "create_time",
-    "export_format",
-    "export_params",
-    "export_type",
-    "id",
-    "path",
-    "progress",
-    "status",
-    "task_id",
-    "update_time",
-    "version_format",
+    'created_at',
+    'export_format',
+    'export_params',
+    'export_type',
+    'id',
+    'path',
+    'progress',
+    'status',
+    'task_id',
+    'updated_at',
+    'version_format',
 )
 
 
-class TestDatasetExportTask(fakes.TestModelartsv2):
+class TestListDatasetExportTask(fakes.TestModelartsv2):
+    _dataset = fakes.FakeDataset.create_one()
     objects = fakes.FakeDatasetExportTask.create_multiple(3)
 
     column_list_headers = (
-        "task_id",
-        "path",
-        "status",
-        "progress",
+        "Task Id",
+        "Created At",
+        "Status",
     )
 
     data = []
@@ -49,25 +49,25 @@ class TestDatasetExportTask(fakes.TestModelartsv2):
         data.append(
             (
                 s.task_id,
-                s.path,
+                cli_utils.UnixTimestampFormatter(s.created_at),
                 s.status,
-                s.progress,
             )
         )
 
     def setUp(self):
-        super(TestDatasetExportTask, self).setUp()
+        super(TestListDatasetExportTask, self).setUp()
 
         self.cmd = dataset_export_task.ListDatasetExportTasks(self.app, None)
 
+        self.client.find_dataset = mock.Mock(return_value=self._dataset)
         self.client.dataset_export_tasks = mock.Mock()
         self.client.api_mock = self.client.dataset_export_tasks
 
     def test_list(self):
-        arglist = ["dataset-uuid"]
+        arglist = ["dataset-id"]
 
         verifylist = [
-            ("datasetId", "dataset-uuid"),
+            ("dataset", "dataset-id"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -79,14 +79,17 @@ class TestDatasetExportTask(fakes.TestModelartsv2):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.api_mock.assert_called_with(dataset_id="dataset-uuid")
+        self.client.find_dataset.assert_called_with(
+            "dataset-id", ignore_missing=False
+        )
+        self.client.api_mock.assert_called_with(self._dataset)
 
         self.assertEqual(self.column_list_headers, columns)
         self.assertEqual(self.data, list(data))
 
     def test_list_args(self):
         arglist = [
-            "test-id",
+            "dataset-id",
             "--export-type",
             "0",
             "--limit",
@@ -96,7 +99,7 @@ class TestDatasetExportTask(fakes.TestModelartsv2):
         ]
 
         verifylist = [
-            ("datasetId", "test-id"),
+            ("dataset", "dataset-id"),
             ("export_type", 0),
             ("limit", 1),
             ("offset", 2),
@@ -111,126 +114,25 @@ class TestDatasetExportTask(fakes.TestModelartsv2):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
+        self.client.find_dataset.assert_called_with(
+            "dataset-id", ignore_missing=False
+        )
         self.client.api_mock.assert_called_with(
-            dataset_id="test-id", limit=1, offset=2, export_type=0
+            self._dataset, limit=1, offset=2, export_type=0
         )
-
-
-class TestCreateDataExportTask(fakes.TestModelartsv2):
-    _data = fakes.FakeDatasetExportTask.create_one()
-    columns = _COLUMNS
-    data = fakes.gen_data(_data, columns)
-
-    def setUp(self):
-        super(TestCreateDataExportTask, self).setUp()
-
-        self.cmd = dataset_export_task.CreateDatasetExportTask(self.app, None)
-
-        self.client.create_dataset_export_task = mock.Mock(
-            return_value=self._data
-        )
-
-    def test_create(self):
-        arglist = [
-            "--dataset-id",
-            "0",
-            "--path",
-            "1",
-            "--version-id",
-            "2",
-            "--work-path",
-            "3",
-            "--work-path-type",
-            "4",
-            "--data-sources",
-            "5",
-            "--labels",
-            "6",
-            "--description",
-            "7",
-            "--import-annotations",
-            "8",
-            "--label-format",
-            "9",
-            "--workspace-id",
-            "10",
-            "--data-type",
-            "11",
-            "--data-path",
-            "12",
-            "--name",
-            "13",
-            "--type",
-            "14",
-            "--property",
-            "15",
-            "--label-type",
-            "16",
-            "--text-label-separator",
-            "17",
-            "--text-sample-separator",
-            "18",
-            "--error-code",
-            "19",
-        ]
-        verifylist = [
-            ("dataset_id", "0"),
-            ("path", "1"),
-            ("version_id", "2"),
-            ("work_path", "3"),
-            ("work_path_type", "4"),
-            ("data_sources", "5"),
-            ("labels", "6"),
-            ("description", "7"),
-            ("import_annotations", "8"),
-            ("label_format", "9"),
-            ("workspace_id", "10"),
-            ("data_type", "11"),
-            ("data_path", "12"),
-            ("name", "13"),
-            ("type", "14"),
-            ("property", "15"),
-            ("label_type", "16"),
-            ("text_label_separator", "17"),
-            ("text_sample_separator", "18"),
-            ("error_code", "19"),
-        ]
-        # Verify cm is triggereg with default parameters
-        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-
-        # Trigger the action
-        columns, data = self.cmd.take_action(parsed_args)
-        attrs = {
-            "work_path": "3",
-            "work_path_type": "4",
-            "labels": "6",
-            "description": "7",
-            "import_annotations": "8",
-            "label_format": "9",
-            "workspace_id": "10",
-            "data_type": "11",
-            "data_path": "12",
-            "name": "13",
-            "type": "14",
-            "property": "15",
-            "label_type": "16",
-            "text_sample_separator": "18",
-            "text_label_separator": "17",
-            "dataset_id": "0",
-            "error_code": "19",
-            "path": "1",
-        }
-        self.client.create_dataset_export_task.assert_called_with(**attrs)
-        self.assertEqual(self.columns, columns)
-        self.assertEqual(self.data, data)
 
 
 class TestShowDatasetExportTask(fakes.TestModelartsv2):
-    formatters = {"export_params": cli_utils.YamlFormat}
+    _dataset = fakes.FakeDataset.create_one()
     columns = _COLUMNS
 
     object = fakes.FakeDatasetExportTask.create_one()
 
+    formatters = {
+        "created_at": cli_utils.UnixTimestampFormatter,
+        "updated_at": cli_utils.UnixTimestampFormatter,
+        "export_params": cli_utils.YamlFormat,
+    }
     data = fakes.gen_data(object, columns, formatters)
 
     def setUp(self):
@@ -238,6 +140,7 @@ class TestShowDatasetExportTask(fakes.TestModelartsv2):
 
         self.cmd = dataset_export_task.ShowDatasetExportTask(self.app, None)
 
+        self.client.find_dataset = mock.Mock(return_value=self._dataset)
         self.client.get_dataset_export_task = mock.Mock(
             return_value=self.object
         )
@@ -260,7 +163,7 @@ class TestShowDatasetExportTask(fakes.TestModelartsv2):
         arglist = ["dataset-id", "task-id"]
 
         verifylist = [
-            ("datasetId", "dataset-id"),
+            ("dataset", "dataset-id"),
             ("taskId", "task-id"),
         ]
 
@@ -269,11 +172,13 @@ class TestShowDatasetExportTask(fakes.TestModelartsv2):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        attrs = {
-            "dataset_id": "dataset-id",
-            "task_id": "task-id",
-        }
-        self.client.get_dataset_export_task.assert_called_with(**attrs)
+
+        self.client.find_dataset.assert_called_with(
+            "dataset-id", ignore_missing=False
+        )
+        self.client.get_dataset_export_task.assert_called_with(
+            self._dataset, "task-id"
+        )
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)

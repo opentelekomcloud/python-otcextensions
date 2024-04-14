@@ -14,20 +14,18 @@ from openstack import resource
 
 
 class DatasetSync(resource.Resource):
-    base_path = "/datasets/%(datasetId)s/sync-data"
+    base_path = "/datasets/%(uri_dataset_id)s/sync-data"
 
     allow_create = True
     allow_fetch = True
-
-    # Resource Key
-    #: Dataset ID.
-    datasetId = resource.URI("datasetId")
 
     # Properties
     #: Number of added samples.
     add_sample_count = resource.Body("add_sample_count", type=int)
     #: Task creation time.
     create_time = resource.Body("create_time", type=int)
+    #: Resource URI Dataset ID.
+    uri_dataset_id = resource.URI("uri_dataset_id")
     #: Dataset ID.
     dataset_id = resource.Body("dataset_id")
     #: Number of deleted samples.

@@ -25,7 +25,7 @@ class TestTrainingJobVersion(base.TestCase):
     def test_basic(self):
         sot = training_job_version.TrainingJobVersion()
 
-        self.assertEqual("/training-jobs/%(jobId)s/versions", sot.base_path)
+        self.assertEqual("/training-jobs/%(job_id)s/versions", sot.base_path)
         self.assertEqual("versions", sot.resources_key)
         self.assertEqual(None, sot.resource_key)
 
@@ -40,9 +40,11 @@ class TestTrainingJobVersion(base.TestCase):
 
         for key, value in EXAMPLE.items():
             if key == "create_time":
-                self.assertEqual(EXAMPLE["create_time"], sot.created_at)
+                self.assertEqual(EXAMPLE[key], sot.created_at)
+            elif key == "job_desc":
+                self.assertEqual(EXAMPLE[key], sot.job_description)
             elif key == "start_time":
-                self.assertEqual(EXAMPLE["start_time"], sot.started_at)
+                self.assertEqual(EXAMPLE[key], sot.started_at)
             elif key == "system_metric_list":
                 updated_sot_attrs = {
                     "cpuUsage": "cpu_usage",

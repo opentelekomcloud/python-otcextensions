@@ -30,7 +30,7 @@ class TestDatasetLabel(base.TestCase):
         sot = dataset_label.DatasetLabel()
 
         self.assertEqual(
-            "/datasets/%(datasetId)s/data-annotations/labels",
+            "/datasets/%(dataset_id)s/data-annotations/labels",
             sot.base_path,
         )
         self.assertEqual(None, sot.resource_key)
@@ -70,7 +70,7 @@ class TestDatasetLabel(base.TestCase):
                 },
             }
         ]
-        sot = dataset_label.DatasetLabel(datasetId=dataset_id)
+        sot = dataset_label.DatasetLabel(dataset_id=dataset_id)
         response = mock.Mock()
         response.status_code = 200
         response.json.return_value = {"success": True}
@@ -78,14 +78,14 @@ class TestDatasetLabel(base.TestCase):
         self.sess.put.return_value = response
         rt = sot.update_labels(self.sess, labels)
         self.sess.put.assert_called_with(
-            sot.base_path % {"datasetId": dataset_id}, json={"labels": labels}
+            sot.base_path % {"dataset_id": dataset_id}, json={"labels": labels}
         )
         self.assertEqual(rt, sot)
 
     def test_delete_labels(self):
         dataset_id = "dataset-id"
         labels = [{"name": "Cat"}]
-        sot = dataset_label.DatasetLabel(datasetId=dataset_id)
+        sot = dataset_label.DatasetLabel(dataset_id=dataset_id)
         response = mock.Mock()
         response.status_code = 200
         response.json.return_value = {"success": True}
@@ -93,7 +93,9 @@ class TestDatasetLabel(base.TestCase):
         self.sess.post.return_value = response
         rt = sot.delete_labels(self.sess, labels, 2)
         self.sess.post.assert_called_with(
-            utils.urljoin(sot.base_path % {"datasetId": dataset_id}, "delete"),
+            utils.urljoin(
+                sot.base_path % {"dataset_id": dataset_id}, "delete"
+            ),
             json={"labels": labels},
             params={"delete_policy": 2},
         )

@@ -168,7 +168,7 @@ class TestShowBuiltInModel(fakes.TestModelartsv1):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
         self.client.find_builtin_model.assert_called_with(
-            self._model.model_name
+            self._model.model_name, ignore_missing=False
         )
 
         self.assertEqual(self.columns, columns)

@@ -24,7 +24,9 @@ class TestDatasetImportTask(base.TestCase):
     def test_basic(self):
         sot = dataset_import_task.DatasetImportTask()
 
-        self.assertEqual("/datasets/%(datasetId)s/import-tasks", sot.base_path)
+        self.assertEqual(
+            "/datasets/%(uri_dataset_id)s/import-tasks", sot.base_path
+        )
         self.assertEqual(None, sot.resource_key)
         self.assertEqual("import_tasks", sot.resources_key)
 
@@ -47,4 +49,9 @@ class TestDatasetImportTask(base.TestCase):
         sot = dataset_import_task.DatasetImportTask(**EXAMPLE)
 
         for key, value in EXAMPLE.items():
-            self.assertEqual(getattr(sot, key), value)
+            if key == 'update_ms':
+                self.assertEqual(sot.updated_at, value)
+            elif key == 'create_time':
+                self.assertEqual(sot.created_at, value)
+            else:
+                self.assertEqual(getattr(sot, key), value)

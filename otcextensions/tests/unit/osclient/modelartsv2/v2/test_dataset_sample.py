@@ -101,7 +101,9 @@ class TestAddDatasetSamples(fakes.TestModelartsv2):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.find_dataset.assert_called_with("dataset-id")
+        self.client.find_dataset.assert_called_with(
+            "dataset-id", ignore_missing=False
+        )
         self.client.add_dataset_samples.assert_called_with(
             self._dataset.id,
             file_path="1",
@@ -169,7 +171,9 @@ class TestListDatasetSamples(fakes.TestModelartsv2):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_dataset.assert_called_with("dataset-name")
+        self.client.find_dataset.assert_called_with(
+            "dataset-name", ignore_missing=False
+        )
         self.client.api_mock.assert_called_with(self.dataset.id)
 
         self.assertEqual(self.column_list_headers, columns)
@@ -302,7 +306,9 @@ class TestShowDatasetSample(fakes.TestModelartsv2):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.find_dataset.assert_called_with("dataset-name")
+        self.client.find_dataset.assert_called_with(
+            "dataset-name", ignore_missing=False
+        )
         self.client.get_dataset_sample.assert_called_with(
             self.dataset.id, "sample-id"
         )
@@ -375,7 +381,9 @@ class TestDeleteDatasetSample(fakes.TestModelartsv2):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.find_dataset.assert_called_with("dataset-name")
+        self.client.find_dataset.assert_called_with(
+            "dataset-name", ignore_missing=False
+        )
         self.client.delete_dataset_samples.assert_called_with(
             self.dataset.id, ["sample1-id", "sample2-id"], True
         )

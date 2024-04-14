@@ -19,7 +19,6 @@ EXAMPLE = examples.TRAINING_JOB
 
 EXAMPLE_CREATE = {
     "job_name": "TestModelArtsJob3",
-    "job_desc": "This is a ModelArts job",
     "workspace_id": "0",
     "config": {
         "worker_server_num": 1,
@@ -79,6 +78,8 @@ class TestTrainingjob(base.TestCase):
         for key, value in EXAMPLE.items():
             if key == "create_time":
                 self.assertEqual(sot.created_at, EXAMPLE[key])
+            elif key == "job_desc":
+                self.assertEqual(sot.job_description, EXAMPLE[key])
             else:
                 assert_attributes_equal(self, getattr(sot, key), value)
 

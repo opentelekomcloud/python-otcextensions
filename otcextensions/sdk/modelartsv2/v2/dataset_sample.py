@@ -206,7 +206,7 @@ class SampleRespSpec(resource.Resource):
 
 
 class DatasetSample(SampleSpec):
-    base_path = "/datasets/%(datasetId)s/data-annotations/samples"
+    base_path = "/datasets/%(dataset_id)s/data-annotations/samples"
 
     resources_key = "samples"
 
@@ -233,9 +233,9 @@ class DatasetSample(SampleSpec):
     allow_list = True
     allow_fetch = True
 
+    # Properties
     #: Dataset ID.
-    datasetId = resource.URI("datasetId")
-
+    dataset_id = resource.URI("dataset_id")
     #: Whether to directly import to the final result.
     final_annotation = resource.Body("final_annotation", type=bool)
     #: Label format.
@@ -259,7 +259,7 @@ class DatasetSample(SampleSpec):
     ):
         """Delete dataset samples"""
         url = utils.urljoin(
-            self.base_path % {"datasetId": dataset_id}, "delete"
+            self.base_path % {"dataset_id": dataset_id}, "delete"
         )
         json_body = {"samples": samples}
         if delete_source:

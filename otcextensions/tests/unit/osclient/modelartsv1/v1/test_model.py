@@ -142,9 +142,6 @@ class TestCreateModel(fakes.TestModelartsv1):
             "model_type": "TensorFlow",
         }
         self.client.create_model.assert_called_with(**attrs)
-        # self.client.wait_for_cluster.assert_called_with(
-        #    self._cluster.id, wait=self.default_timeout)
-        # self.client.find_model.assert_called_with(self._model.id)
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
 
@@ -188,7 +185,9 @@ class TestShowModel(fakes.TestModelartsv1):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.find_model.assert_called_with(self._model.id)
+        self.client.find_model.assert_called_with(
+            self._model.id, ignore_missing=False
+        )
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -209,7 +208,9 @@ class TestShowModel(fakes.TestModelartsv1):
             self.cmd.take_action(parsed_args)
         except Exception as e:
             self.assertEqual("Resource Not Found", str(e))
-        self.client.find_model.assert_called_with("unexist_ma_model")
+        self.client.find_model.assert_called_with(
+            "unexist_ma_model", ignore_missing=False
+        )
 
 
 class TestDeleteModel(fakes.TestModelartsv1):
