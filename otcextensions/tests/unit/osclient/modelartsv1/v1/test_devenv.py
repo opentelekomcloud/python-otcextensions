@@ -115,7 +115,7 @@ class TestListDevenvInstances(fakes.TestModelartsv1):
             ("de_type", "1"),
             ("provision_type", "2"),
             ("status", "RUNNING"),
-            ("sortby", "name"),
+            ("sort_by", "name"),
             ("order", "asc"),
             ("offset", 6),
             ("limit", 7),
@@ -143,7 +143,7 @@ class TestListDevenvInstances(fakes.TestModelartsv1):
             pool_id="10",
             provision_type="2",
             show_self=True,
-            sortby="name",
+            sort_by="name",
             status="RUNNING",
             workspace_id="8",
         )

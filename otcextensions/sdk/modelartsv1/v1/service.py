@@ -103,7 +103,7 @@ class ConfigSpec(resource.Resource):
     #: Model version.
     model_version = resource.Body("model_version")
     #: Inference path of a batch job.
-    req_uri = resource.Body("req_uri")
+    request_uri = resource.Body("req_uri")
     #: Whether auto scaling is enabled.
     scaling = resource.Body("scaling", type=bool)
     #: Model source.

@@ -118,7 +118,6 @@ class ListDevenvInstances(command.Lister):
         parser.add_argument(
             "--sort-by",
             metavar="<sort_by>",
-            dest="sortby",
             type=lambda s: s.lower(),
             choices=["name", "creation_timestamp"],
             help=_(
@@ -177,7 +176,7 @@ class ListDevenvInstances(command.Lister):
             "de_type",
             "provision_type",
             "status",
-            "sortby",
+            "sort_by",
             "order",
             "offset",
             "limit",

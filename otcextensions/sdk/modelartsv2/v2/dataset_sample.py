@@ -111,7 +111,7 @@ class WorkerSpec(resource.Resource):
 
 class HardDetailSpec(resource.Resource):
     #: Alias.
-    alo_name = resource.Body("alo_name")
+    alias_name = resource.Body("alo_name")
     #: Reason ID.
     id = resource.Body("id", type=int)
     #: Reason description.

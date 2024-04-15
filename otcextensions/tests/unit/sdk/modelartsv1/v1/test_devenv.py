@@ -56,6 +56,24 @@ class TestDevenv(base.TestCase):
         self.assertTrue(sot.allow_delete)
         self.assertTrue(sot.allow_commit)
 
+        self.assertDictEqual(
+            {
+                "ai_project": "ai_project_id",
+                "de_type": "de_type",
+                "pool_id": "pool_id",
+                "provision_type": "provision_type",
+                "limit": "limit",
+                "marker": "marker",
+                "offset": "offset",
+                "order": "order",
+                "show_self": "show_self",
+                "sort_by": "sortby",
+                "status": "status",
+                "workspace_id": "workspace_id",
+            },
+            sot._query_mapping._mapping,
+        )
+
     def test_make_it(self):
         sot = devenv.Devenv(**EXAMPLE)
         updated_sot_attrs = {

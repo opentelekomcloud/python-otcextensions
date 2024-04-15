@@ -237,18 +237,19 @@ class Devenv(resource.Resource):
     resources_key = "instances"
 
     _query_mapping = resource.QueryParameters(
-        "de_type",
-        "provision_type",
-        "status",
-        "sortby",
-        "order",
-        "workspace_id",
-        "pool_id",
         "ai_project",
+        "de_type",
         "limit",
+        "order",
+        "pool_id",
+        "provision_type",
         "offset",
         "show_self",
+        "sort_by",
+        "status",
+        "workspace_id",
         ai_project="ai_project_id",
+        sort_by="sortby",
     )
 
     allow_create = True
