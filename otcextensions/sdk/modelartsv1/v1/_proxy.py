@@ -158,8 +158,10 @@ class Proxy(proxy.Proxy):
         :returns: a generator of
             :class:`~otcextensions.sdk.modelartsv1.v1.devenv.Devenv` instances.
         """
+        if not params.get("dev_env_type"):
+            params.update(dev_env_type="Notebook")
         if params.get("limit"):
-            params["paginated"] = False
+            params.update(paginated=False)
         return self._list(_devenv.Devenv, **params)
 
     def create_devenv_instance(self, **attrs):

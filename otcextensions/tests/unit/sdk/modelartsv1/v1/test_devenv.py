@@ -59,7 +59,7 @@ class TestDevenv(base.TestCase):
         self.assertDictEqual(
             {
                 "ai_project": "ai_project_id",
-                "de_type": "de_type",
+                "dev_env_type": "de_type",
                 "pool_id": "pool_id",
                 "provision_type": "provision_type",
                 "limit": "limit",
@@ -79,8 +79,12 @@ class TestDevenv(base.TestCase):
         updated_sot_attrs = {
             "creation_timestamp": "created_at",
             "latest_update_timestamp": "updated_at",
+            "de_type": "dev_env_type",
         }
-
+        self.assertEqual(
+            sot.profile.dev_env_type, EXAMPLE["profile"]["de_type"]
+        )
+        del EXAMPLE["profile"]["de_type"]
         for key, value in EXAMPLE.items():
             if key in updated_sot_attrs.keys():
                 self.assertEqual(

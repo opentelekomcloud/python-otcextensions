@@ -95,8 +95,8 @@ class ListDevenvInstances(command.Lister):
     def get_parser(self, prog_name):
         parser = super(ListDevenvInstances, self).get_parser(prog_name)
         parser.add_argument(
-            "--de-type",
-            metavar="<de_type>",
+            "--dev-env-type",
+            metavar="<dev_env_type>",
             default="Notebook",
             help=_(
                 "Development environment type. Only Notebook is supported. "
@@ -173,7 +173,7 @@ class ListDevenvInstances(command.Lister):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv1
         args_list = (
-            "de_type",
+            "dev_env_type",
             "provision_type",
             "status",
             "sort_by",

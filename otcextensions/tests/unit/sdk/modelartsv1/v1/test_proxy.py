@@ -100,7 +100,11 @@ class TestDevenv(TestModelartsV1Proxy):
             self.proxy.devenv_instances,
             devenv.Devenv,
             method_kwargs={"limit": 10},
-            expected_kwargs={"limit": 10, "paginated": False},
+            expected_kwargs={
+                "dev_env_type": "Notebook",
+                "limit": 10,
+                "paginated": False,
+            },
         )
 
     def test_get_devenv_instance(self):

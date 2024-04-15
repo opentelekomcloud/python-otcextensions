@@ -69,7 +69,7 @@ class TestListDevenvInstances(fakes.TestModelartsv1):
         arglist = []
 
         verifylist = [
-            ("de_type", "Notebook"),
+            ("dev_env_type", "Notebook"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -81,14 +81,14 @@ class TestListDevenvInstances(fakes.TestModelartsv1):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.api_mock.assert_called_with(de_type="Notebook")
+        self.client.api_mock.assert_called_with(dev_env_type="Notebook")
 
         self.assertEqual(self.column_list_headers, columns)
         self.assertEqual(self.data, list(data))
 
     def test_list_args(self):
         arglist = [
-            "--de-type",
+            "--dev-env-type",
             "1",
             "--provision-type",
             "2",
@@ -112,7 +112,7 @@ class TestListDevenvInstances(fakes.TestModelartsv1):
         ]
 
         verifylist = [
-            ("de_type", "1"),
+            ("dev_env_type", "1"),
             ("provision_type", "2"),
             ("status", "RUNNING"),
             ("sort_by", "name"),
@@ -136,7 +136,7 @@ class TestListDevenvInstances(fakes.TestModelartsv1):
 
         self.client.api_mock.assert_called_with(
             ai_project="9",
-            de_type="1",
+            dev_env_type="1",
             limit=7,
             offset=6,
             order="asc",

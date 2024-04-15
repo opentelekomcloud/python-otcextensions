@@ -167,7 +167,7 @@ class QueuingInfoSpec(resource.Resource):
     #: Time when an instance starts queuing.
     begin_timestamp = resource.Body("begin_timestamp", type=int)
     #: Development environment type.
-    de_type = resource.Body("de_type")
+    dev_env_type = resource.Body("de_type")
     #: Time when an instance completes queuing.
     end_timestamp = resource.Body("end_timestamp", type=int)
     #: Instance flavor.
@@ -216,7 +216,7 @@ class ProvisionSpec(resource.Resource):
 
 class ProfileSpec(resource.Resource):
     #: Development environment type.
-    de_type = resource.Body("de_type")
+    dev_env_type = resource.Body("de_type")
     #: Configuration description.
     description = resource.Body("description")
     #: Hardware, which can be CPU, GPU.
@@ -238,7 +238,7 @@ class Devenv(resource.Resource):
 
     _query_mapping = resource.QueryParameters(
         "ai_project",
-        "de_type",
+        "dev_env_type",
         "limit",
         "order",
         "pool_id",
@@ -248,6 +248,7 @@ class Devenv(resource.Resource):
         "sort_by",
         "status",
         "workspace_id",
+        dev_env_type="de_type",
         ai_project="ai_project_id",
         sort_by="sortby",
     )
