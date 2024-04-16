@@ -36,6 +36,7 @@ Open Telekom Cloud Resources
    Software Repository for Containers Service (SWR) <swr/index>
    Virtual Private Cloud (VPC) <vpc/index>
    Web Application Firewall (WAF) <waf/index>
+   Tag Management Service (TMS) <tms/index>
 
 Every resource which is used within the proxy methods have own attributes.
 Those attributes define the behavior of the resource which can be a cluster

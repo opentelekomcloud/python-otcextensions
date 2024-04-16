@@ -36,6 +36,7 @@ Service Proxies
    Volume Backup Service (VBS) <volume_backup>
    Virtual Private Cloud (VPC) <vpc>
    Web Application Firewall (WAF) <waf>
+   Tag Management Service (TMS) <tms>
 
 .. _service-proxies:
 

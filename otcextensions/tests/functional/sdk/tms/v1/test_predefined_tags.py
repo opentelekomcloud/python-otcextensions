@@ -45,9 +45,6 @@ class TestPredefinedTag(base.BaseFunctionalTest):
                 'value': 'value1'
             }
         }
-        value = {
-            'key': 'key1'
-        }
         self.tms.update_predefined_tag(**attrs)
 
     def test_delete_tag(self):
