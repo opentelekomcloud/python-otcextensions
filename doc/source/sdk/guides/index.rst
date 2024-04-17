@@ -24,6 +24,7 @@ Open Telekom Cloud related User Guides
    kms
    lts
    mrs
+   modelarts
    nat
    rds
    sfsturbo

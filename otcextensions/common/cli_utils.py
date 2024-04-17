@@ -10,11 +10,44 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-'''ModelArts devenv v1 action implementations'''
-import yaml
+"""Formatters for cli outputs"""
 import datetime
 
+import yaml
 from cliff import columns as cliff_columns
+
+
+class literal(str):
+    pass
+
+
+def literal_presenter(dumper, data):
+    return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='>')
+
+
+yaml.add_representer(literal, literal_presenter)
+
+
+def scrub_dict(d):
+    new_dict = {}
+    for k, v in d.items():
+        if isinstance(v, dict):
+            v = scrub_dict(v)
+        if v not in ('', None, {}):
+            new_dict[k] = v
+    return new_dict
+
+
+def wrap_text(s):
+    length = 100
+    if isinstance(s, str) and len(s) >= length:
+        return '\n'.join([s[i:i + length] for i in range(0, len(s), length)])
+    return s
+
+
+class WrapText(cliff_columns.FormattableColumn):
+    def human_readable(self):
+        return wrap_text(self._value)
 
 
 class UnixTimestampFormatter(cliff_columns.FormattableColumn):
