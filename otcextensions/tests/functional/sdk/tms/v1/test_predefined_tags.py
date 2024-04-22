@@ -69,4 +69,3 @@ class TestPredefinedTag(base.BaseFunctionalTest):
             'value': 'value1'
         }
         self.tms.delete_predefined_tag(**attrs)
-

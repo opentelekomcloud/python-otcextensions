@@ -31,7 +31,8 @@ class Proxy(proxy.Proxy):
 
 
         :returns: A generator of backup
-            :class:`~otcextensions.sdk.tms.v1.predefined_tag.PredefinedTag` instances
+            :class:`~otcextensions.sdk.tms.v1.predefined_tag.PredefinedTag`
+            instances
         """
         return self._list(_predefined_tag.PredefinedTag, **query)
 
