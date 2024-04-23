@@ -33,9 +33,12 @@ class TestTmsPredefinedTag(TestTmsProxy):
                 'key': 'key',
                 'value': 'value'
             },
+            expected_kwargs={
+                'key': 'key',
+                'value': 'value'
+            },
             expected_args=[
                 self.proxy,
-
             ]
         )
 
@@ -47,6 +50,10 @@ class TestTmsPredefinedTag(TestTmsProxy):
                 'key': 'key',
                 'value': 'value'
             },
+            expected_kwargs={
+                        'key': 'key',
+                        'value': 'value'
+            },
             expected_args=[
                 self.proxy,
 
@@ -56,13 +63,14 @@ class TestTmsPredefinedTag(TestTmsProxy):
     def test_predefined_tag_update(self):
         self.verify_update(self.proxy.update_predefined_tag,
                            predefined_tag.PredefinedTag,
+                           method_args=[],
                            method_kwargs={
                                "new_tag": {
                                     "key": "key",
                                     "value": "value"},
                                "old_tag": {
-                                    'key': 'key',
-                                    'value': 'new_value'
+                                   'key': 'key',
+                                   'value': 'new_value'
                                }
                            },
                            expected_kwargs={
