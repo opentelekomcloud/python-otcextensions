@@ -23,11 +23,13 @@ class TestTmsProxy(test_proxy_base.TestProxyBase):
 
 class TestTmsPredefinedTag(TestTmsProxy):
     def test_predefined_tags(self):
-        self.verify_list(self.proxy.predefined_tags, predefined_tag.PredefinedTag)
+        self.verify_list(self.proxy.predefined_tags,
+                         predefined_tag.PredefinedTag)
 
     def test_predefined_tag_create(self):
         self._verify(
-            mock_method='otcextensions.sdk.tms.v1.predefined_tag.PredefinedTag.add_tag',
+            mock_method='otcextensions.sdk.tms.v1.predefined_tag.'
+                        'PredefinedTag.add_tag',
             test_method=self.proxy.create_predefined_tag,
             method_kwargs={
                 'key': 'key',
@@ -44,15 +46,16 @@ class TestTmsPredefinedTag(TestTmsProxy):
 
     def test_predefined_tag_delete(self):
         self._verify(
-            mock_method='otcextensions.sdk.tms.v1.predefined_tag.PredefinedTag.delete_tag',
+            mock_method='otcextensions.sdk.tms.v1.predefined_tag.'
+                        'PredefinedTag.delete_tag',
             test_method=self.proxy.delete_predefined_tag,
             method_kwargs={
                 'key': 'key',
                 'value': 'value'
             },
             expected_kwargs={
-                        'key': 'key',
-                        'value': 'value'
+                'key': 'key',
+                'value': 'value'
             },
             expected_args=[
                 self.proxy,
