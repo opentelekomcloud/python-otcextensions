@@ -69,8 +69,8 @@ class TestTmsPredefinedTag(TestTmsProxy):
                            method_args=[],
                            method_kwargs={
                                "new_tag": {
-                                    "key": "key",
-                                    "value": "value"},
+                                   "key": "key",
+                                   "value": "value"},
                                "old_tag": {
                                    'key': 'key',
                                    'value': 'new_value'
