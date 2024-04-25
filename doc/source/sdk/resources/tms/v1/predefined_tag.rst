@@ -9,5 +9,5 @@ The Predefined Tag Class
 The ``PredefinedTag`` class inherits from
 :class:`~otcextensions.sdk.sdk_resource.Resource`.
 
-.. autoclass:: otcextensions.sdk.vpc.v1.predefined_tag.PredefinedTag
+.. autoclass:: otcextensions.sdk.tms.v1.predefined_tag.PredefinedTag
    :members:
