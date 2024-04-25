@@ -38,6 +38,7 @@ Service Proxies
    Virtual Private Cloud (VPC) <vpc>
    VPC Endpoint (VPCEP) <vpcep>
    Web Application Firewall (WAF) <waf>
+   Tag Management Service (TMS) <tms>
 
 .. _service-proxies:
 

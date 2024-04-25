@@ -38,6 +38,7 @@ Open Telekom Cloud Resources
    Virtual Private Cloud (VPC) <vpc/index>
    VPC Endpoint (VPCEP) <vpcep/index>
    Web Application Firewall (WAF) <waf/index>
+   Tag Management Service (TMS) <tms/index>
 
 Every resource which is used within the proxy methods have own attributes.
 Those attributes define the behavior of the resource which can be a cluster
