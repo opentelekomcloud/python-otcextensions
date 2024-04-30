@@ -57,7 +57,13 @@ class Key(_base.Resource):
     error_msg = resource.Body('error_msg')
 
     def fetch(self, session, requires_id=None,
-              base_path=None, error_message=None):
+              base_path=None, error_message=None,
+              skip_cache=False,
+              *,
+              resource_response_key=None,
+              microversion=None,
+              **params,
+              ):
         if not self.allow_fetch:
             raise exceptions.MethodNotSupported(self, "fetch")
         url = self.get_path
