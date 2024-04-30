@@ -25,3 +25,4 @@ otcextensions.tests.functional.sdk.sfsturbo*
 otcextensions.tests.functional.osclient.vpc.v1.test_peering*
 otcextensions.tests.functional.sdk.waf.v1.test_domain*
 otcextensions.tests.functional.sdk.tms*
+otcextensions.tests.functional.osclient.kms*
