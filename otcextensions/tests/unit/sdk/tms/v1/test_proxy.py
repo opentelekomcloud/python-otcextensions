@@ -11,8 +11,9 @@
 # under the License.
 from openstack.tests.unit import test_proxy_base
 
-from otcextensions.sdk.tms.v1 import _proxy
+from otcextensions.sdk.tms.v1 import _proxy, resource_tag
 from otcextensions.sdk.tms.v1 import predefined_tag
+from unittest.mock import MagicMock
 
 
 class TestTmsProxy(test_proxy_base.TestProxyBase):
@@ -59,7 +60,6 @@ class TestTmsPredefinedTag(TestTmsProxy):
             },
             expected_args=[
                 self.proxy,
-
             ]
         )
 
@@ -84,4 +84,48 @@ class TestTmsPredefinedTag(TestTmsProxy):
                                    'key': 'key',
                                    'value': 'new_value'
                                }
+                           }, )
+
+
+class TestTmsResourceTag(TestTmsProxy):
+    def test_resource_tag(self):
+        self.proxy._get_endpoint_with_api_version = MagicMock(return_value="http://test")
+        self.verify_list(self.proxy.resource_tags,
+                         resource_tag.ResourceTag,
+                         method_args=['resource_id', 'resource_type'],
+                         expected_args=[])
+
+    def test_resource_tag_create(self):
+        self.verify_create(self.proxy.create_resource_tag,
+                           resource_tag.ResourceTag,
+                           expected_args=['/resource-tags/batch-create'],
+                           method_kwargs={
+                               "project_id": "786ef11caa5c43ff80256be4c7fee8b7",
+                               "resources": [{"resource_id": "2079d0a6-3dbc-4d59-99da-6b8b7c899a97",
+                                              "resource_type": "vpc"}],
+                               "tags": [{"key": "ENV1", "value": "dev1"}],
+                           },
+                           expected_kwargs={
+                               "project_id": "786ef11caa5c43ff80256be4c7fee8b7",
+                               "resources": [{"resource_id": "2079d0a6-3dbc-4d59-99da-6b8b7c899a97",
+                                              "resource_type": "vpc"}],
+                               "tags": [{"key": "ENV1", "value": "dev1"}],
+                           },
+                           )
+
+    def test_resource_tag_delete(self):
+        self.verify_delete(self.proxy.delete_resource_tag,
+                           resource_tag.ResourceTag,
+                           method_args=[],
+                           method_kwargs={
+                               "project_id": "786ef11caa5c43ff80256be4c7fee8b7",
+                               "resources": [{"resource_id": "2079d0a6-3dbc-4d59-99da-6b8b7c899a97",
+                                              "resource_type": "vpc"}],
+                               "tags": [{"key": "ENV1", "value": "dev1"}],
+                           },
+                           expected_kwargs={
+                               "project_id": "786ef11caa5c43ff80256be4c7fee8b7",
+                               "resources": [{"resource_id": "2079d0a6-3dbc-4d59-99da-6b8b7c899a97",
+                                              "resource_type": "vpc"}],
+                               "tags": [{"key": "ENV1", "value": "dev1"}],
                            },)

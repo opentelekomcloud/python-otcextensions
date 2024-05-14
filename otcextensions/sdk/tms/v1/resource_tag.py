@@ -10,11 +10,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
+from openstack import exceptions
 
 
 class ResourceTag(resource.Resource):
     resource_key = 'resource_tag'
-    base_path = '/resource-tags'
+    base_path = '/resource-tags/batch-delete'
 
     _query_mapping = resource.QueryParameters(
         'project_id', 'resource_id', 'resource_type'
@@ -24,6 +25,9 @@ class ResourceTag(resource.Resource):
     project_id = resource.Body('project_id')
     tags = resource.Body('tags', type=list)
     resources = resource.Body('resources', type=list)
+    resource_id = resource.Body('resource_id')
+    resource_type = resource.Body('resource_type')
+    key = resource.Body('key')
 
     #: Allow to create operation for this resource.
     allow_create = True
@@ -45,4 +49,19 @@ class ResourceTag(resource.Resource):
     #: Method for creating a resource (POST, PUT)
     create_method = "POST"
 
+    requires_id = False
+
     # adding tags, removing tags, querying tags, querying resources by tag
+    def create(self, session, prepend_key=False, base_path=None):
+        # Overriden here to override prepend_key default value
+        return super(ResourceTag, self).create(session, prepend_key, base_path)
+
+    def delete(self, session, prepend_key=False, base_path=None):
+        request_body = {
+            "project_id": self.project_id,
+            "resources": self.resources,
+            "tags": self.tags,
+        }
+        response = session.post(self.base_path, json=request_body)
+        exceptions.raise_from_response(response)
+        return response

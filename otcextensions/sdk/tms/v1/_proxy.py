@@ -11,10 +11,21 @@
 # under the License.
 from openstack import proxy
 from otcextensions.sdk.tms.v1 import predefined_tag as _predefined_tag
+from otcextensions.sdk.tms.v1 import resource_tag as _resource_tag
+from urllib.parse import urlparse
 
 
 class Proxy(proxy.Proxy):
     skip_discovery = True
+
+    def _get_endpoint_with_api_version(self, api_version):
+        url_parts = urlparse(self.get_endpoint())
+        alternate_endpoint = '{scheme}://{netloc}/{api_version}'.format(
+            scheme=url_parts.scheme,
+            netloc=url_parts.netloc,
+            api_version=api_version
+        )
+        return alternate_endpoint
 
     # ======== Predefined Tag ========
     def predefined_tags(self, **query):
@@ -65,3 +76,36 @@ class Proxy(proxy.Proxy):
         """
         return self._update(_predefined_tag.PredefinedTag,
                             **attrs)
+
+    # ======== Resource Tag ========
+    def resource_tags(self, resource_id, resource_type, project_id=None):
+        """Retrieve a generator of ResourceTags
+        'project_id', 'resource_id', 'resource_type'
+                :param project_id: Optional ID of the project
+                :param resource_type: Mandatory type of the resource
+                :param resource_id: Mandatory id of the resource
+
+                :returns: A generator of backup
+                    :class:`~otcextensions.sdk.tms.v1.resource_tag.ResourceTag`
+                    instances
+        """
+        base = self._get_endpoint_with_api_version('v2.0')
+        base_path = f"{base}/resources/{resource_id}/tags?project_id={project_id}&resource_type={resource_type}"
+        return self._list(_resource_tag.ResourceTag, base_path=base_path)
+
+    def create_resource_tag(self, **attrs):
+        """Create a new resource tag with attrs
+
+        :param dict attrs: Keyword arguments which will be used to create a
+            :class:`~otcextensions.sdk.tms.v1.predefined_tag.PredefinedTag`
+        """
+        base_path = "/resource-tags/batch-create"
+        return self._create(_resource_tag.ResourceTag, base_path, **attrs)
+
+    def delete_resource_tag(self, **attrs):
+        """Delete a new resource tag with attrs
+
+        :param dict attrs: Keyword arguments which will be used to delete a
+            :class:`~otcextensions.sdk.tms.v1.predefined_tag.PredefinedTag`
+        """
+        return self._delete(_resource_tag.ResourceTag, **attrs)

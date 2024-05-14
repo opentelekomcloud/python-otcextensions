@@ -19,3 +19,10 @@ Predefined Tag Operations
   :noindex:
   :members: predefined_tags, create_predefined_tag, delete_predefined_tag,
             update_predefined_tag
+
+Resource Tag Operations
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.tms.v1._proxy.Proxy
+  :noindex:
+  :members: resource_tags, create_resource_tag, delete_resource_tag
