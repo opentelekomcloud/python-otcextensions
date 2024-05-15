@@ -25,7 +25,7 @@ EXAMPLE = {
 class TestResourceTag(base.TestCase):
     def test_basic(self):
         sot = resource_tag.ResourceTag()
-        path = "/resource-tags/batch-delete"
+        path = "/resource-tags"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
