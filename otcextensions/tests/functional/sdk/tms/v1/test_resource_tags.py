@@ -25,8 +25,9 @@ class TestResourceTag(base.BaseFunctionalTest):
     def test_create_tag(self):
         attrs = {
             "project_id": "786ef11caa5c43ff80256be4c7fee8b7",
-            "resources": [{"resource_id": "2079d0a6-3dbc-4d59-99da-6b8b7c899a97",
-                           "resource_type": "vpc"}],
+            "resources": [
+                {"resource_id": "2079d0a6-3dbc-4d59-99da-6b8b7c899a97",
+                 "resource_type": "vpc"}],
             "tags": [{"key": "ENV1", "value": "dev1"}],
         }
         result = self.tms.create_resource_tag(**attrs)
@@ -35,8 +36,9 @@ class TestResourceTag(base.BaseFunctionalTest):
     def test_delete_tag(self):
         attrs = {
             "project_id": "786ef11caa5c43ff80256be4c7fee8b7",
-            "resources": [{"resource_id": "2079d0a6-3dbc-4d59-99da-6b8b7c899a97",
-                           "resource_type": "vpc"}],
+            "resources": [
+                {"resource_id": "2079d0a6-3dbc-4d59-99da-6b8b7c899a97",
+                 "resource_type": "vpc"}],
             "tags": [{"key": "ENV1", "value": "dev1"}],
         }
         result = self.tms.delete_resource_tag(**attrs)

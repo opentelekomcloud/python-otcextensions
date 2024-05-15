@@ -11,7 +11,8 @@
 # under the License.
 from openstack.tests.unit import test_proxy_base
 
-from otcextensions.sdk.tms.v1 import _proxy, resource_tag
+from otcextensions.sdk.tms.v1 import _proxy
+from otcextensions.sdk.tms.v1 import resource_tag
 from otcextensions.sdk.tms.v1 import predefined_tag
 from unittest.mock import MagicMock
 
@@ -89,7 +90,8 @@ class TestTmsPredefinedTag(TestTmsProxy):
 
 class TestTmsResourceTag(TestTmsProxy):
     def test_resource_tag(self):
-        self.proxy._get_endpoint_with_api_version = MagicMock(return_value="http://test")
+        self.proxy._get_endpoint_with_api_version = MagicMock(
+            return_value="http://test")
         self.verify_list(self.proxy.resource_tags,
                          resource_tag.ResourceTag,
                          method_args=['resource_id', 'resource_type'],
@@ -98,16 +100,16 @@ class TestTmsResourceTag(TestTmsProxy):
     def test_resource_tag_create(self):
         self.verify_create(self.proxy.create_resource_tag,
                            resource_tag.ResourceTag,
-                           expected_args=['/resource-tags/batch-create'],
+                           expected_args=[],
                            method_kwargs={
-                               "project_id": "786ef11caa5c43ff80256be4c7fee8b7",
-                               "resources": [{"resource_id": "2079d0a6-3dbc-4d59-99da-6b8b7c899a97",
+                               "project_id": "id",
+                               "resources": [{"resource_id": "id",
                                               "resource_type": "vpc"}],
                                "tags": [{"key": "ENV1", "value": "dev1"}],
                            },
                            expected_kwargs={
-                               "project_id": "786ef11caa5c43ff80256be4c7fee8b7",
-                               "resources": [{"resource_id": "2079d0a6-3dbc-4d59-99da-6b8b7c899a97",
+                               "project_id": "id",
+                               "resources": [{"resource_id": "id",
                                               "resource_type": "vpc"}],
                                "tags": [{"key": "ENV1", "value": "dev1"}],
                            },
@@ -118,14 +120,14 @@ class TestTmsResourceTag(TestTmsProxy):
                            resource_tag.ResourceTag,
                            method_args=[],
                            method_kwargs={
-                               "project_id": "786ef11caa5c43ff80256be4c7fee8b7",
-                               "resources": [{"resource_id": "2079d0a6-3dbc-4d59-99da-6b8b7c899a97",
+                               "project_id": "id",
+                               "resources": [{"resource_id": "id",
                                               "resource_type": "vpc"}],
                                "tags": [{"key": "ENV1", "value": "dev1"}],
                            },
                            expected_kwargs={
-                               "project_id": "786ef11caa5c43ff80256be4c7fee8b7",
-                               "resources": [{"resource_id": "2079d0a6-3dbc-4d59-99da-6b8b7c899a97",
+                               "project_id": "id",
+                               "resources": [{"resource_id": "id",
                                               "resource_type": "vpc"}],
                                "tags": [{"key": "ENV1", "value": "dev1"}],
                            },)

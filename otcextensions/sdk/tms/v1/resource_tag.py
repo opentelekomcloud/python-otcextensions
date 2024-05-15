@@ -15,7 +15,7 @@ from openstack import exceptions
 
 class ResourceTag(resource.Resource):
     resource_key = 'resource_tag'
-    base_path = '/resource-tags/batch-delete'
+    base_path = '/resource-tags'
 
     _query_mapping = resource.QueryParameters(
         'project_id', 'resource_id', 'resource_type'
@@ -54,6 +54,7 @@ class ResourceTag(resource.Resource):
     # adding tags, removing tags, querying tags, querying resources by tag
     def create(self, session, prepend_key=False, base_path=None):
         # Overriden here to override prepend_key default value
+        self.base_path = "/resource-tags/batch-create"
         return super(ResourceTag, self).create(session, prepend_key, base_path)
 
     def delete(self, session, prepend_key=False, base_path=None):
@@ -62,6 +63,7 @@ class ResourceTag(resource.Resource):
             "resources": self.resources,
             "tags": self.tags,
         }
+        self.base_path = "/resource-tags/batch-delete"
         response = session.post(self.base_path, json=request_body)
         exceptions.raise_from_response(response)
         return response

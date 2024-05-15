@@ -90,7 +90,8 @@ class Proxy(proxy.Proxy):
                     instances
         """
         base = self._get_endpoint_with_api_version('v2.0')
-        base_path = f"{base}/resources/{resource_id}/tags?project_id={project_id}&resource_type={resource_type}"
+        base_path = (f"{base}/resources/{resource_id}/tags?project_id="
+                     f"{project_id}&resource_type={resource_type}")
         return self._list(_resource_tag.ResourceTag, base_path=base_path)
 
     def create_resource_tag(self, **attrs):
@@ -99,8 +100,7 @@ class Proxy(proxy.Proxy):
         :param dict attrs: Keyword arguments which will be used to create a
             :class:`~otcextensions.sdk.tms.v1.predefined_tag.PredefinedTag`
         """
-        base_path = "/resource-tags/batch-create"
-        return self._create(_resource_tag.ResourceTag, base_path, **attrs)
+        return self._create(_resource_tag.ResourceTag, **attrs)
 
     def delete_resource_tag(self, **attrs):
         """Delete a new resource tag with attrs
