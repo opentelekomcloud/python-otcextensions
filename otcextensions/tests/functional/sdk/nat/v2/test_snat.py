@@ -11,6 +11,7 @@
 # under the License.
 import openstack
 import uuid
+from openstack import resource
 
 from otcextensions.tests.functional import base
 
@@ -32,42 +33,44 @@ class TestSnat(base.BaseFunctionalTest):
 
     def _create_network(self):
         cidr = '192.168.0.0/16'
-        ipv4 = 4
         uuid_v4 = uuid.uuid4().hex[:8]
-        router_name = 'snat-test-router-' + uuid_v4
-        net_name = 'snat-test-net-' + uuid_v4
+        vpc_name = 'snat-test-vpc-' + uuid_v4
         subnet_name = 'snat-test-subnet-' + uuid_v4
 
         if not TestSnat.network_info:
-            network = self.conn.network.create_network(name=net_name)
-            self.assertEqual(net_name, network.name)
-            net_id = network.id
-            subnet = self.conn.network.create_subnet(
-                name=subnet_name,
-                ip_version=ipv4,
-                network_id=net_id,
+            vpc = self.conn.vpc.create_vpc(
+                name=vpc_name,
                 cidr=cidr
+            )
+            self.assertEqual(vpc_name, vpc.name)
+            vpc_id = vpc.id
+            gw, _ = cidr.split("/")
+            subnet = self.conn.vpc.create_subnet(
+                name=subnet_name,
+                vpc_id=vpc.id,
+                cidr=vpc.cidr,
+                gateway_ip=gw[:-2] + ".1",
+                dns_list=[
+                    "100.125.4.25",
+                    "100.125.129.199",
+                ]
+            )
+            resource.wait_for_status(
+                self.conn.vpc, subnet, "ACTIVE", None, 2, 20
             )
             self.assertEqual(subnet_name, subnet.name)
             subnet_id = subnet.id
-
-            router = self.conn.network.create_router(name=router_name)
-            self.assertEqual(router_name, router.name)
-            router_id = router.id
-            interface = router.add_interface(
-                self.conn.network,
-                subnet_id=subnet_id
-            )
-            self.assertEqual(interface['subnet_id'], subnet_id)
-            self.assertIn('port_id', interface)
+            network_id = subnet.neutron_network_id
 
             TestSnat.network_info = {
-                'router_id': router_id,
+                'vpc_id': vpc_id,
                 'subnet_id': subnet_id,
-                'network_id': net_id
+                'network_id': network_id,
+                'subnet': subnet,
+                'vpc': vpc
             }
         if not TestSnat.gateway:
-            self.attrs['router_id'] = TestSnat.network_info['router_id']
+            self.attrs['router_id'] = TestSnat.network_info['vpc_id']
             self.attrs['internal_network_id'] =\
                 TestSnat.network_info['network_id']
             TestSnat.gateway = self.conn.nat.create_gateway(**self.attrs)
@@ -89,41 +92,27 @@ class TestSnat(base.BaseFunctionalTest):
         if TestSnat.floating_ip:
             self.conn.network.delete_ip(TestSnat.floating_ip)
             TestSnat.floating_ip = None
-        if TestSnat.network_info:
-            router_id = TestSnat.network_info['router_id']
-            subnet_id = TestSnat.network_info['subnet_id']
-            network_id = TestSnat.network_info['network_id']
-            router = self.conn.network.get_router(router_id)
 
-            interface = router.remove_interface(
-                self.conn.network,
-                subnet_id=subnet_id
+        if TestSnat.network_info:
+            vpc = TestSnat.network_info['vpc']
+            subnet = TestSnat.network_info['subnet']
+
+            resource.wait_for_status(
+                self.conn.vpc, subnet, "ACTIVE", None, 2, 20
             )
-            self.assertEqual(interface['subnet_id'], subnet_id)
-            self.assertIn('port_id', interface)
-            sot = self.conn.network.delete_router(
-                router_id,
-                ignore_missing=False
-            )
-            self.assertIsNone(sot)
-            sot = self.conn.network.delete_subnet(
-                subnet_id,
-                ignore_missing=False
-            )
-            self.assertIsNone(sot)
-            sot = self.conn.network.delete_network(
-                network_id,
-                ignore_missing=False
-            )
+            self.conn.vpc.delete_subnet(subnet, ignore_missing=False)
+            resource.wait_for_delete(self.conn.vpc, subnet, 2, 60)
+
+            sot = self.conn.vpc.delete_vpc(vpc)
+            self.assertIsNotNone(sot)
 
             TestSnat.network_info = None
-            self.assertIsNone(sot)
 
     def _create_snat_rule(self):
         TestSnat.snat_rule = self.conn.nat.create_snat_rule(
             floating_ip_id=TestSnat.floating_ip.id,
             nat_gateway_id=TestSnat.gateway.id,
-            network_id=TestSnat.network_info['network_id'])
+            cidr='192.168.0.0/16')
         self.conn.nat.wait_for_snat(TestSnat.snat_rule)
         self.assertIsNotNone(TestSnat.snat_rule)
 
