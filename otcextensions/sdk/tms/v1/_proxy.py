@@ -81,13 +81,14 @@ class Proxy(proxy.Proxy):
     def resource_tags(self, resource_id, resource_type, project_id=None):
         """Retrieve a generator of ResourceTags
         'project_id', 'resource_id', 'resource_type'
-            :param project_id: Optional ID of the project
-            :param resource_type: Mandatory type of the resource
-            :param resource_id: Mandatory id of the resource
 
-            :returns: A generator of backup
-                :class:`~otcextensions.sdk.tms.v1.resource_tag.ResourceTag`
-                instances
+        :param project_id: Optional ID of the project
+        :param resource_type: Mandatory type of the resource
+        :param resource_id: Mandatory id of the resource
+
+        :returns: A generator of backup
+            :class:`~otcextensions.sdk.tms.v1.resource_tag.ResourceTag`
+            instances
         """
         base = self._get_endpoint_with_api_version('v2.0')
         base_path = (f"{base}/resources/{resource_id}/tags?project_id="
