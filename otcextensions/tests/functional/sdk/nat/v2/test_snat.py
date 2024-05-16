@@ -55,7 +55,9 @@ class TestSnat(base.BaseFunctionalTest):
                     "100.125.129.199",
                 ]
             )
-            resource.wait_for_status(self.conn.vpc, subnet, "ACTIVE", None, 2, 20)
+            resource.wait_for_status(
+                self.conn.vpc, subnet, "ACTIVE", None, 2, 20
+            )
             self.assertEqual(subnet_name, subnet.name)
             subnet_id = subnet.id
             network_id = subnet.neutron_network_id
@@ -95,7 +97,9 @@ class TestSnat(base.BaseFunctionalTest):
             vpc = TestSnat.network_info['vpc']
             subnet = TestSnat.network_info['subnet']
 
-            resource.wait_for_status(self.conn.vpc, subnet, "ACTIVE", None, 2, 20)
+            resource.wait_for_status(
+                self.conn.vpc, subnet, "ACTIVE", None, 2, 20
+            )
             self.conn.vpc.delete_subnet(subnet, ignore_missing=False)
             resource.wait_for_delete(self.conn.vpc, subnet, 2, 60)
 
