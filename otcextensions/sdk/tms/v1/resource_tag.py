@@ -51,7 +51,6 @@ class ResourceTag(resource.Resource):
 
     requires_id = False
 
-    # adding tags, removing tags, querying tags, querying resources by tag
     def create(self, session, prepend_key=False, base_path=None):
         # Overriden here to override prepend_key default value
         self.base_path = "/resource-tags/batch-create"

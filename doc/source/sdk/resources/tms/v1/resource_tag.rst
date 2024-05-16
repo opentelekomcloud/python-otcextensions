@@ -1,7 +1,7 @@
 otcextensions.sdk.tms.v1.resource_tag
 =====================================
 
-.. automodule:: otcextensions.sdk.tms.v1.predefined_tag
+.. automodule:: otcextensions.sdk.tms.v1.resource_tag
 
 The Resource Tag Class
 ----------------------
