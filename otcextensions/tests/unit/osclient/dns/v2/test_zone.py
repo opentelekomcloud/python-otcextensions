@@ -82,7 +82,7 @@ class TestListZone(fakes.TestDNS):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_once_with(
-            type='private'
+            zone_type='private'
         )
 
         self.assertEqual(self.columns, columns)
