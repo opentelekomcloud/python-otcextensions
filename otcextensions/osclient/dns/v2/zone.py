@@ -63,7 +63,7 @@ class ListZone(command.Lister):
         query = {}
 
         if parsed_args.type:
-            query['type'] = parsed_args.type
+            query['zone_type'] = parsed_args.type
 
         data = client.zones(**query)
 
