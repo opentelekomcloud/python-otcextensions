@@ -148,7 +148,8 @@ OTC_SERVICES = {
         'replace_system': True
     },
     'ims': {
-        'service_type': 'ims'
+        'service_type': 'ims',
+        'endpoint_service_type': 'ims'
     },
     'kms': {
         'service_type': 'kms',
