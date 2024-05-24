@@ -9,6 +9,8 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from urllib.parse import urlunparse, urlparse
+
 from openstack import exceptions
 from openstack import utils
 
@@ -16,6 +18,15 @@ from openstack.compute.v2 import server
 
 
 class Server(server.Server):
+
+    def _prepare_override_url(self, url, new_version):
+        parsed = urlparse(url)
+        path_parts = parsed.path.split('/')
+        if len(path_parts) >= 2:
+            path_parts[1] = new_version
+        new_path = '/'.join(path_parts)
+        new_parsed_url = parsed._replace(path=new_path)
+        return urlunparse(new_parsed_url)
 
     def _get_tag_struct(self, tag):
         tag_pairs = tag.split('=')
@@ -34,7 +45,11 @@ class Server(server.Server):
         :param session: The session to use for making this request.
         :param tag: The tag as a string.
         """
-        url = utils.urljoin('servers', self.id,
+        session.endpoint_override = self._prepare_override_url(
+            session.get_endpoint(),
+            'v1'
+        )
+        url = utils.urljoin('cloudservers', self.id,
                             'tags', 'action')
         body = {
             'action': 'create',
@@ -48,6 +63,7 @@ class Server(server.Server):
         self._body.attributes.update({
             'tags': list(set(tags))
         })
+        session.endpoint_override = None
         return self
 
     def remove_tag(self, session, tag):
@@ -56,7 +72,11 @@ class Server(server.Server):
         :param session: The session to use for making this request.
         :param tag: The tag as a string.
         """
-        url = utils.urljoin('servers', self.id,
+        session.endpoint_override = self._prepare_override_url(
+            session.get_endpoint(),
+            'v1'
+        )
+        url = utils.urljoin('cloudservers', self.id,
                             'tags', 'action')
         body = {
             'action': 'delete',
@@ -75,4 +95,5 @@ class Server(server.Server):
         self._body.attributes.update({
             'tags': tags
         })
+        session.endpoint_override = None
         return self
