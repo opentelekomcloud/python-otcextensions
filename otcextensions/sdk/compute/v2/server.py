@@ -9,7 +9,8 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from urllib.parse import urlunparse, urlparse
+from urllib.parse import urlunparse
+from urllib.parse import urlparse
 
 from openstack import exceptions
 from openstack import utils
