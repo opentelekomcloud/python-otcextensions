@@ -38,3 +38,8 @@ class Image(resource.Resource):
     tags = resource.Body('tags', type=list)
     image_tags = resource.Body('image_tags', type=list)
     data_images = resource.Body('data_images', type=list)
+    job_id = resource.Body('job_id')
+
+    def create(self, session, prepend_key=False, base_path=None):
+        # Overriden here to override prepend_key default value
+        return super(Image, self).create(session, prepend_key, base_path)

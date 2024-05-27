@@ -149,7 +149,7 @@ OTC_SERVICES = {
     },
     'ims': {
         'service_type': 'ims',
-        'endpoint_service_type': 'ims'
+        'endpoint_service_type': 'image',
     },
     'kms': {
         'service_type': 'kms',
