@@ -358,6 +358,8 @@ def patch_openstack_resources():
         proxy.Proxy._report_stats_influxdb
     openstack.compute.v2.server.Server._get_tag_struct = \
         server.Server._get_tag_struct
+    openstack.compute.v2.server.Server._prepare_override_url = \
+        server.Server._prepare_override_url
     openstack.compute.v2.server.Server.add_tag = server.Server.add_tag
     openstack.compute.v2.server.Server.remove_tag = server.Server.remove_tag
     openstack.exceptions.raise_from_response = \

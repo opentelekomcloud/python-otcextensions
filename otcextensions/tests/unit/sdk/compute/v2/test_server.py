@@ -16,6 +16,7 @@ from otcextensions.sdk.compute.v2 import server
 
 
 IDENTIFIER = 'fake_id'
+ENDPOINT = 'https://ecs.fake.otc.t-systems.com/v1/my-0346-43be-bc65-project'
 
 
 class TestServer(base.TestCase):
@@ -32,6 +33,7 @@ class TestServer(base.TestCase):
         self.ecs = mock.Mock()
         self.ecs.post = mock.Mock(return_value=self.resp)
         self.sot._connection = mock.Mock(ecs=self.ecs)
+        self.sot._prepare_override_url = mock.Mock(return_value=ENDPOINT)
 
     def test__get_tag_struct(self):
         self.assertDictEqual(
@@ -51,7 +53,7 @@ class TestServer(base.TestCase):
 
         self.assertIsInstance(result, server.Server)
 
-        url = 'servers/%s/tags/action' % (IDENTIFIER)
+        url = 'cloudservers/%s/tags/action' % (IDENTIFIER)
         body = {
             "action": "create",
             "tags": [{'key': 'a', 'value': 'b'}]
@@ -66,7 +68,7 @@ class TestServer(base.TestCase):
 
         self.assertIsInstance(result, server.Server)
 
-        url = 'servers/%s/tags/action' % (IDENTIFIER)
+        url = 'cloudservers/%s/tags/action' % (IDENTIFIER)
         body = {
             "action": "delete",
             "tags": [{'key': 'a', 'value': 'b'}]
