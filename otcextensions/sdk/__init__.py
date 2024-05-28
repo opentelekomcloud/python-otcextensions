@@ -147,6 +147,10 @@ OTC_SERVICES = {
         'service_type': 'identity',
         'replace_system': True
     },
+    'ims': {
+        'service_type': 'ims',
+        'endpoint_service_type': 'image',
+    },
     'kms': {
         'service_type': 'kms',
         'append_project_id': True,
