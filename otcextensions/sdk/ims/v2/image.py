@@ -31,7 +31,6 @@ class Image(resource.Resource):
     is_config = resource.Body('is_config', type=bool)
     cmk_id = resource.Body('cmk_id')
     type = resource.Body('type')
-    enterprise_project_id = resource.Body('enterprise_project_id')
     max_ram = resource.Body('max_ram', type=int)
     min_ram = resource.Body('min_ram', type=int)
     is_quick_import = resource.Body('is_quick_import', type=bool)
