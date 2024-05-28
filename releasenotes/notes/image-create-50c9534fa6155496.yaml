@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    Add IMS v1 Image Operation support for the create from OBS source
