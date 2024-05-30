@@ -11,7 +11,7 @@
 # under the License.
 from openstack import service_description
 
-from otcextensions.sdk.bms.v1 import _proxy
+from otcextensions.sdk.enterprise_dashboard.v1 import _proxy
 
 
 class EnterpriseDashboardService(service_description.ServiceDescription):

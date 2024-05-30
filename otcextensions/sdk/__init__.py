@@ -147,7 +147,7 @@ OTC_SERVICES = {
         'service_type': 'enterprise-dashboard',
         'endpoint_service_type': 'enterprise-dashboard'
     },
-    'enterprise_dashboard_api': {
+    'enterprise_dashboard_v1': {
         'service_type': 'enterprise-dashboard-v1',
         'endpoint_service_type': 'enterprise-dashboard-v1'
     },
