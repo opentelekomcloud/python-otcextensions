@@ -143,6 +143,14 @@ OTC_SERVICES = {
         'service_type': 'elb',
         # 'replace_system': True
     },
+    'enterprise_dashboard': {
+        'service_type': 'enterprise-dashboard',
+        'endpoint_service_type': 'enterprise-dashboard'
+    },
+    'enterprise_dashboard_v1': {
+        'service_type': 'enterprise-dashboard-v1',
+        'endpoint_service_type': 'enterprise-dashboard-v1'
+    },
     'identity': {
         'service_type': 'identity',
         'replace_system': True
