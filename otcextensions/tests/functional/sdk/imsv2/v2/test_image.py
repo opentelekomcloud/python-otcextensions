@@ -21,13 +21,14 @@ class TestImage(base.BaseFunctionalTest):
 
     def setUp(self):
         super(TestImage, self).setUp()
-        self.ims = self.conn.ims
+        self.ims = self.conn.imsv2
 
     def test_create_image(self):
         attrs = {
             "name": "CentOS-7-x86_64-GenericCloud.qcow2",
             "description": "Create an image from a file in an OBS bucket",
-            "image_url": "ims-extensions-test:CentOS-7-GenericCloud.qcow2",
+            "image_url":
+                "ims-extensions-test:CentOS-7-x86_64-GenericCloud.qcow2",
             "os_version": "CentOS 7.0 64bit",
             "min_disk": 40,
             "image_tags": [{"key": "key2", "value": "value2"},

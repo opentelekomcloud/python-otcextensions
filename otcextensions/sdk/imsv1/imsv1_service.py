@@ -14,14 +14,14 @@ import warnings
 from openstack import exceptions
 from openstack import service_description
 
-from otcextensions.sdk.ims.v2 import _proxy
+from otcextensions.sdk.imsv1.v1 import _proxy as _proxy_v1
 
 
-class ImsService(service_description.ServiceDescription):
+class Imsv1Service(service_description.ServiceDescription):
     """The IMS service."""
 
     supported_versions = {
-        '2': _proxy.Proxy
+        '1': _proxy_v1.Proxy,
     }
 
     def _make_proxy(self, instance):
@@ -31,7 +31,7 @@ class ImsService(service_description.ServiceDescription):
           The `openstack.connection.Connection` we're working with.
         """
         config = instance.config
-        version_string = config.get_api_version('ims') or '2'
+        version_string = config.get_api_version('imsv1') or '1'
         endpoint_override = config.get_endpoint(self.service_type)
         ep = config.get_service_catalog().url_for(
             service_type=self.service_type,

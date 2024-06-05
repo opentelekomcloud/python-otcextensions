@@ -12,12 +12,12 @@
 
 from openstack.tests.unit import base
 
-from otcextensions.sdk.ims.v2 import image
+from otcextensions.sdk.imsv2.v2 import image
 
 EXAMPLE = {
     "name": "ims_test_file",
     "description": "Create an image from a file in an OBS bucket",
-    "image_url": "ims-image:centos70.qcow2",
+    "image_url": "imsv2-image:centos70.qcow2",
     "os_version": "CentOS 7.0 64bit",
     "min_disk": 40,
     "image_tags": [{"key": "key2", "value": "value2"},

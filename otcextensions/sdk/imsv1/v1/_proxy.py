@@ -9,19 +9,18 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack.tests.unit import test_proxy_base
-
-from otcextensions.sdk.imsv2.v2 import _proxy
-from otcextensions.sdk.imsv2.v2 import image
+from openstack import proxy
+from otcextensions.sdk.imsv1.v1 import async_job as _async_job
 
 
-class TestImsProxy(test_proxy_base.TestProxyBase):
-    def setUp(self):
-        super(TestImsProxy, self).setUp()
-        self.proxy = _proxy.Proxy(self.session)
+class Proxy(proxy.Proxy):
+    skip_discovery = True
 
+    def get_async_job(self, project_id, job_id):
+        """Get an asynchronous job
 
-class TestImsImage(TestImsProxy):
-    def test_image_create(self):
-        self.verify_create(self.proxy.create_image,
-                           image.Image)
+        :returns: One
+             :class:`~otcextensions.sdk.imsv2.v1.async_job.AsyncJob`
+        """
+        base_path = f'/{project_id}/jobs/{job_id}'
+        return self._get(_async_job.AsyncJob, requires_id=False, base_path=base_path)

@@ -9,17 +9,16 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import proxy
-from otcextensions.sdk.ims.v2 import image as _image
+from openstack import _log
+
+from otcextensions.tests.functional import base
+
+_logger = _log.setup_logging('openstack')
 
 
-class Proxy(proxy.Proxy):
-    skip_discovery = True
+class TestService(base.BaseFunctionalTest):
 
-    def create_image(self, **attrs):
-        """Create a new image with attrs
+    def test_initialize(self):
+        client = self.conn.ims
 
-        :param dict attrs: Keyword arguments which will be used to create a
-            :class:`~otcextensions.sdk.ims.v2.image.Image`
-        """
-        return self._create(_image.Image, **attrs)
+        self.assertIsNotNone(client)
