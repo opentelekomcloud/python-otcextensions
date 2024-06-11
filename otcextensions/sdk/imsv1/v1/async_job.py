@@ -30,4 +30,3 @@ class AsyncJob(resource.Resource):
     error_code = resource.Body('error_code')
     fail_reason = resource.Body('fail_reason')
     entities = resource.Body('entities', type=list)
-

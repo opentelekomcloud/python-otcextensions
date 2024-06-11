@@ -1,7 +1,7 @@
 IMS API
 =======
 
-.. automodule:: otcextensions.sdk.ims.v2._proxy
+.. automodule:: otcextensions.sdk.imsv1.v1._proxy
 
 The Image Management Service Class
 ----------------------------------
@@ -15,6 +15,6 @@ method is called.
 Image Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. autoclass:: otcextensions.sdk.ims.v2._proxy.Proxy
+.. autoclass:: otcextensions.sdk.imsv1.v1._proxy.Proxy
   :noindex:
-  :members: create_image
+  :members: get_async_job

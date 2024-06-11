@@ -29,5 +29,5 @@ attrs = {
     "image_tags": [{"key": "key2", "value": "value2"},
                    {"key": "key1", "value": "value1"}]
 }
-result = conn.ims.create_image(**attrs)
+result = conn.imsv2.create_image(**attrs)
 print(result)

@@ -39,7 +39,8 @@ Service Proxies
    VPC Endpoint (VPCEP) <vpcep>
    Web Application Firewall (WAF) <waf>
    Tag Management Service (TMS) <tms>
-   Image Management Service (IMS) <ims>
+   Image Management Service V1 (IMSv1) <ims_v1>
+   Image Management Service V2 (IMSv2) <ims_v2>
 
 .. _service-proxies:
 
