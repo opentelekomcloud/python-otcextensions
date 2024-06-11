@@ -1,7 +1,7 @@
 otcextensions.sdk.imsv2.v2.image
 =====================================
 
-.. automodule:: otcextensions.sdk.ims.v2.image
+.. automodule:: otcextensions.sdk.imsv2.v2.image
 
 The Image Class
 ---------------
