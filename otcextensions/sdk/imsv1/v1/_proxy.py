@@ -10,16 +10,18 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import proxy
-from otcextensions.sdk.ims.v2 import image as _image
+from otcextensions.sdk.imsv1.v1 import async_job as _async_job
 
 
 class Proxy(proxy.Proxy):
     skip_discovery = True
 
-    def create_image(self, **attrs):
-        """Create a new image with attrs
+    def get_async_job(self, project_id, job_id, **attrs):
+        """Get an asynchronous job
 
-        :param dict attrs: Keyword arguments which will be used to create a
-            :class:`~otcextensions.sdk.ims.v2.image.Image`
+        :returns: One
+             :class:`~otcextensions.sdk.imsv2.v1.async_job.AsyncJob`
         """
-        return self._create(_image.Image, **attrs)
+        base_path = f'/{project_id}/jobs/{job_id}'
+        return self._get(_async_job.AsyncJob, requires_id=False,
+                         base_path=base_path)

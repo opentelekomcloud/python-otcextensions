@@ -23,11 +23,11 @@ sdk.register_otc_extensions(conn)
 attrs = {
     "name": "CentOS-7-x86_64-GenericCloud.qcow2",
     "description": "Create an image from a file in an OBS bucket",
-    "image_url": "ims-extensions-test:CentOS-7-x86_64.qcow2",
+    "image_url": "imsv2-extensions-test:CentOS-7-x86_64.qcow2",
     "os_version": "CentOS 7.0 64bit",
     "min_disk": 40,
     "image_tags": [{"key": "key2", "value": "value2"},
                    {"key": "key1", "value": "value1"}]
 }
-result = conn.ims.create_image(**attrs)
+result = conn.imsv2.create_image(**attrs)
 print(result)

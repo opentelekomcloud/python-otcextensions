@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -9,19 +10,19 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack.tests.unit import test_proxy_base
+"""
+Query Async Job
+"""
 
-from otcextensions.sdk.ims.v2 import _proxy
-from otcextensions.sdk.ims.v2 import image
+import openstack
+from otcextensions import sdk
 
-
-class TestImsProxy(test_proxy_base.TestProxyBase):
-    def setUp(self):
-        super(TestImsProxy, self).setUp()
-        self.proxy = _proxy.Proxy(self.session)
-
-
-class TestImsImage(TestImsProxy):
-    def test_image_create(self):
-        self.verify_create(self.proxy.create_image,
-                           image.Image)
+openstack.enable_logging(True)
+conn = openstack.connect(cloud='otc')
+sdk.register_otc_extensions(conn)
+attrs = {
+    "project_id": "5dd3c0b24cdc4d31952c49589182a89d",
+    "job_id": 'ff8080828f9a78db018fe7c6e2f772b2'
+}
+result = conn.imsv1.get_async_job(**attrs)
+print(result)

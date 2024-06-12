@@ -17,21 +17,16 @@ from otcextensions.tests.functional import base
 _logger = _log.setup_logging('openstack')
 
 
-class TestImage(base.BaseFunctionalTest):
+class TestAsyncJob(base.BaseFunctionalTest):
 
     def setUp(self):
-        super(TestImage, self).setUp()
-        self.ims = self.conn.ims
+        super(TestAsyncJob, self).setUp()
+        self.ims = self.conn.imsv1
 
-    def test_create_image(self):
+    def test_get_async_job(self):
         attrs = {
-            "name": "CentOS-7-x86_64-GenericCloud.qcow2",
-            "description": "Create an image from a file in an OBS bucket",
-            "image_url": "ims-extensions-test:CentOS-7-GenericCloud.qcow2",
-            "os_version": "CentOS 7.0 64bit",
-            "min_disk": 40,
-            "image_tags": [{"key": "key2", "value": "value2"},
-                           {"key": "key1", "value": "value1"}]
+            "project_id": "5dd3c0b24cdc4d31952c49589182a89d",
+            "job_id": 'ff8080828f9a78db018fe7c6e2f772b2'
         }
-        result = self.ims.create_image(**attrs)
-        self.assertNotEqual(result, None)
+        result = self.ims.get_async_job(**attrs)
+        self.assertEqual(result, None)
