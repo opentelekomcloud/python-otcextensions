@@ -9,8 +9,50 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack import exceptions
 from openstack import resource
 from openstack import utils
+
+
+def wait_for_delete(session, resource, interval, wait, base_path,
+                    callback=None):
+    """Wait for the bandwidth to be deleted.
+
+    :param session: The session to use for making this request.
+    :type session: :class:`~keystoneauth1.adapter.Adapter`
+    :param resource: The resource to wait on to be deleted.
+    :type resource: :class:`~openstack.resource.Resource`
+    :param interval: Number of seconds to wait between checks.
+    :param wait: Maximum number of seconds to wait for the delete.
+    :param callback: A callback function. This will be called with a single
+        value, progress. This is API specific but is generally a percentage
+        value from 0-100.
+
+    :return: Method returns self on success.
+    :raises: :class:`~openstack.exceptions.ResourceTimeout` transition
+        to status failed to occur in wait seconds.
+    """
+    orig_resource = resource
+    for count in utils.iterate_timeout(
+        timeout=wait,
+        message="Timeout waiting for {res}:{id} to delete".format(
+            res=resource.__class__.__name__, id=resource.id
+        ),
+        wait=interval,
+    ):
+        try:
+            resource = resource.fetch(session, base_path=base_path,
+                                      skip_cache=True)
+            if not resource:
+                return orig_resource
+            if resource.status.lower() == 'deleted':
+                return resource
+        except exceptions.NotFoundException:
+            return orig_resource
+
+        if callback:
+            progress = getattr(resource, 'progress', None) or 0
+            callback(progress)
 
 
 class PublicIPInfo(resource.Resource):
@@ -37,12 +79,14 @@ class Bandwidth(resource.Resource):
     allow_delete = True
     allow_list = True
 
-    _query_mapping = resource.QueryParameters()
+    _query_mapping = resource.QueryParameters('id')
 
     # Properties
     #: Specifies the bandwidth name.
     #: *Type: dict*
     name = resource.Body('name', type=str)
+    #: *Type: dict*
+    id = resource.Body('id', type=str)
     #: Specifies the bandwidth size.
     #: *Type: dict*
     size = resource.Body('size', type=int)
