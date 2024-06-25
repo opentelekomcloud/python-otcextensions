@@ -9,17 +9,16 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import proxy
-from openstack import exceptions
-from openstack import _log
+import time
+from urllib.parse import urlsplit
 
+from openstack import _log
+from openstack import exceptions
+from openstack import proxy
 from otcextensions.sdk.dws.v1 import cluster as _cluster
 from otcextensions.sdk.dws.v1 import flavor as _flavor
 from otcextensions.sdk.dws.v1 import snapshot as _snapshot
 from otcextensions.sdk.dws.v1 import tag as _tag
-
-from urllib.parse import urlsplit
-import time
 
 LOG = _log.setup_logging(__name__)
 
@@ -35,20 +34,18 @@ def _format_cluster_response(obj):
         for public_endpoint in obj.public_endpoints:
             public_domain.append(public_endpoint['public_connect_info'])
         setattr(obj, 'public_domain', public_domain)
-    # if hasattr(obj, 'public_ip') and hasattr(obj.public_ip, 'eip_address'):
-    #     setattr(obj, 'floating_ip_address', obj.public_ip.eip_address)
-    #     setattr(obj, 'floating_ip_id', obj.public_ip.eip_id)
     return obj
 
 
 class Proxy(proxy.Proxy):
-
     skip_discovery = True
 
     def __init__(self, session, *args, **kwargs):
         super(Proxy, self).__init__(session=session, *args, **kwargs)
-        self.additional_headers = {"Accept": "application/json",
-                                   "Content-type": "application/json"}
+        self.additional_headers = {
+            'Accept': 'application/json',
+            'Content-type': 'application/json',
+        }
 
     # ======== Cluster ========
     def clusters(self, **query):
@@ -71,7 +68,7 @@ class Proxy(proxy.Proxy):
         obj = self._get(_cluster.Cluster, cluster)
         return _format_cluster_response(obj)
 
-    def find_cluster(self, name_or_id, ignore_missing=False):
+    def find_cluster(self, name_or_id, ignore_missing=True):
         """Find a single cluster
 
         :param name_or_id: The name or ID of a DWS cluster
@@ -84,8 +81,9 @@ class Proxy(proxy.Proxy):
         :returns:
             One :class:`~otcextensions.sdk.dws.v1.cluster.Cluster` or ``None``
         """
-        obj = self._find(_cluster.Cluster, name_or_id,
-                         ignore_missing=ignore_missing)
+        obj = self._find(
+            _cluster.Cluster, name_or_id, ignore_missing=ignore_missing
+        )
         return _format_cluster_response(obj)
 
     def create_cluster(self, **attrs):
@@ -97,9 +95,7 @@ class Proxy(proxy.Proxy):
         :returns: The results of cluster creation
         :rtype: :class:`~otcextensions.sdk.dws.v1.cluster.Cluster`
         """
-        return self._create(
-            _cluster.Cluster, **attrs
-        )
+        return self._create(_cluster.Cluster, **attrs)
 
     def restart_cluster(self, cluster):
         """Get the cluster by UUID
@@ -140,10 +136,9 @@ class Proxy(proxy.Proxy):
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return cluster.reset_password(self, new_password)
 
-    def delete_cluster(self,
-                       cluster,
-                       keep_last_manual_snapshot=0,
-                       ignore_missing=False):
+    def delete_cluster(
+        self, cluster, keep_last_manual_snapshot=0, ignore_missing=True
+    ):
         """Delete a DWS Cluster
 
         :param cluster: key id or an instance of
@@ -161,7 +156,7 @@ class Proxy(proxy.Proxy):
             _cluster.Cluster,
             cluster,
             keep_last_manual_snapshot=keep_last_manual_snapshot,
-            ignore_missing=ignore_missing
+            ignore_missing=ignore_missing,
         )
 
     # ======== Flavors ========
@@ -174,7 +169,8 @@ class Proxy(proxy.Proxy):
 
         split_url = urlsplit(self.get_endpoint())
         url = '{}://{}/v2/{}/node-types'.format(
-            split_url.scheme, split_url.netloc, self.get_project_id())
+            split_url.scheme, split_url.netloc, self.get_project_id()
+        )
         return self._list(_flavor.Flavor, base_path=url)
 
     # ======== Snapshot ========
@@ -195,11 +191,9 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.dws.v1.snapshot.Snapshot`
         """
-        return self._get(
-            _snapshot.Snapshot, snapshot
-        )
+        return self._get(_snapshot.Snapshot, snapshot)
 
-    def find_snapshot(self, name_or_id, ignore_missing=False):
+    def find_snapshot(self, name_or_id, ignore_missing=True):
         """Find a single snapshot
 
         :param name_or_id: The name or ID of a snapshot
@@ -213,8 +207,9 @@ class Proxy(proxy.Proxy):
             One :class:`~otcextensions.sdk.dws.v1.snapshot.Snapshot` or
             ``None``
         """
-        return self._find(_snapshot.Snapshot, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(
+            _snapshot.Snapshot, name_or_id, ignore_missing=ignore_missing
+        )
 
     def create_snapshot(self, **attrs):
         """Create a cluster Snapshot from attributes
@@ -225,9 +220,12 @@ class Proxy(proxy.Proxy):
         :returns: The results of cluster snapshot creation
         :rtype: :class:`~otcextensions.sdk.dws.v1.snapshot.Snapshot`
         """
-        return self._create(_snapshot.Snapshot, **attrs,)
+        return self._create(
+            _snapshot.Snapshot,
+            **attrs,
+        )
 
-    def delete_snapshot(self, snapshot, ignore_missing=False):
+    def delete_snapshot(self, snapshot, ignore_missing=True):
         """Delete a snapshot
 
         :param snapshot: key id or an instance of
@@ -240,7 +238,9 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         return self._delete(
-            _snapshot.Snapshot, snapshot, ignore_missing=ignore_missing,
+            _snapshot.Snapshot,
+            snapshot,
+            ignore_missing=ignore_missing,
         )
 
     def restore_snapshot(self, snapshot, **attrs):
@@ -255,9 +255,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.dws.v1.cluster.Cluster`
         """
         snapshot = self._get_resource(_snapshot.Snapshot, snapshot)
-        obj = self._create(
-            _snapshot.Restore, snapshot_id=snapshot.id, **attrs
-        )
+        obj = self._create(_snapshot.Restore, snapshot_id=snapshot.id, **attrs)
         if hasattr(obj, 'cluster'):
             return obj.cluster
         return obj
@@ -269,18 +267,19 @@ class Proxy(proxy.Proxy):
             or a :class:`~otcextensions.sdk.dws.v1.cluster.Cluster`
             instance.
         :param int interval:
-            Number of seconds to wait before to consecutive checks.
-            Default to 5.
+            Number of seconds to wait before two consecutive checks.
+            Default is 5.
         :param int wait:
-            Maximum number of seconds to wait before the change.
-            Default to 1800
+            Maximum number of seconds to wait for the status change.
+            Default is 1800.
         :return: ``True`` on success.
         :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
-                 has transited to one of the failure statuses.
-        :raises: :class:`~openstack.exceptions.ResourceTimeout` if transition
-                 to the desired status failed to occur in specified seconds.
+            transitions to a failure status.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` if the
+            transition to the desired status does not occur within
+            the specified time.
         """
-        to = time.time() + wait
+        end_time = time.time() + wait
 
         task_status_list = (
             'CONFIGURING_EXT_DATASOURCE',
@@ -292,36 +291,43 @@ class Proxy(proxy.Proxy):
             'SETTING_CONFIGURATION',
             'SNAPSHOTTING',
         )
-        while to > time.time():
+
+        while time.time() < end_time:
             obj = self._get(_cluster.Cluster, cluster)
             status = obj.status
             task_status = obj.task_status
             action_progress = obj.action_progress
             sub_status = obj.sub_status
+
             if status == 'CREATING':
                 LOG.debug(
                     'Still waiting for resource %s to reach state %s, '
                     'current state is %s',
-                    obj.name, 'AVAILABLE', status,
+                    obj.name,
+                    'AVAILABLE',
+                    status,
                 )
                 time.sleep(interval)
-            elif task_status in task_status_list or action_progress != {}:
+            elif task_status in task_status_list or action_progress:
                 LOG.debug(
                     'Still waiting for resource %s task_status to complete, '
                     'current task_status is %s',
-                    obj.name, task_status,
+                    obj.name,
+                    task_status,
                 )
                 time.sleep(interval)
-            elif sub_status == "NORMAL" and status == "AVAILABLE":
+            elif sub_status == 'NORMAL' and status == 'AVAILABLE':
                 return True
             else:
                 raise exceptions.ResourceFailure(
-                    f"Failed! Cluster status: {status},\n"
-                    "task_status: {task_status}\n"
-                    "sub_status: {sub_status}\n"
-                    "action_progress: {str(action_progress)}")
+                    f'Failed! Cluster status: {status} '
+                    f'task_status: {task_status} '
+                    f'sub_status: {sub_status} '
+                    f'action_progress: {action_progress}'
+                )
         raise exceptions.ResourceTimeout(
-            'Wait Timed Out. Cluster action still in progress.')
+            'Wait Timed Out. Cluster action still in progress.'
+        )
 
     def wait_for_cluster_scale_out(self, cluster, interval=5, wait=1800):
         """Wait for a Cluster Scale Out Task to Complete.
@@ -337,7 +343,7 @@ class Proxy(proxy.Proxy):
             Default to 1800
         """
         obj = self._get(_cluster.Cluster, cluster)
-        is_snapshotting = (obj.task_status == 'SNAPSHOTTING')
+        is_snapshotting = obj.task_status == 'SNAPSHOTTING'
         self.wait_for_cluster(cluster, interval, wait)
         if is_snapshotting:
             time.sleep(60)
@@ -383,8 +389,10 @@ class Proxy(proxy.Proxy):
         cluster = self._get_resource(_cluster.Cluster, cluster)
         tag_obj = _tag.Tag.existing(key=tag_key, cluster_id=cluster.id)
         return self._delete(
-            _tag.Tag, tag_obj.key, cluster_id=cluster.id,
-            ignore_missing=ignore_missing
+            _tag.Tag,
+            tag_obj.key,
+            cluster_id=cluster.id,
+            ignore_missing=ignore_missing,
         )
 
     def batch_create_cluster_tags(self, cluster, tags):

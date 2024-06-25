@@ -74,7 +74,7 @@ class Flavor(resource.Resource):
                  contains invalid params.
         """
         if not cls.allow_list:
-            raise exceptions.MethodNotSupported(cls, "list")
+            raise exceptions.MethodNotSupported(cls, 'list')
         session = cls._get_session(session)
         microversion = cls._get_microversion(session, action='list')
 
@@ -87,9 +87,10 @@ class Flavor(resource.Resource):
         # Copy query_params due to weird mock unittest interactions
         response = session.get(
             uri,
-            headers={"Accept": "application/json"},
+            headers={'Accept': 'application/json'},
             params=query_params.copy(),
-            microversion=microversion)
+            microversion=microversion,
+        )
         exceptions.raise_from_response(response)
 
         data = response.json()
@@ -98,11 +99,16 @@ class Flavor(resource.Resource):
             resources = [resources]
 
         for raw_resource in resources:
-            raw_resource.pop("self", None)
+            raw_resource.pop('self', None)
 
             for detail in raw_resource['detail']:
                 if detail['type'].lower() in (
-                        'ssd', 'sata', 'essd', 'co-p1', 'uh-l1'):
+                    'ssd',
+                    'sata',
+                    'essd',
+                    'co-p1',
+                    'uh-l1',
+                ):
                     raw_resource['disk_type'] = detail['type']
                     raw_resource['disk_size'] = detail['value']
                 else:
@@ -110,7 +116,7 @@ class Flavor(resource.Resource):
             value = cls.existing(
                 microversion=microversion,
                 connection=session._get_connection(),
-                **raw_resource
+                **raw_resource,
             )
             yield value
         else:

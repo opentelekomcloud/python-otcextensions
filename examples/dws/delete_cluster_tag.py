@@ -21,6 +21,6 @@ conn = openstack.connect(cloud='otc')
 sdk.register_otc_extensions(conn)
 
 cluster_id = 'cluster-uuid'
-tag_key = "example_key"
+tag_key = 'example_key'
 
 conn.dws.delete_cluster_tag(cluster_id, tag_key)
