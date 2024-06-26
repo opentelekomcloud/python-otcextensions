@@ -54,6 +54,8 @@ class Proxy(proxy.Proxy):
         :returns: a generator of
             (:class:`~otcextensions.sdk.dws.v1.cluster.Cluster`) instances
         """
+        if query.get('limit'):
+            query.update(paginated=False)
         return self._list(_cluster.Cluster, **query)
 
     def get_cluster(self, cluster):
