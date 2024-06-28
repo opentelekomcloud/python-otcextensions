@@ -264,13 +264,15 @@ class TestAs(base.BaseFunctionalTest):
                 return func()
             except exceptions.ConflictException as e:
                 if attempt == retries - 1:
-                    raise
+                    raise e
                 time.sleep(delay)
 
     def delete_router_with_retry(self, router_id):
         def delete_router():
             try:
-                sot = self.client_net.delete_router(router_id, ignore_missing=False)
+                sot = self.client_net.delete_router(
+                    router_id, ignore_missing=False
+                )
                 self.assertIsNone(sot)
             except exceptions.ConflictException as e:
                 raise e
