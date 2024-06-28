@@ -22,7 +22,7 @@ This interface is used to query an DWS cluster list.
 :class:`~otcextensions.sdk.dws.v1.cluster.Cluster`.
 
 .. literalinclude:: ../examples/dws/list_clusters.py
-   :lines: 16-22
+   :lines: 16-21
 
 Create DWS Cluster
 ^^^^^^^^^^^^^^^^^^

@@ -10,15 +10,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-'''DWS cluster v1 action implementations'''
+"""DWS cluster v1 action implementations"""
+
 import logging
 
+from osc_lib import exceptions
 from osc_lib import utils
 from osc_lib.cli import format_columns
 from osc_lib.command import command
-from osc_lib import exceptions
-from otcextensions.common import sdk_utils
 
+from otcextensions.common import sdk_utils
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
@@ -35,18 +36,16 @@ _formatters = {
     'public_domain': format_columns.ListColumn,
     'private_domain': format_columns.ListColumn,
     'nodes': format_columns.ListDictColumn,
-    'plugins': format_columns.ListDictColumn
+    'plugins': format_columns.ListDictColumn,
 }
 
 
 def _get_columns(item):
     column_map = {}
-    hidden = [
-        'location',
-        'plugins'
-    ]
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
-                                                           hidden)
+    hidden = ['location', 'plugins']
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(
+        item, column_map, hidden
+    )
 
 
 def set_attributes_for_print(obj):
@@ -75,7 +74,7 @@ class ListClusters(command.Lister):
         'Flavor',
         'Status',
         'Version',
-        'Created At'
+        'Created At',
     )
 
     def get_parser(self, prog_name):
@@ -87,8 +86,10 @@ class ListClusters(command.Lister):
         client = self.app.client_manager.dws
         data = client.clusters()
 
-        return (self.columns, (utils.get_item_properties(s, self.columns)
-                               for s in data))
+        return (
+            self.columns,
+            (utils.get_item_properties(s, self.columns) for s in data),
+        )
 
 
 class CreateCluster(command.ShowOne):
@@ -99,107 +100,116 @@ class CreateCluster(command.ShowOne):
         parser.add_argument(
             'name',
             metavar='<name>',
-            help=_('Cluster Name.')
+            help=_('Cluster Name.'),
         )
         parser.add_argument(
             '--flavor',
             metavar='<flavor>',
-            dest='node_type',
             required=True,
-            help=_('DWS Cluster Flavor (Node Type).')
+            help=_('DWS Cluster Flavor (Node Type).'),
         )
         parser.add_argument(
             '--availability-zone',
             metavar='<availability_zone>',
             required=True,
-            help=_('Availability Zone.')
+            help=_('Availability Zone.'),
         )
         parser.add_argument(
             '--num-nodes',
             metavar='<num_nodes>',
-            dest='number_of_node',
             type=int,
             default=3,
-            help=_('Number of cluster Nodes. The value range is 3 to 256. '
-                   'For a hybrid data warehouse (standalone), the value is 1.')
+            help=_(
+                'Number of cluster Nodes. The value range is 3 to 256. '
+                'For a hybrid data warehouse (standalone), the value is 1.'
+            ),
         )
         parser.add_argument(
             '--num-cn',
             metavar='<num_cn>',
-            dest='number_of_cn',
             type=int,
-            help=_('Number of deployed CNs. The value ranges from 2 to the '
-                   'number of cluster nodes minus 1. The maximum value is 20 '
-                   'and the default value is 3.')
+            help=_(
+                'Number of deployed CNs. The value ranges from 2 to the '
+                'number of cluster nodes minus 1. The maximum value is 20 '
+                'and the default value is 3.'
+            ),
         )
 
         network_group = parser.add_argument_group('Network Parameters')
         network_group.add_argument(
             '--router-id',
             metavar='<router_id>',
-            dest='vpc_id',
             required=True,
-            help=_('Router ID.')
+            help=_('Router ID.'),
         )
         network_group.add_argument(
             '--network-id',
             metavar='<network_id>',
-            dest='subnet_id',
             required=True,
-            help=_('Network ID.')
+            help=_('Network ID.'),
         )
         network_group.add_argument(
             '--security-group-id',
             metavar='<security_group_id>',
             required=True,
-            help=_('Security group ID.')
+            help=_('Security group ID.'),
         )
         parser.add_argument(
             '--username',
             metavar='<username>',
             dest='user_name',
             required=True,
-            help=_('Administrator username for logging in to a '
-                   'GaussDB(DWS) cluster. The username must:\n'
-                   '- Consist of lowercase letters, digits, or underscores.\n'
-                   '- Start with a lowercase letter or an underscore.\n'
-                   '- Contain 1 to 63 characters.\n'
-                   '- Cannot be a keyword of the GaussDB(DWS) database.')
+            help=_(
+                'Administrator username for logging in to a '
+                'GaussDB(DWS) cluster. The username must:\n'
+                '- Consist of lowercase letters, digits, or underscores.\n'
+                '- Start with a lowercase letter or an underscore.\n'
+                '- Contain 1 to 63 characters.\n'
+                '- Cannot be a keyword of the GaussDB(DWS) database.'
+            ),
         )
         parser.add_argument(
             '--password',
             metavar='<password>',
             dest='user_pwd',
             required=True,
-            help=_('Administrator password for logging in to a '
-                   'GaussDB(DWS) cluster.')
+            help=_(
+                'Administrator password for logging in to a '
+                'GaussDB(DWS) cluster.'
+            ),
         )
         parser.add_argument(
             '--port',
             metavar='<port>',
             default=8000,
             type=int,
-            help=_('Service port of a cluster. The value ranges from '
-                   '8000 to 30000. The default value is 8000.')
+            help=_(
+                'Service port of a cluster. The value ranges from '
+                '8000 to 30000. The default value is 8000.'
+            ),
         )
         parser.add_argument(
             '--floating-ip',
             metavar='<floating_ip>',
-            help=_('Bind Floating Ip to a DWS Cluster.\n'
-                   'Possible values can be:\n'
-                   '- "auto" - To automatically assign Floating IP.\n'
-                   '- ID or IP of existing floating ip.')
+            help=_(
+                'Bind Floating Ip to a DWS Cluster.\n'
+                'Possible values can be:\n'
+                '- "auto" - To automatically assign Floating IP.\n'
+                '- ID or IP of existing floating ip.'
+            ),
         )
         parser.add_argument(
             '--enterprise-project-id',
             metavar='<enterprise_project_id>',
-            help=_('Enterprise project. The default '
-                   'enterprise project ID is 0.')
+            help=_(
+                'Enterprise project. The default '
+                'enterprise project ID is 0.'
+            ),
         )
         parser.add_argument(
             '--wait',
             action='store_true',
-            help=('Wait for the Cluster status to be available.')
+            help=('Wait for the Cluster status to be available.'),
         )
         parser.add_argument(
             '--timeout',
@@ -212,14 +222,23 @@ class CreateCluster(command.ShowOne):
 
     @translate_response
     def take_action(self, parsed_args):
-
         client = self.app.client_manager.dws
 
         attrs = {}
-        for arg in ('name', 'vpc_id', 'subnet_id', 'security_group_id',
-                    'number_of_node', 'user_name', 'user_pwd', 'node_type',
-                    'port', 'availability_zone', 'enterprise_project_id',
-                    'number_of_cn'):
+        for arg in (
+            'name',
+            'router_id',
+            'network_id',
+            'security_group_id',
+            'num_nodes',
+            'user_name',
+            'user_pwd',
+            'flavor',
+            'port',
+            'availability_zone',
+            'enterprise_project_id',
+            'num_cn',
+        ):
             val = getattr(parsed_args, arg)
             if val:
                 attrs[arg] = val
@@ -233,8 +252,13 @@ class CreateCluster(command.ShowOne):
             }
         elif floating_ip:
             network_client = self.app.client_manager.network
-            floating_ip = network_client.find_ip(floating_ip)
-
+            floating_ip_resp = network_client.find_ip(
+                floating_ip, ignore_missing=False
+            )
+            attrs['public_ip'] = {
+                'public_bind_type': 'bind_existing',
+                'eip_id': floating_ip_resp.id,
+            }
         cluster = client.create_cluster(**attrs)
         if parsed_args.wait:
             client.wait_for_cluster(cluster.id, wait=parsed_args.timeout)
@@ -257,7 +281,7 @@ class ShowCluster(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.dws
 
-        obj = client.find_cluster(parsed_args.cluster)
+        obj = client.find_cluster(parsed_args.cluster, ignore_missing=False)
         if obj.private_ip is None:
             obj = client.get_cluster(obj.id)
         return obj
@@ -276,7 +300,7 @@ class RestartCluster(command.Command):
         parser.add_argument(
             '--wait',
             action='store_true',
-            help=('Wait for the Cluster restart action to complete.')
+            help=('Wait for the Cluster restart action to complete.'),
         )
         parser.add_argument(
             '--timeout',
@@ -289,7 +313,9 @@ class RestartCluster(command.Command):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.dws
-        cluster = client.find_cluster(parsed_args.cluster)
+        cluster = client.find_cluster(
+            parsed_args.cluster, ignore_missing=False
+        )
         client.restart_cluster(cluster)
         if parsed_args.wait:
             client.wait_for_cluster(cluster.id, wait=parsed_args.timeout)
@@ -309,24 +335,28 @@ class ResetPassword(command.Command):
             '--password',
             metavar='<password>',
             required=True,
-            help=_('New password of the GaussDB(DWS) cluster administrator.\n'
-                   'A password must conform to the following rules:\n'
-                   '- Contains 8 to 32 characters.\n'
-                   '- Cannot be the same as the username or the username '
-                   'written in reverse order.\n'
-                   '- Contains at least three types of the following:\n'
-                   '- > Lowercase letters\n'
-                   '- > Uppercase letters\n'
-                   '- > Digits\n'
-                   '- > Special characters\n'
-                   '- Cannot be the same as previous passwords.\n'
-                   '- Cannot be a weak password.'),
+            help=_(
+                'New password of the GaussDB(DWS) cluster administrator.\n'
+                'A password must conform to the following rules:\n'
+                '- Contains 8 to 32 characters.\n'
+                '- Cannot be the same as the username or the username '
+                'written in reverse order.\n'
+                '- Contains at least three types of the following:\n'
+                '- > Lowercase letters\n'
+                '- > Uppercase letters\n'
+                '- > Digits\n'
+                '- > Special characters\n'
+                '- Cannot be the same as previous passwords.\n'
+                '- Cannot be a weak password.'
+            ),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.dws
-        cluster = client.find_cluster(parsed_args.cluster)
+        cluster = client.find_cluster(
+            parsed_args.cluster, ignore_missing=False
+        )
         return client.reset_password(cluster, parsed_args.password)
 
 
@@ -350,7 +380,7 @@ class ScaleOutCluster(command.Command):
         parser.add_argument(
             '--wait',
             action='store_true',
-            help=('Wait for the Cluster Scaling Task to complete.')
+            help=('Wait for the Cluster Scaling Task to complete.'),
         )
         parser.add_argument(
             '--timeout',
@@ -363,7 +393,9 @@ class ScaleOutCluster(command.Command):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.dws
-        cluster = client.find_cluster(parsed_args.cluster)
+        cluster = client.find_cluster(
+            parsed_args.cluster, ignore_missing=False
+        )
         client.scale_out_cluster(cluster, parsed_args.add_nodes)
         if parsed_args.wait:
             client.wait_for_cluster_scale_out(
@@ -380,15 +412,17 @@ class DeleteCluster(command.Command):
             'cluster',
             metavar='<cluster>',
             nargs='+',
-            help=_("ID or Name of the DWS cluster(s) to be deleted."),
+            help=_('ID or Name of the DWS cluster(s) to be deleted.'),
         )
         parser.add_argument(
             '--keep-last-manual-snapshot',
             metavar='<keep_last_manual_snapshot>',
             type=int,
             default=0,
-            help=_('The number of latest manual snapshots that need '
-                   'to be retained for a cluster.'),
+            help=_(
+                'The number of latest manual snapshots that need '
+                'to be retained for a cluster.'
+            ),
         )
         return parser
 
@@ -399,14 +433,20 @@ class DeleteCluster(command.Command):
             try:
                 cluster = client.find_cluster(name_or_id, ignore_missing=False)
                 client.delete_cluster(
-                    cluster.id, parsed_args.keep_last_manual_snapshot)
+                    cluster.id, parsed_args.keep_last_manual_snapshot
+                )
             except Exception as e:
                 result += 1
-                LOG.error(_("Failed to delete cluster(s) with "
-                          "ID or Name '%(cluster)s': %(e)s"),
-                          {'cluster': name_or_id, 'e': e})
+                LOG.error(
+                    _(
+                        'Failed to delete cluster(s) with '
+                        "ID or Name '%(cluster)s': %(e)s"
+                    ),
+                    {'cluster': name_or_id, 'e': e},
+                )
         if result > 0:
             total = len(parsed_args.cluster)
-            msg = (_("%(result)s of %(total)s Cluster(s) failed "
-                   "to delete.") % {'result': result, 'total': total})
+            msg = _(
+                '%(result)s of %(total)s Cluster(s) failed ' 'to delete.'
+            ) % {'result': result, 'total': total}
             raise exceptions.CommandError(msg)

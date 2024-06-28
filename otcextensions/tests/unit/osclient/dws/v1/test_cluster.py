@@ -10,16 +10,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-import mock
 from unittest.mock import call
 
+import mock
+from openstackclient.tests.unit import utils as tests_utils
 from osc_lib import exceptions
-# from osc_lib.cli import format_columns
 
 from otcextensions.osclient.dws.v1 import cluster
 from otcextensions.tests.unit.osclient.dws.v1 import fakes
 
-from openstackclient.tests.unit import utils as tests_utils
+# from osc_lib.cli import format_columns
 
 
 _COLUMNS = (
@@ -58,12 +58,11 @@ _COLUMNS = (
     'task_status',
     'updated_at',
     'user_name',
-    'version'
+    'version',
 )
 
 
 class TestListClusters(fakes.TestDws):
-
     objects = fakes.FakeCluster.create_multiple(3)
 
     column_list_headers = (
@@ -73,7 +72,7 @@ class TestListClusters(fakes.TestDws):
         'Flavor',
         'Status',
         'Version',
-        'Created At'
+        'Created At',
     )
 
     columns = (
@@ -83,7 +82,7 @@ class TestListClusters(fakes.TestDws):
         'flavor',
         'status',
         'version',
-        'created_at'
+        'created_at',
     )
 
     data = []
@@ -130,7 +129,6 @@ class TestListClusters(fakes.TestDws):
 
 
 class TestCreateCluster(fakes.TestDws):
-
     _cluster = fakes.FakeCluster.create_one()
 
     columns = _COLUMNS
@@ -157,25 +155,25 @@ class TestCreateCluster(fakes.TestDws):
             '--security-group-id', 'sg-uuid',
             '--num-nodes', '3',
             '--num-cn', '2',
-            '--port', '9000',
+            '--port', '8000',
             '--username', 'dbadmin',
-            '--password', 'testtest',
+            '--password', 'testtest!',
             '--enterprise-project-id', 'enterprise-uuid',
             '--availability-zone', 'test-az',
             '--floating-ip', 'auto',
-            '--wait'
+            '--wait',
         ]
         verifylist = [
             ('name', 'test-dws'),
-            ('node_type', 'dws-flavor'),
-            ('vpc_id', 'router-uuid'),
-            ('subnet_id', 'network-uuid'),
+            ('flavor', 'dws-flavor'),
+            ('router_id', 'router-uuid'),
+            ('network_id', 'network-uuid'),
             ('security_group_id', 'sg-uuid'),
-            ('number_of_node', 3),
-            ('number_of_cn', 2),
-            ('port', 9000),
+            ('num_nodes', 3),
+            ('num_cn', 2),
+            ('port', 8000),
             ('user_name', 'dbadmin'),
-            ('user_pwd', 'testtest'),
+            ('user_pwd', 'testtest!'),
             ('enterprise_project_id', 'enterprise-uuid'),
             ('availability_zone', 'test-az'),
             ('floating_ip', 'auto'),
@@ -188,15 +186,15 @@ class TestCreateCluster(fakes.TestDws):
         columns, data = self.cmd.take_action(parsed_args)
         attrs = {
             'name': 'test-dws',
-            'number_of_node': 3,
-            'number_of_cn': 2,
-            'node_type': 'dws-flavor',
-            'vpc_id': 'router-uuid',
-            'subnet_id': 'network-uuid',
+            'num_nodes': 3,
+            'num_cn': 2,
+            'flavor': 'dws-flavor',
+            'router_id': 'router-uuid',
+            'network_id': 'network-uuid',
             'security_group_id': 'sg-uuid',
             'user_name': 'dbadmin',
-            'user_pwd': 'testtest',
-            'port': 9000,
+            'user_pwd': 'testtest!',
+            'port': 8000,
             'enterprise_project_id': 'enterprise-uuid',
             'availability_zone': 'test-az',
             'public_ip': {
@@ -206,14 +204,14 @@ class TestCreateCluster(fakes.TestDws):
         }
         self.client.create_cluster.assert_called_with(**attrs)
         self.client.wait_for_cluster.assert_called_with(
-            self._cluster.id, wait=self.default_timeout)
+            self._cluster.id, wait=self.default_timeout
+        )
         self.client.get_cluster.assert_called_with(self._cluster.id)
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
 
 
 class TestRestartCluster(fakes.TestDws):
-
     _cluster = fakes.FakeCluster.create_one()
 
     default_timeout = 300
@@ -243,15 +241,17 @@ class TestRestartCluster(fakes.TestDws):
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
-        self.client.find_cluster.assert_called_with(self._cluster.name)
+        self.client.find_cluster.assert_called_with(
+            self._cluster.name, ignore_missing=False
+        )
         self.client.restart_cluster.assert_called_with(self._cluster)
         self.client.wait_for_cluster.assert_called_with(
-            self._cluster.id, wait=self.default_timeout)
+            self._cluster.id, wait=self.default_timeout
+        )
         self.assertIsNone(result)
 
 
 class TestClusterPasswordReset(fakes.TestDws):
-
     _cluster = fakes.FakeCluster.create_one()
 
     def setUp(self):
@@ -263,10 +263,7 @@ class TestClusterPasswordReset(fakes.TestDws):
         self.client.reset_password = mock.Mock(return_value=None)
 
     def test_password_reset(self):
-        arglist = [
-            self._cluster.name,
-            '--password', 'TestPasswordReset'
-        ]
+        arglist = [self._cluster.name, '--password', 'TestPasswordReset']
 
         verifylist = [
             ('cluster', self._cluster.name),
@@ -278,14 +275,16 @@ class TestClusterPasswordReset(fakes.TestDws):
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
-        self.client.find_cluster.assert_called_with(self._cluster.name)
-        self.client.reset_password.assert_called_with(self._cluster,
-                                                      'TestPasswordReset')
+        self.client.find_cluster.assert_called_with(
+            self._cluster.name, ignore_missing=False
+        )
+        self.client.reset_password.assert_called_with(
+            self._cluster, 'TestPasswordReset'
+        )
         self.assertIsNone(result)
 
 
 class TestScaleOutCluster(fakes.TestDws):
-
     _cluster = fakes.FakeCluster.create_one()
 
     default_timeout = 1800
@@ -302,7 +301,8 @@ class TestScaleOutCluster(fakes.TestDws):
     def test_scale_out(self):
         arglist = [
             self._cluster.name,
-            '--add-nodes', '2',
+            '--add-nodes',
+            '2',
             '--wait',
         ]
 
@@ -317,16 +317,18 @@ class TestScaleOutCluster(fakes.TestDws):
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
-        self.client.find_cluster.assert_called_with(self._cluster.name)
+        self.client.find_cluster.assert_called_with(
+            self._cluster.name, ignore_missing=False
+        )
         self.client.scale_out_cluster.assert_called_with(self._cluster, 2)
         self.client.wait_for_cluster_scale_out.assert_called_with(
-            self._cluster.id, wait=self.default_timeout)
+            self._cluster.id, wait=self.default_timeout
+        )
 
         self.assertIsNone(result)
 
 
 class TestShowCluster(fakes.TestDws):
-
     _cluster = fakes.FakeCluster.create_one()
     columns = _COLUMNS
     data = fakes.gen_data(_cluster, columns, cluster._formatters)
@@ -345,8 +347,13 @@ class TestShowCluster(fakes.TestDws):
 
         # Testing that a call without the required argument will fail and
         # throw a "ParserExecption"
-        self.assertRaises(tests_utils.ParserException,
-                          self.check_parser, self.cmd, arglist, verifylist)
+        self.assertRaises(
+            tests_utils.ParserException,
+            self.check_parser,
+            self.cmd,
+            arglist,
+            verifylist,
+        )
 
     def test_show(self):
         arglist = [
@@ -362,7 +369,9 @@ class TestShowCluster(fakes.TestDws):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.find_cluster.assert_called_with(self._cluster.id)
+        self.client.find_cluster.assert_called_with(
+            self._cluster.id, ignore_missing=False
+        )
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -380,20 +389,19 @@ class TestShowCluster(fakes.TestDws):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         find_mock_result = exceptions.CommandError('Resource Not Found')
-        self.client.find_cluster = (
-            mock.Mock(side_effect=find_mock_result)
-        )
+        self.client.find_cluster = mock.Mock(side_effect=find_mock_result)
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
             self.assertEqual('Resource Not Found', str(e))
-        self.client.find_cluster.assert_called_with('unexist_dws_cluster')
+        self.client.find_cluster.assert_called_with(
+            'unexist_dws_cluster', ignore_missing=False
+        )
 
 
 class TestDeleteCluster(fakes.TestDws):
-
     _cluster = fakes.FakeCluster.create_multiple(2)
 
     def setUp(self):
@@ -421,7 +429,8 @@ class TestDeleteCluster(fakes.TestDws):
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
         self.client.find_cluster.assert_called_with(
-            self._cluster[0].name, ignore_missing=False)
+            self._cluster[0].name, ignore_missing=False
+        )
         self.client.delete_cluster.assert_called_with(self._cluster[0].id, 0)
         self.assertIsNone(result)
 
@@ -440,9 +449,7 @@ class TestDeleteCluster(fakes.TestDws):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         find_mock_results = self._cluster
-        self.client.find_cluster = (
-            mock.Mock(side_effect=find_mock_results)
-        )
+        self.client.find_cluster = mock.Mock(side_effect=find_mock_results)
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
@@ -470,9 +477,7 @@ class TestDeleteCluster(fakes.TestDws):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         find_mock_results = [self._cluster[0], exceptions.CommandError]
-        self.client.find_cluster = (
-            mock.Mock(side_effect=find_mock_results)
-        )
+        self.client.find_cluster = mock.Mock(side_effect=find_mock_results)
 
         # Trigger the action
         try:

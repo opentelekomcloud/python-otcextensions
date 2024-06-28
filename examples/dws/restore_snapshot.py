@@ -19,15 +19,15 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
 attrs = {
-    "name": "dws-1",
-    "availability_zone": "eu-de-01",
-    "port": 8000,
-    "vpc_id": "router-uuid",
-    "subnet_id": "network-uuid",
-    "security_group_id": "security-group-uuid",
-    "public_ip": {
-        "public_bind_type": "auto_assign",
-        "eip_id": ""
+    'name': 'dws-1',
+    'availability_zone': 'eu-de-01',
+    'port': 8000,
+    'vpc_id': 'router-uuid',
+    'subnet_id': 'network-uuid',
+    'security_group_id': 'security-group-uuid',
+    'public_ip': {
+        'public_bind_type': 'auto_assign',
+        'eip_id': ''
     }
 }
 
