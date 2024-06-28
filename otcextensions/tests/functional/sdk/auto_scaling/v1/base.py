@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import os
+import time
 import uuid
 
 import fixtures
@@ -105,19 +106,8 @@ class TestAs(base.BaseFunctionalTest):
         keypair = self.conn.compute.delete_keypair(keypair=kp_name)
         self.assertIsNone(keypair)
         TestAs.KEYPAIR = None
-
-        router = self.client_net.get_router(router_id)
-        interface = router.remove_interface(
-            self.conn.network,
-            subnet_id=subnet_id
-        )
-        self.assertEqual(interface['subnet_id'], subnet_id)
-        self.assertIn('port_id', interface)
-        sot = self.client_net.delete_router(
-            router_id,
-            ignore_missing=False
-        )
-        self.assertIsNone(sot)
+        self.delete_router_interface_with_retry(router_id, subnet_id)
+        self.delete_router_with_retry(router_id)
         sot = self.client_net.delete_subnet(
             subnet_id,
             ignore_missing=False
@@ -266,3 +256,38 @@ class TestAs(base.BaseFunctionalTest):
         self.delete_instance()
         self.delete_as_group()
         self.delete_as_config()
+
+    def retry(self, func, retries=3, delay=5):
+        """Retry a function multiple times with a delay."""
+        for attempt in range(retries):
+            try:
+                return func()
+            except exceptions.ConflictException as e:
+                if attempt == retries - 1:
+                    raise
+                time.sleep(delay)
+
+    def delete_router_with_retry(self, router_id):
+        def delete_router():
+            try:
+                sot = self.client_net.delete_router(router_id, ignore_missing=False)
+                self.assertIsNone(sot)
+            except exceptions.ConflictException as e:
+                raise e
+
+        self.retry(delete_router)
+
+    def delete_router_interface_with_retry(self, router_id, subnet_id):
+        def delete_interface():
+            try:
+                router = self.client_net.get_router(router_id)
+                interface = router.remove_interface(
+                    self.conn.network,
+                    subnet_id=subnet_id
+                )
+                self.assertEqual(interface['subnet_id'], subnet_id)
+                self.assertIn('port_id', interface)
+            except exceptions.ConflictException as e:
+                raise e
+
+        self.retry(delete_interface)
