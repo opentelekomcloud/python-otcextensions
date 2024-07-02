@@ -225,6 +225,11 @@ OTC_SERVICES = {
         'service_type': 'swr',
         'endpoint_service_type': 'swrv2'
     },
+    's3': {
+        'service_type': 's3',
+        'endpoint_service_type': 'object',
+        'set_endpoint_override': True
+    },
     'tms': {
         'service_type': 'tms'
     },
