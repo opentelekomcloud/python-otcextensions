@@ -50,6 +50,14 @@ OTC_SERVICES = {
         'append_project_id': True,
         'endpoint_service_type': 'antiddos',
     },
+    'aomv1': {
+        'service_type': 'aomv1',
+        'endpoint_service_type': 'aomv1'
+    },
+    'aomv2': {
+        'service_type': 'aomv2',
+        'endpoint_service_type': 'aomv2'
+    },
     'auto_scaling': {
         'service_type': 'auto_scaling',
         'endpoint_service_type': 'as',
