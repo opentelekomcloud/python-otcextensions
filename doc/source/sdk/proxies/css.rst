@@ -25,6 +25,6 @@ Cluster Snapshot Operations
 
 .. autoclass:: otcextensions.sdk.css.v1._proxy.Proxy
   :noindex:
-  :members: snapshots, create_snapshot, get_snapshot_policy, set_snapshot_policy,
-            set_snapshot_configuration, disable_snapshot_function,
-            restore_snapshot, delete_snapshot
+  :members: snapshots, find_snapshot, create_snapshot, get_snapshot_policy,
+            set_snapshot_policy, set_snapshot_configuration,
+            disable_snapshot_function, restore_snapshot, delete_snapshot

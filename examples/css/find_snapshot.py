@@ -11,23 +11,18 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Set CSS Cluster Snapshot Basic Configuration
+Get details of CSS Cluster Snapshot by name_or_id
 """
 
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud='bigdataai')
 
-cluster_id = 'cluster-uuid'
-
-# Set Cluster Snapshot Configuration automatically.
-conn.css.set_snapshot_configuration(cluster_id, auto_configure=True)
-
-# Set Cluster Snapshot Configuration with custom bucket & agency.
-attrs = {
-    'bucket': 'css-backup-1626212749424',
-    'agency': 'css_obs_agency',
-    'backup_path': 'css/repository/test-css',
-}
-conn.css.set_snapshot_configuration(cluster_id, **attrs)
+cluster_name_or_id = 'asomogyi_0509'
+snapshot_name_or_id = 'snapshot-2037'
+cluster = conn.css.find_cluster(cluster_name_or_id, ignore_missing=False)
+snapshot = conn.css.find_snapshot(
+    cluster, snapshot_name_or_id, ignore_missing=False
+)
+print(snapshot)

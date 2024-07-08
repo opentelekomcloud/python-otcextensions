@@ -19,45 +19,44 @@ from openstack.tests.unit import base
 from otcextensions.sdk.css.v1 import snapshot
 
 EXAMPLE = {
-    "created": "2018-03-07T07:34:47",
-    "datastore": {"type": "elasticsearch", "version": "7.6.2"},
-    "description": "",
-    "id": uuid.uuid4().hex,
-    "clusterId": uuid.uuid4().hex,
-    "clusterName": "Es-xfx",
-    "name": "snapshot-002",
-    "status": "COMPLETED",
-    "updated": "2018-03-07T07:40:12",
-    "backupType": "1",
-    "backupMethod": "manual",
-    "backupExpectedStartTime": None,
-    "backupKeepDay": None,
-    "backupPeriod": None,
-    "indices": ".kibana,website2",
-    "totalShards": 6,
-    "failedShards": 0,
-    "version": "7.6.2",
-    "restoreStatus": "success",
-    "startTime": 1520408087099,
-    "endTime": 1520408412219,
-    "bucketName": "obs-b8ed",
+    'created': '2018-03-07T07:34:47',
+    'datastore': {'type': 'elasticsearch', 'version': '7.6.2'},
+    'description': '',
+    'id': uuid.uuid4().hex,
+    'clusterId': uuid.uuid4().hex,
+    'clusterName': 'Es-xfx',
+    'name': 'snapshot-002',
+    'status': 'COMPLETED',
+    'updated': '2018-03-07T07:40:12',
+    'backupType': '1',
+    'backupMethod': 'manual',
+    'backupExpectedStartTime': None,
+    'backupKeepDay': None,
+    'backupPeriod': None,
+    'indices': '.kibana,website2',
+    'totalShards': 6,
+    'failedShards': 0,
+    'version': '7.6.2',
+    'restoreStatus': 'success',
+    'startTime': 1520408087099,
+    'endTime': 1520408412219,
+    'bucketName': 'obs-b8ed',
 }
 
 EXAMPLE_POLICY = {
-    "keepday": 2,
-    "period": "16:00 GMT+08:00",
-    "prefix": "snapshot",
-    "bucket": "es-backup",
-    "basePath": "css_repository/tests",
-    "agency": "usearch",
-    "enable": "true",
-    "indeices": "*",
-    "snapshotCmkId": uuid.uuid4().hex,
+    'keepday': 2,
+    'period': '16:00 GMT+08:00',
+    'prefix': 'snapshot',
+    'bucket': 'es-backup',
+    'basePath': 'css_repository/tests',
+    'agency': 'usearch',
+    'enable': 'true',
+    'indeices': '*',
+    'snapshotCmkId': uuid.uuid4().hex,
 }
 
 
 class TestSnapshot(base.TestCase):
-
     def setUp(self):
         super(TestSnapshot, self).setUp()
         self.sess = mock.Mock(spec=adapter.Adapter)
@@ -120,8 +119,8 @@ class TestSnapshot(base.TestCase):
         sot = snapshot.Snapshot.existing(id=EXAMPLE['id'])
         cluster_id = uuid.uuid4().hex
         json_body = {
-            "targetCluster": uuid.uuid4().hex,
-            "indices": "myindex1,myindex2",
+            'targetCluster': uuid.uuid4().hex,
+            'indices': 'myindex1,myindex2',
         }
         response = mock.Mock()
         response.status_code = 201
@@ -138,7 +137,6 @@ class TestSnapshot(base.TestCase):
 
 
 class TestSnapshotPolicy(base.TestCase):
-
     def setUp(self):
         super(TestSnapshotPolicy, self).setUp()
 
@@ -167,7 +165,6 @@ class TestSnapshotPolicy(base.TestCase):
 
 
 class TestSnapshotConfiguration(base.TestCase):
-
     def setUp(self):
         super(TestSnapshotConfiguration, self).setUp()
         self.sess = mock.Mock(spec=adapter.Adapter)
@@ -186,9 +183,7 @@ class TestSnapshotConfiguration(base.TestCase):
         self.assertFalse(sot.allow_commit)
 
     def test_disable(self):
-        sot = snapshot.SnapshotConfiguration.existing(
-            cluster_id=EXAMPLE['id']
-        )
+        sot = snapshot.SnapshotConfiguration.existing(cluster_id=EXAMPLE['id'])
         response = mock.Mock()
         response.status_code = 200
         response.headers = {}
