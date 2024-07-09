@@ -14,20 +14,18 @@
 from openstack import resource
 
 
-class AsyncJob(resource.Resource):
-    allow_fetch = True
+class ImageExport(resource.Resource):
+    base_path = '/cloudimages/%(image_id)s/file'
+
+    allow_create = True
     requires_id = False
 
-    project_id = resource.Body('project_id')
+    image_id = resource.URI('image_id')
+    bucket_url = resource.Body('bucket_url')
+    file_format = resource.Body('file_format')
+    is_quick_export = resource.Body('is_quick_export', type=bool)
     job_id = resource.Body('job_id')
-    status = resource.Body('status')
-    job_type = resource.Body('job_type')
-    begin_time = resource.Body('begin_time')
-    end_time = resource.Body('end_time')
-    error_code = resource.Body('error_code')
-    fail_reason = resource.Body('fail_reason')
-    entities = resource.Body('entities', type=list)
 
-    def get(self, session, prepend_key=False, base_path=None):
+    def create(self, session, prepend_key=False, base_path=None):
         # Overriden here to override prepend_key default value
-        return super(AsyncJob, self).get(session, prepend_key, base_path)
+        return super(ImageExport, self).create(session, prepend_key, base_path)

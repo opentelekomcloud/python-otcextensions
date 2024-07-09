@@ -27,6 +27,7 @@ class Image(resource.Resource):
     os_type = resource.Body('os_type')
     os_version = resource.Body('os_version')
     image_url = resource.Body('image_url')
+    instance_id = resource.Body('instance_id')
     min_disk = resource.Body('min_disk', type=int)
     is_config = resource.Body('is_config', type=bool)
     cmk_id = resource.Body('cmk_id')
