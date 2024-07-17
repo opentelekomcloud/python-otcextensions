@@ -113,6 +113,18 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
             },
         )
 
+    def test_find_snapshot(self):
+        self._verify(
+            'openstack.proxy.Proxy._find',
+            self.proxy.find_snapshot,
+            method_args=['cluster-uuid', 'snapshot-uuid'],
+            expected_args=[_snapshot.Snapshot, 'snapshot-uuid'],
+            expected_kwargs={
+                'base_path': '/clusters/cluster-uuid/index_snapshots',
+                'ignore_missing': True,
+            },
+        )
+
     def test_delete_snapshot(self):
         self._verify(
             "openstack.proxy.Proxy._delete",

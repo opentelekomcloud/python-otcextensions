@@ -445,6 +445,8 @@ class TestConfigureSnapshot(fakes.TestCss):
     def test_configure(self):
         arglist = [
             self._cluster.name,
+            '--backup-path',
+            'css_repository/test-css',
             '--bucket',
             'test-bucket',
             '--agency',
@@ -454,6 +456,7 @@ class TestConfigureSnapshot(fakes.TestCss):
         ]
         verifylist = [
             ('cluster', self._cluster.name),
+            ('backup_path', 'css_repository/test-css'),
             ('bucket', 'test-bucket'),
             ('agency', 'test-agency'),
             ('cmk_id', 'cmk-uuid'),
@@ -461,6 +464,7 @@ class TestConfigureSnapshot(fakes.TestCss):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         attrs = {
+            'backup_path': 'css_repository/test-css',
             'bucket': 'test-bucket',
             'agency': 'test-agency',
             'snapshotCmkId': 'cmk-uuid',

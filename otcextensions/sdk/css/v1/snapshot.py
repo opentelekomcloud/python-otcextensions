@@ -9,6 +9,8 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import typing as ty
+
 from openstack import exceptions
 from openstack import resource
 from openstack import utils
@@ -16,13 +18,12 @@ from otcextensions.common import format as otc_format
 
 
 class Snapshot(resource.Resource):
-
     base_path = '/clusters/%(uri_cluster_id)s/index_snapshot'
-    # base_path = '/clusters/%(cluster_id}s/index_snapshot'
 
     resource_key = 'backup'
     resources_key = 'backups'
 
+    # capabilities
     allow_create = True
     allow_delete = True
     allow_list = True
@@ -31,6 +32,7 @@ class Snapshot(resource.Resource):
     #: ID of the cluster where index data is to be backed up.
     uri_cluster_id = resource.URI('uri_cluster_id')
 
+    # Properties
     #: Snapshot retention period.
     backup_keep_days = resource.Body('backupKeepDay', type=int)
     #: Snapshot creation mode.
@@ -78,6 +80,73 @@ class Snapshot(resource.Resource):
     #: Version of the snapshot.
     version = resource.Body('version')
 
+    @classmethod
+    def find(
+        cls,
+        session,
+        name_or_id: str,
+        ignore_missing: bool = True,
+        list_base_path: ty.Optional[str] = None,
+        *,
+        microversion: ty.Optional[str] = None,
+        all_projects: ty.Optional[bool] = None,
+        **params,
+    ):
+        """Find a resource by its name or id.
+
+        :param session: The session to use for making this request.
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :param name_or_id: This resource's identifier, if needed by
+            the request. The default is ``None``.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
+            the resource does not exist.  When set to ``True``, None will be
+            returned when attempting to find a nonexistent resource.
+        :param str list_base_path: base_path to be used when need listing
+            resources.
+        :param str microversion: API version to override the negotiated one.
+        :param dict params: Any additional parameters to be passed into
+            underlying methods, such as to
+            :meth:`~openstack.resource.Resource.existing` in order to pass on
+            URI parameters.
+
+        :return: The :class:`Resource` object matching the given name or id
+            or None if nothing matches.
+        :raises: :class:`openstack.exceptions.DuplicateResource` if more
+            than one resource is found for this request.
+        :raises: :class:`openstack.exceptions.ResourceNotFound` if nothing
+            is found and ignore_missing is ``False``.
+        """
+        session = cls._get_session(session)
+
+        if list_base_path:
+            params['base_path'] = list_base_path
+
+        # all_projects is a special case that is used by multiple services. We
+        # handle it here since it doesn't make sense to pass it to the .fetch
+        # call above
+        if all_projects is not None:
+            params['all_projects'] = all_projects
+
+        if (
+            'name' in cls._query_mapping._mapping.keys()
+            and 'name' not in params
+        ):
+            params['name'] = name_or_id
+
+        data = cls.list(session, **params)
+
+        result = cls._get_one_match(name_or_id, data)
+        if result is not None:
+            return result
+
+        if ignore_missing:
+            return None
+
+        raise exceptions.ResourceNotFound(
+            f'No {cls.__name__} found for {name_or_id}'
+        )
+
     def create(self, session, base_path=None):
         # This overrides the default behavior of resource creation because
         # backup create doesn't accept resource_key in its request.
@@ -95,7 +164,6 @@ class Snapshot(resource.Resource):
 
 
 class SnapshotPolicy(resource.Resource):
-
     base_path = '/clusters/%(cluster_id)s/index_snapshot/policy'
 
     allow_create = True
@@ -128,7 +196,6 @@ class SnapshotPolicy(resource.Resource):
 
 
 class SnapshotConfiguration(resource.Resource):
-
     base_path = '/clusters/%(cluster_id)s/index_snapshot/%(setting)s'
 
     allow_create = True
@@ -138,6 +205,8 @@ class SnapshotConfiguration(resource.Resource):
     #: Setting -> auto_setting or custom setting
     setting = resource.URI('setting')
 
+    #: Storage path of the snapshot in the OBS bucket.
+    backup_path = resource.Body('basePath')
     #: OBS bucket used for index data backup.
     bucket_name = resource.Body('bucket')
     #: IAM agency used to access OBS.

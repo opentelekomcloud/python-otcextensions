@@ -38,6 +38,8 @@ class Proxy(proxy.Proxy):
         :returns: a generator of
             (:class:`~otcextensions.sdk.css.v1.cluster.Cluster`) instances
         """
+        if query.get('limit'):
+            query.update(paginated=False)
         return self._list(_cluster.Cluster, **query)
 
     def get_cluster(self, cluster):
@@ -80,7 +82,7 @@ class Proxy(proxy.Proxy):
         return self._create(_cluster.Cluster, **attrs)
 
     def restart_cluster(self, cluster):
-        """Get the cluster by UUID
+        """Restart a cluster.
 
         :param cluster: key id or an instance of
             :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
@@ -168,6 +170,30 @@ class Proxy(proxy.Proxy):
             _snapshot.Snapshot, uri_cluster_id=cluster.id, **attrs
         )
 
+    def find_snapshot(self, cluster, name_or_id, ignore_missing=True):
+        """Find a single snapshot
+
+        :param cluster: key id or an instance of
+            :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
+        :param name_or_id: The name or ID of a snapshot
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be raised
+            if the snapshot does not exist.
+            When set to ``True``, no exception will be set when attempting
+            to find a nonexistent snapshot.
+
+        :returns:
+            One :class:`~otcextensions.sdk.dws.v1.snapshot.Snapshot` or
+            ``None``
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return self._find(
+            _snapshot.Snapshot,
+            name_or_id,
+            base_path=f'/clusters/{cluster.id}/index_snapshots',
+            ignore_missing=ignore_missing,
+        )
+
     def delete_snapshot(self, cluster, snapshot, ignore_missing=True):
         """Delete a snapshot
 
@@ -217,7 +243,7 @@ class Proxy(proxy.Proxy):
             **attrs,
         )
 
-    def disable_snapshot_function(self, cluster, ignore_missing=False):
+    def disable_snapshot_function(self, cluster):
         """Disable the snapshot function of a cluster.
 
         :param cluster: key id or an instance of
@@ -293,12 +319,12 @@ class Proxy(proxy.Proxy):
         org_timeout = timeout
         while timeout > 0:
             obj = self.get_cluster(cluster)
+            if getattr(obj, 'error'):
+                raise exceptions.SDKException(obj.error)
             if obj.status_code == 100:
                 pass
             elif obj.actions == [] and obj.action_progress == {}:
                 return True
-            if getattr(obj, 'error'):
-                raise exceptions.SDKException(obj.error)
             self.log.debug(
                 'Still waiting for resource %s to reach state %s, '
                 'current state is %s'

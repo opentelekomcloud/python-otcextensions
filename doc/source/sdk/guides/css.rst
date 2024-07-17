@@ -108,6 +108,15 @@ by id or an instance of cluster class.
 .. literalinclude:: ../examples/css/list_snapshots.py
    :lines: 16-23
 
+Find Snapshot
+^^^^^^^^^^^^^
+
+This interface is used to find a CSS snapshot by id or name.
+:class:`~otcextensions.sdk.css.v1.cluster.Cluster`.
+
+.. literalinclude:: ../examples/css/find_snapshot.py
+   :lines: 17-28
+
 Create Snapshot
 ^^^^^^^^^^^^^^^
 
@@ -168,7 +177,7 @@ IAM agency.
 :class:`~otcextensions.sdk.css.v1.snapshot.SnapshotConfiguration`.
 
 .. literalinclude:: ../examples/css/set_snapshot_configuration.py
-   :lines: 16-31
+   :lines: 16-33
 
 Disable Snapshot Function
 ^^^^^^^^^^^^^^^^^^^^^^^^^
