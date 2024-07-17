@@ -34,7 +34,7 @@ class Imsv1Service(service_description.ServiceDescription):
         version_string = config.get_api_version('imsv1') or '1'
         endpoint_override = config.get_endpoint(self.service_type)
         ep = config.get_service_catalog().url_for(
-            service_type=self.service_type,
+            service_type='image',
             region_name=config.region_name)
 
         epo = '%(base)s/v%(ver)s' % {

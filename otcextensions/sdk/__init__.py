@@ -165,11 +165,9 @@ OTC_SERVICES = {
     },
     'imsv1': {
         'service_type': 'imsv1',
-        'endpoint_service_type': 'image',
     },
     'imsv2': {
         'service_type': 'imsv2',
-        'endpoint_service_type': 'image',
     },
     'kms': {
         'service_type': 'kms',

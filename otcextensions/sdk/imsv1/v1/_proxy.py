@@ -11,17 +11,30 @@
 # under the License.
 from openstack import proxy
 from otcextensions.sdk.imsv1.v1 import async_job as _async_job
+from otcextensions.sdk.imsv1.v1 import image_export as _image_export
 
 
 class Proxy(proxy.Proxy):
     skip_discovery = True
 
-    def get_async_job(self, project_id, job_id, **attrs):
+    def get_async_job(self, job_id):
         """Get an asynchronous job
 
         :returns: One
              :class:`~otcextensions.sdk.imsv2.v1.async_job.AsyncJob`
         """
-        base_path = f'/{project_id}/jobs/{job_id}'
-        return self._get(_async_job.AsyncJob, requires_id=False,
-                         base_path=base_path)
+        attrs = {
+            'id': job_id
+        }
+        base_path = '{project_id}/jobs'.format(
+            project_id=self.session.get_project_id()
+        )
+        return self._get(_async_job.AsyncJob, base_path=base_path, **attrs)
+
+    def export_image(self, **attrs):
+        """Export an image
+
+        :returns: One
+             :class:`~otcextensions.sdk.imsv1.v1.image_export.ImageExport`
+        """
+        return self._create(_image_export.ImageExport, **attrs)
