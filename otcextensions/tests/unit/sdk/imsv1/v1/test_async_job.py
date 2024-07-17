@@ -29,7 +29,7 @@ class TestAsyncJob(base.TestCase):
 
     def test_basic(self):
         sot = async_job.AsyncJob()
-        path = '/jobs'
+        path = ''
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_fetch)
 

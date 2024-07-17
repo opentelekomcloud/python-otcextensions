@@ -27,7 +27,7 @@ class Proxy(proxy.Proxy):
             'id': job_id
         }
         base_path = '{project_id}/jobs'.format(
-                project_id=self.session.get_project_id()
+            project_id=self.session.get_project_id()
         )
         return self._get(_async_job.AsyncJob, base_path=base_path, **attrs)
 

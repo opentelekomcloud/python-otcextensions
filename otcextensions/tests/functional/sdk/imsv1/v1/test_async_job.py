@@ -25,7 +25,6 @@ class TestAsyncJob(base.BaseFunctionalTest):
 
     def test_get_async_job(self):
         attrs = {
-            "project_id": "5dd3c0b24cdc4d31952c49589182a89d",
             "job_id": 'ff8080828f9a78db018fe7c6e2f772b2'
         }
         result = self.ims.get_async_job(**attrs)
