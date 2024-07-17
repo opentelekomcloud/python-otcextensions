@@ -26,7 +26,9 @@ class Proxy(proxy.Proxy):
         attrs = {
             'id': job_id
         }
-        base_path = '{project_id}/jobs'.format(project_id=self.session.get_project_id())
+        base_path = '{project_id}/jobs'.format(
+                project_id=self.session.get_project_id()
+        )
         return self._get(_async_job.AsyncJob, base_path=base_path, **attrs)
 
     def export_image(self, **attrs):
