@@ -28,7 +28,6 @@ class TestImsAsyncJob(TestImsProxy):
                      self.proxy.get_async_job,
                      expected_args=[async_job.AsyncJob],
                      method_kwargs={
-                         'job_id': '1',
-                         'requires_id': False
+                         'job_id': '1'
                      },
-                     expected_kwargs={'requires_id': False})
+                     expected_kwargs={})
