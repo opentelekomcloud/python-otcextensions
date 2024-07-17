@@ -29,7 +29,6 @@ class TestImsAsyncJob(TestImsProxy):
                      expected_args=[async_job.AsyncJob],
                      method_kwargs={
                          'job_id': '1',
-                         'project_id': '1',
                          'requires_id': False
                      },
                      expected_kwargs={'requires_id': False})
