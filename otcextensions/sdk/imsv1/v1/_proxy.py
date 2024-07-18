@@ -9,7 +9,8 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import proxy, utils
+from openstack import proxy
+from openstack import utils
 from otcextensions.sdk.imsv1.v1 import async_job as _async_job
 from otcextensions.sdk.imsv1.v1 import image_export as _image_export
 
@@ -53,7 +54,7 @@ class Proxy(proxy.Proxy):
                 raise RuntimeError(
                     "Asynchronous job {job_id} failed.".format(job_id=job_id)
                 )
-            elif not job.status in ['INIT', 'RUNNING']:
+            elif job.status not in ['INIT', 'RUNNING']:
                 break
         return job
 
