@@ -17,4 +17,4 @@ Image Operations
 
 .. autoclass:: otcextensions.sdk.imsv1.v1._proxy.Proxy
   :noindex:
-  :members: get_async_job
+  :members: get_async_job, wait_for_async_job, export_image
