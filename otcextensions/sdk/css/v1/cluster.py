@@ -15,7 +15,7 @@ from openstack import resource
 from openstack import utils
 
 
-STATUS_MAP = {"100": "CREATING", "200": "AVAILABLE", "303": "UNAVAILABLE"}
+STATUS_MAP = {'100': 'CREATING', '200': 'AVAILABLE', '303': 'UNAVAILABLE'}
 
 
 class FailedReasonSpec(resource.Resource):
@@ -193,9 +193,7 @@ class Cluster(resource.Resource):
     #: Cluster name.
     name = resource.Body('name')
     #: Kibana public network access information.
-    public_kibana_resp = resource.Body(
-        'publicKibanaResp', type=KibanaRespSpec
-    )
+    public_kibana_resp = resource.Body('publicKibanaResp', type=KibanaRespSpec)
     #: Router (VPC) ID.
     router_id = resource.Body('vpcId')
     #: Security group ID.
@@ -227,6 +225,143 @@ class Cluster(resource.Resource):
             raise exceptions.SDKException('CSS Cluster size can be [1..32]')
         self._action(session, 'extend', {'grow': {'modifySize': add_nodes}})
 
+    def update_flavor(
+        self, session, new_flavor, node_type=None, check_replica=True
+    ):
+        """Modify cluseter specifications."""
+        body = {'needCheckReplica': check_replica, 'newFlavorId': new_flavor}
+
+        url_path = 'flavor'
+
+        if node_type:
+            url_path = node_type + '/flavor'
+
+        self._action(session, url_path, body)
+
+    def update_name(self, session, new_name):
+        """Update the name of the CSS cluster."""
+        body = {'displayName': new_name}
+        self._action(session, 'changename', body)
+
+    def update_password(self, session, new_password):
+        """Update the password of the CSS cluster."""
+        body = {'newpassword': new_password}
+        self._action(session, 'password/reset', body)
+
+    def update_security_mode(
+        self,
+        session,
+        authority_enable=False,
+        admin_pwd=None,
+        https_enable=False,
+    ):
+        body = {
+            'authorityEnable': authority_enable,
+            'httpsEnable': https_enable,
+        }
+
+        if admin_pwd:
+            body['adminPwd'] = admin_pwd
+
+        self._action(session, 'mode/change', body)
+
+    def update_security_group(self, session, security_group_id):
+        """Update security group of the CSS cluster."""
+        body = {'security_group_ids': security_group_id}
+        self._action(session, 'sg/change', body)
+
+    def update_kernel(
+        self,
+        session,
+        target_image_id,
+        upgrade_type,
+        indices_backup_check,
+        agency,
+        cluster_load_check=True,
+    ):
+        """Update the kernel of the CSS cluster."""
+        body = {
+            'target_image_id': target_image_id,
+            'upgrade_type': upgrade_type,
+            'indices_backup_check': indices_backup_check,
+            'agency': agency,
+            'cluster_load_check': cluster_load_check,
+        }
+
+        self._action(session, 'inst-type/all/image/upgrade', body)
+
+    def scale_in(self, session, nodes):
+        """Scale in a cluster by removing specified nodes."""
+        if not isinstance(nodes, list):
+            raise exceptions.SDKException(
+                'nodes parameter should be list type'
+            )
+
+        body = {'shrinkNodes': nodes}
+
+        self._action(session, 'node/offline', body)
+
+    def scale_in_by_node_type(self, session, nodes):
+        """Remove instances of specific types and reduce instance
+        storage capacity in a cluster."""
+        if not isinstance(nodes, list):
+            raise exceptions.SDKException(
+                'nodes parameter should be list of dictionary items'
+            )
+
+        data = []
+
+        for item in nodes:
+            node_type = item.get('type')
+            reduced_node_num = item.get('reducedNodeNum')
+            if node_type not in (
+                'ess',
+                'ess-master',
+                'ess-client',
+                'ess-cold',
+            ):
+                raise ValueError(
+                    f'Unsupported node type: {node_type}. Supported '
+                    'node_type can be ess, ess-master, ess-client, ess-cold,'
+                )
+            if not isinstance(reduced_node_num, int) or reduced_node_num < 1:
+                raise ValueError(
+                    f'Reduced node number for {node_type} must be '
+                    'a non-negative integer.'
+                )
+
+            data.append(
+                {
+                    'type': node_type.replace('_', '-'),
+                    'reducedNodeNum': reduced_node_num,
+                }
+            )
+
+        body = {'shrink': data}
+
+        self._action(session, 'role/shrink', body)
+
+    def replace_node(self, session, node_id):
+        """Replacing cluster node."""
+        uri = utils.urljoin(
+            'clusters', self.id, 'instance', node_id, 'replace'
+        )
+        response = session.put(uri)
+        exceptions.raise_from_response(response)
+
+    def add_nodes(self, session, node_type, flavor, node_size, volume_type):
+        """Adding master and client node to cluster."""
+
+        body = {
+            'type': {
+                'flavor_ref': flavor,
+                'node_size': node_size,
+                'volume_type': volume_type,
+            }
+        }
+
+        self._action(session, f'type/{node_type}/independent', body)
+
     @classmethod
     def existing(cls, connection=None, **kwargs):
         """Create an instance of an existing remote resource.
@@ -241,11 +376,11 @@ class Cluster(resource.Resource):
         :param dict kwargs: Each of the named arguments will be set as
             attributes on the resulting Resource object.
         """
-        if "status" in kwargs.keys():
-            kwargs["status_code"] = kwargs["status"]
-            kwargs["status"] = STATUS_MAP.get(str(kwargs["status"]), "ERROR")
-        if kwargs.get("endpoint"):
-            kwargs["endpoint"] = kwargs["endpoint"].split(",")
+        if 'status' in kwargs.keys():
+            kwargs['status_code'] = kwargs['status']
+            kwargs['status'] = STATUS_MAP.get(str(kwargs['status']), 'ERROR')
+        if kwargs.get('endpoint'):
+            kwargs['endpoint'] = kwargs['endpoint'].split(',')
         return cls(_synchronized=True, connection=connection, **kwargs)
 
     def _translate_response(
@@ -282,15 +417,15 @@ class Cluster(resource.Resource):
                 # we can't send it through cls.existing and into the
                 # Resource initializer. "self" is already the first
                 # argument and is practically a reserved word.
-                body.pop("self", None)
+                body.pop('self', None)
 
-                if "status" in body.keys():
-                    body["status_code"] = body["status"]
-                    body["status"] = STATUS_MAP.get(
-                        str(body["status"]), "ERROR"
+                if 'status' in body.keys():
+                    body['status_code'] = body['status']
+                    body['status'] = STATUS_MAP.get(
+                        str(body['status']), 'ERROR'
                     )
-                if body.get("endpoint"):
-                    body["endpoint"] = body["endpoint"].split(",")
+                if body.get('endpoint'):
+                    body['endpoint'] = body['endpoint'].split(',')
                 body_attrs = self._consume_body_attrs(body)
                 if self._allow_unknown_attrs_in_body:
                     body_attrs.update(body)

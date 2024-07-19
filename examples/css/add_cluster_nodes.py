@@ -11,15 +11,23 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Scale nodes of CSS Cluster by cluster_id or
- instance of Cluster class.
+Add master and client nodes to CSS Cluster
 """
 
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect()
 
-cluster_id = 'cluster-uuid'
-add_nodes = 2
-conn.css.extend_cluster(cluster_id, add_nodes)
+cluster_name_or_id = '3b300b4e-2aa9-45c0-b898-a9e6fa319922'
+
+attrs = {
+    'node_type': 'ess-master',
+    'flavor': 'ced8d1a7-eff8-4e30-a3de-cd9578fd518f',
+    'node_size': 3,
+    'volume_type': 'COMMON',
+}
+
+cluster = conn.css.find_cluster(cluster_name_or_id)
+
+conn.css.add_cluster_nodes(cluster, **attrs)

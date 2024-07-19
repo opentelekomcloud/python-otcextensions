@@ -13,6 +13,7 @@
 """
 Scaling Out a Cluster with Special Nodes.
 """
+
 import openstack
 
 openstack.enable_logging(True)
@@ -20,10 +21,10 @@ conn = openstack.connect(cloud='otc')
 
 cluster_id = 'cluster-uuid'
 attrs = {
-    "grow": [
-        {"type": "ess-master", "nodesize": 2, "disksize": 0},
-        {"type": "ess", "nodesize": 0, "disksize": 60},
-        {"type": "ess-client", "nodesize": 1, "disksize": 0},
+    'grow': [
+        {'type': 'ess-master', 'nodesize': 2, 'disksize': 0},
+        {'type': 'ess', 'nodesize': 0, 'disksize': 60},
+        {'type': 'ess-client', 'nodesize': 1, 'disksize': 0},
     ]
 }
 conn.css.extend_cluster_nodes(cluster_id, **attrs)

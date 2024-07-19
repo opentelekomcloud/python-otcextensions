@@ -13,6 +13,7 @@
 """
 Create CSS Cluster
 """
+
 import openstack
 
 openstack.enable_logging(True)
@@ -31,17 +32,17 @@ attrs = {
         'flavorRef': 'css.xlarge.2',
         'volume': {'volume_type': 'COMMON', 'size': 100},
         'nics': {
-            "vpcId": "router-id",
-            "netId": "network-id",
-            "securityGroupId": "security-group-id",
+            'vpcId': 'router-id',
+            'netId': 'network-id',
+            'securityGroupId': 'security-group-id',
         },
     },
     'tags': [
-        {'key': "key0", 'value': "value0"},
-        {'key': "key1", 'value': "value1"},
+        {'key': 'key0', 'value': 'value0'},
+        {'key': 'key1', 'value': 'value1'},
     ],
     'backupStrategy': {
-        'period': "00:00 GMT+03:00",
+        'period': '00:00 GMT+03:00',
         'prefix': 'backup',
         'keepday': 1,
         'bucket': 'css-test-0',

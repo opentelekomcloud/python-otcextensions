@@ -16,19 +16,21 @@ from openstack import exceptions
 from openstack import proxy
 from otcextensions.sdk.css.v1 import cert as _cert
 from otcextensions.sdk.css.v1 import cluster as _cluster
+from otcextensions.sdk.css.v1 import cluster_image as _cluster_image
+from otcextensions.sdk.css.v1 import cluster_upgrade_info \
+    as _cluster_upgrade_info
 from otcextensions.sdk.css.v1 import flavor as _flavor
 from otcextensions.sdk.css.v1 import snapshot as _snapshot
 
 
 class Proxy(proxy.Proxy):
-
     skip_discovery = True
 
     def __init__(self, session, *args, **kwargs):
         super(Proxy, self).__init__(session=session, *args, **kwargs)
         self.additional_headers = {
-            "Accept": "application/json",
-            "Content-type": "application/json",
+            'Accept': 'application/json',
+            'Content-type': 'application/json',
         }
 
     # ======== Cluster ========
@@ -130,6 +132,191 @@ class Proxy(proxy.Proxy):
         """
         return self._delete(
             _cluster.Cluster, cluster, ignore_missing=ignore_missing
+        )
+
+    def update_cluster_name(self, cluster, new_name):
+        """Update cluster name
+
+        :param cluster: key id or an instance of
+            :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
+        :param new_name: new name for the CSS cluster
+        :returns: ``None``
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return cluster.update_name(self, new_name)
+
+    def update_cluster_password(self, cluster, new_password):
+        """Update cluster password
+
+        :param cluster: key id or an instance of
+            :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
+        :param new_password: new password for the CSS cluster
+        :returns: ``None``
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return cluster.update_password(self, new_password)
+
+    def update_cluster_flavor(
+        self, cluster, new_flavor, node_type=None, check_replica=True
+    ):
+        """Update cluster flavor
+
+        :param cluster: key id or an instance of
+            :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
+        :param check_replica: indicates whether to verify replicas
+        :param new_flavor: ID of the new flavor
+        :param node_type: the type of node
+        :returns: ``None``
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return cluster.update_flavor(
+            self, new_flavor, node_type, check_replica
+        )
+
+    def update_cluster_security_mode(
+        self,
+        cluster,
+        authority_enable=False,
+        admin_pwd=None,
+        https_enable=False,
+    ):
+        """Update cluster security mode
+
+        :param cluster: key id or an instance of
+            :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
+        :param authority_enable: indicates whether to enable the security mode
+        :param admin_pwd: cluster password in security mode
+        :param https_enable: indicates whether to enable HTTPS
+        :returns: ``None``
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return cluster.update_security_mode(
+            self, authority_enable, admin_pwd, https_enable
+        )
+
+    def update_cluster_security_group(self, cluster, security_group_id):
+        """Update cluster security group
+
+        :param cluster: key id or an instance of
+            :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
+        :param security_group_id: new security group id for the CSS cluster
+        :returns: ``None``
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return cluster.update_security_group(self, security_group_id)
+
+    def update_cluster_kernel(
+        self,
+        cluster,
+        target_image_id,
+        upgrade_type,
+        indices_backup_check,
+        agency,
+        cluster_load_check=False,
+    ):
+        """Update cluster kernel
+
+        :param cluster: key id or an instance of
+            :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
+        :param target_image_id: ID of the target image version.
+        :param upgrade_type: upgrade type
+        :param indices_backup_check: indicates whether to perform backup
+            verification
+        :param agency: agency name
+        :param cluster_load_check: indicates whether to verify the load
+        :returns: ``None``
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return cluster.update_kernel(
+            self,
+            target_image_id,
+            upgrade_type,
+            indices_backup_check,
+            agency,
+            cluster_load_check,
+        )
+
+    def get_cluster_version_upgrade_info(self, cluster, upgrade_type):
+        """Get cluster version upgrade info
+
+        :param cluster: key id or an instance of
+            :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
+        :param upgrade_type: version type
+        :returns: image info list
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return self._get(
+            _cluster_image.ClusterImage,
+            cluster_id=cluster.id,
+            upgrade_type=upgrade_type,
+            requires_id=False,
+        )
+
+    def scale_in_cluster(self, cluster, nodes):
+        """Scale in a cluster by removing specified nodes
+
+        :param cluster: key id or an instance of
+            :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
+        :param nodes: list of node id
+        :returns: ``None``
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return cluster.scale_in(self, nodes)
+
+    def scale_in_cluster_by_node_type(self, cluster, nodes):
+        """Remove instances of specific types and reduce instance
+        storage capacity in a cluster
+
+        :param cluster: key id or an instance of
+            :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
+        :param nodes: type and quantity of nodes Type
+        and quantity of nodes to remove
+        :returns: ``None``
+        """
+        split_url = urlsplit(self.get_endpoint())
+        project_id = self.session.get_project_id()
+        self.endpoint_override = (
+            f'{split_url.scheme}://{split_url.netloc}/v1.0/extend/{project_id}'
+        )
+
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return cluster.scale_in_by_node_type(self, nodes)
+
+    def replace_cluster_node(self, cluster, node_id):
+        """Replace a failed node
+
+        :param cluster: key id or an instance of
+            :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
+        :param node_id: ID of the node to be replaced
+        :returns: ``None``
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return cluster.replace_node(self, node_id)
+
+    def add_cluster_nodes(
+        self, cluster, node_type, flavor, node_size, volume_type
+    ):
+        """Add master and client nodes to a cluster
+
+        :param cluster: key id or an instance of
+            :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
+        :param node_type: node type
+        :param flavor: flavor ID
+        :param node_size: number of nodes
+        :param volume_type: node storage type
+        :returns: ``None``
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return cluster.add_nodes(
+            self, node_type, flavor, node_size, volume_type
+        )
+
+    def get_cluster_upgrade_info(self, cluster, **params):
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return self._list(
+            _cluster_upgrade_info.ClusterUpgradeInfo,
+            cluster_id=cluster.id,
+            **params,
         )
 
     # ======== Flavors ========
