@@ -274,6 +274,7 @@ OTC_SERVICES = {
 # Usually 30 seconds should be sufficient
 TMP_AKSK_RENEWAL = 30
 
+
 def _get_descriptor(service_name):
     """Find ServiceDescriptor class by the service name
     and instanciate it
@@ -342,12 +343,14 @@ def _find_service_description_class(service_type):
     service_description_class = getattr(service_description_module, class_name)
     return service_description_class
 
+
 def _get_ak_sk_autocreate(conn):
     """Autocreate/Return a temporary AK/SK"""
     config_tmp_aksk = conn.config.config.get('_tmp_aksk', {})
 
     # Check if a new temporary AK/SK needs to be created
-    if (config_tmp_aksk.get('expires', 0) - TMP_AKSK_RENEWAL) < int(time.time()):
+    if (config_tmp_aksk.get('expires', 0) - TMP_AKSK_RENEWAL) \
+            < int(time.time()):
         # Create new temporary AK/SK with minimal duration of 900s
         tmp_aksk = conn.identity.create_security_token(duration=900)
         config_tmp_aksk['expires'] = int(time.time())
@@ -361,8 +364,8 @@ def _get_ak_sk_autocreate(conn):
     ak = config_tmp_aksk['access_key']
     sk = config_tmp_aksk['secret_key']
     token = config_tmp_aksk['security_token']
-
     return ak, sk, token
+
 
 def get_ak_sk(conn):
     """Fetch AK/SK from the cloud configuration or ENV
