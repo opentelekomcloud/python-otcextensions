@@ -265,12 +265,12 @@ class Proxy(proxy.Proxy):
 
     def scale_in_cluster_by_node_type(self, cluster, nodes):
         """Remove instances of specific types and reduce instance
-        storage capacity in a cluster
+            storage capacity in a cluster
 
         :param cluster: key id or an instance of
             :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
         :param nodes: type and quantity of nodes Type
-        and quantity of nodes to remove
+            and quantity of nodes to remove
         :returns: ``None``
         """
         split_url = urlsplit(self.get_endpoint())
@@ -312,12 +312,31 @@ class Proxy(proxy.Proxy):
         )
 
     def get_cluster_upgrade_info(self, cluster, **params):
+        """Obtain the cluster updgrade details
+
+        :param cluster: key id or an instance of
+            :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
+            return: ``None``
+        """
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return self._list(
             _cluster_upgrade_info.ClusterUpgradeInfo,
             cluster_id=cluster.id,
             **params,
         )
+
+    def retry_cluster_upgrade_job(self, cluster, job_id, retry_mode=None):
+        """Retry a task or terminate the impact of a task
+
+        :param cluster: key id or an instance of
+            :class:`~otcextensions.sdk.css.v1.cluster.Cluster`
+        :param job_id: ID of the task to be retried
+        :param retry_mode: if this parameter is not left blank, the impact
+            of the task is terminated
+        :returns: ``None``
+        """
+        cluster = self._get_resource(_cluster.Cluster, cluster)
+        return cluster.retry_upgrade_job(self, job_id, retry_mode)
 
     # ======== Flavors ========
     def flavors(self):

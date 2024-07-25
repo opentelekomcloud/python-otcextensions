@@ -424,6 +424,31 @@ class TestCluster(base.TestCase):
         )
         self.assertIsNone(rt)
 
+    def test_retry_upgrade_job(self):
+        sot = cluster.Cluster.existing(id=CLUSTER_ID)
+        job_id = 'action-id'
+        response = mock.Mock()
+        response.status_code = 200
+        response.headers = {}
+        self.sess.put.return_value = response
+
+        rt1 = sot.retry_upgrade_job(self.sess, job_id)
+        self.sess.put.assert_called_with(
+            f'clusters/{sot.id}/upgrade/{job_id}/retry',
+            params={}
+        )
+
+        self.assertIsNone(rt1)
+
+        retry_mode = 'abort'
+        rt2 = sot.retry_upgrade_job(self.sess, job_id, retry_mode)
+        self.sess.put.assert_called_with(
+            f'clusters/{sot.id}/upgrade/{job_id}/retry',
+            params={'retry_mode': retry_mode}
+        )
+
+        self.assertIsNone(rt2)
+
 
 class TestExtendClusterNodes(base.TestCase):
     def setUp(self):

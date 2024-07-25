@@ -242,6 +242,25 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
             expected_kwargs={'cluster_id': 'cluster-uuid'},
         )
 
+    def test_retry_cluster_upgrade_job(self):
+        self._verify(
+            'otcextensions.sdk.css.v1.cluster.Cluster.retry_upgrade_job',
+            self.proxy.retry_cluster_upgrade_job,
+            method_kwargs={
+                'cluster': _cluster.Cluster,
+                'job_id': 'job-id',
+                'retry_mode': None,
+            },
+            expected_args=[self.proxy, 'job-id', None],
+        )
+
+        self._verify(
+            'otcextensions.sdk.css.v1.cluster.Cluster.retry_upgrade_job',
+            self.proxy.retry_cluster_upgrade_job,
+            method_args=[_cluster.Cluster, 'job-id', 'abort'],
+            expected_args=[self.proxy, 'job-id', 'abort'],
+        )
+
     def test_flavors(self):
         self.verify_list(
             self.proxy.flavors,

@@ -362,6 +362,20 @@ class Cluster(resource.Resource):
 
         self._action(session, f'type/{node_type}/independent', body)
 
+    def retry_upgrade_job(self, session, job_id, retry_mode=None):
+        """Retry a task or terminate the impact of a task."""
+        uri = utils.urljoin(
+            'clusters', self.id, 'upgrade', job_id, 'retry'
+        )
+
+        params = {}
+
+        if retry_mode:
+            params['retry_mode'] = 'abort'
+
+        response = session.put(uri, params=params)
+        exceptions.raise_from_response(response)
+
     @classmethod
     def existing(cls, connection=None, **kwargs):
         """Create an instance of an existing remote resource.
