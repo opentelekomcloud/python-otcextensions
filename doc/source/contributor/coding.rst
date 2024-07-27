@@ -3,7 +3,7 @@ OpenStack SDK Developer Coding Standards
 
 We follow the coding guidelines of
 https://docs.openstack.org/hacking/latest/ of the OpenStack project in
-general and the adopt the special rules of the OpenStack SDk in
+general and the adopt the special rules of the OpenStack SDK in
 specific where applicable unless otherwise stated.
 
 The SDK project which the OTC Extensions augment developed a set of
