@@ -1,0 +1,9 @@
+---
+features:
+  - |
+    The autocreate AK/SK feature utilizes the capability of creating
+    a temporary AK/SK to run commands that require a AK/SK without
+    explicitly providing a AK/SK in the configuration. This feature can be
+    activated by setting "autocreate_aksk" to true in the clouds.yaml.
+    When activated a temporary AK/SK will be automatically created
+    whenever it is needed.

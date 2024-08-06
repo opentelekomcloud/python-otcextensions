@@ -11,6 +11,7 @@
 # under the License.
 import importlib
 import os
+import time
 
 import openstack
 from openstack import _log
@@ -266,6 +267,11 @@ OTC_SERVICES = {
     }
 }
 
+# Specifies the number of seconds a temporary AK/SK
+# is to be renewed before it expires
+# Usually 30 seconds should be sufficient
+TMP_AKSK_RENEWAL = 30
+
 
 def _get_descriptor(service_name):
     """Find ServiceDescriptor class by the service name
@@ -336,6 +342,29 @@ def _find_service_description_class(service_type):
     return service_description_class
 
 
+def _get_ak_sk_autocreate(conn):
+    """Autocreate/Return a temporary AK/SK"""
+    config_tmp_aksk = conn.config.config.get('_tmp_aksk', {})
+
+    # Check if a new temporary AK/SK needs to be created
+    if (config_tmp_aksk.get('expires', 0) - TMP_AKSK_RENEWAL) \
+            < int(time.time()):
+        # Create new temporary AK/SK with minimal duration of 900s
+        tmp_aksk = conn.identity.create_security_token(duration=900)
+        config_tmp_aksk['expires'] = int(time.time())
+        config_tmp_aksk['access_key'] = tmp_aksk.access
+        config_tmp_aksk['secret_key'] = tmp_aksk.secret
+        config_tmp_aksk['security_token'] = tmp_aksk.security_token
+        # Save temporary AK/SK in config
+        conn.config.config['_tmp_aksk'] = config_tmp_aksk
+
+    # Retrieve temporary AK/SK from config
+    ak = config_tmp_aksk['access_key']
+    sk = config_tmp_aksk['secret_key']
+    token = config_tmp_aksk['security_token']
+    return ak, sk, token
+
+
 def get_ak_sk(conn):
     """Fetch AK/SK from the cloud configuration or ENV
 
@@ -353,6 +382,10 @@ def get_ak_sk(conn):
         sk = os.getenv('OS_SECRET_KEY', os.getenv('S3_SECRET_ACCESS_KEY'))
     if not token:
         token = os.getenv('OS_SECURITY_TOKEN', os.getenv('S3_SECURITY_TOKEN'))
+
+    # Autocreate/return a temporary AK/SK if "autocreate_aksk" is enabled
+    if not (ak and sk) and config.get('autocreate_aksk', False):
+        (ak, sk, token) = _get_ak_sk_autocreate(conn)
 
     if not (ak and sk):
         _logger.error('AK/SK pair is not configured in the connection, '
