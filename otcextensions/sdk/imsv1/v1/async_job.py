@@ -13,10 +13,12 @@
 
 from openstack import resource
 
+
 class AsyncJobEntities(resource.Resource):
     image_id = resource.Body('image_id')
     image_name = resource.Body('image_name')
     process_percent = resource.Body('process_percent')
+
 
 class AsyncJob(resource.Resource):
     allow_fetch = True
