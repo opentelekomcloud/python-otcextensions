@@ -11,15 +11,18 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Scale nodes of CSS Cluster by cluster_id or
- instance of Cluster class.
+Retry a task or terminate the impact of a task
 """
 
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect()
 
-cluster_id = 'cluster-uuid'
-add_nodes = 2
-conn.css.extend_cluster(cluster_id, add_nodes)
+cluster_name_or_id = '3b300b4e-2aa9-45c0-b898-a9e6fa319922'
+job_id = '0249620d-1c4a-4211-943a-ced7b9a3cda5'
+retry_mode = 'abort'
+
+cluster = conn.css.find_cluster(cluster_name_or_id)
+
+conn.css.retry_cluster_upgrade_job(cluster, job_id, retry_mode)

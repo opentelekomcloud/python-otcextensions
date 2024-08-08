@@ -13,6 +13,7 @@
 """
 Get CSS Cluster Snapshot Policy
 """
+
 import openstack
 
 openstack.enable_logging(True)

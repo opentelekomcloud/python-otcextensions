@@ -13,6 +13,7 @@
 """
 Get details of CSS Cluster by name_or_id
 """
+
 import openstack
 
 openstack.enable_logging(True)

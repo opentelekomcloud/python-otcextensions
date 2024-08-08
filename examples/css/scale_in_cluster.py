@@ -11,15 +11,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Scale nodes of CSS Cluster by cluster_id or
- instance of Cluster class.
+Removing sepcified nodes from CSS Cluster
 """
 
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect()
 
-cluster_id = 'cluster-uuid'
-add_nodes = 2
-conn.css.extend_cluster(cluster_id, add_nodes)
+cluster_name_or_id = 'ce50ce66-3083-437c-91aa-58921abd9f99'
+cluster = conn.css.find_cluster(cluster_name_or_id)
+
+nodes = ['5e134b90-8159-4233-9dae-4305029a838a']
+
+conn.css.scale_in_cluster(cluster, nodes)

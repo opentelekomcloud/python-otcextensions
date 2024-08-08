@@ -13,6 +13,7 @@
 """
 Delete CSS Cluster Snapshot
 """
+
 import openstack
 
 openstack.enable_logging(True)

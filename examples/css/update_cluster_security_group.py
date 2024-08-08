@@ -11,15 +11,18 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Scale nodes of CSS Cluster by cluster_id or
- instance of Cluster class.
+Update CSS security group id
 """
 
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect()
 
-cluster_id = 'cluster-uuid'
-add_nodes = 2
-conn.css.extend_cluster(cluster_id, add_nodes)
+cluster_name_or_id = 'asomogyi_0506_updated'
+
+security_group_id = '2a386cf6-bf8a-494b-8e2a-f550307a4871'
+
+cluster = conn.css.find_cluster(cluster_name_or_id)
+
+conn.css.update_cluster_security_group(cluster, security_group_id)

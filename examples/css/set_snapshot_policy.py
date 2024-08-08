@@ -13,16 +13,17 @@
 """
 Set CSS Cluster Snapshot Policy
 """
+
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
 attrs = {
-    "prefix": "snapshot",
-    "period": "16:00 GMT+08:00",
-    "keepday": 7,
-    "enable": "true",
+    'prefix': 'snapshot',
+    'period': '16:00 GMT+08:00',
+    'keepday': 7,
+    'enable': 'true',
 }
 
 cluster_id = 'cluster-uuid'
