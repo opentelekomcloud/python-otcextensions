@@ -13,6 +13,7 @@ import uuid
 
 from otcextensions.tests.functional.sdk.dds import TestDds
 
+shared_data = {}
 
 class TestInstance(TestDds):
     uuid_v4 = uuid.uuid4().hex[:8]
@@ -22,39 +23,45 @@ class TestInstance(TestDds):
     def setUp(self):
         super(TestInstance, self).setUp()
 
+    # def create_network(self):
+    #     cidr = '192.168.0.0/16'
+    #     ipv4 = 4
+    #     router_name = 'sdk-dds-test-router-' + self.uuid_v4
+    #     net_name = 'sdk-dds-test-net-' + self.uuid_v4
+    #     subnet_name = 'sdk-dds-test-subnet-' + self.uuid_v4
+    #
+    #     network = self.conn.network.create_network(name=net_name)
+    #     self.assertEqual(net_name, network.name)
+    #     net_id = network.id
+    #     subnet = self.conn.network.create_subnet(
+    #         name=subnet_name,
+    #         ip_version=ipv4,
+    #         network_id=net_id,
+    #         cidr=cidr
+    #     )
+    #     self.assertEqual(subnet_name, subnet.name)
+    #     subnet_id = subnet.id
+    #
+    #     router = self.conn.network.create_router(name=router_name)
+    #     self.assertEqual(router_name, router.name)
+    #     router_id = router.id
+    #     interface = router.add_interface(
+    #         self.conn.network,
+    #         subnet_id=subnet_id
+    #     )
+    #     self.assertEqual(interface['subnet_id'], subnet_id)
+    #     self.assertIn('port_id', interface)
+    #     return {
+    #         'router_id': router_id,
+    #         'subnet_id': subnet_id,
+    #         'network_id': net_id
+    #     }
     def create_network(self):
-        cidr = '192.168.0.0/16'
-        ipv4 = 4
-        router_name = 'sdk-dds-test-router-' + self.uuid_v4
-        net_name = 'sdk-dds-test-net-' + self.uuid_v4
-        subnet_name = 'sdk-dds-test-subnet-' + self.uuid_v4
-
-        network = self.conn.network.create_network(name=net_name)
-        self.assertEqual(net_name, network.name)
-        net_id = network.id
-        subnet = self.conn.network.create_subnet(
-            name=subnet_name,
-            ip_version=ipv4,
-            network_id=net_id,
-            cidr=cidr
-        )
-        self.assertEqual(subnet_name, subnet.name)
-        subnet_id = subnet.id
-
-        router = self.conn.network.create_router(name=router_name)
-        self.assertEqual(router_name, router.name)
-        router_id = router.id
-        interface = router.add_interface(
-            self.conn.network,
-            subnet_id=subnet_id
-        )
-        self.assertEqual(interface['subnet_id'], subnet_id)
-        self.assertIn('port_id', interface)
         return {
-            'router_id': router_id,
-            'subnet_id': subnet_id,
-            'network_id': net_id
-        }
+                'router_id': '8cfcc486-5b67-4e65-ab5c-c0f3de3bf12e',
+                'subnet_id': 'fca51a32-edec-4c45-bfd5-1c2606f456a0',
+                'network_id': 'eb15b01f-3f32-411f-9ab7-c8617b5c0942'
+            }
 
     def destroy_network(self, params: dict):
         router_id = params.get('router_id')
@@ -88,6 +95,7 @@ class TestInstance(TestDds):
         security_group = self.net_client.find_security_group(
             name_or_id='default', ignore_missing=False)
         self.network = self.create_network()
+        shared_data['network'] = self.network
         name = 'test-dds-' + self.uuid_v4
         datastore = {
             'type': 'DDS-Community',
@@ -126,7 +134,8 @@ class TestInstance(TestDds):
             'start_time': '23:00-00:00',
             'keep_days': '8'
         }
-        self.instance = self.client.create_instance(
+        self.instance  = (
+        self.client.create_instance(
             name=name,
             datastore=datastore,
             region=region,
@@ -138,7 +147,8 @@ class TestInstance(TestDds):
             mode=mode,
             flavor=flavor,
             backup_strategy=backup_strategy
-        )
+        ))
+        shared_data['instance'] = self.instance
         self.assertIsNotNone(self.instance)
 
     def test_02_list_instances(self):
@@ -146,17 +156,21 @@ class TestInstance(TestDds):
         self.assertIsNotNone(instances)
 
     def test_03_get_instance(self):
-        instance = self.client.get_instance(self.instance.id)
+        instance = self.client.get_instance(shared_data['instance']['id'])
         self.assertIsNotNone(instance)
 
     def test_04_find_instance(self):
-        instance = self.client.find_instance(name_or_id=self.instance.name)
+        instance = self.client.find_instance(name_or_id=shared_data['instance']['name'])
         self.assertIsNotNone(instance)
 
-    def test_05_delete_instance(self):
+    def test_05_restart_instance(self):
+        instance = self.client.restart_instance(shared_data['instance']['id'])
+        self.assertIsNotNone(instance)
+
+    def test_06_delete_instance(self):
         instance = None
         try:
-            instance = self.client.delete_instance(instance=self.instance)
+            instance = self.client.delete_instance(instance=shared_data['instance'])
         except Exception:
-            self.destroy_network(self.network)
+            self.destroy_network(shared_data['network'])
         self.assertIsNotNone(instance)

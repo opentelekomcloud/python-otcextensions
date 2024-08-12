@@ -75,6 +75,23 @@ class Proxy(proxy.Proxy):
         """
         return self._create(_instance.Instance, **attrs)
 
+    def restart_instance(self, instance):
+        """Restart an existing instance
+
+        :param instance: The value can be either the ID of an instance or a
+            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+
+        :returns: workflow ID.
+
+        :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.restart(self)
+
+    def enlarge_instance(self, instance):
+        # TODO: узнать метод для нестандартных действий
+        return self._update(_instance.Instance, instance)
+
     def delete_instance(self, instance, ignore_missing=True):
         """Delete an instance
 

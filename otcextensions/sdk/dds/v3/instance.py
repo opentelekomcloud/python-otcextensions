@@ -11,6 +11,7 @@
 # under the License.
 from openstack import exceptions
 from openstack import resource
+from openstack import utils
 
 
 class FlavorSpec(resource.Resource):
@@ -259,3 +260,24 @@ class Instance(resource.Resource):
             session,
             prepend_key=prepend_key,
             base_path=base_path)
+
+    def restart(self, session):
+        '''Restart Instance'''
+        body = {
+            "target_type":self.datastore_type,
+            "target_id":self.id
+        }
+        return self._action(session, body, 'restart')
+
+    def _action(self, session, body, action_type):
+        """Preform alarm actions given the message body.
+
+        """
+        # if getattr(self, 'endpoint_override', None):
+        #     # If we have internal endpoint_override - use it
+        #     endpoint_override = self.endpoint_override
+        url = utils.urljoin(self.base_path, self.id, action_type)
+        return session.post(
+            url,
+            # endpoint_override=endpoint_override,
+            json=body)
