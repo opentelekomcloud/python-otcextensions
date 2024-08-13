@@ -16,4 +16,3 @@ upgrade:
     - add_cluster_nodes
     - get_cluster_upgrade_info
     - retry_cluster_upgrade_job
-    - retry_cluster_upgrade_job
