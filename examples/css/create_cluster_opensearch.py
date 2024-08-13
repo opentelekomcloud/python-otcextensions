@@ -13,6 +13,7 @@
 """
 Create CSS Cluster (opensearch)
 """
+
 import openstack
 
 openstack.enable_logging(True)
@@ -44,11 +45,11 @@ attrs = {
         'systemEncrypted': '0',
     },
     'tags': [
-        {'key': "key0", 'value': "value0"},
-        {'key': "key1", 'value': "value1"},
+        {'key': 'key0', 'value': 'value0'},
+        {'key': 'key1', 'value': 'value1'},
     ],
     'backupStrategy': {
-        'period': "00:00 GMT+01:00",
+        'period': '00:00 GMT+01:00',
         'prefix': 'backup',
         'keepday': 1,
         'bucket': 'css-backup-1663481103064',

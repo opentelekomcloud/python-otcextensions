@@ -11,15 +11,21 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Scale nodes of CSS Cluster by cluster_id or
- instance of Cluster class.
+Modify CSS node specifications
 """
 
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect()
 
-cluster_id = 'cluster-uuid'
-add_nodes = 2
-conn.css.extend_cluster(cluster_id, add_nodes)
+cluster_name_or_id = 'asomogyi_0509'
+
+node_type = 'ess'
+
+check_replica = False
+new_flavor = 'd9dc06ae-b9c4-4ef4-acd8-953ef4205e27'
+
+cluster = conn.css.find_cluster(cluster_name_or_id)
+
+conn.css.update_cluster_flavor(cluster, new_flavor, node_type, check_replica)

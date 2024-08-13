@@ -13,6 +13,7 @@
 """
 Delete CSS Cluster by cluster_id or instance of Cluster class
 """
+
 import openstack
 
 openstack.enable_logging(True)
