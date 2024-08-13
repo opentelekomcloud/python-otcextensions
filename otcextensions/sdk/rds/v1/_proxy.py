@@ -525,37 +525,3 @@ class Proxy(sdk_proxy.Proxy):
             # endpoint_override=self.get_rds_endpoint(),
             headers=self.get_os_headers(True),
             **attrs)
-
-    def _get_cleanup_dependencies(self):
-        return {
-            'rds': {
-                'before': ['instance']
-            }
-        }
-
-    def _service_cleanup(
-        self,
-        dry_run=True,
-        client_status_queue=None,
-        identified_resources=None,
-        filters=None,
-        resource_evaluation_fn=None,
-        skip_resources=None,
-    ):
-        if self.should_skip_resource_cleanup("instance", skip_resources):
-            return
-
-        instances = []
-        for obj in self.instances():
-            need_delete = self._service_cleanup_del_res(
-                self.delete_instance,
-                obj,
-                dry_run=dry_run,
-                client_status_queue=client_status_queue,
-                identified_resources=identified_resources,
-                filters=filters,
-                resource_evaluation_fn=resource_evaluation_fn,
-            )
-            if not dry_run and need_delete:
-                instances.append(obj)
-            

@@ -29,3 +29,4 @@ otcextensions.tests.functional.sdk.nat.v2.test_dnat*
 otcextensions.tests.functional.osclient.kms*
 otcextensions.tests.functional.sdk.imsv1*
 otcextensions.tests.functional.sdk.imsv2*
+otcextensions.tests.functional.sdk.rds.v3*

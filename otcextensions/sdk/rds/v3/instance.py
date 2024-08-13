@@ -119,7 +119,7 @@ class Instance(_base.Resource):
     switch_strategy = resource.Body('switch_strategy')
     #: Lists the tags and their values attached to the instance.
     #: *Type:dict*
-    tags = resource.Body('tags', type=dict)
+    tags = resource.Body('tags', type=list)
     #: Time Zone.
     #: *Type:string*
     time_zone = resource.Body('time_zone')
