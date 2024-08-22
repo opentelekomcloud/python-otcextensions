@@ -17,8 +17,9 @@ from otcextensions.sdk.css.v1 import _proxy
 from otcextensions.sdk.css.v1 import cert as _cert
 from otcextensions.sdk.css.v1 import cluster as _cluster
 from otcextensions.sdk.css.v1 import cluster_image as _cluster_image
-from otcextensions.sdk.css.v1 import cluster_upgrade_info \
-    as _cluster_upgrade_info
+from otcextensions.sdk.css.v1 import (
+    cluster_upgrade_status as _cluster_upgrade_status
+)
 from otcextensions.sdk.css.v1 import flavor as _flavor
 from otcextensions.sdk.css.v1 import snapshot as _snapshot
 
@@ -171,9 +172,9 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
             ],
         )
 
-    def test_get_cluster_upgrade_version_info(self):
+    def test_get_cluster_version_upgrades(self):
         self.verify_get(
-            self.proxy.get_cluster_version_upgrade_info,
+            self.proxy.get_cluster_version_upgrades,
             _cluster_image.ClusterImage,
             method_args=[],
             method_kwargs={'cluster': 'test_id', 'upgrade_type': 'cross'},
@@ -234,10 +235,10 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
             ],
         )
 
-    def test_get_cluster_upgrade_info(self):
+    def test_get_cluster_upgrade_status(self):
         self.verify_list(
-            self.proxy.get_cluster_upgrade_info,
-            _cluster_upgrade_info.ClusterUpgradeInfo,
+            self.proxy.get_cluster_upgrade_status,
+            _cluster_upgrade_status.ClusterUpgradeStatus,
             method_kwargs={'cluster': 'cluster-uuid'},
             expected_kwargs={'cluster_id': 'cluster-uuid'},
         )

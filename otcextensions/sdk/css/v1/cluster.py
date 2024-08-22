@@ -228,7 +228,7 @@ class Cluster(resource.Resource):
     def update_flavor(
         self, session, new_flavor, node_type=None, check_replica=True
     ):
-        """Modify cluseter specifications."""
+        """Modify cluster specifications."""
         body = {'needCheckReplica': check_replica, 'newFlavorId': new_flavor}
 
         url_path = 'flavor'
@@ -364,9 +364,7 @@ class Cluster(resource.Resource):
 
     def retry_upgrade_job(self, session, job_id, retry_mode=None):
         """Retry a task or terminate the impact of a task."""
-        uri = utils.urljoin(
-            'clusters', self.id, 'upgrade', job_id, 'retry'
-        )
+        uri = utils.urljoin('clusters', self.id, 'upgrade', job_id, 'retry')
 
         params = {}
 

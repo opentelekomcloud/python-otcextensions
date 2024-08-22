@@ -115,16 +115,16 @@ Get CSS Cluster Upgrade Info
 This interface is used to obtain the CSS cluster updgrade details.
 :class:`~otcextensions.sdk.css.v1.cluster.Cluster`.
 
-.. literalinclude:: ../examples/css/get_cluster_upgrade_info.py
+.. literalinclude:: ../examples/css/get_cluster_upgrade_status.py
    :lines: 17-29
 
-Get CSS Cluster Version Upgrade Info
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Get CSS Cluster Upgradable Version Info
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This interface is used to get the CSS cluster version upgrade info.
+This interface is used to get the CSS cluster upgradable version info.
 :class:`~otcextensions.sdk.css.v1.cluster.Cluster`.
 
-.. literalinclude:: ../examples/css/get_cluster_version_upgrade_info.py
+.. literalinclude:: ../examples/css/list_cluster_upgradable_versions.py
    :lines: 17-28
 
 Replace CSS Cluster Node
@@ -172,8 +172,8 @@ Update CSS Cluster Flavor
 This interface is used to update the flavor of a CSS cluster.
 :class:`~otcextensions.sdk.css.v1.cluster.Cluster`.
 
-.. literalinclude:: ../examples/css/update_cluster_flavor.py
-   :lines: 17-28
+.. literalinclude:: ../examples/css/update_node_type_flavor.py
+   :lines: 17-31
 
 Update CSS Cluster Kernel
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -318,4 +318,17 @@ for a cluster.
 :class:`~otcextensions.sdk.css.v1.snapshot.Snapshot`.
 
 .. literalinclude:: ../examples/css/disable_snapshot_function.py
+   :lines: 17-23
+
+CSS Flavor
+----------
+
+List CSS Flavors
+^^^^^^^^^^^^^^^^
+
+This interface is used to query list of node types (flavors)
+supported by CSS Cluster.
+:class:`~otcextensions.sdk.css.v1.flavor.Flavor`.
+
+.. literalinclude:: ../examples/css/list_flavors.py
    :lines: 17-23

@@ -434,8 +434,7 @@ class TestCluster(base.TestCase):
 
         rt1 = sot.retry_upgrade_job(self.sess, job_id)
         self.sess.put.assert_called_with(
-            f'clusters/{sot.id}/upgrade/{job_id}/retry',
-            params={}
+            f'clusters/{sot.id}/upgrade/{job_id}/retry', params={}
         )
 
         self.assertIsNone(rt1)
@@ -444,7 +443,7 @@ class TestCluster(base.TestCase):
         rt2 = sot.retry_upgrade_job(self.sess, job_id, retry_mode)
         self.sess.put.assert_called_with(
             f'clusters/{sot.id}/upgrade/{job_id}/retry',
-            params={'retry_mode': retry_mode}
+            params={'retry_mode': retry_mode},
         )
 
         self.assertIsNone(rt2)

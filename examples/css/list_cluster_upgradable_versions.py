@@ -19,10 +19,10 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect()
 
-cluster_name_or_id = 'csstest0716'
-upgrade_type = 'cross'
+cluster_name_or_id = 'css-test0802'
+upgrade_type = 'same'
 
 cluster = conn.css.find_cluster(cluster_name_or_id)
 
-resp = conn.css.get_cluster_version_upgrade_info(cluster, upgrade_type)
+resp = conn.css.cluster_upgradable_versions(cluster, upgrade_type)
 print(resp)

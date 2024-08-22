@@ -28,7 +28,7 @@ class CurrentNodeDetailSpec(resource.Resource):
     status = resource.Body('status')
 
 
-class GetTargetImageIdDetailSpec(resource.Resource):
+class TargetImageSpec(resource.Resource):
     #: Image engine type.
     datastore_type = resource.Body('datastoreType')
     #: Image engine version.
@@ -43,7 +43,7 @@ class GetTargetImageIdDetailSpec(resource.Resource):
     priority = resource.Body('priority', type=int)
 
 
-class ClusterUpgradeInfo(resource.Resource):
+class ClusterUpgradeStatus(resource.Resource):
     base_path = '/clusters/%(cluster_id)s/upgrade/detail'
 
     allow_list = True
@@ -75,7 +75,7 @@ class ClusterUpgradeInfo(resource.Resource):
     #: Task ID.
     id = resource.Body('id')
     #: Image details.
-    image_info = resource.Body('imageInfo', type=GetTargetImageIdDetailSpec)
+    image_info = resource.Body('imageInfo', type=TargetImageSpec)
     #: Current upgrade behavior of the cluster.
     migrate_param = resource.Body('migrateParam')
     #: Start time of the upgrade.

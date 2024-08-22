@@ -19,7 +19,7 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect()
 
-cluster_name_or_id = '3b300b4e-2aa9-45c0-b898-a9e6fa319922'
+cluster_name_or_id = 'a4915eea-7a70-4058-bbf5-c391989c10e3'
 
 attrs = {
     'node_type': 'ess-master',
@@ -28,6 +28,6 @@ attrs = {
     'volume_type': 'COMMON',
 }
 
-cluster = conn.css.find_cluster(cluster_name_or_id)
+cluster = conn.css.find_cluster(cluster_name_or_id, ignore_missing=False)
 
 conn.css.add_cluster_nodes(cluster, **attrs)

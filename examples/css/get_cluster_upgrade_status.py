@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-List all CSS Clusters
+List CSS cluster upgrade details.
 """
 
 import openstack
@@ -20,10 +20,10 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect()
 
-cluster_name_or_id = 'csstest0716'
+cluster_name_or_id = 'ce50ce66-3083-437c-91aa-58921abd9f99'
 cluster = conn.css.find_cluster(cluster_name_or_id)
 
-resp = conn.css.get_cluster_upgrade_info(cluster)
+resp = conn.css.get_cluster_upgrade_status(cluster)
 
 for cluster_upgrade_info in resp:
     print(cluster_upgrade_info)
