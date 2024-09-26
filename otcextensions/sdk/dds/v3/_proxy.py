@@ -14,7 +14,7 @@ from openstack import proxy
 from otcextensions.sdk.dds.v3 import datastore as _datastore
 from otcextensions.sdk.dds.v3 import flavor as _flavor
 from otcextensions.sdk.dds.v3 import instance as _instance
-
+from otcextensions.sdk.dds.v3 import job as _job
 
 class Proxy(proxy.Proxy):
     skip_discovery = True
@@ -88,10 +88,162 @@ class Proxy(proxy.Proxy):
         instance = self._get_resource(_instance.Instance, instance)
         return instance.restart(self)
 
-    def enlarge_instance(self, instance):
-        # TODO: узнать метод для нестандартных действий
-        return self._update(_instance.Instance, instance)
+    def enlarge_instance(self, instance, size, group_id=None):
+        """Enlarge storage space of a DB instance
 
+        :param instance: The value can be either the ID of an instance or a
+            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :param size: New instance size.
+        :returns: workflow ID.
+
+        :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+        """
+        instance = self.get_instance(instance)
+        return instance.enlarge(self, size, group_id)
+
+    def add_instance_nodes(self, instance, **attrs):
+        """Add nodes for a specific instance
+
+        :param instance: The value can be either the ID of an instance or a
+            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :param dict attrs: Keyword arguments which will be used to add node to
+            a :class:`~otcextensions.sdk.dds.v3.instance.Instance`.
+        :returns: workflow ID.
+
+        :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.add_nodes(self, **attrs)
+
+    def resize_instance(self, instance, *attrs):
+        """Change specifications of a DB instance
+
+        :param instance: The value can be either the ID of an instance or a
+            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :param dict attrs: Keyword arguments which will be used to add node to
+            a :class:`~otcextensions.sdk.dds.v3.instance.Instance`.
+        :returns: workflow ID.
+
+        :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.resize(self, *attrs)
+
+    def switchover_instance(self, instance):
+        """Perform a primary/secondary switchover in a replica set instance.
+
+        :param instance: The value can be either the ID of an instance or a
+            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :returns: workflow ID.
+
+        :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.switchover(self)
+
+    def enable_instance_ssl(self, instance, enable=True):
+        """Perform a primary/secondary switchover in a replica set instance.
+
+        :param instance: The value can be either the ID of an instance or a
+            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :param bool enable: Perform a primary/secondary switchover
+        :returns: workflow ID.
+
+        :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.switch_ssl(self, enable)
+
+    def change_instance_name(self, instance, name):
+        """Change name of a DB instance
+
+        :param instance: The value can be either the ID of an instance or a
+            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :param name: New name of an instance
+        :returns: workflow ID.
+
+        :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.modify_name(self, name)
+
+    def change_instance_port(self, instance, port):
+        """Change name of a DB instance
+
+        :param instance: The value can be either the ID of an instance or a
+            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :param port: New port of an instance
+        :returns: workflow ID.
+
+        :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.change_port(self, port)
+
+    def change_instance_security_group(self, instance, security_group_id):
+        """Change security group of a DB instance
+
+        :param instance: The value can be either the ID of an instance or a
+            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :param security_group_id: New security group ID
+        :returns: workflow ID.
+
+        :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.change_security_group(self, security_group_id)
+
+    def change_instance_private_ip(self, instance, *attrs):
+        """Change private IP of a DB instance
+
+        :param instance: The value can be either the ID of an instance or a
+            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :param dict attrs: Keyword arguments which will be used to change ip.
+        :returns: workflow ID.
+
+        :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.change_private_ip(self, *attrs)
+
+    def create_instance_ip(self, instance, *attrs):
+        """Add config for a DB instance
+
+        :param instance: The value can be either the ID of an instance or a
+            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :param dict attrs: Keyword arguments which will be used to add ip
+        :returns: workflow ID.
+
+        :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.create_ip(self, *attrs)
+
+    def configure_client_network(self, instance, network_ranges):
+        """Configure client network of a DB instance
+        :param instance: The value can be either the ID of an instance or a
+            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :param list network_ranges: List of network ranges
+        :returns: workflow ID.
+
+        :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.configure_client_network(self, network_ranges)
+
+    def set_recycle_bin_policy(self, instance, *attrs):
+        # TODO: измени ссылку запроса
+        """Set the recycle bin policy for an instance.
+
+        :param instance: The value can be either the ID of an instance or a
+                    :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :param dict attrs: Keyword arguments which will be used to set policy
+        :returns: workflow ID.
+
+        :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+        """
+        instance = self._get_resource(_instance.Instance, instance)
+        return instance.set_recycle_bin_policy(self, *attrs)
     def delete_instance(self, instance, ignore_missing=True):
         """Delete an instance
 
@@ -148,3 +300,13 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
         """
         return self._list(_instance.Instance, **params)
+
+    def get_job(self, job):
+        """Get information about a job
+
+        :param job: The value can be either the ID of a job or a
+            :class:`~otcextensions.sdk.dds.v3.job.Job` job.
+
+        :returns: One :class:`~otcextensions.sdk.dds.v3.job.Job`
+        """
+        return self._get(_job.Job, job)

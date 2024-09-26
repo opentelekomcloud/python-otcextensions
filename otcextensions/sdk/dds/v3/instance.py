@@ -12,7 +12,7 @@
 from openstack import exceptions
 from openstack import resource
 from openstack import utils
-
+import json
 
 class FlavorSpec(resource.Resource):
     #: Specifies node quantity.
@@ -269,15 +269,103 @@ class Instance(resource.Resource):
         }
         return self._action(session, body, 'restart')
 
-    def _action(self, session, body, action_type):
-        """Preform alarm actions given the message body.
+    def enlarge(self, session, size, group_id):
+        '''Enlarge Instance Storage Space'''
+        body = {
+            "volume":
+                {
+                    "size": size
+                }
+        }
+        if group_id is not None:
+            body["volume"]["group_id"] = group_id
+        result = self._action(session, body, 'enlarge-volume')
+        return json.loads(result.text)
 
+    def add_nodes(self, session, node_type, spec_code, num, volume=None):
+        '''Add Nodes to Instance'''
+        body = {
+            "type": node_type,
+            "spec_code": spec_code,
+            "num": num
+        }
+        if volume is not None:
+            body['volume'] = volume
+        result = self._action(session, body, 'enlarge')
+        return json.loads(result.text)
+
+
+    def resize(self, session, spec_code, target_type=None):
+        body = {
+            "resize": {
+                "target_id": self.id,
+                "target_spec_code": spec_code
+            }
+        }
+        if target_type is not None:
+            body['resize']['target_type'] = target_type
+        result = self._action(session, body, 'resize')
+        return json.loads(result.text)
+
+    def switchover(self, session):
+        return self._action(session, {}, 'switchover')
+
+    def switch_ssl(self, session, enable):
+        body = {'ssl_option': "1" if enable else "0"}
+        return self._action(session, body, 'switch-ssl')
+
+    def modify_name(self, session, name):
+        body = {
+            "new_instance_name": name
+        }
+        return self._action(session, body, 'modify-name', 'PUT')
+
+    def change_port(self, session, port):
+        body = {
+            "port": port
+        }
+        return self._action(session, body, 'modify-port')
+
+    def change_security_group(self, session, security_group_id):
+        body = {
+            "security_group_id": security_group_id
+        }
+        return self._action(session, body, 'modify-security-group')
+
+    def change_private_ip(self, session, node_id, new_ip):
+        body = {
+            "node_id": node_id,
+            "new_ip": new_ip
+        }
+        return self._action(session, body, 'modify-internal-ip')
+
+    def create_ip(self, session, dds_type, password):
+        body = {
+            "type": dds_type,
+            "target_id": self.id,
+            "password": password
+        }
+        return self._action(session, body, 'create-ip')
+
+    def configure_client_network(self, session, network_ranges):
+        body = {
+            "client_network_ranges": [network_ranges]
+        }
+        return self._action(session, body, 'client-network')
+
+    def set_recycle_bin_policy(self, session, *attrs):
+        body = {
+            "recycle_policy": attrs
+        }
+        return self._action(session, body, 'recycle-policy')
+
+    def _action(self, session, body, action_type, api_type='POST'):
+        """Preform actions given the message body.
         """
-        # if getattr(self, 'endpoint_override', None):
-        #     # If we have internal endpoint_override - use it
-        #     endpoint_override = self.endpoint_override
         url = utils.urljoin(self.base_path, self.id, action_type)
-        return session.post(
-            url,
-            # endpoint_override=endpoint_override,
-            json=body)
+        if api_type == 'POST':
+            return session.post(
+                url,
+                json=body)
+        if api_type == 'PUT':
+            return session.put(url, json=body)
