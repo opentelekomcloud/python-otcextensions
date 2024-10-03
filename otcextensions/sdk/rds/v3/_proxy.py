@@ -62,17 +62,18 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
 
     # ======= Flavors =======
 
-    def flavors(self, datastore_name, version_name):
-        """List flavors of given datastore_name and datastore_version
+    def flavors(self, datastore_name, **params):
+        """List flavors of given datastore_name and other optional parameters
 
         :param datastore_name: datastore_name
         :param version_name: version_name
+        :param spec_code: spec_code
 
         :returns: A generator of flavor objects.
         """
         return self._list(_flavor.Flavor,
                           datastore_name=datastore_name,
-                          version_name=version_name)
+                          **params)
 
     # ======= Instance =======
 
