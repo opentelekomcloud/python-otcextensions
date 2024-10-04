@@ -30,7 +30,7 @@ class TestAs(base.BaseFunctionalTest):
     AS_CONFIG = None
     AS_INSTANCE = None
     MAX_INST_NUMBER = 1
-    IMAGE_NAME = "Standard_Debian_10_latest"
+    IMAGE_NAME = "Standard_Debian_11_latest"
     DISK_SIZE = 4
     KP_NAME = None
     AS_GROUP_NAME = None

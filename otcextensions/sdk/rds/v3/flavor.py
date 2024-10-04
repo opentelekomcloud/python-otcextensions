@@ -19,7 +19,8 @@ class Flavor(resource.Resource):
 
     # capabilities
     allow_list = True
-    _query_mapping = resource.QueryParameters('version_name')
+    _query_mapping = resource.QueryParameters(
+        'version_name', 'spec_code')
 
     datastore_name = resource.URI('datastore_name')
     #: Instance Mode (single/ha/replica)
@@ -37,3 +38,15 @@ class Flavor(resource.Resource):
     #: Amount of VCPU's
     #: *Type: str*
     vcpus = resource.Body('vcpus')
+    #: Group type
+    #: *Type: str*
+    group_type = resource.Body('group_type')
+    #: Supported Versions
+    #: *Type:list*
+    version_name = resource.Body('version_name', type=list)
+    #: Availability Zone Status
+    #: *Type: dict*
+    az_status = resource.Body('az_status', type=dict)
+    #: Availability Zone Description
+    #: *Type: dict*
+    az_desc = resource.Body('az_desc', type=dict)
