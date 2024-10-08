@@ -291,7 +291,7 @@ class TestCluster(base.TestCase):
         }
 
         rt1 = sot.update_security_mode(
-            self.sess, authority_enable, admin_pwd, https_enable
+            self.sess, https_enable, authority_enable, admin_pwd
         )
         sot._action.assert_called_with(self.sess, 'mode/change', body)
         self.assertIsNone(rt1)
@@ -300,7 +300,7 @@ class TestCluster(base.TestCase):
         body['adminPwd'] = admin_pwd
 
         rt2 = sot.update_security_mode(
-            self.sess, authority_enable, admin_pwd, https_enable
+            self.sess, https_enable, authority_enable, admin_pwd
         )
         sot._action.assert_called_with(self.sess, 'mode/change', body)
         self.assertIsNone(rt2)

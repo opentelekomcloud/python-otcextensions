@@ -107,8 +107,8 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
         self._verify(
             'otcextensions.sdk.css.v1.cluster.Cluster.update_security_mode',
             self.proxy.update_cluster_security_mode,
-            method_args=[_cluster.Cluster, False, None, True],
-            expected_args=[self.proxy, False, None, True],
+            method_args=[_cluster.Cluster, True, False, None],
+            expected_args=[self.proxy, True, False, None],
         )
 
         self._verify(
@@ -116,11 +116,12 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
             self.proxy.update_cluster_security_mode,
             method_kwargs={
                 'cluster': _cluster.Cluster,
+                'https_enable': False,
                 'authority_enable': False,
                 'admin_pwd': None,
-                'https_enable': False,
+
             },
-            expected_args=[self.proxy, False, None, False],
+            expected_args=[self.proxy, False, False, None],
         )
 
     def test_update_security_group(self):

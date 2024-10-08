@@ -229,12 +229,13 @@ class Cluster(resource.Resource):
         self, session, new_flavor, node_type=None, check_replica=True
     ):
         """Modify cluster specifications."""
-        body = {'needCheckReplica': check_replica, 'newFlavorId': new_flavor}
+        body = {
+            'newFlavorId': new_flavor
+        }
+        if check_replica in (True, False):
+            body['needCheckReplica'] = check_replica
 
-        url_path = 'flavor'
-
-        if node_type:
-            url_path = node_type + '/flavor'
+        url_path = node_type + '/flavor' if node_type else 'flavor'
 
         self._action(session, url_path, body)
 
@@ -251,15 +252,15 @@ class Cluster(resource.Resource):
     def update_security_mode(
         self,
         session,
-        authority_enable=False,
+        https_enable=None,
+        authority_enable=None,
         admin_pwd=None,
-        https_enable=False,
     ):
-        body = {
-            'authorityEnable': authority_enable,
-            'httpsEnable': https_enable,
-        }
-
+        body = {}
+        if https_enable in (True, False):
+            body['httpsEnable'] = https_enable
+        if authority_enable in (True, False):
+            body['authorityEnable'] = authority_enable
         if admin_pwd:
             body['adminPwd'] = admin_pwd
 
@@ -285,8 +286,9 @@ class Cluster(resource.Resource):
             'upgrade_type': upgrade_type,
             'indices_backup_check': indices_backup_check,
             'agency': agency,
-            'cluster_load_check': cluster_load_check,
         }
+        if cluster_load_check in (True, False):
+            body['cluster_load_check'] = cluster_load_check
 
         self._action(session, 'inst-type/all/image/upgrade', body)
 

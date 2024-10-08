@@ -177,9 +177,9 @@ class Proxy(proxy.Proxy):
     def update_cluster_security_mode(
         self,
         cluster,
-        authority_enable=False,
+        https_enable=None,
+        authority_enable=None,
         admin_pwd=None,
-        https_enable=False,
     ):
         """Update cluster security mode
 
@@ -192,7 +192,7 @@ class Proxy(proxy.Proxy):
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return cluster.update_security_mode(
-            self, authority_enable, admin_pwd, https_enable
+            self, https_enable, authority_enable, admin_pwd
         )
 
     def update_cluster_security_group(self, cluster, security_group_id):
@@ -281,7 +281,9 @@ class Proxy(proxy.Proxy):
         )
 
         cluster = self._get_resource(_cluster.Cluster, cluster)
-        return cluster.scale_in_by_node_type(self, nodes)
+        resp = cluster.scale_in_by_node_type(self, nodes)
+        self.endpoint_override = None
+        return resp
 
     def replace_cluster_node(self, cluster, node_id):
         """Replace a failed node
