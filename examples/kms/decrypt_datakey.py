@@ -21,7 +21,7 @@ conn = openstack.connect(cloud='otc')
 
 data = conn.kms.decrypt_datakey(
     cmk='cmk_id',
-    cypher_text='64_bit_cypher',
-    datakey_cypher_length='64'
+    cipher_text='64_bit_cipher',
+    datakey_cipher_length='64'
 )
 print(data)
