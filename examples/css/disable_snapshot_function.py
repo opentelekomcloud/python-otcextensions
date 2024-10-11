@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Get details of CSS Cluster by cluster_id or instance of Cluster class
+Disable the snapshot function of a CSS Cluster
 """
 
 import openstack

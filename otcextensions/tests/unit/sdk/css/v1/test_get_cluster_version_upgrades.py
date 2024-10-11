@@ -10,7 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack.tests.unit import base
-from otcextensions.sdk.css.v1 import cluster_upgrade_info
+from otcextensions.sdk.css.v1 import cluster_upgrade_status
 from otcextensions.tests.unit.sdk.utils import assert_attributes_equal
 
 EXAMPLE = {
@@ -69,12 +69,12 @@ EXAMPLE = {
 }
 
 
-class TestClusterUpgradeInfo(base.TestCase):
+class TestClusterUpgradeStatus(base.TestCase):
     def setUp(self):
-        super(TestClusterUpgradeInfo, self).setUp()
+        super(TestClusterUpgradeStatus, self).setUp()
 
     def test_basic(self):
-        sot = cluster_upgrade_info.ClusterUpgradeInfo()
+        sot = cluster_upgrade_status.ClusterUpgradeStatus()
 
         self.assertEqual(
             '/clusters/%(cluster_id)s/upgrade/detail', sot.base_path
@@ -98,7 +98,7 @@ class TestClusterUpgradeInfo(base.TestCase):
             'executeTimes': 'execute_times',
             'failMessage': 'fail_message',
         }
-        sot = cluster_upgrade_info.ClusterUpgradeInfo(**EXAMPLE)
+        sot = cluster_upgrade_status.ClusterUpgradeStatus(**EXAMPLE)
 
         for key, value in EXAMPLE.items():
             if key in updated_sot_attrs.keys():

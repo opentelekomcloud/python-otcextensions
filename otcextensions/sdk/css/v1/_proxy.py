@@ -17,8 +17,9 @@ from openstack import proxy
 from otcextensions.sdk.css.v1 import cert as _cert
 from otcextensions.sdk.css.v1 import cluster as _cluster
 from otcextensions.sdk.css.v1 import cluster_image as _cluster_image
-from otcextensions.sdk.css.v1 import cluster_upgrade_info \
-    as _cluster_upgrade_info
+from otcextensions.sdk.css.v1 import (
+    cluster_upgrade_status as _cluster_upgrade_status
+)
 from otcextensions.sdk.css.v1 import flavor as _flavor
 from otcextensions.sdk.css.v1 import snapshot as _snapshot
 
@@ -176,9 +177,9 @@ class Proxy(proxy.Proxy):
     def update_cluster_security_mode(
         self,
         cluster,
-        authority_enable=False,
+        https_enable=None,
+        authority_enable=None,
         admin_pwd=None,
-        https_enable=False,
     ):
         """Update cluster security mode
 
@@ -191,7 +192,7 @@ class Proxy(proxy.Proxy):
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return cluster.update_security_mode(
-            self, authority_enable, admin_pwd, https_enable
+            self, https_enable, authority_enable, admin_pwd
         )
 
     def update_cluster_security_group(self, cluster, security_group_id):
@@ -236,7 +237,7 @@ class Proxy(proxy.Proxy):
             cluster_load_check,
         )
 
-    def get_cluster_version_upgrade_info(self, cluster, upgrade_type):
+    def get_cluster_version_upgrades(self, cluster, upgrade_type):
         """Get cluster version upgrade info
 
         :param cluster: key id or an instance of
@@ -280,7 +281,9 @@ class Proxy(proxy.Proxy):
         )
 
         cluster = self._get_resource(_cluster.Cluster, cluster)
-        return cluster.scale_in_by_node_type(self, nodes)
+        resp = cluster.scale_in_by_node_type(self, nodes)
+        self.endpoint_override = None
+        return resp
 
     def replace_cluster_node(self, cluster, node_id):
         """Replace a failed node
@@ -311,7 +314,7 @@ class Proxy(proxy.Proxy):
             self, node_type, flavor, node_size, volume_type
         )
 
-    def get_cluster_upgrade_info(self, cluster, **params):
+    def get_cluster_upgrade_status(self, cluster, **params):
         """Obtain the cluster updgrade details
 
         :param cluster: key id or an instance of
@@ -320,7 +323,7 @@ class Proxy(proxy.Proxy):
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return self._list(
-            _cluster_upgrade_info.ClusterUpgradeInfo,
+            _cluster_upgrade_status.ClusterUpgradeStatus,
             cluster_id=cluster.id,
             **params,
         )

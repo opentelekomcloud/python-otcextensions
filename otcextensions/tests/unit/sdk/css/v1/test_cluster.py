@@ -291,7 +291,7 @@ class TestCluster(base.TestCase):
         }
 
         rt1 = sot.update_security_mode(
-            self.sess, authority_enable, admin_pwd, https_enable
+            self.sess, https_enable, authority_enable, admin_pwd
         )
         sot._action.assert_called_with(self.sess, 'mode/change', body)
         self.assertIsNone(rt1)
@@ -300,7 +300,7 @@ class TestCluster(base.TestCase):
         body['adminPwd'] = admin_pwd
 
         rt2 = sot.update_security_mode(
-            self.sess, authority_enable, admin_pwd, https_enable
+            self.sess, https_enable, authority_enable, admin_pwd
         )
         sot._action.assert_called_with(self.sess, 'mode/change', body)
         self.assertIsNone(rt2)
@@ -434,8 +434,7 @@ class TestCluster(base.TestCase):
 
         rt1 = sot.retry_upgrade_job(self.sess, job_id)
         self.sess.put.assert_called_with(
-            f'clusters/{sot.id}/upgrade/{job_id}/retry',
-            params={}
+            f'clusters/{sot.id}/upgrade/{job_id}/retry', params={}
         )
 
         self.assertIsNone(rt1)
@@ -444,7 +443,7 @@ class TestCluster(base.TestCase):
         rt2 = sot.retry_upgrade_job(self.sess, job_id, retry_mode)
         self.sess.put.assert_called_with(
             f'clusters/{sot.id}/upgrade/{job_id}/retry',
-            params={'retry_mode': retry_mode}
+            params={'retry_mode': retry_mode},
         )
 
         self.assertIsNone(rt2)

@@ -10,7 +10,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-'''CSS ELK cluster v1 action implementations'''
+"""CSS ELK cluster v1 action implementations"""
+
 import logging
 
 from osc_lib import exceptions
@@ -27,6 +28,9 @@ LOG = logging.getLogger(__name__)
 
 
 DISK_TYPE_CHOICES = ['common', 'high', 'ultrahigh']
+NODE_TYPE_CHOICES = ['ess', 'ess-cold', 'ess-client', 'ess-master']
+VOLUME_TYPE_CHOICES = ['ULTRAHIGH', 'COMMON', 'HIGH']
+UPGRADE_TYPE_CHOICES = ['same', 'cross', 'cross-engine']
 
 
 _formatters = {
@@ -42,8 +46,9 @@ _formatters = {
 
 def set_attributes_for_print(obj):
     for data in obj:
-        setattr(data, 'type', data.datastore['type'])
-        setattr(data, 'version', data.datastore['version'])
+        if getattr(data, 'datastore'):
+            setattr(data, 'type', data.datastore['type'])
+            setattr(data, 'version', data.datastore['version'])
         yield data
 
 
@@ -71,7 +76,7 @@ def translate_response(func):
 
 
 class CreateCluster(command.ShowOne):
-    _description = _("Create a new CSS cluster instance.")
+    _description = _('Create a new CSS cluster instance.')
 
     def get_parser(self, prog_name):
         parser = super(CreateCluster, self).get_parser(prog_name)
@@ -179,7 +184,7 @@ class CreateCluster(command.ShowOne):
             metavar='<cmk_id>',
             help=_(
                 'Encryption Key Id. '
-                'The system encryption is used for cluster encryption.'
+                'The system encryption is used or cluster encryption.'
                 'The Default Master Keys cannot be used to create grants.'
             ),
         )
@@ -230,7 +235,7 @@ class CreateCluster(command.ShowOne):
         parser.add_argument(
             '--wait',
             action='store_true',
-            help=('Wait for Cluster to Restart.'),
+            help=('Wait for Cluster.'),
         )
         parser.add_argument(
             '--timeout',
@@ -243,7 +248,6 @@ class CreateCluster(command.ShowOne):
 
     @translate_response
     def take_action(self, parsed_args):
-
         client = self.app.client_manager.css
 
         attrs = {
@@ -367,7 +371,9 @@ class ListClusterNodes(command.Lister):
     def take_action(self, parsed_args):
         client = self.app.client_manager.css
 
-        cluster = client.find_cluster(parsed_args.cluster)
+        cluster = client.find_cluster(
+            parsed_args.cluster, ignore_missing=False
+        )
 
         _formatters = {'Volume': cli_utils.YamlFormat}
         return (
@@ -395,7 +401,14 @@ class ShowCluster(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.css
 
-        return client.find_cluster(parsed_args.cluster)
+        cluster = client.find_cluster(
+            parsed_args.cluster, ignore_missing=False
+        )
+
+        if not getattr(cluster, 'nodes'):
+            cluster = client.get_cluster(cluster)
+
+        return cluster
 
 
 class RestartCluster(command.Command):
@@ -406,7 +419,7 @@ class RestartCluster(command.Command):
         parser.add_argument(
             'cluster',
             metavar='<cluster>',
-            help=_("ID or Name of the CSS cluster to be restart."),
+            help=_('ID or Name of the CSS cluster to be restart.'),
         )
         parser.add_argument(
             '--wait',
@@ -418,7 +431,7 @@ class RestartCluster(command.Command):
             metavar='<timeout>',
             type=int,
             default=300,
-            help=_("Timeout for the wait in seconds (default 300 seconds)."),
+            help=_('Timeout for the wait in seconds (default 300 seconds).'),
         )
         return parser
 
@@ -440,7 +453,7 @@ class ExtendClusterNodes(command.Command):
         parser.add_argument(
             'cluster',
             metavar='<cluster>',
-            help=_("ID or Name of the CSS cluster to be extended."),
+            help=_('ID or Name of the CSS cluster to be extended.'),
         )
         parser.add_argument(
             '--extend',
@@ -474,7 +487,9 @@ class ExtendClusterNodes(command.Command):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.css
-        cluster = client.find_cluster(parsed_args.cluster)
+        cluster = client.find_cluster(
+            parsed_args.cluster, ignore_missing=False
+        )
         attrs = {'grow': parsed_args.extend}
         client.extend_cluster_nodes(cluster, **attrs)
         if parsed_args.wait:
@@ -482,21 +497,21 @@ class ExtendClusterNodes(command.Command):
 
 
 class ExtendCluster(command.Command):
-    _description = _('Scaling Out a Cluster\'s with only Common Nodes.')
+    _description = _("Scaling Out a Cluster's with only Common Nodes.")
 
     def get_parser(self, prog_name):
         parser = super(ExtendCluster, self).get_parser(prog_name)
         parser.add_argument(
             'cluster',
             metavar='<cluster>',
-            help=_("ID or Name of the CSS cluster to be extended."),
+            help=_('ID or Name of the CSS cluster to be extended.'),
         )
         parser.add_argument(
             '--add-nodes',
             metavar='<add_nodes>',
             type=int,
             required=True,
-            help=_("Number of css nodes to be scaled out."),
+            help=_('Number of css nodes to be scaled out.'),
         )
         parser.add_argument(
             '--wait',
@@ -508,13 +523,15 @@ class ExtendCluster(command.Command):
             metavar='<timeout>',
             type=int,
             default=1200,
-            help=_("Timeout for the wait in seconds (default 1200 seconds)."),
+            help=_('Timeout for the wait in seconds (default 1200 seconds).'),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.css
-        cluster = client.find_cluster(parsed_args.cluster)
+        cluster = client.find_cluster(
+            parsed_args.cluster, ignore_missing=False
+        )
         client.extend_cluster(cluster, parsed_args.add_nodes)
         if parsed_args.wait:
             client.wait_for_cluster(cluster.id, parsed_args.timeout)
@@ -529,7 +546,7 @@ class DeleteCluster(command.Command):
             'cluster',
             metavar='<cluster>',
             nargs='+',
-            help=_("ID or Name of the CSS cluster(s) to be deleted."),
+            help=_('ID or Name of the CSS cluster(s) to be deleted.'),
         )
         return parser
 
@@ -544,7 +561,7 @@ class DeleteCluster(command.Command):
                 result += 1
                 LOG.error(
                     _(
-                        "Failed to delete cluster(s) with "
+                        'Failed to delete cluster(s) with '
                         "ID or Name '%(cluster)s': %(e)s"
                     ),
                     {'cluster': name_or_id, 'e': e},
@@ -552,6 +569,640 @@ class DeleteCluster(command.Command):
         if result > 0:
             total = len(parsed_args.cluster)
             msg = _(
-                "%(result)s of %(total)s Cluster(s) failed " "to delete."
+                '%(result)s of %(total)s Cluster(s) failed ' 'to delete.'
             ) % {'result': result, 'total': total}
             raise exceptions.CommandError(msg)
+
+
+class UpdateClusterName(command.ShowOne):
+    _description = _('Change the name of a cluster.')
+
+    def get_parser(self, prog_name):
+        parser = super(UpdateClusterName, self).get_parser(prog_name)
+        parser.add_argument(
+            'cluster', metavar='<cluster>', help=_('Cluster name or ID.')
+        )
+        parser.add_argument(
+            '--new-name',
+            required=True,
+            metavar='<new_name>',
+            help=_('New cluster name.'),
+        )
+        return parser
+
+    @translate_response
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.css
+
+        cluster = client.find_cluster(
+            parsed_args.cluster, ignore_missing=False
+        )
+
+        client.update_cluster_name(cluster, parsed_args.new_name)
+
+        return client.get_cluster(cluster)
+
+
+class UpdateClusterPassword(command.Command):
+    _description = _('Change the password of a cluster.')
+
+    def get_parser(self, prog_name):
+        parser = super(UpdateClusterPassword, self).get_parser(prog_name)
+        parser.add_argument(
+            'cluster', metavar='<cluster>', help=_('Cluster name or ID.')
+        )
+        parser.add_argument(
+            '--new-password',
+            required=True,
+            metavar='<new_password>',
+            help=_('New password.'),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.css
+
+        cluster = client.find_cluster(
+            parsed_args.cluster, ignore_missing=False
+        )
+
+        client.update_cluster_password(cluster, parsed_args.new_password)
+
+
+class UpdateClusterSecurityGroup(command.Command):
+    _description = _('Change the security group after a cluster is created')
+
+    def get_parser(self, prog_name):
+        parser = super(UpdateClusterSecurityGroup, self).get_parser(prog_name)
+        parser.add_argument(
+            'cluster', metavar='<cluster>', help=_('Cluster name or ID.')
+        )
+        parser.add_argument(
+            '--security-group',
+            required=True,
+            metavar='<security_group>',
+            help=_('New security group id or name.'),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.css
+        network_client = self.app.client_manager.network
+
+        cluster = client.find_cluster(
+            parsed_args.cluster, ignore_missing=False
+        )
+        security_group = network_client.find_security_group(
+            parsed_args.security_group, ignore_missing=False
+        )
+
+        client.update_cluster_security_group(cluster, security_group.id)
+
+
+class UpdateClusterSecurityMode(command.Command):
+    _description = _('Change the security mode of a cluster.')
+
+    def get_parser(self, prog_name):
+        parser = super(UpdateClusterSecurityMode, self).get_parser(prog_name)
+        parser.add_argument(
+            'cluster', metavar='<cluster>', help=_('Cluster name or ID.')
+        )
+        parser.add_argument(
+            '--authority-enable',
+            action='store_true',
+            help=('Indicates whether to enable the security mode.'),
+        )
+        parser.add_argument(
+            '--admin-pwd',
+            metavar='<admin_pwd>',
+            help=_('Cluster password in security mode.'),
+        )
+        parser.add_argument(
+            '--https-enable',
+            action='store_true',
+            help=('Indicates whether to enable HTTPS.'),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.css
+        attrs = {}
+
+        if parsed_args.authority_enable:
+            attrs['authority_enable'] = True
+
+        if parsed_args.https_enable:
+            attrs['https_enable'] = True
+
+        if parsed_args.admin_pwd:
+            attrs['admin_pwd'] = parsed_args.admin_pwd
+
+        cluster = client.find_cluster(
+            parsed_args.cluster, ignore_missing=False
+        )
+
+        client.update_cluster_security_mode(cluster, **attrs)
+
+
+class UpdateClusterFlavor(command.Command):
+    _description = _('Modify the specifications of a cluster.')
+
+    def get_parser(self, prog_name):
+        parser = super(UpdateClusterFlavor, self).get_parser(prog_name)
+        parser.add_argument(
+            'cluster', metavar='<cluster>', help=_('Cluster name or ID.')
+        )
+        parser.add_argument(
+            '--node-type',
+            metavar='{' + ','.join(NODE_TYPE_CHOICES) + '}',
+            choices=NODE_TYPE_CHOICES,
+            type=lambda s: s.lower(),
+            help=('Type of the node to modify.'),
+        )
+        parser.add_argument(
+            '--flavor',
+            required=True,
+            metavar='<flavor>',
+            help=('ID of the new flavor.'),
+        )
+        parser.add_argument(
+            '--check-replica',
+            action='store_true',
+            help=('Indicates whether to verify replicas.'),
+        )
+        parser.add_argument(
+            '--wait',
+            action='store_true',
+            help=('Wait for Cluster.'),
+        )
+        parser.add_argument(
+            '--timeout',
+            metavar='<timeout>',
+            type=int,
+            default=1200,
+            help=_('Timeout for the wait in seconds (default 1200 seconds).'),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.css
+        attrs = {}
+
+        if parsed_args.node_type:
+            attrs['node_type'] = parsed_args.node_type
+
+        attrs['new_flavor'] = parsed_args.flavor
+
+        if parsed_args.check_replica:
+            attrs['check_replica'] = True
+
+        cluster = client.find_cluster(
+            parsed_args.cluster, ignore_missing=False
+        )
+
+        client.update_cluster_flavor(cluster, **attrs)
+
+        if parsed_args.wait:
+            client.wait_for_cluster(cluster.id, parsed_args.timeout)
+
+
+class ScaleInCluster(command.Command):
+    _description = _('Scale in a cluster by removing specified nodes.')
+
+    def get_parser(self, prog_name):
+        parser = super(ScaleInCluster, self).get_parser(prog_name)
+        parser.add_argument(
+            'cluster', metavar='<cluster>', help=_('Cluster name or ID.')
+        )
+        parser.add_argument(
+            '--nodes',
+            nargs='+',
+            required=True,
+            metavar='<nodes>',
+            help=_('IDs of the nodes to remove.'),
+        )
+        parser.add_argument(
+            '--wait',
+            action='store_true',
+            help=('Wait for Cluster.'),
+        )
+        parser.add_argument(
+            '--timeout',
+            metavar='<timeout>',
+            type=int,
+            default=1200,
+            help=_('Timeout for the wait in seconds (default 1200 seconds).'),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.css
+
+        cluster = client.find_cluster(
+            parsed_args.cluster, ignore_missing=False
+        )
+
+        client.scale_in_cluster(cluster, parsed_args.nodes)
+
+        if parsed_args.wait:
+            client.wait_for_cluster(cluster.id, parsed_args.timeout)
+
+
+class ScaleInClusterByNodeType(command.Command):
+    _description = _('Remove instances of specific types.')
+
+    def get_parser(self, prog_name):
+        parser = super(ScaleInClusterByNodeType, self).get_parser(prog_name)
+        parser.add_argument(
+            'cluster', metavar='<cluster>', help=_('Cluster name or ID.')
+        )
+        parser.add_argument(
+            '--ess',
+            metavar='<reduce_num>',
+            type=int,
+            help=_('Reduce the ess nodes.'),
+        )
+        parser.add_argument(
+            '--ess-master',
+            metavar='<reduce_num>',
+            dest='ess-master',
+            type=int,
+            help=_('Reduce the ess-master nodes.'),
+        )
+        parser.add_argument(
+            '--ess-client',
+            metavar='<reduce_num>',
+            dest='ess-client',
+            type=int,
+            help=_('Reduce the ess-client nodes.'),
+        )
+        parser.add_argument(
+            '--ess-cold',
+            metavar='<reduce_num>',
+            dest='ess-cold',
+            type=int,
+            help=_('Reduce the ess-cold nodes.'),
+        )
+        parser.add_argument(
+            '--wait',
+            action='store_true',
+            help=('Wait for Cluster.'),
+        )
+        parser.add_argument(
+            '--timeout',
+            metavar='<timeout>',
+            type=int,
+            default=1200,
+            help=_('Timeout for the wait in seconds (default 1200 seconds).'),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.css
+
+        nodes = []
+
+        for arg in ('ess', 'ess-master', 'ess-client', 'ess-cold'):
+            value = getattr(parsed_args, arg)
+            if value:
+                nodes.append(
+                    {
+                        'type': arg,
+                        'reducedNodeNum': value,
+                    }
+                )
+
+        cluster = client.find_cluster(
+            parsed_args.cluster, ignore_missing=False
+        )
+
+        client.scale_in_cluster_by_node_type(cluster, nodes)
+
+        if parsed_args.wait:
+            client.wait_for_cluster(cluster.id, parsed_args.timeout)
+
+
+class UpdateClusterKernel(command.Command):
+    _description = _('Upgrade cluster version.')
+
+    def get_parser(self, prog_name):
+        parser = super(UpdateClusterKernel, self).get_parser(prog_name)
+        parser.add_argument(
+            'cluster', metavar='<cluster>', help=_('Cluster name or ID.')
+        )
+        parser.add_argument(
+            '--target-image-id',
+            metavar='<target_image_id>',
+            help=_('ID of the target image version.'),
+        )
+        parser.add_argument(
+            '--upgrade-type',
+            required=True,
+            metavar='{' + ','.join(UPGRADE_TYPE_CHOICES) + '}',
+            choices=UPGRADE_TYPE_CHOICES,
+            type=lambda s: s.lower(),
+            help=_('Upgrade type.'),
+        )
+        parser.add_argument(
+            '--check-backup-indices',
+            action='store_true',
+            help=_('ID of the target image version.'),
+        )
+        parser.add_argument(
+            '--agency',
+            required=True,
+            metavar='<agency>',
+            help=_('Agency name.'),
+        )
+        parser.add_argument(
+            '--check-cluster-load',
+            action='store_true',
+            help=_('Indicates whether to verify the load.'),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.css
+        attrs = {}
+
+        for arg in ('target_image_id', 'upgrade_type', 'agency'):
+            value = getattr(parsed_args, arg)
+            if value:
+                attrs[arg] = value
+
+        attrs['indices_backup_check'] = (
+            True if parsed_args.check_backup_indices else False
+        )
+
+        if parsed_args.check_cluster_load:
+            attrs['cluster_load_check'] = parsed_args.check_cluster_load
+
+        cluster = client.find_cluster(
+            parsed_args.cluster, ignore_missing=False
+        )
+
+        client.update_cluster_kernel(cluster, **attrs)
+
+
+class ReplaceClusterNode(command.Command):
+    _description = _('Replace a node in the cluster.')
+
+    def get_parser(self, prog_name):
+        parser = super(ReplaceClusterNode, self).get_parser(prog_name)
+        parser.add_argument(
+            'cluster', metavar='<cluster>', help=_('Cluster name or ID.')
+        )
+        parser.add_argument(
+            '--node-id',
+            required=True,
+            metavar='<nodes_id>',
+            help=_('IDs of the node to be replaced.'),
+        )
+        parser.add_argument(
+            '--wait',
+            action='store_true',
+            help=('Wait for Cluster.'),
+        )
+        parser.add_argument(
+            '--timeout',
+            metavar='<timeout>',
+            type=int,
+            default=1200,
+            help=_('Timeout for the wait in seconds (default 1200 seconds).'),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.css
+
+        cluster = client.find_cluster(
+            parsed_args.cluster, ignore_missing=False
+        )
+
+        client.replace_cluster_node(cluster, parsed_args.node_id)
+
+        if parsed_args.wait:
+            client.wait_for_cluster(cluster.id, parsed_args.timeout)
+
+
+class AddClusterNodes(command.Command):
+    _description = _('Add master and client nodes to a cluster.')
+
+    def get_parser(self, prog_name):
+        parser = super(AddClusterNodes, self).get_parser(prog_name)
+        parser.add_argument(
+            'cluster', metavar='<cluster>', help=_('Cluster name or ID.')
+        )
+        parser.add_argument(
+            '--node-type',
+            required=True,
+            metavar='<node_type>',
+            help=_('Node type.'),
+        )
+        parser.add_argument(
+            '--flavor', required=True, metavar='<flavor>', help=_('Flavor ID.')
+        )
+        parser.add_argument(
+            '--node-size',
+            required=True,
+            type=int,
+            metavar='<node_size>',
+            help=_('Number of nodes.'),
+        )
+        parser.add_argument(
+            '--volume-type',
+            required=True,
+            metavar='{' + ','.join(VOLUME_TYPE_CHOICES) + '}',
+            choices=VOLUME_TYPE_CHOICES,
+            type=lambda s: s.upper(),
+            help=_('Node storage type.'),
+        )
+        parser.add_argument(
+            '--wait',
+            action='store_true',
+            help=('Wait for Cluster.'),
+        )
+        parser.add_argument(
+            '--timeout',
+            metavar='<timeout>',
+            type=int,
+            default=1200,
+            help=_('Timeout for the wait in seconds (default 1200 seconds).'),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.css
+
+        attrs = {
+            'node_type': parsed_args.node_type,
+            'flavor': parsed_args.flavor,
+            'node_size': parsed_args.node_size,
+            'volume_type': parsed_args.volume_type,
+        }
+
+        cluster = client.find_cluster(
+            parsed_args.cluster, ignore_missing=False
+        )
+
+        client.add_cluster_nodes(cluster, **attrs)
+
+        if parsed_args.wait:
+            client.wait_for_cluster(cluster.id, parsed_args.timeout)
+
+
+class RetryClusterUpgradeJob(command.Command):
+    _description = _('Retry a task or terminate the impact of a task.')
+
+    def get_parser(self, prog_name):
+        parser = super(RetryClusterUpgradeJob, self).get_parser(prog_name)
+        parser.add_argument(
+            'cluster', metavar='<cluster>', help=_('Cluster name or ID.')
+        )
+        parser.add_argument(
+            '--job-id',
+            required=True,
+            metavar='<job_id>',
+            help=_('ID of the task to be retried.'),
+        )
+        parser.add_argument(
+            '--retry-mode',
+            metavar='<retry_mode>',
+            default='abort',
+            help=_(
+                """If this parameter is not left blank,
+                the impact of the task is terminated."""
+            ),
+        )
+        parser.add_argument(
+            '--wait',
+            action='store_true',
+            help=('Wait for Cluster.'),
+        )
+        parser.add_argument(
+            '--timeout',
+            metavar='<timeout>',
+            type=int,
+            default=1200,
+            help=_('Timeout for the wait in seconds (default 1200 seconds).'),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.css
+        attrs = {}
+
+        attrs['job_id'] = parsed_args.job_id
+
+        attrs['retry_mode'] = parsed_args.retry_mode
+
+        cluster = client.find_cluster(
+            parsed_args.cluster, ignore_missing=False
+        )
+
+        client.retry_cluster_upgrade_job(cluster, **attrs)
+
+        if parsed_args.wait:
+            client.wait_for_cluster(cluster.id, parsed_args.timeout)
+
+
+class ListClusterVersionUpgrades(command.Lister):
+    _description = _('List available upgradable versions.')
+
+    column_headers = [
+        'Datastore Type',
+        'Datastore Version',
+        'Image Name',
+        'Id',
+        'Description',
+        'Priority',
+    ]
+
+    columns = [
+        'datastore_type',
+        'datastore_version',
+        'display_name',
+        'id',
+        'image_desc',
+        'priority',
+    ]
+
+    def get_parser(self, prog_name):
+        parser = super(ListClusterVersionUpgrades, self).get_parser(prog_name)
+        parser.add_argument(
+            'cluster', metavar='<cluster>', help=_('Cluster name or ID.')
+        )
+        parser.add_argument(
+            '--upgrade-type',
+            required=True,
+            metavar='{same, cross}',
+            choices=['same', 'cross'],
+            type=lambda s: s.lower(),
+            help=_('Version type.'),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.css
+
+        cluster = client.find_cluster(
+            parsed_args.cluster, ignore_missing=False
+        )
+
+        obj = client.get_cluster_version_upgrades(
+            cluster, parsed_args.upgrade_type
+        )
+
+        image_info_list = obj.image_info_list
+
+        _formatters = {}
+
+        return (
+            self.column_headers,
+            (
+                utils.get_item_properties(
+                    s, self.columns, formatters=_formatters
+                )
+                for s in image_info_list
+            ),
+        )
+
+
+class ShowClusterUpgradeStatus(command.Lister):
+    _description = _('List CSS Cluster Nodes.')
+    columns = (
+        'ID',
+        'Image Info',
+        'Execute Times',
+        'Start Time',
+        'End Time',
+        'Status',
+    )
+
+    def get_parser(self, prog_name):
+        parser = super(ShowClusterUpgradeStatus, self).get_parser(prog_name)
+        parser.add_argument(
+            'cluster', metavar='<cluster>', help=_('Cluster name or ID.')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.css
+
+        cluster = client.find_cluster(
+            parsed_args.cluster, ignore_missing=False
+        )
+
+        data = client.get_cluster_upgrade_status(cluster)
+
+        _formatters = {'Image Info': cli_utils.YamlFormat}
+
+        return (
+            self.columns,
+            (
+                utils.get_item_properties(
+                    s, self.columns, formatters=_formatters
+                )
+                for s in data
+            ),
+        )

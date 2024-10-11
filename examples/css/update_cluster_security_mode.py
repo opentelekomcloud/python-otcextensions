@@ -11,7 +11,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Update CSS Cluster name
+Update CSS Cluster security mode
 """
 
 import openstack
@@ -19,13 +19,13 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect()
 
-cluster_name_or_id = 'asomogyi_0506_updated_again'
+cluster_name_or_id = 'css-c414'
 
 cluster = conn.css.find_cluster(cluster_name_or_id)
 
 conn.css.update_cluster_security_mode(
     cluster,
+    https_enable=True,
     authority_enable=True,
     admin_pwd='testTEST123!!!',
-    https_enable=False,
 )
