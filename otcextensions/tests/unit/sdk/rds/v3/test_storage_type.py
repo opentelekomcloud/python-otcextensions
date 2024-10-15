@@ -26,6 +26,7 @@ EXAMPLE = {
     }
 }
 
+
 class TestFlavor(base.TestCase):
 
     def test_basic(self):
@@ -40,7 +41,9 @@ class TestFlavor(base.TestCase):
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_delete)
         self.assertFalse(sot.allow_commit)
-        self.assertDictEqual({'version_name': 'version_name'},
+        self.assertDictEqual({'limit': 'limit',
+                              'marker': 'marker',
+                              'version_name': 'version_name'},
                              sot._query_mapping._mapping)
 
     def test_make_it(self):
