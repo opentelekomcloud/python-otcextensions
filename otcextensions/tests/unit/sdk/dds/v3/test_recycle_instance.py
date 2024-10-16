@@ -17,21 +17,23 @@ from otcextensions.sdk.dds.v3 import recycle_instance
 EXAMPLE = {
     "total_count": 1,
     "instances": [
-        {"id": "07fc12a8e0e94df7a3fcf53d0b5e1605in02",
-        "name": "test1",
-        "mode": "ReplicaSet",
-        "datastore": {
-            "type": "DDS-Community",
-            "version": "4.0"
-        },
-        "pay_mode": "0",
-        "enterprise_project_id": "0",
-        "backup_id": "bf9ee62a7f7044c583c6765c916c36edbr02",
-        "created_at": "2022-01-01T10:00:00",
-        "deleted_at": "2022-02-01T10:00:00",
-        "retained_until": "2022-05-01T10:00:00",
-        "status": "Active"
-        }]
+        {
+            "id": "07fc12a8e0e94df7a3fcf53d0b5e1605in02",
+            "name": "test1",
+            "mode": "ReplicaSet",
+            "datastore": {
+                "type": "DDS-Community",
+                "version": "4.0"
+            },
+            "pay_mode": "0",
+            "enterprise_project_id": "0",
+            "backup_id": "bf9ee62a7f7044c583c6765c916c36edbr02",
+            "created_at": "2022-01-01T10:00:00",
+            "deleted_at": "2022-02-01T10:00:00",
+            "retained_until": "2022-05-01T10:00:00",
+            "status": "Active"
+        }
+    ]
 }
 
 

@@ -381,8 +381,6 @@ class Proxy(proxy.Proxy):
         """Get list of instances in recycle bin
         :param dict params: Keyword arguments which will be used to get list
         :returns: A generator of recycle instance objects.
-
-        :rtype: :class:`~otcextensions.sdk.dds.v3.recycle_instance.RecycleInstance`
         """
         base_path = _recycle_instance.RecycleInstance.base_path
         return self._list(_recycle_instance.RecycleInstance, **params,

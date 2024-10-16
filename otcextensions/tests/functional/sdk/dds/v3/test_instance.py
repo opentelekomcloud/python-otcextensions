@@ -131,17 +131,20 @@ class TestInstance(TestDds):
             'keep_days': '8'
         }
         self.instance = (
-        self.client.create_instance(name=name,
-                                    datastore=datastore,
-                                    region=region,
-                                    availability_zone=availability_zone,
-                                    vpc_id=vpc_id,
-                                    subnet_id=subnet_id,
-                                    security_group_id=security_group_id,
-                                    password=password,
-                                    mode=mode,
-                                    flavor=flavor,
-                                    backup_strategy=backup_strategy))
+            self.client.create_instance(
+                name=name,
+                datastore=datastore,
+                region=region,
+                availability_zone=availability_zone,
+                vpc_id=vpc_id,
+                subnet_id=subnet_id,
+                security_group_id=security_group_id,
+                password=password,
+                mode=mode,
+                flavor=flavor,
+                backup_strategy=backup_strategy
+            )
+        )
         shared_data['id'] = self.instance['id']
         print('Job for creation set')
         print('Waiting for job to finish')
@@ -322,7 +325,8 @@ class TestInstance(TestDds):
         self.client.wait_normal_instance(shared_data['instance']['id'])
         instance = (self.client.
                     configure_client_network(shared_data['id'],
-                                             network_ranges=["192.168.0.0/16"]))
+                                             network_ranges=["192.168.0.0/16"])
+                    )
         self.assertIsNotNone(instance['job_id'])
         self.client.wait_job(instance['job_id'])
 
