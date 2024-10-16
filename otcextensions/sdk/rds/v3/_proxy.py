@@ -21,6 +21,7 @@ from otcextensions.sdk.rds.v3 import configuration as _configuration
 from otcextensions.sdk.rds.v3 import datastore as _datastore
 from otcextensions.sdk.rds.v3 import flavor as _flavor
 from otcextensions.sdk.rds.v3 import instance as _instance
+from otcextensions.sdk.rds.v3 import storage_type as _storage_type
 
 
 class Proxy(proxy.Proxy, job.JobProxyMixin):
@@ -74,6 +75,20 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         return self._list(_flavor.Flavor,
                           datastore_name=datastore_name,
                           **params)
+
+    # ======= Storage Types =======
+
+    def storage_types(self, datastore_name, version_name):
+        """List the storage types of a specified DB engine version
+
+        :param datastore_name: datastore_name
+        :param version_name: version_name
+
+        :returns: A generator of flavor objects.
+        """
+        return self._list(_storage_type.StorageType,
+                          datastore_name=datastore_name,
+                          version_name=version_name)
 
     # ======= Instance =======
 
