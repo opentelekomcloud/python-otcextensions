@@ -11,6 +11,8 @@
 # under the License.
 from openstack import resource
 from otcextensions.sdk.dds.v3 import instance as _instance
+
+
 class Job(resource.Resource):
     base_path = '/jobs'
 

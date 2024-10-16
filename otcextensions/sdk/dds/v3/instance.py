@@ -12,7 +12,7 @@
 from openstack import exceptions
 from openstack import resource
 from openstack import utils
-import json
+
 
 class FlavorSpec(resource.Resource):
     #: Specifies node quantity.
@@ -227,7 +227,6 @@ class Instance(resource.Resource):
     def fetch(self, session, requires_id=True,
               base_path=None, error_message=None, **params):
         """Get a remote resource based on this instance.
-
         :param session: The session to use for making this request.
             :type session: :class:`~keystoneauth1.adapter.Adapter`
         :param boolean requires_id: A boolean indicating whether resource ID
@@ -252,7 +251,6 @@ class Instance(resource.Resource):
 
         self._body.attributes.update(result._body.attributes)
         self._body.clean()
-
         return self
 
     def create(self, session, prepend_key=False, base_path=None):
@@ -264,10 +262,13 @@ class Instance(resource.Resource):
     def restart(self, session):
         '''Restart Instance'''
         body = {
-            "target_type":self.datastore_type,
-            "target_id":self.id
+            "target_type": self.datastore_type,
+            "target_id": self.id
         }
-        return self._action(session, body, 'restart')
+        response = self._action(session, body, 'restart')
+        exceptions.raise_from_response(response)
+        self._translate_response(response)
+        return self
 
     def enlarge(self, session, size, group_id):
         '''Enlarge Instance Storage Space'''
@@ -279,8 +280,10 @@ class Instance(resource.Resource):
         }
         if group_id is not None:
             body["volume"]["group_id"] = group_id
-        result = self._action(session, body, 'enlarge-volume')
-        return json.loads(result.text)
+        response = self._action(session, body, 'enlarge-volume')
+        exceptions.raise_from_response(response)
+        self._translate_response(response)
+        return self
 
     def add_nodes(self, session, node_type, spec_code, num, volume=None):
         '''Add Nodes to Instance'''
@@ -291,73 +294,100 @@ class Instance(resource.Resource):
         }
         if volume is not None:
             body['volume'] = volume
-        result = self._action(session, body, 'enlarge')
-        return json.loads(result.text)
+        response = self._action(session, body, 'enlarge')
+        exceptions.raise_from_response(response)
+        self._translate_response(response)
+        return self
 
-
-    def resize(self, session, spec_code, target_type=None):
+    def resize(self, session, target_id, spec_code, target_type=None):
         body = {
             "resize": {
-                "target_id": self.id,
+                "target_id": target_id,
                 "target_spec_code": spec_code
             }
         }
         if target_type is not None:
             body['resize']['target_type'] = target_type
-        result = self._action(session, body, 'resize')
-        return json.loads(result.text)
+        response = self._action(session, body, 'resize')
+        exceptions.raise_from_response(response)
+        self._translate_response(response)
+        return self
 
     def switchover(self, session):
-        return self._action(session, {}, 'switchover')
+        response = self._action(session, {}, 'switchover')
+        exceptions.raise_from_response(response)
+        self._translate_response(response)
+        return self
 
     def switch_ssl(self, session, enable):
         body = {'ssl_option': "1" if enable else "0"}
-        return self._action(session, body, 'switch-ssl')
+        response = self._action(session, body, 'switch-ssl')
+        exceptions.raise_from_response(response)
+        self._translate_response(response)
+        return self
 
     def modify_name(self, session, name):
         body = {
             "new_instance_name": name
         }
-        return self._action(session, body, 'modify-name', 'PUT')
+        response = self._action(session, body, 'modify-name', 'PUT')
+        exceptions.raise_from_response(response)
 
     def change_port(self, session, port):
         body = {
             "port": port
         }
-        return self._action(session, body, 'modify-port')
+        response = self._action(session, body, 'modify-port')
+        exceptions.raise_from_response(response)
+        self._translate_response(response)
+        return self
 
     def change_security_group(self, session, security_group_id):
         body = {
             "security_group_id": security_group_id
         }
-        return self._action(session, body, 'modify-security-group')
+        response = self._action(session, body, 'modify-security-group')
+        exceptions.raise_from_response(response)
+        self._translate_response(response)
+        return self
 
     def change_private_ip(self, session, node_id, new_ip):
         body = {
             "node_id": node_id,
             "new_ip": new_ip
         }
-        return self._action(session, body, 'modify-internal-ip')
+        response = self._action(session, body, 'modify-internal-ip')
+        exceptions.raise_from_response(response)
+        self._translate_response(response)
+        return self
 
     def create_ip(self, session, dds_type, password):
         body = {
             "type": dds_type,
-            "target_id": self.id,
             "password": password
         }
-        return self._action(session, body, 'create-ip')
+        response = self._action(session, body, 'create-ip')
+        exceptions.raise_from_response(response)
+        self._translate_response(response)
+        return self
 
     def configure_client_network(self, session, network_ranges):
         body = {
-            "client_network_ranges": [network_ranges]
+            "client_network_ranges": network_ranges
         }
-        return self._action(session, body, 'client-network')
+        response = self._action(session, body, 'client-network')
+        exceptions.raise_from_response(response)
+        self._translate_response(response)
+        return self
 
     def set_recycle_bin_policy(self, session, *attrs):
         body = {
             "recycle_policy": attrs
         }
-        return self._action(session, body, 'recycle-policy')
+        response = self._action(session, body, 'recycle-policy')
+        exceptions.raise_from_response(response)
+        self._translate_response(response)
+        return self
 
     def _action(self, session, body, action_type, api_type='POST'):
         """Preform actions given the message body.
