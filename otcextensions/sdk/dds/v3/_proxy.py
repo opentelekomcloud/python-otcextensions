@@ -38,7 +38,7 @@ class Proxy(proxy.Proxy):
         """List datastores
 
         :param datastore_name: database store name
-            (currently only DDS-Community and is case-sensitive.)
+        (currently only DDS-Community and is case-sensitive.)
 
         :returns: A generator of supported datastore versions.
 
@@ -71,8 +71,8 @@ class Proxy(proxy.Proxy):
         """Create a new instance from attributes
 
         :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.dds.v3.instance.Instance`,
-            comprised of the properties on the Instance class.
+        a :class:`~otcextensions.sdk.dds.v3.instance.Instance`,
+        comprised of the properties on the Instance class.
 
         :returns: The result of an instance creation.
 
@@ -84,7 +84,7 @@ class Proxy(proxy.Proxy):
         """Restart an existing instance
 
         :param instance: The value can be either the ID of an instance or a
-            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
 
         :returns: job ID.
 
@@ -97,7 +97,7 @@ class Proxy(proxy.Proxy):
         """Enlarge storage space of a DB instance
 
         :param instance: The value can be either the ID of an instance or a
-            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
         :param size: New instance size.
         :param group_id: ID of the group to enlarge storage space.
         :returns: job ID.
@@ -111,9 +111,9 @@ class Proxy(proxy.Proxy):
         """Add nodes for a specific instance
 
         :param instance: The value can be either the ID of an instance or a
-            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
         :param dict attrs: Keyword arguments which will be used to add node to
-            a :class:`~otcextensions.sdk.dds.v3.instance.Instance`.
+        a :class:`~otcextensions.sdk.dds.v3.instance.Instance`.
         :returns: job ID.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
@@ -125,9 +125,9 @@ class Proxy(proxy.Proxy):
         """Change specifications of a DB instance
 
         :param instance: The value can be either the ID of an instance or a
-            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
         :param dict attrs: Keyword arguments which will be used to add node to
-            a :class:`~otcextensions.sdk.dds.v3.instance.Instance`.
+        a :class:`~otcextensions.sdk.dds.v3.instance.Instance`.
         :returns: job ID.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
@@ -139,7 +139,7 @@ class Proxy(proxy.Proxy):
         """Perform a primary/secondary switchover in a replica set instance.
 
         :param instance: The value can be either the ID of an instance or a
-            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
         :returns: job ID.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
@@ -151,7 +151,7 @@ class Proxy(proxy.Proxy):
         """Enable SSL in a replica set instance.
 
         :param instance: The value can be either the ID of an instance or a
-            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
         :param bool enable: enable or disable
         :returns: job ID.
 
@@ -164,7 +164,7 @@ class Proxy(proxy.Proxy):
         """Change name of a DB instance
 
         :param instance: The value can be either the ID of an instance or a
-            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
         :param name: New name of an instance
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
@@ -176,7 +176,7 @@ class Proxy(proxy.Proxy):
         """Change port of a DB instance
 
         :param instance: The value can be either the ID of an instance or a
-            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
         :param port: New port of an instance
         :returns: DB instance object.
 
@@ -189,7 +189,7 @@ class Proxy(proxy.Proxy):
         """Change security group of a DB instance
 
         :param instance: The value can be either the ID of an instance or a
-            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
         :param security_group_id: New security group ID
         :returns: job ID.
 
@@ -202,7 +202,7 @@ class Proxy(proxy.Proxy):
         """Change private IP of a DB instance
 
         :param instance: The value can be either the ID of an instance or a
-            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
         :param dict attrs: Keyword arguments which will be used to change ip.
         :returns: job ID.
 
@@ -215,7 +215,7 @@ class Proxy(proxy.Proxy):
         """Add IP for a DB instance
 
         :param instance: The value can be either the ID of an instance or a
-            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
         :param dict attrs: Keyword arguments which will be used to add ip
         :returns: workflow ID.
 
@@ -227,7 +227,7 @@ class Proxy(proxy.Proxy):
     def configure_client_network(self, instance, network_ranges):
         """Configure client network of a DB instance
         :param instance: The value can be either the ID of an instance or a
-            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
         :param list network_ranges: List of network ranges
         :returns: workflow ID.
 
@@ -240,12 +240,12 @@ class Proxy(proxy.Proxy):
         """Delete an instance
 
         :param instance: The value can be either the ID of an instance or a
-            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
         :param bool ignore_missing: When set to ``False``
-            :class:`~openstack.exceptions.ResourceNotFound` will be
-            raised when the instance does not exist.
-            When set to ``True``, no exception will be set when
-            attempting to delete a nonexistent instance.
+        :class:`~openstack.exceptions.ResourceNotFound` will be
+        raised when the instance does not exist.
+        When set to ``True``, no exception will be set when
+        attempting to delete a nonexistent instance.
 
         :returns: ``None``
         """
@@ -259,7 +259,7 @@ class Proxy(proxy.Proxy):
         """Get a single instance
 
         :param instance: The value can be either the ID of an instance or a
-            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
 
         :returns: One :class:`~otcextensions.sdk.dds.v3.instance.Instance`
         """
@@ -270,13 +270,13 @@ class Proxy(proxy.Proxy):
 
         :param name_or_id: The name or ID of a instance.
         :param bool ignore_missing: When set to ``False``
-            :class:`~openstack.exceptions.ResourceNotFound` will be
-            raised when the resource does not exist.
-            When set to ``True``, None will be returned when
-            attempting to find a nonexistent resource.
+        :class:`~openstack.exceptions.ResourceNotFound` will be
+        raised when the resource does not exist.
+        When set to ``True``, None will be returned when
+        attempting to find a nonexistent resource.
 
         :returns:
-            One :class:`~otcextensions.sdk.dds.v3.instance.Instance` or None.
+        One :class:`~otcextensions.sdk.dds.v3.instance.Instance` or None.
         """
         return self._find(_instance.Instance,
                           name_or_id,
@@ -286,7 +286,7 @@ class Proxy(proxy.Proxy):
         """Return a generator of instances
 
         :param dict params: Optional query parameters to be sent to limit
-            the instances being returned.
+        the instances being returned.
 
         :returns: A generator of instance objects.
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
@@ -297,7 +297,7 @@ class Proxy(proxy.Proxy):
         """Get information about a job
 
         :param job: The value can be either the ID of a job or a
-            :class:`~otcextensions.sdk.dds.v3.job.Job` job.
+        :class:`~otcextensions.sdk.dds.v3.job.Job` job.
 
         :returns: One :class:`~otcextensions.sdk.dds.v3.job.Job`
         """
@@ -306,6 +306,7 @@ class Proxy(proxy.Proxy):
     def wait_job(self, job, status='Completed', failures=None,
                  interval=20, wait=None):
         """Wait for the job to complete
+
         :param job: The value can be either the ID of a job or a
         :param status: Desired status of the job.
         :param failures: List of failure statuses.
@@ -326,7 +327,7 @@ class Proxy(proxy.Proxy):
         """Wait for normal status of an instance
 
         :param instance: The value can be either the ID of an instance or a
-            :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+        :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
 
         :param status: The status of the instance to wait for.
         :param failures: The list of failures.
@@ -343,33 +344,39 @@ class Proxy(proxy.Proxy):
 
     def bind_eip(self, node, public_ip, public_ip_id):
         """Bind an IP to a node
+
         :param node: The value is the ID of a node
         :param public_ip: The public IP address of the node.
         :param public_ip_id: The public IP address of the node.
 
-        :returns: The IP address of the node."""
+        :returns: The IP address of the node.
+        """
         eip = _eip.Eip()
         return eip.bind(self, node, public_ip, public_ip_id)
 
     def unbind_eip(self, node):
         """Unbind an IP to a node
+
         :param node: The value is the ID of a node
 
-        :returns: The ID of the node."""
+        :returns: The ID of the node.
+        """
         eip = _eip.Eip()
         return eip.unbind(self, node)
 
     def get_policy(self):
         """Get the current policy
-        :returns: The current policy."""
+
+        :returns: The current policy.
+        """
         return self._get(_recycle_policy.RecyclePolicy, requires_id=False)
 
     def create_policy(self, **attrs):
         """Create a new policy from attributes
 
         :param dict attrs: Keyword arguments which will be used to create
-            a :class:`~otcextensions.sdk.dds.v3.recycle_policy.RecyclePolicy`,
-            comprised of the properties on the RecyclePolicy class.
+        a :class:`~otcextensions.sdk.dds.v3.recycle_policy.RecyclePolicy`,
+        comprised of the properties on the RecyclePolicy class.
 
         :returns: The result of creation.
 
@@ -379,6 +386,7 @@ class Proxy(proxy.Proxy):
 
     def recycle_instances(self, **params):
         """Get list of instances in recycle bin
+
         :param dict params: Keyword arguments which will be used to get list
         :returns: A generator of recycle instance objects.
         """
