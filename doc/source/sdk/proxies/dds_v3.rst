@@ -33,4 +33,39 @@ Instance Operations
 .. autoclass:: otcextensions.sdk.dds.v3._proxy.Proxy
   :noindex:
   :members: create_instance, delete_instance, get_instance,
-            find_instance, instances
+            find_instance, instances, restart_instance,
+            enlarge_instance, add_instance_nodes, resize_instance,
+            switchover_instance, enable_instance_ssl,
+            change_instance_name, change_instance_port,
+            change_instance_security_group,
+            change_instance_private_ip, create_instance_ip,
+            configure_client_network, wait_normal_instance
+
+Job Operations
+^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.dds.v3._proxy.Proxy
+  :noindex:
+  :members: get_job, wait_job
+
+
+Eip Operations
+^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.dds.v3._proxy.Proxy
+  :noindex:
+  :members: bind_eip, unbind_eip
+
+Recycle Bin Policy Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.dds.v3._proxy.Proxy
+  :noindex:
+  :members: get_policy, create_policy
+
+Recycle Instances Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.dds.v3._proxy.Proxy
+  :noindex:
+  :members: recycle_instances
