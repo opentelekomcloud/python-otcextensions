@@ -106,6 +106,7 @@ class Proxy(proxy.Proxy):
         :returns: job ID.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+
         """
         instance = self.get_instance(instance)
         return instance.enlarge(self, size, group_id)
@@ -120,6 +121,7 @@ class Proxy(proxy.Proxy):
         :returns: job ID.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+
         """
         instance = self._get_resource(_instance.Instance, instance)
         return instance.add_nodes(self, **attrs)
@@ -134,6 +136,7 @@ class Proxy(proxy.Proxy):
         :returns: job ID.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+
         """
         instance = self._get_resource(_instance.Instance, instance)
         return instance.resize(self, **attrs)
@@ -146,6 +149,7 @@ class Proxy(proxy.Proxy):
         :returns: job ID.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+
         """
         instance = self._get_resource(_instance.Instance, instance)
         return instance.switchover(self)
@@ -159,6 +163,7 @@ class Proxy(proxy.Proxy):
         :returns: job ID.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+
         """
         instance = self._get_resource(_instance.Instance, instance)
         return instance.switch_ssl(self, enable)
@@ -171,6 +176,7 @@ class Proxy(proxy.Proxy):
         :param name: New name of an instance
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+
         """
         instance = self._get_resource(_instance.Instance, instance)
         instance.modify_name(self, name)
@@ -184,6 +190,7 @@ class Proxy(proxy.Proxy):
         :returns: DB instance object.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+
         """
         instance = self._get_resource(_instance.Instance, instance)
         return instance.change_port(self, port)
@@ -197,6 +204,7 @@ class Proxy(proxy.Proxy):
         :returns: job ID.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+
         """
         instance = self._get_resource(_instance.Instance, instance)
         return instance.change_security_group(self, security_group_id)
@@ -210,6 +218,7 @@ class Proxy(proxy.Proxy):
         :returns: job ID.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+
         """
         instance = self._get_resource(_instance.Instance, instance)
         return instance.change_private_ip(self, **attrs)
@@ -223,6 +232,7 @@ class Proxy(proxy.Proxy):
         :returns: workflow ID.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+
         """
         instance = self._get_resource(_instance.Instance, instance)
         return instance.create_ip(self, **attrs)
@@ -235,6 +245,7 @@ class Proxy(proxy.Proxy):
         :returns: workflow ID.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+
         """
         instance = self._get_resource(_instance.Instance, instance)
         return instance.configure_client_network(self, network_ranges)
@@ -251,6 +262,7 @@ class Proxy(proxy.Proxy):
         attempting to delete a nonexistent instance.
 
         :returns: ``None``
+
         """
         return self._delete(
             _instance.Instance,
@@ -265,6 +277,7 @@ class Proxy(proxy.Proxy):
         :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
 
         :returns: One :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+
         """
         return self._get(_instance.Instance, instance)
 
@@ -280,6 +293,7 @@ class Proxy(proxy.Proxy):
 
         :returns:
         One :class:`~otcextensions.sdk.dds.v3.instance.Instance` or None.
+
         """
         return self._find(_instance.Instance,
                           name_or_id,
@@ -293,6 +307,7 @@ class Proxy(proxy.Proxy):
 
         :returns: A generator of instance objects.
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+
         """
         return self._list(_instance.Instance, **params)
 
@@ -303,6 +318,7 @@ class Proxy(proxy.Proxy):
         :class:`~otcextensions.sdk.dds.v3.job.Job` job.
 
         :returns: One :class:`~otcextensions.sdk.dds.v3.job.Job`
+
         """
         return self._get(_job.Job, job)
 
@@ -317,6 +333,7 @@ class Proxy(proxy.Proxy):
         :param wait: Seconds to wait for response.
 
         :returns: One :class:`~otcextensions.sdk.dds.v3.job.Job`
+
         """
         if failures is None:
             failures = ['ERROR']
@@ -338,6 +355,7 @@ class Proxy(proxy.Proxy):
         :param wait: Seconds to wait for response.
 
         :returns: One :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+
         """
         if failures is None:
             failures = ['ERROR']
@@ -353,6 +371,7 @@ class Proxy(proxy.Proxy):
         :param public_ip_id: The public IP address of the node.
 
         :returns: The IP address of the node.
+
         """
         eip = _eip.Eip()
         return eip.bind(self, node, public_ip, public_ip_id)
@@ -363,6 +382,7 @@ class Proxy(proxy.Proxy):
         :param node: The value is the ID of a node
 
         :returns: The ID of the node.
+
         """
         eip = _eip.Eip()
         return eip.unbind(self, node)
@@ -371,6 +391,7 @@ class Proxy(proxy.Proxy):
         """Get the current policy
 
         :returns: The current policy.
+
         """
         return self._get(_recycle_policy.RecyclePolicy, requires_id=False)
 
@@ -384,6 +405,7 @@ class Proxy(proxy.Proxy):
         :returns: The result of creation.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.recycle_policy.RecyclePolicy`
+
         """
         return self._create(_recycle_policy.RecyclePolicy, **attrs)
 
@@ -392,6 +414,7 @@ class Proxy(proxy.Proxy):
 
         :param dict params: Keyword arguments which will be used to get list
         :returns: A generator of recycle instance objects.
+
         """
         base_path = _recycle_instance.RecycleInstance.base_path
         return self._list(_recycle_instance.RecycleInstance, **params,
