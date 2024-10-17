@@ -228,20 +228,20 @@ class Instance(resource.Resource):
               base_path=None, error_message=None, **params):
         """Get a remote resource based on this instance.
         :param session: The session to use for making this request.
-            :type session: :class:`~keystoneauth1.adapter.Adapter`
+        :type session: :class:`~keystoneauth1.adapter.Adapter`
         :param boolean requires_id: A boolean indicating whether resource ID
-            should be part of the requested URI.
+        should be part of the requested URI.
         :param str base_path: Base part of the URI for fetching resources, if
-            different from :data:`~openstack.resource.Resource.base_path`.
+        different from :data:`~openstack.resource.Resource.base_path`.
         :param str error_message: An Error message to be returned if
-            requested object does not exist.
+        requested object does not exist.
         :param dict params: Additional parameters that can be consumed.
 
         :return: This :class:`Resource` instance.
         :raises: :exc:`~openstack.exceptions.MethodNotSupported` if
-            :data:`Resource.allow_fetch` is not set to ``True``.
+        :data:`Resource.allow_fetch` is not set to ``True``.
         :raises: :exc:`~openstack.exceptions.ResourceNotFound` if
-            the resource was not found.
+        the resource was not found.
         """
         data = self.list(session, paginated=False, id=self.id)
         result = self._get_one_match(self.id, data)

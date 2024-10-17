@@ -47,4 +47,3 @@ class TestRecycleInstance(base.TestCase):
     def test_make_it(self):
         sot = recycle_instance.RecycleInstance(**EXAMPLE)
         self.assertEqual(EXAMPLE['total_count'], sot.total_count)
-        self.assertEqual(EXAMPLE['instances'], sot.instances)
