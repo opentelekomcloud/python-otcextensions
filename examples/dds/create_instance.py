@@ -57,17 +57,15 @@ backup_strategy = {
     'start_time': '23:00-00:00',
     'keep_days': '8'
 }
-instance = conn.dds.create_instance(
-                name='test-dds',
-                datastore=datastore,
-                region=region,
-                availability_zone=availability_zone,
-                vpc_id=vpc_id,
-                subnet_id=subnet_id,
-                security_group_id=security_group_id,
-                password=password,
-                mode=mode,
-                flavor=flavor,
-                backup_strategy=backup_strategy
-            )
+instance = conn.dds.create_instance(name='test-dds',
+                                    datastore=datastore,
+                                    region=region,
+                                    availability_zone=availability_zone,
+                                    vpc_id=vpc_id,
+                                    subnet_id=subnet_id,
+                                    security_group_id=security_group_id,
+                                    password=password,
+                                    mode=mode,
+                                    flavor=flavor,
+                                    backup_strategy=backup_strategy)
 print(instance)
