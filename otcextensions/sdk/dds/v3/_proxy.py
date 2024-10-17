@@ -37,12 +37,13 @@ class Proxy(proxy.Proxy):
     def datastores(self, datastore_name):
         """List datastores
 
-        :param datastore_name: database store name
+        :param datastore_name: database store name \
         (currently only DDS-Community and is case-sensitive.)
 
         :returns: A generator of supported datastore versions.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.datastore.Datastore`
+
         """
         return self._list(
             _datastore.Datastore,
@@ -70,25 +71,27 @@ class Proxy(proxy.Proxy):
     def create_instance(self, **attrs):
         """Create a new instance from attributes
 
-        :param dict attrs: Keyword arguments which will be used to create
-        a :class:`~otcextensions.sdk.dds.v3.instance.Instance`,
+        :param dict attrs: Keyword arguments which will be used to create \
+        a :class:`~otcextensions.sdk.dds.v3.instance.Instance`, \
         comprised of the properties on the Instance class.
 
         :returns: The result of an instance creation.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+
         """
         return self._create(_instance.Instance, **attrs)
 
     def restart_instance(self, instance):
         """Restart an existing instance
 
-        :param instance: The value can be either the ID of an instance or a
+        :param instance: The value can be either the ID of an instance or a \
         :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
 
         :returns: job ID.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
+
         """
         instance = self._get_resource(_instance.Instance, instance)
         return instance.restart(self)
