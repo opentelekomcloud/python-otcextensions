@@ -99,10 +99,11 @@ class Proxy(proxy.Proxy):
     def enlarge_instance(self, instance, size, group_id=None):
         """Enlarge storage space of a DB instance
 
-        :param instance: The value can be either the ID of an instance or a
+        :param instance: The value can be either the ID of an instance or a \
         :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
         :param size: New instance size.
         :param group_id: ID of the group to enlarge storage space.
+
         :returns: job ID.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
@@ -114,10 +115,11 @@ class Proxy(proxy.Proxy):
     def add_instance_nodes(self, instance, **attrs):
         """Add nodes for a specific instance
 
-        :param instance: The value can be either the ID of an instance or a
+        :param instance: The value can be either the ID of an instance or a \
         :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
-        :param dict attrs: Keyword arguments which will be used to add node to
+        :param dict attrs: Keyword arguments which will be used to add node to \
         a :class:`~otcextensions.sdk.dds.v3.instance.Instance`.
+
         :returns: job ID.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
@@ -129,10 +131,11 @@ class Proxy(proxy.Proxy):
     def resize_instance(self, instance, **attrs):
         """Change specifications of a DB instance
 
-        :param instance: The value can be either the ID of an instance or a
+        :param instance: The value can be either the ID of an instance or a \
         :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
-        :param dict attrs: Keyword arguments which will be used to add node to
+        :param dict attrs: Keyword arguments which will be used to add node to \
         a :class:`~otcextensions.sdk.dds.v3.instance.Instance`.
+
         :returns: job ID.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
@@ -144,8 +147,9 @@ class Proxy(proxy.Proxy):
     def switchover_instance(self, instance):
         """Perform a primary/secondary switchover in a replica set instance.
 
-        :param instance: The value can be either the ID of an instance or a
+        :param instance: The value can be either the ID of an instance or a \
         :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
+
         :returns: job ID.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
@@ -157,9 +161,10 @@ class Proxy(proxy.Proxy):
     def enable_instance_ssl(self, instance, enable=True):
         """Enable SSL in a replica set instance.
 
-        :param instance: The value can be either the ID of an instance or a
+        :param instance: The value can be either the ID of an instance or a \
         :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
         :param bool enable: enable or disable
+
         :returns: job ID.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
@@ -171,7 +176,7 @@ class Proxy(proxy.Proxy):
     def change_instance_name(self, instance, name):
         """Change name of a DB instance
 
-        :param instance: The value can be either the ID of an instance or a
+        :param instance: The value can be either the ID of an instance or a \
         :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
         :param name: New name of an instance
 
@@ -184,9 +189,10 @@ class Proxy(proxy.Proxy):
     def change_instance_port(self, instance, port):
         """Change port of a DB instance
 
-        :param instance: The value can be either the ID of an instance or a
+        :param instance: The value can be either the ID of an instance or a \
         :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
         :param port: New port of an instance
+
         :returns: DB instance object.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
@@ -198,9 +204,10 @@ class Proxy(proxy.Proxy):
     def change_instance_security_group(self, instance, security_group_id):
         """Change security group of a DB instance
 
-        :param instance: The value can be either the ID of an instance or a
+        :param instance: The value can be either the ID of an instance or a \
         :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
         :param security_group_id: New security group ID
+
         :returns: job ID.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
@@ -212,9 +219,10 @@ class Proxy(proxy.Proxy):
     def change_instance_private_ip(self, instance, **attrs):
         """Change private IP of a DB instance
 
-        :param instance: The value can be either the ID of an instance or a
+        :param instance: The value can be either the ID of an instance or a \
         :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
         :param dict attrs: Keyword arguments which will be used to change ip.
+
         :returns: job ID.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
@@ -226,9 +234,10 @@ class Proxy(proxy.Proxy):
     def create_instance_ip(self, instance, **attrs):
         """Add IP for a DB instance
 
-        :param instance: The value can be either the ID of an instance or a
+        :param instance: The value can be either the ID of an instance or a \
         :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
         :param dict attrs: Keyword arguments which will be used to add ip
+
         :returns: workflow ID.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
@@ -239,9 +248,10 @@ class Proxy(proxy.Proxy):
 
     def configure_client_network(self, instance, network_ranges):
         """Configure client network of a DB instance
-        :param instance: The value can be either the ID of an instance or a
+        :param instance: The value can be either the ID of an instance or a \
         :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
         :param list network_ranges: List of network ranges
+
         :returns: workflow ID.
 
         :rtype: :class:`~otcextensions.sdk.dds.v3.instance.Instance`
@@ -253,12 +263,12 @@ class Proxy(proxy.Proxy):
     def delete_instance(self, instance, ignore_missing=True):
         """Delete an instance
 
-        :param instance: The value can be either the ID of an instance or a
+        :param instance: The value can be either the ID of an instance or a \
         :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
-        :param bool ignore_missing: When set to ``False``
-        :class:`~openstack.exceptions.ResourceNotFound` will be
+        :param bool ignore_missing: When set to ``False`` \
+        :class:`~openstack.exceptions.ResourceNotFound` will be \
         raised when the instance does not exist.
-        When set to ``True``, no exception will be set when
+        When set to ``True``, no exception will be set when \
         attempting to delete a nonexistent instance.
 
         :returns: ``None``
@@ -273,7 +283,7 @@ class Proxy(proxy.Proxy):
     def get_instance(self, instance):
         """Get a single instance
 
-        :param instance: The value can be either the ID of an instance or a
+        :param instance: The value can be either the ID of an instance or a \
         :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
 
         :returns: One :class:`~otcextensions.sdk.dds.v3.instance.Instance`
@@ -285,10 +295,10 @@ class Proxy(proxy.Proxy):
         """Find a single instance
 
         :param name_or_id: The name or ID of a instance.
-        :param bool ignore_missing: When set to ``False``
-        :class:`~openstack.exceptions.ResourceNotFound` will be
+        :param bool ignore_missing: When set to ``False`` \
+        :class:`~openstack.exceptions.ResourceNotFound` will be \
         raised when the resource does not exist.
-        When set to ``True``, None will be returned when
+        When set to ``True``, None will be returned when \
         attempting to find a nonexistent resource.
 
         :returns:
@@ -302,7 +312,7 @@ class Proxy(proxy.Proxy):
     def instances(self, **params):
         """Return a generator of instances
 
-        :param dict params: Optional query parameters to be sent to limit
+        :param dict params: Optional query parameters to be sent to limit \
         the instances being returned.
 
         :returns: A generator of instance objects.
@@ -314,7 +324,7 @@ class Proxy(proxy.Proxy):
     def get_job(self, job):
         """Get information about a job
 
-        :param job: The value can be either the ID of a job or a
+        :param job: The value can be either the ID of a job or a \
         :class:`~otcextensions.sdk.dds.v3.job.Job` job.
 
         :returns: One :class:`~otcextensions.sdk.dds.v3.job.Job`
@@ -326,7 +336,7 @@ class Proxy(proxy.Proxy):
                  interval=20, wait=None):
         """Wait for the job to complete
 
-        :param job: The value can be either the ID of a job or a
+        :param job: The value can be either the ID of a job or a \
         :param status: Desired status of the job.
         :param failures: List of failure statuses.
         :param interval: Seconds to wait between retries.
@@ -346,7 +356,7 @@ class Proxy(proxy.Proxy):
                              failures=None, interval=60, wait=None):
         """Wait for normal status of an instance
 
-        :param instance: The value can be either the ID of an instance or a
+        :param instance: The value can be either the ID of an instance or a \
         :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
 
         :param status: The status of the instance to wait for.
@@ -398,8 +408,8 @@ class Proxy(proxy.Proxy):
     def create_policy(self, **attrs):
         """Create a new policy from attributes
 
-        :param dict attrs: Keyword arguments which will be used to create
-        a :class:`~otcextensions.sdk.dds.v3.recycle_policy.RecyclePolicy`,
+        :param dict attrs: Keyword arguments which will be used to create \
+        a :class:`~otcextensions.sdk.dds.v3.recycle_policy.RecyclePolicy`, \
         comprised of the properties on the RecyclePolicy class.
 
         :returns: The result of creation.
@@ -412,7 +422,7 @@ class Proxy(proxy.Proxy):
     def recycle_instances(self, **params):
         """Get list of instances in recycle bin
 
-        :param dict params: Keyword arguments which will be used to get list
+        :param dict params: Keyword arguments which will be used to get list \
         :returns: A generator of recycle instance objects.
 
         """
