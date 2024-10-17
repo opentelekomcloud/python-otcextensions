@@ -117,8 +117,8 @@ class Proxy(proxy.Proxy):
 
         :param instance: The value can be either the ID of an instance or a \
         :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
-        :param dict attrs: Keyword arguments which will be used to add node to \
-        a :class:`~otcextensions.sdk.dds.v3.instance.Instance`.
+        :param dict attrs: Keyword arguments which will be used to add node \
+         to a :class:`~otcextensions.sdk.dds.v3.instance.Instance`.
 
         :returns: job ID.
 
@@ -133,8 +133,8 @@ class Proxy(proxy.Proxy):
 
         :param instance: The value can be either the ID of an instance or a \
         :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
-        :param dict attrs: Keyword arguments which will be used to add node to \
-        a :class:`~otcextensions.sdk.dds.v3.instance.Instance`.
+        :param dict attrs: Keyword arguments which will be used to add node \
+         to a :class:`~otcextensions.sdk.dds.v3.instance.Instance`.
 
         :returns: job ID.
 
@@ -267,7 +267,7 @@ class Proxy(proxy.Proxy):
         :class:`~otcextensions.sdk.dds.v3.instance.Instance` instance.
         :param bool ignore_missing: When set to ``False`` \
         :class:`~openstack.exceptions.ResourceNotFound` will be \
-        raised when the instance does not exist.
+        raised when the instance does not exist. \
         When set to ``True``, no exception will be set when \
         attempting to delete a nonexistent instance.
 
@@ -297,12 +297,12 @@ class Proxy(proxy.Proxy):
         :param name_or_id: The name or ID of a instance.
         :param bool ignore_missing: When set to ``False`` \
         :class:`~openstack.exceptions.ResourceNotFound` will be \
-        raised when the resource does not exist.
+        raised when the resource does not exist. \
         When set to ``True``, None will be returned when \
         attempting to find a nonexistent resource.
 
-        :returns:
-        One :class:`~otcextensions.sdk.dds.v3.instance.Instance` or None.
+        :returns: One :class:`~otcextensions.sdk.dds.v3.instance.Instance` \
+        or None.
 
         """
         return self._find(_instance.Instance,
