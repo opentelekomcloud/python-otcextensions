@@ -25,6 +25,6 @@ Pygments>=2.2.0  # BSD license
 # OTCE specifics
 # Func tests of OSC
 tempest>=17.1.0 # Apache-2.0
-python-openstackclient
+python-openstackclient>=5.0.0 # Apache-2.0
 # Usability of venv
 flake8
