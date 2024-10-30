@@ -14,6 +14,7 @@ from unittest import mock
 
 from otcextensions.sdk.identity.v3 import _proxy
 from otcextensions.sdk.identity.v3 import credential
+from otcextensions.sdk.identity.v3 import custom_role
 from otcextensions.sdk.identity.v3 import agency
 from otcextensions.sdk.identity.v3 import agency_role
 
@@ -400,3 +401,15 @@ class TestIdentitySecurityTokens(TestIdentityProxy):
                     'duration-secods': 2}}}}
         )
         self.assertEqual('f1', token.access)
+
+
+class TestIdentityCustomRole(TestIdentityProxy):
+    @mock.patch(
+        'otcextensions.sdk.identity.v3._proxy.Proxy._get_alternate_endpoint',
+        return_value='fake')
+    def test_custom_roles(self, epo_mock):
+        self.verify_list(
+            self.proxy.custom_roles,
+            custom_role.CustomRole,
+        )
+        epo_mock.assert_called_with()
