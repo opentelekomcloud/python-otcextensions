@@ -12,6 +12,7 @@
 import time
 from urllib.parse import urlsplit
 
+from openstack import resource
 from openstack import _log
 from openstack import exceptions
 from openstack import proxy
@@ -422,3 +423,83 @@ class Proxy(proxy.Proxy):
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return _tag.Tag().manage_tags_batch(self, cluster.id, tags, 'delete')
+
+    def wait_for_delete(self, cluster, interval=20, wait=12000, callback=None):
+        """Wait for a resource to be deleted.
+
+        :param cluster: The resource to wait on to be deleted.
+        :param interval: Number of seconds to wait before to consecutive
+            checks. Default to 2.
+        :param wait: Maximum number of seconds to wait before the change.
+            Default to 120.
+        :param callback: A callback function. This will be called with a single
+            value, progress, which is a percentage value from 0-100.
+
+        :returns: The resource is returned on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` if transition
+            to delete failed to occur in the specified seconds.
+        """
+        return resource.wait_for_delete(self,
+                                        cluster,
+                                        interval,
+                                        wait,
+                                        callback)
+
+    def _get_cleanup_dependencies(self):
+        return {
+            'dws': {
+                'before': ['network']
+            }
+        }
+
+    def _service_cleanup(
+        self,
+        dry_run=True,
+        client_status_queue=None,
+        identified_resources=None,
+        filters=None,
+        resource_evaluation_fn=None,
+        skip_resources=None,
+    ):
+        if self.should_skip_resource_cleanup("cluster", skip_resources):
+            return
+
+        clusters = []
+        for cluster in self.clusters():
+            if not dry_run and cluster.status == 'AVAILABLE':
+                tags = list(self.cluster_tags(cluster))
+                for tag in tags:
+                    self._service_cleanup_del_res(
+                        self.delete_cluster_tag,
+                        tag['key'],
+                        dry_run=dry_run,
+                        client_status_queue=client_status_queue,
+                        identified_resources=identified_resources,
+                        filters=filters,
+                        resource_evaluation_fn=resource_evaluation_fn,
+                    )
+            need_delete = self._service_cleanup_del_res(
+                self.delete_cluster,
+                cluster,
+                dry_run=dry_run,
+                client_status_queue=client_status_queue,
+                identified_resources=identified_resources,
+                filters=filters,
+                resource_evaluation_fn=resource_evaluation_fn,
+            )
+            if not dry_run and need_delete:
+                clusters.append(cluster)
+
+        for cluster in clusters:
+            self.wait_for_delete(cluster)
+
+        for snapshot in self.snapshots():
+            self._service_cleanup_del_res(
+                self.delete_snapshot,
+                snapshot,
+                dry_run=dry_run,
+                client_status_queue=client_status_queue,
+                identified_resources=identified_resources,
+                filters=filters,
+                resource_evaluation_fn=resource_evaluation_fn,
+            )
