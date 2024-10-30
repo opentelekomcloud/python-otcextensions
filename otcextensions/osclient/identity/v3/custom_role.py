@@ -78,7 +78,7 @@ class ListCustomRoles(command.Lister):
         attrs = {}
 
         if parsed_args.page:
-            attrs['page'] = parsed_args.user_id
+            attrs['page'] = parsed_args.page
         if parsed_args.page:
             attrs['per_page'] = parsed_args.per_page
         data = client.custom_roles(**attrs)
