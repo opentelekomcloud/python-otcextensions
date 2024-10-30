@@ -30,3 +30,4 @@ otcextensions.tests.functional.osclient.kms*
 otcextensions.tests.functional.sdk.imsv1*
 otcextensions.tests.functional.sdk.imsv2*
 otcextensions.tests.functional.sdk.rds.v3*
+otcextensions.tests.functional.sdk.dws.v1.test_cleanup
