@@ -54,7 +54,6 @@ class TestCleanup(base.BaseFunctionalTest):
             )
         except exceptions.ResourceFailure:
             self.client.delete_cluster(self.cluster.id)
-        clusters = list(self.conn.dws.clusters())
 
     def test_02_delete(self):
         clusters = list(self.conn.dws.clusters())
