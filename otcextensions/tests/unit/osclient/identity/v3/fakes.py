@@ -18,6 +18,7 @@ import mock
 from openstackclient.tests.unit import utils
 
 from otcextensions.sdk.identity.v3 import credential
+from otcextensions.sdk.identity.v3 import custom_role
 from otcextensions.tests.unit.osclient import test_base
 
 
@@ -64,3 +65,28 @@ class FakeIdentityCredential(test_base.Fake):
         }
 
         return credential.Credential(**object_info)
+
+
+class FakeIdentityCustomRole(test_base.Fake):
+    """Fake one or more identity custom roles."""
+    @classmethod
+    def generate(cls):
+        """Create a fake identity custom role.
+
+        :return:
+            A FakeResource object, with id, name and so on
+        """
+        # Set default attributes.
+
+        object_info = {
+            "id": uuid.uuid4().hex,
+            "name": "role" + uuid.uuid4().hex[:4],
+            "description": "test",
+            "domain_id": uuid.uuid4().hex,
+            "catalog": "CUSTOMED",
+            "display_name": "custom_" + uuid.uuid4().hex[:4],
+            "type": "XA",
+            "created_at": "1600181033358",
+            "updated_at": "1600181033358",
+        }
+        return custom_role.CustomRole(**object_info)
