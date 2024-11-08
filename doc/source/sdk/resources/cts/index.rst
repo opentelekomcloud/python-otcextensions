@@ -6,3 +6,4 @@ CTS Resources
 
    v1/trace
    v1/tracker
+   v3/key_event

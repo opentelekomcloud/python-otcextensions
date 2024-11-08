@@ -10,14 +10,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from openstack import service_description
-
-from otcextensions.sdk.ctsv3.v3 import _proxy
+from otcextensions.tests.functional import base
 
 
-class Ctsv3Service(service_description.ServiceDescription):
-    """The CTS service."""
+class TestCtsv3(base.BaseFunctionalTest):
 
-    supported_versions = {
-        '3': _proxy.Proxy
-    }
+    def setUp(self):
+        super(TestCtsv3, self).setUp()
+        self.client = self.conn.ctsv3

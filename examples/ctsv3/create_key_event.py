@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -9,15 +10,16 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+"""
+Create Cloud Trace Service Key Event
+"""
+import openstack
 
-from openstack import service_description
+openstack.enable_logging(True)
+conn = openstack.connect(cloud='otc')
 
-from otcextensions.sdk.ctsv3.v3 import _proxy
-
-
-class Ctsv3Service(service_description.ServiceDescription):
-    """The CTS service."""
-
-    supported_versions = {
-        '3': _proxy.Proxy
-    }
+attrs = {
+    "notification_name": "test",
+    "operation_type": "complete",
+}
+event = conn.ctsv3.create_key_event(**attrs)

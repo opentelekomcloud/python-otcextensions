@@ -12,6 +12,7 @@ Service Proxies
    Cloud Eye Service (CES) <ces>
    Cloud Search Service (CSS) <css>
    Cloud Trace Service (CTS) <cts>
+   Cloud Trace Service V3 (CTSv3) <cts_v3>
    Data Ingestion Service (DIS) <dis>
    Data Warehouse Service (DWS) <dws>
    Dedicated Host Service (DeH) <deh>
