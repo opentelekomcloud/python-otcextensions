@@ -24,7 +24,7 @@ class Proxy(proxy.Proxy):
         :param dict attrs: Keyword arguments which will be used to create a
              :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent`
         :returns: The key event
-        :rtype: :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent
+        :rtype: :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent`
          """
         return self._create(_key_event.KeyEvent, **attrs)
 
@@ -34,24 +34,23 @@ class Proxy(proxy.Proxy):
         :param dict kwargs: Keyword arguments which will be used to overwrite a
              :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent`
         :returns: The updated key event
-        :rtype: :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent
+        :rtype: :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent`
          """
         return self._update(_key_event.KeyEvent, **attrs)
 
     def delete_key_event(self, notification):
         """Delete an event
 
-        :param notification: The key event to delete
-        :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent`
-
+        :param notification: The key event to delete a
+            :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent`
         :returns: None
          """
         notification.delete_key(self)
 
     def key_events(self, notification_type, **attrs):
         """Query notification events
-        :param notification_type The type of notification to query
 
+        :param notification_type The type of notification to query
         :returns: A generator of key event object of
         :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent`
         """
