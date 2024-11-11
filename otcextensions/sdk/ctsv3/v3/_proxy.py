@@ -12,6 +12,7 @@
 from openstack import proxy
 
 from otcextensions.sdk.ctsv3.v3 import key_event as _key_event
+from otcextensions.sdk.ctsv3.v3 import trace as _trace
 
 
 class Proxy(proxy.Proxy):
@@ -58,3 +59,11 @@ class Proxy(proxy.Proxy):
         return self._list(_key_event.KeyEvent,
                           base_path=base_path,
                           **attrs)
+
+    def traces(self, **attrs):
+        """Query traces
+
+        :returns: A generator of key event object of
+        :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent`
+        """
+        return self._list(_trace.Trace, paginated=False, **attrs)

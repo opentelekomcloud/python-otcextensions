@@ -17,3 +17,10 @@ Key Event Operations
 .. autoclass:: otcextensions.sdk.ctsv3.v3._proxy.Proxy
   :noindex:
   :members: create_key_event, update_key_event, delete_key_event, key_events
+
+Trace Operations
+^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.ctsv3.v3._proxy.Proxy
+  :noindex:
+  :members: traces

@@ -13,6 +13,7 @@
 
 from otcextensions.sdk.ctsv3.v3 import _proxy
 from otcextensions.sdk.ctsv3.v3 import key_event as _key_event
+from otcextensions.sdk.ctsv3.v3 import trace as _trace
 
 from openstack.tests.unit import test_proxy_base
 
@@ -43,4 +44,12 @@ class TestKeyEvent(TestCTSv3Proxy):
             _key_event.KeyEvent,
             method_kwargs={'notification_type': 'type'},
             expected_kwargs={},
+        )
+
+
+class TestTraces(TestCTSv3Proxy):
+    def test_trace_list(self):
+        self.verify_list(
+            self.proxy.traces,
+            _trace.Trace
         )
