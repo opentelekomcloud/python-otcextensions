@@ -20,7 +20,7 @@ EXAMPLE = {
         "domain": {
             "name": "xxx",
             "id": "ded649d814464428ba89d04d7955c93e"
-      }
+        }
     },
     "response": {
         "code": "VPC.0514",

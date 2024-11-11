@@ -63,7 +63,7 @@ class Proxy(proxy.Proxy):
     def traces(self, **attrs):
         """Query traces
 
-        :returns: A generator of key event object of
-        :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent`
+        :returns: A generator of trace object of a
+            :class:`~otcextensions.sdk.ctsv3.v3.trace.Trace`
         """
         return self._list(_trace.Trace, paginated=False, **attrs)
