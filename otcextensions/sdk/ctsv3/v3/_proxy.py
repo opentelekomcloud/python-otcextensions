@@ -13,6 +13,7 @@ from openstack import proxy
 
 from otcextensions.sdk.ctsv3.v3 import key_event as _key_event
 from otcextensions.sdk.ctsv3.v3 import trace as _trace
+from otcextensions.sdk.ctsv3.v3 import tracker as _tracker
 
 
 class Proxy(proxy.Proxy):
@@ -67,3 +68,10 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.ctsv3.v3.trace.Trace`
         """
         return self._list(_trace.Trace, paginated=False, **attrs)
+
+    def create_tracker(self, **attrs):
+        tracker = _tracker.Tracker.new(connection=self._get_connection())
+        return tracker.create_tracker(self, **attrs)
+
+    def trackers(self, **attrs):
+        return self._list(_tracker.Tracker, **attrs)
