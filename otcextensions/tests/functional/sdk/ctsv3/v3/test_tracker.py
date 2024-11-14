@@ -9,22 +9,27 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import unittest
 
 from otcextensions.tests.functional.sdk.ctsv3 import TestCtsv3
 
 
 class TestTracker(TestCtsv3):
 
-    def test_01_create_tracker(self):
+    def setUp(self):
+        super(TestTracker, self).setUp()
+        self.cts = self.conn.ctsv3
         attrs = {
             "tracker_type": "system",
             "tracker_name": "system",
-            "is_lts_enabled": False
         }
-        tracker = self.conn.ctsv3.create_tracker(**attrs)
-        self.assertIsNotNone(tracker)
+        self.tracker = self.cts.create_tracker(**attrs)
 
-    def test_02_get_trackers(self):
+    def tearDown(self):
+        try:
+            self.cts.delete_tracker(self.tracker)
+        finally:
+            super(TestTracker, self).tearDown()
+
+    def test_01_get_trackers(self):
         trackers = list(self.conn.ctsv3.trackers())
         self.assertIsNotNone(trackers)

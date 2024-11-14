@@ -12,8 +12,10 @@
 
 from openstack import resource
 
+from openstack import exceptions
 
-class LtsSpec(resource.Resource):
+
+class ObsInfoSpec(resource.Resource):
     bucket_name = resource.Body('bucket_name')
     file_prefix_name = resource.Body('file_prefix_name')
     is_obs_created = resource.Body('is_obs_created', type=bool)
@@ -21,7 +23,7 @@ class LtsSpec(resource.Resource):
     is_sort_by_service = resource.Body('is_sort_by_service', type=bool)
 
 
-class ObsInfoSpec(resource.Resource):
+class LtsSpec(resource.Resource):
     is_lts_enabled = resource.Body('is_lts_enabled', type=bool)
     log_group_name = resource.Body('log_group_name')
     log_topic_name = resource.Body('log_topic_name')
@@ -29,7 +31,6 @@ class ObsInfoSpec(resource.Resource):
 
 class Tracker(resource.Resource):
     base_path = '/trackers'
-    resource_key = 'tracker'
     resources_key = 'trackers'
     allow_list = True
     allow_create = True
@@ -39,17 +40,18 @@ class Tracker(resource.Resource):
     _query_mapping = resource.QueryParameters('tracker_name')
     id = resource.Body('id')
     create_time = resource.Body('create_time')
-    lts = resource.Body('lts', type = LtsSpec)
+    lts = resource.Body('lts', type=LtsSpec)
     tracker_type = resource.Body('tracker_type')
     domain_id = resource.Body('domain_id')
     project_id = resource.Body('project_id')
     tracker_name = resource.Body('tracker_name')
     status = resource.Body('status')
     detail = resource.Body('detail')
-    obs_info = resource.Body('obs_info', type = ObsInfoSpec)
+    obs_info = resource.Body('obs_info', type=ObsInfoSpec)
     group_id = resource.Body('group_id')
     stream_id = resource.Body('stream_id')
 
-    def create_tracker(self, session, **attrs):
-        return self.create(session, prepend_key=False, base_path='/tracker',
-                           **attrs)
+    def delete_tracker(self, session):
+        path = f'{self.base_path}?tracker_name={self.tracker_name}'
+        response = session.delete(path)
+        exceptions.raise_from_response(response)

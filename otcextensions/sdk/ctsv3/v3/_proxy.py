@@ -17,7 +17,6 @@ from otcextensions.sdk.ctsv3.v3 import tracker as _tracker
 
 
 class Proxy(proxy.Proxy):
-
     skip_discovery = True
 
     def create_key_event(self, **attrs):
@@ -69,9 +68,35 @@ class Proxy(proxy.Proxy):
         """
         return self._list(_trace.Trace, paginated=False, **attrs)
 
-    def create_tracker(self, **attrs):
-        tracker = _tracker.Tracker.new(connection=self._get_connection())
-        return tracker.create_tracker(self, **attrs)
-
     def trackers(self, **attrs):
+        """Query notification events
+
+        :param dict attrs: Optional query parameters to be sent to limit the
+            resources being returned.
+            * `tracker_name`: Tracker name
+        :returns: A generator of key event object of
+        :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent`
+        """
         return self._list(_tracker.Tracker, **attrs)
+
+    def create_tracker(self, **attrs):
+        """Create tracker
+
+        :param dict attrs: Keyword arguments which will be used to create a
+             :class:`~otcextensions.sdk.ctsv3.v3.tracker.Tracker`
+        :returns: The key event
+        :rtype: :class:`~otcextensions.sdk.ctsv3.v3.tracker.Tracker`
+         """
+        return self._create(
+            _tracker.Tracker,
+            base_path=_tracker.Tracker.base_path[:-1], **attrs
+        )
+
+    def delete_tracker(self, tracker):
+        """Delete a single tracker
+
+        :param tracker: The tracker to delete a
+            :class:`~otcextensions.sdk.ctsv3.v3.tracker.Tracker`
+        :returns: None
+         """
+        tracker.delete_tracker(self)
