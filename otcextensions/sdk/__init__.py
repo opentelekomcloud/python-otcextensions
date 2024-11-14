@@ -51,6 +51,11 @@ OTC_SERVICES = {
         'append_project_id': True,
         'endpoint_service_type': 'antiddos',
     },
+    'apig': {
+        'service_type': 'apig',
+        'append_project_id': True,
+        'endpoint_service_type': 'apig'
+    },
     'aomv1': {
         'service_type': 'aomv1',
         'endpoint_service_type': 'aomv1'
@@ -159,6 +164,16 @@ OTC_SERVICES = {
     'enterprise_dashboard_v1': {
         'service_type': 'enterprise-dashboard-v1',
         'endpoint_service_type': 'enterprise-dashboard-v1'
+    },
+    'er': {
+        'service_type': 'er',
+        'append_project_id': True,
+        'endpoint_service_type': 'erv3'
+    },
+    'function_graph': {
+        'service_type': 'function_graph',
+        'append_project_id': True,
+        'endpoint_service_type': 'functiongraph'
     },
     'identity': {
         'service_type': 'identity',
