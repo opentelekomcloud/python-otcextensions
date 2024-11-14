@@ -28,8 +28,11 @@ class ApigService(service_description.ServiceDescription):
         :param instance:
           The `openstack.connection.Connection` we're working with.
         """
-        # Instantiate the ServiceProxy with the current instance and service type
-        service_proxy = ServiceProxy(instance, self.service_type, self.supported_versions)
+        service_proxy = ServiceProxy(
+            instance,
+            self.service_type,
+            self.supported_versions
+        )
 
         # If service not in service catalog the create_proxy method
         # creates and returns the proxy object based on base_service endpoint

@@ -13,7 +13,6 @@
 from openstack import service_description
 
 from otcextensions.sdk.er.v3 import _proxy
-from otcextensions.sdk.sdk_make_proxy import ServiceProxy
 
 
 class ErService(service_description.ServiceDescription):

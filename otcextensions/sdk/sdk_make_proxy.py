@@ -29,22 +29,30 @@ class ServiceProxy:
         endpoint_override = config.get_endpoint(self.service_type)
 
         # Fetch service catalog URL and adjust the endpoint if necessary
-        ep = config.get_service_catalog().url_for(service_type=base_service, region_name=config.region_name)
-        epo = f"{ep.replace(base_service.split('v')[0], target_service)}"  # Flexible endpoint substitution
+        ep = config.get_service_catalog().url_for(
+            service_type=base_service,
+            region_name=config.region_name
+        )
+        epo = f"{ep.replace(base_service.split('v')[0], target_service)}"
 
         if epo and not endpoint_override:
             endpoint_override = epo
 
-        # Default to the only supported version if no version string is provided
         if not version_string and len(self.supported_versions) == 1:
             version_string = list(self.supported_versions)[0]
 
-        # Attempt to create a proxy object with the specified endpoint and version
-        proxy_obj = self._get_proxy_object(config, version_string, endpoint_override)
+        # Attempt to create a proxy object with the
+        # specified endpoint and version
+        proxy_obj = self._get_proxy_object(
+            config,
+            version_string,
+            endpoint_override
+        )
         if proxy_obj:
             return self._handle_discovery(proxy_obj, config)
 
-        # If no specific endpoint or version, allow discovery with version constraints
+        # If no specific endpoint or version,
+        # allow discovery with version constraints
         return self._create_discovery_adapter(config, version_string)
 
     def _get_proxy_object(self, config, version_string, endpoint_override):
@@ -52,24 +60,36 @@ class ServiceProxy:
         if endpoint_override and version_string and self.supported_versions:
             proxy_class = self.supported_versions.get(version_string[0])
             if proxy_class:
-                return self._construct_proxy(config, proxy_class, endpoint_override)
+                return self._construct_proxy(
+                    config,
+                    proxy_class,
+                    endpoint_override
+                )
             else:
                 warnings.warn(
-                    f"The configured version {version_string} for service {self.service_type} "
-                    "is not known or supported. The resulting Proxy object will only have direct "
-                    "passthrough REST capabilities.",
+                    f"The configured version {version_string} "
+                    f"for service {self.service_type} "
+                    f"is not known or supported. The resulting "
+                    f"Proxy object will only have direct "
+                    f"passthrough REST capabilities.",
                     category=os_warnings.UnsupportedServiceVersion)
         elif endpoint_override and self.supported_versions:
             temp_adapter = config.get_session_client(self.service_type)
             api_version = temp_adapter.get_endpoint_data().api_version
             proxy_class = self.supported_versions.get(str(api_version[0]))
             if proxy_class:
-                return self._construct_proxy(config, proxy_class, endpoint_override)
+                return self._construct_proxy(
+                    config,
+                    proxy_class,
+                    endpoint_override
+                )
             else:
                 warnings.warn(
-                    f"Service {self.service_type} has an endpoint override set, "
-                    f"but the version discovered ({api_version}) is not supported. "
-                    "The resulting Proxy object will only have direct passthrough REST capabilities.",
+                    f"Service {self.service_type} has an "
+                    f"endpoint override set, "
+                    f"but the version discovered ({api_version}) is "
+                    f"not supported. The resulting Proxy object will "
+                    f"only have direct passthrough REST capabilities.",
                     category=os_warnings.UnsupportedServiceVersion)
 
     def _construct_proxy(self, config, proxy_class, endpoint_override):
@@ -97,9 +117,9 @@ class ServiceProxy:
         if version_string:
             version_kwargs['version'] = version_string
         elif self.supported_versions:
-            supported_versions = sorted(int(f) for f in self.supported_versions)
-            version_kwargs['min_version'] = str(supported_versions[0])
-            version_kwargs['max_version'] = f"{supported_versions[-1]}.latest"
+            sv = sorted(int(f) for f in self.supported_versions)
+            version_kwargs['min_version'] = str(sv[0])
+            version_kwargs['max_version'] = f"{sv[-1]}.latest"
 
         temp_adapter = config.get_session_client(
             self.service_type,
@@ -109,8 +129,9 @@ class ServiceProxy:
         found_version = temp_adapter.get_api_major_version()
         if found_version is None:
             raise exceptions.NotSupported(
-                f"The {self.service_type} service for {self.instance.name}:{config.region_name} "
-                "exists but does not have any supported versions."
+                f"The {self.service_type} service for "
+                f"{self.instance.name}:{config.region_name} "
+                f"exists but does not have any supported versions."
             )
         proxy_class = self.supported_versions.get(str(found_version[0]))
         if proxy_class:
@@ -118,6 +139,10 @@ class ServiceProxy:
         else:
             warnings.warn(
                 f"Service {self.service_type} has no discoverable version. "
-                "The resulting Proxy object will only have direct passthrough REST capabilities.",
+                f"The resulting Proxy object will only have direct passthrough "
+                f"REST capabilities.",
                 category=os_warnings.UnsupportedServiceVersion)
-        return config.get_session_client(self.service_type, allow_version_hack=True, **version_kwargs)
+        return config.get_session_client(
+            self.service_type,
+            allow_version_hack=True, **version_kwargs
+        )
