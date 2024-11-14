@@ -19,7 +19,8 @@ class TestTracker(TestCtsv3):
     def test_01_create_tracker(self):
         attrs = {
             "tracker_type": "system",
-            "tracker_name": "system"
+            "tracker_name": "system",
+            "is_lts_enabled": False
         }
         tracker = self.conn.ctsv3.create_tracker(**attrs)
         self.assertIsNotNone(tracker)
