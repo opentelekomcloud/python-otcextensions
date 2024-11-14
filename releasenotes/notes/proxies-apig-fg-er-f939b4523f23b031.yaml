@@ -1,0 +1,8 @@
+---
+features:
+  - |
+    Add APIG v2 proxy
+  - |
+    Add EnterpriseRouter v3 proxy
+  - |
+    Add FunctionGraph v2 proxy
