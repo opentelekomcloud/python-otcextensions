@@ -139,8 +139,8 @@ class ServiceProxy:
         else:
             warnings.warn(
                 f"Service {self.service_type} has no discoverable version. "
-                f"The resulting Proxy object will only have direct passthrough "
-                f"REST capabilities.",
+                f"The resulting Proxy object will only have direct"
+                f" passthrough REST capabilities.",
                 category=os_warnings.UnsupportedServiceVersion)
         return config.get_session_client(
             self.service_type,
