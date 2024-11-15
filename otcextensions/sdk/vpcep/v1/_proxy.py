@@ -16,6 +16,8 @@ from otcextensions.sdk.vpcep.v1 import connection as _connection
 from otcextensions.sdk.vpcep.v1 import endpoint as _endpoint
 from otcextensions.sdk.vpcep.v1 import quota as _quota
 from otcextensions.sdk.vpcep.v1 import service as _service
+from otcextensions.sdk.vpcep.v1 import public_service as _public_service
+from otcextensions.sdk.vpcep.v1 import target_service as _target_service
 from otcextensions.sdk.vpcep.v1 import whitelist as _whitelist
 
 
@@ -265,6 +267,67 @@ class Proxy(proxy.Proxy):
         raise exceptions.SDKException(
             "Value of action can be 'add' or 'remove'."
         )
+
+    # ======== VPCEP Public Service  ========
+
+    def public_services(self, **query):
+        """Return a generator of public endpoint services
+
+        :param dict query: Optional query parameters to be sent to limit
+            the resources being returned. Valid parameters are:
+
+        :returns: A generator of public endpoint service objects
+        :rtype: :class:`~otcextensions.sdk.vpcep.public_service.PublicService`
+        """
+        if query.get('limit'):
+            query.update(paginated=False)
+        return self._list(_public_service.PublicService, **query)
+
+    # ======== VPCEP Target Service  ========
+
+    def get_target_service(self, name_or_id, ignore_missing=False):
+        """Get a single target endpoint service
+
+        :param name_or_id: The value can be the ID of a endpoint service,
+            name of a endpoint service or a
+            :class:`~otcextensions.sdk.vpcep.target_service.TargetService`
+            instance.
+        :param bool ignore_missing: When set to ``False``
+            :class:`~openstack.exceptions.ResourceNotFound` will be
+            raised when the resource does not exist.
+            When set to ``True``, None will be returned when
+            attempting to find a nonexistent resource.
+
+        :returns: One
+            :class:`~otcextensions.sdk.vpcep.target_service.TargetService`
+        :raises: :class:`~openstack.exceptions.ResourceNotFound`
+            when no resource can be found.
+
+        """
+        try:
+            base_path = _target_service.TargetService.base_path + \
+                '?id={}'.format(name_or_id)
+            return self._get(
+                _target_service.TargetService,
+                base_path=base_path,
+                requires_id=False
+            )
+        except exceptions.ResourceNotFound:
+            pass
+
+        try:
+            base_path = _target_service.TargetService.base_path + \
+                '?endpoint_service_name={}'.format(name_or_id)
+            return self._get(
+                _target_service.TargetService,
+                base_path=base_path,
+                requires_id=False
+            )
+        except exceptions.ResourceNotFound:
+            if ignore_missing:
+                return None
+            else:
+                raise
 
     # ======== VPCEP Resource Quota  ========
 
