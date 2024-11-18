@@ -38,11 +38,16 @@ class TestTracker(TestCtsv3):
         attrs = {
             "tracker_type": "system",
             "tracker_name": "system",
+            "obs_info": {
+                "is_obs_created": False,
+                "bucket_name": "update-test",
+                "file_prefix_name": "11"
+            },
             "status": "disabled",
             "is_lts_enabled": True,
-            "obs_info": {
-                "bucket_name": "dataart-test"
-            }
+            "is_support_trace_files_encryption": True,
+            "kms_id": "",
+            "is_support_validate": False,
         }
         self.conn.ctsv3.update_tracker(**attrs)
         attrs = {
