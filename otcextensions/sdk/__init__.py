@@ -54,7 +54,7 @@ OTC_SERVICES = {
     'apig': {
         'service_type': 'apig',
         'append_project_id': True,
-        'endpoint_service_type': 'apig'
+        'endpoint_service_type': 'apigv2'
     },
     'aomv1': {
         'service_type': 'aomv1',
