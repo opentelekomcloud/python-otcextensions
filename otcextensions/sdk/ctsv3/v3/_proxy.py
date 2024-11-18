@@ -14,6 +14,7 @@ from openstack import proxy
 from otcextensions.sdk.ctsv3.v3 import key_event as _key_event
 from otcextensions.sdk.ctsv3.v3 import trace as _trace
 from otcextensions.sdk.ctsv3.v3 import tracker as _tracker
+from otcextensions.sdk.ctsv3.v3 import quota as _quota
 
 
 class Proxy(proxy.Proxy):
@@ -74,8 +75,8 @@ class Proxy(proxy.Proxy):
         :param dict attrs: Optional query parameters to be sent to limit the
             resources being returned.
             * `tracker_name`: Tracker name
-        :returns: A generator of key event object of
-        :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent`
+        :returns: A generator of tracker object of
+        :class:`~otcextensions.sdk.ctsv3.v3.tracker.Tracker`
         """
         return self._list(_tracker.Tracker, **attrs)
 
@@ -111,3 +112,11 @@ class Proxy(proxy.Proxy):
         self._update(_tracker.Tracker,
                      base_path=_tracker.Tracker.base_path[:-1],
                      **attrs)
+
+    def quotas(self):
+        """Query quotas
+
+        :returns: A generator of quota object of
+        :class:`~otcextensions.sdk.ctsv3.v3.quota.Quota`
+        """
+        return self._list(_quota.Quota)

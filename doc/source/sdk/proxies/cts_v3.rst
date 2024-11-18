@@ -24,3 +24,17 @@ Trace Operations
 .. autoclass:: otcextensions.sdk.ctsv3.v3._proxy.Proxy
   :noindex:
   :members: traces
+
+Tracker Operations
+^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.ctsv3.v3._proxy.Proxy
+  :noindex:
+  :members: trackers, create_tracker, delete_tracker, update_tracker
+
+Quota Operations
+^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.ctsv3.v3._proxy.Proxy
+  :noindex:
+  :members: quotas
