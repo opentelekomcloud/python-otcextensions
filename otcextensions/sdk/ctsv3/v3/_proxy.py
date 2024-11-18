@@ -32,7 +32,7 @@ class Proxy(proxy.Proxy):
     def update_key_event(self, **attrs):
         """Update an event
 
-        :param dict kwargs: Keyword arguments which will be used to overwrite a
+        :param dict attrs: Keyword arguments which will be used to overwrite a
              :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent`
         :returns: The updated key event
         :rtype: :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent`
@@ -89,8 +89,8 @@ class Proxy(proxy.Proxy):
          """
         return self._create(
             _tracker.Tracker,
-            base_path=_tracker.Tracker.base_path[:-1], **attrs
-        )
+            base_path=_tracker.Tracker.base_path[:-1],
+            **attrs)
 
     def delete_tracker(self, tracker):
         """Delete a single tracker
@@ -100,3 +100,14 @@ class Proxy(proxy.Proxy):
         :returns: None
          """
         tracker.delete_tracker(self)
+
+    def update_tracker(self, **attrs):
+        """Update a single tracker
+
+        :param dict attrs: Keyword arguments which will be used to overwrite a
+            :class:`~otcextensions.sdk.ctsv3.v3.tracker.Tracker`
+        :returns: None
+        """
+        self._update(_tracker.Tracker,
+                     base_path=_tracker.Tracker.base_path[:-1],
+                     **attrs)

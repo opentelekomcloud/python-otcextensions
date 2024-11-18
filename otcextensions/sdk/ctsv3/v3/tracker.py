@@ -36,6 +36,7 @@ class Tracker(resource.Resource):
     allow_create = True
     allow_delete = True
     allow_commit = True
+    requires_id = False
 
     _query_mapping = resource.QueryParameters('tracker_name')
     id = resource.Body('id')

@@ -30,6 +30,23 @@ class TestTracker(TestCtsv3):
         finally:
             super(TestTracker, self).tearDown()
 
-    def test_01_get_trackers(self):
+    def test_01_list_trackers(self):
         trackers = list(self.conn.ctsv3.trackers())
         self.assertIsNotNone(trackers)
+
+    def test_02_update_tracker(self):
+        attrs = {
+            "tracker_type": "system",
+            "tracker_name": "system",
+            "status": "disabled",
+            "is_lts_enabled": True,
+            "obs_info": {
+                "bucket_name": "dataart-test"
+            }
+        }
+        self.conn.ctsv3.update_tracker(**attrs)
+        attrs = {
+            "tracker_name": "system"
+        }
+        tracker = list(self.conn.ctsv3.trackers(**attrs))[0]
+        self.assertEqual(tracker.status, "disabled")
