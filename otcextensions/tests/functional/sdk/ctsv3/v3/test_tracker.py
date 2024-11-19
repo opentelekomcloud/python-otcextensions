@@ -57,7 +57,6 @@ class TestTracker(TestCtsv3):
             self.client_obs.delete_object(obj, container=self.container)
         self.addCleanup(self.client_obs.delete_container, self.container)
 
-
     def test_01_list_trackers(self):
         trackers = list(self.conn.ctsv3.trackers())
         self.assertIsNotNone(trackers)
