@@ -51,6 +51,7 @@ class Tracker(resource.Resource):
     obs_info = resource.Body('obs_info', type=ObsInfoSpec)
     group_id = resource.Body('group_id')
     stream_id = resource.Body('stream_id')
+    is_lts_enabled = resource.Body('is_lts_enabled')
 
     def delete_tracker(self, session):
         path = f'{self.base_path}?tracker_name={self.tracker_name}'
