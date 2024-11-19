@@ -10,7 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import uuid
-import openstack
+from openstack import exceptions
 from otcextensions.tests.functional.sdk.ctsv3 import TestCtsv3
 
 _logger = openstack._log.setup_logging('openstack')
@@ -47,7 +47,7 @@ class TestTracker(TestCtsv3):
         try:
             if self.tracker:
                 self.client.delete_tracker(self.tracker)
-        except openstack.exceptions.SDKException as e:
+        except exceptions.SDKException as e:
             _logger.warning('Got exception during clearing resources %s'
                             % e.message)
         objects = self.client_obs.objects(
