@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    Add query operations for public VPC endpoint services and target VPC endpoint service.

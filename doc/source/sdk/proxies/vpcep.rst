@@ -39,6 +39,20 @@ Service WhiteList Operations
   :noindex:
   :members: service_whitelist, manage_service_whitelist
 
+Public Service Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.vpcep.v1._proxy.Proxy
+  :noindex:
+  :members: public_services
+
+Target Service Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.vpcep.v1._proxy.Proxy
+  :noindex:
+  :members: get_target_service
+
 Quota Operations
 ^^^^^^^^^^^^^^^^
 
