@@ -17,6 +17,8 @@ from otcextensions.sdk.vpcep.v1 import endpoint
 from otcextensions.sdk.vpcep.v1 import quota
 from otcextensions.sdk.vpcep.v1 import service
 from otcextensions.sdk.vpcep.v1 import whitelist
+from otcextensions.sdk.vpcep.v1 import public_service
+from otcextensions.sdk.vpcep.v1 import target_service
 
 
 class TestVpcepProxy(test_proxy_base.TestProxyBase):
@@ -156,3 +158,28 @@ class TestConnection(TestVpcepProxy):
 class TestQuota(TestVpcepProxy):
     def test_resource_quota(self):
         self.verify_list(self.proxy.resource_quota, quota.Quota)
+
+
+class TestPublicService(TestVpcepProxy):
+    def test_public_services(self):
+        self.verify_list(
+            self.proxy.public_services, public_service.PublicService
+        )
+
+
+class TestTargetService(TestVpcepProxy):
+    def test_get_target_service(self):
+        resource_id = 'resource_id'
+        base_path_id = target_service.TargetService.base_path + \
+            '?id={}'.format(resource_id)
+
+        self._verify(
+            'otcextensions.sdk.vpcep.v1._proxy.Proxy._get',
+            self.proxy.get_target_service,
+            method_args=[resource_id],
+            expected_args=[target_service.TargetService],
+            expected_kwargs={
+                'base_path': base_path_id,
+                'requires_id': False,
+            }
+        )

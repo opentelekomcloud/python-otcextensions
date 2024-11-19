@@ -18,6 +18,7 @@ class TargetService(resource.Resource):
 
     _query_mapping = resource.QueryParameters(
         'id',
+        'name',
         name='endpoint_service_name',
     )
 
