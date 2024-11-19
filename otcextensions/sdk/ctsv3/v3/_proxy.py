@@ -75,8 +75,9 @@ class Proxy(proxy.Proxy):
         :param dict attrs: Optional query parameters to be sent to limit the
             resources being returned.
             * `tracker_name`: Tracker name
-        :returns: A generator of tracker object of
-        :class:`~otcextensions.sdk.ctsv3.v3.tracker.Tracker`
+
+        :returns: A generator of tracker object of a
+            :class:`~otcextensions.sdk.ctsv3.v3.tracker.Tracker`
         """
         return self._list(_tracker.Tracker, **attrs)
 
@@ -116,7 +117,7 @@ class Proxy(proxy.Proxy):
     def quotas(self):
         """Query quotas
 
-        :returns: A generator of quota object of
-        :class:`~otcextensions.sdk.ctsv3.v3.quota.Quota`
+        :returns: A generator of quota object of a
+            :class:`~otcextensions.sdk.ctsv3.v3.quota.Quota`
         """
         return self._list(_quota.Quota)
