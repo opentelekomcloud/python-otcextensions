@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import uuid
+import openstack
 from openstack import exceptions
 from otcextensions.tests.functional.sdk.ctsv3 import TestCtsv3
 
