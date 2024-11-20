@@ -14,6 +14,8 @@
 from otcextensions.sdk.ctsv3.v3 import _proxy
 from otcextensions.sdk.ctsv3.v3 import key_event as _key_event
 from otcextensions.sdk.ctsv3.v3 import trace as _trace
+from otcextensions.sdk.ctsv3.v3 import tracker as _tracker
+from otcextensions.sdk.ctsv3.v3 import quota as _quota
 
 from openstack.tests.unit import test_proxy_base
 
@@ -52,4 +54,36 @@ class TestTraces(TestCTSv3Proxy):
         self.verify_list(
             self.proxy.traces,
             _trace.Trace
+        )
+
+
+class TestTracker(TestCTSv3Proxy):
+    def test_tracker_list(self):
+        self.verify_list(
+            self.proxy.trackers,
+            _tracker.Tracker
+        )
+
+    def test_tracker_create(self):
+        self.verify_create(
+            self.proxy.create_tracker,
+            _tracker.Tracker
+        )
+
+    def test_tracker_update(self):
+        self._verify(
+            "openstack.proxy.Proxy._update",
+            self.proxy.update_tracker,
+            method_args=[],
+            method_kwargs={"x": 1, "y": 2, "z": 3},
+            expected_args=[_tracker.Tracker],
+            expected_kwargs={"x": 1, "y": 2, "z": 3},
+        )
+
+
+class TestQuota(TestCTSv3Proxy):
+    def test_quota_list(self):
+        self.verify_list(
+            self.proxy.quotas,
+            _quota.Quota
         )

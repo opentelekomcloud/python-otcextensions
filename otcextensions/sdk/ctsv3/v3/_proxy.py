@@ -13,10 +13,11 @@ from openstack import proxy
 
 from otcextensions.sdk.ctsv3.v3 import key_event as _key_event
 from otcextensions.sdk.ctsv3.v3 import trace as _trace
+from otcextensions.sdk.ctsv3.v3 import tracker as _tracker
+from otcextensions.sdk.ctsv3.v3 import quota as _quota
 
 
 class Proxy(proxy.Proxy):
-
     skip_discovery = True
 
     def create_key_event(self, **attrs):
@@ -32,7 +33,7 @@ class Proxy(proxy.Proxy):
     def update_key_event(self, **attrs):
         """Update an event
 
-        :param dict kwargs: Keyword arguments which will be used to overwrite a
+        :param dict attrs: Keyword arguments which will be used to overwrite a
              :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent`
         :returns: The updated key event
         :rtype: :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent`
@@ -67,3 +68,56 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.ctsv3.v3.trace.Trace`
         """
         return self._list(_trace.Trace, paginated=False, **attrs)
+
+    def trackers(self, **attrs):
+        """Query notification events
+
+        :param dict attrs: Optional query parameters to be sent to limit the
+            resources being returned.
+            * `tracker_name`: Tracker name
+
+        :returns: A generator of tracker object of a
+            :class:`~otcextensions.sdk.ctsv3.v3.tracker.Tracker`
+        """
+        return self._list(_tracker.Tracker, **attrs)
+
+    def create_tracker(self, **attrs):
+        """Create tracker
+
+        :param dict attrs: Keyword arguments which will be used to create a
+             :class:`~otcextensions.sdk.ctsv3.v3.tracker.Tracker`
+        :returns: The key event
+        :rtype: :class:`~otcextensions.sdk.ctsv3.v3.tracker.Tracker`
+         """
+        return self._create(
+            _tracker.Tracker,
+            base_path=_tracker.Tracker.base_path[:-1],
+            **attrs)
+
+    def delete_tracker(self, tracker):
+        """Delete a single tracker
+
+        :param tracker: The tracker to delete a
+            :class:`~otcextensions.sdk.ctsv3.v3.tracker.Tracker`
+        :returns: None
+         """
+        tracker.delete_tracker(self)
+
+    def update_tracker(self, **attrs):
+        """Update a single tracker
+
+        :param dict attrs: Keyword arguments which will be used to overwrite a
+            :class:`~otcextensions.sdk.ctsv3.v3.tracker.Tracker`
+        :returns: None
+        """
+        self._update(_tracker.Tracker,
+                     base_path=_tracker.Tracker.base_path[:-1],
+                     **attrs)
+
+    def quotas(self):
+        """Query quotas
+
+        :returns: A generator of quota object of a
+            :class:`~otcextensions.sdk.ctsv3.v3.quota.Quota`
+        """
+        return self._list(_quota.Quota)
