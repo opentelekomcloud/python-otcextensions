@@ -12,7 +12,6 @@
 from openstack import exceptions
 from openstack import proxy
 
-from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.vpc.v1 import bandwidth as _bandwidth
 from otcextensions.sdk.vpc.v1 import peering as _peering
 from otcextensions.sdk.vpc.v1 import route as _route
@@ -31,9 +30,6 @@ class PublicInfo:
 
 class Proxy(proxy.Proxy):
     skip_discovery = True
-
-    def _extract_name(self, url, service_type=None, project_id=None):
-        return extract_url_parts(url, project_id)
 
     # ======== Bandwidth ========
     def assign_bandwidth(self, **attrs):
