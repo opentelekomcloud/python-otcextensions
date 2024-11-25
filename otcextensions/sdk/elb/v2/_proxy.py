@@ -9,8 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from urllib import parse
-
 from openstack.load_balancer.v2 import _proxy
 
 from otcextensions.common.utils import extract_url_parts
