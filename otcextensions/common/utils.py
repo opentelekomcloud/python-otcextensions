@@ -138,8 +138,8 @@ def extract_region_from_url(url):
 
 def extract_url_parts(url: str, project_id: str) -> list:
     """
-    Extracts meaningful parts of a URL, excluding the project_id, version identifiers,
-    and empty segments.
+    Extracts meaningful parts of a URL, excluding the project_id,
+    version identifiers, and empty segments.
 
     Args:
         url (str): The URL to process.
@@ -159,10 +159,13 @@ def extract_url_parts(url: str, project_id: str) -> list:
     url_parts = [x for x in path.split('/') if x != project_id]
 
     # Exclude parts that are version identifiers
-    url_parts = list(filter(
-        lambda x: not any(c.isdigit() for c in x[1:]) and (x[0].lower() != 'v'),
-        url_parts
-    ))
+    url_parts = list(
+        filter(
+            lambda x: not any(
+                c.isdigit() for c in x[1:]) and (x[0].lower() != 'v'),
+            url_parts
+        )
+    )
 
     # Strip out empty or None segments and return
     return [part for part in url_parts if part]
