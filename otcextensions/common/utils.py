@@ -25,6 +25,7 @@ import os
 # import sys
 import re
 import threading
+from urllib import parse
 
 # import uuid
 #
@@ -133,3 +134,35 @@ def extract_region_from_url(url):
     if match:
         return match.group()
     return
+
+
+def extract_url_parts(url: str, project_id: str) -> list:
+    """
+    Extracts meaningful parts of a URL, excluding the project_id, version identifiers,
+    and empty segments.
+
+    Args:
+        url (str): The URL to process.
+        project_id (str): The project ID to exclude from the URL parts.
+
+    Returns:
+        list: A list of meaningful URL segments.
+    """
+    # Parse and strip the URL path
+    path = parse.urlparse(url).path.strip()
+
+    # Remove leading '/' to keep list indexes consistent
+    if path.startswith('/'):
+        path = path[1:]
+
+    # Split the path into parts, excluding the project_id
+    url_parts = [x for x in path.split('/') if x != project_id]
+
+    # Exclude parts that are version identifiers
+    url_parts = list(filter(
+        lambda x: not any(c.isdigit() for c in x[1:]) and (x[0].lower() != 'v'),
+        url_parts
+    ))
+
+    # Strip out empty or None segments and return
+    return [part for part in url_parts if part]

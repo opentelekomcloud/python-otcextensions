@@ -12,6 +12,8 @@
 from urllib import parse
 
 from openstack import proxy
+
+from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.anti_ddos.v1 import alert_config as _alert
 from otcextensions.sdk.anti_ddos.v1 import config as _config
 from otcextensions.sdk.anti_ddos.v1 import floating_ip as _floating_ip
@@ -23,23 +25,7 @@ class Proxy(proxy.Proxy):
     skip_discovery = True
 
     def _extract_name(self, url, service_type=None, project_id=None):
-        path = parse.urlparse(url).path.strip()
-        # Remove / from the beginning to keep the list indexes of interesting
-        # things consistent
-        if path.startswith('/'):
-            path = path[1:]
-
-        # Split url into parts and exclude potential project_id in some urls
-        url_parts = [
-            x for x in path.split('/') if x != project_id
-        ]
-        # exclude version
-        url_parts = list(filter(lambda x: not any(
-            c.isdigit() for c in x[1:]) and (
-                x[0].lower() != 'v'), url_parts))
-
-        # Strip out anything that's empty or None
-        return [part for part in url_parts if part]
+        return extract_url_parts(url, project_id)
 
     # ======== Alert Config ========
     def get_alert_config(self, **kwargs):
