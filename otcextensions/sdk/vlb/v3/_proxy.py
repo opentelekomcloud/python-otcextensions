@@ -9,10 +9,10 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
 from openstack import proxy
 from openstack import resource
 
+from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.vlb.v3 import availability_zone as _availability_zone
 from otcextensions.sdk.vlb.v3 import certificate as _certificate
 from otcextensions.sdk.vlb.v3 import flavor as _flavor
@@ -31,6 +31,9 @@ from otcextensions.sdk.vlb.v3 import quota as _quota
 
 class Proxy(proxy.Proxy):
     skip_discovery = True
+
+    def _extract_name(self, url, service_type=None, project_id=None):
+        return extract_url_parts(url, project_id)
 
     # ======== Load balancer ========
     def create_load_balancer(self, **attrs):

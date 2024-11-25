@@ -11,13 +11,16 @@
 # under the License.
 from openstack import proxy
 
+from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.waf.v1 import certificate as _cert
 from otcextensions.sdk.waf.v1 import domain as _domain
 
 
 class Proxy(proxy.Proxy):
-
     skip_discovery = True
+
+    def _extract_name(self, url, service_type=None, project_id=None):
+        return extract_url_parts(url, project_id)
 
     def __init__(self, session, *args, **kwargs):
         super(Proxy, self).__init__(session=session, *args, **kwargs)
