@@ -236,10 +236,10 @@ class TestSubnet(TestVpcProxy):
                 'base_path': subnet.vpc_subnet_base_path('vpc'),
             })
 
+
 class TestExtractName(TestVpcProxy):
 
     def test_extract_name(self):
-
         self.assertEqual(
             ['vpcs'],
             self.proxy._extract_name('/v1/123/vpcs', project_id='123')
