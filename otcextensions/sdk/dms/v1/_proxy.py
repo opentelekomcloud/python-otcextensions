@@ -21,6 +21,7 @@ from otcextensions.sdk.dms.v1 import message as _message
 from otcextensions.sdk.dms.v1 import product as _product
 from otcextensions.sdk.dms.v1 import queue as _queue
 from otcextensions.sdk.dms.v1 import topic as _topic
+from openstack import resource
 
 
 class Proxy(proxy.Proxy):
@@ -410,3 +411,68 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.dms.v1.maintenance_window.MaintenanceWindow`
         """
         return self._list(_mw.MaintenanceWindow, **kwargs)
+
+    def wait_for_delete(self, res, interval=2, wait=120, callback=None):
+        """Wait for a resource to be deleted.
+
+        :param res: The resource to wait on to be deleted.
+        :type resource: A :class:`~openstack.resource.Resource` object.
+        :param interval: Number of seconds to wait before to consecutive
+            checks. Default to 2.
+        :param wait: Maximum number of seconds to wait before the change.
+            Default to 120.
+        :param callback: A callback function. This will be called with a single
+            value, progress, which is a percentage value from 0-100.
+
+        :returns: The resource is returned on success.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` if transition
+            to delete failed to occur in the specified seconds.
+        """
+        return resource.wait_for_delete(self, res, interval, wait, callback)
+
+    def _get_cleanup_dependencies(self):
+        return {
+            'rds': {
+                'before': ['network']
+            }
+        }
+
+    def _service_cleanup(
+            self,
+            dry_run=True,
+            client_status_queue=None,
+            identified_resources=None,
+            filters=None,
+            resource_evaluation_fn=None,
+            skip_resources=None,
+    ):
+        if self.should_skip_resource_cleanup("instance", skip_resources):
+            return
+
+        instances = []
+
+        for instance in self.instances():
+            for topic in self.topics(instance):
+                self._service_cleanup_del_res(
+                    self.delete_topic,
+                    topic,
+                    dry_run=dry_run,
+                    client_status_queue=client_status_queue,
+                    identified_resources=identified_resources,
+                    filters=filters,
+                    resource_evaluation_fn=resource_evaluation_fn,
+                )
+            need_delete = self._service_cleanup_del_res(
+                self.delete_instance,
+                instance,
+                dry_run=dry_run,
+                client_status_queue=client_status_queue,
+                identified_resources=identified_resources,
+                filters=filters,
+                resource_evaluation_fn=resource_evaluation_fn,
+            )
+            if not dry_run and need_delete:
+                instances.append(instance)
+
+        for instance in instances:
+            self.wait_for_delete(instance)
