@@ -58,7 +58,18 @@ class StatsdFixture(fixtures.Fixture):
                     data = self.sock.recvfrom(1024)
                     if not data:
                         return
-                    self.stats.append(data[0])
+                    stat_key = data[0].decode('utf-8')
+                    # Check if the stat_key looks like a tuple, e.g. ('key',):value|type
+                    if stat_key.startswith("("):
+                        # Split by ':' to separate the key from the value and type
+                        key_value_pair = stat_key.split(":", 1)
+
+                        # Remove the parentheses from the key part (i.e. ('key',) -> 'key')
+                        key = key_value_pair[0].strip("()").strip("','")
+
+                        # Rebuild the string with the clean key
+                        stat_key = f"{key}:{key_value_pair[1]}"
+                    self.stats.append(stat_key)
                 if fd == self.wake_read:
                     return
 
@@ -133,7 +144,7 @@ class TestStats(base.TestCase):
             # newlines; thus we first flatten the stats out into
             # single entries.
             stats = itertools.chain.from_iterable(
-                [s.decode('utf-8').split('\n') for s in self.statsd.stats]
+                [s.split('\n') for s in self.statsd.stats]
             )
             for stat in stats:
                 k, v = stat.split(':')
@@ -287,12 +298,12 @@ class TestStats(base.TestCase):
             self.assert_calls()
 
             self.assert_reported_stat(
-                "('openstack.api.sfsturbo.GET.sfs-turbo_shares_detail.200',)",
+                'openstack.api.sfsturbo.GET.sfs-turbo_shares_detail.200',
                 value='0.000000',
                 kind='ms',
             )
             self.assert_reported_stat(
-                "('openstack.api.sfsturbo.GET.sfs-turbo_shares_detail.200',)",
+                'openstack.api.sfsturbo.GET.sfs-turbo_shares_detail.200',
                 value='1',
                 kind='c'
             )
