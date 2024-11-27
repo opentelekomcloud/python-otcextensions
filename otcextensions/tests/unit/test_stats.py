@@ -59,15 +59,9 @@ class StatsdFixture(fixtures.Fixture):
                     if not data:
                         return
                     stat_key = data[0].decode('utf-8')
-                    # Check if the stat_key looks like a tuple, e.g. ('key',):value|type
                     if stat_key.startswith("("):
-                        # Split by ':' to separate the key from the value and type
                         key_value_pair = stat_key.split(":", 1)
-
-                        # Remove the parentheses from the key part (i.e. ('key',) -> 'key')
                         key = key_value_pair[0].strip("()").strip("','")
-
-                        # Rebuild the string with the clean key
                         stat_key = f"{key}:{key_value_pair[1]}"
                     self.stats.append(stat_key)
                 if fd == self.wake_read:
@@ -258,7 +252,7 @@ class TestStats(base.TestCase):
                         {
                             "region": "RegionOne",
                             "interface": "public",
-                            "url": "https://shared-file-system.example.com/v1",
+                            "url": "https://sfs.example.com/v1",
                         }
                     ],
                 },
@@ -277,9 +271,13 @@ class TestStats(base.TestCase):
         )
         sdk.register_otc_extensions(self.cloud)
         # Mock the get_access method to return the mock AccessInfoV3 object
-        with mock.patch.object(self.cloud.session.auth, 'get_access', return_value=mock_access_info):
+        with mock.patch.object(
+                self.cloud.session.auth,
+                'get_access',
+                return_value=mock_access_info
+        ):
             # Mock the URI registration for the requests
-            mock_uri = 'https://shared-file-system.example.com/v1/sfs-turbo/shares/detail'
+            mock_uri = 'https://sfs.example.com/v1/sfs-turbo/shares/detail'
             self.register_uris(
                 [
                     dict(
