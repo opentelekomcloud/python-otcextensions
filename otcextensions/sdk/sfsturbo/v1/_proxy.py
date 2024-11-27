@@ -12,6 +12,7 @@
 from openstack import proxy
 from openstack import resource
 
+from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.sfsturbo.v1 import share as _sfs
 from otcextensions.common.exc import HTTPMethodNotAllowed
 
