@@ -40,7 +40,7 @@ class StatsdFixture(fixtures.Fixture):
         self.thread = threading.Thread(target=self.run)
         self.thread.daemon = True
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.sock.bind(('', 0))
+        self.sock.bind(('127.0.0.1', 0))
         self.port = self.sock.getsockname()[1]
         self.wake_read, self.wake_write = os.pipe()
         self.stats = []
