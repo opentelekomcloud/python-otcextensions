@@ -20,6 +20,9 @@ class Proxy(proxy.Proxy):
 
     skip_discovery = True
 
+    def _extract_name(self, url, service_type=None, project_id=None):
+        return extract_url_parts(url, project_id)
+
     # ========== Sfs Turbo ==========
     def shares(self, **query):
         """Return a generator of sfs turbo file systems
