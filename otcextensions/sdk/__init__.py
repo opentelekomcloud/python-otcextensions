@@ -207,6 +207,9 @@ OTC_SERVICES = {
         'endpoint_service_type': 'object',
         'set_endpoint_override': True
     },
+    'ocr': {
+        'service_type': 'ocr',
+    },
     'plas': {
         'service_type': 'plas'
     },
