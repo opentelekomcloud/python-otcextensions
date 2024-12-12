@@ -9,10 +9,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
 from openstack import proxy
+
+from otcextensions.common.utils import extract_url_parts
 
 
 class Proxy(proxy.Proxy):
 
     skip_discovery = True
+
+    def _extract_name(self, url, service_type=None, project_id=None):
+        return extract_url_parts(url, project_id)
