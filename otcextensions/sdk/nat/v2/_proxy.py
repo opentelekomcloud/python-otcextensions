@@ -356,18 +356,61 @@ class Proxy(proxy.Proxy):
             }
         }
 
-    def _service_cleanup(self, dry_run=True, client_status_queue=None,
+    def _service_cleanup(self,
+                         dry_run=True,
+                         client_status_queue=None,
                          identified_resources=None,
-                         filters=None, resource_evaluation_fn=None):
-        for obj in self.gateways():
+                         filters=None,
+                         resource_evaluation_fn=None,
+                         skip_resources=None):
+        if self.should_skip_resource_cleanup("gateway",
+                                             skip_resources):
+            return
+
+        gateways = []
+        for gateway in self.gateways():
+            snat_rules = []
+            for snat in self.snat_rules():
+                need_delete = self._service_cleanup_del_res(
+                    self.delete_snat_rule,
+                    snat,
+                    dry_run=dry_run,
+                    client_status_queue=client_status_queue,
+                    identified_resources=identified_resources,
+                    filters=filters,
+                    resource_evaluation_fn=resource_evaluation_fn)
+                if not dry_run and need_delete:
+                    snat_rules.append(snat)
+            dnat_rules = []
+            for dnat in self.dnat_rules():
+                need_delete = self._service_cleanup_del_res(
+                    self.delete_dnat_rule,
+                    dnat,
+                    dry_run=dry_run,
+                    client_status_queue=client_status_queue,
+                    identified_resources=identified_resources,
+                    filters=filters,
+                    resource_evaluation_fn=resource_evaluation_fn)
+                if not dry_run and need_delete:
+                    dnat_rules.append(dnat)
+            for snat in snat_rules:
+                self.wait_for_delete_snat(snat)
+            for dnat in dnat_rules:
+                self.wait_for_delete_dnat(dnat)
             need_delete = self._service_cleanup_del_res(
                 self.delete_gateway,
-                obj,
+                gateway,
                 dry_run=dry_run,
                 client_status_queue=client_status_queue,
                 identified_resources=identified_resources,
                 filters=filters,
                 resource_evaluation_fn=resource_evaluation_fn)
             if dry_run and need_delete:
-                for port in self._connection.network.ports(device_id=obj.id):
+                for port in self._connection.network.ports(
+                        device_id=gateway.id):
                     identified_resources[port.id] = port
+            if not dry_run and need_delete:
+                gateways.append(gateway)
+
+        for gateway in gateways:
+            self.wait_for_delete_gateway(gateway)
