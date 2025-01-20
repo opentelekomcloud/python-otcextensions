@@ -363,7 +363,8 @@ class Proxy(proxy.Proxy):
                          filters=None,
                          resource_evaluation_fn=None,
                          skip_resources=None):
-        if self.should_skip_resource_cleanup("gateway", skip_resources):
+        if self.should_skip_resource_cleanup("gateway",
+                                             skip_resources):
             return
 
         gateways = []
@@ -405,7 +406,8 @@ class Proxy(proxy.Proxy):
                 filters=filters,
                 resource_evaluation_fn=resource_evaluation_fn)
             if dry_run and need_delete:
-                for port in self._connection.network.ports(device_id=gateway.id):
+                for port in self._connection.network.ports(
+                        device_id=gateway.id):
                     identified_resources[port.id] = port
             if not dry_run and need_delete:
                 gateways.append(gateway)
