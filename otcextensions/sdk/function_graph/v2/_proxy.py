@@ -121,13 +121,18 @@ class Proxy(proxy.Proxy):
                  * `zip`: ZIP file.
                  * `obs`: Function code stored in an OBS bucket.
                  * `jar`: JAR file (mainly for Java functions).
+
                - code_url: If `code_type` is set to `obs`, enter the OBS URL
                of the function code package. Leave this parameter blank if
                `code_type` is not `obs`.
+
                - code_filename: Name of the function file. This parameter
                is mandatory only when `code_type` is set to `jar` or `zip`.
+
                - func_code: Response body of the `FuncCode` struct.
+
                - depend_version_list: Dependency version IDs.
+
         :rtype: :class:`~otcextensions.sdk.function_graph.v2.function.Function`
         """
         function = self._get_resource(_function.Function, function)

@@ -180,7 +180,8 @@ class Function(resource.Resource):
     def _update_function_metadata(self, session, function, **attrs):
         """Update Function Metadata
         """
-        url = self.base_path + f'/{function.func_urn.rpartition(":")[0]}/config'
+        urn = function.func_urn.rpartition(":")[0]
+        url = self.base_path + f'/{urn}/config'
         response = session.put(url, json=attrs)
         exceptions.raise_from_response(response)
         self._translate_response(response)
