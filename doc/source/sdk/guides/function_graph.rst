@@ -4,15 +4,18 @@ FunctionGraph Service (FGS)
 .. contents:: Table of Contents
    :local:
 
-FunctionGraph hosts and computes event-driven functions in a serverless context while ensuring high availability,
-high scalability, and zero maintenance. All you need to do is write your code and set conditions.
+FunctionGraph hosts and computes event-driven functions in a serverless
+context while ensuring high availability, high scalability,
+and zero maintenance. All you need to do is write your code and set conditions.
 
 Function
 --------
 
-Function is a combination of code, runtime, resources, and settings required to achieve a specific purpose.
+Function is a combination of code, runtime, resources,
+and settings required to achieve a specific purpose.
 It is the minimum unit that can run independently.
-A function can be triggered by triggers and automatically schedule required resources and environments to achieve expected results.
+A function can be triggered by triggers and automatically schedule
+required resources and environments to achieve expected results.
 
 
 Create Function
