@@ -117,10 +117,10 @@ class Proxy(proxy.Proxy):
         :param function: The URN or instance of the Function to update.
         :param attrs: Attributes for updating the function code. These include:
                code_type: Function code type. Options:
-                 * `inline`: Inline code.
-                 * `zip`: ZIP file.
-                 * `obs`: Function code stored in an OBS bucket.
-                 * `jar`: JAR file (mainly for Java functions).
+               * `inline`: Inline code.
+               * `zip`: ZIP file.
+               * `obs`: Function code stored in an OBS bucket.
+               * `jar`: JAR file (mainly for Java functions).
 
                code_url: If `code_type` is set to `obs`, enter the OBS URL
                of the function code package. Leave this parameter blank if
