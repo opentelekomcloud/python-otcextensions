@@ -16,7 +16,6 @@ from otcextensions.sdk.function_graph.v2 import function as _function
 
 
 class Proxy(proxy.Proxy):
-
     skip_discovery = True
 
     def _extract_name(self, url, service_type=None, project_id=None):
@@ -38,7 +37,7 @@ class Proxy(proxy.Proxy):
 
         :param function: The instance of the Function to delete.
         :param bool ignore_missing: Whether to ignore if the function is missing.
-        :returns: None
+        :returns: ``None``
         """
         function = self._get_resource(_function.Function, function)
         return function._delete_function(self, function)
@@ -51,32 +50,106 @@ class Proxy(proxy.Proxy):
         """
         return self._list(_function.Function, **query)
 
-    def get_function(self, function):
-        """Get details of a single function.
+    def get_function_code(self, function):
+        """Get details of a function code.
 
-        :param function: The ID or instance of the Function to retrieve.
+        :param function: The URN or instance of the Function to retrieve.
         :returns: The Function instance.
         :rtype: :class:`~otcextensions.sdk.function_graph.v2.function.Function`
         """
-        return self._get(_function.Function, function)
+        function = self._get_resource(_function.Function, function)
+        return function._get_function_code(self, function)
 
-    def update_function(self, function, **attrs):
-        """Update a function's attributes.
+    def get_function_metadata(self, function):
+        """Get details of a function metadata.
 
-        :param function: The ID or instance of the Function to update.
-        :param dict attrs: Attributes to update on the function.
-        :returns: The updated Function instance.
+        :param function: The URN or instance of the Function to retrieve.
+        :returns: The Function instance.
         :rtype: :class:`~otcextensions.sdk.function_graph.v2.function.Function`
         """
-        return self._update(_function.Function, function, **attrs)
+        function = self._get_resource(_function.Function, function)
+        return function._get_function_metadata(self, function)
 
-    def find_function(self, name_or_id, ignore_missing=False):
-        """Find a function by name or ID.
+    def get_resource_tags(self, function):
+        """Get a function resource tags.
 
-        :param name_or_id: The name or ID of the Function.
-        :param bool ignore_missing: Whether to ignore if the function is missing.
-        :returns: The Function instance or None.
+        :param function: The URN or instance of the Function to retrieve.
+        :returns: The Function instance.
         :rtype: :class:`~otcextensions.sdk.function_graph.v2.function.Function`
         """
-        return self._find(_function.Function, name_or_id,
-                          ignore_missing=ignore_missing)
+        function = self._get_resource(_function.Function, function)
+        return function._get_resource_tags(self, function)
+
+    def create_resource_tags(self, function, tags):
+        """Create function resource tags.
+
+        :param tags: list of tags
+        :param function: The URN or instance of the Function to create tags.
+        :returns: ``None``
+        """
+        function = self._get_resource(_function.Function, function)
+        return function._create_resource_tags(self, function, tags)
+
+    def delete_resource_tags(self, function, tags):
+        """Delete function resource tags.
+
+        :param tags: list of tags
+        :param function: The URN or instance of the Function
+               from which need to delete tags.
+        :returns: ``None``
+        """
+        function = self._get_resource(_function.Function, function)
+        return function._delete_resource_tags(self, function, tags)
+
+    def update_pin_status(self, function):
+        """Update a function's pin status.
+
+        :param function: The URN or instance of the Function to update.
+        :returns: The updated Function pin status.
+        :returns: ``None``
+        """
+        function = self._get_resource(_function.Function, function)
+        return function._update_pin_status(self, function)
+
+    def update_function_code(self, function, **attrs):
+        """Update a function code.
+
+        :param function: The URN or instance of the Function to update.
+        :param attrs: Attributes for updating the function code. These include:
+            - code_type: Function code type. Options:
+                * `inline`: Inline code.
+                * `zip`: ZIP file.
+                * `obs`: Function code stored in an OBS bucket.
+                * `jar`: JAR file (mainly for Java functions).
+            - code_url: If `code_type` is set to `obs`, enter the OBS URL
+              of the function code package. Leave this parameter blank if
+              `code_type` is not `obs`.
+            - code_filename: Name of the function file. This parameter
+              is mandatory only when `code_type` is set to `jar` or `zip`.
+            - func_code: Response body of the `FuncCode` struct.
+            - depend_version_list: Dependency version IDs.
+        :rtype: :class:`~otcextensions.sdk.function_graph.v2.function.Function`
+        """
+        function = self._get_resource(_function.Function, function)
+        return function._update_function_code(self, function, **attrs)
+
+    def update_function_metadata(self, function, **attrs):
+        """Update a function metadata.
+
+        :param function: The URN or instance of the Function to update.
+        :returns: The updated Function pin status.
+        :rtype: :class:`~otcextensions.sdk.function_graph.v2.function.Function`
+        """
+        function = self._get_resource(_function.Function, function)
+        return function._update_function_metadata(self, function, **attrs)
+
+    def update_max_instances(self, function, instances):
+        """Update a function max instances number.
+
+        :param instances: Maximum number of instances.
+        :param function: The URN or instance of the Function to update.
+        :returns: The updated Function pin status.
+        :rtype: :class:`~otcextensions.sdk.function_graph.v2.function.Function`
+        """
+        function = self._get_resource(_function.Function, function)
+        return function._update_max_instances(self, function, instances)

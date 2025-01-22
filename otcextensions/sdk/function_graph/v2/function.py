@@ -12,6 +12,13 @@
 from openstack import resource, exceptions
 
 
+class TagSpec(resource.Resource):
+    #: Key
+    key = resource.Body('key')
+    #: Value.
+    values = resource.Body('values', type=list)
+
+
 class Function(resource.Resource):
     resources_key = 'functions'
     base_path = '/fgs/functions'
@@ -22,6 +29,8 @@ class Function(resource.Resource):
     allow_commit = True
     allow_delete = True
     allow_list = True
+
+    _query_mapping = resource.QueryParameters('package_name', 'maxitems', 'marker')
 
     # Properties
     func_name = resource.Body('func_name', type=str)
@@ -84,9 +93,12 @@ class Function(resource.Resource):
     resource_id = resource.Body('resource_id', type=str)
     is_return_stream = resource.Body('is_return_stream', type=bool)
     enable_auth_in_header = resource.Body('enable_auth_in_header', type=bool)
-    gpu_memory = resource.Body('enable_auth_in_header', type=int)
+    gpu_memory = resource.Body('gpu_memory', type=int)
     func_vpc_id = resource.Body('func_vpc_id', type=str)
-    bind_bridge_funcUrns = resource.Body('bind_bridge_funcUrns', type=list)
+    bind_bridge_func_urns = resource.Body('bind_bridge_funcUrns', type=list)
+    reserved_instance_idle_mode = resource.Body('reserved_instance_idle_mode', type=bool)
+    gpu_type = resource.Body('gpu_type', type=str)
+    tags = resource.Body('tags', type=list, list_type=TagSpec)
 
     def _delete_function(self, session, function):
         """Delete Function
@@ -95,3 +107,82 @@ class Function(resource.Resource):
         response = session.delete(url)
         exceptions.raise_from_response(response)
         return None
+
+    def _get_function_code(self, session, function):
+        """Get Function Code
+        """
+        url = self.base_path + f'/{function.func_urn.rpartition(":")[0]}/code'
+        response = session.get(url)
+        exceptions.raise_from_response(response)
+        return self
+
+    def _get_function_metadata(self, session, function):
+        """Get Function Metadata
+        """
+        url = self.base_path + f'/{function.func_urn.rpartition(":")[0]}/config'
+        response = session.get(url)
+        exceptions.raise_from_response(response)
+        return self
+
+    def _get_resource_tags(self, session, function):
+        """Get Resource Tags
+        """
+        url = f'/functions/tags'
+        response = session.get(url)
+        exceptions.raise_from_response(response)
+        self.tags = response.json()["tags"]
+        return self
+
+    def _create_resource_tags(self, session, function, tags):
+        """Create Resource Tags
+        """
+        data = {"tags": tags}
+        url = f'/functions/{function.func_urn.rpartition(":")[0]}/tags/create'
+        response = session.post(url, json=data)
+        exceptions.raise_from_response(response)
+        return None
+
+    def _delete_resource_tags(self, session, function, tags):
+        """Delete Resource Tags
+        """
+        data = {"tags": tags}
+        url = f'/functions/{function.func_urn.rpartition(":")[0]}/tags/delete'
+        response = session.delete(url, json=data)
+        exceptions.raise_from_response(response)
+        return None
+
+    def _update_pin_status(self, session, function):
+        """Update Pin Status
+        """
+        url = self.base_path + f'/{function.func_urn.rpartition(":")[0]}/collect/true'
+        response = session.put(url)
+        exceptions.raise_from_response(response)
+        self._translate_response(response)
+        return self
+
+    def _update_function_code(self, session, function, **attrs):
+        """Update Function Code
+        """
+        url = self.base_path + f'/{function.func_urn.rpartition(":")[0]}/code'
+        response = session.put(url, json=attrs)
+        exceptions.raise_from_response(response)
+        self._translate_response(response)
+        return self
+
+    def _update_function_metadata(self, session, function, **attrs):
+        """Update Function Metadata
+        """
+        url = self.base_path + f'/{function.func_urn.rpartition(":")[0]}/config'
+        response = session.put(url, json=attrs)
+        exceptions.raise_from_response(response)
+        self._translate_response(response)
+        return self
+
+    def _update_max_instances(self, session, function, number):
+        """Update Function Instances Number
+        """
+        url = self.base_path + f'/{function.func_urn.rpartition(":")[0]}/config-max-instance'
+        response = session.put(url, json={'max_instance_num': number})
+        exceptions.raise_from_response(response)
+        self._translate_response(response)
+        return self
