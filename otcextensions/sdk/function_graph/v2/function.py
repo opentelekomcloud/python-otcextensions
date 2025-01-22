@@ -9,7 +9,8 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import resource, exceptions
+from openstack import resource
+from openstack import exceptions
 
 
 class TagSpec(resource.Resource):
@@ -124,7 +125,8 @@ class Function(resource.Resource):
     def _get_function_metadata(self, session, function):
         """Get Function Metadata
         """
-        url = self.base_path + f'/{function.func_urn.rpartition(":")[0]}/config'
+        urn = function.func_urn.rpartition(":")[0]
+        url = self.base_path + f'/{urn}/config'
         response = session.get(url)
         exceptions.raise_from_response(response)
         return self
@@ -159,7 +161,8 @@ class Function(resource.Resource):
     def _update_pin_status(self, session, function):
         """Update Pin Status
         """
-        url = self.base_path + f'/{function.func_urn.rpartition(":")[0]}/collect/true'
+        urn = function.func_urn.rpartition(":")[0]
+        url = self.base_path + f'/{urn}/collect/true'
         response = session.put(url)
         exceptions.raise_from_response(response)
         self._translate_response(response)
@@ -186,7 +189,8 @@ class Function(resource.Resource):
     def _update_max_instances(self, session, function, number):
         """Update Function Instances Number
         """
-        url = self.base_path + f'/{function.func_urn.rpartition(":")[0]}/config-max-instance'
+        urn = function.func_urn.rpartition(":")[0]
+        url = self.base_path + f'/{urn}/config-max-instance'
         response = session.put(url, json={'max_instance_num': number})
         exceptions.raise_from_response(response)
         self._translate_response(response)

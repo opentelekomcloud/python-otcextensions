@@ -32,4 +32,6 @@ metadata_attrs = {
     },
     'timeout': 40
 }
-metadata = conn.functiongraph.update_function_metadata("func_urn", **metadata_attrs)
+metadata = conn.functiongraph.update_function_metadata(
+    "func_urn", **metadata_attrs
+)
