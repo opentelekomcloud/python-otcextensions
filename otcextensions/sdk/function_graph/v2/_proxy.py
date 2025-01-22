@@ -35,8 +35,8 @@ class Proxy(proxy.Proxy):
     def delete_function(self, function, ignore_missing=True):
         """Delete a function.
 
+        :param ignore_missing:
         :param function: The instance of the Function to delete.
-        :param bool ignore_missing: Whether to ignore if the function is missing.
         :returns: ``None``
         """
         function = self._get_resource(_function.Function, function)

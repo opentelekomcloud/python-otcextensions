@@ -30,7 +30,9 @@ class Function(resource.Resource):
     allow_delete = True
     allow_list = True
 
-    _query_mapping = resource.QueryParameters('package_name', 'maxitems', 'marker')
+    _query_mapping = resource.QueryParameters(
+        'package_name', 'maxitems', 'marker'
+    )
 
     # Properties
     func_name = resource.Body('func_name', type=str)
@@ -76,7 +78,8 @@ class Function(resource.Resource):
     version = resource.Body('version', type=str)
     image_name = resource.Body('image_name', type=str)
     last_modified = resource.Body('last_modified', type=str)
-    reserved_instance_count = resource.Body('reserved_instance_count', type=int)
+    reserved_instance_count = resource.Body(
+        'reserved_instance_count', type=int)
     strategy_config = resource.Body('strategy_config', type=dict)
     extend_config = resource.Body('extend_config', type=str)
     dependencies = resource.Body('dependencies', type=list)
@@ -88,7 +91,8 @@ class Function(resource.Resource):
     apig_route_enable = resource.Body('apig_route_enable', type=bool)
     heartbeat_handler = resource.Body('heartbeat_handler', type=str)
     enable_class_isolation = resource.Body('enable_class_isolation', type=bool)
-    allow_ephemeral_storage = resource.Body('allow_ephemeral_storage', type=bool)
+    allow_ephemeral_storage = resource.Body(
+        'allow_ephemeral_storage', type=bool)
     ephemeral_storage = resource.Body('ephemeral_storage', type=int)
     resource_id = resource.Body('resource_id', type=str)
     is_return_stream = resource.Body('is_return_stream', type=bool)
@@ -96,7 +100,8 @@ class Function(resource.Resource):
     gpu_memory = resource.Body('gpu_memory', type=int)
     func_vpc_id = resource.Body('func_vpc_id', type=str)
     bind_bridge_func_urns = resource.Body('bind_bridge_funcUrns', type=list)
-    reserved_instance_idle_mode = resource.Body('reserved_instance_idle_mode', type=bool)
+    reserved_instance_idle_mode = resource.Body(
+        'reserved_instance_idle_mode', type=bool)
     gpu_type = resource.Body('gpu_type', type=str)
     tags = resource.Body('tags', type=list, list_type=TagSpec)
 

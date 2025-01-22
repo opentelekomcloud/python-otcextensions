@@ -102,7 +102,8 @@ class TestFunction(base.BaseFunctionalTest):
                         'AAEANgAAANIAAAAAAA=='
             }
         }
-        code = self.conn.functiongraph.update_function_code(self.function, **code_attrs)
+        code = self.conn.functiongraph.update_function_code(
+            self.function, **code_attrs)
         self.assertIsNotNone(code)
         self.assertEqual(code.code_type, code_attrs['code_type'])
 
@@ -118,13 +119,15 @@ class TestFunction(base.BaseFunctionalTest):
             },
             'timeout': 40
         }
-        metadata = self.conn.functiongraph.update_function_metadata(self.function, **metadata_attrs)
+        metadata = self.conn.functiongraph.update_function_metadata(
+            self.function, **metadata_attrs)
         self.assertIsNotNone(metadata)
         self.assertEqual(metadata.handler, metadata_attrs['handler'])
         self.assertEqual(metadata.memory_size, metadata_attrs['memory_size'])
         self.assertEqual(metadata.runtime, metadata_attrs['runtime'])
         self.assertEqual(metadata.timeout, metadata_attrs['timeout'])
 
-        instances = self.conn.functiongraph.update_max_instances(self.function, 300)
+        instances = self.conn.functiongraph.update_max_instances(
+            self.function, 300)
         self.assertIsNotNone(instances)
         self.assertEqual(metadata.strategy_config['concurrency'], 300)

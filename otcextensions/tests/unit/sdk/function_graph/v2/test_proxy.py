@@ -40,7 +40,8 @@ class TestFgFunctions(TestFgProxy):
                      ':access-mysql-js-1213-1737554083545:latest')
         self.proxy._get_resource = mock.Mock(return_value=function)
         self._verify(
-            'otcextensions.sdk.function_graph.v2.function.Function._delete_function',
+            'otcextensions.sdk.function_graph.v2.function.'
+            'Function._delete_function',
             self.proxy.delete_function,
             method_args=[function],
             expected_args=[self.proxy, function],
@@ -53,7 +54,8 @@ class TestFgFunctions(TestFgProxy):
                      ':access-mysql-js-1213-1737554083545:latest')
         self.proxy._get_resource = mock.Mock(return_value=function)
         self._verify(
-            'otcextensions.sdk.function_graph.v2.function.Function._get_function_code',
+            'otcextensions.sdk.function_graph.v2.function.'
+            'Function._get_function_code',
             self.proxy.get_function_code,
             method_args=[function],
             expected_args=[self.proxy, function],
@@ -66,7 +68,8 @@ class TestFgFunctions(TestFgProxy):
                      ':access-mysql-js-1213-1737554083545:latest')
         self.proxy._get_resource = mock.Mock(return_value=function)
         self._verify(
-            'otcextensions.sdk.function_graph.v2.function.Function._get_function_metadata',
+            'otcextensions.sdk.function_graph.v2.function.'
+            'Function._get_function_metadata',
             self.proxy.get_function_metadata,
             method_args=[function],
             expected_args=[self.proxy, function]
@@ -75,7 +78,8 @@ class TestFgFunctions(TestFgProxy):
     def test_get_resource_tags(self):
         function = _function.Function(id='test_function')
         self._verify(
-            'otcextensions.sdk.function_graph.v2.function.Function._get_resource_tags',
+            'otcextensions.sdk.function_graph.v2.function.'
+            'Function._get_resource_tags',
             self.proxy.get_resource_tags,
             method_args=[function],
             expected_args=[self.proxy, function]
@@ -85,7 +89,8 @@ class TestFgFunctions(TestFgProxy):
         function = _function.Function(id='test_function')
         tags = [{'key': 'tag1', 'value': 'value1'}]
         self._verify(
-            'otcextensions.sdk.function_graph.v2.function.Function._create_resource_tags',
+            'otcextensions.sdk.function_graph.v2.function.'
+            'Function._create_resource_tags',
             self.proxy.create_resource_tags,
             method_args=[function, tags],
             expected_args=[self.proxy, function, tags]
@@ -95,7 +100,8 @@ class TestFgFunctions(TestFgProxy):
         function = _function.Function(id='test_function')
         tags = [{'key': 'tag1'}]
         self._verify(
-            'otcextensions.sdk.function_graph.v2.function.Function._delete_resource_tags',
+            'otcextensions.sdk.function_graph.v2.function.'
+            'Function._delete_resource_tags',
             self.proxy.delete_resource_tags,
             method_args=[function, tags],
             expected_args=[self.proxy, function, tags]
@@ -104,7 +110,8 @@ class TestFgFunctions(TestFgProxy):
     def test_update_pin_status(self):
         function = _function.Function(id='test_function')
         self._verify(
-            'otcextensions.sdk.function_graph.v2.function.Function._update_pin_status',
+            'otcextensions.sdk.function_graph.v2.function.'
+            'Function._update_pin_status',
             self.proxy.update_pin_status,
             method_args=[function],
             expected_args=[self.proxy, function]
@@ -119,7 +126,8 @@ class TestFgFunctions(TestFgProxy):
             'func_code': {'file': 'content'}
         }
         self._verify(
-            'otcextensions.sdk.function_graph.v2.function.Function._update_function_code',
+            'otcextensions.sdk.function_graph.v2.function.'
+            'Function._update_function_code',
             self.proxy.update_function_code,
             method_args=[function],
             method_kwargs=attrs,
@@ -131,7 +139,8 @@ class TestFgFunctions(TestFgProxy):
         function = _function.Function(id='test_function')
         attrs = {'description': 'Updated metadata'}
         self._verify(
-            'otcextensions.sdk.function_graph.v2.function.Function._update_function_metadata',
+            'otcextensions.sdk.function_graph.v2.function.'
+            'Function._update_function_metadata',
             self.proxy.update_function_metadata,
             method_args=[function],
             method_kwargs=attrs,
@@ -143,7 +152,8 @@ class TestFgFunctions(TestFgProxy):
         function = _function.Function(id='test_function')
         instances = 10
         self._verify(
-            'otcextensions.sdk.function_graph.v2.function.Function._update_max_instances',
+            'otcextensions.sdk.function_graph.v2.function.'
+            'Function._update_max_instances',
             self.proxy.update_max_instances,
             method_args=[function, instances],
             expected_args=[self.proxy, function, 10],
