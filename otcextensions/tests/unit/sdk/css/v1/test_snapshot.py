@@ -53,6 +53,7 @@ EXAMPLE_POLICY = {
     'enable': 'true',
     'indeices': '*',
     'snapshotCmkId': uuid.uuid4().hex,
+    'frequency': 'DAY',
 }
 
 
@@ -156,6 +157,7 @@ class TestSnapshotPolicy(base.TestCase):
         sot = snapshot.SnapshotPolicy(**EXAMPLE_POLICY)
         self.assertEqual(EXAMPLE_POLICY['agency'], sot.agency)
         self.assertEqual(EXAMPLE_POLICY['basePath'], sot.backup_path)
+        self.assertEqual(EXAMPLE_POLICY['frequency'], sot.frequency)
         self.assertEqual(EXAMPLE_POLICY['period'], sot.backup_period)
         self.assertEqual(EXAMPLE_POLICY['keepday'], sot.backup_keep_days)
         self.assertEqual(EXAMPLE_POLICY['bucket'], sot.bucket_name)

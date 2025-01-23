@@ -14,7 +14,6 @@ import mock
 
 from openstack.tests.unit import test_proxy_base
 from otcextensions.sdk.css.v1 import _proxy
-from otcextensions.sdk.css.v1 import cert as _cert
 from otcextensions.sdk.css.v1 import cluster as _cluster
 from otcextensions.sdk.css.v1 import cluster_image as _cluster_image
 from otcextensions.sdk.css.v1 import (
@@ -372,10 +371,24 @@ class TestCssProxy(test_proxy_base.TestProxyBase):
             },
         )
 
-    def test_get_certificate(self):
-        self._verify(
-            'openstack.proxy.Proxy._get',
-            self.proxy.get_certificate,
-            expected_args=[_cert.Cert],
-            expected_kwargs={'requires_id': False},
+    @mock.patch('builtins.open', new_callable=mock.mock_open)
+    @mock.patch('otcextensions.sdk.css.v1._proxy.Proxy.get')
+    def test_download_certificate(self, mock_get, mock_open):
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.headers = {
+            'Content-Disposition': 'attachment; filename="custom_cert.cer"'
+        }
+        mock_response.iter_content = mock.Mock(return_value=[b'cert content'])
+        mock_get.return_value = mock_response
+
+        filename = 'custom_cert.cer'
+        self.proxy.download_certificate(filename)
+
+        mock_get.assert_called_once_with(
+            '/cer/download',
+            headers={'Accept': '*/*'},
+            stream=True
         )
+        mock_open.assert_called_once_with(filename, 'wb')
+        mock_open().write.assert_called_once_with(b'cert content')

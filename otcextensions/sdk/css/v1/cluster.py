@@ -338,10 +338,11 @@ class Cluster(resource.Resource):
                     'reducedNodeNum': reduced_node_num,
                 }
             )
+        endpoint = session.get_endpoint().replace("v1.0", "v1.0/extend")
 
-        body = {'shrink': data}
-
-        self._action(session, 'role/shrink', body)
+        url = utils.urljoin(endpoint, 'clusters', self.id, 'role/shrink')
+        response = session.post(url, json={'shrink': data})
+        exceptions.raise_from_response(response)
 
     def replace_node(self, session, node_id):
         """Replacing cluster node."""
