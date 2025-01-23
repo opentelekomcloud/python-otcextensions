@@ -21,6 +21,7 @@ Open Telekom Cloud related User Guides
    dms
    dns
    dws
+   function_graph
    kms
    lts
    mrs
