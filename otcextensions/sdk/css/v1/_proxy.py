@@ -9,12 +9,11 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import os
 import time
-from urllib.parse import urlsplit
 
 from openstack import exceptions
 from openstack import proxy
-from otcextensions.sdk.css.v1 import cert as _cert
 from otcextensions.sdk.css.v1 import cluster as _cluster
 from otcextensions.sdk.css.v1 import cluster_image as _cluster_image
 from otcextensions.sdk.css.v1 import (
@@ -274,15 +273,8 @@ class Proxy(proxy.Proxy):
             and quantity of nodes to remove
         :returns: ``None``
         """
-        split_url = urlsplit(self.get_endpoint())
-        project_id = self.session.get_project_id()
-        self.endpoint_override = (
-            f'{split_url.scheme}://{split_url.netloc}/v1.0/extend/{project_id}'
-        )
-
         cluster = self._get_resource(_cluster.Cluster, cluster)
         resp = cluster.scale_in_by_node_type(self, nodes)
-        self.endpoint_override = None
         return resp
 
     def replace_cluster_node(self, cluster, node_id):
@@ -509,18 +501,38 @@ class Proxy(proxy.Proxy):
         snapshot = self._get_resource(_snapshot.Snapshot, snapshot)
         return snapshot.restore(self, cluster.id, **attrs)
 
-    def get_certificate(self):
-        """Download the HTTPS certificate file of the server."""
-        split_url = urlsplit(self.get_endpoint())
-        self.endpoint_override = (
-            f'{split_url.scheme}://{split_url.netloc}/v1.0/'
-        )
-        resp = self._get(
-            _cert.Cert,
-            requires_id=False,
-        )
-        self.endpoint_override = None
-        return resp
+    def download_certificate(self, filename=None):
+        """
+        Downloads a security certificate for ssl connectivity.
+        The certificate is downloaded and saved to the specified file.
+
+        :param filename: The name of the file to save the certificate as.
+            If not provided, the default filename 'CloudSearchService.cer'
+            is used.
+
+        :returns: ``None``
+        """
+        headers = {'Accept': '*/*'}
+        response = self.get('/cer/download', headers=headers, stream=True)
+        exceptions.raise_from_response(response)
+
+        # Extract the filename from Content-Disposition header if available
+        content_disposition = response.headers.get('Content-Disposition', '')
+
+        override_filename = filename
+        filename = override_filename or 'CloudSearchService.cer'
+        if not override_filename and 'filename=' in content_disposition:
+            filename = content_disposition.split('filename=')[1].strip('"')
+
+        if os.path.exists(filename):
+            raise FileExistsError(
+                f"The file '{filename}' already exists. Aborting download."
+            )
+
+        with open(filename, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=1024):
+                if chunk:
+                    f.write(chunk)
 
     def wait_for_cluster(
         self, cluster, timeout=1200, wait=5, print_status=False

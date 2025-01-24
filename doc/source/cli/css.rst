@@ -25,3 +25,9 @@ CSS Snapshot Operations
 
 .. autoprogram-cliff:: openstack.css.v1
    :command: css snapshot *
+
+CSS SSL Certificate
+-------------------
+
+.. autoprogram-cliff:: openstack.css.v1
+   :command: css certificate *

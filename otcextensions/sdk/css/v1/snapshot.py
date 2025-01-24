@@ -187,6 +187,8 @@ class SnapshotPolicy(resource.Resource):
     #: Whether to delete all automatically created snapshots when the
     #:  automatic snapshot creation policy is disabled.
     delete_auto = resource.Body('deleteAuto', type=otc_format.BoolStr_1)
+    #: Frequency of automatically creating snapshots.
+    frequency = resource.Body('frequency')
     #: Snapshot name prefix.
     prefix = resource.Body('prefix')
     #: Name of the index to be backed up.
