@@ -105,3 +105,19 @@ This API is used to update the maximum number of instances of a function.
 
 .. literalinclude:: ../examples/function_graph/update_function_metadata.py
    :lines: 16-23
+
+Function Execution Synchronously
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to execute a function synchronously.
+
+.. literalinclude:: ../examples/function_graph/sync_function_invocation.py
+   :lines: 16-27
+
+Function Execution Asynchronously
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to execute a function synchronously.
+
+.. literalinclude:: ../examples/function_graph/async_function_invocation.py
+   :lines: 16-27

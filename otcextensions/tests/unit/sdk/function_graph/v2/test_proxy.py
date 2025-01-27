@@ -13,6 +13,7 @@ from unittest import mock
 
 from otcextensions.sdk.function_graph.v2 import _proxy
 from otcextensions.sdk.function_graph.v2 import function as _function
+from otcextensions.sdk.function_graph.v2 import function_invocation as _fi
 from openstack.tests.unit import test_proxy_base
 
 
@@ -157,4 +158,40 @@ class TestFgFunctions(TestFgProxy):
             self.proxy.update_max_instances,
             method_args=[function, instances],
             expected_args=[self.proxy, function, 10],
+        )
+
+    def test_invocation_async(self):
+        fi = _fi.FunctionInvocation(
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default'
+                     ':access-mysql-js-1213-1737554083545:latest',
+            attrs={'a': 'b'}
+        )
+        self.proxy._get_resource = mock.Mock(return_value=fi)
+        self._verify(
+            'otcextensions.sdk.function_graph.v2.function_invocation.'
+            'FunctionInvocation._invocation',
+            self.proxy.executing_function_asynchronously,
+            method_args=[fi.func_urn],
+            method_kwargs={'a': 'b'},
+            expected_args=[self.proxy, 'invocations-async'],
+            expected_kwargs={'a': 'b'}
+        )
+
+    def test_invocation_sync(self):
+        fi = _fi.FunctionInvocation(
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default'
+                     ':access-mysql-js-1213-1737554083545:latest',
+            attrs={'a': 'b'}
+        )
+        self.proxy._get_resource = mock.Mock(return_value=fi)
+        self._verify(
+            'otcextensions.sdk.function_graph.v2.function_invocation.'
+            'FunctionInvocation._invocation',
+            self.proxy.executing_function_synchronously,
+            method_args=[fi.func_urn],
+            method_kwargs={'a': 'b'},
+            expected_args=[self.proxy, 'invocations'],
+            expected_kwargs={'a': 'b'}
         )
