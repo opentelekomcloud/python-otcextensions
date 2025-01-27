@@ -13,6 +13,7 @@ from openstack import proxy
 
 from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.function_graph.v2 import function as _function
+from otcextensions.sdk.function_graph.v2 import function_invocation as _fi
 
 
 class Proxy(proxy.Proxy):
@@ -158,3 +159,33 @@ class Proxy(proxy.Proxy):
         """
         function = self._get_resource(_function.Function, function)
         return function._update_max_instances(self, function, instances)
+
+    # ======== Function Invocations Methods ========
+
+    def executing_function_synchronously(self, func_urn, **attrs):
+        """Execute a function synchronously.
+
+        :param func_urn: The URN of the Function to run
+        :param attrs: The request parameter as a key pair ("k":"v")
+        :rtype: :class:`~otcextensions.sdk.function_graph.v2.
+            function_invocation.FunctionInvocation`
+        """
+        fi = self._get_resource(
+            _fi.FunctionInvocation, func_urn,
+            func_urn=func_urn.rpartition(":")[0]
+        )
+        return fi._invocation(self, 'invocations', **attrs)
+
+    def executing_function_asynchronously(self, func_urn, **attrs):
+        """Execute a function asynchronously.
+
+        :param func_urn: The URN of the Function to run
+        :param attrs: The request parameter as a key pair ("k":"v")
+        :rtype: :class:`~otcextensions.sdk.function_graph.v2.
+            function_invocation.FunctionInvocation`
+        """
+        fi = self._get_resource(
+            _fi.FunctionInvocation, func_urn,
+            func_urn=func_urn.rpartition(":")[0]
+        )
+        return fi._invocation(self, 'invocations-async', **attrs)

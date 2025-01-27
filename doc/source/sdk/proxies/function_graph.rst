@@ -21,3 +21,9 @@ Function Operations
             create_resource_tags, delete_resource_tags, update_pin_status,
             update_function_code, update_function_metadata, update_max_instances
 
+Function Invocation Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.function_graph.v2._proxy.Proxy
+  :noindex:
+  :members: executing_function_synchronously, executing_function_asynchronously
