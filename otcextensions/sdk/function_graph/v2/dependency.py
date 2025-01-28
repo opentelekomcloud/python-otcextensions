@@ -9,6 +9,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+
 from openstack import resource
 from openstack import exceptions
 
@@ -74,7 +75,8 @@ class Dependency(resource.Resource):
     def _delete_version(self, session, dependency):
         """Delete Version
         """
-        url = self.base_path + f'/{dependency.dep_id}/version/{dependency.version}'
+        url = self.base_path + (f'/{dependency.dep_id}'
+                                f'/version/{dependency.version}')
         response = session.delete(url)
         exceptions.raise_from_response(response)
         return None

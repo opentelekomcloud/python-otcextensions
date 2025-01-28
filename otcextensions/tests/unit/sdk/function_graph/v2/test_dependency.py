@@ -17,7 +17,7 @@ from otcextensions.sdk.function_graph.v2 import dependency
 EXAMPLE = {
     "id": "4f4ae4eb-dcdc-4dd3-bffd-79600bd972b3",
     "owner": "*****",
-    "link": "https://{bucket}.{obs_endpoint}/depends/****/4f4ae4eb-dcdc-4dd3-bffd-79600bd972b3.zip",
+    "link": "https://{bucket}.{obs_endpoint}.zip",
     "runtime": "Python3.6",
     "etag": "83863be4b6c3a86aef995dbc83aae68f",
     "size": 577118,
