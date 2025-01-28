@@ -216,8 +216,8 @@ class Proxy(proxy.Proxy):
 
         :param dict attrs: Keyword arguments to create a Function.
         :returns: The created Dependency instance.
-        :rtype: :class:
-            `~otcextensions.sdk.function_graph.v2.dependency.Dependency`
+        :rtype:
+            :class:`~otcextensions.sdk.function_graph.v2.dependency.Dependency`
         """
         base_path = "/fgs/dependencies/version"
         return self._create(_d.Dependency, **attrs, base_path=base_path)
