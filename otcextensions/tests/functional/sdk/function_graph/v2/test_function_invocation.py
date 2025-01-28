@@ -18,12 +18,12 @@ from openstack import _log
 _logger = _log.setup_logging('openstack')
 
 
-class TestFunction(base.BaseFunctionalTest):
+class TestFunctionInvocation(base.BaseFunctionalTest):
     ID = None
     uuid = uuid.uuid4().hex[:8]
 
     def setUp(self):
-        super(TestFunction, self).setUp()
+        super(TestFunctionInvocation, self).setUp()
         self.attrs = {
             'func_name': 'test-function-' + self.uuid,
             'package': 'default',

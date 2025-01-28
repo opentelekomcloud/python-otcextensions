@@ -121,3 +121,51 @@ This API is used to execute a function synchronously.
 
 .. literalinclude:: ../examples/function_graph/async_function_invocation.py
    :lines: 16-27
+
+Querying Tenant Quotas
+^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to query tenant quotas.
+
+.. literalinclude:: ../examples/function_graph/list_quotas.py
+   :lines: 16-24
+
+Querying Dependencies
+^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to query all dependencies.
+
+.. literalinclude:: ../examples/function_graph/list_dependencies.py
+   :lines: 16-24
+
+Creating a Dependency Version
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to create a dependency version.
+
+.. literalinclude:: ../examples/function_graph/delete_dependency_version.py
+   :lines: 16-31
+
+Querying Dependency Versions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to query dependency versions.
+
+.. literalinclude:: ../examples/function_graph/list_dependency_versions.py
+   :lines: 16-32
+
+Querying a Dependency Version
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to query the details about a dependency version.
+
+.. literalinclude:: ../examples/function_graph/get_dependency_version.py
+   :lines: 16-31
+
+Deleting a Dependency Version
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to delete a dependency version.
+
+.. literalinclude:: ../examples/function_graph/delete_dependency_version.py
+   :lines: 16-31

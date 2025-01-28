@@ -14,6 +14,8 @@ from unittest import mock
 from otcextensions.sdk.function_graph.v2 import _proxy
 from otcextensions.sdk.function_graph.v2 import function as _function
 from otcextensions.sdk.function_graph.v2 import function_invocation as _fi
+from otcextensions.sdk.function_graph.v2 import dependency as _d
+from otcextensions.sdk.function_graph.v2 import quota as _q
 from openstack.tests.unit import test_proxy_base
 
 
@@ -194,4 +196,63 @@ class TestFgFunctions(TestFgProxy):
             method_kwargs={'a': 'b'},
             expected_args=[self.proxy, 'invocations'],
             expected_kwargs={'a': 'b'}
+        )
+
+
+class TestFgQuotas(TestFgProxy):
+    def test_quotas(self):
+        self.verify_list(self.proxy.quotas, _q.Quota)
+
+
+class TestFgDependencies(TestFgProxy):
+    def test_dependencies(self):
+        self.verify_list(
+            self.proxy.dependencies,
+            _d.Dependency,
+            expected_args=[{}],
+        )
+
+    def test_create_dependency_version(self):
+        self.verify_create(
+            self.proxy.create_dependency_version,
+            _d.Dependency
+        )
+
+    def test_delete_dependency_version(self):
+        dep = _d.Dependency(
+            version=1,
+            dep_id='edbd67fa-f107-40b3-af75-a85f0577ad61'
+        )
+        self.proxy._get_resource = mock.Mock(return_value=dep)
+        self._verify(
+            'otcextensions.sdk.function_graph.v2.dependency.'
+            'Dependency._delete_version',
+            self.proxy.delete_dependency_version,
+            method_args=[dep],
+            expected_args=[self.proxy, dep],
+        )
+
+    def test_dependency_versions(self):
+        dep = _d.Dependency(
+            version=1,
+            dep_id='edbd67fa-f107-40b3-af75-a85f0577ad61'
+        )
+        self.verify_list(
+            self.proxy.dependency_versions,
+            _d.Dependency,
+            method_args=[dep],
+            expected_args=[{}],
+        )
+
+    def test_get_dependency_version(self):
+        dep = _d.Dependency(
+            version=1,
+            dep_id='edbd67fa-f107-40b3-af75-a85f0577ad61'
+        )
+        self.verify_get(
+            self.proxy.get_dependency_version,
+            _d.Dependency,
+            method_args=[dep],
+            expected_args=[],
+            expected_kwargs={"requires_id": False}
         )

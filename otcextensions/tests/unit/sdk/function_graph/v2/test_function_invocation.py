@@ -21,7 +21,7 @@ EXAMPLE = {
 }
 
 
-class TestFunction(base.TestCase):
+class TestFunctionInvocation(base.TestCase):
 
     def test_basic(self):
         sot = function_invocation.FunctionInvocation()

@@ -27,3 +27,18 @@ Function Invocation Operations
 .. autoclass:: otcextensions.sdk.function_graph.v2._proxy.Proxy
   :noindex:
   :members: executing_function_synchronously, executing_function_asynchronously
+
+Function Quotas
+^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.function_graph.v2._proxy.Proxy
+  :noindex:
+  :members: quotas
+
+Dependencies
+^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.function_graph.v2._proxy.Proxy
+  :noindex:
+  :members: dependencies, create_dependency_version, delete_dependency_version,
+            dependency_versions, get_dependency_version
