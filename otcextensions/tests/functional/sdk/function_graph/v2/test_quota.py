@@ -10,16 +10,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from openstack import _log
-
 from otcextensions.tests.functional import base
+
+from openstack import _log
 
 _logger = _log.setup_logging('openstack')
 
 
-class TestService(base.BaseFunctionalTest):
-
-    def test_initialize(self):
-        client = self.conn.function_graph
-
-        self.assertIsNotNone(client)
+class TestFunctionQuotas(base.BaseFunctionalTest):
+    def test_list_quotas(self):
+        q = list(self.conn.functiongraph.quotas())
+        self.assertGreaterEqual(18, len(q))

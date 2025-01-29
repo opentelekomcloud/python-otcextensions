@@ -14,6 +14,8 @@ from openstack import proxy
 from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.function_graph.v2 import function as _function
 from otcextensions.sdk.function_graph.v2 import function_invocation as _fi
+from otcextensions.sdk.function_graph.v2 import quota as _quota
+from otcextensions.sdk.function_graph.v2 import dependency as _d
 
 
 class Proxy(proxy.Proxy):
@@ -189,3 +191,63 @@ class Proxy(proxy.Proxy):
             func_urn=func_urn.rpartition(":")[0]
         )
         return fi._invocation(self, 'invocations-async', **attrs)
+
+    # ======== Function Quotas Methods ========
+
+    def quotas(self):
+        """List all quotas.
+
+        :returns: A generator of Quota instances.
+        """
+        return self._list(_quota.Quota)
+
+    # ======== Function Dependencies Methods ========
+
+    def dependencies(self, **query):
+        """List all dependencies.
+
+        :param dict query: Query parameters to filter the dependencies list.
+        :returns: A generator of Dependency instances.
+        """
+        return self._list(_d.Dependency, query)
+
+    def create_dependency_version(self, **attrs):
+        """Create a new dependency from attributes.
+
+        :param dict attrs: Keyword arguments to create a Function.
+        :returns: The created Dependency instance.
+        :rtype:
+            :class:`~otcextensions.sdk.function_graph.v2.dependency.Dependency`
+        """
+        base_path = "/fgs/dependencies/version"
+        return self._create(_d.Dependency, **attrs, base_path=base_path)
+
+    def delete_dependency_version(self, dependency, ignore_missing=True):
+        """Delete a dependency.
+
+        :param ignore_missing:
+        :param dependency: The instance of the Dependency to delete.
+        :returns: ``None``
+        """
+        dep = self._get_resource(_d.Dependency, dependency)
+        return dep._delete_version(self, dependency)
+
+    def dependency_versions(self, dependency, **query):
+        """List all dependency versions.
+
+        :param dependency: Dependency instance
+        :param dict query: Query parameters to filter the versions list.
+        :returns: A generator of Dependency instances.
+        """
+        base_path = f"/fgs/dependencies/{dependency.dep_id}/version"
+        return self._list(_d.Dependency, query, base_path=base_path)
+
+    def get_dependency_version(self, dependency):
+        """List all dependency versions.
+
+        :param dependency: Dependency instance
+        :returns: A generator of Dependency instances.
+        """
+        base_path = (f"/fgs/dependencies/{dependency.dep_id}"
+                     f"/version/{dependency.version}")
+        return self._get(_d.Dependency, base_path=base_path, requires_id=False)
