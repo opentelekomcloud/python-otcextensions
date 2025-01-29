@@ -104,11 +104,87 @@ class Gateway(resource.Resource):
     start_time = resource.Body('start_time')
     end_time = resource.Body('end_time')
     listeners = resource.Body('listeners', type=dict)
-
+    restrict_cidrs = resource.Body('restrict_cidrs', type=list)
+    resource_subnet_cidr = resource.Body('resource_subnet_cidr')
+    cloud_eip_id = resource.Body("cloudEipId")
+    cloud_eip_address = resource.Body("cloudEipAddress")
+    cloud_bandwidth_id = resource.Body('cloudBandwidthId')
+    bandwidth_name = resource.Body('bandwidthName')
+    charge_mode = resource.Body('chargeMode')
 
     def _get_creation_progress(self, session, gateway):
-        url = f'{self.base_path}/{gateway.instance_id}/progress'
+        gw_id = gateway.instance_id if gateway.id is None else gateway.id
+        url = f'{self.base_path}/{gw_id}/progress'
         response = session.get(url)
         exceptions.raise_from_response(response)
         self._translate_response(response)
         return self
+
+    def _get_constraints(self, session, gateway):
+        gw_id = gateway.instance_id if gateway.id is None else gateway.id
+        url = f'{self.base_path}/{gw_id}/restriction'
+        response = session.get(url)
+        exceptions.raise_from_response(response)
+        self._translate_response(response)
+        return self
+
+
+    def _modify_spec(self, session, gateway, **attrs):
+        gw_id = gateway.instance_id if gateway.id is None else gateway.id
+        url = f'{self.base_path}/{gw_id}/postpaid-resize'
+        response = session.post(url, json=attrs)
+        exceptions.raise_from_response(response)
+        self._translate_response(response)
+        return self
+
+    def _bind_eip(self, session, gateway, **attrs):
+        gw_id = gateway.instance_id if gateway.id is None else gateway.id
+        url = f'{self.base_path}/{gw_id}/eip'
+        response = session.put(url, json=attrs)
+        exceptions.raise_from_response(response)
+
+    def _unbind_eip(self, session, gateway):
+        gw_id = gateway.instance_id if gateway.id is None else gateway.id
+        url = f'{self.base_path}/{gw_id}/eip'
+        response = session.delete(url)
+
+    def _enable_public_access(self, session, gateway, **attrs):
+        return self._enable_eip(session, gateway, 'nat-eip', **attrs)
+
+    def _update_public_access(self, session, gateway, **attrs):
+        return self._update_eip(session, gateway, 'nat-eip', **attrs)
+
+    def _disable_public_access(self, session, gateway):
+        return self._delete_eip(session, gateway, 'nat-eip')
+
+    def _enable_ingress(self, session, gateway, **attrs):
+        return self._enable_eip(session, gateway, 'ingress-eip', **attrs)
+
+    def _update_ingress(self, session, gateway, **attrs):
+        return self._update_eip(session, gateway, 'ingress-eip', **attrs)
+
+    def _disable_ingress(self, session, gateway):
+        return self._delete_eip(session, gateway, 'ingress-eip')
+
+    def _enable_eip(self, session, gateway, url, **attrs):
+        gw_id = gateway.instance_id if gateway.id is None else gateway.id
+        url = f'{self.base_path}/{gw_id}/{url}'
+        response = session.post(url, json=attrs)
+        exceptions.raise_from_response(response)
+        self._translate_response(response)
+        return self
+
+    def _update_eip(self, session, gateway, url, **attrs):
+        gw_id = gateway.instance_id if gateway.id is None else gateway.id
+        url = f'{self.base_path}/{gw_id}/{url}'
+        response = session.put(url, json=attrs)
+        exceptions.raise_from_response(response)
+        self._translate_response(response)
+        return self
+
+    def _delete_eip(self, session, gateway, url):
+        gw_id = gateway.instance_id if gateway.id is None else gateway.id
+        url = f'{self.base_path}/{gw_id}/{url}'
+        response = session.delete(url)
+        exceptions.raise_from_response(response)
+        return None

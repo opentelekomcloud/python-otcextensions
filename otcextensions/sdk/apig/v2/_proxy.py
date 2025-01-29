@@ -14,7 +14,7 @@ from openstack import resource
 
 from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.apig.v2 import gateway as _gateway
-
+from otcextensions.sdk.apig.v2 import az as _az
 
 class Proxy(proxy.Proxy):
     skip_discovery = True
@@ -90,16 +90,53 @@ class Proxy(proxy.Proxy):
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return gateway._get_creation_progress(self, gateway)
 
+    def get_constraints(self, gateway):
+        """Get gateway constraints
+
+        :param gateway: key id or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+
+        %returns: instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return gateway._get_constraints(self, gateway)
+
+    def enable_public_access(self, gateway, **attrs):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return gateway._enable_public_access(self, gateway, **attrs)
+
+    def update_public_access(self, gateway, **attrs):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return gateway._update_public_access(self, gateway, **attrs)
+
+    def disable_public_access(self, gateway):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return gateway._disable_public_access(self, gateway)
+
+    def modify_gateway_spec(self, gateway, **attrs):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return gateway._modify_spec(self, gateway, **attrs)
+
+    def bind_eip(self, gateway, **attrs):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return gateway._bind_eip(self, gateway, **attrs)
+
+    def azs(self, **attrs):
+        return self._list(_az.AZ, paginated=False, **attrs)
+
+    def enable_ingress(self, gateway, **attrs):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return gateway._enable_ingress(self, gateway, **attrs)
+
+    def update_ingress(self, gateway, **attrs):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return gateway._update_ingress(self, gateway, **attrs)
+
+    def disable_ingress(self, gateway):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return gateway._disable_ingress(self, gateway)
+
     # modifying specs
-    # querying constraints
-    # querying creation progress
-    # bind or update EIP
-    # unbind eip
-    # enable public access
-    # disable public access
-    # update outbound access bandwidth
-    # enable public inbound access
-    # update public inbound
-    # disable public inbound
-    # querying az
+    # bind/unbind eip
 

@@ -11,7 +11,6 @@
 # under the License.
 
 from otcextensions.tests.functional.sdk.apig import TestApiG
-from otcextensions.sdk.apig.v2 import gateway
 import uuid
 
 
@@ -73,5 +72,69 @@ class TestGateway(TestApiG):
         found = self.client.update_gateway(TestGateway.gateway, **attrs)
         self.assertEqual(found.description, attrs['description'])
 
-    def test_05_delete_gateway(self):
+    def test_05_get_constraints(self):
+        found = self.client.get_constraints(TestGateway.gateway.id)
+        self.assertIsNotNone(found.resource_subnet_cidr)
+
+    def test_06_enable_public_access(self):
+        self.client.wait_for_gateway(TestGateway.gateway)
+        attrs = {
+            "bandwidth_size" : "5",
+            "bandwidth_charging_mode" : "bandwidth"
+        }
+        found = self.client.enable_public_access(TestGateway.gateway.id, **attrs)
+        self.assertIsNotNone(found.bandwidth_name)
+
+    def test_07_update_public_access(self):
+        self.client.wait_for_gateway(TestGateway.gateway)
+        attrs = {
+            "bandwidth_size" : "7",
+            "bandwidth_charging_mode" : "bandwidth"
+        }
+        found = self.client.update_public_access(TestGateway.gateway.id, **attrs)
+        self.assertIsNotNone(found.bandwidth_name)
+
+    def test_08_disable_public_access(self):
+        self.client.wait_for_gateway(TestGateway.gateway)
+        self.client.disable_public_access(TestGateway.gateway.id)
+
+    def test_09_modify_spec(self):
+        self.client.wait_for_gateway(TestGateway.gateway)
+        attrs = {
+            "spec_id" : "PROFESSIONAL"
+        }
+        found = self.client.modify_gateway_spec(TestGateway.gateway, **attrs)
+        self.assertIsNotNone(found.job_id)
+
+    def test_10_enable_ingress(self):
+        self.client.wait_for_gateway(TestGateway.gateway)
+        attrs = {
+            "bandwidth_size" : "5",
+            "bandwidth_charging_mode" : "bandwidth"
+        }
+        found = self.client.enable_ingress(TestGateway.gateway.id, **attrs)
+        self.assertIsNotNone(found.job_id)
+
+    def test_11_update_ingress(self):
+        self.client.wait_for_gateway(TestGateway.gateway)
+        attrs = {
+            "bandwidth_size" : "7",
+            "bandwidth_charging_mode" : "bandwidth"
+        }
+        found = self.client.update_ingress(TestGateway.gateway.id, **attrs)
+        self.assertIsNotNone(found.job_id)
+
+    def test_12_disable_ingress(self):
+        self.client.wait_for_gateway(TestGateway.gateway)
+        self.client.disable_ingress(TestGateway.gateway.id)
+
+    # def test_09_bind_eip(self):
+    #     eips = self.conn.dns.floating_ips()
+    #     self.client.wait_for_gateway(TestGateway.gateway)
+    #     attrs = {
+    #         "eip_id": ""
+    #     }
+    #     self.client.bind_eip(TestGateway.gateway, attrs)
+
+    def test_13_delete_gateway(self):
         self.client.delete_gateway(TestGateway.gateway)
