@@ -136,6 +136,3 @@ class Proxy(proxy.Proxy):
     def disable_ingress(self, gateway):
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return gateway._disable_ingress(self, gateway)
-
-
-
