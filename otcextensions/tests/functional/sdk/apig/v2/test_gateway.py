@@ -16,6 +16,8 @@ import uuid
 
 class TestGateway(TestApiG):
     gateway = None
+    eip = None
+    admin_external_net = None
 
     def setUp(self):
         super(TestGateway, self).setUp()
@@ -128,13 +130,22 @@ class TestGateway(TestApiG):
         self.client.wait_for_gateway(TestGateway.gateway)
         self.client.disable_ingress(TestGateway.gateway.id)
 
-    # def test_09_bind_eip(self):
-    #     eips = self.conn.dns.floating_ips()
-    #     self.client.wait_for_gateway(TestGateway.gateway)
-    #     attrs = {
-    #         "eip_id": ""
-    #     }
-    #     self.client.bind_eip(TestGateway.gateway, attrs)
+    def test_13_bind_eip(self):
+        admin_external_net = self.conn.network.find_network(
+            name_or_id='admin_external_net')
+        self.assertIsNotNone(admin_external_net)
+        floating_ip = self.conn.network.create_ip(
+            floating_network_id=admin_external_net.id)
+        self.client.wait_for_gateway(TestGateway.gateway)
+        attrs = {
+            "eip_id": floating_ip.id
+        }
+        TestGateway.eip = floating_ip
+        TestGateway.admin_external_net = admin_external_net
+        self.client.bind_eip(TestGateway.gateway, **attrs)
 
-    def test_13_delete_gateway(self):
+    def test_14_unbind_eip(self):
+        self.conn.network.delete_ip(TestGateway.eip)
+
+    def test_15_delete_gateway(self):
         self.client.delete_gateway(TestGateway.gateway)

@@ -137,6 +137,5 @@ class Proxy(proxy.Proxy):
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return gateway._disable_ingress(self, gateway)
 
-    # modifying specs
-    # bind/unbind eip
+
 
