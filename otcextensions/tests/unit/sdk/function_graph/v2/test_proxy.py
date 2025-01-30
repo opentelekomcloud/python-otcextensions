@@ -318,9 +318,7 @@ class TestFgEvents(TestFgProxy):
                      'function:default:access-mysql-js-1213-1737554083545:'
                      'latest'
         )
-        event = _event.Event(
-                    name='test',
-                )
+        event = _event.Event(name='test')
         self.verify_update(
             self.proxy.update_event,
             _event.Event,
@@ -341,9 +339,7 @@ class TestFgEvents(TestFgProxy):
                      'function:default:access-mysql-js-1213-1737554083545:'
                      'latest'
         )
-        event = _event.Event(
-                    name='test',
-                )
+        event = _event.Event(name='test')
         self.verify_get(
             self.proxy.get_event,
             _event.Event,
