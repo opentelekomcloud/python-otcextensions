@@ -16,6 +16,7 @@ from otcextensions.sdk.function_graph.v2 import function as _function
 from otcextensions.sdk.function_graph.v2 import function_invocation as _fi
 from otcextensions.sdk.function_graph.v2 import quota as _quota
 from otcextensions.sdk.function_graph.v2 import dependency as _d
+from otcextensions.sdk.function_graph.v2 import event as _event
 
 
 class Proxy(proxy.Proxy):
@@ -251,3 +252,84 @@ class Proxy(proxy.Proxy):
         base_path = (f"/fgs/dependencies/{dependency.dep_id}"
                      f"/version/{dependency.version}")
         return self._get(_d.Dependency, base_path=base_path, requires_id=False)
+
+    # ======== Test Events Methods ========
+
+    def create_event(self, function, **attrs):
+        """Create a new event from attributes.
+
+        :param function: The URN or instance of the Function to create
+            event in.
+        :param dict attrs: Keyword arguments to create an Event.
+        :returns: The created Event instance.
+        :rtype: :class:`~otcextensions.sdk.function_graph.v2.event.Event`
+        """
+        function = self._get_resource(_function.Function, function)
+        function_urn = function.func_urn.rpartition(":")[0]
+        return self._create(
+            _event.Event, function_urn=function_urn, **attrs
+        )
+
+    def delete_event(self, function, event, ignore_missing=True):
+        """Delete an event.
+
+        :param function: The URN or instance of the Function to delete
+            event from.
+        :param ignore_missing: When False,
+            `openstack.exceptions.ResourceNotFound`
+            will be raised when the tag does not exist.
+            When True, no exception will be set when attempting
+            to delete a nonexistent event.
+        :param event: The instance of the Event to delete.
+        :returns: ``None``
+        """
+        function = self._get_resource(_function.Function, function)
+        function_urn = function.func_urn.rpartition(":")[0]
+        return self._delete(
+            _event.Event, event,
+            function_urn=function_urn, ignore_missing=ignore_missing
+        )
+
+    def events(self, func_urn):
+        """List all events.
+
+        :param func_urn: The URN of the Function to fetch
+            events from.
+        :returns: A generator of Event instances.
+        """
+        function_urn = func_urn.rpartition(":")[0]
+        return self._list(_event.Event, function_urn=function_urn)
+
+    def get_event(self, function, event):
+        """Get one event by ID.
+
+        :param event: key id or an instance of
+            :class:`~otcextensions.sdk.function_graph.v2.event.Event`
+        :param function: The value can be the ID of a function or
+            a :class:`~otcextensions.sdk.function_graph.v2.function.Function`
+            instance.
+        :returns: instance of
+            :class:`~otcextensions.sdk.function_graph.v2.event.Event`
+        """
+        function = self._get_resource(_function.Function, function)
+        return self._get(
+            _event.Event, event,
+            function_urn=function.func_urn
+        )
+
+    def update_event(self, function, event, **attrs):
+        """Update an event from attributes.
+
+        :param event: key id or an instance of
+            :class:`~otcextensions.sdk.function_graph.v2.event.Event`
+        :param function: The URN or instance of the Function to update
+            event in.
+        :param dict attrs: Keyword arguments to update an Event.
+        :returns: The updated Event instance.
+        :rtype: :class:`~otcextensions.sdk.function_graph.v2.event.Event`
+        """
+        function = self._get_resource(_function.Function, function)
+        function_urn = function.func_urn.rpartition(":")[0]
+        return self._update(
+            _event.Event, event, function_urn=function_urn, **attrs
+        )

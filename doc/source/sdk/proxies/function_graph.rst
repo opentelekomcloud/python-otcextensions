@@ -42,3 +42,11 @@ Dependencies
   :noindex:
   :members: dependencies, create_dependency_version, delete_dependency_version,
             dependency_versions, get_dependency_version
+
+Events
+^^^^^^
+
+.. autoclass:: otcextensions.sdk.function_graph.v2._proxy.Proxy
+  :noindex:
+  :members: create_event, delete_event, events,
+            get_event, update_event

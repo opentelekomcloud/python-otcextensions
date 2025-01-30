@@ -17,6 +17,8 @@ It is the minimum unit that can run independently.
 A function can be triggered by triggers and automatically schedule
 required resources and environments to achieve expected results.
 
+Function Lifecycle
+------------------
 
 Create Function
 ^^^^^^^^^^^^^^^
@@ -106,6 +108,9 @@ This API is used to update the maximum number of instances of a function.
 .. literalinclude:: ../examples/function_graph/update_function_metadata.py
    :lines: 16-23
 
+Function Invocation
+-------------------
+
 Function Execution Synchronously
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -122,6 +127,9 @@ This API is used to execute a function synchronously.
 .. literalinclude:: ../examples/function_graph/async_function_invocation.py
    :lines: 16-27
 
+Function Quotas
+---------------
+
 Querying Tenant Quotas
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -129,6 +137,9 @@ This API is used to query tenant quotas.
 
 .. literalinclude:: ../examples/function_graph/list_quotas.py
    :lines: 16-24
+
+Dependencies
+------------
 
 Querying Dependencies
 ^^^^^^^^^^^^^^^^^^^^^
@@ -169,3 +180,46 @@ This API is used to delete a dependency version.
 
 .. literalinclude:: ../examples/function_graph/delete_dependency_version.py
    :lines: 16-31
+
+Test Events
+-----------
+
+Querying Test Events of a Function
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to query the test events of a function.
+
+.. literalinclude:: ../examples/function_graph/list_events.py
+   :lines: 16-24
+
+Creating a Test Event
+^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to query the test events of a function.
+
+.. literalinclude:: ../examples/function_graph/create_event.py
+   :lines: 16-39
+
+Deleting a Test Event
+^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to delete a test event.
+
+.. literalinclude:: ../examples/function_graph/delete_event.py
+   :lines: 16-40
+
+Obtaining the Details of a Test Event
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to query the details of a test event.
+
+.. literalinclude:: ../examples/function_graph/get_event.py
+   :lines: 16-42
+
+Updating a Test Event
+^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to update a test event.
+
+.. literalinclude:: ../examples/function_graph/update_event.py
+   :lines: 16-45

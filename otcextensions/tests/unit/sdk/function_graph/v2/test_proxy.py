@@ -16,6 +16,7 @@ from otcextensions.sdk.function_graph.v2 import function as _function
 from otcextensions.sdk.function_graph.v2 import function_invocation as _fi
 from otcextensions.sdk.function_graph.v2 import dependency as _d
 from otcextensions.sdk.function_graph.v2 import quota as _q
+from otcextensions.sdk.function_graph.v2 import event as _event
 from openstack.tests.unit import test_proxy_base
 
 
@@ -255,4 +256,96 @@ class TestFgDependencies(TestFgProxy):
             method_args=[dep],
             expected_args=[],
             expected_kwargs={"requires_id": False}
+        )
+
+
+class TestFgEvents(TestFgProxy):
+    def test_events(self):
+        func_urn = ('urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                    'function:default:access-mysql-js-1213-1737554083545:'
+                    'latest')
+        self.verify_list(
+            self.proxy.events,
+            _event.Event,
+            method_args=[func_urn],
+            expected_args=[],
+            expected_kwargs={
+                'function_urn': func_urn.rpartition(":")[0]
+            },
+        )
+
+    def test_create_event(self):
+        func = _function.Function(
+            name='test',
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default:access-mysql-js-1213-1737554083545:'
+                     'latest'
+        )
+        self.verify_create(
+            self.proxy.create_event,
+            _event.Event,
+            method_kwargs={
+                'function': func,
+                'name': 'test_event'
+            },
+            expected_kwargs={
+                'function_urn': func.func_urn.rpartition(":")[0],
+                'name': 'test_event'}
+        )
+
+    def test_delete_event(self):
+        func = _function.Function(
+            name='test',
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default:access-mysql-js-1213-1737554083545:'
+                     'latest'
+        )
+        event = _event.Event(
+            name='test',
+        )
+        self.verify_delete(
+            self.proxy.delete_event,
+            _event.Event,
+            method_args=[func, event],
+            expected_args=[event],
+            expected_kwargs={'function_urn': func.func_urn.rpartition(":")[0]}
+        )
+
+    def test_update_event(self):
+        func = _function.Function(
+            name='test',
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default:access-mysql-js-1213-1737554083545:'
+                     'latest'
+        )
+        event = _event.Event(name='test')
+        self.verify_update(
+            self.proxy.update_event,
+            _event.Event,
+            method_args=[func, event],
+            expected_args=[event],
+            expected_kwargs={
+                'function_urn': func.func_urn.rpartition(":")[0],
+                'x': 1,
+                'y': 2,
+                'z': 3
+            }
+        )
+
+    def test_get_event(self):
+        func = _function.Function(
+            name='test',
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default:access-mysql-js-1213-1737554083545:'
+                     'latest'
+        )
+        event = _event.Event(name='test')
+        self.verify_get(
+            self.proxy.get_event,
+            _event.Event,
+            method_args=[func, event],
+            expected_args=[event],
+            expected_kwargs={
+                'function_urn': func.func_urn,
+            }
         )
