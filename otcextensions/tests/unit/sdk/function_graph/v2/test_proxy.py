@@ -17,6 +17,8 @@ from otcextensions.sdk.function_graph.v2 import function_invocation as _fi
 from otcextensions.sdk.function_graph.v2 import dependency as _d
 from otcextensions.sdk.function_graph.v2 import quota as _q
 from otcextensions.sdk.function_graph.v2 import event as _event
+from otcextensions.sdk.function_graph.v2 import alias as _alias
+from otcextensions.sdk.function_graph.v2 import version as _version
 from openstack.tests.unit import test_proxy_base
 
 
@@ -348,4 +350,132 @@ class TestFgEvents(TestFgProxy):
             expected_kwargs={
                 'function_urn': func.func_urn,
             }
+        )
+
+
+class TestFgAlias(TestFgProxy):
+    def test_aliases(self):
+        func_urn = ('urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                    'function:default:access-mysql-js-1213-1737554083545:'
+                    'latest')
+        self.verify_list(
+            self.proxy.aliases,
+            _alias.Alias,
+            method_args=[func_urn],
+            expected_args=[],
+            expected_kwargs={
+                'function_urn': func_urn.rpartition(":")[0]
+            },
+        )
+
+    def test_create_alias(self):
+        func = _function.Function(
+            name='test',
+            id='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+               'function:default:access-mysql-js-1213-1737554083545:'
+               'latest'
+        )
+        self.verify_create(
+            self.proxy.create_alias,
+            _alias.Alias,
+            method_kwargs={
+                'function': func,
+                'name': 'test_event'
+            },
+            expected_kwargs={
+                'function_urn': func.id.rpartition(":")[0],
+                'name': 'test_event'}
+        )
+
+    def test_delete_alias(self):
+        func = _function.Function(
+            name='test',
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default:access-mysql-js-1213-1737554083545:'
+                     'latest'
+        )
+        a = _alias.Alias(
+            name='test',
+        )
+        self.verify_delete(
+            self.proxy.delete_alias,
+            _alias.Alias,
+            method_args=[func, a],
+            expected_args=[a],
+            expected_kwargs={'function_urn': func.func_urn.rpartition(":")[0]}
+        )
+
+    def test_update_event(self):
+        func = _function.Function(
+            name='test',
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default:access-mysql-js-1213-1737554083545:'
+                     'latest'
+        )
+        a = _alias.Alias(name='test')
+        attrs = {
+            'version': 'new-version',
+            'description': 'new',
+        }
+        self._verify(
+            'otcextensions.sdk.function_graph.v2.alias.'
+            'Alias._update_alias',
+            self.proxy.update_alias,
+            method_args=[func, a],
+            method_kwargs=attrs,
+            expected_args=[self.proxy, func, a],
+            expected_kwargs=attrs
+        )
+
+    def test_get_event(self):
+        func = _function.Function(
+            name='test',
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default:access-mysql-js-1213-1737554083545:'
+                     'latest'
+        )
+        a = _alias.Alias(name='test')
+        self.verify_get(
+            self.proxy.get_alias,
+            _alias.Alias,
+            method_args=[func, a],
+            expected_args=[a],
+            expected_kwargs={
+                'function_urn': func.func_urn,
+            }
+        )
+
+
+class TestFgVersion(TestFgProxy):
+    def test_versions(self):
+        func_urn = ('urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                    'function:default:access-mysql-js-1213-1737554083545:'
+                    'latest')
+        self.verify_list(
+            self.proxy.versions,
+            _version.Version,
+            method_args=[func_urn],
+            expected_args=[],
+            expected_kwargs={
+                'function_urn': func_urn.rpartition(":")[0]
+            },
+        )
+
+    def test_publish_version(self):
+        func = _function.Function(
+            name='test',
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default:access-mysql-js-1213-1737554083545:'
+                     'latest'
+        )
+        self.verify_create(
+            self.proxy.publish_version,
+            _version.Version,
+            method_kwargs={
+                'function': func,
+                'name': 'test_event'
+            },
+            expected_kwargs={
+                'function_urn': func.func_urn.rpartition(":")[0],
+                'name': 'test_event'}
         )

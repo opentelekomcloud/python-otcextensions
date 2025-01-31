@@ -17,6 +17,8 @@ from otcextensions.sdk.function_graph.v2 import function_invocation as _fi
 from otcextensions.sdk.function_graph.v2 import quota as _quota
 from otcextensions.sdk.function_graph.v2 import dependency as _d
 from otcextensions.sdk.function_graph.v2 import event as _event
+from otcextensions.sdk.function_graph.v2 import alias as _alias
+from otcextensions.sdk.function_graph.v2 import version as _version
 
 
 class Proxy(proxy.Proxy):
@@ -332,4 +334,109 @@ class Proxy(proxy.Proxy):
         function_urn = function.func_urn.rpartition(":")[0]
         return self._update(
             _event.Event, event, function_urn=function_urn, **attrs
+        )
+
+    # ======== Versions Methods ========
+    def versions(self, func_urn):
+        """List all published versions.
+
+        :param func_urn: The URN of the Function to fetch
+            events from.
+        :returns: A generator of Version instances.
+        """
+        function_urn = func_urn.rpartition(":")[0]
+        return self._list(_version.Version, function_urn=function_urn)
+
+    def publish_version(self, function, **attrs):
+        """Publish a new version from attributes.
+
+        :param function: The URN or instance of the Function to create
+            event in.
+        :param dict attrs: Keyword arguments to publish a Version.
+        :returns: The created Version instance.
+        :rtype: :class:`~otcextensions.sdk.function_graph.v2.version.Version`
+        """
+        function = self._get_resource(_function.Function, function)
+        function_urn = function.func_urn.rpartition(":")[0]
+        return self._create(
+            _version.Version, function_urn=function_urn, **attrs
+        )
+
+    # ======== Aliases Methods ========
+
+    def aliases(self, func_urn):
+        """List all aliases.
+
+        :param func_urn: The URN of the Function to fetch
+            events from.
+        :returns: A generator of Alias instances.
+        """
+        function_urn = func_urn.rpartition(":")[0]
+        return self._list(_alias.Alias, function_urn=function_urn)
+
+    def create_alias(self, function, **attrs):
+        """Create a new alias from attributes.
+
+        :param function: The URN or instance of the Function to create
+            event in.
+        :param dict attrs: Keyword arguments to create an Alias.
+        :returns: The created Event instance.
+        :rtype: :class:`~otcextensions.sdk.function_graph.v2.alias.Alias`
+        """
+        function = self._get_resource(_function.Function, function)
+        function_urn = function.id.rpartition(":")[0]
+        return self._create(
+            _alias.Alias, function_urn=function_urn, **attrs
+        )
+
+    def delete_alias(self, function, alias, ignore_missing=True):
+        """Delete an alias.
+
+        :param function: The URN or instance of the Function to delete
+            alias from.
+        :param ignore_missing: When False,
+            `openstack.exceptions.ResourceNotFound`
+            will be raised when the tag does not exist.
+            When True, no exception will be set when attempting
+            to delete a nonexistent event.
+        :param alias: The instance of the Alias to delete.
+        :returns: ``None``
+        """
+        function = self._get_resource(_function.Function, function)
+        function_urn = function.func_urn.rpartition(":")[0]
+        return self._delete(
+            _alias.Alias, alias,
+            function_urn=function_urn, ignore_missing=ignore_missing
+        )
+
+    def update_alias(self, function, alias, **attrs):
+        """Update an alias from attributes.
+
+        :param alias: key id or an instance of
+            :class:`~otcextensions.sdk.function_graph.v2.alias.Alias`
+        :param function: The URN or instance of the Function to update
+            alias in.
+        :param dict attrs: Keyword arguments to update an Alias.
+        :returns: The updated Alias instance.
+        :rtype: :class:`~otcextensions.sdk.function_graph.v2.alias.Alias`
+        """
+        function = self._get_resource(_function.Function, function)
+        a = self._get_resource(_alias.Alias, alias)
+        return a._update_alias(self, function, alias, **attrs)
+
+    def get_alias(self, function, alias):
+        """Get one alias by ID.
+
+        :param alias: key id or an instance of
+            :class:`~otcextensions.sdk.function_graph.v2.alias.Alias`
+        :param function: The value can be the ID of a function or
+            a :class:`~otcextensions.sdk.function_graph.v2.function.Function`
+            instance.
+        :returns: instance of
+            :class:`~otcextensions.sdk.function_graph.v2.alias.Alias`
+        """
+        function = self._get_resource(_function.Function, function)
+        return self._get(
+            _alias.Alias, alias,
+            function_urn=function.func_urn
         )

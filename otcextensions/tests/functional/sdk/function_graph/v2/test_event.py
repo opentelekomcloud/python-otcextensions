@@ -80,7 +80,7 @@ class TestFunctionEvent(base.BaseFunctionalTest):
     def test_function_events(self):
         elist = list(self.conn.functiongraph.events(
             func_urn=self.function.func_urn))
-        self.assertIn(self.ID, elist[0].events[0].id)
+        self.assertIn(self.ID, elist[0].id)
 
     def test_get_function_event(self):
         e = self.conn.functiongraph.get_event(
