@@ -278,4 +278,4 @@ Querying the Alias of a Function Version
 This API is used to query the alias of a function version.
 
 .. literalinclude:: ../examples/function_graph/get_alias.py
-   :lines: 16-47
+   :lines: 16-42
