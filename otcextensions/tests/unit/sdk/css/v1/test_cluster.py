@@ -376,13 +376,24 @@ class TestCluster(base.TestCase):
 
     def test_scale_in_by_node_type(self):
         sot = cluster.Cluster.existing(id=CLUSTER_ID)
-        sot._action = mock.Mock()
         nodes = [{'type': 'ess', 'reducedNodeNum': 1}]
+        json_body = {'shrink': nodes}
+        response = mock.Mock()
+        response.status_code = 200
+        response.headers = {}
+        self.sess.post.return_value = response
 
-        body = {'shrink': nodes}
+        endpoint = 'https://test-url.com/v1.0/project-id'
+        updated_endpoint = 'https://test-url.com/v1.0/extend/project-id'
+
+        self.sess.get_endpoint.return_value = endpoint
 
         rt = sot.scale_in_by_node_type(self.sess, nodes)
-        sot._action.assert_called_with(self.sess, 'role/shrink', body)
+        self.sess.post.assert_called_with(
+            f'{updated_endpoint}/clusters/{CLUSTER_ID}/role/shrink',
+            json=json_body
+        )
+
         self.assertIsNone(rt)
 
     def test_replace_node(self):

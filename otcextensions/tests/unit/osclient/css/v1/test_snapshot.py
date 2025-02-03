@@ -366,6 +366,8 @@ class TestSetSnapshotPolicy(fakes.TestCss):
             '2',
             '--period',
             '3',
+            '--frequency',
+            'DAY',
             '--disable',
             '--delete-auto',
         ]
@@ -374,6 +376,7 @@ class TestSetSnapshotPolicy(fakes.TestCss):
             ('name_prefix', '1'),
             ('keep_days', 2),
             ('period', '3'),
+            ('frequency', 'day'),
             ('disable', True),
             ('delete_auto', True),
         ]
@@ -386,6 +389,7 @@ class TestSetSnapshotPolicy(fakes.TestCss):
             "prefix": "1",
             "keepday": 2,
             "period": "3",
+            "frequency": "DAY",
             "enable": 'false',
             "deleteAuto": 'true',
         }

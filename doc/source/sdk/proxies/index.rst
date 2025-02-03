@@ -22,6 +22,7 @@ Service Proxies
    Distributed Message Service (DMS) <dms>
    Document Database Service (DDS) <dds_v3>
    Domain Name Server Service (DNS) <dns>
+   FunctionGraph Service (FGS) <function_graph>
    Identity Service (IAM) <identity_v3>
    Key Management Service (KMS) <kms>
    Log Tank Service (LTS) <lts>

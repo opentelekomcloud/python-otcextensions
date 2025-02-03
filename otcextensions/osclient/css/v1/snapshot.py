@@ -28,6 +28,19 @@ from otcextensions.osclient.css.v1 import cluster as _cluster
 LOG = logging.getLogger(__name__)
 
 
+FREQUENCY_CHOICES = [
+    "day",
+    "hour",
+    "sun",
+    "mon",
+    "tue",
+    "wed",
+    "thu",
+    "fri",
+    "sat"
+]
+
+
 def _get_columns(item):
     column_map = {}
     hidden = [
@@ -300,6 +313,13 @@ class SetSnapshotPolicy(command.ShowOne):
             help=_('ID or Name of the cluster to which the snapshot belongs.'),
         )
         parser.add_argument(
+            "--frequency",
+            metavar="{" + ",".join(FREQUENCY_CHOICES) + "}",
+            type=lambda s: s.lower(),
+            choices=FREQUENCY_CHOICES,
+            help=_("Frequency of automatically creating snapshots."),
+        )
+        parser.add_argument(
             '--name-prefix',
             metavar='<name_prefix>',
             required=True,
@@ -354,6 +374,8 @@ class SetSnapshotPolicy(command.ShowOne):
             attrs['enable'] = 'false'
         if getattr(parsed_args, 'delete_auto'):
             attrs['deleteAuto'] = 'true'
+        if parsed_args.frequency:
+            attrs['frequency'] = parsed_args.frequency.upper()
 
         cluster = client.find_cluster(parsed_args.cluster)
         client.set_snapshot_policy(cluster, **attrs)

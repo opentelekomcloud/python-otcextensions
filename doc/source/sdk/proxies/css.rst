@@ -35,3 +35,10 @@ Cluster Snapshot Operations
   :members: snapshots, find_snapshot, create_snapshot, get_snapshot_policy,
             set_snapshot_policy, set_snapshot_configuration,
             disable_snapshot_function, restore_snapshot, delete_snapshot
+
+Cluster SSL Certificate
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.css.v1._proxy.Proxy
+  :noindex:
+  :members: download_certificate

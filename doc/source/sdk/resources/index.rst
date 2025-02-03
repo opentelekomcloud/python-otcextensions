@@ -23,6 +23,7 @@ Open Telekom Cloud Resources
    Distributed Message Service (DMS) <dms/index>
    Document Database Service (DDS) <dds/index>
    Domain Name Service (DNS) <dns/index>
+   FunctionGraph Service (FGS) <function_graph/index>
    Identity Service (IAM) <identity/index>
    Key Management Service (KMS) <kms/index>
    Log Tank Service (LTS) <lts/index>
