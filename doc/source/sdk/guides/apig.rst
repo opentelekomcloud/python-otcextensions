@@ -25,7 +25,7 @@ Create Gateway
 
 This example demonstrates how to create a new gateway.
 
-.. literalinclude:: ../../../examples/apig/create_gateway.py
+.. literalinclude:: ../examples/apig/create_gateway.py
    :lines: 16-31
 
 Delete Gateway
@@ -33,7 +33,7 @@ Delete Gateway
 
 This example demonstrates how to delete an existing gateway.
 
-.. literalinclude:: ../../../examples/apig/delete_gateway.py
+.. literalinclude:: ../examples/apig/delete_gateway.py
    :lines: 16-21
 
 List Gateways
@@ -41,7 +41,7 @@ List Gateways
 
 This example demonstrates how to list all gateways.
 
-.. literalinclude:: ../../../examples/apig/list_gateways.py
+.. literalinclude:: ../examples/apig/list_gateways.py
    :lines: 16-25
 
 Get Gateway Details
@@ -49,7 +49,7 @@ Get Gateway Details
 
 This example demonstrates how to retrieve details of a specific gateway.
 
-.. literalinclude:: ../../../examples/apig/get_gateway.py
+.. literalinclude:: ../examples/apig/get_gateway.py
    :lines: 16-21
 
 Update Gateway
@@ -57,7 +57,7 @@ Update Gateway
 
 This example demonstrates how to update an existing gateway.
 
-.. literalinclude:: ../../../examples/apig/update_gateway.py
+.. literalinclude:: ../examples/apig/update_gateway.py
    :lines: 16-25
 
 Bind EIP
@@ -65,7 +65,7 @@ Bind EIP
 
 This example demonstrates how to bind an Elastic IP (EIP) to a gateway.
 
-.. literalinclude:: ../../../examples/apig/bind_eip.py
+.. literalinclude:: ../examples/apig/bind_eip.py
    :lines: 16-24
 
 Unbind EIP
@@ -73,7 +73,7 @@ Unbind EIP
 
 This example demonstrates how to unbind an Elastic IP (EIP) from a gateway.
 
-.. literalinclude:: ../../../examples/apig/unbind_eip.py
+.. literalinclude:: ../examples/apig/unbind_eip.py
    :lines: 16-21
 
 
@@ -82,7 +82,7 @@ Update Public Inbound Access
 
 This example demonstrates how to update public inbound access for a gateway.
 
-.. literalinclude:: ../../../examples/apig/update_ingress.py
+.. literalinclude:: ../examples/apig/update_ingress.py
    :lines: 16-26
 
 Enable Public Inbound Access
@@ -90,7 +90,7 @@ Enable Public Inbound Access
 
 This example demonstrates how to enable public inbound access for a gateway.
 
-.. literalinclude:: ../../../examples/apig/enable_ingress.py
+.. literalinclude:: ../examples/apig/enable_ingress.py
    :lines: 16-25
 
 Disable Public Inbound Access
@@ -98,7 +98,7 @@ Disable Public Inbound Access
 
 This example demonstrates how to disable public inbound access for a gateway.
 
-.. literalinclude:: ../../../examples/apig/disable_ingress.py
+.. literalinclude:: ../examples/apig/disable_ingress.py
    :lines: 16-21
 
 Enable Public Access
@@ -106,7 +106,7 @@ Enable Public Access
 
 This example demonstrates how to enable public access for a gateway.
 
-.. literalinclude:: ../../../examples/apig/enable_public_access.py
+.. literalinclude:: ../examples/apig/enable_public_access.py
    :lines: 16-25
 
 Update Public Access
@@ -114,7 +114,7 @@ Update Public Access
 
 This example demonstrates how to update public access settings for a gateway.
 
-.. literalinclude:: ../../../examples/apig/update_public_access.py
+.. literalinclude:: ../examples/apig/update_public_access.py
    :lines: 16-26
 
 Disable Public Access
@@ -122,7 +122,7 @@ Disable Public Access
 
 This example demonstrates how to disable public access for a gateway.
 
-.. literalinclude:: ../../../examples/apig/disable_public_access.py
+.. literalinclude:: ../examples/apig/disable_public_access.py
    :lines: 16-21
 
 Get Gateway Constraints
@@ -131,7 +131,7 @@ Get Gateway Constraints
 This example demonstrates how to retrieve the constraints and
 limitations of a gateway.
 
-.. literalinclude:: ../../../examples/apig/get_constraints.py
+.. literalinclude:: ../examples/apig/get_constraints.py
    :lines: 16-21
 
 Get Gateway Creation Progress
@@ -140,7 +140,7 @@ Get Gateway Creation Progress
 This example demonstrates how to check the progress of a gateway
 creation process.
 
-.. literalinclude:: ../../../examples/apig/get_gateway_progress.py
+.. literalinclude:: ../examples/apig/get_gateway_progress.py
    :lines: 16-21
 
 Modify Gateway Specifications
@@ -149,7 +149,7 @@ Modify Gateway Specifications
 This example demonstrates how to modify the specifications of an
 existing gateway.
 
-.. literalinclude:: ../../../examples/apig/modify_gateway_spec.py
+.. literalinclude:: ../examples/apig/modify_gateway_spec.py
    :lines: 16-25
 
 AZs
@@ -161,5 +161,5 @@ List Azs
 This example demonstrates how to list the availability zones (AZs)
 supported by API Gateway.
 
-.. literalinclude:: ../../../examples/apig/list_azs.py
+.. literalinclude:: ../examples/apig/list_azs.py
    :lines: 16-25
