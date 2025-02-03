@@ -35,5 +35,7 @@ class TestFunctionInvocation(base.TestCase):
 
     def test_make_it(self):
         sot = metric.Metric(**EXAMPLE)
-        self.assertEqual(EXAMPLE['duration'][0]['timestamp'], sot.duration[0].timestamp)
-        self.assertEqual(EXAMPLE['duration'][0]['value'], sot.duration[0].value)
+        self.assertEqual(EXAMPLE['duration'][0]['timestamp'],
+                         sot.duration[0].timestamp)
+        self.assertEqual(EXAMPLE['duration'][0]['value'],
+                         sot.duration[0].value)
