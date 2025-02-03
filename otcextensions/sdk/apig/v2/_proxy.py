@@ -43,7 +43,8 @@ class Proxy(proxy.Proxy):
                          interval=2, wait=960):
         """Wait for specific gateway status
         :param gateway: key id or an instance of
-            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+
         :param status: Specific status of the gateway.
         :param failures: Specific failure status of the gateway.
         :param interval: Seconds between checking the gateway.
@@ -61,7 +62,7 @@ class Proxy(proxy.Proxy):
     def get_gateway(self, gateway):
         """Get details of specific gateway
         :param gateway: key id or an instance of
-            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
 
         :returns: instance of
             :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
@@ -83,7 +84,7 @@ class Proxy(proxy.Proxy):
     def delete_gateway(self, gateway, **attrs):
         """Delete specific gateway
         :param gateway: key id or an instance of
-            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
 
         :returns: 'None'
         """
@@ -92,7 +93,7 @@ class Proxy(proxy.Proxy):
     def get_gateway_progress(self, gateway):
         """Get specific gateway progress
         :param gateway: key id or an instance of
-            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
 
         %returns: instance of
             :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
@@ -205,12 +206,9 @@ class Proxy(proxy.Proxy):
         public inbound traffic from the internet.
 
         :param gateway: The ID of the gateway or an instance of
-            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param attrs: Additional attributes required for enabling public
-        inbound access, including:
-            - **public_ip_id** (str): The ID of the public IP address to bind.
-            - **public_bound** (str): Set to "ENABLE" to allow public
-            inbound access.
+        inbound access
 
         :returns: Updated instance of
             :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
@@ -225,11 +223,9 @@ class Proxy(proxy.Proxy):
         that has public access enabled.
 
         :param gateway: The ID of the gateway or an instance of
-            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param attrs: Additional attributes required for updating the ingress
-        bandwidth, including:
-            - **ingress_bandwidth_size** (int): The new bandwidth size for
-            public inbound access (in Mbps).
+        bandwidth
 
         :returns: Updated instance of
             :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
