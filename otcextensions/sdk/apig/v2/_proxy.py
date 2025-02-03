@@ -207,6 +207,7 @@ class Proxy(proxy.Proxy):
 
         :param gateway: The ID of the gateway or an instance of
         :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+
         :param attrs: Additional attributes required for enabling public
         inbound access
 
@@ -224,6 +225,7 @@ class Proxy(proxy.Proxy):
 
         :param gateway: The ID of the gateway or an instance of
         :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+
         :param attrs: Additional attributes required for updating the ingress
         bandwidth
 
