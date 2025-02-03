@@ -11,3 +11,4 @@ FunctionGraph Resources
    v2/event
    v2/alias
    v2/version
+   v2/metric

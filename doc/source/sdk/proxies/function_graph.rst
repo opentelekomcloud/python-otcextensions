@@ -65,3 +65,11 @@ Aliases
   :noindex:
   :members: aliases, create_alias, delete_alias,
             update_alias, get_alias
+
+
+Metrics
+^^^^^^^
+
+.. autoclass:: otcextensions.sdk.function_graph.v2._proxy.Proxy
+  :noindex:
+  :members: metrics, function_metrics
