@@ -206,13 +206,14 @@ class Proxy(proxy.Proxy):
         public inbound traffic from the internet.
 
         :param gateway: The ID of the gateway or an instance of
-        :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
 
         :param attrs: Additional attributes required for enabling public
-        inbound access
+            inbound access
 
         :returns: Updated instance of
             :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return gateway._enable_ingress(self, gateway, **attrs)
@@ -224,13 +225,14 @@ class Proxy(proxy.Proxy):
         that has public access enabled.
 
         :param gateway: The ID of the gateway or an instance of
-        :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
 
         :param attrs: Additional attributes required for updating the ingress
-        bandwidth
+            bandwidth
 
         :returns: Updated instance of
             :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return gateway._update_ingress(self, gateway, **attrs)
