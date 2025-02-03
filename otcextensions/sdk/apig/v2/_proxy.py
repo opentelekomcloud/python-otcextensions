@@ -16,6 +16,7 @@ from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.apig.v2 import gateway as _gateway
 from otcextensions.sdk.apig.v2 import az as _az
 
+
 class Proxy(proxy.Proxy):
     skip_discovery = True
 

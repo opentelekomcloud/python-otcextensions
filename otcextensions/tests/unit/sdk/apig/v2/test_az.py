@@ -38,6 +38,8 @@ class TestAZ(base.TestCase):
         self.assertEqual(EXAMPLE_AZ['id'], sot.id)
         self.assertEqual(EXAMPLE_AZ['code'], sot.code)
         self.assertEqual(EXAMPLE_AZ['port'], sot.port)
-        self.assertEqual(EXAMPLE_AZ['local_name']['en_us'], sot.local_name.en_us)
-        self.assertEqual(EXAMPLE_AZ['local_name']['zh_cn'], sot.local_name.zh_cn)
+        self.assertEqual(EXAMPLE_AZ['local_name']['en_us'],
+                         sot.local_name.en_us)
+        self.assertEqual(EXAMPLE_AZ['local_name']['zh_cn'],
+                         sot.local_name.zh_cn)
         self.assertEqual(EXAMPLE_AZ['specs'], sot.specs)

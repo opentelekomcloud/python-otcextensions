@@ -22,6 +22,7 @@ class TmsKeyValueSpec(resource.Resource):
     key = resource.Body('key')
     value = resource.Body('value')
 
+
 class EndPointServiceSpec(resource.Resource):
     service_name = resource.Body('service_name')
     created_at = resource.Body('created_at')
@@ -35,6 +36,7 @@ class NodeIpsSpec(resource.Resource):
 class IpSpec(resource.Resource):
     ip_address = resource.Body('ip_address')
     bandwidth_size = resource.Body('bandwidth_size', type=int)
+
 
 class Gateway(resource.Resource):
     base_path = '/apigw/instances'
@@ -69,7 +71,8 @@ class Gateway(resource.Resource):
     charging_mode = resource.Body('charging_mode', type=int)
     cbc_metadata = resource.Body('cbc_metadata', type=int)
     loadbalancer_provider = resource.Body('loadbalancer_provider')
-    cbc_operation_locks = resource.Body('cbc_operation_locks', type=list, list_type=CbcOperationLockSpec)
+    cbc_operation_locks = resource.Body('cbc_operation_locks', type=list,
+                                        list_type=CbcOperationLockSpec)
     instance_id = resource.Body('instance_id')
     spec_id = resource.Body('spec_id')
     vpc_id = resource.Body('vpc_id')
@@ -80,7 +83,8 @@ class Gateway(resource.Resource):
     bandwidth_charging_mode = resource.Body('bandwidth_charging_mode')
     tags = resource.Body('tags', type=list, list_type=TmsKeyValueSpec)
     ingress_bandwidth_size = resource.Body('ingress_bandwidth_size', type=int)
-    ingress_bandwidth_charging_mode = resource.Body('ingress_bandwidth_charging_mode')
+    ingress_bandwidth_charging_mode = resource.Body(
+        'ingress_bandwidth_charging_mode')
     message = resource.Body('message')
     job_id = resource.Body('job_id')
     ingress_ip = resource.Body('ingress_ip')
@@ -91,8 +95,10 @@ class Gateway(resource.Resource):
     virsubnet_id = resource.Body('virsubnet_id')
     roma_eip_address = resource.Body('roma_eip_address')
     supported_features = resource.Body('supported_features', type=list)
-    endpoint_service = resource.Body('endpoint_service', type=EndPointServiceSpec)
-    endpoint_services = resource.Body('endpoint_services', type=list, list_type=EndPointServiceSpec)
+    endpoint_service = resource.Body('endpoint_service',
+                                     type=EndPointServiceSpec)
+    endpoint_services = resource.Body('endpoint_services', type=list,
+                                      list_type=EndPointServiceSpec)
     node_ips = resource.Body('node_ips', type=NodeIpsSpec)
     publicips = resource.Body('publicips', type=IpSpec)
     privateips = resource.Body('privateips', type=IpSpec)
@@ -127,7 +133,6 @@ class Gateway(resource.Resource):
         exceptions.raise_from_response(response)
         self._translate_response(response)
         return self
-
 
     def _modify_spec(self, session, gateway, **attrs):
         gw_id = gateway.instance_id if gateway.id is None else gateway.id

@@ -21,6 +21,7 @@ class TestApiGatewayProxy(test_proxy_base.TestProxyBase):
         super(TestApiGatewayProxy, self).setUp()
         self.proxy = _proxy.Proxy(self.session)
 
+
 class TestApiGatewayFunctions(TestApiGatewayProxy):
     def test_gateways(self):
         self.verify_list(self.proxy.gateways, _gateway.Gateway)
@@ -48,7 +49,6 @@ class TestApiGatewayFunctions(TestApiGatewayProxy):
         self.verify_update(self.proxy.update_gateway,
                            _gateway.Gateway)
 
-
     def test_get_gateway_progress(self):
         gateway = _gateway.Gateway()
         self._verify(
@@ -68,6 +68,7 @@ class TestApiGatewayFunctions(TestApiGatewayProxy):
             method_args=[gateway],
             expected_args=[self.proxy, gateway]
         )
+
     def test_get_constraints(self):
         gateway = _gateway.Gateway()
         self._verify(
