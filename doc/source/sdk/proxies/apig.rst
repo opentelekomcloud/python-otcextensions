@@ -6,7 +6,7 @@ ApiGateway
 Gateway Operations
 ^^^^^^^^^^^^^^^^^^
 
-.. autoclass:: otcextensions.sdk.apig.v2_proxy.Proxy
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
   :noindex:
   :members: gateways, create_gateway, wait_for_gateway, get_gateway,
             update_gateway, delete_gateway, get_gateway_progress,
@@ -16,6 +16,6 @@ Gateway Operations
 
 AZ Operations
 ^^^^^^^^^^^^^
-.. autoclass:: otcextensions.sdk.apig.v2_proxy.Proxy
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
   :noindex:
   :members: azs
