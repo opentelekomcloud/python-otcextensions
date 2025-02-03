@@ -142,11 +142,15 @@ class Gateway(resource.Resource):
         url = f'{self.base_path}/{gw_id}/eip'
         response = session.put(url, json=attrs)
         exceptions.raise_from_response(response)
+        self._translate_response(response)
+        return self
 
     def _unbind_eip(self, session, gateway):
         gw_id = gateway.instance_id if gateway.id is None else gateway.id
         url = f'{self.base_path}/{gw_id}/eip'
         response = session.delete(url)
+        exceptions.raise_from_response(response)
+        return None
 
     def _enable_public_access(self, session, gateway, **attrs):
         return self._enable_eip(session, gateway, 'nat-eip', **attrs)

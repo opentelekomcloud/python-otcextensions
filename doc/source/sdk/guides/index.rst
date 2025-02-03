@@ -32,6 +32,7 @@ Open Telekom Cloud related User Guides
    vpc
    vpcep
    logging
+   apig
 
 .. _user_guides:
 

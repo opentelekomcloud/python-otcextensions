@@ -42,6 +42,7 @@ Service Proxies
    Tag Management Service (TMS) <tms>
    Image Management Service V1 (IMSv1) <ims_v1>
    Image Management Service V2 (IMSv2) <ims_v2>
+   ApiGateway Service (AGS) <apig>
 
 .. _service-proxies:
 
