@@ -32,5 +32,6 @@ class TestFunctionQuotas(TestFg):
             self.client.delete_function,
             self.function
         )
-        m = list(self.client.function_metrics(self.function, period=f'{now},{now - 3600}'))
+        m = list(self.client.function_metrics(
+            self.function, period=f'{now},{now - 3600}'))
         self.assertGreaterEqual(1, len(m))
