@@ -279,3 +279,19 @@ This API is used to query the alias of a function version.
 
 .. literalinclude:: ../examples/function_graph/get_alias.py
    :lines: 16-42
+
+Querying Metrics in a Specified Period
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to query the alias of a function version.
+
+.. literalinclude:: ../examples/function_graph/list_function_metrics.py
+   :lines: 16-35
+
+Querying Tenant-Level Function Statistics
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to query the alias of a function version.
+
+.. literalinclude:: ../examples/function_graph/list_metrics.py
+   :lines: 16-24

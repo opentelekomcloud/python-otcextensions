@@ -19,6 +19,7 @@ from otcextensions.sdk.function_graph.v2 import dependency as _d
 from otcextensions.sdk.function_graph.v2 import event as _event
 from otcextensions.sdk.function_graph.v2 import alias as _alias
 from otcextensions.sdk.function_graph.v2 import version as _version
+from otcextensions.sdk.function_graph.v2 import metric as _metric
 
 
 class Proxy(proxy.Proxy):
@@ -440,3 +441,22 @@ class Proxy(proxy.Proxy):
             _alias.Alias, alias,
             function_urn=function.func_urn
         )
+
+    # ======== Metric Methods ========
+
+    def metrics(self, **query):
+        """List all tenant-level function statistics.
+
+        :returns: A generator of Metric instances.
+        """
+        return self._list(_metric.Metric, **query)
+
+    def function_metrics(self, function, period):
+        """List all metrics of a function in a specified period.
+
+        :returns: A generator of Metric instances.
+        """
+        function = self._get_resource(_function.Function, function)
+        func_urn = function.func_urn.rpartition(":")[0]
+        base_path = f'/fgs/functions/{func_urn}/statistics/{period}'
+        return self._list(_metric.Metric, base_path=base_path)

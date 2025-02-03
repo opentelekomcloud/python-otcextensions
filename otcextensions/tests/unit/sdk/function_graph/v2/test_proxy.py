@@ -19,6 +19,7 @@ from otcextensions.sdk.function_graph.v2 import quota as _q
 from otcextensions.sdk.function_graph.v2 import event as _event
 from otcextensions.sdk.function_graph.v2 import alias as _alias
 from otcextensions.sdk.function_graph.v2 import version as _version
+from otcextensions.sdk.function_graph.v2 import metric as _metric
 from openstack.tests.unit import test_proxy_base
 
 
@@ -478,4 +479,29 @@ class TestFgVersion(TestFgProxy):
             expected_kwargs={
                 'function_urn': func.func_urn.rpartition(":")[0],
                 'name': 'test_event'}
+        )
+
+
+class TestFgMetric(TestFgProxy):
+    def test_metrics(self):
+        self.verify_list(
+            self.proxy.metrics,
+            _metric.Metric,
+        )
+
+    def test_function_metrics(self):
+        func = _function.Function(
+            name='test',
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default:access-mysql-js-1213-1737554083545:'
+                     'latest'
+        )
+        self.verify_list(
+            self.proxy.function_metrics,
+            _metric.Metric,
+            method_args=[
+                func,
+                '1596686400000,1596686400000'
+            ],
+            expected_args=[],
         )
