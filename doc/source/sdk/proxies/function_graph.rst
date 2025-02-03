@@ -50,3 +50,18 @@ Events
   :noindex:
   :members: create_event, delete_event, events,
             get_event, update_event
+
+Versions
+^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.function_graph.v2._proxy.Proxy
+  :noindex:
+  :members: versions, publish_version
+
+Aliases
+^^^^^^^
+
+.. autoclass:: otcextensions.sdk.function_graph.v2._proxy.Proxy
+  :noindex:
+  :members: aliases, create_alias, delete_alias,
+            update_alias, get_alias

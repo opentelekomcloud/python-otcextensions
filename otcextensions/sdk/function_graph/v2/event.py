@@ -21,7 +21,7 @@ class ListEvents(resource.Resource):
 
 class Event(resource.Resource):
     base_path = '/fgs/functions/%(function_urn)s/events'
-
+    resources_key = 'events'
     # Capabilities
     allow_create = True
     allow_fetch = True
@@ -43,8 +43,6 @@ class Event(resource.Resource):
     id = resource.Body('id', type=str)
     #: Total number of test events.
     count = resource.Body('count', type=int)
-    #: Total number of test events.
-    events = resource.Body('events', type=list, list_type=ListEvents)
     #: Next read location.
     next_marker = resource.Body('next_marker', type=int)
     #: Last update time.

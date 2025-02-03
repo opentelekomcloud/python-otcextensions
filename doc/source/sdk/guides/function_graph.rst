@@ -223,3 +223,59 @@ This API is used to update a test event.
 
 .. literalinclude:: ../examples/function_graph/update_event.py
    :lines: 16-45
+
+Publishing a Function Version
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to publish a function version.
+
+.. literalinclude:: ../examples/function_graph/publish_version.py
+   :lines: 16-41
+
+Querying the Versions of a Function
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to query the versions of a function.
+
+.. literalinclude:: ../examples/function_graph/list_versions.py
+   :lines: 16-24
+
+Querying All Aliases of a Function
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to query the versions and aliases of a function.
+
+.. literalinclude:: ../examples/function_graph/list_aliases.py
+   :lines: 16-24
+
+Creating an Alias for a Function Version
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to create an alias for a function version.
+
+.. literalinclude:: ../examples/function_graph/create_alias.py
+   :lines: 16-40
+
+Deleting an Alias of a Function Version
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to delete an alias of a function version.
+
+.. literalinclude:: ../examples/function_graph/delete_alias.py
+   :lines: 16-40
+
+Modifying the Alias of a Function Version
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to modify the alias of a function version.
+
+.. literalinclude:: ../examples/function_graph/update_alias.py
+   :lines: 16-47
+
+Querying the Alias of a Function Version
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to query the alias of a function version.
+
+.. literalinclude:: ../examples/function_graph/get_alias.py
+   :lines: 16-42

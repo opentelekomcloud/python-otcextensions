@@ -9,3 +9,5 @@ FunctionGraph Resources
    v2/quota
    v2/dependency
    v2/event
+   v2/alias
+   v2/version
