@@ -538,12 +538,6 @@ class TestFgLog(TestFgProxy):
 
 class TestFgTemplate(TestFgProxy):
     def test_get_template(self):
-        func = _function.Function(
-            name='test',
-            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
-                     'function:default:access-mysql-js-1213-1737554083545:'
-                     'latest'
-        )
         self.verify_get(
             self.proxy.get_template,
             _t.Template,
