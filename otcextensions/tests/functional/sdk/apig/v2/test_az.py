@@ -10,11 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from otcextensions.tests.functional import base
+from otcextensions.tests.functional.sdk.apig import TestApiG
 
 
-class TestApiG(base.BaseFunctionalTest):
-
-    def setUp(self):
-        super(TestApiG, self).setUp()
-        self.client = self.conn.apig
+class TestAZ(TestApiG):
+    def test_01_list_az(self):
+        azs = list(self.client.azs())
+        self.assertGreater(len(azs), 0)

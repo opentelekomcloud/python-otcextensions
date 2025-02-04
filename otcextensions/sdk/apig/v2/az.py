@@ -9,12 +9,24 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from openstack import resource
 
-from otcextensions.tests.functional import base
+
+class LocalNameSpec(resource.Resource):
+    en_us = resource.Body('en_us')
+    zh_cn = resource.Body('zh_cn')
 
 
-class TestApiG(base.BaseFunctionalTest):
+class AZ(resource.Resource):
+    resource_name = 'AZ'
+    resources_key = 'available_zones'
+    base_path = '/apigw/available-zones'
 
-    def setUp(self):
-        super(TestApiG, self).setUp()
-        self.client = self.conn.apig
+    allow_list = True
+
+    name = resource.Body('name')
+    id = resource.Body('id')
+    code = resource.Body('code')
+    port = resource.Body('port')
+    local_name = resource.Body('local_name', type=LocalNameSpec)
+    specs = resource.Body('specs', type=dict)

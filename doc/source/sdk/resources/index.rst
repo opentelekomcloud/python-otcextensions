@@ -41,6 +41,7 @@ Open Telekom Cloud Resources
    Web Application Firewall (WAF) <waf/index>
    Tag Management Service (TMS) <tms/index>
    Image Management Service (IMS) <ims/index>
+   ApiGateway Service (AGS) <apig/index>
 
 Every resource which is used within the proxy methods have own attributes.
 Those attributes define the behavior of the resource which can be a cluster

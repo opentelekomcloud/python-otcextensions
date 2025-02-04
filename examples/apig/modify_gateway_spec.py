@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -9,12 +10,16 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+"""
+Modify gateway spec
+"""
+import openstack
 
-from otcextensions.tests.functional import base
+openstack.enable_logging(True)
+conn = openstack.connect(cloud='otc')
 
+attrs = {
+    "spec_id": "PROFESSIONAL"
+}
 
-class TestApiG(base.BaseFunctionalTest):
-
-    def setUp(self):
-        super(TestApiG, self).setUp()
-        self.client = self.conn.apig
+conn.apig.modify_gateway_spec("gateway_id", **attrs)
