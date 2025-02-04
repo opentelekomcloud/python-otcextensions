@@ -535,6 +535,7 @@ class TestFgLog(TestFgProxy):
             method_kwargs={},
         )
 
+
 class TestFgTemplate(TestFgProxy):
     def test_get_template(self):
         func = _function.Function(
