@@ -12,3 +12,5 @@ FunctionGraph Resources
    v2/alias
    v2/version
    v2/metric
+   v2/log
+   v2/template

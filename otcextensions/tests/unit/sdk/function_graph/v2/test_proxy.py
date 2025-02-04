@@ -20,6 +20,8 @@ from otcextensions.sdk.function_graph.v2 import event as _event
 from otcextensions.sdk.function_graph.v2 import alias as _alias
 from otcextensions.sdk.function_graph.v2 import version as _version
 from otcextensions.sdk.function_graph.v2 import metric as _metric
+from otcextensions.sdk.function_graph.v2 import log as _log
+from otcextensions.sdk.function_graph.v2 import template as _t
 from openstack.tests.unit import test_proxy_base
 
 
@@ -504,4 +506,50 @@ class TestFgMetric(TestFgProxy):
                 '1596686400000,1596686400000'
             ],
             expected_args=[],
+        )
+
+
+class TestFgLog(TestFgProxy):
+    def test_get_lts_log_settings(self):
+        func = _function.Function(
+            name='test',
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default:access-mysql-js-1213-1737554083545:'
+                     'latest'
+        )
+        self.verify_get(
+            self.proxy.get_lts_log_settings,
+            _log.Log,
+            method_args=[
+                func,
+            ],
+            expected_args=[],
+            expected_kwargs={'function_urn': func.func_urn.rpartition(":")[0],
+                             'requires_id': False}
+        )
+
+    def test_enable_lts_log(self):
+        self.verify_create(
+            self.proxy.enable_lts_log,
+            _log.Log,
+            method_kwargs={},
+        )
+
+class TestFgTemplate(TestFgProxy):
+    def test_get_template(self):
+        func = _function.Function(
+            name='test',
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default:access-mysql-js-1213-1737554083545:'
+                     'latest'
+        )
+        self.verify_get(
+            self.proxy.get_template,
+            _t.Template,
+            method_args=["41d5d9ca-cea3-4ba9-b866-e30c46f45f1f"],
+            expected_kwargs={
+                "template_id": "41d5d9ca-cea3-4ba9-b866-e30c46f45f1f",
+                "requires_id": False
+            },
+            expected_args=[]
         )
