@@ -174,7 +174,7 @@ This example demonstrates how to create a new environment within
 a specific API Gateway.
 
 .. literalinclude:: ../examples/apig/create_env.py
-   :lines: 16-26
+   :lines: 16-25
 
 
 Update Environment
