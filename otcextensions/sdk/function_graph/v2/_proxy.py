@@ -559,10 +559,8 @@ class Proxy(proxy.Proxy):
     def import_function(self, **attrs):
         """Import a function.
 
-        :param dict attrs: Keyword arguments to create an Alias.
+        :param dict attrs: Keyword arguments to import Function.
         :returns: The Import instance.
-        :rtype: :class:
-            `~otcextensions.sdk.function_graph.v2.import_function.Import`
         """
         return self._create(
             _import.Import, **attrs
