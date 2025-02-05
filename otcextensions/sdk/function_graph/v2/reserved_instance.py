@@ -24,7 +24,9 @@ class CronConfig(resource.Resource):
 
 
 class TacticsConfig(resource.Resource):
-    cron_configs = resource.Body('cron_configs', type=list, list_type=CronConfig)
+    cron_configs = resource.Body(
+        'cron_configs', type=list, list_type=CronConfig
+    )
 
 
 class ReservedInstance(resource.Resource):
