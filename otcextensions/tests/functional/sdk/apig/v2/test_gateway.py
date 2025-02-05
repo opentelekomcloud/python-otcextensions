@@ -15,7 +15,6 @@ import uuid
 
 
 class TestGateway(TestApiG):
-    gateway = None
     eip = None
     admin_external_net = None
 
@@ -25,29 +24,6 @@ class TestGateway(TestApiG):
 
     def tearDown(self):
         super(TestGateway, self).tearDown()
-
-    def get_attrs(self):
-        all_vpc = list(self.conn.vpc.vpcs())
-        vpc = all_vpc[0]
-        all_subnets = list(self.conn.vpc.subnets(vpc_id=vpc.id))
-        subnet = all_subnets[0]
-        security_groups = list(self.conn.network.security_groups())
-        security_group = security_groups[0]
-        available_zone_ids = ["eu-de-01"]
-        nmb = uuid.uuid4().hex[:8]
-        return {
-            'instance_name': 'test_gateway_{}'.format(nmb),
-            'spec_id': 'BASIC',
-            'vpc_id': vpc.id,
-            'subnet_id': subnet.id,
-            'security_group_id': security_group.id,
-            'available_zone_ids': available_zone_ids,
-        }
-
-    def create_gateway(self):
-        if not TestGateway.gateway:
-            attrs = self.get_attrs()
-            TestGateway.gateway = self.client.create_gateway(**attrs)
 
     def test_01_list_gateways(self):
         attrs = {

@@ -11,21 +11,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Create gateway
+Update env in gateway
 """
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
-
-
 attrs = {
-    'instance_name': 'name',
-    'spec_id': 'BASIC',
-    'vpc_id': 'vpc.id',
-    'subnet_id': 'subnet.id',
-    'security_group_id': 'security_group.id',
-    'available_zone_ids': ['available_zone_ids'],
+    "name": "DEV",
+    "remark": "Development environment"
 }
-
-gateway = conn.apig.create_gateway(**attrs)
+environment = conn.apig.update_environment(environment="env_id",
+                                           gateway="gateway_id",
+                                           **attrs)

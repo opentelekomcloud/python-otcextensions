@@ -163,3 +163,45 @@ supported by API Gateway.
 
 .. literalinclude:: ../examples/apig/list_azs.py
    :lines: 16-25
+
+Environment
+___________
+
+Create Environment
+^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to create a new environment within
+a specific API Gateway.
+
+.. literalinclude:: ../examples/apig/create_environment.py
+   :lines: 16-26
+
+
+Update Environment
+^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to update an existing environment
+within a specific API Gateway.
+
+.. literalinclude:: ../examples/apig/update_environment.py
+   :lines: 16-26
+
+
+Delete Environment
+^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to delete an existing environment
+from a specific API Gateway.
+
+.. literalinclude:: ../examples/apig/delete_environment.py
+   :lines: 16-21
+
+
+List Environments
+^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to list all environments associated
+with a specific API Gateway.
+
+.. literalinclude:: ../examples/apig/list_environments.py
+   :lines: 16-20
