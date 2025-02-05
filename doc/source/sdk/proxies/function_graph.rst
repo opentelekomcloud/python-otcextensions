@@ -73,3 +73,17 @@ Metrics
 .. autoclass:: otcextensions.sdk.function_graph.v2._proxy.Proxy
   :noindex:
   :members: metrics, function_metrics
+
+Logs
+^^^^
+
+.. autoclass:: otcextensions.sdk.function_graph.v2._proxy.Proxy
+  :noindex:
+  :members: get_lts_log_settings, enable_lts_log
+
+Templates
+^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.function_graph.v2._proxy.Proxy
+  :noindex:
+  :members: get_template

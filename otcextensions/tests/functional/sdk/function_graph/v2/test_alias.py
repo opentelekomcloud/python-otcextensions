@@ -22,12 +22,12 @@ from otcextensions.tests.functional.sdk.function_graph import TestFg
 _logger = _log.setup_logging('openstack')
 
 
-class TestFunctionEvent(TestFg):
+class TestFunctionAlias(TestFg):
     ID = None
     uuid = uuid.uuid4().hex[:8]
 
     def setUp(self):
-        super(TestFunctionEvent, self).setUp()
+        super(TestFunctionAlias, self).setUp()
         self.function = self.client.create_function(**TestFg.function_attrs)
         assert isinstance(self.function, function.Function)
 

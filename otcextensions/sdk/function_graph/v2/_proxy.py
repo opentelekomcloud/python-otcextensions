@@ -20,6 +20,8 @@ from otcextensions.sdk.function_graph.v2 import event as _event
 from otcextensions.sdk.function_graph.v2 import alias as _alias
 from otcextensions.sdk.function_graph.v2 import version as _version
 from otcextensions.sdk.function_graph.v2 import metric as _metric
+from otcextensions.sdk.function_graph.v2 import log as _log
+from otcextensions.sdk.function_graph.v2 import template as _t
 
 
 class Proxy(proxy.Proxy):
@@ -460,3 +462,48 @@ class Proxy(proxy.Proxy):
         func_urn = function.func_urn.rpartition(":")[0]
         base_path = f'/fgs/functions/{func_urn}/statistics/{period}'
         return self._list(_metric.Metric, base_path=base_path)
+
+    # ======== Log Methods ========
+
+    def get_lts_log_settings(self, function):
+        """Get log group and stream settings of a function.
+
+        :param function: The value can be the ID of a function or
+            a :class:`~otcextensions.sdk.function_graph.v2.function.Function`
+            instance.
+        :returns: instance of
+            :class:`~otcextensions.sdk.function_graph.v2.log.Log`
+        """
+        func = self._get_resource(_function.Function, function)
+        function_urn = func.func_urn.rpartition(":")[0]
+        return self._get(
+            _log.Log,
+            function_urn=function_urn,
+            requires_id=False
+        )
+
+    def enable_lts_log(self):
+        """Enable log reporting to LTS.
+
+        :returns: The created Log instance.
+        :rtype: :class:`~otcextensions.sdk.function_graph.v2.log.Log`
+        """
+        base_path = '/fgs/functions/enable-lts-logs'
+        return self._create(
+            _log.Log, base_path=base_path
+        )
+
+    # ======== Templates Methods ========
+
+    def get_template(self, template_id):
+        """Get one template by ID.
+
+        :param template_id: id of template
+        :returns: instance of
+            :class:`~otcextensions.sdk.function_graph.v2.template.Template`
+        """
+        return self._get(
+            _t.Template,
+            template_id=template_id,
+            requires_id=False
+        )

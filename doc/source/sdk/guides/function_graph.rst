@@ -295,3 +295,27 @@ This API is used to query the alias of a function version.
 
 .. literalinclude:: ../examples/function_graph/list_metrics.py
    :lines: 16-24
+
+Querying the Log Group and Stream of a Function
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to query the LTS log group and stream settings of a function.
+
+.. literalinclude:: ../examples/function_graph/get_lts_log_detail.py
+   :lines: 16-35
+
+Enabling Log Reporting to LTS
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to enable log reporting to LTS.
+
+.. literalinclude:: ../examples/function_graph/enable_lts_log.py
+   :lines: 16-23
+
+Querying a Specified Function Template
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to query a specified function template.
+
+.. literalinclude:: ../examples/function_graph/get_template.py
+   :lines: 16-26
