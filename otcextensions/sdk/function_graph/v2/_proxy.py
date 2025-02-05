@@ -22,6 +22,9 @@ from otcextensions.sdk.function_graph.v2 import version as _version
 from otcextensions.sdk.function_graph.v2 import metric as _metric
 from otcextensions.sdk.function_graph.v2 import log as _log
 from otcextensions.sdk.function_graph.v2 import template as _t
+from otcextensions.sdk.function_graph.v2 import reserved_instance as _r
+from otcextensions.sdk.function_graph.v2 import export_function as _export
+from otcextensions.sdk.function_graph.v2 import import_function as _import
 
 
 class Proxy(proxy.Proxy):
@@ -506,4 +509,61 @@ class Proxy(proxy.Proxy):
             _t.Template,
             template_id=template_id,
             requires_id=False
+        )
+
+    # ======== Reserved Instances Methods ========
+
+    def update_instances_number(self, function, **attrs):
+        """Update a number of reserved instances from attributes.
+
+        :param function: The URN or instance of the Function to update
+            event in.
+        :param dict attrs: Keyword arguments to update a reserved instances.
+        :returns: The updated ReservedInstance instance.
+        """
+        function = self._get_resource(_function.Function, function)
+        function_urn = function.func_urn.rpartition(":")[0]
+        return self._update(
+            _r.ReservedInstance, function_urn=function_urn, **attrs
+        )
+
+    def reserved_instances_config(self, **query):
+        """List all reserved instances of a function.
+
+        :returns: A generator of ReservedInstance instances.
+        """
+        base_path = "/fgs/functions/reservedinstanceconfigs"
+        return self._list(_r.ReservedInstance, base_path=base_path, **query)
+
+    def reserved_instances(self, **query):
+        """List all query the number of instances reserved for a function.
+
+        :returns: A generator of ReservedInstance instances.
+        """
+        base_path = "/fgs/functions/reservedinstances"
+        return self._list(_r.ReservedInstance, base_path=base_path, **query)
+
+    # ======== Import/Export Methods ========
+
+    def export_function(self, function, **query):
+        """Export a function.
+
+        :param function: The URN or instance of the Function to export.
+        :returns: instance of :class:
+            `~otcextensions.sdk.function_graph.v2.export_function.Export`
+        """
+        function = self._get_resource(_function.Function, function)
+        export = self._get_resource(_export.Export, "")
+        return export._export(self, function, **query)
+
+    def import_function(self, **attrs):
+        """Import a function.
+
+        :param dict attrs: Keyword arguments to create an Alias.
+        :returns: The Import instance.
+        :rtype: :class:
+            `~otcextensions.sdk.function_graph.v2.import_function.Import`
+        """
+        return self._create(
+            _import.Import, **attrs
         )

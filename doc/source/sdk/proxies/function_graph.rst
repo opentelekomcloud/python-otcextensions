@@ -87,3 +87,26 @@ Templates
 .. autoclass:: otcextensions.sdk.function_graph.v2._proxy.Proxy
   :noindex:
   :members: get_template
+
+Reserved Instances
+^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.function_graph.v2._proxy.Proxy
+  :noindex:
+  :members: update_instances_number, reserved_instances_config,
+            reserved_instances
+
+
+Export
+^^^^^^
+
+.. autoclass:: otcextensions.sdk.function_graph.v2._proxy.Proxy
+  :noindex:
+  :members: export_function
+
+Import
+^^^^^^
+
+.. autoclass:: otcextensions.sdk.function_graph.v2._proxy.Proxy
+  :noindex:
+  :members: import_function

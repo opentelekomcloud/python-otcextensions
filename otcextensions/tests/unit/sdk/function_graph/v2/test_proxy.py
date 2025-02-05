@@ -22,6 +22,8 @@ from otcextensions.sdk.function_graph.v2 import version as _version
 from otcextensions.sdk.function_graph.v2 import metric as _metric
 from otcextensions.sdk.function_graph.v2 import log as _log
 from otcextensions.sdk.function_graph.v2 import template as _t
+from otcextensions.sdk.function_graph.v2 import reserved_instance as _r
+from otcextensions.sdk.function_graph.v2 import import_function as _import
 from openstack.tests.unit import test_proxy_base
 
 
@@ -547,4 +549,75 @@ class TestFgTemplate(TestFgProxy):
                 "requires_id": False
             },
             expected_args=[]
+        )
+
+
+class TestFgReservedInstances(TestFgProxy):
+    def test_update_event(self):
+        func = _function.Function(
+            name='test',
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default:access-mysql-js-1213-1737554083545:'
+                     'latest'
+        )
+        self.verify_update(
+            self.proxy.update_instances_number,
+            _r.ReservedInstance,
+            method_args=[func],
+            expected_args=[],
+            expected_kwargs={
+                'function_urn': func.func_urn.rpartition(":")[0],
+                'x': 1,
+                'y': 2,
+                'z': 3
+            }
+        )
+
+    def test_reserved_instances_config(self):
+        self.verify_list(
+            self.proxy.reserved_instances_config,
+            _r.ReservedInstance,
+            method_args=[],
+            expected_args=[],
+        )
+
+    def test_reserved_instances(self):
+        self.verify_list(
+            self.proxy.reserved_instances,
+            _r.ReservedInstance,
+            method_args=[],
+            expected_args=[],
+        )
+
+class TestFgImportExport(TestFgProxy):
+    def test_import_function(self):
+        attrs = {
+            'func_name': 'test',
+            'file_type': 'zip',
+            'file_name': 'test.zip',
+            'file_code': 'UEsDBBQAAAAIAPBbPFpOs3AMAgEAAEwCAAAGAAAAZGVwLnB5jVHB'
+                         'asMwDL37K4R3iSGMMtglsNNW2HH0B4oXq9SjtY2shJbSf5/tpl5y'
+                         'GFQX23qS3nuWPQZPDD/ROyGEwR3stTMHpAZHdNxC7x3jiVUnIAXT'
+                         '+XbJ8QRfmiIC7xGsCwND6YHGaNaqlhVom3PwVoieD16beCNQYj6O'
+                         'bGrP4wL50Ro0kNtqRch4IzfYox0nsJPtjGExboM8kAMNhDF4F7Fi'
+                         '90QSdKnJHDKy5iG+e4Oyg5fVql3C396cE7CTH9kOTUI6uPxJuMra'
+                         'cp0RFinFvRmOITZ3CZNiPPUYGNblsD6pjoDzr/4sawEk8hRrvjy3'
+                         'D9p5/d/OOs9JNiKnxasHLSzJlfgFUEsBAhQDFAAAAAgA8Fs8Wk6z'
+                         'cAwCAQAATAIAAAYAAAAAAAAAAAAAAKSBAAAAAGRlcC5weVBLBQYA'
+                         'AAAAAQABADQAAAAmAQAAAAA='
+        }
+        self.verify_create(
+            self.proxy.import_function,
+            _import.Import,
+            method_kwargs={**attrs}
+        )
+
+    def test_export(self):
+        function = _function.Function(id='test_function')
+        self._verify(
+            'otcextensions.sdk.function_graph.v2.export_function.'
+            'Export._export',
+            self.proxy.export_function,
+            method_args=[function],
+            expected_args=[self.proxy, function]
         )

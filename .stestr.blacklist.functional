@@ -39,4 +39,5 @@ otcextensions.tests.functional.sdk.nat.v2.test_cleanup
 otcextensions.tests.functional.sdk.function_graph.v2.test_dependency*
 otcextensions.tests.functional.sdk.function_graph.v2.test_log*
 otcextensions.tests.functional.sdk.function_graph.v2.test_template*
+otcextensions.tests.functional.sdk.function_graph.v2.test_import_export*
 otcextensions.tests.functional.sdk.apig.v2.test_gateway

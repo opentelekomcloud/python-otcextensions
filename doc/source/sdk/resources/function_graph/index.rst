@@ -14,3 +14,6 @@ FunctionGraph Resources
    v2/metric
    v2/log
    v2/template
+   v2/reserved_instance
+   v2/export
+   v2/import
