@@ -173,7 +173,7 @@ Create Environment
 This example demonstrates how to create a new environment within
 a specific API Gateway.
 
-.. literalinclude:: ../examples/apig/create_environment.py
+.. literalinclude:: ../examples/apig/create_env.py
    :lines: 16-26
 
 
@@ -183,7 +183,7 @@ Update Environment
 This example demonstrates how to update an existing environment
 within a specific API Gateway.
 
-.. literalinclude:: ../examples/apig/update_environment.py
+.. literalinclude:: ../examples/apig/update_env.py
    :lines: 16-26
 
 
@@ -193,7 +193,7 @@ Delete Environment
 This example demonstrates how to delete an existing environment
 from a specific API Gateway.
 
-.. literalinclude:: ../examples/apig/delete_environment.py
+.. literalinclude:: ../examples/apig/delete_env.py
    :lines: 16-21
 
 
@@ -203,5 +203,5 @@ List Environments
 This example demonstrates how to list all environments associated
 with a specific API Gateway.
 
-.. literalinclude:: ../examples/apig/list_environments.py
+.. literalinclude:: ../examples/apig/list_envs.py
    :lines: 16-20
