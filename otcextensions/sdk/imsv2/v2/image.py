@@ -15,7 +15,7 @@ from openstack import resource
 
 
 class Image(resource.Resource):
-    resource_key = 'image'
+    resources_key = 'images'
     base_path = '/cloudimages'
 
     allow_create = True
@@ -25,7 +25,37 @@ class Image(resource.Resource):
     create_method = "POST"
 
     _query_mapping = resource.QueryParameters('limit', 'id',
-                                              'name', 'status')
+                                              'name', 'status',
+                                              '__isregistered',
+                                              '__imagetype',
+                                              '__whole_image',
+                                              '__system__cmkid',
+                                              'protected',
+                                              'visibility',
+                                              'owner',
+                                              'container_format',
+                                              'disk_format',
+                                              'min_disk',
+                                              'min_ram',
+                                              '__os_bit',
+                                              '__platform',
+                                              'marker',
+                                              'sort_key',
+                                              'sort_dir',
+                                              '__os_type',
+                                              'tag',
+                                              'member_status',
+                                              '__support_kvm',
+                                              '__support_xen',
+                                              '__support_largememory',
+                                              '__support_diskintensive',
+                                              '__support_highperformance',
+                                              '__support_xen_gpu_type',
+                                              '__support_kvm_gpu_type',
+                                              '__support_xen_hana',
+                                              '__support_kvm_infiniband',
+                                              'virtual_env_type',
+                                              'enterprise_project_id')
 
     name = resource.Body('name')
     description = resource.Body('description')
@@ -57,4 +87,5 @@ class Image(resource.Resource):
 
     def create(self, session, prepend_key=False, base_path=None):
         # Overriden here to override prepend_key default value
-        return super(Image, self).create(session, prepend_key, base_path + '/action')
+        return super(Image, self).create(session, prepend_key, base_path
+                                         + '/action')
