@@ -319,3 +319,43 @@ This API is used to query a specified function template.
 
 .. literalinclude:: ../examples/function_graph/get_template.py
    :lines: 16-26
+
+Querying Reserved Instances of a Function
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to query reserved instances of a function.
+
+.. literalinclude:: ../examples/function_graph/list_reserved_instances_config.py
+   :lines: 16-24
+
+Querying the Number of Reserved Instances
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to query the number of instances reserved for a function.
+
+.. literalinclude:: ../examples/function_graph/list_reserved_instances.py
+   :lines: 16-24
+
+Changing the Number of Reserved Instances
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to change the number of reserved instances.
+
+.. literalinclude:: ../examples/function_graph/update_reserved_instances.py
+   :lines: 16-40
+
+Importing a Function
+^^^^^^^^^^^^^^^^^^^^
+
+This API is used to import a function.
+
+.. literalinclude:: ../examples/function_graph/import_function.py
+   :lines: 16-39
+
+Exporting a Function
+^^^^^^^^^^^^^^^^^^^^
+
+This API is used to export a function.
+
+.. literalinclude:: ../examples/function_graph/export_function.py
+   :lines: 16-38
