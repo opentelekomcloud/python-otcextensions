@@ -29,7 +29,7 @@ class TestImage(base.TestCase):
 
     def test_basic(self):
         sot = image.Image()
-        path = '/cloudimages/action'
+        path = '/cloudimages'
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_create)
 
