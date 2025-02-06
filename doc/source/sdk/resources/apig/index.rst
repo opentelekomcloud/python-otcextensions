@@ -6,3 +6,4 @@ ApiGateway Resources
 
    v2/gateway
    v2/az
+   v2/env

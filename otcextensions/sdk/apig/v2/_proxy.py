@@ -15,6 +15,7 @@ from openstack import resource
 from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.apig.v2 import gateway as _gateway
 from otcextensions.sdk.apig.v2 import az as _az
+from otcextensions.sdk.apig.v2 import apienvironment as _api_environment
 
 
 class Proxy(proxy.Proxy):
@@ -251,3 +252,81 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return gateway._disable_ingress(self, gateway)
+
+    def create_environment(self, gateway, **attrs):
+        """Create a new environment for a specific API Gateway.
+
+        This method creates an environment within the given API Gateway
+        by associating it with the specified attributes.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional attributes for the environment creation.
+
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.api_environment.ApiEnvironment`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._create(_api_environment.ApiEnvironment,
+                            gateway_id=gateway.id,
+                            **attrs)
+
+    def update_environment(self, gateway, environment, **attrs):
+        """Update an existing environment for a specific API Gateway.
+
+        This method updates the specified environment within the API Gateway
+        by applying the provided attributes.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param environment: The ID of the environment or an instance of
+            :class:`~otcextensions.sdk.apig.v2.environment.ApiEnvironment`
+        :param attrs: Additional attributes to update the environment.
+
+        :returns: Updated instance of
+            :class:`~otcextensions.sdk.apig.v2.environment.ApiEnvironment`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        environment = self._get_resource(_api_environment.ApiEnvironment,
+                                         environment)
+        return environment._update_env(self, gateway, **attrs)
+
+    def delete_environment(self, gateway, environment, **attrs):
+        """Delete an existing environment from a specific API Gateway.
+
+        This method removes the specified environment from the API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param environment: The ID of the environment or an instance of
+            :class:`~otcextensions.sdk.apig.v2.environment.ApiEnvironment`
+        :param attrs: Additional attributes for the delete operation.
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        environment = self._get_resource(_api_environment.ApiEnvironment,
+                                         environment)
+        return self._delete(_api_environment.ApiEnvironment,
+                            environment,
+                            gateway_id=gateway.id,
+                            **attrs)
+
+    def environments(self, gateway, **attrs):
+        """List all environments for a specific API Gateway.
+
+        This method retrieves a list of environments associated with
+        the given API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional filters for listing environments.
+
+        :returns: A list of instances of
+            :class:`~otcextensions.sdk.apig.v2.environment.ApiEnvironment`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(_api_environment.ApiEnvironment,
+                          paginated=False,
+                          gateway_id=gateway.id,
+                          **attrs)

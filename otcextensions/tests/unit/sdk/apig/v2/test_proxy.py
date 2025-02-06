@@ -12,6 +12,7 @@
 from otcextensions.sdk.apig.v2 import _proxy
 from otcextensions.sdk.apig.v2 import gateway as _gateway
 from otcextensions.sdk.apig.v2 import az as _az
+from otcextensions.sdk.apig.v2 import apienvironment as _env
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
 
@@ -159,3 +160,43 @@ class TestApiGatewayFunctions(TestApiGatewayProxy):
             method_args=[gateway],
             expected_args=[self.proxy, gateway]
         )
+
+    def test_create_env(self):
+        gateway = _gateway.Gateway()
+        self.verify_create(self.proxy.create_environment,
+                           _env.ApiEnvironment,
+                           method_args=[gateway],
+                           expected_args=[],
+                           method_kwargs={},
+                           expected_kwargs={'gateway_id': None}
+                           )
+
+    def test_update_env(self):
+        gateway = _gateway.Gateway()
+        env = _env.ApiEnvironment()
+        self._verify(
+            'otcextensions.sdk.apig.v2.apienvironment.'
+            'ApiEnvironment._update_env',
+            self.proxy.update_environment,
+            method_args=[gateway, env],
+            expected_args=[self.proxy, gateway]
+        )
+
+    def test_delete_env(self):
+        gateway = _gateway.Gateway()
+        env = _env.ApiEnvironment()
+        self.verify_delete(self.proxy.delete_environment,
+                           _env.ApiEnvironment,
+                           method_args=[gateway, env],
+                           expected_args=[gateway],
+                           expected_kwargs={'gateway_id': None}
+                           )
+
+    def test_list_envs(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(self.proxy.environments,
+                         _env.ApiEnvironment,
+                         method_args=[gateway],
+                         expected_args=[],
+                         expected_kwargs={'gateway_id': None}
+                         )

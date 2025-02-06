@@ -19,3 +19,10 @@ AZ Operations
 .. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
   :noindex:
   :members: azs
+
+Environment Operations
+^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: create_environment, update_environment, environments,
+            delete_environment
