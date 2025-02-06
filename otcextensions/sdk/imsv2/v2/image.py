@@ -16,6 +16,7 @@ from openstack import resource
 
 class Image(resource.Resource):
     resources_key = 'images'
+    resource_key = 'image'
     base_path = '/cloudimages'
 
     allow_create = True
