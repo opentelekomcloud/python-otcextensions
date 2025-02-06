@@ -24,6 +24,9 @@ class Image(resource.Resource):
     #: Method for creating a resource (POST, PUT)
     create_method = "POST"
 
+    _query_mapping = resource.QueryParameters('limit', 'id',
+                                              'name', 'status')
+
     name = resource.Body('name')
     description = resource.Body('description')
     os_type = resource.Body('os_type')
@@ -41,6 +44,16 @@ class Image(resource.Resource):
     image_tags = resource.Body('image_tags', type=list)
     data_images = resource.Body('data_images', type=list)
     job_id = resource.Body('job_id')
+    status = resource.Body('status')
+    visibility = resource.Body('visibility')
+    created_at = resource.Body('created_at')
+    updated_at = resource.Body('updated_at')
+    container_format = resource.Body('container_format')
+    disk_format = resource.Body('disk_format')
+    member_status = resource.Body('member_status')
+    virtual_env_type = resource.Body('virtual_env_type')
+    enterprise_project_id = resource.Body('enterprise_project_id')
+    protected = resource.Body('protected', type=bool)
 
     def create(self, session, prepend_key=False, base_path=None):
         # Overriden here to override prepend_key default value

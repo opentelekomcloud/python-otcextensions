@@ -24,7 +24,7 @@ class Proxy(proxy.Proxy):
         """
         return self._create(_image.Image, **attrs)
 
-    def images(self, **query):
+    def images(self, **attrs):
         """Retrieve a generator of images
 
         :param dict query: Optional query parameters to be sent to limit the
@@ -33,4 +33,4 @@ class Proxy(proxy.Proxy):
         :returns: A generator of zone
             :class:`~otcextensions.sdk.imsv2.v2.image.Image` instances
         """
-        return self._list(_image.Image, **query)
+        return self._list(_image.Image, paginated=False, **attrs)
