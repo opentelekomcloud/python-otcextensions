@@ -16,9 +16,11 @@ from openstack import resource
 
 class Image(resource.Resource):
     resource_key = 'image'
-    base_path = '/cloudimages/action'
+    base_path = '/cloudimages'
 
     allow_create = True
+    allow_list = True
+
     #: Method for creating a resource (POST, PUT)
     create_method = "POST"
 
@@ -42,4 +44,4 @@ class Image(resource.Resource):
 
     def create(self, session, prepend_key=False, base_path=None):
         # Overriden here to override prepend_key default value
-        return super(Image, self).create(session, prepend_key, base_path)
+        return super(Image, self).create(session, prepend_key, base_path + '/action')
