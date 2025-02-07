@@ -20,9 +20,6 @@ class TestEnvironment(TestApiG):
         super(TestEnvironment, self).setUp()
         self.create_gateway()
 
-    def tearDown(self):
-        super(TestEnvironment, self).tearDown()
-
     def test_01_create_environment(self):
         attrs = {
             "name": "DEV",

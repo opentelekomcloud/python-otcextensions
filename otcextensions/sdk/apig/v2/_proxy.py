@@ -16,6 +16,7 @@ from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.apig.v2 import gateway as _gateway
 from otcextensions.sdk.apig.v2 import az as _az
 from otcextensions.sdk.apig.v2 import apienvironment as _api_environment
+from otcextensions.sdk.apig.v2 import apigroup as _api_group
 
 
 class Proxy(proxy.Proxy):
@@ -330,3 +331,39 @@ class Proxy(proxy.Proxy):
                           paginated=False,
                           gateway_id=gateway.id,
                           **attrs)
+
+    def create_api_group(self, gateway, **attrs):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._create(_api_group.ApiGroup,
+                            gateway_id=gateway.id,
+                            **attrs)
+
+    def update_api_group(self, gateway, api_group, **attrs):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        api_group = self._get_resource(_api_group.ApiGroup, api_group)
+        return api_group._update_group(self, gateway=gateway, **attrs)
+
+    def delete_api_group(self, gateway, api_group):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        api_group = self._get_resource(_api_group.ApiGroup, api_group)
+        return self._delete(_api_group.ApiGroup,
+                            api_group,
+                            gateway_id=gateway.id)
+
+    def get_api_group(self, gateway, api_group):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._get(_api_group.ApiGroup,
+                         api_group,
+                         gateway_id=gateway.id)
+
+    def api_groups(self, gateway, **attrs):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(_api_group.ApiGroup,
+                          paginated=False,
+                          gateway_id=gateway.id,
+                          **attrs)
+
+    def verify_api_group_name(self, gateway, **attrs):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        api_group = _api_group.ApiGroup(gateway_id=gateway.id)
+        return api_group._verify_name(self, gateway=gateway, **attrs)
