@@ -205,3 +205,59 @@ with a specific API Gateway.
 
 .. literalinclude:: ../examples/apig/list_envs.py
    :lines: 16-20
+
+Api Group
+_________
+
+Create Api Group
+^^^^^^^^^^^^^^^^
+
+This example demonstrates how to create a new API group in the API Gateway.
+
+.. literalinclude:: ../examples/apig/create_api_group.py
+   :lines: 16-25
+
+Update Api Group
+^^^^^^^^^^^^^^^^
+
+This example demonstrates how to update an existing API group
+in the API Gateway.
+
+.. literalinclude:: ../examples/apig/update_api_group.py
+   :lines: 16-27
+
+Delete Api Group
+^^^^^^^^^^^^^^^^
+
+This example demonstrates how to delete an existing API group from
+the API Gateway.
+
+.. literalinclude:: ../examples/apig/delete_api_group.py
+   :lines: 16-21
+
+List Api Groups
+^^^^^^^^^^^^^^^
+
+This example demonstrates how to list all API groups associated
+with a specific API Gateway.
+
+.. literalinclude:: ../examples/apig/list_api_groups.py
+   :lines: 16-20
+
+Get Api Group
+^^^^^^^^^^^^^
+
+This example demonstrates how to retrieve details of a specific
+API group from the API Gateway.
+
+.. literalinclude:: ../examples/apig/get_api_group.py
+   :lines: 16-21
+
+Verify Api Group Name
+^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to verify whether a given API group
+name is available in the API Gateway.
+
+.. literalinclude:: ../examples/apig/verify_api_group_name.py
+   :lines: 16-23

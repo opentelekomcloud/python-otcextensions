@@ -333,24 +333,76 @@ class Proxy(proxy.Proxy):
                           **attrs)
 
     def create_api_group(self, gateway, **attrs):
+        """Create a new API group for a specific API Gateway.
+
+        This method creates an API group associated with the given API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional attributes for creating the API group.
+
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.api_group.ApiGroup`
+        """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return self._create(_api_group.ApiGroup,
                             gateway_id=gateway.id,
                             **attrs)
 
     def update_api_group(self, gateway, api_group, **attrs):
+        """Update an existing API group for a specific API Gateway.
+
+        This method updates the attributes of an API group associated with
+        the given API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param api_group: The ID of the API group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.api_group.ApiGroup`
+        :param attrs: Additional attributes for updating the API group.
+
+        :returns: The updated instance of
+            :class:`~otcextensions.sdk.apig.v2.api_group.ApiGroup`
+        """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         api_group = self._get_resource(_api_group.ApiGroup, api_group)
         return api_group._update_group(self, gateway=gateway, **attrs)
 
-    def delete_api_group(self, gateway, api_group):
+    def delete_api_group(self, gateway, api_group, **attrs):
+        """Delete an API group from a specific API Gateway.
+
+        This method deletes the specified API group associated with
+        the given API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param api_group: The ID of the API group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.api_group.ApiGroup`
+        :param attrs: Additional parameters for deleting the API group.
+
+        :returns: None
+        """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         api_group = self._get_resource(_api_group.ApiGroup, api_group)
         return self._delete(_api_group.ApiGroup,
                             api_group,
-                            gateway_id=gateway.id)
+                            gateway_id=gateway.id,
+                            **attrs)
 
     def get_api_group(self, gateway, api_group):
+        """Retrieve details of a specific API group.
+
+        This method retrieves the details of an API group associated
+        with the given API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param api_group: The ID of the API group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.api_group.ApiGroup`
+
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.api_group.ApiGroup`
+        """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return self._get(_api_group.ApiGroup,
                          api_group,
@@ -365,5 +417,5 @@ class Proxy(proxy.Proxy):
 
     def verify_api_group_name(self, gateway, **attrs):
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        api_group = _api_group.ApiGroup(gateway_id=gateway.id)
+        api_group = _api_group.ApiGroup()
         return api_group._verify_name(self, gateway=gateway, **attrs)

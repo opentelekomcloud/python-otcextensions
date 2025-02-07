@@ -52,12 +52,12 @@ class TestApiGroup(TestApiG):
         groups = list(self.client.api_groups(gateway=TestApiG.gateway))
         self.assertGreater(len(groups), 1)
 
-
     def test_05_verify_api_group(self):
         attrs = {
-            "group_name" : "api_group_001"
+            "group_name": "api_group_002"
         }
-        result = self.client.verify_api_group_name(gateway=TestApiG.gateway)
+        self.client.verify_api_group_name(gateway=TestApiG.gateway,
+                                          **attrs)
 
     def test_06_delete_api_group(self):
         self.client.delete_api_group(gateway=TestApiG.gateway,

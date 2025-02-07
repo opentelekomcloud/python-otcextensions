@@ -12,6 +12,7 @@
 from openstack import resource
 from openstack import exceptions
 
+
 class UrlDomainSpec(resource.Resource):
     id = resource.Body('id')
     domain = resource.Body('domain')
@@ -45,7 +46,6 @@ class ApiGroup(resource.Resource):
     roma_app_id = resource.Body('roma_app_id')
     version = resource.Body('version')
 
-
     id = resource.Body('id')
     status = resource.Body('status')
     sl_domain = resource.Body('sl_domain')
@@ -70,8 +70,7 @@ class ApiGroup(resource.Resource):
         uri = f'/apigw/instances/{gateway.id}/api-groups/check'
         response = session.post(uri, json=attrs)
         exceptions.raise_from_response(response)
-        self._translate_response(response)
-        return self
+        return None
 
     def _update_group(self, session, gateway, **attrs):
         """Update API group.
