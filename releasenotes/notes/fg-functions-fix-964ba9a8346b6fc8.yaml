@@ -1,0 +1,7 @@
+---
+
+fixes:
+  - |
+    Fixed FunctionGraph to return correct values for
+     _get_function_metadata
+     _get_function_code
