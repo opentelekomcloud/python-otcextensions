@@ -120,6 +120,7 @@ class Function(resource.Resource):
         url = self.base_path + f'/{function.func_urn.rpartition(":")[0]}/code'
         response = session.get(url)
         exceptions.raise_from_response(response)
+        self._translate_response(response)
         return self
 
     def _get_function_metadata(self, session, function):
@@ -129,6 +130,7 @@ class Function(resource.Resource):
         url = self.base_path + f'/{urn}/config'
         response = session.get(url)
         exceptions.raise_from_response(response)
+        self._translate_response(response)
         return self
 
     def _get_resource_tags(self, session, function):
