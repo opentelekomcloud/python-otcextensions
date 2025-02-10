@@ -26,3 +26,10 @@ Environment Operations
   :noindex:
   :members: create_environment, update_environment, environments,
             delete_environment
+
+Api Group Operations
+^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: create_api_group, update_api_group, delete_api_group,
+            get_api_group, api_groups, verify_api_group_name

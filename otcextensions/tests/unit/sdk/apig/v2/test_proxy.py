@@ -13,6 +13,7 @@ from otcextensions.sdk.apig.v2 import _proxy
 from otcextensions.sdk.apig.v2 import gateway as _gateway
 from otcextensions.sdk.apig.v2 import az as _az
 from otcextensions.sdk.apig.v2 import apienvironment as _env
+from otcextensions.sdk.apig.v2 import apigroup as _api_group
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
 
@@ -200,3 +201,66 @@ class TestApiGatewayFunctions(TestApiGatewayProxy):
                          expected_args=[],
                          expected_kwargs={'gateway_id': None}
                          )
+
+    def test_create_api_group(self):
+        gateway = _gateway.Gateway()
+        self.verify_create(self.proxy.create_api_group,
+                           _api_group.ApiGroup,
+                           method_args=[gateway],
+                           expected_args=[],
+                           method_kwargs={},
+                           expected_kwargs={'gateway_id': None}
+                           )
+
+    def test_update_api_group(self):
+        gateway = _gateway.Gateway()
+        api_group = _api_group.ApiGroup()
+        self._verify(
+            'otcextensions.sdk.apig.v2.apigroup.'
+            'ApiGroup._update_group',
+            self.proxy.update_api_group,
+            method_args=[gateway, api_group],
+            expected_args=[self.proxy],
+            expected_kwargs={'gateway': gateway}
+        )
+
+    def test_delete_api_group(self):
+        gateway = _gateway.Gateway()
+        api_group = _api_group.ApiGroup()
+        self.verify_delete(self.proxy.delete_api_group,
+                           _api_group.ApiGroup,
+                           method_args=[gateway, api_group],
+                           expected_args=[gateway],
+                           method_kwargs={},
+                           expected_kwargs={'gateway_id': None}
+                           )
+
+    def test_list_api_groups(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(self.proxy.api_groups,
+                         _api_group.ApiGroup,
+                         method_args=[gateway],
+                         expected_args=[],
+                         expected_kwargs={'gateway_id': None}
+                         )
+
+    def test_get_api_group(self):
+        gateway = _gateway.Gateway()
+        api_group = _api_group.ApiGroup()
+        self.verify_get(self.proxy.get_api_group,
+                        _api_group.ApiGroup,
+                        method_args=[gateway, api_group],
+                        expected_args=[api_group],
+                        expected_kwargs={'gateway_id': None}
+                        )
+
+    def test_verify_name(self):
+        gateway = _gateway.Gateway()
+        self._verify(
+            'otcextensions.sdk.apig.v2.apigroup.'
+            'ApiGroup._verify_name',
+            self.proxy.verify_api_group_name,
+            method_args=[gateway],
+            expected_args=[self.proxy],
+            expected_kwargs={'gateway': gateway}
+        )
