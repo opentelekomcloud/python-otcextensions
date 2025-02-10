@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    Fixed FGS to return correct values for
+     _get_function_metadata
+     _get_function_code
