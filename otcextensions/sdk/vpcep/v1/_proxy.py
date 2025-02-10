@@ -48,6 +48,13 @@ class Proxy(proxy.Proxy):
         :returns: The results of endpoint creation
         :rtype: :class:`~otcextensions.sdk.vpcep.endpoint.Endpoint`
         """
+        if attrs.get('ip') and attrs.get('port_ip'):
+            raise TypeError(
+                "You can use either the 'ip' or the 'port_ip' keyword argument"
+            )
+        elif attrs.get('ip'):
+            attrs['port_ip'] = attrs['ip']
+            del attrs['ip']
         return self._create(_endpoint.Endpoint, **attrs)
 
     def get_endpoint(self, endpoint):
