@@ -110,3 +110,11 @@ Import
 .. autoclass:: otcextensions.sdk.function_graph.v2._proxy.Proxy
   :noindex:
   :members: import_function
+
+Function Triggers
+^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.function_graph.v2._proxy.Proxy
+  :noindex:
+  :members: create_trigger, delete_trigger, delete_all_triggers,
+            triggers, get_trigger, update_trigger
