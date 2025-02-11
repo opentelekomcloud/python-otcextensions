@@ -624,6 +624,7 @@ class TestFgImportExport(TestFgProxy):
             expected_args=[self.proxy, function]
         )
 
+
 class TestFgTrigger(TestFgProxy):
 
     def test_triggers(self):
