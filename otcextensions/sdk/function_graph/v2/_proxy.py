@@ -25,6 +25,7 @@ from otcextensions.sdk.function_graph.v2 import template as _t
 from otcextensions.sdk.function_graph.v2 import reserved_instance as _r
 from otcextensions.sdk.function_graph.v2 import export_function as _export
 from otcextensions.sdk.function_graph.v2 import import_function as _import
+from otcextensions.sdk.function_graph.v2 import trigger as _trigger
 
 
 class Proxy(proxy.Proxy):
@@ -564,4 +565,92 @@ class Proxy(proxy.Proxy):
         """
         return self._create(
             _import.Import, **attrs
+        )
+
+    # ======== Trigger Methods ========
+
+    def create_trigger(self, function, **attrs):
+        """Create a new function trigger from attributes.
+
+        :param dict attrs: Keyword arguments to create a Function.
+        :returns: The created Trigger instance.
+        :rtype: :class:`~otcextensions.sdk.function_graph.v2.trigger.Trigger`
+        """
+        function = self._get_resource(_function.Function, function)
+        function_urn = function.func_urn.rpartition(":")[0]
+        base_path = f'/fgs/triggers/{function_urn}'
+        return self._create(_trigger.Trigger, base_path=base_path, **attrs)
+
+    def delete_trigger(
+            self, function_urn, trigger_type_code, trigger_id,
+            ignore_missing=True
+    ):
+        """Delete a function trigger.
+
+        :param trigger_id: Trigger ID.
+        :param trigger_type_code: Trigger type code.
+        :param function_urn: Function URN
+        :param ignore_missing:
+        :returns: ``None``
+        """
+        trigger = self._get_resource(_trigger.Trigger, "")
+        return trigger._delete_trigger(
+            self, function_urn, trigger_type_code, trigger_id
+        )
+
+    def delete_all_triggers(self, function_urn, ignore_missing=True):
+        """Delete all function triggers.
+
+        :param function_urn: Function URN
+        :param ignore_missing:
+        :returns: ``None``
+        """
+        function_urn = function_urn.rpartition(":")[0]
+        trigger = self._get_resource(_trigger.Trigger, "")
+        return trigger._delete_triggers(self, function_urn)
+
+    def triggers(self, function_urn):
+        """List all triggers of a function.
+
+        :param function_urn: Function URN
+        :returns: A generator of Trigger instances.
+        """
+        function_urn = function_urn.rpartition(":")[0]
+        return self._list(_trigger.Trigger, function_urn=function_urn)
+
+    def get_trigger(self, function_urn, trigger_type_code, trigger_id):
+        """Get one trigger.
+
+        :param trigger_id: Trigger ID.
+        :param trigger_type_code: Trigger type code.
+        :param function_urn: Function URN.
+        :returns: instance of
+            :class:`~otcextensions.sdk.function_graph.v2.trigger.Trigger`
+        """
+        function_urn = function_urn.rpartition(":")[0]
+        base_path = (f'/fgs/triggers/{function_urn}'
+                     f'/{trigger_type_code}'
+                     f'/{trigger_id}')
+        return self._get(
+            _trigger.Trigger,
+            base_path=base_path,
+            requires_id=False
+        )
+
+    def update_trigger(
+            self, function_urn, trigger_type_code, trigger_id, **attrs
+    ):
+        """Update a number of reserved instances from attributes.
+
+        :param function_urn: Function URN.
+        :param trigger_id: Trigger ID.
+        :param trigger_type_code: Trigger type code.
+        :param dict attrs: Keyword arguments to update a trigger.
+        :returns: The updated Trigger instance.
+        """
+        function_urn = function_urn.rpartition(":")[0]
+        base_path = (f'/fgs/triggers/{function_urn}/{trigger_type_code}'
+                     f'/{trigger_id}')
+        return self._update(
+            _trigger.Trigger, base_path=base_path, **attrs
         )

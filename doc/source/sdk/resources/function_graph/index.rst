@@ -17,3 +17,4 @@ FunctionGraph Resources
    v2/reserved_instance
    v2/export
    v2/import
+   v2/trigger

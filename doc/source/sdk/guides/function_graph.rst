@@ -359,3 +359,51 @@ This API is used to export a function.
 
 .. literalinclude:: ../examples/function_graph/export_function.py
    :lines: 16-38
+
+Deleting All Triggers of a Function
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to delete all triggers of a function.
+
+.. literalinclude:: ../examples/function_graph/delete_all_triggers.py
+   :lines: 16-36
+
+Deleting a Trigger
+^^^^^^^^^^^^^^^^^^
+
+This API is used to delete a trigger.
+
+.. literalinclude:: ../examples/function_graph/delete_trigger.py
+   :lines: 16-50
+
+Querying All Triggers of a Function
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to query all triggers of a function.
+
+.. literalinclude:: ../examples/function_graph/list_triggers.py
+   :lines: 16-24
+
+Creating a Trigger
+^^^^^^^^^^^^^^^^^^
+
+This API is used to create a trigger.
+
+.. literalinclude:: ../examples/function_graph/create_trigger.py
+   :lines: 16-46
+
+Querying a Trigger
+^^^^^^^^^^^^^^^^^^
+
+This API is used to query a specified trigger.
+
+.. literalinclude:: ../examples/function_graph/get_trigger.py
+   :lines: 16-50
+
+Updating a Trigger
+^^^^^^^^^^^^^^^^^^
+
+This API is used to update a trigger.
+
+.. literalinclude:: ../examples/function_graph/update_trigger.py
+   :lines: 16-56
