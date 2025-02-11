@@ -24,6 +24,7 @@ from otcextensions.sdk.function_graph.v2 import log as _log
 from otcextensions.sdk.function_graph.v2 import template as _t
 from otcextensions.sdk.function_graph.v2 import reserved_instance as _r
 from otcextensions.sdk.function_graph.v2 import import_function as _import
+from otcextensions.sdk.function_graph.v2 import trigger as _trigger
 from openstack.tests.unit import test_proxy_base
 
 
@@ -621,4 +622,112 @@ class TestFgImportExport(TestFgProxy):
             self.proxy.export_function,
             method_args=[function],
             expected_args=[self.proxy, function]
+        )
+
+
+class TestFgTrigger(TestFgProxy):
+
+    def test_triggers(self):
+        function = _function.Function(
+            name='test',
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default:access-mysql-js-1213-1737554083545:'
+                     'latest'
+        )
+        self.verify_list(
+            self.proxy.triggers,
+            _trigger.Trigger,
+            method_kwargs={"function_urn": function.func_urn},
+            expected_kwargs={
+                "function_urn": function.func_urn.rpartition(":")[0]
+            },
+            expected_args=[]
+        )
+
+    def test_create_trigger(self):
+        function = _function.Function(
+            name='test',
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default:access-mysql-js-1213-1737554083545:'
+                     'latest'
+        )
+        self.verify_create(self.proxy.create_trigger,
+                           _trigger.Trigger,
+                           method_args=[function],
+                           method_kwargs={
+                               "trigger_type_code": "TIMER",
+                               "trigger_status": "ACTIVE",
+                               "event_data": {
+                                   "name": "Timer-l8v2",
+                                   "schedule": "3m",
+                                   "schedule_type": "Rate"
+                               }
+                           },
+                           expected_kwargs={
+                               "trigger_type_code": "TIMER",
+                               "trigger_status": "ACTIVE",
+                               "event_data": {
+                                   "name": "Timer-l8v2",
+                                   "schedule": "3m",
+                                   "schedule_type": "Rate"
+                               }
+                           },
+                           expected_args=[]
+                           )
+
+    def test_update_trigger(self):
+        function = _function.Function(
+            name='test',
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default:access-mysql-js-1213-1737554083545:'
+                     'latest'
+        )
+        self._verify(
+            'openstack.proxy.Proxy._update',
+            self.proxy.update_trigger,
+            method_args=[function.func_urn, 'TIMER', 'id'],
+            method_kwargs={
+                "trigger_status": "DISABLED",
+            },
+            expected_kwargs={
+                "trigger_status": "DISABLED",
+            },
+            expected_args=[_trigger.Trigger]
+        )
+
+    def test_delete_trigger(self):
+        function = _function.Function(
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default'
+                     ':access-mysql-js-1213-1737554083545:latest')
+        self._verify(
+            'otcextensions.sdk.function_graph.v2.trigger.'
+            'Trigger._delete_trigger',
+            self.proxy.delete_trigger,
+            method_args=[function, "TIMER", "id"],
+            expected_args=[self.proxy, function, "TIMER", "id"],
+        )
+
+    def test_delete_triggers(self):
+        function = _function.Function(
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default'
+                     ':access-mysql-js-1213-1737554083545:latest')
+        self._verify(
+            'otcextensions.sdk.function_graph.v2.trigger.'
+            'Trigger._delete_triggers',
+            self.proxy.delete_all_triggers,
+            method_args=[function.func_urn],
+            expected_args=[self.proxy, function.func_urn.rpartition(":")[0]],
+        )
+
+    def test_get_trigger(self):
+        self.verify_get(
+            self.proxy.get_trigger,
+            _trigger.Trigger,
+            method_args=["urn", "code", "id"],
+            expected_kwargs={
+                "requires_id": False
+            },
+            expected_args=[]
         )
