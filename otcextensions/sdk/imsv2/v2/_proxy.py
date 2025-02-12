@@ -22,7 +22,8 @@ class Proxy(proxy.Proxy):
         :param dict attrs: Keyword arguments which will be used to create a
             :class:`~otcextensions.sdk.imsv2.v2.image.Image`
         """
-        return self._create(_image.Image, **attrs)
+        base_path = '/cloudimages/action'
+        return self._create(_image.Image, base_path=base_path, **attrs)
 
     def images(self, **attrs):
         """Retrieve a generator of images

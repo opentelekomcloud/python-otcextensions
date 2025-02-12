@@ -113,8 +113,7 @@ class Image(resource.Resource):
 
     def create(self, session, prepend_key=False, base_path=None):
         # Overriden here to override prepend_key default value
-        return super(Image, self).create(session, prepend_key, base_path
-                                         + '/action')
+        return super(Image, self).create(session, prepend_key, base_path)
     
     def _action(self, session, request_body, image_id):
         url = utils.urljoin(self.base_path, image_id)
