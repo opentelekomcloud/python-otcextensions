@@ -84,6 +84,21 @@ OTC_SERVICES = {
         'service_type': 'ces',
         'append_project_id': True,
     },
+    'cfwv1': {
+        'service_type': 'cfwv1',
+        'append_project_id': True,
+        'endpoint_service_type': 'cfwv1'
+    },
+    'cfwv2': {
+        'service_type': 'cfwv2',
+        'append_project_id': True,
+        'endpoint_service_type': 'cfwv2'
+    },
+    'cfwv3': {
+        'service_type': 'cfwv3',
+        'append_project_id': True,
+        'endpoint_service_type': 'cfwv3'
+    },
     'cts': {
         'service_type': 'cts',
         'endpoint_service_type': 'cts'
@@ -170,10 +185,25 @@ OTC_SERVICES = {
         'append_project_id': True,
         'endpoint_service_type': 'erv3'
     },
+    'evpn': {
+        'service_type': 'evpn',
+        'append_project_id': True,
+        'endpoint_service_type': 'evpn'
+    },
     'function_graph': {
         'service_type': 'function_graph',
         'append_project_id': True,
         'endpoint_service_type': 'functiongraph'
+    },
+    'geminidb': {
+        'service_type': 'gemindb',
+        'append_project_id': True,
+        'endpoint_service_type': 'gemindb'
+    },
+    'hss': {
+        'service_type': 'hss',
+        'append_project_id': True,
+        'endpoint_service_type': 'hss'
     },
     'identity': {
         'service_type': 'identity',
