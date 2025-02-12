@@ -196,9 +196,9 @@ OTC_SERVICES = {
         'endpoint_service_type': 'functiongraph'
     },
     'geminidb': {
-        'service_type': 'gemindb',
+        'service_type': 'geminidb',
         'append_project_id': True,
-        'endpoint_service_type': 'gemindb'
+        'endpoint_service_type': 'geminidb'
     },
     'hss': {
         'service_type': 'hss',
