@@ -23,6 +23,7 @@ class TestImage(base.BaseFunctionalTest):
         super(TestImage, self).setUp()
         self.ims = self.conn.imsv2
 
+
     def test_create_image(self):
         attrs = {
             "name": "CentOS-7-x86_64-GenericCloud.qcow2",
@@ -36,3 +37,12 @@ class TestImage(base.BaseFunctionalTest):
         }
         result = self.ims.create_image(**attrs)
         self.assertNotEqual(result, None)
+    
+    def test_list_images(self):
+        attrs = {
+            "name": "sgode-ubuntu2404"
+        }
+        result = self.ims.images(**attrs)
+        self.assertNotEqual(result, None)
+
+    
