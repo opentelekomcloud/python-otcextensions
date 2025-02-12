@@ -23,7 +23,6 @@ class Image(resource.Resource):
 
     allow_create = True
     allow_list = True
-    allow_delete = True
     allow_commit = True
 
     #: Method for creating a resource (POST, PUT)

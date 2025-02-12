@@ -50,18 +50,3 @@ class Proxy(proxy.Proxy):
         image = _image.Image()
         return image.update_image_details(self, image_id=image_id, **attrs)
 
-    def delete_image(self, image, ignore_missing=True):
-        """Delete a gateway
-
-        :param image: The value can be either the ID of a image or a
-            :class:`~otcextensions.sdk.imsv2.v2.image.Image` instance.
-        :param bool ignore_missing: When set to ``False``
-            :class:`~openstack.exceptions.ResourceNotFound` will be raised when
-            the image does not exist.
-            When set to ``True``, no exception will be set when attempting to
-            delete a nonexistent image.
-
-        :returns: ``None``
-        """
-        return self._delete(_image.Image, image,
-                            ignore_missing=ignore_missing)
