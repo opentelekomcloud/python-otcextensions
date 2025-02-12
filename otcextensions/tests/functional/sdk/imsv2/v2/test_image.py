@@ -38,11 +38,24 @@ class TestImage(base.BaseFunctionalTest):
         result = self.ims.create_image(**attrs)
         self.assertNotEqual(result, None)
     
-    def test_list_images(self):
+    def test_update_and_query_image(self):
         attrs = {
-            "name": "sgode-ubuntu2404"
-        }
-        result = self.ims.images(**attrs)
-        self.assertNotEqual(result, None)
+                    "name": "CentOS-7-x86_64-GenericCloud.qcow2"
+                }
+        result_query = self.ims.images(**attrs)
+        self.assertNotEqual(result_query, None)
+
+        image_id = ""
+        for image in result_query:
+            image_id = image['id']
+        command_list = [
+            {
+                "op": "replace",
+                "path": "/name",
+                "value": "NewImageTestName"
+            }
+        ]
+        result_update = self.ims.update_image(image_id=image_id, command_list=command_list)
+        self.assertNotEqual(result_update, None)       
 
     
