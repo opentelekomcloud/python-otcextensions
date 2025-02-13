@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    Add FGS async notification support.
+  - |
+    Add FGS async requests support.

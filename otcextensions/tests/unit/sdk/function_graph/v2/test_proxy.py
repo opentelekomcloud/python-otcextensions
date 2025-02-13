@@ -219,7 +219,7 @@ class TestFgDependencies(TestFgProxy):
         self.verify_list(
             self.proxy.dependencies,
             _d.Dependency,
-            expected_args=[{}],
+            expected_args=[],
         )
 
     def test_create_dependency_version(self):
@@ -251,7 +251,7 @@ class TestFgDependencies(TestFgProxy):
             self.proxy.dependency_versions,
             _d.Dependency,
             method_args=[dep],
-            expected_args=[{}],
+            expected_args=[],
         )
 
     def test_get_dependency_version(self):

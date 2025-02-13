@@ -453,7 +453,7 @@ Stopping an Asynchronous Invocation Request
 
 This API is used to stop asynchronous invocation of a function with N concurrent instances.
 When calling this API, set recursive to false and force to true.
- The API will also stop the function's other concurrent requests and return "4208 function invocation canceled".
+The API will also stop the function's other concurrent requests and return "4208 function invocation canceled".
 
 .. literalinclude:: ../examples/function_graph/stop_async_invocation_request.py
    :lines: 16-37
