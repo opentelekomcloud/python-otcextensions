@@ -411,7 +411,8 @@ This API is used to update a trigger.
 Querying Asynchronous Execution Notification Settings of a Function Version
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This API is used to query the asynchronous invocation setting of a function version.
+This API is used to query the asynchronous invocation
+setting of a function version.
 
 .. literalinclude:: ../examples/function_graph/list_async_notifications.py
    :lines: 16-24
@@ -419,7 +420,8 @@ This API is used to query the asynchronous invocation setting of a function vers
 Deleting Asynchronous Execution Notification Settings
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This API is used to delete the asynchronous execution notification settings of a function.
+This API is used to delete the asynchronous execution
+notification settings of a function.
 
 .. literalinclude:: ../examples/function_graph/delete_async_notification.py
    :lines: 16-37
@@ -427,15 +429,17 @@ This API is used to delete the asynchronous execution notification settings of a
 Configuring Asynchronous Execution Notification
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This API is used to configure asynchronous execution notification for a function.
+This API is used to configure asynchronous execution
+notification for a function.
 
 .. literalinclude:: ../examples/function_graph/configure_async_notification.py
    :lines: 16-37
 
-Querying Asynchronous Execution Notification Settings of a Function's All Versions
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Querying Asynchronous Execution Notification Settings of All Versions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This API is used to query the asynchronous execution notification settings of a function's all versions.
+This API is used to query the asynchronous execution notification
+settings of a function's all versions.
 
 .. literalinclude:: ../examples/function_graph/list_all_async_notifications.py
    :lines: 16-31
@@ -451,9 +455,11 @@ This API is used to query the asynchronous invocation requests of a function.
 Stopping an Asynchronous Invocation Request
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This API is used to stop asynchronous invocation of a function with N concurrent instances.
+This API is used to stop asynchronous invocation of a function with
+N concurrent instances.
 When calling this API, set recursive to false and force to true.
-The API will also stop the function's other concurrent requests and return "4208 function invocation canceled".
+The API will also stop the function's other concurrent requests
+and return "4208 function invocation canceled".
 
 .. literalinclude:: ../examples/function_graph/stop_async_invocation_request.py
    :lines: 16-37
