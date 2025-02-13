@@ -407,3 +407,59 @@ This API is used to update a trigger.
 
 .. literalinclude:: ../examples/function_graph/update_trigger.py
    :lines: 16-56
+
+Querying Asynchronous Execution Notification Settings of a Function Version
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to query the asynchronous invocation
+setting of a function version.
+
+.. literalinclude:: ../examples/function_graph/list_async_notifications.py
+   :lines: 16-24
+
+Deleting Asynchronous Execution Notification Settings
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to delete the asynchronous execution
+notification settings of a function.
+
+.. literalinclude:: ../examples/function_graph/delete_async_notification.py
+   :lines: 16-37
+
+Configuring Asynchronous Execution Notification
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to configure asynchronous execution
+notification for a function.
+
+.. literalinclude:: ../examples/function_graph/configure_async_notification.py
+   :lines: 16-37
+
+Querying Asynchronous Execution Notification Settings of All Versions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to query the asynchronous execution notification
+settings of a function's all versions.
+
+.. literalinclude:: ../examples/function_graph/list_all_async_notifications.py
+   :lines: 16-31
+
+Querying Asynchronous Invocation Requests
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to query the asynchronous invocation requests of a function.
+
+.. literalinclude:: ../examples/function_graph/list_async_invocation_requests.py
+   :lines: 16-24
+
+Stopping an Asynchronous Invocation Request
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This API is used to stop asynchronous invocation of a function with
+N concurrent instances.
+When calling this API, set recursive to false and force to true.
+The API will also stop the function's other concurrent requests
+and return "4208 function invocation canceled".
+
+.. literalinclude:: ../examples/function_graph/stop_async_invocation_request.py
+   :lines: 16-37

@@ -118,3 +118,12 @@ Function Triggers
   :noindex:
   :members: create_trigger, delete_trigger, delete_all_triggers,
             triggers, get_trigger, update_trigger
+
+Asynchronous Invocation Notification
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.function_graph.v2._proxy.Proxy
+  :noindex:
+  :members: async_notifications, configure_async_notification,
+            delete_async_notification, all_versions_async_notifications,
+            async_invocation_requests, stop_async_invocation_request

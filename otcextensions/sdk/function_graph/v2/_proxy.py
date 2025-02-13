@@ -26,6 +26,7 @@ from otcextensions.sdk.function_graph.v2 import reserved_instance as _r
 from otcextensions.sdk.function_graph.v2 import export_function as _export
 from otcextensions.sdk.function_graph.v2 import import_function as _import
 from otcextensions.sdk.function_graph.v2 import trigger as _trigger
+from otcextensions.sdk.function_graph.v2 import async_notification as _async
 
 
 class Proxy(proxy.Proxy):
@@ -219,7 +220,7 @@ class Proxy(proxy.Proxy):
         :param dict query: Query parameters to filter the dependencies list.
         :returns: A generator of Dependency instances.
         """
-        return self._list(_d.Dependency, query)
+        return self._list(_d.Dependency, **query)
 
     def create_dependency_version(self, **attrs):
         """Create a new dependency from attributes.
@@ -250,7 +251,7 @@ class Proxy(proxy.Proxy):
         :returns: A generator of Dependency instances.
         """
         base_path = f"/fgs/dependencies/{dependency.dep_id}/version"
-        return self._list(_d.Dependency, query, base_path=base_path)
+        return self._list(_d.Dependency, **query, base_path=base_path)
 
     def get_dependency_version(self, dependency):
         """List all dependency versions.
@@ -654,3 +655,106 @@ class Proxy(proxy.Proxy):
         return self._update(
             _trigger.Trigger, base_path=base_path, **attrs
         )
+
+    # ======== Asynchronous Invocation Methods ========
+
+    def async_notifications(self, function):
+        """List asynchronous invocation setting of a function version.
+
+        :param function: Function instance or function URN
+        :returns: A generator of Notification instances.
+        """
+        function = self._get_resource(_function.Function, function)
+        if function.id is not None:
+            function_urn = function.id.rpartition(":")[0]
+        else:
+            function_urn = function.func_urn.rpartition(":")[0]
+        return self._list(_async.Notification, function_urn=function_urn)
+
+    def configure_async_notification(
+            self, function, **attrs
+    ):
+        """Configure asynchronous execution notification for a function.
+
+        :param function: Function instance or function URN
+        :param dict attrs: Keyword arguments to update a notifications
+            settings.
+        :returns: The updated Notification instance.
+        """
+        function = self._get_resource(_function.Function, function)
+        if function.id is not None:
+            function_urn = function.id.rpartition(":")[0]
+        else:
+            function_urn = function.func_urn.rpartition(":")[0]
+        return self._create(
+            _async.Notification, function_urn=function_urn, **attrs
+        )
+
+    def delete_async_notification(self, function, ignore_missing=True):
+        """Delete asynchronous execution notification for a function.
+
+        :param function: The URN or instance of the Function to delete
+            alias from.
+        :param ignore_missing: When False,
+            `openstack.exceptions.ResourceNotFound`
+            will be raised when the tag does not exist.
+            When True, no exception will be set when attempting
+            to delete a nonexistent event.
+        :returns: ``None``
+        """
+        function = self._get_resource(_function.Function, function)
+        if function.id is not None:
+            function_urn = function.id.rpartition(":")[0]
+        else:
+            function_urn = function.func_urn.rpartition(":")[0]
+        return self._delete(
+            _async.Notification,
+            function_urn=function_urn, ignore_missing=ignore_missing,
+        )
+
+    def all_versions_async_notifications(self, function, **query):
+        """List asynchronous invocation setting of all function versions.
+
+        :param function: Function instance or function URN
+        :returns: A generator of Notification instances.
+        """
+        function = self._get_resource(_function.Function, function)
+        if function.id is not None:
+            function_urn = function.id
+        else:
+            function_urn = function.func_urn
+        return self._list(
+            _async.Notification,
+            function_urn=function_urn,
+            **query)
+
+    def async_invocation_requests(self, function, **query):
+        """Get asynchronous invocation requests of a function.
+
+        :param function: Function instance or function URN
+        :returns: instance of Requests
+        """
+        function = self._get_resource(_function.Function, function)
+        if function.id is not None:
+            function_urn = function.id.rpartition(":")[0]
+        else:
+            function_urn = function.func_urn.rpartition(":")[0]
+        return self._list(
+            _async.Requests,
+            function_urn=function_urn,
+            **query
+        )
+
+    def stop_async_invocation_request(self, function, **attrs):
+        """Stop asynchronous invocation request of a function.
+
+        :param function: Function instance or function URN
+        :returns: instance of Requests
+        """
+        function = self._get_resource(_function.Function, function)
+        stop = self._get_resource(_async.Requests, "")
+        if function.id is not None:
+            function_urn = function.id.rpartition(":")[0]
+        else:
+            function_urn = function.func_urn.rpartition(":")[0]
+        return stop._stop(self, function_urn=function_urn, **attrs)

@@ -18,3 +18,4 @@ FunctionGraph Resources
    v2/export
    v2/import
    v2/trigger
+   v2/notification
