@@ -195,6 +195,11 @@ OTC_SERVICES = {
         'append_project_id': True,
         'endpoint_service_type': 'functiongraph'
     },
+    'gaussdb': {
+        'service_type': 'gaussdb',
+        'append_project_id': True,
+        'endpoint_service_type': 'gaussdb-mysql'
+    },
     'geminidb': {
         'service_type': 'geminidb',
         'append_project_id': True,
