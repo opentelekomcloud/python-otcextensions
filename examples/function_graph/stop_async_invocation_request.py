@@ -34,4 +34,4 @@ inv = conn.functiongraph.executing_function_asynchronously(
     function="urn", attrs={'a': 'b'}
 )
 conn.functiongraph.stop_async_invocation_request(
-            fg, request_id=inv.request_id)
+    fg, request_id=inv.request_id)

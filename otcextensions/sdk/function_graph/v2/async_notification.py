@@ -52,7 +52,8 @@ class Notification(resource.Resource):
     # Attributes
     # Function URN.
     func_urn = resource.Body('func_urn', type=str)
-    # Maximum validity period of a message. Value range: 1-86,400. Unit: second.
+    # Maximum validity period of a message. Value range: 1-86,400.
+    # Unit: second.
     max_async_event_age_in_seconds = resource.Body(
         'max_async_event_age_in_seconds', type=int
     )
@@ -65,7 +66,8 @@ class Notification(resource.Resource):
     )
     # Time when asynchronous execution notification was configured.
     created_at = resource.Body('created_time', type=str)
-    # Time when the asynchronous execution notification settings were last modified.
+    # Time when the asynchronous execution notification settings
+    # were last modified.
     updated_at = resource.Body('last_modified', type=str)
     # Whether to enable asynchronous invocation status persistence.
     enable_async_status_log = resource.Body(
