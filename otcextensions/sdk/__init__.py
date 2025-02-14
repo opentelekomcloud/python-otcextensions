@@ -138,6 +138,21 @@ OTC_SERVICES = {
         'service_type': 'deh',
         'append_project_id': True,
     },
+    'ddmv1': {
+        'service_type': 'ddmv1',
+        'endpoint_service_type': 'ddmv1',
+        'append_project_id': True
+    },
+    'ddmv2': {
+        'service_type': 'ddmv2',
+        'endpoint_service_type': 'ddmv2',
+        'append_project_id': True
+    },
+    'ddmv3': {
+        'service_type': 'ddmv3',
+        'endpoint_service_type': 'ddmv3',
+        'append_project_id': True
+    },
     'dis': {
         'service_type': 'dis',
         'endpoint_service_type': 'disv2'
