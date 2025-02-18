@@ -41,10 +41,10 @@ class TestEnvironmentVar(TestApiG):
         self.assertIsNotNone(self.group.id)
 
         self.attrs = {
-            "variable_name" : "address",
-            "variable_value" : "192.168.1.5",
-            "env_id" : environment.id,
-            "group_id" : self.group.id
+            "variable_name": "address",
+            "variable_value": "192.168.1.5",
+            "env_id": environment.id,
+            "group_id": self.group.id
         }
         self.variable = self.client.create_environment_variable(
             gateway=self.gateway_id,

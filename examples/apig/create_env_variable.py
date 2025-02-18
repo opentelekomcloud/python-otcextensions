@@ -19,10 +19,10 @@ openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
 
 attrs = {
-    "variable_name" : "address",
-    "variable_value" : "192.168.1.5",
-    "env_id" : "environment_id",
-    "group_id" : "group_id"
+    "variable_name": "address",
+    "variable_value": "192.168.1.5",
+    "env_id": "environment_id",
+    "group_id": "group_id"
 }
 variable = conn.apig.create_environment_variable(
     gateway="gateway_id",

@@ -266,6 +266,7 @@ class TestApiGatewayFunctions(TestApiGatewayProxy):
             expected_kwargs={'gateway': gateway}
         )
 
+
 class TestApiEnvVars(TestApiGatewayProxy):
     def test_environment_variables(self):
         gateway = _gateway.Gateway()
@@ -280,10 +281,10 @@ class TestApiEnvVars(TestApiGatewayProxy):
     def test_create_environment_variable(self):
         gateway = _gateway.Gateway()
         attrs = {
-            "variable_name" : "address",
-            "variable_value" : "192.168.1.5",
-            "env_id" : "env_id",
-            "group_id" : "group_id"
+            "variable_name": "address",
+            "variable_value": "192.168.1.5",
+            "env_id": "env_id",
+            "group_id": "group_id"
         }
         self.verify_create(
             self.proxy.create_environment_variable,
@@ -320,7 +321,7 @@ class TestApiEnvVars(TestApiGatewayProxy):
         gateway = _gateway.Gateway()
         var = _var.ApiEnvironmentVar()
         attrs = {
-            "variable_value" : "192.168.1.5",
+            "variable_value": "192.168.1.5",
         }
         self.verify_update(
             self.proxy.update_environment_variable,

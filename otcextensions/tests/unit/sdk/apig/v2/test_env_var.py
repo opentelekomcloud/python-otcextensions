@@ -13,11 +13,11 @@ from openstack.tests.unit import base
 from otcextensions.sdk.apig.v2 import apienvironmentvar as var
 
 EXAMPLE_VAR = {
-    "variable_value" : "192.168.1.5",
-    "env_id" : "7a1ad0c350844ee69479b47df9a881cb",
-    "group_id" : "c77f5e81d9cb4424bf704ef2b0ac7600",
-    "id" : "25054838a624400bbf2267cf5b3a3f70",
-    "variable_name" : "address"
+    "variable_value": "192.168.1.5",
+    "env_id": "7a1ad0c350844ee69479b47df9a881cb",
+    "group_id": "c77f5e81d9cb4424bf704ef2b0ac7600",
+    "id": "25054838a624400bbf2267cf5b3a3f70",
+    "variable_name": "address"
 }
 
 

@@ -450,8 +450,9 @@ class Proxy(proxy.Proxy):
         :returns: Updated instance of ApiEnvironmentVar
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        var = self._get_resource(_api_var.ApiEnvironmentVar,
-                                         var)
+        var = self._get_resource(
+            _api_var.ApiEnvironmentVar,
+            var)
         return self._update(
             _api_var.ApiEnvironmentVar,
             var,
@@ -470,8 +471,9 @@ class Proxy(proxy.Proxy):
         :returns: None
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        var = self._get_resource(_api_var.ApiEnvironmentVar,
-                                         var)
+        var = self._get_resource(
+            _api_var.ApiEnvironmentVar,
+            var)
         return self._delete(
             _api_var.ApiEnvironmentVar,
             var,
