@@ -40,5 +40,5 @@ Environment Variables Operations
 .. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
   :noindex:
   :members: create_environment_variable, update_environment_variable,
-            delete_environment_variable, environment_variables
+            delete_environment_variable, environment_variables,
             get_environment_variable
