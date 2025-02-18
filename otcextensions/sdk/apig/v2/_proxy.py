@@ -17,6 +17,7 @@ from otcextensions.sdk.apig.v2 import gateway as _gateway
 from otcextensions.sdk.apig.v2 import az as _az
 from otcextensions.sdk.apig.v2 import apienvironment as _api_environment
 from otcextensions.sdk.apig.v2 import apigroup as _api_group
+from otcextensions.sdk.apig.v2 import apienvironmentvar as _api_var
 
 
 class Proxy(proxy.Proxy):
@@ -419,3 +420,97 @@ class Proxy(proxy.Proxy):
         gateway = self._get_resource(_gateway.Gateway, gateway)
         api_group = _api_group.ApiGroup()
         return api_group._verify_name(self, gateway=gateway, **attrs)
+
+    # ======== Environment Variable Methods ========
+
+    def create_environment_variable(self, gateway, **attrs):
+        """Create a new environment variable for a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional attributes for the environment variable
+            creation.
+
+        :returns: An instance of ApiEnvironmentVar
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._create(_api_var.ApiEnvironmentVar,
+                            gateway_id=gateway.id,
+                            **attrs)
+
+    def update_environment_variable(self, gateway, var, **attrs):
+        """Update an existing environment variable for a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param var: The ID of the environment var or an instance of
+            ApiEnvironmentVar
+        :param attrs: Additional attributes to update the environment.
+
+        :returns: Updated instance of ApiEnvironmentVar
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        var = self._get_resource(_api_var.ApiEnvironmentVar,
+                                         var)
+        return self._update(
+            _api_var.ApiEnvironmentVar,
+            var,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def delete_environment_variable(self, gateway, var, ignore_missing=False):
+        """Delete an existing environment variable from a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param var: The ID of the environment or an instance of
+            ApiEnvironmentVar
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        var = self._get_resource(_api_var.ApiEnvironmentVar,
+                                         var)
+        return self._delete(
+            _api_var.ApiEnvironmentVar,
+            var,
+            gateway_id=gateway.id,
+            ignore_missing=ignore_missing
+        )
+
+    def environment_variables(self, gateway, **attrs):
+        """List all environment vars for a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional filters for listing environment vars.
+
+        :returns: A list of instances of ApiEnvironmentVar
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(_api_var.ApiEnvironmentVar,
+                          paginated=False,
+                          gateway_id=gateway.id,
+                          **attrs)
+
+    def get_environment_variable(self, gateway, var):
+        """Retrieve details of a specific environment variable.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param var: The ID of the variable or an instance of
+            ApiEnvironmentVar
+
+        :returns: An instance of ApiEnvironmentVar
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        var = self._get_resource(
+            _api_var.ApiEnvironmentVar,
+            var
+        )
+        return self._get(
+            _api_var.ApiEnvironmentVar,
+            var,
+            gateway_id=gateway.id
+        )

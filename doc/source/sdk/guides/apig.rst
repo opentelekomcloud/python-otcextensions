@@ -261,3 +261,44 @@ name is available in the API Gateway.
 
 .. literalinclude:: ../examples/apig/verify_api_group_name.py
    :lines: 16-23
+
+Creating a Variable
+^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to define environment variables.
+
+.. literalinclude:: ../examples/apig/create_env_variable.py
+   :lines: 16-30
+
+Deleting a Variable
+^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to delete environment variable.
+
+.. literalinclude:: ../examples/apig/delete_env_variable.py
+   :lines: 16-23
+
+Querying Variable Details
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query the details of an environment variable.
+
+.. literalinclude:: ../examples/apig/get_env_variable.py
+   :lines: 16-24
+
+Querying Environment Variables
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query all environment
+variables under an API group.
+
+.. literalinclude:: ../examples/apig/list_env_variables.py
+   :lines: 16-23
+
+Modifying a Variable
+^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to modify an environment variable.
+
+.. literalinclude:: ../examples/apig/update_env_variable.py
+   :lines: 16-27

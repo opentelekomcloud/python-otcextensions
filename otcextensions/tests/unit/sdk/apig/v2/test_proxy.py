@@ -13,6 +13,7 @@ from otcextensions.sdk.apig.v2 import _proxy
 from otcextensions.sdk.apig.v2 import gateway as _gateway
 from otcextensions.sdk.apig.v2 import az as _az
 from otcextensions.sdk.apig.v2 import apienvironment as _env
+from otcextensions.sdk.apig.v2 import apienvironmentvar as _var
 from otcextensions.sdk.apig.v2 import apigroup as _api_group
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
@@ -263,4 +264,69 @@ class TestApiGatewayFunctions(TestApiGatewayProxy):
             method_args=[gateway],
             expected_args=[self.proxy],
             expected_kwargs={'gateway': gateway}
+        )
+
+class TestApiEnvVars(TestApiGatewayProxy):
+    def test_environment_variables(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(
+            self.proxy.environment_variables,
+            _var.ApiEnvironmentVar,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_create_environment_variable(self):
+        gateway = _gateway.Gateway()
+        attrs = {
+            "variable_name" : "address",
+            "variable_value" : "192.168.1.5",
+            "env_id" : "env_id",
+            "group_id" : "group_id"
+        }
+        self.verify_create(
+            self.proxy.create_environment_variable,
+            _var.ApiEnvironmentVar,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={**attrs},
+            expected_kwargs={**attrs, "gateway_id": None}
+        )
+
+    def test_delete_environment_variable(self):
+        gateway = _gateway.Gateway()
+        var = _var.ApiEnvironmentVar()
+        self.verify_delete(
+            self.proxy.delete_environment_variable,
+            _var.ApiEnvironmentVar,
+            method_args=[gateway, var],
+            expected_args=[var],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_get_environment_variable(self):
+        gateway = _gateway.Gateway()
+        var = _var.ApiEnvironmentVar()
+        self.verify_get(
+            self.proxy.get_environment_variable,
+            _var.ApiEnvironmentVar,
+            method_args=[gateway, var],
+            expected_args=[var],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_update_environment_variable(self):
+        gateway = _gateway.Gateway()
+        var = _var.ApiEnvironmentVar()
+        attrs = {
+            "variable_value" : "192.168.1.5",
+        }
+        self.verify_update(
+            self.proxy.update_environment_variable,
+            _var.ApiEnvironmentVar,
+            method_args=[gateway, var],
+            expected_args=[var],
+            method_kwargs={**attrs},
+            expected_kwargs={**attrs, "gateway_id": None}
         )

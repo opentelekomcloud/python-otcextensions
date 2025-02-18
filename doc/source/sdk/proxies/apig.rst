@@ -33,3 +33,12 @@ Api Group Operations
   :noindex:
   :members: create_api_group, update_api_group, delete_api_group,
             get_api_group, api_groups, verify_api_group_name
+
+
+Environment Variables Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: create_environment_variable, update_environment_variable,
+            delete_environment_variable, environment_variables
+            get_environment_variable
