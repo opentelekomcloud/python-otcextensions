@@ -66,6 +66,7 @@ class TestEnvironmentVar(TestApiG):
             gateway=self.gateway_id,
             api_group=self.group.id,
         )
+        self.addCleanup(self.delete_gateway())
 
     def test_list_environment_variables(self):
         vars = list(self.client.environment_variables(

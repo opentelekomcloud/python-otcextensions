@@ -302,3 +302,43 @@ This example demonstrates how to modify an environment variable.
 
 .. literalinclude:: ../examples/apig/update_env_variable.py
    :lines: 16-27
+
+Creating a Request Throttling Policy
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to create throttling policy.
+
+.. literalinclude:: ../examples/apig/create_throttling_policy.py
+   :lines: 16-38
+
+Modifying a Request Throttling Policy
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to update throttling policy.
+
+.. literalinclude:: ../examples/apig/update_throttling_policy.py
+   :lines: 16-34
+
+Deleting a Request Throttling Policy
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to delete throttling policy.
+
+.. literalinclude:: ../examples/apig/delete_throttling_policy.py
+   :lines: 16-23
+
+Querying Request Throttling Policies
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query all throttling policies.
+
+.. literalinclude:: ../examples/apig/list_throttling_policies.py
+   :lines: 16-21
+
+Querying Details of a Request Throttling Policy
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to get throttling policy.
+
+.. literalinclude:: ../examples/apig/get_throttling_policy.py
+   :lines: 16-24

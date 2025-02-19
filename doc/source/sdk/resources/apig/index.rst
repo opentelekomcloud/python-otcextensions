@@ -9,3 +9,5 @@ ApiGateway Resources
    v2/env
    v2/group
    v2/env_var
+   v2/throttling_policy
+

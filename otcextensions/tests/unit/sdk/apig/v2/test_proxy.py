@@ -15,6 +15,7 @@ from otcextensions.sdk.apig.v2 import az as _az
 from otcextensions.sdk.apig.v2 import apienvironment as _env
 from otcextensions.sdk.apig.v2 import apienvironmentvar as _var
 from otcextensions.sdk.apig.v2 import apigroup as _api_group
+from otcextensions.sdk.apig.v2 import throttling_policy as _tp
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
 
@@ -328,6 +329,88 @@ class TestApiEnvVars(TestApiGatewayProxy):
             _var.ApiEnvironmentVar,
             method_args=[gateway, var],
             expected_args=[var],
+            method_kwargs={**attrs},
+            expected_kwargs={**attrs, "gateway_id": None}
+        )
+
+
+class TestThrottlingPolicy(TestApiGatewayProxy):
+    def test_throttling_policies(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(
+            self.proxy.throttling_policies,
+            _tp.ThrottlingPolicy,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_create_throttling_policy(self):
+        gateway = _gateway.Gateway()
+        attrs = {
+            "api_call_limits": 100,
+            "app_call_limits": 60,
+            "enable_adaptive_control": "FALSE",
+            "ip_call_limits": 60,
+            "name": "throttle_demo",
+            "remark": "Total: 800 calls/second;"
+                      " user: 500 calls/second;"
+                      " app: 300 calls/second;"
+                      " IP address: 600 calls/second",
+            "time_interval": 1,
+            "time_unit": "SECOND",
+            "type": 1,
+            "user_call_limits": 60
+        }
+        self.verify_create(
+            self.proxy.create_throttling_policy,
+            _tp.ThrottlingPolicy,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={**attrs},
+            expected_kwargs={**attrs, "gateway_id": None}
+        )
+
+    def test_delete_throttling_policy(self):
+        gateway = _gateway.Gateway()
+        policy = _tp.ThrottlingPolicy()
+        self.verify_delete(
+            self.proxy.delete_throttling_policy,
+            _tp.ThrottlingPolicy,
+            method_args=[gateway, policy],
+            expected_args=[policy],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_get_throttling_policy(self):
+        gateway = _gateway.Gateway()
+        policy = _tp.ThrottlingPolicy()
+        self.verify_get(
+            self.proxy.get_throttling_policy,
+            _tp.ThrottlingPolicy,
+            method_args=[gateway, policy],
+            expected_args=[policy],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_update_throttling_policy(self):
+        gateway = _gateway.Gateway()
+        policy = _tp.ThrottlingPolicy()
+        attrs = {
+            "time_unit": "SECOND",
+            "name": "throttle_demo",
+            "api_call_limits": 100,
+            "time_interval": 1,
+            "remark": "Total: 800 calls/second;"
+                      " user: 500 calls/second;"
+                      " app: 300 calls/second;"
+                      " IP address: 600 calls/second",
+        }
+        self.verify_update(
+            self.proxy.update_throttling_policy,
+            _tp.ThrottlingPolicy,
+            method_args=[gateway, policy],
+            expected_args=[policy],
             method_kwargs={**attrs},
             expected_kwargs={**attrs, "gateway_id": None}
         )
