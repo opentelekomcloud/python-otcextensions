@@ -71,7 +71,8 @@ class ThrottlingPolicy(resource.Resource):
     # Attributes
     # Number of APIs to which the request throttling policy has been bound.
     bind_num = resource.Body('bind_num', type=int)
-    # Indicates whether an excluded request throttling configuration has been created.
+    # Indicates whether an excluded request throttling
+    # configuration has been created.
     # 1: yes
     # 2: no
     is_inclu_special_throttle = resource.Body(
