@@ -42,3 +42,11 @@ Environment Variables Operations
   :members: create_environment_variable, update_environment_variable,
             delete_environment_variable, environment_variables,
             get_environment_variable
+
+Throttling Policies Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: throttling_policies, create_throttling_policy,
+            delete_throttling_policy, get_throttling_policy,
+            update_throttling_policy

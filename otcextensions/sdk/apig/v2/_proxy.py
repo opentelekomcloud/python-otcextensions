@@ -18,6 +18,7 @@ from otcextensions.sdk.apig.v2 import az as _az
 from otcextensions.sdk.apig.v2 import apienvironment as _api_environment
 from otcextensions.sdk.apig.v2 import apigroup as _api_group
 from otcextensions.sdk.apig.v2 import apienvironmentvar as _api_var
+from otcextensions.sdk.apig.v2 import throttling_policy as _tp
 
 
 class Proxy(proxy.Proxy):
@@ -514,5 +515,101 @@ class Proxy(proxy.Proxy):
         return self._get(
             _api_var.ApiEnvironmentVar,
             var,
+            gateway_id=gateway.id
+        )
+
+    # ======== Throttling Policy Methods ========
+
+    def create_throttling_policy(self, gateway, **attrs):
+        """Create a new throttling policy for a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional attributes for the throttling policy
+            creation.
+
+        :returns: An instance of ThrottlingPolicy
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._create(_tp.ThrottlingPolicy,
+                            gateway_id=gateway.id,
+                            **attrs)
+
+    def update_throttling_policy(self, gateway, policy, **attrs):
+        """Update an existing throttling policy for a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param tp: The ID of the throttling policy or an instance of
+            ThrottlingPolicy
+        :param attrs: Additional attributes to update the throttling policy.
+
+        :returns: Updated instance of ThrottlingPolicy
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        policy = self._get_resource(
+            _tp.ThrottlingPolicy,
+            policy)
+        return self._update(
+            _tp.ThrottlingPolicy,
+            policy,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def delete_throttling_policy(self, gateway, policy, ignore_missing=False):
+        """Delete an existing throttling policy from a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param policy: The ID of the throttling policy or an instance of
+            ThrottlingPolicy
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        policy = self._get_resource(
+            _tp.ThrottlingPolicy,
+            policy)
+        return self._delete(
+            _tp.ThrottlingPolicy,
+            policy,
+            gateway_id=gateway.id,
+            ignore_missing=ignore_missing
+        )
+
+    def throttling_policies(self, gateway, **attrs):
+        """List all throttling policies for a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional filters for listing throttling policies.
+
+        :returns: A list of instances of ThrottlingPolicy
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(_tp.ThrottlingPolicy,
+                          paginated=False,
+                          gateway_id=gateway.id,
+                          **attrs)
+
+    def get_throttling_policy(self, gateway, policy):
+        """Retrieve details of a specific throttling policy.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param policy: The ID of the throttling policy or an instance of
+            ThrottlingPolicy
+
+        :returns: An instance of ThrottlingPolicy
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        policy = self._get_resource(
+            _tp.ThrottlingPolicy,
+            policy
+        )
+        return self._get(
+            _tp.ThrottlingPolicy,
+            policy,
             gateway_id=gateway.id
         )
