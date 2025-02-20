@@ -19,6 +19,7 @@ from otcextensions.sdk.apig.v2 import apienvironment as _api_environment
 from otcextensions.sdk.apig.v2 import apigroup as _api_group
 from otcextensions.sdk.apig.v2 import apienvironmentvar as _api_var
 from otcextensions.sdk.apig.v2 import throttling_policy as _tp
+from otcextensions.sdk.apig.v2 import api as _api
 
 
 class Proxy(proxy.Proxy):
@@ -611,5 +612,90 @@ class Proxy(proxy.Proxy):
         return self._get(
             _tp.ThrottlingPolicy,
             policy,
+            gateway_id=gateway.id
+        )
+
+    # ======== Api Methods ========
+
+    def create_api(self, gateway, **attrs):
+        """Create a new API for a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional attributes for the Api creation.
+
+        :returns: An instance of Api
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._create(_api.Api,
+                            gateway_id=gateway.id,
+                            **attrs)
+
+    def update_api(self, gateway, api, **attrs):
+        """Update an existing API for a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param api: The ID of the Api or an instance of Api
+        :param attrs: Additional attributes to update the Api.
+
+        :returns: Updated instance of Api
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        api = self._get_resource(_api.Api, api)
+        return self._update(
+            _api.Api,
+            api,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def delete_api(self, gateway, api, ignore_missing=False):
+        """Delete an existing API from a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param api: The ID of the Api or an instance of Api
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        api = self._get_resource(_api.Api, api)
+        return self._delete(
+            _api.Api,
+            api,
+            gateway_id=gateway.id,
+            ignore_missing=ignore_missing
+        )
+
+    def apis(self, gateway, **attrs):
+        """List all APIs for a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional filters for listing Api.
+
+        :returns: A list of instances of Api
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(_api.Api,
+                          paginated=False,
+                          gateway_id=gateway.id,
+                          **attrs)
+
+    def get_api(self, gateway, api):
+        """Retrieve details of a specific API.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param api: The ID of the Api or an instance of Api
+
+        :returns: An instance of Api
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        api = self._get_resource(_api.Api, api)
+        return self._get(
+            _api.Api,
+            api,
             gateway_id=gateway.id
         )
