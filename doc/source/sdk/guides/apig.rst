@@ -342,3 +342,43 @@ This example demonstrates how to get throttling policy.
 
 .. literalinclude:: ../examples/apig/get_throttling_policy.py
    :lines: 16-24
+
+Creating an API
+^^^^^^^^^^^^^^^
+
+This example demonstrates how to create an API.
+
+.. literalinclude:: ../examples/apig/create_api.py
+   :lines: 16-45
+
+Modifying an API
+^^^^^^^^^^^^^^^^
+
+This example demonstrates how to update an API.
+
+.. literalinclude:: ../examples/apig/update_api.py
+   :lines: 16-46
+
+Deleting an API
+^^^^^^^^^^^^^^^
+
+This example demonstrates how to delete an API.
+
+.. literalinclude:: ../examples/apig/delete_api.py
+   :lines: 16-23
+
+Querying API Details
+^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to get an API.
+
+.. literalinclude:: ../examples/apig/get_api.py
+   :lines: 16-24
+
+Querying APIs
+^^^^^^^^^^^^^
+
+This example demonstrates how to list an APIs.
+
+.. literalinclude:: ../examples/apig/list_apis.py
+   :lines: 16-20

@@ -16,6 +16,7 @@ from otcextensions.sdk.apig.v2 import apienvironment as _env
 from otcextensions.sdk.apig.v2 import apienvironmentvar as _var
 from otcextensions.sdk.apig.v2 import apigroup as _api_group
 from otcextensions.sdk.apig.v2 import throttling_policy as _tp
+from otcextensions.sdk.apig.v2 import api
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
 
@@ -411,6 +412,107 @@ class TestThrottlingPolicy(TestApiGatewayProxy):
             _tp.ThrottlingPolicy,
             method_args=[gateway, policy],
             expected_args=[policy],
+            method_kwargs={**attrs},
+            expected_kwargs={**attrs, "gateway_id": None}
+        )
+
+
+class TestApi(TestApiGatewayProxy):
+    def test_apis(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(
+            self.proxy.apis,
+            api.Api,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_create_api(self):
+        gateway = _gateway.Gateway()
+        attrs = {
+            "group_id": "id",
+            "name": "test_api_001",
+            "auth_type": "IAM",
+            "backend_type": "HTTP",
+            "req_protocol": "HTTP",
+            "req_uri": "/test/http",
+            "remark": "Mock backend API",
+            "type": 2,
+            "req_method": "GET",
+            "result_normal_sample": "Example success response",
+            "result_failure_sample": "Example failure response",
+            "tags": ["httpApi"],
+            "backend_api": {
+                "req_protocol": "HTTP",
+                "req_method": "GET",
+                "req_uri": "/test/benchmark",
+                "timeout": 5000,
+                "retry_count": "-1",
+                "url_domain": "192.168.189.156:12346"
+            },
+        }
+        self.verify_create(
+            self.proxy.create_api,
+            api.Api,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={**attrs},
+            expected_kwargs={**attrs, "gateway_id": None}
+        )
+
+    def test_delete_api(self):
+        gateway = _gateway.Gateway()
+        a = api.Api()
+        self.verify_delete(
+            self.proxy.delete_api,
+            api.Api,
+            method_args=[gateway, a],
+            expected_args=[a],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_get_api(self):
+        gateway = _gateway.Gateway()
+        a = api.Api()
+        self.verify_get(
+            self.proxy.get_api,
+            api.Api,
+            method_args=[gateway, a],
+            expected_args=[a],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_update_api(self):
+        gateway = _gateway.Gateway()
+        a = api.Api()
+        attrs = {
+            "group_id": "id",
+            "name": "test_api_001",
+            "auth_type": "IAM",
+            "backend_type": "HTTP",
+            "req_protocol": "HTTP",
+            "req_uri": "/test/http",
+            "remark": "Mock backend API",
+            "type": 2,
+            "req_method": "GET",
+            "result_normal_sample": "Example success response",
+            "result_failure_sample": "Example failure response",
+            "tags": ["httpApi"],
+            "backend_api": {
+                "req_protocol": "HTTP",
+                "req_method": "GET",
+                "req_uri": "/test/benchmark",
+                "timeout": 5000,
+                "retry_count": "-1",
+                "url_domain": "192.168.189.156:12346"
+            },
+        }
+        self.verify_update(
+            self.proxy.update_api,
+            api.Api,
+            method_args=[gateway, a],
+            expected_args=[a],
             method_kwargs={**attrs},
             expected_kwargs={**attrs, "gateway_id": None}
         )

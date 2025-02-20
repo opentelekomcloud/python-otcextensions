@@ -50,3 +50,9 @@ Throttling Policies Operations
   :members: throttling_policies, create_throttling_policy,
             delete_throttling_policy, get_throttling_policy,
             update_throttling_policy
+
+Api Operations
+^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: apis, create_api, delete_api, get_api, update_api
