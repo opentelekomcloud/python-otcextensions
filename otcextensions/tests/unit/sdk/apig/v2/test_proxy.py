@@ -17,6 +17,7 @@ from otcextensions.sdk.apig.v2 import apienvironmentvar as _var
 from otcextensions.sdk.apig.v2 import apigroup as _api_group
 from otcextensions.sdk.apig.v2 import throttling_policy as _tp
 from otcextensions.sdk.apig.v2 import api
+from otcextensions.sdk.apig.v2 import api_supplements as _as
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
 
@@ -515,4 +516,184 @@ class TestApi(TestApiGatewayProxy):
             expected_args=[a],
             method_kwargs={**attrs},
             expected_kwargs={**attrs, "gateway_id": None}
+        )
+
+
+class TestApiSupplements(TestApiGatewayProxy):
+    def test_online_api(self):
+        gateway = _gateway.Gateway()
+        environment = _env.ApiEnvironment()
+        a = api.Api()
+        self._verify(
+            'otcextensions.sdk.apig.v2.api_supplements.'
+            'PublishApi.publish_api',
+            self.proxy.publish_api,
+            method_args=[gateway, environment, a],
+            expected_args=[self.proxy],
+            expected_kwargs={
+                "api_id": None,
+                "env_id": None,
+                "gateway_id": None
+            }
+        )
+
+    def test_offline_api(self):
+        gateway = _gateway.Gateway()
+        environment = _env.ApiEnvironment()
+        a = api.Api()
+        self._verify(
+            'otcextensions.sdk.apig.v2.api_supplements.'
+            'PublishApi.take_api_offline',
+            self.proxy.offline_api,
+            method_args=[gateway, environment, a],
+            expected_args=[self.proxy],
+            expected_kwargs={
+                "api_id": None,
+                "env_id": None,
+                "gateway_id": None
+            }
+        )
+
+    def test_check_api(self):
+        gateway = _gateway.Gateway()
+        attrs = {
+            "type": "name",
+            "name": "test"
+        }
+        self.verify_create(
+            self.proxy.check_api,
+            _as.CheckApi,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={**attrs},
+            expected_kwargs={
+                **attrs,
+                "gateway_id": None
+            }
+        )
+
+    def test_debug_api(self):
+        gateway = _gateway.Gateway()
+        a = api.Api()
+        attrs = {
+            "mode": "DEVELOPER",
+            "scheme": "HTTP",
+            "method": "GET",
+            "path": "/test/http"
+        }
+        self.verify_create(
+            self.proxy.debug_api,
+            _as.DebugApi,
+            method_args=[gateway, a],
+            expected_args=[],
+            method_kwargs={**attrs},
+            expected_kwargs={
+                **attrs,
+                "api_id": None,
+                "gateway_id": None
+            }
+        )
+
+    def test_online_apis(self):
+        gateway = _gateway.Gateway()
+        environment = _env.ApiEnvironment()
+        self._verify(
+            'otcextensions.sdk.apig.v2.api_supplements.'
+            'PublishApis.publish_apis',
+            self.proxy.publish_apis,
+            method_args=[gateway, environment],
+            expected_args=[self.proxy],
+            expected_kwargs={
+                "env_id": None,
+                "gateway_id": None
+            }
+        )
+
+    def test_offline_apis(self):
+        gateway = _gateway.Gateway()
+        environment = _env.ApiEnvironment()
+        self._verify(
+            'otcextensions.sdk.apig.v2.api_supplements.'
+            'PublishApis.take_apis_offline',
+            self.proxy.offline_apis,
+            method_args=[gateway, environment],
+            expected_args=[self.proxy],
+            expected_kwargs={
+                "env_id": None,
+                "gateway_id": None
+            }
+        )
+
+    def test_api_versions(self):
+        gateway = _gateway.Gateway()
+        a = api.Api()
+        self.verify_list(
+            self.proxy.api_versions,
+            _as.PublishApis,
+            method_args=[gateway, a],
+            expected_args=[],
+            expected_kwargs={
+                "api_id": a,
+                "gateway_id": None
+            }
+        )
+
+    def test_switch_version(self):
+        gateway = _gateway.Gateway()
+        a = api.Api()
+        version_id = 'id'
+        self._verify(
+            'openstack.proxy.Proxy._update',
+            self.proxy.switch_version,
+            # expected_result=_as.PublishApis(),
+            method_args=[gateway, a, version_id],
+            method_kwargs={},
+            expected_args=[_as.PublishApis],
+            expected_kwargs={
+                "id": a,
+                "version_id": 'id',
+                "gateway_id": None
+            }
+        )
+
+    def test_api_runtime_definitions(self):
+        gateway = _gateway.Gateway()
+        a = api.Api()
+        self.verify_list(
+            self.proxy.api_runtime_definitions,
+            _as.RuntimeDefinitionApi,
+            method_args=[gateway, a],
+            expected_args=[],
+            expected_kwargs={
+                "api_id": a,
+                "gateway_id": None
+            }
+        )
+
+    def test_api_version_details(self):
+        gateway = _gateway.Gateway()
+        version_id = 'id'
+        self.verify_list(
+            self.proxy.api_version_details,
+            _as.VersionsApi,
+            method_args=[gateway, version_id],
+            expected_args=[],
+            expected_kwargs={
+                "version_id": 'id',
+                "gateway_id": None
+            }
+        )
+
+    def test_take_api_version_offline(self):
+        gateway = _gateway.Gateway()
+        version_id = 'id'
+        self.verify_delete(
+            self.proxy.take_api_version_offline,
+            _as.VersionsApi,
+            method_args=[gateway, version_id],
+            expected_args=[],
+            expected_kwargs={
+                "version_id": 'id',
+                "gateway_id": None
+            }
         )
