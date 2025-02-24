@@ -382,3 +382,92 @@ This example demonstrates how to list an APIs.
 
 .. literalinclude:: ../examples/apig/list_apis.py
    :lines: 16-20
+
+Publishing an API
+^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to publish an API.
+
+.. literalinclude:: ../examples/apig/publish_api.py
+   :lines: 16-25
+
+Take API offline
+^^^^^^^^^^^^^^^^
+
+This example demonstrates how to take API offline.
+
+.. literalinclude:: ../examples/apig/offline_api.py
+   :lines: 16-25
+
+Verifying the API Definition
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to verify the API definition.
+
+.. literalinclude:: ../examples/apig/check_api.py
+   :lines: 16-27
+
+Debugging an API
+^^^^^^^^^^^^^^^^
+
+This example demonstrates how to debug an API in a specified environment.
+
+.. literalinclude:: ../examples/apig/debug_api.py
+   :lines: 16-30
+
+Publishing APIs
+^^^^^^^^^^^^^^^
+
+This example demonstrates how to publish multiple APIs in an environment.
+
+.. literalinclude:: ../examples/apig/publish_apis.py
+   :lines: 16-25
+
+Taking APIs Offline
+^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to remove multiple APIs from the environment.
+
+.. literalinclude:: ../examples/apig/offline_apis.py
+   :lines: 16-25
+
+Querying Historical Versions of an API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query the historical versions of an API.
+
+.. literalinclude:: ../examples/apig/list_api_versions.py
+   :lines: 16-23
+
+Switching the Version of an API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to switch the version of an API.
+
+.. literalinclude:: ../examples/apig/switch_api_version.py
+   :lines: 16-24
+
+Querying the Runtime Definition of an API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query the runtime definition
+of an API in a specified environment.
+
+.. literalinclude:: ../examples/apig/list_api_runtime_definitions.py
+   :lines: 16-24
+
+Querying API Version Details
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query the details of a specified API version.
+
+.. literalinclude:: ../examples/apig/list_api_version_details.py
+   :lines: 16-23
+
+Taking an API Version Offline
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to remove an effective version of an API.
+
+.. literalinclude:: ../examples/apig/offline_api_version.py
+   :lines: 16-23

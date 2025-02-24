@@ -763,7 +763,7 @@ class Proxy(proxy.Proxy):
             **attrs)
 
     def debug_api(self, gateway, api, **attrs):
-        """Verify the API definition.
+        """Debug an API in a specified environment.
 
         :param gateway: The ID of the gateway or an instance of
             :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
@@ -781,7 +781,7 @@ class Proxy(proxy.Proxy):
             **attrs)
 
     def publish_apis(self, gateway, env, **attrs):
-        """Publish an API.
+        """Publish an APIs.
 
         :param gateway: The ID of the gateway or an instance of
             :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
@@ -893,7 +893,8 @@ class Proxy(proxy.Proxy):
         )
 
     def take_api_version_offline(
-            self, gateway, version_id, ignore_missing=False):
+            self, gateway, version_id, ignore_missing=False
+    ):
         """Remove an effective version of an API.
 
         :param version_id: API version.
