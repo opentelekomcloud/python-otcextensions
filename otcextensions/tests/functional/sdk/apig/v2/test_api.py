@@ -18,9 +18,9 @@ class TestApi(TestApiG):
 
     def setUp(self):
         super(TestApi, self).setUp()
-        # self.create_gateway()
-        # self.gateway_id = TestApi.gateway.id
-        self.gateway_id = "be76ca6de5fe4aa7af503c03b3b44dea"
+        self.create_gateway()
+        self.gateway_id = TestApi.gateway.id
+        # self.gateway_id = "be76ca6de5fe4aa7af503c03b3b44dea"
 
         group_attrs = {
             "name": "api_group_001",
@@ -58,6 +58,12 @@ class TestApi(TestApiG):
             gateway=self.gateway_id,
             **self.attrs
         )
+        self.environment = self.client.create_environment(
+            gateway=self.gateway_id,
+            name="testPub",
+            remark="test publish"
+        )
+
         self.addCleanup(
             self.client.delete_api_group,
             gateway=self.gateway_id,
@@ -68,7 +74,12 @@ class TestApi(TestApiG):
             gateway=self.gateway_id,
             api=self.api
         )
-        # self.addCleanup(self.delete_gateway())
+        self.addCleanup(
+            self.client.delete_environment,
+            gateway=self.gateway_id,
+            environment=self.environment,
+        )
+        self.addCleanup(self.delete_gateway())
 
     def test_list_apis(self):
         a = list(self.client.apis(
@@ -97,3 +108,125 @@ class TestApi(TestApiG):
         self.assertEqual(updated.type, self.attrs["type"])
         self.assertEqual(updated.req_method, self.attrs["req_method"])
         self.assertEqual(updated.req_protocol, self.attrs["req_protocol"])
+
+    def test_online_offline_api(self):
+        publish = self.client.publish_api(
+            gateway=self.gateway_id,
+            api=self.api.id,
+            env=self.environment,
+            remark="publish"
+        )
+        self.assertEqual(publish.api_name, self.api.name)
+        self.assertEqual(publish.remark, "publish")
+
+        offline = self.client.offline_api(
+            gateway=self.gateway_id,
+            api=self.api.id,
+            env=self.environment,
+            remark="offline"
+        )
+        self.assertEqual(offline.api_name, self.api.name)
+        self.assertEqual(offline.remark, "offline")
+
+    def test_check_api(self):
+        attrs = {
+            "type": "name",
+            "name": self.api.name
+        }
+        check = self.client.check_api(
+            gateway=self.gateway_id,
+            **attrs
+        )
+        self.assertIsNotNone(check)
+
+    def test_debug_api(self):
+        attrs = {
+            "mode": "DEVELOPER",
+            "scheme": "HTTP",
+            "method": "GET",
+            "path": "/test/http"
+        }
+        debug = self.client.debug_api(
+            gateway=self.gateway_id,
+            api=self.api.id,
+            **attrs
+        )
+        self.assertIsNotNone(debug)
+
+    def test_online_offline_apis(self):
+        publish = self.client.publish_apis(
+            gateway=self.gateway_id,
+            env=self.environment,
+            remark="publish",
+            apis=[self.api.id]
+        )
+        self.assertIsNotNone(publish)
+        self.assertEqual(publish.success[0]["api_id"], self.api.id)
+
+        offline = self.client.offline_apis(
+            gateway=self.gateway_id,
+            env=self.environment,
+            remark="offline",
+            apis=[self.api.id]
+        )
+        self.assertIsNotNone(offline)
+        self.assertEqual(offline.success[0]["api_id"], self.api.id)
+
+    def test_list_api_versions(self):
+        versions = list(self.client.api_versions(
+            gateway=self.gateway_id,
+            api=self.api.id))
+        self.assertIsNotNone(versions)
+
+    def test_switch_api_versions(self):
+        publish = self.client.publish_api(
+            gateway=self.gateway_id,
+            api=self.api.id,
+            env=self.environment,
+            remark="publish"
+        )
+        self.assertIsNotNone(publish)
+
+        switch = self.client.switch_version(
+            gateway=self.gateway_id,
+            api=self.api.id,
+            version_id=publish.version_id
+        )
+        self.assertIsNotNone(switch)
+
+        offline = self.client.offline_api(
+            gateway=self.gateway_id,
+            env=self.environment,
+            remark="offline",
+            api=self.api.id,
+        )
+        self.assertIsNotNone(offline)
+
+    # def test_list_runtime_definitions(self):
+    #     definitions = list(self.client.api_runtime_definitions(
+    #         gateway=self.gateway_id,
+    #         api=self.api.id,
+    #         env_id=self.environment.id
+    #     ))
+    #     self.assertIsNotNone(definitions)
+
+    def test_list_api_version_details(self):
+        publish = self.client.publish_api(
+            gateway=self.gateway_id,
+            api=self.api.id,
+            env=self.environment,
+            remark="publish"
+        )
+        self.assertIsNotNone(publish)
+
+        details = list(self.client.api_version_details(
+            gateway=self.gateway_id,
+            version_id=publish.version_id
+        ))
+        self.assertIsNotNone(details)
+
+        offline_version = self.client.take_api_version_offline(
+            gateway=self.gateway_id,
+            version_id=publish.version_id
+        )
+        self.assertIsNotNone(offline_version)

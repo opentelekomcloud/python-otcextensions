@@ -55,4 +55,8 @@ Api Operations
 ^^^^^^^^^^^^^^
 .. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
   :noindex:
-  :members: apis, create_api, delete_api, get_api, update_api
+  :members: apis, create_api, delete_api, get_api, update_api,
+            publish_api, offline_api, check_api, debug_api,
+            publish_apis, offline_apis, api_versions,
+            switch_version, api_runtime_definitions,
+            api_version_details, take_api_version_offline

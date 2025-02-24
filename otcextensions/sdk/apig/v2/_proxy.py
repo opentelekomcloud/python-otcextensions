@@ -20,6 +20,7 @@ from otcextensions.sdk.apig.v2 import apigroup as _api_group
 from otcextensions.sdk.apig.v2 import apienvironmentvar as _api_var
 from otcextensions.sdk.apig.v2 import throttling_policy as _tp
 from otcextensions.sdk.apig.v2 import api as _api
+from otcextensions.sdk.apig.v2 import api_supplements as _supp
 
 
 class Proxy(proxy.Proxy):
@@ -698,4 +699,214 @@ class Proxy(proxy.Proxy):
             _api.Api,
             api,
             gateway_id=gateway.id
+        )
+
+    def publish_api(self, gateway, env, api, **attrs):
+        """Publish an API.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param api: The ID of the Api or an instance of Api
+        :param env: The ID of the Environment or an instance of it
+        :param attrs: Additional attributes
+
+        :returns: An instance of PublishApi
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        env = self._get_resource(_api_environment.ApiEnvironment, env)
+        api = self._get_resource(_api.Api, api)
+        action = self._get_resource(_supp.PublishApi, "")
+        return action.publish_api(
+            self,
+            api_id=api.id,
+            env_id=env.id,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def offline_api(self, gateway, env, api, **attrs):
+        """Take API offline.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param api: The ID of the Api or an instance of Api
+        :param env: The ID of the Environment or an instance of it
+        :param attrs: Additional attributes
+
+        :returns: An instance of PublishApi
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        env = self._get_resource(_api_environment.ApiEnvironment, env)
+        api = self._get_resource(_api.Api, api)
+        action = self._get_resource(_supp.PublishApi, "")
+        return action.take_api_offline(
+            self,
+            api_id=api.id,
+            env_id=env.id,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def check_api(self, gateway, **attrs):
+        """Verify the API definition.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional attributes
+
+        :returns: An instance of CheckApi
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._create(
+            _supp.CheckApi,
+            gateway_id=gateway.id,
+            **attrs)
+
+    def debug_api(self, gateway, api, **attrs):
+        """Debug an API in a specified environment.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param api: The ID of the Api or an instance of Api
+        :param attrs: Additional attributes
+
+        :returns: An instance of DebugApi
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        api = self._get_resource(_api.Api, api)
+        return self._create(
+            _supp.DebugApi,
+            gateway_id=gateway.id,
+            api_id=api.id,
+            **attrs)
+
+    def publish_apis(self, gateway, env, **attrs):
+        """Publish an APIs.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param env: The ID of the Environment or an instance of it
+        :param attrs: Additional attributes
+
+        :returns: An instance of PublishApis
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        env = self._get_resource(_api_environment.ApiEnvironment, env)
+        action = self._get_resource(_supp.PublishApis, "")
+        return action.publish_apis(
+            self,
+            env_id=env.id,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def offline_apis(self, gateway, env, **attrs):
+        """Takes offline an APIs.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param env: The ID of the Environment or an instance of it
+        :param attrs: Additional attributes
+
+        :returns: An instance of PublishApis
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        env = self._get_resource(_api_environment.ApiEnvironment, env)
+        action = self._get_resource(_supp.PublishApis, "")
+        return action.take_apis_offline(
+            self,
+            env_id=env.id,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def api_versions(self, gateway, api):
+        """Retrieve the historical versions of an API.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param api: The ID of the Api or an instance of Api
+
+        :returns: An instance of PublishApis
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        api = self._get_resource(_supp.PublishApis, api)
+        base_path = f'/apigw/instances/%(gateway_id)s/apis/publish/%(api_id)s'
+        return self._list(
+            _supp.PublishApis,
+            api_id=api.id,
+            gateway_id=gateway.id,
+            base_path=base_path,
+        )
+
+    def switch_version(self, gateway, api, version_id):
+        """Switch the version of an API.
+
+        :param version_id: API version ID.
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param api: The ID of the Api or an instance of Api
+
+        :returns: An instance of PublishApis
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        api = self._get_resource(_supp.PublishApis, api)
+        return self._update(
+            _supp.PublishApis,
+            id=api.id,
+            gateway_id=gateway.id,
+            version_id=version_id,
+        )
+
+    def api_runtime_definitions(self, gateway, api, **query):
+        """Retrieve the runtime definition of an API.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param api: The ID of the Api or an instance of Api
+
+        :returns: An instance of RuntimeDefinitionApi
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        api = self._get_resource(_supp.PublishApis, api)
+        return self._list(
+            _supp.RuntimeDefinitionApi,
+            api_id=api.id,
+            gateway_id=gateway.id,
+            **query
+        )
+
+    def api_version_details(self, gateway, version_id):
+        """Retrieve the details of specified API version.
+
+        :param version_id: API version.
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+
+        :returns: An instance of RuntimeDefinitionApi
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _supp.VersionsApi,
+            gateway_id=gateway.id,
+            version_id=version_id
+        )
+
+    def take_api_version_offline(
+            self, gateway, version_id, ignore_missing=False
+    ):
+        """Remove an effective version of an API.
+
+        :param version_id: API version.
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._delete(
+            _supp.VersionsApi,
+            gateway_id=gateway.id,
+            version_id=version_id,
+            ignore_missing=ignore_missing
         )
