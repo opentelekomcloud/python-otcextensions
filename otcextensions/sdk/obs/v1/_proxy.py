@@ -451,10 +451,11 @@ class Proxy(sdk_proxy.Proxy):
         url = f'{endpoint}/{object_name}'
         # Schedule the segments for upload
         for name, segment in segments.items():
+            part_number = name.rsplit('/', 1)[-1]
             # Async call to put - schedules execution and returns a future
             segment_future = self._connection._pool_executor.submit(
                 self.put,
-                f'{url}?partNumber={name[-1]}&uploadId={upload_id}',
+                f'{url}?partNumber={part_number}&uploadId={upload_id}',
                 headers=headers, data=segment,
                 requests_auth=requests_auth,
                 raise_exc=False)

@@ -44,8 +44,46 @@ class Container(_base.BaseResource):
     name = resource.Body('Name', alternate_id=True, alias='id')
     creation_date = resource.Body('CreationDate')
 
+    # When creating a bucket, you can use this parameter
+    # to set a pre-defined ACL.
     storage_acl = resource.Header('x-amz-acl')
-    storage_class = resource.Header('x-default-storage-class')
+    # When creating a bucket, you can add this header
+    # to set the default storage class for the bucket.
+    # Value range:
+    # STANDARD (Standard storage)
+    # WARM (Warm storage)
+    # COLD (Cold storage)
+    storage_class = resource.Header('x-obs-storage-class')
+    # Grants the read permission to all users in a specified domain.
+    grant_read = resource.Header('x-obs-grant-read')
+    # Grants the WRITE permission to all users in a specified domain to create,
+    # delete, and overwrite all objects in a bucket; and initiate multipart
+    # uploads, upload parts, copy parts, assemble parts,
+    # and cancel multipart uploads.
+    grant_write = resource.Header('x-obs-grant-write')
+    # Grant the READ_ACP permission to all users in a specified domain
+    # to allow them to read the bucket ACL.
+    grant_read_acp = resource.Header('x-obs-grant-read-acp')
+    # Grants the WRITE_ACP permission to all users in a specified domain
+    # to allow them to modify the bucket ACL.
+    grant_write_acp = resource.Header('x-obs-grant-write-acp')
+    # Grants the FULL_CONTROL permission to all users in a specified domain.
+    grant_full_control = resource.Header('x-obs-grant-full-control')
+    # Grants the READ permission to all users in a specified domain.
+    # By default, the read permission is granted on all objects in the bucket.
+    grant_read_delivered = resource.Header('x-obs-grant-read-delivered')
+    # Grants the FULL_CONTROL permission to all users in a specified domain.
+    # By default, the FULL_CONTROL permission is granted on all
+    # objects in the bucket.
+    grant_full_delivered = resource.Header(
+        'x-obs-grant-full-control-delivered'
+    )
+    # This header can be carried when you want to create
+    # a parallel file system.
+    fs_file_interface = resource.Header('x-obs-fs-file-interface')
+    # When creating a bucket,
+    # you can use this header to enable WORM for the bucket.
+    object_lock_enabled = resource.Header('x-obs-bucket-object-lock-enabled')
 
     def _translate_response(self, response, has_body=True, error_message=None):
         """Given a KSA response, inflate this instance with its data
@@ -87,6 +125,11 @@ class Container(_base.BaseResource):
 
         base_path = '/'
         headers = {}
+        for k, v in self._header.dirty.items():
+            if isinstance(v, list):
+                headers[k] = ", ".join(v)
+            else:
+                headers[k] = str(v)
         uri = base_path % self._uri.attributes
         if requires_id:
             if self.id is None:
@@ -135,7 +178,8 @@ class Container(_base.BaseResource):
         return
 
     def create(self, session, prepend_key=True,
-               endpoint_override=None, headers=None, requests_auth=None):
+               endpoint_override=None, headers=None, requests_auth=None,
+               **attrs):
 
         if not self.allow_create:
             raise exceptions.MethodNotSupported(self, "create")
