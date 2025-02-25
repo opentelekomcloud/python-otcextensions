@@ -1,0 +1,5 @@
+fixes:
+  - |
+    SDK OBS container headers assigning
+  - |
+    SDK OBS object multipart upload fix
