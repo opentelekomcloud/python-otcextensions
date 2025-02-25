@@ -75,7 +75,9 @@ class Container(_base.BaseResource):
     # Grants the FULL_CONTROL permission to all users in a specified domain.
     # By default, the FULL_CONTROL permission is granted on all
     # objects in the bucket.
-    grant_full_delivered = resource.Header('x-obs-grant-full-control-delivered')
+    grant_full_delivered = resource.Header(
+        'x-obs-grant-full-control-delivered'
+    )
     # This header can be carried when you want to create
     # a parallel file system.
     fs_file_interface = resource.Header('x-obs-fs-file-interface')
