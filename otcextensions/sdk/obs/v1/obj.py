@@ -352,7 +352,7 @@ class Object(_base.BaseResource):
 
     @staticmethod
     def complete_multipart_upload(
-            proxy, endpoint, upload_id, data, headers, **params):
+            proxy, endpoint, upload_id, data, headers, requests_auth):
         url = f'{endpoint}?uploadId={upload_id}'
         root = ET.Element("CompleteMultipartUpload")
         for item in data:
@@ -362,4 +362,4 @@ class Object(_base.BaseResource):
         tree = ET.ElementTree(root)
         data = ET.tostring(tree.getroot()).decode()
         return proxy.post(url, data=data,
-                          headers=headers, params=params)
+                          headers=headers, requests_auth=requests_auth)
