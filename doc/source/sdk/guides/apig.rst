@@ -471,3 +471,35 @@ This example demonstrates how to remove an effective version of an API.
 
 .. literalinclude:: ../examples/apig/offline_api_version.py
    :lines: 16-23
+
+Creating a Signature Key
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to create a signature key.
+
+.. literalinclude:: ../examples/apig/create_signature.py
+   :lines: 16-28
+
+Modifying a Signature Key
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to update a signature key.
+
+.. literalinclude:: ../examples/apig/update_signature.py
+   :lines: 16-29
+
+Deleting a Signature Key
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to delete a signature key.
+
+.. literalinclude:: ../examples/apig/delete_signature.py
+   :lines: 16-23
+
+Querying Signature Keys
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to fetch all signature keys.
+
+.. literalinclude:: ../examples/apig/list_signatures.py
+   :lines: 16-20

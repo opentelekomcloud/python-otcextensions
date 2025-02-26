@@ -21,6 +21,7 @@ from otcextensions.sdk.apig.v2 import apienvironmentvar as _api_var
 from otcextensions.sdk.apig.v2 import throttling_policy as _tp
 from otcextensions.sdk.apig.v2 import api as _api
 from otcextensions.sdk.apig.v2 import api_supplements as _supp
+from otcextensions.sdk.apig.v2 import signature as _sign
 
 
 class Proxy(proxy.Proxy):
@@ -909,4 +910,74 @@ class Proxy(proxy.Proxy):
             gateway_id=gateway.id,
             version_id=version_id,
             ignore_missing=ignore_missing
+        )
+
+    # ======== Signature Keys Methods ========
+
+    def create_signature(self, gateway, **attrs):
+        """Create a new Signature for a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional attributes for the Signature creation.
+
+        :returns: An instance of Signature
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._create(_sign.Signature,
+                            gateway_id=gateway.id,
+                            **attrs)
+
+    def update_signature(self, gateway, sign, **attrs):
+        """Update an existing Signature for a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param sign: The ID of the Signature or an instance of Signature
+        :param attrs: Additional attributes to update the Signature.
+
+        :returns: Updated instance of Signature
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        sign = self._get_resource(_sign.Signature, sign)
+        return self._update(
+            _sign.Signature,
+            sign,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def delete_signature(self, gateway, sign, ignore_missing=False):
+        """Delete an existing Signature from a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param sign: The ID of the Signature or an instance of Signature
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        sign = self._get_resource(_sign.Signature, sign)
+        return self._delete(
+            _sign.Signature,
+            sign,
+            gateway_id=gateway.id,
+            ignore_missing=ignore_missing
+        )
+
+    def signatures(self, gateway, **attrs):
+        """List all Signatures for a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional filters for listing Signature.
+
+        :returns: A list of instances of Signature
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _sign.Signature,
+            paginated=False,
+            gateway_id=gateway.id,
+            **attrs
         )
