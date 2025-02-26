@@ -22,6 +22,7 @@ from otcextensions.sdk.apig.v2 import throttling_policy as _tp
 from otcextensions.sdk.apig.v2 import api as _api
 from otcextensions.sdk.apig.v2 import api_supplements as _supp
 from otcextensions.sdk.apig.v2 import signature as _sign
+from otcextensions.sdk.apig.v2 import signature_binding as _sign_bind
 
 
 class Proxy(proxy.Proxy):
@@ -980,4 +981,93 @@ class Proxy(proxy.Proxy):
             paginated=False,
             gateway_id=gateway.id,
             **attrs
+        )
+
+    # ======== Signature Binding Methods ========
+
+    def bind_signature(self, gateway, **attrs):
+        """Bind a Signature for a specific API.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional attributes for the Signature bind.
+
+        :returns: An instance of SignatureBind
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._create(
+            _sign_bind.SignatureBind,
+            gateway_id=gateway.id,
+            **attrs)
+
+    def unbind_signature(self, gateway, bind, ignore_missing=False):
+        """Unbind a bound Signature from a specific API.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param bind: The ID of the SignatureBind or an instance
+            of SignatureBind
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        bind = self._get_resource(_sign_bind.SignatureBind, bind)
+        return self._delete(
+            _sign_bind.SignatureBind,
+            bind,
+            gateway_id=gateway.id,
+            ignore_missing=ignore_missing
+        )
+
+    def bound_signatures(self, gateway, **query):
+        """List all Signatures bound a specific API.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param query: Additional filters for listing SignatureBind.
+
+        :returns: A list of instances of SignatureBind
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        bp = '/apigw/instances/%(gateway_id)s/sign-bindings/binded-signs'
+        return self._list(
+            _sign_bind.SignatureBind,
+            paginated=False,
+            gateway_id=gateway.id,
+            base_path=bp,
+            **query
+        )
+
+    def not_bound_apis(self, gateway, **query):
+        """List all APIs to which a signature key has not been bound.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param query: Additional filters for listing NotBoundApi.
+
+        :returns: A list of instances of NotBoundApi
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _sign_bind.NotBoundApi,
+            paginated=False,
+            gateway_id=gateway.id,
+            **query
+        )
+
+    def bound_apis(self, gateway, **query):
+        """List all APIs to which a signature key has been bound.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param query: Additional filters for listing BoundApi.
+
+        :returns: A list of instances of BoundApi
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _sign_bind.BoundApi,
+            paginated=False,
+            gateway_id=gateway.id,
+            **query
         )

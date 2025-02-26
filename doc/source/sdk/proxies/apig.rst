@@ -66,4 +66,5 @@ Signature Key Operations
 .. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
   :noindex:
   :members: create_signature, update_signature, delete_signature,
-            signatures
+            signatures, bind_signature, unbind_signature, bound_signatures,
+            not_bound_apis, bound_apis

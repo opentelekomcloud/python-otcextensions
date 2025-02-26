@@ -13,3 +13,4 @@ ApiGateway Resources
    v2/api
    v2/api_supplements
    v2/signature
+   v2/signature_bind
