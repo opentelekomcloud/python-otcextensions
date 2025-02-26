@@ -18,6 +18,7 @@ from otcextensions.sdk.apig.v2 import apigroup as _api_group
 from otcextensions.sdk.apig.v2 import throttling_policy as _tp
 from otcextensions.sdk.apig.v2 import api
 from otcextensions.sdk.apig.v2 import api_supplements as _as
+from otcextensions.sdk.apig.v2 import signature as _sign
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
 
@@ -696,4 +697,60 @@ class TestApiSupplements(TestApiGatewayProxy):
                 "version_id": 'id',
                 "gateway_id": None
             }
+        )
+
+
+class TestSignature(TestApiGatewayProxy):
+    def test_signatures(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(
+            self.proxy.signatures,
+            _sign.Signature,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_create_api(self):
+        gateway = _gateway.Gateway()
+        attrs = {
+            "name": "otce_signature_1",
+            "sign_type": "aes",
+            "sign_algorithm": "aes-256-cfb",
+        }
+        self.verify_create(
+            self.proxy.create_signature,
+            _sign.Signature,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={**attrs},
+            expected_kwargs={**attrs, "gateway_id": None}
+        )
+
+    def test_delete_api(self):
+        gateway = _gateway.Gateway()
+        s = _sign.Signature()
+        self.verify_delete(
+            self.proxy.delete_signature,
+            _sign.Signature,
+            method_args=[gateway, s],
+            expected_args=[s],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_update_api(self):
+        gateway = _gateway.Gateway()
+        s = _sign.Signature()
+        attrs = {
+            "name": "otce_signature_1",
+            "sign_type": "aes",
+            "sign_algorithm": "aes-128-cfb",
+        }
+        self.verify_update(
+            self.proxy.update_signature,
+            _sign.Signature,
+            method_args=[gateway, s],
+            expected_args=[s],
+            method_kwargs={**attrs},
+            expected_kwargs={**attrs, "gateway_id": None}
         )

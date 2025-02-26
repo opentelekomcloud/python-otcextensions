@@ -60,3 +60,10 @@ Api Operations
             publish_apis, offline_apis, api_versions,
             switch_version, api_runtime_definitions,
             api_version_details, take_api_version_offline
+
+Signature Key Operations
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: create_signature, update_signature, delete_signature,
+            signatures
