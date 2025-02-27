@@ -23,6 +23,7 @@ from otcextensions.sdk.apig.v2 import api as _api
 from otcextensions.sdk.apig.v2 import api_supplements as _supp
 from otcextensions.sdk.apig.v2 import signature as _sign
 from otcextensions.sdk.apig.v2 import signature_binding as _sign_bind
+from otcextensions.sdk.apig.v2 import throttling_policy_binding as _tpb
 
 
 class Proxy(proxy.Proxy):
@@ -1067,6 +1068,115 @@ class Proxy(proxy.Proxy):
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return self._list(
             _sign_bind.BoundApi,
+            paginated=False,
+            gateway_id=gateway.id,
+            **query
+        )
+
+    # ======== Throttling Policy Binding Methods ========
+
+    def bind_throttling_policy(self, gateway, **attrs):
+        """Bind a throttling policy to a specific API.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional attributes for the ThrottlingPolicy bind.
+
+        :returns: An instance of ThrottlingPolicyBind
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._create(
+            _tpb.ThrottlingPolicyBind,
+            gateway_id=gateway.id,
+            **attrs)
+
+    def unbind_throttling_policy(self, gateway, bind, ignore_missing=False):
+        """Unbind a bound Signature from a specific API.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param bind: The ID of the SignatureBind or an instance
+            of ThrottlingPolicyBind
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        bind = self._get_resource(_tpb.ThrottlingPolicyBind, bind)
+        return self._delete(
+            _tpb.ThrottlingPolicyBind,
+            bind,
+            gateway_id=gateway.id,
+            ignore_missing=ignore_missing
+        )
+
+    def unbind_throttling_policies(self, gateway, throttle_bindings: list):
+        """Unbind a bound Signature from a specific API.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param throttle_bindings: The IDs of the request throttling
+            policy binding records to be canceled.
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        bind = self._get_resource(_tpb.ThrottlingPolicyBind, "")
+        return bind.unbind_policies(
+            self,
+            gateway_id=gateway.id,
+            throttle_bindings=throttle_bindings
+        )
+
+    def bound_throttling_policy_apis(self, gateway, **query):
+        """List all APIs to which a specified request
+            throttling policy has been bound.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param query: Additional filters for listing ThrottlingPolicyBind.
+
+        :returns: A list of instances of ThrottlingPolicyBind
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        bp = '/apigw/instances/%(gateway_id)s/throttle-bindings/binded-apis'
+        return self._list(
+            _tpb.ThrottlingPolicyBind,
+            paginated=False,
+            gateway_id=gateway.id,
+            base_path=bp,
+            **query
+        )
+
+    def not_bound_throttling_policy_apis(self, gateway, **query):
+        """List all APIs to which a request throttling
+            policy has not been bound.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param query: Additional filters for listing NotBoundApi.
+
+        :returns: A list of instances of NotBoundApi
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _tpb.NotBoundApi,
+            paginated=False,
+            gateway_id=gateway.id,
+            **query
+        )
+
+    def bound_throttling_policies(self, gateway, **query):
+        """List all throttling policies that have been bound to an API.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param query: Additional filters for listing BoundApi.
+
+        :returns: A list of instances of BoundThrottles
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _tpb.BoundThrottles,
             paginated=False,
             gateway_id=gateway.id,
             **query
