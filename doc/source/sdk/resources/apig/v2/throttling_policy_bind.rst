@@ -3,8 +3,8 @@ otcextensions.sdk.apig.v2.throttling_policy_binding
 
 .. automodule:: otcextensions.sdk.apig.v2.throttling_policy_binding
 
-The SignatureBind Class
------------------------
+The ThrottlingPolicyBind Class
+------------------------------
 
 The ``ThrottlingPolicyBind`` class inherits from
 :class:`~otcextensions.sdk.sdk_resource.Resource`.
