@@ -503,3 +503,46 @@ This example demonstrates how to fetch all signature keys.
 
 .. literalinclude:: ../examples/apig/list_signatures.py
    :lines: 16-20
+
+Binding a Signature Key
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to bind a signature key.
+
+.. literalinclude:: ../examples/apig/bind_signature.py
+   :lines: 16-28
+
+Unbinding a Signature Key
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to unbind a signature key.
+
+.. literalinclude:: ../examples/apig/unbind_signature.py
+   :lines: 16-24
+
+Querying Signature Keys Bound to an API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to list the signature keys that
+have been bound to a specified API.
+
+.. literalinclude:: ../examples/apig/list_bound_signatures.py
+   :lines: 16-24
+
+Querying APIs Not Bound with a Signature Key
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to list the APIs to which a signature key
+has not been bound.
+
+.. literalinclude:: ../examples/apig/list_not_bound_apis.py
+   :lines: 16-23
+
+Querying APIs Bound with a Signature Key
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to list the APIs to which a signature key
+has been bound.
+
+.. literalinclude:: ../examples/apig/list_bound_apis.py
+   :lines: 16-24

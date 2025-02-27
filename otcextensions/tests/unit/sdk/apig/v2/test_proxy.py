@@ -19,6 +19,7 @@ from otcextensions.sdk.apig.v2 import throttling_policy as _tp
 from otcextensions.sdk.apig.v2 import api
 from otcextensions.sdk.apig.v2 import api_supplements as _as
 from otcextensions.sdk.apig.v2 import signature as _sign
+from otcextensions.sdk.apig.v2 import signature_binding as _sb
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
 
@@ -711,7 +712,7 @@ class TestSignature(TestApiGatewayProxy):
             expected_kwargs={"gateway_id": None}
         )
 
-    def test_create_api(self):
+    def test_create_signature(self):
         gateway = _gateway.Gateway()
         attrs = {
             "name": "otce_signature_1",
@@ -727,7 +728,7 @@ class TestSignature(TestApiGatewayProxy):
             expected_kwargs={**attrs, "gateway_id": None}
         )
 
-    def test_delete_api(self):
+    def test_delete_signature(self):
         gateway = _gateway.Gateway()
         s = _sign.Signature()
         self.verify_delete(
@@ -753,4 +754,63 @@ class TestSignature(TestApiGatewayProxy):
             expected_args=[s],
             method_kwargs={**attrs},
             expected_kwargs={**attrs, "gateway_id": None}
+        )
+
+
+class TestSignatureBind(TestApiGatewayProxy):
+    def test_bound_signatures(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(
+            self.proxy.bound_signatures,
+            _sb.SignatureBind,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_not_bound_apis(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(
+            self.proxy.not_bound_apis,
+            _sb.NotBoundApi,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_bound_apis(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(
+            self.proxy.bound_apis,
+            _sb.BoundApi,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_bind_signature(self):
+        gateway = _gateway.Gateway()
+        attrs = {
+            "name": "otce_signature",
+            "sign_type": "aes",
+            "sign_algorithm": "aes-256-cfb",
+        }
+        self.verify_create(
+            self.proxy.bind_signature,
+            _sb.SignatureBind,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={**attrs},
+            expected_kwargs={**attrs, "gateway_id": None}
+        )
+
+    def test_unbind_signature(self):
+        gateway = _gateway.Gateway()
+        s = _sb.SignatureBind()
+        self.verify_delete(
+            self.proxy.unbind_signature,
+            _sb.SignatureBind,
+            method_args=[gateway, s],
+            expected_args=[s],
+            expected_kwargs={"gateway_id": None}
         )

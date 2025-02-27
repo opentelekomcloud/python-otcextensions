@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    Add API signature key bindings management support for API Gateway
