@@ -13,7 +13,7 @@ The ``ThrottlingPolicyBind`` class inherits from
    :members:
 
 The NotBoundApi Class
------------------------
+---------------------
 
 The ``NotBoundApi`` class inherits from
 :class:`~otcextensions.sdk.sdk_resource.Resource`.
@@ -22,7 +22,7 @@ The ``NotBoundApi`` class inherits from
    :members:
 
 The BoundApi Class
------------------------
+------------------
 
 The ``BoundThrottles`` class inherits from
 :class:`~otcextensions.sdk.sdk_resource.Resource`.
