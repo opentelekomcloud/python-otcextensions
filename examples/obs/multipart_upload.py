@@ -22,7 +22,7 @@ sdk.get_ak_sk(conn)
 
 container = conn.obs.create_container(
     name='test-multipart',
-    storage_acl='public-read-write',
+    storage_acl='private',
     storage_class='STANDARD'
 )
 
