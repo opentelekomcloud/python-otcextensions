@@ -587,7 +587,7 @@ Querying Request Throttling Policies Bound to an API
 
 This example demonstrates how to query the request throttling policies
 that have been bound to an API.
- Only one request throttling policy can be bound to an API in an environment
+Only one request throttling policy can be bound to an API in an environment
 
 .. literalinclude:: ../examples/apig/list_bound_throttling_policies.py
    :lines: 16-24
