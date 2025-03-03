@@ -546,3 +546,56 @@ has been bound.
 
 .. literalinclude:: ../examples/apig/list_bound_apis.py
    :lines: 16-24
+
+Binding a Request Throttling Policy
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to bind request throttling policy to an API.
+
+.. literalinclude:: ../examples/apig/bind_throttling_policy.py
+   :lines: 16-28
+
+Unbinding a Request Throttling Policy
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to unbind request throttling policy from an API.
+
+.. literalinclude:: ../examples/apig/unbind_throttling_policy.py
+   :lines: 16-24
+
+Querying APIs Bound with a Request Throttling Policy
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query the APIs to which a
+specified request throttling policy has been bound.
+
+.. literalinclude:: ../examples/apig/list_bound_throttling_policy_apis.py
+   :lines: 16-23
+
+Querying APIs Not Bound with a Request Throttling Policy
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query the self-developed APIs
+to which a request throttling policy has not been bound.
+Only published APIs will be displayed.
+
+.. literalinclude:: ../examples/apig/list_not_bound_throttling_policy_apis.py
+   :lines: 16-23
+
+Querying Request Throttling Policies Bound to an API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query the request throttling policies
+that have been bound to an API.
+Only one request throttling policy can be bound to an API in an environment
+
+.. literalinclude:: ../examples/apig/list_bound_throttling_policies.py
+   :lines: 16-24
+
+Querying Request Throttling Policies Bound to an API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to unbind request throttling policies from APIs.
+
+.. literalinclude:: ../examples/apig/unbind_throttling_policies.py
+   :lines: 16-27

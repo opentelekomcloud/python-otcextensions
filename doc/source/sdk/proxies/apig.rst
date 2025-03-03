@@ -49,7 +49,10 @@ Throttling Policies Operations
   :noindex:
   :members: throttling_policies, create_throttling_policy,
             delete_throttling_policy, get_throttling_policy,
-            update_throttling_policy
+            update_throttling_policy, bind_throttling_policy,
+            unbind_throttling_policy, unbind_throttling_policies,
+            bound_throttling_policy_apis, not_bound_throttling_policy_apis,
+            bound_throttling_policies
 
 Api Operations
 ^^^^^^^^^^^^^^

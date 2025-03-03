@@ -20,6 +20,7 @@ from otcextensions.sdk.apig.v2 import api
 from otcextensions.sdk.apig.v2 import api_supplements as _as
 from otcextensions.sdk.apig.v2 import signature as _sign
 from otcextensions.sdk.apig.v2 import signature_binding as _sb
+from otcextensions.sdk.apig.v2 import throttling_policy_binding as _tb
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
 
@@ -813,4 +814,73 @@ class TestSignatureBind(TestApiGatewayProxy):
             method_args=[gateway, s],
             expected_args=[s],
             expected_kwargs={"gateway_id": None}
+        )
+
+
+class TestThrottlesBind(TestApiGatewayProxy):
+    def test_bound_throttling_policies(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(
+            self.proxy.bound_throttling_policies,
+            _tb.BoundThrottles,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_not_bound_throttling_policy_apis(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(
+            self.proxy.not_bound_throttling_policy_apis,
+            _tb.NotBoundApi,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_bound_throttling_policy_apis(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(
+            self.proxy.bound_throttling_policy_apis,
+            _tb.ThrottlingPolicyBind,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_bind_throttling_policy(self):
+        gateway = _gateway.Gateway()
+        attrs = {
+            "throttle_id": "id",
+            "publish_ids": ["publish_id"]
+        }
+        self.verify_create(
+            self.proxy.bind_throttling_policy,
+            _tb.ThrottlingPolicyBind,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={**attrs},
+            expected_kwargs={**attrs, "gateway_id": None}
+        )
+
+    def test_unbind_throttling_policy(self):
+        gateway = _gateway.Gateway()
+        t = _tb.ThrottlingPolicyBind()
+        self.verify_delete(
+            self.proxy.unbind_throttling_policy,
+            _tb.ThrottlingPolicyBind,
+            method_args=[gateway, t],
+            expected_args=[t],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_unbind_throttling_policies(self):
+        gateway = _gateway.Gateway()
+        self._verify(
+            'otcextensions.sdk.apig.v2.throttling_policy_binding.'
+            'ThrottlingPolicyBind.unbind_policies',
+            self.proxy.unbind_throttling_policies,
+            method_args=[gateway, ["t"]],
+            expected_args=[self.proxy],
+            expected_kwargs={"gateway_id": None, "throttle_bindings": ["t"]}
         )

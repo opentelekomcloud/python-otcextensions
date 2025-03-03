@@ -50,7 +50,7 @@ class Bandwidth(resource.Resource):
     share_type = resource.Body('share_type', type=str)
     #: Specifies the project ID.
     publicip_info = resource.Body('publicip_info', type=list,
-                                  elements=PublicIPInfo)
+                                  list_type=PublicIPInfo)
     #: Specifies the project ID.
     project_id = resource.URI('project_id')
     #: Specifies the bandwidth type.

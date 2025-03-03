@@ -60,6 +60,23 @@ class TestQuota(base.TestCase):
 
     def test_make_it(self):
         test_quota = _quota.Quota(**EXAMPLE)
-        self.assertEqual(
-            EXAMPLE['resources'],
-            test_quota.resources)
+        self.assertEqual(EXAMPLE['resources'][0]['type'],
+                         test_quota.resources[0].type)
+        self.assertEqual(EXAMPLE['resources'][0]['used'],
+                         test_quota.resources[0].used)
+        self.assertEqual(EXAMPLE['resources'][0]['quota'],
+                         test_quota.resources[0].quota)
+        self.assertEqual(EXAMPLE['resources'][0]['min'],
+                         test_quota.resources[0].min)
+        self.assertEqual(EXAMPLE['resources'][0]['max'],
+                         test_quota.resources[0].max)
+        self.assertEqual(EXAMPLE['resources'][1]['type'],
+                         test_quota.resources[1].type)
+        self.assertEqual(EXAMPLE['resources'][1]['used'],
+                         test_quota.resources[1].used)
+        self.assertEqual(EXAMPLE['resources'][1]['quota'],
+                         test_quota.resources[1].quota)
+        self.assertEqual(EXAMPLE['resources'][1]['min'],
+                         test_quota.resources[1].min)
+        self.assertEqual(EXAMPLE['resources'][1]['max'],
+                         test_quota.resources[1].max)
