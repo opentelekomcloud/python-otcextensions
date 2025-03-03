@@ -10,5 +10,4 @@ sphinxcontrib-apidoc>=0.2.0 # BSD
 cliff!=2.9.0,>=2.8.0 # Apache-2.0
 oslo.i18n>=3.15.3 # Apache-2.0
 osc-lib>=1.10.0 # Apache-2.0
-openstacksdk==4.3.0 # temorary need to remove after version fix
 python-openstackclient>=3.14.0 # Apache-2.0
