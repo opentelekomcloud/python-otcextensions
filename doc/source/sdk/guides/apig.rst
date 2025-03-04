@@ -599,3 +599,39 @@ This example demonstrates how to unbind request throttling policies from APIs.
 
 .. literalinclude:: ../examples/apig/unbind_throttling_policies.py
    :lines: 16-27
+
+Creating an Excluded Request Throttling Configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to create an
+excluded request throttling configuration.
+
+.. literalinclude:: ../examples/apig/create_throttling_exclude.py
+   :lines: 16-50
+
+Modifying an Excluded Request Throttling Configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to update an
+excluded request throttling configuration.
+
+.. literalinclude:: ../examples/apig/update_throttling_exclude.py
+   :lines: 16-28
+
+Deleting an Excluded Request Throttling Configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to delete an
+excluded request throttling configuration.
+
+.. literalinclude:: ../examples/apig/delete_throttling_exclude.py
+   :lines: 16-24
+
+Querying Excluded Request Throttling Configurations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query an
+excluded request throttling configurations.
+
+.. literalinclude:: ../examples/apig/list_throttling_exclude.py
+   :lines: 16-23
