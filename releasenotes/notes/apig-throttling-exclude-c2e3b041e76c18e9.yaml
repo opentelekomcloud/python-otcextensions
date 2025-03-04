@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    Add excluded request throttling configuration support for API Gateway
