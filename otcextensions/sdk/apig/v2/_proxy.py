@@ -24,6 +24,7 @@ from otcextensions.sdk.apig.v2 import api_supplements as _supp
 from otcextensions.sdk.apig.v2 import signature as _sign
 from otcextensions.sdk.apig.v2 import signature_binding as _sign_bind
 from otcextensions.sdk.apig.v2 import throttling_policy_binding as _tpb
+from otcextensions.sdk.apig.v2 import throttling_excluded as _tx
 from otcextensions.sdk.apig.v2 import gateway_features as _gwf
 
 
@@ -1180,6 +1181,107 @@ class Proxy(proxy.Proxy):
             _tpb.BoundThrottles,
             paginated=False,
             gateway_id=gateway.id,
+            **query
+        )
+
+    # ======== Throttling Policy Methods ========
+
+    def create_throttling_excluded_policy(self, gateway, policy, **attrs):
+        """Creating an Excluded Request Throttling Configuration.
+
+        :param policy: The ID of the throttling policy or an instance of
+            :class:`~otcextensions.sdk.apig.v2.throttling_policy.
+            ThrottlingPolicy`
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional attributes for the excluded throttling policy
+            creation.
+
+        :returns: An instance of ThrottlingExcludedPolicy
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        policy = self._get_resource(_tp.ThrottlingPolicy, policy)
+        return self._create(_tx.ThrottlingExcludedPolicy,
+                            gateway_id=gateway.id,
+                            throttle_id=policy.id,
+                            **attrs)
+
+    def update_throttling_excluded_policy(
+            self, gateway, policy, exclude, **attrs):
+        """Update an Excluded Request Throttling Configuration.
+
+        :param exclude: The ID of the excluded throttling policy or
+            an instance of
+            :class:`~otcextensions.sdk.apig.v2.throttling_excluded.
+            ThrottlingExcludedPolicy`
+        :param policy: The ID of the throttling policy or an instance of
+            :class:`~otcextensions.sdk.apig.v2.throttling_policy.
+            ThrottlingPolicy`
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional attributes to update the
+            excluded throttling policy.
+
+        :returns: Updated instance of ThrottlingExcludedPolicy
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        policy = self._get_resource(_tp.ThrottlingPolicy, policy)
+        exclude = self._get_resource(_tx.ThrottlingExcludedPolicy, exclude)
+        return self._update(
+            _tx.ThrottlingExcludedPolicy,
+            exclude,
+            gateway_id=gateway.id,
+            throttle_id=policy.id,
+            **attrs
+        )
+
+    def delete_throttling_excluded_policy(
+            self, gateway, policy, exclude, ignore_missing=False):
+        """Deleting an Excluded Request Throttling Configuration.
+
+        :param exclude: The ID of the excluded throttling policy or
+            an instance of
+            :class:`~otcextensions.sdk.apig.v2.throttling_excluded.
+            ThrottlingExcludedPolicy`
+        :param policy: The ID of the throttling policy or an instance of
+            :class:`~otcextensions.sdk.apig.v2.throttling_policy.
+            ThrottlingPolicy`
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        policy = self._get_resource(_tp.ThrottlingPolicy, policy)
+        exclude = self._get_resource(_tx.ThrottlingExcludedPolicy, exclude)
+        return self._delete(
+            _tx.ThrottlingExcludedPolicy,
+            exclude,
+            gateway_id=gateway.id,
+            throttle_id=policy.id,
+            ignore_missing=ignore_missing
+        )
+
+    def throttling_excluded_policies(self, gateway, policy, **query):
+        """List all Excluded Request Throttling Configurations.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param policy: The ID of the throttling policy or an instance of
+            :class:`~otcextensions.sdk.apig.v2.throttling_policy.
+            ThrottlingPolicy`
+        :param query: Additional filters for listing excluded throttling
+            policies.
+
+        :returns: A list of instances of ThrottlingExcludedPolicy
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        policy = self._get_resource(_tp.ThrottlingPolicy, policy)
+        return self._list(
+            _tx.ThrottlingExcludedPolicy,
+            paginated=False,
+            gateway_id=gateway.id,
+            throttle_id=policy.id,
             **query
         )
 

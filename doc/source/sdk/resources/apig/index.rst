@@ -12,6 +12,7 @@ ApiGateway Resources
    v2/env_var
    v2/throttling_policy
    v2/throttling_policy_bind
+   v2/throttling_excluded
    v2/api
    v2/api_supplements
    v2/signature

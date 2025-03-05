@@ -72,6 +72,14 @@ Signature Key Operations
             signatures, bind_signature, unbind_signature, bound_signatures,
             not_bound_apis, bound_apis
 
+Excluded Request Throttling Configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: create_throttling_excluded_policy,
+            update_throttling_excluded_policy,
+            delete_throttling_excluded_policy, throttling_excluded_policies
+
 
 Gateway Features Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^

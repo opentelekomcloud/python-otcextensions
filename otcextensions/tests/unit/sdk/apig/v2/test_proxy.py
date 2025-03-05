@@ -21,6 +21,7 @@ from otcextensions.sdk.apig.v2 import api_supplements as _as
 from otcextensions.sdk.apig.v2 import signature as _sign
 from otcextensions.sdk.apig.v2 import signature_binding as _sb
 from otcextensions.sdk.apig.v2 import throttling_policy_binding as _tb
+from otcextensions.sdk.apig.v2 import throttling_excluded as _tx
 from otcextensions.sdk.apig.v2 import gateway_features as _gwf
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
@@ -884,6 +885,78 @@ class TestThrottlesBind(TestApiGatewayProxy):
             method_args=[gateway, ["t"]],
             expected_args=[self.proxy],
             expected_kwargs={"gateway_id": None, "throttle_bindings": ["t"]}
+        )
+
+
+class TestThrottlingExcludePolicy(TestApiGatewayProxy):
+    def test_throttling_excluded_policies(self):
+        gateway = _gateway.Gateway()
+        policy = _tp.ThrottlingPolicy()
+        self.verify_list(
+            self.proxy.throttling_excluded_policies,
+            _tx.ThrottlingExcludedPolicy,
+            method_args=[gateway, policy],
+            expected_args=[],
+            expected_kwargs={
+                "gateway_id": None,
+                "throttle_id": None
+            }
+        )
+
+    def test_create_throttling_excluded_policy(self):
+        gateway = _gateway.Gateway()
+        policy = _tp.ThrottlingPolicy()
+        attrs = {
+            "call_limits": 50,
+            "object_id": "id",
+            "object_type": "USER"
+        }
+        self.verify_create(
+            self.proxy.create_throttling_excluded_policy,
+            _tx.ThrottlingExcludedPolicy,
+            method_args=[gateway, policy],
+            expected_args=[],
+            method_kwargs={**attrs},
+            expected_kwargs={
+                **attrs,
+                "gateway_id": None,
+                "throttle_id": None
+            }
+        )
+
+    def test_delete_throttling_excluded_policy(self):
+        gateway = _gateway.Gateway()
+        policy = _tp.ThrottlingPolicy()
+        ex = _tx.ThrottlingExcludedPolicy()
+        self.verify_delete(
+            self.proxy.delete_throttling_excluded_policy,
+            _tx.ThrottlingExcludedPolicy,
+            method_args=[gateway, policy, ex],
+            expected_args=[ex],
+            expected_kwargs={
+                "gateway_id": None,
+                "throttle_id": None
+            }
+        )
+
+    def test_update_throttling_excluded_policy(self):
+        gateway = _gateway.Gateway()
+        policy = _tp.ThrottlingPolicy()
+        ex = _tx.ThrottlingExcludedPolicy()
+        attrs = {
+            "call_limits": 30
+        }
+        self.verify_update(
+            self.proxy.update_throttling_excluded_policy,
+            _tx.ThrottlingExcludedPolicy,
+            method_args=[gateway, policy, ex],
+            expected_args=[ex],
+            method_kwargs={**attrs},
+            expected_kwargs={
+                **attrs,
+                "gateway_id": None,
+                "throttle_id": None
+            }
         )
 
 
