@@ -22,7 +22,8 @@ class TestGwFeatures(TestApiG):
         self.attrs = {
             "name": "route",
             "enable": True,
-            "config": "{\"user_routes\":[\"172.16.128.0/20\",\"172.16.0.0/20\"]}",
+            "config": "{\"user_routes\":[\"172.16.128.0/20\","
+                      "\"172.16.0.0/20\"]}",
         }
         self.feat = self.client.configure_gateway_feature(
             gateway=self.gateway_id,
