@@ -71,3 +71,11 @@ Signature Key Operations
   :members: create_signature, update_signature, delete_signature,
             signatures, bind_signature, unbind_signature, bound_signatures,
             not_bound_apis, bound_apis
+
+
+Gateway Features Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: configure_gateway_feature, gateway_features,
+            supported_gateway_features

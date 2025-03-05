@@ -599,3 +599,27 @@ This example demonstrates how to unbind request throttling policies from APIs.
 
 .. literalinclude:: ../examples/apig/unbind_throttling_policies.py
    :lines: 16-27
+
+Querying the Supported Features of a Gateway
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query the supported features of a gateway.
+
+.. literalinclude:: ../examples/apig/list_supported_gw_features.py
+   :lines: 16-20
+
+Querying Gateway Features
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query the features of a gateway.
+
+.. literalinclude:: ../examples/apig/list_gw_features.py
+   :lines: 16-20
+
+Querying Gateway Features
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to configure a feature for a gateway.
+
+.. literalinclude:: ../examples/apig/configure_gw_feature.py
+   :lines: 16-29

@@ -24,6 +24,7 @@ from otcextensions.sdk.apig.v2 import api_supplements as _supp
 from otcextensions.sdk.apig.v2 import signature as _sign
 from otcextensions.sdk.apig.v2 import signature_binding as _sign_bind
 from otcextensions.sdk.apig.v2 import throttling_policy_binding as _tpb
+from otcextensions.sdk.apig.v2 import gateway_features as _gwf
 
 
 class Proxy(proxy.Proxy):
@@ -1181,3 +1182,49 @@ class Proxy(proxy.Proxy):
             gateway_id=gateway.id,
             **query
         )
+
+    # ======== Gateway Features Methods ========
+
+    def configure_gateway_feature(self, gateway, **attrs):
+        """Configuring a feature for a Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional attributes for the GatewayFeatures.
+
+        :returns: An instance of GatewayFeatures
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._create(
+            _gwf.GatewayFeatures,
+            gateway_id=gateway.id,
+            **attrs)
+
+    def gateway_features(self, gateway, **query):
+        """List all Gateway Features.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param query:  Additional filters for listing GatewayFeatures.
+
+        :returns: A list of instances of GatewayFeatures
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _gwf.GatewayFeatures,
+            gateway_id=gateway.id,
+            **query)
+
+    def supported_gateway_features(self, gateway, **query):
+        """List all the supported features of a Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param query:  Additional filters for listing GatewayFeatures.
+
+        :returns: A list of instances of features names
+        """
+
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        feat = self._get_resource(_gwf.GatewayFeatures, "")
+        return feat._supported_features(self, gateway, **query)
