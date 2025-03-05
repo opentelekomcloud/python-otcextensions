@@ -22,6 +22,7 @@ from otcextensions.sdk.apig.v2 import signature as _sign
 from otcextensions.sdk.apig.v2 import signature_binding as _sb
 from otcextensions.sdk.apig.v2 import throttling_policy_binding as _tb
 from otcextensions.sdk.apig.v2 import throttling_excluded as _tx
+from otcextensions.sdk.apig.v2 import gateway_features as _gwf
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
 
@@ -956,4 +957,43 @@ class TestThrottlingExcludePolicy(TestApiGatewayProxy):
                 "gateway_id": None,
                 "throttle_id": None
             }
+        )
+
+
+class TestGwFeatures(TestApiGatewayProxy):
+    def test_list_gateway_features(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(
+            self.proxy.gateway_features,
+            _gwf.GatewayFeatures,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_configure_gateway_feature(self):
+        gateway = _gateway.Gateway()
+        attrs = {
+            "name": "route",
+            "enable": False,
+            "config": "{\"user_routes\":[]}",
+        }
+        self.verify_create(
+            self.proxy.configure_gateway_feature,
+            _gwf.GatewayFeatures,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={**attrs},
+            expected_kwargs={**attrs, "gateway_id": None}
+        )
+
+    def test_supported_gateway_features(self):
+        gateway = _gateway.Gateway()
+        self._verify(
+            'otcextensions.sdk.apig.v2.gateway_features.'
+            'GatewayFeatures._supported_features',
+            self.proxy.supported_gateway_features,
+            method_args=[gateway],
+            expected_args=[self.proxy, gateway],
+            expected_kwargs={}
         )

@@ -5,6 +5,7 @@ ApiGateway Resources
    :maxdepth: 1
 
    v2/gateway
+   v2/gateway_features
    v2/az
    v2/env
    v2/group

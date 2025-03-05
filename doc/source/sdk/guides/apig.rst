@@ -635,3 +635,27 @@ excluded request throttling configurations.
 
 .. literalinclude:: ../examples/apig/list_throttling_exclude.py
    :lines: 16-23
+
+Querying the Supported Features of a Gateway
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query the supported features of a gateway.
+
+.. literalinclude:: ../examples/apig/list_supported_gw_features.py
+   :lines: 16-20
+
+Querying Gateway Features
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query the features of a gateway.
+
+.. literalinclude:: ../examples/apig/list_gw_features.py
+   :lines: 16-20
+
+Querying Gateway Features
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to configure a feature for a gateway.
+
+.. literalinclude:: ../examples/apig/configure_gw_feature.py
+   :lines: 16-29

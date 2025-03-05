@@ -79,3 +79,11 @@ Excluded Request Throttling Configuration
   :members: create_throttling_excluded_policy,
             update_throttling_excluded_policy,
             delete_throttling_excluded_policy, throttling_excluded_policies
+
+
+Gateway Features Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: configure_gateway_feature, gateway_features,
+            supported_gateway_features
