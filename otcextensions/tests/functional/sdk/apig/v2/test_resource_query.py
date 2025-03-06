@@ -16,10 +16,10 @@ from otcextensions.tests.functional.sdk.apig import TestApiG
 class TestGwFeatures(TestApiG):
     def setUp(self):
         super(TestGwFeatures, self).setUp()
-        # self.create_gateway()
-        # self.gateway_id = TestGwFeatures.gateway.id
-        self.gateway_id = "be76ca6de5fe4aa7af503c03b3b44dea"
-        # self.addCleanup(self.delete_gateway())
+        self.create_gateway()
+        self.gateway_id = TestGwFeatures.gateway.id
+        # self.gateway_id = "be76ca6de5fe4aa7af503c03b3b44dea"
+        self.addCleanup(self.delete_gateway())
 
     def test_get_api_quantities(self):
         api_q = self.client.get_api_quantities(
