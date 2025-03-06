@@ -87,3 +87,10 @@ Gateway Features Operations
   :noindex:
   :members: configure_gateway_feature, gateway_features,
             supported_gateway_features
+
+Resource Query Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: get_api_quantities, get_api_group_quantities,
+            get_app_quantities
