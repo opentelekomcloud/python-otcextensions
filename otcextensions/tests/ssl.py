@@ -62,9 +62,9 @@ class SelfSignedCertificateGenerator:
         ).serial_number(
             x509.random_serial_number()
         ).not_valid_before(
-            datetime.datetime.utcnow() - datetime.timedelta(days=1)
+            datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=1)
         ).not_valid_after(
-            datetime.datetime.utcnow() + datetime.timedelta(
+            datetime.datetime.now(datetime.UTC) + datetime.timedelta(
                 days=self.valid_days)
         ).add_extension(
             x509.SubjectAlternativeName([x509.DNSName(self.domain_name)]),
