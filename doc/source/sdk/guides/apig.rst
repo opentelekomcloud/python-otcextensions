@@ -659,3 +659,72 @@ This example demonstrates how to configure a feature for a gateway.
 
 .. literalinclude:: ../examples/apig/configure_gw_feature.py
    :lines: 16-29
+
+Binding a Domain Name
+^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to bind domain name.
+
+.. literalinclude:: ../examples/apig/bind_domain_name.py
+   :lines: 16-28
+
+Adding a Certificate to a Domain Name
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to add certificate to a domain name.
+
+.. literalinclude:: ../examples/apig/create_certificate_for_domain.py
+   :lines: 16-30
+
+Modifying a Domain Name
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to modify the configuration
+of a domain name bound to an API group.
+
+.. literalinclude:: ../examples/apig/update_domain_name_bound.py
+   :lines: 16-29
+
+Unbinding a Domain Name
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to unbind a custom domain name from an API group.
+
+.. literalinclude:: ../examples/apig/unbind_domain_name.py
+   :lines: 16-25
+
+Unbinding a Domain Name
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to to disable or enable
+the debugging domain name bound to an API group.
+
+.. literalinclude:: ../examples/apig/enable_debug_domain_name.py
+   :lines: 16-26
+
+Deleting the Certificate Bound to a Domain Name
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to delete a certificate
+that is no longer needed or has expired.
+
+.. literalinclude:: ../examples/apig/unbind_certificate_from_domain.py
+   :lines: 16-25
+
+Deleting the Certificate Bound to a Domain Name
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query the details
+of the certificate bound to a domain name.
+
+.. literalinclude:: ../examples/apig/get_bound_certificate.py
+   :lines: 16-25
+
+Deleting an SSL Certificate
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query the details
+of the certificate bound to a domain name.
+
+.. literalinclude:: ../examples/apig/delete_certificate.py
+   :lines: 16-22
