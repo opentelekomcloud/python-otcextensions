@@ -163,7 +163,8 @@ class Object(_base.BaseResource):
         super(_base.BaseResource, self).__init__(**attrs)
         self.data = data
 
-    def _translate_response(self, response, has_body=True, error_message=None):
+    def _translate_response(self, response, has_body=True, error_message=None,
+                            resource_response_key=None):
         """Given a KSA response, inflate this instance with its data
 
         This method updates attributes that correspond to headers

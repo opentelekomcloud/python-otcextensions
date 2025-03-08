@@ -85,7 +85,8 @@ class Container(_base.BaseResource):
     # you can use this header to enable WORM for the bucket.
     object_lock_enabled = resource.Header('x-obs-bucket-object-lock-enabled')
 
-    def _translate_response(self, response, has_body=True, error_message=None):
+    def _translate_response(self, response, has_body=True, error_message=None,
+                            resource_response_key=None):
         """Given a KSA response, inflate this instance with its data
 
         This method updates attributes that correspond to headers
