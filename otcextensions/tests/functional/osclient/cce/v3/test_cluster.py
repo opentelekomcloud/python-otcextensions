@@ -51,12 +51,13 @@ class TestCce(base.TestCase):
 
         json_output = json.loads(self.openstack(cmd))
 
-        self.assertIsNotNone(json_output['id'])
+        self.assertIsNotNone(json_output['ID'])
 
     def test_03_cluster_delete(self):
         self.addCleanup(self._deinitialize_network)
         self.openstack(
-            'cce cluster delete {name}'.format(
+            'cce cluster delete {name} '
+            '--wait --wait-interval 10'.format(
                 name=self.CLUSTER_NAME
             )
         )
