@@ -104,7 +104,9 @@ class Resource(resource.Resource):
         else:
             return object.__getattribute__(self, name)
 
-    def _translate_response(self, response, has_body=None, error_message=None):
+    def _translate_response(
+            self, response, has_body=None, error_message=None,
+            resource_response_key=None):
         if has_body is None:
             has_body = self.has_body
         # NOTE: we only use our own exception parser
