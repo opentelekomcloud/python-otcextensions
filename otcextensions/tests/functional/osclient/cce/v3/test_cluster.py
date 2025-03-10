@@ -37,7 +37,9 @@ class TestCce(base.TestCase):
         self._initialize_network()
         cmd = (
             f'cce cluster create '
-            f'{self.CLUSTER_NAME} {self.ROUTER_NAME} {self.NET_NAME} '
+            f'{self.CLUSTER_NAME} '
+            f'{self.ROUTER_NAME} '
+            f'{self.NET_NAME} '
             f'--description descr '
             f'--flavor cce.s1.small '
             f'--container-network-mode overlay_l2 '
@@ -82,8 +84,7 @@ class TestCce(base.TestCase):
 
     def _deinitialize_network(self):
         self.openstack(
-            f'router remove subnet {self.ROUTER_NAME} {self.SUBNET_NAME}'
-            )
+            f'router remove subnet {self.ROUTER_NAME} {self.SUBNET_NAME}')
         self.openstack('subnet delete ' + self.SUBNET_NAME)
         self.openstack('network delete ' + self.NET_NAME)
         self.openstack('router delete ' + self.ROUTER_NAME)
