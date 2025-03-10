@@ -43,7 +43,8 @@ class Tag(resource.Resource):
         response = session.post(uri, json=body)
         return self._translate_response(response)
 
-    def _translate_response(self, response, has_body=None, error_message=None):
+    def _translate_response(self, response, has_body=None, error_message=None,
+                            resource_response_key=None):
         """
         Translates the server response into Tag objects.
         """

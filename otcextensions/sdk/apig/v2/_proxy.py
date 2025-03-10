@@ -26,6 +26,7 @@ from otcextensions.sdk.apig.v2 import signature_binding as _sign_bind
 from otcextensions.sdk.apig.v2 import throttling_policy_binding as _tpb
 from otcextensions.sdk.apig.v2 import throttling_excluded as _tx
 from otcextensions.sdk.apig.v2 import gateway_features as _gwf
+from otcextensions.sdk.apig.v2 import resource_query as _rq
 from otcextensions.sdk.apig.v2 import domain_name as _domain
 from otcextensions.sdk.apig.v2 import certificate as _c
 
@@ -1332,6 +1333,57 @@ class Proxy(proxy.Proxy):
         gateway = self._get_resource(_gateway.Gateway, gateway)
         feat = self._get_resource(_gwf.GatewayFeatures, "")
         return feat._supported_features(self, gateway, **query)
+
+    # ======== Resource Query Methods ========
+
+    def get_api_quantities(self, gateway):
+        """Get the number of APIs that have been published in the RELEASE
+            environment and the number of APIs that have not been
+            published in this environment.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+
+        :returns: An instance of ApiQuantities
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._get(
+            _rq.ApiQuantities,
+            gateway_id=gateway.id,
+            requires_id=False,
+        )
+
+    def get_api_group_quantities(self, gateway):
+        """Get the number of API groups.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+
+        :returns: An instance of ApiGroupQuantities
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._get(
+            _rq.ApiGroupQuantities,
+            gateway_id=gateway.id,
+            requires_id=False,
+        )
+
+    def get_app_quantities(self, gateway):
+        """Get the number of apps that have been authorized to access APIs
+            and the number of apps that have not been authorized to access
+            any APIs.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+
+        :returns: An instance of AppQuantities
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._get(
+            _rq.AppQuantities,
+            gateway_id=gateway.id,
+            requires_id=False,
+        )
 
     # ======== Domain Name Methods ========
 
