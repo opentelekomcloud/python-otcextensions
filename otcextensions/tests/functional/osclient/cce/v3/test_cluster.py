@@ -26,7 +26,7 @@ class TestCce(base.TestCase):
     ROUTER_ID = None
     NET_ID = None
 
-    CLUSTER_NAME = 'sdk_test_cce' + UUID
+    CLUSTER_NAME = 'sdk-test-cce' + UUID
 
     def test_01_cluster_list(self):
         self.openstack(
