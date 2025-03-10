@@ -20,13 +20,13 @@ class TestCce(base.TestCase):
     """Functional tests for CCE Instance. """
 
     UUID = uuid.uuid4().hex[:4]
-    ROUTER_NAME = 'sdk--cce-test-router-' + UUID
-    NET_NAME = 'sdk-cce-test-net-' + UUID
-    SUBNET_NAME = 'sdk-cce-test-subnet-' + UUID
+    ROUTER_NAME = 'sdk_cce_test_router' + UUID
+    NET_NAME = 'sdk_cce_test_net' + UUID
+    SUBNET_NAME = 'sdk_cce_test_subnet' + UUID
     ROUTER_ID = None
     NET_ID = None
 
-    CLUSTER_NAME = 'sdk-test-cce-' + UUID
+    CLUSTER_NAME = 'sdk_test_cce' + UUID
 
     def test_01_cluster_list(self):
         self.openstack(
