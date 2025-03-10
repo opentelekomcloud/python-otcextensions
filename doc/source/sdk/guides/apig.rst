@@ -659,3 +659,31 @@ This example demonstrates how to configure a feature for a gateway.
 
 .. literalinclude:: ../examples/apig/configure_gw_feature.py
    :lines: 16-29
+
+Querying API Quantities
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to get the number
+of APIs that have been published in the RELEASE environment
+and the number of APIs that have not been published in this environment.
+
+.. literalinclude:: ../examples/apig/get_api_quantities.py
+   :lines: 16-22
+
+Querying API Group Quantities
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to get the number of API groups.
+
+.. literalinclude:: ../examples/apig/get_api_group_quantities.py
+   :lines: 16-22
+
+Querying App Quantities
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to get the number of apps that have
+been authorized to access APIs and the number of apps that have
+not been authorized to access any APIs.
+
+.. literalinclude:: ../examples/apig/get_app_quantities.py
+   :lines: 16-22

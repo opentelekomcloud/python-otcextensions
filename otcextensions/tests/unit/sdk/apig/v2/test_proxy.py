@@ -23,6 +23,7 @@ from otcextensions.sdk.apig.v2 import signature_binding as _sb
 from otcextensions.sdk.apig.v2 import throttling_policy_binding as _tb
 from otcextensions.sdk.apig.v2 import throttling_excluded as _tx
 from otcextensions.sdk.apig.v2 import gateway_features as _gwf
+from otcextensions.sdk.apig.v2 import resource_query as _rq
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
 
@@ -996,4 +997,45 @@ class TestGwFeatures(TestApiGatewayProxy):
             method_args=[gateway],
             expected_args=[self.proxy, gateway],
             expected_kwargs={}
+        )
+
+
+class TestResourceQuery(TestApiGatewayProxy):
+    def test_get_api_quantities(self):
+        gateway = _gateway.Gateway()
+        self.verify_get(
+            self.proxy.get_api_quantities,
+            _rq.ApiQuantities,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={
+                'gateway_id': None,
+                'requires_id': False
+            }
+        )
+
+    def test_get_api_group_quantities(self):
+        gateway = _gateway.Gateway()
+        self.verify_get(
+            self.proxy.get_api_group_quantities,
+            _rq.ApiGroupQuantities,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={
+                'gateway_id': None,
+                'requires_id': False
+            }
+        )
+
+    def test_get_app_quantities(self):
+        gateway = _gateway.Gateway()
+        self.verify_get(
+            self.proxy.get_app_quantities,
+            _rq.AppQuantities,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={
+                'gateway_id': None,
+                'requires_id': False
+            }
         )
