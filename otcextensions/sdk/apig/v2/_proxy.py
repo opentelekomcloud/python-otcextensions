@@ -27,6 +27,8 @@ from otcextensions.sdk.apig.v2 import throttling_policy_binding as _tpb
 from otcextensions.sdk.apig.v2 import throttling_excluded as _tx
 from otcextensions.sdk.apig.v2 import gateway_features as _gwf
 from otcextensions.sdk.apig.v2 import resource_query as _rq
+from otcextensions.sdk.apig.v2 import domain_name as _domain
+from otcextensions.sdk.apig.v2 import certificate as _c
 
 
 class Proxy(proxy.Proxy):
@@ -1381,4 +1383,197 @@ class Proxy(proxy.Proxy):
             _rq.AppQuantities,
             gateway_id=gateway.id,
             requires_id=False,
+        )
+
+    # ======== Domain Name Methods ========
+
+    def bind_domain_name(self, gateway, group, **attrs):
+        """Bind domain name to group.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID of the group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.apigroup.ApiGroup`
+        :param attrs: Additional attributes for the DomainName.
+
+        :returns: An instance of DomainName
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        return self._create(
+            _domain.DomainName,
+            gateway_id=gateway.id,
+            group_id=group.id,
+            **attrs)
+
+    def unbind_domain_name(
+            self, gateway, group, domain, ignore_missing=False):
+        """Unbind domain name from group.
+
+        :param domain: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.domain_name.DomainName`
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID of the group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.apigroup.ApiGroup`
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        domain = self._get_resource(_domain.DomainName, domain)
+        return self._delete(
+            _domain.DomainName,
+            domain,
+            gateway_id=gateway.id,
+            group_id=group.id,
+            ignore_missing=ignore_missing
+        )
+
+    def update_domain_name_bound(
+            self, gateway, group, domain, **attrs):
+        """Update a bound of domain name to group.
+
+        :param domain: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.domain_name.DomainName`
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID of the group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.apigroup.ApiGroup`
+        :param attrs: Additional attributes to update the
+            DomainName bind.
+
+        :returns: Updated instance of DomainName
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        domain = self._get_resource(_domain.DomainName, domain)
+        return self._update(
+            _domain.DomainName,
+            domain,
+            gateway_id=gateway.id,
+            group_id=group.id,
+            **attrs
+        )
+
+    def create_certificate_for_domain_name(
+            self, gateway, group, domain, **attrs):
+        """Add certificate to domain name.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID of the group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.apigroup.ApiGroup`
+        :param domain: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.domain_name.DomainName`
+        :param attrs: Additional attributes for the DomainName.
+
+        :returns: An instance of Certificate
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        domain = self._get_resource(_domain.DomainName, domain)
+        return self._create(
+            _domain.Certificate,
+            gateway_id=gateway.id,
+            group_id=group.id,
+            domain_id=domain.id,
+            **attrs)
+
+    def unbind_certificate_from_domain_name(
+            self, gateway, group, domain,
+            certificate, ignore_missing=False):
+        """Unbind certificate from domain name.
+
+        :param certificate: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.certificate.Certificate`
+        :param domain: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.domain_name.DomainName`
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID of the group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.apigroup.ApiGroup`
+        :param group: The ID of the certificate
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        domain = self._get_resource(_domain.DomainName, domain)
+        certificate = self._get_resource(_c.Certificate, certificate)
+        return self._delete(
+            _domain.DomainName,
+            domain,
+            gateway_id=gateway.id,
+            group_id=group.id,
+            domain_id=domain.id,
+            certificate_id=certificate.id,
+            ignore_missing=ignore_missing
+        )
+
+    def enable_debug_domain_name(self, gateway, group, domain, enable):
+        """Disable or Enable the debugging domain name bound to an API group.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID of the group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.apigroup.ApiGroup`
+        :param domain: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.domain_name.DomainName`
+        :param enable: Specifies whether the debugging domain name
+            is accessible. Options: true and false.
+
+        :returns: An instance of DomainDebug
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        domain = self._get_resource(_domain.DomainName, domain)
+        return self._update(
+            _domain.DomainDebug,
+            gateway_id=gateway.id,
+            group_id=group.id,
+            domain_id=domain.id,
+            sl_domain_access_enabled=enable)
+
+    def get_bound_certificate(self, gateway, group, domain, certificate):
+        """Get the details of the certificate bound to a domain name.
+
+        :param certificate: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.certificate.Certificate`
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID of the group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.apigroup.ApiGroup`
+        :param domain: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.domain_name.DomainName`
+
+        :returns: An instance of Certificate
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        domain = self._get_resource(_domain.DomainName, domain)
+        certificate = self._get_resource(_c.Certificate, certificate)
+        return self._get(
+            _domain.Certificate,
+            gateway_id=gateway.id,
+            group_id=group.id,
+            domain_id=domain.id,
+            id=certificate.id
+        )
+
+    # ======== Certificate Methods ========
+
+    def delete_certificate(self, certificate, ignore_missing=False):
+        """Delete an SSL certificate.
+
+        :param certificate: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.certificate.Certificate`
+
+        :returns: None
+        """
+        certificate = self._get_resource(_c.Certificate, certificate)
+        return self._delete(
+            _c.Certificate,
+            certificate,
+            ignore_missing=ignore_missing
         )

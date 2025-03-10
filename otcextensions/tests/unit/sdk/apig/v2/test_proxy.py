@@ -23,6 +23,8 @@ from otcextensions.sdk.apig.v2 import signature_binding as _sb
 from otcextensions.sdk.apig.v2 import throttling_policy_binding as _tb
 from otcextensions.sdk.apig.v2 import throttling_excluded as _tx
 from otcextensions.sdk.apig.v2 import gateway_features as _gwf
+from otcextensions.sdk.apig.v2 import domain_name
+from otcextensions.sdk.apig.v2 import certificate
 from otcextensions.sdk.apig.v2 import resource_query as _rq
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
@@ -1037,5 +1039,155 @@ class TestResourceQuery(TestApiGatewayProxy):
             expected_kwargs={
                 'gateway_id': None,
                 'requires_id': False
+            }
+        )
+
+
+class TestDomain(TestApiGatewayProxy):
+    def test_bind_domain_name(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        attrs = {
+            "url_domain": "name"
+        }
+        self.verify_create(
+            self.proxy.bind_domain_name,
+            domain_name.DomainName,
+            method_args=[gateway, group],
+            expected_args=[],
+            method_kwargs={**attrs},
+            expected_kwargs={
+                **attrs,
+                "gateway_id": None,
+                "group_id": None
+            }
+        )
+
+    def test_unbind_domain_name(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        domain = domain_name.DomainName()
+        self.verify_delete(
+            self.proxy.unbind_domain_name,
+            domain_name.DomainName,
+            method_args=[gateway, group, domain],
+            expected_args=[domain],
+            expected_kwargs={
+                "gateway_id": None,
+                "group_id": None,
+                "ignore_missing": True
+            }
+        )
+
+    def test_update_domain_name_bound(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        domain = domain_name.DomainName()
+        attrs = {
+            "min_ssl_version": "TLSv1.2"
+        }
+        self.verify_update(
+            self.proxy.update_domain_name_bound,
+            domain_name.DomainName,
+            method_args=[gateway, group, domain],
+            expected_args=[domain],
+            method_kwargs={**attrs},
+            expected_kwargs={
+                **attrs,
+                "gateway_id": None,
+                "group_id": None
+            }
+        )
+
+    def test_create_certificate_for_domain_name(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        domain = domain_name.DomainName()
+        attrs = {
+            "name": "test",
+            "private_key": "private_key",
+            "cert_content": "content"
+        }
+        self.verify_create(
+            self.proxy.create_certificate_for_domain_name,
+            domain_name.Certificate,
+            method_args=[gateway, group, domain],
+            expected_args=[],
+            method_kwargs={**attrs},
+            expected_kwargs={
+                **attrs,
+                "gateway_id": None,
+                "group_id": None,
+                "domain_id": None
+            }
+        )
+
+    def test_unbind_certificate_from_domain_name(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        domain = domain_name.DomainName()
+        cert = certificate.Certificate()
+        self.verify_delete(
+            self.proxy.unbind_certificate_from_domain_name,
+            domain_name.DomainName,
+            method_args=[gateway, group, domain, cert],
+            expected_args=[domain],
+            expected_kwargs={
+                "gateway_id": None,
+                "group_id": None,
+                "domain_id": None,
+                "certificate_id": None,
+                "ignore_missing": True
+            }
+        )
+
+    def test_enable_debug_domain_name(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        domain = domain_name.DomainName()
+        self._verify(
+            'openstack.proxy.Proxy._update',
+            self.proxy.enable_debug_domain_name,
+            method_args=[gateway, group, domain, False],
+            expected_args=[domain_name.DomainDebug],
+            method_kwargs={},
+            expected_kwargs={
+                "gateway_id": None,
+                "group_id": None,
+                "domain_id": None,
+                "sl_domain_access_enabled": False
+            }
+        )
+
+    def test_get_bound_certificate(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        domain = domain_name.DomainName()
+        cert = certificate.Certificate()
+        self.verify_get(
+            self.proxy.get_bound_certificate,
+            domain_name.Certificate,
+            method_args=[gateway, group, domain, cert],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={
+                "gateway_id": None,
+                "group_id": None,
+                "domain_id": None,
+                "id": None
+            }
+        )
+
+
+class TestCertificate(TestApiGatewayProxy):
+    def test_delete_certificate(self):
+        cert = certificate.Certificate()
+        self.verify_delete(
+            self.proxy.delete_certificate,
+            certificate.Certificate,
+            method_args=[cert],
+            expected_args=[cert],
+            expected_kwargs={
+                "ignore_missing": True
             }
         )

@@ -94,3 +94,18 @@ Resource Query Operations
   :noindex:
   :members: get_api_quantities, get_api_group_quantities,
             get_app_quantities
+
+Domain Name Operations
+^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: bind_domain_name, unbind_domain_name,
+            update_domain_name_bound, create_certificate_for_domain_name,
+            unbind_certificate_from_domain_name, enable_debug_domain_name,
+            get_bound_certificate
+
+Certificate Operations
+^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: delete_certificate
