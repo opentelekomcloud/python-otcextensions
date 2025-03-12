@@ -363,6 +363,12 @@ class Proxy(sdk_proxy.Proxy):
         if data is not None and filename:
             raise ValueError(
                 "Both filename and data given. Please choose one.")
+        if data is not None and not name:
+            raise ValueError("name is a required parameter when data is given")
+        if data is not None and generate_checksums:
+            raise ValueError(
+                "checksums cannot be generated with data parameter"
+            )
 
         if not filename and data is None:
             filename = name
@@ -407,7 +413,7 @@ class Proxy(sdk_proxy.Proxy):
                 self._upload_object(endpoint, filename, headers, name)
             else:
                 self._upload_large_object(
-                    endpoint, filename, headers,
+                    endpoint, filename, name, headers,
                     file_size, segment_size)
 
     # Backwards compat
@@ -424,7 +430,7 @@ class Proxy(sdk_proxy.Proxy):
                 requests_auth=self._get_req_auth(endpoint),
                 **headers)
 
-    def _upload_large_object(self, endpoint, filename, headers,
+    def _upload_large_object(self, endpoint, filename, name, headers,
                              file_size, segment_size):
         """
         If the object is big, we need to break it up into segments that
@@ -438,8 +444,9 @@ class Proxy(sdk_proxy.Proxy):
         retry_results = []
         retry_futures = []
         manifest = []
-
         object_name = os.path.basename(filename)
+        if name:
+            object_name = name
         requests_auth = self._get_req_auth(endpoint)
         segments = utils._get_file_segments(
             endpoint, filename, file_size, segment_size)
