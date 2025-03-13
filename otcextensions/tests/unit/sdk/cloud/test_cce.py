@@ -53,10 +53,9 @@ class TestCceMixin(base.TestCase):
             dict(
                 method='GET',
                 uri=self.get_mock_url(
-                    'network',
-                    resource='routers',
-                    base_url_append='v2.0',
-                    append=['my_router']
+                    'vpc',
+                    resource='vpcs',
+                    base_url_append='v1',
                 ),
                 json={'id': 'router_id'}
             ),
@@ -323,12 +322,12 @@ class TestCceMixin(base.TestCase):
             dict(
                 method='GET',
                 uri=self.get_mock_url(
-                    'network',
-                    resource='routers',
-                    base_url_append='v2.0',
+                    'vpc',
+                    resource='vpcs',
+                    base_url_append='v1',
                     append=['my_router']
                 ),
-                json={'id': 'router_id'},
+                json={'id': 'router_id'}
             ),
             dict(
                 method='GET',
