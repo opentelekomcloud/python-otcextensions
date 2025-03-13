@@ -1,6 +1,6 @@
 otcextensions.tests.unit.sdk.cce*
-otcextensions.tests.functional.osclient.cce.test_cluster.TestCce.test_02_cluster_create
-otcextensions.tests.functional.osclient.cce.test_cluster.TestCce.test_03_cluster_delete
+otcextensions.tests.functional.osclient.cce.v3.test_cluster.TestCce.test_02_cluster_create
+otcextensions.tests.functional.osclient.cce.v3.test_cluster.TestCce.test_03_cluster_delete
 otcextensions.tests.functional.osclient.dcaas
 otcextensions.tests.functional.osclient.dns*
 otcextensions.tests.functional.osclient.obs*
