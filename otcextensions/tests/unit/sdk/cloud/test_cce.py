@@ -52,11 +52,11 @@ class TestCceMixin(base.TestCase):
         self.register_uris([
             dict(
                 method='GET',
-                uri=self.get_mock_url(
-                    'vpc',
-                    resource='vpcs',
-                    base_url_append='v1',
+                uri=self.get_vpc_url(
+                    base_url_append='vpcs/my_router',
+                    qs_elements=[f'project_id={self.cloud.current_project_id}'],
                 ),
+                status_code=200,
                 json={'id': 'router_id'}
             ),
             dict(
@@ -175,12 +175,11 @@ class TestCceMixin(base.TestCase):
         self.register_uris([
             dict(
                 method='GET',
-                uri=self.get_mock_url(
-                    'network',
-                    resource='routers',
-                    base_url_append='v2.0',
-                    append=['my_router']
+                uri=self.get_vpc_url(
+                    base_url_append='vpcs/my_router',
+                    qs_elements=[f'project_id={self.cloud.current_project_id}'],
                 ),
+                status_code=200,
                 json={'id': 'router_id'}
             ),
             dict(
@@ -255,13 +254,12 @@ class TestCceMixin(base.TestCase):
         self.register_uris([
             dict(
                 method='GET',
-                uri=self.get_mock_url(
-                    'network',
-                    resource='routers',
-                    base_url_append='v2.0',
-                    append=['my_router']
+                uri=self.get_vpc_url(
+                    base_url_append='vpcs/my_router',
+                    qs_elements=[f'project_id={self.cloud.current_project_id}'],
                 ),
-                status_code=404,
+                status_code=200,
+                json={'id': 'router_id'}
             ),
             dict(
                 method='GET',
@@ -283,6 +281,25 @@ class TestCceMixin(base.TestCase):
                     append=['my_net']
                 ),
                 json={'id': 'net_id'}
+            ),
+            dict(
+                method='GET',
+                uri=self.get_cce_url(
+                    base_url_append='jobs',
+                    append=['job123']
+                ),
+                json={
+                    'metadata': {'uid': 'job123'},
+                    'status': {'phase': 'Success'},
+                },
+            ),
+            dict(
+                method='POST',
+                uri=self.get_cce_url(
+                    base_url_append='clusters'
+                ),
+                status_code=200,
+                json={'status': {'jobID': 'job123'}},
             ),
         ])
 
@@ -321,12 +338,11 @@ class TestCceMixin(base.TestCase):
         self.register_uris([
             dict(
                 method='GET',
-                uri=self.get_mock_url(
-                    'vpc',
-                    resource='vpcs',
-                    base_url_append='v1',
-                    append=['my_router']
+                uri=self.get_vpc_url(
+                    base_url_append='vpcs/my_router',
+                    qs_elements=[f'project_id={self.cloud.current_project_id}'],
                 ),
+                status_code=200,
                 json={'id': 'router_id'}
             ),
             dict(

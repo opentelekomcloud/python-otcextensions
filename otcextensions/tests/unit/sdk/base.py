@@ -42,6 +42,10 @@ class TestCase(base.TestCase):
         svc_dds = self.os_fixture.v3_token.add_service('ddsv3', name='ddsv3')
         svc_dds.add_standard_endpoints(region='RegionOne', **ets_dds)
 
+        ets_vpc = self.os_fixture._get_endpoint_templates('vpc')
+        svc_vpc = self.os_fixture.v3_token.add_service('vpc', name='vpc')
+        svc_vpc.add_standard_endpoints(region='RegionOne', **ets_vpc)
+
         return super(TestCase, self).get_keystone_v3_token()
 
     def get_rds_url(
@@ -105,3 +109,30 @@ class TestCase(base.TestCase):
         url = url % {'project_id': self.cloud.current_project_id}
 
         return url
+
+    def get_vpc_url(
+            self,
+            resource=None,
+            append=None,
+            base_url_append=None,
+            qs_elements=None,
+    ):
+        eurl = (
+                   'https://vpc.example.com/%(project_id)s/v1/%(project_id)s'
+               ) % {'project_id': self.cloud.current_project_id}
+        if eurl.endswith('/'):
+            endpoint_url = eurl[:-1]
+        to_join = [eurl]
+        qs = ''
+        if base_url_append:
+            to_join.append(base_url_append)
+        if resource:
+            to_join.append(resource)
+        to_join.extend(append or [])
+        if qs_elements is not None:
+            qs = '?%s' % '&'.join(qs_elements)
+        return '%(uri)s%(qs)s' % {'uri': '/'.join(to_join), 'qs': qs}
+        # https://vpc.example.com/1c36b64c840a42cd9e9b931a369337f0/v1/1c36b64c840a42cd9e9b931a369337f0/vpcs/my_router?project_id=1c36b64c840a42cd9e9b931a369337f0
+        # url = url % {'project_id': self.cloud.current_project_id}
+        #
+        # return url
