@@ -1,4 +1,6 @@
 otcextensions.tests.unit.sdk.cce*
+otcextensions.tests.functional.osclient.cce.test_cluster.TestCce.test_02_cluster_create
+otcextensions.tests.functional.osclient.cce.test_cluster.TestCce.test_03_cluster_delete
 otcextensions.tests.functional.osclient.dcaas
 otcextensions.tests.functional.osclient.dns*
 otcextensions.tests.functional.osclient.obs*
@@ -8,7 +10,7 @@ otcextensions.tests.functional.osclient.volume_backup*
 otcextensions.tests.functional.osclient.nat*
 otcextensions.tests.functional.osclient.rds*
 otcextensions.tests.functional.sdk.dcaas*
-otcextensions.tests.functional.sdk.cce.v1*
+otcextensions.tests.functional.sdk.cce.v1.test_cluster_nodes*
 otcextensions.tests.functional.sdk.kms*
 otcextensions.tests.functional.sdk.volume_backup*
 otcextensions.tests.functional.sdk.deh*

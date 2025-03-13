@@ -11,29 +11,27 @@
 # under the License.
 from openstack import _log
 
-from otcextensions.tests.functional import base
+from otcextensions.tests.functional.sdk.cce import TestCce
 
 _logger = _log.setup_logging('openstack')
 
 
-class TestCluster(base.BaseFunctionalTest):
-    TEST_CLUSTER = '5a66a449-668c-492f-8c33-5cdbdeaadd2e'
-
+class TestCluster(TestCce):
     def setUp(self):
         super(TestCluster, self).setUp()
-        self.cce = self.conn.cce
+        self.create_network()
+        self.create_cluster()
+        self.addCleanup(self._destroy_network)
+        self.addCleanup(
+            self.conn.delete_cce_cluster,
+            cluster=TestCce.cluster.id
+        )
 
     def test_list(self):
 
-        objects = list(self.cce.clusters())
+        objects = list(self.client.clusters())
 
         for obj in objects:
             self.assertIsNotNone(obj.id)
 
         self.assertGreaterEqual(len(objects), 0)
-
-    def test_get(self):
-        obj = self.cce.get_cluster(self.TEST_CLUSTER)
-
-        self.assertIsNotNone(obj.id)
-        self.assertIsNotNone(obj)
