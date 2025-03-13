@@ -132,7 +132,3 @@ class TestCase(base.TestCase):
         if qs_elements is not None:
             qs = '?%s' % '&'.join(qs_elements)
         return '%(uri)s%(qs)s' % {'uri': '/'.join(to_join), 'qs': qs}
-        # https://vpc.example.com/1c36b64c840a42cd9e9b931a369337f0/v1/1c36b64c840a42cd9e9b931a369337f0/vpcs/my_router?project_id=1c36b64c840a42cd9e9b931a369337f0
-        # url = url % {'project_id': self.cloud.current_project_id}
-        #
-        # return url
