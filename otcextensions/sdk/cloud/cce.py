@@ -152,7 +152,7 @@ class CceMixin:
         if extended_params:
             spec['extendedParam'] = extended_params
 
-        router_obj = self.network.find_router(
+        router_obj = self.vpc.find_vpc(
             router, ignore_missing=False)
         network_obj = self.network.find_network(
             network, ignore_missing=False)
