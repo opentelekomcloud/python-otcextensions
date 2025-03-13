@@ -118,10 +118,10 @@ class TestCase(base.TestCase):
             qs_elements=None,
     ):
         eurl = (
-                   'https://vpc.example.com/%(project_id)s/v1/%(project_id)s'
-               ) % {'project_id': self.cloud.current_project_id}
+            'https://vpc.example.com/%(project_id)s/v1/%(project_id)s'
+        ) % {'project_id': self.cloud.current_project_id}
         if eurl.endswith('/'):
-            endpoint_url = eurl[:-1]
+            eurl = eurl[:-1]
         to_join = [eurl]
         qs = ''
         if base_url_append:

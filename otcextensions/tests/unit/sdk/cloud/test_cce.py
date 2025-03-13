@@ -54,7 +54,9 @@ class TestCceMixin(base.TestCase):
                 method='GET',
                 uri=self.get_vpc_url(
                     base_url_append='vpcs/my_router',
-                    qs_elements=[f'project_id={self.cloud.current_project_id}'],
+                    qs_elements=[
+                        f'project_id={self.cloud.current_project_id}'
+                    ],
                 ),
                 status_code=200,
                 json={'id': 'router_id'}
@@ -177,7 +179,9 @@ class TestCceMixin(base.TestCase):
                 method='GET',
                 uri=self.get_vpc_url(
                     base_url_append='vpcs/my_router',
-                    qs_elements=[f'project_id={self.cloud.current_project_id}'],
+                    qs_elements=[
+                        f'project_id={self.cloud.current_project_id}'
+                    ],
                 ),
                 status_code=200,
                 json={'id': 'router_id'}
@@ -256,7 +260,9 @@ class TestCceMixin(base.TestCase):
                 method='GET',
                 uri=self.get_vpc_url(
                     base_url_append='vpcs/my_router',
-                    qs_elements=[f'project_id={self.cloud.current_project_id}'],
+                    qs_elements=[
+                        f'project_id={self.cloud.current_project_id}'
+                    ],
                 ),
                 status_code=200,
                 json={'id': 'router_id'}
@@ -340,7 +346,9 @@ class TestCceMixin(base.TestCase):
                 method='GET',
                 uri=self.get_vpc_url(
                     base_url_append='vpcs/my_router',
-                    qs_elements=[f'project_id={self.cloud.current_project_id}'],
+                    qs_elements=[
+                        f'project_id={self.cloud.current_project_id}'
+                    ],
                 ),
                 status_code=200,
                 json={'id': 'router_id'}
