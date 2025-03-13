@@ -1,5 +1,5 @@
 otcextensions.tests.unit.sdk.cce*
-otcextensions.tests.unit.sdk.cloud.test_cce*
+otcextensions.tests.unit.sdk.cloud.test_cce.TestCceMixin
 otcextensions.tests.functional.osclient.dcaas
 otcextensions.tests.functional.osclient.dns*
 otcextensions.tests.functional.osclient.obs*
