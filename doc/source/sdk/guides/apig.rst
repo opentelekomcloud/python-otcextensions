@@ -791,7 +791,7 @@ This example demonstrates how to reset the AppSecret of a specific app
 in the API Gateway.
 
 .. literalinclude:: ../examples/apig/reset_app_secret.py
-   :lines: 16-22
+   :lines: 16-21
 
 Verify an App
 ^^^^^^^^^^^^^
