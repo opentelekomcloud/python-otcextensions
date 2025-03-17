@@ -163,7 +163,8 @@ class Object(_base.BaseResource):
         super(_base.BaseResource, self).__init__(**attrs)
         self.data = data
 
-    def _translate_response(self, response, has_body=True, error_message=None):
+    def _translate_response(self, response, has_body=True, error_message=None,
+                            resource_response_key=None):
         """Given a KSA response, inflate this instance with its data
 
         This method updates attributes that correspond to headers
@@ -352,7 +353,7 @@ class Object(_base.BaseResource):
 
     @staticmethod
     def complete_multipart_upload(
-            proxy, endpoint, upload_id, data, headers, **params):
+            proxy, endpoint, upload_id, data, headers, requests_auth):
         url = f'{endpoint}?uploadId={upload_id}'
         root = ET.Element("CompleteMultipartUpload")
         for item in data:
@@ -362,4 +363,4 @@ class Object(_base.BaseResource):
         tree = ET.ElementTree(root)
         data = ET.tostring(tree.getroot()).decode()
         return proxy.post(url, data=data,
-                          headers=headers, params=params)
+                          headers=headers, requests_auth=requests_auth)

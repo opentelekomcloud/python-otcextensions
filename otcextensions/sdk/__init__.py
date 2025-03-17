@@ -23,6 +23,7 @@ from otcextensions.sdk.cloud import cce as _cce
 from otcextensions.sdk.cloud import dds as _dds
 from otcextensions.sdk.cloud import rds as _rds
 from otcextensions.sdk.compute.v2 import server
+from otcextensions.sdk.network.v2 import service_provider
 
 
 _logger = _log.setup_logging('openstack')
@@ -487,6 +488,8 @@ def patch_openstack_resources():
     openstack.compute.v2.server.Server.remove_tag = server.Server.remove_tag
     openstack.exceptions.raise_from_response = \
         exc.raise_from_response
+    openstack.network.v2.service_provider.ServiceProvider.list = \
+        service_provider.ServiceProvider.list
 
 
 def register_single_service(conn, service_name, project_id=None, service=None):

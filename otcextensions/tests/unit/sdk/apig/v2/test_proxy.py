@@ -18,6 +18,14 @@ from otcextensions.sdk.apig.v2 import apigroup as _api_group
 from otcextensions.sdk.apig.v2 import throttling_policy as _tp
 from otcextensions.sdk.apig.v2 import api
 from otcextensions.sdk.apig.v2 import api_supplements as _as
+from otcextensions.sdk.apig.v2 import signature as _sign
+from otcextensions.sdk.apig.v2 import signature_binding as _sb
+from otcextensions.sdk.apig.v2 import throttling_policy_binding as _tb
+from otcextensions.sdk.apig.v2 import throttling_excluded as _tx
+from otcextensions.sdk.apig.v2 import gateway_features as _gwf
+from otcextensions.sdk.apig.v2 import domain_name
+from otcextensions.sdk.apig.v2 import certificate
+from otcextensions.sdk.apig.v2 import resource_query as _rq
 from otcextensions.sdk.apig.v2 import app as _app
 from otcextensions.sdk.apig.v2 import appcode as _appcode
 from otcextensions.sdk.apig.v2 import quota as _quota
@@ -698,6 +706,492 @@ class TestApiSupplements(TestApiGatewayProxy):
             expected_kwargs={
                 "version_id": 'id',
                 "gateway_id": None
+            }
+        )
+
+
+class TestSignature(TestApiGatewayProxy):
+    def test_signatures(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(
+            self.proxy.signatures,
+            _sign.Signature,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_create_signature(self):
+        gateway = _gateway.Gateway()
+        attrs = {
+            "name": "otce_signature_1",
+            "sign_type": "aes",
+            "sign_algorithm": "aes-256-cfb",
+        }
+        self.verify_create(
+            self.proxy.create_signature,
+            _sign.Signature,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={**attrs},
+            expected_kwargs={**attrs, "gateway_id": None}
+        )
+
+    def test_delete_signature(self):
+        gateway = _gateway.Gateway()
+        s = _sign.Signature()
+        self.verify_delete(
+            self.proxy.delete_signature,
+            _sign.Signature,
+            method_args=[gateway, s],
+            expected_args=[s],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_update_api(self):
+        gateway = _gateway.Gateway()
+        s = _sign.Signature()
+        attrs = {
+            "name": "otce_signature_1",
+            "sign_type": "aes",
+            "sign_algorithm": "aes-128-cfb",
+        }
+        self.verify_update(
+            self.proxy.update_signature,
+            _sign.Signature,
+            method_args=[gateway, s],
+            expected_args=[s],
+            method_kwargs={**attrs},
+            expected_kwargs={**attrs, "gateway_id": None}
+        )
+
+
+class TestSignatureBind(TestApiGatewayProxy):
+    def test_bound_signatures(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(
+            self.proxy.bound_signatures,
+            _sb.SignatureBind,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_not_bound_apis(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(
+            self.proxy.not_bound_apis,
+            _sb.NotBoundApi,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_bound_apis(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(
+            self.proxy.bound_apis,
+            _sb.BoundApi,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_bind_signature(self):
+        gateway = _gateway.Gateway()
+        attrs = {
+            "name": "otce_signature",
+            "sign_type": "aes",
+            "sign_algorithm": "aes-256-cfb",
+        }
+        self.verify_create(
+            self.proxy.bind_signature,
+            _sb.SignatureBind,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={**attrs},
+            expected_kwargs={**attrs, "gateway_id": None}
+        )
+
+    def test_unbind_signature(self):
+        gateway = _gateway.Gateway()
+        s = _sb.SignatureBind()
+        self.verify_delete(
+            self.proxy.unbind_signature,
+            _sb.SignatureBind,
+            method_args=[gateway, s],
+            expected_args=[s],
+            expected_kwargs={"gateway_id": None}
+        )
+
+
+class TestThrottlesBind(TestApiGatewayProxy):
+    def test_bound_throttling_policies(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(
+            self.proxy.bound_throttling_policies,
+            _tb.BoundThrottles,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_not_bound_throttling_policy_apis(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(
+            self.proxy.not_bound_throttling_policy_apis,
+            _tb.NotBoundApi,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_bound_throttling_policy_apis(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(
+            self.proxy.bound_throttling_policy_apis,
+            _tb.ThrottlingPolicyBind,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_bind_throttling_policy(self):
+        gateway = _gateway.Gateway()
+        attrs = {
+            "throttle_id": "id",
+            "publish_ids": ["publish_id"]
+        }
+        self.verify_create(
+            self.proxy.bind_throttling_policy,
+            _tb.ThrottlingPolicyBind,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={**attrs},
+            expected_kwargs={**attrs, "gateway_id": None}
+        )
+
+    def test_unbind_throttling_policy(self):
+        gateway = _gateway.Gateway()
+        t = _tb.ThrottlingPolicyBind()
+        self.verify_delete(
+            self.proxy.unbind_throttling_policy,
+            _tb.ThrottlingPolicyBind,
+            method_args=[gateway, t],
+            expected_args=[t],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_unbind_throttling_policies(self):
+        gateway = _gateway.Gateway()
+        self._verify(
+            'otcextensions.sdk.apig.v2.throttling_policy_binding.'
+            'ThrottlingPolicyBind.unbind_policies',
+            self.proxy.unbind_throttling_policies,
+            method_args=[gateway, ["t"]],
+            expected_args=[self.proxy],
+            expected_kwargs={"gateway_id": None, "throttle_bindings": ["t"]}
+        )
+
+
+class TestThrottlingExcludePolicy(TestApiGatewayProxy):
+    def test_throttling_excluded_policies(self):
+        gateway = _gateway.Gateway()
+        policy = _tp.ThrottlingPolicy()
+        self.verify_list(
+            self.proxy.throttling_excluded_policies,
+            _tx.ThrottlingExcludedPolicy,
+            method_args=[gateway, policy],
+            expected_args=[],
+            expected_kwargs={
+                "gateway_id": None,
+                "throttle_id": None
+            }
+        )
+
+    def test_create_throttling_excluded_policy(self):
+        gateway = _gateway.Gateway()
+        policy = _tp.ThrottlingPolicy()
+        attrs = {
+            "call_limits": 50,
+            "object_id": "id",
+            "object_type": "USER"
+        }
+        self.verify_create(
+            self.proxy.create_throttling_excluded_policy,
+            _tx.ThrottlingExcludedPolicy,
+            method_args=[gateway, policy],
+            expected_args=[],
+            method_kwargs={**attrs},
+            expected_kwargs={
+                **attrs,
+                "gateway_id": None,
+                "throttle_id": None
+            }
+        )
+
+    def test_delete_throttling_excluded_policy(self):
+        gateway = _gateway.Gateway()
+        policy = _tp.ThrottlingPolicy()
+        ex = _tx.ThrottlingExcludedPolicy()
+        self.verify_delete(
+            self.proxy.delete_throttling_excluded_policy,
+            _tx.ThrottlingExcludedPolicy,
+            method_args=[gateway, policy, ex],
+            expected_args=[ex],
+            expected_kwargs={
+                "gateway_id": None,
+                "throttle_id": None
+            }
+        )
+
+    def test_update_throttling_excluded_policy(self):
+        gateway = _gateway.Gateway()
+        policy = _tp.ThrottlingPolicy()
+        ex = _tx.ThrottlingExcludedPolicy()
+        attrs = {
+            "call_limits": 30
+        }
+        self.verify_update(
+            self.proxy.update_throttling_excluded_policy,
+            _tx.ThrottlingExcludedPolicy,
+            method_args=[gateway, policy, ex],
+            expected_args=[ex],
+            method_kwargs={**attrs},
+            expected_kwargs={
+                **attrs,
+                "gateway_id": None,
+                "throttle_id": None
+            }
+        )
+
+
+class TestGwFeatures(TestApiGatewayProxy):
+    def test_list_gateway_features(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(
+            self.proxy.gateway_features,
+            _gwf.GatewayFeatures,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={"gateway_id": None}
+        )
+
+    def test_configure_gateway_feature(self):
+        gateway = _gateway.Gateway()
+        attrs = {
+            "name": "route",
+            "enable": False,
+            "config": "{\"user_routes\":[]}",
+        }
+        self.verify_create(
+            self.proxy.configure_gateway_feature,
+            _gwf.GatewayFeatures,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={**attrs},
+            expected_kwargs={**attrs, "gateway_id": None}
+        )
+
+    def test_supported_gateway_features(self):
+        gateway = _gateway.Gateway()
+        self._verify(
+            'otcextensions.sdk.apig.v2.gateway_features.'
+            'GatewayFeatures._supported_features',
+            self.proxy.supported_gateway_features,
+            method_args=[gateway],
+            expected_args=[self.proxy, gateway],
+            expected_kwargs={}
+        )
+
+
+class TestResourceQuery(TestApiGatewayProxy):
+    def test_get_api_quantities(self):
+        gateway = _gateway.Gateway()
+        self.verify_get(
+            self.proxy.get_api_quantities,
+            _rq.ApiQuantities,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={
+                'gateway_id': None,
+                'requires_id': False
+            }
+        )
+
+    def test_get_api_group_quantities(self):
+        gateway = _gateway.Gateway()
+        self.verify_get(
+            self.proxy.get_api_group_quantities,
+            _rq.ApiGroupQuantities,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={
+                'gateway_id': None,
+                'requires_id': False
+            }
+        )
+
+    def test_get_app_quantities(self):
+        gateway = _gateway.Gateway()
+        self.verify_get(
+            self.proxy.get_app_quantities,
+            _rq.AppQuantities,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={
+                'gateway_id': None,
+                'requires_id': False
+            }
+        )
+
+
+class TestDomain(TestApiGatewayProxy):
+    def test_bind_domain_name(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        attrs = {
+            "url_domain": "name"
+        }
+        self.verify_create(
+            self.proxy.bind_domain_name,
+            domain_name.DomainName,
+            method_args=[gateway, group],
+            expected_args=[],
+            method_kwargs={**attrs},
+            expected_kwargs={
+                **attrs,
+                "gateway_id": None,
+                "group_id": None
+            }
+        )
+
+    def test_unbind_domain_name(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        domain = domain_name.DomainName()
+        self.verify_delete(
+            self.proxy.unbind_domain_name,
+            domain_name.DomainName,
+            method_args=[gateway, group, domain],
+            expected_args=[domain],
+            expected_kwargs={
+                "gateway_id": None,
+                "group_id": None,
+                "ignore_missing": True
+            }
+        )
+
+    def test_update_domain_name_bound(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        domain = domain_name.DomainName()
+        attrs = {
+            "min_ssl_version": "TLSv1.2"
+        }
+        self.verify_update(
+            self.proxy.update_domain_name_bound,
+            domain_name.DomainName,
+            method_args=[gateway, group, domain],
+            expected_args=[domain],
+            method_kwargs={**attrs},
+            expected_kwargs={
+                **attrs,
+                "gateway_id": None,
+                "group_id": None
+            }
+        )
+
+    def test_create_certificate_for_domain_name(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        domain = domain_name.DomainName()
+        attrs = {
+            "name": "test",
+            "private_key": "private_key",
+            "cert_content": "content"
+        }
+        self.verify_create(
+            self.proxy.create_certificate_for_domain_name,
+            domain_name.Certificate,
+            method_args=[gateway, group, domain],
+            expected_args=[],
+            method_kwargs={**attrs},
+            expected_kwargs={
+                **attrs,
+                "gateway_id": None,
+                "group_id": None,
+                "domain_id": None
+            }
+        )
+
+    def test_unbind_certificate_from_domain_name(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        domain = domain_name.DomainName()
+        cert = certificate.Certificate()
+        self.verify_delete(
+            self.proxy.unbind_certificate_from_domain_name,
+            domain_name.DomainName,
+            method_args=[gateway, group, domain, cert],
+            expected_args=[domain],
+            expected_kwargs={
+                "gateway_id": None,
+                "group_id": None,
+                "domain_id": None,
+                "certificate_id": None,
+                "ignore_missing": True
+            }
+        )
+
+    def test_enable_debug_domain_name(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        domain = domain_name.DomainName()
+        self._verify(
+            'openstack.proxy.Proxy._update',
+            self.proxy.enable_debug_domain_name,
+            method_args=[gateway, group, domain, False],
+            expected_args=[domain_name.DomainDebug],
+            method_kwargs={},
+            expected_kwargs={
+                "gateway_id": None,
+                "group_id": None,
+                "domain_id": None,
+                "sl_domain_access_enabled": False
+            }
+        )
+
+    def test_get_bound_certificate(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        domain = domain_name.DomainName()
+        cert = certificate.Certificate()
+        self.verify_get(
+            self.proxy.get_bound_certificate,
+            domain_name.Certificate,
+            method_args=[gateway, group, domain, cert],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={
+                "gateway_id": None,
+                "group_id": None,
+                "domain_id": None,
+                "id": None
+            }
+        )
+
+
+class TestCertificate(TestApiGatewayProxy):
+    def test_delete_certificate(self):
+        cert = certificate.Certificate()
+        self.verify_delete(
+            self.proxy.delete_certificate,
+            certificate.Certificate,
+            method_args=[cert],
+            expected_args=[cert],
+            expected_kwargs={
+                "ignore_missing": True
             }
         )
 

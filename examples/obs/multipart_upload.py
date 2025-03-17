@@ -22,12 +22,13 @@ sdk.get_ak_sk(conn)
 
 container = conn.obs.create_container(
     name='test-multipart',
-    storage_acl='public-read-write',
+    storage_acl='private',
     storage_class='STANDARD'
 )
 
 obj = conn.obs.upload_object(
-    name='myfile.zip',
+    name='pdfs/book.pdf',
+    filename='my-book.pdf',
     container=container,
     segment_size=1400000
 )

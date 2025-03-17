@@ -197,12 +197,13 @@ class TestObject(base.TestCase):
             'http://obs.otc.t-systems.com',
             'test',
             input_data,
-            {}
+            {},
+            requests_auth='requests_auth'
         )
 
         self.sess.post.assert_called_once_with(
             'http://obs.otc.t-systems.com?uploadId=test',
             data=COMPLETE_MPU_RESP,
             headers={},
-            params={}
+            requests_auth='requests_auth'
         )

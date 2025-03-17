@@ -49,7 +49,10 @@ Throttling Policies Operations
   :noindex:
   :members: throttling_policies, create_throttling_policy,
             delete_throttling_policy, get_throttling_policy,
-            update_throttling_policy
+            update_throttling_policy, bind_throttling_policy,
+            unbind_throttling_policy, unbind_throttling_policies,
+            bound_throttling_policy_apis, not_bound_throttling_policy_apis,
+            bound_throttling_policies
 
 Api Operations
 ^^^^^^^^^^^^^^
@@ -69,3 +72,49 @@ Credentials Operations
             apps, verify_app, reset_app_secret, get_app_code
             create_app_code, generate_app_code, app_codes,
             delete_app_code, quotas
+
+Signature Key Operations
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: create_signature, update_signature, delete_signature,
+            signatures, bind_signature, unbind_signature, bound_signatures,
+            not_bound_apis, bound_apis
+
+Excluded Request Throttling Configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: create_throttling_excluded_policy,
+            update_throttling_excluded_policy,
+            delete_throttling_excluded_policy, throttling_excluded_policies
+
+
+Gateway Features Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: configure_gateway_feature, gateway_features,
+            supported_gateway_features
+
+Resource Query Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: get_api_quantities, get_api_group_quantities,
+            get_app_quantities
+
+Domain Name Operations
+^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: bind_domain_name, unbind_domain_name,
+            update_domain_name_bound, create_certificate_for_domain_name,
+            unbind_certificate_from_domain_name, enable_debug_domain_name,
+            get_bound_certificate
+
+Certificate Operations
+^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: delete_certificate

@@ -24,6 +24,14 @@ from otcextensions.sdk.apig.v2 import api_supplements as _supp
 from otcextensions.sdk.apig.v2 import app as _app
 from otcextensions.sdk.apig.v2 import appcode as _app_code
 from otcextensions.sdk.apig.v2 import quota as _quota
+from otcextensions.sdk.apig.v2 import signature as _sign
+from otcextensions.sdk.apig.v2 import signature_binding as _sign_bind
+from otcextensions.sdk.apig.v2 import throttling_policy_binding as _tpb
+from otcextensions.sdk.apig.v2 import throttling_excluded as _tx
+from otcextensions.sdk.apig.v2 import gateway_features as _gwf
+from otcextensions.sdk.apig.v2 import resource_query as _rq
+from otcextensions.sdk.apig.v2 import domain_name as _domain
+from otcextensions.sdk.apig.v2 import certificate as _c
 
 
 class Proxy(proxy.Proxy):
@@ -911,6 +919,665 @@ class Proxy(proxy.Proxy):
             _supp.VersionsApi,
             gateway_id=gateway.id,
             version_id=version_id,
+            ignore_missing=ignore_missing
+        )
+
+    # ======== Signature Keys Methods ========
+
+    def create_signature(self, gateway, **attrs):
+        """Create a new Signature for a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional attributes for the Signature creation.
+
+        :returns: An instance of Signature
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._create(_sign.Signature,
+                            gateway_id=gateway.id,
+                            **attrs)
+
+    def update_signature(self, gateway, sign, **attrs):
+        """Update an existing Signature for a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param sign: The ID of the Signature or an instance of Signature
+        :param attrs: Additional attributes to update the Signature.
+
+        :returns: Updated instance of Signature
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        sign = self._get_resource(_sign.Signature, sign)
+        return self._update(
+            _sign.Signature,
+            sign,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def delete_signature(self, gateway, sign, ignore_missing=False):
+        """Delete an existing Signature from a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param sign: The ID of the Signature or an instance of Signature
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        sign = self._get_resource(_sign.Signature, sign)
+        return self._delete(
+            _sign.Signature,
+            sign,
+            gateway_id=gateway.id,
+            ignore_missing=ignore_missing
+        )
+
+    def signatures(self, gateway, **attrs):
+        """List all Signatures for a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional filters for listing Signature.
+
+        :returns: A list of instances of Signature
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _sign.Signature,
+            paginated=False,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    # ======== Signature Binding Methods ========
+
+    def bind_signature(self, gateway, **attrs):
+        """Bind a Signature for a specific API.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional attributes for the Signature bind.
+
+        :returns: An instance of SignatureBind
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._create(
+            _sign_bind.SignatureBind,
+            gateway_id=gateway.id,
+            **attrs)
+
+    def unbind_signature(self, gateway, bind, ignore_missing=False):
+        """Unbind a bound Signature from a specific API.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param bind: The ID of the SignatureBind or an instance
+            of SignatureBind
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        bind = self._get_resource(_sign_bind.SignatureBind, bind)
+        return self._delete(
+            _sign_bind.SignatureBind,
+            bind,
+            gateway_id=gateway.id,
+            ignore_missing=ignore_missing
+        )
+
+    def bound_signatures(self, gateway, **query):
+        """List all Signatures bound a specific API.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param query: Additional filters for listing SignatureBind.
+
+        :returns: A list of instances of SignatureBind
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        bp = '/apigw/instances/%(gateway_id)s/sign-bindings/binded-signs'
+        return self._list(
+            _sign_bind.SignatureBind,
+            paginated=False,
+            gateway_id=gateway.id,
+            base_path=bp,
+            **query
+        )
+
+    def not_bound_apis(self, gateway, **query):
+        """List all APIs to which a signature key has not been bound.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param query: Additional filters for listing NotBoundApi.
+
+        :returns: A list of instances of NotBoundApi
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _sign_bind.NotBoundApi,
+            paginated=False,
+            gateway_id=gateway.id,
+            **query
+        )
+
+    def bound_apis(self, gateway, **query):
+        """List all APIs to which a signature key has been bound.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param query: Additional filters for listing BoundApi.
+
+        :returns: A list of instances of BoundApi
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _sign_bind.BoundApi,
+            paginated=False,
+            gateway_id=gateway.id,
+            **query
+        )
+
+    # ======== Throttling Policy Binding Methods ========
+
+    def bind_throttling_policy(self, gateway, **attrs):
+        """Bind a throttling policy to a specific API.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional attributes for the ThrottlingPolicy bind.
+
+        :returns: An instance of ThrottlingPolicyBind
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._create(
+            _tpb.ThrottlingPolicyBind,
+            gateway_id=gateway.id,
+            **attrs)
+
+    def unbind_throttling_policy(self, gateway, bind, ignore_missing=False):
+        """Unbind a bound Signature from a specific API.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param bind: The ID of the SignatureBind or an instance
+            of ThrottlingPolicyBind
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        bind = self._get_resource(_tpb.ThrottlingPolicyBind, bind)
+        return self._delete(
+            _tpb.ThrottlingPolicyBind,
+            bind,
+            gateway_id=gateway.id,
+            ignore_missing=ignore_missing
+        )
+
+    def unbind_throttling_policies(self, gateway, throttle_bindings: list):
+        """Unbind a bound Signature from a specific API.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param throttle_bindings: The IDs of the request throttling
+            policy binding records to be canceled.
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        bind = self._get_resource(_tpb.ThrottlingPolicyBind, "")
+        return bind.unbind_policies(
+            self,
+            gateway_id=gateway.id,
+            throttle_bindings=throttle_bindings
+        )
+
+    def bound_throttling_policy_apis(self, gateway, **query):
+        """List all APIs to which a specified request
+            throttling policy has been bound.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param query: Additional filters for listing ThrottlingPolicyBind.
+
+        :returns: A list of instances of ThrottlingPolicyBind
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        bp = '/apigw/instances/%(gateway_id)s/throttle-bindings/binded-apis'
+        return self._list(
+            _tpb.ThrottlingPolicyBind,
+            paginated=False,
+            gateway_id=gateway.id,
+            base_path=bp,
+            **query
+        )
+
+    def not_bound_throttling_policy_apis(self, gateway, **query):
+        """List all APIs to which a request throttling
+            policy has not been bound.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param query: Additional filters for listing NotBoundApi.
+
+        :returns: A list of instances of NotBoundApi
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _tpb.NotBoundApi,
+            paginated=False,
+            gateway_id=gateway.id,
+            **query
+        )
+
+    def bound_throttling_policies(self, gateway, **query):
+        """List all throttling policies that have been bound to an API.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param query: Additional filters for listing BoundApi.
+
+        :returns: A list of instances of BoundThrottles
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _tpb.BoundThrottles,
+            paginated=False,
+            gateway_id=gateway.id,
+            **query
+        )
+
+    # ======== Throttling Policy Methods ========
+
+    def create_throttling_excluded_policy(self, gateway, policy, **attrs):
+        """Creating an Excluded Request Throttling Configuration.
+
+        :param policy: The ID of the throttling policy or an instance of
+            :class:`~otcextensions.sdk.apig.v2.throttling_policy.
+            ThrottlingPolicy`
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional attributes for the excluded throttling policy
+            creation.
+
+        :returns: An instance of ThrottlingExcludedPolicy
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        policy = self._get_resource(_tp.ThrottlingPolicy, policy)
+        return self._create(_tx.ThrottlingExcludedPolicy,
+                            gateway_id=gateway.id,
+                            throttle_id=policy.id,
+                            **attrs)
+
+    def update_throttling_excluded_policy(
+            self, gateway, policy, exclude, **attrs):
+        """Update an Excluded Request Throttling Configuration.
+
+        :param exclude: The ID of the excluded throttling policy or
+            an instance of
+            :class:`~otcextensions.sdk.apig.v2.throttling_excluded.
+            ThrottlingExcludedPolicy`
+        :param policy: The ID of the throttling policy or an instance of
+            :class:`~otcextensions.sdk.apig.v2.throttling_policy.
+            ThrottlingPolicy`
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional attributes to update the
+            excluded throttling policy.
+
+        :returns: Updated instance of ThrottlingExcludedPolicy
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        policy = self._get_resource(_tp.ThrottlingPolicy, policy)
+        exclude = self._get_resource(_tx.ThrottlingExcludedPolicy, exclude)
+        return self._update(
+            _tx.ThrottlingExcludedPolicy,
+            exclude,
+            gateway_id=gateway.id,
+            throttle_id=policy.id,
+            **attrs
+        )
+
+    def delete_throttling_excluded_policy(
+            self, gateway, policy, exclude, ignore_missing=False):
+        """Deleting an Excluded Request Throttling Configuration.
+
+        :param exclude: The ID of the excluded throttling policy or
+            an instance of
+            :class:`~otcextensions.sdk.apig.v2.throttling_excluded.
+            ThrottlingExcludedPolicy`
+        :param policy: The ID of the throttling policy or an instance of
+            :class:`~otcextensions.sdk.apig.v2.throttling_policy.
+            ThrottlingPolicy`
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        policy = self._get_resource(_tp.ThrottlingPolicy, policy)
+        exclude = self._get_resource(_tx.ThrottlingExcludedPolicy, exclude)
+        return self._delete(
+            _tx.ThrottlingExcludedPolicy,
+            exclude,
+            gateway_id=gateway.id,
+            throttle_id=policy.id,
+            ignore_missing=ignore_missing
+        )
+
+    def throttling_excluded_policies(self, gateway, policy, **query):
+        """List all Excluded Request Throttling Configurations.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param policy: The ID of the throttling policy or an instance of
+            :class:`~otcextensions.sdk.apig.v2.throttling_policy.
+            ThrottlingPolicy`
+        :param query: Additional filters for listing excluded throttling
+            policies.
+
+        :returns: A list of instances of ThrottlingExcludedPolicy
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        policy = self._get_resource(_tp.ThrottlingPolicy, policy)
+        return self._list(
+            _tx.ThrottlingExcludedPolicy,
+            paginated=False,
+            gateway_id=gateway.id,
+            throttle_id=policy.id,
+            **query
+        )
+
+    # ======== Gateway Features Methods ========
+
+    def configure_gateway_feature(self, gateway, **attrs):
+        """Configuring a feature for a Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional attributes for the GatewayFeatures.
+
+        :returns: An instance of GatewayFeatures
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._create(
+            _gwf.GatewayFeatures,
+            gateway_id=gateway.id,
+            **attrs)
+
+    def gateway_features(self, gateway, **query):
+        """List all Gateway Features.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param query:  Additional filters for listing GatewayFeatures.
+
+        :returns: A list of instances of GatewayFeatures
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _gwf.GatewayFeatures,
+            gateway_id=gateway.id,
+            **query)
+
+    def supported_gateway_features(self, gateway, **query):
+        """List all the supported features of a Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param query:  Additional filters for listing GatewayFeatures.
+
+        :returns: A list of instances of features names
+        """
+
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        feat = self._get_resource(_gwf.GatewayFeatures, "")
+        return feat._supported_features(self, gateway, **query)
+
+    # ======== Resource Query Methods ========
+
+    def get_api_quantities(self, gateway):
+        """Get the number of APIs that have been published in the RELEASE
+            environment and the number of APIs that have not been
+            published in this environment.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+
+        :returns: An instance of ApiQuantities
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._get(
+            _rq.ApiQuantities,
+            gateway_id=gateway.id,
+            requires_id=False,
+        )
+
+    def get_api_group_quantities(self, gateway):
+        """Get the number of API groups.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+
+        :returns: An instance of ApiGroupQuantities
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._get(
+            _rq.ApiGroupQuantities,
+            gateway_id=gateway.id,
+            requires_id=False,
+        )
+
+    def get_app_quantities(self, gateway):
+        """Get the number of apps that have been authorized to access APIs
+            and the number of apps that have not been authorized to access
+            any APIs.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+
+        :returns: An instance of AppQuantities
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._get(
+            _rq.AppQuantities,
+            gateway_id=gateway.id,
+            requires_id=False,
+        )
+
+    # ======== Domain Name Methods ========
+
+    def bind_domain_name(self, gateway, group, **attrs):
+        """Bind domain name to group.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID of the group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.apigroup.ApiGroup`
+        :param attrs: Additional attributes for the DomainName.
+
+        :returns: An instance of DomainName
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        return self._create(
+            _domain.DomainName,
+            gateway_id=gateway.id,
+            group_id=group.id,
+            **attrs)
+
+    def unbind_domain_name(
+            self, gateway, group, domain, ignore_missing=False):
+        """Unbind domain name from group.
+
+        :param domain: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.domain_name.DomainName`
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID of the group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.apigroup.ApiGroup`
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        domain = self._get_resource(_domain.DomainName, domain)
+        return self._delete(
+            _domain.DomainName,
+            domain,
+            gateway_id=gateway.id,
+            group_id=group.id,
+            ignore_missing=ignore_missing
+        )
+
+    def update_domain_name_bound(
+            self, gateway, group, domain, **attrs):
+        """Update a bound of domain name to group.
+
+        :param domain: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.domain_name.DomainName`
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID of the group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.apigroup.ApiGroup`
+        :param attrs: Additional attributes to update the
+            DomainName bind.
+
+        :returns: Updated instance of DomainName
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        domain = self._get_resource(_domain.DomainName, domain)
+        return self._update(
+            _domain.DomainName,
+            domain,
+            gateway_id=gateway.id,
+            group_id=group.id,
+            **attrs
+        )
+
+    def create_certificate_for_domain_name(
+            self, gateway, group, domain, **attrs):
+        """Add certificate to domain name.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID of the group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.apigroup.ApiGroup`
+        :param domain: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.domain_name.DomainName`
+        :param attrs: Additional attributes for the DomainName.
+
+        :returns: An instance of Certificate
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        domain = self._get_resource(_domain.DomainName, domain)
+        return self._create(
+            _domain.Certificate,
+            gateway_id=gateway.id,
+            group_id=group.id,
+            domain_id=domain.id,
+            **attrs)
+
+    def unbind_certificate_from_domain_name(
+            self, gateway, group, domain,
+            certificate, ignore_missing=False):
+        """Unbind certificate from domain name.
+
+        :param certificate: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.certificate.Certificate`
+        :param domain: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.domain_name.DomainName`
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID of the group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.apigroup.ApiGroup`
+        :param group: The ID of the certificate
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        domain = self._get_resource(_domain.DomainName, domain)
+        certificate = self._get_resource(_c.Certificate, certificate)
+        return self._delete(
+            _domain.DomainName,
+            domain,
+            gateway_id=gateway.id,
+            group_id=group.id,
+            domain_id=domain.id,
+            certificate_id=certificate.id,
+            ignore_missing=ignore_missing
+        )
+
+    def enable_debug_domain_name(self, gateway, group, domain, enable):
+        """Disable or Enable the debugging domain name bound to an API group.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID of the group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.apigroup.ApiGroup`
+        :param domain: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.domain_name.DomainName`
+        :param enable: Specifies whether the debugging domain name
+            is accessible. Options: true and false.
+
+        :returns: An instance of DomainDebug
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        domain = self._get_resource(_domain.DomainName, domain)
+        return self._update(
+            _domain.DomainDebug,
+            gateway_id=gateway.id,
+            group_id=group.id,
+            domain_id=domain.id,
+            sl_domain_access_enabled=enable)
+
+    def get_bound_certificate(self, gateway, group, domain, certificate):
+        """Get the details of the certificate bound to a domain name.
+
+        :param certificate: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.certificate.Certificate`
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID of the group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.apigroup.ApiGroup`
+        :param domain: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.domain_name.DomainName`
+
+        :returns: An instance of Certificate
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        domain = self._get_resource(_domain.DomainName, domain)
+        certificate = self._get_resource(_c.Certificate, certificate)
+        return self._get(
+            _domain.Certificate,
+            gateway_id=gateway.id,
+            group_id=group.id,
+            domain_id=domain.id,
+            id=certificate.id
+        )
+
+    # ======== Certificate Methods ========
+
+    def delete_certificate(self, certificate, ignore_missing=False):
+        """Delete an SSL certificate.
+
+        :param certificate: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.certificate.Certificate`
+
+        :returns: None
+        """
+        certificate = self._get_resource(_c.Certificate, certificate)
+        return self._delete(
+            _c.Certificate,
+            certificate,
             ignore_missing=ignore_missing
         )
 

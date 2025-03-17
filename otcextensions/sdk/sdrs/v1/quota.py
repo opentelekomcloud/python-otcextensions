@@ -37,4 +37,4 @@ class Quota(resource.Resource):
 
     #: Properties
     #: Tenant resource quotas
-    resources = resource.Body('resources', type=list, type_list=ResourceType)
+    resources = resource.Body('resources', type=list, list_type=ResourceType)

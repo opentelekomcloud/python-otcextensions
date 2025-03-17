@@ -472,6 +472,291 @@ This example demonstrates how to remove an effective version of an API.
 .. literalinclude:: ../examples/apig/offline_api_version.py
    :lines: 16-23
 
+Creating a Signature Key
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to create a signature key.
+
+.. literalinclude:: ../examples/apig/create_signature.py
+   :lines: 16-28
+
+Modifying a Signature Key
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to update a signature key.
+
+.. literalinclude:: ../examples/apig/update_signature.py
+   :lines: 16-29
+
+Deleting a Signature Key
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to delete a signature key.
+
+.. literalinclude:: ../examples/apig/delete_signature.py
+   :lines: 16-23
+
+Querying Signature Keys
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to fetch all signature keys.
+
+.. literalinclude:: ../examples/apig/list_signatures.py
+   :lines: 16-20
+
+Binding a Signature Key
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to bind a signature key.
+
+.. literalinclude:: ../examples/apig/bind_signature.py
+   :lines: 16-28
+
+Unbinding a Signature Key
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to unbind a signature key.
+
+.. literalinclude:: ../examples/apig/unbind_signature.py
+   :lines: 16-24
+
+Querying Signature Keys Bound to an API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to list the signature keys that
+have been bound to a specified API.
+
+.. literalinclude:: ../examples/apig/list_bound_signatures.py
+   :lines: 16-24
+
+Querying APIs Not Bound with a Signature Key
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to list the APIs to which a signature key
+has not been bound.
+
+.. literalinclude:: ../examples/apig/list_not_bound_apis.py
+   :lines: 16-23
+
+Querying APIs Bound with a Signature Key
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to list the APIs to which a signature key
+has been bound.
+
+.. literalinclude:: ../examples/apig/list_bound_apis.py
+   :lines: 16-24
+
+Binding a Request Throttling Policy
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to bind request throttling policy to an API.
+
+.. literalinclude:: ../examples/apig/bind_throttling_policy.py
+   :lines: 16-28
+
+Unbinding a Request Throttling Policy
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to unbind request throttling policy from an API.
+
+.. literalinclude:: ../examples/apig/unbind_throttling_policy.py
+   :lines: 16-24
+
+Querying APIs Bound with a Request Throttling Policy
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query the APIs to which a
+specified request throttling policy has been bound.
+
+.. literalinclude:: ../examples/apig/list_bound_throttling_policy_apis.py
+   :lines: 16-23
+
+Querying APIs Not Bound with a Request Throttling Policy
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query the self-developed APIs
+to which a request throttling policy has not been bound.
+Only published APIs will be displayed.
+
+.. literalinclude:: ../examples/apig/list_not_bound_throttling_policy_apis.py
+   :lines: 16-23
+
+Querying Request Throttling Policies Bound to an API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query the request throttling policies
+that have been bound to an API.
+Only one request throttling policy can be bound to an API in an environment
+
+.. literalinclude:: ../examples/apig/list_bound_throttling_policies.py
+   :lines: 16-24
+
+Querying Request Throttling Policies Bound to an API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to unbind request throttling policies from APIs.
+
+.. literalinclude:: ../examples/apig/unbind_throttling_policies.py
+   :lines: 16-27
+
+Creating an Excluded Request Throttling Configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to create an
+excluded request throttling configuration.
+
+.. literalinclude:: ../examples/apig/create_throttling_exclude.py
+   :lines: 16-50
+
+Modifying an Excluded Request Throttling Configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to update an
+excluded request throttling configuration.
+
+.. literalinclude:: ../examples/apig/update_throttling_exclude.py
+   :lines: 16-28
+
+Deleting an Excluded Request Throttling Configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to delete an
+excluded request throttling configuration.
+
+.. literalinclude:: ../examples/apig/delete_throttling_exclude.py
+   :lines: 16-24
+
+Querying Excluded Request Throttling Configurations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query an
+excluded request throttling configurations.
+
+.. literalinclude:: ../examples/apig/list_throttling_exclude.py
+   :lines: 16-23
+
+Querying the Supported Features of a Gateway
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query the supported features of a gateway.
+
+.. literalinclude:: ../examples/apig/list_supported_gw_features.py
+   :lines: 16-20
+
+Querying Gateway Features
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query the features of a gateway.
+
+.. literalinclude:: ../examples/apig/list_gw_features.py
+   :lines: 16-20
+
+Querying Gateway Features
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to configure a feature for a gateway.
+
+.. literalinclude:: ../examples/apig/configure_gw_feature.py
+   :lines: 16-29
+
+Querying API Quantities
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to get the number
+of APIs that have been published in the RELEASE environment
+and the number of APIs that have not been published in this environment.
+
+.. literalinclude:: ../examples/apig/get_api_quantities.py
+   :lines: 16-22
+
+Querying API Group Quantities
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to get the number of API groups.
+
+.. literalinclude:: ../examples/apig/get_api_group_quantities.py
+   :lines: 16-22
+
+Querying App Quantities
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to get the number of apps that have
+been authorized to access APIs and the number of apps that have
+not been authorized to access any APIs.
+
+.. literalinclude:: ../examples/apig/get_app_quantities.py
+   :lines: 16-22
+
+Binding a Domain Name
+^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to bind domain name.
+
+.. literalinclude:: ../examples/apig/bind_domain_name.py
+   :lines: 16-28
+
+Adding a Certificate to a Domain Name
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to add certificate to a domain name.
+
+.. literalinclude:: ../examples/apig/create_certificate_for_domain.py
+   :lines: 16-30
+
+Modifying a Domain Name
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to modify the configuration
+of a domain name bound to an API group.
+
+.. literalinclude:: ../examples/apig/update_domain_name_bound.py
+   :lines: 16-29
+
+Unbinding a Domain Name
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to unbind a custom domain name from an API group.
+
+.. literalinclude:: ../examples/apig/unbind_domain_name.py
+   :lines: 16-25
+
+Unbinding a Domain Name
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to to disable or enable
+the debugging domain name bound to an API group.
+
+.. literalinclude:: ../examples/apig/enable_debug_domain_name.py
+   :lines: 16-26
+
+Deleting the Certificate Bound to a Domain Name
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to delete a certificate
+that is no longer needed or has expired.
+
+.. literalinclude:: ../examples/apig/unbind_certificate_from_domain.py
+   :lines: 16-25
+
+Deleting the Certificate Bound to a Domain Name
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query the details
+of the certificate bound to a domain name.
+
+.. literalinclude:: ../examples/apig/get_bound_certificate.py
+   :lines: 16-25
+
+Deleting an SSL Certificate
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query the details
+of the certificate bound to a domain name.
+
+.. literalinclude:: ../examples/apig/delete_certificate.py
+   :lines: 16-22
+
 Credentials
 ___________
 
