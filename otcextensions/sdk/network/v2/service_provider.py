@@ -9,12 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from urllib.parse import urlunparse
-from urllib.parse import urlparse
-
-from openstack import exceptions
-from openstack import utils
-
 from openstack.network.v2 import service_provider
 
 
@@ -23,4 +17,8 @@ class ServiceProvider(service_provider.ServiceProvider):
     def list(cls, session, paginated=False,
              endpoint_override=None, headers=None, requests_auth=None,
              **params):
+        """
+        this dummy fake interface is temporarily introduced until
+        demand OTCPR-24905 is completed
+        """
         return [True]
