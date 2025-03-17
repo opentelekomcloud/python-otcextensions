@@ -21,6 +21,9 @@ from otcextensions.sdk.apig.v2 import apienvironmentvar as _api_var
 from otcextensions.sdk.apig.v2 import throttling_policy as _tp
 from otcextensions.sdk.apig.v2 import api as _api
 from otcextensions.sdk.apig.v2 import api_supplements as _supp
+from otcextensions.sdk.apig.v2 import app as _app
+from otcextensions.sdk.apig.v2 import appcode as _app_code
+from otcextensions.sdk.apig.v2 import quota as _quota
 
 
 class Proxy(proxy.Proxy):
@@ -910,3 +913,321 @@ class Proxy(proxy.Proxy):
             version_id=version_id,
             ignore_missing=ignore_missing
         )
+
+    # ======== Credentials Management Methods ========
+
+    def create_app(self, gateway, **attrs):
+        """Create a new identity for accessing a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional attributes for the App creation.
+
+        :returns: An instance of App
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._create(_app.App,
+                            gateway_id=gateway.id,
+                            **attrs)
+
+    def get_app(self, gateway, app):
+        """Retrieve details of a specific App.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param app: The ID of the App or an instance of App
+
+        :returns: An instance of App
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        app = self._get_resource(_app.App, app)
+        return self._get(
+            _app.App,
+            app,
+            gateway_id=gateway.id
+        )
+
+    def update_app(self, gateway, app, **attrs):
+        """Update an existing App for a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param app: The ID of the App or an instance of App
+        :param attrs: Additional attributes to update the App.
+
+        :returns: Updated instance of App
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        app = self._get_resource(_app.App, app)
+        return self._update(
+            _app.App,
+            app,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def delete_app(self, gateway, app, ignore_missing=False):
+        """Delete an existing identity from a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param app: The ID of the App or an instance of App
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        app = self._get_resource(_app.App, app)
+        return self._delete(
+            _app.App,
+            app,
+            gateway_id=gateway.id,
+            ignore_missing=ignore_missing
+        )
+
+    def apps(self, gateway, **attrs):
+        """Retrieve the list of Apps for a specific API Gateway.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+
+        :returns: An instance of App
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _app.App,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def verify_app(self, gateway, app):
+        """Verify if the App exists
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param app: The ID of the App or an instance of App
+
+        :returns: An instance of App
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        app = self._get_resource(_app.App, app)
+        return app._verify_app(self, gateway)
+
+    def reset_app_secret(self, gateway, app, **attrs):
+        """Reset the App secret
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param app: The ID of the App or an instance of App
+        :param attrs: Additional attributes to update the App secret.
+
+        :returns: An instance of App
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        app = self._get_resource(_app.App, app)
+        return app._reset_secret(self, gateway, **attrs)
+
+    def get_app_code(self, gateway, app, app_code):
+        """Retrieve details of a specific application code.
+
+        This method retrieves the details of an application code associated
+        with the given API Gateway and application.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param app: The ID of the application or an instance of
+            :class:`~otcextensions.sdk.apig.v2.app.App`
+        :param app_code: The ID of the application code or an instance of
+            :class:`~otcextensions.sdk.apig.v2.app_code.AppCode`
+
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.app_code.AppCode`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        app = self._get_resource(_app.App, app)
+        app_code = self._get_resource(_app_code.AppCode, app_code)
+        return self._get(
+            _app_code.AppCode,
+            app_code,
+            gateway_id=gateway.id,
+            app_id=app.id,
+        )
+
+    def create_app_code(self, gateway, app, **attrs):
+        """Create a new application code for a specific application.
+
+        This method creates an application code associated with
+        the given API Gateway and application.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param app: The ID of the application or an instance of
+            :class:`~otcextensions.sdk.apig.v2.app.App`
+        :param attrs: Additional attributes for creating the application code.
+
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.app_code.AppCode`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        app = self._get_resource(_app.App, app)
+        return self._create(
+            _app_code.AppCode,
+            gateway_id=gateway.id,
+            app_id=app.id,
+            **attrs
+        )
+
+    def generate_app_code(self, gateway, app, **attrs):
+        """Generate a new application code for a specific application.
+
+        This method generates a new application code associated with
+        the given API Gateway and application.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param app: The ID of the application or an instance of
+            :class:`~otcextensions.sdk.apig.v2.app.App`
+        :param attrs: Additional attributes for generating the app code.
+
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.app_code.AppCode`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        app = self._get_resource(_app.App, app)
+        app_code = _app_code.AppCode()
+        return app_code._generate_app_code(self, gateway, app, **attrs)
+
+    def app_codes(self, gateway, app, **attrs):
+        """List all application codes for a specific application.
+
+        This method retrieves a list of application codes associated with
+        the given API Gateway and application.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param app: The ID of the application or an instance of
+            :class:`~otcextensions.sdk.apig.v2.app.App`
+        :param attrs: Additional filters for listing application codes.
+
+        :returns: A list of instances of
+            :class:`~otcextensions.sdk.apig.v2.app_code.AppCode`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        app = self._get_resource(_app.App, app)
+        return self._list(
+            _app_code.AppCode,
+            gateway_id=gateway.id,
+            app_id=app.id,
+            **attrs
+        )
+
+    def delete_app_code(self, gateway, app, app_code, ignore_missing=False):
+        """Delete a specific application code.
+
+        This method deletes an application code associated with
+        the given API Gateway and application.
+
+        :param gateway: The ID of the gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param app: The ID of the application or an instance of
+            :class:`~otcextensions.sdk.apig.v2.app.App`
+        :param app_code: The ID of the application code or an instance of
+            :class:`~otcextensions.sdk.apig.v2.app_code.AppCode`
+        :param ignore_missing: When set to True, no exception will be raised
+            if the application code does not exist. Default is False.
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        app = self._get_resource(_app.App, app)
+        app_code = self._get_resource(_app_code.AppCode, app_code)
+        return self._delete(
+            _app_code.AppCode,
+            app_code,
+            gateway_id=gateway.id,
+            app_id=app.id,
+            ignore_missing=ignore_missing
+        )
+
+    def quotas(self, gateway, app, **attrs):
+        """Retrieve quotas associated with a credential.
+
+        This method retrieves the quota details associated with
+        the given API Gateway instance and application.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+        :param app: The ID of the application or an instance of
+            :class:`~otcextensions.sdk.apig.v2.app.App`
+        :param attrs: Additional filters for retrieving quota details.
+
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.quota.Quota`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        app = self._get_resource(_app.App, app)
+        return self._get(
+            _quota.Quota,
+            gateway_id=gateway.id,
+            app_id=app.id,
+            requires_id=False,
+            **attrs
+        )
+    #
+    # def access_controls(self, gateway, app, **attrs):
+    #     """Retrieve access control details for a specific application.
+    #
+    #     :param gateway: The ID of the API Gateway instance or an instance of
+    #         :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+    #     :param app: The ID of the application or an instance of
+    #         :class:`~otcextensions.sdk.apig.v2.app.App`
+    #     :param attrs: Additional filters for access control details.
+    #
+    #     :returns: An instance of
+    #         :class:`~otcextensions.sdk.apig.v2.access_control.AccessControl`
+    #     """
+    #     gateway = self._get_resource(_gateway.Gateway, gateway)
+    #     app = self._get_resource(_app.App, app)
+    #     return self._get(
+    #         _ac.AccessControl,
+    #         gateway_id = gateway.id,
+    #         app_url_id = app.id,
+    #         requires_id=False,
+    #         **attrs
+    #     )
+    #
+    # def delete_access_control(self, gateway, app, **attrs):
+    #     """Delete access control details for a specific application.
+    #
+    #     :param gateway: The ID of the API Gateway instance or an instance of
+    #         :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+    #     :param app: The ID of the application or an instance of
+    #         :class:`~otcextensions.sdk.apig.v2.app.App`
+    #
+    #     :returns: None
+    #     """
+    #     gateway = self._get_resource(_gateway.Gateway, gateway)
+    #     app = self._get_resource(_app.App, app)
+    #     access_control = _ac.AccessControl()
+    #     return access_control._delete(
+    #         self,
+    #         gateway = gateway,
+    #         app = app,
+    #         **attrs
+    #     )
+    #
+    # def configure_access_control(self, gateway, app, **attrs):
+    #     """Configure access control details for a specific application.
+    #
+    #     :param gateway: The ID of the API Gateway instance or an instance of
+    #         :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+    #     :param app: The ID of the application or an instance of
+    #         :class:`~otcextensions.sdk.apig.v2.app.App`
+    #     :param attrs: Additional attributes for configuring access control.
+    #
+    #     :returns: An instance of
+    #         :class:`~otcextensions.sdk.apig.v2.access_control.AccessControl`
+    #     """
+    #     gateway = self._get_resource(_gateway.Gateway, gateway)
+    #     app = self._get_resource(_app.App, app)
+    #     access_control = _ac.AccessControl()
+    #     return access_control._configure(self, gateway, app, **attrs)
