@@ -69,7 +69,7 @@ Credentials Operations
 .. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
   :noindex:
   :members: create_app, get_app, update_app, delete_app,
-            apps, verify_app, reset_app_secret, get_app_code
+            apps, verify_app, reset_app_secret, get_app_code,
             create_app_code, generate_app_code, app_codes,
             delete_app_code, quotas
 
