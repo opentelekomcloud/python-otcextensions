@@ -28,7 +28,6 @@ from otcextensions.sdk.apig.v2 import certificate
 from otcextensions.sdk.apig.v2 import resource_query as _rq
 from otcextensions.sdk.apig.v2 import app as _app
 from otcextensions.sdk.apig.v2 import appcode as _appcode
-from otcextensions.sdk.apig.v2 import quota as _quota
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
 
@@ -1339,7 +1338,7 @@ class TestQuota(TestApiGatewayProxy):
         gateway = _gateway.Gateway()
         app = _app.App()
         self.verify_get(self.proxy.quotas,
-                        _quota.Quota,
+                        _app.Quota,
                         method_args=[gateway, app, ],
                         expected_args=[],
                         method_kwargs={},
