@@ -23,7 +23,6 @@ from otcextensions.sdk.apig.v2 import api as _api
 from otcextensions.sdk.apig.v2 import api_supplements as _supp
 from otcextensions.sdk.apig.v2 import app as _app
 from otcextensions.sdk.apig.v2 import appcode as _app_code
-from otcextensions.sdk.apig.v2 import quota as _quota
 from otcextensions.sdk.apig.v2 import signature as _sign
 from otcextensions.sdk.apig.v2 import signature_binding as _sign_bind
 from otcextensions.sdk.apig.v2 import throttling_policy_binding as _tpb
@@ -1833,7 +1832,7 @@ class Proxy(proxy.Proxy):
         gateway = self._get_resource(_gateway.Gateway, gateway)
         app = self._get_resource(_app.App, app)
         return self._get(
-            _quota.Quota,
+            _app.Quota,
             gateway_id=gateway.id,
             app_id=app.id,
             requires_id=False,

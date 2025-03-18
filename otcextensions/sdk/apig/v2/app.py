@@ -13,6 +13,52 @@ from openstack import resource
 from openstack import exceptions
 
 
+class Quota(resource.Resource):
+    base_path = f'/apigw/instances/%(gateway_id)s/apps/%(app_id)s/bound-quota'
+
+    gateway_id = resource.URI('gateway_id')
+    app_id = resource.URI('app_id')
+
+    allow_fetch = True
+
+    app_quota_id = resource.Body('app_quota_id')
+    name = resource.Body('name')
+    call_limits = resource.Body('call_limits', type=int)
+    time_unit = resource.Body('time_unit')
+    time_interval = resource.Body('time_interval')
+    remark = resource.Body('remark')
+    reset_time = resource.Body('reset_time')
+    create_time = resource.Body('create_time')
+    bound_app_num = resource.Body('bound_app_num')
+
+
+class AccessControl(resource.Resource):
+    base_path = f'/apigw/instances/%(gateway_id)s/apps/%(app_url_id)s/app-acl'
+    gateway_id = resource.URI('gateway_id')
+    app_url_id = resource.URI('app_url_id')
+
+    app_id = resource.Body('app_id')
+    app_acl_type = resource.Body('app_acl_type')
+    app_acl_values = resource.Body('app_acl_values', type=list)
+
+    allow_fetch = True
+    allow_delete = True
+    allow_update = True
+
+    def _configure(self, session, gateway, app, **attrs):
+        url = f'/apigw/instances/{gateway.id}/apps/{app.id}/app-acl'
+        response = session.put(url, json=attrs)
+        exceptions.raise_from_response(response)
+        self._translate_response(response)
+        return self
+
+    def _delete(self, session, gateway, app, **attrs):
+        url = f'/apigw/instances/{gateway.id}/apps/{app.id}/app-acl'
+        response = session.delete(url, json=attrs)
+        exceptions.raise_from_response(response)
+        return None
+
+
 class App(resource.Resource):
     base_path = f'/apigw/instances/%(gateway_id)s/apps'
     resources_key = 'apps'

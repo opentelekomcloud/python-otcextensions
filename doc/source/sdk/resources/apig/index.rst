@@ -21,5 +21,3 @@ ApiGateway Resources
    v2/domain_name
    v2/certificate
    v2/app
-   v2/app_code
-   v2/quota

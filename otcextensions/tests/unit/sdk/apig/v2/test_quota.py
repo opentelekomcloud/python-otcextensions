@@ -10,7 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack.tests.unit import base
-from otcextensions.sdk.apig.v2 import quota
+from otcextensions.sdk.apig.v2 import app
 
 
 EXAMPLE_QUOTA = {
@@ -31,14 +31,14 @@ EXAMPLE_QUOTA = {
 class TestQuota(base.TestCase):
 
     def test_basic(self):
-        sot = quota.Quota()
+        sot = app.Quota()
         self.assertEqual('/apigw/instances/%(gateway_id)s/apps/'
                          '%(app_id)s/bound-quota',
                          sot.base_path)
         self.assertTrue(sot.allow_fetch)
 
     def test_make_it(self):
-        sot = quota.Quota(**EXAMPLE_QUOTA)
+        sot = app.Quota(**EXAMPLE_QUOTA)
         self.assertEqual(EXAMPLE_QUOTA['gateway_id'], sot.gateway_id)
         self.assertEqual(EXAMPLE_QUOTA['app_id'], sot.app_id)
         self.assertEqual(EXAMPLE_QUOTA['app_quota_id'], sot.app_quota_id)
