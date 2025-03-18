@@ -405,7 +405,8 @@ class Proxy(proxy.Proxy):
 
     def _service_cleanup(self, dry_run=True, client_status_queue=False,
                          identified_resources=None,
-                         filters=None, resource_evaluation_fn=None):
+                         filters=None, resource_evaluation_fn=None,
+                         skip_resources=None):
         # Delete all public zones
         for obj in self.zones():
             self._service_cleanup_del_res(
