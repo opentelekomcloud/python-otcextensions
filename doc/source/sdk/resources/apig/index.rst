@@ -20,3 +20,4 @@ ApiGateway Resources
    v2/resource_query
    v2/domain_name
    v2/certificate
+   v2/app

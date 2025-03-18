@@ -756,3 +756,120 @@ of the certificate bound to a domain name.
 
 .. literalinclude:: ../examples/apig/delete_certificate.py
    :lines: 16-22
+
+Credentials
+___________
+
+Create an App
+^^^^^^^^^^^^^
+
+This example demonstrates how to create a new app in the API Gateway.
+
+.. literalinclude:: ../examples/apig/create_app.py
+   :lines: 16-25
+
+Modify an App
+^^^^^^^^^^^^^
+
+This example demonstrates how to modify an existing app in the API Gateway.
+
+.. literalinclude:: ../examples/apig/update_app.py
+   :lines: 16-21
+
+Delete an App
+^^^^^^^^^^^^^
+
+This example demonstrates how to delete an existing app from the API Gateway.
+
+.. literalinclude:: ../examples/apig/delete_app.py
+   :lines: 16-21
+
+Reset the AppSecret of an App
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to reset the AppSecret of a specific app
+in the API Gateway.
+
+.. literalinclude:: ../examples/apig/reset_app_secret.py
+   :lines: 16-21
+
+Verify an App
+^^^^^^^^^^^^^
+
+This example demonstrates how to verify a specific app in the API
+Gateway.
+
+.. literalinclude:: ../examples/apig/verify_app.py
+   :lines: 16-21
+
+Query App Details
+^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to retrieve details of a specific app
+from the API Gateway.
+
+.. literalinclude:: ../examples/apig/get_app.py
+   :lines: 16-21
+
+Query Apps
+^^^^^^^^^^
+
+This example demonstrates how to list all apps associated with a
+specific API Gateway.
+
+.. literalinclude:: ../examples/apig/list_apps.py
+   :lines: 16-23
+
+Create an AppCode
+^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to create a new AppCode for an app
+in the API Gateway.
+
+.. literalinclude:: ../examples/apig/create_app_code.py
+   :lines: 16-28
+
+Generate an AppCode
+^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to generate a new AppCode for an app
+in the API Gateway.
+
+.. literalinclude:: ../examples/apig/generate_app_code.py
+   :lines: 16-21
+
+Delete an AppCode
+^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to delete an existing AppCode
+from the API Gateway.
+
+.. literalinclude:: ../examples/apig/delete_app_code.py
+   :lines: 16-21
+
+Query AppCode Details
+^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to retrieve details of a specific
+AppCode in the API Gateway.
+
+.. literalinclude:: ../examples/apig/get_app_code.py
+   :lines: 16-22
+
+Query AppCodes of an App
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to list all AppCodes associated
+with a specific app in the API Gateway.
+
+.. literalinclude:: ../examples/apig/list_app_codes.py
+   :lines: 16-21
+
+Query Quotas Associated with a Credential
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query quotas associated
+with a specific credential in the API Gateway.
+
+.. literalinclude:: ../examples/apig/list_quotas.py
+   :lines: 16-20

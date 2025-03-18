@@ -26,6 +26,8 @@ from otcextensions.sdk.apig.v2 import gateway_features as _gwf
 from otcextensions.sdk.apig.v2 import domain_name
 from otcextensions.sdk.apig.v2 import certificate
 from otcextensions.sdk.apig.v2 import resource_query as _rq
+from otcextensions.sdk.apig.v2 import app as _app
+from otcextensions.sdk.apig.v2 import appcode as _appcode
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
 
@@ -1191,3 +1193,156 @@ class TestCertificate(TestApiGatewayProxy):
                 "ignore_missing": True
             }
         )
+
+
+class TestApp(TestApiGatewayProxy):
+    def test_create_app(self):
+        gateway = _gateway.Gateway()
+        self.verify_create(self.proxy.create_app,
+                           _app.App,
+                           method_args=[gateway],
+                           expected_args=[],
+                           method_kwargs={},
+                           expected_kwargs={'gateway_id': None}
+                           )
+
+    def test_get_app(self):
+        gateway = _gateway.Gateway()
+        app = _app.App()
+        self.verify_get(self.proxy.get_app,
+                        _app.App,
+                        method_args=[gateway, app],
+                        expected_args=[app],
+                        method_kwargs={},
+                        expected_kwargs={'gateway_id': None}
+                        )
+
+    def test_update_app(self):
+        gateway = _gateway.Gateway()
+        app = _app.App()
+        self.verify_update(self.proxy.update_app,
+                           _app.App,
+                           method_args=[gateway, app],
+                           expected_args=[app],
+                           method_kwargs={},
+                           expected_kwargs={'gateway_id': None}
+                           )
+
+    def test_delete_app(self):
+        gateway = _gateway.Gateway()
+        app = _app.App()
+        self.verify_delete(self.proxy.delete_app,
+                           _app.App,
+                           method_args=[gateway, app],
+                           expected_args=[app],
+                           method_kwargs={},
+                           expected_kwargs={'gateway_id': None}
+                           )
+
+    def test_list_apps(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(self.proxy.apps,
+                         _app.App,
+                         method_args=[gateway, ],
+                         expected_args=[],
+                         method_kwargs={},
+                         expected_kwargs={'gateway_id': None}
+                         )
+
+    def test_verify_app(self):
+        gateway = _gateway.Gateway()
+        app = _app.App()
+        self._verify(
+            'otcextensions.sdk.apig.v2.app.'
+            'App._verify_app',
+            self.proxy.verify_app,
+            method_args=[gateway, app],
+            expected_args=[self.proxy, gateway]
+        )
+
+    def test_reset_app_secret(self):
+        gateway = _gateway.Gateway()
+        app = _app.App()
+        self._verify(
+            'otcextensions.sdk.apig.v2.app.'
+            'App._reset_secret',
+            self.proxy.reset_app_secret,
+            method_args=[gateway, app],
+            expected_args=[self.proxy, gateway]
+        )
+
+
+class TestAppCode(TestApiGatewayProxy):
+    def test_get_app_code(self):
+        gateway = _gateway.Gateway()
+        app = _app.App()
+        app_code = _appcode.AppCode()
+        self.verify_get(self.proxy.get_app_code,
+                        _appcode.AppCode,
+                        method_args=[gateway, app, app_code],
+                        expected_args=[app_code],
+                        method_kwargs={},
+                        expected_kwargs={'gateway_id': None,
+                                         'app_id': None}
+                        )
+
+    def test_create_app_code(self):
+        gateway = _gateway.Gateway()
+        app = _app.App()
+        self.verify_create(self.proxy.create_app_code,
+                           _appcode.AppCode,
+                           method_args=[gateway, app],
+                           expected_args=[],
+                           method_kwargs={},
+                           expected_kwargs={'gateway_id': None,
+                                            'app_id': None}
+                           )
+
+    def test_generate_app_code(self):
+        gateway = _gateway.Gateway()
+        app = _app.App()
+        self._verify(
+            'otcextensions.sdk.apig.v2.appcode.'
+            'AppCode._generate_app_code',
+            self.proxy.generate_app_code,
+            method_args=[gateway, app],
+            expected_args=[self.proxy, gateway, app]
+        )
+
+    def test_list_app_codes(self):
+        gateway = _gateway.Gateway()
+        app = _app.App()
+        self.verify_list(self.proxy.app_codes,
+                         _appcode.AppCode,
+                         method_args=[gateway, app],
+                         expected_args=[],
+                         method_kwargs={},
+                         expected_kwargs={'gateway_id': None,
+                                          'app_id': None}
+                         )
+
+    def test_delete_app_code(self):
+        gateway = _gateway.Gateway()
+        app = _app.App()
+        self.verify_delete(self.proxy.delete_app,
+                           _app.App,
+                           method_args=[gateway, app],
+                           expected_args=[app],
+                           method_kwargs={},
+                           expected_kwargs={'gateway_id': None}
+                           )
+
+
+class TestQuota(TestApiGatewayProxy):
+    def test_quotas(self):
+        gateway = _gateway.Gateway()
+        app = _app.App()
+        self.verify_get(self.proxy.quotas,
+                        _app.Quota,
+                        method_args=[gateway, app, ],
+                        expected_args=[],
+                        method_kwargs={},
+                        expected_kwargs={'gateway_id': None,
+                                         'app_id': None,
+                                         'requires_id': False}
+                        )
