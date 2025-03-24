@@ -56,9 +56,11 @@ class TestAuth(TestApiG):
             gateway="560de602c9f74969a05ff01d401a53ed"))
         to_delete = [item for item in found
                      if item['app_id'] == "74593f5c94f64a139db38b61a7705df3"][0]
-        result = self.client.delete_auth_from_api(
+        self.client.delete_auth_from_api(
             self,
             gateway="560de602c9f74969a05ff01d401a53ed",
             auth_id=to_delete.id
         )
-        self.assertIsNotNone(result)
+        found = list(self.client.list_apps_bound_to_api(
+            gateway="560de602c9f74969a05ff01d401a53ed"))
+        self.assertEqual(1, len(found))
