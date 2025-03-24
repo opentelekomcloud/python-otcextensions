@@ -31,6 +31,7 @@ from otcextensions.sdk.apig.v2 import gateway_features as _gwf
 from otcextensions.sdk.apig.v2 import resource_query as _rq
 from otcextensions.sdk.apig.v2 import domain_name as _domain
 from otcextensions.sdk.apig.v2 import certificate as _c
+from otcextensions.sdk.apig.v2 import api_auth as _auth
 
 
 class Proxy(proxy.Proxy):
@@ -1897,3 +1898,53 @@ class Proxy(proxy.Proxy):
     #     app = self._get_resource(_app.App, app)
     #     access_control = _ac.AccessControl()
     #     return access_control._configure(self, gateway, app, **attrs)
+
+    # ======== App Authorization Methods ========
+
+    def list_api_bound_to_app(self, gateway, **attrs):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _auth.ApiAuthInfo,
+            paginated=False,
+            base_path=f'{_auth.ApiAuthInfo.base_path}/binded-apis',
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def list_apps_bound_to_api(self,gateway, **attrs):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _auth.ApiAuthInfo,
+            paginated=False,
+            base_path=f'{_auth.ApiAuthInfo.base_path}/binded-apps',
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def list_api_not_bound_to_app(self, gateway, **attrs):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _auth.ApiAuthInfo,
+            paginated=False,
+            base_path=f'{_auth.ApiAuthInfo.base_path}/unbinded-apis',
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def create_auth_in_api(self, gateway, **attrs ):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        auth = _auth.ApiAuthInfo()
+        return auth._authorize_apps(
+            self,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def delete_auth_from_api(self, api_auth, gateway, auth_id):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        auth = _auth.ApiAuthInfo()
+        return auth._cancel_auth(
+            self,
+            gateway_id=gateway.id,
+            app_auth_id=auth_id
+        )
