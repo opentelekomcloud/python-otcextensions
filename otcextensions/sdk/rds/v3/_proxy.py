@@ -567,17 +567,18 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         instances = []
         for instance in self.instances():
             if not dry_run:
-                for tag in instance.tags:
-                    self.remove_tag(instance, tag['key'])
-                    self._service_cleanup_del_res(
-                        self.remove_tag,
-                        tag['key'],
-                        dry_run=dry_run,
-                        client_status_queue=client_status_queue,
-                        identified_resources=identified_resources,
-                        filters=filters,
-                        resource_evaluation_fn=resource_evaluation_fn,
-                    )
+                if instance.tags:
+                    for tag in instance.tags:
+                        self.remove_tag(instance, tag['key'])
+                        self._service_cleanup_del_res(
+                            self.remove_tag,
+                            tag['key'],
+                            dry_run=dry_run,
+                            client_status_queue=client_status_queue,
+                            identified_resources=identified_resources,
+                            filters=filters,
+                            resource_evaluation_fn=resource_evaluation_fn,
+                        )
             for backup in self.backups(instance):
                 if 'Automated' not in backup.type:
                     self._service_cleanup_del_res(
