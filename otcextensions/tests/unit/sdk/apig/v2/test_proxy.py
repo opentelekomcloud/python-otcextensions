@@ -28,6 +28,7 @@ from otcextensions.sdk.apig.v2 import certificate
 from otcextensions.sdk.apig.v2 import resource_query as _rq
 from otcextensions.sdk.apig.v2 import app as _app
 from otcextensions.sdk.apig.v2 import appcode as _appcode
+from otcextensions.sdk.apig.v2 import api_auth as _auth
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
 
@@ -1346,3 +1347,59 @@ class TestQuota(TestApiGatewayProxy):
                                          'app_id': None,
                                          'requires_id': False}
                         )
+
+
+class TestAuth(TestApiGatewayProxy):
+    def test_list_api_bound_to_app(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(self.proxy.list_api_bound_to_app,
+                         _auth.ApiAuthInfo,
+                         method_args=[gateway],
+                         expected_args=[],
+                         method_kwargs={},
+                         expected_kwargs={'gateway_id': None}
+                         )
+
+    def test_list_api_not_bound_to_app(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(self.proxy.list_apps_bound_to_api,
+                         _auth.ApiAuthInfo,
+                         method_args=[gateway],
+                         expected_args=[],
+                         method_kwargs={},
+                         expected_kwargs={'gateway_id': None}
+                         )
+
+    def test_list_app_bound_to_api(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(self.proxy.list_api_not_bound_to_app,
+                         _auth.ApiAuth,
+                         method_args=[gateway],
+                         expected_args=[],
+                         method_kwargs={},
+                         expected_kwargs={'gateway_id': None}
+                         )
+
+    def test_create_auth(self):
+        gateway = _gateway.Gateway()
+        self._verify(
+            'otcextensions.sdk.apig.v2.api_auth.'
+            'ApiAuthInfo._authorize_apps',
+            self.proxy.create_auth_in_api,
+            method_args=[gateway],
+            expected_args=[self.proxy],
+            expected_kwargs={'gateway_id': None}
+        )
+
+    def test_delete_auth(self):
+        gateway = _gateway.Gateway()
+        self._verify(
+            'otcextensions.sdk.apig.v2.api_auth.'
+            'ApiAuthInfo._cancel_auth',
+            self.proxy.delete_auth_from_api,
+            method_args=[gateway],
+            expected_args=[self.proxy],
+            method_kwargs={'auth_id': None},
+            expected_kwargs={'app_auth_id': None,
+                             'gateway_id': None}
+        )
