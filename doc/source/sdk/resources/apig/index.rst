@@ -21,3 +21,4 @@ ApiGateway Resources
    v2/domain_name
    v2/certificate
    v2/app
+   v2/api_auth

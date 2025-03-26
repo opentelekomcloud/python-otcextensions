@@ -1902,6 +1902,18 @@ class Proxy(proxy.Proxy):
     # ======== App Authorization Methods ========
 
     def list_api_bound_to_app(self, gateway, **attrs):
+        """List all APIs authorized (bound) to a specific application.
+
+        This method retrieves a list of APIs that are bound (authorized)
+        to the given application within the specified API Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+        :param attrs: Additional filters, such as app_id, env_id, or API name.
+
+        :returns: A list of instances of
+            :class:`~otcextensions.sdk.apig.v2.auth.ApiAuthInfo`
+        """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return self._list(
             _auth.ApiAuthInfo,
@@ -1911,7 +1923,19 @@ class Proxy(proxy.Proxy):
             **attrs
         )
 
-    def list_apps_bound_to_api(self,gateway, **attrs):
+    def list_apps_bound_to_api(self, gateway, **attrs):
+        """List all applications authorized (bound) to a specific API.
+
+        This method gets a list of applications that are bound (authorized)
+        to the given API within the specified API Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+        :param attrs: Additional filters, such as api_id or environment ID.
+
+        :returns: A list of instances of
+            :class:`~otcextensions.sdk.apig.v2.auth.ApiAuthInfo`
+        """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return self._list(
             _auth.ApiAuthInfo,
@@ -1922,16 +1946,43 @@ class Proxy(proxy.Proxy):
         )
 
     def list_api_not_bound_to_app(self, gateway, **attrs):
+        """List all APIs not authorized (not bound) to a specific application.
+
+        This method retrieves a list of APIs that are not bound (unauthorized)
+        to the given application within the specified API Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+        :param attrs: Additional filters, such as app_id or environment ID.
+
+        :returns: A list of instances of
+            :class:`~otcextensions.sdk.apig.v2.auth.ApiAuth`
+        """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return self._list(
-            _auth.ApiAuthInfo,
+            _auth.ApiAuth,
             paginated=False,
             base_path=f'{_auth.ApiAuthInfo.base_path}/unbinded-apis',
             gateway_id=gateway.id,
             **attrs
         )
 
-    def create_auth_in_api(self, gateway, **attrs ):
+    def create_auth_in_api(self, gateway, **attrs):
+        """Authorize one or more applications to access a specific API.
+
+        This method binds applications to the specified API within the given
+        API Gateway instance, effectively authorizing them to access the API.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+        :param attrs: Attributes required for authorization, including:
+            - api_id: ID of the API to authorize.
+            - app_ids: List of application IDs to bind to the API.
+            - env_id: ID of the environment in which the API is published.
+
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.auth.ApiAuthInfo`
+        """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         auth = _auth.ApiAuthInfo()
         return auth._authorize_apps(
@@ -1940,7 +1991,18 @@ class Proxy(proxy.Proxy):
             **attrs
         )
 
-    def delete_auth_from_api(self, api_auth, gateway, auth_id):
+    def delete_auth_from_api(self, gateway, auth_id):
+        """Delete an API authorization from an application.
+
+        This method removes the authorization binding between a specific
+        API and an application within the given API Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+        :param auth_id: The ID of the authorization binding to be deleted.
+
+        :returns: None
+        """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         auth = _auth.ApiAuthInfo()
         return auth._cancel_auth(

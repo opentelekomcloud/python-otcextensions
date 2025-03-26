@@ -873,3 +873,52 @@ with a specific credential in the API Gateway.
 
 .. literalinclude:: ../examples/apig/list_quotas.py
    :lines: 16-20
+
+
+App Authorization
+_________________
+
+Authorizing Apps
+^^^^^^^^^^^^^^^^
+
+This example demonstrates how to authorize one or more
+apps for specific APIs in the API Gateway.
+
+.. literalinclude:: ../examples/apig/authorize_apps.py
+   :lines: 16-29
+
+Canceling Authorization
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to cancel the authorization
+of an app for one or more APIs in the API Gateway.
+
+.. literalinclude:: ../examples/apig/cancel_authorization.py
+   :lines: 16-22
+
+Querying APIs Bound with an App
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query all APIs that are
+currently bound to a specific app in the API Gateway.
+
+.. literalinclude:: ../examples/apig/list_api_bound_to_app.py
+   :lines: 16-27
+
+Querying APIs Not Bound with an App
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to list APIs that are not yet
+bound to a specific app in the API Gateway.
+
+.. literalinclude:: ../examples/apig/list_api_not_bound_to_app.py
+   :lines: 16-28
+
+Querying Apps Bound to an API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to list all apps that are bound
+to a specific API in the API Gateway.
+
+.. literalinclude:: ../examples/apig/list_apps_bound_to_api.py
+   :lines: 16-22

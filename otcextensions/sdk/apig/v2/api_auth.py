@@ -25,9 +25,11 @@ class ApiAuthInfo(resource.Resource):
     base_path = f'apigw/instances/%(gateway_id)s/app-auths'
     resources_key = 'auths'
 
-    _query_mapping = resource.QueryParameters('limit', 'offset', 'app_id',
-                                              'api_id', 'api_name', 'group_id',
-                                              'group_name', 'env_id', 'app_name')
+    _query_mapping = resource.QueryParameters('limit', 'offset',
+                                              'app_id', 'api_id',
+                                              'api_name', 'group_id',
+                                              'group_name', 'env_id',
+                                              'app_name')
 
     allow_list = True
     allow_create = True
@@ -78,3 +80,8 @@ class ApiAuthInfo(resource.Resource):
         response = session.delete(uri)
         exceptions.raise_from_response(response)
         return None
+
+
+class ApiAuth(ApiAuthInfo):
+    allow_create = False
+    resources_key = 'apis'
