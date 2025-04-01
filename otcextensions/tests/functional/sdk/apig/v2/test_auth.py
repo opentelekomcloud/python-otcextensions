@@ -14,7 +14,6 @@ from otcextensions.tests.functional.sdk.apig import TestApiG
 
 
 class TestAuth(TestApiG):
-    app = None
 
     def setUp(self):
         super(TestAuth, self).setUp()
