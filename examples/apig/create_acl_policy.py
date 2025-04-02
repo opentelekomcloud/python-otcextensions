@@ -11,11 +11,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
-Delete Access Control Policy
+Create Access Control Policy
 """
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
-conn.apig.delete_ac_policy(gateway='gateway_id',
-                           ac_policy='acl_id')
+attrs = {
+    "acl_name": "acl_demo",
+    "acl_type": "PERMIT",
+    "acl_value": "192.168.1.5,192.168.10.1",
+    "entity_type": "IP"
+}
+created = conn.apig.create_acl_policy(gateway='gateway_id',
+                                      **attrs)

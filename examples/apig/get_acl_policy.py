@@ -17,5 +17,5 @@ import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud='otc')
-acl = conn.apig.get_ac_policy(gateway='gateway_id',
-                              ac_policy='acl_id')
+acl = conn.apig.get_acl_policy(gateway='gateway_id',
+                               acl_policy='acl_id')

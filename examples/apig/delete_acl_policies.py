@@ -20,5 +20,5 @@ conn = openstack.connect(cloud='otc')
 attrs = {
     'acls': ['acl_id1', 'acl_id2']
 }
-conn.apig.delete_ac_policies(gateway='gateway_id',
-                             **attrs)
+conn.apig.delete_acl_policies(gateway='gateway_id',
+                              **attrs)

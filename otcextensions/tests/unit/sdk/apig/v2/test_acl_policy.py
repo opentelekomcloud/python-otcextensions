@@ -10,7 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack.tests.unit import base
-from otcextensions.sdk.apig.v2 import ac_policy
+from otcextensions.sdk.apig.v2 import acl_policy
 
 EXAMPLE_AC_POLICY = {
     'gateway_id': 'gateway-67890',
@@ -29,7 +29,7 @@ EXAMPLE_AC_POLICY = {
 class TestAcPolicy(base.TestCase):
 
     def test_basic(self):
-        sot = ac_policy.AcPolicy()
+        sot = acl_policy.AclPolicy()
         self.assertEqual('apigw/instances/%(gateway_id)s/acls', sot.base_path)
         self.assertEqual('acls', sot.resources_key)
         self.assertTrue(sot.allow_create)
@@ -39,7 +39,7 @@ class TestAcPolicy(base.TestCase):
         self.assertTrue(sot.allow_fetch)
 
     def test_make_it(self):
-        sot = ac_policy.AcPolicy(**EXAMPLE_AC_POLICY)
+        sot = acl_policy.AclPolicy(**EXAMPLE_AC_POLICY)
         self.assertEqual(EXAMPLE_AC_POLICY['gateway_id'], sot.gateway_id)
         self.assertEqual(EXAMPLE_AC_POLICY['id'], sot.id)
         self.assertEqual(EXAMPLE_AC_POLICY['acl_name'], sot.acl_name)

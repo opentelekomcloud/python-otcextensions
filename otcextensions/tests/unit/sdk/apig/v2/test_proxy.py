@@ -29,7 +29,7 @@ from otcextensions.sdk.apig.v2 import resource_query as _rq
 from otcextensions.sdk.apig.v2 import app as _app
 from otcextensions.sdk.apig.v2 import appcode as _appcode
 from otcextensions.sdk.apig.v2 import api_auth as _auth
-from otcextensions.sdk.apig.v2 import ac_policy as _ac
+from otcextensions.sdk.apig.v2 import acl_policy as _ac
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
 
@@ -1407,65 +1407,65 @@ class TestAuth(TestApiGatewayProxy):
 
 
 class TestAcPolicy(TestApiGatewayProxy):
-    def test_create_ac_policy(self):
+    def test_create_acl_policy(self):
         gateway = _gateway.Gateway()
-        self.verify_create(self.proxy.create_ac_policy,
-                           _ac.AcPolicy,
+        self.verify_create(self.proxy.create_acl_policy,
+                           _ac.AclPolicy,
                            method_args=[gateway],
                            expected_args=[],
                            method_kwargs={},
                            expected_kwargs={'gateway_id': None}
                            )
 
-    def test_update_ac_policy(self):
+    def test_update_acl_policy(self):
         gateway = _gateway.Gateway()
-        ac = _ac.AcPolicy()
-        self.verify_update(self.proxy.update_ac_policy,
-                           _ac.AcPolicy,
+        ac = _ac.AclPolicy()
+        self.verify_update(self.proxy.update_acl_policy,
+                           _ac.AclPolicy,
                            method_args=[gateway, ac],
                            expected_args=[ac],
                            method_kwargs={},
                            expected_kwargs={'gateway_id': None}
                            )
 
-    def test_delete_ac_policy(self):
+    def test_delete_acl_policy(self):
         gateway = _gateway.Gateway()
-        ac = _ac.AcPolicy()
-        self.verify_delete(self.proxy.delete_ac_policy,
-                           _ac.AcPolicy,
+        ac = _ac.AclPolicy()
+        self.verify_delete(self.proxy.delete_acl_policy,
+                           _ac.AclPolicy,
                            method_args=[gateway, ac],
                            expected_args=[ac],
                            method_kwargs={},
                            expected_kwargs={'gateway_id': None}
                            )
 
-    def test_list_ac_policies(self):
+    def test_list_acl_policies(self):
         gateway = _gateway.Gateway()
-        self.verify_list(self.proxy.ac_policies,
-                         _ac.AcPolicy,
+        self.verify_list(self.proxy.acl_policies,
+                         _ac.AclPolicy,
                          method_args=[gateway],
                          expected_args=[],
                          method_kwargs={},
                          expected_kwargs={'gateway_id': None}
                          )
 
-    def test_get_ac_policy(self):
+    def test_get_acl_policy(self):
         gateway = _gateway.Gateway()
-        ac = _ac.AcPolicy()
-        self.verify_get(self.proxy.get_ac_policy,
-                        _ac.AcPolicy,
+        ac = _ac.AclPolicy()
+        self.verify_get(self.proxy.get_acl_policy,
+                        _ac.AclPolicy,
                         method_args=[gateway, ac],
                         expected_args=[ac],
                         method_kwargs={},
                         expected_kwargs={'gateway_id': None}
                         )
 
-    def test_delete_ac_policies(self):
+    def test_delete_acl_policies(self):
         gateway = _gateway.Gateway()
         self._verify(
-            'otcextensions.sdk.apig.v2.ac_policy.'
-            'AcPolicy._delete_multiple_acls',
-            self.proxy.delete_ac_policies,
+            'otcextensions.sdk.apig.v2.acl_policy.'
+            'AclPolicy._delete_multiple_acls',
+            self.proxy.delete_acl_policies,
             method_args=[gateway],
             expected_args=[self.proxy],
             expected_kwargs={'gateway_id': None}

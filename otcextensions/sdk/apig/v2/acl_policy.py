@@ -13,7 +13,7 @@ from openstack import resource
 from openstack import exceptions
 
 
-class AcPolicy(resource.Resource):
+class AclPolicy(resource.Resource):
     base_path = f'apigw/instances/%(gateway_id)s/acls'
     resources_key = 'acls'
 
