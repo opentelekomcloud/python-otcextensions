@@ -931,7 +931,7 @@ Creating an Access Control Policy
 This example demonstrates how to create an ACL policy in the
 API Gateway.
 
-.. literalinclude:: ../examples/apig/create_ac_policy.py
+.. literalinclude:: ../examples/apig/create_acl_policy.py
    :lines: 16-27
 
 Updating an Access Control Policy
@@ -940,7 +940,7 @@ Updating an Access Control Policy
 This example demonstrates how to update an existing ACL policy
 in the API Gateway.
 
-.. literalinclude:: ../examples/apig/update_ac_policy.py
+.. literalinclude:: ../examples/apig/update_acl_policy.py
    :lines: 16-28
 
 Deleting an Access Control Policy
@@ -949,7 +949,7 @@ Deleting an Access Control Policy
 This example demonstrates how to delete a specific ACL policy
 in the API Gateway.
 
-.. literalinclude:: ../examples/apig/delete_ac_policy.py
+.. literalinclude:: ../examples/apig/delete_acl_policy.py
    :lines: 16-21
 
 Deleting Multiple Access Control Policies
@@ -958,7 +958,7 @@ Deleting Multiple Access Control Policies
 This example demonstrates how to delete multiple ACL policies
 in a single request in the API Gateway.
 
-.. literalinclude:: ../examples/apig/delete_ac_policies.py
+.. literalinclude:: ../examples/apig/delete_acl_policies.py
    :lines: 16-24
 
 Querying Access Control Policy
@@ -967,7 +967,7 @@ Querying Access Control Policy
 This example demonstrates how to list all ACL policies configured
 in a specific API Gateway.
 
-.. literalinclude:: ../examples/apig/list_ac_policies.py
+.. literalinclude:: ../examples/apig/list_acl_policies.py
    :lines: 16-24
 
 Get Access Control Policy
@@ -976,5 +976,5 @@ Get Access Control Policy
 This example demonstrates how to retrieve details of a specific
 ACL policy in the API Gateway.
 
-.. literalinclude:: ../examples/apig/get_ac_policy.py
+.. literalinclude:: ../examples/apig/get_acl_policy.py
    :lines: 16-21

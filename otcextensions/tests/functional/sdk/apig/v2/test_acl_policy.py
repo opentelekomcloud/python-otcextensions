@@ -27,8 +27,9 @@ class TestACPolicy(TestApiG):
             "acl_value": "192.168.1.5,192.168.10.1",
             "entity_type": "IP"
         }
-        created = self.client.create_acl_policy(gateway=TestACPolicy.gateway_id,
-                                                **attrs)
+        created = self.client.create_acl_policy(
+            gateway=TestACPolicy.gateway_id,
+            **attrs)
         self.assertIsNotNone(created.id)
         TestACPolicy.acl_id = created.id
 
