@@ -32,6 +32,7 @@ from otcextensions.sdk.apig.v2 import resource_query as _rq
 from otcextensions.sdk.apig.v2 import domain_name as _domain
 from otcextensions.sdk.apig.v2 import certificate as _c
 from otcextensions.sdk.apig.v2 import api_auth as _auth
+from otcextensions.sdk.apig.v2 import acl_policy as _acl
 
 
 class Proxy(proxy.Proxy):
@@ -2009,4 +2010,64 @@ class Proxy(proxy.Proxy):
             self,
             gateway_id=gateway.id,
             app_auth_id=auth_id
+        )
+
+    # ======== Access Control Policy Methods ========
+
+    def create_acl_policy(self, gateway, **attrs):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._create(
+            _acl.AclPolicy,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def update_acl_policy(self, gateway, acl_policy, **attrs):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        acl_policy = self._get_resource(_acl.AclPolicy, acl_policy)
+        return self._update(
+            _acl.AclPolicy,
+            acl_policy,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def delete_acl_policy(self, gateway, acl_policy, ignore_missing=True,
+                          **attrs):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        acl_policy = self._get_resource(_acl.AclPolicy, acl_policy)
+        return self._delete(
+            _acl.AclPolicy,
+            acl_policy,
+            gateway_id=gateway.id,
+            ignore_missing=ignore_missing,
+            **attrs
+        )
+
+    def delete_acl_policies(self, gateway, **attrs):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        acl = _acl.AclPolicy()
+        return acl._delete_multiple_acls(
+            self,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def acl_policies(self, gateway, **attrs):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _acl.AclPolicy,
+            paginated=False,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def get_acl_policy(self, gateway, acl_policy, **attrs):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        acl_policy = self._get_resource(_acl.AclPolicy, acl_policy)
+        return self._get(
+            _acl.AclPolicy,
+            acl_policy,
+            gateway_id=gateway.id,
+            **attrs
         )

@@ -39,7 +39,7 @@ attrs = {
         "url_domain": "192.168.189.156:12346"
     },
 }
-created = conn.apig.create_apicreate_api(
+created = conn.apig.create_api(
     gateway="gateway_id",
     **attrs
 )

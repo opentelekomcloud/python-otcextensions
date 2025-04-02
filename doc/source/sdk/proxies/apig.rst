@@ -127,3 +127,11 @@ App Authorization Operations
   :members: list_api_bound_to_app, list_apps_bound_to_api,
             list_api_not_bound_to_app, create_auth_in_api,
             delete_auth_from_api
+
+Access Control Policy Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: create_acl_policy, update_acl_policy, delete_acl_policy,
+            delete_acl_policies, acl_policies, get_acl_policy
