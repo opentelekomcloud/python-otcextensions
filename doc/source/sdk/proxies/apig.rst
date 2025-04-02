@@ -133,5 +133,5 @@ Access Control Policy Operations
 
 .. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
   :noindex:
-  :members: create_ac_policy, update_ac_policy, delete_ac_policy,
-            delete_ac_policies, ac_policies, get_ac_policy
+  :members: create_acl_policy, update_acl_policy, delete_acl_policy,
+            delete_acl_policies, acl_policies, get_acl_policy
