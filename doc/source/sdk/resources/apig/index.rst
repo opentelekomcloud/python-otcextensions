@@ -22,4 +22,4 @@ ApiGateway Resources
    v2/certificate
    v2/app
    v2/api_auth
-   v2/ac_policy
+   v2/acl_policy
