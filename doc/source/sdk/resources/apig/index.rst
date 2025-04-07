@@ -23,3 +23,4 @@ ApiGateway Resources
    v2/app
    v2/api_auth
    v2/acl_policy
+   v2/acl_binding

@@ -33,6 +33,7 @@ from otcextensions.sdk.apig.v2 import domain_name as _domain
 from otcextensions.sdk.apig.v2 import certificate as _c
 from otcextensions.sdk.apig.v2 import api_auth as _auth
 from otcextensions.sdk.apig.v2 import acl_policy as _acl
+from otcextensions.sdk.apig.v2 import acl_api_binding as _acl_api_binding
 
 
 class Proxy(proxy.Proxy):
@@ -2015,6 +2016,15 @@ class Proxy(proxy.Proxy):
     # ======== Access Control Policy Methods ========
 
     def create_acl_policy(self, gateway, **attrs):
+        """Create an access control policy.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+        :param attrs: Attributes required to create the ACL policy
+
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.acl_policy.AclPolicy`
+        """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return self._create(
             _acl.AclPolicy,
@@ -2023,6 +2033,20 @@ class Proxy(proxy.Proxy):
         )
 
     def update_acl_policy(self, gateway, acl_policy, **attrs):
+        """Update an existing access control policy.
+
+        This method updates an existing ACL (access control list) policy
+        in the specified API Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+        :param acl_policy: The ID of the ACL policy or an instance of
+            :class:`~otcextensions.sdk.apig.v2.acl_policy.AclPolicy`
+        :param attrs: Attributes to update
+
+        :returns: The updated instance of
+            :class:`~otcextensions.sdk.apig.v2.acl_policy.AclPolicy`
+        """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         acl_policy = self._get_resource(_acl.AclPolicy, acl_policy)
         return self._update(
@@ -2034,6 +2058,21 @@ class Proxy(proxy.Proxy):
 
     def delete_acl_policy(self, gateway, acl_policy, ignore_missing=True,
                           **attrs):
+        """Delete an access control policy.
+
+        This method deletes an existing access control (ACL) policy from
+        the specified API Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+        :param acl_policy: The ID of the ACL policy or an instance of
+            :class:`~otcextensions.sdk.apig.v2.acl_policy.AclPolicy`
+        :param ignore_missing: If True, no exception is raised when
+        the ACL policy does not exist.
+        :param attrs: Additional attributes for the delete operation.
+
+        :returns: None
+        """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         acl_policy = self._get_resource(_acl.AclPolicy, acl_policy)
         return self._delete(
@@ -2045,6 +2084,17 @@ class Proxy(proxy.Proxy):
         )
 
     def delete_acl_policies(self, gateway, **attrs):
+        """Delete multiple access control policies in batch.
+
+        This method deletes multiple ACL (access control list) policies at once
+        within the specified API Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+        :param attrs: Attributes for batch deletion
+
+        :returns: A response indicating the result of the batch deletion.
+        """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         acl = _acl.AclPolicy()
         return acl._delete_multiple_acls(
@@ -2054,6 +2104,18 @@ class Proxy(proxy.Proxy):
         )
 
     def acl_policies(self, gateway, **attrs):
+        """List all access control policies in an API Gateway instance.
+
+        This method retrieves a list of all ACL (access control list) policies
+        defined in the specified API Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+        :param attrs: Additional filters for listing ACL policies
+
+        :returns: A list of instances of
+            :class:`~otcextensions.sdk.apig.v2.acl_policy.AclPolicy`
+        """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return self._list(
             _acl.AclPolicy,
@@ -2063,11 +2125,156 @@ class Proxy(proxy.Proxy):
         )
 
     def get_acl_policy(self, gateway, acl_policy, **attrs):
+        """Retrieve details of a specific access control policy.
+
+        This method retrieves detailed information about an existing ACL
+        policy within the specified API Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+        :param acl_policy: The ID of the ACL policy or an instance of
+            :class:`~otcextensions.sdk.apig.v2.acl_policy.AclPolicy`
+        :param attrs: Additional parameters for retrieving the ACL policy.
+
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.acl_policy.AclPolicy`
+        """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         acl_policy = self._get_resource(_acl.AclPolicy, acl_policy)
         return self._get(
             _acl.AclPolicy,
             acl_policy,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    # ======== Binding/Unbinding Access Control Policies Methods ========
+
+    def list_apis_for_acl(self, gateway, **attrs):
+        """List all APIs bound to a specific access control policy.
+
+        This method retrieves a list of APIs that are associated with
+        the specified ACL policy in the given API Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+        :param attrs: Additional filters
+
+        :returns: A list of instances of
+            :class:`~otcextensions.sdk.apig.v2.acl_api_binding.ApiForAcl`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _acl_api_binding.ApiForAcl,
+            paginated=False,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def list_api_not_bound_to_acl(self, gateway, **attrs):
+        """List all APIs not bound to a specific access control policy.
+
+        This method retrieves a list of APIs that are not associated with
+        the specified ACL policy in the given API Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+        :param attrs: Additional filters
+
+        :returns: A list of instances of
+            :class:`~otcextensions.sdk.apig.v2.acl_api_binding.UnbindApiForAcl`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _acl_api_binding.UnbindApiForAcl,
+            paginated=False,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def list_acl_for_api(self, gateway, **attrs):
+        """List all access control policies bound to a specific API.
+
+        This method retrieves a list of ACL policies that are associated with
+        the specified API in the given API Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+        :param attrs: Additional filters
+
+        :returns: A list of instances of
+            :class:`~otcextensions.sdk.apig.v2.acl_api_binding.AclForApi`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _acl_api_binding.AclForApi,
+            paginated=False,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def bind_acl_to_api(self, gateway, **attrs):
+        """Bind an access control policy to one or more APIs.
+
+        This method binds an existing ACL policy to one
+        or more APIs within the specified API Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+        :param attrs: Attributes for the binding
+
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.acl_api_binding.AclApiBinding`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        acl = _acl_api_binding.AclApiBinding()
+        return acl._bind_to_api(
+            self,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def unbind_acl(self, gateway, acl, ignore_missing=True):
+        """Unbind an access control policy from an API.
+
+        This method removes the binding between an ACL (access control list)
+        policy and an API within the specified API Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+        :param acl: The ID of the ACL binding or an instance of
+            :class:`~otcextensions.sdk.apig.v2.acl_api_binding.AclApiBinding`
+        :param ignore_missing: If True, no exception is raised if
+        the binding does not exist.
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        acl = self._get_resource(_acl_api_binding.AclApiBinding, acl)
+        return self._delete(
+            _acl_api_binding.AclApiBinding,
+            acl,
+            gateway_id=gateway.id,
+            ignore_missing=ignore_missing
+        )
+
+    def unbind_acls(self, gateway, **attrs):
+        """Unbind multiple access control policies from APIs in batch.
+
+        This method removes bindings between one or more ACL policies
+        and APIs within the specified API Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+        :param attrs: Attributes for the unbinding operation
+
+        :returns: An instance of
+        :class:`~otcextensions.sdk.apig.v2.acl_api_binding.AclBindingFailure`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        acl = _acl_api_binding.AclBindingFailure()
+        return acl._unbind_multiple_acls(
+            self,
             gateway_id=gateway.id,
             **attrs
         )

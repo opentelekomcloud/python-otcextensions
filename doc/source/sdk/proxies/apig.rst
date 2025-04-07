@@ -135,3 +135,11 @@ Access Control Policy Operations
   :noindex:
   :members: create_acl_policy, update_acl_policy, delete_acl_policy,
             delete_acl_policies, acl_policies, get_acl_policy
+
+Access Control Policy Binding Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: unbind_acls, unbind_acl, bind_acl_to_api, list_apis_for_acl,
+            list_acl_for_api, list_api_not_bound_to_acl
