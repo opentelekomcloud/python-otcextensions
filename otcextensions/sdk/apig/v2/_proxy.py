@@ -2067,8 +2067,8 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.apig.v2.instance.Instance`
         :param acl_policy: The ID of the ACL policy or an instance of
             :class:`~otcextensions.sdk.apig.v2.acl_policy.AclPolicy`
-        :param ignore_missing: If True, no exception is raised when
-        the ACL policy does not exist.
+        :param ignore_missing: If True, no exception is raised when the ACL
+        policy does not exist
         :param attrs: Additional attributes for the delete operation.
 
         :returns: None
@@ -2244,8 +2244,8 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.apig.v2.instance.Instance`
         :param acl: The ID of the ACL binding or an instance of
             :class:`~otcextensions.sdk.apig.v2.acl_api_binding.AclApiBinding`
-        :param ignore_missing: If True, no exception is raised if
-        the binding does not exist.
+        :param ignore_missing: If True, no exception is raised if the binding
+            does not exist
 
         :returns: None
         """
@@ -2269,7 +2269,8 @@ class Proxy(proxy.Proxy):
         :param attrs: Attributes for the unbinding operation
 
         :returns: An instance of
-        :class:`~otcextensions.sdk.apig.v2.acl_api_binding.AclBindingFailure`
+            :class:`~otcextensions.sdk.apig.v2.acl_api_binding.
+            AclBindingFailure`
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         acl = _acl_api_binding.AclBindingFailure()
