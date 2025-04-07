@@ -2069,7 +2069,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.apig.v2.acl_policy.AclPolicy`
         :param ignore_missing: If True, no exception is raised when the ACL
         policy does not exist
-        :param attrs: Additional attributes for the delete operation.
+        :param attrs: Additional attributes for the delete operation
 
         :returns: None
         """
