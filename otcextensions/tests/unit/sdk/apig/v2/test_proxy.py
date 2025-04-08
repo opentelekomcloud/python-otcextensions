@@ -30,6 +30,7 @@ from otcextensions.sdk.apig.v2 import app as _app
 from otcextensions.sdk.apig.v2 import appcode as _appcode
 from otcextensions.sdk.apig.v2 import api_auth as _auth
 from otcextensions.sdk.apig.v2 import acl_policy as _ac
+from otcextensions.sdk.apig.v2 import acl_api_binding as _acl_api
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
 
@@ -1406,7 +1407,7 @@ class TestAuth(TestApiGatewayProxy):
         )
 
 
-class TestAcPolicy(TestApiGatewayProxy):
+class TestAclPolicy(TestApiGatewayProxy):
     def test_create_acl_policy(self):
         gateway = _gateway.Gateway()
         self.verify_create(self.proxy.create_acl_policy,
@@ -1466,6 +1467,71 @@ class TestAcPolicy(TestApiGatewayProxy):
             'otcextensions.sdk.apig.v2.acl_policy.'
             'AclPolicy._delete_multiple_acls',
             self.proxy.delete_acl_policies,
+            method_args=[gateway],
+            expected_args=[self.proxy],
+            expected_kwargs={'gateway_id': None}
+        )
+
+
+class TestAclPolicyBinding(TestApiGatewayProxy):
+    def test_list_apis_for_acl(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(self.proxy.list_apis_for_acl,
+                         _acl_api.ApiForAcl,
+                         method_args=[gateway],
+                         expected_args=[],
+                         method_kwargs={},
+                         expected_kwargs={'gateway_id': None}
+                         )
+
+    def test_list_api_not_bound_to_acl(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(self.proxy.list_api_not_bound_to_acl,
+                         _acl_api.UnbindApiForAcl,
+                         method_args=[gateway],
+                         expected_args=[],
+                         method_kwargs={},
+                         expected_kwargs={'gateway_id': None}
+                         )
+
+    def test_list_acl_for_api(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(self.proxy.list_acl_for_api,
+                         _acl_api.AclForApi,
+                         method_args=[gateway],
+                         expected_args=[],
+                         method_kwargs={},
+                         expected_kwargs={'gateway_id': None}
+                         )
+
+    def test_bind_acl_to_api(self):
+        gateway = _gateway.Gateway()
+        self._verify(
+            'otcextensions.sdk.apig.v2.acl_api_binding.'
+            'AclApiBinding._bind_to_api',
+            self.proxy.bind_acl_to_api,
+            method_args=[gateway],
+            expected_args=[self.proxy],
+            expected_kwargs={'gateway_id': None}
+        )
+
+    def test_unbind_acl(self):
+        gateway = _gateway.Gateway()
+        acl = _acl_api.AclApiBinding()
+        self.verify_delete(self.proxy.unbind_acl,
+                           _acl_api.AclApiBinding,
+                           method_args=[gateway, acl],
+                           expected_args=[acl],
+                           method_kwargs={},
+                           expected_kwargs={'gateway_id': None}
+                           )
+
+    def test_unbind_acls(self):
+        gateway = _gateway.Gateway()
+        self._verify(
+            'otcextensions.sdk.apig.v2.acl_api_binding.'
+            'AclBindingFailure._unbind_multiple_acls',
+            self.proxy.unbind_acls,
             method_args=[gateway],
             expected_args=[self.proxy],
             expected_kwargs={'gateway_id': None}

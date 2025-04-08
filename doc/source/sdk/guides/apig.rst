@@ -978,3 +978,60 @@ ACL policy in the API Gateway.
 
 .. literalinclude:: ../examples/apig/get_acl_policy.py
    :lines: 16-21
+
+Access Control Policy Binding
+_____________________________
+
+Binding an Access Control Policy to an API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to bind an access control policy
+to a specific API in the API Gateway.
+
+.. literalinclude:: ../examples/apig/bind_acl_to_api.py
+   :lines: 16-24
+
+Unbinding an Access Control Policy
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to unbind a specific access control
+policy from an API in the API Gateway.
+
+.. literalinclude:: ../examples/apig/unbind_acl.py
+   :lines: 16-23
+
+Unbinding Access Control Policies
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to unbind multiple access control
+policies from APIs in the API Gateway.
+
+.. literalinclude:: ../examples/apig/unbind_acls.py
+   :lines: 16-23
+
+Query APIs Bound with an Access Control Policy
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query APIs that are bound to
+a specific access control policy in the API Gateway.
+
+.. literalinclude:: ../examples/apig/list_apis_for_acl.py
+   :lines: 16-24
+
+Query APIs Not Bound with an Access Control Policy
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query APIs that are not bound
+to a specific access control policy in the API Gateway.
+
+.. literalinclude:: ../examples/apig/list_api_not_bound_to_acl.py
+   :lines: 16-24
+
+Query Access Control Policies Bound to an API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query access control policies
+bound to a specific API in the API Gateway.
+
+.. literalinclude:: ../examples/apig/list_acl_for_api.py
+   :lines: 16-24

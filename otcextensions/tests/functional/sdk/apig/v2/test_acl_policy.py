@@ -56,11 +56,11 @@ class TestACPolicy(TestApiG):
                                            acl_policy=TestACPolicy.acl_id)
         self.assertIsNotNone(found.id)
 
-    # def test_delete_ac_policy(self):
-    #     self.client.delete_acl_policy(gateway=TestACPolicy.gateway_id,
-    #                                  ac_policy=TestACPolicy.acl_id)
-    #     found = self.client.acl_policies(gateway=TestACPolicy.gateway_id)
-    #     self.assertEqual(len(list(found)), 0)
+    def test_delete_ac_policy(self):
+        self.client.delete_acl_policy(gateway=TestACPolicy.gateway_id,
+                                      ac_policy=TestACPolicy.acl_id)
+        found = self.client.acl_policies(gateway=TestACPolicy.gateway_id)
+        self.assertEqual(len(list(found)), 0)
 
     def test_delete_acl_policies(self):
         attrs = {
