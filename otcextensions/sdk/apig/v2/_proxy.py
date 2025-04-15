@@ -2263,7 +2263,7 @@ class Proxy(proxy.Proxy):
         """Unbind multiple access control policies from APIs in batch.
 
         This method removes bindings between one or more ACL policies
-        and APIs within the specified API Gateway instance.
+        and APIs within the specified API Gateway instance
 
         :param gateway: The ID of the API Gateway instance or an instance of
             :class:`~otcextensions.sdk.apig.v2.instance.Instance`
@@ -2293,7 +2293,7 @@ class Proxy(proxy.Proxy):
         :param gateway: The ID of the API Gateway instance or an instance of
             :class:`~otcextensions.sdk.apig.v2.instance.Instance`
         :param attrs: Additional filters for listing custom authorizers,
-        such as name or type
+            such as name or type
 
         :returns: A list of instances of
             :class:`~otcextensions.sdk.apig.v2.custom_authorizer.
@@ -2319,7 +2319,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.apig.v2.custom_authorizer
             CustomAuthorizer`
         :param attrs: Additional parameters for retrieving
-        the custom authorizer
+            the custom authorizer
 
         :returns: An instance of
             :class:`~otcextensions.sdk.apig.v2.custom_authorizer.
@@ -2398,7 +2398,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.apig.v2.custom_authorizer.
             CustomAuthorizer`
         :param ignore_missing: If True, no exception is raised if
-        the authorizer does not exist
+            the authorizer does not exist
         :param attrs: Additional parameters for the delete operation
 
         :returns: None
