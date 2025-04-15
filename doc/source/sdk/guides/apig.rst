@@ -1035,3 +1035,51 @@ bound to a specific API in the API Gateway.
 
 .. literalinclude:: ../examples/apig/list_acl_for_api.py
    :lines: 16-24
+
+Custom Authorizer
+_________________
+
+Creating a Custom Authorizer
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to create a custom authorizer in
+the API Gateway.
+
+.. literalinclude:: ../examples/apig/create_custom_authorizer.py
+   :lines: 16-28
+
+Modifying a Custom Authorizer
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to modify an existing custom
+authorizer in the API Gateway.
+
+.. literalinclude:: ../examples/apig/update_custom_authorizer.py
+   :lines: 16-35
+
+Deleting a Custom Authorizer
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to delete a custom authorizer
+in the API Gateway.
+
+.. literalinclude:: ../examples/apig/delete_custom_authorizer.py
+   :lines: 16-21
+
+Querying Custom Authorizer Details
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to retrieve details of a specific
+custom authorizer in the API Gateway.
+
+.. literalinclude:: ../examples/apig/get_custom_authorizer.py
+   :lines: 16-21
+
+Querying Custom Authorizers
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to list all custom authorizers
+configured in the API Gateway.
+
+.. literalinclude:: ../examples/apig/list_custom_authorizers.py
+   :lines: 16-24

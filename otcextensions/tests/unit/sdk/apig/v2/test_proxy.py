@@ -31,6 +31,7 @@ from otcextensions.sdk.apig.v2 import appcode as _appcode
 from otcextensions.sdk.apig.v2 import api_auth as _auth
 from otcextensions.sdk.apig.v2 import acl_policy as _ac
 from otcextensions.sdk.apig.v2 import acl_api_binding as _acl_api
+from otcextensions.sdk.apig.v2 import custom_authorizer as _custom_auth
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
 
@@ -1536,3 +1537,58 @@ class TestAclPolicyBinding(TestApiGatewayProxy):
             expected_args=[self.proxy],
             expected_kwargs={'gateway_id': None}
         )
+
+
+class TestCustomAuthorizer(TestApiGatewayProxy):
+    def test_list_custom_authorizers(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(self.proxy.custom_authorizers,
+                         _custom_auth.CustomAuthorizer,
+                         method_args=[gateway],
+                         expected_args=[],
+                         method_kwargs={},
+                         expected_kwargs={'gateway_id': None}
+                         )
+
+    def test_get_custom_authorizer(self):
+        gateway = _gateway.Gateway()
+        custom_auth = _custom_auth.CustomAuthorizer()
+        self.verify_get(self.proxy.get_custom_authorizer,
+                        _custom_auth.CustomAuthorizer,
+                        method_args=[gateway, custom_auth],
+                        expected_args=[custom_auth],
+                        method_kwargs={},
+                        expected_kwargs={'gateway_id': None}
+                        )
+
+    def test_create_custom_authorizer(self):
+        gateway = _gateway.Gateway()
+        self.verify_create(self.proxy.create_custom_authorizer,
+                           _custom_auth.CustomAuthorizer,
+                           method_args=[gateway],
+                           expected_args=[],
+                           method_kwargs={},
+                           expected_kwargs={'gateway_id': None}
+                           )
+
+    def test_update_custom_authorizer(self):
+        gateway = _gateway.Gateway()
+        custom_auth = _custom_auth.CustomAuthorizer()
+        self.verify_update(self.proxy.update_custom_authorizer,
+                           _custom_auth.CustomAuthorizer,
+                           method_args=[gateway, custom_auth],
+                           expected_args=[custom_auth],
+                           method_kwargs={},
+                           expected_kwargs={'gateway_id': None}
+                           )
+
+    def test_delete_custom_authorizer(self):
+        gateway = _gateway.Gateway()
+        custom_auth = _custom_auth.CustomAuthorizer()
+        self.verify_delete(self.proxy.delete_custom_authorizer,
+                           _custom_auth.CustomAuthorizer,
+                           method_args=[gateway, custom_auth],
+                           expected_args=[custom_auth],
+                           method_kwargs={},
+                           expected_kwargs={'gateway_id': None}
+                           )

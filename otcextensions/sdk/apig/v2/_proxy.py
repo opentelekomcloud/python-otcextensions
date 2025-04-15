@@ -34,6 +34,7 @@ from otcextensions.sdk.apig.v2 import certificate as _c
 from otcextensions.sdk.apig.v2 import api_auth as _auth
 from otcextensions.sdk.apig.v2 import acl_policy as _acl
 from otcextensions.sdk.apig.v2 import acl_api_binding as _acl_api_binding
+from otcextensions.sdk.apig.v2 import custom_authorizer as _custom_auth
 
 
 class Proxy(proxy.Proxy):
@@ -2277,5 +2278,138 @@ class Proxy(proxy.Proxy):
         return acl._unbind_multiple_acls(
             self,
             gateway_id=gateway.id,
+            **attrs
+        )
+
+    # ======== Custom Authorizer Methods ========
+
+    def custom_authorizers(self, gateway, **attrs):
+        """List all custom authorizers in an API Gateway instance
+
+        This method retrieves a list of custom authorizers configured within
+        the specified API Gateway instance. Custom authorizers allow you to
+        define your own logic for validating access tokens and identities
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+        :param attrs: Additional filters for listing custom authorizers,
+        such as name or type
+
+        :returns: A list of instances of
+            :class:`~otcextensions.sdk.apig.v2.custom_authorizer.
+            CustomAuthorizer`
+            """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _custom_auth.CustomAuthorizer,
+            paginated=False,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def get_custom_authorizer(self, gateway, custom_authorizer, **attrs):
+        """Retrieve details of a specific custom authorizer
+
+        This method retrieves detailed information about a custom authorizer
+        within the specified API Gateway instance
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+        :param custom_authorizer: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.custom_authorizer
+            CustomAuthorizer`
+        :param attrs: Additional parameters for retrieving
+        the custom authorizer
+
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.custom_authorizer.
+            CustomAuthorizer`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        custom_authorizer = self._get_resource(_custom_auth.CustomAuthorizer,
+                                               custom_authorizer)
+        return self._get(
+            _custom_auth.CustomAuthorizer,
+            custom_authorizer,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def create_custom_authorizer(self, gateway, **attrs):
+        """Create a custom authorizer in an API Gateway instance
+
+            This method creates a new custom authorizer within the specified
+            API Gateway instance. Custom authorizers enable custom
+            authentication and authorization logic for APIs
+
+            :param gateway: The ID of the API Gateway or an instance of
+                :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+            :param attrs: Attributes required to create the custom authorizer
+
+            :returns: An instance of
+                :class:`~otcextensions.sdk.apig.v2.custom_authorizer.
+                CustomAuthorizer`
+            """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._create(
+            _custom_auth.CustomAuthorizer,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def update_custom_authorizer(self, gateway, custom_authorizer, **attrs):
+        """Update a custom authorizer
+
+        This method updates an existing custom authorizer within the specified
+        API Gateway instance
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+        :param custom_authorizer: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.custom_authorizer.
+            CustomAuthorizer`
+        :param attrs: Attributes to update
+
+        :returns: The updated instance of
+            :class:`~otcextensions.sdk.apig.v2.custom_authorizer.
+            CustomAuthorizer`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        custom_authorizer = self._get_resource(_custom_auth.CustomAuthorizer,
+                                               custom_authorizer)
+        return self._update(
+            _custom_auth.CustomAuthorizer,
+            custom_authorizer,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def delete_custom_authorizer(self, gateway, custom_authorizer,
+                                 ignore_missing=False,
+                                 **attrs):
+        """Delete a custom authorizer
+
+        This method deletes a custom authorizer from the specified
+        API Gateway instance
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+        :param custom_authorizer: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.custom_authorizer.
+            CustomAuthorizer`
+        :param ignore_missing: If True, no exception is raised if
+        the authorizer does not exist
+        :param attrs: Additional parameters for the delete operation
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        custom_authorizer = self._get_resource(_custom_auth.CustomAuthorizer,
+                                               custom_authorizer)
+        return self._delete(
+            _custom_auth.CustomAuthorizer,
+            custom_authorizer,
+            gateway_id=gateway.id,
+            ignore_missing=ignore_missing,
             **attrs
         )

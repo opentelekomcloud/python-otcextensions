@@ -143,3 +143,11 @@ Access Control Policy Binding Operations
   :noindex:
   :members: unbind_acls, unbind_acl, bind_acl_to_api, list_apis_for_acl,
             list_acl_for_api, list_api_not_bound_to_acl
+
+Custom Authorizer Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: custom_authorizers, get_custom_authorizer, create_custom_authorizer,
+            update_custom_authorizer, delete_custom_authorizer
