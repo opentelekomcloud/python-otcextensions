@@ -35,6 +35,7 @@ from otcextensions.sdk.apig.v2 import api_auth as _auth
 from otcextensions.sdk.apig.v2 import acl_policy as _acl
 from otcextensions.sdk.apig.v2 import acl_api_binding as _acl_api_binding
 from otcextensions.sdk.apig.v2 import custom_authorizer as _custom_auth
+from otcextensions.sdk.apig.v2 import export_api as _export_api
 
 
 class Proxy(proxy.Proxy):
@@ -2411,5 +2412,24 @@ class Proxy(proxy.Proxy):
             custom_authorizer,
             gateway_id=gateway.id,
             ignore_missing=ignore_missing,
+            **attrs
+        )
+
+    def import_api(self, gateway, **attrs):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        import_api = _export_api.ImportApi()
+        return import_api._import_api(
+            self,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def export_api(self, gateway, full_path, **attrs):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        export_api = _export_api.ExportApi()
+        return export_api._export_api(
+            self,
+            gateway_id=gateway.id,
+            full_path=full_path,
             **attrs
         )

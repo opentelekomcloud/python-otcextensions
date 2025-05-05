@@ -1592,3 +1592,29 @@ class TestCustomAuthorizer(TestApiGatewayProxy):
                            method_kwargs={},
                            expected_kwargs={'gateway_id': None}
                            )
+
+
+class TestExportApi(TestApiGatewayProxy):
+    def test_import_api(self):
+        gateway = _gateway.Gateway()
+        self._verify(
+            'otcextensions.sdk.apig.v2.export_api.'
+            'ImportApi._import_api',
+            self.proxy.import_api,
+            method_args=[gateway],
+            expected_args=[self.proxy],
+            expected_kwargs={'gateway_id': None}
+        )
+
+    def test_export_api(self):
+        gateway = _gateway.Gateway()
+        full_path = ''
+        self._verify(
+            'otcextensions.sdk.apig.v2.export_api.'
+            'ExportApi._export_api',
+            self.proxy.export_api,
+            method_args=[gateway, full_path],
+            expected_args=[self.proxy],
+            expected_kwargs={'gateway_id': None,
+                             'full_path': full_path}
+        )
