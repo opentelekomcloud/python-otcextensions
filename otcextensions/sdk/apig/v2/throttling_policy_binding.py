@@ -160,7 +160,7 @@ class ThrottlingPolicyBind(resource.Resource):
 
         session = self._get_session(session)
         if microversion is None:
-            microversion = self._get_microversion(session, action='create')
+            microversion = self._get_microversion(session)
         requires_id = (
             self.create_requires_id
             if self.create_requires_id is not None
