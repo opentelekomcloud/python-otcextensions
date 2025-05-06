@@ -11,6 +11,7 @@
 # under the License.
 
 from openstack import proxy
+import requests
 
 
 def normalize_metric_name(name):
@@ -21,38 +22,72 @@ def normalize_metric_name(name):
 
 class Proxy(proxy.Proxy):
 
-    def _report_stats_statsd(self, response, url=None, method=None, exc=None):
+    def _report_stats_statsd(
+            self,
+            response: requests.Response | None,
+            url: str | None = None,
+            method: str | None = None,
+            exc: BaseException | None = None,
+    ) -> None:
+        if not self._statsd_prefix:
+            return None
+
+        if not self._statsd_client:
+            return None
+
         try:
             if response is not None and not url:
                 url = response.request.url
             if response is not None and not method:
                 method = response.request.method
-            name_parts = [
-                normalize_metric_name(f) for f in
-                self._extract_name(
-                    url, self.service_type, self.session.get_project_id())
-            ]
 
+            # narrow types
+            assert url is not None
+            assert method is not None
+            assert self.service_type is not None
+
+            name_parts = [
+                normalize_metric_name(f)
+                for f in self._extract_name(
+                    url, self.service_type, self.session.get_project_id()
+                )
+            ]
             key = '.'.join(
-                [self._statsd_prefix,
-                 normalize_metric_name(self.service_type), method,
-                 '_'.join(name_parts)
-                 ])
-            if response is not None:
-                duration = int(response.elapsed.total_seconds() * 1000)
-                metric_name = '%s.%s' % (key, str(response.status_code)),
-                self._statsd_client.timing(metric_name, duration)
-                self._statsd_client.incr(metric_name)
-                if duration > 1000:
-                    self._statsd_client.incr('%s.over_1000' % key)
-            elif exc is not None:
-                self._statsd_client.incr('%s.failed' % key)
-            self._statsd_client.incr('%s.attempted' % key)
+                [
+                    self._statsd_prefix,
+                    normalize_metric_name(self.service_type),
+                    method,
+                    '_'.join(name_parts),
+                ]
+            )
+            with self._statsd_client.pipeline() as pipe:
+                if response is not None:
+                    duration = int(response.elapsed.total_seconds() * 1000)
+                    metric_name = f'{key}.{str(response.status_code)}'
+                    pipe.timing(metric_name, duration)
+                    pipe.incr(metric_name)
+                    if duration > 1000:
+                        pipe.incr(f'{key}.over_1000')
+                elif exc is not None:
+                    pipe.incr(f'{key}.failed')
+                pipe.incr(f'{key}.attempted')
         except Exception:
+            # We do not want errors in metric reporting ever break client
             self.log.exception("Exception reporting metrics")
 
-    def _report_stats_influxdb(self, response, url=None, method=None,
-                               exc=None):
+    def _report_stats_influxdb(
+            self,
+            response: requests.Response | None,
+            url: str | None = None,
+            method: str | None = None,
+            exc: BaseException | None = None,
+    ) -> None:
+        if not self._influxdb_client:
+            return None
+
+        if not self._influxdb_config:
+            return None
+
         # NOTE(gtema): status_code is saved both as tag and field to give
         # ability showing it as a value and not only as a legend.
         # However Influx is not ok with having same name in tags and fields,
@@ -61,24 +96,24 @@ class Proxy(proxy.Proxy):
             url = response.request.url
         if response is not None and not method:
             method = response.request.method
-        tags = dict(
-            method=method,
-            name='_'.join([
-                normalize_metric_name(f) for f in
-                self._extract_name(
-                    url, self.service_type,
-                    self.session.get_project_id())
-            ])
-        )
-        fields = dict(
-            attempted=1
-        )
+        tags = {
+            'method': method,
+            'name': '_'.join(
+                [
+                    normalize_metric_name(f)
+                    for f in self._extract_name(
+                    url, self.service_type, self.session.get_project_id()
+                )
+                ]
+            ),
+        }
+        fields = {'attempted': 1}
         if response is not None:
             fields['duration'] = int(response.elapsed.total_seconds() * 1000)
             tags['status_code'] = str(response.status_code)
             # Note(gtema): emit also status_code as a value (counter)
             fields[str(response.status_code)] = 1
-            fields['%s.%s' % (method, response.status_code)] = 1
+            fields[f'{method}.{response.status_code}'] = 1
             # Note(gtema): status_code field itself is also very helpful on the
             # graphs to show what was the code, instead of counting its
             # occurences
@@ -87,16 +122,14 @@ class Proxy(proxy.Proxy):
             fields['failed'] = 1
         if 'additional_metric_tags' in self._influxdb_config:
             tags.update(self._influxdb_config['additional_metric_tags'])
-        measurement = self._influxdb_config.get(
-            'measurement', 'openstack_api') \
-            if self._influxdb_config else 'openstack_api'
+        measurement = (
+            self._influxdb_config.get('measurement', 'openstack_api')
+            if self._influxdb_config
+            else 'openstack_api'
+        )
         # Note(gtema) append service name into the measurement name
-        measurement = '%s.%s' % (measurement, self.service_type)
-        data = [dict(
-            measurement=measurement,
-            tags=tags,
-            fields=fields
-        )]
+        measurement = f'{measurement}.{self.service_type}'
+        data = [{'measurement': measurement, 'tags': tags, 'fields': fields}]
         try:
             self._influxdb_client.write_points(data)
         except Exception:
