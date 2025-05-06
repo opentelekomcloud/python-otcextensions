@@ -30,8 +30,9 @@ class TestKeyEvent(TestCtsv3):
         self.assertGreater(len(events), 0)
 
     def test_03_update_event(self):
-        event = list(self.conn.ctsv3.key_events(notification_type='smn',
-                                                notification_name=f'event_{self.uuid_v4}'))[0]
+        event = list(self.conn.ctsv3.key_events(
+            notification_type='smn',
+            notification_name=f'event_{self.uuid_v4}'))[0]
         attrs = {
             "notification_name": f'event_{self.uuid_v4}_update',
             "operation_type": "complete",
