@@ -102,8 +102,9 @@ class Proxy(proxy.Proxy):
                 [
                     normalize_metric_name(f)
                     for f in self._extract_name(
-                    url, self.service_type, self.session.get_project_id()
-                )
+                        url, self.service_type,
+                        self.session.get_project_id()
+                    )
                 ]
             ),
         }
