@@ -36,7 +36,7 @@ class RecyclePolicy(resource.Resource):
         )
         session = self._get_session(session)
         if microversion is None:
-            microversion = self._get_microversion(session, action='fetch')
+            microversion = self._get_microversion(session)
         response = session.get(
             request.url,
             headers={"Content-Type": "application/json"},
@@ -55,7 +55,7 @@ class RecyclePolicy(resource.Resource):
             raise exceptions.MethodNotSupported(self, 'create')
         session = self._get_session(session)
         if microversion is None:
-            microversion = self._get_microversion(session, action='create')
+            microversion = self._get_microversion(session)
         request_kwargs = {
             "requires_id": self.requires_id,
             "prepend_key": prepend_key,

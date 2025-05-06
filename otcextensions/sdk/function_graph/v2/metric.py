@@ -115,7 +115,7 @@ class Metric(resource.Resource):
             elif params['filter'] == 'monthly_report':
                 cls.resources_key = 'monthly_report'
         session = cls._get_session(session)
-        microversion = cls._get_microversion(session, action='list')
+        microversion = cls._get_microversion(session)
 
         if base_path is None:
             base_path = cls.base_path

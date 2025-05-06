@@ -109,7 +109,7 @@ class Backup(_base.Resource):
         url = utils.urljoin(self.base_path) % request_params
 
         session = self._get_session(session)
-        microversion = self._get_microversion(session, action='fetch')
+        microversion = self._get_microversion(session)
         response = session.get(
             url, microversion=microversion,
             headers={"Accept": "application/json"},
