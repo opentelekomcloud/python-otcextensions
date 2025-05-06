@@ -40,3 +40,4 @@ otcextensions.tests.functional.sdk.function_graph.v2*
 otcextensions.tests.functional.sdk.apig.v2*
 otcextensions.tests.functional.sdk.network.v2.test_cleanup
 otcextensions.tests.functional.sdk.rts*
+otcextensions.tests.functional.sdk.dcs.v1*

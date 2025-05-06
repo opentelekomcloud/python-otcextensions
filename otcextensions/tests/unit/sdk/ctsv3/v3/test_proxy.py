@@ -37,7 +37,8 @@ class TestKeyEvent(TestCTSv3Proxy):
         self.verify_update(
             self.proxy.update_key_event,
             _key_event.KeyEvent,
-            method_args=[]
+            method_args=[],
+            expected_args=['']
         )
 
     def test_key_event_list(self):

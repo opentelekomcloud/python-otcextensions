@@ -38,7 +38,7 @@ class Proxy(proxy.Proxy):
         :returns: The updated key event
         :rtype: :class:`~otcextensions.sdk.ctsv3.v3.key_event.KeyEvent`
          """
-        return self._update(_key_event.KeyEvent, **attrs)
+        return self._update(_key_event.KeyEvent, "", **attrs)
 
     def delete_key_event(self, notification):
         """Delete an event
