@@ -1083,3 +1083,22 @@ configured in the API Gateway.
 
 .. literalinclude:: ../examples/apig/list_custom_authorizers.py
    :lines: 16-24
+
+API Import and Export
+_____________________
+
+Exporting APIs
+^^^^^^^^^^^^^^
+
+This example demonstrates how to export an existing API from the API Gateway.
+
+.. literalinclude:: ../examples/apig/export_api.py
+   :lines: 16-28
+
+Importing APIs
+^^^^^^^^^^^^^^
+
+This example demonstrates how to import an API definition into API Gateway.
+
+.. literalinclude:: ../examples/apig/import_api.py
+   :lines: 16-32

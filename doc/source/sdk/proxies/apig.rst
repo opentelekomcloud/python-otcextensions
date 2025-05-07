@@ -151,3 +151,10 @@ Custom Authorizer Operations
   :noindex:
   :members: custom_authorizers, get_custom_authorizer, create_custom_authorizer,
             update_custom_authorizer, delete_custom_authorizer
+
+API Import and Export Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: import_api, export_api

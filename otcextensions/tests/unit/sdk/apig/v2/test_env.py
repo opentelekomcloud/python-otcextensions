@@ -24,7 +24,8 @@ class TestApiEnvironment(base.TestCase):
 
     def test_basic(self):
         sot = env.ApiEnvironment()
-        self.assertEqual('/apigw/instances/%(gateway_id)s/envs', sot.base_path)
+        self.assertEqual('/apigw/instances/%(gateway_id)s/envs',
+                         sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_commit)

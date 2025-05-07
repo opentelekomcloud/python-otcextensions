@@ -25,3 +25,4 @@ ApiGateway Resources
    v2/acl_policy
    v2/acl_binding
    v2/custom_authorizer
+   v2/export_api
