@@ -82,7 +82,7 @@ class Proxy(proxy.Proxy):
     def delete_load_balancer(self, load_balancer, ignore_missing=True):
         """Delete a load balancer
 
-        :param load_balancer: The load_balancer can be either the name or a
+        :param load_balancer: The load_balancer can be either the id or a
             :class:`~otcextensions.sdk.vlb.v3.load_balancer.LoadBalancer`
             instance
         :param bool ignore_missing: When set to ``False``
