@@ -1172,7 +1172,7 @@ Updating Backend Instances
 This example demonstrates how to update configuration of existing
 backend instances.
 
-.. literalinclude:: ../examples/apig/update_backend_servers.py
+.. literalinclude:: ../examples/apig/update_backend_server.py
   :lines: 16-33
 
 Removing a Backend Server
