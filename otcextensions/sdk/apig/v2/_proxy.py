@@ -2605,8 +2605,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param vpc_channel: The ID or an instance of
             :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
-        :param attrs: Dictionary of parameters for backend server group
-        creation or update.
+        :param attrs: Dictionary of parameters for creation or update.
 
         :returns: An instance of
             :class:`~otcextensions.sdk.apig.v2.backend_server_group.
