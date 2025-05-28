@@ -36,6 +36,9 @@ from otcextensions.sdk.apig.v2 import acl_policy as _acl
 from otcextensions.sdk.apig.v2 import acl_api_binding as _acl_api_binding
 from otcextensions.sdk.apig.v2 import custom_authorizer as _custom_auth
 from otcextensions.sdk.apig.v2 import export_api as _export_api
+from otcextensions.sdk.apig.v2 import vpc_channel as _vpc_channel
+from otcextensions.sdk.apig.v2 import backend_server_group as _backend_group
+from otcextensions.sdk.apig.v2 import backend_server as _backend_server
 
 
 class Proxy(proxy.Proxy):
@@ -1826,7 +1829,7 @@ class Proxy(proxy.Proxy):
         the given API Gateway instance and application.
 
         :param gateway: The ID of the API Gateway instance or an instance of
-            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param app: The ID of the application or an instance of
             :class:`~otcextensions.sdk.apig.v2.app.App`
         :param attrs: Additional filters for retrieving quota details.
@@ -1912,7 +1915,7 @@ class Proxy(proxy.Proxy):
         to the given application within the specified API Gateway instance.
 
         :param gateway: The ID of the API Gateway instance or an instance of
-            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param attrs: Additional filters, such as app_id, env_id, or API name.
 
         :returns: A list of instances of
@@ -1934,7 +1937,7 @@ class Proxy(proxy.Proxy):
         to the given API within the specified API Gateway instance.
 
         :param gateway: The ID of the API Gateway instance or an instance of
-            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param attrs: Additional filters, such as api_id or environment ID.
 
         :returns: A list of instances of
@@ -1956,7 +1959,7 @@ class Proxy(proxy.Proxy):
         to the given application within the specified API Gateway instance.
 
         :param gateway: The ID of the API Gateway instance or an instance of
-            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param attrs: Additional filters, such as app_id or environment ID.
 
         :returns: A list of instances of
@@ -1978,7 +1981,7 @@ class Proxy(proxy.Proxy):
         API Gateway instance, effectively authorizing them to access the API.
 
         :param gateway: The ID of the API Gateway instance or an instance of
-            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param attrs: Attributes required for authorization, including:
             - api_id: ID of the API to authorize.
             - app_ids: List of application IDs to bind to the API.
@@ -2002,7 +2005,7 @@ class Proxy(proxy.Proxy):
         API and an application within the given API Gateway instance.
 
         :param gateway: The ID of the API Gateway instance or an instance of
-            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param auth_id: The ID of the authorization binding to be deleted.
 
         :returns: None
@@ -2021,7 +2024,7 @@ class Proxy(proxy.Proxy):
         """Create an access control policy.
 
         :param gateway: The ID of the API Gateway instance or an instance of
-            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param attrs: Attributes required to create the ACL policy
 
         :returns: An instance of
@@ -2041,7 +2044,7 @@ class Proxy(proxy.Proxy):
         in the specified API Gateway instance.
 
         :param gateway: The ID of the API Gateway instance or an instance of
-            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param acl_policy: The ID of the ACL policy or an instance of
             :class:`~otcextensions.sdk.apig.v2.acl_policy.AclPolicy`
         :param attrs: Attributes to update
@@ -2066,7 +2069,7 @@ class Proxy(proxy.Proxy):
         the specified API Gateway instance.
 
         :param gateway: The ID of the API Gateway instance or an instance of
-            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param acl_policy: The ID of the ACL policy or an instance of
             :class:`~otcextensions.sdk.apig.v2.acl_policy.AclPolicy`
         :param ignore_missing: If True, no exception is raised when the ACL
@@ -2092,7 +2095,7 @@ class Proxy(proxy.Proxy):
         within the specified API Gateway instance.
 
         :param gateway: The ID of the API Gateway instance or an instance of
-            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param attrs: Attributes for batch deletion
 
         :returns: A response indicating the result of the batch deletion.
@@ -2112,7 +2115,7 @@ class Proxy(proxy.Proxy):
         defined in the specified API Gateway instance.
 
         :param gateway: The ID of the API Gateway instance or an instance of
-            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param attrs: Additional filters for listing ACL policies
 
         :returns: A list of instances of
@@ -2133,7 +2136,7 @@ class Proxy(proxy.Proxy):
         policy within the specified API Gateway instance.
 
         :param gateway: The ID of the API Gateway instance or an instance of
-            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param acl_policy: The ID of the ACL policy or an instance of
             :class:`~otcextensions.sdk.apig.v2.acl_policy.AclPolicy`
         :param attrs: Additional parameters for retrieving the ACL policy.
@@ -2159,7 +2162,7 @@ class Proxy(proxy.Proxy):
         the specified ACL policy in the given API Gateway instance.
 
         :param gateway: The ID of the API Gateway instance or an instance of
-            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param attrs: Additional filters
 
         :returns: A list of instances of
@@ -2180,7 +2183,7 @@ class Proxy(proxy.Proxy):
         the specified ACL policy in the given API Gateway instance.
 
         :param gateway: The ID of the API Gateway instance or an instance of
-            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param attrs: Additional filters
 
         :returns: A list of instances of
@@ -2201,7 +2204,7 @@ class Proxy(proxy.Proxy):
         the specified API in the given API Gateway instance.
 
         :param gateway: The ID of the API Gateway instance or an instance of
-            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param attrs: Additional filters
 
         :returns: A list of instances of
@@ -2222,7 +2225,7 @@ class Proxy(proxy.Proxy):
         or more APIs within the specified API Gateway instance.
 
         :param gateway: The ID of the API Gateway instance or an instance of
-            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param attrs: Attributes for the binding
 
         :returns: An instance of
@@ -2243,7 +2246,7 @@ class Proxy(proxy.Proxy):
         policy and an API within the specified API Gateway instance.
 
         :param gateway: The ID of the API Gateway instance or an instance of
-            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param acl: The ID of the ACL binding or an instance of
             :class:`~otcextensions.sdk.apig.v2.acl_api_binding.AclApiBinding`
         :param ignore_missing: If True, no exception is raised if the binding
@@ -2267,7 +2270,7 @@ class Proxy(proxy.Proxy):
         and APIs within the specified API Gateway instance
 
         :param gateway: The ID of the API Gateway instance or an instance of
-            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param attrs: Attributes for the unbinding operation
 
         :returns: An instance of
@@ -2292,7 +2295,7 @@ class Proxy(proxy.Proxy):
         define your own logic for validating access tokens and identities
 
         :param gateway: The ID of the API Gateway instance or an instance of
-            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param attrs: Additional filters for listing custom authorizers,
             such as name or type
 
@@ -2315,7 +2318,7 @@ class Proxy(proxy.Proxy):
         within the specified API Gateway instance
 
         :param gateway: The ID of the API Gateway instance or an instance of
-            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param custom_authorizer: The ID or an instance of
             :class:`~otcextensions.sdk.apig.v2.custom_authorizer
             CustomAuthorizer`
@@ -2344,7 +2347,7 @@ class Proxy(proxy.Proxy):
             authentication and authorization logic for APIs
 
             :param gateway: The ID of the API Gateway or an instance of
-                :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+                :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
             :param attrs: Attributes required to create the custom authorizer
 
             :returns: An instance of
@@ -2365,7 +2368,7 @@ class Proxy(proxy.Proxy):
         API Gateway instance
 
         :param gateway: The ID of the API Gateway instance or an instance of
-            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param custom_authorizer: The ID or an instance of
             :class:`~otcextensions.sdk.apig.v2.custom_authorizer.
             CustomAuthorizer`
@@ -2394,7 +2397,7 @@ class Proxy(proxy.Proxy):
         API Gateway instance
 
         :param gateway: The ID of the API Gateway instance or an instance of
-            :class:`~otcextensions.sdk.apig.v2.instance.Instance`
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
         :param custom_authorizer: The ID or an instance of
             :class:`~otcextensions.sdk.apig.v2.custom_authorizer.
             CustomAuthorizer`
@@ -2416,6 +2419,18 @@ class Proxy(proxy.Proxy):
         )
 
     def import_api(self, gateway, **attrs):
+        """Import an API definition into API Gateway
+
+        This method imports an API from an OpenAPI/Swagger definition or
+        other supported format into the specified API Gateway instance.
+
+        :param gateway: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Dictionary of parameters required for import.
+
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.export_import.ImportApi`
+        """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         import_api = _export_api.ImportApi()
         return import_api._import_api(
@@ -2425,11 +2440,464 @@ class Proxy(proxy.Proxy):
         )
 
     def export_api(self, gateway, full_path, **attrs):
+        """Export an API definition from API Gateway
+
+        This method exports an API definition (e.g. in Swagger/OpenAPI format)
+        from the specified API Gateway instance to a file.
+
+        :param gateway: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param full_path: Path where the exported file will be stored
+        :param attrs: Optional parameters for export.
+
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.export_import.ExportApi`
+        """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         export_api = _export_api.ExportApi()
         return export_api._export_api(
             self,
             gateway_id=gateway.id,
             full_path=full_path,
+            **attrs
+        )
+    # ======== VPC Channel Methods ========
+
+    def create_vpc_channel(self, gateway, **attrs):
+        """Create a VPC channel under the specified API Gateway instance
+
+        This method creates a new VPC channel, which defines how the
+        gateway communicates with backend services.
+
+        :param gateway: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Dictionary of parameters for VPC channel creation.
+
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._create(
+            _vpc_channel.VpcChannel,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def update_vpc_channel(self, gateway, vpc_channel, **attrs):
+        """Update an existing VPC channel
+
+        This method updates the properties of a VPC channel under the
+        specified API Gateway instance.
+
+        :param gateway: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param vpc_channel: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
+        :param attrs: Dictionary of attributes to update on the VPC channel
+
+        :returns: An updated instance of
+            :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
+        return self._update(
+            _vpc_channel.VpcChannel,
+            vpc_channel,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def delete_vpc_channel(self, gateway, vpc_channel, ignore_missing=False):
+        """Delete a VPC channel
+
+        This method deletes the specified VPC channel from the given
+        API Gateway instance.
+
+        :param gateway: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param vpc_channel: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
+        :param ignore_missing: When set to True, no exception will be raised
+            if the application code does not exist. Default is False.
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
+        return self._delete(
+            _vpc_channel.VpcChannel,
+            vpc_channel,
+            gateway_id=gateway.id,
+            ignore_missing=ignore_missing
+        )
+
+    def get_vpc_channel(self, gateway, vpc_channel):
+        """Retrieve details of a VPC channel
+
+        This method fetches the details of the specified VPC channel
+        under the given API Gateway instance.
+
+        :param gateway: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param vpc_channel: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
+
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._get(_vpc_channel.VpcChannel,
+                         vpc_channel,
+                         gateway_id=gateway.id)
+
+    def vpc_channels(self, gateway, **attrs):
+        """List all VPC channels under a gateway
+
+        This method retrieves all VPC channels configured for the specified
+        API Gateway instance.
+
+        :param gateway: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Optional query parameters for filtering the list
+
+        :returns: A generator of
+            :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _vpc_channel.VpcChannel,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def modify_vpc_channel_healthcheck(self, gateway, vpc_channel, **attrs):
+        """Update the health check configuration of a VPC channel
+
+        This method modifies the health check settings (e.g. path, interval,
+        timeout, thresholds) for the specified VPC channel.
+
+        :param gateway: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param vpc_channel: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
+        :param attrs: Dictionary of health check configuration parameters.
+
+        :returns: An updated instance of
+            :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
+        return vpc_channel.modify_healthcheck(
+            self,
+            gateway_id=gateway.id,
+            vpc_channel_id=vpc_channel.id,
+            **attrs
+        )
+
+    def add_or_update_backend_server_group(self, gateway, vpc_channel,
+                                           **attrs):
+        """Add or update a backend server group for a VPC channel
+
+        This method creates or updates a backend server group within the
+        specified VPC channel of an API Gateway instance.
+
+        :param gateway: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param vpc_channel: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
+        :param attrs: Dictionary of parameters for backend server group
+        creation or update.
+
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.backend_server_group.
+            BackendServerGroup`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
+        member_group = _backend_group.BackendServerGroup()
+        return member_group.create_group(
+            self,
+            gateway_id=gateway.id,
+            vpc_channel_id=vpc_channel.id,
+            **attrs
+        )
+
+    def backend_server_groups(self, gateway, vpc_channel, **attrs):
+        """List backend server groups under a VPC channel
+
+        This method retrieves all backend server groups configured within the
+        specified VPC channel of an API Gateway instance.
+
+        :param gateway: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param vpc_channel: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
+        :param attrs: Optional query parameters for filtering the list
+
+        :returns: A generator of
+            :class:`~otcextensions.sdk.apig.v2.backend_server_group.
+            BackendServerGroup` instances
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
+        return self._list(
+            _backend_group.BackendServerGroup,
+            gateway_id=gateway.id,
+            vpc_channel_id=vpc_channel.id,
+            **attrs
+        )
+
+    def get_backend_server_group(self, gateway, vpc_channel, backend_group):
+        """Retrieve details of a backend server group
+
+        This method fetches details of the specified backend server group
+        under a given VPC channel of an API Gateway instance.
+
+        :param gateway: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param vpc_channel: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
+        :param backend_group: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.backend_server_group.
+            BackendServerGroup`
+
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.backend_server_group.
+            BackendServerGroup`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
+        backend_group = self._get_resource(_backend_group.BackendServerGroup,
+                                           backend_group)
+        return self._get(
+            _backend_group.BackendServerGroup,
+            backend_group.member_group_id,
+            gateway_id=gateway.id,
+            vpc_channel_id=vpc_channel.id
+        )
+
+    def update_backend_server_group(self, gateway, vpc_channel, backend_group,
+                                    **attrs):
+        """Update a backend server group
+
+        This method updates the specified backend server group under a given
+        VPC channel of an API Gateway instance.
+
+        :param gateway: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param vpc_channel: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
+        :param backend_group: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.backend_server_group.
+            BackendServerGroup`
+        :param attrs: Dictionary of attributes to update on the backend group.
+
+        :returns: An updated instance of
+            :class:`~otcextensions.sdk.apig.v2.backend_server_group.
+            BackendServerGroup`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
+        backend_group = self._get_resource(_backend_group.BackendServerGroup,
+                                           backend_group)
+        return self._update(
+            _backend_group.BackendServerGroup,
+            backend_group.member_group_id,
+            gateway_id=gateway.id,
+            vpc_channel_id=vpc_channel.id,
+            **attrs
+        )
+
+    def delete_backend_server_group(self, gateway, vpc_channel, backend_group,
+                                    ignore_missing=False):
+        """Delete a backend server group
+
+        This method deletes the specified backend server group from a VPC
+        channel under an API Gateway instance.
+
+        :param gateway: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param vpc_channel: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
+        :param backend_group: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.backend_server_group.
+            BackendServerGroup`
+        :param ignore_missing: When set to True, no exception will be raised
+            if the application code does not exist. Default is False.
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
+        backend_group = self._get_resource(_backend_group.BackendServerGroup,
+                                           backend_group)
+        self._delete(
+            _backend_group.BackendServerGroup,
+            backend_group.member_group_id,
+            gateway_id=gateway.id,
+            vpc_channel_id=vpc_channel.id,
+            ignore_missing=ignore_missing
+        )
+
+    def add_or_update_backend_servers(self, gateway, vpc_channel, **attrs):
+        """Add or update backend server instances
+
+        This method adds or updates backend server instances directly
+        under a VPC channel of the specified API Gateway instance.
+
+        :param gateway: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param vpc_channel: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
+        :param attrs: Dictionary containing list of members to add or update.
+
+        :returns: A list of
+            :class:`~otcextensions.sdk.apig.v2.backend_server.BackendServer`
+            instances
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
+        member = _backend_server.BackendServer()
+        return member.create_members(
+            self,
+            gateway_id=gateway.id,
+            vpc_channel_id=vpc_channel.id,
+            **attrs
+        )
+
+    def list_backend_servers(self, gateway, vpc_channel, **attrs):
+        """List backend server instances
+
+        This method retrieves all backend server instances configured
+        under a specified VPC channel in an API Gateway instance.
+
+        :param gateway: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param vpc_channel: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
+        :param attrs: Optional query parameters for filtering
+
+        :returns: A generator of
+            :class:`~otcextensions.sdk.apig.v2.backend_server.BackendServer`
+            instances
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
+        return self._list(
+            _backend_server.BackendServer,
+            gateway_id=gateway.id,
+            vpc_chan_id=vpc_channel.id,
+            **attrs
+        )
+
+    def update_backend_server(self, gateway, vpc_channel, **attrs):
+        """Update backend server instance(s)
+
+        This method updates one or more backend server instances
+        under a specified VPC channel.
+
+        :param gateway: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param vpc_channel: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
+        :param attrs: Dictionary with the list of members to update.
+
+        :returns: A list of
+            :class:`~otcextensions.sdk.apig.v2.backend_server.BackendServer`
+            instances
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
+        member = _backend_server.BackendServer()
+        return member.update_members(
+            self,
+            gateway_id=gateway.id,
+            vpc_channel_id=vpc_channel.id,
+            **attrs
+        )
+
+    def remove_backend_server(self, gateway, vpc_channel, backend_server,
+                              ignore_missing=False):
+        """Delete a backend server instance
+
+        This method deletes a specific backend server from a VPC channel
+        under the specified API Gateway instance.
+
+        :param gateway: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param vpc_channel: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
+        :param backend_server: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.backend_server.BackendServer`
+        :param ignore_missing: When set to True, no exception will be raised
+            if the application code does not exist. Default is False.
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
+        backend_server = self._get_resource(_backend_server.BackendServer,
+                                            backend_server)
+        self._delete(
+            _backend_server.BackendServer,
+            backend_server,
+            gateway_id=gateway.id,
+            vpc_chan_id=vpc_channel.id,
+            ignore_missing=ignore_missing
+        )
+
+    def enable_backend_server(self, gateway, vpc_channel, backend_server,
+                              **attrs):
+        """Enable a backend server instance
+
+        This method enables a specific backend server instance by sending
+        a batch-enable request with the server's ID.
+
+        :param gateway: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param vpc_channel: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
+        :param backend_server: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.backend_server.BackendServer`
+        :param attrs: Optional parameters for the enable operation.
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
+        backend_server = self._get_resource(_backend_server.BackendServer,
+                                            backend_server)
+        backend_server.enable_server(
+            self,
+            gateway_id=gateway.id,
+            vpc_chan_id=vpc_channel.id,
+            **attrs
+        )
+
+    def disable_backend_server(self, gateway, vpc_channel, backend_server,
+                               **attrs):
+        """Disable a backend server instance
+
+        This method disables a specific backend server instance by sending
+        a batch-disable request with the server's ID.
+
+        :param gateway: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param vpc_channel: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
+        :param backend_server: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.backend_server.BackendServer`
+        :param attrs: Optional parameters for the disable operation.
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
+        backend_server = self._get_resource(_backend_server.BackendServer,
+                                            backend_server)
+        backend_server.disable_server(
+            self,
+            gateway_id=gateway.id,
+            vpc_chan_id=vpc_channel.id,
             **attrs
         )
