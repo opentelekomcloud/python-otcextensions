@@ -32,6 +32,9 @@ from otcextensions.sdk.apig.v2 import api_auth as _auth
 from otcextensions.sdk.apig.v2 import acl_policy as _ac
 from otcextensions.sdk.apig.v2 import acl_api_binding as _acl_api
 from otcextensions.sdk.apig.v2 import custom_authorizer as _custom_auth
+from otcextensions.sdk.apig.v2 import vpc_channel as _vpc
+from otcextensions.sdk.apig.v2 import backend_server_group as _vpc_sg
+from otcextensions.sdk.apig.v2 import backend_server as _vpc_s
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
 
@@ -1617,4 +1620,218 @@ class TestExportApi(TestApiGatewayProxy):
             expected_args=[self.proxy],
             expected_kwargs={'gateway_id': None,
                              'full_path': full_path}
+        )
+
+
+class TestVpc(TestApiGatewayProxy):
+    def test_create_vpc_channel(self):
+        gateway = _gateway.Gateway()
+        self.verify_create(self.proxy.create_vpc_channel,
+                           _vpc.VpcChannel,
+                           method_args=[gateway],
+                           expected_args=[],
+                           method_kwargs={},
+                           expected_kwargs={'gateway_id': None}
+                           )
+
+    def test_update_vpc_channel(self):
+        gateway = _gateway.Gateway()
+        vpc_channel = _vpc.VpcChannel()
+        self.verify_update(self.proxy.update_vpc_channel,
+                           _vpc.VpcChannel,
+                           method_args=[gateway, vpc_channel],
+                           expected_args=[vpc_channel],
+                           method_kwargs={},
+                           expected_kwargs={'gateway_id': None}
+                           )
+
+    def test_delete_vpc_channel(self):
+        gateway = _gateway.Gateway()
+        vpc_channel = _vpc.VpcChannel()
+        self.verify_delete(self.proxy.delete_vpc_channel,
+                           _vpc.VpcChannel,
+                           method_args=[gateway, vpc_channel],
+                           expected_args=[vpc_channel],
+                           method_kwargs={},
+                           expected_kwargs={'gateway_id': None}
+                           )
+
+    def test_get_vpc_channel(self):
+        gateway = _gateway.Gateway()
+        vpc_channel = _vpc.VpcChannel()
+        self.verify_get(self.proxy.get_vpc_channel,
+                        _vpc.VpcChannel,
+                        method_args=[gateway, vpc_channel],
+                        expected_args=[vpc_channel],
+                        method_kwargs={},
+                        expected_kwargs={'gateway_id': None}
+                        )
+
+    def test_list_vpc_channels(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(self.proxy.vpc_channels,
+                         _vpc.VpcChannel,
+                         method_args=[gateway],
+                         expected_args=[],
+                         method_kwargs={},
+                         expected_kwargs={'gateway_id': None}
+                         )
+
+    def test_modify_vpc_channel_healthcheck(self):
+        gateway = _gateway.Gateway()
+        vpc_channel = _vpc.VpcChannel()
+        self._verify(
+            'otcextensions.sdk.apig.v2.vpc_channel.'
+            'VpcChannel.modify_healthcheck',
+            self.proxy.modify_vpc_channel_healthcheck,
+            method_args=[gateway, vpc_channel],
+            expected_args=[self.proxy],
+            expected_kwargs={'gateway_id': None,
+                             'vpc_channel_id': None}
+        )
+
+    def test_add_or_update_backend_server_group(self):
+        gateway = _gateway.Gateway()
+        vpc_channel = _vpc.VpcChannel()
+        self._verify(
+            'otcextensions.sdk.apig.v2.backend_server_group.'
+            'BackendServerGroup.create_group',
+            self.proxy.add_or_update_backend_server_group,
+            method_args=[gateway, vpc_channel],
+            expected_args=[self.proxy],
+            expected_kwargs={'gateway_id': None,
+                             'vpc_channel_id': None}
+        )
+
+    def test_backend_server_groups(self):
+        gateway = _gateway.Gateway()
+        vpc_channel = _vpc.VpcChannel()
+        self.verify_list(self.proxy.backend_server_groups,
+                         _vpc_sg.BackendServerGroup,
+                         method_args=[gateway, vpc_channel],
+                         expected_args=[],
+                         method_kwargs={},
+                         expected_kwargs={'gateway_id': None,
+                                          'vpc_channel_id': None}
+                         )
+
+    def test_get_backend_server_group(self):
+        gateway = _gateway.Gateway()
+        vpc_channel = _vpc.VpcChannel()
+        backend_server_group = _vpc_sg.BackendServerGroup()
+        self.verify_get(self.proxy.get_backend_server_group,
+                        _vpc_sg.BackendServerGroup,
+                        method_args=[gateway, vpc_channel,
+                                     backend_server_group],
+                        expected_args=[None],
+                        method_kwargs={},
+                        expected_kwargs={'gateway_id': None,
+                                         'vpc_channel_id': None}
+                        )
+
+    def test_update_backend_server_group(self):
+        gateway = _gateway.Gateway()
+        vpc_channel = _vpc.VpcChannel()
+        backend_server_group = _vpc_sg.BackendServerGroup()
+        self.verify_update(self.proxy.update_backend_server_group,
+                           _vpc_sg.BackendServerGroup,
+                           method_args=[gateway, vpc_channel,
+                                        backend_server_group],
+                           expected_args=[None],
+                           method_kwargs={},
+                           expected_kwargs={'gateway_id': None,
+                                            'vpc_channel_id': None}
+                           )
+
+    def test_delete_backend_server_group(self):
+        gateway = _gateway.Gateway()
+        vpc_channel = _vpc.VpcChannel()
+        backend_server_group = _vpc_sg.BackendServerGroup()
+        self.verify_delete(self.proxy.delete_backend_server_group,
+                           _vpc_sg.BackendServerGroup,
+                           method_args=[gateway, vpc_channel,
+                                        backend_server_group],
+                           expected_args=[None],
+                           method_kwargs={},
+                           expected_kwargs={'gateway_id': None,
+                                            'vpc_channel_id': None}
+                           )
+
+    def test_add_or_update_backend_servers(self):
+        gateway = _gateway.Gateway()
+        vpc_channel = _vpc.VpcChannel()
+        self._verify(
+            'otcextensions.sdk.apig.v2.backend_server.'
+            'BackendServer.create_members',
+            self.proxy.add_or_update_backend_servers,
+            method_args=[gateway, vpc_channel],
+            expected_args=[self.proxy],
+            expected_kwargs={'gateway_id': None,
+                             'vpc_channel_id': None}
+        )
+
+    def test_list_backend_servers(self):
+        gateway = _gateway.Gateway()
+        vpc_channel = _vpc.VpcChannel()
+        self.verify_list(self.proxy.list_backend_servers,
+                         _vpc_s.BackendServer,
+                         method_args=[gateway, vpc_channel],
+                         expected_args=[],
+                         method_kwargs={},
+                         expected_kwargs={'gateway_id': None,
+                                          'vpc_chan_id': None}
+                         )
+
+    def test_update_backend_servers(self):
+        gateway = _gateway.Gateway()
+        vpc_channel = _vpc.VpcChannel()
+        self._verify(
+            'otcextensions.sdk.apig.v2.backend_server.'
+            'BackendServer.update_members',
+            self.proxy.update_backend_server,
+            method_args=[gateway, vpc_channel],
+            expected_args=[self.proxy],
+            expected_kwargs={'gateway_id': None,
+                             'vpc_channel_id': None}
+        )
+
+    def test_delete_backend_servers(self):
+        gateway = _gateway.Gateway()
+        vpc_channel = _vpc.VpcChannel()
+        backend_server = _vpc_s.BackendServer()
+        self.verify_delete(self.proxy.remove_backend_server,
+                           _vpc_s.BackendServer,
+                           method_args=[gateway, vpc_channel, backend_server],
+                           expected_args=[backend_server],
+                           method_kwargs={},
+                           expected_kwargs={'gateway_id': None,
+                                            'vpc_chan_id': None}
+                           )
+
+    def test_enable_backend_server(self):
+        gateway = _gateway.Gateway()
+        vpc_channel = _vpc.VpcChannel()
+        backend_server = _vpc_s.BackendServer()
+        self._verify(
+            'otcextensions.sdk.apig.v2.backend_server.'
+            'BackendServer.enable_server',
+            self.proxy.enable_backend_server,
+            method_args=[gateway, vpc_channel, backend_server],
+            expected_args=[self.proxy],
+            expected_kwargs={'gateway_id': None,
+                             'vpc_chan_id': None}
+        )
+
+    def test_disable_backend_server(self):
+        gateway = _gateway.Gateway()
+        vpc_channel = _vpc.VpcChannel()
+        backend_server = _vpc_s.BackendServer()
+        self._verify(
+            'otcextensions.sdk.apig.v2.backend_server.'
+            'BackendServer.disable_server',
+            self.proxy.disable_backend_server,
+            method_args=[gateway, vpc_channel, backend_server],
+            expected_args=[self.proxy],
+            expected_kwargs={'gateway_id': None,
+                             'vpc_chan_id': None}
         )

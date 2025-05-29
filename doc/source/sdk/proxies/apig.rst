@@ -158,3 +158,16 @@ API Import and Export Operations
 .. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
   :noindex:
   :members: import_api, export_api
+
+VPC Channel Operations
+^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: create_vpc_channel, update_vpc_channel, delete_vpc_channel,
+            get_vpc_channel, vpc_channels, modify_vpc_channel_healthcheck,
+            add_or_update_backend_server_group, backend_server_groups,
+            get_backend_server_group, update_backend_server_group,
+            delete_backend_server_group, add_or_update_backend_servers,
+            list_backend_servers, update_backend_server,
+            remove_backend_server, enable_backend_server,
+            disable_backend_server

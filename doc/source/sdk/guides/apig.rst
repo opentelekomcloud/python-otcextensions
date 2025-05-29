@@ -1102,3 +1102,156 @@ This example demonstrates how to import an API definition into API Gateway.
 
 .. literalinclude:: ../examples/apig/import_api.py
    :lines: 16-32
+
+VPC Channel
+___________
+
+Creating a VPC Channel
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to create a VPC channel in the API Gateway.
+
+.. literalinclude:: ../examples/apig/create_vpc_channel.py
+  :lines: 16-27
+
+Updating a VPC Channel
+^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to update configuration of an existing
+VPC channel.
+
+.. literalinclude:: ../examples/apig/update_vpc_channel.py
+  :lines: 16-29
+
+Deleting a VPC Channel
+^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to delete a VPC channel from the API Gateway.
+
+.. literalinclude:: ../examples/apig/delete_vpc_channel.py
+  :lines: 16-22
+
+Get VPC Channel Details
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to retrieve details of a specific VPC channel.
+
+.. literalinclude:: ../examples/apig/get_vpc_channel.py
+  :lines: 16-23
+
+List VPC Channels
+^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to list all VPC channels configured in the
+API Gateway.
+
+.. literalinclude:: ../examples/apig/list_vpc_channels.py
+  :lines: 16-20
+
+Adding or Updating Backend Instances
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to add or update backend instances for a
+VPC channel.
+
+.. literalinclude:: ../examples/apig/add_or_update_backend_servers.py
+  :lines: 16-31
+
+Querying Backend Servers of a VPC Channel
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to list all backend servers of a given
+VPC channel.
+
+.. literalinclude:: ../examples/apig/list_backend_servers.py
+  :lines: 16-23
+
+Updating Backend Instances
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to update configuration of existing
+backend instances.
+
+.. literalinclude:: ../examples/apig/update_backend_server.py
+  :lines: 16-33
+
+Removing a Backend Server
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to remove a backend server from a
+VPC channel.
+
+.. literalinclude:: ../examples/apig/remove_backend_server.py
+  :lines: 16-24
+
+Enabling Backend Servers
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to enable one or more backend
+servers for a VPC channel.
+
+.. literalinclude:: ../examples/apig/enable_backend_server.py
+  :lines: 16-28
+
+Disabling Backend Servers
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to disable one or more backend
+servers for a VPC channel.
+
+.. literalinclude:: ../examples/apig/disable_backend_server.py
+  :lines: 16-28
+
+Modifying VPC Channel Health Check
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to modify the health check
+settings of a VPC channel.
+
+.. literalinclude:: ../examples/apig/modify_vpc_channel_healthcheck.py
+  :lines: 16-36
+
+Adding or Updating a Backend Server Group of a VPC Channel
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to add or update a backend server
+group for a VPC channel.
+
+.. literalinclude:: ../examples/apig/add_or_update_backend_server_group.py
+  :lines: 16-30
+
+Querying Backend Server Groups of a VPC Channel
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to list all backend server groups
+of a given VPC channel.
+
+.. literalinclude:: ../examples/apig/list_backend_server_groups.py
+  :lines: 16-22
+
+Querying a Backend Server Group of a VPC Channel
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to retrieve details of a specific
+backend server group.
+
+.. literalinclude:: ../examples/apig/get_backend_server_group.py
+  :lines: 16-23
+
+Deleting a Backend Server Group of a VPC Channel
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to delete a backend server group
+from a VPC channel.
+
+.. literalinclude:: ../examples/apig/delete_backend_server_group.py
+  :lines: 16-24
+
+Updating a Backend Server Group of a VPC Channel
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to update configuration of an existing
+backend server group.
+
+.. literalinclude:: ../examples/apig/update_backend_server_group.py
+  :lines: 16-23

@@ -26,3 +26,6 @@ ApiGateway Resources
    v2/acl_binding
    v2/custom_authorizer
    v2/export_api
+   v2/vpc_channel
+   v2/backend_server
+   v2/backend_server_group
