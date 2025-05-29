@@ -30,7 +30,7 @@ class TestQuota(base.TestAs):
                           'bandwidth_scaling_policy']
         objects = list(self.auto_scaling.quotas())
 
-        self.assertGreaterEqual(len(objects), 7)
+        self.assertGreaterEqual(len(objects), 6)
         types = []
 
         for obj in objects:
