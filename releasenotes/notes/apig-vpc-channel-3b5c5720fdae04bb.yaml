@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    Add VPC Channel management support for API Gateway
