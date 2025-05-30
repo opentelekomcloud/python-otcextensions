@@ -359,16 +359,17 @@ class UpdateService(command.ShowOne):
             val = getattr(parsed_args, arg)
             if val:
                 attrs[arg] = val
-        ports = []
-        for port in parsed_args.ports:
-            ports.append(
-                {
-                    'client_port': int(port['client_port']),
-                    'server_port': int(port['server_port']),
-                    'protocol': port['protocol'],
-                }
-            )
-        attrs['ports'] = ports
+        if parsed_args.ports:
+            ports = []
+            for port in parsed_args.ports:
+                ports.append(
+                    {
+                        'client_port': int(port['client_port']),
+                        'server_port': int(port['server_port']),
+                        'protocol': port['protocol'],
+                    }
+                )
+            attrs['ports'] = ports
         if parsed_args.enable_approval:
             attrs['approval_enabled'] = True
         if parsed_args.disable_approval:
