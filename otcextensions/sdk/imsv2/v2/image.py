@@ -110,11 +110,10 @@ class Image(resource.Resource):
     support_fc_inject = resource.Body('__support_fc_inject')
     data_origin = resource.Body('__data_origin')
 
-
     def create(self, session, prepend_key=False, base_path=None):
         # Override here to override prepend_key default value
         return super(Image, self).create(session, prepend_key, base_path)
-    
+
     def _action(self, session, request_body, image_id):
         url = utils.urljoin(self.base_path, image_id)
         response = session.patch(url, json=request_body)
@@ -123,8 +122,11 @@ class Image(resource.Resource):
 
     def update_image_details(self, session, image_id, command_list):
         request_body = command_list
-        response = self._action(session=session, request_body=request_body, image_id=image_id)
-        return self._to_object(session, response)     
+        response = self._action(
+            session=session,
+            request_body=request_body,
+            image_id=image_id)
+        return self._to_object(session, response)
 
     def _to_object(self, session, response):
         has_body = (
