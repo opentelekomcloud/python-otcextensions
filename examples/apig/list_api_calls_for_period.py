@@ -22,4 +22,4 @@ attrs = {
     'duration': '1h',
 }
 found = conn.apig.list_api_calls_for_period(gateway='gateway_id_here',
-                                              **attrs)
+                                            **attrs)
