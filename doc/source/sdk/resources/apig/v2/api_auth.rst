@@ -12,8 +12,8 @@ The ``ApiAuthResult`` class inherits from
 .. autoclass:: otcextensions.sdk.apig.v2.api_auth.ApiAuthResult
    :members:
 
-The App Class
--------------
+The ApiAuthInfo Class
+---------------------
 
 The ``ApiAuthInfo`` class inherits from
 :class:`~otcextensions.sdk.sdk_resource.Resource`.
@@ -21,8 +21,8 @@ The ``ApiAuthInfo`` class inherits from
 .. autoclass:: otcextensions.sdk.apig.v2.api_auth.ApiAuthInfo
    :members:
 
-The App Class
--------------
+The ApiAuth Class
+-----------------
 
 The ``ApiAuth`` class inherits from
 :class:`~otcextensions.sdk.apig.v2.api_auth.ApiAuthInfo`.

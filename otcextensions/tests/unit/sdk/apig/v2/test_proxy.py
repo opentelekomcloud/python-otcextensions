@@ -1835,3 +1835,38 @@ class TestVpc(TestApiGatewayProxy):
             expected_kwargs={'gateway_id': None,
                              'vpc_chan_id': None}
         )
+
+
+class TestApiCall(TestApiGatewayProxy):
+    def test_list_api_calls_for_period(self):
+        gateway = _gateway.Gateway()
+        self._verify(
+            'otcextensions.sdk.apig.v2.api_call.'
+            'ApiCallResult.get_api_calls_for_period',
+            self.proxy.list_api_calls_for_period,
+            method_args=[gateway],
+            expected_args=[self.proxy],
+            expected_kwargs={'gateway_id': None}
+        )
+
+    def test_list_api_calls_for_group(self):
+        gateway = _gateway.Gateway()
+        self._verify(
+            'otcextensions.sdk.apig.v2.api_call.'
+            'ApiCallResult.get_api_calls_for_group',
+            self.proxy.list_api_calls_for_group,
+            method_args=[gateway],
+            expected_args=[self.proxy],
+            expected_kwargs={'gateway_id': None}
+        )
+
+    def test_list_metric_data(self):
+        gateway = _gateway.Gateway()
+        self._verify(
+            'otcextensions.sdk.apig.v2.metric_data.'
+            'MetricData.get_metric_data',
+            self.proxy.list_metric_data,
+            method_args=[gateway],
+            expected_args=[self.proxy],
+            expected_kwargs={'gateway_id': None}
+        )
