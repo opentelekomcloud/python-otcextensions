@@ -29,3 +29,5 @@ ApiGateway Resources
    v2/vpc_channel
    v2/backend_server
    v2/backend_server_group
+   v2/api_call
+   v2/metric_data

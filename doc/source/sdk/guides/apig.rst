@@ -1273,7 +1273,7 @@ Querying Monitoring Data
 
 This example demonstrates how to query monitoring metrics for your APIs.
 
-.. literalinclude:: ../examples/apig/list_metric_data.py
+.. literalinclude:: ../examples/apig/list_metrics_data.py
   :lines: 16-28
 
 Querying API Calls Under an API Group in the Last One Hour
