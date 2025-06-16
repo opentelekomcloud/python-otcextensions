@@ -171,3 +171,10 @@ VPC Channel Operations
             list_backend_servers, update_backend_server,
             remove_backend_server, enable_backend_server,
             disable_backend_server
+
+Monitoring Information Query
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: list_api_calls_for_period, list_api_calls_for_group,
+            list_metric_data

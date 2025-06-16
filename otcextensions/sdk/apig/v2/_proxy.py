@@ -39,6 +39,8 @@ from otcextensions.sdk.apig.v2 import export_api as _export_api
 from otcextensions.sdk.apig.v2 import vpc_channel as _vpc_channel
 from otcextensions.sdk.apig.v2 import backend_server_group as _backend_group
 from otcextensions.sdk.apig.v2 import backend_server as _backend_server
+from otcextensions.sdk.apig.v2 import api_call as _api_call
+from otcextensions.sdk.apig.v2 import metric_data as _metric_data
 
 
 class Proxy(proxy.Proxy):
@@ -2898,5 +2900,73 @@ class Proxy(proxy.Proxy):
             self,
             gateway_id=gateway.id,
             vpc_chan_id=vpc_channel.id,
+            **attrs
+        )
+
+    # ======== Monitoring Information Query Methods ========
+
+    def list_api_calls_for_period(self, gateway, **attrs):
+        """List API call statistics for a specified period
+
+        This method retrieves API call statistics for the specified
+        API Gateway instance over a defined time period.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional parameters for filtering the results,
+            such as start and end time, API ID, etc.
+
+        :returns: A list of instances of
+            :class:`~otcextensions.sdk.apig.v2.api_call.ApiCallResult`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        api_call = _api_call.ApiCallResult()
+        return api_call.get_api_calls_for_period(
+            self,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def list_api_calls_for_group(self, gateway, **attrs):
+        """List API call statistics for a specific group
+
+        This method retrieves API call statistics for a specific group
+        within the specified API Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional parameters for filtering the results,
+            such as group ID, start and end time, etc.
+
+        :returns: A list of instances of
+            :class:`~otcextensions.sdk.apig.v2.api_call.ApiCallResult`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        api_call = _api_call.ApiCallResult()
+        return api_call.get_api_calls_for_group(
+            self,
+            gateway_id=gateway.id,
+            **attrs
+        )
+
+    def list_metric_data(self, gateway, **attrs):
+        """List metric data for the API Gateway instance
+
+        This method retrieves metric data for the specified API Gateway
+        instance, allowing you to monitor performance and usage statistics.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Additional parameters for filtering the results,
+            such as metric name, time range, etc.
+
+        :returns: A list of instances of
+            :class:`~otcextensions.sdk.apig.v2.metric_data.MetricData`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        metric_data = _metric_data.MetricData()
+        return metric_data.get_metric_data(
+            self,
+            gateway_id=gateway.id,
             **attrs
         )

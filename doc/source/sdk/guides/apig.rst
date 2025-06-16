@@ -1255,3 +1255,32 @@ backend server group.
 
 .. literalinclude:: ../examples/apig/update_backend_server_group.py
   :lines: 16-23
+
+VPC Channel
+___________
+
+Querying API Calls Within a Period
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to retrieve statistics of API calls
+within a specified time period.
+
+.. literalinclude:: ../examples/apig/list_api_calls_for_period.py
+  :lines: 16-25
+
+Querying Monitoring Data
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query monitoring metrics for your APIs.
+
+.. literalinclude:: ../examples/apig/list_metrics_data.py
+  :lines: 16-28
+
+Querying API Calls Under an API Group in the Last One Hour
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to retrieve API call data for a specific
+API group over the past hour.
+
+.. literalinclude:: ../examples/apig/list_api_calls_for_group.py
+  :lines: 16-24
