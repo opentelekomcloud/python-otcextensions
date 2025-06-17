@@ -26,7 +26,7 @@ extensions = [
 ]
 
 # Analytics app name
-otcdocs_analytics_app == 'otcextensions'
+otcdocs_analytics_app = 'otcextensions'
 
 # openstackdocstheme options
 #otcdocs_repo_name = 'opentelekomcloud/python-otcextensions'
