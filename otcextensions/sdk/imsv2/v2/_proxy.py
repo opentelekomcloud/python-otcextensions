@@ -35,3 +35,18 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.imsv2.v2.image.Image` instances
         """
         return self._list(_image.Image, paginated=False, **attrs)
+
+    def update_image(self, image_id, **attrs):
+        """Update an image
+
+        :param image: The value can be either the ID of a image or a
+            :class:`~otcextensions.sdk.imsv2.v2.image.Image` instance.
+        :param dict attrs: The attributes to update of the image represented
+            by ``image``.
+
+        :returns: The updated image.
+
+        :rtype: :class:`~otcextensions.sdk.imsv2.v2.image.Image`
+        """
+        image = _image.Image()
+        return image.update_image_details(self, image_id=image_id, **attrs)
