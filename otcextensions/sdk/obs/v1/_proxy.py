@@ -24,7 +24,7 @@ from otcextensions.sdk.obs.v1 import container as _container
 from otcextensions.sdk.obs.v1 import obj as _obj
 
 DEFAULT_OBJECT_SEGMENT_SIZE = 1073741824  # 1GB
-DEFAULT_MAX_FILE_SIZE = (5 * 1024 * 1024 * 1024 + 2) / 2
+DEFAULT_MAX_FILE_SIZE = int((5 * 1024 * 1024 * 1024 + 2) / 2)
 EXPIRES_ISO8601_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 SHORT_EXPIRES_ISO8601_FORMAT = '%Y-%m-%d'
 
