@@ -1,7 +1,7 @@
 - job:
-    name: tox-functional-master
+    name: tox-functional-main
     parent: tox-functional-eu-de
-    branches: master
+    branches: main
 
 - job:
     name: otce-build-image
@@ -27,7 +27,7 @@
 
 - project:
     merge-mode: squash-merge
-    default-branch: master
+    default-branch: main
     templates:
       - publish-to-pypi
       - publish-otc-docs-hc-pti
@@ -50,4 +50,4 @@
         - otce-upload-image
     periodic:
       jobs:
-        - tox-functional-master
+        - tox-functional-main
