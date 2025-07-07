@@ -25,6 +25,7 @@ from otcextensions.sdk.function_graph.v2 import template as _t
 from otcextensions.sdk.function_graph.v2 import reserved_instance as _r
 from otcextensions.sdk.function_graph.v2 import import_function as _import
 from otcextensions.sdk.function_graph.v2 import trigger as _trigger
+from otcextensions.sdk.function_graph.v2 import async_notification as _async
 from openstack.tests.unit import test_proxy_base
 
 
@@ -218,7 +219,7 @@ class TestFgDependencies(TestFgProxy):
         self.verify_list(
             self.proxy.dependencies,
             _d.Dependency,
-            expected_args=[{}],
+            expected_args=[],
         )
 
     def test_create_dependency_version(self):
@@ -250,7 +251,7 @@ class TestFgDependencies(TestFgProxy):
             self.proxy.dependency_versions,
             _d.Dependency,
             method_args=[dep],
-            expected_args=[{}],
+            expected_args=[],
         )
 
     def test_get_dependency_version(self):
@@ -730,4 +731,112 @@ class TestFgTrigger(TestFgProxy):
                 "requires_id": False
             },
             expected_args=[]
+        )
+
+
+class TestFgAsyncNotifications(TestFgProxy):
+
+    def test_async_notifications(self):
+        function = _function.Function(
+            name='test',
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default:access-mysql-js-1213-1737554083545:'
+                     'latest'
+        )
+        self.verify_list(
+            self.proxy.async_notifications,
+            _async.Notification,
+            method_kwargs={"function": function.func_urn},
+            expected_kwargs={
+                "function_urn": function.func_urn.rpartition(":")[0]
+            },
+            expected_args=[]
+        )
+
+    def test_configure_async_notification(self):
+        function = _function.Function(
+            name='test',
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default:access-mysql-js-1213-1737554083545:'
+                     'latest'
+        )
+        self.verify_create(
+            self.proxy.configure_async_notification,
+            _async.Notification,
+            method_args=[function],
+            method_kwargs={
+                "max_async_event_age_in_seconds": 1000,
+            },
+            expected_kwargs={
+                "function_urn": function.func_urn.rpartition(":")[0],
+                "max_async_event_age_in_seconds": 1000,
+            },
+            expected_args=[]
+        )
+
+    def test_delete_async_notification(self):
+        function = _function.Function(
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default'
+                     ':access-mysql-js-1213-1737554083545:latest')
+        self.verify_delete(
+            self.proxy.delete_async_notification,
+            _async.Notification,
+            method_args=[function],
+            expected_args=[],
+            expected_kwargs={
+                'function_urn': function.func_urn.rpartition(":")[0]
+            }
+        )
+
+    def test_all_versions_async_notifications(self):
+        function = _function.Function(
+            name='test',
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default:access-mysql-js-1213-1737554083545:'
+                     'latest'
+        )
+        self.verify_list(
+            self.proxy.all_versions_async_notifications,
+            _async.Notification,
+            method_kwargs={"function": function.func_urn},
+            expected_kwargs={
+                "function_urn": function.func_urn
+            },
+            expected_args=[]
+        )
+
+    def test_async_invocation_requests(self):
+        function = _function.Function(
+            name='test',
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default:access-mysql-js-1213-1737554083545:'
+                     'latest'
+        )
+        self.verify_list(
+            self.proxy.async_invocation_requests,
+            _async.Requests,
+            method_kwargs={"function": function.func_urn},
+            expected_kwargs={
+                "function_urn": function.func_urn.rpartition(":")[0]
+            },
+            expected_args=[]
+        )
+
+    def test_stop_async_invocation_request(self):
+        function = _function.Function(
+            func_urn='urn:fss:eu-de:45c274f200d2498683982c8741fb76ac:'
+                     'function:default'
+                     ':access-mysql-js-1213-1737554083545:latest')
+        self._verify(
+            'otcextensions.sdk.function_graph.v2.async_notification.'
+            'Requests._stop',
+            self.proxy.stop_async_invocation_request,
+            method_args=[function],
+            method_kwargs={"request_id": "123"},
+            expected_args=[self.proxy],
+            expected_kwargs={
+                "function_urn": function.func_urn.rpartition(":")[0],
+                "request_id": "123"
+            }
         )

@@ -1,0 +1,4 @@
+---
+features:
+  - |
+    Add environment variables management support for API Gateway

@@ -25,6 +25,9 @@ extensions = [
     'cliff.sphinxext',
 ]
 
+# Analytics app name
+otcdocs_analytics_app = 'otcextensions'
+
 # openstackdocstheme options
 #otcdocs_repo_name = 'opentelekomcloud/python-otcextensions'
 html_last_updated_fmt = '%Y-%m-%d %H:%M'

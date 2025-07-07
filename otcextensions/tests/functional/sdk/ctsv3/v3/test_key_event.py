@@ -9,15 +9,17 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import uuid
 
 from otcextensions.tests.functional.sdk.ctsv3 import TestCtsv3
 
 
 class TestKeyEvent(TestCtsv3):
+    uuid_v4 = uuid.uuid4().hex[:8]
 
     def test_01_create_event(self):
         attrs = {
-            "notification_name": "test",
+            "notification_name": f'event_{self.uuid_v4}',
             "operation_type": "complete",
         }
         event = self.conn.ctsv3.create_key_event(**attrs)
@@ -28,10 +30,11 @@ class TestKeyEvent(TestCtsv3):
         self.assertGreater(len(events), 0)
 
     def test_03_update_event(self):
-        event = list(self.conn.ctsv3.key_events(notification_type='smn',
-                                                notification_name='test'))[0]
+        event = list(self.conn.ctsv3.key_events(
+            notification_type='smn',
+            notification_name=f'event_{self.uuid_v4}'))[0]
         attrs = {
-            "notification_name": "test_1",
+            "notification_name": f'event_{self.uuid_v4}_update',
             "operation_type": "complete",
             "status": "disabled",
             "notification_id": event['notification_id']
@@ -40,10 +43,12 @@ class TestKeyEvent(TestCtsv3):
         self.assertGreater(len(event['notification_id']), 0)
 
     def test_04_delete_event(self):
-        event = list(self.conn.ctsv3.key_events(notification_type='smn',
-                                                notification_name='test_1'))[0]
+        event = list(self.conn.ctsv3.key_events(
+            notification_type='smn',
+            notification_name=f'event_{self.uuid_v4}_update'))[0]
         self.conn.ctsv3.delete_key_event(event)
         events = list(self.conn.ctsv3.key_events(notification_type='smn'))
-        test_event = [event for event in events
-                      if event['notification_name'] == 'test_1']
+        test_event = [
+            event for event in events
+            if event['notification_name'] == f'event_{self.uuid_v4}_update']
         self.assertEqual(len(test_event), 0)

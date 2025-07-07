@@ -132,7 +132,7 @@ class Share(resource.Resource):
             if self.create_returns_body is None
             else self.create_returns_body
         )
-        microversion = self._get_microversion(session, action='create')
+        microversion = self._get_microversion(session)
         self.microversion = microversion
         self._translate_response(response, has_body=has_body)
         if self.has_body and self.create_returns_body is False:

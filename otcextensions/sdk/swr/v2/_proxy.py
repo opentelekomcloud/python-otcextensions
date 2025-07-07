@@ -214,7 +214,7 @@ class Proxy(proxy.Proxy):
         bp = f'/manage/namespaces/%(namespace)s/repos/{attrs["repository"]}'
         repotype = _repository.Repository
         repotype.requires_id = False
-        return self._update(repotype, base_path=bp, **attrs)
+        return self._update(repotype, "", base_path=bp, **attrs)
 
     def create_repository_permissions(self, **attrs):
         """Create a new repository permissions from attributes

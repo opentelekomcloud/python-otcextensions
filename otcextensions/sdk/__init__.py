@@ -23,6 +23,7 @@ from otcextensions.sdk.cloud import cce as _cce
 from otcextensions.sdk.cloud import dds as _dds
 from otcextensions.sdk.cloud import rds as _rds
 from otcextensions.sdk.compute.v2 import server
+from otcextensions.sdk.network.v2 import service_provider
 
 
 _logger = _log.setup_logging('openstack')
@@ -138,6 +139,21 @@ OTC_SERVICES = {
         'service_type': 'deh',
         'append_project_id': True,
     },
+    'ddmv1': {
+        'service_type': 'ddmv1',
+        'endpoint_service_type': 'ddmv1',
+        'append_project_id': True
+    },
+    'ddmv2': {
+        'service_type': 'ddmv2',
+        'endpoint_service_type': 'ddmv2',
+        'append_project_id': True
+    },
+    'ddmv3': {
+        'service_type': 'ddmv3',
+        'endpoint_service_type': 'ddmv3',
+        'append_project_id': True
+    },
     'dis': {
         'service_type': 'dis',
         'endpoint_service_type': 'disv2'
@@ -194,6 +210,11 @@ OTC_SERVICES = {
         'service_type': 'function_graph',
         'append_project_id': True,
         'endpoint_service_type': 'functiongraph'
+    },
+    'gaussdb': {
+        'service_type': 'gaussdb',
+        'append_project_id': True,
+        'endpoint_service_type': 'gaussdb-mysql'
     },
     'geminidb': {
         'service_type': 'geminidb',
@@ -467,6 +488,8 @@ def patch_openstack_resources():
     openstack.compute.v2.server.Server.remove_tag = server.Server.remove_tag
     openstack.exceptions.raise_from_response = \
         exc.raise_from_response
+    openstack.network.v2.service_provider.ServiceProvider.list = \
+        service_provider.ServiceProvider.list
 
 
 def register_single_service(conn, service_name, project_id=None, service=None):

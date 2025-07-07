@@ -41,7 +41,7 @@ class RecycleInstance(resource.Resource):
     @classmethod
     def list(cls, session, paginated=True, base_path=None, **params):
         session = cls._get_session(session)
-        microversion = cls._get_microversion(session, action='list')
+        microversion = cls._get_microversion(session)
         response = session.get(
             base_path,
             headers={"Content-Type": "application/json"},
