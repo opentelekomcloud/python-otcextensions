@@ -1,0 +1,3 @@
+---
+fixes:
+  - CLI CBR fix in ListVaults.
