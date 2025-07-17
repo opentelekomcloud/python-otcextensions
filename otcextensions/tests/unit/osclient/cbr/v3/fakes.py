@@ -306,6 +306,10 @@ class FakeVault(test_base.Fake):
             'description': 'vault_description',
             'auto_bind': False,
             'name': 'vault-' + uuid.uuid4().hex,
+            'tags': [{
+                'key': 'key-tags',
+                'value': 'val-tags'
+            }],
             'resources': [{
                 'extra_info': {
                     'include_volumes': [{
@@ -315,10 +319,6 @@ class FakeVault(test_base.Fake):
                 },
                 'id': 'resource_id',
                 'type': 'OS::Nova::Server'
-            }],
-            'tags': [{
-                'key': 'key-tags',
-                'value': 'val-tags'
             }],
             'bind_rules': {
                 'tags': [{
