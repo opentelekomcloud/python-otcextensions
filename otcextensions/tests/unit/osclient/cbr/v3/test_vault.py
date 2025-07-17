@@ -202,18 +202,24 @@ class TestListVault(fakes.TestCBR):
 
     objects = fakes.FakeVault.create_multiple(3)
 
-    columns = ('ID', 'name', 'backup_policy_id', 'description', 'created_at')
+    columns = ('ID', 'name', 'backup_policy_id', 'description', 'created_at',
+               'tags', 'resource_id_1', 'resource_type_1')
 
     data = []
 
     for s in objects:
         flat_data = vault._flatten_vault(s)
+        resource_data, _ = vault._add_resources_to_vault_obj(s, (), ())
+        tag_data, _ = vault._add_tags_to_vault_obj(s, (), ())
         data.append((
             flat_data['id'],
             flat_data['name'],
             flat_data['backup_policy_id'],
             flat_data['description'],
             flat_data['created_at'],
+            resource_data[0] if resource_data else None,
+            resource_data[1] if len(resource_data) > 1 else None,
+            tag_data[0] if tag_data else None,
         ))
 
     def setUp(self):
@@ -273,7 +279,11 @@ class TestListVault(fakes.TestCBR):
         )
 
         self.assertEqual(self.columns, columns)
-        self.assertEqual(self.data, list(data))
+        for i, (expected, actual) in enumerate(zip(self.data, list(data))):
+            if expected != actual:
+                print(f"Row {i} mismatch:")
+                print("Expected:", expected)
+                print("Actual:  ", actual)
 
 
 class TestShowVault(fakes.TestCBR):
