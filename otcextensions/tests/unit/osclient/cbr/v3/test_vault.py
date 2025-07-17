@@ -285,6 +285,7 @@ class TestListVault(fakes.TestCBR):
                 print("Expected:", expected)
                 print("Actual:  ", actual)
 
+
 class TestShowVault(fakes.TestCBR):
 
     object = fakes.FakeVault.create_one()
