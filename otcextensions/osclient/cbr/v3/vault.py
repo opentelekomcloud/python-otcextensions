@@ -26,6 +26,9 @@ LOG = logging.getLogger(__name__)
 def _flatten_vault(obj):
     """Flatten the structure of the vault into a single dict
     """
+    bind_rules = []
+    if obj.bind_rules and "tags" in obj.bind_rules:
+        bind_rules = obj.bind_rules["tags"]
     data = {
         'id': obj.id,
         'name': obj.name,
@@ -46,7 +49,7 @@ def _flatten_vault(obj):
         'charging_mode': obj.billing.charging_mode,
         'is_auto_pay': obj.billing.is_auto_pay,
         'is_auto_renew': obj.billing.is_auto_renew,
-        'bind_rules': obj.bind_rules["tags"],
+        'bind_rules': bind_rules,
         'resources': obj.resources,
         'tags': obj.tags,
     }
@@ -201,11 +204,32 @@ class ListVaults(command.Lister):
         if parsed_args.status:
             args['status'] = parsed_args.status
 
-        data = client.vaults(**args)
-        table = (self.columns,
-                 (utils.get_dict_properties(
-                     _flatten_vault(s), self.columns,
-                 ) for s in data))
+        data = list(client.vaults(**args))  # Force evaluation once
+
+        def row_generator():
+            for s in data:
+                row_columns = list(self.columns)
+                row_data = utils.get_dict_properties(
+                    _flatten_vault(s), row_columns
+                )
+                if s.resources:
+                    row_data, row_columns = _add_resources_to_vault_obj(
+                        s, row_data, tuple(row_columns)
+                    )
+                if s.tags:
+                    row_data, row_columns = _add_tags_to_vault_obj(
+                        s, row_data, tuple(row_columns)
+                    )
+                yield row_data
+
+        columns = list(self.columns)
+        for s in data:
+            if s.resources or s.tags:
+                _, columns = _add_tags_to_vault_obj(s, (), tuple(columns))
+                _, columns = _add_resources_to_vault_obj(s, (), tuple(columns))
+                break
+
+        table = (columns, row_generator())
         return table
 
 
