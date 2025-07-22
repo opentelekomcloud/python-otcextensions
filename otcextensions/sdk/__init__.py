@@ -267,6 +267,10 @@ OTC_SERVICES = {
     'nat': {
         'service_type': 'nat',
     },
+    'natv3': {
+        'service_type': 'natv3',
+        'endpoint_service_type': 'natv3'
+    },
     'obs': {
         'service_type': 'obs',
         'require_ak': True,
