@@ -204,8 +204,14 @@ class ListVaults(command.Lister):
         if parsed_args.status:
             args['status'] = parsed_args.status
 
-        data = list(client.vaults(**args))  # Force evaluation once
+        data = list(client.vaults(**args))
 
+        columns = list(self.columns)
+        for s in data:
+            if s.resources:
+                _, columns = _add_resources_to_vault_obj(s, (), tuple(columns))
+            if s.tags:
+                _, columns = _add_tags_to_vault_obj(s, (), tuple(columns))
         def row_generator():
             for s in data:
                 row_columns = list(self.columns)
@@ -220,15 +226,8 @@ class ListVaults(command.Lister):
                     row_data, row_columns = _add_tags_to_vault_obj(
                         s, row_data, tuple(row_columns)
                     )
-                yield row_data
-
-        columns = list(self.columns)
-        for s in data:
-            if s.resources or s.tags:
-                _, columns = _add_tags_to_vault_obj(s, (), tuple(columns))
-                _, columns = _add_resources_to_vault_obj(s, (), tuple(columns))
-                break
-
+                row_dict = {col: val for col, val in zip(row_columns, row_data)}
+                yield tuple(row_dict.get(col, '') for col in columns)
         table = (columns, row_generator())
         return table
 
