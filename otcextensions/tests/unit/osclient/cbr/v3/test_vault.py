@@ -203,7 +203,7 @@ class TestListVault(fakes.TestCBR):
     objects = fakes.FakeVault.create_multiple(3)
 
     columns = ('ID', 'name', 'backup_policy_id', 'description', 'created_at',
-               'tags', 'resource_id_1', 'resource_type_1')
+               'resource_id_1', 'resource_type_1', 'tags')
 
     data = []
 
@@ -277,8 +277,7 @@ class TestListVault(fakes.TestCBR):
             protect_type='protect-type',
             status='status'
         )
-
-        self.assertEqual(self.columns, columns)
+        self.assertEqual(self.columns, tuple(columns))
         for i, (expected, actual) in enumerate(zip(self.data, list(data))):
             if expected != actual:
                 print(f"Row {i} mismatch:")
