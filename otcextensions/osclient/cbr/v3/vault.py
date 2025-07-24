@@ -218,6 +218,7 @@ class ListVaults(command.Lister):
             if s.tags and 'tags' not in seen_columns:
                 columns.append('tags')
                 seen_columns.add('tags')
+
         def row_generator():
             for s in data:
                 row_columns = list(self.columns)
@@ -232,8 +233,11 @@ class ListVaults(command.Lister):
                     row_data, row_columns = _add_tags_to_vault_obj(
                         s, row_data, tuple(row_columns)
                     )
-                row_dict = {col: val for col, val in zip(row_columns, row_data)}
+                row_dict = {
+                    col: val for col, val in zip(row_columns, row_data)
+                }
                 yield tuple(row_dict.get(col, '') for col in columns)
+
         table = (columns, row_generator())
         return table
 
@@ -786,7 +790,6 @@ class UnbindVaultPolicy(command.Command):
         return parser
 
     def take_action(self, parsed_args):
-
         client = self.app.client_manager.cbr
         vault = client.find_vault(
             name_or_id=parsed_args.vault,
