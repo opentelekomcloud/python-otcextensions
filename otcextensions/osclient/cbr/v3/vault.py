@@ -207,11 +207,17 @@ class ListVaults(command.Lister):
         data = list(client.vaults(**args))
 
         columns = list(self.columns)
+        seen_columns = set(columns)
         for s in data:
             if s.resources:
-                _, columns = _add_resources_to_vault_obj(s, (), tuple(columns))
-            if s.tags:
-                _, columns = _add_tags_to_vault_obj(s, (), tuple(columns))
+                _, new_cols = _add_resources_to_vault_obj(s, (), tuple())
+                for col in new_cols:
+                    if col not in seen_columns:
+                        columns.append(col)
+                        seen_columns.add(col)
+            if s.tags and 'tags' not in seen_columns:
+                columns.append('tags')
+                seen_columns.add('tags')
         def row_generator():
             for s in data:
                 row_columns = list(self.columns)
