@@ -23,7 +23,6 @@
     parent: otcinfra-upload-image-quay
     provides: otce-container-image
     vars: *otce_image_vars
-    nodeset: ubuntu-jammy
 
 - project:
     merge-mode: squash-merge
