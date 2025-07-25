@@ -38,7 +38,6 @@
         - tox-functional-eu-de
         - tox-functional-eu-nl:
             voting: false
-        - otce-upload-image
     check-post:
       jobs:
         - otce-upload-image
