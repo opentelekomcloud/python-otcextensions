@@ -35,6 +35,7 @@ from otcextensions.sdk.apig.v2 import custom_authorizer as _custom_auth
 from otcextensions.sdk.apig.v2 import vpc_channel as _vpc
 from otcextensions.sdk.apig.v2 import backend_server_group as _vpc_sg
 from otcextensions.sdk.apig.v2 import backend_server as _vpc_s
+from otcextensions.sdk.apig.v2 import group_response as _group_response
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
 
@@ -1869,4 +1870,119 @@ class TestApiCall(TestApiGatewayProxy):
             method_args=[gateway],
             expected_args=[self.proxy],
             expected_kwargs={'gateway_id': None}
+        )
+
+
+class TestGroupResponse(TestApiGatewayProxy):
+    def test_get_group_response(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        response = _group_response.GroupResponse()
+        self.verify_get(self.proxy.get_group_response,
+                        _group_response.GroupResponse,
+                        method_args=[gateway, group, response],
+                        expected_args=[None],
+                        method_kwargs={},
+                        expected_kwargs={'group_id': None,
+                                         'gateway_id': None}
+                        )
+
+    def test_create_group_response(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        self.verify_create(self.proxy.create_group_response,
+                           _group_response.GroupResponse,
+                           method_args=[gateway, group],
+                           expected_args=[],
+                           method_kwargs={},
+                           expected_kwargs={'gateway_id': None,
+                                            'group_id': None}
+                           )
+
+    def test_update_group_response(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        response = _group_response.GroupResponse()
+        self.verify_update(self.proxy.update_group_response,
+                           _group_response.GroupResponse,
+                           method_args=[gateway, group, response],
+                           expected_args=[None],
+                           method_kwargs={},
+                           expected_kwargs={'gateway_id': None,
+                                            'group_id': None}
+                           )
+
+    def test_delete_group_response(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        response = _group_response.GroupResponse()
+        self.verify_delete(self.proxy.delete_group_response,
+                           _group_response.GroupResponse,
+                           method_args=[gateway, group, response],
+                           expected_args=[None],
+                           method_kwargs={},
+                           expected_kwargs={'gateway_id': None,
+                                            'group_id': None}
+                           )
+
+    def test_list_group_responses(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        self.verify_list(self.proxy.group_responses,
+                         _group_response.GroupResponse,
+                         method_args=[gateway, group],
+                         expected_args=[],
+                         method_kwargs={},
+                         expected_kwargs={'gateway_id': None,
+                                          'group_id': None}
+                         )
+
+
+class TestErrorResponse(TestApiGatewayProxy):
+    def test_get_error_response(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        response = _group_response.GroupResponse()
+        response_type = None
+        self._verify(
+            'otcextensions.sdk.apig.v2.error_response.'
+            'ErrorResponse._get',
+            self.proxy.get_error_response,
+            method_args=[gateway, group, response, response_type],
+            expected_args=[self.proxy],
+            expected_kwargs={'gateway_id': None,
+                             'group_id': None, 'response_id': None,
+                             'response_type': None}
+        )
+
+    def test_update_error_response(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        response = _group_response.GroupResponse()
+        response_type = None
+        self._verify(
+            'otcextensions.sdk.apig.v2.error_response.'
+            'ErrorResponse._update',
+            self.proxy.update_error_response,
+            method_args=[gateway, group, response, response_type],
+            expected_args=[self.proxy],
+            expected_kwargs={'gateway_id': None,
+                             'group_id': None, 'response_id': None,
+                             'response_type': None}
+        )
+
+    def test_delete_error_response(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        response = _group_response.GroupResponse()
+        response_type = None
+        self._verify(
+            'otcextensions.sdk.apig.v2.error_response.'
+            'ErrorResponse._delete',
+            self.proxy.delete_error_response,
+            method_args=[gateway, group, response, response_type],
+            expected_args=[self.proxy],
+            expected_kwargs={'gateway_id': None,
+                             'group_id': None, 'response_id': None,
+                             'response_type': None}
         )

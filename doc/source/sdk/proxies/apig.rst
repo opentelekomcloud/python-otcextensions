@@ -178,3 +178,11 @@ Monitoring Information Query
   :noindex:
   :members: list_api_calls_for_period, list_api_calls_for_group,
             list_metric_data
+
+Group Response Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: create_group_response, update_group_response,
+            delete_group_response, group_responses, get_group_response,
+            get_error_response, update_error_response, delete_error_response
