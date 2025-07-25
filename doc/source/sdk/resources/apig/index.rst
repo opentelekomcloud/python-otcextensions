@@ -31,3 +31,5 @@ ApiGateway Resources
    v2/backend_server_group
    v2/api_call
    v2/metric_data
+   v2/group_response
+   v2/error_response

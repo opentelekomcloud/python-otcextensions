@@ -1284,3 +1284,77 @@ API group over the past hour.
 
 .. literalinclude:: ../examples/apig/list_api_calls_for_group.py
   :lines: 16-24
+
+
+Group Response
+--------------
+
+Creating a Group Response
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to create a group response in the API Gateway.
+
+.. literalinclude:: ../examples/apig/create_group_response.py
+   :lines: 16-37
+
+Querying Group Response Details
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to retrieve details of a specific
+group response.
+
+.. literalinclude:: ../examples/apig/get_group_response.py
+   :lines: 16-25
+
+Modifying a Group Response
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to update configuration of an existing
+group response.
+
+.. literalinclude:: ../examples/apig/update_group_response.py
+   :lines: 16-29
+
+Deleting a Group Response
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to delete a group response from the API Gateway.
+
+.. literalinclude:: ../examples/apig/delete_group_response.py
+   :lines: 16-25
+
+Querying the Response of an Error Type
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to retrieve the response configuration for a
+specific error type.
+
+.. literalinclude:: ../examples/apig/get_error_response.py
+   :lines: 16-25
+
+Modifying the Response of an Error Type
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to update the response settings for
+a given error type.
+
+.. literalinclude:: ../examples/apig/update_error_response.py
+   :lines: 16-30
+
+Deleting the Response of an Error Type
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to delete the response configuration for
+a specific error type.
+
+.. literalinclude:: ../examples/apig/delete_error_response.py
+   :lines: 16-25
+
+Querying Group Responses
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to list all group responses configured
+in the API Gateway.
+
+.. literalinclude:: ../examples/apig/list_group_responses.py
+   :lines: 16-23
