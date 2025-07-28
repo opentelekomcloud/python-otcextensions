@@ -656,7 +656,7 @@ class UpdateListener(command.ShowOne):
         )
         parser.add_argument(
             '--http2-enable',
-            type='store_true',
+            action='store_true',
             help=_('Specifies whether to use HTTP/2. This parameter'
                    'is available only for HTTPS listeners. If you configure'
                    'this parameter for other types of listeners, it will not'
@@ -700,7 +700,7 @@ class UpdateListener(command.ShowOne):
         )
         parser.add_argument(
             '--disable-member-retry',
-            action='story_true',
+            action='store_true',
             help=_('Specifies whether to enable health check retries for'
                    'backend servers. This parameter is available only for'
                    'HTTP and HTTPS listeners.')
