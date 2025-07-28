@@ -41,6 +41,8 @@ from otcextensions.sdk.apig.v2 import backend_server_group as _backend_group
 from otcextensions.sdk.apig.v2 import backend_server as _backend_server
 from otcextensions.sdk.apig.v2 import api_call as _api_call
 from otcextensions.sdk.apig.v2 import metric_data as _metric_data
+from otcextensions.sdk.apig.v2 import group_response as _group_response
+from otcextensions.sdk.apig.v2 import error_response as _error_response
 
 
 class Proxy(proxy.Proxy):
@@ -2969,4 +2971,176 @@ class Proxy(proxy.Proxy):
             self,
             gateway_id=gateway.id,
             **attrs
+        )
+
+    # ======== Group Response Management Methods ========
+
+    def create_group_response(self, gateway, group, **attrs):
+        """Create a custom response for an API group
+
+        This method creates a custom response that can be returned by the
+        API Gateway when certain conditions are met (e.g., errors).
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID of the API group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.group.Group`
+        :param attrs: Attributes for the custom response
+
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.group_response.GroupResponse`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        return self._create(
+            _group_response.GroupResponse,
+            gateway_id=gateway.id,
+            group_id=group.id,
+            **attrs
+        )
+
+    def get_group_response(self, gateway, group, response):
+        """Retrieve a specific group response
+
+        This method fetches details of a specific custom response for an API
+        group within the specified API Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID of the API group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.group.Group`
+        :param response: The ID of the group response or an instance of
+            :class:`~otcextensions.sdk.apig.v2.group_response.GroupResponse`
+
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.group_response.GroupResponse`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        response = self._get_resource(_group_response.GroupResponse, response)
+        return self._get(
+            _group_response.GroupResponse,
+            response.id,
+            gateway_id=gateway.id,
+            group_id=group.id
+        )
+
+    def group_responses(self, gateway, group, **attrs):
+        """List all custom responses for an API group
+        This method retrieves all custom responses defined for a specific
+        API group within the specified API Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID of the API group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.group.Group`
+        :param attrs: Additional parameters for filtering the list,
+            such as limit, offset, or specific response attributes
+
+        :returns: A generator of
+            :class:`~otcextensions.sdk.apig.v2.group_response.GroupResponse`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        return self._list(
+            _group_response.GroupResponse,
+            gateway_id=gateway.id,
+            group_id=group.id,
+            **attrs
+        )
+
+    def update_group_response(self, gateway, group, response, **attrs):
+        """Update a custom response for an API group
+        This method updates an existing custom response for a specific API
+        group within the specified API Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID of the API group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.group.Group`
+        :param response: The ID of the group response or an instance of
+            :class:`~otcextensions.sdk.apig.v2.group_response.GroupResponse`
+        :param attrs: Attributes to update in the group response
+
+        :returns: The updated instance of
+            :class:`~otcextensions.sdk.apig.v2.group_response.GroupResponse`
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        response = self._get_resource(_group_response.GroupResponse, response)
+        return self._update(
+            _group_response.GroupResponse,
+            response.id,
+            gateway_id=gateway.id,
+            group_id=group.id,
+            **attrs
+        )
+
+    def delete_group_response(self, gateway, group, response,
+                              ignore_missing=False):
+        """Delete a custom response for an API group
+        This method deletes a specific custom response for an API group
+        within the specified API Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID of the API group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.group.Group`
+        :param response: The ID of the group response or an instance of
+            :class:`~otcextensions.sdk.apig.v2.group_response.GroupResponse`
+        :param ignore_missing: If True, no exception is raised if the
+            response does not exist. Default is False.
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        response = self._get_resource(_group_response.GroupResponse, response)
+        return self._delete(
+            _group_response.GroupResponse,
+            response.id,
+            gateway_id=gateway.id,
+            group_id=group.id,
+            ignore_missing=ignore_missing
+        )
+
+    def get_error_response(self, gateway, group, response, response_type):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        response = self._get_resource(_group_response.GroupResponse, response)
+        error_response = _error_response.ErrorResponse()
+        return error_response._get(
+            self,
+            gateway_id=gateway.id,
+            group_id=group.id,
+            response_id=response.id,
+            response_type=response_type
+        )
+
+    def update_error_response(self, gateway, group, response, response_type,
+                              **attrs):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        response = self._get_resource(_group_response.GroupResponse, response)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        error_response = _error_response.ErrorResponse()
+        return error_response._update(
+            self,
+            gateway_id=gateway.id,
+            group_id=group.id,
+            response_id=response.id,
+            response_type=response_type,
+            **attrs
+        )
+
+    def delete_error_response(self, gateway, group, response, response_type):
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        response = self._get_resource(_group_response.GroupResponse, response)
+        error_response = _error_response.ErrorResponse()
+        return error_response._delete(
+            self,
+            gateway_id=gateway.id,
+            group_id=group.id,
+            response_id=response.id,
+            response_type=response_type,
         )
