@@ -191,4 +191,4 @@ Tag Operations
 ^^^^^^^^^^^^^^
 .. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
   :noindex:
-  :members: list_tags
+  :members: tags
