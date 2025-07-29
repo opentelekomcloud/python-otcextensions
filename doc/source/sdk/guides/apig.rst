@@ -1358,3 +1358,15 @@ in the API Gateway.
 
 .. literalinclude:: ../examples/apig/list_group_responses.py
    :lines: 16-23
+
+Tag
+---
+
+Listing Tags
+^^^^^^^^^^^^
+
+This example demonstrates how to list all tags associated with a specific
+API Gateway.
+
+.. literalinclude:: ../examples/apig/list_tags.py
+   :lines: 16-21

@@ -186,3 +186,9 @@ Group Response Operations
   :members: create_group_response, update_group_response,
             delete_group_response, group_responses, get_group_response,
             get_error_response, update_error_response, delete_error_response
+
+Tag Operations
+^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: list_tags
