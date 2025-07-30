@@ -13,12 +13,16 @@ from otcextensions.tests.functional.sdk.apig import TestApiG
 
 
 class TestTags(TestApiG):
-    gateway_id = "560de602c9f74969a05ff01d401a53ed"
 
     def setUp(self):
         super(TestTags, self).setUp()
+        self.create_gateway()
+
+    def tearDown(self):
+        super(TestTags, self).tearDown()
+        self.delete_gateway()
 
     def test_list_tags(self):
-        tags = list(self.client.tags(gateway=TestTags.gateway_id))
+        tags = list(self.client.tags(gateway=TestTags.gateway))
         print("Tags:", tags)
         self.assertGreater(len(tags), 0, "No tags found")
