@@ -30,6 +30,12 @@ class TestApiG(base.BaseFunctionalTest):
         security_group = security_groups[0]
         available_zone_ids = ["eu-de-01"]
         nmb = uuid.uuid4().hex[:8]
+        tags = [
+            {
+                "key": "check_this",
+                "value": "mate"
+            }
+        ]
         return {
             'instance_name': 'test_gateway_{}'.format(nmb),
             'spec_id': 'BASIC',
@@ -37,6 +43,7 @@ class TestApiG(base.BaseFunctionalTest):
             'subnet_id': subnet.id,
             'security_group_id': security_group.id,
             'available_zone_ids': available_zone_ids,
+            'tags': tags
         }
 
     def create_gateway(self):

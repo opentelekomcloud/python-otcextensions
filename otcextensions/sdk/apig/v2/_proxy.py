@@ -43,6 +43,7 @@ from otcextensions.sdk.apig.v2 import api_call as _api_call
 from otcextensions.sdk.apig.v2 import metric_data as _metric_data
 from otcextensions.sdk.apig.v2 import group_response as _group_response
 from otcextensions.sdk.apig.v2 import error_response as _error_response
+from otcextensions.sdk.apig.v2 import tag as _tag
 
 
 class Proxy(proxy.Proxy):
@@ -3105,6 +3106,23 @@ class Proxy(proxy.Proxy):
         )
 
     def get_error_response(self, gateway, group, response, response_type):
+        """
+        Retrieve a specific error response for an API group
+        This method fetches details of a specific error response for an API
+        group within the specified API Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID of the API group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.group.Group`
+        :param response: The ID of the group response or an instance of
+            :class:`~otcextensions.sdk.apig.v2.group_response.GroupResponse`
+        :param response_type: The type of the error response (e.g., 'default',
+            'unauthorized', 'not_found', etc.)
+
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.error_response.ErrorResponse`
+        """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         group = self._get_resource(_api_group.ApiGroup, group)
         response = self._get_resource(_group_response.GroupResponse, response)
@@ -3119,6 +3137,23 @@ class Proxy(proxy.Proxy):
 
     def update_error_response(self, gateway, group, response, response_type,
                               **attrs):
+        """Update a custom error response for an API group
+        This method updates an existing custom error response for a specific
+        API group within the specified API Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID of the API group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.group.Group`
+        :param response: The ID of the group response or an instance of
+            :class:`~otcextensions.sdk.apig.v2.group_response.GroupResponse`
+        :param response_type: The type of the error response (e.g., 'default',
+            'unauthorized', 'not_found', etc.)
+        :param attrs: Attributes to update in the error response
+
+        :returns: The updated instance of
+            :class:`~otcextensions.sdk.apig.v2.error_response.ErrorResponse`
+        """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         response = self._get_resource(_group_response.GroupResponse, response)
         group = self._get_resource(_api_group.ApiGroup, group)
@@ -3133,6 +3168,22 @@ class Proxy(proxy.Proxy):
         )
 
     def delete_error_response(self, gateway, group, response, response_type):
+        """
+        Delete a custom error response for an API group
+        This method deletes a specific custom error response for an API group
+        within the specified API Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID of the API group or an instance of
+            :class:`~otcextensions.sdk.apig.v2.group.Group`
+        :param response: The ID of the group response or an instance of
+            :class:`~otcextensions.sdk.apig.v2.group_response.GroupResponse`
+        :param response_type: The type of the error response (e.g., 'default',
+            'unauthorized', 'not_found', etc.)
+
+        :returns: None
+        """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         group = self._get_resource(_api_group.ApiGroup, group)
         response = self._get_resource(_group_response.GroupResponse, response)
@@ -3143,4 +3194,23 @@ class Proxy(proxy.Proxy):
             group_id=group.id,
             response_id=response.id,
             response_type=response_type,
+        )
+
+    # ======== Tag Management Methods ========
+    def tags(self, gateway):
+        """List all tags for an API Gateway instance
+
+        This method retrieves all tags associated with the specified API
+        Gateway instance.
+
+        :param gateway: The ID of the API Gateway instance or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+
+        :returns: A generator of
+            :class:`~otcextensions.sdk.apig.v2.tag.Tag` instances
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _tag.Tag,
+            gateway_id=gateway.id
         )

@@ -36,6 +36,7 @@ from otcextensions.sdk.apig.v2 import vpc_channel as _vpc
 from otcextensions.sdk.apig.v2 import backend_server_group as _vpc_sg
 from otcextensions.sdk.apig.v2 import backend_server as _vpc_s
 from otcextensions.sdk.apig.v2 import group_response as _group_response
+from otcextensions.sdk.apig.v2 import tag as _tag
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
 
@@ -1986,3 +1987,15 @@ class TestErrorResponse(TestApiGatewayProxy):
                              'group_id': None, 'response_id': None,
                              'response_type': None}
         )
+
+
+class TestTag(TestApiGatewayProxy):
+    def test_list_tags(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(self.proxy.tags,
+                         _tag.Tag,
+                         method_args=[gateway],
+                         expected_args=[],
+                         method_kwargs={},
+                         expected_kwargs={'gateway_id': None}
+                         )
