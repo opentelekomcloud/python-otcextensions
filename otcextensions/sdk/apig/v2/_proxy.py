@@ -43,6 +43,7 @@ from otcextensions.sdk.apig.v2 import api_call as _api_call
 from otcextensions.sdk.apig.v2 import metric_data as _metric_data
 from otcextensions.sdk.apig.v2 import group_response as _group_response
 from otcextensions.sdk.apig.v2 import error_response as _error_response
+from otcextensions.sdk.apig.v2 import ssl_certificate as _ssl_certificate
 from otcextensions.sdk.apig.v2 import tag as _tag
 
 
@@ -3213,4 +3214,102 @@ class Proxy(proxy.Proxy):
         return self._list(
             _tag.Tag,
             gateway_id=gateway.id
+        )
+
+    # ======== SSL Certificate Management Methods ========
+
+    def create_ssl_certificate(self, **attrs):
+        """Create a new SSL certificate
+        This method creates a new SSL certificate for the specified API
+        Gateway instance.
+
+        :param attrs: Attributes for the SSL certificate, such as name,
+            cert_content, private_key, type, etc.
+
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.ssl_certificate.SslCertificate`
+        """
+        return self._create(
+            _ssl_certificate.SslCertificate,
+            **attrs
+        )
+
+    def get_ssl_certificate(self, ssl_certificate):
+        """Retrieve details of an SSL certificate
+
+        This method fetches the details of a specific SSL certificate
+        associated with the given API Gateway instance.
+
+        :param ssl_certificate: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.ssl_certificate.SslCertificate`
+
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.ssl_certificate.SslCertificate`
+        """
+        ssl_certificate = self._get_resource(
+            _ssl_certificate.SslCertificate, ssl_certificate
+        )
+        return self._get(
+            _ssl_certificate.SslCertificate,
+            ssl_certificate.id,
+        )
+
+    def ssl_certificates(self, **attrs):
+        """List all SSL certificates
+
+        This method retrieves all SSL certificates associated with the API
+        Gateway instance.
+
+        :param attrs: Optional query parameters for filtering the list,
+            such as limit, offset, common_name, etc.
+
+        :returns: A generator of
+            :class:`~otcextensions.sdk.apig.v2.ssl_certificate.SslCertificate`
+        """
+        return self._list(
+            _ssl_certificate.SslCertificate,
+            **attrs
+        )
+
+    def update_ssl_certificate(self, ssl_certificate, **attrs):
+        """Update an existing SSL certificate
+
+        This method updates the specified SSL certificate with new attributes.
+
+        :param ssl_certificate: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.ssl_certificate.SslCertificate`
+        :param attrs: Attributes to update in the SSL certificate
+
+        :returns: The updated instance of
+            :class:`~otcextensions.sdk.apig.v2.ssl_certificate.SslCertificate`
+        """
+        ssl_certificate = self._get_resource(
+            _ssl_certificate.SslCertificate, ssl_certificate
+        )
+        return self._update(
+            _ssl_certificate.SslCertificate,
+            ssl_certificate.id,
+            **attrs
+        )
+
+    def delete_ssl_certificate(self, ssl_certificate, ignore_missing=False):
+        """Delete an SSL certificate
+
+        This method deletes the specified SSL certificate from the API
+        Gateway instance.
+
+        :param ssl_certificate: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.ssl_certificate.SslCertificate`
+        :param ignore_missing: If True, no exception is raised if the
+            certificate does not exist. Default is False.
+
+        :returns: None
+        """
+        ssl_certificate = self._get_resource(
+            _ssl_certificate.SslCertificate, ssl_certificate
+        )
+        self._delete(
+            _ssl_certificate.SslCertificate,
+            ssl_certificate.id,
+            ignore_missing=ignore_missing
         )
