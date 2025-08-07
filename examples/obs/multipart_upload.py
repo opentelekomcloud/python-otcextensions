@@ -16,7 +16,7 @@ Create an multipart upload of a large object
 """
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud='swiss')
 sdk.register_otc_extensions(conn)
 sdk.get_ak_sk(conn)
 
@@ -27,8 +27,8 @@ container = conn.obs.create_container(
 )
 
 obj = conn.obs.upload_object(
-    name='pdfs/book.pdf',
-    filename='my-book.pdf',
+    name='rancheros-openstack',
+    filename='rancheros-openstack.img',
     container=container,
-    segment_size=1400000
+    segment_size=14000000
 )
