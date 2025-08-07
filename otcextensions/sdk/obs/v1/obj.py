@@ -347,7 +347,9 @@ class Object(_base.BaseResource):
             dict_raw_resource = _base.BaseResource.etree_to_dict(element)
             dict_raw_resource = Object.clear_element(dict_raw_resource, proxy)
             if element.tag.endswith('Part'):
-                dict_resource.setdefault('Parts', []).append(dict_raw_resource['Part'])
+                dict_resource.setdefault('Parts', []).append(
+                    dict_raw_resource['Part']
+                )
                 continue
             dict_resource.update(dict_raw_resource)
         return dict_resource
