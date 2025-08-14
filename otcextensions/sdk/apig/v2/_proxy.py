@@ -3268,6 +3268,7 @@ class Proxy(proxy.Proxy):
         """
         return self._list(
             _ssl_certificate.SslCertificate,
+            paginated=False,
             **attrs
         )
 

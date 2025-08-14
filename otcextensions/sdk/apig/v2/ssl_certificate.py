@@ -19,7 +19,7 @@ class SslCertificate(resource.Resource):
     allow_fetch = True
     allow_delete = True
     allow_list = True
-    allow_update = True
+    allow_commit = True
 
     resources_key = 'certs'
 
