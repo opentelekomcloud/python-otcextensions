@@ -27,9 +27,9 @@ from otcextensions.i18n import _
 LOG = logging.getLogger(__name__)
 
 
-DISK_TYPE_CHOICES = ['common', 'high', 'ultrahigh']
+DISK_TYPE_CHOICES = ['high', 'ultrahigh']
 NODE_TYPE_CHOICES = ['ess', 'ess-cold', 'ess-client', 'ess-master']
-VOLUME_TYPE_CHOICES = ['ULTRAHIGH', 'COMMON', 'HIGH']
+VOLUME_TYPE_CHOICES = ['ULTRAHIGH', 'HIGH']
 UPGRADE_TYPE_CHOICES = ['same', 'cross', 'cross-engine']
 
 
@@ -103,7 +103,7 @@ class CreateCluster(command.ShowOne):
                 'If datastore_type is `elasticsearch` supported versions: '
                 '(7.6.2, 7.9.3, 7.10.2)\n'
                 'If datastore_type is `opensearch` supported versions: '
-                '(1.3.6)\n'
+                '(1.3.6, 2.11.0)\n'
                 '(default datastore_version: 7.10.2).'
             ),
         )
@@ -147,12 +147,12 @@ class CreateCluster(command.ShowOne):
             '--volume-type',
             metavar='{' + ','.join(DISK_TYPE_CHOICES) + '}',
             type=lambda s: s.upper(),
-            default='COMMON',
+            default='HIGH',
             dest='volume_type',
             choices=[s.upper() for s in DISK_TYPE_CHOICES],
             help=_(
-                'Volume type. Supported types: COMMON, HIGH, ULTRAHIGH. '
-                '(default value: COMMON)'
+                'Volume type. Supported types: HIGH, ULTRAHIGH. '
+                '(default value: HIGH)'
             ),
         )
         network_group = parser.add_argument_group('Network Parameters')
