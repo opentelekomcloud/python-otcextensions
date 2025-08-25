@@ -1424,7 +1424,7 @@ Deleting an SSL Certificate
 This example demonstrates how to delete an SSL certificate
 from the API Gateway.
 
-.. literalinclude:: ../examples/apig/delete_ssl_certificate.py
+.. literalinclude:: ../examples/apig/delete_ssl_cert.py
    :lines: 16-20
 
 Modifying an SSL Certificate

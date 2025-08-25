@@ -3393,10 +3393,10 @@ class Proxy(proxy.Proxy):
         )
 
     def bind_ssl_certificates_for_domain(self, ssl_certificate, **attrs):
-        """
-        List all SSL certificates bound to a domain
+        """List all SSL certificates bound to a domain
         This method retrieves all SSL certificates that are currently bound
         to the specified domain within an API Gateway instance.
+
         :param ssl_certificate: The ID or an instance of
             :class:`~otcextensions.sdk.apig.v2.ssl_certificate.SslCertificate`
         :param attrs: Optional query parameters for filtering the list
@@ -3414,8 +3414,7 @@ class Proxy(proxy.Proxy):
         )
 
     def unbind_ssl_certificates_for_domain(self, ssl_certificate, **attrs):
-        """
-        Unbind an SSL certificate from a domain
+        """Unbind an SSL certificate from a domain
         This method unbinds the specified SSL certificate from a domain
         within an API Gateway instance.
 
