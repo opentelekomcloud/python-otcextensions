@@ -1,0 +1,4 @@
+---
+fixes:
+  - |
+    Fix for CSS default volume type.
