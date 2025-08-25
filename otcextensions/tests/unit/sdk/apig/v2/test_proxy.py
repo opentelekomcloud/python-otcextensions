@@ -39,6 +39,7 @@ from otcextensions.sdk.apig.v2 import group_response as _group_response
 from otcextensions.sdk.apig.v2 import tag as _tag
 from otcextensions.sdk.apig.v2 import ssl_certificate as _ssl_cert
 from otcextensions.sdk.apig.v2 import ssl_domain as _ssl_domain
+from otcextensions.sdk.apig.v2 import config as _config
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
 
@@ -2116,3 +2117,24 @@ class TestSSLDomains(TestApiGatewayProxy):
             expected_args=[self.proxy],
             expected_kwargs={'certificate_id': None}
         )
+
+
+class TestConfig(TestApiGatewayProxy):
+    def test_list_configs(self):
+        self.verify_list(self.proxy.configs,
+                         _config.Config,
+                         method_args=[],
+                         expected_args=[],
+                         method_kwargs={},
+                         expected_kwargs={}
+                         )
+
+    def test_list_configs_for_gateway(self):
+        gateway = _gateway.Gateway()
+        self.verify_list(self.proxy.configs_for_gateway,
+                         _config.Config,
+                         method_args=[gateway],
+                         expected_args=[],
+                         method_kwargs={},
+                         expected_kwargs={}
+                         )

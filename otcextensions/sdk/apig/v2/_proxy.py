@@ -46,6 +46,7 @@ from otcextensions.sdk.apig.v2 import error_response as _error_response
 from otcextensions.sdk.apig.v2 import ssl_certificate as _ssl_certificate
 from otcextensions.sdk.apig.v2 import ssl_domain as _ssl_domain
 from otcextensions.sdk.apig.v2 import tag as _tag
+from otcextensions.sdk.apig.v2 import config as _config
 
 
 class Proxy(proxy.Proxy):
@@ -3433,3 +3434,38 @@ class Proxy(proxy.Proxy):
             certificate_id=ssl_certificate.id,
             **attrs
         )
+
+    # ======== Configuration Management Methods ========
+
+    def configs(self, **attrs):
+        """List all configuration items
+
+        This method retrieves all configuration items for the API Gateway
+        instance.
+
+        :param attrs: Optional query parameters for filtering the list,
+            such as limit, offset, or specific config attributes
+
+        :returns: A generator of
+            :class:`~otcextensions.sdk.apig.v2.config.Config` instances
+        """
+        return self._list(
+            _config.Config,
+            paginated=False,
+            **attrs
+        )
+
+    def configs_for_gateway(self, gateway_id, **attrs):
+        """Get configuration items for a specific gateway.
+
+        :param gateway_id: The ID of the gateway.
+        :param attrs: Additional parameters to be passed to the
+                       underlying `Session.get` method.
+        :returns: A generator of configuration items.
+        """
+        base_path = f'/apigw/instances/{gateway_id}/project/configs'
+        return self._list(
+            _config.Config,
+            paginated=False,
+            base_path=base_path,
+            **attrs,)

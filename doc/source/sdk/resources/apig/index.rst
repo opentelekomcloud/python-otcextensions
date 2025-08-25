@@ -36,3 +36,4 @@ ApiGateway Resources
    v2/tag
    v2/ssl_certificate
    v2/ssl_domain
+   v2/config
