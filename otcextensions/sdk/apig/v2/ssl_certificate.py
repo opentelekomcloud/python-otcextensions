@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
+from openstack import exceptions
 
 
 class SslCertificate(resource.Resource):
@@ -54,3 +55,20 @@ class SslCertificate(resource.Resource):
     not_before = resource.Body('not_before')
     serial_number = resource.Body('serial_number')
     issuer = resource.Body('issuer', type=list)
+
+    def _bind_domain(self, session, gateway_id, group_id, domain_id, **attrs):
+        """Bind SSL certificate to a domain."""
+        url = (f'/apigw/instances/{gateway_id}/api-groups/{group_id}/'
+               f'domains/{domain_id}/certificates/attach')
+        response = session.post(url, json=attrs)
+        exceptions.raise_from_response(response)
+        return None
+
+    def _unbind_domain(self, session, gateway_id,
+                       group_id, domain_id, **attrs):
+        """Unbind SSL certificate from a domain."""
+        url = (f'/apigw/instances/{gateway_id}/api-groups/{group_id}/'
+               f'domains/{domain_id}/certificates/detach')
+        response = session.post(url, json=attrs)
+        exceptions.raise_from_response(response)
+        return None

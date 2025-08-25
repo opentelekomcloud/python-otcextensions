@@ -10,23 +10,25 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from pathlib import Path
-
 from otcextensions.tests.functional.sdk.apig import TestApiG
 
+
 class TestSSLCert(TestApiG):
-    gateway = "560de602c9f74969a05ff01d401a53ed"
+    gateway_id = "560de602c9f74969a05ff01d401a53ed"
+    group_id = "ce973ff83ce54ef192c80bde884aa0ac"
+    domain = None
     cert_id = ""
 
     def setUp(self):
         super(TestSSLCert, self).setUp()
         attrs = {
-            "name" : "cert_demo",
+            "name": "cert_demo",
             "cert_content": Path("/mnt/c/Users/sand1/fullchain.pem")
             .read_text().replace('\r\n', '\n'),
             "private_key": Path("/mnt/c/Users/sand1/privkey.pem")
             .read_text().replace('\r\n', '\n'),
-            "type" : "instance",
-            "instance_id" : TestSSLCert.gateway
+            "type": "instance",
+            "instance_id": TestSSLCert.gateway_id
         }
         certificate = self.client.create_ssl_certificate(**attrs)
         self.assertIsNotNone(certificate.id)
@@ -34,6 +36,21 @@ class TestSSLCert(TestApiG):
         self.addCleanup(
             self.client.delete_ssl_certificate,
             ssl_certificate=certificate.id,
+        )
+        attrs = {
+            "url_domain": "test-domain-ssl-cert.com"
+        }
+        domain = self.client.bind_domain_name(
+            gateway=TestSSLCert.gateway_id,
+            group=TestSSLCert.group_id,
+            **attrs
+        )
+        TestSSLCert.domain = domain
+        self.addCleanup(
+            self.client.unbind_domain_name,
+            gateway=TestSSLCert.gateway_id,
+            group=TestSSLCert.group_id,
+            domain=TestSSLCert.domain.id,
         )
 
     def test_get_ssl_certificate(self):
@@ -64,3 +81,25 @@ class TestSSLCert(TestApiG):
             **attrs
         )
         self.assertEqual(result.name, attrs["name"])
+
+    def test_bind_domain_to_cert(self):
+        attrs = {
+            "certificate_ids": [TestSSLCert.cert_id]
+        }
+        self.client.bind_domain_to_certificate(
+            gateway=TestSSLCert.gateway_id,
+            group=TestSSLCert.group_id,
+            domain=TestSSLCert.domain.id,
+            **attrs
+        )
+
+    def test_unbind_domain_from_cert(self):
+        attrs = {
+            "certificate_ids": [TestSSLCert.cert_id]
+        }
+        self.client.unbind_domain_from_certificate(
+            gateway=TestSSLCert.gateway_id,
+            group=TestSSLCert.group_id,
+            domain=TestSSLCert.domain.id,
+            **attrs
+        )

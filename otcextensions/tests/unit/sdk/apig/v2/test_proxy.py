@@ -37,6 +37,8 @@ from otcextensions.sdk.apig.v2 import backend_server_group as _vpc_sg
 from otcextensions.sdk.apig.v2 import backend_server as _vpc_s
 from otcextensions.sdk.apig.v2 import group_response as _group_response
 from otcextensions.sdk.apig.v2 import tag as _tag
+from otcextensions.sdk.apig.v2 import ssl_certificate as _ssl_cert
+from otcextensions.sdk.apig.v2 import ssl_domain as _ssl_domain
 from openstack.tests.unit import test_proxy_base
 from unittest import mock
 
@@ -1999,3 +2001,118 @@ class TestTag(TestApiGatewayProxy):
                          method_kwargs={},
                          expected_kwargs={'gateway_id': None}
                          )
+
+
+class TestSSLCertificate(TestApiGatewayProxy):
+    def test_create_ssl(self):
+
+        self.verify_create(self.proxy.create_ssl_certificate,
+                           _ssl_cert.SslCertificate,
+                           method_args=[],
+                           expected_args=[],
+                           method_kwargs={},
+                           expected_kwargs={}
+                           )
+
+    def test_update_ssl(self):
+        ssl = _ssl_cert.SslCertificate
+        self.verify_update(self.proxy.update_ssl_certificate,
+                           _ssl_cert.SslCertificate,
+                           method_args=[ssl],
+                           expected_args=[ssl],
+                           method_kwargs={},
+                           expected_kwargs={}
+                           )
+
+    def test_delete_ssl(self):
+        ssl = _ssl_cert.SslCertificate()
+        self.verify_delete(self.proxy.delete_ssl_certificate,
+                           _ssl_cert.SslCertificate,
+                           method_args=[ssl],
+                           expected_args=[None],
+                           method_kwargs={},
+                           expected_kwargs={}
+                           )
+
+    def test_get_ssl(self):
+        ssl = _ssl_cert.SslCertificate()
+        self.verify_get(self.proxy.get_ssl_certificate,
+                        _ssl_cert.SslCertificate,
+                        method_args=[ssl],
+                        expected_args=[None],
+                        method_kwargs={},
+                        expected_kwargs={}
+                        )
+
+    def test_list_ssls(self):
+        self.verify_list(self.proxy.ssl_certificates,
+                         _ssl_cert.SslCertificate,
+                         method_args=[],
+                         expected_args=[],
+                         method_kwargs={},
+                         expected_kwargs={}
+                         )
+
+    def test_bind_domain_to_cert(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        domain = _ssl_domain.SslDomain()
+        self._verify(
+            'otcextensions.sdk.apig.v2.ssl_certificate.'
+            'SslCertificate._bind_domain',
+            self.proxy.bind_domain_to_certificate,
+            method_args=[gateway, group, domain],
+            expected_args=[self.proxy],
+            expected_kwargs={'domain_id': None,
+                             'gateway_id': None,
+                             'group_id': None}
+        )
+
+    def test_unbind_domain_from_cert(self):
+        gateway = _gateway.Gateway()
+        group = _api_group.ApiGroup()
+        domain = _ssl_domain.SslDomain()
+        self._verify(
+            'otcextensions.sdk.apig.v2.ssl_certificate.'
+            'SslCertificate._unbind_domain',
+            self.proxy.unbind_domain_from_certificate,
+            method_args=[gateway, group, domain],
+            expected_args=[self.proxy],
+            expected_kwargs={'domain_id': None,
+                             'gateway_id': None,
+                             'group_id': None}
+        )
+
+
+class TestSSLDomains(TestApiGatewayProxy):
+    def test_list_ssl_domains(self):
+        cert = _ssl_cert.SslCertificate()
+        self.verify_list(self.proxy.domains_for_certificate,
+                         _ssl_domain.SslDomain,
+                         method_args=[cert],
+                         expected_args=[],
+                         method_kwargs={},
+                         expected_kwargs={'certificate_id': None}
+                         )
+
+    def test_bind_cert_to_domain(self):
+        cert = _ssl_cert.SslCertificate()
+        self._verify(
+            'otcextensions.sdk.apig.v2.ssl_domain.'
+            'SslDomain._bind_certificate',
+            self.proxy.bind_ssl_certificates_for_domain,
+            method_args=[cert],
+            expected_args=[self.proxy],
+            expected_kwargs={'certificate_id': None}
+        )
+
+    def test_unbind_cert_from_domain(self):
+        cert = _ssl_cert.SslCertificate()
+        self._verify(
+            'otcextensions.sdk.apig.v2.ssl_domain.'
+            'SslDomain._unbind_certificate',
+            self.proxy.unbind_ssl_certificates_for_domain,
+            method_args=[cert],
+            expected_args=[self.proxy],
+            expected_kwargs={'certificate_id': None}
+        )

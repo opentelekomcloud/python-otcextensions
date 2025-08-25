@@ -44,6 +44,7 @@ from otcextensions.sdk.apig.v2 import metric_data as _metric_data
 from otcextensions.sdk.apig.v2 import group_response as _group_response
 from otcextensions.sdk.apig.v2 import error_response as _error_response
 from otcextensions.sdk.apig.v2 import ssl_certificate as _ssl_certificate
+from otcextensions.sdk.apig.v2 import ssl_domain as _ssl_domain
 from otcextensions.sdk.apig.v2 import tag as _tag
 
 
@@ -3313,4 +3314,123 @@ class Proxy(proxy.Proxy):
             _ssl_certificate.SslCertificate,
             ssl_certificate.id,
             ignore_missing=ignore_missing
+        )
+
+    def bind_domain_to_certificate(self, gateway, group, domain, **attrs):
+        """Bind an SSL certificate to a domain
+
+        This method binds the specified SSL certificate to a domain within
+        an API Gateway instance.
+
+        :param gateway: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.group.Group`
+        :param domain: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.domain.Domain`
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        domain = self._get_resource(_ssl_domain.SslDomain, domain)
+        ssl_certificate = _ssl_certificate.SslCertificate()
+        return ssl_certificate._bind_domain(
+            self,
+            gateway_id=gateway.id,
+            group_id=group.id,
+            domain_id=domain.id,
+            **attrs
+        )
+
+    def unbind_domain_from_certificate(self, gateway, group, domain, **attrs):
+        """Unbind an SSL certificate from a domain
+
+        This method unbinds the specified SSL certificate from a domain
+        within an API Gateway instance.
+
+        :param gateway: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param group: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.group.Group`
+        :param domain: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.domain.Domain`
+
+        :returns: None
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        group = self._get_resource(_api_group.ApiGroup, group)
+        domain = self._get_resource(_ssl_domain.SslDomain, domain)
+        ssl_certificate = _ssl_certificate.SslCertificate()
+        return ssl_certificate._unbind_domain(
+            self,
+            gateway_id=gateway.id,
+            group_id=group.id,
+            domain_id=domain.id,
+            **attrs
+        )
+
+    def domains_for_certificate(self, ssl_certificate, **attrs):
+        """List all domains bound to an SSL certificate
+
+        This method retrieves all domains that are currently bound to the
+        specified SSL certificate within an API Gateway instance.
+
+        :param ssl_certificate: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.ssl_certificate.SslCertificate`
+        :param attrs: Optional query parameters for filtering the list
+
+        :returns: A generator of
+            :class:`~otcextensions.sdk.apig.v2.ssl_domain.SslDomain` instances
+        """
+        ssl_certificate = self._get_resource(
+            _ssl_certificate.SslCertificate, ssl_certificate
+        )
+        return self._list(
+            _ssl_domain.SslDomain,
+            certificate_id=ssl_certificate.id,
+            **attrs
+        )
+
+    def bind_ssl_certificates_for_domain(self, ssl_certificate, **attrs):
+        """
+        List all SSL certificates bound to a domain
+        This method retrieves all SSL certificates that are currently bound
+        to the specified domain within an API Gateway instance.
+        :param ssl_certificate: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.ssl_certificate.SslCertificate`
+        :param attrs: Optional query parameters for filtering the list
+
+        :returns: None
+        """
+        ssl_certificate = self._get_resource(
+            _ssl_certificate.SslCertificate, ssl_certificate
+        )
+        domain = _ssl_domain.SslDomain()
+        return domain._bind_certificate(
+            self,
+            certificate_id=ssl_certificate.id,
+            **attrs
+        )
+
+    def unbind_ssl_certificates_for_domain(self, ssl_certificate, **attrs):
+        """
+        Unbind an SSL certificate from a domain
+        This method unbinds the specified SSL certificate from a domain
+        within an API Gateway instance.
+
+        :param ssl_certificate: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.ssl_certificate.SslCertificate`
+        :param attrs: Optional parameters for the unbind operation
+
+        :returns: None
+        """
+        ssl_certificate = self._get_resource(
+            _ssl_certificate.SslCertificate, ssl_certificate
+        )
+        domain = _ssl_domain.SslDomain()
+        return domain._unbind_certificate(
+            self,
+            certificate_id=ssl_certificate.id,
+            **attrs
         )

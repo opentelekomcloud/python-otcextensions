@@ -1370,3 +1370,95 @@ API Gateway.
 
 .. literalinclude:: ../examples/apig/list_tags.py
    :lines: 16-21
+
+SSL Certificate
+---------------
+
+Querying SSL Certificates
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to list SSL certificates configured
+in the API Gateway.
+
+.. literalinclude:: ../examples/apig/list_ssl_cert.py
+   :lines: 16-26
+
+Creating an SSL Certificate
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to create a new SSL certificate.
+
+.. literalinclude:: ../examples/apig/create_ssl_cert.py
+   :lines: 16-30
+
+Binding a Domain Name with SSL Certificates
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to bind one or more SSL certificates
+to a domain name.
+
+.. literalinclude:: ../examples/apig/bind_domain_to_cert.py
+   :lines: 16-36
+
+Unbinding a Domain Name's SSL Certificates
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to unbind SSL certificates from a
+domain name.
+
+.. literalinclude:: ../examples/apig/unbind_domain_from_cert.py
+   :lines: 16-28
+
+Querying Certificate Details
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to retrieve details of a specific
+SSL certificate.
+
+.. literalinclude:: ../examples/apig/get_ssl_cert.py
+   :lines: 16-20
+
+Deleting an SSL Certificate
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to delete an SSL certificate
+from the API Gateway.
+
+.. literalinclude:: ../examples/apig/delete_ssl_certificate.py
+   :lines: 16-20
+
+Modifying an SSL Certificate
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to update an existing SSL
+certificate's metadata or contents.
+
+.. literalinclude:: ../examples/apig/update_ssl_cert.py
+   :lines: 16-31
+
+Binding an SSL Certificate to a Domain Name
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to bind a specific SSL certificate
+to a domain name.
+
+.. literalinclude:: ../examples/apig/bind_certificates_for_domain.py
+   :lines: 16-29
+
+Unbinding an SSL Certificate from a Domain Name
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to unbind a specific SSL certificate
+from a domain name.
+
+.. literalinclude:: ../examples/apig/unbind_cert_from_domain.py
+   :lines: 16-29
+
+Querying Domain Names of an SSL Certificate
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to list all domain names associated
+with a given SSL certificate.
+
+.. literalinclude:: ../examples/apig/list_domain_for_cert.py
+   :lines: 16-22
