@@ -34,3 +34,5 @@ ApiGateway Resources
    v2/group_response
    v2/error_response
    v2/tag
+   v2/ssl_certificate
+   v2/ssl_domain

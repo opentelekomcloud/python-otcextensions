@@ -192,3 +192,12 @@ Tag Operations
 .. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
   :noindex:
   :members: tags
+
+SSL Certificate Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: create_ssl_certificate, get_ssl_certificate, ssl_certificates,
+            update_ssl_certificate, delete_ssl_certificate, bind_domain_to_certificate,
+            unbind_domain_from_certificate, domains_for_certificate,
+            bind_ssl_certificates_for_domain, unbind_ssl_certificates_for_domain
