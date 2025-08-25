@@ -142,7 +142,7 @@ class TestCreateCluster(fakes.TestCss):
             '--volume-size',
             '100',
             '--volume-type',
-            'COMMON',
+            'HIGH',
             '--cmk-id',
             'cmk-uuid',
             '--https-enable',
@@ -170,7 +170,7 @@ class TestCreateCluster(fakes.TestCss):
             ('security_group_id', 'sg-uuid'),
             ('num_nodes', 2),
             ('volume_size', 100),
-            ('volume_type', 'COMMON'),
+            ('volume_type', 'HIGH'),
             ('cmk_id', 'cmk-uuid'),
             ('https_enable', True),
             ('admin_pwd', 'testtest'),
@@ -208,7 +208,7 @@ class TestCreateCluster(fakes.TestCss):
             'instance': {
                 'availability_zone': 'eu-de-01,eu-de-02',
                 'flavorRef': 'css-flavor',
-                'volume': {'volume_type': 'COMMON', 'size': 100},
+                'volume': {'volume_type': 'HIGH', 'size': 100},
                 'nics': {
                     'vpcId': 'router-uuid',
                     'netId': 'network-uuid',
@@ -1177,7 +1177,7 @@ class TestAddClusterNodes(fakes.TestCss):
             '--node-size',
             '3',
             '--volume-type',
-            'COMMON',
+            'HIGH',
             '--wait',
         ]
 
@@ -1186,7 +1186,7 @@ class TestAddClusterNodes(fakes.TestCss):
             ('node_type', 'ess'),
             ('flavor', 'node_flavor'),
             ('node_size', 3),
-            ('volume_type', 'COMMON'),
+            ('volume_type', 'HIGH'),
             ('wait', True),
         ]
 
@@ -1194,7 +1194,7 @@ class TestAddClusterNodes(fakes.TestCss):
             'node_type': 'ess',
             'flavor': 'node_flavor',
             'node_size': 3,
-            'volume_type': 'COMMON',
+            'volume_type': 'HIGH',
         }
 
         # Verify cm is triggered with default parameters

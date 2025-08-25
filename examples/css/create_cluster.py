@@ -30,7 +30,7 @@ attrs = {
     'instance': {
         'availability_zone': 'eu-de-01',
         'flavorRef': 'css.xlarge.2',
-        'volume': {'volume_type': 'COMMON', 'size': 100},
+        'volume': {'volume_type': 'HIGH', 'size': 100},
         'nics': {
             'vpcId': 'router-id',
             'netId': 'network-id',
