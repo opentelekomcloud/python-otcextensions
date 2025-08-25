@@ -1462,3 +1462,23 @@ with a given SSL certificate.
 
 .. literalinclude:: ../examples/apig/list_domain_for_cert.py
    :lines: 16-22
+
+Config
+------
+
+Querying Configurations
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query configurations.
+
+.. literalinclude:: ../examples/apig/list_configs.py
+   :lines: 16-21
+
+Querying Configurations for Gateway
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This example demonstrates how to query configurations of a
+specific gateway.
+
+.. literalinclude:: ../examples/apig/list_configs_for_gateway.py
+   :lines: 16-22

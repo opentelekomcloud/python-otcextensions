@@ -201,3 +201,9 @@ SSL Certificate Operations
             update_ssl_certificate, delete_ssl_certificate, bind_domain_to_certificate,
             unbind_domain_from_certificate, domains_for_certificate,
             bind_ssl_certificates_for_domain, unbind_ssl_certificates_for_domain
+
+Configuration Operations
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. autoclass:: otcextensions.sdk.apig.v2._proxy.Proxy
+  :noindex:
+  :members: configs, configs_for_gateway
