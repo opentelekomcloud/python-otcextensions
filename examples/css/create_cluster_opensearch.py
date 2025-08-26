@@ -31,7 +31,7 @@ attrs = {
         'availability_zone': 'eu-de-01',
         'flavorRef': 'css.xlarge.2',
         'volume': {
-            'volume_type': 'COMMON',
+            'volume_type': 'HIGH',
             'size': 100,
         },
         'nics': {
