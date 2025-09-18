@@ -10,8 +10,7 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-"""DWS Flavors (Node Types) action implementation"""
-
+'''DWS Flavors (Node Types) action implementation'''
 import logging
 
 from osc_lib import utils
@@ -37,7 +36,5 @@ class ListFlavors(command.Lister):
     def take_action(self, parsed_args):
         client = self.app.client_manager.dws
         data = client.flavors()
-        return (
-            self.columns,
-            (utils.get_item_properties(s, self.columns) for s in data),
-        )
+        return (self.columns, (utils.get_item_properties(s, self.columns)
+                               for s in data))

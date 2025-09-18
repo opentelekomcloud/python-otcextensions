@@ -50,7 +50,7 @@ class Bandwidth(resource.Resource):
     share_type = resource.Body('share_type', type=str)
     #: Specifies the project ID.
     publicip_info = resource.Body('publicip_info', type=list,
-                                  list_type=PublicIPInfo)
+                                  elements=PublicIPInfo)
     #: Specifies the project ID.
     project_id = resource.URI('project_id')
     #: Specifies the bandwidth type.
@@ -116,7 +116,7 @@ class Bandwidth(resource.Resource):
             if self.create_returns_body is None
             else self.create_returns_body
         )
-        microversion = self._get_microversion(session)
+        microversion = self._get_microversion(session, action='create')
         self.microversion = microversion
         self._translate_response(response, has_body=has_body)
         if self.has_body and self.create_returns_body is False:

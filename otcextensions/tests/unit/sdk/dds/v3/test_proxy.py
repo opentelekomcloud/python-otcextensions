@@ -12,9 +12,7 @@
 from openstack.tests.unit import test_proxy_base
 
 from otcextensions.sdk.dds.v3 import _proxy
-from otcextensions.sdk.dds.v3 import datastore as _datastore
-from otcextensions.sdk.dds.v3 import instance as _instance
-from otcextensions.sdk.dds.v3 import flavor as _flavor
+from otcextensions.sdk.dds.v3 import datastore
 
 
 class TestDdsProxy(test_proxy_base.TestProxyBase):
@@ -32,39 +30,10 @@ class TestDatastore(TestDdsProxy):
     def test_datastores(self):
         self.verify_list(
             self.proxy.datastores,
-            _datastore.Datastore,
+            datastore.Datastore,
             method_kwargs={
                 'datastore_name': 'foo'},
             expected_kwargs={
                 'datastore_name': 'foo'
             }
         )
-
-
-class TestFlavor(TestDdsProxy):
-    def test_flavors(self):
-        self.verify_list(
-            self.proxy.flavors,
-            _flavor.Flavor,
-            method_kwargs={
-                'region': 'foo',
-                'engine_name': 'engine',
-            },
-            expected_kwargs={
-                'region': 'foo',
-                'engine_name': 'engine',
-            }
-        )
-
-
-class TestInstance(TestDdsProxy):
-    def test_get_instance(self):
-        self.verify_get(
-            self.proxy.get_instance,
-            _instance.Instance
-        )
-
-    def test_create_instance(self):
-        self.verify_create(
-            self.proxy.create_instance,
-            _instance.Instance,)

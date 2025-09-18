@@ -62,8 +62,6 @@ class Endpoint(resource.Resource):
     id = resource.Body('id')
     #: IP address for accessing the associated VPC endpoint service.
     ip = resource.Body('ip')
-    #: IP address for accessing the associated VPC endpoint service.
-    port_ip = resource.Body('port_ip', alias='ip')
     #: Whether to create a private domain name.
     is_dns_enabled = resource.Body('enable_dns', type=bool)
     #: Whether the VPC endpoint is enabled.

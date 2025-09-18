@@ -61,7 +61,7 @@ class Listener(resource.Resource):
     is_admin_state_up = resource.Body('admin_state_up', type=bool)
     #: List of load balancers associated with this listener.
     #: *Type: list of dicts which contain the load balancer IDs*
-    load_balancers = resource.Body('loadbalancers', type=list, list_type=dict)
+    load_balancers = resource.Body('loadbalancers', type=list, elements=dict)
     #: Specifies the ID of the load balancer that the listener is added to.
     loadbalancer_id = resource.Body('loadbalancer_id')
     #: Specifies the IP address group associated with the listener.

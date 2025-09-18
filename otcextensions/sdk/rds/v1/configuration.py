@@ -161,8 +161,7 @@ class ConfigurationGroup(sdk_resource.Resource):
         if resp:
             return resp['instances']
 
-    def _translate_response(self, response, has_body=None, error_message=None,
-                            resource_response_key=None):
+    def _translate_response(self, response, has_body=None, error_message=None):
         """Given a KSA response, inflate this instance with its data
 
         'DELETE' operations don't return a body, so only try to work

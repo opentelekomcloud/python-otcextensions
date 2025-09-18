@@ -631,7 +631,7 @@ class UpdateLoadBalancer(command.ShowOne):
                    'about the load balancer.')
         )
         parser.add_argument(
-            '--subnet-id',
+            'subnet-id',
             metavar='<subnet_id>',
             dest='vip_subnet_cidr_id',
             help=_('Specifies the ID of the IPv4 subnet where'

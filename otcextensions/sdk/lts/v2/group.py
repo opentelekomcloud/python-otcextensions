@@ -93,7 +93,7 @@ class Group(resource.Resource):
             **kwargs,
         )
         if microversion is None:
-            microversion = self._get_microversion(session)
+            microversion = self._get_microversion(session, action='commit')
 
         return self._commit(
             session,

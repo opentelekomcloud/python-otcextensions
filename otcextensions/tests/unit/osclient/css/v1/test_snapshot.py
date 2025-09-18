@@ -366,8 +366,6 @@ class TestSetSnapshotPolicy(fakes.TestCss):
             '2',
             '--period',
             '3',
-            '--frequency',
-            'DAY',
             '--disable',
             '--delete-auto',
         ]
@@ -376,7 +374,6 @@ class TestSetSnapshotPolicy(fakes.TestCss):
             ('name_prefix', '1'),
             ('keep_days', 2),
             ('period', '3'),
-            ('frequency', 'day'),
             ('disable', True),
             ('delete_auto', True),
         ]
@@ -389,7 +386,6 @@ class TestSetSnapshotPolicy(fakes.TestCss):
             "prefix": "1",
             "keepday": 2,
             "period": "3",
-            "frequency": "DAY",
             "enable": 'false',
             "deleteAuto": 'true',
         }
@@ -449,8 +445,6 @@ class TestConfigureSnapshot(fakes.TestCss):
     def test_configure(self):
         arglist = [
             self._cluster.name,
-            '--backup-path',
-            'css_repository/test-css',
             '--bucket',
             'test-bucket',
             '--agency',
@@ -460,7 +454,6 @@ class TestConfigureSnapshot(fakes.TestCss):
         ]
         verifylist = [
             ('cluster', self._cluster.name),
-            ('backup_path', 'css_repository/test-css'),
             ('bucket', 'test-bucket'),
             ('agency', 'test-agency'),
             ('cmk_id', 'cmk-uuid'),
@@ -468,7 +461,6 @@ class TestConfigureSnapshot(fakes.TestCss):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         attrs = {
-            'backup_path': 'css_repository/test-css',
             'bucket': 'test-bucket',
             'agency': 'test-agency',
             'snapshotCmkId': 'cmk-uuid',

@@ -10,35 +10,18 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-"""CSS ELK cluster v1 action implementations"""
-
+'''CSS ELK cluster v1 action implementations'''
 import logging
-import datetime
 
-from cliff import columns as cliff_columns
 from osc_lib import exceptions
 from osc_lib import utils
 from osc_lib.command import command
 
 from otcextensions.common import sdk_utils
-from otcextensions.common import cli_utils
 from otcextensions.i18n import _
 from otcextensions.osclient.css.v1 import cluster as _cluster
 
 LOG = logging.getLogger(__name__)
-
-
-FREQUENCY_CHOICES = [
-    "day",
-    "hour",
-    "sun",
-    "mon",
-    "tue",
-    "wed",
-    "thu",
-    "fri",
-    "sat"
-]
 
 
 def _get_columns(item):
@@ -63,24 +46,8 @@ def translate_response(func):
     return new
 
 
-class UnixTimestampFormatter(cliff_columns.FormattableColumn):
-    """Generate a formatted timestamp."""
-
-    def human_readable(self):
-        if self._value is None:
-            return ''
-
-        # Convert Unix timestamp to UTC
-        if not isinstance(self._value, int):
-            self._value = int(self._value) / 1000
-        else:
-            self._value = self._value / 1000
-        return datetime.datetime.fromtimestamp(
-            self._value, tz=datetime.timezone.utc
-        ).strftime('%Y-%m-%dT%H:%M:%S')
-
-
 class ListSnapshots(command.Lister):
+
     _description = _('List CSS Backups')
 
     columns = (
@@ -98,7 +65,7 @@ class ListSnapshots(command.Lister):
         parser.add_argument(
             'cluster',
             metavar='cluster',
-            help=_('Specifies the ID or Name of the CSS Cluster.'),
+            help=_("Specifies the ID or Name of the CSS Cluster."),
         )
         return parser
 
@@ -129,9 +96,7 @@ class CreateSnapshot(command.ShowOne):
             ),
         )
         parser.add_argument(
-            'name',
-            metavar='<name>',
-            help=_('Snapshot name.'),
+            'name', metavar='<name>', help=_('Snapshot name.')
         )
         parser.add_argument(
             '--description',
@@ -156,11 +121,12 @@ class CreateSnapshot(command.ShowOne):
             metavar='<timeout>',
             type=int,
             default=600,
-            help=_('Timeout for the wait in seconds (default: 600 seconds).'),
+            help=_("Timeout for the wait in seconds (default: 600 seconds)."),
         )
         return parser
 
     def take_action(self, parsed_args):
+
         client = self.app.client_manager.css
 
         attrs = {}
@@ -180,46 +146,8 @@ class CreateSnapshot(command.ShowOne):
         return (self.columns, data)
 
 
-class ShowSnapshot(command.ShowOne):
-    _description = _('Show details of a CSS cluster')
-
-    def get_parser(self, prog_name):
-        parser = super(ShowSnapshot, self).get_parser(prog_name)
-        parser.add_argument(
-            'cluster',
-            metavar='<cluster>',
-            help=_('Cluster name or ID.'),
-        )
-        parser.add_argument(
-            'snapshot',
-            metavar='<snapshot>',
-            help=_('Snapshot name or ID.'),
-        )
-        return parser
-
-    def take_action(self, parsed_args):
-        client = self.app.client_manager.css
-
-        cluster = client.find_cluster(
-            parsed_args.cluster, ignore_missing=False
-        )
-        snapshot = client.find_snapshot(
-            cluster, parsed_args.snapshot, ignore_missing=False
-        )
-        _formatters = {
-            'start_time': UnixTimestampFormatter,
-            'end_time': UnixTimestampFormatter,
-            'datastore': cli_utils.YamlFormat,
-        }
-        display_columns, columns = _get_columns(snapshot)
-        data = utils.get_item_properties(
-            snapshot, columns, formatters=_formatters
-        )
-
-        return (display_columns, data)
-
-
 class RestoreSnapshot(command.Command):
+
     _description = _('Restore the CSS cluster using the specified snapshot')
 
     def get_parser(self, prog_name):
@@ -230,9 +158,7 @@ class RestoreSnapshot(command.Command):
             help=_('Cluster ID or Name to which the snapshot belongs.'),
         )
         parser.add_argument(
-            'snapshotId',
-            metavar='<snapshotId>',
-            help=_('The snapshot ID.'),
+            'snapshotId', metavar='<snapshotId>', help=_('The snapshot ID.')
         )
         parser.add_argument(
             '--target-cluster',
@@ -277,7 +203,7 @@ class RestoreSnapshot(command.Command):
             metavar='<timeout>',
             type=int,
             default=1200,
-            help=_('Timeout for the wait in seconds (default 1200 seconds).'),
+            help=_("Timeout for the wait in seconds (default 1200 seconds)."),
         )
         return parser
 
@@ -310,14 +236,9 @@ class SetSnapshotPolicy(command.ShowOne):
         parser.add_argument(
             'cluster',
             metavar='<cluster>',
-            help=_('ID or Name of the cluster to which the snapshot belongs.'),
-        )
-        parser.add_argument(
-            "--frequency",
-            metavar="{" + ",".join(FREQUENCY_CHOICES) + "}",
-            type=lambda s: s.lower(),
-            choices=FREQUENCY_CHOICES,
-            help=_("Frequency of automatically creating snapshots."),
+            help=_(
+                'ID or Name of the cluster to which the snapshot belongs.'
+            ),
         )
         parser.add_argument(
             '--name-prefix',
@@ -374,8 +295,6 @@ class SetSnapshotPolicy(command.ShowOne):
             attrs['enable'] = 'false'
         if getattr(parsed_args, 'delete_auto'):
             attrs['deleteAuto'] = 'true'
-        if parsed_args.frequency:
-            attrs['frequency'] = parsed_args.frequency.upper()
 
         cluster = client.find_cluster(parsed_args.cluster)
         client.set_snapshot_policy(cluster, **attrs)
@@ -390,7 +309,9 @@ class ShowSnapshotPolicy(command.ShowOne):
         parser.add_argument(
             'cluster',
             metavar='<cluster>',
-            help=_('ID or Name of the cluster to which the snapshot belongs.'),
+            help=_(
+                'ID or Name of the cluster to which the snapshot belongs.'
+            ),
         )
         return parser
 
@@ -410,17 +331,14 @@ class ConfigureSnapshot(command.Command):
         parser.add_argument(
             'cluster',
             metavar='<cluster>',
-            help=_('ID or Name of the cluster to which the snapshot belongs.'),
+            help=_(
+                'ID or Name of the cluster to which the snapshot belongs.'
+            ),
         )
         parser.add_argument(
             '--auto-configure',
             action='store_true',
             help=('Set Snapshot Configuration Automatically.'),
-        )
-        parser.add_argument(
-            '--backup-path',
-            metavar='<backup_path>',
-            help=('Storage path of the snapshot in the OBS bucket.'),
         )
         parser.add_argument(
             '--bucket',
@@ -441,27 +359,21 @@ class ConfigureSnapshot(command.Command):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.css
-
         attrs = {}
         if not parsed_args.auto_configure:
-            mandatory_args = {
-                'bucket': 'Missing mandatory argument: --bucket',
-                'agency': 'Missing mandatory argument: --agency',
-                'backup_path': 'Missing mandatory argument: --backup-path',
-            }
-
-            for arg, error_msg in mandatory_args.items():
-                value = getattr(parsed_args, arg, None)
-                if not value:
-                    raise exceptions.CommandError(error_msg)
-                attrs[arg] = value
+            if not parsed_args.bucket or not parsed_args.agency:
+                msg = (
+                    'Please provide --bucket and --agency '
+                    'to set snapshot configuration'
+                )
+                raise exceptions.CommandError(msg)
+            attrs['bucket'] = parsed_args.bucket
+            attrs['agency'] = parsed_args.agency
 
             if parsed_args.cmk_id:
                 attrs['snapshotCmkId'] = parsed_args.cmk_id
 
-        cluster = client.find_cluster(
-            parsed_args.cluster, ignore_missing=False
-        )
+        cluster = client.find_cluster(parsed_args.cluster)
         client.set_snapshot_configuration(
             cluster, auto_configure=parsed_args.auto_configure, **attrs
         )
@@ -475,13 +387,15 @@ class DeleteSnapshot(command.Command):
         parser.add_argument(
             'cluster',
             metavar='<cluster>',
-            help=_('ID or Name of the cluster to which the snapshot belongs.'),
+            help=_(
+                'ID or Name of the cluster to which the snapshot belongs.'
+            ),
         )
         parser.add_argument(
             'snapshot',
             metavar='<snapshot>',
             nargs='+',
-            help=_('ID(s) of the snapshot(s) to be deleted.'),
+            help=_("ID(s) of the snapshot(s) to be deleted."),
         )
         return parser
 
@@ -498,7 +412,7 @@ class DeleteSnapshot(command.Command):
                 result += 1
                 LOG.error(
                     _(
-                        'Failed to delete Snapshot(s) with '
+                        "Failed to delete Snapshot(s) with "
                         "ID or Name '%(snapshot)s': %(e)s"
                     ),
                     {'snapshot': snapshotId, 'e': e},
@@ -506,7 +420,7 @@ class DeleteSnapshot(command.Command):
         if result > 0:
             total = len(parsed_args.snapshot)
             msg = _(
-                '%(result)s of %(total)s Snapshot(s) failed ' 'to delete.'
+                "%(result)s of %(total)s Snapshot(s) failed " "to delete."
             ) % {'result': result, 'total': total}
             raise exceptions.CommandError(msg)
 
@@ -519,7 +433,9 @@ class DisableSnapshot(command.Command):
         parser.add_argument(
             'cluster',
             metavar='<cluster>',
-            help=_('ID or Name of the cluster to which the snapshot belongs.'),
+            help=_(
+                'ID or Name of the cluster to which the snapshot belongs.'
+            ),
         )
         return parser
 

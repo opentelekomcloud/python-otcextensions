@@ -14,24 +14,30 @@ import uuid
 from openstack.tests.unit import base
 from otcextensions.sdk.dws.v1 import flavor
 
+
 EXAMPLE = {
     'id': uuid.uuid4().hex,
-    'detail': [
-        {'value': '32', 'type': 'vCPU'},
-        {'value': '4000', 'type': 'SSD', 'unit': 'GB'},
-        {'value': '256', 'type': 'mem', 'unit': 'GB'},
-        {'value': 'eu-de-02,eu-de-01', 'type': 'availableZones'},
-    ],
+    'detail': [{'value': '32',
+                'type': 'vCPU'},
+               {'value': '4000',
+                'type': 'SSD',
+                'unit': 'GB'},
+               {'value': '256',
+                'type': 'mem',
+                'unit': 'GB'},
+               {'value': 'eu-de-02,eu-de-01',
+                'type': 'availableZones'}],
     'spec_name': 'dws2.m6.8xlarge.8',
     'vCPU': '32',
     'disk_type': 'SSD',
     'disk_size': '4000',
     'mem': '256',
-    'availableZones': 'eu-de-02,eu-de-01',
+    'availableZones': 'eu-de-02,eu-de-01'
 }
 
 
 class TestFlavor(base.TestCase):
+
     def setUp(self):
         super(TestFlavor, self).setUp()
 

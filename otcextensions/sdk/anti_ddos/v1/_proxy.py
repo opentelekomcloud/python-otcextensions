@@ -9,9 +9,8 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import proxy
 
-from otcextensions.common.utils import extract_url_parts
+from openstack import proxy
 from otcextensions.sdk.anti_ddos.v1 import alert_config as _alert
 from otcextensions.sdk.anti_ddos.v1 import config as _config
 from otcextensions.sdk.anti_ddos.v1 import floating_ip as _floating_ip
@@ -21,9 +20,6 @@ from otcextensions.sdk.anti_ddos.v1 import status as _status
 class Proxy(proxy.Proxy):
 
     skip_discovery = True
-
-    def _extract_name(self, url, service_type=None, project_id=None):
-        return extract_url_parts(url, project_id)
 
     # ======== Alert Config ========
     def get_alert_config(self, **kwargs):
@@ -169,6 +165,5 @@ class Proxy(proxy.Proxy):
 
     def _service_cleanup(self, dry_run=True, client_status_queue=None,
                          identified_resources=None,
-                         filters=None, resource_evaluation_fn=None,
-                         skip_resources=None):
+                         filters=None, resource_evaluation_fn=None):
         pass

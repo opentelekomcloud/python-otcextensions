@@ -67,7 +67,7 @@ class LoadBalancer(resource.Resource):
     #: Specifies the Layer-7 flavor.
     l7_flavor_id = resource.Body('l7_flavor_id')
     #: List of listeners associated with this load balancer
-    listeners = resource.Body('listeners', type=list, list_type=dict)
+    listeners = resource.Body('listeners', type=list, elements=dict)
     #: Load balancer name.
     name = resource.Body('name')
     #: Network id
@@ -77,7 +77,7 @@ class LoadBalancer(resource.Resource):
     #: Operating status of the load balancer
     operating_status = resource.Body('operating_status')
     #: List of pools associated with this load balancer
-    pools = resource.Body('pools', type=list, list_type=dict)
+    pools = resource.Body('pools', type=list, elements=dict)
     #: The ID of the project this load balancer is associated with.
     project_id = resource.Body('project_id')
     #: Provider name for the load balancer.

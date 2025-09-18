@@ -17,8 +17,6 @@ from openstackclient.tests.unit import utils
 from osc_lib import utils as _osc_lib_utils
 
 from otcextensions.sdk.css.v1 import cluster
-from otcextensions.sdk.css.v1 import cluster_upgrade_status
-from otcextensions.sdk.css.v1 import cluster_image
 from otcextensions.sdk.css.v1 import flavor
 from otcextensions.sdk.css.v1 import snapshot
 from otcextensions.tests.unit.osclient import test_base
@@ -112,50 +110,6 @@ class FakeCluster(test_base.Fake):
         return obj
 
 
-class FakeClusterImage(test_base.Fake):
-    @classmethod
-    def generate(cls):
-        object_info = {
-            'imageInfoList': [
-                {
-                    'datastoreType': 'elasticsearch',
-                    'datastoreVersion': '7.9.3',
-                    'displayName': '7.9.3_23.3.1_0823',
-                    'id': '9a07921e-0168-43e2-b5b6-2aa63912bdf3',
-                    'imageDesc': 'The latest image of version 7.9.3 will ...',
-                    'priority': 6,
-                }
-            ],
-            'needUploadUpgradePlugin': False,
-        }
-        return cluster_image.ClusterImage(**object_info)
-
-
-class FakeClusterUpgradeStatus(test_base.Fake):
-    @classmethod
-    def generate(cls):
-        object_info = {
-            'agencyName': 'css_upgrade_agency',
-            'completedNodes': 'asomogyi_0506-ess-esn-1-1',
-            'endTime': '2024-07-15T15:11:31',
-            'executeTimes': '1',
-            'id': '7ebd2c2f-0a4f-429c-b3b3-4cf263b93d5b',
-            'imageInfo': {
-                'datastoreType': 'opensearch',
-                'datastoreVersion': '1.3.6',
-                'displayName': '1.3.6_23.5.1_0123',
-                'id': 'cff076f4-84c3-42eb-842e-b93a2ed4609a',
-                'imageDesc': 'Provide services based on Opensearch...',
-                'priority': 11,
-            },
-            'startTime': '2024-07-15T14:45:46',
-            'status': 'SUCCESS',
-            'totalNodes': 'asomogyi_0506-ess-esn-1-1',
-        }
-
-        return cluster_upgrade_status.ClusterUpgradeStatus(**object_info)
-
-
 class FakeSnapshot(test_base.Fake):
     """Fakse one or more Snapshot"""
 
@@ -167,28 +121,28 @@ class FakeSnapshot(test_base.Fake):
             A FakeResource object, with id, name and so on
         """
         object_info = {
-            'created': '2018-03-07T07:34:47',
-            'datastore': {'type': 'elasticsearch', 'version': '6.2.3'},
-            'description': '',
-            'id': 'id-' + uuid.uuid4().hex,
-            'clusterId': 'cluster_id-' + uuid.uuid4().hex,
-            'clusterName': 'Es-xfx',
-            'name': 'snapshot-002',
-            'status': 'COMPLETED',
-            'updated': '2018-03-07T07:40:12',
-            'backupType': '1',
-            'backupMethod': 'manual',
-            'backupExpectedStartTime': None,
-            'backupKeepDay': None,
-            'backupPeriod': None,
-            'indices': '.kibana,website2',
-            'totalShards': 6,
-            'failedShards': 0,
-            'version': '6.2.3',
-            'restoreStatus': 'success',
-            'startTime': 1520408087099,
-            'endTime': 1520408412219,
-            'bucketName': 'obs-b8ed',
+            "created": "2018-03-07T07:34:47",
+            "datastore": {"type": "elasticsearch", "version": "6.2.3"},
+            "description": "",
+            "id": "id-" + uuid.uuid4().hex,
+            "clusterId": "cluster_id-" + uuid.uuid4().hex,
+            "clusterName": "Es-xfx",
+            "name": "snapshot-002",
+            "status": "COMPLETED",
+            "updated": "2018-03-07T07:40:12",
+            "backupType": "1",
+            "backupMethod": "manual",
+            "backupExpectedStartTime": None,
+            "backupKeepDay": None,
+            "backupPeriod": None,
+            "indices": ".kibana,website2",
+            "totalShards": 6,
+            "failedShards": 0,
+            "version": "6.2.3",
+            "restoreStatus": "success",
+            "startTime": 1520408087099,
+            "endTime": 1520408412219,
+            "bucketName": "obs-b8ed",
         }
         return snapshot.Snapshot(**object_info)
 
@@ -205,14 +159,14 @@ class FakeSnapshotPolicy(test_base.Fake):
         """
         # Set default attributes.
         object_info = {
-            'keepday': 2,
-            'period': '16:00 GMT+08:00',
-            'prefix': 'snapshot',
-            'bucket': 'test-bucket',
-            'basePath': 'css_repository/tests',
-            'agency': 'usearch',
-            'enable': 'true',
-            'snapshotCmkId': 'kms-' + uuid.uuid4().hex,
+            "keepday": 2,
+            "period": "16:00 GMT+08:00",
+            "prefix": "snapshot",
+            "bucket": "test-bucket",
+            "basePath": "css_repository/tests",
+            "agency": "usearch",
+            "enable": "true",
+            "snapshotCmkId": "kms-" + uuid.uuid4().hex,
         }
         return snapshot.SnapshotPolicy(**object_info)
 
@@ -229,14 +183,14 @@ class FakeFlavor(test_base.Fake):
         """
         # Set default attributes.
         object_info = {
-            'type': 'ess',
-            'version': '7.6.2',
-            'cpu': 1,
-            'ram': 8,
-            'name': 'css.medium.8',
-            'region': 'eu-de',
-            'diskrange': '40,640',
-            'availableAZ': 'eu-de-01,eu-de-02,eu-de-03',
-            'flavor_id': uuid.uuid4().hex,
+            "type": "ess",
+            "version": "7.6.2",
+            "cpu": 1,
+            "ram": 8,
+            "name": "css.medium.8",
+            "region": "eu-de",
+            "diskrange": "40,640",
+            "availableAZ": "eu-de-01,eu-de-02,eu-de-03",
+            "flavor_id": uuid.uuid4().hex,
         }
         return flavor.Flavor(**object_info)

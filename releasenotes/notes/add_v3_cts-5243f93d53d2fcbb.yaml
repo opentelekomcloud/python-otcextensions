@@ -1,5 +1,0 @@
----
-features:
-  - |
-    Add CTS v3 SDK support for the following operations: create, update, list and delete key events,
-    query traces, create, update, list and delete trackers, list quotas.

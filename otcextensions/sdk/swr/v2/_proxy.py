@@ -9,9 +9,9 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import proxy
+from urllib import parse
 
-from otcextensions.common.utils import extract_url_parts
+from openstack import proxy
 from otcextensions.sdk.swr.v2 import _base
 from otcextensions.sdk.swr.v2 import organization as _organization
 from otcextensions.sdk.swr.v2 import repository as _repository
@@ -28,7 +28,23 @@ class Proxy(proxy.Proxy):
     skip_discovery = True
 
     def _extract_name(self, url, service_type=None, project_id=None):
-        return extract_url_parts(url, project_id)
+        path = parse.urlparse(url).path.strip()
+        # Remove / from the beginning to keep the list indexes of interesting
+        # things consistent
+        if path.startswith('/'):
+            path = path[1:]
+
+        # Split url into parts and exclude potential project_id in some urls
+        url_parts = [
+            x for x in path.split('/') if x != project_id
+        ]
+        # exclude version
+        url_parts = list(filter(lambda x: not any(
+            c.isdigit() for c in x[1:]) and (
+                x[0].lower() != 'v'), url_parts))
+
+        # Strip out anything that's empty or None
+        return [part for part in url_parts if part]
 
     def create_organization(self, **attrs):
         """Create a new organization from attributes
@@ -214,7 +230,7 @@ class Proxy(proxy.Proxy):
         bp = f'/manage/namespaces/%(namespace)s/repos/{attrs["repository"]}'
         repotype = _repository.Repository
         repotype.requires_id = False
-        return self._update(repotype, "", base_path=bp, **attrs)
+        return self._update(repotype, base_path=bp, **attrs)
 
     def create_repository_permissions(self, **attrs):
         """Create a new repository permissions from attributes

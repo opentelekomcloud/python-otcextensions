@@ -12,7 +12,6 @@
 from openstack import proxy
 from openstack import resource
 
-from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.sfsturbo.v1 import share as _sfs
 from otcextensions.common.exc import HTTPMethodNotAllowed
 
@@ -20,9 +19,6 @@ from otcextensions.common.exc import HTTPMethodNotAllowed
 class Proxy(proxy.Proxy):
 
     skip_discovery = True
-
-    def _extract_name(self, url, service_type=None, project_id=None):
-        return extract_url_parts(url, project_id)
 
     # ========== Sfs Turbo ==========
     def shares(self, **query):

@@ -13,7 +13,7 @@
 from openstackclient.tests.functional import base
 
 
-class TestCbr(base.TestCase):
+class TestCce(base.TestCase):
     """Functional tests for CBR Task. """
 
     def test_task_list(self):

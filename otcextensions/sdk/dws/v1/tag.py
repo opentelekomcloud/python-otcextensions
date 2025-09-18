@@ -9,12 +9,13 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import exceptions
 from openstack import resource
 from openstack import utils
+from openstack import exceptions
 
 
 class Tag(resource.Resource):
+
     base_path = '/clusters/%(cluster_id)s/tags'
 
     # Properties
@@ -43,8 +44,7 @@ class Tag(resource.Resource):
         response = session.post(uri, json=body)
         return self._translate_response(response)
 
-    def _translate_response(self, response, has_body=None, error_message=None,
-                            resource_response_key=None):
+    def _translate_response(self, response, has_body=None, error_message=None):
         """
         Translates the server response into Tag objects.
         """
@@ -55,7 +55,8 @@ class Tag(resource.Resource):
         if has_body and response.status_code == 204:
             if hasattr(self, 'last_tags_sent'):
                 tags_list = [
-                    Tag.existing(**tag_data)
-                    for tag_data in self.last_tags_sent
+                    Tag.existing(
+                        **tag_data
+                    ) for tag_data in self.last_tags_sent
                 ]
         return tags_list

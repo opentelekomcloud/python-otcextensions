@@ -125,13 +125,14 @@ class FakeFloatingIPStatWeek(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'weekdata': [{
+            'weekdata': [({
                 'period_start': time.time() * 1000,
                 'ddos_intercept_times': random.randint(1, 5),
                 'ddos_blackhole_times': random.randint(1, 5),
                 'max_attack_bps': random.randint(1, 5),
                 'max_attack_conns': random.randint(1, 5),
-            }]
+            } for i in range(1, 2))]
+
         }
         obj = status.FloatingIPWeekStat.existing(**object_info)
         return obj

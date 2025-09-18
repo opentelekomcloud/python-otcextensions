@@ -9,9 +9,9 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+
 from openstack.load_balancer.v2 import _proxy
 
-from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.elb.v2 import elb_certificate as _certificate
 from otcextensions.sdk.elb.v2 import load_balancer as _load_balancer
 from openstack.load_balancer.v2 import listener as _listener
@@ -21,9 +21,6 @@ from otcextensions.sdk.elb.v2 import listener_tag as _lstnr_tag
 
 class Proxy(_proxy.Proxy):
     skip_discovery = True
-
-    def _extract_name(self, url, service_type=None, project_id=None):
-        return extract_url_parts(url, project_id)
 
     # ======== Certificate ========
     def create_certificate(self, **attrs):

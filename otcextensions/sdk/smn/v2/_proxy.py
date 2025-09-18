@@ -9,7 +9,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.smn.v2 import topic as _topic
 from otcextensions.sdk.smn.v2 import subscription as _subscription
 from otcextensions.sdk.smn.v2 import template as _template
@@ -20,10 +19,8 @@ from openstack import proxy
 
 
 class Proxy(proxy.Proxy):
-    skip_discovery = True
 
-    def _extract_name(self, url, service_type=None, project_id=None):
-        return extract_url_parts(url, project_id)
+    skip_discovery = True
 
     # ======== Topic ========
     def create_topic(self, **attrs):

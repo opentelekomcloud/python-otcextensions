@@ -1,7 +1,0 @@
----
-fixes:
-  - |
-    Updated the following methods in the CSS module:
-    - Fixed CSS certificate download method.
-    - Removed the `override_endpoint` logic from the `scale_in_by_node_type` method.
-    - Added a `frequency` parameter to the snapshot policy configuration.

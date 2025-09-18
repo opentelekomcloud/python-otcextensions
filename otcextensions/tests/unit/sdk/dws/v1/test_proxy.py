@@ -12,21 +12,26 @@
 
 import mock
 
-from openstack.tests.unit import test_proxy_base
 from otcextensions.sdk.dws.v1 import _proxy
 from otcextensions.sdk.dws.v1 import cluster as _cluster
-from otcextensions.sdk.dws.v1 import flavor as _flavor
 from otcextensions.sdk.dws.v1 import snapshot as _snapshot
+from otcextensions.sdk.dws.v1 import flavor as _flavor
 from otcextensions.sdk.dws.v1 import tag as _tag
+
+from openstack.tests.unit import test_proxy_base
+
 
 ENDPOINT_DWS = 'http://dws.example.com/v1.0'
 
 
 class TestDwsProxy(test_proxy_base.TestProxyBase):
+
     def setUp(self):
         super(TestDwsProxy, self).setUp()
         self.proxy = _proxy.Proxy(self.session)
-        self.session.get_endpoint = mock.Mock(return_value=ENDPOINT_DWS)
+        self.session.get_endpoint = mock.Mock(
+            return_value=ENDPOINT_DWS
+        )
 
     def test_clusters(self):
         self.verify_list(
@@ -42,22 +47,23 @@ class TestDwsProxy(test_proxy_base.TestProxyBase):
 
     def test_create_cluster(self):
         self.verify_create(
-            self.proxy.create_cluster,
-            _cluster.Cluster,
+            self.proxy.create_cluster, _cluster.Cluster,
             method_kwargs={'x': 1, 'y': 2, 'z': 3},
-            expected_kwargs={'x': 1, 'y': 2, 'z': 3},
+            expected_kwargs={
+                'x': 1, 'y': 2, 'z': 3
+            }
         )
 
     def test_delete_cluster(self):
         self._verify(
-            'openstack.proxy.Proxy._delete',
+            "openstack.proxy.Proxy._delete",
             self.proxy.delete_cluster,
             method_args=['cluster-uuid', 0, True],
             expected_args=[_cluster.Cluster, 'cluster-uuid'],
             expected_kwargs={
                 'keep_last_manual_snapshot': 0,
-                'ignore_missing': True,
-            },
+                'ignore_missing': True
+            }
         )
 
     def test_restart_cluster(self):
@@ -65,7 +71,7 @@ class TestDwsProxy(test_proxy_base.TestProxyBase):
             'otcextensions.sdk.dws.v1.cluster.Cluster.restart',
             self.proxy.restart_cluster,
             method_args=[_cluster.Cluster],
-            expected_args=[self.proxy],
+            expected_args=[self.proxy]
         )
 
     def test_scale_out_cluster(self):
@@ -73,7 +79,7 @@ class TestDwsProxy(test_proxy_base.TestProxyBase):
             'otcextensions.sdk.dws.v1.cluster.Cluster.scale_out',
             self.proxy.scale_out_cluster,
             method_args=[_cluster.Cluster, 2],
-            expected_args=[self.proxy, 2],
+            expected_args=[self.proxy, 2]
         )
 
     def test_reset_password(self):
@@ -81,7 +87,7 @@ class TestDwsProxy(test_proxy_base.TestProxyBase):
             'otcextensions.sdk.dws.v1.cluster.Cluster.reset_password',
             self.proxy.reset_password,
             method_args=[_cluster.Cluster, 'TestNewPassword'],
-            expected_args=[self.proxy, 'TestNewPassword'],
+            expected_args=[self.proxy, 'TestNewPassword']
         )
 
     def test_snapshots(self):
@@ -100,16 +106,21 @@ class TestDwsProxy(test_proxy_base.TestProxyBase):
         self.verify_create(
             self.proxy.create_snapshot,
             _snapshot.Snapshot,
-            method_kwargs={'x': 1, 'y': 2},
-            expected_kwargs={'x': 1, 'y': 2},
+            method_kwargs={
+                'x': 1, 'y': 2
+            },
+            expected_kwargs={
+                'x': 1, 'y': 2
+            }
         )
 
     def test_restore_snapshot(self):
         self.verify_create(
-            self.proxy.restore_snapshot,
-            _snapshot.Restore,
+            self.proxy.restore_snapshot, _snapshot.Restore,
             method_args=['snapshot-uuid'],
-            method_kwargs={'x': 1, 'y': 2, 'z': 3},
+            method_kwargs={
+                'x': 1, 'y': 2, 'z': 3
+            },
             expected_args=[],
             expected_kwargs={
                 'snapshot_id': 'snapshot-uuid',
@@ -119,11 +130,13 @@ class TestDwsProxy(test_proxy_base.TestProxyBase):
 
     def test_delete_snapshot(self):
         self._verify(
-            'openstack.proxy.Proxy._delete',
+            "openstack.proxy.Proxy._delete",
             self.proxy.delete_snapshot,
             method_args=['snapshot-uuid', True],
             expected_args=[_snapshot.Snapshot, 'snapshot-uuid'],
-            expected_kwargs={'ignore_missing': True},
+            expected_kwargs={
+                'ignore_missing': True
+            }
         )
 
     def test_flavors(self):
@@ -136,9 +149,9 @@ class TestDwsProxy(test_proxy_base.TestProxyBase):
         self.verify_list(
             self.proxy.cluster_tags,
             _tag.Tag,
-            method_args=['test_cluster_id'],
+            method_args=["test_cluster_id"],
             expected_kwargs={'cluster_id': 'test_cluster_id'},
-            expected_args=[],
+            expected_args=[]
         )
 
     def test_create_cluster_tag(self):
@@ -150,10 +163,9 @@ class TestDwsProxy(test_proxy_base.TestProxyBase):
             method_kwargs={},
             expected_kwargs={
                 'cluster_id': 'test_cluster_id',
-                'key': 'key1',
-                'value': 'value1',
+                'key': 'key1', 'value': 'value1'
             },
-            expected_args=[],
+            expected_args=[]
         )
 
     def test_delete_cluster_tag(self):
@@ -164,9 +176,9 @@ class TestDwsProxy(test_proxy_base.TestProxyBase):
             method_kwargs={},
             expected_kwargs={
                 'cluster_id': 'test_cluster_id',
-                'ignore_missing': True,
+                'ignore_missing': True
             },
-            expected_args=['key1'],
+            expected_args=['key1']
         )
 
     # Tests for batch operations
@@ -178,19 +190,19 @@ class TestDwsProxy(test_proxy_base.TestProxyBase):
                 'test_cluster_id',
                 [
                     {'key': 'key1', 'value': 'value1'},
-                    {'key': 'key2', 'value': 'value2'},
-                ],
+                    {'key': 'key2', 'value': 'value2'}
+                ]
             ],
             expected_args=[
                 self.proxy,
                 'test_cluster_id',
                 [
                     {'key': 'key1', 'value': 'value1'},
-                    {'key': 'key2', 'value': 'value2'},
+                    {'key': 'key2', 'value': 'value2'}
                 ],
-                'create',
+                'create'
             ],
-            expected_kwargs={},
+            expected_kwargs={}
         )
 
     def test_batch_delete_cluster_tags(self):
@@ -199,13 +211,16 @@ class TestDwsProxy(test_proxy_base.TestProxyBase):
             self.proxy.batch_delete_cluster_tags,
             method_args=[
                 'test_cluster_id',
-                [{'key': 'key1'}, {'key': 'key2'}],
+                [
+                    {'key': 'key1'},
+                    {'key': 'key2'}
+                ]
             ],
             expected_args=[
                 self.proxy,
                 'test_cluster_id',
                 [{'key': 'key1'}, {'key': 'key2'}],
-                'delete',
+                'delete'
             ],
-            expected_kwargs={},
+            expected_kwargs={}
         )

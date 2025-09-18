@@ -61,9 +61,8 @@ class ObsDestinationSpec(resource.Resource):
     partition_format = resource.Body('partition_format')
     #: Dump time directory generated based on the timestamp of the
     #:  source data and the configured partition_format.
-    processing_schema = resource.Body(
-        'processing_schema', type=ProcessingSchemaSpec
-    )
+    processing_schema = resource.Body('processing_schema', type=dict,
+                                      dict_type=ProcessingSchemaSpec)
     #: Delimiter for the dump file, which is used to separate the
     #:  user data that is written into the dump file.
     record_delimiter = resource.Body('record_delimiter')

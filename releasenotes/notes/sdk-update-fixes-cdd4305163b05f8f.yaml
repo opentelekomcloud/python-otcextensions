@@ -1,5 +1,0 @@
-fixes:
-  - |
-    SDK method overrides fixes according openstacksdk signatures.
-  - |
-    Update requirements, now necessary to install python-novaclient for OSC functioning.

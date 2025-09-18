@@ -17,21 +17,7 @@ EXAMPLE = {
     "vcpus": "1",
     "ram": 2,
     "spec_code": "rds.mysql.c2.medium.ha",
-    "instance_mode": "ha",
-    "group_type": "normal",
-    "version_name": [
-        "8.0"
-    ],
-    "az_status": {
-        "eu-de-02": "normal",
-        "eu-de-01": "normal",
-        "eu-de-03": "normal"
-    },
-    "az_desc": {
-        "eu-de-02": "eu-de-02",
-        "eu-de-01": "eu-de-01",
-        "eu-de-03": "eu-de-03"
-    }
+    "instance_mode": "ha"
 }
 
 
@@ -51,8 +37,7 @@ class TestFlavor(base.TestCase):
         self.assertFalse(sot.allow_commit)
         self.assertDictEqual({'limit': 'limit',
                               'marker': 'marker',
-                              'version_name': 'version_name',
-                              'spec_code': 'spec_code'},
+                              'version_name': 'version_name'},
                              sot._query_mapping._mapping)
 
     def test_make_it(self):
@@ -63,7 +48,3 @@ class TestFlavor(base.TestCase):
         self.assertEqual(EXAMPLE['vcpus'], sot.vcpus)
         self.assertEqual(EXAMPLE['ram'], sot.ram)
         self.assertEqual(EXAMPLE['instance_mode'], sot.instance_mode)
-        self.assertEqual(EXAMPLE['group_type'], sot.group_type)
-        self.assertEqual(EXAMPLE['version_name'], sot.version_name)
-        self.assertEqual(EXAMPLE['az_status'], sot.az_status)
-        self.assertEqual(EXAMPLE['az_desc'], sot.az_desc)

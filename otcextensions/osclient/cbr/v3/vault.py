@@ -26,9 +26,6 @@ LOG = logging.getLogger(__name__)
 def _flatten_vault(obj):
     """Flatten the structure of the vault into a single dict
     """
-    bind_rules = []
-    if obj.bind_rules and "tags" in obj.bind_rules:
-        bind_rules = obj.bind_rules["tags"]
     data = {
         'id': obj.id,
         'name': obj.name,
@@ -49,7 +46,7 @@ def _flatten_vault(obj):
         'charging_mode': obj.billing.charging_mode,
         'is_auto_pay': obj.billing.is_auto_pay,
         'is_auto_renew': obj.billing.is_auto_renew,
-        'bind_rules': bind_rules,
+        'bind_rules': obj.bind_rules["tags"],
         'resources': obj.resources,
         'tags': obj.tags,
     }
@@ -204,41 +201,11 @@ class ListVaults(command.Lister):
         if parsed_args.status:
             args['status'] = parsed_args.status
 
-        data = list(client.vaults(**args))
-
-        columns = list(self.columns)
-        seen_columns = set(columns)
-        for s in data:
-            if s.resources:
-                _, new_cols = _add_resources_to_vault_obj(s, (), tuple())
-                for col in new_cols:
-                    if col not in seen_columns:
-                        columns.append(col)
-                        seen_columns.add(col)
-            if s.tags and 'tags' not in seen_columns:
-                columns.append('tags')
-                seen_columns.add('tags')
-
-        def row_generator():
-            for s in data:
-                row_columns = list(self.columns)
-                row_data = utils.get_dict_properties(
-                    _flatten_vault(s), row_columns
-                )
-                if s.resources:
-                    row_data, row_columns = _add_resources_to_vault_obj(
-                        s, row_data, tuple(row_columns)
-                    )
-                if s.tags:
-                    row_data, row_columns = _add_tags_to_vault_obj(
-                        s, row_data, tuple(row_columns)
-                    )
-                row_dict = {
-                    col: val for col, val in zip(row_columns, row_data)
-                }
-                yield tuple(row_dict.get(col, '') for col in columns)
-
-        table = (columns, row_generator())
+        data = client.vaults(**args)
+        table = (self.columns,
+                 (utils.get_dict_properties(
+                     _flatten_vault(s), self.columns,
+                 ) for s in data))
         return table
 
 
@@ -790,6 +757,7 @@ class UnbindVaultPolicy(command.Command):
         return parser
 
     def take_action(self, parsed_args):
+
         client = self.app.client_manager.cbr
         vault = client.find_vault(
             name_or_id=parsed_args.vault,

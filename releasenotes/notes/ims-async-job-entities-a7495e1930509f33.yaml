@@ -1,4 +1,0 @@
----
-features:
-  - |
-    The AsyncJobEntities type allows easier access to the entities of an IMS job.

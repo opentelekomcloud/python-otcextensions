@@ -17,22 +17,22 @@ from keystoneauth1 import adapter
 from openstack.tests.unit import base
 from otcextensions.sdk.css.v1 import flavor
 
-FAKE_ID = '68d5745e-6af2-40e4-945d-fe449be00148'
+FAKE_ID = "68d5745e-6af2-40e4-945d-fe449be00148"
 
 EXAMPLE = {
-    'versions': [
+    "versions": [
         {
-            'type': 'ess',
-            'version': '7.6.2',
-            'flavors': [
+            "type": "ess",
+            "version": "7.6.2",
+            "flavors": [
                 {
-                    'cpu': 1,
-                    'ram': 8,
-                    'name': 'css.medium.8',
-                    'region': 'eu-de',
-                    'diskrange': '40,640',
-                    'availableAZ': 'eu-de-01,eu-de-02,eu-de-03',
-                    'flavor_id': '6b6c0bcf-750d-4f8a-b6f5-c45a143f5198',
+                    "cpu": 1,
+                    "ram": 8,
+                    "name": "css.medium.8",
+                    "region": "eu-de",
+                    "diskrange": "40,640",
+                    "availableAZ": "eu-de-01,eu-de-02,eu-de-03",
+                    "flavor_id": "6b6c0bcf-750d-4f8a-b6f5-c45a143f5198",
                 }
             ],
         }
@@ -41,6 +41,7 @@ EXAMPLE = {
 
 
 class TestFlavor(base.TestCase):
+
     def setUp(self):
         super(TestFlavor, self).setUp()
         self.sess = mock.Mock(spec=adapter.Adapter)

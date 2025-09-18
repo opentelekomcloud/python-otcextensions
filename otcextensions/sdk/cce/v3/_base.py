@@ -104,9 +104,7 @@ class Resource(resource.Resource):
         else:
             return object.__getattribute__(self, name)
 
-    def _translate_response(
-            self, response, has_body=None, error_message=None,
-            resource_response_key=None):
+    def _translate_response(self, response, has_body=None, error_message=None):
         if has_body is None:
             has_body = self.has_body
         # NOTE: we only use our own exception parser
@@ -201,7 +199,7 @@ class Resource(resource.Resource):
         if not cls.allow_list:
             raise exceptions.MethodNotSupported(cls, "list")
         session = cls._get_session(session)
-        microversion = cls._get_microversion(session)
+        microversion = cls._get_microversion(session, action='list')
 
         if base_path is None:
             base_path = cls.base_path

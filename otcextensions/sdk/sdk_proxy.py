@@ -48,6 +48,7 @@ class Proxy(os_proxy.Proxy):
 
         return result
 
+    @os_proxy._check_resource(strict=False)
     def _delete(self, resource_type, value, ignore_missing=True,
                 endpoint_override=None, headers=None, requests_auth=None,
                 **attrs):
@@ -99,6 +100,7 @@ class Proxy(os_proxy.Proxy):
 
         return rv
 
+    @os_proxy._check_resource(strict=False)
     def _update(self, resource_type, value,
                 endpoint_override=None, headers=None, requests_auth=None,
                 **attrs):
@@ -163,6 +165,7 @@ class Proxy(os_proxy.Proxy):
 
         return persist
 
+    @os_proxy._check_resource(strict=False)
     def _get(self, resource_type, value=None, requires_id=True,
              endpoint_override=None, headers=None, requests_auth=None,
              **attrs):

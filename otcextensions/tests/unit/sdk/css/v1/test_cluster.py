@@ -85,17 +85,17 @@ EXAMPLE_CREATE = {
         'flavorRef': 'css.xlarge.2',
         'volume': {'volume_type': 'COMMON', 'size': 100},
         'nics': {
-            'vpcId': 'vpc-id',
-            'netId': 'net-id',
-            'securityGroupId': 'sg-id',
+            "vpcId": "vpc-id",
+            "netId": "net-id",
+            "securityGroupId": "sg-id",
         },
     },
     'tags': [
-        {'key': 'key0', 'value': 'value0'},
-        {'key': 'key1', 'value': 'value1'},
+        {'key': "key0", 'value': "value0"},
+        {'key': "key1", 'value': "value1"},
     ],
     'backupStrategy': {
-        'period': '00:00 GMT+03:00',
+        'period': "00:00 GMT+03:00",
         'prefix': 'backup',
         'keepday': 1,
         'bucket': 'css-test-0',
@@ -106,6 +106,7 @@ EXAMPLE_CREATE = {
 
 
 class TestCluster(base.TestCase):
+
     def setUp(self):
         super(TestCluster, self).setUp()
         self.sess = mock.Mock(spec=adapter.Adapter)
@@ -222,8 +223,8 @@ class TestCluster(base.TestCase):
 
     def test_action(self):
         sot = cluster.Cluster.existing(id=CLUSTER_ID)
-        action = 'restart'
-        json_body = {'restart': {}}
+        action = "restart"
+        json_body = {"restart": {}}
         response = mock.Mock()
         response.status_code = 200
         response.headers = {}
@@ -255,219 +256,18 @@ class TestCluster(base.TestCase):
         )
         self.assertIsNone(rt)
 
-    def test_update_name(self):
-        sot = cluster.Cluster.existing(id=CLUSTER_ID)
-        sot._action = mock.Mock()
-        new_name = 'test_update_name'
-
-        body = {'displayName': new_name}
-
-        rt = sot.update_name(self.sess, new_name)
-        sot._action.assert_called_with(self.sess, 'changename', body)
-        self.assertIsNone(rt)
-
-    def test_update_password(self):
-        sot = cluster.Cluster.existing(id=CLUSTER_ID)
-        sot._action = mock.Mock()
-        new_password = 'test_new_123_Pass'
-
-        body = {'newpassword': new_password}
-
-        rt = sot.update_password(self.sess, new_password)
-        sot._action.assert_called_with(self.sess, 'password/reset', body)
-        self.assertIsNone(rt)
-
-    def test_update_security_mode(self):
-        sot = cluster.Cluster.existing(id=CLUSTER_ID)
-        sot._action = mock.Mock()
-
-        authority_enable = True
-        https_enable = True
-        admin_pwd = None
-
-        body = {
-            'authorityEnable': authority_enable,
-            'httpsEnable': https_enable,
-        }
-
-        rt1 = sot.update_security_mode(
-            self.sess, https_enable, authority_enable, admin_pwd
-        )
-        sot._action.assert_called_with(self.sess, 'mode/change', body)
-        self.assertIsNone(rt1)
-
-        admin_pwd = 'new_Pass_123'
-        body['adminPwd'] = admin_pwd
-
-        rt2 = sot.update_security_mode(
-            self.sess, https_enable, authority_enable, admin_pwd
-        )
-        sot._action.assert_called_with(self.sess, 'mode/change', body)
-        self.assertIsNone(rt2)
-
-    def test_update_security_group(self):
-        sot = cluster.Cluster.existing(id=CLUSTER_ID)
-        sot._action = mock.Mock()
-        security_group_id = 'test_security_group_id'
-
-        body = {'security_group_ids': security_group_id}
-
-        rt = sot.update_security_group(self.sess, security_group_id)
-        sot._action.assert_called_with(self.sess, 'sg/change', body)
-        self.assertIsNone(rt)
-
-    def test_update_kernel(self):
-        sot = cluster.Cluster.existing(id=CLUSTER_ID)
-        sot._action = mock.Mock()
-
-        target_image_id = 'target_image_id'
-        upgrade_type = 'same'
-        indices_backup_check = True
-        agency = 'test-agency'
-
-        body = {
-            'target_image_id': target_image_id,
-            'upgrade_type': upgrade_type,
-            'indices_backup_check': indices_backup_check,
-            'agency': agency,
-            'cluster_load_check': True,
-        }
-
-        rt1 = sot.update_kernel(
-            self.sess,
-            target_image_id,
-            upgrade_type,
-            indices_backup_check,
-            agency,
-        )
-        sot._action.assert_called_with(
-            self.sess, 'inst-type/all/image/upgrade', body
-        )
-        self.assertIsNone(rt1)
-
-    def test_update_flavor(self):
-        sot = cluster.Cluster.existing(id=CLUSTER_ID)
-        sot._action = mock.Mock()
-        new_flavor = 'test_update_name'
-        body = {'needCheckReplica': True, 'newFlavorId': new_flavor}
-
-        rt1 = sot.update_flavor(self.sess, new_flavor, check_replica=True)
-        sot._action.assert_called_with(self.sess, 'flavor', body)
-        self.assertIsNone(rt1)
-
-        rt2 = sot.update_flavor(
-            self.sess, new_flavor, node_type='ess', check_replica=True
-        )
-        sot._action.assert_called_with(self.sess, 'ess/flavor', body)
-        self.assertIsNone(rt2)
-
-    def test_scale_in(self):
-        sot = cluster.Cluster.existing(id=CLUSTER_ID)
-        sot._action = mock.Mock()
-        nodes = ['5e134b90-8159-4333-9dae-4305029a838a']
-
-        body = {
-            'shrinkNodes': nodes,
-        }
-
-        rt = sot.scale_in(self.sess, nodes)
-        sot._action.assert_called_with(self.sess, 'node/offline', body)
-        self.assertIsNone(rt)
-
-    def test_scale_in_by_node_type(self):
-        sot = cluster.Cluster.existing(id=CLUSTER_ID)
-        nodes = [{'type': 'ess', 'reducedNodeNum': 1}]
-        json_body = {'shrink': nodes}
-        response = mock.Mock()
-        response.status_code = 200
-        response.headers = {}
-        self.sess.post.return_value = response
-
-        endpoint = 'https://test-url.com/v1.0/project-id'
-        updated_endpoint = 'https://test-url.com/v1.0/extend/project-id'
-
-        self.sess.get_endpoint.return_value = endpoint
-
-        rt = sot.scale_in_by_node_type(self.sess, nodes)
-        self.sess.post.assert_called_with(
-            f'{updated_endpoint}/clusters/{CLUSTER_ID}/role/shrink',
-            json=json_body
-        )
-
-        self.assertIsNone(rt)
-
-    def test_replace_node(self):
-        sot = cluster.Cluster.existing(id=CLUSTER_ID)
-        node_id = 'test-id'
-        response = mock.Mock()
-        response.status_code = 200
-        response.headers = {}
-        self.sess.put.return_value = response
-
-        rt = sot.replace_node(self.sess, node_id)
-        self.sess.put.assert_called_with(
-            f'clusters/{sot.id}/instance/{node_id}/replace'
-        )
-
-        self.assertIsNone(rt)
-
-    def test_add_nodes(self):
-        sot = cluster.Cluster.existing(id=CLUSTER_ID)
-        sot._action = mock.Mock()
-
-        node_type = 'ess-client'
-        flavor = 'flavor-id'
-        node_size = 3
-        volume_type = 'volume-type'
-        body = {
-            'type': {
-                'flavor_ref': flavor,
-                'node_size': node_size,
-                'volume_type': volume_type,
-            }
-        }
-
-        rt = sot.add_nodes(
-            self.sess, node_type, flavor, node_size, volume_type
-        )
-        sot._action.assert_called_with(
-            self.sess, f'type/{node_type}/independent', body
-        )
-        self.assertIsNone(rt)
-
-    def test_retry_upgrade_job(self):
-        sot = cluster.Cluster.existing(id=CLUSTER_ID)
-        job_id = 'action-id'
-        response = mock.Mock()
-        response.status_code = 200
-        response.headers = {}
-        self.sess.put.return_value = response
-
-        rt1 = sot.retry_upgrade_job(self.sess, job_id)
-        self.sess.put.assert_called_with(
-            f'clusters/{sot.id}/upgrade/{job_id}/retry', params={}
-        )
-
-        self.assertIsNone(rt1)
-
-        retry_mode = 'abort'
-        rt2 = sot.retry_upgrade_job(self.sess, job_id, retry_mode)
-        self.sess.put.assert_called_with(
-            f'clusters/{sot.id}/upgrade/{job_id}/retry',
-            params={'retry_mode': retry_mode},
-        )
-
-        self.assertIsNone(rt2)
-
 
 class TestExtendClusterNodes(base.TestCase):
+
     def setUp(self):
         super(TestExtendClusterNodes, self).setUp()
 
     def test_basic(self):
         sot = cluster.ExtendClusterNodes()
 
-        self.assertEqual('/clusters/%(cluster_id)s/role_extend', sot.base_path)
+        self.assertEqual(
+            '/clusters/%(cluster_id)s/role_extend', sot.base_path
+        )
         self.assertTrue(sot.allow_create)
         self.assertFalse(sot.allow_list)
         self.assertFalse(sot.allow_fetch)
@@ -477,9 +277,9 @@ class TestExtendClusterNodes(base.TestCase):
 
     def test_make_it(self):
         request = {
-            'grow': [
-                {'type': 'ess-master', 'nodesize': 2, 'disksize': 0},
-                {'type': 'ess', 'nodesize': 0, 'disksize': 60},
+            "grow": [
+                {"type": "ess-master", "nodesize": 2, "disksize": 0},
+                {"type": "ess", "nodesize": 0, "disksize": 60},
             ]
         }
         sot = cluster.ExtendClusterNodes(**request)

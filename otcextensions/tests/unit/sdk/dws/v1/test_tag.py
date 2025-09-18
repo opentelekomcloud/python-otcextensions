@@ -15,9 +15,10 @@ from unittest import mock
 
 
 class TestTag(base.TestCase):
+
     def setUp(self):
         super(TestTag, self).setUp()
-        self.cluster_id = 'example_cluster_id'
+        self.cluster_id = "example_cluster_id"
         self.proxy = mock.Mock()
         self.mock_response = mock.Mock()
         self.mock_response.status_code = 204
@@ -31,9 +32,9 @@ class TestTag(base.TestCase):
 
     def test_make_it(self):
         example = {
-            'key': 'example_key',
-            'value': 'example_value',
-            'cluster_id': 'example_cluster_id',
+            "key": "example_key",
+            "value": "example_value",
+            "cluster_id": "example_cluster_id"
         }
         sot = tag.Tag(**example)
         self.assertEqual(example['key'], sot.key)
@@ -42,8 +43,8 @@ class TestTag(base.TestCase):
 
     def test_batch_create_cluster_tags(self):
         tags = [
-            {'key': 'key1', 'value': 'value1'},
-            {'key': 'key2', 'value': 'value2'},
+            {"key": "key1", "value": "value1"},
+            {"key": "key2", "value": "value2"}
         ]
         tag_instance = tag.Tag()
         self.proxy.post.return_value = self.mock_response
@@ -52,11 +53,11 @@ class TestTag(base.TestCase):
         )
         self.proxy.post.assert_called_once_with(
             'clusters/example_cluster_id/tags/action',
-            json={'action': 'create', 'tags': tags},
+            json={'action': 'create', 'tags': tags}
         )
 
     def test_batch_delete_cluster_tags(self):
-        tags = [{'key': 'key1'}, {'key': 'key2'}]
+        tags = [{"key": "key1"}, {"key": "key2"}]
         tag_instance = tag.Tag()
         self.proxy.post.return_value = self.mock_response
         tag_instance.manage_tags_batch(
@@ -64,5 +65,5 @@ class TestTag(base.TestCase):
         )
         self.proxy.post.assert_called_once_with(
             'clusters/example_cluster_id/tags/action',
-            json={'action': 'delete', 'tags': tags},
+            json={'action': 'delete', 'tags': tags}
         )

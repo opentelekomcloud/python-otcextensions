@@ -119,7 +119,7 @@ class Instance(_base.Resource):
     switch_strategy = resource.Body('switch_strategy')
     #: Lists the tags and their values attached to the instance.
     #: *Type:dict*
-    tags = resource.Body('tags', type=list)
+    tags = resource.Body('tags', type=dict)
     #: Time Zone.
     #: *Type:string*
     time_zone = resource.Body('time_zone')
@@ -136,8 +136,7 @@ class Instance(_base.Resource):
     #: *Type:dict*
     volume = resource.Body('volume', type=dict)
 
-    def _translate_response(self, response, has_body=None, error_message=None,
-                            resource_response_key=None):
+    def _translate_response(self, response, has_body=None, error_message=None):
         """Given a KSA response, inflate this instance with its data
 
         DELETE operations don't return a body, so only try to work

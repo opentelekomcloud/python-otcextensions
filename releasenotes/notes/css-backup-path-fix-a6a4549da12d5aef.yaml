@@ -1,4 +1,0 @@
----
-fixes:
-  - |
-    CSS snapshot configuration backup_path (basePath) required attr fix.

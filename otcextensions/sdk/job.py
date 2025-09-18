@@ -70,7 +70,7 @@ class Job(resource.Resource):
             request.url = self.base_path + '?id=' + self.id
             self.resource_key = 'job'
         session = self._get_session(session)
-        microversion = self._get_microversion(session)
+        microversion = self._get_microversion(session, action='fetch')
         response = session.get(request.url, microversion=microversion,
                                params=params)
         kwargs = {}

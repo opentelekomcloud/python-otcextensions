@@ -19,7 +19,6 @@ from otcextensions.sdk.identity.v3 import agency as _agency
 from otcextensions.sdk.identity.v3 import agency_role as _agency_role
 from otcextensions.sdk.identity.v3 import credential as _credential
 from otcextensions.sdk.identity.v3 import security_token as _security_token
-from otcextensions.sdk.identity.v3 import custom_role as _custom
 
 
 class Proxy(_proxy.Proxy):
@@ -461,22 +460,3 @@ class Proxy(_proxy.Proxy):
         token = _security_token.SecurityToken()
         token._translate_response(response)
         return token
-
-    def custom_roles(self, **attrs):
-        """Retrieve a generator of custom roles
-
-        :param dict attrs: Optional query parameters to be sent to limit the
-            resources being returned.
-            * `page`: Page number for pagination query.
-            * `per_page`: Number of data records to be displayed on each page.
-
-        :returns: A generator of custom roles
-            :class:`~otcextensions.sdk.identity.v3._custom.CustomRole`
-            instances
-        """
-        # for list, we need to pass corrected endpoint
-        base = self._get_alternate_endpoint()
-        base_path = urljoin(base, _custom.CustomRole.base_path)
-
-        return self._list(_custom.CustomRole, base_path=base_path,
-                          **attrs)

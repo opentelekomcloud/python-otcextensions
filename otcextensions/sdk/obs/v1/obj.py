@@ -163,8 +163,7 @@ class Object(_base.BaseResource):
         super(_base.BaseResource, self).__init__(**attrs)
         self.data = data
 
-    def _translate_response(self, response, has_body=True, error_message=None,
-                            resource_response_key=None):
+    def _translate_response(self, response, has_body=True, error_message=None):
         """Given a KSA response, inflate this instance with its data
 
         This method updates attributes that correspond to headers
@@ -334,7 +333,6 @@ class Object(_base.BaseResource):
         root = ET.fromstring(response.content)
         for element in root:
             dict_raw_resource = _base.BaseResource.etree_to_dict(element)
-            dict_raw_resource = Object.clear_element(dict_raw_resource, proxy)
             dict_resource.update(dict_raw_resource)
         return dict_resource['UploadId']
 
@@ -345,38 +343,23 @@ class Object(_base.BaseResource):
         root = ET.fromstring(response.content)
         for element in root:
             dict_raw_resource = _base.BaseResource.etree_to_dict(element)
-            dict_raw_resource = Object.clear_element(dict_raw_resource, proxy)
-            if element.tag.endswith('Part'):
-                dict_resource.setdefault('Parts', []).append(
-                    dict_raw_resource['Part']
-                )
+            if element.tag == 'Part':
+                dict_resource.setdefault('Parts', []).\
+                    append(dict_raw_resource['Part'])
                 continue
             dict_resource.update(dict_raw_resource)
         return dict_resource
 
     @staticmethod
-    def clear_element(dict_raw_resource, proxy):
-        if proxy.region_name == 'eu-ch2':
-            cleaned_dict = {}
-            for full_key, value in dict_raw_resource.items():
-                # Strip namespace if present
-                cleaned_key = full_key.split('}', 1)[1] \
-                    if full_key.startswith('{') else full_key
-                cleaned_dict[cleaned_key] = value
-            dict_raw_resource = cleaned_dict
-        return dict_raw_resource
-
-    @staticmethod
     def complete_multipart_upload(
-            proxy, endpoint, upload_id, data, headers, requests_auth):
+            proxy, endpoint, upload_id, data, headers, **params):
         url = f'{endpoint}?uploadId={upload_id}'
         root = ET.Element("CompleteMultipartUpload")
         for item in data:
-            item = Object.clear_element(item, proxy)
             part = ET.SubElement(root, "Part")
             ET.SubElement(part, 'PartNumber').text = item['PartNumber']
             ET.SubElement(part, 'ETag').text = item['ETag']
         tree = ET.ElementTree(root)
         data = ET.tostring(tree.getroot()).decode()
         return proxy.post(url, data=data,
-                          headers=headers, requests_auth=requests_auth)
+                          headers=headers, params=params)

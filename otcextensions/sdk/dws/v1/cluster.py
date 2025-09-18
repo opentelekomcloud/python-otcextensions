@@ -54,19 +54,16 @@ class Cluster(resource.Resource):
     guest_agent_version = resource.Body('guest_agent_version')
     #: Whether logical_cluster has been enabled.
     is_logical_cluster_enabled = resource.Body(
-        'use_logical_cluster', type=bool
-    )
+        'use_logical_cluster', type=bool)
     #: Whether logical_cluster has been initialed
     is_logical_cluster_initialed = resource.Body(
-        'logical_cluster_initialed', type=bool
-    )
+        'logical_cluster_initialed', type=bool)
     #: Whether logical_cluster_mode is set ``true``.
     is_logical_cluster_mode = resource.Body('logical_cluster_mode', type=bool)
     #: The number of latest manual snapshots that
     #:  need to be retained for a cluster.
     keep_last_manual_snapshot = resource.Body(
-        'keep_last_manual_snapshot', type=int
-    )
+        'keep_last_manual_snapshot', type=int)
     #: Cluster maintenance window.
     maintenance_window = resource.Body('maintain_window', type=dict)
     #: Network ID, which is used for configuring cluster network.
@@ -91,9 +88,8 @@ class Cluster(resource.Resource):
     #: List of private network IP addresses.
     private_ip = resource.Body('private_ip', type=list)
     #: Public network connection information about the cluster.
-    public_endpoints = resource.Body(
-        'public_endpoints', type=list, list_type=dict
-    )
+    public_endpoints = resource.Body('public_endpoints',
+                                     type=list, list_type=dict)
     #: Cluster scale-out details.
     resize_info = resource.Body('resize_info', type=dict)
     #: Router ID, which is used for configuring cluster network.
@@ -129,9 +125,9 @@ class Cluster(resource.Resource):
     #: Public Domain from public_endpoints connection_info
     public_domain = resource.Computed('public_domain', default='')
 
-    def delete(
-        self, session, keep_last_manual_snapshot=0, ignore_missing=False
-    ):
+    def delete(self, session,
+               keep_last_manual_snapshot=0,
+               ignore_missing=False):
         """Delete a DWS Cluster.
 
         This function overrides default Resource.delete to enable params
@@ -147,7 +143,9 @@ class Cluster(resource.Resource):
             to delete a nonexistent cluster.
         :returns: None
         """
-        body = {'keep_last_manual_snapshot': keep_last_manual_snapshot}
+        body = {
+            "keep_last_manual_snapshot": keep_last_manual_snapshot
+        }
         request = self._prepare_request()
         response = session.delete(request.url, json=body)
         try:
@@ -158,39 +156,25 @@ class Cluster(resource.Resource):
             raise
 
     def _action(self, session, action, body=None):
-        """Preform actions given the message body."""
+        """Preform actions given the message body.
+        """
         uri = utils.urljoin('clusters', self.id, action)
         response = session.post(uri, json=body)
         exceptions.raise_from_response(response)
 
     def restart(self, session):
-        """Restart the cluster."""
-        self._action(
-            session,
-            'restart',
-            {
-                'restart': {},
-            },
-        )
+        """Restart the cluster.
+        """
+        self._action(session, 'restart', {"restart": {}})
 
     def scale_out(self, session, node_count):
-        """Scale Out cluster Nodes."""
-        self._action(
-            session,
-            'resize',
-            {
-                'scale_out': {
-                    'count': node_count,
-                }
-            },
-        )
+        """Scale Out cluster Nodes.
+        """
+        self._action(session, 'resize',
+                     {'scale_out': {'count': node_count}})
 
     def reset_password(self, session, new_password):
-        """Reset Admin DB Password."""
-        self._action(
-            session,
-            'reset-password',
-            {
-                'new_password': new_password,
-            },
-        )
+        """Reset Admin DB Password.
+        """
+        self._action(session, 'reset-password',
+                     {'new_password': new_password})

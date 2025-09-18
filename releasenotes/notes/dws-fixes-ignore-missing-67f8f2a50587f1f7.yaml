@@ -1,5 +1,0 @@
----
-fixes:
-  - |
-    Set the default value of ignore_missing to True for the
-    find and delete SDK methods in DWS.

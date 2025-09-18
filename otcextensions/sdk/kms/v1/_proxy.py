@@ -10,8 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import proxy
-
-from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.kms.v1 import data_key as _data_key
 from otcextensions.sdk.kms.v1 import key as _key
 from otcextensions.sdk.kms.v1 import misc as _misc
@@ -20,9 +18,6 @@ from otcextensions.sdk.kms.v1 import misc as _misc
 class Proxy(proxy.Proxy):
 
     skip_discovery = True
-
-    def _extract_name(self, url, service_type=None, project_id=None):
-        return extract_url_parts(url, project_id)
 
     def __init__(self, session, *args, **kwargs):
         super(Proxy, self).__init__(session=session, *args, **kwargs)

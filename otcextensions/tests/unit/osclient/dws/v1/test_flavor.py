@@ -17,42 +17,20 @@ from otcextensions.tests.unit.osclient.dws.v1 import fakes
 
 
 class TestListFlavors(fakes.TestDws):
+
     objects = fakes.FakeFlavor.create_multiple(3)
 
-    column_list_headers = (
-        'ID',
-        'Name',
-        'Availability Zones',
-        'vCPU',
-        'RAM',
-        'Disk Size',
-        'Disk Type',
-    )
+    column_list_headers = ('ID', 'Name', 'Availability Zones', 'vCPU',
+                           'RAM', 'Disk Size', 'Disk Type',)
 
-    columns = (
-        'id',
-        'name',
-        'availability_zones',
-        'vcpu',
-        'ram',
-        'disk_size',
-        'disk_type',
-    )
+    columns = ('id', 'name', 'availability_zones', 'vcpu',
+               'ram', 'disk_size', 'disk_type',)
 
     data = []
 
     for s in objects:
-        data.append(
-            (
-                s.id,
-                s.name,
-                s.availability_zones,
-                s.vcpu,
-                s.ram,
-                s.disk_size,
-                s.disk_type,
-            )
-        )
+        data.append((s.id, s.name, s.availability_zones, s.vcpu,
+                     s.ram, s.disk_size, s.disk_type))
 
     def setUp(self):
         super(TestListFlavors, self).setUp()
@@ -63,8 +41,10 @@ class TestListFlavors(fakes.TestDws):
         self.client.api_mock = self.client.flavors
 
     def test_list(self):
-        arglist = []
-        verifylist = []
+        arglist = [
+        ]
+        verifylist = [
+        ]
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 

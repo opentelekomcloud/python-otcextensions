@@ -154,8 +154,6 @@ class TestObject(base.TestCase):
         response_data = return_data(INITIATE_MPU_RESP)
 
         self.sess.post = mock.Mock(return_value=response_data)
-        self.sess.region_name = mock.Mock(return_value="eu-de")
-
         sot.initiate_multipart_upload(
             self.sess,
             'http://obs.otc.t-systems.com',
@@ -174,7 +172,6 @@ class TestObject(base.TestCase):
         response_data = return_data(LIST_PARTS_RESP)
 
         self.sess.get = mock.Mock(return_value=response_data)
-        self.sess.region_name = mock.Mock(return_value="eu-de")
         sot.get_parts(
             self.sess,
             'http://obs.otc.t-systems.com',
@@ -195,19 +192,17 @@ class TestObject(base.TestCase):
         ]
 
         self.sess.post = mock.Mock(return_value=input_data)
-        self.sess.region_name = mock.Mock(return_value="eu-de")
         sot.complete_multipart_upload(
             self.sess,
             'http://obs.otc.t-systems.com',
             'test',
             input_data,
-            {},
-            requests_auth='requests_auth'
+            {}
         )
 
         self.sess.post.assert_called_once_with(
             'http://obs.otc.t-systems.com?uploadId=test',
             data=COMPLETE_MPU_RESP,
             headers={},
-            requests_auth='requests_auth'
+            params={}
         )

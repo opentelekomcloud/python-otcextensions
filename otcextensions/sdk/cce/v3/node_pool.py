@@ -197,7 +197,7 @@ class NodePoolSpec(resource.Resource):
     node_template_spec = resource.Body('nodeTemplate', type=NodeTemplateSpec)
 
 
-class MetaDataSpec(resource.Resource):
+class MetaDataSpec(resource.Body):
     # Name of the node pool
     name = resource.Body('name')
     #: UUID

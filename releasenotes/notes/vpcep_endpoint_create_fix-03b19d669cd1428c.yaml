@@ -1,3 +1,0 @@
----
-fixes:
-  - Fixes for VPC endpoint creation to include the port_ip parameter.

@@ -12,7 +12,7 @@
 
 from openstack import service_description
 
-from otcextensions.sdk.ctsv3.v3 import _proxy
+from otcextensions.sdk.cts.v1 import _proxy
 
 
 class Ctsv3Service(service_description.ServiceDescription):

@@ -129,7 +129,7 @@ class Group(_base.Resource):
         request = self._prepare_request(params=params)
 
         session = self._get_session(session)
-        microversion = self._get_microversion(session)
+        microversion = self._get_microversion(session, action='delete')
 
         response = session.delete(request.url, headers=request.headers,
                                   microversion=microversion)

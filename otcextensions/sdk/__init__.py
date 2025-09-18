@@ -11,7 +11,6 @@
 # under the License.
 import importlib
 import os
-import time
 
 import openstack
 from openstack import _log
@@ -23,7 +22,6 @@ from otcextensions.sdk.cloud import cce as _cce
 from otcextensions.sdk.cloud import dds as _dds
 from otcextensions.sdk.cloud import rds as _rds
 from otcextensions.sdk.compute.v2 import server
-from otcextensions.sdk.network.v2 import service_provider
 
 
 _logger = _log.setup_logging('openstack')
@@ -52,19 +50,6 @@ OTC_SERVICES = {
         'append_project_id': True,
         'endpoint_service_type': 'antiddos',
     },
-    'apig': {
-        'service_type': 'apig',
-        'append_project_id': True,
-        'endpoint_service_type': 'apigv2'
-    },
-    'aomv1': {
-        'service_type': 'aomv1',
-        'endpoint_service_type': 'aomv1'
-    },
-    'aomv2': {
-        'service_type': 'aomv2',
-        'endpoint_service_type': 'aomv2'
-    },
     'auto_scaling': {
         'service_type': 'auto_scaling',
         'endpoint_service_type': 'as',
@@ -84,21 +69,6 @@ OTC_SERVICES = {
     'ces': {
         'service_type': 'ces',
         'append_project_id': True,
-    },
-    'cfwv1': {
-        'service_type': 'cfwv1',
-        'append_project_id': True,
-        'endpoint_service_type': 'cfwv1'
-    },
-    'cfwv2': {
-        'service_type': 'cfwv2',
-        'append_project_id': True,
-        'endpoint_service_type': 'cfwv2'
-    },
-    'cfwv3': {
-        'service_type': 'cfwv3',
-        'append_project_id': True,
-        'endpoint_service_type': 'cfwv3'
     },
     'cts': {
         'service_type': 'cts',
@@ -138,21 +108,6 @@ OTC_SERVICES = {
     'deh': {
         'service_type': 'deh',
         'append_project_id': True,
-    },
-    'ddmv1': {
-        'service_type': 'ddmv1',
-        'endpoint_service_type': 'ddmv1',
-        'append_project_id': True
-    },
-    'ddmv2': {
-        'service_type': 'ddmv2',
-        'endpoint_service_type': 'ddmv2',
-        'append_project_id': True
-    },
-    'ddmv3': {
-        'service_type': 'ddmv3',
-        'endpoint_service_type': 'ddmv3',
-        'append_project_id': True
     },
     'dis': {
         'service_type': 'dis',
@@ -196,45 +151,13 @@ OTC_SERVICES = {
         'service_type': 'enterprise-dashboard-v1',
         'endpoint_service_type': 'enterprise-dashboard-v1'
     },
-    'er': {
-        'service_type': 'er',
-        'append_project_id': True,
-        'endpoint_service_type': 'erv3'
-    },
-    'evpn': {
-        'service_type': 'evpn',
-        'append_project_id': True,
-        'endpoint_service_type': 'evpn'
-    },
-    'function_graph': {
-        'service_type': 'function_graph',
-        'append_project_id': True,
-        'endpoint_service_type': 'functiongraph'
-    },
-    'gaussdb': {
-        'service_type': 'gaussdb',
-        'append_project_id': True,
-        'endpoint_service_type': 'gaussdb-mysql'
-    },
-    'geminidb': {
-        'service_type': 'geminidb',
-        'append_project_id': True,
-        'endpoint_service_type': 'geminidb'
-    },
-    'hss': {
-        'service_type': 'hss',
-        'append_project_id': True,
-        'endpoint_service_type': 'hss'
-    },
     'identity': {
         'service_type': 'identity',
         'replace_system': True
     },
-    'imsv1': {
-        'service_type': 'imsv1',
-    },
-    'imsv2': {
-        'service_type': 'imsv2',
+    'ims': {
+        'service_type': 'ims',
+        'endpoint_service_type': 'image',
     },
     'kms': {
         'service_type': 'kms',
@@ -267,18 +190,11 @@ OTC_SERVICES = {
     'nat': {
         'service_type': 'nat',
     },
-    'natv3': {
-        'service_type': 'natv3',
-        'endpoint_service_type': 'natv3'
-    },
     'obs': {
         'service_type': 'obs',
         'require_ak': True,
         'endpoint_service_type': 'object',
         'set_endpoint_override': True
-    },
-    'ocr': {
-        'service_type': 'ocr',
     },
     'plas': {
         'service_type': 'plas'
@@ -339,11 +255,6 @@ OTC_SERVICES = {
         'endpoint_service_type': 'premium-waf'
     }
 }
-
-# Specifies the number of seconds a temporary AK/SK
-# is to be renewed before it expires
-# Usually 30 seconds should be sufficient
-TMP_AKSK_RENEWAL = 30
 
 
 def _get_descriptor(service_name):
@@ -415,29 +326,6 @@ def _find_service_description_class(service_type):
     return service_description_class
 
 
-def _get_ak_sk_autocreate(conn):
-    """Autocreate/Return a temporary AK/SK"""
-    config_tmp_aksk = conn.config.config.get('_tmp_aksk', {})
-
-    # Check if a new temporary AK/SK needs to be created
-    if (config_tmp_aksk.get('expires', 0) - TMP_AKSK_RENEWAL) \
-            < int(time.time()):
-        # Create new temporary AK/SK with minimal duration of 900s
-        tmp_aksk = conn.identity.create_security_token(duration=900)
-        config_tmp_aksk['expires'] = int(time.time())
-        config_tmp_aksk['access_key'] = tmp_aksk.access
-        config_tmp_aksk['secret_key'] = tmp_aksk.secret
-        config_tmp_aksk['security_token'] = tmp_aksk.security_token
-        # Save temporary AK/SK in config
-        conn.config.config['_tmp_aksk'] = config_tmp_aksk
-
-    # Retrieve temporary AK/SK from config
-    ak = config_tmp_aksk['access_key']
-    sk = config_tmp_aksk['secret_key']
-    token = config_tmp_aksk['security_token']
-    return ak, sk, token
-
-
 def get_ak_sk(conn):
     """Fetch AK/SK from the cloud configuration or ENV
 
@@ -455,10 +343,6 @@ def get_ak_sk(conn):
         sk = os.getenv('OS_SECRET_KEY', os.getenv('S3_SECRET_ACCESS_KEY'))
     if not token:
         token = os.getenv('OS_SECURITY_TOKEN', os.getenv('S3_SECURITY_TOKEN'))
-
-    # Autocreate/return a temporary AK/SK if "autocreate_aksk" is enabled
-    if not (ak and sk) and config.get('autocreate_aksk', False):
-        (ak, sk, token) = _get_ak_sk_autocreate(conn)
 
     if not (ak and sk):
         _logger.error('AK/SK pair is not configured in the connection, '
@@ -492,8 +376,6 @@ def patch_openstack_resources():
     openstack.compute.v2.server.Server.remove_tag = server.Server.remove_tag
     openstack.exceptions.raise_from_response = \
         exc.raise_from_response
-    openstack.network.v2.service_provider.ServiceProvider.list = \
-        service_provider.ServiceProvider.list
 
 
 def register_single_service(conn, service_name, project_id=None, service=None):

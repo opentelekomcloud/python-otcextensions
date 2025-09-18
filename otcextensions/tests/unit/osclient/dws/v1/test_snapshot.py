@@ -10,45 +10,30 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
+import mock
 from unittest.mock import call
 
-import mock
-from openstackclient.tests.unit import utils as tests_utils
 from osc_lib import exceptions
 
-from otcextensions.osclient.dws.v1 import cluster
 from otcextensions.osclient.dws.v1 import snapshot
+from otcextensions.osclient.dws.v1 import cluster
 from otcextensions.tests.unit.osclient.dws.v1 import fakes
+
+from openstackclient.tests.unit import utils as tests_utils
 
 
 class TestListSnapshots(fakes.TestDws):
+
     objects = fakes.FakeSnapshot.create_multiple(3)
 
-    column_list_headers = (
-        'ID',
-        'Name',
-        'Type',
-        'Cluster Id',
-    )
+    column_list_headers = ('ID', 'Name', 'Type', 'Cluster Id',)
 
-    columns = (
-        'id',
-        'name',
-        'type',
-        'cluster_id',
-    )
+    columns = ('id', 'name', 'type', 'cluster_id',)
 
     data = []
 
     for s in objects:
-        data.append(
-            (
-                s.id,
-                s.name,
-                s.type,
-                s.cluster_id,
-            )
-        )
+        data.append((s.id, s.name, s.type, s.cluster_id,))
 
     def setUp(self):
         super(TestListSnapshots, self).setUp()
@@ -59,8 +44,10 @@ class TestListSnapshots(fakes.TestDws):
         self.client.api_mock = self.client.snapshots
 
     def test_list(self):
-        arglist = []
-        verifylist = []
+        arglist = [
+        ]
+        verifylist = [
+        ]
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -77,6 +64,7 @@ class TestListSnapshots(fakes.TestDws):
 
 
 class TestCreateSnapshot(fakes.TestDws):
+
     _cluster = fakes.FakeCluster.create_one()
     _snapshot = fakes.FakeSnapshot.create_one()
 
@@ -131,12 +119,12 @@ class TestCreateSnapshot(fakes.TestDws):
         }
         self.client.create_snapshot.assert_called_with(**attrs)
         self.client.wait_for_cluster.assert_called_with(
-            self._cluster.id, wait=self.default_timeout
-        )
+            self._cluster.id, wait=self.default_timeout)
         self.assertEqual(self.columns, columns)
 
 
 class TestShowSnapshot(fakes.TestDws):
+
     _snapshot = fakes.FakeSnapshot.create_one()
 
     columns = (
@@ -148,7 +136,7 @@ class TestShowSnapshot(fakes.TestDws):
         'size',
         'status',
         'type',
-        'updated_at',
+        'updated_at'
     )
 
     data = fakes.gen_data(_snapshot, columns)
@@ -166,13 +154,8 @@ class TestShowSnapshot(fakes.TestDws):
 
         # Testing that a call without the required argument will fail and
         # throw a "ParserExecption"
-        self.assertRaises(
-            tests_utils.ParserException,
-            self.check_parser,
-            self.cmd,
-            arglist,
-            verifylist,
-        )
+        self.assertRaises(tests_utils.ParserException,
+                          self.check_parser, self.cmd, arglist, verifylist)
 
     def test_show(self):
         arglist = [
@@ -188,9 +171,7 @@ class TestShowSnapshot(fakes.TestDws):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.find_snapshot.assert_called_with(
-            self._snapshot.id, ignore_missing=False
-        )
+        self.client.find_snapshot.assert_called_with(self._snapshot.id)
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -208,19 +189,20 @@ class TestShowSnapshot(fakes.TestDws):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         find_mock_result = exceptions.CommandError('Resource Not Found')
-        self.client.find_snapshot = mock.Mock(side_effect=find_mock_result)
+        self.client.find_snapshot = (
+            mock.Mock(side_effect=find_mock_result)
+        )
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
             self.assertEqual('Resource Not Found', str(e))
-        self.client.find_snapshot.assert_called_with(
-            'unexist_dws_snapshot', ignore_missing=False
-        )
+        self.client.find_snapshot.assert_called_with('unexist_dws_snapshot')
 
 
 class TestRestoreSnapshot(fakes.TestDws):
+
     _cluster = fakes.FakeCluster.create_one()
     _snapshot = fakes.FakeSnapshot.create_one()
 
@@ -260,7 +242,7 @@ class TestRestoreSnapshot(fakes.TestDws):
         'task_status',
         'updated_at',
         'user_name',
-        'version',
+        'version'
     )
 
     data = fakes.gen_data(_cluster, columns, cluster._formatters)
@@ -287,7 +269,7 @@ class TestRestoreSnapshot(fakes.TestDws):
             '--availability-zone', 'test-az',
             '--enterprise-project-id', 'eps-uuid',
             '--floating-ip', 'auto',
-            '--wait',
+            '--wait'
         ]
         verifylist = [
             ('name', 'restored-cluster'),
@@ -320,16 +302,15 @@ class TestRestoreSnapshot(fakes.TestDws):
             }
         }
         self.client.restore_snapshot.assert_called_with(
-            self._snapshot.id, **attrs
-        )
+            self._snapshot.id, **attrs)
         self.client.wait_for_cluster.assert_called_with(
-            self._cluster.id, self.default_timeout
-        )
+            self._cluster.id, self.default_timeout)
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
 
 
 class TestDeleteSnapshot(fakes.TestDws):
+
     _snapshot = fakes.FakeSnapshot.create_multiple(2)
 
     def setUp(self):
@@ -356,8 +337,7 @@ class TestDeleteSnapshot(fakes.TestDws):
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
         self.client.find_snapshot.assert_called_with(
-            self._snapshot[0].id, ignore_missing=False
-        )
+            self._snapshot[0].id, ignore_missing=False)
         self.client.delete_snapshot.assert_called_with(self._snapshot[0].id)
         self.assertIsNone(result)
 
@@ -399,8 +379,8 @@ class TestDeleteSnapshot(fakes.TestDws):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         delete_mock_results = [None, exceptions.CommandError]
-        self.client.delete_snapshot = mock.Mock(
-            side_effect=delete_mock_results
+        self.client.delete_snapshot = (
+            mock.Mock(side_effect=delete_mock_results)
         )
 
         # Trigger the action

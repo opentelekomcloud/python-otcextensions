@@ -15,19 +15,22 @@ import uuid
 from openstack.tests.unit import base
 from otcextensions.sdk.dws.v1 import snapshot
 
+
 EXAMPLE = {
-    'id': uuid.uuid4().hex,
-    'name': 'snapshot-1',
-    'description': 'snapshot description',
-    'started': '2016-08-23T03:59:23Z',
-    'finished': '2016-08-23T04:01:40Z',
-    'size': 500,
-    'status': 'AVAILABLE',
-    'type': 'MANUAL',
-    'cluster_id': uuid.uuid4().hex,
+    "id": uuid.uuid4().hex,
+    "name": "snapshot-1",
+    "description": "snapshot description",
+    "started": "2016-08-23T03:59:23Z",
+    "finished": "2016-08-23T04:01:40Z",
+    "size": 500,
+    "status": "AVAILABLE",
+    "type": "MANUAL",
+    "cluster_id": uuid.uuid4().hex
 }
 
-RESTORED_CLUSTER = {'id': uuid.uuid4().hex}
+RESTORED_CLUSTER = {
+    'id': uuid.uuid4().hex
+}
 
 
 class TestSnapshot(base.TestCase):
