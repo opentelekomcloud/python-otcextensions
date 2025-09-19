@@ -18,13 +18,13 @@
 import getpass
 import logging
 
-from novaclient import api_versions
 from osc_lib.cli import parseractions
 from osc_lib.command import command
 from osc_lib import exceptions
-from osc_lib import utils
 
 from openstackclient.i18n import _
+
+from openstack import utils as sdk_utils
 
 from otcextensions import sdk
 
@@ -53,11 +53,14 @@ class SetServer(command.Command):
             help=_('Set new root password (interactive only)'),
         )
         parser.add_argument(
-            "--property",
-            metavar="<key=value>",
+            '--property',
+            metavar='<key=value>',
             action=parseractions.KeyValueAction,
-            help=_('Property to add/change for this server '
-                   '(repeat option to set multiple properties)'),
+            dest='properties',
+            help=_(
+                'Property to add/change for this server '
+                '(repeat option to set multiple properties)'
+            ),
         )
         parser.add_argument(
             '--state',
@@ -83,18 +86,16 @@ class SetServer(command.Command):
     def take_action(self, parsed_args):
 
         compute_client = self.app.client_manager.compute
-        server = utils.find_resource(
-            compute_client.servers,
-            parsed_args.server,
+        server = compute_client.find_server(
+            parsed_args.server, ignore_missing=False
         )
 
         if parsed_args.name:
             server.update(name=parsed_args.name)
 
-        if parsed_args.property:
-            compute_client.servers.set_meta(
-                server,
-                parsed_args.property,
+        if parsed_args.properties:
+            compute_client.set_server_metadata(
+                server, **parsed_args.properties
             )
 
         if parsed_args.state:
@@ -110,16 +111,20 @@ class SetServer(command.Command):
                 raise exceptions.CommandError(msg)
 
         if parsed_args.description:
-            if server.api_version < api_versions.APIVersion("2.19"):
-                msg = _("Description is not supported for "
-                        "--os-compute-api-version less than 2.19")
+            if not sdk_utils.supports_microversion(compute_client, '2.19'):
+                msg = _(
+                    '--os-compute-api-version 2.19 or greater is required to '
+                    'support the --description option'
+                )
                 raise exceptions.CommandError(msg)
             server.update(description=parsed_args.description)
 
         if parsed_args.tag:
-            if server.api_version < api_versions.APIVersion("2.26"):
-                msg = _("Modifying tags is not supported for "
-                        "--os-compute-api-version less than 2.26")
+            if not sdk_utils.supports_microversion(compute_client, '2.26'):
+                msg = _(
+                    '--os-compute-api-version 2.26 or greater is required to '
+                    'support the --tag option'
+                )
                 raise exceptions.CommandError(msg)
             sdk.load(self.app.client_manager.sdk_connection)
             client = self.app.client_manager.sdk_connection.compute
@@ -140,11 +145,13 @@ class UnsetServer(command.Command):
         )
         parser.add_argument(
             '--property',
-            metavar='<key>',
-            action='append',
-            default=[],
-            help=_('Property key to remove from server '
-                   '(repeat option to remove multiple values)'),
+            metavar='<key=value>',
+            action=parseractions.KeyValueAction,
+            dest='properties',
+            help=_(
+                'Property to add/change for this server '
+                '(repeat option to set multiple properties)'
+            ),
         )
         parser.add_argument(
             '--description',
@@ -164,31 +171,31 @@ class UnsetServer(command.Command):
 
     def take_action(self, parsed_args):
         compute_client = self.app.client_manager.compute
-        server = utils.find_resource(
-            compute_client.servers,
-            parsed_args.server,
+        server = compute_client.find_server(
+            parsed_args.server, ignore_missing=False
         )
 
-        if parsed_args.property:
-            compute_client.servers.delete_meta(
-                server,
-                parsed_args.property,
+        if parsed_args.properties:
+            compute_client.delete_server_metadata(
+                server, parsed_args.properties or None
             )
 
         if parsed_args.description:
-            if compute_client.api_version < api_versions.APIVersion("2.19"):
-                msg = _("Description is not supported for "
-                        "--os-compute-api-version less than 2.19")
+            if not sdk_utils.supports_microversion(compute_client, '2.19'):
+                msg = _(
+                    '--os-compute-api-version 2.19 or greater is required to '
+                    'support the --description option'
+                )
                 raise exceptions.CommandError(msg)
-            compute_client.servers.update(
-                server,
-                description="",
-            )
+
+            compute_client.update_server(server, description="")
 
         if parsed_args.tag:
-            if compute_client.api_version < api_versions.APIVersion("2.26"):
-                msg = _("Modifying tags is not supported for "
-                        "--os-compute-api-version less than 2.26")
+            if not sdk_utils.supports_microversion(compute_client, '2.26'):
+                msg = _(
+                    '--os-compute-api-version 2.26 or greater is required to '
+                    'support the --tag option'
+                )
                 raise exceptions.CommandError(msg)
             sdk.load(self.app.client_manager.sdk_connection)
             client = self.app.client_manager.sdk_connection.compute

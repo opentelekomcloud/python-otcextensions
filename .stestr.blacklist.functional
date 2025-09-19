@@ -1,4 +1,5 @@
 otcextensions.tests.unit.sdk.cce*
+otcextensions.tests.functional.osclient.compute*
 otcextensions.tests.functional.osclient.dcaas
 otcextensions.tests.functional.osclient.dns*
 otcextensions.tests.functional.osclient.obs*
