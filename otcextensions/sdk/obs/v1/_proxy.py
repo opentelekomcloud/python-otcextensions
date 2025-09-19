@@ -65,7 +65,7 @@ class Proxy(sdk_proxy.Proxy):
         split_url = urlsplit(self.get_endpoint())
 
         return f'{split_url.scheme}://%(container)s.{split_url.netloc}' % \
-               {'container': container}
+            {'container': container}
 
     def _get_req_auth(self, host=None):
         auth = getattr(self, '_ak_auth', None)
