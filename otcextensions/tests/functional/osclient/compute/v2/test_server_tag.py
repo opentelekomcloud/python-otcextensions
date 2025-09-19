@@ -26,7 +26,6 @@ class TestCce(base.TestCase):
         json_output = json.loads(self.openstack(cmd))
         self.assertIsNotNone(json_output['id'])
 
-
     def test_02_create_server_tag(self):
         cmd = (
             f'server set {self.SERVER_ID} '

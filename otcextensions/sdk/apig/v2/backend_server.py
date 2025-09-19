@@ -74,7 +74,7 @@ class BackendServer(resource.Resource):
 
     def enable_server(self, session, gateway_id, vpc_channel_id, **attrs):
         uri = f'apigw/instances/{gateway_id}/vpc-channels/'\
-              f'{vpc_channel_id}/members/batch-enable'
+            f'{vpc_channel_id}/members/batch-enable'
         response = session.post(uri, json=attrs)
         exceptions.raise_from_response(response)
         self._translate_response(response)
@@ -82,7 +82,7 @@ class BackendServer(resource.Resource):
 
     def disable_server(self, session, gateway_id, vpc_channel_id, **attrs):
         uri = f'apigw/instances/{gateway_id}/vpc-channels/'\
-              f'{vpc_channel_id}/members/batch-disable'
+            f'{vpc_channel_id}/members/batch-disable'
         response = session.post(uri, json=attrs)
         exceptions.raise_from_response(response)
         self._translate_response(response)
