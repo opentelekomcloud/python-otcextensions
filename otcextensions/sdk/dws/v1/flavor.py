@@ -76,7 +76,7 @@ class Flavor(resource.Resource):
         if not cls.allow_list:
             raise exceptions.MethodNotSupported(cls, 'list')
         session = cls._get_session(session)
-        microversion = cls._get_microversion(session)
+        microversion = cls._get_microversion(session, action='list')
 
         if base_path is None:
             base_path = cls.base_path
