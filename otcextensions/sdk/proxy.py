@@ -11,6 +11,7 @@
 # under the License.
 
 from openstack import proxy
+from typing import Optional
 import requests
 
 
@@ -24,10 +25,10 @@ class Proxy(proxy.Proxy):
 
     def _report_stats_statsd(
             self,
-            response: requests.Response | None,
-            url: str | None = None,
-            method: str | None = None,
-            exc: BaseException | None = None,
+            response: Optional[requests.Response],
+            url: Optional[str] = None,
+            method: Optional[str] = None,
+            exc: Optional[BaseException] = None,
     ) -> None:
         if not self._statsd_prefix:
             return None
@@ -77,10 +78,10 @@ class Proxy(proxy.Proxy):
 
     def _report_stats_influxdb(
             self,
-            response: requests.Response | None,
-            url: str | None = None,
-            method: str | None = None,
-            exc: BaseException | None = None,
+            response: Optional[requests.Response],
+            url: Optional[str] = None,
+            method: Optional[str] = None,
+            exc: Optional[BaseException] = None,
     ) -> None:
         if not self._influxdb_client:
             return None
