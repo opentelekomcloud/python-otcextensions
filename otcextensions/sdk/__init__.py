@@ -297,6 +297,12 @@ OTC_SERVICES = {
         'endpoint_service_type': 'sfsturbo',
         # 'append_project_id': True,
     },
+    'sfs': {
+        'service_type': 'sfs',
+        'endpoint_service_type': 'share',
+        'require_ak': True,
+        'set_endpoint_override': True
+    },
     'smn': {
         'service_type': 'smn',
         'append_project_id': True
