@@ -1,0 +1,6 @@
+---
+upgrade:
+  - |
+    Uploading large files is now more reliable. When using the data parameter, 
+    the SDK can automatically split the upload into chunks, improving stability 
+    and reducing the chance of failures.

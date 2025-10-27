@@ -9,6 +9,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import io
 import os
 from urllib import parse
 from urllib.parse import urlsplit
@@ -383,21 +384,28 @@ class Proxy(sdk_proxy.Proxy):
                                 endpoint_override=endpoint,
                                 requests_auth=self._get_req_auth(endpoint),
                                 **headers)
-
-        if data is not None:
-            self.log.debug(
-                "uploading data to %(endpoint)s",
-                {'endpoint': endpoint})
-            return self._create(
-                _obj.Object, container=container,
-                name=name, data=data,
-                endpoint_override=endpoint,
-                requests_auth=self._get_req_auth(endpoint),
-                **headers)
-
         if segment_size:
             segment_size = int(segment_size)
         segment_size = self.get_object_segment_size(segment_size)
+
+        if data is not None:
+            data_size = self._try_get_size(data)
+
+            if data_size is not None and data_size > segment_size:
+                return self._upload_large_data(
+                    endpoint, data, name, headers, segment_size
+                )
+            else:
+                self.log.debug(
+                    "uploading data to %(endpoint)s",
+                    {'endpoint': endpoint})
+                return self._create(
+                    _obj.Object, container=container,
+                    name=name, data=data,
+                    endpoint_override=endpoint,
+                    requests_auth=self._get_req_auth(endpoint),
+                    **headers)
+
         file_size = os.path.getsize(filename)
 
         if generate_checksums and md5 is None:
@@ -530,6 +538,80 @@ class Proxy(sdk_proxy.Proxy):
                 retries -= 1
                 if retries == 0:
                     raise
+
+    def _try_get_size(self, data):
+        """Try to get the size of a data object if possible.
+
+        :param data: The data object passed to create_object.
+        :returns: The size of the data if it can be determined, else None.
+        """
+        if hasattr(data, 'fileno'):
+            try:
+                fileno = data.fileno()
+            except io.UnsupportedOperation:
+                return None
+            try:
+                st = os.fstat(fileno)
+                return st.st_size
+            except Exception:
+                self.log.debug(
+                    "Cannot determine size of data with fileno %s",
+                    fileno, exc_info=True)
+                return None
+        if hasattr(data, 'len'):
+            return data.len
+        if hasattr(data, '__len__'):
+            return len(data)
+        try:
+            pos = data.tell()
+            data.seek(0, os.SEEK_END)
+            size = data.tell()
+            data.seek(pos, os.SEEK_SET)
+            return size
+        except Exception:
+            pass
+        return None
+
+    def _upload_large_data(self, endpoint, data, name, headers, segment_size):
+        """
+        If the object is big, we need to break it up into segments that
+        are no larger than segment_size, upload each of them individually
+        and then upload a manifest object. The segments can be uploaded in
+        parallel, so we'll use the async feature of the TaskManager.
+        """
+        upload_id = _obj.Object.initiate_multipart_upload(
+            self, endpoint, name,
+            requests_auth=self._get_req_auth(endpoint)
+        )
+        url = f'{endpoint}/{name}'
+        part_number = 1
+
+        try:
+            while True:
+                segment = data.read(segment_size)
+                if not segment:
+                    break
+                result = self.put(
+                    f'{url}?partNumber={part_number}&uploadId={upload_id}',
+                    headers=headers, data=segment,
+                    requests_auth=self._get_req_auth(endpoint)
+                )
+                result.raise_for_status()
+                part_number += 1
+
+            return self._finish_large_object_upload(
+                url, headers, upload_id)
+        except Exception:
+            try:
+                self.log.debug(
+                    "Failed to upload large data. Aborting %s", upload_id
+                )
+                self._abort_multipart_upload(endpoint=url, upload_id=upload_id)
+            except Exception:
+                self.log.exception(
+                    "Failed to cleanup multipart upload %s:", upload_id
+                )
+            raise
 
     def _object_name_from_url(self, url):
         '''Get container_name/object_name from the full URL called.
