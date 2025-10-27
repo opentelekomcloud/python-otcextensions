@@ -219,7 +219,7 @@ class TestShowPolicy(fakes.TestCBR):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_policy.assert_called_once_with(
-            name_or_id='policy',
+            policy_id='policy',
             ignore_missing=False,
         )
 
@@ -482,7 +482,7 @@ class TestUpdatePolicy(fakes.TestCBR):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_policy.assert_called_with(
-            name_or_id='policy_id',
+            policy_id='policy_id',
             ignore_missing=False)
 
         self.client.update_policy.assert_called_once_with(

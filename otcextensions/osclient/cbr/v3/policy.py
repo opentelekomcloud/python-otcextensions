@@ -138,7 +138,7 @@ class ShowPolicy(command.ShowOne):
         client = self.app.client_manager.cbr
 
         obj = client.find_policy(
-            name_or_id=parsed_args.policy,
+            policy_id=parsed_args.policy,
             ignore_missing=False
         )
 
@@ -486,7 +486,7 @@ class UpdatePolicy(command.ShowOne):
 
         client = self.app.client_manager.cbr
         policy = client.find_policy(
-            name_or_id=parsed_args.policy,
+            policy_id=parsed_args.policy,
             ignore_missing=False
         )
 
@@ -525,7 +525,7 @@ class DeletePolicy(command.Command):
         client = self.app.client_manager.cbr
 
         policy = client.find_policy(
-            name_or_id=parsed_args.policy,
+            policy_id=parsed_args.policy,
             ignore_missing=False
         )
 

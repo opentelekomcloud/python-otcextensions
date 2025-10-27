@@ -20,5 +20,5 @@ conn = openstack.connect(cloud='otc')
 
 
 policy = 'name_or_id'
-policy = conn.cbr.find_policy(name_or_id=policy)
+policy = conn.cbr.find_policy(policy_id=policy)
 print(policy)
