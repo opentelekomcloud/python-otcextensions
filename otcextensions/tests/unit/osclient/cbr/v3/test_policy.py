@@ -277,7 +277,7 @@ class TestDeletePolicy(fakes.TestCBR):
 
         find_calls = [
             mock.call(
-                name_or_id='p1',
+                policy_id='p1',
                 ignore_missing=False),
         ]
 
