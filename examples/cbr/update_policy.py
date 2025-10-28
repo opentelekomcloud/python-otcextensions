@@ -40,6 +40,6 @@ attrs = {
 }
 
 policy = 'name_or_id'
-policy = conn.cbr.find_policy(name_or_id=policy)
+policy = conn.cbr.find_policy(policy_id=policy)
 policy = conn.cbr.update_policy(policy=policy, **attrs)
 print(policy)

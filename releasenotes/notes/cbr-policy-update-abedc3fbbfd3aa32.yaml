@@ -1,0 +1,4 @@
+---
+fixes:
+  - |
+    Fixed variable names and description in CBR policy configuration to ensure clarity and consistency.
