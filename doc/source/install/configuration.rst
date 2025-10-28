@@ -50,9 +50,9 @@ S3_SECRET_ACCESS_KEY.
 Test your connection
 ^^^^^^^^^^^^^^^^^^^^
 
-If you followed the `installation advices <index>`_ for your specific
-operating system, you can use the following command to test the basic
-functionality.
+If you followed the :doc:`installation advices </install/index>`
+for your specific  operating system, you can use the following
+command to test the basic functionality.
 
 .. code-block:: bash
 
