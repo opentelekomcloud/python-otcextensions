@@ -32,6 +32,7 @@ class Object(_base.BaseResource):
 
     allow_create = True
     allow_get = True
+    allow_fetch = True
     allow_commit = True
     allow_delete = True
     allow_list = True

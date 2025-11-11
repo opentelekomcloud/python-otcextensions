@@ -29,6 +29,7 @@ class Container(_base.BaseResource):
     resource_key = 'Bucket'
 
     allow_get = True
+    allow_fetch = True
     allow_head = True
     allow_list = True
     allow_create = True

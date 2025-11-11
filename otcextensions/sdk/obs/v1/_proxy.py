@@ -23,6 +23,8 @@ from otcextensions.sdk import ak_auth
 from otcextensions.sdk import sdk_proxy
 from otcextensions.sdk.obs.v1 import container as _container
 from otcextensions.sdk.obs.v1 import obj as _obj
+from openstack import utils as os_utils
+
 
 DEFAULT_OBJECT_SEGMENT_SIZE = 1073741824  # 1GB
 DEFAULT_MAX_FILE_SIZE = int((5 * 1024 * 1024 * 1024 + 2) / 2)
@@ -772,3 +774,126 @@ class Proxy(sdk_proxy.Proxy):
         """
         url = f'{endpoint}?uploadId={upload_id}'
         return self.delete(url, requests_auth=self._get_req_auth(endpoint))
+
+    def wait_for_delete_object(self, obj, container=None,
+                               interval=2, wait=300):
+        """Waits for an object to be deleted.
+
+        :param obj: The value can be the name of an object or a
+                    :class:`~otcextensions.sdk.obs.v1.obj.Object` instance.
+        :param container: The value can be the name of a container or a
+               :class:`~otcextensions.sdk.obs.v1.container.Container`.
+        :param int interval: The time in seconds to wait between checks.
+        :param int wait: The maximum time in seconds to wait for the object
+                         to be deleted.
+
+        :returns: The last head response from the server.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` if the
+                 object is not deleted in the specified time.
+        """
+        obj = self._get_resource(_obj.Object, obj)
+        container = self._get_container_name(obj, container)
+        for _ in os_utils.iterate_timeout(
+                timeout=wait,
+                message=f"Timeout waiting for {obj.name} "
+                        f"in {container} to delete",
+                wait=interval,
+        ):
+            try:
+                obj.fetch(self, container=container, skip_cache=True)
+            except exceptions.NotFoundException:
+                return obj
+
+        raise exceptions.ResourceTimeout(
+            f"Object {obj.name} in {container} was not "
+            f"deleted in {wait} seconds"
+        )
+
+    def wait_for_delete_container(self, container, interval=2, wait=180):
+        """Waits for a container to be deleted.
+
+        :param container: The value can be either the name of a container or a
+                      :class:`~otcextensions.sdk.obs.v1.container.Container`
+                      instance.
+        :param int interval: The time in seconds to wait between checks.
+        :param int wait: The maximum time in seconds to wait for the container
+                         to be deleted.
+        :returns: The last head response from the server.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` if the
+                 container is not deleted in the specified time.
+        """
+        container = self._get_resource(_container.Container, container)
+
+        for _ in os_utils.iterate_timeout(
+                timeout=wait,
+                message=f"Timeout waiting for container"
+                        f" {container.name} to delete",
+                wait=interval,
+        ):
+            try:
+                self.get_container(container.name)
+            except exceptions.NotFoundException:
+                return container
+        raise exceptions.ResourceTimeout(
+            f"Container {container.name} was not deleted in {wait} seconds"
+        )
+
+    def _get_cleanup_dependencies(self):
+        return {
+            'obs': {
+                'before': ['network']
+            }
+        }
+
+    def _service_cleanup(
+            self,
+            dry_run=True,
+            client_status_queue=None,
+            identified_resources=None,
+            filters=None,
+            resource_evaluation_fn=None,
+            skip_resources=None,
+            cont_name=None,
+    ):
+        pass
+        containers = []
+        for container in self.containers():
+            objects = []
+            for obj in self.objects(container=container.name):
+                need_delete = self._service_cleanup_del_res(
+                    lambda o: self.delete_object(o, container=container.name),
+                    obj,
+                    dry_run=dry_run,
+                    client_status_queue=client_status_queue,
+                    identified_resources=identified_resources,
+                    filters=filters,
+                    resource_evaluation_fn=resource_evaluation_fn
+                )
+                if not dry_run and need_delete:
+                    objects.append(obj)
+            for obj in objects:
+                try:
+                    self.wait_for_delete_object(obj, container=container.name)
+                except Exception as e:
+                    self.log.warning(
+                        f"Failed to delete object {obj.name} "
+                        f"from {container.name}: {e}"
+                    )
+            need_delete = self._service_cleanup_del_res(
+                self.delete_container,
+                container,
+                dry_run=dry_run,
+                client_status_queue=client_status_queue,
+                identified_resources=identified_resources,
+                filters=filters,
+                resource_evaluation_fn=resource_evaluation_fn
+            )
+            if not dry_run and need_delete:
+                containers.append(container)
+        for container in containers:
+            try:
+                self.wait_for_delete_container(container)
+            except Exception as e:
+                self.log.warning(
+                    f"Failed to delete container {container.name}: {e}"
+                )
