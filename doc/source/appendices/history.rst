@@ -59,17 +59,4 @@ OpenStack client. This way the SDK and CLI can be extended and
 maintained without touching the generic code. One instance making use
 of this plugin mechanism are the OTC Extensions, this very project.
 
-Wann gab es die ersten Clients für OpenStack?
-
-Wer hat wann erstmals die Notwendigkeit gesehen, etwas zu
-vereinheitlichen? Wann? Haben wir da irgendwo einen Link drauf?
-
-Wer hat Shade begonnen und wann?
-
-Wer hat os-client-config beginnen und wann?
-
-Wann/warum wurden die Projekte aufgegeben?
-
-Wer maintaint was?
-
 https://docs.openstack.org/openstacksdk/latest/contributor/history.html
