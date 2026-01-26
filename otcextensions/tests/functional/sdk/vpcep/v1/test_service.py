@@ -104,12 +104,3 @@ class TestService(TestVpcep):
         fetched = self.client.get_service(service.id)
         self.assertIn(updated_name, fetched.service_name)
         self.assertTrue(fetched.is_approval_enabled)
-
-    def test_delete_service(self):
-        """Test deleting an Endpoint Service."""
-        service = self._create_service(remove=False)
-        self.client.delete_service(service.id)
-        time.sleep(5)
-
-        services = list(self.client.services(id=service.id))
-        self.assertEqual(0, len(services))

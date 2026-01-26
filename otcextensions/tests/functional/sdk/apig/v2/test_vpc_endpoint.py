@@ -14,17 +14,16 @@ from otcextensions.tests.functional.sdk.apig import TestApiG
 
 
 class TestVpcEndpoint(TestApiG):
-    gateway = "4a5d39b75bc341e89033c65e97ad5bca"
+    gateway = ""
 
     def setUp(self):
         super(TestVpcEndpoint, self).setUp()
 
     def test_01_list_vpc_endpoint(self):
         self.conn.vpcep.create_endpoint(
-            subnet_id='1bc849dc-4426-455a-8207-fb5f726c6ff7',
-            endpoint_service_id='b002616f-f386-4da1-8118-04d5e090200f',
-            vpc_id='80a6ba4b-44d7-4c57-be40-5013a1e55273',
-
+            subnet_id='',
+            endpoint_service_id='',
+            vpc_id='',
         )
         list(self.client.vpc_endpoints(
             gateway=TestVpcEndpoint.gateway,
