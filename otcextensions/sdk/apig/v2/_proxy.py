@@ -47,6 +47,7 @@ from otcextensions.sdk.apig.v2 import ssl_certificate as _ssl_certificate
 from otcextensions.sdk.apig.v2 import ssl_domain as _ssl_domain
 from otcextensions.sdk.apig.v2 import tag as _tag
 from otcextensions.sdk.apig.v2 import config as _config
+from otcextensions.sdk.apig.v2 import vpc_endpoint as _vpc_endpoint
 
 
 class Proxy(proxy.Proxy):
@@ -3469,3 +3470,27 @@ class Proxy(proxy.Proxy):
             paginated=False,
             base_path=base_path,
             **attrs,)
+
+    # ======== VPC Endpoint Management Methods ========
+
+    def vpc_endpoints(self, gateway, **attrs):
+        """List all VPC endpoints
+
+        This method retrieves all VPC endpoints associated with the specified
+        API Gateway instance.
+
+        :param gateway: The ID or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Optional query parameters for filtering the list,
+            such as limit, offset, id, marker_id, status
+
+        :returns: A generator of
+            :class:`~otcextensions.sdk.apig.v2.vpc_endpoint.VpcEndpoint`
+            instances
+        """
+        gateway = self._get_resource(_gateway.Gateway, gateway)
+        return self._list(
+            _vpc_endpoint.VpcEndpoint,
+            gateway_id=gateway.id,
+            **attrs
+        )

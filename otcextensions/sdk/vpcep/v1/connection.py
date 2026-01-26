@@ -54,8 +54,10 @@ class Connection(resource.Resource):
         body = {'endpoints': endpoints, 'action': action}
         response = session.post(uri, json=body)
         exceptions.raise_from_response(response)
-        for raw_resource in response.json()[self.resources_key]:
-            yield Connection.existing(**raw_resource)
+        return [
+            Connection.existing(**raw_resource)
+            for raw_resource in response.json()[self.resources_key]
+        ]
 
     def accept(self, session, endpoints=[]):
         """Accept connections."""

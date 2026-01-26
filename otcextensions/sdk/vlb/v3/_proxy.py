@@ -133,6 +133,21 @@ class Proxy(proxy.Proxy):
         return resource.wait_for_status(self, lb, status, failures, interval,
                                         wait, attribute='provisioning_status')
 
+    def wait_for_delete_load_balancer(self, name_or_id, interval=2, wait=300):
+        """Wait for a load balancer to be deleted.
+
+        :param name_or_id: The name or ID of a load balancer.
+        :param interval: Number of seconds to wait between checks.
+            Default is 2.
+        :param wait: Maximum number of seconds to wait for deletion.
+            Default is 300.
+        :returns: True if the resource is deleted, False if timeout.
+        :raises: :class:`~openstack.exceptions.ResourceTimeout` if transition
+            to delete failed to occur in the specified seconds.
+        """
+        lb = self._get_resource(_lb.LoadBalancer, name_or_id)
+        return resource.wait_for_delete(self, lb, interval, wait)
+
     def get_load_balancer_statuses(self, loadbalancer_id):
         """Get specific load balancer statuses by load balancer id.
 

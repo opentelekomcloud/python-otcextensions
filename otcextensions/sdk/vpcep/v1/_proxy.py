@@ -210,10 +210,8 @@ class Proxy(proxy.Proxy):
         :param action: action can be ``accept`` or ``reject``.
         :param endpoints: List of VPC Endpoints Id.
 
-        :returns: A generator of connection objects.
-        :rtype: :class:`~otcextensions.sdk.vpcep.connection.Connection`
+        :returns: List of connection objects.
         """
-
         endpoint_service = self._get_resource(_service.Service, service)
         connection = self._get_resource(
             _connection.Connection,
