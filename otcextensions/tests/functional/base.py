@@ -11,6 +11,7 @@
 # under the License.
 
 import os
+import uuid
 
 from keystoneauth1 import exceptions as _exceptions
 
@@ -72,3 +73,86 @@ class BaseFunctionalTest(base.TestCase):
         except _exceptions.EndpointNotFound:
             self.skipTest('Service {service_type} not found in cloud'.format(
                 service_type=service_type))
+
+
+class NetworkBaseFunctionalTest(BaseFunctionalTest):
+    def create_network(self, prefix='sdk-test'):
+        cidr = '192.168.0.0/16'
+        ipv4 = 4
+        uuid_v4 = uuid.uuid4().hex[:8]
+        router_name = prefix + '-router-' + uuid_v4
+        net_name = prefix + '-net-' + uuid_v4
+        subnet_name = prefix + '-subnet-' + uuid_v4
+
+        network = self.conn.network.create_network(name=net_name)
+        self.assertEqual(net_name, network.name)
+        net_id = network.id
+        subnet = self.conn.network.create_subnet(
+            name=subnet_name,
+            ip_version=ipv4,
+            network_id=net_id,
+            cidr=cidr
+        )
+        self.assertEqual(subnet_name, subnet.name)
+        subnet_id = subnet.id
+
+        router = self.conn.network.create_router(name=router_name)
+        self.assertEqual(router_name, router.name)
+        router_id = router.id
+        interface = router.add_interface(
+            self.conn.network,
+            subnet_id=subnet_id
+        )
+        self.assertEqual(interface['subnet_id'], subnet_id)
+        self.assertIn('port_id', interface)
+        return {
+            'router_id': router_id,
+            'subnet_id': subnet_id,
+            'network_id': net_id
+        }
+
+    def destroy_network(self, params: dict):
+        router_id = params.get('router_id')
+        subnet_id = params.get('subnet_id')
+        network_id = params.get('network_id')
+        router = self.conn.network.get_router(router_id)
+
+        interface = router.remove_interface(
+            self.conn.network,
+            subnet_id=subnet_id
+        )
+        self.assertEqual(interface['subnet_id'], subnet_id)
+        self.assertIn('port_id', interface)
+        sot = self.conn.network.delete_router(
+            router_id,
+            ignore_missing=False
+        )
+        self.assertIsNone(sot)
+        sot = self.conn.network.delete_subnet(
+            subnet_id,
+            ignore_missing=False
+        )
+        self.assertIsNone(sot)
+        sot = self.conn.network.delete_network(
+            network_id,
+            ignore_missing=False
+        )
+        self.assertIsNone(sot)
+
+    def create_port(self, network_id, prefix='sdk-test'):
+        uuid_v4 = uuid.uuid4().hex[:8]
+        port_name = prefix + '-port-' + uuid_v4
+
+        port = self.conn.network.create_port(
+            name=port_name,
+            network_id=network_id
+        )
+        self.assertEqual(port_name, port.name)
+        return port
+
+    def destroy_port(self, port):
+        sot = self.conn.network.delete_port(
+            port,
+            ignore_missing=False
+        )
+        self.assertIsNone(sot)
