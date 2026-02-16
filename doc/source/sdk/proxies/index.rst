@@ -29,6 +29,7 @@ Service Proxies
    MapReduce Service (MRS) <mrs>
    Modelarts Service (ModelArts) <modelarts>
    Network Address Translation (NAT) <nat>
+    Network Address Translation (NAT) V3 <nat_v3>
    Object Block Storage (OBS) <obs>
    Relational Database Service RDS V1 (RDSv1) <rds_v1>
    Relational Database Service RDS V3 (RDS) <rds_v3>

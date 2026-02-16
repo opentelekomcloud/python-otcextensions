@@ -14,6 +14,6 @@ member of a :class:`~openstack.connection.Connection` object.  The
 Gateway Operations
 ^^^^^^^^^^^^^^^^^^
 
-.. autoclass:: otcextensions.sdk.nat.v2._proxy.Proxy
+.. autoclass:: otcextensions.sdk.natv3.v3._proxy.Proxy
   :noindex:
   :members: gateways
