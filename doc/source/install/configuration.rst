@@ -184,7 +184,7 @@ according to your credentials.
     export NOVA_ENDPOINT_TYPE=publicURL
     export OS_ENDPOINT_TYPE=publicURL
     export CINDER_ENDPOINT_TYPE=publicURL
-    export OS_VOLUME_API_VERSION=2
+    export OS_VOLUME_API_VERSION=3
     export OS_IDENTITY_API_VERSION=3
     export OS_IMAGE_API_VERSION=2
 
