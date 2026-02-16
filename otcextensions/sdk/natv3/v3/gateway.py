@@ -25,8 +25,8 @@ class TagSpec(resource.Resource):
 
 class Gateway(resource.Resource):
     base_path = '/private-nat/gateways'
-    resource_name = 'gateway'
-    resources_name = 'gateways'
+    resource_key = 'gateway'
+    resources_key = 'gateways'
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
