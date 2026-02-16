@@ -9,25 +9,17 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import proxy
-
-from otcextensions.common.utils import extract_url_parts
+from openstack.tests.unit import test_proxy_base
+from otcextensions.sdk.natv3.v3 import _proxy
 from otcextensions.sdk.natv3.v3 import gateway as _gateway
 
 
-class Proxy(proxy.Proxy):
+class TestNatProxy(test_proxy_base.TestProxyBase):
+    def setUp(self):
+        super(TestNatProxy, self).setUp()
+        self.proxy = _proxy.Proxy(self.session)
 
-    skip_discovery = True
 
-    def _extract_name(self, url, service_type=None, project_id=None):
-        return extract_url_parts(url, project_id)
-
-    def gateways(self, **query):
-        """List all gateways
-
-        :param query: Keyword arguments which will be used
-        to filter the gateways
-
-        :returns: a generator of Gateway objects
-        """
-        return self._list(_gateway.Gateway, **query)
+class TestNatGateway(TestNatProxy):
+    def test_gateways(self):
+        self.verify_list(self.proxy.gateways, _gateway.Gateway)

@@ -7,3 +7,4 @@ NAT Resources
    v2/gateway
    v2/snat
    v2/dnat
+   v3/gateway
