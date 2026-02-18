@@ -24,7 +24,6 @@ class DownlinkVpc(resource.Resource):
     ngport_ip_address = resource.Body('ngport_ip_address')
 
 
-
 class Tag(resource.Resource):
     #: Specifies the tag key. Up to 128 Unicode characters. Cannot be blank.
     key = resource.Body('key')
@@ -68,7 +67,8 @@ class PrivateNatGateway(resource.Resource):
     #: * vpc_id: Specifies the ID of the VPC.
     #: * virsubnet_id: Specifies the ID of the subnet.
     #: * ngport_ip_address: Specifies the private IP address of the gateway.
-    downlink_vpcs = resource.Body('downlink_vpcs', type=list, list_type=DownlinkVpc)
+    downlink_vpcs = resource.Body('downlink_vpcs', type=list,
+                                  list_type=DownlinkVpc)
     #: Specifies the ID of the enterprise project that is associated
     #: with the private NAT gateway when the private NAT gateway is created.
     enterprise_project_id = resource.Body('enterprise_project_id')
@@ -106,7 +106,6 @@ class PrivateNatGateway(resource.Resource):
     #: Specifies the time when the private NAT gateway was updated.
     #: It is a UTC time in yyyy-mm-ddThh:mm:ssZ format.
     updated_at = resource.Body('updated_at')
-
 
 
 class PageInfo(resource.Resource):

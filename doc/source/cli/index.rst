@@ -42,6 +42,7 @@ documentation of these services:
    load_balancer
    modelarts
    nat
+   natv3
    obs
    rds_v3
    sdrs
