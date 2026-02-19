@@ -60,7 +60,7 @@ class PrivateNatGateway(resource.Resource):
     created_at = resource.Body('created_at')
     #: Provides supplementary information about the private NAT gateway.
     #: The description can contain up to 255 characters.
-    #:  Cannot contain angle brackets (<>).
+    #: Cannot contain angle brackets (<>).
     description = resource.Body('description')
     #: Specifies the VPC where the private NAT gateway works.
     #: Each item contains:

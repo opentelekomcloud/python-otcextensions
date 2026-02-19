@@ -44,6 +44,7 @@ documentation of these services:
    nat
    natv3
    obs
+   privatenat
    rds_v3
    sdrs
    smn
