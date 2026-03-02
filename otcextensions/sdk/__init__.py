@@ -269,6 +269,7 @@ OTC_SERVICES = {
     },
     'natv3': {
         'service_type': 'natv3',
+        'append_project_id': True,
         'endpoint_service_type': 'natv3'
     },
     'obs': {

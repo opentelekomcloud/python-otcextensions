@@ -30,6 +30,7 @@ Open Telekom Cloud Resources
    MapReduce Service (MRS) <mrs/index>
    ModelArts Service (MA) <modelarts/index>
    Network Address Translation (NAT) <nat/index>
+   Private Network Address Translation (Private NAT) <privatenat/index>
    Object Block Storage (OBS) <obs/index>
    Relational Database Service (RDS) <rds/index>
    Shared File System Turbo (SFS Turbo) <sfsturbo/index>

@@ -12,6 +12,7 @@
 from openstack import proxy
 
 from otcextensions.common.utils import extract_url_parts
+from otcextensions.sdk.natv3.v3 import gateway as _gateway
 
 
 class Proxy(proxy.Proxy):
@@ -20,3 +21,13 @@ class Proxy(proxy.Proxy):
 
     def _extract_name(self, url, service_type=None, project_id=None):
         return extract_url_parts(url, project_id)
+
+    def private_nat_gateways(self, **query):
+        """Return a generator of private NAT gateways.
+
+        :param dict query: Optional query parameters to be sent to limit
+            the resources being returned.
+
+        :returns: A generator of private NAT gateway objects.
+        """
+        return self._list(_gateway.PrivateNatGateway, **query)

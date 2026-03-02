@@ -43,6 +43,7 @@ documentation of these services:
    modelarts
    nat
    obs
+   privatenat
    rds_v3
    sdrs
    smn

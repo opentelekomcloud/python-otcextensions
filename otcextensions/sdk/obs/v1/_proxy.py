@@ -794,10 +794,12 @@ class Proxy(sdk_proxy.Proxy):
         obj = self._get_resource(_obj.Object, obj)
         container = self._get_container_name(obj, container)
         for _ in os_utils.iterate_timeout(
-                timeout=wait,
-                message=f"Timeout waiting for {obj.name} "
-                        f"in {container} to delete",
-                wait=interval,
+            timeout=wait,
+            message=(
+                f"Timeout waiting for {obj.name} "
+                f"in {container} to delete"
+            ),
+            wait=interval,
         ):
             try:
                 obj.fetch(self, container=container, skip_cache=True)
@@ -825,10 +827,12 @@ class Proxy(sdk_proxy.Proxy):
         container = self._get_resource(_container.Container, container)
 
         for _ in os_utils.iterate_timeout(
-                timeout=wait,
-                message=f"Timeout waiting for container"
-                        f" {container.name} to delete",
-                wait=interval,
+            timeout=wait,
+            message=(
+                f"Timeout waiting for container"
+                f" {container.name} to delete"
+            ),
+            wait=interval,
         ):
             try:
                 self.get_container(container.name)
