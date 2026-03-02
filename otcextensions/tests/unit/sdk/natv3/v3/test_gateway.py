@@ -46,7 +46,7 @@ class TestPrivateNatGateway(base.TestCase):
         sot = gateway.PrivateNatGateway()
         self.assertEqual('gateways', sot.resources_key)
         self.assertEqual('gateway', sot.resource_key)
-        self.assertEqual('private-nat/gateways',
+        self.assertEqual('/private-nat/gateways',
                          sot.base_path)
         self.assertTrue(sot.allow_list)
 

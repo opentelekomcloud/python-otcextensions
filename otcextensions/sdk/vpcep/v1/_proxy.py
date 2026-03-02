@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
+import re
 from openstack import exceptions
 from openstack import proxy
 from otcextensions.sdk.vpcep.v1 import connection as _connection
@@ -309,30 +310,31 @@ class Proxy(proxy.Proxy):
             when no resource can be found.
 
         """
-        try:
-            base_path = _target_service.TargetService.base_path + \
-                '?id={}'.format(name_or_id)
-            return self._get(
-                _target_service.TargetService,
-                base_path=base_path,
-                requires_id=False
+        uuid_re = re.compile(
+            r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        )
+
+        if isinstance(name_or_id, str) and uuid_re.match(name_or_id):
+            base_path = (
+                _target_service.TargetService.base_path
+                + "?id={}".format(name_or_id)
             )
-        except exceptions.ResourceNotFound:
-            pass
+        else:
+            base_path = (
+                _target_service.TargetService.base_path
+                + "?endpoint_service_name={}".format(name_or_id)
+            )
 
         try:
-            base_path = _target_service.TargetService.base_path + \
-                '?endpoint_service_name={}'.format(name_or_id)
             return self._get(
                 _target_service.TargetService,
                 base_path=base_path,
-                requires_id=False
+                requires_id=False,
             )
         except exceptions.ResourceNotFound:
             if ignore_missing:
                 return None
-            else:
-                raise
+            raise
 
     # ======== VPCEP Resource Quota  ========
 
