@@ -171,7 +171,7 @@ class TestTargetService(TestVpcepProxy):
     def test_get_target_service(self):
         resource_id = '6a0a8b5f-0511-459f-b35b-e6fb6357a0be'
         base_path_id = target_service.TargetService.base_path + \
-            '?id={}'.format(resource_id)
+            '?endpoint_service_name={}'.format(resource_id)
 
         self._verify(
             'otcextensions.sdk.vpcep.v1._proxy.Proxy._get',
