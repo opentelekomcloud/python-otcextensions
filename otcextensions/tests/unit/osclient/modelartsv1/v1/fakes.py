@@ -35,9 +35,7 @@ from otcextensions.tests.unit.sdk.modelartsv1.v1 import examples
 
 def gen_data(obj, columns, formatters=None):
     """Fill expected data tuple based on columns list"""
-    return _osc_lib_utils.get_item_properties(
-        obj, columns, formatters=formatters
-    )
+    return _osc_lib_utils.get_item_properties(obj, columns, formatters=formatters)
 
 
 def gen_data_dict(data, columns):
@@ -205,9 +203,7 @@ class FakeServiceMonitor(test_base.Fake):
         """
         monitor = service_monitor.ServiceMonitor(**examples.SERVICE_MONITOR)
         monitor.cpu_core = f"{monitor.cpu_core_usage}/{monitor.cpu_core_total}"
-        monitor.cpu_memory = (
-            f"{monitor.cpu_memory_usage}/{monitor.cpu_memory_total}"
-        )
+        monitor.cpu_memory = f"{monitor.cpu_memory_usage}/{monitor.cpu_memory_total}"
         monitor.gpu = f"{monitor.gpu_usage}/{monitor.gpu_total}"
         return monitor
 
@@ -254,9 +250,7 @@ class FakeTrainingJobVersion(test_base.Fake):
         :return:
             A FakeResource object, with id, name and so on
         """
-        return training_job_version.TrainingJobVersion(
-            **examples.TRAINING_JOB_VERSION
-        )
+        return training_job_version.TrainingJobVersion(**examples.TRAINING_JOB_VERSION)
 
 
 class FakeTrainingJobConfig(test_base.Fake):
@@ -269,9 +263,7 @@ class FakeTrainingJobConfig(test_base.Fake):
         :return:
             A FakeResource object, with id, name and so on
         """
-        return training_job_config.TrainingJobConfig(
-            **examples.TRAINING_JOB_CONFIG
-        )
+        return training_job_config.TrainingJobConfig(**examples.TRAINING_JOB_CONFIG)
 
 
 class FakeVisualizationJob(test_base.Fake):

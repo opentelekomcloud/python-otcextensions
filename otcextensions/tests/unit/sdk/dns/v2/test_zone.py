@@ -10,13 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import mock
-
 from keystoneauth1 import adapter
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.dns.v2 import zone
-
 
 FAKE_ID = "68d5745e-6af2-40e4-945d-fe449be00148"
 EXAMPLE = {
@@ -28,9 +25,7 @@ EXAMPLE = {
     "serial": 0,
     "masters": [],
     "status": "ACTIVE",
-    "links": {
-        "self": "https://Endpoint/v2/zones/ff8080825b8fc86c015b94bc6f8712c3"
-    },
+    "links": {"self": "https://Endpoint/v2/zones/ff8080825b8fc86c015b94bc6f8712c3"},
     "pool_id": "ff8080825ab738f4015ab7513298010e",
     "project_id": "e55c6f3dc4e34c9f86353b664ae0e70c",
     "zone_type": "private",
@@ -41,15 +36,14 @@ EXAMPLE = {
         {
             "status": "ACTIVE",
             "router_id": "19664294-0bf6-4271-ad3a-94b8c79c6558",
-            "router_region": "xx"
+            "router_region": "xx",
         },
         {
             "status": "ACTIVE",
             "router_id": "f0791650-db8c-4a20-8a44-a06c6e24b15b",
-            "router_region": "xx"
-        }
-    ]
-
+            "router_region": "xx",
+        },
+    ],
 }
 
 
@@ -63,8 +57,8 @@ class TestZone(base.TestCase):
     def test_basic(self):
         sot = zone.Zone()
 
-        self.assertEqual('/zones', sot.base_path)
-        self.assertEqual('zones', sot.resources_key)
+        self.assertEqual("/zones", sot.base_path)
+        self.assertEqual("zones", sot.resources_key)
         self.assertIsNone(sot.resource_key)
 
         self.assertTrue(sot.allow_list)
@@ -76,21 +70,21 @@ class TestZone(base.TestCase):
     def test_make_it(self):
 
         sot = zone.Zone(**EXAMPLE)
-        self.assertEqual(EXAMPLE['id'], sot.id)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['description'], sot.description)
-        self.assertEqual(EXAMPLE['email'], sot.email)
-        self.assertEqual(EXAMPLE['ttl'], sot.ttl)
-        self.assertEqual(EXAMPLE['serial'], sot.serial)
-        self.assertEqual(EXAMPLE['masters'], sot.masters)
-        self.assertEqual(EXAMPLE['status'], sot.status)
-        self.assertEqual(EXAMPLE['pool_id'], sot.pool_id)
-        self.assertEqual(EXAMPLE['project_id'], sot.project_id)
-        self.assertEqual(EXAMPLE['zone_type'], sot.zone_type)
-        self.assertEqual(EXAMPLE['created_at'], sot.created_at)
-        self.assertEqual(EXAMPLE['updated_at'], sot.updated_at)
-        self.assertEqual(EXAMPLE['record_num'], sot.record_num)
-        self.assertEqual(len(EXAMPLE['routers']), len(sot.routers))
+        self.assertEqual(EXAMPLE["id"], sot.id)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["description"], sot.description)
+        self.assertEqual(EXAMPLE["email"], sot.email)
+        self.assertEqual(EXAMPLE["ttl"], sot.ttl)
+        self.assertEqual(EXAMPLE["serial"], sot.serial)
+        self.assertEqual(EXAMPLE["masters"], sot.masters)
+        self.assertEqual(EXAMPLE["status"], sot.status)
+        self.assertEqual(EXAMPLE["pool_id"], sot.pool_id)
+        self.assertEqual(EXAMPLE["project_id"], sot.project_id)
+        self.assertEqual(EXAMPLE["zone_type"], sot.zone_type)
+        self.assertEqual(EXAMPLE["created_at"], sot.created_at)
+        self.assertEqual(EXAMPLE["updated_at"], sot.updated_at)
+        self.assertEqual(EXAMPLE["record_num"], sot.record_num)
+        self.assertEqual(len(EXAMPLE["routers"]), len(sot.routers))
 
     def test_associate_router(self):
         sot = zone.Zone(**EXAMPLE)
@@ -102,13 +96,11 @@ class TestZone(base.TestCase):
 
         self.sess.post.return_value = mock_response
 
-        sot.associate_router(
-            self.sess, router_id=1, router_region='a'
-        )
+        sot.associate_router(self.sess, router_id=1, router_region="a")
 
         self.sess.post.assert_called_once_with(
-            'zones/%s/associaterouter' % FAKE_ID,
-            json={'router': {'router_id': 1, 'router_region': 'a'}}
+            "zones/%s/associaterouter" % FAKE_ID,
+            json={"router": {"router_id": 1, "router_region": "a"}},
         )
 
     def test_disassociate_router(self):
@@ -121,11 +113,8 @@ class TestZone(base.TestCase):
 
         self.sess.post.return_value = mock_response
 
-        sot.disassociate_router(
-            self.sess, router_id=1
-        )
+        sot.disassociate_router(self.sess, router_id=1)
 
         self.sess.post.assert_called_once_with(
-            'zones/%s/disassociaterouter' % FAKE_ID,
-            json={'router': {'router_id': 1}}
+            "zones/%s/disassociaterouter" % FAKE_ID, json={"router": {"router_id": 1}}
         )

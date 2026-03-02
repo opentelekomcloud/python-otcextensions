@@ -13,10 +13,11 @@
 """
 List all Anti-DDoS events per week of all Floating IPs.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 for event in conn.anti_ddos.floating_ip_stat_week():

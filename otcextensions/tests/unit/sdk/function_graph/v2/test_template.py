@@ -11,9 +11,7 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.function_graph.v2 import template
-
 
 EXAMPLE = {
     "id": "41d5d9ca-cea3-4ba9-b866-e30c46f45f1f",
@@ -29,10 +27,10 @@ EXAMPLE = {
     "temp_detail": {
         "input": "None",
         "output": "Execution successful: Database query results",
-        "warning": ""
+        "warning": "",
     },
     "scene": "basic_function_usage",
-    "service": "FunctionGraph"
+    "service": "FunctionGraph",
 }
 
 
@@ -40,13 +38,13 @@ class TestFunctionInvocation(base.TestCase):
 
     def test_basic(self):
         sot = template.Template()
-        path = 'fgs/templates/%(template_id)s'
+        path = "fgs/templates/%(template_id)s"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_fetch)
 
     def test_make_it(self):
         sot = template.Template(**EXAMPLE)
-        self.assertEqual(EXAMPLE['id'], sot.id)
-        self.assertEqual(EXAMPLE['type'], sot.type)
-        self.assertEqual(EXAMPLE['title'], sot.title)
-        self.assertEqual(EXAMPLE['template_name'], sot.template_name)
+        self.assertEqual(EXAMPLE["id"], sot.id)
+        self.assertEqual(EXAMPLE["type"], sot.type)
+        self.assertEqual(EXAMPLE["title"], sot.title)
+        self.assertEqual(EXAMPLE["template_name"], sot.template_name)

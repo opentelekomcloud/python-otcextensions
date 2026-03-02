@@ -13,12 +13,12 @@
 """
 List all RDS Datastores
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-db_type = 'MySQL'   # or PostgreSQL, or SQLServer
+db_type = "MySQL"  # or PostgreSQL, or SQLServer
 for ds in conn.rds.datastores(db_type):
     print(ds)

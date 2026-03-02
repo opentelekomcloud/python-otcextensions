@@ -13,52 +13,57 @@ from openstack import resource
 
 
 class Subscription(resource.Resource):
-    resources_key = 'subscriptions'
-    base_path = '/notifications/topics/%(topic_urn)s/subscriptions'
+    resources_key = "subscriptions"
+    base_path = "/notifications/topics/%(topic_urn)s/subscriptions"
 
     # capabilities
     allow_create = True
     allow_delete = True
     allow_list = True
 
-    _query_mapping = resource.QueryParameters(
-        'offset', 'limit')
+    _query_mapping = resource.QueryParameters("offset", "limit")
 
     #: Resource identifier of a subscription, which is unique
-    id = resource.Body('subscription_urn', alternate_id=True)
+    id = resource.Body("subscription_urn", alternate_id=True)
     #: Message receiving endpoint
-    endpoint = resource.Body('endpoint')
+    endpoint = resource.Body("endpoint")
     #: Subscription protocol
     #: Following protocols are supported:
     #: email, sms, http and https
-    protocol = resource.Body('protocol')
+    protocol = resource.Body("protocol")
     #: Project ID of the topic creator
-    owner = resource.Body('owner')
+    owner = resource.Body("owner")
     #: Remarks
-    remark = resource.Body('remark')
+    remark = resource.Body("remark")
     #: Subscription status
     #:  0: unconfirmed
     #:  1: confirmed
     #:  3: canceled
-    status = resource.Body('status')
+    status = resource.Body("status")
     #: Resource identifier of a topic, which is unique
-    topic_urn = resource.URI('topic_urn')
+    topic_urn = resource.URI("topic_urn")
 
     def delete(self, session, error_message=None, **kwargs):
-        self.base_path = '/notifications/subscriptions'
+        self.base_path = "/notifications/subscriptions"
         return super(Subscription, self).delete(
-            session,
-            error_message=error_message,
-            **kwargs)
+            session, error_message=error_message, **kwargs
+        )
 
     @classmethod
-    def list(cls, session, paginated=True, base_path=None,
-             allow_unknown_params=False, **params):
-        if not params.get('topic_urn'):
-            base_path = '/notifications/subscriptions'
+    def list(
+        cls,
+        session,
+        paginated=True,
+        base_path=None,
+        allow_unknown_params=False,
+        **params
+    ):
+        if not params.get("topic_urn"):
+            base_path = "/notifications/subscriptions"
         return super(Subscription, cls).list(
             session=session,
             paginated=paginated,
             base_path=base_path,
             allow_unknown_params=allow_unknown_params,
-            **params)
+            **params
+        )

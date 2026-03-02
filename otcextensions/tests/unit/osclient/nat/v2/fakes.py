@@ -14,26 +14,22 @@ import uuid
 from datetime import datetime
 
 import mock
-
 from openstackclient.tests.unit import utils
 
-from otcextensions.tests.unit.osclient import test_base
-
+from otcextensions.sdk.nat.v2 import dnat
 from otcextensions.sdk.nat.v2 import gateway
 from otcextensions.sdk.nat.v2 import snat
-from otcextensions.sdk.nat.v2 import dnat
+from otcextensions.tests.unit.osclient import test_base
 
 
 def gen_data(data, columns):
-    """Fill expected data tuple based on columns list
-    """
-    return tuple(getattr(data, attr, '') for attr in columns)
+    """Fill expected data tuple based on columns list"""
+    return tuple(getattr(data, attr, "") for attr in columns)
 
 
 def gen_data_dict(data, columns):
-    """Fill expected data tuple based on columns list
-    """
-    return tuple(data.get(attr, '') for attr in columns)
+    """Fill expected data tuple based on columns list"""
+    return tuple(data.get(attr, "") for attr in columns)
 
 
 class TestNat(utils.TestCommand):
@@ -47,6 +43,7 @@ class TestNat(utils.TestCommand):
 
 class FakeNatGateway(test_base.Fake):
     """Fake one or more Nat Gateways."""
+
     @classmethod
     def generate(cls):
         """Create a fake NAT Gateway.
@@ -61,11 +58,11 @@ class FakeNatGateway(test_base.Fake):
             "router_id": "router-" + uuid.uuid4().hex,
             "status": "PENDING_CREATE",
             "description": "my nat gateway",
-            "admin_state_up": 'true',
+            "admin_state_up": "true",
             "tenant_id": "tenant-id-" + uuid.uuid4().hex,
             "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),
             "spec": "1",
-            "internal_network_id": "net-id-" + uuid.uuid4().hex
+            "internal_network_id": "net-id-" + uuid.uuid4().hex,
         }
 
         return gateway.Gateway(**object_info)
@@ -73,6 +70,7 @@ class FakeNatGateway(test_base.Fake):
 
 class FakeSnatRule(test_base.Fake):
     """Fake one or more SNAT Rule."""
+
     @classmethod
     def generate(cls):
         """Create a fake SNAT Rule.
@@ -92,7 +90,7 @@ class FakeSnatRule(test_base.Fake):
             "source_type": 0,
             "tenant_id": "tenant-id-" + uuid.uuid4().hex,
             "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),
-            "floating_ip_address": uuid.uuid4().hex
+            "floating_ip_address": uuid.uuid4().hex,
         }
 
         return snat.Snat.existing(**object_info)
@@ -100,6 +98,7 @@ class FakeSnatRule(test_base.Fake):
 
 class FakeDnatRule(test_base.Fake):
     """Fake one or more DNAT Rule"""
+
     @classmethod
     def generate(cls):
         """Create a fake DNAT Rule.
@@ -121,7 +120,7 @@ class FakeDnatRule(test_base.Fake):
             "port_id": "",
             "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),
             "floating_ip_address": uuid.uuid4().hex,
-            "external_service_port": 0
+            "external_service_port": 0,
         }
 
         obj = dnat.Dnat.existing(**object_info)

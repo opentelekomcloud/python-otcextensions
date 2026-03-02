@@ -17,8 +17,8 @@ import random
 import uuid
 
 import mock
-# from osc_lib import utils as common_utils
 
+# from osc_lib import utils as common_utils
 # from openstackclient.tests.unit import fakes
 from openstackclient.tests.unit import utils
 
@@ -61,12 +61,10 @@ class FakeBucket(object):
 
         # Set default attributes.
         object_info = {
-            'creationdate': datetime.datetime(
-                random.randint(2000, 2020),
-                random.randint(1, 12),
-                random.randint(1, 28)
+            "creationdate": datetime.datetime(
+                random.randint(2000, 2020), random.randint(1, 12), random.randint(1, 28)
             ),
-            'name': 'bucket-' + uuid.uuid4().hex,
+            "name": "bucket-" + uuid.uuid4().hex,
         }
 
         # Overwrite default attributes.
@@ -112,15 +110,13 @@ class FakeObject(object):
 
         # Set default attributes.
         object_info = {
-            'key': 'object-key-' + uuid.uuid4().hex,
-            'size': random.randint(1, 99999999999),
-            'lastmodified': datetime.datetime(
-                random.randint(2000, 2020),
-                random.randint(1, 12),
-                random.randint(1, 28)
+            "key": "object-key-" + uuid.uuid4().hex,
+            "size": random.randint(1, 99999999999),
+            "lastmodified": datetime.datetime(
+                random.randint(2000, 2020), random.randint(1, 12), random.randint(1, 28)
             ),
-            'etag': 'image-id-' + uuid.uuid4().hex,
-            'storageclass': 'storage-class-' + uuid.uuid4().hex,
+            "etag": "image-id-" + uuid.uuid4().hex,
+            "storageclass": "storage-class-" + uuid.uuid4().hex,
         }
 
         # Overwrite default attributes.

@@ -19,8 +19,8 @@ from enum import Enum
 
 class ObsError(Enum):
     ERROR_INTERNAL = (1, "Internal error")
-    ERROR_S3_SOURCE_MISSING = (404, 'Requested Object with key %s not found')
-    ERROR_SOURCE_NOT_AVAILABLE = (123, 'Source %s is not available')
+    ERROR_S3_SOURCE_MISSING = (404, "Requested Object with key %s not found")
+    ERROR_SOURCE_NOT_AVAILABLE = (123, "Source %s is not available")
 
     def __init__(self, code, message, **kwargs):
         self.code = code

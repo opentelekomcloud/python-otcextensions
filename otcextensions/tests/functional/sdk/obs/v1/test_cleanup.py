@@ -9,15 +9,16 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from otcextensions.tests.functional import base
 import uuid
+
+from otcextensions.tests.functional import base
 
 
 class TestObsCleanup(base.BaseFunctionalTest):
     uuid_v4 = uuid.uuid4().hex[:8]
-    bucket_name = 'obs-test-' + uuid_v4
-    object_name = f'obs{uuid_v4}.object'
-    folder_name = f'folder{uuid_v4}/'
+    bucket_name = "obs-test-" + uuid_v4
+    object_name = f"obs{uuid_v4}.object"
+    folder_name = f"folder{uuid_v4}/"
     data = str(uuid.uuid4())
 
     def setUp(self):
@@ -25,23 +26,20 @@ class TestObsCleanup(base.BaseFunctionalTest):
         self.client = self.conn.obs
         self.container = self.client.create_container(
             name=self.bucket_name,
-            storage_acl='public-read-write',
-            storage_class='STANDARD'
+            storage_acl="public-read-write",
+            storage_class="STANDARD",
         )
         self.object = self.client.create_object(
-            container=self.container,
-            name=self.object_name,
-            data=self.data
+            container=self.container, name=self.object_name, data=self.data
         )
         self.folder = self.client.create_object(
-            container=self.container,
-            name=self.folder_name
+            container=self.container, name=self.folder_name
         )
         self.nested_object_name = f"{self.folder_name}nest_{self.uuid_v4}.txt"
         self.nested_object = self.client.create_object(
             container=self.container,
             name=self.nested_object_name,
-            data="nested test data"
+            data="nested test data",
         )
 
     def test_cleanup(self):

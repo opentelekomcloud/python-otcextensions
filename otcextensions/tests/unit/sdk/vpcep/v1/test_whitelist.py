@@ -22,9 +22,9 @@ from otcextensions.tests.unit.sdk.utils import assert_attributes_equal
 VPCEP_SERVICE_ID = uuid.uuid4().hex
 
 EXAMPLE = {
-    'id': uuid.uuid4().hex,
-    'permission': '*',
-    'created_at': '2018-10-18T13:26:40Z',
+    "id": uuid.uuid4().hex,
+    "permission": "*",
+    "created_at": "2018-10-18T13:26:40Z",
 }
 
 
@@ -35,10 +35,10 @@ class TestWhitelist(base.TestCase):
 
     def test_basic(self):
         sot = whitelist.Whitelist()
-        self.assertEqual('permissions', sot.resources_key)
+        self.assertEqual("permissions", sot.resources_key)
         self.assertEqual(None, sot.resource_key)
         self.assertEqual(
-            '/vpc-endpoint-services/%(endpoint_service_id)s/permissions',
+            "/vpc-endpoint-services/%(endpoint_service_id)s/permissions",
             sot.base_path,
         )
         self.assertTrue(sot.allow_list)
@@ -55,21 +55,21 @@ class TestWhitelist(base.TestCase):
         sot = whitelist.Whitelist.existing(
             id=None, endpoint_service_id=VPCEP_SERVICE_ID
         )
-        action = 'add'
-        domains = ['123', '456']
+        action = "add"
+        domains = ["123", "456"]
         formatted_domains = []
         for domain in domains:
-            formatted_domains.append('iam:domain::' + domain)
-        json_body = {'permissions': formatted_domains, 'action': action}
+            formatted_domains.append("iam:domain::" + domain)
+        json_body = {"permissions": formatted_domains, "action": action}
         response = mock.Mock()
         response.status_code = 200
-        response.json.return_value = {'permissions': formatted_domains}
+        response.json.return_value = {"permissions": formatted_domains}
         response.headers = {}
         self.sess.post.return_value = response
 
         rt = list(sot._action(self.sess, action, domains))
         self.sess.post.assert_called_with(
-            'vpc-endpoint-services/%s/permissions/action' % VPCEP_SERVICE_ID,
+            "vpc-endpoint-services/%s/permissions/action" % VPCEP_SERVICE_ID,
             json=json_body,
         )
         self.assertEqual(
@@ -83,9 +83,9 @@ class TestWhitelist(base.TestCase):
         )
         sot._action = mock.Mock()
 
-        domains = ['123', '456']
+        domains = ["123", "456"]
         rt = sot.add(self.sess, domains)
-        sot._action.assert_called_with(self.sess, 'add', domains)
+        sot._action.assert_called_with(self.sess, "add", domains)
         self.assertIsNotNone(rt)
 
     def test_remove(self):
@@ -94,7 +94,7 @@ class TestWhitelist(base.TestCase):
         )
         sot._action = mock.Mock()
 
-        domains = ['123', '456']
+        domains = ["123", "456"]
         rt = sot.remove(self.sess, domains)
-        sot._action.assert_called_with(self.sess, 'remove', domains)
+        sot._action.assert_called_with(self.sess, "remove", domains)
         self.assertIsNotNone(rt)

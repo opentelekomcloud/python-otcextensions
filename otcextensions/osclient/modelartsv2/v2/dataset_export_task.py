@@ -11,6 +11,7 @@
 #   under the License.
 #
 """ModelArts dataset export task v2 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -19,7 +20,6 @@ from osc_lib.command import command
 from otcextensions.common import cli_utils
 from otcextensions.common import sdk_utils
 from otcextensions.i18n import _
-
 
 LOG = logging.getLogger(__name__)
 
@@ -35,9 +35,7 @@ EXPORT_TYPE_CHOICES_MAP = {
 def _get_columns(item):
     column_map = {}
     hidden = ["location"]
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(
-        item, column_map, hidden
-    )
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map, hidden)
 
 
 class ShowDatasetExportTask(command.ShowOne):
@@ -65,9 +63,7 @@ class ShowDatasetExportTask(command.ShowOne):
         if parsed_args.taskId:
             query["task_id"] = parsed_args.taskId
 
-        dataset = client.find_dataset(
-            parsed_args.dataset, ignore_missing=False
-        )
+        dataset = client.find_dataset(parsed_args.dataset, ignore_missing=False)
         obj = client.get_dataset_export_task(dataset, parsed_args.taskId)
 
         formatters = {
@@ -126,12 +122,10 @@ class ListDatasetExportTasks(command.Lister):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
 
-        dataset = client.find_dataset(
-            parsed_args.dataset, ignore_missing=False
-        )
+        dataset = client.find_dataset(parsed_args.dataset, ignore_missing=False)
 
         query = {}
-        for arg in ('export_type', 'limit', 'offset'):
+        for arg in ("export_type", "limit", "offset"):
             val = getattr(parsed_args, arg)
             if val or str(val) == "0":
                 query[arg] = val
@@ -145,9 +139,7 @@ class ListDatasetExportTasks(command.Lister):
         return (
             self.columns,
             (
-                utils.get_dict_properties(
-                    s, self.columns, formatters=formatters
-                )
+                utils.get_dict_properties(s, self.columns, formatters=formatters)
                 for s in data
             ),
         )

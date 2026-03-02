@@ -13,13 +13,11 @@
 """
 Encrypt a KMS data encryption key
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-data = conn.kms.encrypt_datakey(
-    datakey='datakey_id'
-)
+data = conn.kms.encrypt_datakey(datakey="datakey_id")
 print(data)

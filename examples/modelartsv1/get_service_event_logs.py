@@ -12,6 +12,7 @@
 # under the License.
 #
 """Querying Service Event Logs"""
+
 import openstack
 
 openstack.enable_logging(True)

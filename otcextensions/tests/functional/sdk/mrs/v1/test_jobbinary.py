@@ -15,10 +15,9 @@ import uuid
 
 import openstack
 from openstack import _log
-
 from otcextensions.tests.functional.sdk.mrs import TestMrs
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestJobbinary(TestMrs):
@@ -29,7 +28,7 @@ class TestJobbinary(TestMrs):
         res = self.client.create_jobbinary(
             name=uuid.uuid4().hex,
             url="/simple/mapreduce/program",
-            description='this is the job binary template',
+            description="this is the job binary template",
         )
         id = res.id
         self.jobbinary = self.client.get_jobbinary(id)
@@ -44,8 +43,7 @@ class TestJobbinary(TestMrs):
                 pass
                 self.client.delete_jobbinary(self.jobbinary)
         except openstack.exceptions.SDKException as e:
-            _logger.warning('Got exception during clearing resources %s'
-                            % e.message)
+            _logger.warning("Got exception during clearing resources %s" % e.message)
         super(TestJobbinary, self).tearDown()
 
     def test_list(self):
@@ -56,13 +54,10 @@ class TestJobbinary(TestMrs):
 
     def test_update(self):
         res = self.client.update_jobbinary(
-            self.jobbinary,
-            is_protected=False,
-            is_public=False,
-            description='updated'
+            self.jobbinary, is_protected=False, is_public=False, description="updated"
         )
 
-        self.assertEqual('updated', res.description)
+        self.assertEqual("updated", res.description)
         _logger.debug(res)
         self.jbs = list(self.client.jobbinaries())
         self.assertGreaterEqual(len(self.jbs), 0)

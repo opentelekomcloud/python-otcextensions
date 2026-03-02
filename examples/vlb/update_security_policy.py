@@ -13,17 +13,18 @@
 """
 Update security policy
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 attrs = {
     "name": "test-security-policy",
     "protocols": ["TLSv1.2", "TLSv1", "TLSv1.3"],
-    "ciphers": ["ECDHE-ECDSA-AES128-SHA", "TLS_AES_128_GCM_SHA256"]
+    "ciphers": ["ECDHE-ECDSA-AES128-SHA", "TLS_AES_128_GCM_SHA256"],
 }
 
 security_policy = conn.vlb.ipdate_security_policy(**attrs)

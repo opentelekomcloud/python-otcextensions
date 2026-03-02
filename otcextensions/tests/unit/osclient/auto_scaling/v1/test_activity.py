@@ -29,22 +29,29 @@ class TestListAutoScalingActivity(TestAutoScalingActivity):
     _group = fakes.FakeGroup.create_one()
 
     columns = (
-        'ID', 'status', 'description',
-        'instance_value', 'desire_value',
-        'start_time', 'end_time')
+        "ID",
+        "status",
+        "description",
+        "instance_value",
+        "desire_value",
+        "start_time",
+        "end_time",
+    )
 
     data = []
 
     for s in _activities:
-        data.append((
-            s.id,
-            s.status,
-            s.description,
-            s.instance_value,
-            s.desire_value,
-            s.start_time,
-            s.end_time
-        ))
+        data.append(
+            (
+                s.id,
+                s.status,
+                s.description,
+                s.instance_value,
+                s.desire_value,
+                s.start_time,
+                s.end_time,
+            )
+        )
 
     def setUp(self):
         super(TestListAutoScalingActivity, self).setUp()
@@ -56,37 +63,36 @@ class TestListAutoScalingActivity(TestAutoScalingActivity):
 
     def test_list_default(self):
         arglist = [
-            '--start-time', '2200-01-01T00:00:00Z',
-            '--end-time', '2200-01-02T00:00:00Z',
-            '--limit', '14',
-            '--group', 'group1'
+            "--start-time",
+            "2200-01-01T00:00:00Z",
+            "--end-time",
+            "2200-01-02T00:00:00Z",
+            "--limit",
+            "14",
+            "--group",
+            "group1",
         ]
 
         verifylist = [
-            ('start_time', '2200-01-01T00:00:00Z'),
-            ('end_time', '2200-01-02T00:00:00Z'),
-            ('limit', 14),
-            ('group', 'group1')
+            ("start_time", "2200-01-01T00:00:00Z"),
+            ("end_time", "2200-01-02T00:00:00Z"),
+            ("limit", 14),
+            ("group", "group1"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_group.side_effect = [
-            self._group
-        ]
-        self.client.activities.side_effect = [
-            self._activities
-        ]
+        self.client.find_group.side_effect = [self._group]
+        self.client.activities.side_effect = [self._activities]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_group.assert_called_once_with(
-            'group1', ignore_missing=False)
+        self.client.find_group.assert_called_once_with("group1", ignore_missing=False)
         self.client.activities.assert_called_once_with(
-            end_time='2200-01-02T00:00:00Z',
-            start_time='2200-01-01T00:00:00Z',
+            end_time="2200-01-02T00:00:00Z",
+            start_time="2200-01-01T00:00:00Z",
             group=self._group.id,
             limit=14,
         )

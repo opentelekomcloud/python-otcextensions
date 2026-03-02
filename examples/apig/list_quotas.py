@@ -13,8 +13,9 @@
 """
 Get quotas associated with a credential.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 info = conn.apig.quotas()

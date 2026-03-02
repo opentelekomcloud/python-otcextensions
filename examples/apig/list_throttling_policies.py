@@ -13,9 +13,9 @@
 """
 List throttling policies
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-environments = list(conn.apig.throttling_policies(
-    gateway="gateway_id"))
+conn = openstack.connect(cloud="otc")
+environments = list(conn.apig.throttling_policies(gateway="gateway_id"))

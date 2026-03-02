@@ -14,12 +14,12 @@ from openstack import resource
 
 
 class TargetService(resource.Resource):
-    base_path = '/vpc-endpoint-services/describe'
+    base_path = "/vpc-endpoint-services/describe"
 
     _query_mapping = resource.QueryParameters(
-        'id',
-        'name',
-        name='endpoint_service_name',
+        "id",
+        "name",
+        name="endpoint_service_name",
     )
 
     # capabilities
@@ -33,12 +33,12 @@ class TargetService(resource.Resource):
 
     # Properties
     #: ID of the VPC endpoint service.
-    id = resource.Body('id')
+    id = resource.Body("id")
     #: Name of the VPC endpoint service.
-    service_name = resource.Body('service_name')
+    service_name = resource.Body("service_name")
     #: Type of the VPC endpoint service.
-    service_type = resource.Body('service_type')
+    service_type = resource.Body("service_type")
     #: Creation time of the VPC endpoint service.
-    created_at = resource.Body('created_at')
+    created_at = resource.Body("created_at")
     #: If the usage of the VPC endpoint service will be charged.
-    is_charge = resource.Body('is_charge')
+    is_charge = resource.Body("is_charge")

@@ -21,16 +21,22 @@ class TestListConfiguration(fakes.TestRds):
     objects = fakes.FakeConfiguration.create_multiple(3)
 
     column_list_headers = [
-        'ID',
-        'Name',
-        'Description',
-        'Datastore Name',
-        'Datastore Version Name',
-        'User Defined'
+        "ID",
+        "Name",
+        "Description",
+        "Datastore Name",
+        "Datastore Version Name",
+        "User Defined",
     ]
 
-    columns = ('id', 'name', 'description', 'datastore_name',
-               'datastore_version_name', 'is_user_defined')
+    columns = (
+        "id",
+        "name",
+        "description",
+        "datastore_name",
+        "datastore_version_name",
+        "is_user_defined",
+    )
 
     data = []
 
@@ -70,8 +76,13 @@ class TestShowConfiguration(fakes.TestRds):
     _data = fakes.FakeConfiguration.create_one()
 
     columns = (
-        'apply_results', 'datastore_name', 'datastore_version_name',
-        'description', 'id', 'is_user_defined', 'name'
+        "apply_results",
+        "datastore_name",
+        "datastore_version_name",
+        "description",
+        "id",
+        "is_user_defined",
+        "name",
     )
 
     data = fakes.gen_data(_data, columns)
@@ -85,11 +96,11 @@ class TestShowConfiguration(fakes.TestRds):
 
     def test_show(self):
         arglist = [
-            'test',
+            "test",
         ]
 
         verifylist = [
-            ('configuration', 'test'),
+            ("configuration", "test"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -97,8 +108,7 @@ class TestShowConfiguration(fakes.TestRds):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.find_configuration.assert_called_with('test',
-                                                          ignore_missing=False)
+        self.client.find_configuration.assert_called_with("test", ignore_missing=False)
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -111,13 +121,23 @@ class TestListConfigurationParameters(fakes.TestRds):
     objects = config.configuration_parameters
 
     column_list_headers = (
-        'Name', 'Value', 'Type', 'Description',
-        'Restart Required', 'Readonly', 'Value Range'
+        "Name",
+        "Value",
+        "Type",
+        "Description",
+        "Restart Required",
+        "Readonly",
+        "Value Range",
     )
 
     columns = (
-        'name', 'value', 'type', 'description',
-        'restart_required', 'readonly', 'value_range'
+        "name",
+        "value",
+        "type",
+        "description",
+        "restart_required",
+        "readonly",
+        "value_range",
     )
 
     data = []
@@ -127,7 +147,7 @@ class TestListConfigurationParameters(fakes.TestRds):
         # here
         values = []
         for attr in columns:
-            values.append(s.get(attr, ''))
+            values.append(s.get(attr, ""))
         data.append(tuple(values))
 
     def setUp(self):
@@ -139,11 +159,9 @@ class TestListConfigurationParameters(fakes.TestRds):
         self.client.api_mock = self.client.find_configuration
 
     def test_list(self):
-        arglist = ['test_config']
+        arglist = ["test_config"]
 
-        verifylist = [
-            ('configuration', 'test_config')
-        ]
+        verifylist = [("configuration", "test_config")]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -151,8 +169,7 @@ class TestListConfigurationParameters(fakes.TestRds):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.api_mock.assert_called_with('test_config',
-                                                ignore_missing=False)
+        self.client.api_mock.assert_called_with("test_config", ignore_missing=False)
 
         self.assertEqual(self.column_list_headers, columns)
         self.assertEqual(self.data, list(data))
@@ -163,8 +180,13 @@ class TestCreateConfiguration(fakes.TestRds):
     _data = fakes.FakeConfiguration.create_one()
 
     columns = (
-        'apply_results', 'datastore_name', 'datastore_version_name',
-        'description', 'id', 'is_user_defined', 'name'
+        "apply_results",
+        "datastore_name",
+        "datastore_version_name",
+        "description",
+        "id",
+        "is_user_defined",
+        "name",
     )
 
     data = fakes.gen_data(_data, columns)
@@ -179,38 +201,41 @@ class TestCreateConfiguration(fakes.TestRds):
 
     def test_create(self):
         arglist = [
-            'cfg',
-            '--datastore-type', 'postgresql',
-            '--datastore-version', '-9.6',
-            '--description', 'descr',
-            '--value', 'a=b',
-            '--value', 'c=d'
+            "cfg",
+            "--datastore-type",
+            "postgresql",
+            "--datastore-version",
+            "-9.6",
+            "--description",
+            "descr",
+            "--value",
+            "a=b",
+            "--value",
+            "c=d",
         ]
 
         verifylist = [
-            ('name', 'cfg'),
-            ('datastore_type', 'postgresql'),
-            ('datastore_version', '-9.6'),
-            ('description', 'descr'),
-            ('values', {'a': 'b', 'c': 'd'})
+            ("name", "cfg"),
+            ("datastore_type", "postgresql"),
+            ("datastore_version", "-9.6"),
+            ("description", "descr"),
+            ("values", {"a": "b", "c": "d"}),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self._data
-        ]
+        self.client.api_mock.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_once_with(
-            datastore={'type': 'postgresql', 'version': '-9.6'},
-            description='descr',
-            name='cfg',
-            values={'a': 'b', 'c': 'd'}
+            datastore={"type": "postgresql", "version": "-9.6"},
+            description="descr",
+            name="cfg",
+            values={"a": "b", "c": "d"},
         )
 
         self.assertEqual(self.columns, columns)
@@ -218,31 +243,30 @@ class TestCreateConfiguration(fakes.TestRds):
 
     def test_create2(self):
         arglist = [
-            'cfg',
-            '--datastore-type', 'MySQL',
-            '--datastore-version', '-9.6',
+            "cfg",
+            "--datastore-type",
+            "MySQL",
+            "--datastore-version",
+            "-9.6",
         ]
 
         verifylist = [
-            ('name', 'cfg'),
-            ('datastore_type', 'mysql'),
-            ('datastore_version', '-9.6'),
+            ("name", "cfg"),
+            ("datastore_type", "mysql"),
+            ("datastore_version", "-9.6"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self._data
-        ]
+        self.client.api_mock.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_once_with(
-            datastore={'type': 'mysql', 'version': '-9.6'},
-            name='cfg'
+            datastore={"type": "mysql", "version": "-9.6"}, name="cfg"
         )
 
         self.assertEqual(self.columns, columns)
@@ -262,34 +286,34 @@ class TestSetConfiguration(fakes.TestRds):
 
     def test_action(self):
         arglist = [
-            't1',
-            '--name', 'new_name',
-            '--description', 'new_descr',
-            '--value', 'q=z',
-            '--value', 'w=u'
+            "t1",
+            "--name",
+            "new_name",
+            "--description",
+            "new_descr",
+            "--value",
+            "q=z",
+            "--value",
+            "w=u",
         ]
         verifylist = [
-            ('configuration', 't1'),
-            ('name', 'new_name'),
-            ('description', 'new_descr'),
-            ('values', {'q': 'z', 'w': 'u'})
+            ("configuration", "t1"),
+            ("name", "new_name"),
+            ("description", "new_descr"),
+            ("values", {"q": "z", "w": "u"}),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_configuration.return_value = 't1'
+        self.client.find_configuration.return_value = "t1"
 
         # Trigger the action
         resp = self.cmd.take_action(parsed_args)
 
-        self.client.find_configuration.assert_called_with('t1',
-                                                          ignore_missing=False)
+        self.client.find_configuration.assert_called_with("t1", ignore_missing=False)
         self.client.api_mock.assert_called_with(
-            't1',
-            description='new_descr',
-            name='new_name',
-            values={'q': 'z', 'w': 'u'}
+            "t1", description="new_descr", name="new_name", values={"q": "z", "w": "u"}
         )
         self.assertIsNone(resp)
 
@@ -307,31 +331,26 @@ class TestDeleteConfiguration(fakes.TestRds):
 
     def test_delete_multiple(self):
         arglist = [
-            't1',
-            't2',
+            "t1",
+            "t2",
         ]
-        verifylist = [
-            ('configuration', ['t1', 't2'])
-        ]
+        verifylist = [("configuration", ["t1", "t2"])]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
         self.client.api_mock.side_effect = [{}, {}]
-        self.client.find_configuration.side_effect = ['t1', 't2']
+        self.client.find_configuration.side_effect = ["t1", "t2"]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
         find_calls = [
-            mock.call('t1', ignore_missing=False),
-            mock.call('t2', ignore_missing=False)
+            mock.call("t1", ignore_missing=False),
+            mock.call("t2", ignore_missing=False),
         ]
 
-        delete_calls = [
-            mock.call('t1'),
-            mock.call('t2')
-        ]
+        delete_calls = [mock.call("t1"), mock.call("t2")]
 
         self.client.find_configuration.assert_has_calls(find_calls)
         self.client.api_mock.assert_has_calls(delete_calls)
@@ -341,20 +360,15 @@ class TestApplyConfiguration(fakes.TestRds):
 
     _data = fakes.FakeConfiguration.create_one()
 
-    columns = (
-        'instance_id', 'instance_name',
-        'restart_required', 'success'
-    )
+    columns = ("instance_id", "instance_name", "restart_required", "success")
 
-    column_headers = (
-        'ID', 'Name', 'Restart required', 'success'
-    )
+    column_headers = ("ID", "Name", "Restart required", "success")
 
     data = []
     for s in _data.apply_results:
         values = []
         for attr in columns:
-            values.append(s.get(attr, ''))
+            values.append(s.get(attr, ""))
         data.append(tuple(values))
 
     def setUp(self):
@@ -368,14 +382,16 @@ class TestApplyConfiguration(fakes.TestRds):
 
     def test_apply(self):
         arglist = [
-            'cfg',
-            '--instance', 'i1',
-            '--instance', 'i2',
+            "cfg",
+            "--instance",
+            "i1",
+            "--instance",
+            "i2",
         ]
 
         verifylist = [
-            ('configuration', 'cfg'),
-            ('instances', ['i1', 'i2']),
+            ("configuration", "cfg"),
+            ("instances", ["i1", "i2"]),
         ]
 
         # Verify cm is triggereg with default parameters
@@ -394,18 +410,13 @@ class TestApplyConfiguration(fakes.TestRds):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        get_calls = [
-            mock.call('i1'),
-            mock.call('i2')
-        ]
+        get_calls = [mock.call("i1"), mock.call("i2")]
 
         self.client.get_instance.assert_has_calls(get_calls)
-        self.client.find_configuration.assert_called_with('cfg',
-                                                          ignore_missing=False)
+        self.client.find_configuration.assert_called_with("cfg", ignore_missing=False)
 
         self.client.apply_configuration.assert_called_once_with(
-            self._data.id,
-            instances=['i1', 'i2']
+            self._data.id, instances=["i1", "i2"]
         )
 
         self.assertEqual(self.column_headers, columns)

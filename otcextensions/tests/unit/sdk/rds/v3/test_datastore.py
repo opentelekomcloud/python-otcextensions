@@ -11,10 +11,9 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.rds.v3 import datastore
 
-IDENTIFIER = 'IDENTIFIER'
+IDENTIFIER = "IDENTIFIER"
 EXAMPLE = {"id": IDENTIFIER, "name": "5.7"}
 
 
@@ -24,20 +23,19 @@ class TestDatastore(base.TestCase):
 
     def test_basic(self):
         sot = datastore.Datastore()
-        self.assertEqual('dataStores', sot.resources_key)
-        self.assertEqual('/datastores/%(database_name)s', sot.base_path)
+        self.assertEqual("dataStores", sot.resources_key)
+        self.assertEqual("/datastores/%(database_name)s", sot.base_path)
         self.assertIsNone(sot.resource_key)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_fetch)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_delete)
         self.assertFalse(sot.allow_commit)
-        self.assertDictEqual({
-            'limit': 'limit',
-            'marker': 'marker'
-        }, sot._query_mapping._mapping)
+        self.assertDictEqual(
+            {"limit": "limit", "marker": "marker"}, sot._query_mapping._mapping
+        )
 
     def test_make_it(self):
         sot = datastore.Datastore(**EXAMPLE)
         self.assertEqual(IDENTIFIER, sot.id)
-        self.assertEqual(EXAMPLE['name'], sot.name)
+        self.assertEqual(EXAMPLE["name"], sot.name)

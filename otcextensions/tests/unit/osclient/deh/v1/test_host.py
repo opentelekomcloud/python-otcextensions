@@ -20,8 +20,12 @@ class TestListHost(fakes.TestDeH):
     objects = fakes.FakeHost.create_multiple(3)
 
     columns = (
-        'id', 'name', 'auto_placement', 'availability_zone',
-        'available_vcpus', 'available_memory'
+        "id",
+        "name",
+        "auto_placement",
+        "availability_zone",
+        "available_vcpus",
+        "available_memory",
     )
 
     data = []
@@ -38,81 +42,85 @@ class TestListHost(fakes.TestDeH):
         self.client.api_mock = self.client.hosts
 
     def test_default(self):
-        arglist = [
-        ]
+        arglist = []
 
-        verifylist = [
-        ]
+        verifylist = []
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self.objects
-        ]
+        self.client.api_mock.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.api_mock.assert_called_once_with(
-        )
+        self.client.api_mock.assert_called_once_with()
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
 
     def test_default_query(self):
         arglist = [
-            '--id', 'some_id',
-            '--name', 'some_name',
-            '--host_type', 'some_type',
-            '--host_type_name', 'some_type_name',
-            '--flavor', 'some_flavor',
-            '--status', 'available',
-            '--tenant', 'all',
-            '--availability_zone', 'some_az',
-            '--limit', '1',
-            '--marker', 'some_marker',
-            '--changes_since', '2200-01-01T00:00:00+00:00'
+            "--id",
+            "some_id",
+            "--name",
+            "some_name",
+            "--host_type",
+            "some_type",
+            "--host_type_name",
+            "some_type_name",
+            "--flavor",
+            "some_flavor",
+            "--status",
+            "available",
+            "--tenant",
+            "all",
+            "--availability_zone",
+            "some_az",
+            "--limit",
+            "1",
+            "--marker",
+            "some_marker",
+            "--changes_since",
+            "2200-01-01T00:00:00+00:00",
         ]
 
         verifylist = [
-            ('id', 'some_id'),
-            ('name', 'some_name'),
-            ('host_type', 'some_type'),
-            ('host_type_name', 'some_type_name'),
-            ('flavor', 'some_flavor'),
-            ('status', 'available'),
-            ('tenant', 'all'),
-            ('availability_zone', 'some_az'),
-            ('limit', 1),
-            ('marker', 'some_marker'),
-            ('changes_since', '2200-01-01T00:00:00+00:00')
+            ("id", "some_id"),
+            ("name", "some_name"),
+            ("host_type", "some_type"),
+            ("host_type_name", "some_type_name"),
+            ("flavor", "some_flavor"),
+            ("status", "available"),
+            ("tenant", "all"),
+            ("availability_zone", "some_az"),
+            ("limit", 1),
+            ("marker", "some_marker"),
+            ("changes_since", "2200-01-01T00:00:00+00:00"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self.objects
-        ]
+        self.client.api_mock.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_once_with(
-            availability_zone='some_az',
-            changes_since='2200-01-01T00:00:00+00:00',
-            flavor='some_flavor',
-            host_type='some_type',
-            host_type_name='some_type_name',
-            id='some_id',
+            availability_zone="some_az",
+            changes_since="2200-01-01T00:00:00+00:00",
+            flavor="some_flavor",
+            host_type="some_type",
+            host_type_name="some_type_name",
+            id="some_id",
             limit=1,
-            marker='some_marker',
-            name='some_name',
-            status='available',
-            tenant='all'
+            marker="some_marker",
+            name="some_name",
+            status="available",
+            tenant="all",
         )
 
         self.assertEqual(self.columns, columns)
@@ -124,9 +132,19 @@ class TestShowHost(fakes.TestDeH):
     _data = fakes.FakeHost.create_one()
 
     columns = (
-        'allocated_at', 'auto_placement', 'availability_zone',
-        'available_memory', 'available_vcpus', 'host_properties', 'id',
-        'instance_total', 'name', 'project_id', 'released_at', 'status', 'tags'
+        "allocated_at",
+        "auto_placement",
+        "availability_zone",
+        "available_memory",
+        "available_vcpus",
+        "host_properties",
+        "id",
+        "instance_total",
+        "name",
+        "project_id",
+        "released_at",
+        "status",
+        "tags",
     )
 
     data = fakes.gen_data(_data, columns)
@@ -141,28 +159,20 @@ class TestShowHost(fakes.TestDeH):
         self._data.fetch_tags = mock.Mock()
 
     def test_default(self):
-        arglist = [
-            'host'
-        ]
+        arglist = ["host"]
 
-        verifylist = [
-            ('host', 'host')
-        ]
+        verifylist = [("host", "host")]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self._data
-        ]
+        self.client.api_mock.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.api_mock.assert_called_once_with(
-            'host'
-        )
+        self.client.api_mock.assert_called_once_with("host")
 
         self.assertEqual(self.columns, columns)
         self.assertItemEqual(self.data, data)
@@ -172,9 +182,7 @@ class TestCreateHost(fakes.TestDeH):
 
     _data = fakes.FakeHost.create_one()
 
-    columns = (
-        'id'
-    )
+    columns = "id"
 
     _data.dedicated_host_ids = [_data.id]
 
@@ -193,35 +201,40 @@ class TestCreateHost(fakes.TestDeH):
 
     def test_create(self):
         arglist = [
-            '--name', 'name',
-            '--auto_placement',
-            '--availability_zone', 'az1',
-            '--host_type', 'type',
-            '--quantity', '1',
+            "--name",
+            "name",
+            "--auto_placement",
+            "--availability_zone",
+            "az1",
+            "--host_type",
+            "type",
+            "--quantity",
+            "1",
         ]
 
         verifylist = [
-            ('name', 'name'),
-            ('auto_placement', 'on'),
-            ('availability_zone', 'az1'),
-            ('host_type', 'type'),
-            ('quantity', 1),
+            ("name", "name"),
+            ("auto_placement", "on"),
+            ("availability_zone", "az1"),
+            ("host_type", "type"),
+            ("quantity", 1),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self._data
-        ]
+        self.client.api_mock.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_once_with(
-            auto_placement='on', availability_zone='az1',
-            host_type='type', name='name', quantity=1
+            auto_placement="on",
+            availability_zone="az1",
+            host_type="type",
+            name="name",
+            quantity=1,
         )
 
         self.assertEqual(self.columns, columns)
@@ -229,15 +242,17 @@ class TestCreateHost(fakes.TestDeH):
 
     def test_create_default_placement(self):
         arglist = [
-            '--name', 'name',
-            '--availability_zone', 'az1',
+            "--name",
+            "name",
+            "--availability_zone",
+            "az1",
         ]
 
         verifylist = [
-            ('name', 'name'),
-            ('auto_placement', 'on'),
-            ('availability_zone', 'az1'),
-            ('quantity', 1),
+            ("name", "name"),
+            ("auto_placement", "on"),
+            ("availability_zone", "az1"),
+            ("quantity", 1),
         ]
 
         # Verify cm is triggereg with default parameters
@@ -245,16 +260,18 @@ class TestCreateHost(fakes.TestDeH):
 
     def test_create_no_placement(self):
         arglist = [
-            '--name', 'name',
-            '--no-auto_placement',
-            '--availability_zone', 'az1',
+            "--name",
+            "name",
+            "--no-auto_placement",
+            "--availability_zone",
+            "az1",
         ]
 
         verifylist = [
-            ('name', 'name'),
-            ('auto_placement', 'off'),
-            ('availability_zone', 'az1'),
-            ('quantity', 1),
+            ("name", "name"),
+            ("auto_placement", "off"),
+            ("availability_zone", "az1"),
+            ("quantity", 1),
         ]
 
         # Verify cm is triggereg with default parameters
@@ -266,9 +283,19 @@ class TestSetHost(fakes.TestDeH):
     _fake = fakes.FakeHost.create_one()
 
     columns = (
-        'allocated_at', 'auto_placement', 'availability_zone',
-        'available_memory', 'available_vcpus', 'host_properties', 'id',
-        'instance_total', 'name', 'project_id', 'released_at', 'status', 'tags'
+        "allocated_at",
+        "auto_placement",
+        "availability_zone",
+        "available_memory",
+        "available_vcpus",
+        "host_properties",
+        "id",
+        "instance_total",
+        "name",
+        "project_id",
+        "released_at",
+        "status",
+        "tags",
     )
 
     data = fakes.gen_data(_fake, columns)
@@ -285,124 +312,82 @@ class TestSetHost(fakes.TestDeH):
         self._fake.add_tags = mock.Mock()
 
     def test_update(self):
-        arglist = [
-            'zn',
-            '--name', 'name',
-            '--auto_placement'
-        ]
+        arglist = ["zn", "--name", "name", "--auto_placement"]
 
-        verifylist = [
-            ('host', 'zn'),
-            ('name', 'name'),
-            ('auto_placement', 'on')
-        ]
+        verifylist = [("host", "zn"), ("name", "name"), ("auto_placement", "on")]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self._fake
-        ]
-        self.client.find_host.side_effect = [
-            self._fake
-        ]
+        self.client.api_mock.side_effect = [self._fake]
+        self.client.find_host.side_effect = [self._fake]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_host.assert_called_once_with(
-            'zn',
-            ignore_missing=False
-        )
+        self.client.find_host.assert_called_once_with("zn", ignore_missing=False)
 
         self.client.api_mock.assert_called_once_with(
             host=self._fake,
-            name='name',
-            auto_placement='on',
+            name="name",
+            auto_placement="on",
         )
 
         self.assertEqual(self.columns, columns)
         self.assertItemEqual(self.data, data)
 
     def test_update_disable_placement(self):
-        arglist = [
-            'zn',
-            '--name', 'name',
-            '--no-auto_placement'
-        ]
+        arglist = ["zn", "--name", "name", "--no-auto_placement"]
 
         verifylist = [
-            ('host', 'zn'),
-            ('name', 'name'),
-            ('auto_placement', 'off'),
+            ("host", "zn"),
+            ("name", "name"),
+            ("auto_placement", "off"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self._fake
-        ]
-        self.client.find_host.side_effect = [
-            self._fake
-        ]
+        self.client.api_mock.side_effect = [self._fake]
+        self.client.find_host.side_effect = [self._fake]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_host.assert_called_once_with(
-            'zn',
-            ignore_missing=False
-        )
+        self.client.find_host.assert_called_once_with("zn", ignore_missing=False)
 
         self.client.api_mock.assert_called_once_with(
             host=self._fake,
-            name='name',
-            auto_placement='off',
+            name="name",
+            auto_placement="off",
         )
 
         self.assertEqual(self.columns, columns)
         self.assertItemEqual(self.data, data)
 
     def test_add_tags(self):
-        arglist = [
-            'zn',
-            '--tag', 'a=b',
-            '--tag', 'c=d'
-        ]
+        arglist = ["zn", "--tag", "a=b", "--tag", "c=d"]
 
-        verifylist = [
-            ('host', 'zn'),
-            ('tag', ['a=b', 'c=d'])
-        ]
+        verifylist = [("host", "zn"), ("tag", ["a=b", "c=d"])]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_host.side_effect = [
-            self._fake
-        ]
-        self._fake.add_tags.side_effect = [
-            self._fake
-        ]
+        self.client.find_host.side_effect = [self._fake]
+        self._fake.add_tags.side_effect = [self._fake]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_host.assert_called_once_with(
-            'zn',
-            ignore_missing=False
-        )
+        self.client.find_host.assert_called_once_with("zn", ignore_missing=False)
 
         self.client.api_mock.assert_not_called()
 
         self._fake.add_tags.assert_called_once_with(
-            mock.ANY,
-            [{'key': 'a', 'value': 'b'},
-             {'key': 'c', 'value': 'd'}]
+            mock.ANY, [{"key": "a", "value": "b"}, {"key": "c", "value": "d"}]
         )
 
         self.assertEqual(self.columns, columns)
@@ -414,9 +399,19 @@ class TestUnsetHost(fakes.TestDeH):
     _fake = fakes.FakeHost.create_one()
 
     columns = (
-        'allocated_at', 'auto_placement', 'availability_zone',
-        'available_memory', 'available_vcpus', 'host_properties', 'id',
-        'instance_total', 'name', 'project_id', 'released_at', 'status', 'tags'
+        "allocated_at",
+        "auto_placement",
+        "availability_zone",
+        "available_memory",
+        "available_vcpus",
+        "host_properties",
+        "id",
+        "instance_total",
+        "name",
+        "project_id",
+        "released_at",
+        "status",
+        "tags",
     )
 
     data = fakes.gen_data(_fake, columns)
@@ -434,93 +429,53 @@ class TestUnsetHost(fakes.TestDeH):
 
     def test_remove_tags_with_value(self):
         tag = self._fake.tags[0]
-        tag_str = '{key}={value}'.format(
-            key=tag['key'],
-            value=tag['value'])
-        arglist = [
-            'zn',
-            '--tag', tag_str,
-            '--tag', 'e'
-        ]
+        tag_str = "{key}={value}".format(key=tag["key"], value=tag["value"])
+        arglist = ["zn", "--tag", tag_str, "--tag", "e"]
 
-        verifylist = [
-            ('host', 'zn'),
-            ('tag', [tag_str, 'e'])
-        ]
+        verifylist = [("host", "zn"), ("tag", [tag_str, "e"])]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_host.side_effect = [
-            self._fake
-        ]
-        self._fake.fetch_tags.side_effect = [
-            self._fake
-        ]
-        self._fake.remove_tags.side_effect = [
-            self._fake
-        ]
+        self.client.find_host.side_effect = [self._fake]
+        self._fake.fetch_tags.side_effect = [self._fake]
+        self._fake.remove_tags.side_effect = [self._fake]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_host.assert_called_once_with(
-            'zn',
-            ignore_missing=False
-        )
+        self.client.find_host.assert_called_once_with("zn", ignore_missing=False)
 
         self.client.api_mock.assert_not_called()
 
-        self._fake.remove_tags.assert_called_once_with(
-            mock.ANY,
-            [tag]
-        )
+        self._fake.remove_tags.assert_called_once_with(mock.ANY, [tag])
 
         self.assertEqual(self.columns, columns)
         self.assertItemEqual(self.data, data)
 
     def test_remove_tags_without_value(self):
         tag = self._fake.tags[0]
-        arglist = [
-            'zn',
-            '--tag', tag['key'],
-            '--tag', 'e'
-        ]
+        arglist = ["zn", "--tag", tag["key"], "--tag", "e"]
 
-        verifylist = [
-            ('host', 'zn'),
-            ('tag', [tag['key'], 'e'])
-        ]
+        verifylist = [("host", "zn"), ("tag", [tag["key"], "e"])]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_host.side_effect = [
-            self._fake
-        ]
-        self._fake.fetch_tags.side_effect = [
-            self._fake
-        ]
-        self._fake.remove_tags.side_effect = [
-            self._fake
-        ]
+        self.client.find_host.side_effect = [self._fake]
+        self._fake.fetch_tags.side_effect = [self._fake]
+        self._fake.remove_tags.side_effect = [self._fake]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_host.assert_called_once_with(
-            'zn',
-            ignore_missing=False
-        )
+        self.client.find_host.assert_called_once_with("zn", ignore_missing=False)
 
         self.client.api_mock.assert_not_called()
 
-        self._fake.remove_tags.assert_called_once_with(
-            mock.ANY,
-            [tag]
-        )
+        self._fake.remove_tags.assert_called_once_with(mock.ANY, [tag])
 
         self.assertEqual(self.columns, columns)
         self.assertItemEqual(self.data, data)
@@ -538,12 +493,10 @@ class TestDeleteHost(fakes.TestDeH):
 
     def test_delete_multiple(self):
         arglist = [
-            't1',
-            't2',
+            "t1",
+            "t2",
         ]
-        verifylist = [
-            ('host', ['t1', 't2'])
-        ]
+        verifylist = [("host", ["t1", "t2"])]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -554,8 +507,8 @@ class TestDeleteHost(fakes.TestDeH):
         self.cmd.take_action(parsed_args)
 
         calls = [
-            mock.call(host='t1', ignore_missing=False),
-            mock.call(host='t2', ignore_missing=False)
+            mock.call(host="t1", ignore_missing=False),
+            mock.call(host="t2", ignore_missing=False),
         ]
 
         self.client.api_mock.assert_has_calls(calls)
@@ -567,9 +520,7 @@ class TestListServer(fakes.TestDeH):
     _host = fakes.FakeHost.create_one()
     objects = fakes.FakeServer.create_multiple(3)
 
-    columns = (
-        'addresses', 'id', 'name', 'metadata', 'status', 'user_id'
-    )
+    columns = ("addresses", "id", "name", "metadata", "status", "user_id")
 
     data = []
 
@@ -587,31 +538,24 @@ class TestListServer(fakes.TestDeH):
 
     def test_default(self):
         arglist = [
-            'zn',
+            "zn",
         ]
 
         verifylist = [
-            ('host', 'zn'),
+            ("host", "zn"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self.objects
-        ]
-        self.client.find_host.side_effect = [
-            self.data
-        ]
+        self.client.api_mock.side_effect = [self.objects]
+        self.client.find_host.side_effect = [self.data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_host.assert_called_once_with(
-            'zn',
-            ignore_missing=False
-        )
+        self.client.find_host.assert_called_once_with("zn", ignore_missing=False)
 
         self.client.api_mock.assert_called_once_with(
             host=self.data,
@@ -625,9 +569,7 @@ class TestListHostType(fakes.TestDeH):
 
     objects = fakes.FakeHostType.create_multiple(3)
 
-    columns = (
-        'host_type', 'host_type_name'
-    )
+    columns = ("host_type", "host_type_name")
 
     data = []
 
@@ -644,27 +586,23 @@ class TestListHostType(fakes.TestDeH):
 
     def test_default(self):
         arglist = [
-            'az',
+            "az",
         ]
 
         verifylist = [
-            ('az', 'az'),
+            ("az", "az"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self.objects
-        ]
+        self.client.api_mock.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.api_mock.assert_called_once_with(
-            'az'
-        )
+        self.client.api_mock.assert_called_once_with("az")
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))

@@ -42,55 +42,52 @@ class DcaasTestCase(base.TestCase):
             super(DcaasTestCase, self).tearDown()
 
     def _get_project_id(self):
-        json_output = json.loads(self.openstack(
-            'token issue -f json'
-        ))
-        return json_output['project_id']
+        json_output = json.loads(self.openstack("token issue -f json"))
+        return json_output["project_id"]
 
     def _create_network(self):
-        json.loads(self.openstack(
-            'network create -f json ' + self.NETWORK_NAME
-        ))
+        json.loads(self.openstack("network create -f json " + self.NETWORK_NAME))
 
     def _delete_network(self):
-        self.openstack('network delete ' + self.NETWORK_NAME)
+        self.openstack("network delete " + self.NETWORK_NAME)
 
     def _create_subnet(self):
-        json_output = json.loads(self.openstack(
-            'subnet create {subnet} -f json '
-            '--network {network} '
-            '--subnet-range {subnet_range} '.format(
-                subnet=self.SUBNET_NAME,
-                network=self.NETWORK_NAME,
-                subnet_range=self.CIDR)
-        ))
-        self.SUBNET_ID = json_output['id']
-
-    def _delete_subnet(self):
-        self.openstack('subnet delete ' + self.SUBNET_ID)
-
-    def _create_router(self):
-        json_output = json.loads(self.openstack(
-            'router create -f json ' + self.ROUTER_NAME
-        ))
-        self.openstack(
-            'router add subnet {router} {subnet} '.format(
-                router=self.ROUTER_NAME,
-                subnet=self.SUBNET_NAME
+        json_output = json.loads(
+            self.openstack(
+                "subnet create {subnet} -f json "
+                "--network {network} "
+                "--subnet-range {subnet_range} ".format(
+                    subnet=self.SUBNET_NAME,
+                    network=self.NETWORK_NAME,
+                    subnet_range=self.CIDR,
+                )
             )
         )
-        self.VPC_ID = json_output['id']
+        self.SUBNET_ID = json_output["id"]
+
+    def _delete_subnet(self):
+        self.openstack("subnet delete " + self.SUBNET_ID)
+
+    def _create_router(self):
+        json_output = json.loads(
+            self.openstack("router create -f json " + self.ROUTER_NAME)
+        )
+        self.openstack(
+            "router add subnet {router} {subnet} ".format(
+                router=self.ROUTER_NAME, subnet=self.SUBNET_NAME
+            )
+        )
+        self.VPC_ID = json_output["id"]
 
     def _router_remove_subnet(self):
         self.openstack(
-            'router remove subnet {router} {subnet} '.format(
-                router=self.ROUTER_NAME,
-                subnet=self.SUBNET_NAME
+            "router remove subnet {router} {subnet} ".format(
+                router=self.ROUTER_NAME, subnet=self.SUBNET_NAME
             )
         )
 
     def _delete_router(self):
-        self.openstack('router delete ' + self.VPC_ID)
+        self.openstack("router delete " + self.VPC_ID)
 
     def create_test_infra(self):
         self._create_network()
@@ -106,21 +103,21 @@ class DcaasTestCase(base.TestCase):
     def create_endpoint_group(self):
         project_id = self._get_project_id()
         endpoints = self.CIDR
-        json_output = json.loads(self.openstack(
-            'dcaas endpoint group create '
-            '--name {name} '
-            '{project_id} '
-            '{type} '
-            '{endpoints} -f json'.format(
-                name=self.EP_GROUP_NAME,
-                project_id=project_id,
-                type=self.EP_GROUP_TYPE,
-                endpoints=endpoints
+        json_output = json.loads(
+            self.openstack(
+                "dcaas endpoint group create "
+                "--name {name} "
+                "{project_id} "
+                "{type} "
+                "{endpoints} -f json".format(
+                    name=self.EP_GROUP_NAME,
+                    project_id=project_id,
+                    type=self.EP_GROUP_TYPE,
+                    endpoints=endpoints,
+                )
             )
-        ))
-        return json_output['id']
+        )
+        return json_output["id"]
 
     def delete_endpoint_group(self):
-        self.openstack(
-            'dcaas endpoint group delete ' + self.EP_GROUP_ID
-        )
+        self.openstack("dcaas endpoint group delete " + self.EP_GROUP_ID)

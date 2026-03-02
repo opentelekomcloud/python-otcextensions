@@ -10,20 +10,21 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-'''
+"""
 Create MRS Job binary with attributes
-'''
+"""
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 attrs = {
     "name": "my-job-binary",
     "url": "/simple/mapreduce/program",
     "is_protected": False,
     "is_public": False,
-    "description": "this is the job binary template"
+    "description": "this is the job binary template",
 }
 
 job_binary = conn.mrs.create_jobbinary(**attrs)

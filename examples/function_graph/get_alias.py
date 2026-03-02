@@ -13,30 +13,25 @@
 """
 Get alias
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-alias_attrs = {
-    'name': 'a1',
-    'version': 'new-version'
-}
+alias_attrs = {"name": "a1", "version": "new-version"}
 func_attrs = {
-    'func_name': 'test-function',
-    'package': 'default',
-    'runtime': 'Python3.9',
-    'handler': 'index.handler',
-    'timeout': 30,
-    'memory_size': 128,
-    'code_type': 'inline',
+    "func_name": "test-function",
+    "package": "default",
+    "runtime": "Python3.9",
+    "handler": "index.handler",
+    "timeout": 30,
+    "memory_size": 128,
+    "code_type": "inline",
 }
 fg = conn.functiongraph.create_function(**func_attrs)
-al = conn.functiongraph.create_alias(
-    fg, **alias_attrs
-)
-a = conn.functiongraph.get_alias(
-    fg, al)
+al = conn.functiongraph.create_alias(fg, **alias_attrs)
+a = conn.functiongraph.get_alias(fg, al)
 print(a)

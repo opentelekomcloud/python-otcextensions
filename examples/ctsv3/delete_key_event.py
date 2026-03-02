@@ -13,10 +13,11 @@
 """
 Delete Cloud Trace Service Key Event
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-event = list(conn.ctsv3.key_events(notification_type='smn'))[0]
+event = list(conn.ctsv3.key_events(notification_type="smn"))[0]
 conn.ctsv3.delete_key_event(event)

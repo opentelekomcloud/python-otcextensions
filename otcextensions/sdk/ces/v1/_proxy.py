@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import proxy
-
 from otcextensions.sdk.ces.v1 import alarm as _alarm
 from otcextensions.sdk.ces.v1 import event_data as _event_data
 from otcextensions.sdk.ces.v1 import metric as _metric
@@ -24,7 +23,8 @@ class Proxy(proxy.Proxy):
 
     def _extract_name(self, url, service_type=None, project_id=None):
         return super()._extract_name(
-            url.lower(), service_type=service_type, project_id=project_id)
+            url.lower(), service_type=service_type, project_id=project_id
+        )
 
     # ======== Alarms ========
     def alarms(self, **query):
@@ -68,8 +68,7 @@ class Proxy(proxy.Proxy):
         :returns: Alarm been deleted
         :rtype: :class:`otcextensions.sdk.ces.v1.alarm.Alarm`
         """
-        return self._delete(_alarm.Alarm, alarm,
-                            ignore_missing=ignore_missing)
+        return self._delete(_alarm.Alarm, alarm, ignore_missing=ignore_missing)
 
     def find_alarm(self, name_or_id, ignore_missing=True):
         """Find a single alarm
@@ -83,8 +82,7 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._find(_alarm.Alarm, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(_alarm.Alarm, name_or_id, ignore_missing=ignore_missing)
 
     def switch_alarm_state(self, alarm):
         """Enables or disables Alarm

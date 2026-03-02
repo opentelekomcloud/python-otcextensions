@@ -13,7 +13,6 @@
 from unittest import mock
 
 from openstack.tests.unit import test_proxy_base
-
 from otcextensions.sdk.cbr.v3 import _proxy
 from otcextensions.sdk.cbr.v3 import backup as _backup
 from otcextensions.sdk.cbr.v3 import checkpoint as _checkpoint
@@ -37,8 +36,7 @@ class TestCBRBackup(TestCBRProxy):
         self.verify_list(self.proxy.backups, _backup.Backup)
 
     def test_backup_delete(self):
-        self.verify_delete(self.proxy.delete_backup,
-                           _backup.Backup, True)
+        self.verify_delete(self.proxy.delete_backup, _backup.Backup, True)
 
     def test_backup_find(self):
         self.verify_find(self.proxy.find_backup, _backup.Backup)
@@ -47,18 +45,18 @@ class TestCBRBackup(TestCBRProxy):
         self.verify_get(self.proxy.get_backup, _backup.Backup)
 
     def test_member_add(self):
-        members = ['member1']
-        backup = _backup.Backup(id='backup')
-        m1 = _member.Member(id='member1')
+        members = ["member1"]
+        backup = _backup.Backup(id="backup")
+        m1 = _member.Member(id="member1")
         self.proxy._get = mock.Mock()
         self.proxy._get.return_value = m1
         self._verify(
-            'otcextensions.sdk.cbr.v3.backup.Backup.add_members',
+            "otcextensions.sdk.cbr.v3.backup.Backup.add_members",
             self.proxy.add_members,
             method_args=[backup, members],
             expected_args=[self.proxy],
             expected_result=[m1],
-            expected_kwargs={'members': members}
+            expected_kwargs={"members": members},
         )
 
 
@@ -74,14 +72,15 @@ class TestCBRPolicy(TestCBRProxy):
         self.verify_get(self.proxy.get_policy, _policy.Policy)
 
     def test_policy_create(self):
-        self.verify_create(self.proxy.create_policy,
-                           _policy.Policy,
-                           method_kwargs={'name': 'id'},
-                           expected_kwargs={'name': 'id'})
+        self.verify_create(
+            self.proxy.create_policy,
+            _policy.Policy,
+            method_kwargs={"name": "id"},
+            expected_kwargs={"name": "id"},
+        )
 
     def test_policy_delete(self):
-        self.verify_delete(self.proxy.delete_policy,
-                           _policy.Policy, True)
+        self.verify_delete(self.proxy.delete_policy, _policy.Policy, True)
 
 
 class TestCBRCheckpoint(TestCBRProxy):
@@ -90,27 +89,26 @@ class TestCBRCheckpoint(TestCBRProxy):
         self.verify_get(self.proxy.get_checkpoint, _checkpoint.Checkpoint)
 
     def test_checkpoint_create(self):
-        self.verify_create(self.proxy.create_checkpoint,
-                           _checkpoint.Checkpoint,
-                           method_kwargs={'name': 'id'},
-                           expected_kwargs={'name': 'id'})
+        self.verify_create(
+            self.proxy.create_checkpoint,
+            _checkpoint.Checkpoint,
+            method_kwargs={"name": "id"},
+            expected_kwargs={"name": "id"},
+        )
 
 
 class TestCBRRestore(TestCBRProxy):
 
     def test_restore_server(self):
-        attrs = {'a': 'b'}
-        backup = _backup.Backup(id='my_backup')
+        attrs = {"a": "b"}
+        backup = _backup.Backup(id="my_backup")
         self._verify(
-            'openstack.proxy.Proxy._create',
+            "openstack.proxy.Proxy._create",
             self.proxy.restore_data,
             method_args=[backup],
             method_kwargs=attrs,
             expected_args=[_restore.Restore],
-            expected_kwargs=dict(
-                backup_id=backup.id,
-                **attrs
-            )
+            expected_kwargs=dict(backup_id=backup.id, **attrs),
         )
 
 
@@ -126,52 +124,53 @@ class TestCBRVault(TestCBRProxy):
         self.verify_get(self.proxy.get_vault, _vault.Vault)
 
     def test_vault_create(self):
-        self.verify_create(self.proxy.create_vault,
-                           _vault.Vault,
-                           method_kwargs={'name': 'id'},
-                           expected_kwargs={'name': 'id'})
+        self.verify_create(
+            self.proxy.create_vault,
+            _vault.Vault,
+            method_kwargs={"name": "id"},
+            expected_kwargs={"name": "id"},
+        )
 
     def test_vault_delete(self):
-        self.verify_delete(self.proxy.delete_vault,
-                           _vault.Vault, True)
+        self.verify_delete(self.proxy.delete_vault, _vault.Vault, True)
 
     def test_bind_policy(self):
-        vault = _vault.Vault(id='vault')
-        policy = _policy.Policy(id='policy')
+        vault = _vault.Vault(id="vault")
+        policy = _policy.Policy(id="policy")
         self._verify(
-            'otcextensions.sdk.cbr.v3.vault.Vault.bind_policy',
+            "otcextensions.sdk.cbr.v3.vault.Vault.bind_policy",
             self.proxy.bind_policy,
             method_args=[vault, policy],
             expected_args=[self.proxy],
-            expected_kwargs={'policy_id': 'policy'}
+            expected_kwargs={"policy_id": "policy"},
         )
 
     def test_unbind_policy(self):
-        vault = _vault.Vault(id='vault')
-        policy = _policy.Policy(id='policy')
+        vault = _vault.Vault(id="vault")
+        policy = _policy.Policy(id="policy")
         self._verify(
-            'otcextensions.sdk.cbr.v3.vault.Vault.unbind_policy',
+            "otcextensions.sdk.cbr.v3.vault.Vault.unbind_policy",
             self.proxy.unbind_policy,
             method_args=[vault, policy],
             expected_args=[self.proxy],
-            expected_kwargs={'policy_id': 'policy'}
+            expected_kwargs={"policy_id": "policy"},
         )
 
     def test_associate_resources(self):
-        vault = _vault.Vault(id='vault')
-        resources = 'resources'
+        vault = _vault.Vault(id="vault")
+        resources = "resources"
         self._verify(
-            'otcextensions.sdk.cbr.v3.vault.Vault.associate_resources',
+            "otcextensions.sdk.cbr.v3.vault.Vault.associate_resources",
             self.proxy.associate_resources,
             method_args=[vault, resources],
             expected_args=[self.proxy, resources],
         )
 
     def test_dissociate_resources(self):
-        vault = _vault.Vault(id='vault')
-        resources = 'resources'
+        vault = _vault.Vault(id="vault")
+        resources = "resources"
         self._verify(
-            'otcextensions.sdk.cbr.v3.vault.Vault.dissociate_resources',
+            "otcextensions.sdk.cbr.v3.vault.Vault.dissociate_resources",
             self.proxy.dissociate_resources,
             method_args=[vault, resources],
             expected_args=[self.proxy, resources],
@@ -181,56 +180,55 @@ class TestCBRVault(TestCBRProxy):
 class TestCBRMember(TestCBRProxy):
 
     def test_list(self):
-        backup = _backup.Backup(id='backup')
+        backup = _backup.Backup(id="backup")
         self.verify_list(
             self.proxy.members,
             _member.Member,
             method_args=[backup],
-            expected_kwargs={'backup_id': backup.id},
-            expected_args=[]
+            expected_kwargs={"backup_id": backup.id},
+            expected_args=[],
         )
 
     def test_get(self):
-        backup = _backup.Backup(id='backup')
-        member = _member.Member(id='member')
+        backup = _backup.Backup(id="backup")
+        member = _member.Member(id="member")
         self._verify(
-            'openstack.proxy.Proxy._get',
+            "openstack.proxy.Proxy._get",
             self.proxy.get_member,
             method_args=[backup, member],
             method_kwargs={},
             expected_args=[_member.Member, member],
-            expected_kwargs={'backup_id': backup.id}
+            expected_kwargs={"backup_id": backup.id},
         )
 
     def test_delete(self):
-        backup = _backup.Backup(id='backup')
-        member = _member.Member(id='member')
+        backup = _backup.Backup(id="backup")
+        member = _member.Member(id="member")
         self._verify(
-            'openstack.proxy.Proxy._delete',
+            "openstack.proxy.Proxy._delete",
             self.proxy.delete_member,
             method_args=[backup, member, True],
             method_kwargs={},
             expected_args=[_member.Member, member],
-            expected_kwargs={
-                'backup_id': backup.id,
-                'ignore_missing': True}
+            expected_kwargs={"backup_id": backup.id, "ignore_missing": True},
         )
 
     def test_update(self):
-        backup = _backup.Backup(id='backup')
-        member = _member.Member(id='member')
-        status = 'accepted'
-        vault = _vault.Vault(id='vault')
+        backup = _backup.Backup(id="backup")
+        member = _member.Member(id="member")
+        status = "accepted"
+        vault = _vault.Vault(id="vault")
         self._verify(
-            'openstack.proxy.Proxy._update',
+            "openstack.proxy.Proxy._update",
             self.proxy.update_member,
             method_args=[backup, member, status, vault],
             method_kwargs={},
             expected_args=[_member.Member, member],
             expected_kwargs={
-                'backup_id': backup.id,
-                'status': status,
-                'vault_id': vault.id}
+                "backup_id": backup.id,
+                "status": status,
+                "vault_id": vault.id,
+            },
         )
 
 

@@ -21,37 +21,48 @@ class TestListIdentityCustomRoles(fakes.TestIdentity):
     objects = fakes.FakeIdentityCustomRole.create_multiple(3)
 
     column_list_headers = (
-        'ID',
-        'Name',
-        'Description',
-        'Domain ID',
-        'References',
-        'Catalog',
-        'Display name',
-        'Type',
-        'Created At',
-        'Updated At',
+        "ID",
+        "Name",
+        "Description",
+        "Domain ID",
+        "References",
+        "Catalog",
+        "Display name",
+        "Type",
+        "Created At",
+        "Updated At",
     )
 
     columns = (
-        'id',
-        'name',
-        'description',
-        'domain_id',
-        'references',
-        'catalog',
-        'display_name',
-        'type',
-        'created_at',
-        'updated_at',
+        "id",
+        "name",
+        "description",
+        "domain_id",
+        "references",
+        "catalog",
+        "display_name",
+        "type",
+        "created_at",
+        "updated_at",
     )
 
     data = []
 
     for o in objects:
         data.append(
-            (o.id, o.name, o.description, o.domain_id, o.references,
-             o.catalog, o.display_name, o.type, o.created_at, o.updated_at))
+            (
+                o.id,
+                o.name,
+                o.description,
+                o.domain_id,
+                o.references,
+                o.catalog,
+                o.display_name,
+                o.type,
+                o.created_at,
+                o.updated_at,
+            )
+        )
 
     def setUp(self):
         super(TestListIdentityCustomRoles, self).setUp()
@@ -81,14 +92,11 @@ class TestListIdentityCustomRoles(fakes.TestIdentity):
         self.assertEqual(self.data, list(data))
 
     def test_list_args(self):
-        arglist = [
-            '--page', '1',
-            '--per_page', '2'
-        ]
+        arglist = ["--page", "1", "--per_page", "2"]
 
         verifylist = [
-            ('page', '1'),
-            ('per_page', '2'),
+            ("page", "1"),
+            ("per_page", "2"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -100,6 +108,4 @@ class TestListIdentityCustomRoles(fakes.TestIdentity):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.api_mock.assert_called_with(
-            page='1', per_page='2'
-        )
+        self.client.api_mock.assert_called_with(page="1", per_page="2")

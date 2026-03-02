@@ -13,6 +13,7 @@
 """
 Create new ELB server cert
 """
+
 import openstack
 
 _PRIVATE_KEY = """-----BEGIN PRIVATE KEY-----
@@ -65,11 +66,9 @@ rNcviQ==
 -----END CERTIFICATE-----"""
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 cert = conn.elb.create_certificate(
-    private_key=_PRIVATE_KEY,
-    certificate=_CERTIFICATE,
-    name="test_certificate"
+    private_key=_PRIVATE_KEY, certificate=_CERTIFICATE, name="test_certificate"
 )
 print(cert)

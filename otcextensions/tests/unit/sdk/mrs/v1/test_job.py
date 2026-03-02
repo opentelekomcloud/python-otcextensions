@@ -11,20 +11,17 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.mrs.v1 import job
 
 EXAMPLE = {
     "name": "my-mapreduce-job",
     "mains": [],
-    "libs": [
-        "092b628b-26a3-4571-9ba4-f8d000df8877"
-    ],
+    "libs": ["092b628b-26a3-4571-9ba4-f8d000df8877"],
     "is_protected": False,
     "interface": [],
     "is_public": False,
     "type": "MapReduce",
-    "description": "This is the Map Reduce job template"
+    "description": "This is the Map Reduce job template",
 }
 
 
@@ -32,9 +29,9 @@ class TestJob(base.TestCase):
 
     def test_basic(self):
         sot = job.Job()
-        self.assertEqual('job', sot.resource_key)
-        self.assertEqual('jobs', sot.resources_key)
-        path = '/jobs'
+        self.assertEqual("job", sot.resource_key)
+        self.assertEqual("jobs", sot.resources_key)
+        path = "/jobs"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
@@ -45,9 +42,9 @@ class TestJob(base.TestCase):
 
     def test_make_it(self):
         sot = job.Job(**EXAMPLE)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['description'], sot.description)
-        self.assertEqual(EXAMPLE['libs'], sot.libs)
-        self.assertEqual(EXAMPLE['type'], sot.type)
-        self.assertEqual(EXAMPLE['is_public'], sot.is_public)
-        self.assertEqual(EXAMPLE['is_protected'], sot.is_protected)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["description"], sot.description)
+        self.assertEqual(EXAMPLE["libs"], sot.libs)
+        self.assertEqual(EXAMPLE["type"], sot.type)
+        self.assertEqual(EXAMPLE["is_public"], sot.is_public)
+        self.assertEqual(EXAMPLE["is_protected"], sot.is_protected)

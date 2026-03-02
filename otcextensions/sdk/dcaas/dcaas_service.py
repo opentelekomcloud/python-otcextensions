@@ -10,13 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import service_description
-
 from otcextensions.sdk.dcaas.v2 import _proxy
 
 
 class DcaasService(service_description.ServiceDescription):
     """The Direct Connect service."""
 
-    supported_versions = {
-        '2': _proxy.Proxy
-    }
+    supported_versions = {"2": _proxy.Proxy}

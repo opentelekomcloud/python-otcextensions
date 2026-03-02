@@ -14,7 +14,7 @@ from otcextensions.sdk.apig.v2 import throttling_policy_binding
 
 EXAMPLE_BIND = {
     "throttle_id": "0b0e8f456b8742218af75f945307173c",
-    "publish_ids": ["40e7162dc6b94bbbbb1a60d2a24b1b0c"]
+    "publish_ids": ["40e7162dc6b94bbbbb1a60d2a24b1b0c"],
 }
 
 
@@ -23,17 +23,17 @@ class TestThrottlingPolicyBind(base.TestCase):
     def test_basic(self):
         sot = throttling_policy_binding.ThrottlingPolicyBind()
         self.assertEqual(
-            '/apigw/instances/%(gateway_id)s/throttle-bindings',
-            sot.base_path)
+            "/apigw/instances/%(gateway_id)s/throttle-bindings", sot.base_path
+        )
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_delete)
-        self.assertEqual('apis', sot.resources_key)
+        self.assertEqual("apis", sot.resources_key)
 
     def test_make_it(self):
         sot = throttling_policy_binding.ThrottlingPolicyBind(**EXAMPLE_BIND)
-        self.assertEqual(EXAMPLE_BIND['throttle_id'], sot.throttle_id)
-        self.assertEqual(EXAMPLE_BIND['publish_ids'], sot.publish_ids)
+        self.assertEqual(EXAMPLE_BIND["throttle_id"], sot.throttle_id)
+        self.assertEqual(EXAMPLE_BIND["publish_ids"], sot.publish_ids)
 
 
 EXAMPLE_NOTBOUND = {
@@ -50,7 +50,7 @@ EXAMPLE_NOTBOUND = {
     "type": 1,
     "throttle_name": "throttle_demo",
     "auth_type": "APP",
-    "req_uri": "/test/http"
+    "req_uri": "/test/http",
 }
 
 
@@ -59,17 +59,15 @@ class TestThrottlingPolicyNotBoundApi(base.TestCase):
     def test_basic(self):
         sot = throttling_policy_binding.NotBoundApi()
         self.assertEqual(
-            '/apigw/instances/%(gateway_id)s/'
-            'throttle-bindings/unbinded-apis',
-            sot.base_path)
+            "/apigw/instances/%(gateway_id)s/" "throttle-bindings/unbinded-apis",
+            sot.base_path,
+        )
         self.assertTrue(sot.allow_list)
-        self.assertEqual('apis', sot.resources_key)
+        self.assertEqual("apis", sot.resources_key)
 
     def test_make_it(self):
         sot = throttling_policy_binding.NotBoundApi(**EXAMPLE_NOTBOUND)
-        self.assertEqual(
-            EXAMPLE_NOTBOUND['throttle_apply_id'], sot.throttle_apply_id
-        )
+        self.assertEqual(EXAMPLE_NOTBOUND["throttle_apply_id"], sot.throttle_apply_id)
 
 
 EXAMPLE_BOUND = {
@@ -88,7 +86,7 @@ EXAMPLE_BOUND = {
     "bind_id": "3e06ac135e18477e918060d3c59d6f6a",
     "bind_time": "2020-08-03T12:25:52Z",
     "bind_num": 0,
-    "enable_adaptive_control": "FALSE"
+    "enable_adaptive_control": "FALSE",
 }
 
 
@@ -97,18 +95,16 @@ class TestThrottlingPolicyBoundThrottles(base.TestCase):
     def test_basic(self):
         sot = throttling_policy_binding.BoundThrottles()
         self.assertEqual(
-            '/apigw/instances/%(gateway_id)s/'
-            'throttle-bindings/binded-throttles',
-            sot.base_path)
+            "/apigw/instances/%(gateway_id)s/" "throttle-bindings/binded-throttles",
+            sot.base_path,
+        )
         self.assertTrue(sot.allow_list)
-        self.assertEqual('throttles', sot.resources_key)
+        self.assertEqual("throttles", sot.resources_key)
 
     def test_make_it(self):
         sot = throttling_policy_binding.BoundThrottles(**EXAMPLE_BOUND)
-        self.assertEqual(EXAMPLE_BOUND['id'], sot.id)
-        self.assertEqual(EXAMPLE_BOUND['name'], sot.name)
-        self.assertEqual(EXAMPLE_BOUND['api_call_limits'], sot.api_call_limits)
-        self.assertEqual(
-            EXAMPLE_BOUND['user_call_limits'], sot.user_call_limits
-        )
-        self.assertEqual(EXAMPLE_BOUND['ip_call_limits'], sot.ip_call_limits)
+        self.assertEqual(EXAMPLE_BOUND["id"], sot.id)
+        self.assertEqual(EXAMPLE_BOUND["name"], sot.name)
+        self.assertEqual(EXAMPLE_BOUND["api_call_limits"], sot.api_call_limits)
+        self.assertEqual(EXAMPLE_BOUND["user_call_limits"], sot.user_call_limits)
+        self.assertEqual(EXAMPLE_BOUND["ip_call_limits"], sot.ip_call_limits)

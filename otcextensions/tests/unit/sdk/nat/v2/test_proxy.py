@@ -22,12 +22,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from openstack.tests.unit import test_proxy_base
 from otcextensions.sdk.nat.v2 import _proxy
-from otcextensions.sdk.nat.v2 import snat
 from otcextensions.sdk.nat.v2 import dnat
 from otcextensions.sdk.nat.v2 import gateway
-
-from openstack.tests.unit import test_proxy_base
+from otcextensions.sdk.nat.v2 import snat
 
 
 class TestNatProxy(test_proxy_base.TestProxyBase):
@@ -38,13 +37,15 @@ class TestNatProxy(test_proxy_base.TestProxyBase):
 
 class TestNatGateway(TestNatProxy):
     def test_gateway_create(self):
-        self.verify_create(self.proxy.create_gateway, gateway.Gateway,
-                           method_kwargs={'name': 'id'},
-                           expected_kwargs={'name': 'id'})
+        self.verify_create(
+            self.proxy.create_gateway,
+            gateway.Gateway,
+            method_kwargs={"name": "id"},
+            expected_kwargs={"name": "id"},
+        )
 
     def test_gateway_delete(self):
-        self.verify_delete(self.proxy.delete_gateway,
-                           gateway.Gateway, True)
+        self.verify_delete(self.proxy.delete_gateway, gateway.Gateway, True)
 
     def test_gateway_get(self):
         self.verify_get(self.proxy.get_gateway, gateway.Gateway)
@@ -58,13 +59,15 @@ class TestNatGateway(TestNatProxy):
 
 class TestNatSnatRule(TestNatProxy):
     def test_snat_rule_create(self):
-        self.verify_create(self.proxy.create_snat_rule, snat.Snat,
-                           method_kwargs={'name': 'id'},
-                           expected_kwargs={'name': 'id'})
+        self.verify_create(
+            self.proxy.create_snat_rule,
+            snat.Snat,
+            method_kwargs={"name": "id"},
+            expected_kwargs={"name": "id"},
+        )
 
     def test_snat_rule_delete(self):
-        self.verify_delete(self.proxy.delete_snat_rule,
-                           snat.Snat, True)
+        self.verify_delete(self.proxy.delete_snat_rule, snat.Snat, True)
 
     def test_snat_rule_get(self):
         self.verify_get(self.proxy.get_snat_rule, snat.Snat)
@@ -75,13 +78,15 @@ class TestNatSnatRule(TestNatProxy):
 
 class TestNatDnatRule(TestNatProxy):
     def test_dnat_rule_create(self):
-        self.verify_create(self.proxy.create_dnat_rule, dnat.Dnat,
-                           method_kwargs={'name': 'id'},
-                           expected_kwargs={'name': 'id'})
+        self.verify_create(
+            self.proxy.create_dnat_rule,
+            dnat.Dnat,
+            method_kwargs={"name": "id"},
+            expected_kwargs={"name": "id"},
+        )
 
     def test_dnat_rule_delete(self):
-        self.verify_delete(self.proxy.delete_dnat_rule,
-                           dnat.Dnat, True)
+        self.verify_delete(self.proxy.delete_dnat_rule, dnat.Dnat, True)
 
     def test_dnat_rule_get(self):
         self.verify_get(self.proxy.get_dnat_rule, dnat.Dnat)

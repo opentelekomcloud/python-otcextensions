@@ -13,7 +13,6 @@ import binascii
 import hashlib
 
 from openstack import resource
-
 from otcextensions.sdk.kms.v1 import _base
 
 
@@ -28,7 +27,7 @@ def calculate_plain_message(plain_text):
 
 class DataKey(_base.Resource):
 
-    create_path = '/kms/create-datakey'
+    create_path = "/kms/create-datakey"
 
     allow_create = True
     allow_update = True
@@ -37,35 +36,37 @@ class DataKey(_base.Resource):
     # Properties
     #: Secret key (CMK) ID
     #: *Type:str*
-    key_id = resource.Body('key_id')
+    key_id = resource.Body("key_id")
     #: Encryption context
     #: Dict (as string) describing resource context information
     #: *Type:str*
-    encryption_context = resource.Body('encryption_context', type=dict)
+    encryption_context = resource.Body("encryption_context", type=dict)
     #: Datakey length
     #: *Type:int*
-    datakey_length = resource.Body('datakey_length')
+    datakey_length = resource.Body("datakey_length")
     #: Datakey plain length
     #: *Type:int*
-    datakey_plain_length = resource.Body('datakey_plain_length')
+    datakey_plain_length = resource.Body("datakey_plain_length")
     #: Datakey plain length
     #: *Type:int*
-    datakey_cipher_length = resource.Body('datakey_cipher_length')
+    datakey_cipher_length = resource.Body("datakey_cipher_length")
     #: Sequence
     #: *Type:str*
-    sequence = resource.Body('sequence')
+    sequence = resource.Body("sequence")
     #: Plain text of the data key
     #: *Type:str*
-    plain_text = resource.Body('plain_text')
+    plain_text = resource.Body("plain_text")
     #: Cipher text of the data key and encrypted_value
     #: *Type:str*
-    cipher_text = resource.Body('cipher_text')
+    cipher_text = resource.Body("cipher_text")
 
     def create_wo_plain(self, session, prepend_key=True, requires_id=True):
         return super(DataKey, self).create(
-            session, prepend_key=prepend_key,
-            uri='/kms/create-datakey-without-plaintext',
-            requires_id=requires_id)
+            session,
+            prepend_key=prepend_key,
+            uri="/kms/create-datakey-without-plaintext",
+            requires_id=requires_id,
+        )
 
     def encrypt(self, session):
         """Encrypt DEK
@@ -78,29 +79,25 @@ class DataKey(_base.Resource):
 
         plain_text = self.plain_text
         if plain_text is None:
-            raise ValueError('plain_text should be provided')
-        (msg, size) = calculate_plain_message(plain_text)
+            raise ValueError("plain_text should be provided")
+        msg, size = calculate_plain_message(plain_text)
         # params.update({'plain_text': msg})
         body = {
-            'key_id': self.key_id,
-            'plain_text': msg,
-            'datakey_plain_length': size,
+            "key_id": self.key_id,
+            "plain_text": msg,
+            "datakey_plain_length": size,
         }
         if self.sequence:
-            body['sequence'] = self.sequence
+            body["sequence"] = self.sequence
         if self.encryption_context:
-            body['encryption_context'] = self.encryption_context
+            body["encryption_context"] = self.encryption_context
 
-        url = '/kms/encrypt-datakey'
-        response = session.post(
-            url,
-            json=body)
+        url = "/kms/encrypt-datakey"
+        response = session.post(url, json=body)
 
         self._translate_response(response)
 
-        self._update(
-            datakey_cipher_length=self.datakey_length
-        )
+        self._update(datakey_cipher_length=self.datakey_length)
 
         return self
 
@@ -111,24 +108,20 @@ class DataKey(_base.Resource):
         """
         session = self._get_session(session)
         body = {
-            'key_id': self.key_id,
-            'cipher_text': self.cipher_text,
-            'datakey_cipher_length': self.datakey_cipher_length,
+            "key_id": self.key_id,
+            "cipher_text": self.cipher_text,
+            "datakey_cipher_length": self.datakey_cipher_length,
         }
         if self.sequence:
-            body['sequence'] = self.sequence
+            body["sequence"] = self.sequence
         if self.encryption_context:
-            body['encryption_context'] = self.encryption_context
+            body["encryption_context"] = self.encryption_context
 
-        url = '/kms/decrypt-datakey'
-        response = session.post(
-            url,
-            json=body)
+        url = "/kms/decrypt-datakey"
+        response = session.post(url, json=body)
 
         self._translate_response(response)
         data = response.json()
-        self._update(
-            plain_text=data['data_key']
-        )
+        self._update(plain_text=data["data_key"])
 
         return self

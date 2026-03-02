@@ -10,34 +10,33 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-'''
+"""
 Create CBR policy with attributes
-'''
+"""
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 attrs = {
-    'enabled': True,
-    'name': 'my_policy',
-    'operation_definition': {
-        'day_backups': 0,
-        'month_backups': 0,
-        'max_backups': 1,
-        'timezone': 'UTC+08:00',
-        'week_backups': 0,
-        'year_backups': 0
+    "enabled": True,
+    "name": "my_policy",
+    "operation_definition": {
+        "day_backups": 0,
+        "month_backups": 0,
+        "max_backups": 1,
+        "timezone": "UTC+08:00",
+        "week_backups": 0,
+        "year_backups": 0,
     },
-    'operation_type': 'backup',
-    'trigger': {
-        'properties': {
-            'pattern': [
-                'FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR,SA,SU;BYHOUR=14;BYMINUTE=00'
-            ]
+    "operation_type": "backup",
+    "trigger": {
+        "properties": {
+            "pattern": ["FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR,SA,SU;BYHOUR=14;BYMINUTE=00"]
         }
-    }
+    },
 }
 
 policy = conn.cbr.create_policy(**attrs)

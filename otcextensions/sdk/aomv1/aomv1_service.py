@@ -11,13 +11,10 @@
 # under the License.
 
 from openstack import service_description
-
 from otcextensions.sdk.imsv1.v1 import _proxy
 
 
 class Aomv1Service(service_description.ServiceDescription):
     """The AOM service."""
 
-    supported_versions = {
-        '1': _proxy.Proxy
-    }
+    supported_versions = {"1": _proxy.Proxy}

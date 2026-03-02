@@ -13,15 +13,13 @@
 """
 Send SMS via SMN
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-attrs = {
-    'endpoint': '+49123123456789',
-    'message': 'test message'
-}
+attrs = {"endpoint": "+49123123456789", "message": "test message"}
 response = conn.smn.send_sms(**attrs)
 print(response)

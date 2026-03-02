@@ -11,13 +11,10 @@
 # under the License.
 
 from openstack import service_description
-
 from otcextensions.sdk.deh.v1 import _proxy
 
 
 class DehService(service_description.ServiceDescription):
     """The DeH (Dedicated Host) service."""
 
-    supported_versions = {
-        '1': _proxy.Proxy
-    }
+    supported_versions = {"1": _proxy.Proxy}

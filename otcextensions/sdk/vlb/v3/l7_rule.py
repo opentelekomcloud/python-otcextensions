@@ -14,9 +14,9 @@ from openstack import resource
 
 
 class L7Rule(resource.Resource):
-    resource_key = 'rule'
-    resources_key = 'rules'
-    base_path = '/elb/l7policies/%(l7policy_id)s/rules'
+    resource_key = "rule"
+    resources_key = "rules"
+    base_path = "/elb/l7policies/%(l7policy_id)s/rules"
 
     # capabilities
     allow_create = True
@@ -26,30 +26,36 @@ class L7Rule(resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'admin_state_up', 'compare_type', 'id',
-        'invert', 'key', 'provisioning_status',
-        'type', 'rule_value', is_admin_state_up='admin_state_up'
+        "admin_state_up",
+        "compare_type",
+        "id",
+        "invert",
+        "key",
+        "provisioning_status",
+        "type",
+        "rule_value",
+        is_admin_state_up="admin_state_up",
     )
 
     # Properties
     #: Specifies the forwarding policy ID.
-    l7policy_id = resource.URI('l7policy_id')
+    l7policy_id = resource.URI("l7policy_id")
 
     #: Specifies how requests are matched and forwarded.
-    compare_type = resource.Body('compare_type')
+    compare_type = resource.Body("compare_type")
     #: Specifies the matching conditions of the forwarding rule.
-    conditions = resource.Body('conditions', type=list)
+    conditions = resource.Body("conditions", type=list)
     #: Specifies whether reverse matching is supported.
-    invert = resource.Body('invert', type=bool)
+    invert = resource.Body("invert", type=bool)
     #: Specifies the administrative status of the forwarding rule.
-    is_admin_state_up = resource.Body('admin_state_up', type=bool)
+    is_admin_state_up = resource.Body("admin_state_up", type=bool)
     #: Specifies the key of the match item.
-    key = resource.Body('key')
+    key = resource.Body("key")
     #: Specifies the project ID.
-    project_id = resource.Body('project_id')
+    project_id = resource.Body("project_id")
     #: Specifies the provisioning status of the forwarding rule.
-    provisioning_status = resource.Body('provisioning_status')
+    provisioning_status = resource.Body("provisioning_status")
     #: Specifies the match content.
-    type = resource.Body('type')
+    type = resource.Body("type")
     #: Specifies the value of the match item.
-    rule_value = resource.Body('value')
+    rule_value = resource.Body("value")

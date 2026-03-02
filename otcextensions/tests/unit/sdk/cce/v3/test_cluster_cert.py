@@ -11,14 +11,11 @@
 # under the License.
 import copy
 
+import mock
 from keystoneauth1 import adapter
 
-import mock
-
 from openstack.tests.unit import base
-
 from otcextensions.sdk.cce.v3 import cluster_cert
-
 
 EXAMPLE = {
     "kind": "Config",
@@ -29,8 +26,8 @@ EXAMPLE = {
             "name": "internalCluster",
             "cluster": {
                 "server": "https://192.168.1.7:5443",
-                "certificate-authority-data": "ca-data"
-            }
+                "certificate-authority-data": "ca-data",
+            },
         }
     ],
     "users": [
@@ -38,20 +35,14 @@ EXAMPLE = {
             "name": "user",
             "user": {
                 "client-certificate-data": "cc-data",
-                "client-key-data": "ck-data"
-            }
+                "client-key-data": "ck-data",
+            },
         }
     ],
     "contexts": [
-        {
-            "name": "internal",
-            "context": {
-                "cluster": "internalCluster",
-                "user": "user"
-            }
-        }
+        {"name": "internal", "context": {"cluster": "internalCluster", "user": "user"}}
     ],
-    "current-context": "internal"
+    "current-context": "internal",
 }
 
 
@@ -61,15 +52,14 @@ class TestClusterCert(base.TestCase):
         super(TestClusterCert, self).setUp()
         self.sess = mock.Mock(spec=adapter.Adapter)
         self.sess.get = mock.Mock()
-        self.sess.default_microversion = '1'
+        self.sess.default_microversion = "1"
         self.sess._get_connection = mock.Mock(return_value=self.cloud)
 
     def test_basic(self):
         sot = cluster_cert.ClusterCertificate()
         self.assertEqual(None, sot.resource_key)
         self.assertEqual(None, sot.resources_key)
-        self.assertEqual('/clusters/%(cluster_id)s/clustercert',
-                         sot.base_path)
+        self.assertEqual("/clusters/%(cluster_id)s/clustercert", sot.base_path)
         self.assertFalse(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertTrue(sot.allow_fetch)
@@ -86,18 +76,17 @@ class TestClusterCert(base.TestCase):
         sot = cluster_cert.ClusterCertificate()
         sot._translate_response(mock_response)
         self.assertEqual(
-            obj['clusters'][0]['cluster']['certificate-authority-data'],
-            sot.ca)
+            obj["clusters"][0]["cluster"]["certificate-authority-data"], sot.ca
+        )
         self.assertEqual(
-            obj['users'][0]['user']['client-certificate-data'],
-            sot.client_certificate)
-        self.assertEqual(
-            obj['users'][0]['user']['client-key-data'],
-            sot.client_key)
+            obj["users"][0]["user"]["client-certificate-data"], sot.client_certificate
+        )
+        self.assertEqual(obj["users"][0]["user"]["client-key-data"], sot.client_key)
         self.assertEqual(
             {
-                'name': obj['contexts'][0]['name'],
-                'cluster': obj['clusters'][0]['cluster']['server'],
-                'user': obj['contexts'][0]['context']['user']
+                "name": obj["contexts"][0]["name"],
+                "cluster": obj["clusters"][0]["cluster"]["server"],
+                "user": obj["contexts"][0]["context"]["user"],
             },
-            sot.context)
+            sot.context,
+        )

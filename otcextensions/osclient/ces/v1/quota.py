@@ -10,7 +10,8 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-'''CES Alarm v1 action implementations'''
+"""CES Alarm v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -23,20 +24,16 @@ LOG = logging.getLogger(__name__)
 
 def _flatten_output(obj):
     data = {
-        'type': obj.resources[0].type,
-        'quota': obj.resources[0].quota,
-        'used': obj.resources[0].used
+        "type": obj.resources[0].type,
+        "quota": obj.resources[0].quota,
+        "used": obj.resources[0].used,
     }
     return data
 
 
 class ListQuotas(command.Lister):
-    _description = _('List CES alarm quota')
-    columns = (
-        'type',
-        'quota',
-        'used'
-    )
+    _description = _("List CES alarm quota")
+    columns = ("type", "quota", "used")
 
     def get_parser(self, prog_name):
         parser = super(ListQuotas, self).get_parser(prog_name)
@@ -47,8 +44,8 @@ class ListQuotas(command.Lister):
 
         data = client.quotas()
 
-        table = (self.columns,
-                 (utils.get_dict_properties(
-                     _flatten_output(s), self.columns
-                 ) for s in data))
+        table = (
+            self.columns,
+            (utils.get_dict_properties(_flatten_output(s), self.columns) for s in data),
+        )
         return table

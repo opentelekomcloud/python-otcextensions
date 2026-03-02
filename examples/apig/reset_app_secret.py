@@ -13,9 +13,12 @@
 """
 Reset the App secret
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-found = conn.apig.reset_app_secret(gateway='gateway_id',
-                                   app='app_id',)
+conn = openstack.connect(cloud="otc")
+found = conn.apig.reset_app_secret(
+    gateway="gateway_id",
+    app="app_id",
+)

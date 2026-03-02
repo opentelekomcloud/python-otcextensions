@@ -13,11 +13,12 @@
 """
 Find a single MRS Job by name or id
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-name_or_id = 'name_or_id'
+name_or_id = "name_or_id"
 job = conn.mrs.find_job(name_or_id)
 print(job)

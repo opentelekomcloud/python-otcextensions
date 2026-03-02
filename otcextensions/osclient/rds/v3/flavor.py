@@ -11,6 +11,7 @@
 # under the License.
 #
 """Flavor v3 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -20,29 +21,29 @@ from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
-DB_TYPE_CHOICES = ['mysql', 'postgresql', 'sqlserver']
+DB_TYPE_CHOICES = ["mysql", "postgresql", "sqlserver"]
 
 
 class ListDatabaseFlavors(command.Lister):
 
     _description = _("List database flavors.")
-    columns = ('name', 'instance_mode', 'vcpus', 'ram')
+    columns = ("name", "instance_mode", "vcpus", "ram")
 
     def get_parser(self, prog_name):
         parser = super(ListDatabaseFlavors, self).get_parser(prog_name)
 
         parser.add_argument(
-            'database',
-            metavar='{' + ','.join(DB_TYPE_CHOICES) + '}',
+            "database",
+            metavar="{" + ",".join(DB_TYPE_CHOICES) + "}",
             type=lambda s: s.lower(),
             choices=DB_TYPE_CHOICES,
-            help=_('Name of the datastore Engine.'),
+            help=_("Name of the datastore Engine."),
         )
 
         parser.add_argument(
-            'version',
-            metavar='<version>',
-            help=_('Specifies the database version.'),
+            "version",
+            metavar="<version>",
+            help=_("Specifies the database version."),
         )
 
         return parser
@@ -51,13 +52,16 @@ class ListDatabaseFlavors(command.Lister):
         client = self.app.client_manager.rds
 
         data = client.flavors(
-            datastore_name=parsed_args.database,
-            version_name=parsed_args.version)
+            datastore_name=parsed_args.database, version_name=parsed_args.version
+        )
 
         return (
             self.columns,
-            (utils.get_item_properties(
-                s,
-                self.columns,
-            ) for s in data)
+            (
+                utils.get_item_properties(
+                    s,
+                    self.columns,
+                )
+                for s in data
+            ),
         )

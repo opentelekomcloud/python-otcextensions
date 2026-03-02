@@ -43,25 +43,14 @@ class TestMember(TestVlb):
             TestVlb.pool,
             weight=new_weight,
         )
-        self.assertEqual(member['weight'], new_weight)
+        self.assertEqual(member["weight"], new_weight)
 
         # cleanup
-        self.client.delete_member(
-            TestVlb.member,
-            TestVlb.pool
-        )
-        self.client.delete_pool(
-            TestVlb.pool
-        )
-        self.client.delete_listener(
-            TestVlb.listener
-        )
-        self.client.delete_load_balancer(
-            TestVlb.load_balancer
-        )
-        self.net_client.delete_ip(
-            TestVlb.load_balancer.floating_ips[0]['publicip_id']
-        )
+        self.client.delete_member(TestVlb.member, TestVlb.pool)
+        self.client.delete_pool(TestVlb.pool)
+        self.client.delete_listener(TestVlb.listener)
+        self.client.delete_load_balancer(TestVlb.load_balancer)
+        self.net_client.delete_ip(TestVlb.load_balancer.floating_ips[0]["publicip_id"])
         self.delete_server()
         self.ecs_client.delete_keypair(TestVlb.keypair)
 

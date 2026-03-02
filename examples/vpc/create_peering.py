@@ -13,21 +13,18 @@
 """
 Create VPC Peering Connection
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 attrs = {
     "name": "test-peering",
-    "request_vpc_info": {
-        "vpc_id": "requester-router-uuid"
-    },
-    "accept_vpc_info": {
-        "vpc_id": "accepter-router-uuid"
-    }
+    "request_vpc_info": {"vpc_id": "requester-router-uuid"},
+    "accept_vpc_info": {"vpc_id": "accepter-router-uuid"},
 }
 
 peering = conn.vpc.create_peering(**attrs)

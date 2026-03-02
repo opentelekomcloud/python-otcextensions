@@ -13,10 +13,11 @@
 """
 List all CBR policies
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 for policies in conn.cbr.policies():
     print(policies)

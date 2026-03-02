@@ -16,20 +16,20 @@ from otcextensions.sdk.ctsv3.v3 import key_event
 EXAMPLE = {
     "notification_name": "test",
     "operation_type": "complete",
-    "topic_id": "urn:smn:{regionid}:24edf66e79d04187acb99a463e610764:test"
+    "topic_id": "urn:smn:{regionid}:24edf66e79d04187acb99a463e610764:test",
 }
 
 
 class TestKeyEvent(base.TestCase):
     def test_basic(self):
         sot = key_event.KeyEvent()
-        self.assertEqual('/notifications', sot.base_path)
+        self.assertEqual("/notifications", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_commit)
 
     def test_make_it(self):
         sot = key_event.KeyEvent(**EXAMPLE)
-        self.assertEqual(EXAMPLE['notification_name'], sot.notification_name)
-        self.assertEqual(EXAMPLE['operation_type'], sot.operation_type)
-        self.assertEqual(EXAMPLE['topic_id'], sot.topic_id)
+        self.assertEqual(EXAMPLE["notification_name"], sot.notification_name)
+        self.assertEqual(EXAMPLE["operation_type"], sot.operation_type)
+        self.assertEqual(EXAMPLE["topic_id"], sot.topic_id)

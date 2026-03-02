@@ -10,66 +10,55 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from openstack import resource
 from openstack import exceptions
+from openstack import resource
 
 
 class SlaReportsValue(resource.Resource):
-    timestamp = resource.Body('timestamp', type=int)
-    value = resource.Body('value', type=int)
+    timestamp = resource.Body("timestamp", type=int)
+    value = resource.Body("value", type=int)
 
 
 class Metric(resource.Resource):
-    base_path = '/fgs/functions/statistics'
+    base_path = "/fgs/functions/statistics"
     # Capabilities
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'filter', 'period', 'option',
-        'limit', 'marker'
+        "filter", "period", "option", "limit", "marker"
     )
 
     # Attributes
-    count = resource.Body('count', type=list, list_type=SlaReportsValue)
-    duration = resource.Body('duration', type=list, list_type=SlaReportsValue)
-    fail_count = resource.Body(
-        'fail_count', type=list, list_type=SlaReportsValue
-    )
-    fail_rate = resource.Body(
-        'fail_rate', type=list, list_type=SlaReportsValue
-    )
-    max_duration = resource.Body(
-        'max_duration', type=list, list_type=SlaReportsValue
-    )
-    min_duration = resource.Body(
-        'min_duration', type=list, list_type=SlaReportsValue
-    )
-    reject_count = resource.Body(
-        'reject_count', type=list, list_type=SlaReportsValue
-    )
+    count = resource.Body("count", type=list, list_type=SlaReportsValue)
+    duration = resource.Body("duration", type=list, list_type=SlaReportsValue)
+    fail_count = resource.Body("fail_count", type=list, list_type=SlaReportsValue)
+    fail_rate = resource.Body("fail_rate", type=list, list_type=SlaReportsValue)
+    max_duration = resource.Body("max_duration", type=list, list_type=SlaReportsValue)
+    min_duration = resource.Body("min_duration", type=list, list_type=SlaReportsValue)
+    reject_count = resource.Body("reject_count", type=list, list_type=SlaReportsValue)
     function_error_count = resource.Body(
-        'function_error_count', type=list, list_type=SlaReportsValue
+        "function_error_count", type=list, list_type=SlaReportsValue
     )
     system_error_count = resource.Body(
-        'system_error_count', type=list, list_type=SlaReportsValue
+        "system_error_count", type=list, list_type=SlaReportsValue
     )
     reserved_instance_num = resource.Body(
-        'reserved_instance_num', type=list, list_type=SlaReportsValue
+        "reserved_instance_num", type=list, list_type=SlaReportsValue
     )
     concurrency_num = resource.Body(
-        'concurrency_num', type=list, list_type=SlaReportsValue
+        "concurrency_num", type=list, list_type=SlaReportsValue
     )
 
     @classmethod
     def list(
-            cls,
-            session,
-            paginated=True,
-            base_path=None,
-            allow_unknown_params=False,
-            *,
-            microversion=None,
-            **params,
+        cls,
+        session,
+        paginated=True,
+        base_path=None,
+        allow_unknown_params=False,
+        *,
+        microversion=None,
+        **params,
     ):
         """This method is a generator which yields resource objects.
 
@@ -109,11 +98,11 @@ class Metric(resource.Resource):
         """
         if not cls.allow_list:
             raise exceptions.MethodNotSupported(cls, "list")
-        if 'filter' in params:
-            if params['filter'] == 'monitor_data':
-                cls.resources_key = 'monitor_data'
-            elif params['filter'] == 'monthly_report':
-                cls.resources_key = 'monthly_report'
+        if "filter" in params:
+            if params["filter"] == "monitor_data":
+                cls.resources_key = "monitor_data"
+            elif params["filter"] == "monthly_report":
+                cls.resources_key = "monthly_report"
         session = cls._get_session(session)
         microversion = cls._get_microversion(session)
 
@@ -128,9 +117,11 @@ class Metric(resource.Resource):
             response = session.get(
                 uri,
                 headers={
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'},
-                params=query_params.copy())
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                },
+                params=query_params.copy(),
+            )
             exceptions.raise_from_response(response)
 
             data = response.json()
@@ -147,7 +138,8 @@ class Metric(resource.Resource):
                 value = cls.existing(
                     microversion=microversion,
                     connection=session._get_connection(),
-                    **raw_resource)
+                    **raw_resource,
+                )
                 yield value
 
             return

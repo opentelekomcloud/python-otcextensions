@@ -13,13 +13,13 @@ from openstack import resource
 
 
 class Tag(resource.Resource):
-    base_path = 'apigw/instances/%(gateway_id)s/tags'
+    base_path = "apigw/instances/%(gateway_id)s/tags"
 
-    _query_mapping = resource.QueryParameters('limit', 'offset')
+    _query_mapping = resource.QueryParameters("limit", "offset")
 
     allow_list = True
 
-    gateway_id = resource.URI('gateway_id')
-    tags = resource.Body('tags', type=list)
-    size = resource.Body('size', type=int)
-    total = resource.Body('total', type=int)
+    gateway_id = resource.URI("gateway_id")
+    tags = resource.Body("tags", type=list)
+    size = resource.Body("size", type=int)
+    total = resource.Body("total", type=int)

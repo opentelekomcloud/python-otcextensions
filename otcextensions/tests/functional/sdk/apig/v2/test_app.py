@@ -20,10 +20,7 @@ class TestApp(TestApiG):
         super(TestApp, self).setUp()
         self.create_gateway()
         self.gateway_id = TestApp.gateway.id
-        self.attrs = {
-            "name": "app_demo",
-            "remark": "Demo app"
-        }
+        self.attrs = {"name": "app_demo", "remark": "Demo app"}
         TestApp.app = self.client.create_app(self.gateway_id, **self.attrs)
         self.assertIsNotNone(self.app.id)
         self.addCleanup(
@@ -33,9 +30,7 @@ class TestApp(TestApiG):
         )
 
     def test_get_app(self):
-        found = self.client.get_app(
-            gateway=self.gateway_id,
-            app=TestApp.app.id)
+        found = self.client.get_app(gateway=self.gateway_id, app=TestApp.app.id)
         self.assertEqual(found.id, TestApp.app.id)
 
     def test_list_apps(self):
@@ -44,14 +39,9 @@ class TestApp(TestApiG):
 
     def test_update_app(self):
         test_remark = "Demo app changed"
-        attrs = {
-            "name": "app_demo",
-            "remark": test_remark
-        }
+        attrs = {"name": "app_demo", "remark": test_remark}
         result = self.client.update_app(
-            gateway=self.gateway_id,
-            app=TestApp.app.id,
-            **attrs
+            gateway=self.gateway_id, app=TestApp.app.id, **attrs
         )
         self.assertEqual(result.remark, test_remark)
 

@@ -21,27 +21,26 @@ class TestEndpointGroup(common.DcaasTestCase):
         super(TestEndpointGroup, self).setUp()
 
     def test_list_endpoint_groups(self):
-        json_output = json.loads(self.openstack(
-            'dcaas endpoint group list -f json '
-        ))
+        json_output = json.loads(self.openstack("dcaas endpoint group list -f json "))
         self.assertIsNotNone(json_output)
 
     def test_find_endpoint_group(self):
-        json_output = json.loads(self.openstack(
-            'dcaas endpoint group show {id} -f json'.format(
-                id=self.EP_GROUP_ID
+        json_output = json.loads(
+            self.openstack(
+                "dcaas endpoint group show {id} -f json".format(id=self.EP_GROUP_ID)
             )
-        ))
+        )
         self.assertIsNotNone(json_output)
-        self.assertEqual(json_output['name'], self.EP_GROUP_NAME)
+        self.assertEqual(json_output["name"], self.EP_GROUP_NAME)
 
     def test_update_endpoint_group(self):
-        ep_group_name = self.EP_GROUP_NAME + '-updated'
-        json_output = json.loads(self.openstack(
-            'dcaas endpoint group update {id} --name {name} -f json'.format(
-                id=self.EP_GROUP_ID,
-                name=ep_group_name
+        ep_group_name = self.EP_GROUP_NAME + "-updated"
+        json_output = json.loads(
+            self.openstack(
+                "dcaas endpoint group update {id} --name {name} -f json".format(
+                    id=self.EP_GROUP_ID, name=ep_group_name
+                )
             )
-        ))
-        self.assertEqual(json_output['id'], self.EP_GROUP_ID)
-        self.assertEqual(json_output['name'], ep_group_name)
+        )
+        self.assertEqual(json_output["id"], self.EP_GROUP_ID)
+        self.assertEqual(json_output["name"], ep_group_name)

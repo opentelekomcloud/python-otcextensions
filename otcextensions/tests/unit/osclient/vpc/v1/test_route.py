@@ -10,15 +10,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-import mock
 from unittest.mock import call
 
+import mock
+from openstackclient.tests.unit import utils as tests_utils
 from osc_lib import exceptions
 
 from otcextensions.osclient.vpc.v2 import route
 from otcextensions.tests.unit.osclient.vpc.v1 import fakes
-
-from openstackclient.tests.unit import utils as tests_utils
 
 
 class TestListVpcRoutes(fakes.TestVpc):
@@ -26,29 +25,20 @@ class TestListVpcRoutes(fakes.TestVpc):
     objects = fakes.FakeVpcRoute.create_multiple(3)
 
     column_list_headers = (
-        'Id',
-        'Type',
-        'Router Id',
-        'Project Id',
-        'NextHop',
-        'Destination'
+        "Id",
+        "Type",
+        "Router Id",
+        "Project Id",
+        "NextHop",
+        "Destination",
     )
 
-    columns = (
-        'id',
-        'type',
-        'router_id',
-        'project_id',
-        'nexthop',
-        'destination'
-    )
+    columns = ("id", "type", "router_id", "project_id", "nexthop", "destination")
 
     data = []
 
     for s in objects:
-        data.append(
-            (s.id, s.type, s.router_id, s.project_id,
-                s.nexthop, s.destination))
+        data.append((s.id, s.type, s.router_id, s.project_id, s.nexthop, s.destination))
 
     def setUp(self):
         super(TestListVpcRoutes, self).setUp()
@@ -79,21 +69,27 @@ class TestListVpcRoutes(fakes.TestVpc):
 
     def test_list_args(self):
         arglist = [
-            '--limit', '1',
-            '--marker', '2',
-            '--id', '3',
-            '--destination', '4',
-            '--project-id', '5',
-            '--router-id', '6'
+            "--limit",
+            "1",
+            "--marker",
+            "2",
+            "--id",
+            "3",
+            "--destination",
+            "4",
+            "--project-id",
+            "5",
+            "--router-id",
+            "6",
         ]
 
         verifylist = [
-            ('limit', 1),
-            ('marker', '2'),
-            ('id', '3'),
-            ('destination', '4'),
-            ('project_id', '5'),
-            ('router_id', '6')
+            ("limit", 1),
+            ("marker", "2"),
+            ("id", "3"),
+            ("destination", "4"),
+            ("project_id", "5"),
+            ("router_id", "6"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -107,11 +103,11 @@ class TestListVpcRoutes(fakes.TestVpc):
 
         self.client.api_mock.assert_called_with(
             limit=1,
-            marker='2',
-            id='3',
-            destination='4',
-            project_id='5',
-            router_id='6',
+            marker="2",
+            id="3",
+            destination="4",
+            project_id="5",
+            router_id="6",
         )
 
 
@@ -119,14 +115,7 @@ class TestAddVpcRoute(fakes.TestVpc):
 
     _data = fakes.FakeVpcRoute.create_one()
 
-    columns = (
-        'id',
-        'type',
-        'nexthop',
-        'destination',
-        'router_id',
-        'project_id'
-    )
+    columns = ("id", "type", "nexthop", "destination", "router_id", "project_id")
 
     data = fakes.gen_data(_data, columns)
 
@@ -134,20 +123,22 @@ class TestAddVpcRoute(fakes.TestVpc):
         super(TestAddVpcRoute, self).setUp()
 
         self.cmd = route.AddVpcRoute(self.app, None)
-        self.client.add_route = mock.Mock(
-            return_value=fakes.FakeVpcRoute.create_one())
+        self.client.add_route = mock.Mock(return_value=fakes.FakeVpcRoute.create_one())
 
     def test_add_route(self):
         arglist = [
-            '--nexthop', 'test-peering-uuid',
-            '--destination', '192.168.1.0/24',
-            '--router-id', 'test-router-uuid',
+            "--nexthop",
+            "test-peering-uuid",
+            "--destination",
+            "192.168.1.0/24",
+            "--router-id",
+            "test-router-uuid",
         ]
         verifylist = [
-            ('nexthop', 'test-peering-uuid'),
-            ('type', 'peering'),
-            ('destination', '192.168.1.0/24'),
-            ('router_id', 'test-router-uuid'),
+            ("nexthop", "test-peering-uuid"),
+            ("type", "peering"),
+            ("destination", "192.168.1.0/24"),
+            ("router_id", "test-router-uuid"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -155,10 +146,10 @@ class TestAddVpcRoute(fakes.TestVpc):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
         attrs = {
-            'nexthop': 'test-peering-uuid',
-            'type': 'peering',
-            'destination': '192.168.1.0/24',
-            'router_id': 'test-router-uuid'
+            "nexthop": "test-peering-uuid",
+            "type": "peering",
+            "destination": "192.168.1.0/24",
+            "router_id": "test-router-uuid",
         }
 
         self.client.add_route.assert_called_with(**attrs)
@@ -169,14 +160,7 @@ class TestShowVpcRoute(fakes.TestVpc):
 
     _data = fakes.FakeVpcRoute.create_one()
 
-    columns = (
-        'id',
-        'type',
-        'nexthop',
-        'destination',
-        'router_id',
-        'project_id'
-    )
+    columns = ("id", "type", "nexthop", "destination", "router_id", "project_id")
 
     data = fakes.gen_data(_data, columns)
 
@@ -193,8 +177,13 @@ class TestShowVpcRoute(fakes.TestVpc):
 
         # Testing that a call without the required argument will fail and
         # throw a "ParserExecption"
-        self.assertRaises(tests_utils.ParserException,
-                          self.check_parser, self.cmd, arglist, verifylist)
+        self.assertRaises(
+            tests_utils.ParserException,
+            self.check_parser,
+            self.cmd,
+            arglist,
+            verifylist,
+        )
 
     def test_show(self):
         arglist = [
@@ -202,7 +191,7 @@ class TestShowVpcRoute(fakes.TestVpc):
         ]
 
         verifylist = [
-            ('route', self._data.id),
+            ("route", self._data.id),
         ]
 
         # Verify cm is triggered with default parameters
@@ -217,27 +206,25 @@ class TestShowVpcRoute(fakes.TestVpc):
 
     def test_show_non_existent(self):
         arglist = [
-            'unexist_vpc_route',
+            "unexist_vpc_route",
         ]
 
         verifylist = [
-            ('route', 'unexist_vpc_route'),
+            ("route", "unexist_vpc_route"),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        find_mock_result = exceptions.CommandError('Resource Not Found')
-        self.client.get_route = (
-            mock.Mock(side_effect=find_mock_result)
-        )
+        find_mock_result = exceptions.CommandError("Resource Not Found")
+        self.client.get_route = mock.Mock(side_effect=find_mock_result)
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual('Resource Not Found', str(e))
-        self.client.get_route.assert_called_with('unexist_vpc_route')
+            self.assertEqual("Resource Not Found", str(e))
+        self.client.get_route.assert_called_with("unexist_vpc_route")
 
 
 class TestDeleteVpcRoute(fakes.TestVpc):
@@ -258,15 +245,13 @@ class TestDeleteVpcRoute(fakes.TestVpc):
         ]
 
         verifylist = [
-            ('route', [self._data[0].id]),
+            ("route", [self._data[0].id]),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        self.client.get_route = (
-            mock.Mock(return_value=self._data[0])
-        )
+        self.client.get_route = mock.Mock(return_value=self._data[0])
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
@@ -280,16 +265,14 @@ class TestDeleteVpcRoute(fakes.TestVpc):
             arglist.append(data.id)
 
         verifylist = [
-            ('route', arglist),
+            ("route", arglist),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         get_mock_result = self._data
-        self.client.get_route = (
-            mock.Mock(side_effect=get_mock_result)
-        )
+        self.client.get_route = mock.Mock(side_effect=get_mock_result)
 
         # Trigger the action
         result = self.cmd.take_action(parsed_args)
@@ -303,27 +286,24 @@ class TestDeleteVpcRoute(fakes.TestVpc):
     def test_multiple_delete_with_exception(self):
         arglist = [
             self._data[0].id,
-            'unexist_vpc_route',
+            "unexist_vpc_route",
         ]
         verifylist = [
-            ('route', arglist),
+            ("route", arglist),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         get_mock_result = [self._data[0], exceptions.CommandError]
-        self.client.get_route = (
-            mock.Mock(side_effect=get_mock_result)
-        )
+        self.client.get_route = mock.Mock(side_effect=get_mock_result)
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual(
-                '1 of 2 VPC route(s) failed to delete.', str(e))
+            self.assertEqual("1 of 2 VPC route(s) failed to delete.", str(e))
 
         self.client.get_route.assert_any_call(self._data[0].id)
-        self.client.get_route.assert_any_call('unexist_vpc_route')
+        self.client.get_route.assert_any_call("unexist_vpc_route")
         self.client.delete_route.assert_called_once_with(self._data[0].id)

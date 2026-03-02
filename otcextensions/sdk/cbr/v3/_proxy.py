@@ -63,9 +63,7 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.cbr.v3.backup.Backup`
         """
-        return self._get(
-            _backup.Backup, backup
-        )
+        return self._get(_backup.Backup, backup)
 
     def find_backup(self, name_or_id, ignore_missing=True):
         """Find a single CBR backup by name or id
@@ -80,7 +78,8 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         return self._find(
-            _backup.Backup, name_or_id,
+            _backup.Backup,
+            name_or_id,
             ignore_missing=ignore_missing,
         )
 
@@ -97,12 +96,13 @@ class Proxy(proxy.Proxy):
             delete a nonexistent backup.
         """
         return self._delete(
-            _backup.Backup, backup, ignore_missing=ignore_missing,
+            _backup.Backup,
+            backup,
+            ignore_missing=ignore_missing,
         )
 
     # ======== Checkpoint / Restore Point ========
     def get_checkpoint(self, checkpoint):
-
         """Get the checkpoint by UUID.
 
         :param checkpoint: key id or an instance of
@@ -111,9 +111,7 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.cbr.v3.checkpoint.Checkpoint`
         """
-        return self._get(
-            _checkpoint.Checkpoint, checkpoint
-        )
+        return self._get(_checkpoint.Checkpoint, checkpoint)
 
     def create_checkpoint(self, **attrs):
         """Creating a restore point / checkpoint using attributes
@@ -124,14 +122,17 @@ class Proxy(proxy.Proxy):
         :returns: The results of config creation
         :rtype: :class:`~otcextensions.sdk.cbr.v3.checkpoint.Checkpoint`
         """
-        return self._create(
-            _checkpoint.Checkpoint,
-            **attrs
-        )
+        return self._create(_checkpoint.Checkpoint, **attrs)
 
-    def wait_for_checkpoint(self, checkpoint, status='available',
-                            failures=None,
-                            interval=2, wait=300, attribute='status'):
+    def wait_for_checkpoint(
+        self,
+        checkpoint,
+        status="available",
+        failures=None,
+        interval=2,
+        wait=300,
+        attribute="status",
+    ):
         """Wait for an checkpoint to be in a particular status.
 
         :param checkpoint:
@@ -153,13 +154,13 @@ class Proxy(proxy.Proxy):
         :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
                  has transited to one of the failure statuses.
         """
-        failures = ['error'] if failures is None else failures
+        failures = ["error"] if failures is None else failures
         return resource.wait_for_status(
-            self, checkpoint, status, failures, interval, wait)
+            self, checkpoint, status, failures, interval, wait
+        )
 
     # ======== Policy ========
     def policies(self, **query):
-
         """Retrieve a generator of CBR policies
 
         :param dict query: Optional query parameters to be sent to limit the
@@ -181,9 +182,7 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.cbr.v3.policy.Policy`
         """
-        return self._get(
-            _policy.Policy, policy
-        )
+        return self._get(_policy.Policy, policy)
 
     def find_policy(self, policy_id, ignore_missing=True):
         """Find a single CBR policy by ID
@@ -197,8 +196,7 @@ class Proxy(proxy.Proxy):
 
         :returns: a :class:`~otcextensions.sdk.cbr.v3.policy.Policy` instance
         """
-        return self._find(_policy.Policy, policy_id,
-                          ignore_missing=ignore_missing)
+        return self._find(_policy.Policy, policy_id, ignore_missing=ignore_missing)
 
     def create_policy(self, **attrs):
         """Creating a CBR policy using attributes
@@ -209,10 +207,7 @@ class Proxy(proxy.Proxy):
         :returns: The results of config creation
         :rtype: :class:`~otcextensions.sdk.cbr.v3.policy.Policy`
         """
-        return self._create(
-            _policy.Policy,
-            **attrs
-        )
+        return self._create(_policy.Policy, **attrs)
 
     def update_policy(self, policy, **attrs):
         """Update CBR policy attributes
@@ -239,7 +234,9 @@ class Proxy(proxy.Proxy):
             delete a nonexistent policy.
         """
         return self._delete(
-            _policy.Policy, policy, ignore_missing=ignore_missing,
+            _policy.Policy,
+            policy,
+            ignore_missing=ignore_missing,
         )
 
     # ======== Restore ========
@@ -256,11 +253,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.cbr.v3.restore.Restore`
         """
         backup = self._get_resource(_backup.Backup, backup)
-        return self._create(
-            _restore.Restore,
-            backup_id=backup.id,
-            **attrs
-        )
+        return self._create(_restore.Restore, backup_id=backup.id, **attrs)
 
     # ======== Vault ========
     def vaults(self, **query):
@@ -293,9 +286,7 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.cbr.v3.vault.Vault`
         """
-        return self._get(
-            _vault.Vault, vault
-        )
+        return self._get(_vault.Vault, vault)
 
     def find_vault(self, name_or_id, ignore_missing=True):
         """Find a single CBR vault by name or id
@@ -310,7 +301,8 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         return self._find(
-            _vault.Vault, name_or_id,
+            _vault.Vault,
+            name_or_id,
             ignore_missing=ignore_missing,
         )
 
@@ -323,10 +315,7 @@ class Proxy(proxy.Proxy):
         :returns: The results of config creation
         :rtype: :class:`~otcextensions.sdk.cbr.v3.vault.Vault`
         """
-        return self._create(
-            _vault.Vault,
-            **attrs
-        )
+        return self._create(_vault.Vault, **attrs)
 
     def update_vault(self, vault, **attrs):
         """Update CBR vault attributes
@@ -353,7 +342,9 @@ class Proxy(proxy.Proxy):
             delete a nonexistent vault.
         """
         return self._delete(
-            _vault.Vault, vault, ignore_missing=ignore_missing,
+            _vault.Vault,
+            vault,
+            ignore_missing=ignore_missing,
         )
 
     def unbind_policy(self, vault, policy):
@@ -368,9 +359,7 @@ class Proxy(proxy.Proxy):
         """
         vault = self._get_resource(_vault.Vault, vault)
         policy = self._get_resource(_policy.Policy, policy)
-        return vault.unbind_policy(
-            self,
-            policy_id=policy.id)
+        return vault.unbind_policy(self, policy_id=policy.id)
 
     def bind_policy(self, vault, policy):
         """Associate policy to an existing CBR vault
@@ -384,9 +373,7 @@ class Proxy(proxy.Proxy):
         """
         vault = self._get_resource(_vault.Vault, vault)
         policy = self._get_resource(_policy.Policy, policy)
-        return vault.bind_policy(
-            self,
-            policy_id=policy.id)
+        return vault.bind_policy(self, policy_id=policy.id)
 
     def associate_resources(self, vault, resources):
         """Associate resources to an existing CBR vault
@@ -397,9 +384,7 @@ class Proxy(proxy.Proxy):
         :param resources: array of resources in the format: id and type
         """
         vault = self._get_resource(_vault.Vault, vault)
-        return vault.associate_resources(
-            self,
-            resources)
+        return vault.associate_resources(self, resources)
 
     def dissociate_resources(self, vault, resources):
         """Associate resources to an existing CBR vault
@@ -410,9 +395,7 @@ class Proxy(proxy.Proxy):
         :param resources: list of resource ids to be released from vault
         """
         vault = self._get_resource(_vault.Vault, vault)
-        return vault.dissociate_resources(
-            self,
-            resources)
+        return vault.dissociate_resources(self, resources)
 
     # ======== Share Member ========
     def members(self, backup, **query):
@@ -428,11 +411,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.cbr.v3.member.Member`
         """
         backup = self._get_resource(_backup.Backup, backup)
-        return self._list(
-            _member.Member,
-            backup_id=backup.id,
-            **query
-        )
+        return self._list(_member.Member, backup_id=backup.id, **query)
 
     def get_member(self, backup, member):
         """Get one CBR share member by UUID.
@@ -446,9 +425,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.cbr.v3.member.Member`
         """
         backup = self._get_resource(_backup.Backup, backup)
-        return self._get(
-            _member.Member, member, backup_id=backup.id
-        )
+        return self._get(_member.Member, member, backup_id=backup.id)
 
     def add_members(self, backup, members):
         """Add a list of share members to an existing backup
@@ -461,17 +438,14 @@ class Proxy(proxy.Proxy):
         :returns: The results are the list of share member objects
         """
         backup = self._get_resource(_backup.Backup, backup)
-        backup.add_members(
-            self,
-            members=members
-        )
+        backup.add_members(self, members=members)
         members_data = []
         for member_id in members:
             member = self._get(_member.Member, member_id, backup_id=backup.id)
             members_data.append(member)
         return members_data
 
-    def update_member(self, backup, member, status='accepted', vault=None):
+    def update_member(self, backup, member, status="accepted", vault=None):
         """Update CBR share members
 
         :param member: The id or an instance of
@@ -487,8 +461,12 @@ class Proxy(proxy.Proxy):
         backup = self._get_resource(_backup.Backup, backup)
         vault = self._get_resource(_vault.Vault, vault)
         return self._update(
-            _member.Member, member, backup_id=backup.id,
-            status=status, vault_id=vault.id)
+            _member.Member,
+            member,
+            backup_id=backup.id,
+            status=status,
+            vault_id=vault.id,
+        )
 
     def delete_member(self, backup, member, ignore_missing=True):
         """Delete a single CBR share member.
@@ -506,7 +484,9 @@ class Proxy(proxy.Proxy):
         """
         backup = self._get_resource(_backup.Backup, backup)
         return self._delete(
-            _member.Member, member, backup_id=backup.id,
+            _member.Member,
+            member,
+            backup_id=backup.id,
             ignore_missing=ignore_missing,
         )
 
@@ -520,10 +500,7 @@ class Proxy(proxy.Proxy):
         :returns: A generator of task
             :class:`~otcextensions.sdk.cbr.v3.task.Task` instances
         """
-        return self._list(
-            _task.Task,
-            **query
-        )
+        return self._list(_task.Task, **query)
 
     def get_task(self, task):
         """Get one CBR task by id.

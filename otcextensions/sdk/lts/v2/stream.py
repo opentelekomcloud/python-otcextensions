@@ -15,9 +15,9 @@ from openstack import resource
 
 
 class Stream(resource.Resource):
-    resource_key = 'log_streams'
-    resources_key = 'log_streams'
-    base_path = '/groups/%(log_group_id)s/streams'
+    resource_key = "log_streams"
+    resources_key = "log_streams"
+    base_path = "/groups/%(log_group_id)s/streams"
 
     # capabilities
     allow_create = True
@@ -27,22 +27,22 @@ class Stream(resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'id',
+        "id",
     )
 
     # Properties
     #: Name of the log stream.
-    name = resource.Body('log_stream_name')
+    name = resource.Body("log_stream_name")
     #: ID of the log stream.
-    id = resource.Body('log_stream_id', alternate_id=True)
+    id = resource.Body("log_stream_id", alternate_id=True)
     #: Time when a log stream was created
-    creation_time = resource.Body('creation_time')
+    creation_time = resource.Body("creation_time")
     #: ID of the log group to which the log stream to be created will belong.
-    log_group_id = resource.Body('log_group_id')
+    log_group_id = resource.Body("log_group_id")
     #: Number of filters.
-    filter_count = resource.Body('filter_count', type=int)
+    filter_count = resource.Body("filter_count", type=int)
     #: Log stream tag.
-    tag = resource.Body('tag')
+    tag = resource.Body("tag")
 
     @classmethod
     def list(
@@ -83,8 +83,8 @@ class Stream(resource.Resource):
             exceptions.raise_from_response(response)
             data = response.json()
 
-            query_params.pop('marker', None)
-            query_params.pop('limit', None)
+            query_params.pop("marker", None)
+            query_params.pop("limit", None)
 
             if cls.resources_key:
                 resources = data[cls.resources_key]

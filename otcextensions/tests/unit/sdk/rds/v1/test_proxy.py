@@ -12,29 +12,26 @@
 import mock
 
 from openstack.tests.unit import test_proxy_base
-
 from otcextensions.sdk.rds.v1 import _proxy
 from otcextensions.sdk.rds.v1 import backup as _backup
+
 # from otcextensions.sdk.rds.v1 import configuration as _configuration
 from otcextensions.sdk.rds.v1 import datastore as _datastore
 from otcextensions.sdk.rds.v1 import flavor as _flavor
 from otcextensions.sdk.rds.v1 import instance as _instance
 
-PROJECT_ID = '123'
-ENDPOINT_OS = 'http://rds.example.com/v1.0'
-ENDPOINT_RDS = 'http://rds.example.com/rds/v1'
+PROJECT_ID = "123"
+ENDPOINT_OS = "http://rds.example.com/v1.0"
+ENDPOINT_RDS = "http://rds.example.com/rds/v1"
 
 # RDS requires those headers to be present in the request, to native API
 # otherwise 404
-RDS_HEADERS = {
-    'Content-Type': 'application/json',
-    'X-Language': 'en-us'
-}
+RDS_HEADERS = {"Content-Type": "application/json", "X-Language": "en-us"}
 
 # RDS requires those headers to be present in the request, to OS-compat API
 # otherwise 404
 OS_HEADERS = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
 }
 
 
@@ -45,36 +42,32 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
         self.proxy = _proxy.Proxy(self.session)
         self.session.get_project_id = mock.Mock(return_value=PROJECT_ID)
 
-        self.proxy.get_os_endpoint = mock.Mock(
-            return_value=ENDPOINT_OS
-        )
-        self.proxy.get_rds_endpoint = mock.Mock(
-            return_value=ENDPOINT_RDS
-        )
-        self.session.get_endpoint = mock.Mock(
-            return_value=ENDPOINT_RDS
-        )
+        self.proxy.get_os_endpoint = mock.Mock(return_value=ENDPOINT_OS)
+        self.proxy.get_rds_endpoint = mock.Mock(return_value=ENDPOINT_RDS)
+        self.session.get_endpoint = mock.Mock(return_value=ENDPOINT_RDS)
 
         self.additional_headers = RDS_HEADERS
 
     def test_datastore_types(self):
         result = self.proxy.datastore_types()
 
-        self.assertEqual(['MySQL', 'PostgreSQL', 'SQLServer'],
-                         list(s.name for s in result))
+        self.assertEqual(
+            ["MySQL", "PostgreSQL", "SQLServer"], list(s.name for s in result)
+        )
 
     def test_datastore_versions(self):
         self.verify_list(
-            self.proxy.datastore_versions, _datastore.Datastore,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
+            self.proxy.datastore_versions,
+            _datastore.Datastore,
+            mock_method="otcextensions.sdk.sdk_proxy.Proxy._list",
             method_kwargs={
-                'datastore': 'test',
+                "datastore": "test",
             },
             expected_kwargs={
-                'paginated': False,
-                'datastore_name': 'test',
-                'headers': RDS_HEADERS,
-            }
+                "paginated": False,
+                "datastore_name": "test",
+                "headers": RDS_HEADERS,
+            },
         )
 
     def test_get_datastore_version(self):
@@ -100,26 +93,25 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
 
     def test_flavors(self):
         self.verify_list(
-            self.proxy.flavors, _flavor.Flavor,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
+            self.proxy.flavors,
+            _flavor.Flavor,
+            mock_method="otcextensions.sdk.sdk_proxy.Proxy._list",
             method_args=["dbId", "regio"],
             expected_kwargs={
-                'paginated': False,
-                'dbId': 'dbId',
-                'region': 'regio',
-                'headers': RDS_HEADERS
+                "paginated": False,
+                "dbId": "dbId",
+                "region": "regio",
+                "headers": RDS_HEADERS,
             },
-            expected_args=[]
+            expected_args=[],
         )
 
     def test_get_flavor(self):
         self.verify_get(
             self.proxy.get_flavor,
             _flavor.Flavor,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
-            expected_kwargs={
-                'headers': RDS_HEADERS
-            }
+            mock_method="otcextensions.sdk.sdk_proxy.Proxy._get",
+            expected_kwargs={"headers": RDS_HEADERS},
         )
 
     # def test_find_flavor(self):
@@ -133,71 +125,65 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
 
     def test_create_instance(self):
         self.verify_create(
-            self.proxy.create_instance, _instance.Instance,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
-            method_kwargs={
-                'instance': 'test',
-                'name': 'some_name'
-            },
+            self.proxy.create_instance,
+            _instance.Instance,
+            mock_method="otcextensions.sdk.sdk_proxy.Proxy._create",
+            method_kwargs={"instance": "test", "name": "some_name"},
             expected_kwargs={
-                'instance': 'test',
-                'name': 'some_name',
-                'headers': RDS_HEADERS
-            }
+                "instance": "test",
+                "name": "some_name",
+                "headers": RDS_HEADERS,
+            },
         )
 
     def test_delete_instance(self):
         self.verify_delete(
             self.proxy.delete_instance,
-            _instance.Instance, True,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
+            _instance.Instance,
+            True,
+            mock_method="otcextensions.sdk.sdk_proxy.Proxy._delete",
             expected_kwargs={
-                'headers': RDS_HEADERS,
-            }
+                "headers": RDS_HEADERS,
+            },
         )
 
     def test_update_instance(self):
         self._verify(
-            'otcextensions.sdk.sdk_proxy.Proxy._update',
+            "otcextensions.sdk.sdk_proxy.Proxy._update",
             self.proxy.update_instance,
-            method_args=['INSTANCE'],
-            method_kwargs={'test': 't'},
+            method_args=["INSTANCE"],
+            method_kwargs={"test": "t"},
             expected_args=[_instance.Instance],
             expected_kwargs={
-                'test': 't',
-                'instance': 'INSTANCE',
-                'headers': RDS_HEADERS
-            }
+                "test": "t",
+                "instance": "INSTANCE",
+                "headers": RDS_HEADERS,
+            },
         )
 
     def test_get_instance(self):
         self.verify_get(
             self.proxy.get_instance,
             _instance.Instance,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
-            expected_kwargs={
-                'headers': RDS_HEADERS
-            }
+            mock_method="otcextensions.sdk.sdk_proxy.Proxy._get",
+            expected_kwargs={"headers": RDS_HEADERS},
         )
 
     def test_find_instance(self):
         self._verify(
-            'otcextensions.sdk.sdk_proxy.Proxy._find',
+            "otcextensions.sdk.sdk_proxy.Proxy._find",
             self.proxy.find_instance,
             method_args=["instance"],
             expected_args=[_instance.Instance, "instance"],
-            expected_kwargs={
-                'headers': RDS_HEADERS,
-                "ignore_missing": True})
+            expected_kwargs={"headers": RDS_HEADERS, "ignore_missing": True},
+        )
 
     def test_instances(self):
         self.verify_list(
-            self.proxy.instances, _instance.Instance,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
-            expected_kwargs={
-                'paginated': False,
-                'headers': RDS_HEADERS
-            }
+            self.proxy.instances,
+            _instance.Instance,
+            mock_method="otcextensions.sdk.sdk_proxy.Proxy._list",
+            expected_kwargs={"paginated": False, "headers": RDS_HEADERS},
         )
 
     # def test_configurations(self):
@@ -278,63 +264,56 @@ class TestRdsProxy(test_proxy_base.TestProxyBase):
 
     def test_backups(self):
         self.verify_list(
-            self.proxy.backups, _backup.Backup,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._list',
-            expected_kwargs={
-                'paginated': False,
-                'headers': RDS_HEADERS
-            }
+            self.proxy.backups,
+            _backup.Backup,
+            mock_method="otcextensions.sdk.sdk_proxy.Proxy._list",
+            expected_kwargs={"paginated": False, "headers": RDS_HEADERS},
         )
 
     def test_create_backup(self):
         self.verify_create(
-            self.proxy.create_backup, _backup.Backup,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._create',
-            method_kwargs={
-                'instance': 'test',
-                'name': 'some_name'
-            },
+            self.proxy.create_backup,
+            _backup.Backup,
+            mock_method="otcextensions.sdk.sdk_proxy.Proxy._create",
+            method_kwargs={"instance": "test", "name": "some_name"},
             expected_kwargs={
-                'headers': RDS_HEADERS,
-                'instance': 'test',
-                'name': 'some_name'
-            }
+                "headers": RDS_HEADERS,
+                "instance": "test",
+                "name": "some_name",
+            },
         )
 
     def test_delete_backup(self):
         self.verify_delete(
             self.proxy.delete_backup,
-            _backup.Backup, False,
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._delete',
+            _backup.Backup,
+            False,
+            mock_method="otcextensions.sdk.sdk_proxy.Proxy._delete",
             expected_kwargs={
-                'headers': RDS_HEADERS,
-            }
+                "headers": RDS_HEADERS,
+            },
         )
 
     def test_get_backup_policy(self):
         self.verify_get(
-            self.proxy.get_backup_policy, _backup.BackupPolicy,
+            self.proxy.get_backup_policy,
+            _backup.BackupPolicy,
             method_args=[],
-            mock_method='otcextensions.sdk.sdk_proxy.Proxy._get',
-            method_kwargs={
-                'instance': 'id'
-            },
+            mock_method="otcextensions.sdk.sdk_proxy.Proxy._get",
+            method_kwargs={"instance": "id"},
             expected_kwargs={
-                'headers': RDS_HEADERS,
-                'instance_id': 'id',
-                'requires_id': False
-            }
+                "headers": RDS_HEADERS,
+                "instance_id": "id",
+                "requires_id": False,
+            },
         )
 
     def test_set_backup_policy(self):
         # TODO(agoncharov) upstream BaseProxy is renamed to Proxy
         self._verify(
-            'otcextensions.sdk.sdk_proxy.Proxy._update',
+            "otcextensions.sdk.sdk_proxy.Proxy._update",
             self.proxy.set_backup_policy,
-            method_args=['POLICY', 'INST_ID'],
-            expected_args=[_backup.BackupPolicy, 'POLICY'],
-            expected_kwargs={
-                'instance_id': 'INST_ID',
-                'headers': RDS_HEADERS
-            }
+            method_args=["POLICY", "INST_ID"],
+            expected_args=[_backup.BackupPolicy, "POLICY"],
+            expected_kwargs={"instance_id": "INST_ID", "headers": RDS_HEADERS},
         )

@@ -64,13 +64,9 @@ class DatasetImportTask(resource.Resource):
     #: Error message.
     error_msg = resource.Body("error_msg")
     #: Do not import samples containing the specified label.
-    excluded_labels = resource.Body(
-        "excluded_labels", type=list, list_type=LabelSpec
-    )
+    excluded_labels = resource.Body("excluded_labels", type=list, list_type=LabelSpec)
     #: Progress of file copy.
-    file_statistics = resource.Body(
-        "file_statistics", type=FileCopyProgressSpec
-    )
+    file_statistics = resource.Body("file_statistics", type=FileCopyProgressSpec)
     #: Whether to import data to the final state.
     final_annotation = resource.Body("final_annotation", type=bool)
     #: Number of files that have been transferred.
@@ -92,13 +88,9 @@ class DatasetImportTask(resource.Resource):
     #: Number of imported samples.
     imported_sample_count = resource.Body("imported_sample_count", type=int)
     #: Number of imported subsamples.
-    imported_sub_sample_count = resource.Body(
-        "imported_sub_sample_count", type=int
-    )
+    imported_sub_sample_count = resource.Body("imported_sub_sample_count", type=int)
     #: Import samples containing the specified label.
-    included_labels = resource.Body(
-        "included_labels", type=list, list_type=LabelSpec
-    )
+    included_labels = resource.Body("included_labels", type=list, list_type=LabelSpec)
     #: Label format.
     label_format = resource.Body("label_format", type=LabelFormatSpec)
     #: ID of a preprocessing task.
@@ -118,9 +110,7 @@ class DatasetImportTask(resource.Resource):
     #: Total number of subsamples generated from the parent samples.
     total_sub_sample_count = resource.Body("total_sub_sample_count", type=int)
     #: Number of samples to be confirmed.
-    unconfirmed_sample_count = resource.Body(
-        "unconfirmed_sample_count", type=int
-    )
+    unconfirmed_sample_count = resource.Body("unconfirmed_sample_count", type=int)
     #: Time when a task is updated.
     updated_at = resource.Body("update_ms", type=int)
     #: Whether the first row in the file is a column name.

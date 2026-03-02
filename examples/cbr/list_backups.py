@@ -13,10 +13,11 @@
 """
 List all CBR Backups
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 for backup in conn.cbr.backups():
     print(backup)

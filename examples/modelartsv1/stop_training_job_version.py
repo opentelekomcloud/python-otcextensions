@@ -12,6 +12,7 @@
 # under the License.
 #
 """Stopping a Training Job Version."""
+
 import openstack
 
 openstack.enable_logging(True)

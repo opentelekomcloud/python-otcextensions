@@ -13,15 +13,14 @@
 """
 Wait for a backup to be finished.
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-backup = conn.rds.create_backup(instance='instance_id',
-                                name='my_backup',
-                                description='This is new')
-conn.rds.wait_for_backup(backup=backup, status='COMPLETED',
-                         interval=2, wait=300)
+backup = conn.rds.create_backup(
+    instance="instance_id", name="my_backup", description="This is new"
+)
+conn.rds.wait_for_backup(backup=backup, status="COMPLETED", interval=2, wait=300)
 print(backup)

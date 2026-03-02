@@ -11,6 +11,7 @@
 # under the License.
 #
 """VPC Endpoint Service v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -25,61 +26,59 @@ LOG = logging.getLogger(__name__)
 def _get_columns(item):
     column_map = {}
     hidden = [
-        'location',
+        "location",
     ]
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(
-        item, column_map, hidden
-    )
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map, hidden)
 
 
 class ListWhitelist(command.Lister):
 
-    _description = _('List whitelist records of a VPC endpoint service.')
-    columns = ('Id', 'Permission', 'Created At')
+    _description = _("List whitelist records of a VPC endpoint service.")
+    columns = ("Id", "Permission", "Created At")
 
     def get_parser(self, prog_name):
         parser = super(ListWhitelist, self).get_parser(prog_name)
 
         parser.add_argument(
-            'service',
-            metavar='<service>',
-            help=_('ID or name of the VPC Endpoint Service.'),
+            "service",
+            metavar="<service>",
+            help=_("ID or name of the VPC Endpoint Service."),
         )
         parser.add_argument(
-            '--sort-key',
-            metavar='{created_at}',
+            "--sort-key",
+            metavar="{created_at}",
             type=lambda s: s.lower(),
-            choices=['created_at'],
-            help=_('Sorting field of the whitelist records.'),
+            choices=["created_at"],
+            help=_("Sorting field of the whitelist records."),
         )
         parser.add_argument(
-            '--sort-dir',
-            metavar='{asc, desc}',
+            "--sort-dir",
+            metavar="{asc, desc}",
             type=lambda s: s.lower(),
-            choices=['asc', 'desc'],
-            help=_('Sorting order of the whitelist record list.'),
+            choices=["asc", "desc"],
+            help=_("Sorting order of the whitelist record list."),
         )
         parser.add_argument(
-            '--limit',
-            metavar='<limit>',
+            "--limit",
+            metavar="<limit>",
             type=int,
-            help=_('Limit number of whitelist records to fetch.'),
+            help=_("Limit number of whitelist records to fetch."),
         )
         parser.add_argument(
-            '--offset',
-            metavar='<offset>',
+            "--offset",
+            metavar="<offset>",
             type=int,
-            help=_('Whitelist records after this Offset will be queried.'),
+            help=_("Whitelist records after this Offset will be queried."),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.vpcep
         args_list = [
-            'limit',
-            'offset',
-            'sort_key',
-            'sort_dir',
+            "limit",
+            "offset",
+            "sort_key",
+            "sort_dir",
         ]
         attrs = {}
         for arg in args_list:
@@ -96,51 +95,48 @@ class ListWhitelist(command.Lister):
 
 
 class ManageWhitelist(command.Lister):
-    _description = _('Manage whitelist records of a VPC endpoint service.')
+    _description = _("Manage whitelist records of a VPC endpoint service.")
 
-    columns = ('Permission',)
+    columns = ("Permission",)
 
     def get_parser(self, prog_name):
         parser = super(ManageWhitelist, self).get_parser(prog_name)
 
         parser.add_argument(
-            'service',
-            metavar='<service>',
-            help=_('ID or name of the VPC Endpoint Service.'),
+            "service",
+            metavar="<service>",
+            help=_("ID or name of the VPC Endpoint Service."),
         )
         parser.add_argument(
-            'domain',
-            metavar='<domain>',
-            nargs='+',
+            "domain",
+            metavar="<domain>",
+            nargs="+",
             help=_(
-                'Domain ID(s) to add to whitelist record of the '
-                'Vpc endpoint service.'
+                "Domain ID(s) to add to whitelist record of the "
+                "Vpc endpoint service."
             ),
         )
-        manage_request_group = parser.add_mutually_exclusive_group(
-            required=True
-        )
+        manage_request_group = parser.add_mutually_exclusive_group(required=True)
         manage_request_group.add_argument(
-            '--add',
-            action='store_true',
+            "--add",
+            action="store_true",
             help=(
-                'Add a domian to the whitelist record of the '
-                'Vpc endpoint service.'
+                "Add a domian to the whitelist record of the " "Vpc endpoint service."
             ),
         )
         manage_request_group.add_argument(
-            '--remove',
-            action='store_true',
+            "--remove",
+            action="store_true",
             help=(
-                'Remove a domian from the whitelist record of the '
-                'Vpc endpoint service.'
+                "Remove a domian from the whitelist record of the "
+                "Vpc endpoint service."
             ),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.vpcep
-        set_args = ('add', 'remove')
+        set_args = ("add", "remove")
         request_status = [
             request for request in set_args if getattr(parsed_args, request)
         ]

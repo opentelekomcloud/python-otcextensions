@@ -12,6 +12,7 @@
 # under the License.
 #
 """Querying Dedicated Resource Pools"""
+
 import openstack
 
 openstack.enable_logging(True)

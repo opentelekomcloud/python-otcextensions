@@ -12,11 +12,10 @@
 import uuid
 
 from openstack import _log
-
 from otcextensions.sdk.vpc.v1 import vpc
 from otcextensions.tests.functional import base
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestService(base.BaseFunctionalTest):
@@ -26,10 +25,7 @@ class TestService(base.BaseFunctionalTest):
     def setUp(self):
         super(TestService, self).setUp()
 
-        attrs = {
-            'name': "test-vpc-" + self.uuid,
-            'cidr': '192.168.0.0/24'
-        }
+        attrs = {"name": "test-vpc-" + self.uuid, "cidr": "192.168.0.0/24"}
 
         self.NAME = "test-vpc-" + self.uuid
         self.UPDATE_NAME = "test-vpc-upd-" + self.uuid
@@ -54,10 +50,7 @@ class TestService(base.BaseFunctionalTest):
         self.assertIn(self.NAME, vpcs)
 
     def test_update_vpc(self):
-        new_attrs = {
-            'name': self.UPDATE_NAME,
-            'cidr': '192.168.0.0/16'
-        }
+        new_attrs = {"name": self.UPDATE_NAME, "cidr": "192.168.0.0/16"}
         updated = self.conn.vpc.update_vpc(self.ID, **new_attrs)
-        self.assertEqual(updated.name, new_attrs['name'])
-        self.assertEqual(updated.cidr, new_attrs['cidr'])
+        self.assertEqual(updated.name, new_attrs["name"])
+        self.assertEqual(updated.cidr, new_attrs["cidr"])

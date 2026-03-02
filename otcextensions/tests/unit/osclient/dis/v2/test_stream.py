@@ -10,16 +10,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-import mock
 from unittest.mock import call
 
+import mock
+from openstackclient.tests.unit import utils as tests_utils
 from osc_lib import exceptions
 
 from otcextensions.osclient.dis.v2 import stream
 from otcextensions.sdk.dis.v2 import stream as sdk_stream
 from otcextensions.tests.unit.osclient.dis.v2 import fakes
-
-from openstackclient.tests.unit import utils as tests_utils
 
 
 class TestListStreams(fakes.TestDis):
@@ -27,34 +26,36 @@ class TestListStreams(fakes.TestDis):
     objects = fakes.FakeStream.create_multiple(3)
 
     column_list_headers = (
-        'Name',
-        'Stream Type',
-        'Data Type',
-        'Partition Count',
-        'AutoScale Enabled',
-        'Status'
+        "Name",
+        "Stream Type",
+        "Data Type",
+        "Partition Count",
+        "AutoScale Enabled",
+        "Status",
     )
 
     columns = (
-        'name',
-        'stream_type',
-        'data_type',
-        'partition_count',
-        'is_auto_scale_enabled',
-        'status'
+        "name",
+        "stream_type",
+        "data_type",
+        "partition_count",
+        "is_auto_scale_enabled",
+        "status",
     )
 
     data = []
 
     for s in objects:
-        data.append((
-            s.name,
-            s.stream_type,
-            s.data_type,
-            s.partition_count,
-            s.is_auto_scale_enabled,
-            s.status
-        ))
+        data.append(
+            (
+                s.name,
+                s.stream_type,
+                s.data_type,
+                s.partition_count,
+                s.is_auto_scale_enabled,
+                s.status,
+            )
+        )
 
     def setUp(self):
         super(TestListStreams, self).setUp()
@@ -85,13 +86,15 @@ class TestListStreams(fakes.TestDis):
 
     def test_list_args(self):
         arglist = [
-            '--limit', '1',
-            '--start-stream-name', '2',
+            "--limit",
+            "1",
+            "--start-stream-name",
+            "2",
         ]
 
         verifylist = [
-            ('limit', 1),
-            ('start_stream_name', '2'),
+            ("limit", 1),
+            ("start_stream_name", "2"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -105,23 +108,23 @@ class TestListStreams(fakes.TestDis):
 
         self.client.api_mock.assert_called_with(
             limit=1,
-            start_stream_name='2',
+            start_stream_name="2",
         )
 
 
 class TestCreateStream(fakes.TestDis):
 
     columns = (
-        'auto_scale_max_partition_count',
-        'auto_scale_min_partition_count',
-        'compression_format',
-        'data_duration',
-        'data_type',
-        'is_auto_scale_enabled',
-        'name',
-        'partition_count',
-        'stream_type',
-        'tags'
+        "auto_scale_max_partition_count",
+        "auto_scale_min_partition_count",
+        "compression_format",
+        "data_duration",
+        "data_type",
+        "is_auto_scale_enabled",
+        "name",
+        "partition_count",
+        "stream_type",
+        "tags",
     )
 
     def setUp(self):
@@ -131,50 +134,57 @@ class TestCreateStream(fakes.TestDis):
 
     def test_create(self):
         arglist = [
-            'test-stream',
-            '--partition-count', '2',
-            '--stream-type', 'COMMON',
-            '--data-type', 'BLOB',
-            '--data-duration', '5',
-            '--autoscale-min-count', '6',
-            '--autoscale-max-count', '7',
-            '--compression-format', 'gzip',
-            '--tag', 'key=k1,value=v1',
-            '--tag', 'key=k2,value=v2',
-            '--autoscale',
+            "test-stream",
+            "--partition-count",
+            "2",
+            "--stream-type",
+            "COMMON",
+            "--data-type",
+            "BLOB",
+            "--data-duration",
+            "5",
+            "--autoscale-min-count",
+            "6",
+            "--autoscale-max-count",
+            "7",
+            "--compression-format",
+            "gzip",
+            "--tag",
+            "key=k1,value=v1",
+            "--tag",
+            "key=k2,value=v2",
+            "--autoscale",
         ]
         verifylist = [
-            ('streamName', 'test-stream'),
-            ('partition_count', 2),
-            ('stream_type', 'COMMON'),
-            ('data_type', 'BLOB'),
-            ('data_duration', 5),
-            ('auto_scale_min_partition_count', 6),
-            ('auto_scale_max_partition_count', 7),
-            ('compression_format', 'gzip'),
-            ('tags', [{'key': 'k1', 'value': 'v1'},
-                      {'key': 'k2', 'value': 'v2'}]),
-            ('autoscale', True),
+            ("streamName", "test-stream"),
+            ("partition_count", 2),
+            ("stream_type", "COMMON"),
+            ("data_type", "BLOB"),
+            ("data_duration", 5),
+            ("auto_scale_min_partition_count", 6),
+            ("auto_scale_max_partition_count", 7),
+            ("compression_format", "gzip"),
+            ("tags", [{"key": "k1", "value": "v1"}, {"key": "k2", "value": "v2"}]),
+            ("autoscale", True),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         attrs = {}
         attrs.update(
-            name='test-stream',
+            name="test-stream",
             partition_count=2,
-            stream_type='COMMON',
-            data_type='BLOB',
+            stream_type="COMMON",
+            data_type="BLOB",
             data_duration=5,
             auto_scale_min_partition_count=6,
             auto_scale_max_partition_count=7,
-            compression_format='gzip',
-            tags=[{'key': 'k1', 'value': 'v1'}, {'key': 'k2', 'value': 'v2'}],
-            auto_scale_enabled=True
+            compression_format="gzip",
+            tags=[{"key": "k1", "value": "v1"}, {"key": "k2", "value": "v2"}],
+            auto_scale_enabled=True,
         )
 
-        self.client.create_stream = mock.Mock(
-            return_value=sdk_stream.Stream(**attrs))
+        self.client.create_stream = mock.Mock(return_value=sdk_stream.Stream(**attrs))
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -185,24 +195,22 @@ class TestCreateStream(fakes.TestDis):
 
 class TestUpdateStreamPartition(fakes.TestDis):
 
-    stream_name = 'test-dis-stream'
+    stream_name = "test-dis-stream"
 
     _data = sdk_stream.Stream(
-        stream_name=stream_name,
-        current_partition_count=4,
-        target_partition_count=2
+        stream_name=stream_name, current_partition_count=4, target_partition_count=2
     )
 
     display_columns = (
-        'stream_name',
-        'current_partition_count',
-        'target_partition_count',
+        "stream_name",
+        "current_partition_count",
+        "target_partition_count",
     )
 
     columns = (
-        'name',
-        'current_partition_count',
-        'target_partition_count',
+        "name",
+        "current_partition_count",
+        "target_partition_count",
     )
 
     data = fakes.gen_data(_data, columns, stream._formatters)
@@ -212,17 +220,17 @@ class TestUpdateStreamPartition(fakes.TestDis):
 
         self.cmd = stream.UpdateStreamPartition(self.app, None)
 
-        self.client.update_stream_partition = \
-            mock.Mock(return_value=self._data)
+        self.client.update_stream_partition = mock.Mock(return_value=self._data)
 
     def test_update(self):
         arglist = [
             self._data.name,
-            '--partition-count', '2',
+            "--partition-count",
+            "2",
         ]
         verifylist = [
-            ('streamName', self._data.name),
-            ('partition_count', 2),
+            ("streamName", self._data.name),
+            ("partition_count", 2),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -230,9 +238,7 @@ class TestUpdateStreamPartition(fakes.TestDis):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.update_stream_partition.assert_called_with(
-            'test-dis-stream', 2
-        )
+        self.client.update_stream_partition.assert_called_with("test-dis-stream", 2)
         self.assertEqual(self.display_columns, columns)
 
 
@@ -240,23 +246,23 @@ class TestShowStream(fakes.TestDis):
 
     _data = fakes.FakeStream.create_one()
     columns = (
-        'auto_scale_max_partition_count',
-        'auto_scale_min_partition_count',
-        'compression_format',
-        'created_at',
-        'data_type',
-        'has_more_partitions',
-        'id',
-        'is_auto_scale_enabled',
-        'name',
-        'partitions',
-        'readable_partition_count',
-        'retention_period',
-        'status',
-        'stream_id',
-        'stream_type',
-        'updated_at',
-        'writable_partition_count'
+        "auto_scale_max_partition_count",
+        "auto_scale_min_partition_count",
+        "compression_format",
+        "created_at",
+        "data_type",
+        "has_more_partitions",
+        "id",
+        "is_auto_scale_enabled",
+        "name",
+        "partitions",
+        "readable_partition_count",
+        "retention_period",
+        "status",
+        "stream_id",
+        "stream_type",
+        "updated_at",
+        "writable_partition_count",
     )
 
     data = fakes.gen_data(_data, columns, stream._formatters)
@@ -274,8 +280,13 @@ class TestShowStream(fakes.TestDis):
 
         # Testing that a call without the required argument will fail and
         # throw a "ParserExecption"
-        self.assertRaises(tests_utils.ParserException,
-                          self.check_parser, self.cmd, arglist, verifylist)
+        self.assertRaises(
+            tests_utils.ParserException,
+            self.check_parser,
+            self.cmd,
+            arglist,
+            verifylist,
+        )
 
     def test_show(self):
         arglist = [
@@ -283,7 +294,7 @@ class TestShowStream(fakes.TestDis):
         ]
 
         verifylist = [
-            ('streamName', self._data.name),
+            ("streamName", self._data.name),
         ]
 
         # Verify cm is triggered with default parameters
@@ -298,27 +309,25 @@ class TestShowStream(fakes.TestDis):
 
     def test_show_non_existent(self):
         arglist = [
-            'unexist_dis_stream',
+            "unexist_dis_stream",
         ]
 
         verifylist = [
-            ('streamName', 'unexist_dis_stream'),
+            ("streamName", "unexist_dis_stream"),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        get_mock_result = exceptions.CommandError('Resource Not Found')
-        self.client.find_stream = (
-            mock.Mock(side_effect=get_mock_result)
-        )
+        get_mock_result = exceptions.CommandError("Resource Not Found")
+        self.client.find_stream = mock.Mock(side_effect=get_mock_result)
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual('Resource Not Found', str(e))
-        self.client.get_stream.assert_called_with('unexist_dis_stream')
+            self.assertEqual("Resource Not Found", str(e))
+        self.client.get_stream.assert_called_with("unexist_dis_stream")
 
 
 class TestDeleteStream(fakes.TestDis):
@@ -339,7 +348,7 @@ class TestDeleteStream(fakes.TestDis):
         ]
 
         verifylist = [
-            ('streamName', [self._data[0].name]),
+            ("streamName", [self._data[0].name]),
         ]
 
         # Verify cm is triggered with default parameters
@@ -357,7 +366,7 @@ class TestDeleteStream(fakes.TestDis):
             arglist.append(dis_stream.name)
 
         verifylist = [
-            ('streamName', arglist),
+            ("streamName", arglist),
         ]
 
         # Verify cm is triggered with default parameters
@@ -375,10 +384,10 @@ class TestDeleteStream(fakes.TestDis):
     def test_multiple_delete_with_exception(self):
         arglist = [
             self._data[0].name,
-            'unexist_dis_stream',
+            "unexist_dis_stream",
         ]
         verifylist = [
-            ('streamName', arglist),
+            ("streamName", arglist),
         ]
 
         # Verify cm is triggered with default parameters
@@ -390,7 +399,7 @@ class TestDeleteStream(fakes.TestDis):
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual('1 of 2 DIS Stream(s) failed to delete.', str(e))
+            self.assertEqual("1 of 2 DIS Stream(s) failed to delete.", str(e))
 
-        calls = [call(self._data[0].name), call('unexist_dis_stream')]
+        calls = [call(self._data[0].name), call("unexist_dis_stream")]
         self.client.delete_stream.assert_has_calls(calls)

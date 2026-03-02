@@ -20,9 +20,9 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect()
 
-cluster_name_or_id = 'css-c647'
+cluster_name_or_id = "css-c647"
 cluster = conn.css.find_cluster(cluster_name_or_id)
 
-nodes = [{'type': 'ess', 'reducedNodeNum': 1}]
+nodes = [{"type": "ess", "reducedNodeNum": 1}]
 
 conn.css.scale_in_cluster_by_node_type(cluster, nodes)

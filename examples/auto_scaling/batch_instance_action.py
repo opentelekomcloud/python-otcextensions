@@ -13,25 +13,20 @@
 """
 Remove an Auto-Scaling Instances of a specific AS Group.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 group = "group_name_or_id"
 group = conn.auto_scaling.find_group(group)
 
-instances = [
-    "instance_id",
-    "instance_id2"
-]
+instances = ["instance_id", "instance_id2"]
 
 action = "ADD"
 
 conn.auto_scaling.batch_instance_action(
-    group,
-    instances,
-    action,  # ADD, REMOVE, PROTECT, UNPROTECT
-    delete_instance=False
+    group, instances, action, delete_instance=False  # ADD, REMOVE, PROTECT, UNPROTECT
 )

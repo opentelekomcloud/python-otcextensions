@@ -13,9 +13,9 @@ from openstack import resource
 
 
 class Vpc(resource.Resource):
-    resource_key = 'vpc'
-    resources_key = 'vpcs'
-    base_path = '/v1/%(project_id)s/vpcs'
+    resource_key = "vpc"
+    resources_key = "vpcs"
+    base_path = "/v1/%(project_id)s/vpcs"
 
     # capabilities
     allow_create = True
@@ -25,16 +25,16 @@ class Vpc(resource.Resource):
     allow_list = True
 
     # Properties
-    project_id = resource.URI('project_id')
+    project_id = resource.URI("project_id")
     #: Specifies the available IP address ranges for subnets in the VPC.
-    cidr = resource.Body('cidr')
+    cidr = resource.Body("cidr")
     #: Provides supplementary information about the VPC.
-    description = resource.Body('description')
+    description = resource.Body("description")
     #: Specifies whether the shared SNAT function is enabled.
-    enable_shared_snat = resource.Body('enable_shared_snat', type=bool)
+    enable_shared_snat = resource.Body("enable_shared_snat", type=bool)
     #: Specifies the VPC name.
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: Specifies the route list.
-    routes = resource.Body('routes', type=list, list_type=dict)
+    routes = resource.Body("routes", type=list, list_type=dict)
     #: Specifies the VPC status.
-    status = resource.Body('status')
+    status = resource.Body("status")

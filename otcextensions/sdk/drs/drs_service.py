@@ -11,13 +11,10 @@
 # under the License.
 
 from openstack import service_description
-
 from otcextensions.sdk.drs.v3 import _proxy
 
 
 class DrsService(service_description.ServiceDescription):
     """The DRS service."""
 
-    supported_versions = {
-        '3': _proxy.Proxy
-    }
+    supported_versions = {"3": _proxy.Proxy}

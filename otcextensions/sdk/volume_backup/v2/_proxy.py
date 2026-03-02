@@ -58,10 +58,9 @@ class Proxy(proxy.Proxy):
         :rtype:
             :class:`~otcextensions.sdk.volume_backup.v2.backup_policy.BackupPolicy`
         """
-        return self._update(_backup_policy.BackupPolicy,
-                            backup_policy,
-                            prepend_key=False,
-                            **attrs)
+        return self._update(
+            _backup_policy.BackupPolicy, backup_policy, prepend_key=False, **attrs
+        )
 
     def delete_backup_policy(self, backup_policy, ignore_missing=True):
         """Delete a backup policy
@@ -79,9 +78,9 @@ class Proxy(proxy.Proxy):
         :rtype:
             :class:`~otcextensions.sdk.volume_backup.v2.backup_policy.BackupPolicy`
         """
-        return self._delete(_backup_policy.BackupPolicy,
-                            backup_policy,
-                            ignore_missing=ignore_missing)
+        return self._delete(
+            _backup_policy.BackupPolicy, backup_policy, ignore_missing=ignore_missing
+        )
 
     def find_backup_policy(self, name_or_id, ignore_missing=True):
         """Find a single backup_policy
@@ -97,8 +96,9 @@ class Proxy(proxy.Proxy):
         """
         if isinstance(name_or_id, _backup_policy.BackupPolicy):
             name_or_id = name_or_id.id
-        return self._find(_backup_policy.BackupPolicy, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(
+            _backup_policy.BackupPolicy, name_or_id, ignore_missing=ignore_missing
+        )
 
     def execute_policy(self, backup_policy):
         """Execute policy immediately
@@ -107,8 +107,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.volume_backup.v2.backup_policy.BackupPolicy`
             instance
         """
-        backup_policy = self._get_resource(_backup_policy.BackupPolicy,
-                                           backup_policy)
+        backup_policy = self._get_resource(_backup_policy.BackupPolicy, backup_policy)
         return backup_policy.execute(self)
 
     def enable_policy(self, backup_policy):
@@ -118,11 +117,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.volume_backup.v2.backup_policy.BackupPolicy`
             instance
         """
-        updated = {
-            "scheduled_policy": {
-                "status": "ON"
-            }
-        }
+        updated = {"scheduled_policy": {"status": "ON"}}
         return self.update_backup_policy(backup_policy, **updated)
 
     def disable_policy(self, backup_policy):
@@ -132,11 +127,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.volume_backup.v2.backup_policy.BackupPolicy`
             instance
         """
-        updated = {
-            "scheduled_policy": {
-                "status": "OFF"
-            }
-        }
+        updated = {"scheduled_policy": {"status": "OFF"}}
         return self.update_backup_policy(backup_policy, **updated)
 
     def link_resources_to_policy(self, backup_policy, resources):
@@ -149,12 +140,9 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.volume_backup.v2.backup_policy
                     .BackupPolicyResource`
         """
-        backup_policy = self._get_resource(_backup_policy.BackupPolicy,
-                                           backup_policy)
+        backup_policy = self._get_resource(_backup_policy.BackupPolicy, backup_policy)
         policy_resource = _backup_policy.BackupPolicyResource()
-        return policy_resource.link(self,
-                                    backup_policy.id,
-                                    resources)
+        return policy_resource.link(self, backup_policy.id, resources)
 
     def unlink_resources_of_policy(self, backup_policy, resources):
         """Unlink resources of backup policy
@@ -166,12 +154,9 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.volume_backup.v2.backup_policy.
                         BackupPolicyResource`
         """
-        backup_policy = self._get_resource(_backup_policy.BackupPolicy,
-                                           backup_policy)
+        backup_policy = self._get_resource(_backup_policy.BackupPolicy, backup_policy)
         policy_resource = _backup_policy.BackupPolicyResource()
-        return policy_resource.unlink(self,
-                                      backup_policy.id,
-                                      resources)
+        return policy_resource.unlink(self, backup_policy.id, resources)
 
     # ======== Misc ========
     def tasks(self, backup_policy, **query):
@@ -196,8 +181,7 @@ class Proxy(proxy.Proxy):
             (:class:`~otcextensions.sdk.volume_backup.v2.backup.Backup`)
             instances
         """
-        backup_policy = self._get_resource(_backup_policy.BackupPolicy,
-                                           backup_policy)
+        backup_policy = self._get_resource(_backup_policy.BackupPolicy, backup_policy)
         query["policy_id"] = backup_policy.id
         return self._list(_backup_task.BackupTask, paginated=False, **query)
 

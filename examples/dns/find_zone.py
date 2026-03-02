@@ -13,12 +13,13 @@
 """
 Find DNS zone by name or id
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-zone = 'private-zone.'
+zone = "private-zone."
 zone = conn.dns.find_zone(zone)
 print(zone)

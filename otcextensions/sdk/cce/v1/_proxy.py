@@ -37,7 +37,8 @@ class Proxy(sdk_proxy.Proxy):
             :class:`~otcextensions.sdk.cce.v1.cluster.Cluster`
         """
         return self._get(
-            _cluster.Cluster, cluster,
+            _cluster.Cluster,
+            cluster,
         )
 
     def create_cluster(self, **attrs):
@@ -49,9 +50,7 @@ class Proxy(sdk_proxy.Proxy):
         :returns: The results of cluster creation
         :rtype: :class:`~otcextensions.sdk.cce.v1.cluster.Cluster`
         """
-        return self._create(
-            _cluster.Cluster, prepend_key=False, **attrs
-        )
+        return self._create(_cluster.Cluster, prepend_key=False, **attrs)
 
     def find_cluster(self, name_or_id, ignore_missing=True):
         """Find a single cluster
@@ -66,7 +65,8 @@ class Proxy(sdk_proxy.Proxy):
         :returns: ``None``
         """
         return self._find(
-            _cluster.Cluster, name_or_id,
+            _cluster.Cluster,
+            name_or_id,
             ignore_missing=ignore_missing,
         )
 
@@ -83,7 +83,9 @@ class Proxy(sdk_proxy.Proxy):
             delete a nonexistent cluster.
         """
         return self._delete(
-            _cluster.Cluster, cluster, ignore_missing=ignore_missing,
+            _cluster.Cluster,
+            cluster,
+            ignore_missing=ignore_missing,
         )
 
     # ======== Cluster Nodes ========
@@ -100,8 +102,7 @@ class Proxy(sdk_proxy.Proxy):
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return self._list(
-            _cluster_node.ClusterNode, cluster_uuid=cluster.id,
-            paginated=False
+            _cluster_node.ClusterNode, cluster_uuid=cluster.id, paginated=False
         )
 
     def get_cluster_node(self, cluster, node_id):
@@ -166,8 +167,4 @@ class Proxy(sdk_proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.cce.v1.config.Config`
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
-        return self._create(
-            _cluster_node.ClusterNode,
-            cluster_uuid=cluster.id,
-            **attrs
-        )
+        return self._create(_cluster_node.ClusterNode, cluster_uuid=cluster.id, **attrs)

@@ -13,35 +13,30 @@
 """
 Update alias
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 func_attrs = {
-    'func_name': 'test-function',
-    'package': 'default',
-    'runtime': 'Python3.9',
-    'handler': 'index.handler',
-    'timeout': 30,
-    'memory_size': 128,
-    'code_type': 'inline',
+    "func_name": "test-function",
+    "package": "default",
+    "runtime": "Python3.9",
+    "handler": "index.handler",
+    "timeout": 30,
+    "memory_size": 128,
+    "code_type": "inline",
 }
 fg = conn.functiongraph.create_function(**func_attrs)
 
-alias_attrs = {
-    'name': 'a1',
-    'version': 'new-version'
-}
-alias = conn.functiongraph.create_alias(
-    fg.func_urn, **alias_attrs
-)
+alias_attrs = {"name": "a1", "version": "new-version"}
+alias = conn.functiongraph.create_alias(fg.func_urn, **alias_attrs)
 
 new_attrs = {
-    'version': 'new-version',
-    'description': 'new',
+    "version": "new-version",
+    "description": "new",
 }
-updated = conn.functiongraph.update_alias(
-    fg, alias, **new_attrs)
+updated = conn.functiongraph.update_alias(fg, alias, **new_attrs)

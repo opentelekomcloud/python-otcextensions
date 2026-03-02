@@ -9,39 +9,40 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from unittest import mock
+
+from openstack.tests.unit import test_proxy_base
 from otcextensions.sdk.apig.v2 import _proxy
-from otcextensions.sdk.apig.v2 import gateway as _gateway
-from otcextensions.sdk.apig.v2 import az as _az
+from otcextensions.sdk.apig.v2 import acl_api_binding as _acl_api
+from otcextensions.sdk.apig.v2 import acl_policy as _ac
+from otcextensions.sdk.apig.v2 import api
+from otcextensions.sdk.apig.v2 import api_auth as _auth
+from otcextensions.sdk.apig.v2 import api_supplements as _as
 from otcextensions.sdk.apig.v2 import apienvironment as _env
 from otcextensions.sdk.apig.v2 import apienvironmentvar as _var
 from otcextensions.sdk.apig.v2 import apigroup as _api_group
-from otcextensions.sdk.apig.v2 import throttling_policy as _tp
-from otcextensions.sdk.apig.v2 import api
-from otcextensions.sdk.apig.v2 import api_supplements as _as
-from otcextensions.sdk.apig.v2 import signature as _sign
-from otcextensions.sdk.apig.v2 import signature_binding as _sb
-from otcextensions.sdk.apig.v2 import throttling_policy_binding as _tb
-from otcextensions.sdk.apig.v2 import throttling_excluded as _tx
-from otcextensions.sdk.apig.v2 import gateway_features as _gwf
-from otcextensions.sdk.apig.v2 import domain_name
-from otcextensions.sdk.apig.v2 import certificate
-from otcextensions.sdk.apig.v2 import resource_query as _rq
 from otcextensions.sdk.apig.v2 import app as _app
 from otcextensions.sdk.apig.v2 import appcode as _appcode
-from otcextensions.sdk.apig.v2 import api_auth as _auth
-from otcextensions.sdk.apig.v2 import acl_policy as _ac
-from otcextensions.sdk.apig.v2 import acl_api_binding as _acl_api
-from otcextensions.sdk.apig.v2 import custom_authorizer as _custom_auth
-from otcextensions.sdk.apig.v2 import vpc_channel as _vpc
-from otcextensions.sdk.apig.v2 import backend_server_group as _vpc_sg
+from otcextensions.sdk.apig.v2 import az as _az
 from otcextensions.sdk.apig.v2 import backend_server as _vpc_s
+from otcextensions.sdk.apig.v2 import backend_server_group as _vpc_sg
+from otcextensions.sdk.apig.v2 import certificate
+from otcextensions.sdk.apig.v2 import config as _config
+from otcextensions.sdk.apig.v2 import custom_authorizer as _custom_auth
+from otcextensions.sdk.apig.v2 import domain_name
+from otcextensions.sdk.apig.v2 import gateway as _gateway
+from otcextensions.sdk.apig.v2 import gateway_features as _gwf
 from otcextensions.sdk.apig.v2 import group_response as _group_response
-from otcextensions.sdk.apig.v2 import tag as _tag
+from otcextensions.sdk.apig.v2 import resource_query as _rq
+from otcextensions.sdk.apig.v2 import signature as _sign
+from otcextensions.sdk.apig.v2 import signature_binding as _sb
 from otcextensions.sdk.apig.v2 import ssl_certificate as _ssl_cert
 from otcextensions.sdk.apig.v2 import ssl_domain as _ssl_domain
-from otcextensions.sdk.apig.v2 import config as _config
-from openstack.tests.unit import test_proxy_base
-from unittest import mock
+from otcextensions.sdk.apig.v2 import tag as _tag
+from otcextensions.sdk.apig.v2 import throttling_excluded as _tx
+from otcextensions.sdk.apig.v2 import throttling_policy as _tp
+from otcextensions.sdk.apig.v2 import throttling_policy_binding as _tb
+from otcextensions.sdk.apig.v2 import vpc_channel as _vpc
 
 
 class TestApiGatewayProxy(test_proxy_base.TestProxyBase):
@@ -58,237 +59,228 @@ class TestApiGatewayFunctions(TestApiGatewayProxy):
         self.verify_list(self.proxy.azs, _az.AZ)
 
     def test_create_gateway(self):
-        self.verify_create(self.proxy.create_gateway,
-                           _gateway.Gateway)
+        self.verify_create(self.proxy.create_gateway, _gateway.Gateway)
 
     def test_delete_gateway(self):
         gateway = _gateway.Gateway()
-        self.verify_delete(self.proxy.delete_gateway,
-                           _gateway.Gateway,
-                           method_args=[gateway],
-                           expected_args=[gateway]
-                           )
+        self.verify_delete(
+            self.proxy.delete_gateway,
+            _gateway.Gateway,
+            method_args=[gateway],
+            expected_args=[gateway],
+        )
 
     def test_get_gateway(self):
-        self.verify_get(self.proxy.get_gateway,
-                        _gateway.Gateway)
+        self.verify_get(self.proxy.get_gateway, _gateway.Gateway)
 
     def test_update_gateway(self):
-        self.verify_update(self.proxy.update_gateway,
-                           _gateway.Gateway)
+        self.verify_update(self.proxy.update_gateway, _gateway.Gateway)
 
     def test_get_gateway_progress(self):
         gateway = _gateway.Gateway()
         self._verify(
-            'otcextensions.sdk.apig.v2.gateway.'
-            'Gateway._get_creation_progress',
+            "otcextensions.sdk.apig.v2.gateway." "Gateway._get_creation_progress",
             self.proxy.get_gateway_progress,
             method_args=[gateway],
-            expected_args=[self.proxy, gateway]
+            expected_args=[self.proxy, gateway],
         )
 
     def test_modify_spec(self):
         gateway = _gateway.Gateway()
         self._verify(
-            'otcextensions.sdk.apig.v2.gateway.'
-            'Gateway._modify_spec',
+            "otcextensions.sdk.apig.v2.gateway." "Gateway._modify_spec",
             self.proxy.modify_gateway_spec,
             method_args=[gateway],
-            expected_args=[self.proxy, gateway]
+            expected_args=[self.proxy, gateway],
         )
 
     def test_get_constraints(self):
         gateway = _gateway.Gateway()
         self._verify(
-            'otcextensions.sdk.apig.v2.gateway.'
-            'Gateway._get_constraints',
+            "otcextensions.sdk.apig.v2.gateway." "Gateway._get_constraints",
             self.proxy.get_constraints,
             method_args=[gateway],
-            expected_args=[self.proxy, gateway]
+            expected_args=[self.proxy, gateway],
         )
 
     def test_enable_public_access(self):
         gateway = _gateway.Gateway()
         self._verify(
-            'otcextensions.sdk.apig.v2.gateway.'
-            'Gateway._enable_public_access',
+            "otcextensions.sdk.apig.v2.gateway." "Gateway._enable_public_access",
             self.proxy.enable_public_access,
             method_args=[gateway],
-            expected_args=[self.proxy, gateway]
+            expected_args=[self.proxy, gateway],
         )
 
     def test_update_public_access(self):
         gateway = _gateway.Gateway()
         self._verify(
-            'otcextensions.sdk.apig.v2.gateway.'
-            'Gateway._update_public_access',
+            "otcextensions.sdk.apig.v2.gateway." "Gateway._update_public_access",
             self.proxy.update_public_access,
             method_args=[gateway],
-            expected_args=[self.proxy, gateway]
+            expected_args=[self.proxy, gateway],
         )
 
     def test_disable_public_access(self):
         gateway = _gateway.Gateway()
         self._verify(
-            'otcextensions.sdk.apig.v2.gateway.'
-            'Gateway._disable_public_access',
+            "otcextensions.sdk.apig.v2.gateway." "Gateway._disable_public_access",
             self.proxy.disable_public_access,
             method_args=[gateway],
-            expected_args=[self.proxy, gateway]
+            expected_args=[self.proxy, gateway],
         )
 
     def test_bind_eip(self):
         gateway = _gateway.Gateway()
         self.proxy._get_resource = mock.Mock(return_value=gateway)
         self._verify(
-            'otcextensions.sdk.apig.v2.gateway.'
-            'Gateway._bind_eip',
+            "otcextensions.sdk.apig.v2.gateway." "Gateway._bind_eip",
             self.proxy.bind_eip,
             method_args=[gateway],
-            expected_args=[self.proxy, gateway]
+            expected_args=[self.proxy, gateway],
         )
 
     def test_unbind_eip(self):
         gateway = _gateway.Gateway()
         self._verify(
-            'otcextensions.sdk.apig.v2.gateway.'
-            'Gateway._unbind_eip',
+            "otcextensions.sdk.apig.v2.gateway." "Gateway._unbind_eip",
             self.proxy.unbind_eip,
             method_args=[gateway],
-            expected_args=[self.proxy, gateway]
+            expected_args=[self.proxy, gateway],
         )
 
     def test_enable_ingress(self):
         gateway = _gateway.Gateway()
         self._verify(
-            'otcextensions.sdk.apig.v2.gateway.'
-            'Gateway._enable_ingress',
+            "otcextensions.sdk.apig.v2.gateway." "Gateway._enable_ingress",
             self.proxy.enable_ingress,
             method_args=[gateway],
-            expected_args=[self.proxy, gateway]
+            expected_args=[self.proxy, gateway],
         )
 
     def test_update_ingress(self):
         gateway = _gateway.Gateway()
         self._verify(
-            'otcextensions.sdk.apig.v2.gateway.'
-            'Gateway._update_ingress',
+            "otcextensions.sdk.apig.v2.gateway." "Gateway._update_ingress",
             self.proxy.update_ingress,
             method_args=[gateway],
-            expected_args=[self.proxy, gateway]
+            expected_args=[self.proxy, gateway],
         )
 
     def test_disable_ingress(self):
         gateway = _gateway.Gateway()
         self._verify(
-            'otcextensions.sdk.apig.v2.gateway.'
-            'Gateway._disable_ingress',
+            "otcextensions.sdk.apig.v2.gateway." "Gateway._disable_ingress",
             self.proxy.disable_ingress,
             method_args=[gateway],
-            expected_args=[self.proxy, gateway]
+            expected_args=[self.proxy, gateway],
         )
 
     def test_create_env(self):
         gateway = _gateway.Gateway()
-        self.verify_create(self.proxy.create_environment,
-                           _env.ApiEnvironment,
-                           method_args=[gateway],
-                           expected_args=[],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None}
-                           )
+        self.verify_create(
+            self.proxy.create_environment,
+            _env.ApiEnvironment,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_update_env(self):
         gateway = _gateway.Gateway()
         env = _env.ApiEnvironment()
         self._verify(
-            'otcextensions.sdk.apig.v2.apienvironment.'
-            'ApiEnvironment._update_env',
+            "otcextensions.sdk.apig.v2.apienvironment." "ApiEnvironment._update_env",
             self.proxy.update_environment,
             method_args=[gateway, env],
-            expected_args=[self.proxy, gateway]
+            expected_args=[self.proxy, gateway],
         )
 
     def test_delete_env(self):
         gateway = _gateway.Gateway()
         env = _env.ApiEnvironment()
-        self.verify_delete(self.proxy.delete_environment,
-                           _env.ApiEnvironment,
-                           method_args=[gateway, env],
-                           expected_args=[gateway],
-                           expected_kwargs={'gateway_id': None}
-                           )
+        self.verify_delete(
+            self.proxy.delete_environment,
+            _env.ApiEnvironment,
+            method_args=[gateway, env],
+            expected_args=[gateway],
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_list_envs(self):
         gateway = _gateway.Gateway()
-        self.verify_list(self.proxy.environments,
-                         _env.ApiEnvironment,
-                         method_args=[gateway],
-                         expected_args=[],
-                         expected_kwargs={'gateway_id': None}
-                         )
+        self.verify_list(
+            self.proxy.environments,
+            _env.ApiEnvironment,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_create_api_group(self):
         gateway = _gateway.Gateway()
-        self.verify_create(self.proxy.create_api_group,
-                           _api_group.ApiGroup,
-                           method_args=[gateway],
-                           expected_args=[],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None}
-                           )
+        self.verify_create(
+            self.proxy.create_api_group,
+            _api_group.ApiGroup,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_update_api_group(self):
         gateway = _gateway.Gateway()
         api_group = _api_group.ApiGroup()
         self._verify(
-            'otcextensions.sdk.apig.v2.apigroup.'
-            'ApiGroup._update_group',
+            "otcextensions.sdk.apig.v2.apigroup." "ApiGroup._update_group",
             self.proxy.update_api_group,
             method_args=[gateway, api_group],
             expected_args=[self.proxy],
-            expected_kwargs={'gateway': gateway}
+            expected_kwargs={"gateway": gateway},
         )
 
     def test_delete_api_group(self):
         gateway = _gateway.Gateway()
         api_group = _api_group.ApiGroup()
-        self.verify_delete(self.proxy.delete_api_group,
-                           _api_group.ApiGroup,
-                           method_args=[gateway, api_group],
-                           expected_args=[gateway],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None}
-                           )
+        self.verify_delete(
+            self.proxy.delete_api_group,
+            _api_group.ApiGroup,
+            method_args=[gateway, api_group],
+            expected_args=[gateway],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_list_api_groups(self):
         gateway = _gateway.Gateway()
-        self.verify_list(self.proxy.api_groups,
-                         _api_group.ApiGroup,
-                         method_args=[gateway],
-                         expected_args=[],
-                         expected_kwargs={'gateway_id': None}
-                         )
+        self.verify_list(
+            self.proxy.api_groups,
+            _api_group.ApiGroup,
+            method_args=[gateway],
+            expected_args=[],
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_get_api_group(self):
         gateway = _gateway.Gateway()
         api_group = _api_group.ApiGroup()
-        self.verify_get(self.proxy.get_api_group,
-                        _api_group.ApiGroup,
-                        method_args=[gateway, api_group],
-                        expected_args=[api_group],
-                        expected_kwargs={'gateway_id': None}
-                        )
+        self.verify_get(
+            self.proxy.get_api_group,
+            _api_group.ApiGroup,
+            method_args=[gateway, api_group],
+            expected_args=[api_group],
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_verify_name(self):
         gateway = _gateway.Gateway()
         self._verify(
-            'otcextensions.sdk.apig.v2.apigroup.'
-            'ApiGroup._verify_name',
+            "otcextensions.sdk.apig.v2.apigroup." "ApiGroup._verify_name",
             self.proxy.verify_api_group_name,
             method_args=[gateway],
             expected_args=[self.proxy],
-            expected_kwargs={'gateway': gateway}
+            expected_kwargs={"gateway": gateway},
         )
 
 
@@ -300,7 +292,7 @@ class TestApiEnvVars(TestApiGatewayProxy):
             _var.ApiEnvironmentVar,
             method_args=[gateway],
             expected_args=[],
-            expected_kwargs={"gateway_id": None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_create_environment_variable(self):
@@ -309,7 +301,7 @@ class TestApiEnvVars(TestApiGatewayProxy):
             "variable_name": "address",
             "variable_value": "192.168.1.5",
             "env_id": "env_id",
-            "group_id": "group_id"
+            "group_id": "group_id",
         }
         self.verify_create(
             self.proxy.create_environment_variable,
@@ -317,7 +309,7 @@ class TestApiEnvVars(TestApiGatewayProxy):
             method_args=[gateway],
             expected_args=[],
             method_kwargs={**attrs},
-            expected_kwargs={**attrs, "gateway_id": None}
+            expected_kwargs={**attrs, "gateway_id": None},
         )
 
     def test_delete_environment_variable(self):
@@ -328,7 +320,7 @@ class TestApiEnvVars(TestApiGatewayProxy):
             _var.ApiEnvironmentVar,
             method_args=[gateway, var],
             expected_args=[var],
-            expected_kwargs={"gateway_id": None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_get_environment_variable(self):
@@ -339,7 +331,7 @@ class TestApiEnvVars(TestApiGatewayProxy):
             _var.ApiEnvironmentVar,
             method_args=[gateway, var],
             expected_args=[var],
-            expected_kwargs={"gateway_id": None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_update_environment_variable(self):
@@ -354,7 +346,7 @@ class TestApiEnvVars(TestApiGatewayProxy):
             method_args=[gateway, var],
             expected_args=[var],
             method_kwargs={**attrs},
-            expected_kwargs={**attrs, "gateway_id": None}
+            expected_kwargs={**attrs, "gateway_id": None},
         )
 
 
@@ -366,7 +358,7 @@ class TestThrottlingPolicy(TestApiGatewayProxy):
             _tp.ThrottlingPolicy,
             method_args=[gateway],
             expected_args=[],
-            expected_kwargs={"gateway_id": None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_create_throttling_policy(self):
@@ -378,13 +370,13 @@ class TestThrottlingPolicy(TestApiGatewayProxy):
             "ip_call_limits": 60,
             "name": "throttle_demo",
             "remark": "Total: 800 calls/second;"
-                      " user: 500 calls/second;"
-                      " app: 300 calls/second;"
-                      " IP address: 600 calls/second",
+            " user: 500 calls/second;"
+            " app: 300 calls/second;"
+            " IP address: 600 calls/second",
             "time_interval": 1,
             "time_unit": "SECOND",
             "type": 1,
-            "user_call_limits": 60
+            "user_call_limits": 60,
         }
         self.verify_create(
             self.proxy.create_throttling_policy,
@@ -392,7 +384,7 @@ class TestThrottlingPolicy(TestApiGatewayProxy):
             method_args=[gateway],
             expected_args=[],
             method_kwargs={**attrs},
-            expected_kwargs={**attrs, "gateway_id": None}
+            expected_kwargs={**attrs, "gateway_id": None},
         )
 
     def test_delete_throttling_policy(self):
@@ -403,7 +395,7 @@ class TestThrottlingPolicy(TestApiGatewayProxy):
             _tp.ThrottlingPolicy,
             method_args=[gateway, policy],
             expected_args=[policy],
-            expected_kwargs={"gateway_id": None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_get_throttling_policy(self):
@@ -414,7 +406,7 @@ class TestThrottlingPolicy(TestApiGatewayProxy):
             _tp.ThrottlingPolicy,
             method_args=[gateway, policy],
             expected_args=[policy],
-            expected_kwargs={"gateway_id": None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_update_throttling_policy(self):
@@ -426,9 +418,9 @@ class TestThrottlingPolicy(TestApiGatewayProxy):
             "api_call_limits": 100,
             "time_interval": 1,
             "remark": "Total: 800 calls/second;"
-                      " user: 500 calls/second;"
-                      " app: 300 calls/second;"
-                      " IP address: 600 calls/second",
+            " user: 500 calls/second;"
+            " app: 300 calls/second;"
+            " IP address: 600 calls/second",
         }
         self.verify_update(
             self.proxy.update_throttling_policy,
@@ -436,7 +428,7 @@ class TestThrottlingPolicy(TestApiGatewayProxy):
             method_args=[gateway, policy],
             expected_args=[policy],
             method_kwargs={**attrs},
-            expected_kwargs={**attrs, "gateway_id": None}
+            expected_kwargs={**attrs, "gateway_id": None},
         )
 
 
@@ -448,7 +440,7 @@ class TestApi(TestApiGatewayProxy):
             api.Api,
             method_args=[gateway],
             expected_args=[],
-            expected_kwargs={"gateway_id": None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_create_api(self):
@@ -472,7 +464,7 @@ class TestApi(TestApiGatewayProxy):
                 "req_uri": "/test/benchmark",
                 "timeout": 5000,
                 "retry_count": "-1",
-                "url_domain": "192.168.189.156:12346"
+                "url_domain": "192.168.189.156:12346",
             },
         }
         self.verify_create(
@@ -481,7 +473,7 @@ class TestApi(TestApiGatewayProxy):
             method_args=[gateway],
             expected_args=[],
             method_kwargs={**attrs},
-            expected_kwargs={**attrs, "gateway_id": None}
+            expected_kwargs={**attrs, "gateway_id": None},
         )
 
     def test_delete_api(self):
@@ -492,7 +484,7 @@ class TestApi(TestApiGatewayProxy):
             api.Api,
             method_args=[gateway, a],
             expected_args=[a],
-            expected_kwargs={"gateway_id": None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_get_api(self):
@@ -503,7 +495,7 @@ class TestApi(TestApiGatewayProxy):
             api.Api,
             method_args=[gateway, a],
             expected_args=[a],
-            expected_kwargs={"gateway_id": None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_update_api(self):
@@ -528,7 +520,7 @@ class TestApi(TestApiGatewayProxy):
                 "req_uri": "/test/benchmark",
                 "timeout": 5000,
                 "retry_count": "-1",
-                "url_domain": "192.168.189.156:12346"
+                "url_domain": "192.168.189.156:12346",
             },
         }
         self.verify_update(
@@ -537,7 +529,7 @@ class TestApi(TestApiGatewayProxy):
             method_args=[gateway, a],
             expected_args=[a],
             method_kwargs={**attrs},
-            expected_kwargs={**attrs, "gateway_id": None}
+            expected_kwargs={**attrs, "gateway_id": None},
         )
 
 
@@ -547,16 +539,11 @@ class TestApiSupplements(TestApiGatewayProxy):
         environment = _env.ApiEnvironment()
         a = api.Api()
         self._verify(
-            'otcextensions.sdk.apig.v2.api_supplements.'
-            'PublishApi.publish_api',
+            "otcextensions.sdk.apig.v2.api_supplements." "PublishApi.publish_api",
             self.proxy.publish_api,
             method_args=[gateway, environment, a],
             expected_args=[self.proxy],
-            expected_kwargs={
-                "api_id": None,
-                "env_id": None,
-                "gateway_id": None
-            }
+            expected_kwargs={"api_id": None, "env_id": None, "gateway_id": None},
         )
 
     def test_offline_api(self):
@@ -564,34 +551,23 @@ class TestApiSupplements(TestApiGatewayProxy):
         environment = _env.ApiEnvironment()
         a = api.Api()
         self._verify(
-            'otcextensions.sdk.apig.v2.api_supplements.'
-            'PublishApi.take_api_offline',
+            "otcextensions.sdk.apig.v2.api_supplements." "PublishApi.take_api_offline",
             self.proxy.offline_api,
             method_args=[gateway, environment, a],
             expected_args=[self.proxy],
-            expected_kwargs={
-                "api_id": None,
-                "env_id": None,
-                "gateway_id": None
-            }
+            expected_kwargs={"api_id": None, "env_id": None, "gateway_id": None},
         )
 
     def test_check_api(self):
         gateway = _gateway.Gateway()
-        attrs = {
-            "type": "name",
-            "name": "test"
-        }
+        attrs = {"type": "name", "name": "test"}
         self.verify_create(
             self.proxy.check_api,
             _as.CheckApi,
             method_args=[gateway],
             expected_args=[],
             method_kwargs={**attrs},
-            expected_kwargs={
-                **attrs,
-                "gateway_id": None
-            }
+            expected_kwargs={**attrs, "gateway_id": None},
         )
 
     def test_debug_api(self):
@@ -601,7 +577,7 @@ class TestApiSupplements(TestApiGatewayProxy):
             "mode": "DEVELOPER",
             "scheme": "HTTP",
             "method": "GET",
-            "path": "/test/http"
+            "path": "/test/http",
         }
         self.verify_create(
             self.proxy.debug_api,
@@ -609,41 +585,30 @@ class TestApiSupplements(TestApiGatewayProxy):
             method_args=[gateway, a],
             expected_args=[],
             method_kwargs={**attrs},
-            expected_kwargs={
-                **attrs,
-                "api_id": None,
-                "gateway_id": None
-            }
+            expected_kwargs={**attrs, "api_id": None, "gateway_id": None},
         )
 
     def test_online_apis(self):
         gateway = _gateway.Gateway()
         environment = _env.ApiEnvironment()
         self._verify(
-            'otcextensions.sdk.apig.v2.api_supplements.'
-            'PublishApis.publish_apis',
+            "otcextensions.sdk.apig.v2.api_supplements." "PublishApis.publish_apis",
             self.proxy.publish_apis,
             method_args=[gateway, environment],
             expected_args=[self.proxy],
-            expected_kwargs={
-                "env_id": None,
-                "gateway_id": None
-            }
+            expected_kwargs={"env_id": None, "gateway_id": None},
         )
 
     def test_offline_apis(self):
         gateway = _gateway.Gateway()
         environment = _env.ApiEnvironment()
         self._verify(
-            'otcextensions.sdk.apig.v2.api_supplements.'
-            'PublishApis.take_apis_offline',
+            "otcextensions.sdk.apig.v2.api_supplements."
+            "PublishApis.take_apis_offline",
             self.proxy.offline_apis,
             method_args=[gateway, environment],
             expected_args=[self.proxy],
-            expected_kwargs={
-                "env_id": None,
-                "gateway_id": None
-            }
+            expected_kwargs={"env_id": None, "gateway_id": None},
         )
 
     def test_api_versions(self):
@@ -654,28 +619,21 @@ class TestApiSupplements(TestApiGatewayProxy):
             _as.PublishApis,
             method_args=[gateway, a],
             expected_args=[],
-            expected_kwargs={
-                "api_id": a,
-                "gateway_id": None
-            }
+            expected_kwargs={"api_id": a, "gateway_id": None},
         )
 
     def test_switch_version(self):
         gateway = _gateway.Gateway()
         a = api.Api()
-        version_id = 'id'
+        version_id = "id"
         self._verify(
-            'openstack.proxy.Proxy._update',
+            "openstack.proxy.Proxy._update",
             self.proxy.switch_version,
             # expected_result=_as.PublishApis(),
             method_args=[gateway, a, version_id],
             method_kwargs={},
             expected_args=[_as.PublishApis],
-            expected_kwargs={
-                "id": a,
-                "version_id": 'id',
-                "gateway_id": None
-            }
+            expected_kwargs={"id": a, "version_id": "id", "gateway_id": None},
         )
 
     def test_api_runtime_definitions(self):
@@ -686,38 +644,29 @@ class TestApiSupplements(TestApiGatewayProxy):
             _as.RuntimeDefinitionApi,
             method_args=[gateway, a],
             expected_args=[],
-            expected_kwargs={
-                "api_id": a,
-                "gateway_id": None
-            }
+            expected_kwargs={"api_id": a, "gateway_id": None},
         )
 
     def test_api_version_details(self):
         gateway = _gateway.Gateway()
-        version_id = 'id'
+        version_id = "id"
         self.verify_list(
             self.proxy.api_version_details,
             _as.VersionsApi,
             method_args=[gateway, version_id],
             expected_args=[],
-            expected_kwargs={
-                "version_id": 'id',
-                "gateway_id": None
-            }
+            expected_kwargs={"version_id": "id", "gateway_id": None},
         )
 
     def test_take_api_version_offline(self):
         gateway = _gateway.Gateway()
-        version_id = 'id'
+        version_id = "id"
         self.verify_delete(
             self.proxy.take_api_version_offline,
             _as.VersionsApi,
             method_args=[gateway, version_id],
             expected_args=[],
-            expected_kwargs={
-                "version_id": 'id',
-                "gateway_id": None
-            }
+            expected_kwargs={"version_id": "id", "gateway_id": None},
         )
 
 
@@ -729,7 +678,7 @@ class TestSignature(TestApiGatewayProxy):
             _sign.Signature,
             method_args=[gateway],
             expected_args=[],
-            expected_kwargs={"gateway_id": None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_create_signature(self):
@@ -745,7 +694,7 @@ class TestSignature(TestApiGatewayProxy):
             method_args=[gateway],
             expected_args=[],
             method_kwargs={**attrs},
-            expected_kwargs={**attrs, "gateway_id": None}
+            expected_kwargs={**attrs, "gateway_id": None},
         )
 
     def test_delete_signature(self):
@@ -756,7 +705,7 @@ class TestSignature(TestApiGatewayProxy):
             _sign.Signature,
             method_args=[gateway, s],
             expected_args=[s],
-            expected_kwargs={"gateway_id": None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_update_api(self):
@@ -773,7 +722,7 @@ class TestSignature(TestApiGatewayProxy):
             method_args=[gateway, s],
             expected_args=[s],
             method_kwargs={**attrs},
-            expected_kwargs={**attrs, "gateway_id": None}
+            expected_kwargs={**attrs, "gateway_id": None},
         )
 
 
@@ -785,7 +734,7 @@ class TestSignatureBind(TestApiGatewayProxy):
             _sb.SignatureBind,
             method_args=[gateway],
             expected_args=[],
-            expected_kwargs={"gateway_id": None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_not_bound_apis(self):
@@ -795,7 +744,7 @@ class TestSignatureBind(TestApiGatewayProxy):
             _sb.NotBoundApi,
             method_args=[gateway],
             expected_args=[],
-            expected_kwargs={"gateway_id": None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_bound_apis(self):
@@ -805,7 +754,7 @@ class TestSignatureBind(TestApiGatewayProxy):
             _sb.BoundApi,
             method_args=[gateway],
             expected_args=[],
-            expected_kwargs={"gateway_id": None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_bind_signature(self):
@@ -821,7 +770,7 @@ class TestSignatureBind(TestApiGatewayProxy):
             method_args=[gateway],
             expected_args=[],
             method_kwargs={**attrs},
-            expected_kwargs={**attrs, "gateway_id": None}
+            expected_kwargs={**attrs, "gateway_id": None},
         )
 
     def test_unbind_signature(self):
@@ -832,7 +781,7 @@ class TestSignatureBind(TestApiGatewayProxy):
             _sb.SignatureBind,
             method_args=[gateway, s],
             expected_args=[s],
-            expected_kwargs={"gateway_id": None}
+            expected_kwargs={"gateway_id": None},
         )
 
 
@@ -844,7 +793,7 @@ class TestThrottlesBind(TestApiGatewayProxy):
             _tb.BoundThrottles,
             method_args=[gateway],
             expected_args=[],
-            expected_kwargs={"gateway_id": None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_not_bound_throttling_policy_apis(self):
@@ -854,7 +803,7 @@ class TestThrottlesBind(TestApiGatewayProxy):
             _tb.NotBoundApi,
             method_args=[gateway],
             expected_args=[],
-            expected_kwargs={"gateway_id": None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_bound_throttling_policy_apis(self):
@@ -864,22 +813,19 @@ class TestThrottlesBind(TestApiGatewayProxy):
             _tb.ThrottlingPolicyBind,
             method_args=[gateway],
             expected_args=[],
-            expected_kwargs={"gateway_id": None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_bind_throttling_policy(self):
         gateway = _gateway.Gateway()
-        attrs = {
-            "throttle_id": "id",
-            "publish_ids": ["publish_id"]
-        }
+        attrs = {"throttle_id": "id", "publish_ids": ["publish_id"]}
         self.verify_create(
             self.proxy.bind_throttling_policy,
             _tb.ThrottlingPolicyBind,
             method_args=[gateway],
             expected_args=[],
             method_kwargs={**attrs},
-            expected_kwargs={**attrs, "gateway_id": None}
+            expected_kwargs={**attrs, "gateway_id": None},
         )
 
     def test_unbind_throttling_policy(self):
@@ -890,18 +836,18 @@ class TestThrottlesBind(TestApiGatewayProxy):
             _tb.ThrottlingPolicyBind,
             method_args=[gateway, t],
             expected_args=[t],
-            expected_kwargs={"gateway_id": None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_unbind_throttling_policies(self):
         gateway = _gateway.Gateway()
         self._verify(
-            'otcextensions.sdk.apig.v2.throttling_policy_binding.'
-            'ThrottlingPolicyBind.unbind_policies',
+            "otcextensions.sdk.apig.v2.throttling_policy_binding."
+            "ThrottlingPolicyBind.unbind_policies",
             self.proxy.unbind_throttling_policies,
             method_args=[gateway, ["t"]],
             expected_args=[self.proxy],
-            expected_kwargs={"gateway_id": None, "throttle_bindings": ["t"]}
+            expected_kwargs={"gateway_id": None, "throttle_bindings": ["t"]},
         )
 
 
@@ -914,31 +860,20 @@ class TestThrottlingExcludePolicy(TestApiGatewayProxy):
             _tx.ThrottlingExcludedPolicy,
             method_args=[gateway, policy],
             expected_args=[],
-            expected_kwargs={
-                "gateway_id": None,
-                "throttle_id": None
-            }
+            expected_kwargs={"gateway_id": None, "throttle_id": None},
         )
 
     def test_create_throttling_excluded_policy(self):
         gateway = _gateway.Gateway()
         policy = _tp.ThrottlingPolicy()
-        attrs = {
-            "call_limits": 50,
-            "object_id": "id",
-            "object_type": "USER"
-        }
+        attrs = {"call_limits": 50, "object_id": "id", "object_type": "USER"}
         self.verify_create(
             self.proxy.create_throttling_excluded_policy,
             _tx.ThrottlingExcludedPolicy,
             method_args=[gateway, policy],
             expected_args=[],
             method_kwargs={**attrs},
-            expected_kwargs={
-                **attrs,
-                "gateway_id": None,
-                "throttle_id": None
-            }
+            expected_kwargs={**attrs, "gateway_id": None, "throttle_id": None},
         )
 
     def test_delete_throttling_excluded_policy(self):
@@ -950,30 +885,21 @@ class TestThrottlingExcludePolicy(TestApiGatewayProxy):
             _tx.ThrottlingExcludedPolicy,
             method_args=[gateway, policy, ex],
             expected_args=[ex],
-            expected_kwargs={
-                "gateway_id": None,
-                "throttle_id": None
-            }
+            expected_kwargs={"gateway_id": None, "throttle_id": None},
         )
 
     def test_update_throttling_excluded_policy(self):
         gateway = _gateway.Gateway()
         policy = _tp.ThrottlingPolicy()
         ex = _tx.ThrottlingExcludedPolicy()
-        attrs = {
-            "call_limits": 30
-        }
+        attrs = {"call_limits": 30}
         self.verify_update(
             self.proxy.update_throttling_excluded_policy,
             _tx.ThrottlingExcludedPolicy,
             method_args=[gateway, policy, ex],
             expected_args=[ex],
             method_kwargs={**attrs},
-            expected_kwargs={
-                **attrs,
-                "gateway_id": None,
-                "throttle_id": None
-            }
+            expected_kwargs={**attrs, "gateway_id": None, "throttle_id": None},
         )
 
 
@@ -985,7 +911,7 @@ class TestGwFeatures(TestApiGatewayProxy):
             _gwf.GatewayFeatures,
             method_args=[gateway],
             expected_args=[],
-            expected_kwargs={"gateway_id": None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_configure_gateway_feature(self):
@@ -993,7 +919,7 @@ class TestGwFeatures(TestApiGatewayProxy):
         attrs = {
             "name": "route",
             "enable": False,
-            "config": "{\"user_routes\":[]}",
+            "config": '{"user_routes":[]}',
         }
         self.verify_create(
             self.proxy.configure_gateway_feature,
@@ -1001,18 +927,18 @@ class TestGwFeatures(TestApiGatewayProxy):
             method_args=[gateway],
             expected_args=[],
             method_kwargs={**attrs},
-            expected_kwargs={**attrs, "gateway_id": None}
+            expected_kwargs={**attrs, "gateway_id": None},
         )
 
     def test_supported_gateway_features(self):
         gateway = _gateway.Gateway()
         self._verify(
-            'otcextensions.sdk.apig.v2.gateway_features.'
-            'GatewayFeatures._supported_features',
+            "otcextensions.sdk.apig.v2.gateway_features."
+            "GatewayFeatures._supported_features",
             self.proxy.supported_gateway_features,
             method_args=[gateway],
             expected_args=[self.proxy, gateway],
-            expected_kwargs={}
+            expected_kwargs={},
         )
 
 
@@ -1024,10 +950,7 @@ class TestResourceQuery(TestApiGatewayProxy):
             _rq.ApiQuantities,
             method_args=[gateway],
             expected_args=[],
-            expected_kwargs={
-                'gateway_id': None,
-                'requires_id': False
-            }
+            expected_kwargs={"gateway_id": None, "requires_id": False},
         )
 
     def test_get_api_group_quantities(self):
@@ -1037,10 +960,7 @@ class TestResourceQuery(TestApiGatewayProxy):
             _rq.ApiGroupQuantities,
             method_args=[gateway],
             expected_args=[],
-            expected_kwargs={
-                'gateway_id': None,
-                'requires_id': False
-            }
+            expected_kwargs={"gateway_id": None, "requires_id": False},
         )
 
     def test_get_app_quantities(self):
@@ -1050,10 +970,7 @@ class TestResourceQuery(TestApiGatewayProxy):
             _rq.AppQuantities,
             method_args=[gateway],
             expected_args=[],
-            expected_kwargs={
-                'gateway_id': None,
-                'requires_id': False
-            }
+            expected_kwargs={"gateway_id": None, "requires_id": False},
         )
 
 
@@ -1061,20 +978,14 @@ class TestDomain(TestApiGatewayProxy):
     def test_bind_domain_name(self):
         gateway = _gateway.Gateway()
         group = _api_group.ApiGroup()
-        attrs = {
-            "url_domain": "name"
-        }
+        attrs = {"url_domain": "name"}
         self.verify_create(
             self.proxy.bind_domain_name,
             domain_name.DomainName,
             method_args=[gateway, group],
             expected_args=[],
             method_kwargs={**attrs},
-            expected_kwargs={
-                **attrs,
-                "gateway_id": None,
-                "group_id": None
-            }
+            expected_kwargs={**attrs, "gateway_id": None, "group_id": None},
         )
 
     def test_unbind_domain_name(self):
@@ -1089,28 +1000,22 @@ class TestDomain(TestApiGatewayProxy):
             expected_kwargs={
                 "gateway_id": None,
                 "group_id": None,
-                "ignore_missing": True
-            }
+                "ignore_missing": True,
+            },
         )
 
     def test_update_domain_name_bound(self):
         gateway = _gateway.Gateway()
         group = _api_group.ApiGroup()
         domain = domain_name.DomainName()
-        attrs = {
-            "min_ssl_version": "TLSv1.2"
-        }
+        attrs = {"min_ssl_version": "TLSv1.2"}
         self.verify_update(
             self.proxy.update_domain_name_bound,
             domain_name.DomainName,
             method_args=[gateway, group, domain],
             expected_args=[domain],
             method_kwargs={**attrs},
-            expected_kwargs={
-                **attrs,
-                "gateway_id": None,
-                "group_id": None
-            }
+            expected_kwargs={**attrs, "gateway_id": None, "group_id": None},
         )
 
     def test_create_certificate_for_domain_name(self):
@@ -1120,7 +1025,7 @@ class TestDomain(TestApiGatewayProxy):
         attrs = {
             "name": "test",
             "private_key": "private_key",
-            "cert_content": "content"
+            "cert_content": "content",
         }
         self.verify_create(
             self.proxy.create_certificate_for_domain_name,
@@ -1132,8 +1037,8 @@ class TestDomain(TestApiGatewayProxy):
                 **attrs,
                 "gateway_id": None,
                 "group_id": None,
-                "domain_id": None
-            }
+                "domain_id": None,
+            },
         )
 
     def test_unbind_certificate_from_domain_name(self):
@@ -1151,8 +1056,8 @@ class TestDomain(TestApiGatewayProxy):
                 "group_id": None,
                 "domain_id": None,
                 "certificate_id": None,
-                "ignore_missing": True
-            }
+                "ignore_missing": True,
+            },
         )
 
     def test_enable_debug_domain_name(self):
@@ -1160,7 +1065,7 @@ class TestDomain(TestApiGatewayProxy):
         group = _api_group.ApiGroup()
         domain = domain_name.DomainName()
         self._verify(
-            'openstack.proxy.Proxy._update',
+            "openstack.proxy.Proxy._update",
             self.proxy.enable_debug_domain_name,
             method_args=[gateway, group, domain, False],
             expected_args=[domain_name.DomainDebug],
@@ -1169,8 +1074,8 @@ class TestDomain(TestApiGatewayProxy):
                 "gateway_id": None,
                 "group_id": None,
                 "domain_id": None,
-                "sl_domain_access_enabled": False
-            }
+                "sl_domain_access_enabled": False,
+            },
         )
 
     def test_get_bound_certificate(self):
@@ -1188,8 +1093,8 @@ class TestDomain(TestApiGatewayProxy):
                 "gateway_id": None,
                 "group_id": None,
                 "domain_id": None,
-                "id": None
-            }
+                "id": None,
+            },
         )
 
 
@@ -1201,86 +1106,89 @@ class TestCertificate(TestApiGatewayProxy):
             certificate.Certificate,
             method_args=[cert],
             expected_args=[cert],
-            expected_kwargs={
-                "ignore_missing": True
-            }
+            expected_kwargs={"ignore_missing": True},
         )
 
 
 class TestApp(TestApiGatewayProxy):
     def test_create_app(self):
         gateway = _gateway.Gateway()
-        self.verify_create(self.proxy.create_app,
-                           _app.App,
-                           method_args=[gateway],
-                           expected_args=[],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None}
-                           )
+        self.verify_create(
+            self.proxy.create_app,
+            _app.App,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_get_app(self):
         gateway = _gateway.Gateway()
         app = _app.App()
-        self.verify_get(self.proxy.get_app,
-                        _app.App,
-                        method_args=[gateway, app],
-                        expected_args=[app],
-                        method_kwargs={},
-                        expected_kwargs={'gateway_id': None}
-                        )
+        self.verify_get(
+            self.proxy.get_app,
+            _app.App,
+            method_args=[gateway, app],
+            expected_args=[app],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_update_app(self):
         gateway = _gateway.Gateway()
         app = _app.App()
-        self.verify_update(self.proxy.update_app,
-                           _app.App,
-                           method_args=[gateway, app],
-                           expected_args=[app],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None}
-                           )
+        self.verify_update(
+            self.proxy.update_app,
+            _app.App,
+            method_args=[gateway, app],
+            expected_args=[app],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_delete_app(self):
         gateway = _gateway.Gateway()
         app = _app.App()
-        self.verify_delete(self.proxy.delete_app,
-                           _app.App,
-                           method_args=[gateway, app],
-                           expected_args=[app],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None}
-                           )
+        self.verify_delete(
+            self.proxy.delete_app,
+            _app.App,
+            method_args=[gateway, app],
+            expected_args=[app],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_list_apps(self):
         gateway = _gateway.Gateway()
-        self.verify_list(self.proxy.apps,
-                         _app.App,
-                         method_args=[gateway, ],
-                         expected_args=[],
-                         method_kwargs={},
-                         expected_kwargs={'gateway_id': None}
-                         )
+        self.verify_list(
+            self.proxy.apps,
+            _app.App,
+            method_args=[
+                gateway,
+            ],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_verify_app(self):
         gateway = _gateway.Gateway()
         app = _app.App()
         self._verify(
-            'otcextensions.sdk.apig.v2.app.'
-            'App._verify_app',
+            "otcextensions.sdk.apig.v2.app." "App._verify_app",
             self.proxy.verify_app,
             method_args=[gateway, app],
-            expected_args=[self.proxy, gateway]
+            expected_args=[self.proxy, gateway],
         )
 
     def test_reset_app_secret(self):
         gateway = _gateway.Gateway()
         app = _app.App()
         self._verify(
-            'otcextensions.sdk.apig.v2.app.'
-            'App._reset_secret',
+            "otcextensions.sdk.apig.v2.app." "App._reset_secret",
             self.proxy.reset_app_secret,
             method_args=[gateway, app],
-            expected_args=[self.proxy, gateway]
+            expected_args=[self.proxy, gateway],
         )
 
 
@@ -1289,542 +1197,546 @@ class TestAppCode(TestApiGatewayProxy):
         gateway = _gateway.Gateway()
         app = _app.App()
         app_code = _appcode.AppCode()
-        self.verify_get(self.proxy.get_app_code,
-                        _appcode.AppCode,
-                        method_args=[gateway, app, app_code],
-                        expected_args=[app_code],
-                        method_kwargs={},
-                        expected_kwargs={'gateway_id': None,
-                                         'app_id': None}
-                        )
+        self.verify_get(
+            self.proxy.get_app_code,
+            _appcode.AppCode,
+            method_args=[gateway, app, app_code],
+            expected_args=[app_code],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None, "app_id": None},
+        )
 
     def test_create_app_code(self):
         gateway = _gateway.Gateway()
         app = _app.App()
-        self.verify_create(self.proxy.create_app_code,
-                           _appcode.AppCode,
-                           method_args=[gateway, app],
-                           expected_args=[],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None,
-                                            'app_id': None}
-                           )
+        self.verify_create(
+            self.proxy.create_app_code,
+            _appcode.AppCode,
+            method_args=[gateway, app],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None, "app_id": None},
+        )
 
     def test_generate_app_code(self):
         gateway = _gateway.Gateway()
         app = _app.App()
         self._verify(
-            'otcextensions.sdk.apig.v2.appcode.'
-            'AppCode._generate_app_code',
+            "otcextensions.sdk.apig.v2.appcode." "AppCode._generate_app_code",
             self.proxy.generate_app_code,
             method_args=[gateway, app],
-            expected_args=[self.proxy, gateway, app]
+            expected_args=[self.proxy, gateway, app],
         )
 
     def test_list_app_codes(self):
         gateway = _gateway.Gateway()
         app = _app.App()
-        self.verify_list(self.proxy.app_codes,
-                         _appcode.AppCode,
-                         method_args=[gateway, app],
-                         expected_args=[],
-                         method_kwargs={},
-                         expected_kwargs={'gateway_id': None,
-                                          'app_id': None}
-                         )
+        self.verify_list(
+            self.proxy.app_codes,
+            _appcode.AppCode,
+            method_args=[gateway, app],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None, "app_id": None},
+        )
 
     def test_delete_app_code(self):
         gateway = _gateway.Gateway()
         app = _app.App()
-        self.verify_delete(self.proxy.delete_app,
-                           _app.App,
-                           method_args=[gateway, app],
-                           expected_args=[app],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None}
-                           )
+        self.verify_delete(
+            self.proxy.delete_app,
+            _app.App,
+            method_args=[gateway, app],
+            expected_args=[app],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
 
 class TestQuota(TestApiGatewayProxy):
     def test_quotas(self):
         gateway = _gateway.Gateway()
         app = _app.App()
-        self.verify_get(self.proxy.quotas,
-                        _app.Quota,
-                        method_args=[gateway, app, ],
-                        expected_args=[],
-                        method_kwargs={},
-                        expected_kwargs={'gateway_id': None,
-                                         'app_id': None,
-                                         'requires_id': False}
-                        )
+        self.verify_get(
+            self.proxy.quotas,
+            _app.Quota,
+            method_args=[
+                gateway,
+                app,
+            ],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None, "app_id": None, "requires_id": False},
+        )
 
 
 class TestAuth(TestApiGatewayProxy):
     def test_list_api_bound_to_app(self):
         gateway = _gateway.Gateway()
-        self.verify_list(self.proxy.list_api_bound_to_app,
-                         _auth.ApiAuthInfo,
-                         method_args=[gateway],
-                         expected_args=[],
-                         method_kwargs={},
-                         expected_kwargs={'gateway_id': None}
-                         )
+        self.verify_list(
+            self.proxy.list_api_bound_to_app,
+            _auth.ApiAuthInfo,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_list_api_not_bound_to_app(self):
         gateway = _gateway.Gateway()
-        self.verify_list(self.proxy.list_apps_bound_to_api,
-                         _auth.ApiAuthInfo,
-                         method_args=[gateway],
-                         expected_args=[],
-                         method_kwargs={},
-                         expected_kwargs={'gateway_id': None}
-                         )
+        self.verify_list(
+            self.proxy.list_apps_bound_to_api,
+            _auth.ApiAuthInfo,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_list_app_bound_to_api(self):
         gateway = _gateway.Gateway()
-        self.verify_list(self.proxy.list_api_not_bound_to_app,
-                         _auth.ApiAuth,
-                         method_args=[gateway],
-                         expected_args=[],
-                         method_kwargs={},
-                         expected_kwargs={'gateway_id': None}
-                         )
+        self.verify_list(
+            self.proxy.list_api_not_bound_to_app,
+            _auth.ApiAuth,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_create_auth(self):
         gateway = _gateway.Gateway()
         self._verify(
-            'otcextensions.sdk.apig.v2.api_auth.'
-            'ApiAuthInfo._authorize_apps',
+            "otcextensions.sdk.apig.v2.api_auth." "ApiAuthInfo._authorize_apps",
             self.proxy.create_auth_in_api,
             method_args=[gateway],
             expected_args=[self.proxy],
-            expected_kwargs={'gateway_id': None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_delete_auth(self):
         gateway = _gateway.Gateway()
         self._verify(
-            'otcextensions.sdk.apig.v2.api_auth.'
-            'ApiAuthInfo._cancel_auth',
+            "otcextensions.sdk.apig.v2.api_auth." "ApiAuthInfo._cancel_auth",
             self.proxy.delete_auth_from_api,
             method_args=[gateway],
             expected_args=[self.proxy],
-            method_kwargs={'auth_id': None},
-            expected_kwargs={'app_auth_id': None,
-                             'gateway_id': None}
+            method_kwargs={"auth_id": None},
+            expected_kwargs={"app_auth_id": None, "gateway_id": None},
         )
 
 
 class TestAclPolicy(TestApiGatewayProxy):
     def test_create_acl_policy(self):
         gateway = _gateway.Gateway()
-        self.verify_create(self.proxy.create_acl_policy,
-                           _ac.AclPolicy,
-                           method_args=[gateway],
-                           expected_args=[],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None}
-                           )
+        self.verify_create(
+            self.proxy.create_acl_policy,
+            _ac.AclPolicy,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_update_acl_policy(self):
         gateway = _gateway.Gateway()
         ac = _ac.AclPolicy()
-        self.verify_update(self.proxy.update_acl_policy,
-                           _ac.AclPolicy,
-                           method_args=[gateway, ac],
-                           expected_args=[ac],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None}
-                           )
+        self.verify_update(
+            self.proxy.update_acl_policy,
+            _ac.AclPolicy,
+            method_args=[gateway, ac],
+            expected_args=[ac],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_delete_acl_policy(self):
         gateway = _gateway.Gateway()
         ac = _ac.AclPolicy()
-        self.verify_delete(self.proxy.delete_acl_policy,
-                           _ac.AclPolicy,
-                           method_args=[gateway, ac],
-                           expected_args=[ac],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None}
-                           )
+        self.verify_delete(
+            self.proxy.delete_acl_policy,
+            _ac.AclPolicy,
+            method_args=[gateway, ac],
+            expected_args=[ac],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_list_acl_policies(self):
         gateway = _gateway.Gateway()
-        self.verify_list(self.proxy.acl_policies,
-                         _ac.AclPolicy,
-                         method_args=[gateway],
-                         expected_args=[],
-                         method_kwargs={},
-                         expected_kwargs={'gateway_id': None}
-                         )
+        self.verify_list(
+            self.proxy.acl_policies,
+            _ac.AclPolicy,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_get_acl_policy(self):
         gateway = _gateway.Gateway()
         ac = _ac.AclPolicy()
-        self.verify_get(self.proxy.get_acl_policy,
-                        _ac.AclPolicy,
-                        method_args=[gateway, ac],
-                        expected_args=[ac],
-                        method_kwargs={},
-                        expected_kwargs={'gateway_id': None}
-                        )
+        self.verify_get(
+            self.proxy.get_acl_policy,
+            _ac.AclPolicy,
+            method_args=[gateway, ac],
+            expected_args=[ac],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_delete_acl_policies(self):
         gateway = _gateway.Gateway()
         self._verify(
-            'otcextensions.sdk.apig.v2.acl_policy.'
-            'AclPolicy._delete_multiple_acls',
+            "otcextensions.sdk.apig.v2.acl_policy." "AclPolicy._delete_multiple_acls",
             self.proxy.delete_acl_policies,
             method_args=[gateway],
             expected_args=[self.proxy],
-            expected_kwargs={'gateway_id': None}
+            expected_kwargs={"gateway_id": None},
         )
 
 
 class TestAclPolicyBinding(TestApiGatewayProxy):
     def test_list_apis_for_acl(self):
         gateway = _gateway.Gateway()
-        self.verify_list(self.proxy.list_apis_for_acl,
-                         _acl_api.ApiForAcl,
-                         method_args=[gateway],
-                         expected_args=[],
-                         method_kwargs={},
-                         expected_kwargs={'gateway_id': None}
-                         )
+        self.verify_list(
+            self.proxy.list_apis_for_acl,
+            _acl_api.ApiForAcl,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_list_api_not_bound_to_acl(self):
         gateway = _gateway.Gateway()
-        self.verify_list(self.proxy.list_api_not_bound_to_acl,
-                         _acl_api.UnbindApiForAcl,
-                         method_args=[gateway],
-                         expected_args=[],
-                         method_kwargs={},
-                         expected_kwargs={'gateway_id': None}
-                         )
+        self.verify_list(
+            self.proxy.list_api_not_bound_to_acl,
+            _acl_api.UnbindApiForAcl,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_list_acl_for_api(self):
         gateway = _gateway.Gateway()
-        self.verify_list(self.proxy.list_acl_for_api,
-                         _acl_api.AclForApi,
-                         method_args=[gateway],
-                         expected_args=[],
-                         method_kwargs={},
-                         expected_kwargs={'gateway_id': None}
-                         )
+        self.verify_list(
+            self.proxy.list_acl_for_api,
+            _acl_api.AclForApi,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_bind_acl_to_api(self):
         gateway = _gateway.Gateway()
         self._verify(
-            'otcextensions.sdk.apig.v2.acl_api_binding.'
-            'AclApiBinding._bind_to_api',
+            "otcextensions.sdk.apig.v2.acl_api_binding." "AclApiBinding._bind_to_api",
             self.proxy.bind_acl_to_api,
             method_args=[gateway],
             expected_args=[self.proxy],
-            expected_kwargs={'gateway_id': None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_unbind_acl(self):
         gateway = _gateway.Gateway()
         acl = _acl_api.AclApiBinding()
-        self.verify_delete(self.proxy.unbind_acl,
-                           _acl_api.AclApiBinding,
-                           method_args=[gateway, acl],
-                           expected_args=[acl],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None}
-                           )
+        self.verify_delete(
+            self.proxy.unbind_acl,
+            _acl_api.AclApiBinding,
+            method_args=[gateway, acl],
+            expected_args=[acl],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_unbind_acls(self):
         gateway = _gateway.Gateway()
         self._verify(
-            'otcextensions.sdk.apig.v2.acl_api_binding.'
-            'AclBindingFailure._unbind_multiple_acls',
+            "otcextensions.sdk.apig.v2.acl_api_binding."
+            "AclBindingFailure._unbind_multiple_acls",
             self.proxy.unbind_acls,
             method_args=[gateway],
             expected_args=[self.proxy],
-            expected_kwargs={'gateway_id': None}
+            expected_kwargs={"gateway_id": None},
         )
 
 
 class TestCustomAuthorizer(TestApiGatewayProxy):
     def test_list_custom_authorizers(self):
         gateway = _gateway.Gateway()
-        self.verify_list(self.proxy.custom_authorizers,
-                         _custom_auth.CustomAuthorizer,
-                         method_args=[gateway],
-                         expected_args=[],
-                         method_kwargs={},
-                         expected_kwargs={'gateway_id': None}
-                         )
+        self.verify_list(
+            self.proxy.custom_authorizers,
+            _custom_auth.CustomAuthorizer,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_get_custom_authorizer(self):
         gateway = _gateway.Gateway()
         custom_auth = _custom_auth.CustomAuthorizer()
-        self.verify_get(self.proxy.get_custom_authorizer,
-                        _custom_auth.CustomAuthorizer,
-                        method_args=[gateway, custom_auth],
-                        expected_args=[custom_auth],
-                        method_kwargs={},
-                        expected_kwargs={'gateway_id': None}
-                        )
+        self.verify_get(
+            self.proxy.get_custom_authorizer,
+            _custom_auth.CustomAuthorizer,
+            method_args=[gateway, custom_auth],
+            expected_args=[custom_auth],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_create_custom_authorizer(self):
         gateway = _gateway.Gateway()
-        self.verify_create(self.proxy.create_custom_authorizer,
-                           _custom_auth.CustomAuthorizer,
-                           method_args=[gateway],
-                           expected_args=[],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None}
-                           )
+        self.verify_create(
+            self.proxy.create_custom_authorizer,
+            _custom_auth.CustomAuthorizer,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_update_custom_authorizer(self):
         gateway = _gateway.Gateway()
         custom_auth = _custom_auth.CustomAuthorizer()
-        self.verify_update(self.proxy.update_custom_authorizer,
-                           _custom_auth.CustomAuthorizer,
-                           method_args=[gateway, custom_auth],
-                           expected_args=[custom_auth],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None}
-                           )
+        self.verify_update(
+            self.proxy.update_custom_authorizer,
+            _custom_auth.CustomAuthorizer,
+            method_args=[gateway, custom_auth],
+            expected_args=[custom_auth],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_delete_custom_authorizer(self):
         gateway = _gateway.Gateway()
         custom_auth = _custom_auth.CustomAuthorizer()
-        self.verify_delete(self.proxy.delete_custom_authorizer,
-                           _custom_auth.CustomAuthorizer,
-                           method_args=[gateway, custom_auth],
-                           expected_args=[custom_auth],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None}
-                           )
+        self.verify_delete(
+            self.proxy.delete_custom_authorizer,
+            _custom_auth.CustomAuthorizer,
+            method_args=[gateway, custom_auth],
+            expected_args=[custom_auth],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
 
 class TestExportApi(TestApiGatewayProxy):
     def test_import_api(self):
         gateway = _gateway.Gateway()
         self._verify(
-            'otcextensions.sdk.apig.v2.export_api.'
-            'ImportApi._import_api',
+            "otcextensions.sdk.apig.v2.export_api." "ImportApi._import_api",
             self.proxy.import_api,
             method_args=[gateway],
             expected_args=[self.proxy],
-            expected_kwargs={'gateway_id': None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_export_api(self):
         gateway = _gateway.Gateway()
-        full_path = ''
+        full_path = ""
         self._verify(
-            'otcextensions.sdk.apig.v2.export_api.'
-            'ExportApi._export_api',
+            "otcextensions.sdk.apig.v2.export_api." "ExportApi._export_api",
             self.proxy.export_api,
             method_args=[gateway, full_path],
             expected_args=[self.proxy],
-            expected_kwargs={'gateway_id': None,
-                             'full_path': full_path}
+            expected_kwargs={"gateway_id": None, "full_path": full_path},
         )
 
 
 class TestVpc(TestApiGatewayProxy):
     def test_create_vpc_channel(self):
         gateway = _gateway.Gateway()
-        self.verify_create(self.proxy.create_vpc_channel,
-                           _vpc.VpcChannel,
-                           method_args=[gateway],
-                           expected_args=[],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None}
-                           )
+        self.verify_create(
+            self.proxy.create_vpc_channel,
+            _vpc.VpcChannel,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_update_vpc_channel(self):
         gateway = _gateway.Gateway()
         vpc_channel = _vpc.VpcChannel()
-        self.verify_update(self.proxy.update_vpc_channel,
-                           _vpc.VpcChannel,
-                           method_args=[gateway, vpc_channel],
-                           expected_args=[vpc_channel],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None}
-                           )
+        self.verify_update(
+            self.proxy.update_vpc_channel,
+            _vpc.VpcChannel,
+            method_args=[gateway, vpc_channel],
+            expected_args=[vpc_channel],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_delete_vpc_channel(self):
         gateway = _gateway.Gateway()
         vpc_channel = _vpc.VpcChannel()
-        self.verify_delete(self.proxy.delete_vpc_channel,
-                           _vpc.VpcChannel,
-                           method_args=[gateway, vpc_channel],
-                           expected_args=[vpc_channel],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None}
-                           )
+        self.verify_delete(
+            self.proxy.delete_vpc_channel,
+            _vpc.VpcChannel,
+            method_args=[gateway, vpc_channel],
+            expected_args=[vpc_channel],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_get_vpc_channel(self):
         gateway = _gateway.Gateway()
         vpc_channel = _vpc.VpcChannel()
-        self.verify_get(self.proxy.get_vpc_channel,
-                        _vpc.VpcChannel,
-                        method_args=[gateway, vpc_channel],
-                        expected_args=[vpc_channel],
-                        method_kwargs={},
-                        expected_kwargs={'gateway_id': None}
-                        )
+        self.verify_get(
+            self.proxy.get_vpc_channel,
+            _vpc.VpcChannel,
+            method_args=[gateway, vpc_channel],
+            expected_args=[vpc_channel],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_list_vpc_channels(self):
         gateway = _gateway.Gateway()
-        self.verify_list(self.proxy.vpc_channels,
-                         _vpc.VpcChannel,
-                         method_args=[gateway],
-                         expected_args=[],
-                         method_kwargs={},
-                         expected_kwargs={'gateway_id': None}
-                         )
+        self.verify_list(
+            self.proxy.vpc_channels,
+            _vpc.VpcChannel,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
     def test_modify_vpc_channel_healthcheck(self):
         gateway = _gateway.Gateway()
         vpc_channel = _vpc.VpcChannel()
         self._verify(
-            'otcextensions.sdk.apig.v2.vpc_channel.'
-            'VpcChannel.modify_healthcheck',
+            "otcextensions.sdk.apig.v2.vpc_channel." "VpcChannel.modify_healthcheck",
             self.proxy.modify_vpc_channel_healthcheck,
             method_args=[gateway, vpc_channel],
             expected_args=[self.proxy],
-            expected_kwargs={'gateway_id': None,
-                             'vpc_channel_id': None}
+            expected_kwargs={"gateway_id": None, "vpc_channel_id": None},
         )
 
     def test_add_or_update_backend_server_group(self):
         gateway = _gateway.Gateway()
         vpc_channel = _vpc.VpcChannel()
         self._verify(
-            'otcextensions.sdk.apig.v2.backend_server_group.'
-            'BackendServerGroup.create_group',
+            "otcextensions.sdk.apig.v2.backend_server_group."
+            "BackendServerGroup.create_group",
             self.proxy.add_or_update_backend_server_group,
             method_args=[gateway, vpc_channel],
             expected_args=[self.proxy],
-            expected_kwargs={'gateway_id': None,
-                             'vpc_channel_id': None}
+            expected_kwargs={"gateway_id": None, "vpc_channel_id": None},
         )
 
     def test_backend_server_groups(self):
         gateway = _gateway.Gateway()
         vpc_channel = _vpc.VpcChannel()
-        self.verify_list(self.proxy.backend_server_groups,
-                         _vpc_sg.BackendServerGroup,
-                         method_args=[gateway, vpc_channel],
-                         expected_args=[],
-                         method_kwargs={},
-                         expected_kwargs={'gateway_id': None,
-                                          'vpc_channel_id': None}
-                         )
+        self.verify_list(
+            self.proxy.backend_server_groups,
+            _vpc_sg.BackendServerGroup,
+            method_args=[gateway, vpc_channel],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None, "vpc_channel_id": None},
+        )
 
     def test_get_backend_server_group(self):
         gateway = _gateway.Gateway()
         vpc_channel = _vpc.VpcChannel()
         backend_server_group = _vpc_sg.BackendServerGroup()
-        self.verify_get(self.proxy.get_backend_server_group,
-                        _vpc_sg.BackendServerGroup,
-                        method_args=[gateway, vpc_channel,
-                                     backend_server_group],
-                        expected_args=[None],
-                        method_kwargs={},
-                        expected_kwargs={'gateway_id': None,
-                                         'vpc_channel_id': None}
-                        )
+        self.verify_get(
+            self.proxy.get_backend_server_group,
+            _vpc_sg.BackendServerGroup,
+            method_args=[gateway, vpc_channel, backend_server_group],
+            expected_args=[None],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None, "vpc_channel_id": None},
+        )
 
     def test_update_backend_server_group(self):
         gateway = _gateway.Gateway()
         vpc_channel = _vpc.VpcChannel()
         backend_server_group = _vpc_sg.BackendServerGroup()
-        self.verify_update(self.proxy.update_backend_server_group,
-                           _vpc_sg.BackendServerGroup,
-                           method_args=[gateway, vpc_channel,
-                                        backend_server_group],
-                           expected_args=[None],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None,
-                                            'vpc_channel_id': None}
-                           )
+        self.verify_update(
+            self.proxy.update_backend_server_group,
+            _vpc_sg.BackendServerGroup,
+            method_args=[gateway, vpc_channel, backend_server_group],
+            expected_args=[None],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None, "vpc_channel_id": None},
+        )
 
     def test_delete_backend_server_group(self):
         gateway = _gateway.Gateway()
         vpc_channel = _vpc.VpcChannel()
         backend_server_group = _vpc_sg.BackendServerGroup()
-        self.verify_delete(self.proxy.delete_backend_server_group,
-                           _vpc_sg.BackendServerGroup,
-                           method_args=[gateway, vpc_channel,
-                                        backend_server_group],
-                           expected_args=[None],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None,
-                                            'vpc_channel_id': None}
-                           )
+        self.verify_delete(
+            self.proxy.delete_backend_server_group,
+            _vpc_sg.BackendServerGroup,
+            method_args=[gateway, vpc_channel, backend_server_group],
+            expected_args=[None],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None, "vpc_channel_id": None},
+        )
 
     def test_add_or_update_backend_servers(self):
         gateway = _gateway.Gateway()
         vpc_channel = _vpc.VpcChannel()
         self._verify(
-            'otcextensions.sdk.apig.v2.backend_server.'
-            'BackendServer.create_members',
+            "otcextensions.sdk.apig.v2.backend_server." "BackendServer.create_members",
             self.proxy.add_or_update_backend_servers,
             method_args=[gateway, vpc_channel],
             expected_args=[self.proxy],
-            expected_kwargs={'gateway_id': None,
-                             'vpc_channel_id': None}
+            expected_kwargs={"gateway_id": None, "vpc_channel_id": None},
         )
 
     def test_list_backend_servers(self):
         gateway = _gateway.Gateway()
         vpc_channel = _vpc.VpcChannel()
-        self.verify_list(self.proxy.list_backend_servers,
-                         _vpc_s.BackendServer,
-                         method_args=[gateway, vpc_channel],
-                         expected_args=[],
-                         method_kwargs={},
-                         expected_kwargs={'gateway_id': None,
-                                          'vpc_chan_id': None}
-                         )
+        self.verify_list(
+            self.proxy.list_backend_servers,
+            _vpc_s.BackendServer,
+            method_args=[gateway, vpc_channel],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None, "vpc_chan_id": None},
+        )
 
     def test_update_backend_servers(self):
         gateway = _gateway.Gateway()
         vpc_channel = _vpc.VpcChannel()
         self._verify(
-            'otcextensions.sdk.apig.v2.backend_server.'
-            'BackendServer.update_members',
+            "otcextensions.sdk.apig.v2.backend_server." "BackendServer.update_members",
             self.proxy.update_backend_server,
             method_args=[gateway, vpc_channel],
             expected_args=[self.proxy],
-            expected_kwargs={'gateway_id': None,
-                             'vpc_channel_id': None}
+            expected_kwargs={"gateway_id": None, "vpc_channel_id": None},
         )
 
     def test_delete_backend_servers(self):
         gateway = _gateway.Gateway()
         vpc_channel = _vpc.VpcChannel()
         backend_server = _vpc_s.BackendServer()
-        self.verify_delete(self.proxy.remove_backend_server,
-                           _vpc_s.BackendServer,
-                           method_args=[gateway, vpc_channel, backend_server],
-                           expected_args=[backend_server],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None,
-                                            'vpc_chan_id': None}
-                           )
+        self.verify_delete(
+            self.proxy.remove_backend_server,
+            _vpc_s.BackendServer,
+            method_args=[gateway, vpc_channel, backend_server],
+            expected_args=[backend_server],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None, "vpc_chan_id": None},
+        )
 
     def test_enable_backend_server(self):
         gateway = _gateway.Gateway()
         vpc_channel = _vpc.VpcChannel()
         backend_server = _vpc_s.BackendServer()
         self._verify(
-            'otcextensions.sdk.apig.v2.backend_server.'
-            'BackendServer.enable_server',
+            "otcextensions.sdk.apig.v2.backend_server." "BackendServer.enable_server",
             self.proxy.enable_backend_server,
             method_args=[gateway, vpc_channel, backend_server],
             expected_args=[self.proxy],
-            expected_kwargs={'gateway_id': None,
-                             'vpc_chan_id': None}
+            expected_kwargs={"gateway_id": None, "vpc_chan_id": None},
         )
 
     def test_disable_backend_server(self):
@@ -1832,13 +1744,11 @@ class TestVpc(TestApiGatewayProxy):
         vpc_channel = _vpc.VpcChannel()
         backend_server = _vpc_s.BackendServer()
         self._verify(
-            'otcextensions.sdk.apig.v2.backend_server.'
-            'BackendServer.disable_server',
+            "otcextensions.sdk.apig.v2.backend_server." "BackendServer.disable_server",
             self.proxy.disable_backend_server,
             method_args=[gateway, vpc_channel, backend_server],
             expected_args=[self.proxy],
-            expected_kwargs={'gateway_id': None,
-                             'vpc_chan_id': None}
+            expected_kwargs={"gateway_id": None, "vpc_chan_id": None},
         )
 
 
@@ -1846,34 +1756,33 @@ class TestApiCall(TestApiGatewayProxy):
     def test_list_api_calls_for_period(self):
         gateway = _gateway.Gateway()
         self._verify(
-            'otcextensions.sdk.apig.v2.api_call.'
-            'ApiCallResult.get_api_calls_for_period',
+            "otcextensions.sdk.apig.v2.api_call."
+            "ApiCallResult.get_api_calls_for_period",
             self.proxy.list_api_calls_for_period,
             method_args=[gateway],
             expected_args=[self.proxy],
-            expected_kwargs={'gateway_id': None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_list_api_calls_for_group(self):
         gateway = _gateway.Gateway()
         self._verify(
-            'otcextensions.sdk.apig.v2.api_call.'
-            'ApiCallResult.get_api_calls_for_group',
+            "otcextensions.sdk.apig.v2.api_call."
+            "ApiCallResult.get_api_calls_for_group",
             self.proxy.list_api_calls_for_group,
             method_args=[gateway],
             expected_args=[self.proxy],
-            expected_kwargs={'gateway_id': None}
+            expected_kwargs={"gateway_id": None},
         )
 
     def test_list_metric_data(self):
         gateway = _gateway.Gateway()
         self._verify(
-            'otcextensions.sdk.apig.v2.metric_data.'
-            'MetricData.get_metric_data',
+            "otcextensions.sdk.apig.v2.metric_data." "MetricData.get_metric_data",
             self.proxy.list_metric_data,
             method_args=[gateway],
             expected_args=[self.proxy],
-            expected_kwargs={'gateway_id': None}
+            expected_kwargs={"gateway_id": None},
         )
 
 
@@ -1882,64 +1791,64 @@ class TestGroupResponse(TestApiGatewayProxy):
         gateway = _gateway.Gateway()
         group = _api_group.ApiGroup()
         response = _group_response.GroupResponse()
-        self.verify_get(self.proxy.get_group_response,
-                        _group_response.GroupResponse,
-                        method_args=[gateway, group, response],
-                        expected_args=[None],
-                        method_kwargs={},
-                        expected_kwargs={'group_id': None,
-                                         'gateway_id': None}
-                        )
+        self.verify_get(
+            self.proxy.get_group_response,
+            _group_response.GroupResponse,
+            method_args=[gateway, group, response],
+            expected_args=[None],
+            method_kwargs={},
+            expected_kwargs={"group_id": None, "gateway_id": None},
+        )
 
     def test_create_group_response(self):
         gateway = _gateway.Gateway()
         group = _api_group.ApiGroup()
-        self.verify_create(self.proxy.create_group_response,
-                           _group_response.GroupResponse,
-                           method_args=[gateway, group],
-                           expected_args=[],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None,
-                                            'group_id': None}
-                           )
+        self.verify_create(
+            self.proxy.create_group_response,
+            _group_response.GroupResponse,
+            method_args=[gateway, group],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None, "group_id": None},
+        )
 
     def test_update_group_response(self):
         gateway = _gateway.Gateway()
         group = _api_group.ApiGroup()
         response = _group_response.GroupResponse()
-        self.verify_update(self.proxy.update_group_response,
-                           _group_response.GroupResponse,
-                           method_args=[gateway, group, response],
-                           expected_args=[None],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None,
-                                            'group_id': None}
-                           )
+        self.verify_update(
+            self.proxy.update_group_response,
+            _group_response.GroupResponse,
+            method_args=[gateway, group, response],
+            expected_args=[None],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None, "group_id": None},
+        )
 
     def test_delete_group_response(self):
         gateway = _gateway.Gateway()
         group = _api_group.ApiGroup()
         response = _group_response.GroupResponse()
-        self.verify_delete(self.proxy.delete_group_response,
-                           _group_response.GroupResponse,
-                           method_args=[gateway, group, response],
-                           expected_args=[None],
-                           method_kwargs={},
-                           expected_kwargs={'gateway_id': None,
-                                            'group_id': None}
-                           )
+        self.verify_delete(
+            self.proxy.delete_group_response,
+            _group_response.GroupResponse,
+            method_args=[gateway, group, response],
+            expected_args=[None],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None, "group_id": None},
+        )
 
     def test_list_group_responses(self):
         gateway = _gateway.Gateway()
         group = _api_group.ApiGroup()
-        self.verify_list(self.proxy.group_responses,
-                         _group_response.GroupResponse,
-                         method_args=[gateway, group],
-                         expected_args=[],
-                         method_kwargs={},
-                         expected_kwargs={'gateway_id': None,
-                                          'group_id': None}
-                         )
+        self.verify_list(
+            self.proxy.group_responses,
+            _group_response.GroupResponse,
+            method_args=[gateway, group],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None, "group_id": None},
+        )
 
 
 class TestErrorResponse(TestApiGatewayProxy):
@@ -1949,14 +1858,16 @@ class TestErrorResponse(TestApiGatewayProxy):
         response = _group_response.GroupResponse()
         response_type = None
         self._verify(
-            'otcextensions.sdk.apig.v2.error_response.'
-            'ErrorResponse._get',
+            "otcextensions.sdk.apig.v2.error_response." "ErrorResponse._get",
             self.proxy.get_error_response,
             method_args=[gateway, group, response, response_type],
             expected_args=[self.proxy],
-            expected_kwargs={'gateway_id': None,
-                             'group_id': None, 'response_id': None,
-                             'response_type': None}
+            expected_kwargs={
+                "gateway_id": None,
+                "group_id": None,
+                "response_id": None,
+                "response_type": None,
+            },
         )
 
     def test_update_error_response(self):
@@ -1965,14 +1876,16 @@ class TestErrorResponse(TestApiGatewayProxy):
         response = _group_response.GroupResponse()
         response_type = None
         self._verify(
-            'otcextensions.sdk.apig.v2.error_response.'
-            'ErrorResponse._update',
+            "otcextensions.sdk.apig.v2.error_response." "ErrorResponse._update",
             self.proxy.update_error_response,
             method_args=[gateway, group, response, response_type],
             expected_args=[self.proxy],
-            expected_kwargs={'gateway_id': None,
-                             'group_id': None, 'response_id': None,
-                             'response_type': None}
+            expected_kwargs={
+                "gateway_id": None,
+                "group_id": None,
+                "response_id": None,
+                "response_type": None,
+            },
         )
 
     def test_delete_error_response(self):
@@ -1981,92 +1894,97 @@ class TestErrorResponse(TestApiGatewayProxy):
         response = _group_response.GroupResponse()
         response_type = None
         self._verify(
-            'otcextensions.sdk.apig.v2.error_response.'
-            'ErrorResponse._delete',
+            "otcextensions.sdk.apig.v2.error_response." "ErrorResponse._delete",
             self.proxy.delete_error_response,
             method_args=[gateway, group, response, response_type],
             expected_args=[self.proxy],
-            expected_kwargs={'gateway_id': None,
-                             'group_id': None, 'response_id': None,
-                             'response_type': None}
+            expected_kwargs={
+                "gateway_id": None,
+                "group_id": None,
+                "response_id": None,
+                "response_type": None,
+            },
         )
 
 
 class TestTag(TestApiGatewayProxy):
     def test_list_tags(self):
         gateway = _gateway.Gateway()
-        self.verify_list(self.proxy.tags,
-                         _tag.Tag,
-                         method_args=[gateway],
-                         expected_args=[],
-                         method_kwargs={},
-                         expected_kwargs={'gateway_id': None}
-                         )
+        self.verify_list(
+            self.proxy.tags,
+            _tag.Tag,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"gateway_id": None},
+        )
 
 
 class TestSSLCertificate(TestApiGatewayProxy):
     def test_create_ssl(self):
 
-        self.verify_create(self.proxy.create_ssl_certificate,
-                           _ssl_cert.SslCertificate,
-                           method_args=[],
-                           expected_args=[],
-                           method_kwargs={},
-                           expected_kwargs={}
-                           )
+        self.verify_create(
+            self.proxy.create_ssl_certificate,
+            _ssl_cert.SslCertificate,
+            method_args=[],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={},
+        )
 
     def test_update_ssl(self):
         ssl = _ssl_cert.SslCertificate
-        self.verify_update(self.proxy.update_ssl_certificate,
-                           _ssl_cert.SslCertificate,
-                           method_args=[ssl],
-                           expected_args=[ssl],
-                           method_kwargs={},
-                           expected_kwargs={}
-                           )
+        self.verify_update(
+            self.proxy.update_ssl_certificate,
+            _ssl_cert.SslCertificate,
+            method_args=[ssl],
+            expected_args=[ssl],
+            method_kwargs={},
+            expected_kwargs={},
+        )
 
     def test_delete_ssl(self):
         ssl = _ssl_cert.SslCertificate()
-        self.verify_delete(self.proxy.delete_ssl_certificate,
-                           _ssl_cert.SslCertificate,
-                           method_args=[ssl],
-                           expected_args=[None],
-                           method_kwargs={},
-                           expected_kwargs={}
-                           )
+        self.verify_delete(
+            self.proxy.delete_ssl_certificate,
+            _ssl_cert.SslCertificate,
+            method_args=[ssl],
+            expected_args=[None],
+            method_kwargs={},
+            expected_kwargs={},
+        )
 
     def test_get_ssl(self):
         ssl = _ssl_cert.SslCertificate()
-        self.verify_get(self.proxy.get_ssl_certificate,
-                        _ssl_cert.SslCertificate,
-                        method_args=[ssl],
-                        expected_args=[None],
-                        method_kwargs={},
-                        expected_kwargs={}
-                        )
+        self.verify_get(
+            self.proxy.get_ssl_certificate,
+            _ssl_cert.SslCertificate,
+            method_args=[ssl],
+            expected_args=[None],
+            method_kwargs={},
+            expected_kwargs={},
+        )
 
     def test_list_ssls(self):
-        self.verify_list(self.proxy.ssl_certificates,
-                         _ssl_cert.SslCertificate,
-                         method_args=[],
-                         expected_args=[],
-                         method_kwargs={},
-                         expected_kwargs={}
-                         )
+        self.verify_list(
+            self.proxy.ssl_certificates,
+            _ssl_cert.SslCertificate,
+            method_args=[],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={},
+        )
 
     def test_bind_domain_to_cert(self):
         gateway = _gateway.Gateway()
         group = _api_group.ApiGroup()
         domain = _ssl_domain.SslDomain()
         self._verify(
-            'otcextensions.sdk.apig.v2.ssl_certificate.'
-            'SslCertificate._bind_domain',
+            "otcextensions.sdk.apig.v2.ssl_certificate." "SslCertificate._bind_domain",
             self.proxy.bind_domain_to_certificate,
             method_args=[gateway, group, domain],
             expected_args=[self.proxy],
-            expected_kwargs={'domain_id': None,
-                             'gateway_id': None,
-                             'group_id': None}
+            expected_kwargs={"domain_id": None, "gateway_id": None, "group_id": None},
         )
 
     def test_unbind_domain_from_cert(self):
@@ -2074,67 +1992,66 @@ class TestSSLCertificate(TestApiGatewayProxy):
         group = _api_group.ApiGroup()
         domain = _ssl_domain.SslDomain()
         self._verify(
-            'otcextensions.sdk.apig.v2.ssl_certificate.'
-            'SslCertificate._unbind_domain',
+            "otcextensions.sdk.apig.v2.ssl_certificate."
+            "SslCertificate._unbind_domain",
             self.proxy.unbind_domain_from_certificate,
             method_args=[gateway, group, domain],
             expected_args=[self.proxy],
-            expected_kwargs={'domain_id': None,
-                             'gateway_id': None,
-                             'group_id': None}
+            expected_kwargs={"domain_id": None, "gateway_id": None, "group_id": None},
         )
 
 
 class TestSSLDomains(TestApiGatewayProxy):
     def test_list_ssl_domains(self):
         cert = _ssl_cert.SslCertificate()
-        self.verify_list(self.proxy.domains_for_certificate,
-                         _ssl_domain.SslDomain,
-                         method_args=[cert],
-                         expected_args=[],
-                         method_kwargs={},
-                         expected_kwargs={'certificate_id': None}
-                         )
+        self.verify_list(
+            self.proxy.domains_for_certificate,
+            _ssl_domain.SslDomain,
+            method_args=[cert],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={"certificate_id": None},
+        )
 
     def test_bind_cert_to_domain(self):
         cert = _ssl_cert.SslCertificate()
         self._verify(
-            'otcextensions.sdk.apig.v2.ssl_domain.'
-            'SslDomain._bind_certificate',
+            "otcextensions.sdk.apig.v2.ssl_domain." "SslDomain._bind_certificate",
             self.proxy.bind_ssl_certificates_for_domain,
             method_args=[cert],
             expected_args=[self.proxy],
-            expected_kwargs={'certificate_id': None}
+            expected_kwargs={"certificate_id": None},
         )
 
     def test_unbind_cert_from_domain(self):
         cert = _ssl_cert.SslCertificate()
         self._verify(
-            'otcextensions.sdk.apig.v2.ssl_domain.'
-            'SslDomain._unbind_certificate',
+            "otcextensions.sdk.apig.v2.ssl_domain." "SslDomain._unbind_certificate",
             self.proxy.unbind_ssl_certificates_for_domain,
             method_args=[cert],
             expected_args=[self.proxy],
-            expected_kwargs={'certificate_id': None}
+            expected_kwargs={"certificate_id": None},
         )
 
 
 class TestConfig(TestApiGatewayProxy):
     def test_list_configs(self):
-        self.verify_list(self.proxy.configs,
-                         _config.Config,
-                         method_args=[],
-                         expected_args=[],
-                         method_kwargs={},
-                         expected_kwargs={}
-                         )
+        self.verify_list(
+            self.proxy.configs,
+            _config.Config,
+            method_args=[],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={},
+        )
 
     def test_list_configs_for_gateway(self):
         gateway = _gateway.Gateway()
-        self.verify_list(self.proxy.configs_for_gateway,
-                         _config.Config,
-                         method_args=[gateway],
-                         expected_args=[],
-                         method_kwargs={},
-                         expected_kwargs={}
-                         )
+        self.verify_list(
+            self.proxy.configs_for_gateway,
+            _config.Config,
+            method_args=[gateway],
+            expected_args=[],
+            method_kwargs={},
+            expected_kwargs={},
+        )

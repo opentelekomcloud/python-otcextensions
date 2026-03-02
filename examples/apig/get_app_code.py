@@ -13,10 +13,13 @@
 """
 Get the AppCode
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-found = conn.apig.get_app_code(gateway='gateway_id',
-                               app='app_id',
-                               app_code='app_code_id',)
+conn = openstack.connect(cloud="otc")
+found = conn.apig.get_app_code(
+    gateway="gateway_id",
+    app="app_id",
+    app_code="app_code_id",
+)

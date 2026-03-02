@@ -11,7 +11,6 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.swr.v2 import organization
 
 EXAMPLE = {
@@ -26,10 +25,10 @@ EXAMPLE_PERMISSION = {
         {
             "user_id": "5a23ecb3999b458d92d51d524bb7fb4b",
             "user_name": "test",
-            "user_auth": 1
+            "user_auth": 1,
         }
     ],
-    "namespace": "test_create_org_v2"
+    "namespace": "test_create_org_v2",
 }
 
 
@@ -37,8 +36,8 @@ class TestOrganization(base.TestCase):
 
     def test_basic(self):
         sot = organization.Organization()
-        self.assertEqual('namespaces', sot.resources_key)
-        path = '/manage/namespaces'
+        self.assertEqual("namespaces", sot.resources_key)
+        path = "/manage/namespaces"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
@@ -47,17 +46,17 @@ class TestOrganization(base.TestCase):
 
     def test_make_it(self):
         sot = organization.Organization(**EXAMPLE)
-        self.assertEqual(EXAMPLE['id'], sot.id)
-        self.assertEqual(EXAMPLE['namespace'], sot.namespace)
-        self.assertEqual(EXAMPLE['creator_name'], sot.creator_name)
-        self.assertEqual(EXAMPLE['user_auth'], sot.user_auth)
+        self.assertEqual(EXAMPLE["id"], sot.id)
+        self.assertEqual(EXAMPLE["namespace"], sot.namespace)
+        self.assertEqual(EXAMPLE["creator_name"], sot.creator_name)
+        self.assertEqual(EXAMPLE["user_auth"], sot.user_auth)
 
 
 class TestOrganizationPermissions(base.TestCase):
 
     def test_basic(self):
         sot = organization.Permission()
-        path = '/manage/namespaces/%(namespace)s/access'
+        path = "/manage/namespaces/%(namespace)s/access"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
@@ -67,16 +66,15 @@ class TestOrganizationPermissions(base.TestCase):
 
     def test_make_it(self):
         sot = organization.Permission(**EXAMPLE_PERMISSION)
-        self.assertEqual(EXAMPLE_PERMISSION['namespace'], sot.namespace)
+        self.assertEqual(EXAMPLE_PERMISSION["namespace"], sot.namespace)
         self.assertEqual(
-            EXAMPLE_PERMISSION['permissions'][0]["user_id"],
-            sot.permissions[0].user_id
+            EXAMPLE_PERMISSION["permissions"][0]["user_id"], sot.permissions[0].user_id
         )
         self.assertEqual(
-            EXAMPLE_PERMISSION['permissions'][0]["user_auth"],
-            sot.permissions[0].user_auth
+            EXAMPLE_PERMISSION["permissions"][0]["user_auth"],
+            sot.permissions[0].user_auth,
         )
         self.assertEqual(
-            EXAMPLE_PERMISSION['permissions'][0]["user_name"],
-            sot.permissions[0].user_name
+            EXAMPLE_PERMISSION["permissions"][0]["user_name"],
+            sot.permissions[0].user_name,
         )

@@ -13,11 +13,9 @@
 """
 Delete throttling policy from gateway
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-conn.apig.delete_throttling_policy(
-    gateway="gateway_id",
-    policy="policy_id"
-)
+conn = openstack.connect(cloud="otc")
+conn.apig.delete_throttling_policy(gateway="gateway_id", policy="policy_id")

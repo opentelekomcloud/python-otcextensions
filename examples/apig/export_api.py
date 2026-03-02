@@ -13,16 +13,14 @@
 """
 Export API
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 attrs = {
     "env_id": "DEFAULT_ENVIRONMENT_RELEASE_ID",
     "group_id": "ce973ff83ce54ef192c80bde884aa0ac",
-    "define": "all"
+    "define": "all",
 }
-conn.apig.export_api(
-    gateway='gateway_id',
-    full_path='/mnt/c/Users/sand1/api',
-    **attrs)
+conn.apig.export_api(gateway="gateway_id", full_path="/mnt/c/Users/sand1/api", **attrs)

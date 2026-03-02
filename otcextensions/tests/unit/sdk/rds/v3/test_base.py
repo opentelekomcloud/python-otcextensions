@@ -9,12 +9,10 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import mock
 from keystoneauth1 import adapter
 
-import mock
-
 from openstack.tests.unit import base
-
 from otcextensions.sdk.rds.v3 import _base
 
 
@@ -34,7 +32,7 @@ class TestBase(base.TestCase):
 
         response = mock.Mock()
         response.status_code = 200
-        response.json.return_value = {'job_id': 'fake'}
+        response.json.return_value = {"job_id": "fake"}
         response.headers = {}
         self.sess.delete.return_value = response
 

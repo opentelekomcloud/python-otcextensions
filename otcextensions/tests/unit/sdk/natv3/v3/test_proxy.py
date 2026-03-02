@@ -10,10 +10,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from openstack.tests.unit import test_proxy_base
 from otcextensions.sdk.natv3.v3 import _proxy
 from otcextensions.sdk.natv3.v3 import gateway
-
-from openstack.tests.unit import test_proxy_base
 
 
 class TestNatv3Proxy(test_proxy_base.TestProxyBase):
@@ -24,5 +23,4 @@ class TestNatv3Proxy(test_proxy_base.TestProxyBase):
 
 class TestPrivateNatGateway(TestNatv3Proxy):
     def test_private_nat_gateways(self):
-        self.verify_list(self.proxy.private_nat_gateways,
-                         gateway.PrivateNatGateway)
+        self.verify_list(self.proxy.private_nat_gateways, gateway.PrivateNatGateway)

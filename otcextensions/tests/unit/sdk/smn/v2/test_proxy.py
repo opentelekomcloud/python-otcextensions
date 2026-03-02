@@ -22,14 +22,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from openstack.tests.unit import test_proxy_base
 from otcextensions.sdk.smn.v2 import _proxy
-from otcextensions.sdk.smn.v2 import topic
-from otcextensions.sdk.smn.v2 import template
-from otcextensions.sdk.smn.v2 import subscription
 from otcextensions.sdk.smn.v2 import message
 from otcextensions.sdk.smn.v2 import sms
-
-from openstack.tests.unit import test_proxy_base
+from otcextensions.sdk.smn.v2 import subscription
+from otcextensions.sdk.smn.v2 import template
+from otcextensions.sdk.smn.v2 import topic
 
 
 class TestSmnProxy(test_proxy_base.TestProxyBase):
@@ -40,13 +39,15 @@ class TestSmnProxy(test_proxy_base.TestProxyBase):
 
 class TestSmnTopic(TestSmnProxy):
     def test_topic_create(self):
-        self.verify_create(self.proxy.create_topic, topic.Topic,
-                           method_kwargs={'name': 'id'},
-                           expected_kwargs={'name': 'id'})
+        self.verify_create(
+            self.proxy.create_topic,
+            topic.Topic,
+            method_kwargs={"name": "id"},
+            expected_kwargs={"name": "id"},
+        )
 
     def test_topic_delete(self):
-        self.verify_delete(self.proxy.delete_topic,
-                           topic.Topic, True)
+        self.verify_delete(self.proxy.delete_topic, topic.Topic, True)
 
     def test_topic_get(self):
         self.verify_get(self.proxy.get_topic, topic.Topic)
@@ -60,13 +61,15 @@ class TestSmnTopic(TestSmnProxy):
 
 class TestSmnTemplate(TestSmnProxy):
     def test_template_create(self):
-        self.verify_create(self.proxy.create_template, template.Template,
-                           method_kwargs={'name': 'id'},
-                           expected_kwargs={'name': 'id'})
+        self.verify_create(
+            self.proxy.create_template,
+            template.Template,
+            method_kwargs={"name": "id"},
+            expected_kwargs={"name": "id"},
+        )
 
     def test_template_delete(self):
-        self.verify_delete(self.proxy.delete_template,
-                           template.Template, True)
+        self.verify_delete(self.proxy.delete_template, template.Template, True)
 
     def test_template_get(self):
         self.verify_get(self.proxy.get_template, template.Template)
@@ -81,52 +84,49 @@ class TestSmnTemplate(TestSmnProxy):
 class TestSmnSubscription(TestSmnProxy):
     def test_subscription_create(self):
         self.verify_create(
-            self.proxy.create_subscription, subscription.Subscription,
-            method_args=['topic_id'],
-            method_kwargs={'name': 'id'},
-            expected_kwargs={'topic_urn': 'topic_id', 'name': 'id'},
-            expected_args=[]
+            self.proxy.create_subscription,
+            subscription.Subscription,
+            method_args=["topic_id"],
+            method_kwargs={"name": "id"},
+            expected_kwargs={"topic_urn": "topic_id", "name": "id"},
+            expected_args=[],
         )
 
     def test_subscription_delete(self):
-        self.verify_delete(self.proxy.delete_subscription,
-                           subscription.Subscription, True)
+        self.verify_delete(
+            self.proxy.delete_subscription, subscription.Subscription, True
+        )
 
     def test_subscriptions(self):
         self.verify_list(self.proxy.subscriptions, subscription.Subscription)
 
     def test_topic_subscriptions(self):
         self.verify_list(
-            self.proxy.subscriptions, subscription.Subscription,
-            method_args=['topic_id'],
-            expected_kwargs={'topic_urn': 'topic_id'},
-            expected_args=[]
+            self.proxy.subscriptions,
+            subscription.Subscription,
+            method_args=["topic_id"],
+            expected_kwargs={"topic_urn": "topic_id"},
+            expected_args=[],
         )
 
 
 class TestSmnMessage(TestSmnProxy):
     def test_publish_message(self):
         self.verify_create(
-            self.proxy.publish_message, message.Message,
-            method_args=['topic_id'],
-            method_kwargs={'subject': 'Test Message'},
-            expected_kwargs={
-                'topic_urn': 'topic_id',
-                'subject': 'Test Message'},
-            expected_args=[]
+            self.proxy.publish_message,
+            message.Message,
+            method_args=["topic_id"],
+            method_kwargs={"subject": "Test Message"},
+            expected_kwargs={"topic_urn": "topic_id", "subject": "Test Message"},
+            expected_args=[],
         )
 
 
 class TestSmnSms(TestSmnProxy):
     def test_send_sms(self):
         self.verify_create(
-            self.proxy.send_sms, sms.Sms,
-            method_kwargs={
-                'endpoint': '+999999',
-                'message': 'Test SMS'
-            },
-            expected_kwargs={
-                'endpoint': '+999999',
-                'message': 'Test SMS'
-            }
+            self.proxy.send_sms,
+            sms.Sms,
+            method_kwargs={"endpoint": "+999999", "message": "Test SMS"},
+            expected_kwargs={"endpoint": "+999999", "message": "Test SMS"},
         )

@@ -13,12 +13,13 @@
 """
 Delete one SMN topic
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-urn = 'urn:smn:eu-de:123:myname'
+urn = "urn:smn:eu-de:123:myname"
 topic = conn.smn.get_topic(topic=urn)
 topic = conn.smn.delete_topic(topic)

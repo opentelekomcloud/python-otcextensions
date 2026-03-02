@@ -14,9 +14,9 @@ from openstack import resource
 
 
 class SecurityPolicy(resource.Resource):
-    resource_key = 'security_policy'
-    resources_key = 'security_policies'
-    base_path = '/elb/security-policies'
+    resource_key = "security_policy"
+    resources_key = "security_policies"
+    base_path = "/elb/security-policies"
 
     # capabilities
     allow_create = True
@@ -26,25 +26,25 @@ class SecurityPolicy(resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'id', 'description', 'protocols', 'ciphers'
+        "id", "description", "protocols", "ciphers"
     )
 
     # Properties
     #: Specifies the security policy id.
-    id = resource.Body('id', type=str)
+    id = resource.Body("id", type=str)
     #: Specifies the security policy name.
-    name = resource.Body('name', type=str)
+    name = resource.Body("name", type=str)
     #: Lists the cipher suites supported by the custom security policy.
-    ciphers = resource.Body('ciphers', type=list, list_type=str)
+    ciphers = resource.Body("ciphers", type=list, list_type=str)
     #: Provides supplementary information about the security policy.
-    description = resource.Body('description', type=str)
+    description = resource.Body("description", type=str)
     #: Specifies the project ID of the custom security policy.
-    project_id = resource.Body('project_id', type=str)
+    project_id = resource.Body("project_id", type=str)
     #: Lists the TLS protocols supported by the custom security policy.
-    protocols = resource.Body('protocols', type=list, list_type=str)
+    protocols = resource.Body("protocols", type=list, list_type=str)
     #: Specifies the listeners that use the custom security policies.
-    listeners = resource.Body('listeners', type=list, list_type=dict)
+    listeners = resource.Body("listeners", type=list, list_type=dict)
     #: Specifies the time when the custom security policy was created.
-    created_at = resource.Body('created_at', type=str)
+    created_at = resource.Body("created_at", type=str)
     #: Specifies the time when the custom security policy was updated..
-    updated_at = resource.Body('updated_at', type=str)
+    updated_at = resource.Body("updated_at", type=str)

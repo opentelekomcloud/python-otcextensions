@@ -13,21 +13,19 @@
 """
 Create a DNS recordset
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 recordset = conn.dns.create_recordset(
-    zone='zone_id',
-    name='recordset.my-zone.',
-    description='My new recordset',
-    type='A',
+    zone="zone_id",
+    name="recordset.my-zone.",
+    description="My new recordset",
+    type="A",
     ttl=300,
-    records=[
-        '192.168.2.4'
-    ]
+    records=["192.168.2.4"],
 )
 print(recordset)

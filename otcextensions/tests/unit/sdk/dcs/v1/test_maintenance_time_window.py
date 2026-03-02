@@ -11,7 +11,6 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.dcs.v1 import maintenance_time_window
 
 
@@ -19,8 +18,8 @@ class TestMaintenanceTimeWindow(base.TestCase):
 
     def test_basic(self):
         sot = maintenance_time_window.MaintenanceTimeWindow()
-        self.assertEqual('maintain_windows', sot.resources_key)
-        self.assertEqual('/instances/maintain-windows', sot.base_path)
+        self.assertEqual("maintain_windows", sot.resources_key)
+        self.assertEqual("/instances/maintain-windows", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_fetch)

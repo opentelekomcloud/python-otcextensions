@@ -13,10 +13,10 @@
 """
 List all DIS Streams.
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 print(list(conn.dis.streams()))

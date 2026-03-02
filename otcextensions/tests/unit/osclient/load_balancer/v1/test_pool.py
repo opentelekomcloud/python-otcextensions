@@ -11,7 +11,6 @@
 #   under the License.
 #
 import mock
-
 from openstackclient.tests.unit import utils
 
 from otcextensions.common import sdk_utils
@@ -24,21 +23,29 @@ class TestListPool(fakes.TestLoadBalancer):
     _objects = fakes.FakePool.create_multiple(3)
 
     columns = (
-        'id', 'name', 'project_id', 'provisioning_status',
-        'protocol', 'lb_algorithm', 'admin_state_up')
+        "id",
+        "name",
+        "project_id",
+        "provisioning_status",
+        "protocol",
+        "lb_algorithm",
+        "admin_state_up",
+    )
 
     data = []
 
     for s in _objects:
-        data.append((
-            s.id,
-            s.name,
-            s.project_id,
-            '',
-            s.protocol,
-            s.lb_algorithm,
-            s.is_admin_state_up,
-        ))
+        data.append(
+            (
+                s.id,
+                s.name,
+                s.project_id,
+                "",
+                s.protocol,
+                s.lb_algorithm,
+                s.is_admin_state_up,
+            )
+        )
 
     def setUp(self):
         super(TestListPool, self).setUp()
@@ -48,18 +55,14 @@ class TestListPool(fakes.TestLoadBalancer):
         self.client.pools = mock.Mock()
 
     def test_list_default(self):
-        arglist = [
-        ]
+        arglist = []
 
-        verifylist = [
-        ]
+        verifylist = []
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.pools.side_effect = [
-            self._objects
-        ]
+        self.client.pools.side_effect = [self._objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -71,66 +74,71 @@ class TestListPool(fakes.TestLoadBalancer):
 
     def test_list_filter_values(self):
         arglist = [
-            '--name', 'name',
-            '--protocol', 'TCP',
-            '--lb_algorithm', 'ROUND_ROBIN',
-            '--description', 'descr',
-            '--load_balancer', 'lb',
+            "--name",
+            "name",
+            "--protocol",
+            "TCP",
+            "--lb_algorithm",
+            "ROUND_ROBIN",
+            "--description",
+            "descr",
+            "--load_balancer",
+            "lb",
         ]
 
         verifylist = [
-            ('name', 'name'),
-            ('protocol', 'TCP'),
-            ('lb_algorithm', 'ROUND_ROBIN'),
-            ('description', 'descr'),
-            ('load_balancer', 'lb')
+            ("name", "name"),
+            ("protocol", "TCP"),
+            ("lb_algorithm", "ROUND_ROBIN"),
+            ("description", "descr"),
+            ("load_balancer", "lb"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.pools.side_effect = [
-            {}
-        ]
+        self.client.pools.side_effect = [{}]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.pools.assert_called_once_with(
-            name='name',
-            protocol='TCP',
-            lb_algorithm='ROUND_ROBIN',
-            description='descr',
-            load_balancer_id='lb'
+            name="name",
+            protocol="TCP",
+            lb_algorithm="ROUND_ROBIN",
+            description="descr",
+            load_balancer_id="lb",
         )
 
     def test_list_filter_exceptions_proto(self):
         arglist = [
-            '--protocol', 'bad',
+            "--protocol",
+            "bad",
         ]
 
         verifylist = [
-            ('protocol', 'bad'),
+            ("protocol", "bad"),
         ]
 
         # Ensure exception is raised
         self.assertRaises(
-            utils.ParserException,
-            self.check_parser, self.cmd, arglist, verifylist)
+            utils.ParserException, self.check_parser, self.cmd, arglist, verifylist
+        )
 
     def test_list_filter_exceptions_algo(self):
         arglist = [
-            '--lb_algorithm', 'bad',
+            "--lb_algorithm",
+            "bad",
         ]
 
         verifylist = [
-            ('lb_algorithm', 'bad'),
+            ("lb_algorithm", "bad"),
         ]
 
         # Ensure exception is raised
         self.assertRaises(
-            utils.ParserException,
-            self.check_parser, self.cmd, arglist, verifylist)
+            utils.ParserException, self.check_parser, self.cmd, arglist, verifylist
+        )
 
 
 class TestShowPool(fakes.TestLoadBalancer):
@@ -138,10 +146,19 @@ class TestShowPool(fakes.TestLoadBalancer):
     _object = fakes.FakePool.create_one()
 
     columns = (
-        'admin_state_up', 'description',
-        'healthmonitor_id', 'id', 'lb_algorithm', 'listeners',
-        'loadbalancers', 'member_ids', 'name', 'protocol',
-        'provisioning_status', 'session_persistence')
+        "admin_state_up",
+        "description",
+        "healthmonitor_id",
+        "id",
+        "lb_algorithm",
+        "listeners",
+        "loadbalancers",
+        "member_ids",
+        "name",
+        "protocol",
+        "provisioning_status",
+        "session_persistence",
+    )
 
     data = (
         _object.is_admin_state_up,
@@ -167,27 +184,20 @@ class TestShowPool(fakes.TestLoadBalancer):
         self.client.find_pool = mock.Mock()
 
     def test_show_default(self):
-        arglist = [
-            'pool_id'
-        ]
+        arglist = ["pool_id"]
 
-        verifylist = [
-            ('pool', 'pool_id')
-        ]
+        verifylist = [("pool", "pool_id")]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_pool.side_effect = [
-            self._object
-        ]
+        self.client.find_pool.side_effect = [self._object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_pool.assert_called_once_with(
-            name_or_id='pool_id',
-            ignore_missing=False
+            name_or_id="pool_id", ignore_missing=False
         )
 
         self.assertEqual(self.columns, columns)
@@ -199,10 +209,19 @@ class TestCreatePool(fakes.TestLoadBalancer):
     _object = fakes.FakePool.create_one()
 
     columns = (
-        'admin_state_up', 'description',
-        'healthmonitor_id', 'id', 'lb_algorithm', 'listeners',
-        'loadbalancers', 'member_ids', 'name', 'protocol',
-        'provisioning_status', 'session_persistence')
+        "admin_state_up",
+        "description",
+        "healthmonitor_id",
+        "id",
+        "lb_algorithm",
+        "listeners",
+        "loadbalancers",
+        "member_ids",
+        "name",
+        "protocol",
+        "provisioning_status",
+        "session_persistence",
+    )
 
     data = (
         _object.is_admin_state_up,
@@ -228,44 +247,48 @@ class TestCreatePool(fakes.TestLoadBalancer):
 
     def test_create_default(self):
         arglist = [
-            '--protocol', 'HTTP',
-            '--lb_algorithm', 'ROUND_ROBIN',
-            '--listener_id', 'listener',
-            '--name', 'name',
-            '--description', 'descr',
-            '--session_persistence', '{"a": "b"}',
-            '--disable'
+            "--protocol",
+            "HTTP",
+            "--lb_algorithm",
+            "ROUND_ROBIN",
+            "--listener_id",
+            "listener",
+            "--name",
+            "name",
+            "--description",
+            "descr",
+            "--session_persistence",
+            '{"a": "b"}',
+            "--disable",
         ]
 
         verifylist = [
-            ('protocol', 'HTTP'),
-            ('lb_algorithm', 'ROUND_ROBIN'),
-            ('listener_id', 'listener'),
-            ('disable', True),
-            ('name', 'name'),
-            ('description', 'descr'),
-            ('session_persistence', '{"a": "b"}'),
+            ("protocol", "HTTP"),
+            ("lb_algorithm", "ROUND_ROBIN"),
+            ("listener_id", "listener"),
+            ("disable", True),
+            ("name", "name"),
+            ("description", "descr"),
+            ("session_persistence", '{"a": "b"}'),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.create_pool.side_effect = [
-            self._object
-        ]
+        self.client.create_pool.side_effect = [self._object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.create_pool.assert_called_once_with(
-            lb_algorithm='ROUND_ROBIN',
-            listener_id='listener',
-            name='name',
-            protocol='HTTP',
-            session_persistence={'a': 'b'},
+            lb_algorithm="ROUND_ROBIN",
+            listener_id="listener",
+            name="name",
+            protocol="HTTP",
+            session_persistence={"a": "b"},
             is_admin_state_up=False,
-            description='descr'
+            description="descr",
         )
 
         self.assertEqual(self.columns, columns)
@@ -273,32 +296,33 @@ class TestCreatePool(fakes.TestLoadBalancer):
 
     def test_create_with_lb(self):
         arglist = [
-            '--protocol', 'HTTP',
-            '--lb_algorithm', 'ROUND_ROBIN',
-            '--loadbalancer_id', 'lb',
+            "--protocol",
+            "HTTP",
+            "--lb_algorithm",
+            "ROUND_ROBIN",
+            "--loadbalancer_id",
+            "lb",
         ]
 
         verifylist = [
-            ('protocol', 'HTTP'),
-            ('lb_algorithm', 'ROUND_ROBIN'),
-            ('loadbalancer_id', 'lb'),
+            ("protocol", "HTTP"),
+            ("lb_algorithm", "ROUND_ROBIN"),
+            ("loadbalancer_id", "lb"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.create_pool.side_effect = [
-            self._object
-        ]
+        self.client.create_pool.side_effect = [self._object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.create_pool.assert_called_once_with(
-            lb_algorithm='ROUND_ROBIN',
-            loadbalancer_id='lb',
-            protocol='HTTP',
+            lb_algorithm="ROUND_ROBIN",
+            loadbalancer_id="lb",
+            protocol="HTTP",
         )
 
         self.assertEqual(self.columns, columns)
@@ -306,28 +330,30 @@ class TestCreatePool(fakes.TestLoadBalancer):
 
     def test_create_exclusive_group(self):
         arglist = [
-            'HTTP',
-            'ROUND_ROBIN',
-            '--listener_id', 'listener',
-            '--loadbalancer_id', 'loadbalancer_id',
-            '--name', 'name',
-            '--session_persistence', "{'a': 'b'}"
+            "HTTP",
+            "ROUND_ROBIN",
+            "--listener_id",
+            "listener",
+            "--loadbalancer_id",
+            "loadbalancer_id",
+            "--name",
+            "name",
+            "--session_persistence",
+            "{'a': 'b'}",
         ]
 
         verifylist = [
-            ('protocol', 'HTTP'),
-            ('lb_algorithm', 'ROUND_ROBIN'),
-            ('listener_id', 'listener'),
-            ('loadbalancer_id', 'loadbalancer_id'),
-            ('name', 'name'),
-            ('session_persistence', "{'a': 'b'}"),
+            ("protocol", "HTTP"),
+            ("lb_algorithm", "ROUND_ROBIN"),
+            ("listener_id", "listener"),
+            ("loadbalancer_id", "loadbalancer_id"),
+            ("name", "name"),
+            ("session_persistence", "{'a': 'b'}"),
         ]
 
         # Verify cm is raising exception due to the exclusive group
         self.assertRaises(
-            utils.ParserException,
-            self.check_parser,
-            self.cmd, arglist, verifylist
+            utils.ParserException, self.check_parser, self.cmd, arglist, verifylist
         )
 
 
@@ -336,10 +362,19 @@ class TestUpdatePool(fakes.TestLoadBalancer):
     _object = fakes.FakePool.create_one()
 
     columns = (
-        'admin_state_up', 'description',
-        'healthmonitor_id', 'id', 'lb_algorithm', 'listeners',
-        'loadbalancers', 'member_ids', 'name', 'protocol',
-        'provisioning_status', 'session_persistence')
+        "admin_state_up",
+        "description",
+        "healthmonitor_id",
+        "id",
+        "lb_algorithm",
+        "listeners",
+        "loadbalancers",
+        "member_ids",
+        "name",
+        "protocol",
+        "provisioning_status",
+        "session_persistence",
+    )
 
     data = (
         _object.is_admin_state_up,
@@ -365,41 +400,43 @@ class TestUpdatePool(fakes.TestLoadBalancer):
 
     def test_update_default(self):
         arglist = [
-            'pool',
-            '--lb_algorithm', 'ROUND_ROBIN',
-            '--name', 'name',
-            '--description', 'descr',
-            '--session_persistence', '{"a": "b"}',
-            '--disable'
+            "pool",
+            "--lb_algorithm",
+            "ROUND_ROBIN",
+            "--name",
+            "name",
+            "--description",
+            "descr",
+            "--session_persistence",
+            '{"a": "b"}',
+            "--disable",
         ]
 
         verifylist = [
-            ('pool', 'pool'),
-            ('lb_algorithm', 'ROUND_ROBIN'),
-            ('disable', True),
-            ('name', 'name'),
-            ('description', 'descr'),
-            ('session_persistence', '{"a": "b"}'),
+            ("pool", "pool"),
+            ("lb_algorithm", "ROUND_ROBIN"),
+            ("disable", True),
+            ("name", "name"),
+            ("description", "descr"),
+            ("session_persistence", '{"a": "b"}'),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.update_pool.side_effect = [
-            self._object
-        ]
+        self.client.update_pool.side_effect = [self._object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.update_pool.assert_called_once_with(
-            lb_algorithm='ROUND_ROBIN',
-            pool='pool',
-            name='name',
-            session_persistence={'a': 'b'},
+            lb_algorithm="ROUND_ROBIN",
+            pool="pool",
+            name="name",
+            session_persistence={"a": "b"},
             is_admin_state_up=False,
-            description='descr'
+            description="descr",
         )
 
         self.assertEqual(self.columns, columns)
@@ -420,28 +457,23 @@ class TestDeletePool(fakes.TestLoadBalancer):
 
     def test_delete_default(self):
         arglist = [
-            'pool',
+            "pool",
         ]
 
         verifylist = [
-            ('pool', ['pool']),
+            ("pool", ["pool"]),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.delete_pool.side_effect = [
-            {}
-        ]
-        self.client.find_pool.side_effect = [
-            self._object
-        ]
+        self.client.delete_pool.side_effect = [{}]
+        self.client.find_pool.side_effect = [self._object]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
         self.client.delete_pool.assert_called_once_with(
-            pool=self._object.id,
-            ignore_missing=False
+            pool=self._object.id, ignore_missing=False
         )

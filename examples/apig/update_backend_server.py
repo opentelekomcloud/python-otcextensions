@@ -13,21 +13,22 @@
 """
 Update backend server
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 attrs = {
     "member_group_name": "vpc_member_group",
-    "members": [{
-        "host": "192.168.2.25",
-        "weight": 2,
-        "is_backup": True,
-        "member_group_name": "vpc_member_group"
-    }]
+    "members": [
+        {
+            "host": "192.168.2.25",
+            "weight": 2,
+            "is_backup": True,
+            "member_group_name": "vpc_member_group",
+        }
+    ],
 }
 updated = conn.apig.update_backend_server(
-    gateway="gateway_id",
-    vpc_channel="vpc_channel_id",
-    **attrs
+    gateway="gateway_id", vpc_channel="vpc_channel_id", **attrs
 )

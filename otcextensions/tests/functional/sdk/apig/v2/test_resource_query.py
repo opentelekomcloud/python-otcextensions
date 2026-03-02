@@ -22,16 +22,13 @@ class TestGwFeatures(TestApiG):
         self.addCleanup(self.delete_gateway())
 
     def test_get_api_quantities(self):
-        api_q = self.client.get_api_quantities(
-            gateway=self.gateway_id)
+        api_q = self.client.get_api_quantities(gateway=self.gateway_id)
         self.assertIsNotNone(api_q)
 
     def test_get_api_group_quantities(self):
-        api_group_q = self.client.get_api_group_quantities(
-            gateway=self.gateway_id)
+        api_group_q = self.client.get_api_group_quantities(gateway=self.gateway_id)
         self.assertIsNotNone(api_group_q)
 
     def test_get_app_quantities(self):
-        api_group_q = self.client.get_app_quantities(
-            gateway=self.gateway_id)
+        api_group_q = self.client.get_app_quantities(gateway=self.gateway_id)
         self.assertIsNotNone(api_group_q)

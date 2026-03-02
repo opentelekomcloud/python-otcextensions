@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack.tests.unit import base
-
 from otcextensions.sdk.dds.v3 import flavor
 
 EXAMPLE = {
@@ -24,20 +23,24 @@ class TestFlavor(base.TestCase):
     def test_basic(self):
         sot = flavor.Flavor()
 
-        self.assertEqual('/flavors', sot.base_path)
+        self.assertEqual("/flavors", sot.base_path)
 
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_fetch)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_delete)
         self.assertFalse(sot.allow_commit)
-        self.assertDictEqual({'limit': 'limit',
-                              'marker': 'marker',
-                              'region': 'region',
-                              'engine_name': 'engine_name'},
-                             sot._query_mapping._mapping)
+        self.assertDictEqual(
+            {
+                "limit": "limit",
+                "marker": "marker",
+                "region": "region",
+                "engine_name": "engine_name",
+            },
+            sot._query_mapping._mapping,
+        )
 
     def test_make_it(self):
         sot = flavor.Flavor(**EXAMPLE)
-        self.assertEqual(EXAMPLE['region'], sot.region)
-        self.assertEqual(EXAMPLE['engine_name'], sot.engine_name)
+        self.assertEqual(EXAMPLE["region"], sot.region)
+        self.assertEqual(EXAMPLE["engine_name"], sot.engine_name)

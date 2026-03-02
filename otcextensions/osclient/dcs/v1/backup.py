@@ -10,57 +10,51 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-'''DCS Backup v1 action implementations'''
+"""DCS Backup v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
 from osc_lib.command import command
 
 from otcextensions.common import sdk_utils
-
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
 
 def _get_columns(item):
-    column_map = {
-    }
+    column_map = {}
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
 class ListBackup(command.Lister):
-    _description = _('List backups of a single DCS instance')
-    columns = ('id', 'name', 'progress', 'status', 'error_code')
+    _description = _("List backups of a single DCS instance")
+    columns = ("id", "name", "progress", "status", "error_code")
 
     def get_parser(self, prog_name):
         parser = super(ListBackup, self).get_parser(prog_name)
         parser.add_argument(
-            'instance',
-            metavar='<instance>',
-            help=_('Name or ID of the instance')
+            "instance", metavar="<instance>", help=_("Name or ID of the instance")
         )
         parser.add_argument(
-            '--limit',
-            metavar='<limit>',
+            "--limit",
+            metavar="<limit>",
             type=int,
-            help=_('Limit number of records to return.')
+            help=_("Limit number of records to return."),
         )
         parser.add_argument(
-            '--start',
-            metavar='<start>',
-            type=int,
-            help=_('Start number for querying.')
+            "--start", metavar="<start>", type=int, help=_("Start number for querying.")
         )
         parser.add_argument(
-            '--from_time',
-            metavar='<yyyyMMddHHmmss>',
-            help=_('Start time of the period to be queried.')
+            "--from_time",
+            metavar="<yyyyMMddHHmmss>",
+            help=_("Start time of the period to be queried."),
         )
         parser.add_argument(
-            '--to_time',
-            metavar='<yyyyMMddHHmmss>',
-            help=_('End time of the period to be queried.')
+            "--to_time",
+            metavar="<yyyyMMddHHmmss>",
+            help=_("End time of the period to be queried."),
         )
         return parser
 
@@ -69,43 +63,45 @@ class ListBackup(command.Lister):
 
         query = {}
         if parsed_args.limit:
-            query['limit'] = parsed_args.limit
+            query["limit"] = parsed_args.limit
         if parsed_args.start:
-            query['start'] = parsed_args.start
+            query["start"] = parsed_args.start
         if parsed_args.from_time:
-            query['begin_time'] = parsed_args.from_time
+            query["begin_time"] = parsed_args.from_time
         if parsed_args.to_time:
-            query['end_time'] = parsed_args.to_time
+            query["end_time"] = parsed_args.to_time
 
-        inst = client.find_instance(name_or_id=parsed_args.instance,
-                                    ignore_missing=False)
-        data = client.backups(
-            instance={'id': inst.id},
-            **query
+        inst = client.find_instance(
+            name_or_id=parsed_args.instance, ignore_missing=False
         )
+        data = client.backups(instance={"id": inst.id}, **query)
 
-        table = (self.columns,
-                 (utils.get_item_properties(
-                     s, self.columns,
-                 ) for s in data))
+        table = (
+            self.columns,
+            (
+                utils.get_item_properties(
+                    s,
+                    self.columns,
+                )
+                for s in data
+            ),
+        )
         return table
 
 
 class DeleteBackup(command.Command):
-    _description = _('Delete DCS instance backup')
+    _description = _("Delete DCS instance backup")
 
     def get_parser(self, prog_name):
         parser = super(DeleteBackup, self).get_parser(prog_name)
         parser.add_argument(
-            'instance',
-            metavar='<instance>',
-            help=_('ID of the instance.')
+            "instance", metavar="<instance>", help=_("ID of the instance.")
         )
         parser.add_argument(
-            'backup',
-            metavar='<backup>',
-            nargs='+',
-            help=_('ID of the instance backup to delete.')
+            "backup",
+            metavar="<backup>",
+            nargs="+",
+            help=_("ID of the instance backup to delete."),
         )
         return parser
 
@@ -113,29 +109,27 @@ class DeleteBackup(command.Command):
 
         if parsed_args.instance:
             client = self.app.client_manager.dcs
-            inst = client.find_instance(name_or_id=parsed_args.instance,
-                                        ignore_missing=False)
+            inst = client.find_instance(
+                name_or_id=parsed_args.instance, ignore_missing=False
+            )
             for backup in parsed_args.backup:
-                client.delete_instance_backup(
-                    backup=backup,
-                    instance_id=inst.id
-                )
+                client.delete_instance_backup(backup=backup, instance_id=inst.id)
 
 
 class CreateBackup(command.ShowOne):
-    _description = _('Create a backup of a DCS instance')
+    _description = _("Create a backup of a DCS instance")
 
     def get_parser(self, prog_name):
         parser = super(CreateBackup, self).get_parser(prog_name)
         parser.add_argument(
-            'instance',
-            metavar='<instance>',
-            help=_('Name or ID of the DCS instance to take backup from.')
+            "instance",
+            metavar="<instance>",
+            help=_("Name or ID of the DCS instance to take backup from."),
         )
         parser.add_argument(
-            '--description',
-            metavar='<description>',
-            help=_('Description of the backup.')
+            "--description",
+            metavar="<description>",
+            help=_("Description of the backup."),
         )
         return parser
 
@@ -146,14 +140,13 @@ class CreateBackup(command.ShowOne):
         attrs = {}
 
         if parsed_args.description:
-            attrs['description'] = parsed_args.description
+            attrs["description"] = parsed_args.description
 
-        inst = client.find_instance(name_or_id=parsed_args.instance,
-                                    ignore_missing=False)
+        inst = client.find_instance(
+            name_or_id=parsed_args.instance, ignore_missing=False
+        )
 
-        obj = client.backup_instance(
-            instance={'id': inst.id},
-            **attrs)
+        obj = client.backup_instance(instance={"id": inst.id}, **attrs)
 
         display_columns, columns = _get_columns(obj)
         data = utils.get_item_properties(obj, columns)

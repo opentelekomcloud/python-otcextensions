@@ -14,7 +14,7 @@ from otcextensions.tests.functional.sdk.apig import TestApiG
 
 
 class TestApiCall(TestApiG):
-    gateway = '560de602c9f74969a05ff01d401a53ed'
+    gateway = "560de602c9f74969a05ff01d401a53ed"
 
     def setUp(self):
         super(TestApiCall, self).setUp()
@@ -24,29 +24,27 @@ class TestApiCall(TestApiG):
 
     def test_get_api_call_for_period(self):
         attrs = {
-            'api_id': '64182cc7e77245ebbae8cf3b8522a540',
-            'duration': '1h',
+            "api_id": "64182cc7e77245ebbae8cf3b8522a540",
+            "duration": "1h",
         }
-        found = self.client.list_api_calls_for_period(gateway=self.gateway,
-                                                      **attrs)
+        found = self.client.list_api_calls_for_period(gateway=self.gateway, **attrs)
         self.assertIsNotNone(found)
 
     def test_get_api_call_for_group(self):
         attrs = {
-            'group_id': 'ce973ff83ce54ef192c80bde884aa0ac',
+            "group_id": "ce973ff83ce54ef192c80bde884aa0ac",
         }
-        found = self.client.list_api_calls_for_group(gateway=self.gateway,
-                                                     **attrs)
+        found = self.client.list_api_calls_for_group(gateway=self.gateway, **attrs)
         self.assertIsNotNone(found)
 
     def test_list_metric_data(self):
         attrs = {
-            'dim': 'inbound_eip',
-            'metric_name': 'upstream_bandwidth',
-            'from': '1740787200000',
-            'to': '1740873600000',
-            'period': 3600,
-            'filter': 'average',
+            "dim": "inbound_eip",
+            "metric_name": "upstream_bandwidth",
+            "from": "1740787200000",
+            "to": "1740873600000",
+            "period": 3600,
+            "filter": "average",
         }
         found = self.client.list_metric_data(gateway=self.gateway, **attrs)
         self.assertIsNotNone(found)

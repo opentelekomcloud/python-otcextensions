@@ -20,32 +20,29 @@ class TestIpAddressGroup(TestVlb):
         self.create_ip_address_group()
 
     def test_01_list_ip_address_groups(self):
-        ip_groups = list(self.client.ip_address_groups(
-            name=TestIpAddressGroup.ip_address_group.name))
+        ip_groups = list(
+            self.client.ip_address_groups(name=TestIpAddressGroup.ip_address_group.name)
+        )
         self.assertGreaterEqual(len(ip_groups), 0)
 
     def test_02_get_ip_address_group(self):
-        ip_address_group = self.client.get_ip_address_group(
-            TestVlb.ip_address_group)
+        ip_address_group = self.client.get_ip_address_group(TestVlb.ip_address_group)
         self.assertIsNotNone(ip_address_group)
 
     def test_03_find_ip_address_group(self):
         ip_address_group = self.client.find_ip_address_group(
-            TestVlb.ip_address_group.name)
+            TestVlb.ip_address_group.name
+        )
         self.assertIsNotNone(ip_address_group)
 
     def test_04_update_ip_address_group(self):
-        new_description = 'changed'
+        new_description = "changed"
         ip_list = [{"ip": "192.168.1.125", "description": ""}]
         ip_address_group = self.client.update_ip_address_group(
-            TestVlb.ip_address_group,
-            description=new_description,
-            ip_list=ip_list
+            TestVlb.ip_address_group, description=new_description, ip_list=ip_list
         )
-        self.assertEqual(ip_address_group['description'], new_description)
-        self.assertEqual(ip_address_group['ip_list'], ip_list)
+        self.assertEqual(ip_address_group["description"], new_description)
+        self.assertEqual(ip_address_group["ip_list"], ip_list)
 
         # cleanup
-        self.client.delete_ip_address_group(
-            TestVlb.ip_address_group
-        )
+        self.client.delete_ip_address_group(TestVlb.ip_address_group)

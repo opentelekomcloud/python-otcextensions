@@ -12,6 +12,7 @@
 # under the License.
 #
 """Create a training job configuration from attributes."""
+
 import openstack
 
 openstack.enable_logging(True)

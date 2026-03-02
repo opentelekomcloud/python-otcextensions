@@ -16,7 +16,7 @@ from otcextensions.tests.functional.sdk.apig import TestApiG
 class TestGroupResponse(TestApiG):
     gateway_id = "560de602c9f74969a05ff01d401a53ed"
     group_id = "ce973ff83ce54ef192c80bde884aa0ac"
-    response_id = '0bcaa1fd92984d2d86dfc207bd3f3bcd'
+    response_id = "0bcaa1fd92984d2d86dfc207bd3f3bcd"
 
     def setUp(self):
         super(TestGroupResponse, self).setUp()
@@ -26,12 +26,14 @@ class TestGroupResponse(TestApiG):
                 "NOT_FOUND": {
                     "status": 404,
                     "body": "Bad Request",
-                    "headers": [{
-                        "key": "Content-Type",
-                        "value": "application/json",
-                    }]
+                    "headers": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json",
+                        }
+                    ],
                 }
-            }
+            },
         }
         try:
             group_response = self.client.create_group_response(
@@ -45,7 +47,7 @@ class TestGroupResponse(TestApiG):
                 self.client.delete_group_response,
                 gateway=TestGroupResponse.gateway_id,
                 group=TestGroupResponse.group_id,
-                response=group_response.id
+                response=group_response.id,
             )
         except Exception as e:
             print("Failed to create group response:", e)
@@ -54,16 +56,16 @@ class TestGroupResponse(TestApiG):
         super(TestGroupResponse, self).tearDown()
 
     def test_get_group_response_list(self):
-        response_list = list(self.client.group_responses(
-            gateway=TestGroupResponse.gateway_id,
-            group=TestGroupResponse.group_id))
+        response_list = list(
+            self.client.group_responses(
+                gateway=TestGroupResponse.gateway_id, group=TestGroupResponse.group_id
+            )
+        )
         print(response_list)
 
     def test_update_response(self):
         check = "response_demo"
-        attrs = {
-            "name": check
-        }
+        attrs = {"name": check}
         updated = self.client.update_group_response(
             gateway=TestGroupResponse.gateway_id,
             group=TestGroupResponse.group_id,
@@ -76,7 +78,7 @@ class TestGroupResponse(TestApiG):
         response = self.client.get_group_response(
             gateway=TestGroupResponse.gateway_id,
             group=TestGroupResponse.group_id,
-            response=TestGroupResponse.response_id
+            response=TestGroupResponse.response_id,
         )
         print("Fetched Group Response:", response)
         self.assertEqual(TestGroupResponse.response_id, response.id)
@@ -86,7 +88,7 @@ class TestGroupResponse(TestApiG):
             gateway=TestGroupResponse.gateway_id,
             group=TestGroupResponse.group_id,
             response=TestGroupResponse.response_id,
-            response_type='NOT_FOUND'
+            response_type="NOT_FOUND",
         )
         print(error_response)
 
@@ -94,14 +96,14 @@ class TestGroupResponse(TestApiG):
         check = "response_demo"
         attrs = {
             "status": 403,
-            "body": "{\"error_code\": \"$context.error.code\", "
-                    "\"error_msg\": \"$context.error.message\"}"
+            "body": '{"error_code": "$context.error.code", '
+            '"error_msg": "$context.error.message"}',
         }
         updated = self.client.update_error_response(
             gateway=TestGroupResponse.gateway_id,
             group=TestGroupResponse.group_id,
             response=TestGroupResponse.response_id,
-            response_type='NOT_FOUND',
+            response_type="NOT_FOUND",
             **attrs
         )
         self.assertEqual(check, updated.name)
@@ -111,7 +113,7 @@ class TestGroupResponse(TestApiG):
             gateway=TestGroupResponse.gateway_id,
             group=TestGroupResponse.group_id,
             response=TestGroupResponse.response_id,
-            response_type='NOT_FOUND'
+            response_type="NOT_FOUND",
         )
         print("Deleted Error Response:", response)
         self.assertIsNone(response)

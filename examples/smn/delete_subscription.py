@@ -13,11 +13,12 @@
 """
 Delete a SMN subscription
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-subscription = 'subscription_urn'
+subscription = "subscription_urn"
 conn.smn.delete_subscription(subscription)

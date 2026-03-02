@@ -11,10 +11,11 @@
 # under the License.
 #
 """List endpoints."""
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 endpoints = conn.vpcep.endpoints()
 print(list(endpoints))

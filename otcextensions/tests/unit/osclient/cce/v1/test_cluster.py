@@ -27,15 +27,15 @@ class TestCluster(fakes.TestCCE):
         flat_data = cluster._flatten_cluster(_obj)
 
         data = (
-            flat_data['id'],
-            flat_data['name'],
-            flat_data['cpu'],
-            flat_data['memory'],
-            flat_data['endpoint'],
-            flat_data['availability_zone'],
-            flat_data['vpc'],
-            flat_data['status'],
-            flat_data['nodes']
+            flat_data["id"],
+            flat_data["name"],
+            flat_data["cpu"],
+            flat_data["memory"],
+            flat_data["endpoint"],
+            flat_data["availability_zone"],
+            flat_data["vpc"],
+            flat_data["status"],
+            flat_data["nodes"],
         )
 
         cmp_data = (
@@ -46,8 +46,8 @@ class TestCluster(fakes.TestCCE):
             _obj.spec.endpoint,
             _obj.spec.availability_zone,
             _obj.spec.vpc,
-            _obj.status['status'],
-            len(_obj.spec.host_list.spec.host_list)
+            _obj.status["status"],
+            len(_obj.spec.host_list.spec.host_list),
         )
 
         self.assertEqual(data, cmp_data)
@@ -61,15 +61,15 @@ class TestCluster(fakes.TestCCE):
         flat_data = cluster._flatten_cluster(_obj)
 
         data = (
-            flat_data['id'],
-            flat_data['name'],
-            flat_data['cpu'],
-            flat_data['memory'],
-            flat_data['endpoint'],
-            flat_data['availability_zone'],
-            flat_data['vpc'],
-            flat_data['status'],
-            flat_data['nodes']
+            flat_data["id"],
+            flat_data["name"],
+            flat_data["cpu"],
+            flat_data["memory"],
+            flat_data["endpoint"],
+            flat_data["availability_zone"],
+            flat_data["vpc"],
+            flat_data["status"],
+            flat_data["nodes"],
         )
 
         cmp_data = (
@@ -80,8 +80,8 @@ class TestCluster(fakes.TestCCE):
             _obj.spec.endpoint,
             _obj.spec.availability_zone,
             _obj.spec.vpc,
-            _obj.status['status'],
-            0
+            _obj.status["status"],
+            0,
         )
 
         self.assertEqual(data, cmp_data)
@@ -91,19 +91,21 @@ class TestListCluster(fakes.TestCCE):
 
     _objs = fakes.FakeCluster.create_multiple(3)
 
-    columns = ('ID', 'name', 'cpu', 'memory', 'endpoint')
+    columns = ("ID", "name", "cpu", "memory", "endpoint")
 
     data = []
 
     for s in _objs:
         flat_data = cluster._flatten_cluster(s)
-        data.append((
-            flat_data['id'],
-            flat_data['name'],
-            flat_data['cpu'],
-            flat_data['memory'],
-            flat_data['endpoint'],
-        ))
+        data.append(
+            (
+                flat_data["id"],
+                flat_data["name"],
+                flat_data["cpu"],
+                flat_data["memory"],
+                flat_data["endpoint"],
+            )
+        )
 
     def setUp(self):
         super(TestListCluster, self).setUp()
@@ -121,9 +123,7 @@ class TestListCluster(fakes.TestCCE):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.clusters.side_effect = [
-            self._objs
-        ]
+        self.client.clusters.side_effect = [self._objs]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -138,20 +138,28 @@ class TestShowCluster(fakes.TestCCE):
 
     _obj = fakes.FakeCluster.create_one()
 
-    columns = ('ID', 'name', 'status', 'cpu', 'memory', 'endpoint',
-               'availability_zone',
-               'vpc', 'nodes')
+    columns = (
+        "ID",
+        "name",
+        "status",
+        "cpu",
+        "memory",
+        "endpoint",
+        "availability_zone",
+        "vpc",
+        "nodes",
+    )
     flat_data = cluster._flatten_cluster(_obj)
     data = (
-        flat_data['id'],
-        flat_data['name'],
-        flat_data['status'],
-        flat_data['cpu'],
-        flat_data['memory'],
-        flat_data['endpoint'],
-        flat_data['availability_zone'],
-        flat_data['vpc'],
-        flat_data['nodes']
+        flat_data["id"],
+        flat_data["name"],
+        flat_data["status"],
+        flat_data["cpu"],
+        flat_data["memory"],
+        flat_data["endpoint"],
+        flat_data["availability_zone"],
+        flat_data["vpc"],
+        flat_data["nodes"],
     )
 
     def setUp(self):
@@ -162,26 +170,20 @@ class TestShowCluster(fakes.TestCCE):
         self.client.find_cluster = mock.Mock()
 
     def test_get(self):
-        arglist = [
-            'cluster_uuid'
-        ]
+        arglist = ["cluster_uuid"]
 
-        verifylist = [
-            ('cluster', 'cluster_uuid')
-        ]
+        verifylist = [("cluster", "cluster_uuid")]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_cluster.side_effect = [
-            self._obj
-        ]
+        self.client.find_cluster.side_effect = [self._obj]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_cluster.assert_called_once_with('cluster_uuid')
+        self.client.find_cluster.assert_called_once_with("cluster_uuid")
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -191,21 +193,29 @@ class TestCreateCluster(fakes.TestCCE):
 
     _obj = fakes.FakeCluster.create_one()
 
-    columns = ('ID', 'name', 'status', 'cpu', 'memory', 'endpoint',
-               'availability_zone',
-               'vpc', 'nodes')
+    columns = (
+        "ID",
+        "name",
+        "status",
+        "cpu",
+        "memory",
+        "endpoint",
+        "availability_zone",
+        "vpc",
+        "nodes",
+    )
 
     flat_data = cluster._flatten_cluster(_obj)
     data = (
-        flat_data['id'],
-        flat_data['name'],
-        flat_data['status'],
-        flat_data['cpu'],
-        flat_data['memory'],
-        flat_data['endpoint'],
-        flat_data['availability_zone'],
-        flat_data['vpc'],
-        flat_data['nodes']
+        flat_data["id"],
+        flat_data["name"],
+        flat_data["status"],
+        flat_data["cpu"],
+        flat_data["memory"],
+        flat_data["endpoint"],
+        flat_data["availability_zone"],
+        flat_data["vpc"],
+        flat_data["nodes"],
     )
 
     def setUp(self):
@@ -217,46 +227,48 @@ class TestCreateCluster(fakes.TestCCE):
 
     def test_create(self):
         arglist = [
-            'cluster_name',
-            'vpc_id',
-            'subnet_id',
-            '--description', 'descr',
-            '--region', 'regio',
-            '--security_group', 'sg',
-            '--type', 'HA'
+            "cluster_name",
+            "vpc_id",
+            "subnet_id",
+            "--description",
+            "descr",
+            "--region",
+            "regio",
+            "--security_group",
+            "sg",
+            "--type",
+            "HA",
         ]
 
         verifylist = [
-            ('name', 'cluster_name'),
-            ('vpc', 'vpc_id'),
-            ('subnet', 'subnet_id'),
-            ('description', 'descr'),
-            ('region', 'regio'),
-            ('security_group', 'sg'),
-            ('type', 'HA')
+            ("name", "cluster_name"),
+            ("vpc", "vpc_id"),
+            ("subnet", "subnet_id"),
+            ("description", "descr"),
+            ("region", "regio"),
+            ("security_group", "sg"),
+            ("type", "HA"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.create_cluster.side_effect = [
-            self._obj
-        ]
+        self.client.create_cluster.side_effect = [self._obj]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.create_cluster.assert_called_once_with(
-            name='cluster_name',
+            name="cluster_name",
             spec={
-                'vpc': 'vpc_id',
-                'subnet': 'subnet_id',
-                'region': 'regio',
-                'description': 'descr',
-                'security_group_id': 'sg',
-                'cluster_type': 'HA'
-            }
+                "vpc": "vpc_id",
+                "subnet": "subnet_id",
+                "region": "regio",
+                "description": "descr",
+                "security_group_id": "sg",
+                "cluster_type": "HA",
+            },
         )
 
         self.assertEqual(self.columns, columns)
@@ -273,13 +285,9 @@ class TestDeleteCluster(fakes.TestCCE):
         self.client.delete_cluster = mock.Mock()
 
     def test_delete(self):
-        arglist = [
-            'cluster_uuid'
-        ]
+        arglist = ["cluster_uuid"]
 
-        verifylist = [
-            ('cluster', 'cluster_uuid')
-        ]
+        verifylist = [("cluster", "cluster_uuid")]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -290,4 +298,4 @@ class TestDeleteCluster(fakes.TestCCE):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        self.client.delete_cluster.assert_called_once_with('cluster_uuid')
+        self.client.delete_cluster.assert_called_once_with("cluster_uuid")

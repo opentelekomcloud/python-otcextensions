@@ -11,13 +11,12 @@
 # under the License.
 
 import uuid
-from otcextensions.sdk.function_graph.v2 import function
 
 from openstack import _log
-
+from otcextensions.sdk.function_graph.v2 import function
 from otcextensions.tests.functional.sdk.function_graph import TestFg
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestFunctionInstances(TestFg):
@@ -29,19 +28,11 @@ class TestFunctionInstances(TestFg):
         self.function = self.client.create_function(**TestFg.function_attrs)
         assert isinstance(self.function, function.Function)
 
-        attrs = {
-            "count": 2
-        }
-        self.instances = self.client.update_instances_number(
-            self.function,
-            **attrs
-        )
+        attrs = {"count": 2}
+        self.instances = self.client.update_instances_number(self.function, **attrs)
         assert isinstance(self.function, function.Function)
 
-        self.addCleanup(
-            self.client.delete_function,
-            self.function
-        )
+        self.addCleanup(self.client.delete_function, self.function)
 
     def test_instances_config(self):
         inst = list(self.client.reserved_instances_config())

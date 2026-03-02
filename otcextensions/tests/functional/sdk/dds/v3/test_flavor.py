@@ -18,6 +18,5 @@ class TestFlavors(TestDds):
         super(TestFlavors, self).setUp()
 
     def test_list_flavors(self):
-        flavors = list(self.client.flavors(
-            region='eu-de', engine_name='DDS-Community'))
+        flavors = list(self.client.flavors(region="eu-de", engine_name="DDS-Community"))
         self.assertIsNotNone(flavors)

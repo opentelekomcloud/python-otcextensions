@@ -13,16 +13,15 @@ from otcextensions.tests.functional.sdk.dds import TestDds
 
 
 class TestDatastores(TestDds):
-    datastore_name = 'DDS-Community'
+    datastore_name = "DDS-Community"
 
     def setUp(self):
         super(TestDatastores, self).setUp()
 
     def test_list_datastores(self):
-        datastores = list(self.client.datastores(
-            datastore_name=self.datastore_name))
+        datastores = list(self.client.datastores(datastore_name=self.datastore_name))
         self.assertIsNotNone(datastores)
 
     def test_list_datastore_types(self):
         datastore_types = list(self.client.datastore_types())
-        self.assertEqual('DDS-Community', datastore_types[0].name)
+        self.assertEqual("DDS-Community", datastore_types[0].name)

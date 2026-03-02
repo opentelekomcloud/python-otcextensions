@@ -13,11 +13,11 @@
 """
 Get encrypted Key Instance Number
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 instances = conn.kms.get_instance_number()
 print(instances)

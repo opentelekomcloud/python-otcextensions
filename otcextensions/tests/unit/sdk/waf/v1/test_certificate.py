@@ -10,13 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import mock
-
 from keystoneauth1 import adapter
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.waf.v1 import certificate
-
 
 FAKE_ID = "68d5745e-6af2-40e4-945d-fe449be00148"
 EXAMPLE = {
@@ -25,7 +22,7 @@ EXAMPLE = {
     "content": "fake",
     "key": "fake",
     "timestamp": 1499817600,
-    "expire_time": 1499817600
+    "expire_time": 1499817600,
 }
 
 
@@ -39,8 +36,8 @@ class TestCertificate(base.TestCase):
     def test_basic(self):
         sot = certificate.Certificate()
 
-        self.assertEqual('/waf/certificate', sot.base_path)
-        self.assertEqual('items', sot.resources_key)
+        self.assertEqual("/waf/certificate", sot.base_path)
+        self.assertEqual("items", sot.resources_key)
         self.assertIsNone(sot.resource_key)
 
         self.assertTrue(sot.allow_list)
@@ -52,14 +49,12 @@ class TestCertificate(base.TestCase):
     def test_make_it(self):
 
         sot = certificate.Certificate(**EXAMPLE)
-        self.assertEqual(EXAMPLE['id'], sot.id)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['expire_time'], sot.expire_time)
-        self.assertEqual(EXAMPLE['timestamp'], sot.timestamp)
+        self.assertEqual(EXAMPLE["id"], sot.id)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["expire_time"], sot.expire_time)
+        self.assertEqual(EXAMPLE["timestamp"], sot.timestamp)
 
-        self.assertDictEqual({
-            'limit': 'limit',
-            'marker': 'marker',
-            'offset': 'offset'},
-            sot._query_mapping._mapping
+        self.assertDictEqual(
+            {"limit": "limit", "marker": "marker", "offset": "offset"},
+            sot._query_mapping._mapping,
         )

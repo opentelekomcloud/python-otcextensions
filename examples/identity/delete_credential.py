@@ -13,13 +13,13 @@
 """
 Delete AK/SK credentials
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-name_or_id = 'AK'
+name_or_id = "AK"
 credential = conn.identity.find_credential(name_or_id, ignore_missing=False)
 response = conn.identity.delete_credential(credential)

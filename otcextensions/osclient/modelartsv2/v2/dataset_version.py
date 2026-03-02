@@ -11,6 +11,7 @@
 #   under the License.
 #
 """ModelArts dataset version v2 action implementations"""
+
 import logging
 
 from cliff import columns as cliff_columns
@@ -27,9 +28,7 @@ LOG = logging.getLogger(__name__)
 def _get_columns(item):
     column_map = {}
     hidden = ["location"]
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(
-        item, column_map, hidden
-    )
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map, hidden)
 
 
 class VersionStatus(cliff_columns.FormattableColumn):
@@ -105,9 +104,7 @@ class ListDatasetVersions(command.Lister):
             if val or str(val) == "0":
                 query_params[arg] = val
 
-        dataset = client.find_dataset(
-            parsed_args.dataset, ignore_missing=False
-        )
+        dataset = client.find_dataset(parsed_args.dataset, ignore_missing=False)
         data = client.dataset_versions(dataset.id, **query_params)
 
         formatters = {
@@ -117,9 +114,7 @@ class ListDatasetVersions(command.Lister):
         return (
             self.columns,
             (
-                utils.get_item_properties(
-                    s, self.columns, formatters=formatters
-                )
+                utils.get_item_properties(s, self.columns, formatters=formatters)
                 for s in data
             ),
         )
@@ -158,8 +153,7 @@ class CreateDatasetVersion(command.ShowOne):
             "--version-format",
             metavar="<version_format>",
             help=_(
-                "Format of the exported version file, which is "
-                "case insensitive."
+                "Format of the exported version file, which is " "case insensitive."
             ),
         )
         parser.add_argument(
@@ -201,9 +195,7 @@ class CreateDatasetVersion(command.ShowOne):
         client = self.app.client_manager.modelartsv2
 
         attrs = {}
-        dataset = client.find_dataset(
-            parsed_args.dataset, ignore_missing=False
-        )
+        dataset = client.find_dataset(parsed_args.dataset, ignore_missing=False)
         if parsed_args.version_name:
             attrs["version_name"] = parsed_args.version_name
         if parsed_args.version_format:
@@ -251,9 +243,7 @@ class ShowDatasetVersion(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
 
-        dataset = client.find_dataset(
-            parsed_args.dataset, ignore_missing=False
-        )
+        dataset = client.find_dataset(parsed_args.dataset, ignore_missing=False)
         obj = client.get_dataset_version(dataset.id, parsed_args.versionId)
 
         formatters = {
@@ -288,8 +278,6 @@ class DeleteDatasetVersion(command.Command):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
-        dataset = client.find_dataset(
-            parsed_args.dataset, ignore_missing=False
-        )
+        dataset = client.find_dataset(parsed_args.dataset, ignore_missing=False)
 
         client.delete_dataset_version(dataset.id, parsed_args.versionId)

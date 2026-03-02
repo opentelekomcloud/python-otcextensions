@@ -10,14 +10,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from openstack import _log
-
 from collections import defaultdict
 
+from openstack import _log
 from otcextensions.sdk import sdk_resource
 
-
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class BaseResource(sdk_resource.Resource):
@@ -25,10 +23,9 @@ class BaseResource(sdk_resource.Resource):
 
     @classmethod
     def etree_to_dict(cls, t):
-        """Convert ETree to python dict
-        """
+        """Convert ETree to python dict"""
         if cls.OBS_NS in t.tag:
-            t.tag = t.tag.lstrip('{%s}' % (cls.OBS_NS))
+            t.tag = t.tag.lstrip("{%s}" % (cls.OBS_NS))
         d = {t.tag: {} if t.attrib else None}
         children = list(t)
         if children:
@@ -38,13 +35,13 @@ class BaseResource(sdk_resource.Resource):
                     dd[k].append(v)
             d = {t.tag: {k: v[0] if len(v) == 1 else v for k, v in dd.items()}}
         if t.attrib:
-            d[t.tag].update(('@' + k, v) for k, v in t.attrib.items())
+            d[t.tag].update(("@" + k, v) for k, v in t.attrib.items())
         if t.text:
             # strip spaces and quotes
             text = t.text.strip(' "')
             if children or t.attrib:
                 if text:
-                    d[t.tag]['#text'] = text
+                    d[t.tag]["#text"] = text
             else:
                 d[t.tag] = text
         return d

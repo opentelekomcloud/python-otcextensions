@@ -13,12 +13,13 @@
 """
 Get all log streams in log group
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-for stream in conn.lts.streams(log_group='log-group-uuid'):
+for stream in conn.lts.streams(log_group="log-group-uuid"):
     print(stream)

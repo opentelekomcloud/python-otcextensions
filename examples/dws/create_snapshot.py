@@ -13,16 +13,17 @@
 """
 Create snapshot for a specified DWS cluster.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-cluster_id = 'cluster-uuid'
+cluster_id = "cluster-uuid"
 attrs = {
-    'name': 'snapshot-3',
-    'cluster_id': cluster_id,
-    'description': 'Snapshot-3 description'
+    "name": "snapshot-3",
+    "cluster_id": cluster_id,
+    "description": "Snapshot-3 description",
 }
 
 result = conn.dws.create_snapshot(**attrs)

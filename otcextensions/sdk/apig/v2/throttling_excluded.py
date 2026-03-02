@@ -13,43 +13,43 @@ from openstack import resource
 
 
 class ThrottlingExcludedPolicy(resource.Resource):
-    base_path = (f'/apigw/instances/%(gateway_id)s/throttles/'
-                 f'%(throttle_id)s/throttle-specials')
+    base_path = (
+        "/apigw/instances/%(gateway_id)s/throttles/" "%(throttle_id)s/throttle-specials"
+    )
 
     allow_list = True
     allow_create = True
     allow_commit = True
     allow_delete = True
 
-    resources_key = 'throttle_specials'
+    resources_key = "throttle_specials"
 
     _query_mapping = resource.QueryParameters(
-        'limit', 'offset', 'object_type',
-        'app_name', 'user'
+        "limit", "offset", "object_type", "app_name", "user"
     )
 
     # Properties
-    gateway_id = resource.URI('gateway_id')
+    gateway_id = resource.URI("gateway_id")
     # Request throttling policy ID.
-    throttle_id = resource.URI('throttle_id')
+    throttle_id = resource.URI("throttle_id")
 
     # Maximum number of times an excluded object
     # can access an API within the throttling period.
-    call_limits = resource.Body('call_limits', type=int)
+    call_limits = resource.Body("call_limits", type=int)
     # Excluded app ID or account ID.
-    object_id = resource.Body('object_id', type=str)
+    object_id = resource.Body("object_id", type=str)
     # Excluded object type.
     # Enumeration values:
     # APP
     # USER
-    object_type = resource.Body('object_type', type=str)
+    object_type = resource.Body("object_type", type=str)
 
     # Attributes
     # Throttling period.
-    apply_time = resource.Body('apply_time', type=str)
+    apply_time = resource.Body("apply_time", type=str)
     # App name.
-    app_name = resource.Body('app_name', type=str)
+    app_name = resource.Body("app_name", type=str)
     # App ID.
-    app_id = resource.Body('app_id', type=str)
+    app_id = resource.Body("app_id", type=str)
     # Name of an app or a tenant to which the excluded configuration applies.
-    object_name = resource.Body('object_name', type=str)
+    object_name = resource.Body("object_name", type=str)

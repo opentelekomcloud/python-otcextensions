@@ -10,81 +10,74 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import uuid
 import json
+import uuid
 
 from openstackclient.tests.functional import base
 
 
 class TestCce(base.TestCase):
-    """Functional tests for CCE Instance. """
+    """Functional tests for CCE Instance."""
 
     UUID = uuid.uuid4().hex[:4]
-    ROUTER_NAME = 'sdk_cce_test_router' + UUID
-    NET_NAME = 'sdk_cce_test_net' + UUID
-    SUBNET_NAME = 'sdk_cce_test_subnet' + UUID
+    ROUTER_NAME = "sdk_cce_test_router" + UUID
+    NET_NAME = "sdk_cce_test_net" + UUID
+    SUBNET_NAME = "sdk_cce_test_subnet" + UUID
     ROUTER_ID = None
     NET_ID = None
 
-    CLUSTER_NAME = 'sdk-test-cce' + UUID
+    CLUSTER_NAME = "sdk-test-cce" + UUID
 
     def test_01_cluster_list(self):
-        self.openstack(
-            'cce cluster list -f json '
-        )
+        self.openstack("cce cluster list -f json ")
 
     def test_02_cluster_create(self):
         self._initialize_network()
         cmd = (
-            f'cce cluster create '
-            f'{self.CLUSTER_NAME} '
-            f'{self.ROUTER_NAME} '
-            f'{self.NET_NAME} '
-            f'--description descr '
-            f'--flavor cce.s1.small '
-            f'--container-network-mode overlay_l2 '
-            f'--wait --wait-interval 10 '
-            f'-f json'
+            f"cce cluster create "
+            f"{self.CLUSTER_NAME} "
+            f"{self.ROUTER_NAME} "
+            f"{self.NET_NAME} "
+            f"--description descr "
+            f"--flavor cce.s1.small "
+            f"--container-network-mode overlay_l2 "
+            f"--wait --wait-interval 10 "
+            f"-f json"
         )
 
         json_output = json.loads(self.openstack(cmd))
 
-        self.assertIsNotNone(json_output['ID'])
+        self.assertIsNotNone(json_output["ID"])
 
     def test_03_cluster_delete(self):
         self.addCleanup(self._deinitialize_network)
         self.openstack(
-            f'cce cluster delete {self.CLUSTER_NAME} --wait --wait-interval 10'
+            f"cce cluster delete {self.CLUSTER_NAME} --wait --wait-interval 10"
         )
 
     def _initialize_network(self):
-        router = json.loads(self.openstack(
-            'router create -f json ' + self.ROUTER_NAME
-        ))
+        router = json.loads(self.openstack("router create -f json " + self.ROUTER_NAME))
         self.assertIsNotNone(router)
 
-        net = json.loads(self.openstack(
-            'network create -f json ' + self.NET_NAME
-        ))
+        net = json.loads(self.openstack("network create -f json " + self.NET_NAME))
         self.assertIsNotNone(net)
 
-        subnet = json.loads(self.openstack(
-            f'subnet create {self.SUBNET_NAME} '
-            f'-f json --network {self.NET_NAME} '
-            f'--subnet-range 192.168.0.0/24'
-        ))
+        subnet = json.loads(
+            self.openstack(
+                f"subnet create {self.SUBNET_NAME} "
+                f"-f json --network {self.NET_NAME} "
+                f"--subnet-range 192.168.0.0/24"
+            )
+        )
         self.assertIsNotNone(subnet)
 
-        self.openstack(
-            f'router add subnet {self.ROUTER_NAME} {self.SUBNET_NAME}'
-        )
+        self.openstack(f"router add subnet {self.ROUTER_NAME} {self.SUBNET_NAME}")
 
-        self.ROUTER_ID = router['id']
-        self.NET_ID = net['id']
+        self.ROUTER_ID = router["id"]
+        self.NET_ID = net["id"]
 
     def _deinitialize_network(self):
-        self.openstack(
-            f'router remove subnet {self.ROUTER_NAME} {self.SUBNET_NAME}')
-        self.openstack('subnet delete ' + self.SUBNET_NAME)
-        self.openstack('network delete ' + self.NET_NAME)
-        self.openstack('router delete ' + self.ROUTER_NAME)
+        self.openstack(f"router remove subnet {self.ROUTER_NAME} {self.SUBNET_NAME}")
+        self.openstack("subnet delete " + self.SUBNET_NAME)
+        self.openstack("network delete " + self.NET_NAME)
+        self.openstack("router delete " + self.ROUTER_NAME)

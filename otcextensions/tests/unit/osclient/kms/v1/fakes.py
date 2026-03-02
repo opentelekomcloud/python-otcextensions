@@ -14,12 +14,12 @@ import random
 import uuid
 
 import mock
-
 from openstackclient.tests.unit import utils
-from otcextensions.tests.unit.osclient import test_base
 
 from otcextensions.sdk.kms.v1 import key
 from otcextensions.sdk.kms.v1 import quota
+from otcextensions.tests.unit.osclient import test_base
+
 # from otcextensions.sdk.kms.v1 import data_key
 
 
@@ -37,23 +37,19 @@ class FakeCMK(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'creation_date': datetime.datetime(
-                random.randint(2000, 2020),
-                random.randint(1, 12),
-                random.randint(1, 28)
+            "creation_date": datetime.datetime(
+                random.randint(2000, 2020), random.randint(1, 12), random.randint(1, 28)
             ),
-            'scheduled_deletion_date': datetime.datetime(
-                random.randint(2000, 2020),
-                random.randint(1, 12),
-                random.randint(1, 28)
+            "scheduled_deletion_date": datetime.datetime(
+                random.randint(2000, 2020), random.randint(1, 12), random.randint(1, 28)
             ),
-            'key_alias': 'alias-' + uuid.uuid4().hex,
-            'id': 'id-' + uuid.uuid4().hex,
-            'domain_id': 'domain-' + uuid.uuid4().hex,
-            'key_status': 'SOME STATUS',
-            'key_description': 'description-' + uuid.uuid4().hex,
-            'realm': 'realm-' + uuid.uuid4().hex,
-            'key_type': 'type-' + uuid.uuid4().hex,
+            "key_alias": "alias-" + uuid.uuid4().hex,
+            "id": "id-" + uuid.uuid4().hex,
+            "domain_id": "domain-" + uuid.uuid4().hex,
+            "key_status": "SOME STATUS",
+            "key_description": "description-" + uuid.uuid4().hex,
+            "realm": "realm-" + uuid.uuid4().hex,
+            "key_type": "type-" + uuid.uuid4().hex,
         }
         obj = key.Key.existing(**object_info)
         return obj
@@ -66,9 +62,9 @@ class FakeQuota(test_base.Fake):
     def generate(cls):
 
         object_info = {
-            'quota': random.randint(1, 65535),
-            'used': random.randint(1, 65535),
-            'type': random.choice(['CMK', 'grant_per_CMK']),
+            "quota": random.randint(1, 65535),
+            "used": random.randint(1, 65535),
+            "type": random.choice(["CMK", "grant_per_CMK"]),
         }
         obj = quota.Quota.existing(**object_info)
         return obj

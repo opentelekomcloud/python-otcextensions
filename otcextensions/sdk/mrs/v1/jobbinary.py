@@ -12,16 +12,15 @@
 
 from openstack import _log
 from openstack import resource
-
 from otcextensions.sdk.mrs.v1 import _base
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class Jobbinary(_base.Resource):
-    resource_key = 'job_binary'
-    resources_key = 'binaries'
-    base_path = '/job-binaries'
+    resource_key = "job_binary"
+    resources_key = "binaries"
+    base_path = "/job-binaries"
 
     # capabilities
     allow_create = True
@@ -31,23 +30,23 @@ class Jobbinary(_base.Resource):
     allow_update = True
 
     _query_mapping = resource.QueryParameters(
-        'id', 'name', 'url', 'description', 'is_public',
-        'is_protected')
+        "id", "name", "url", "description", "is_public", "is_protected"
+    )
 
     #: Properties
     #: Binary object ID
-    id = resource.Body('id', alternate_id=True)
+    id = resource.Body("id", alternate_id=True)
     #: Binary object name
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: Binary object URL
-    url = resource.Body('url')
+    url = resource.Body("url")
     #: Binary object description
-    description = resource.Body('description')
+    description = resource.Body("description")
     #: Whether a binary object is public
-    is_public = resource.Body('is_public')
+    is_public = resource.Body("is_public")
     #: Whether a binary object is protected
-    is_protected = resource.Body('is_protected')
+    is_protected = resource.Body("is_protected")
     #: Binary object creation time
-    created_at = resource.Body('created_at')
+    created_at = resource.Body("created_at")
     #: Binary object update time
-    updated_at = resource.Body('updated_at')
+    updated_at = resource.Body("updated_at")

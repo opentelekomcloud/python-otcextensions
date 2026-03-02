@@ -13,15 +13,16 @@
 """
 List all SMN subscriptions
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 for item in conn.smn.subscriptions():
     print(item)
 
-topic = 'topic_urn'
+topic = "topic_urn"
 for item in conn.smn.subscriptions(topic=topic):
     print(item)

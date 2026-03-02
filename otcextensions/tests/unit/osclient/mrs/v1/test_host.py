@@ -19,8 +19,15 @@ class TestListClusterHost(fakes.TestMrs):
     objects = fakes.FakeHost.create_multiple(3)
 
     columns = (
-        'id', 'name', 'status', 'flavor', 'type',
-        'ip', 'mem', 'cpu', 'data_volume_size'
+        "id",
+        "name",
+        "status",
+        "flavor",
+        "type",
+        "ip",
+        "mem",
+        "cpu",
+        "data_volume_size",
     )
 
     data = []
@@ -37,26 +44,19 @@ class TestListClusterHost(fakes.TestMrs):
         self.client.api_mock = self.client.hosts
 
     def test_default(self):
-        arglist = [
-            'cluster_id'
-        ]
-        verifylist = [
-        ]
+        arglist = ["cluster_id"]
+        verifylist = []
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self.objects
-        ]
+        self.client.api_mock.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.api_mock.assert_called_once_with(
-            cluster_id='cluster_id'
-        )
+        self.client.api_mock.assert_called_once_with(cluster_id="cluster_id")
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))

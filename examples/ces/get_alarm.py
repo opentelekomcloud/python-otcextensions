@@ -13,12 +13,13 @@
 """
 Find CloudEye alarm rule by ID
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-alarm = 'alarm_id'
+alarm = "alarm_id"
 alarm = conn.ces.get_alarm(alarm)
 print(alarm)

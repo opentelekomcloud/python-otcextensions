@@ -11,17 +11,14 @@
 # under the License.
 
 import openstack
-
 from otcextensions.tests.functional import base
 
 
 class TestOtcextensionsInitialization(base.BaseFunctionalTest):
 
     def test_basic(self):
-        conn = openstack.connect(
-            vendor_hook='otcextensions.sdk:load'
-        )
+        conn = openstack.connect(vendor_hook="otcextensions.sdk:load")
 
-        self.assertTrue(hasattr(conn.dns, 'add_router_to_zone'))
+        self.assertTrue(hasattr(conn.dns, "add_router_to_zone"))
         list(conn.volume_backup.backup_policies())
         list(conn.obs.containers())

@@ -15,9 +15,7 @@ from cliff import columns
 
 
 def get_osc_show_columns_for_sdk_resource(
-        sdk_resource,
-        osc_column_map,
-        invisible_columns=None
+    sdk_resource, osc_column_map, invisible_columns=None
 ):
     """Get and filter the display and attribute columns for an SDK resource.
 
@@ -32,9 +30,8 @@ def get_osc_show_columns_for_sdk_resource(
               columns
     """
 
-    if getattr(sdk_resource, 'allow_fetch', None) is not None:
-        resource_dict = sdk_resource.to_dict(
-            body=True, headers=False, ignore_none=True)
+    if getattr(sdk_resource, "allow_fetch", None) is not None:
+        resource_dict = sdk_resource.to_dict(body=True, headers=False, ignore_none=True)
     else:
         resource_dict = sdk_resource
 
@@ -67,7 +64,7 @@ class ListOfIdsColumn(columns.FormattableColumn):
         if self._value is None:
             return None
 
-        return '[' + ','.join(i['id'] for i in self._value if 'id' in i) + ']'
+        return "[" + ",".join(i["id"] for i in self._value if "id" in i) + "]"
 
 
 class ListOfIdsColumnBR(columns.FormattableColumn):
@@ -76,18 +73,17 @@ class ListOfIdsColumnBR(columns.FormattableColumn):
         if self._value is None:
             return None
 
-        return '\n'.join(i['id'] for i in self._value if 'id' in i)
+        return "\n".join(i["id"] for i in self._value if "id" in i)
 
 
 class ListOfDictColumn(columns.FormattableColumn):
-    """Format OSC ListOfDicts column
-    """
+    """Format OSC ListOfDicts column"""
 
     def human_readable(self):
         if self._value is None:
             return None
 
-        return '\n'.join(str(i) for i in self._value)
+        return "\n".join(str(i) for i in self._value)
 
 
 class DictListColumn(columns.FormattableColumn):
@@ -101,11 +97,10 @@ class DictListColumn(columns.FormattableColumn):
 
 
 def str2bool(v):
-    """Convert input (CLI) boolean text value into boolean
-    """
-    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+    """Convert input (CLI) boolean text value into boolean"""
+    if v.lower() in ("yes", "true", "t", "y", "1"):
         return True
-    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+    elif v.lower() in ("no", "false", "f", "n", "0"):
         return False
     else:
-        raise argparse.ArgumentTypeError('Boolean value expected.')
+        raise argparse.ArgumentTypeError("Boolean value expected.")

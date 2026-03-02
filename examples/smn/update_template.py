@@ -13,16 +13,15 @@
 """
 Update one SMN message template
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-template = 'name_or_id'
-attrs = {
-    'content': 'my_new content'
-}
+template = "name_or_id"
+attrs = {"content": "my_new content"}
 template = conn.smn.find_template(name_or_id=template)
 template = conn.smn.update_template(template, **attrs)
 print(template)

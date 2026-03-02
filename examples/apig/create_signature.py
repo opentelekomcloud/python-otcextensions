@@ -13,16 +13,14 @@
 """
 Create Signature Key
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 attrs = {
     "name": "otce_signature_1",
     "sign_type": "aes",
     "sign_algorithm": "aes-256-cfb",
 }
-created = conn.apig.create_signature(
-    gateway="gateway_id",
-    **attrs
-)
+created = conn.apig.create_signature(gateway="gateway_id", **attrs)

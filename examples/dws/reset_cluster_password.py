@@ -14,11 +14,12 @@
 Reset the password of DWS cluster administrator by cluster name_or_id or
  instance of Cluster class.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-cluster_id = 'cluster-uuid'
-new_password = 'NewPassword!'
+cluster_id = "cluster-uuid"
+new_password = "NewPassword!"
 conn.dws.reset_password(cluster_id, new_password)

@@ -10,15 +10,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import _log
-
 from otcextensions.tests.functional import base
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestClusterNodes(base.BaseFunctionalTest):
 
-    TEST_CLUSTER = '5a66a449-668c-492f-8c33-5cdbdeaadd2e'
+    TEST_CLUSTER = "5a66a449-668c-492f-8c33-5cdbdeaadd2e"
 
     def setUp(self):
         super(TestClusterNodes, self).setUp()

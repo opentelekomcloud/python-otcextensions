@@ -15,10 +15,10 @@ from openstackclient.tests.functional import base
 
 
 class TestCbr(base.TestCase):
-    """Functional tests for CBR Vault. """
+    """Functional tests for CBR Vault."""
 
     def test_vault_list(self):
-        cmd = 'cbr vault list -f json '
+        cmd = "cbr vault list -f json "
         output = self.openstack(cmd)
         print(f"Command output: {output}")
         json_output = json.loads(output)

@@ -13,11 +13,12 @@
 """
 Get single MRS Job
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-job = 'job_id'
+job = "job_id"
 job = conn.mrs.get_job(job=job)
 print(job)

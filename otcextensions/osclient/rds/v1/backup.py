@@ -11,6 +11,7 @@
 #   under the License.
 #
 """Backup v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -23,16 +24,16 @@ LOG = logging.getLogger(__name__)
 
 def set_attributes_for_print_detail(obj):
     info = {}  # instance.copy()
-    info['id'] = obj.id
-    info['name'] = obj.name
-    info['instance_id'] = obj.instance_id
-    info['size'] = obj.size
-    info['status'] = obj.status
-    info['created'] = obj.created
-    info['updated'] = obj.updated
+    info["id"] = obj.id
+    info["name"] = obj.name
+    info["instance_id"] = obj.instance_id
+    info["size"] = obj.size
+    info["status"] = obj.status
+    info["created"] = obj.created
+    info["updated"] = obj.updated
     if obj.datastore:
-        info['datastore_type'] = obj.datastore['type']
-        info['datastore_version'] = obj.datastore['version']
+        info["datastore_type"] = obj.datastore["type"]
+        info["datastore_version"] = obj.datastore["version"]
 
     return info
 
@@ -40,9 +41,17 @@ def set_attributes_for_print_detail(obj):
 class ListBackup(command.Lister):
 
     _description = _("List database backups/snapshots")
-    columns = ('ID', 'Name', 'instance_id', 'datastore_type',
-               'datastore_version',
-               'size', 'status', 'created', 'updated')
+    columns = (
+        "ID",
+        "Name",
+        "instance_id",
+        "datastore_type",
+        "datastore_version",
+        "size",
+        "status",
+        "created",
+        "updated",
+    )
 
     def get_parser(self, prog_name):
         parser = super(ListBackup, self).get_parser(prog_name)
@@ -56,37 +65,45 @@ class ListBackup(command.Lister):
 
         return (
             self.columns,
-            (utils.get_dict_properties(
-                set_attributes_for_print_detail(s),
-                self.columns,
-            ) for s in data)
+            (
+                utils.get_dict_properties(
+                    set_attributes_for_print_detail(s),
+                    self.columns,
+                )
+                for s in data
+            ),
         )
 
 
 class CreateBackup(command.ShowOne):
-    _description = _('Create Database backup')
+    _description = _("Create Database backup")
 
-    columns = ('ID', 'Name', 'instance_id', 'datastore_type',
-               'datastore_version',
-               'size', 'status', 'created', 'updated')
+    columns = (
+        "ID",
+        "Name",
+        "instance_id",
+        "datastore_type",
+        "datastore_version",
+        "size",
+        "status",
+        "created",
+        "updated",
+    )
 
     def get_parser(self, prog_name):
         parser = super(CreateBackup, self).get_parser(prog_name)
         parser.add_argument(
-            'instance',
-            metavar='<instance>',
-            help=_('ID of the instance to take backup from')
+            "instance",
+            metavar="<instance>",
+            help=_("ID of the instance to take backup from"),
         )
         parser.add_argument(
-            '--name',
-            metavar='<name>',
-            required=True,
-            help=_('Name for the backup')
+            "--name", metavar="<name>", required=True, help=_("Name for the backup")
         )
         parser.add_argument(
-            '--description',
-            metavar='<description>',
-            help=_('Description for the backup')
+            "--description",
+            metavar="<description>",
+            help=_("Description for the backup"),
         )
         return parser
 
@@ -95,32 +112,28 @@ class CreateBackup(command.ShowOne):
 
         info = {}
 
-        info['name'] = parsed_args.name
+        info["name"] = parsed_args.name
         if parsed_args.description:
-            info['description'] = parsed_args.description
+            info["description"] = parsed_args.description
 
-        data = client.create_backup(instance=parsed_args.instance,
-                                    **info)
+        data = client.create_backup(instance=parsed_args.instance, **info)
 
         return (
             self.columns,
             utils.get_dict_properties(
                 set_attributes_for_print_detail(data),
                 self.columns,
-            )
+            ),
         )
 
 
 class DeleteBackup(command.Command):
-    _description = _('Delete Backup')
+    _description = _("Delete Backup")
 
     def get_parser(self, prog_name):
         parser = super(DeleteBackup, self).get_parser(prog_name)
         parser.add_argument(
-            'backup',
-            metavar='<backup>',
-            nargs='+',
-            help=_('ID of the backup')
+            "backup", metavar="<backup>", nargs="+", help=_("ID of the backup")
         )
         return parser
 
@@ -129,6 +142,4 @@ class DeleteBackup(command.Command):
         if parsed_args.backup:
             client = self.app.client_manager.rds
             for bck in parsed_args.backup:
-                client.delete_backup(
-                    backup=bck,
-                    ignore_missing=False)
+                client.delete_backup(backup=bck, ignore_missing=False)

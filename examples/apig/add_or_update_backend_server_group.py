@@ -13,18 +13,16 @@
 """
 Add or update backend server group
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 attrs = {
-    "member_groups": [{
-        "member_group_name": "vpc_member_group",
-        "member_group_weight": 10
-    }]
+    "member_groups": [
+        {"member_group_name": "vpc_member_group", "member_group_weight": 10}
+    ]
 }
 result = conn.apig.add_or_update_backend_server_group(
-    gateway="gateway_id",
-    vpc_channel="vpc_channel_id",
-    **attrs
+    gateway="gateway_id", vpc_channel="vpc_channel_id", **attrs
 )

@@ -13,9 +13,10 @@
 """
 List all DWS Clusters
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 print(list(conn.dws.clusters()))

@@ -13,14 +13,14 @@ from openstack import resource
 
 
 class IdentitySpec(resource.Resource):
-    name = resource.Body('name')
-    location = resource.Body('location')
-    validation = resource.Body('validation')
+    name = resource.Body("name")
+    location = resource.Body("location")
+    validation = resource.Body("validation")
 
 
 class CustomAuthorizer(resource.Resource):
-    base_path = f'/apigw/instances/%(gateway_id)s/authorizers'
-    resources_key = 'authorizer_list'
+    base_path = "/apigw/instances/%(gateway_id)s/authorizers"
+    resources_key = "authorizer_list"
     allow_list = True
     allow_fetch = True
     allow_create = True
@@ -28,24 +28,21 @@ class CustomAuthorizer(resource.Resource):
     allow_delete = True
     allow_commit = True
 
-    _query_mapping = resource.QueryParameters(
-        'limit', 'offset', 'id', 'type', 'name')
-    gateway_id = resource.URI('gateway_id')
-    name = resource.Body('name')
-    type = resource.Body('type')
-    authorizer_type = resource.Body('authorizer_type')
-    authorizer_uri = resource.Body('authorizer_uri')
-    network_type = resource.Body('network_type')
-    authorizer_version = resource.Body('authorizer_version')
-    authorizer_alias_uri = resource.Body('authorizer_alias_uri')
-    identities = resource.Body('identities',
-                               type=list,
-                               list_type=IdentitySpec)
-    ttl = resource.Body('ttl')
-    user_data = resource.Body('user_data')
-    ld_api_id = resource.Body('ld_api_id')
-    need_body = resource.Body('need_body', type=bool)
-    id = resource.Body('id')
-    create_time = resource.Body('create_time')
-    roma_app_id = resource.Body('roma_app_id')
-    roma_app_name = resource.Body('roma_app_name')
+    _query_mapping = resource.QueryParameters("limit", "offset", "id", "type", "name")
+    gateway_id = resource.URI("gateway_id")
+    name = resource.Body("name")
+    type = resource.Body("type")
+    authorizer_type = resource.Body("authorizer_type")
+    authorizer_uri = resource.Body("authorizer_uri")
+    network_type = resource.Body("network_type")
+    authorizer_version = resource.Body("authorizer_version")
+    authorizer_alias_uri = resource.Body("authorizer_alias_uri")
+    identities = resource.Body("identities", type=list, list_type=IdentitySpec)
+    ttl = resource.Body("ttl")
+    user_data = resource.Body("user_data")
+    ld_api_id = resource.Body("ld_api_id")
+    need_body = resource.Body("need_body", type=bool)
+    id = resource.Body("id")
+    create_time = resource.Body("create_time")
+    roma_app_id = resource.Body("roma_app_id")
+    roma_app_name = resource.Body("roma_app_name")

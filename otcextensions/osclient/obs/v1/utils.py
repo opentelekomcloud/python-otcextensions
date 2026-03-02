@@ -15,12 +15,12 @@
 
 
 def parse_s3_uri(s3path):
-    bucket, path = '', ''
-    if str(s3path) and s3path.startswith('s3://'):
-        val = str(s3path).replace('s3://', '').split('/', 1)
+    bucket, path = "", ""
+    if str(s3path) and s3path.startswith("s3://"):
+        val = str(s3path).replace("s3://", "").split("/", 1)
         bucket = val[0]
         if len(val) > 1:
-            path = val[1].strip('/')
+            path = val[1].strip("/")
         else:
             path = ""
     return bucket, path

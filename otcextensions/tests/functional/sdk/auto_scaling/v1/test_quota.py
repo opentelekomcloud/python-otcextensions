@@ -11,10 +11,9 @@
 # under the License.
 
 from openstack import _log
-
 from otcextensions.tests.functional.sdk.auto_scaling.v1 import base
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestQuota(base.TestAs):
@@ -24,20 +23,25 @@ class TestQuota(base.TestAs):
         self.auto_scaling = self.conn.auto_scaling
 
     def test_list(self):
-        expected_types = ['scaling_Group', 'scaling_Config',
-                          'scaling_Policy', 'scaling_Instance',
-                          'load_balance', 'bandwidth_scaling_policy']
+        expected_types = [
+            "scaling_Group",
+            "scaling_Config",
+            "scaling_Policy",
+            "scaling_Instance",
+            "load_balance",
+            "bandwidth_scaling_policy",
+        ]
         objects = list(self.auto_scaling.quotas())
 
         self.assertGreaterEqual(len(objects), 6)
         types = []
 
         for obj in objects:
-            types.append(obj.get('type'))
+            types.append(obj.get("type"))
             self.assertIsInstance(obj, dict)
-            self.assertIn('type', obj.keys())
-            self.assertIn('used', obj.keys())
-            self.assertIn('max', obj.keys())
-            self.assertIn('quota', obj.keys())
+            self.assertIn("type", obj.keys())
+            self.assertIn("used", obj.keys())
+            self.assertIn("max", obj.keys())
+            self.assertIn("quota", obj.keys())
 
         self.assertListEqual(types, expected_types)

@@ -13,12 +13,10 @@
 """
 Get API
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-conn.apig.get_api(
-    gateway="gateway_id",
-    api="api_id"
-)
+conn.apig.get_api(gateway="gateway_id", api="api_id")

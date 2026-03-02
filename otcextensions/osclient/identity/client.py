@@ -14,11 +14,10 @@ import logging
 
 from otcextensions import sdk
 
-
 LOG = logging.getLogger(__name__)
 
-DEFAULT_API_VERSION = '3'
-API_VERSION_OPTION = 'os_iam_api_version'
+DEFAULT_API_VERSION = "3"
+API_VERSION_OPTION = "os_iam_api_version"
 API_NAME = "iam"
 API_VERSIONS = {
     "3": "openstack.connection.Connection",
@@ -33,8 +32,7 @@ def make_client(instance):
     # register unconditionally, since we need to override default services
     sdk.register_otc_extensions(conn)
 
-    LOG.debug('identity client initialized using OpenStack OTC SDK: %s',
-              conn.identity)
+    LOG.debug("identity client initialized using OpenStack OTC SDK: %s", conn.identity)
     return conn.identity
 
 

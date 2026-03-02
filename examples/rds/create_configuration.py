@@ -13,21 +13,18 @@
 """
 Create a RDS configuration
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-datastore = {
-    'type': 'mysql',
-    'version': '8.0'
-}
-values = {
-    'max_connections': '10'
-}
-config = conn.rds.create_configuration(name='configuration_name_or_id',
-                                       description='my config',
-                                       datastore=datastore,
-                                       values=values)
+datastore = {"type": "mysql", "version": "8.0"}
+values = {"max_connections": "10"}
+config = conn.rds.create_configuration(
+    name="configuration_name_or_id",
+    description="my config",
+    datastore=datastore,
+    values=values,
+)
 print(config)

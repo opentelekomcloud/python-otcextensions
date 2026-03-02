@@ -14,11 +14,11 @@ from openstack.tests.unit import test_proxy_base
 from otcextensions.sdk.vpcep.v1 import _proxy
 from otcextensions.sdk.vpcep.v1 import connection
 from otcextensions.sdk.vpcep.v1 import endpoint
+from otcextensions.sdk.vpcep.v1 import public_service
 from otcextensions.sdk.vpcep.v1 import quota
 from otcextensions.sdk.vpcep.v1 import service
-from otcextensions.sdk.vpcep.v1 import whitelist
-from otcextensions.sdk.vpcep.v1 import public_service
 from otcextensions.sdk.vpcep.v1 import target_service
+from otcextensions.sdk.vpcep.v1 import whitelist
 
 
 class TestVpcepProxy(test_proxy_base.TestProxyBase):
@@ -38,8 +38,8 @@ class TestEndpointService(TestVpcepProxy):
         self.verify_create(
             self.proxy.create_service,
             service.Service,
-            method_kwargs={'name': 'id'},
-            expected_kwargs={'name': 'id'},
+            method_kwargs={"name": "id"},
+            expected_kwargs={"name": "id"},
         )
 
     def test_get_service(self):
@@ -76,8 +76,8 @@ class TestEndpoint(TestVpcepProxy):
         self.verify_create(
             self.proxy.create_endpoint,
             endpoint.Endpoint,
-            method_kwargs={'name': 'id'},
-            expected_kwargs={'name': 'id'},
+            method_kwargs={"name": "id"},
+            expected_kwargs={"name": "id"},
         )
 
     def test_endpoint_get(self):
@@ -92,32 +92,32 @@ class TestWhitelist(TestVpcepProxy):
         self.verify_list(
             self.proxy.service_whitelist,
             whitelist.Whitelist,
-            method_kwargs={'service': 'endpoint-service-id'},
-            expected_kwargs={'endpoint_service_id': 'endpoint-service-id'},
+            method_kwargs={"service": "endpoint-service-id"},
+            expected_kwargs={"endpoint_service_id": "endpoint-service-id"},
         )
 
     def test_manage_service_whitelist_add(self):
         self._verify(
-            'otcextensions.sdk.vpcep.v1.whitelist.Whitelist.add',
+            "otcextensions.sdk.vpcep.v1.whitelist.Whitelist.add",
             self.proxy.manage_service_whitelist,
             method_kwargs={
-                'service': 'endpoint-service-id',
-                'action': 'add',
-                'domains': ['abc', 'xyz'],
+                "service": "endpoint-service-id",
+                "action": "add",
+                "domains": ["abc", "xyz"],
             },
-            expected_args=[self.proxy, ['abc', 'xyz']],
+            expected_args=[self.proxy, ["abc", "xyz"]],
         )
 
     def test_manage_service_whitelist_remove(self):
         self._verify(
-            'otcextensions.sdk.vpcep.v1.whitelist.Whitelist.remove',
+            "otcextensions.sdk.vpcep.v1.whitelist.Whitelist.remove",
             self.proxy.manage_service_whitelist,
             method_kwargs={
-                'service': 'endpoint-service-id',
-                'action': 'remove',
-                'domains': ['abc', 'xyz'],
+                "service": "endpoint-service-id",
+                "action": "remove",
+                "domains": ["abc", "xyz"],
             },
-            expected_args=[self.proxy, ['abc', 'xyz']],
+            expected_args=[self.proxy, ["abc", "xyz"]],
         )
 
 
@@ -126,32 +126,32 @@ class TestConnection(TestVpcepProxy):
         self.verify_list(
             self.proxy.service_connections,
             connection.Connection,
-            method_kwargs={'service': 'endpoint-service-id'},
-            expected_kwargs={'endpoint_service_id': 'endpoint-service-id'},
+            method_kwargs={"service": "endpoint-service-id"},
+            expected_kwargs={"endpoint_service_id": "endpoint-service-id"},
         )
 
     def test_manage_service_connections_accept(self):
         self._verify(
-            'otcextensions.sdk.vpcep.v1.connection.Connection.accept',
+            "otcextensions.sdk.vpcep.v1.connection.Connection.accept",
             self.proxy.manage_service_connections,
             method_kwargs={
-                'service': 'endpoint-service-id',
-                'action': 'accept',
-                'endpoints': ['abc', 'xyz'],
+                "service": "endpoint-service-id",
+                "action": "accept",
+                "endpoints": ["abc", "xyz"],
             },
-            expected_args=[self.proxy, ['abc', 'xyz']],
+            expected_args=[self.proxy, ["abc", "xyz"]],
         )
 
     def test_manage_service_connections_reject(self):
         self._verify(
-            'otcextensions.sdk.vpcep.v1.connection.Connection.reject',
+            "otcextensions.sdk.vpcep.v1.connection.Connection.reject",
             self.proxy.manage_service_connections,
             method_kwargs={
-                'service': 'endpoint-service-id',
-                'action': 'reject',
-                'endpoints': ['abc', 'xyz'],
+                "service": "endpoint-service-id",
+                "action": "reject",
+                "endpoints": ["abc", "xyz"],
             },
-            expected_args=[self.proxy, ['abc', 'xyz']],
+            expected_args=[self.proxy, ["abc", "xyz"]],
         )
 
 
@@ -162,24 +162,23 @@ class TestQuota(TestVpcepProxy):
 
 class TestPublicService(TestVpcepProxy):
     def test_public_services(self):
-        self.verify_list(
-            self.proxy.public_services, public_service.PublicService
-        )
+        self.verify_list(self.proxy.public_services, public_service.PublicService)
 
 
 class TestTargetService(TestVpcepProxy):
     def test_get_target_service(self):
-        resource_id = '6a0a8b5f-0511-459f-b35b-e6fb6357a0be'
-        base_path_id = target_service.TargetService.base_path + \
-            '?id={}'.format(resource_id)
+        resource_id = "6a0a8b5f-0511-459f-b35b-e6fb6357a0be"
+        base_path_id = target_service.TargetService.base_path + "?id={}".format(
+            resource_id
+        )
 
         self._verify(
-            'otcextensions.sdk.vpcep.v1._proxy.Proxy._get',
+            "otcextensions.sdk.vpcep.v1._proxy.Proxy._get",
             self.proxy.get_target_service,
             method_args=[resource_id],
             expected_args=[target_service.TargetService],
             expected_kwargs={
-                'base_path': base_path_id,
-                'requires_id': False,
-            }
+                "base_path": base_path_id,
+                "requires_id": False,
+            },
         )

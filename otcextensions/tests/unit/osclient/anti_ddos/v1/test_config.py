@@ -20,18 +20,18 @@ class TestListConfig(fakes.TestAntiDDoS):
 
     objects = fakes.FakeConfig.create_multiple(3)
 
-    columns = (
-        'traffic_limited_list', 'http_limited_list', 'connection_limited_list'
-    )
+    columns = ("traffic_limited_list", "http_limited_list", "connection_limited_list")
 
     data = []
 
     for s in objects:
-        data.append((
-            sdk_utils.ListOfDictColumn(s.traffic_limited_list),
-            sdk_utils.ListOfDictColumn(s.http_limited_list),
-            sdk_utils.ListOfDictColumn(s.connection_limited_list),
-        ))
+        data.append(
+            (
+                sdk_utils.ListOfDictColumn(s.traffic_limited_list),
+                sdk_utils.ListOfDictColumn(s.http_limited_list),
+                sdk_utils.ListOfDictColumn(s.connection_limited_list),
+            )
+        )
 
     def setUp(self):
         super(TestListConfig, self).setUp()
@@ -41,25 +41,20 @@ class TestListConfig(fakes.TestAntiDDoS):
         self.client.configs = mock.Mock()
 
     def test_list(self):
-        arglist = [
-        ]
+        arglist = []
 
-        verifylist = [
-        ]
+        verifylist = []
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.configs.side_effect = [
-            self.objects
-        ]
+        self.client.configs.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.configs.assert_called_once_with(
-        )
+        self.client.configs.assert_called_once_with()
 
         self.assertEqual(self.columns, columns)
         self.assertListItemEqual(self.data, list(data))

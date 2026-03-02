@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import mock
-
 from osc_lib import exceptions
 
 from otcextensions.osclient.rds.v3 import backup
@@ -23,10 +22,16 @@ class TestList(fakes.TestRds):
 
     _objects = fakes.FakeBackup.create_multiple(3)
 
-    column_headers = ('ID', 'Name', 'Type', 'Instance Id', 'Size (KB)',
-                      'Begin time', 'End time')
-    columns = ('id', 'name', 'type', 'instance_id', 'size',
-               'begin_time', 'end_time')
+    column_headers = (
+        "ID",
+        "Name",
+        "Type",
+        "Instance Id",
+        "Size (KB)",
+        "Begin time",
+        "End time",
+    )
+    columns = ("id", "name", "type", "instance_id", "size", "begin_time", "end_time")
 
     data = []
 
@@ -42,46 +47,10 @@ class TestList(fakes.TestRds):
         self.client.find_instance = mock.Mock(return_value=self._instance)
 
     def test_list_default(self):
-        arglist = ['test-instance']
+        arglist = ["test-instance"]
 
         verifylist = [
-            ('instance', 'test-instance'),
-        ]
-        # Verify cm is triggereg with default parameters
-        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-
-        # Set the response
-        self.client.backups.side_effect = [self._objects]
-
-        # Trigger the action
-        columns, data = self.cmd.take_action(parsed_args)
-
-        self.client.find_instance.assert_called_with('test-instance',
-                                                     ignore_missing=False)
-        self.client.backups.assert_called_once_with(instance=self._instance)
-
-        self.assertEqual(self.column_headers, columns)
-        self.assertEqual(self.data, list(data))
-
-    def test_list_params(self):
-        arglist = [
-            'test-instance',
-            '--backup-id', 'bid',
-            '--backup-type', 'manual',
-            '--offset', '1',
-            '--limit', '2',
-            '--begin-time', '3',
-            '--end-time', '4'
-        ]
-
-        verifylist = [
-            ('instance', 'test-instance'),
-            ('backup_id', 'bid'),
-            ('backup_type', 'manual'),
-            ('offset', 1),
-            ('limit', 2),
-            ('begin_time', '3'),
-            ('end_time', '4')
+            ("instance", "test-instance"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -93,40 +62,73 @@ class TestList(fakes.TestRds):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_instance.assert_called_with(
-            'test-instance',
-            ignore_missing=False)
+            "test-instance", ignore_missing=False
+        )
+        self.client.backups.assert_called_once_with(instance=self._instance)
+
+        self.assertEqual(self.column_headers, columns)
+        self.assertEqual(self.data, list(data))
+
+    def test_list_params(self):
+        arglist = [
+            "test-instance",
+            "--backup-id",
+            "bid",
+            "--backup-type",
+            "manual",
+            "--offset",
+            "1",
+            "--limit",
+            "2",
+            "--begin-time",
+            "3",
+            "--end-time",
+            "4",
+        ]
+
+        verifylist = [
+            ("instance", "test-instance"),
+            ("backup_id", "bid"),
+            ("backup_type", "manual"),
+            ("offset", 1),
+            ("limit", 2),
+            ("begin_time", "3"),
+            ("end_time", "4"),
+        ]
+        # Verify cm is triggereg with default parameters
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        # Set the response
+        self.client.backups.side_effect = [self._objects]
+
+        # Trigger the action
+        columns, data = self.cmd.take_action(parsed_args)
+
+        self.client.find_instance.assert_called_with(
+            "test-instance", ignore_missing=False
+        )
         self.client.backups.assert_called_once_with(
             instance=self._instance,
-            backup_id='bid',
-            backup_type='manual',
+            backup_id="bid",
+            backup_type="manual",
             offset=1,
             limit=2,
             paginated=False,
-            begin_time='3',
-            end_time='4'
+            begin_time="3",
+            end_time="4",
         )
 
         self.assertEqual(self.column_headers, columns)
         self.assertEqual(self.data, list(data))
 
     def test_list_wrong_filter(self):
-        arglist = [
-            'test-instance',
-            '--begin-time', 'asd'
-        ]
+        arglist = ["test-instance", "--begin-time", "asd"]
 
-        verifylist = [
-            ('instance', 'test-instance'),
-            ('begin_time', 'asd')
-        ]
+        verifylist = [("instance", "test-instance"), ("begin_time", "asd")]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        self.assertRaises(
-            exceptions.CommandError,
-            self.cmd.take_action,
-            parsed_args
-        )
+        self.assertRaises(exceptions.CommandError, self.cmd.take_action, parsed_args)
 
 
 class TestCreate(fakes.TestRds):
@@ -135,9 +137,16 @@ class TestCreate(fakes.TestRds):
     _instance = fakes.FakeInstance.create_one()
 
     columns = (
-        'begin_time', 'datastore', 'description',
-        'end_time', 'id', 'instance_id', 'name',
-        'size', 'status', 'type'
+        "begin_time",
+        "datastore",
+        "description",
+        "end_time",
+        "id",
+        "instance_id",
+        "name",
+        "size",
+        "status",
+        "type",
     )
 
     data = fakes.gen_data(_data, columns)
@@ -153,15 +162,15 @@ class TestCreate(fakes.TestRds):
 
     def test_create(self):
         arglist = [
-            'test-backup',
-            'test-instance',
-            '--description',
-            'test description',
+            "test-backup",
+            "test-instance",
+            "--description",
+            "test description",
         ]
         verifylist = [
-            ('name', 'test-backup'),
-            ('instance', 'test-instance'),
-            ('description', 'test description'),
+            ("name", "test-backup"),
+            ("instance", "test-instance"),
+            ("description", "test description"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -169,29 +178,30 @@ class TestCreate(fakes.TestRds):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_instance.assert_called_with('test-instance',
-                                                     ignore_missing=False)
+        self.client.find_instance.assert_called_with(
+            "test-instance", ignore_missing=False
+        )
         self.client.create_backup.assert_called_with(
-            instance=self._instance,
-            description='test description',
-            name='test-backup'
+            instance=self._instance, description="test description", name="test-backup"
         )
         self.assertEqual(self.columns, columns)
 
     def test_create_wait(self):
         arglist = [
-            'test-backup',
-            'test-instance',
-            '--description',
-            'test description',
-            '--wait', '--wait-interval', '5'
+            "test-backup",
+            "test-instance",
+            "--description",
+            "test description",
+            "--wait",
+            "--wait-interval",
+            "5",
         ]
         verifylist = [
-            ('name', 'test-backup'),
-            ('instance', 'test-instance'),
-            ('description', 'test description'),
-            ('wait', True),
-            ('wait_interval', 5)
+            ("name", "test-backup"),
+            ("instance", "test-instance"),
+            ("description", "test description"),
+            ("wait", True),
+            ("wait_interval", 5),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -199,48 +209,47 @@ class TestCreate(fakes.TestRds):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_instance.assert_called_with('test-instance',
-                                                     ignore_missing=False)
+        self.client.find_instance.assert_called_with(
+            "test-instance", ignore_missing=False
+        )
         self.client.create_backup.assert_called_with(
-            instance=self._instance,
-            description='test description',
-            name='test-backup'
+            instance=self._instance, description="test description", name="test-backup"
         )
-        self.client.wait_for_backup.assert_called_with(
-            self._data,
-            interval=5
-        )
+        self.client.wait_for_backup.assert_called_with(self._data, interval=5)
         self.assertEqual(self.columns, columns)
 
     def test_create_sqlserver(self):
         arglist = [
-            'test-backup',
-            'test-instance',
-            '--description', 'test description',
-            '--databases', 'a,b,c'
+            "test-backup",
+            "test-instance",
+            "--description",
+            "test description",
+            "--databases",
+            "a,b,c",
         ]
         verifylist = [
-            ('name', 'test-backup'),
-            ('instance', 'test-instance'),
-            ('description', 'test description'),
-            ('databases', 'a,b,c')
+            ("name", "test-backup"),
+            ("instance", "test-instance"),
+            ("description", "test description"),
+            ("databases", "a,b,c"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        self._instance.datastore.update({'type': 'sqlserver'})
+        self._instance.datastore.update({"type": "sqlserver"})
         self.client.find_instance.return_value = self._instance
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.find_instance.assert_called_with('test-instance',
-                                                     ignore_missing=False)
+        self.client.find_instance.assert_called_with(
+            "test-instance", ignore_missing=False
+        )
         self.client.create_backup.assert_called_with(
             instance=self._instance,
-            description='test description',
-            name='test-backup',
-            databases=[{'name': 'a'}, {'name': 'b'}, {'name': 'c'}]
+            description="test description",
+            name="test-backup",
+            databases=[{"name": "a"}, {"name": "b"}, {"name": "c"}],
         )
         self.assertEqual(self.columns, columns)
 
@@ -255,11 +264,11 @@ class TestDelete(fakes.TestRds):
 
     def test_delete_default(self):
         arglist = [
-            'bck1',
+            "bck1",
         ]
 
         verifylist = [
-            ('backup', ['bck1']),
+            ("backup", ["bck1"]),
         ]
 
         # Verify cm is triggereg with default parameters
@@ -271,14 +280,15 @@ class TestDelete(fakes.TestRds):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        self.client.delete_backup.assert_called_once_with(backup='bck1',
-                                                          ignore_missing=False)
+        self.client.delete_backup.assert_called_once_with(
+            backup="bck1", ignore_missing=False
+        )
 
     def test_delete_multiple(self):
-        arglist = ['bck1', 'bck2']
+        arglist = ["bck1", "bck2"]
 
         verifylist = [
-            ('backup', ['bck1', 'bck2']),
+            ("backup", ["bck1", "bck2"]),
         ]
 
         # Verify cm is triggereg with default parameters
@@ -291,8 +301,8 @@ class TestDelete(fakes.TestRds):
         self.cmd.take_action(parsed_args)
 
         calls = [
-            mock.call(backup='bck1', ignore_missing=False),
-            mock.call(backup='bck2', ignore_missing=False),
+            mock.call(backup="bck1", ignore_missing=False),
+            mock.call(backup="bck2", ignore_missing=False),
         ]
 
         self.client.delete_backup.assert_has_calls(calls)
@@ -303,8 +313,8 @@ class TestListLinks(fakes.TestRds):
 
     _objects = fakes.FakeBackupFile.create_multiple(3)
 
-    column_headers = ('Size (KB)', 'URL', 'Expires at')
-    columns = ('size', 'download_link', 'expires_at')
+    column_headers = ("Size (KB)", "URL", "Expires at")
+    columns = ("size", "download_link", "expires_at")
 
     data = []
 
@@ -316,14 +326,13 @@ class TestListLinks(fakes.TestRds):
 
         self.cmd = backup.ListBackupDownloadLinks(self.app, None)
 
-        self.client.backup_download_links = mock.Mock(
-            return_value=self._objects)
+        self.client.backup_download_links = mock.Mock(return_value=self._objects)
 
     def test_list_default(self):
-        arglist = ['test-backup']
+        arglist = ["test-backup"]
 
         verifylist = [
-            ('backup_id', 'test-backup'),
+            ("backup_id", "test-backup"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -332,7 +341,8 @@ class TestListLinks(fakes.TestRds):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.backup_download_links.assert_called_once_with(
-            backup_id='test-backup')
+            backup_id="test-backup"
+        )
 
         self.assertEqual(self.column_headers, columns)
         self.assertEqual(self.data, list(data))

@@ -13,8 +13,9 @@
 """
 Get list of API groups for gateway
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 groups = list(conn.apig.api_groups(gateway="gateway_id"))

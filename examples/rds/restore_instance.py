@@ -13,13 +13,13 @@
 """
 Restore an RDS instance by using a backup
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-job_id = conn.rds.restore_instance(instance='instance_id',
-                                   backup='backup_id',
-                                   restore_time=None)
+job_id = conn.rds.restore_instance(
+    instance="instance_id", backup="backup_id", restore_time=None
+)
 print(job_id)

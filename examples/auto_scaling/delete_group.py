@@ -13,11 +13,12 @@
 """
 Delete Auto-Scaling Group by id or instance of class Group.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-group_id = '1234567-ad7a-48ce-8f92-b55c651439d2'
+group_id = "1234567-ad7a-48ce-8f92-b55c651439d2"
 conn.auto_scaling.delete_group(group_id)

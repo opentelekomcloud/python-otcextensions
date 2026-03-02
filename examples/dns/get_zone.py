@@ -13,12 +13,13 @@
 """
 Get DNS zone by id or class Zone
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-zone = 'zone_id'
+zone = "zone_id"
 zone = conn.dns.get_zone(zone)
 print(zone)

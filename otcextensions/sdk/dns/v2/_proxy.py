@@ -11,10 +11,10 @@
 # under the License.
 from openstack import proxy
 from openstack import resource
+from otcextensions.sdk.dns.v2 import floating_ip as _fip
 from otcextensions.sdk.dns.v2 import nameserver as _ns
 from otcextensions.sdk.dns.v2 import recordset as _rs
 from otcextensions.sdk.dns.v2 import zone as _zone
-from otcextensions.sdk.dns.v2 import floating_ip as _fip
 
 
 class Proxy(proxy.Proxy):
@@ -96,9 +96,9 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._find(_zone.Zone, name_or_id,
-                          ignore_missing=ignore_missing,
-                          **attrs)
+        return self._find(
+            _zone.Zone, name_or_id, ignore_missing=ignore_missing, **attrs
+        )
 
     def add_router_to_zone(self, zone, **router):
         """Add router(VPC) to private zone
@@ -126,8 +126,15 @@ class Proxy(proxy.Proxy):
         zone = self._get_resource(_zone.Zone, zone)
         return zone.disassociate_router(self, **router)
 
-    def wait_for_zone(self, zone, status='ACTIVE', failures=None,
-                      interval=2, wait=180, attribute='status'):
+    def wait_for_zone(
+        self,
+        zone,
+        status="ACTIVE",
+        failures=None,
+        interval=2,
+        wait=180,
+        attribute="status",
+    ):
         """Wait for an zone to be in a particular status.
         :param zone:
             The :class:`~otcextensions.sdk.dns.v2.zone.Zone`
@@ -148,9 +155,8 @@ class Proxy(proxy.Proxy):
         :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
                  has transited to one of the failure statuses.
         """
-        failures = ['ERROR'] if failures is None else failures
-        return resource.wait_for_status(
-            self, zone, status, failures, interval, wait)
+        failures = ["ERROR"] if failures is None else failures
+        return resource.wait_for_status(self, zone, status, failures, interval, wait)
 
     def wait_for_delete_zone(self, zone, interval=2, wait=180):
         """Wait for the zone to be deleted.
@@ -181,8 +187,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.dns.v2.nameserver.NameServer`
         """
         instance = self._get_resource(_zone.Zone, zone)
-        return self._list(_ns.NameServer, paginated=False,
-                          zone_id=instance.id)
+        return self._list(_ns.NameServer, paginated=False, zone_id=instance.id)
 
     # ======== Recordsets ========
     def recordsets(self, zone=None, **query):
@@ -200,10 +205,10 @@ class Proxy(proxy.Proxy):
         """
         base_path = None
         if not zone:
-            base_path = '/recordsets'
+            base_path = "/recordsets"
         else:
             zone = self._get_resource(_zone.Zone, zone)
-            query.update({'zone_id': zone.id})
+            query.update({"zone_id": zone.id})
         return self._list(_rs.Recordset, base_path=base_path, **query)
 
     def create_recordset(self, zone, **attrs):
@@ -218,7 +223,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.dns.v2.recordset.Recordset`
         """
         zone = self._get_resource(_zone.Zone, zone)
-        attrs.update({'zone_id': zone.id})
+        attrs.update({"zone_id": zone.id})
         return self._create(_rs.Recordset, prepend_key=False, **attrs)
 
     def update_recordset(self, recordset, **attrs):
@@ -261,10 +266,8 @@ class Proxy(proxy.Proxy):
         """
         if zone:
             zone = self._get_resource(_zone.Zone, zone)
-            recordset = self._get(
-                _rs.Recordset, recordset, zone_id=zone.id)
-        return self._delete(_rs.Recordset, recordset,
-                            ignore_missing=ignore_missing)
+            recordset = self._get(_rs.Recordset, recordset, zone_id=zone.id)
+        return self._delete(_rs.Recordset, recordset, ignore_missing=ignore_missing)
 
     def find_recordset(self, zone, name_or_id, ignore_missing=True, **attrs):
         """Find a single recordset
@@ -281,12 +284,23 @@ class Proxy(proxy.Proxy):
         :returns: :class:`~otcextensions.sdk.dns.v2.recordset.Recordset`
         """
         zone = self._get_resource(_zone.Zone, zone)
-        return self._find(_rs.Recordset, name_or_id,
-                          ignore_missing=ignore_missing, zone_id=zone.id,
-                          **attrs)
+        return self._find(
+            _rs.Recordset,
+            name_or_id,
+            ignore_missing=ignore_missing,
+            zone_id=zone.id,
+            **attrs
+        )
 
-    def wait_for_recordset(self, recordset, status='ACTIVE', failures=None,
-                           interval=2, wait=180, attribute='status'):
+    def wait_for_recordset(
+        self,
+        recordset,
+        status="ACTIVE",
+        failures=None,
+        interval=2,
+        wait=180,
+        attribute="status",
+    ):
         """Wait for an recordset to be in a particular status.
         :param zone:
             The :class:`~otcextensions.sdk.dns.v2.recordset.Recordset`
@@ -307,9 +321,10 @@ class Proxy(proxy.Proxy):
         :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
                  has transited to one of the failure statuses.
         """
-        failures = ['ERROR'] if failures is None else failures
+        failures = ["ERROR"] if failures is None else failures
         return resource.wait_for_status(
-            self, recordset, status, failures, interval, wait)
+            self, recordset, status, failures, interval, wait
+        )
 
     def wait_for_delete_recordset(self, recordset, interval=2, wait=180):
         """Wait for the recordset to be deleted.
@@ -392,21 +407,22 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.dns.v2.floating_ip.FloatipgIP`
         """
         # concat `region:floating_ip_id` as id
-        attrs = {'ptrdname': None}
+        attrs = {"ptrdname": None}
         return self._update(_fip.FloatingIP, floating_ip, **attrs)
 
     def _get_cleanup_dependencies(self):
         # DNS may depend on floating ip
-        return {
-            'dns': {
-                'before': ['network']
-            }
-        }
+        return {"dns": {"before": ["network"]}}
 
-    def _service_cleanup(self, dry_run=True, client_status_queue=False,
-                         identified_resources=None,
-                         filters=None, resource_evaluation_fn=None,
-                         skip_resources=None):
+    def _service_cleanup(
+        self,
+        dry_run=True,
+        client_status_queue=False,
+        identified_resources=None,
+        filters=None,
+        resource_evaluation_fn=None,
+        skip_resources=None,
+    ):
         # Delete all public zones
         for obj in self.zones():
             self._service_cleanup_del_res(
@@ -416,9 +432,10 @@ class Proxy(proxy.Proxy):
                 client_status_queue=client_status_queue,
                 identified_resources=identified_resources,
                 filters=filters,
-                resource_evaluation_fn=resource_evaluation_fn)
+                resource_evaluation_fn=resource_evaluation_fn,
+            )
         # Delete all private zones
-        for obj in self.zones(type='private'):
+        for obj in self.zones(type="private"):
             self._service_cleanup_del_res(
                 self.delete_zone,
                 obj,
@@ -426,7 +443,8 @@ class Proxy(proxy.Proxy):
                 client_status_queue=client_status_queue,
                 identified_resources=identified_resources,
                 filters=filters,
-                resource_evaluation_fn=resource_evaluation_fn)
+                resource_evaluation_fn=resource_evaluation_fn,
+            )
         # Unset all floatingIPs
         # NOTE: FloatingIPs are not cleaned when filters are set
         for obj in self.floating_ips():
@@ -437,4 +455,5 @@ class Proxy(proxy.Proxy):
                 client_status_queue=client_status_queue,
                 identified_resources=identified_resources,
                 filters=filters,
-                resource_evaluation_fn=resource_evaluation_fn)
+                resource_evaluation_fn=resource_evaluation_fn,
+            )

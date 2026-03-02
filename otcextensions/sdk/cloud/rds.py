@@ -15,9 +15,9 @@ from openstack import exceptions
 
 
 class RdsMixin:
-    def create_rds_instance(self, name,
-                            wait=True, wait_timeout=600, wait_interval=5,
-                            **kwargs):
+    def create_rds_instance(
+        self, name, wait=True, wait_timeout=600, wait_interval=5, **kwargs
+    ):
         """Create RDS instance with all the checks
 
         :param str availability_zone:
@@ -53,142 +53,126 @@ class RdsMixin:
         :rtype: :class:`~otcextensions.sdk.rds.v3.instance.Instance`
         """
 
-        availability_zone = kwargs.get('availability_zone')
-        backup = kwargs.get('backup')
-        backup_keepdays = kwargs.get('backup_keepdays')
-        backup_timeframe = kwargs.get('backup_timeframe')
-        charge_mode = kwargs.get('charge_mode')
-        configuration = kwargs.get('configuration')
-        datastore_type = kwargs.get('datastore_type')
-        datastore_version = kwargs.get('datastore_version')
-        disk_encryption_id = kwargs.get('disk_encryption_id')
-        flavor = kwargs.get('flavor')
-        from_instance = kwargs.get('from_instance')
-        ha_mode = kwargs.get('ha_mode')
-        network = kwargs.get('network')
-        password = kwargs.get('password')
-        port = kwargs.get('port')
-        region = kwargs.get('region')
-        replica_of = kwargs.get('replica_of')
-        restore_time = kwargs.get('restore_time')
-        router = kwargs.get('router')
-        security_group = kwargs.get('security_group')
-        volume_type = kwargs.get('volume_type')
-        volume_size = kwargs.get('volume_size')
+        availability_zone = kwargs.get("availability_zone")
+        backup = kwargs.get("backup")
+        backup_keepdays = kwargs.get("backup_keepdays")
+        backup_timeframe = kwargs.get("backup_timeframe")
+        charge_mode = kwargs.get("charge_mode")
+        configuration = kwargs.get("configuration")
+        datastore_type = kwargs.get("datastore_type")
+        datastore_version = kwargs.get("datastore_version")
+        disk_encryption_id = kwargs.get("disk_encryption_id")
+        flavor = kwargs.get("flavor")
+        from_instance = kwargs.get("from_instance")
+        ha_mode = kwargs.get("ha_mode")
+        network = kwargs.get("network")
+        password = kwargs.get("password")
+        port = kwargs.get("port")
+        region = kwargs.get("region")
+        replica_of = kwargs.get("replica_of")
+        restore_time = kwargs.get("restore_time")
+        router = kwargs.get("router")
+        security_group = kwargs.get("security_group")
+        volume_type = kwargs.get("volume_type")
+        volume_size = kwargs.get("volume_size")
 
         attrs = {}
 
-        attrs['name'] = name
+        attrs["name"] = name
 
         if availability_zone:
-            attrs['availability_zone'] = availability_zone
+            attrs["availability_zone"] = availability_zone
         if backup_keepdays and backup_timeframe:
             backup_attrs = {}
-            backup_attrs['keep_days'] = backup_keepdays
-            backup_attrs['start_time'] = backup_timeframe
-            attrs['backup_strategy'] = backup_attrs
+            backup_attrs["keep_days"] = backup_keepdays
+            backup_attrs["start_time"] = backup_timeframe
+            attrs["backup_strategy"] = backup_attrs
         elif backup_keepdays or backup_timeframe:
             raise exceptions.SDKException(
-                '`backup_keepdays` and `backup_timeframe` must be passed'
-                'together'
+                "`backup_keepdays` and `backup_timeframe` must be passed" "together"
             )
         if charge_mode:
-            attrs['charge_info'] = {'charge_mode': charge_mode}
+            attrs["charge_info"] = {"charge_mode": charge_mode}
         if configuration:
             # TODO(not_gtema): find configuration
-            attrs['configuration_id'] = configuration
+            attrs["configuration_id"] = configuration
         if datastore_type:
-            datastore = {
-                'type': datastore_type,
-                'version': datastore_version
-            }
-            attrs['datastore'] = datastore
+            datastore = {"type": datastore_type, "version": datastore_version}
+            attrs["datastore"] = datastore
         if disk_encryption_id:
-            attrs['disk_encryption_id'] = disk_encryption_id
+            attrs["disk_encryption_id"] = disk_encryption_id
         if flavor:
-            attrs['flavor_ref'] = flavor
+            attrs["flavor_ref"] = flavor
         if ha_mode:
-            ha = {'mode': 'ha', 'replication_mode': ha_mode}
-            attrs['ha'] = ha
+            ha = {"mode": "ha", "replication_mode": ha_mode}
+            attrs["ha"] = ha
         if port:
-            attrs['port'] = port
+            attrs["port"] = port
         if password:
-            attrs['password'] = password
+            attrs["password"] = password
         if region:
-            attrs['region'] = region
+            attrs["region"] = region
 
         volume = {}
         if volume_size:
             volume = {"size": volume_size}
             if volume_type:
-                volume['type'] = volume_type
-            attrs['volume'] = volume
+                volume["type"] = volume_type
+            attrs["volume"] = volume
 
-        new_instance_required = [
-            router,
-            network,
-            security_group,
-            password
-        ]
+        new_instance_required = [router, network, security_group, password]
 
-        if (not replica_of
-                and not (datastore_type and datastore_version)):
+        if not replica_of and not (datastore_type and datastore_version):
             raise exceptions.SDKException(
-                '`--datastore-type` and `--datastore-version` are '
-                'required'
+                "`--datastore-type` and `--datastore-version` are " "required"
             )
 
         if replica_of:
             # Create replica
-            if (
-                password or port
-                or router or security_group
-                or network
-            ):
+            if password or port or router or security_group or network:
                 raise exceptions.SDKException(
-                    'Setting password/port/router/network/sg is not '
-                    'supported when creating replica'
+                    "Setting password/port/router/network/sg is not "
+                    "supported when creating replica"
                 )
             src = self.rds.find_instance(replica_of, ignore_missing=False)
-            datastore_type = src['datastore']['type']
-            datastore_version = src['datastore']['version']
-            attrs['replica_of_id'] = src.id
-            attrs.pop('datastore', None)
+            datastore_type = src["datastore"]["type"]
+            datastore_version = src["datastore"]["version"]
+            attrs["replica_of_id"] = src.id
+            attrs.pop("datastore", None)
         elif from_instance:
-            source = self.rds.find_instance(
-                from_instance, ignore_missing=False)
+            source = self.rds.find_instance(from_instance, ignore_missing=False)
             if backup:
                 # Create from backup
                 backup_obj = self.rds.find_backup(
-                    name_or_id=backup,
-                    instance=source,
-                    ignore_missing=False)
-                attrs['restore_point'] = {
-                    'type': 'backup',
-                    'backup_id': backup_obj.id,
-                    'instance_id': backup_obj.instance_id
+                    name_or_id=backup, instance=source, ignore_missing=False
+                )
+                attrs["restore_point"] = {
+                    "type": "backup",
+                    "backup_id": backup_obj.id,
+                    "instance_id": backup_obj.instance_id,
                 }
             elif restore_time:
-                attrs['restore_point'] = {
-                    'type': 'timestamp',
-                    'restore_time': restore_time,
-                    'instance_id': source.id
+                attrs["restore_point"] = {
+                    "type": "timestamp",
+                    "restore_time": restore_time,
+                    "instance_id": source.id,
                 }
         elif backup or restore_time:
             raise exceptions.SDKException(
-                '`from-instance` is required when restoring from '
-                'backup or using PITR.'
+                "`from-instance` is required when restoring from "
+                "backup or using PITR."
             )
         elif not all(new_instance_required):
             raise exceptions.SDKException(
-                '`router`, `subnet`, `security-group`, '
-                '`password` parameters are required when creating '
-                'new primary instance.'
+                "`router`, `subnet`, `security-group`, "
+                "`password` parameters are required when creating "
+                "new primary instance."
             )
 
-        flavors = list(self.rds.flavors(
-            datastore_name=datastore_type,
-            version_name=datastore_version)
+        flavors = list(
+            self.rds.flavors(
+                datastore_name=datastore_type, version_name=datastore_version
+            )
         )
         flavor_obj = None
         for f in flavors:
@@ -196,73 +180,65 @@ class RdsMixin:
                 flavor_obj = f
         if not flavor_obj:
             raise exceptions.SDKException(
-                'Flavor {flavor} can not be found'.format(
-                    flavor=flavor)
+                "Flavor {flavor} can not be found".format(flavor=flavor)
             )
-        if flavor_obj.instance_mode == 'ha' and not ha_mode:
+        if flavor_obj.instance_mode == "ha" and not ha_mode:
             raise exceptions.SDKException(
-                '`ha_mode` is required when using HA enabled flavor'
+                "`ha_mode` is required when using HA enabled flavor"
             )
-        if flavor_obj.instance_mode != 'ha' and ha_mode:
+        if flavor_obj.instance_mode != "ha" and ha_mode:
             raise exceptions.SDKException(
-                '`ha` enabled flavor must be '
-                'chosen when setting ha_mode'
+                "`ha` enabled flavor must be " "chosen when setting ha_mode"
             )
-        if flavor_obj.instance_mode != 'replica' and replica_of:
+        if flavor_obj.instance_mode != "replica" and replica_of:
             raise exceptions.SDKException(
-                '`replica` enabled flavor must be '
-                'chosen when creating replica'
+                "`replica` enabled flavor must be " "chosen when creating replica"
             )
         if ha_mode:
-            if ',' not in availability_zone:
+            if "," not in availability_zone:
                 raise exceptions.SDKException(
-                    'List of availability zones must be used when '
-                    'creating ha instance'
+                    "List of availability zones must be used when "
+                    "creating ha instance"
                 )
         if ha_mode:
             mode = ha_mode
-            if (datastore_type.lower() == 'postgresql'
-                    and mode not in ['async', 'sync']):
+            if datastore_type.lower() == "postgresql" and mode not in ["async", "sync"]:
                 raise exceptions.SDKException(
-                    '`async` or `sync` ha_mode can be used for '
-                    'PostgreSQL isntance'
+                    "`async` or `sync` ha_mode can be used for " "PostgreSQL isntance"
                 )
-            elif (datastore_type.lower() == 'mysql'
-                    and mode not in ['async', 'semisync']):
+            elif datastore_type.lower() == "mysql" and mode not in [
+                "async",
+                "semisync",
+            ]:
                 raise exceptions.SDKException(
-                    '`async` or `semisync` ha_mode can be used for '
-                    'MySQL isntance'
+                    "`async` or `semisync` ha_mode can be used for " "MySQL isntance"
                 )
-            elif (datastore_type.lower() == 'sqlserver'
-                    and mode not in ['sync']):
+            elif datastore_type.lower() == "sqlserver" and mode not in ["sync"]:
                 raise exceptions.SDKException(
-                    'Only `sync` ha_mode can be used for '
-                    'SQLServer isntance'
+                    "Only `sync` ha_mode can be used for " "SQLServer isntance"
                 )
         if wait_interval and not wait:
-            raise exceptions.SDKException(
-                '`wait-interval` is only valid with `wait`'
-            )
+            raise exceptions.SDKException("`wait-interval` is only valid with `wait`")
         if network:
-            network_obj = self.network.find_network(
-                network, ignore_missing=False)
-            attrs['network_id'] = network_obj.id
+            network_obj = self.network.find_network(network, ignore_missing=False)
+            attrs["network_id"] = network_obj.id
         if security_group:
             security_group_obj = self.network.find_security_group(
-                security_group, ignore_missing=False)
-            attrs['security_group_id'] = security_group_obj.id
+                security_group, ignore_missing=False
+            )
+            attrs["security_group_id"] = security_group_obj.id
         if router:
             router_obj = self.network.find_router(router, ignore_missing=False)
-            attrs['router_id'] = router_obj.id
+            attrs["router_id"] = router_obj.id
 
         obj = self.rds.create_instance(**attrs)
 
         if obj.job_id and wait:
             wait_args = {}
             if wait_interval:
-                wait_args['interval'] = wait_interval
+                wait_args["interval"] = wait_interval
             if wait_timeout:
-                wait_args['wait'] = wait_timeout
+                wait_args["wait"] = wait_timeout
 
             # RDS is so bad, that job_id appears only some time after it is
             # returned
@@ -291,9 +267,9 @@ class RdsMixin:
         if obj.job_id and wait:
             wait_args = {}
             if wait_interval:
-                wait_args['interval'] = wait_interval
+                wait_args["interval"] = wait_interval
             if wait_timeout:
-                wait_args['wait'] = wait_timeout
+                wait_args["wait"] = wait_timeout
 
             # RDS is so bad, that job_id appears only some time after it is
             # returned

@@ -11,71 +11,63 @@
 # under the License.
 import copy
 
+import mock
 from keystoneauth1 import adapter
 
-import mock
-
 from openstack.tests.unit import base
-
 from otcextensions.sdk.cce.v1 import cluster_node
 
 OS_HEADERS = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
 }
 
 EXAMPLE_LIST = {
-    'kind': 'list',
-    'apiVersion': 'v1',
-    'metadata': {},
-    'spec': {
-        'hostList': [{
-            'kind': 'host',
-            'apiVersion': 'v1',
-            'metadata': {
-                'name': 'ag-test-node-1',
-                'uuid': '580add6d-db4a-4571-ae02-9b3364818f8a',
-                'spaceuuid': 'de213bc4-4949-2a70-1a28-ae6c54e4ea23',
-                'createAt': '2018-04-03 13:37:27.993379777 +0000 UTC',
-                'updateAt': '2018-04-03 13:37:27.993379777 +0000 UTC'},
-            'spec': {
-                'clusteruuid': '5a66a449-668c-492f-8c33-5cdbdeaadd2e',
-                'clustername': 'ag-test',
-                'flavor': 's1.medium',
-                'cpu': 1,
-                'memory': 4096,
-                'label': 'fake',
-                'status': {
-                    'capacity': {
-                        'cpu': '',
-                        'memory': '',
-                        'pods': ''
+    "kind": "list",
+    "apiVersion": "v1",
+    "metadata": {},
+    "spec": {
+        "hostList": [
+            {
+                "kind": "host",
+                "apiVersion": "v1",
+                "metadata": {
+                    "name": "ag-test-node-1",
+                    "uuid": "580add6d-db4a-4571-ae02-9b3364818f8a",
+                    "spaceuuid": "de213bc4-4949-2a70-1a28-ae6c54e4ea23",
+                    "createAt": "2018-04-03 13:37:27.993379777 +0000 UTC",
+                    "updateAt": "2018-04-03 13:37:27.993379777 +0000 UTC",
+                },
+                "spec": {
+                    "clusteruuid": "5a66a449-668c-492f-8c33-5cdbdeaadd2e",
+                    "clustername": "ag-test",
+                    "flavor": "s1.medium",
+                    "cpu": 1,
+                    "memory": 4096,
+                    "label": "fake",
+                    "status": {
+                        "capacity": {"cpu": "", "memory": "", "pods": ""},
+                        "allocatable": {"cpu": "", "memory": "", "pods": ""},
+                        "conditions": None,
+                        "addresses": None,
+                        "daemonEndpoints": {"kubeletEndpoint": {"Port": 0}},
+                        "nodeInfo": {
+                            "machineID": "",
+                            "systemUUID": "",
+                            "bootID": "",
+                            "kernelVersion": "",
+                            "osImage": "",
+                            "containerRuntimeVersion": "",
+                            "kubeletVersion": "",
+                            "kubeProxyVersion": "",
+                        },
+                        "images": None,
                     },
-                    'allocatable': {
-                        'cpu': '',
-                        'memory': '',
-                        'pods': ''
-                    },
-                    'conditions': None,
-                    'addresses': None,
-                    'daemonEndpoints': {
-                        'kubeletEndpoint': {'Port': 0}
-                    },
-                    'nodeInfo': {
-                        'machineID': '',
-                        'systemUUID': '',
-                        'bootID': '',
-                        'kernelVersion': '',
-                        'osImage': '',
-                        'containerRuntimeVersion': '',
-                        'kubeletVersion': '',
-                        'kubeProxyVersion': ''},
-                    'images': None
-                }
-            },
-            'replicas': 1,
-            'status': 'BUILD'
-        }]
-    }
+                },
+                "replicas": 1,
+                "status": "BUILD",
+            }
+        ]
+    },
 }
 
 EXAMPLE_CREATE = {
@@ -84,21 +76,16 @@ EXAMPLE_CREATE = {
     "spec": {
         "flavor": "s1.medium",
         "label": "",
-        "volume": [{
-            "diskType": "root",
-            "diskSize": 40,
-            "volumeType": "SAS"
-        }, {
-            "diskType": "data",
-            "diskSize": 100,
-            "volumeType": "SATA"
-        }],
+        "volume": [
+            {"diskType": "root", "diskSize": 40, "volumeType": "SAS"},
+            {"diskType": "data", "diskSize": 100, "volumeType": "SATA"},
+        ],
         "sshkey": "SSHkey-1864",
         "snat": False,
         "az": "eu-de-01",
-        "tags": ["aaa.111", "bbb.222"]
+        "tags": ["aaa.111", "bbb.222"],
     },
-    "replicas": 1
+    "replicas": 1,
 }
 
 
@@ -111,14 +98,13 @@ class TestClusterNode(base.TestCase):
         self.sess.post = mock.Mock()
         self.sess.get = mock.Mock()
 
-        self.sot = cluster_node.ClusterNode(cluster_uuid='cluster_uuid')
+        self.sot = cluster_node.ClusterNode(cluster_uuid="cluster_uuid")
 
     def test_basic(self):
         sot = cluster_node.ClusterNode()
         self.assertEqual(None, sot.resource_key)
         self.assertEqual(None, sot.resources_key)
-        self.assertEqual('/clusters/%(cluster_uuid)s/hosts',
-                         sot.base_path)
+        self.assertEqual("/clusters/%(cluster_uuid)s/hosts", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_get)
@@ -142,28 +128,24 @@ class TestClusterNode(base.TestCase):
             self.sot.list(
                 self.sess,
                 headers=OS_HEADERS,
-                cluster_uuid='cluster_uuid',
+                cluster_uuid="cluster_uuid",
             )
         )
 
         self.sess.get.assert_called_once_with(
-            '/clusters/%s/hosts' % self.sot.cluster_uuid,
-            params={},
-            headers=OS_HEADERS
+            "/clusters/%s/hosts" % self.sot.cluster_uuid, params={}, headers=OS_HEADERS
         )
 
         expected_list = [
-            cluster_node.ClusterNode.existing(
-                **EXAMPLE_LIST['spec']['hostList'][0]),
+            cluster_node.ClusterNode.existing(**EXAMPLE_LIST["spec"]["hostList"][0]),
         ]
 
         self.assertEqual(expected_list, result)
 
     def test_get(self):
-        host = EXAMPLE_LIST['spec']['hostList'][0]
+        host = EXAMPLE_LIST["spec"]["hostList"][0]
         sot = cluster_node.ClusterNode.existing(
-            id=host['metadata']['uuid'],
-            cluster_uuid='cluster_uuid'
+            id=host["metadata"]["uuid"], cluster_uuid="cluster_uuid"
         )
 
         mock_response = mock.Mock()
@@ -176,22 +158,17 @@ class TestClusterNode(base.TestCase):
         result = sot.get(self.sess)
 
         self.sess.get.assert_called_once_with(
-            'clusters/%s/hosts/%s' % (
-                'cluster_uuid',
-                sot.id
-            ),
-            headers=OS_HEADERS
+            "clusters/%s/hosts/%s" % ("cluster_uuid", sot.id), headers=OS_HEADERS
         )
 
         self.assertDictEqual(
-            cluster_node.ClusterNode.existing(**host).to_dict(),
-            result.to_dict()
+            cluster_node.ClusterNode.existing(**host).to_dict(), result.to_dict()
         )
 
     def test_delete(self):
         sot = cluster_node.ClusterNode.existing(
-            cluster_uuid='bla',
-            **EXAMPLE_LIST['spec']['hostList'][0])
+            cluster_uuid="bla", **EXAMPLE_LIST["spec"]["hostList"][0]
+        )
 
         mock_response = mock.Mock()
         mock_response.status_code = 200
@@ -203,14 +180,13 @@ class TestClusterNode(base.TestCase):
         sot.delete(self.sess)
 
         self.sess.delete.assert_called_once_with(
-            '/clusters/%s/hosts' % 'bla',
-            json={'hosts': [{'name': 'ag-test-node-1'}]},
-            headers=OS_HEADERS)
+            "/clusters/%s/hosts" % "bla",
+            json={"hosts": [{"name": "ag-test-node-1"}]},
+            headers=OS_HEADERS,
+        )
 
     def test_create(self):
-        sot = cluster_node.ClusterNode.new(
-            cluster_uuid='bla',
-            **EXAMPLE_CREATE)
+        sot = cluster_node.ClusterNode.new(cluster_uuid="bla", **EXAMPLE_CREATE)
 
         mock_response = mock.Mock()
         mock_response.status_code = 200
@@ -222,6 +198,5 @@ class TestClusterNode(base.TestCase):
         sot.create(self.sess)
 
         self.sess.post.assert_called_once_with(
-            '/clusters/%s/hosts' % 'bla',
-            json=EXAMPLE_CREATE,
-            headers=OS_HEADERS)
+            "/clusters/%s/hosts" % "bla", json=EXAMPLE_CREATE, headers=OS_HEADERS
+        )

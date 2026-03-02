@@ -22,12 +22,12 @@ def create_host(conn):
     print("Create Host:")
 
     host = conn.deh.create_host(
-        name='my_new_host',
+        name="my_new_host",
         # host_type can be retrieved with host_types() call
-        host_type='general',
-        availability_zone='eu-de-01',
+        host_type="general",
+        availability_zone="eu-de-01",
         # amount of hosts to allocate
-        quantity=1
+        quantity=1,
     )
 
     # dedicated_host_ids is a list of allocated hosts (since multiple may

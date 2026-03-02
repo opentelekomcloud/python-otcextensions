@@ -101,9 +101,7 @@ class TestAddDatasetSamples(fakes.TestModelartsv2):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.find_dataset.assert_called_with(
-            "dataset-id", ignore_missing=False
-        )
+        self.client.find_dataset.assert_called_with("dataset-id", ignore_missing=False)
         self.client.add_dataset_samples.assert_called_with(
             self._dataset.id,
             file_path="1",
@@ -309,9 +307,7 @@ class TestShowDatasetSample(fakes.TestModelartsv2):
         self.client.find_dataset.assert_called_with(
             "dataset-name", ignore_missing=False
         )
-        self.client.get_dataset_sample.assert_called_with(
-            self.dataset.id, "sample-id"
-        )
+        self.client.get_dataset_sample.assert_called_with(self.dataset.id, "sample-id")
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)

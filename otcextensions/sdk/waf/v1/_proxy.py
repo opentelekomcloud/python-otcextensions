@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import proxy
-
 from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.waf.v1 import certificate as _cert
 from otcextensions.sdk.waf.v1 import domain as _domain
@@ -24,14 +23,14 @@ class Proxy(proxy.Proxy):
 
     def __init__(self, session, *args, **kwargs):
         super(Proxy, self).__init__(session=session, *args, **kwargs)
-        self.endpoint_override = \
-            '%s/%s/%s' % (
-                self.get_endpoint(),
-                'v1',
-                '%(project_id)s')
+        self.endpoint_override = "%s/%s/%s" % (
+            self.get_endpoint(),
+            "v1",
+            "%(project_id)s",
+        )
         self.additional_headers = {
-            'x-request-source-type': 'ApiCall',
-            'content-type': 'application/json'
+            "x-request-source-type": "ApiCall",
+            "content-type": "application/json",
         }
 
     # ======== Certificates ========
@@ -86,8 +85,9 @@ class Proxy(proxy.Proxy):
         :returns: Certificate been deleted
         :rtype: :class:`~otcextensions.sdk.waf.v1.certificate.Certificate`
         """
-        return self._delete(_cert.Certificate, certificate,
-                            ignore_missing=ignore_missing)
+        return self._delete(
+            _cert.Certificate, certificate, ignore_missing=ignore_missing
+        )
 
     def update_certificate(self, certificate, **attrs):
         """Update certificate attributes
@@ -113,9 +113,9 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._find(_cert.Certificate, name_or_id,
-                          ignore_missing=ignore_missing,
-                          **attrs)
+        return self._find(
+            _cert.Certificate, name_or_id, ignore_missing=ignore_missing, **attrs
+        )
 
     # ======== Domains ========
     def domains(self, **query):
@@ -171,8 +171,7 @@ class Proxy(proxy.Proxy):
         :returns: Domain been deleted
         :rtype: :class:`~otcextensions.sdk.waf.v1.domain.Domain`
         """
-        return self._delete(_domain.Domain, domain,
-                            ignore_missing=ignore_missing)
+        return self._delete(_domain.Domain, domain, ignore_missing=ignore_missing)
 
     def update_domain(self, domain, **attrs):
         """Update domain attributes
@@ -198,22 +197,23 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._find(_domain.Domain, name_or_id,
-                          ignore_missing=ignore_missing,
-                          **attrs)
+        return self._find(
+            _domain.Domain, name_or_id, ignore_missing=ignore_missing, **attrs
+        )
 
     # ======== Project cleanup ========
     def _get_cleanup_dependencies(self):
-        return {
-            'waf': {
-                'before': []
-            }
-        }
+        return {"waf": {"before": []}}
 
-    def _service_cleanup(self, dry_run=True, client_status_queue=None,
-                         identified_resources=None,
-                         filters=None, resource_evaluation_fn=None,
-                         skip_resources=None):
+    def _service_cleanup(
+        self,
+        dry_run=True,
+        client_status_queue=None,
+        identified_resources=None,
+        filters=None,
+        resource_evaluation_fn=None,
+        skip_resources=None,
+    ):
         for obj in self.domains():
             self._service_cleanup_del_res(
                 self.delete_domain,
@@ -222,7 +222,8 @@ class Proxy(proxy.Proxy):
                 client_status_queue=client_status_queue,
                 identified_resources=identified_resources,
                 filters=filters,
-                resource_evaluation_fn=resource_evaluation_fn)
+                resource_evaluation_fn=resource_evaluation_fn,
+            )
 
         for obj in self.certificates():
             self._service_cleanup_del_res(
@@ -232,4 +233,5 @@ class Proxy(proxy.Proxy):
                 client_status_queue=client_status_queue,
                 identified_resources=identified_resources,
                 filters=filters,
-                resource_evaluation_fn=resource_evaluation_fn)
+                resource_evaluation_fn=resource_evaluation_fn,
+            )

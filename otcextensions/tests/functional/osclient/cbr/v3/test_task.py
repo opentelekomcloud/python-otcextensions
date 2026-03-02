@@ -14,9 +14,7 @@ from openstackclient.tests.functional import base
 
 
 class TestCbr(base.TestCase):
-    """Functional tests for CBR Task. """
+    """Functional tests for CBR Task."""
 
     def test_task_list(self):
-        self.openstack(
-            'cbr task list -f json '
-        )
+        self.openstack("cbr task list -f json ")

@@ -34,25 +34,27 @@ WRITTEN_METHODS = set()
 
 class EnforcementError(errors.SphinxError):
     """A mismatch between what exists and what's documented"""
+
     category = "Enforcer"
 
 
 def get_proxy_methods():
     """Return a set of public names on all proxies"""
-    names = ["otcextensions.sdk.anti_ddos.v1._proxy",
-             "otcextensions.sdk.auto_scaling.v1._proxy",
-             "otcextensions.sdk.cce.v1._proxy",
-             "otcextensions.sdk.ces.v1._proxy",
-             "otcextensions.sdk.cts.v1._proxy",
-             "otcextensions.sdk.dcs.v1._proxy",
-             "otcextensions.sdk.dms.v1._proxy",
-             "otcextensions.sdk.dns.v2._proxy",
-             "otcextensions.sdk.kms.v1._proxy",
-             "otcextensions.sdk.obs.v1._proxy",
-             "otcextensions.sdk.rds.v1._proxy",
-             "otcextensions.sdk.rds.v3._proxy",
-             "otcextensions.sdk.volume_backup.v2._proxy"
-             ]
+    names = [
+        "otcextensions.sdk.anti_ddos.v1._proxy",
+        "otcextensions.sdk.auto_scaling.v1._proxy",
+        "otcextensions.sdk.cce.v1._proxy",
+        "otcextensions.sdk.ces.v1._proxy",
+        "otcextensions.sdk.cts.v1._proxy",
+        "otcextensions.sdk.dcs.v1._proxy",
+        "otcextensions.sdk.dms.v1._proxy",
+        "otcextensions.sdk.dns.v2._proxy",
+        "otcextensions.sdk.kms.v1._proxy",
+        "otcextensions.sdk.obs.v1._proxy",
+        "otcextensions.sdk.rds.v1._proxy",
+        "otcextensions.sdk.rds.v3._proxy",
+        "otcextensions.sdk.volume_backup.v2._proxy",
+    ]
 
     modules = (importlib.import_module(name) for name in names)
 
@@ -92,8 +94,7 @@ def page_context(app, pagename, templatename, context, doctree):
                 written += 1
 
         if DEBUG:
-            LOG.info("ENFORCER: Wrote %d proxy methods for %s" % (
-                     written, pagename))
+            LOG.info("ENFORCER: Wrote %d proxy methods for %s" % (written, pagename))
 
 
 def build_finished(app, exception):
@@ -113,8 +114,9 @@ def build_finished(app, exception):
     missing = all_methods - WRITTEN_METHODS
 
     missing_count = len(missing)
-    LOG.info("ENFORCER: Found %d missing proxy methods "
-             "in the output" % missing_count)
+    LOG.info(
+        "ENFORCER: Found %d missing proxy methods " "in the output" % missing_count
+    )
 
     # TODO(shade) This is spewing a bunch of content for missing thing that
     # are not actually missing. Leave it as info rather than warn so that the
@@ -128,7 +130,8 @@ def build_finished(app, exception):
 
     if app.config.enforcer_warnings_as_errors and missing_count > 0:
         raise EnforcementError(
-            "There are %d undocumented proxy methods" % missing_count)
+            "There are %d undocumented proxy methods" % missing_count
+        )
 
 
 def setup(app):

@@ -28,28 +28,28 @@ class TestVault(fakes.TestCBR):
         flat_data = vault._flatten_vault(obj)
 
         data = (
-            flat_data['id'],
-            flat_data['name'],
-            flat_data['auto_bind'],
-            flat_data['auto_expand'],
-            flat_data['backup_policy_id'],
-            flat_data['created_at'],
-            flat_data['description'],
-            flat_data['project_id'],
-            flat_data['provider_id'],
-            flat_data['user_id'],
-            flat_data['status'],
-            flat_data['operation_type'],
-            flat_data['object_type'],
-            flat_data['spec_code'],
-            flat_data['size'],
-            flat_data['consistent_level'],
-            flat_data['charging_mode'],
-            flat_data['is_auto_pay'],
-            flat_data['is_auto_renew'],
-            flat_data['bind_rules'],
-            flat_data['resources'],
-            flat_data['tags']
+            flat_data["id"],
+            flat_data["name"],
+            flat_data["auto_bind"],
+            flat_data["auto_expand"],
+            flat_data["backup_policy_id"],
+            flat_data["created_at"],
+            flat_data["description"],
+            flat_data["project_id"],
+            flat_data["provider_id"],
+            flat_data["user_id"],
+            flat_data["status"],
+            flat_data["operation_type"],
+            flat_data["object_type"],
+            flat_data["spec_code"],
+            flat_data["size"],
+            flat_data["consistent_level"],
+            flat_data["charging_mode"],
+            flat_data["is_auto_pay"],
+            flat_data["is_auto_renew"],
+            flat_data["bind_rules"],
+            flat_data["resources"],
+            flat_data["tags"],
         )
 
         cmp_data = (
@@ -85,12 +85,12 @@ class TestVault(fakes.TestCBR):
         column = ()
         data = ()
         verify_column = (
-            'resource_id_1',
-            'resource_type_1',
+            "resource_id_1",
+            "resource_type_1",
         )
         verify_data = (
-            'resource_id',
-            'OS::Nova::Server',
+            "resource_id",
+            "OS::Nova::Server",
         )
 
         data, column = vault._add_resources_to_vault_obj(obj, data, column)
@@ -103,12 +103,8 @@ class TestVault(fakes.TestCBR):
 
         column = ()
         data = ()
-        verify_column = (
-            'tags',
-        )
-        verify_data = (
-            ('value=val-tags, key=key-tags',)
-        )
+        verify_column = ("tags",)
+        verify_data = ("value=val-tags, key=key-tags",)
 
         data, column = vault._add_tags_to_vault_obj(obj, data, column)
 
@@ -120,12 +116,8 @@ class TestVault(fakes.TestCBR):
 
         column = ()
         data = ()
-        verify_column = (
-            'bind_rules',
-        )
-        verify_data = (
-            ('value=val-bind, key=key-bind',)
-        )
+        verify_column = ("bind_rules",)
+        verify_data = ("value=val-bind, key=key-bind",)
 
         data, column = vault._add_bind_rules_to_vault_obj(obj, data, column)
 
@@ -134,20 +126,17 @@ class TestVault(fakes.TestCBR):
 
     def test_add_associated_policy_to_vault_output(self):
         obj = {
-            'associate_policy': {
-                'vault_id': 'cc56d0c6-c0c3-47e6-84cc-d7840dccb706',
-                'policy_id': '6359dd6f-4146-42f8-9d7f-fbd6fa740d9f'
+            "associate_policy": {
+                "vault_id": "cc56d0c6-c0c3-47e6-84cc-d7840dccb706",
+                "policy_id": "6359dd6f-4146-42f8-9d7f-fbd6fa740d9f",
             }
         }
 
         column = ()
-        verify_column = (
-            'vault_id',
-            'policy_id'
-        )
+        verify_column = ("vault_id", "policy_id")
         verify_data = (
-            'cc56d0c6-c0c3-47e6-84cc-d7840dccb706',
-            '6359dd6f-4146-42f8-9d7f-fbd6fa740d9f'
+            "cc56d0c6-c0c3-47e6-84cc-d7840dccb706",
+            "6359dd6f-4146-42f8-9d7f-fbd6fa740d9f",
         )
 
         data, column = vault._add_associated_policy_to_vault_obj(obj, column)
@@ -157,40 +146,31 @@ class TestVault(fakes.TestCBR):
 
     def test_add_associated_resources_to_vault_output(self):
         obj = {
-            'add_resource_ids': [
-                'cc56d0c6-c0c3-47e6-84cc-d7840dccb706',
-                '6359dd6f-4146-42f8-9d7f-fbd6fa740d9f'
+            "add_resource_ids": [
+                "cc56d0c6-c0c3-47e6-84cc-d7840dccb706",
+                "6359dd6f-4146-42f8-9d7f-fbd6fa740d9f",
             ]
         }
 
         column = ()
-        verify_column = (
-            'resource_1',
-            'resource_2'
-        )
+        verify_column = ("resource_1", "resource_2")
         verify_data = (
-            'cc56d0c6-c0c3-47e6-84cc-d7840dccb706',
-            '6359dd6f-4146-42f8-9d7f-fbd6fa740d9f'
+            "cc56d0c6-c0c3-47e6-84cc-d7840dccb706",
+            "6359dd6f-4146-42f8-9d7f-fbd6fa740d9f",
         )
 
-        data, column = vault._add_associated_resources_to_vault_obj(
-            obj, column
-        )
+        data, column = vault._add_associated_resources_to_vault_obj(obj, column)
 
         self.assertEqual(data, verify_data)
         self.assertEqual(column, verify_column)
 
     def test_normalize_tags(self):
-        tags = [
-            'key1=value',
-            'key2=',
-            'key3'
-        ]
+        tags = ["key1=value", "key2=", "key3"]
 
         verify_result = [
-            {'key': 'key1', 'value': 'value'},
-            {'key': 'key2', 'value': ''},
-            {'key': 'key3', 'value': ''}
+            {"key": "key1", "value": "value"},
+            {"key": "key2", "value": ""},
+            {"key": "key3", "value": ""},
         ]
 
         result = vault._normalize_tags(tags)
@@ -202,8 +182,16 @@ class TestListVault(fakes.TestCBR):
 
     objects = fakes.FakeVault.create_multiple(3)
 
-    columns = ('ID', 'name', 'backup_policy_id', 'description', 'created_at',
-               'resource_id_1', 'resource_type_1', 'tags')
+    columns = (
+        "ID",
+        "name",
+        "backup_policy_id",
+        "description",
+        "created_at",
+        "resource_id_1",
+        "resource_type_1",
+        "tags",
+    )
 
     data = []
 
@@ -211,16 +199,18 @@ class TestListVault(fakes.TestCBR):
         flat_data = vault._flatten_vault(s)
         resource_data, _ = vault._add_resources_to_vault_obj(s, (), ())
         tag_data, _ = vault._add_tags_to_vault_obj(s, (), ())
-        data.append((
-            flat_data['id'],
-            flat_data['name'],
-            flat_data['backup_policy_id'],
-            flat_data['description'],
-            flat_data['created_at'],
-            resource_data[0] if resource_data else None,
-            resource_data[1] if len(resource_data) > 1 else None,
-            tag_data[0] if tag_data else None,
-        ))
+        data.append(
+            (
+                flat_data["id"],
+                flat_data["name"],
+                flat_data["backup_policy_id"],
+                flat_data["description"],
+                flat_data["created_at"],
+                resource_data[0] if resource_data else None,
+                resource_data[1] if len(resource_data) > 1 else None,
+                tag_data[0] if tag_data else None,
+            )
+        )
 
     def setUp(self):
         super(TestListVault, self).setUp()
@@ -232,50 +222,57 @@ class TestListVault(fakes.TestCBR):
 
     def test_default(self):
         arglist = [
-            '--id', 'vault-id',
-            '--name', 'vault-name',
-            '--cloud-type', 'cloud-type',
-            '--limit', '12',
-            '--object-type', 'object-type',
-            '--offset', '1',
-            '--policy-id', 'policy-id',
-            '--protect-type', 'protect-type',
-            '--status', 'status',
+            "--id",
+            "vault-id",
+            "--name",
+            "vault-name",
+            "--cloud-type",
+            "cloud-type",
+            "--limit",
+            "12",
+            "--object-type",
+            "object-type",
+            "--offset",
+            "1",
+            "--policy-id",
+            "policy-id",
+            "--protect-type",
+            "protect-type",
+            "--status",
+            "status",
         ]
 
         verifylist = [
-            ('id', 'vault-id'),
-            ('name', 'vault-name'),
-            ('cloud_type', 'cloud-type'),
-            ('limit', 12),
-            ('object_type', 'object-type'),
-            ('offset', 1),
-            ('policy_id', 'policy-id'),
-            ('protect_type', 'protect-type'),
-            ('status', 'status')
+            ("id", "vault-id"),
+            ("name", "vault-name"),
+            ("cloud_type", "cloud-type"),
+            ("limit", 12),
+            ("object_type", "object-type"),
+            ("offset", 1),
+            ("policy_id", "policy-id"),
+            ("protect_type", "protect-type"),
+            ("status", "status"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self.objects
-        ]
+        self.client.api_mock.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_once_with(
-            id='vault-id',
-            name='vault-name',
-            cloud_type='cloud-type',
+            id="vault-id",
+            name="vault-name",
+            cloud_type="cloud-type",
             limit=12,
-            object_type='object-type',
+            object_type="object-type",
             offset=1,
-            policy_id='policy-id',
-            protect_type='protect-type',
-            status='status'
+            policy_id="policy-id",
+            protect_type="protect-type",
+            status="status",
         )
         self.assertEqual(self.columns, tuple(columns))
         for i, (expected, actual) in enumerate(zip(self.data, list(data))):
@@ -290,49 +287,49 @@ class TestShowVault(fakes.TestCBR):
     object = fakes.FakeVault.create_one()
 
     columns = (
-        'ID',
-        'name',
-        'auto_bind',
-        'auto_expand',
-        'backup_policy_id',
-        'created_at',
-        'description',
-        'project_id',
-        'provider_id',
-        'user_id',
-        'status',
-        'operation_type',
-        'object_type',
-        'spec_code',
-        'size',
-        'consistent_level',
-        'charging_mode',
-        'is_auto_pay',
-        'is_auto_renew',
+        "ID",
+        "name",
+        "auto_bind",
+        "auto_expand",
+        "backup_policy_id",
+        "created_at",
+        "description",
+        "project_id",
+        "provider_id",
+        "user_id",
+        "status",
+        "operation_type",
+        "object_type",
+        "spec_code",
+        "size",
+        "consistent_level",
+        "charging_mode",
+        "is_auto_pay",
+        "is_auto_renew",
     )
 
     flat_data = vault._flatten_vault(object)
 
     data = (
-        flat_data['id'],
-        flat_data['name'],
-        flat_data['auto_bind'],
-        flat_data['auto_expand'],
-        flat_data['backup_policy_id'],
-        flat_data['created_at'],
-        flat_data['description'],
-        flat_data['project_id'],
-        flat_data['provider_id'],
-        flat_data['user_id'],
-        flat_data['status'],
-        flat_data['operation_type'],
-        flat_data['object_type'],
-        flat_data['spec_code'],
-        flat_data['size'],
-        flat_data['consistent_level'],
-        flat_data['charging_mode'],
-        flat_data['is_auto_pay'],
-        flat_data['is_auto_renew'],
+        flat_data["id"],
+        flat_data["name"],
+        flat_data["auto_bind"],
+        flat_data["auto_expand"],
+        flat_data["backup_policy_id"],
+        flat_data["created_at"],
+        flat_data["description"],
+        flat_data["project_id"],
+        flat_data["provider_id"],
+        flat_data["user_id"],
+        flat_data["status"],
+        flat_data["operation_type"],
+        flat_data["object_type"],
+        flat_data["spec_code"],
+        flat_data["size"],
+        flat_data["consistent_level"],
+        flat_data["charging_mode"],
+        flat_data["is_auto_pay"],
+        flat_data["is_auto_renew"],
     )
 
     def setUp(self):
@@ -343,31 +340,25 @@ class TestShowVault(fakes.TestCBR):
         self.client.find_vault = mock.Mock()
 
     def test_default(self):
-        arglist = [
-            'vault'
-        ]
-        verifylist = [
-        ]
+        arglist = ["vault"]
+        verifylist = []
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_vault.side_effect = [
-            self.object
-        ]
+        self.client.find_vault.side_effect = [self.object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_vault.assert_called_once_with(
-            name_or_id='vault',
-            ignore_missing=False,)
+            name_or_id="vault",
+            ignore_missing=False,
+        )
 
         self.data, self.columns = vault._add_resources_to_vault_obj(
-            self.object,
-            self.data,
-            self.columns
+            self.object, self.data, self.columns
         )
 
         self.data, self.columns = vault._add_tags_to_vault_obj(
@@ -377,9 +368,7 @@ class TestShowVault(fakes.TestCBR):
         )
 
         self.data, self.columns = vault._add_bind_rules_to_vault_obj(
-            self.object,
-            self.data,
-            self.columns
+            self.object, self.data, self.columns
         )
 
         self.assertEqual(self.columns, columns)
@@ -396,12 +385,8 @@ class TestDeleteVault(fakes.TestCBR):
         self.client.delete_vault = mock.Mock()
 
     def test_delete(self):
-        arglist = [
-            'p1'
-        ]
-        verifylist = [
-            ('vault', 'p1')
-        ]
+        arglist = ["p1"]
+        verifylist = [("vault", "p1")]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -409,23 +394,17 @@ class TestDeleteVault(fakes.TestCBR):
         self.client.delete_vault.side_effect = [{}]
 
         # Set the response for find_policy
-        self.client.find_vault.side_effect = [
-            vaultSDK.Vault(id='p1')
-        ]
+        self.client.find_vault.side_effect = [vaultSDK.Vault(id="p1")]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
         delete_calls = [
-            mock.call(
-                vault='p1',
-                ignore_missing=False),
+            mock.call(vault="p1", ignore_missing=False),
         ]
 
         find_calls = [
-            mock.call(
-                name_or_id='p1',
-                ignore_missing=False),
+            mock.call(name_or_id="p1", ignore_missing=False),
         ]
 
         self.client.delete_vault.assert_has_calls(delete_calls)
@@ -438,49 +417,49 @@ class TestCreateVault(fakes.TestCBR):
     object = fakes.FakeVault.create_one()
 
     columns = (
-        'ID',
-        'name',
-        'auto_bind',
-        'auto_expand',
-        'backup_policy_id',
-        'created_at',
-        'description',
-        'project_id',
-        'provider_id',
-        'user_id',
-        'status',
-        'operation_type',
-        'object_type',
-        'spec_code',
-        'size',
-        'consistent_level',
-        'charging_mode',
-        'is_auto_pay',
-        'is_auto_renew',
+        "ID",
+        "name",
+        "auto_bind",
+        "auto_expand",
+        "backup_policy_id",
+        "created_at",
+        "description",
+        "project_id",
+        "provider_id",
+        "user_id",
+        "status",
+        "operation_type",
+        "object_type",
+        "spec_code",
+        "size",
+        "consistent_level",
+        "charging_mode",
+        "is_auto_pay",
+        "is_auto_renew",
     )
 
     flat_data = vault._flatten_vault(object)
 
     data = (
-        flat_data['id'],
-        flat_data['name'],
-        flat_data['auto_bind'],
-        flat_data['auto_expand'],
-        flat_data['backup_policy_id'],
-        flat_data['created_at'],
-        flat_data['description'],
-        flat_data['project_id'],
-        flat_data['provider_id'],
-        flat_data['user_id'],
-        flat_data['status'],
-        flat_data['operation_type'],
-        flat_data['object_type'],
-        flat_data['spec_code'],
-        flat_data['size'],
-        flat_data['consistent_level'],
-        flat_data['charging_mode'],
-        flat_data['is_auto_pay'],
-        flat_data['is_auto_renew'],
+        flat_data["id"],
+        flat_data["name"],
+        flat_data["auto_bind"],
+        flat_data["auto_expand"],
+        flat_data["backup_policy_id"],
+        flat_data["created_at"],
+        flat_data["description"],
+        flat_data["project_id"],
+        flat_data["provider_id"],
+        flat_data["user_id"],
+        flat_data["status"],
+        flat_data["operation_type"],
+        flat_data["object_type"],
+        flat_data["spec_code"],
+        flat_data["size"],
+        flat_data["consistent_level"],
+        flat_data["charging_mode"],
+        flat_data["is_auto_pay"],
+        flat_data["is_auto_renew"],
     )
 
     def setUp(self):
@@ -493,64 +472,60 @@ class TestCreateVault(fakes.TestCBR):
 
     def test_default(self):
         arglist = [
-            'vault_name',
-            '--consistent-level', 'crash_consistent',
-            '--backup-policy', 'id',
-            '--object-type', 'disk',
-            '--size', '40',
+            "vault_name",
+            "--consistent-level",
+            "crash_consistent",
+            "--backup-policy",
+            "id",
+            "--object-type",
+            "disk",
+            "--size",
+            "40",
         ]
         verifylist = [
-            ('name', 'vault_name'),
-            ('consistent_level', 'crash_consistent'),
-            ('backup_policy', 'id'),
-            ('object_type', 'disk'),
-            ('size', 40)
+            ("name", "vault_name"),
+            ("consistent_level", "crash_consistent"),
+            ("backup_policy", "id"),
+            ("object_type", "disk"),
+            ("size", 40),
         ]
 
         # Verify cmd is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.create_vault.side_effect = [
-            self.object
-        ]
+        self.client.create_vault.side_effect = [self.object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.create_vault.assert_called_once_with(
             resources=[],
-            backup_policy_id='id',
-            bind_rules={'tags': []},
+            backup_policy_id="id",
+            bind_rules={"tags": []},
             billing={
-                'cloud_type': 'public',
-                'protect_type': 'backup',
-                'charging_mode': 'post_paid',
-                'consistent_level': 'crash_consistent',
-                'object_type': 'disk',
-                'size': 40,
-                'is_auto_renew': True,
-                'is_auto_pay': True
+                "cloud_type": "public",
+                "protect_type": "backup",
+                "charging_mode": "post_paid",
+                "consistent_level": "crash_consistent",
+                "object_type": "disk",
+                "size": 40,
+                "is_auto_renew": True,
+                "is_auto_pay": True,
             },
-            name='vault_name'
+            name="vault_name",
         )
 
         self.data, self.columns = vault._add_resources_to_vault_obj(
-            self.object,
-            self.data,
-            self.columns
+            self.object, self.data, self.columns
         )
 
         self.data, self.columns = vault._add_bind_rules_to_vault_obj(
-            self.object,
-            self.data,
-            self.columns
+            self.object, self.data, self.columns
         )
 
         self.data, self.columns = vault._add_tags_to_vault_obj(
-            self.object,
-            self.data,
-            self.columns
+            self.object, self.data, self.columns
         )
 
         self.assertEqual(self.columns, columns)
@@ -562,49 +537,49 @@ class TestUpdateVault(fakes.TestCBR):
     object = fakes.FakeVault.create_one()
 
     columns = (
-        'ID',
-        'name',
-        'auto_bind',
-        'auto_expand',
-        'backup_policy_id',
-        'created_at',
-        'description',
-        'project_id',
-        'provider_id',
-        'user_id',
-        'status',
-        'operation_type',
-        'object_type',
-        'spec_code',
-        'size',
-        'consistent_level',
-        'charging_mode',
-        'is_auto_pay',
-        'is_auto_renew',
+        "ID",
+        "name",
+        "auto_bind",
+        "auto_expand",
+        "backup_policy_id",
+        "created_at",
+        "description",
+        "project_id",
+        "provider_id",
+        "user_id",
+        "status",
+        "operation_type",
+        "object_type",
+        "spec_code",
+        "size",
+        "consistent_level",
+        "charging_mode",
+        "is_auto_pay",
+        "is_auto_renew",
     )
 
     flat_data = vault._flatten_vault(object)
 
     data = (
-        flat_data['id'],
-        flat_data['name'],
-        flat_data['auto_bind'],
-        flat_data['auto_expand'],
-        flat_data['backup_policy_id'],
-        flat_data['created_at'],
-        flat_data['description'],
-        flat_data['project_id'],
-        flat_data['provider_id'],
-        flat_data['user_id'],
-        flat_data['status'],
-        flat_data['operation_type'],
-        flat_data['object_type'],
-        flat_data['spec_code'],
-        flat_data['size'],
-        flat_data['consistent_level'],
-        flat_data['charging_mode'],
-        flat_data['is_auto_pay'],
-        flat_data['is_auto_renew'],
+        flat_data["id"],
+        flat_data["name"],
+        flat_data["auto_bind"],
+        flat_data["auto_expand"],
+        flat_data["backup_policy_id"],
+        flat_data["created_at"],
+        flat_data["description"],
+        flat_data["project_id"],
+        flat_data["provider_id"],
+        flat_data["user_id"],
+        flat_data["status"],
+        flat_data["operation_type"],
+        flat_data["object_type"],
+        flat_data["spec_code"],
+        flat_data["size"],
+        flat_data["consistent_level"],
+        flat_data["charging_mode"],
+        flat_data["is_auto_pay"],
+        flat_data["is_auto_renew"],
     )
 
     def setUp(self):
@@ -617,55 +592,49 @@ class TestUpdateVault(fakes.TestCBR):
 
     def test_default(self):
         arglist = [
-            'vault_id',
-            '--name', 'vault_name',
-            '--size', '40',
+            "vault_id",
+            "--name",
+            "vault_name",
+            "--size",
+            "40",
         ]
         verifylist = [
-            ('vault', 'vault_id'),
-            ('name', 'vault_name'),
-            ('size', 40),
+            ("vault", "vault_id"),
+            ("name", "vault_name"),
+            ("size", 40),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.update_vault.side_effect = [
-            self.object
-        ]
+        self.client.update_vault.side_effect = [self.object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_vault.assert_called_with(
-            name_or_id='vault_id',
-            ignore_missing=False)
+            name_or_id="vault_id", ignore_missing=False
+        )
 
         self.client.update_vault.assert_called_once_with(
             vault=mock.ANY,
             billing={
-                'size': 40,
+                "size": 40,
             },
-            name='vault_name'
+            name="vault_name",
         )
 
         self.data, self.columns = vault._add_resources_to_vault_obj(
-            self.object,
-            self.data,
-            self.columns
+            self.object, self.data, self.columns
         )
 
         self.data, self.columns = vault._add_bind_rules_to_vault_obj(
-            self.object,
-            self.data,
-            self.columns
+            self.object, self.data, self.columns
         )
 
         self.data, self.columns = vault._add_tags_to_vault_obj(
-            self.object,
-            self.data,
-            self.columns
+            self.object, self.data, self.columns
         )
 
         self.assertEqual(self.columns, columns)
@@ -682,21 +651,16 @@ class TestDissociateVaultResource(fakes.TestCBR):
         self.client.dissociate_resources = mock.Mock()
 
     def test_delete(self):
-        arglist = [
-            'vault',
-            '--resource', 'resource'
-        ]
+        arglist = ["vault", "--resource", "resource"]
         verifylist = [
-            ('vault', 'vault'),
-            ('resource', ['resource']),
+            ("vault", "vault"),
+            ("resource", ["resource"]),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response for find_vault
-        self.client.find_vault.side_effect = [
-            vaultSDK.Vault(id='vault')
-        ]
+        self.client.find_vault.side_effect = [vaultSDK.Vault(id="vault")]
 
         # Set the response
         self.client.dissociate_resources.side_effect = [{}]
@@ -705,15 +669,11 @@ class TestDissociateVaultResource(fakes.TestCBR):
         self.cmd.take_action(parsed_args)
 
         dissociate_calls = [
-            mock.call(
-                vault='vault',
-                resources=['resource']),
+            mock.call(vault="vault", resources=["resource"]),
         ]
 
         find_calls = [
-            mock.call(
-                name_or_id='vault',
-                ignore_missing=False),
+            mock.call(name_or_id="vault", ignore_missing=False),
         ]
 
         self.client.find_vault.assert_has_calls(find_calls)
@@ -731,21 +691,16 @@ class TestUnbindVaultPolicy(fakes.TestCBR):
         self.client.unbind_policy = mock.Mock()
 
     def test_delete(self):
-        arglist = [
-            'vault',
-            'policy'
-        ]
+        arglist = ["vault", "policy"]
         verifylist = [
-            ('vault', 'vault'),
-            ('policy', 'policy'),
+            ("vault", "vault"),
+            ("policy", "policy"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response for find_vault
-        self.client.find_vault.side_effect = [
-            vaultSDK.Vault(id='vault')
-        ]
+        self.client.find_vault.side_effect = [vaultSDK.Vault(id="vault")]
 
         # Set the response
         self.client.unbind_policy.side_effect = [{}]
@@ -754,15 +709,11 @@ class TestUnbindVaultPolicy(fakes.TestCBR):
         self.cmd.take_action(parsed_args)
 
         unbind_calls = [
-            mock.call(
-                vault='vault',
-                policy='policy'),
+            mock.call(vault="vault", policy="policy"),
         ]
 
         find_calls = [
-            mock.call(
-                name_or_id='vault',
-                ignore_missing=False),
+            mock.call(name_or_id="vault", ignore_missing=False),
         ]
 
         self.client.find_vault.assert_has_calls(find_calls)
@@ -772,16 +723,10 @@ class TestUnbindVaultPolicy(fakes.TestCBR):
 
 class TestAssociateVaultResource(fakes.TestCBR):
     object = fakes.VaultDefaultStruct(
-        **{
-            '_content': b'{"add_resource_ids": ["resource_id"]}'
-        }
+        **{"_content": b'{"add_resource_ids": ["resource_id"]}'}
     )
-    columns = (
-        'resource_1',
-    )
-    data = (
-        'resource_id',
-    )
+    columns = ("resource_1",)
+    data = ("resource_id",)
 
     def setUp(self):
         super(TestAssociateVaultResource, self).setUp()
@@ -792,39 +737,30 @@ class TestAssociateVaultResource(fakes.TestCBR):
         self.client.associate_resources = mock.Mock()
 
     def test_default(self):
-        arglist = [
-            'vault_id',
-            '--resource', 'id=resource_id,type=resource_type'
-        ]
+        arglist = ["vault_id", "--resource", "id=resource_id,type=resource_type"]
         verifylist = [
-            ('vault', 'vault_id'),
-            ('resource', [{'id': 'resource_id', 'type': 'resource_type'}]),
+            ("vault", "vault_id"),
+            ("resource", [{"id": "resource_id", "type": "resource_type"}]),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response for find_vault
-        self.client.find_vault.side_effect = [
-            vaultSDK.Vault(id='vault_id')
-        ]
+        self.client.find_vault.side_effect = [vaultSDK.Vault(id="vault_id")]
 
         # Set the response
-        self.client.associate_resources.side_effect = [
-            self.object
-        ]
+        self.client.associate_resources.side_effect = [self.object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.associate_resources.assert_called_with(
-            vault='vault_id',
-            resources=[{'id': 'resource_id', 'type': 'resource_type'}]
+            vault="vault_id", resources=[{"id": "resource_id", "type": "resource_type"}]
         )
 
         self.client.associate_resources.assert_called_once_with(
-            vault='vault_id',
-            resources=[{'id': 'resource_id', 'type': 'resource_type'}]
+            vault="vault_id", resources=[{"id": "resource_id", "type": "resource_type"}]
         )
 
         self.assertEqual(self.columns, columns)
@@ -834,18 +770,18 @@ class TestAssociateVaultResource(fakes.TestCBR):
 class TestBindVaultPolicy(fakes.TestCBR):
     object = fakes.VaultDefaultStruct(
         **{
-            '_content': b'{"associate_policy": '
-                        b'{"vault_id" : "vault_id",'
-                        b'"policy_id" : "policy_id"}}'
+            "_content": b'{"associate_policy": '
+            b'{"vault_id" : "vault_id",'
+            b'"policy_id" : "policy_id"}}'
         }
     )
     columns = (
-        'vault_id',
-        'policy_id',
+        "vault_id",
+        "policy_id",
     )
     data = (
-        'vault_id',
-        'policy_id',
+        "vault_id",
+        "policy_id",
     )
 
     def setUp(self):
@@ -858,38 +794,30 @@ class TestBindVaultPolicy(fakes.TestCBR):
 
     def test_default(self):
         arglist = [
-            'vault_id',
-            'policy_id',
+            "vault_id",
+            "policy_id",
         ]
         verifylist = [
-            ('vault', 'vault_id'),
-            ('policy', 'policy_id'),
+            ("vault", "vault_id"),
+            ("policy", "policy_id"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response for find_vault
-        self.client.find_vault.side_effect = [
-            vaultSDK.Vault(id='vault_id')
-        ]
+        self.client.find_vault.side_effect = [vaultSDK.Vault(id="vault_id")]
 
         # Set the response
-        self.client.bind_policy.side_effect = [
-            self.object
-        ]
+        self.client.bind_policy.side_effect = [self.object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.bind_policy.assert_called_with(
-            vault='vault_id',
-            policy='policy_id'
-        )
+        self.client.bind_policy.assert_called_with(vault="vault_id", policy="policy_id")
 
         self.client.bind_policy.assert_called_once_with(
-            vault='vault_id',
-            policy='policy_id'
+            vault="vault_id", policy="policy_id"
         )
 
         self.assertEqual(self.columns, columns)

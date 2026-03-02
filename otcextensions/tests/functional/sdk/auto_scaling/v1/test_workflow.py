@@ -11,10 +11,9 @@
 # under the License.
 
 from openstack import _log
-
 from otcextensions.tests.functional.sdk.auto_scaling.v1.base import TestAs
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestASWorkflow(TestAs):
@@ -25,8 +24,7 @@ class TestASWorkflow(TestAs):
         self.initialize_as_group_with_instance()
 
     def test_01_find_as_group_by_name(self):
-        as_group = self.client.find_group(
-            name_or_id=TestAs.AS_GROUP_NAME)
+        as_group = self.client.find_group(name_or_id=TestAs.AS_GROUP_NAME)
         self.assertIsNotNone(as_group)
         self.assertEqual(as_group.name, self.AS_GROUP_NAME)
 
@@ -37,25 +35,22 @@ class TestASWorkflow(TestAs):
     def test_03_update_as_group(self):
         new_name = self.AS_GROUP_NAME
         as_group = self.client.update_group(
-            group=TestAs.AS_GROUP, name=new_name,
-            desire_instance_number=0)
+            group=TestAs.AS_GROUP, name=new_name, desire_instance_number=0
+        )
         self.assertIsNotNone(as_group)
         self.assertEqual(as_group.name, new_name)
 
     def test_04_find_as_group_by_id(self):
-        find_as_group = self.conn.auto_scaling.find_group(
-            name_or_id=TestAs.AS_GROUP.id
-        )
+        find_as_group = self.conn.auto_scaling.find_group(name_or_id=TestAs.AS_GROUP.id)
         self.assertEqual(TestAs.AS_GROUP.id, find_as_group.id)
         self.assertEqual(TestAs.AS_GROUP.name, find_as_group.name)
 
         self.deinitialize_as_group_with_instance()
-        as_group = self.client.find_group(
-            name_or_id=find_as_group.name)
+        as_group = self.client.find_group(name_or_id=find_as_group.name)
         self.assertIsNone(as_group)
 
         self.destroy_network(TestAs.NETWORK, TestAs.KP_NAME)
         vpc = self.conn.vpc.find_vpc(
-            TestAs.NETWORK.get('router_id'),
-            ignore_missing=True)
+            TestAs.NETWORK.get("router_id"), ignore_missing=True
+        )
         self.assertIsNone(vpc)

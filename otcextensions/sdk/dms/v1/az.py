@@ -10,27 +10,27 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
-
 from otcextensions.sdk.dms.v1 import _base
 
 
 class AvailabilityZone(_base.Resource):
     """DMS AZ resource"""
-    resources_key = 'available_zones'
-    base_path = '/availableZones'
+
+    resources_key = "available_zones"
+    base_path = "/availableZones"
 
     # capabilities
     allow_list = True
 
     #: Properties
     #: AZ code
-    code = resource.Body('code')
+    code = resource.Body("code")
     #: Has free resources
-    has_available_resources = resource.Body('resource_availability', type=bool)
+    has_available_resources = resource.Body("resource_availability", type=bool)
     #: Port number
-    port = resource.Body('port')
+    port = resource.Body("port")
     #: Region ID
-    region_id = resource.Body('region_id')
+    region_id = resource.Body("region_id")
 
     @classmethod
     def list(cls, session, **params):

@@ -13,12 +13,10 @@
 """
 Delete Multiple Access Control Policies
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-attrs = {
-    'acls': ['acl_id1', 'acl_id2']
-}
-conn.apig.delete_acl_policies(gateway='gateway_id',
-                              **attrs)
+conn = openstack.connect(cloud="otc")
+attrs = {"acls": ["acl_id1", "acl_id2"]}
+conn.apig.delete_acl_policies(gateway="gateway_id", **attrs)

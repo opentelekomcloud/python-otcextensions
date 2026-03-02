@@ -13,13 +13,14 @@
 """
 Delete CloudEye alarm rule
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-alarm = 'al1596533022051EZVV2nlZ8'
+alarm = "al1596533022051EZVV2nlZ8"
 alarm = conn.ces.find_alarm(alarm)
 alarm = conn.ces.delete_alarm(alarm)
 print(alarm)

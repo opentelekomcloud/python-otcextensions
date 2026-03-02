@@ -314,9 +314,7 @@ class TestUpdateTrainingJob(fakes.TestModelartsv1):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.update_training_job.assert_called_with(
-            1234, "New Description"
-        )
+        self.client.update_training_job.assert_called_with(1234, "New Description")
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
 
@@ -379,14 +377,10 @@ class TestDeleteTrainingJob(fakes.TestModelartsv1):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         delete_mock_results = [None, exceptions.CommandError]
-        self.client.delete_training_job = mock.Mock(
-            side_effect=delete_mock_results
-        )
+        self.client.delete_training_job = mock.Mock(side_effect=delete_mock_results)
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual(
-                "1 of 2 training job(s) failed to delete.", str(e)
-            )
+            self.assertEqual("1 of 2 training job(s) failed to delete.", str(e))

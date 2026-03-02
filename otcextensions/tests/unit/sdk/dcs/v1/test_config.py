@@ -10,11 +10,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import mock
-
 from keystoneauth1 import adapter
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.dcs.v1 import config
 
 FAKE_ID = "68d5745e-6af2-40e4-945d-fe449be00148"
@@ -26,7 +24,7 @@ EXAMPLE = {
     "param_value": "noeviction",
     "default_value": "noeviction",
     "value_type": "Enum",
-    "value_range": "volatile-lru,allkeys-lru,volatile-random,"
+    "value_range": "volatile-lru,allkeys-lru,volatile-random,",
 }
 
 
@@ -40,7 +38,7 @@ class TestConfig(base.TestCase):
     def test_basic(self):
         sot = config.Config()
 
-        self.assertEqual('/instances/%(instance_id)s/configs', sot.base_path)
+        self.assertEqual("/instances/%(instance_id)s/configs", sot.base_path)
 
         self.assertTrue(sot.allow_commit)
         self.assertTrue(sot.allow_list)
@@ -49,25 +47,25 @@ class TestConfig(base.TestCase):
 
         sot = config.Config(instance_id=FAKE_INSTANCE_ID, **EXAMPLE)
         self.assertEqual(FAKE_INSTANCE_ID, sot.instance_id)
-        self.assertEqual(EXAMPLE['param_id'], sot.id)
-        self.assertEqual(EXAMPLE['param_name'], sot.name)
-        self.assertEqual(EXAMPLE['param_value'], sot.value)
-        self.assertEqual(EXAMPLE['default_value'], sot.default_value)
-        self.assertEqual(EXAMPLE['value_type'], sot.value_type)
-        self.assertEqual(EXAMPLE['value_range'], sot.value_range)
+        self.assertEqual(EXAMPLE["param_id"], sot.id)
+        self.assertEqual(EXAMPLE["param_name"], sot.name)
+        self.assertEqual(EXAMPLE["param_value"], sot.value)
+        self.assertEqual(EXAMPLE["default_value"], sot.default_value)
+        self.assertEqual(EXAMPLE["value_type"], sot.value_type)
+        self.assertEqual(EXAMPLE["value_range"], sot.value_range)
 
     def test_construct_param_for_update(self):
         sot = config.Config(instance_id=FAKE_INSTANCE_ID)
         sot_dirty = {
-            'param_name': 'name',
-            'param_value': 'val',
-            'param_id': 'id',
-            'dummy': 'dummy'
+            "param_name": "name",
+            "param_value": "val",
+            "param_id": "id",
+            "dummy": "dummy",
         }
         sot_expected = {
-            'param_name': 'name',
-            'param_value': 'val',
-            'param_id': 'id',
+            "param_name": "name",
+            "param_value": "val",
+            "param_id": "id",
         }
 
         res = sot._construct_dict_for_update(sot_dirty)
@@ -77,9 +75,9 @@ class TestConfig(base.TestCase):
 
         sot = config.Config(instance_id=FAKE_INSTANCE_ID)
         sot2 = {
-            'param_name': 'name',
-            'param_value': 'val',
-            'param_id': 'id',
+            "param_name": "name",
+            "param_value": "val",
+            "param_id": "id",
         }
 
         mock_response = mock.Mock()
@@ -89,12 +87,8 @@ class TestConfig(base.TestCase):
 
         self.sess.put.return_value = mock_response
 
-        sot._update(
-            self.sess, [sot2]
-        )
+        sot._update(self.sess, [sot2])
 
         self.sess.put.assert_called_once_with(
-            '/instances/%s/configs' % FAKE_INSTANCE_ID,
-            json={
-                'redis_config': [sot2]}
+            "/instances/%s/configs" % FAKE_INSTANCE_ID, json={"redis_config": [sot2]}
         )

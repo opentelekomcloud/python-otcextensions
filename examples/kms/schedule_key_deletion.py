@@ -13,11 +13,11 @@
 """
 Schedule KMS CMK deletion
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-key = 'cmk_id'
+key = "cmk_id"
 conn.kms.schedule_key_deletion(key)

@@ -13,10 +13,11 @@
 """
 List all Distributed Cache Service instances
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 for instance in conn.dcs.instances():

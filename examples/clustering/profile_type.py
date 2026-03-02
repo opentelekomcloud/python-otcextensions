@@ -28,6 +28,6 @@ def list_profile_types(conn):
 def get_profile_type(conn):
     print("Get Profile Type:")
 
-    pt = conn.clustering.get_profile_type('os.nova.server-1.0')
+    pt = conn.clustering.get_profile_type("os.nova.server-1.0")
 
     print(pt.to_dict())

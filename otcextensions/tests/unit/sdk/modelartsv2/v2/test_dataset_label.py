@@ -51,9 +51,7 @@ class TestDatasetLabel(base.TestCase):
     def test_make_it(self):
         sot = dataset_label.DatasetLabel(**EXAMPLE)
         self.assertEqual(sot.name, EXAMPLE["name"])
-        self.assertEqual(
-            sot.property.color, EXAMPLE["property"]["@modelarts:color"]
-        )
+        self.assertEqual(sot.property.color, EXAMPLE["property"]["@modelarts:color"])
         self.assertEqual(
             sot.property.default_shape,
             EXAMPLE["property"]["@modelarts:default_shape"],
@@ -93,9 +91,7 @@ class TestDatasetLabel(base.TestCase):
         self.sess.post.return_value = response
         rt = sot.delete_labels(self.sess, labels, 2)
         self.sess.post.assert_called_with(
-            utils.urljoin(
-                sot.base_path % {"dataset_id": dataset_id}, "delete"
-            ),
+            utils.urljoin(sot.base_path % {"dataset_id": dataset_id}, "delete"),
             json={"labels": labels},
             params={"delete_policy": 2},
         )

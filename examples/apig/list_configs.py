@@ -13,9 +13,10 @@
 """
 List Configs
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 configs = list(conn.apig.configs())

@@ -10,7 +10,8 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-'''DMS Quota v1 action implementations'''
+"""DMS Quota v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -22,8 +23,8 @@ LOG = logging.getLogger(__name__)
 
 
 class ListQuota(command.Lister):
-    _description = _('List DMS Quotas')
-    columns = ('type', 'quota', 'used', 'min', 'max')
+    _description = _("List DMS Quotas")
+    columns = ("type", "quota", "used", "min", "max")
 
     def get_parser(self, prog_name):
         parser = super(ListQuota, self).get_parser(prog_name)
@@ -35,8 +36,14 @@ class ListQuota(command.Lister):
 
         data = client.quotas()
 
-        table = (self.columns,
-                 (utils.get_item_properties(
-                     s, self.columns,
-                 ) for s in data))
+        table = (
+            self.columns,
+            (
+                utils.get_item_properties(
+                    s,
+                    self.columns,
+                )
+                for s in data
+            ),
+        )
         return table

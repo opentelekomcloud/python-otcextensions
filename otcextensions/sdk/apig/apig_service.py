@@ -17,6 +17,4 @@ from otcextensions.sdk.apig.v2 import _proxy
 class ApigService(service_description.ServiceDescription):
     """The APIG service."""
 
-    supported_versions = {
-        '2': _proxy.Proxy
-    }
+    supported_versions = {"2": _proxy.Proxy}

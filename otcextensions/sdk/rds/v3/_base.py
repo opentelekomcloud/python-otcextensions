@@ -15,16 +15,19 @@ from openstack import resource
 
 class Resource(resource.Resource):
 
-    query_marker_key = 'offset'
+    query_marker_key = "offset"
 
-    _query_mapping = resource.QueryParameters(
-        'marker', 'limit',
-        marker='offset'
-    )
+    _query_mapping = resource.QueryParameters("marker", "limit", marker="offset")
 
     @classmethod
-    def list(cls, session, paginated=True, base_path=None,
-             allow_unknown_params=False, **params):
+    def list(
+        cls,
+        session,
+        paginated=True,
+        base_path=None,
+        allow_unknown_params=False,
+        **params
+    ):
 
         if not cls.allow_list:
             raise exceptions.MethodNotSupported(cls, "list")
@@ -34,30 +37,31 @@ class Resource(resource.Resource):
         if base_path is None:
             base_path = cls.base_path
         params = cls._query_mapping._validate(
-            params, base_path=base_path,
-            allow_unknown_params=allow_unknown_params)
+            params, base_path=base_path, allow_unknown_params=allow_unknown_params
+        )
 
         query_params = cls._query_mapping._transpose(params, cls)
         uri = base_path % params
 
-        limit = query_params.get('limit')
+        limit = query_params.get("limit")
 
         # Track the total number of resources yielded so we can paginate
         # swift objects
-        total_yielded = query_params.get('offset', 0)
+        total_yielded = query_params.get("offset", 0)
         while uri:
             # Copy query_params due to weird mock unittest interactions
             response = session.get(
                 uri,
                 headers={"Accept": "application/json"},
                 params=query_params.copy(),
-                microversion=microversion)
+                microversion=microversion,
+            )
             exceptions.raise_from_response(response)
             data = response.json()
 
             # Discard any existing pagination keys
-            query_params.pop('offset', None)
-            query_params.pop('limit', None)
+            query_params.pop("offset", None)
+            query_params.pop("limit", None)
 
             if cls.resources_key:
                 resources = data[cls.resources_key]
@@ -72,14 +76,16 @@ class Resource(resource.Resource):
                 value = cls.existing(
                     microversion=microversion,
                     connection=session._get_connection(),
-                    **raw_resource)
+                    **raw_resource
+                )
                 marker = total_yielded + 1
                 yield value
                 total_yielded += 1
 
             if resources and paginated:
                 uri, next_params = cls._get_next_link(
-                    uri, response, data, marker, limit, total_yielded)
+                    uri, response, data, marker, limit, total_yielded
+                )
                 query_params.update(next_params)
             else:
                 return
@@ -89,10 +95,10 @@ class Resource(resource.Resource):
         # RDS service pagination. Returns query for the next page
         next_link = None
         params = {}
-        if 'total_count' in data and total_yielded <= data['total_count']:
+        if "total_count" in data and total_yielded <= data["total_count"]:
             next_link = uri
-            params['offset'] = marker
-            params['limit'] = limit
+            params["offset"] = marker
+            params["limit"] = limit
         else:
             next_link = None
         query_params = cls._query_mapping._transpose(params, cls)
@@ -127,9 +133,8 @@ class Resource(resource.Resource):
         # Try to short-circuit by looking directly for a matching ID.
         try:
             match = cls.existing(
-                id=name_or_id,
-                connection=session._get_connection(),
-                **params)
+                id=name_or_id, connection=session._get_connection(), **params
+            )
             return match.fetch(session, **params)
         except exceptions.SDKException:
             pass
@@ -143,14 +148,15 @@ class Resource(resource.Resource):
         if ignore_missing:
             return None
         raise exceptions.ResourceNotFound(
-            "No %s found for %s" % (cls.__name__, name_or_id))
+            "No %s found for %s" % (cls.__name__, name_or_id)
+        )
 
     def delete(self, session, error_message=None):
 
         response = self._raw_delete(session)
         kwargs = {}
         if error_message:
-            kwargs['error_message'] = error_message
+            kwargs["error_message"] = error_message
 
         self._translate_response(response, has_body=True, **kwargs)
         return self

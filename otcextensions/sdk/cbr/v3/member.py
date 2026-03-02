@@ -14,9 +14,10 @@ from openstack import resource
 
 class Member(resource.Resource):
     """CBR Member Resource"""
-    resource_key = 'member'
-    resources_key = 'members'
-    base_path = '/backups/%(backup_id)s/members'
+
+    resource_key = "member"
+    resources_key = "members"
+    base_path = "/backups/%(backup_id)s/members"
 
     # capabilities
     allow_create = True
@@ -26,36 +27,49 @@ class Member(resource.Resource):
     allow_commit = True
 
     _query_mapping = resource.QueryParameters(
-        'created_at', 'dest_project_id', 'id', 'image_id',
-        'status', 'updated_at', 'vault_id')
+        "created_at",
+        "dest_project_id",
+        "id",
+        "image_id",
+        "status",
+        "updated_at",
+        "vault_id",
+    )
 
     #: Properties
     #: Backup ID
-    backup_id = resource.URI('backup_id')
+    backup_id = resource.URI("backup_id")
     #: Backup sharing time
     #: Example: 2020-02-05T10:38:34.209782
-    created_at = resource.Body('created_at')
+    created_at = resource.Body("created_at")
     #: Destination project ID which the backup is shared
-    dest_project_id = resource.Body('dest_project_id')
+    dest_project_id = resource.Body("dest_project_id")
     #: ID of the image created by using the accepted shared backup_id
-    image_id = resource.Body('image_id')
+    image_id = resource.Body("image_id")
     #: Backup sharing values
     #: values: pending, accepted, rejected
-    status = resource.Body('status')
+    status = resource.Body("status")
     #: Update time
     #: Example: 2020-02-05T10:38:34.209782
-    updated_at = resource.Body('updated_at')
+    updated_at = resource.Body("updated_at")
     #: ID of the vault where the shared backup is stored
-    vault_id = resource.Body('vault_id')
+    vault_id = resource.Body("vault_id")
 
     #: Updating the resource does not allow the resource key
     def commit(
-        self, session, prepend_key=False, has_body=True,
-            retry_on_conflict=None, base_path=None, **kwargs):
+        self,
+        session,
+        prepend_key=False,
+        has_body=True,
+        retry_on_conflict=None,
+        base_path=None,
+        **kwargs
+    ):
         return super(Member, self).commit(
             session,
             prepend_key=prepend_key,
             has_body=has_body,
             retry_on_conflict=retry_on_conflict,
             base_path=base_path,
-            **kwargs)
+            **kwargs
+        )

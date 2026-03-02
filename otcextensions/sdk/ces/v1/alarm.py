@@ -13,7 +13,6 @@ from openstack import exceptions
 from openstack import resource
 from openstack import utils
 
-
 # class MetaDataSpec(resource.Resource):
 
 # Properties
@@ -29,20 +28,20 @@ class AlarmActionsSpec(resource.Resource):
 
     # Properties
     # notification list ID
-    notificationList = resource.Body('notificationList')
+    notificationList = resource.Body("notificationList")
     # Indicates the type of action triggered by an alarm.
     # Value can be notication or autoscaling
-    type = resource.Body('type')
+    type = resource.Body("type")
 
 
 class OkActionsSpec(resource.Resource):
 
     # Properties
     # notification list ID
-    notificationList = resource.Body('notificationList')
+    notificationList = resource.Body("notificationList")
     # Indicates the type of action triggered by an alarm.
     # Value can be notication or autoscaling
-    type = resource.Body('type')
+    type = resource.Body("type")
 
 
 class ConditionSpec(resource.Resource):
@@ -50,47 +49,46 @@ class ConditionSpec(resource.Resource):
     # Properties
     # indicates the comparison operator
     # values can be <,=,>,>= or <=
-    comparison_operator = resource.Body('comparison_operator')
+    comparison_operator = resource.Body("comparison_operator")
     # Indicates how many consecutive times an alarm has
     # been generated
-    count = resource.Body('count', type=int)
+    count = resource.Body("count", type=int)
     # indicates the data rollup method
     # values: max, min, average, sum, variance
-    filter = resource.Body('filter')
+    filter = resource.Body("filter")
     # Indicates the interval (in seconds) for checking
     # whether the configured alarm rules are met
-    period = resource.Body('period', type=int)
+    period = resource.Body("period", type=int)
     # Data unit
-    unit = resource.Body('unit')
+    unit = resource.Body("unit")
     # Alarm threshold
-    value = resource.Body('value', type=int)
+    value = resource.Body("value", type=int)
 
 
 class DimensionsSpec(resource.Resource):
 
     # Properties
     #: dimension.name: object type e.g. ECS (instance_id)
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: dimension.value: object id e.g. ECS ID
-    value = resource.Body('value')
+    value = resource.Body("value")
 
 
 class MetricSpec(resource.Resource):
 
     # Properties
     # List of metric dimensions
-    dimensions = resource.Body('dimensions', type=list,
-                               list_type=DimensionsSpec)
+    dimensions = resource.Body("dimensions", type=list, list_type=DimensionsSpec)
     # Specifies the metric name
-    metric_name = resource.Body('metric_name')
+    metric_name = resource.Body("metric_name")
     # Metric Namespace
-    namespace = resource.Body('namespace')
+    namespace = resource.Body("namespace")
 
 
 class Alarm(resource.Resource):
 
-    resources_key = 'metric_alarms'
-    base_path = '/alarms'
+    resources_key = "metric_alarms"
+    base_path = "/alarms"
 
     # capabilities
     allow_commit = True
@@ -99,45 +97,44 @@ class Alarm(resource.Resource):
     allow_delete = True
     allow_list = True
 
-    _query_mapping = resource.QueryParameters(
-        'limit', 'order', 'start'
-    )
+    _query_mapping = resource.QueryParameters("limit", "order", "start")
 
     # Properties
     # Specifies the action triggered by an alarm.
-    alarm_actions = resource.Body('alarm_actions', type=AlarmActionsSpec)
+    alarm_actions = resource.Body("alarm_actions", type=AlarmActionsSpec)
     # Indicates whether an action will be triggered by an alarm
     # True: action will be triggered
     # False: action will not be triggered
-    alarm_action_enabled = resource.Body('alarm_action_enabled', type=bool)
+    alarm_action_enabled = resource.Body("alarm_action_enabled", type=bool)
     # Description of the alarm
-    alarm_description = resource.Body('alarm_description')
+    alarm_description = resource.Body("alarm_description")
     # Alarm is enabled (True) or disabled (False)
-    alarm_enabled = resource.Body('alarm_enabled', type=bool)
+    alarm_enabled = resource.Body("alarm_enabled", type=bool)
     # alarm rule ID
-    alarm_id = resource.Body('alarm_id', alternate_id=True)
+    alarm_id = resource.Body("alarm_id", alternate_id=True)
     # alarm severity
     # values: 1: critical, 2: major, 3: minor, 4: informational alarm
-    alarm_level = resource.Body('alarm_level', type=int)
+    alarm_level = resource.Body("alarm_level", type=int)
     # Alarm status
     # ok: alarm status is normal
     # alarm: an alarm is generated
     # insufficient_data: required data is insufficient
-    alarm_state = resource.Body('alarm_state')
+    alarm_state = resource.Body("alarm_state")
     # Name of the alarm
-    name = resource.Body('alarm_name')
+    name = resource.Body("alarm_name")
     # Indicates the action triggered by clearing an alarm
-    ok_actions = resource.Body('ok_actions', type=OkActionsSpec)
+    ok_actions = resource.Body("ok_actions", type=OkActionsSpec)
     # Describes alarm triggering condititon
-    condition = resource.Body('condition', type=ConditionSpec)
+    condition = resource.Body("condition", type=ConditionSpec)
     # Specification of specific alarm
-    metric = resource.Body('metric', type=MetricSpec)
+    metric = resource.Body("metric", type=MetricSpec)
     # Time when alarm status changed
     # UNIX timestamp in ms
-    update_time = resource.Body('update_time')
+    update_time = resource.Body("update_time")
 
-    def _translate_response(self, response, has_body=None, error_message=None,
-                            resource_response_key=None):
+    def _translate_response(
+        self, response, has_body=None, error_message=None, resource_response_key=None
+    ):
         """Given a KSA response, inflate this instance with its data
 
         DELETE operations don't return a body, so only try to work
@@ -170,23 +167,17 @@ class Alarm(resource.Resource):
         dict.update(self, self.to_dict())
 
     def _action(self, session, body):
-        """Perform actions given the message body.
-
-        """
+        """Perform actions given the message body."""
         url = utils.urljoin(self.base_path, self.id, "action")
-        response = session.put(
-            url,
-            json=body)
+        response = session.put(url, json=body)
         exceptions.raise_from_response(response)
         return response
 
     def change_alarm_status(self, session):
-        body = {
-            "alarm_enabled": True
-        }
-        current_status = self.get('alarm_enabled')
+        body = {"alarm_enabled": True}
+        current_status = self.get("alarm_enabled")
         if current_status is True:
-            body.update({'alarm_enabled': False})
+            body.update({"alarm_enabled": False})
         self._action(session, body)
 
     @classmethod
@@ -218,9 +209,8 @@ class Alarm(resource.Resource):
         # Try to short-circuit by looking directly for a matching ID.
         try:
             match = cls.existing(
-                id=name_or_id,
-                connection=session._get_connection(),
-                **params)
+                id=name_or_id, connection=session._get_connection(), **params
+            )
             return match.fetch(session, **params)
         except exceptions.SDKException:
             pass
@@ -234,4 +224,5 @@ class Alarm(resource.Resource):
         if ignore_missing:
             return None
         raise exceptions.ResourceNotFound(
-            "No %s found for %s" % (cls.__name__, name_or_id))
+            "No %s found for %s" % (cls.__name__, name_or_id)
+        )

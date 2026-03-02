@@ -14,32 +14,32 @@ from openstack import resource
 
 
 class Quota(resource.Resource):
-    base_path = '/elb/quotas'
+    base_path = "/elb/quotas"
 
     # capabilities
     allow_fetch = True
 
     # Properties
     #: Specifies the certificate quota.
-    certificate = resource.Body('certificate', type=int)
+    certificate = resource.Body("certificate", type=int)
     #: Specifies the health check quota.
-    healthmonitor = resource.Body('healthmonitor', type=int)
+    healthmonitor = resource.Body("healthmonitor", type=int)
     #: Specifies the IP address group quota.
-    ipgroup = resource.Body('ipgroup', type=int)
+    ipgroup = resource.Body("ipgroup", type=int)
     #: Specifies the forwarding policy quota.
-    l7policy = resource.Body('l7policy', type=int)
+    l7policy = resource.Body("l7policy", type=int)
     #: Specifies the listener quota.
-    listener = resource.Body('listener', type=int)
+    listener = resource.Body("listener", type=int)
     #: Specifies the loadbalancer quota.
-    loadbalancer = resource.Body('loadbalancer', type=int)
+    loadbalancer = resource.Body("loadbalancer", type=int)
     #: Specifies the backend server quota.
-    member = resource.Body('member', type=int)
+    member = resource.Body("member", type=int)
     #: Specifies the quota of backend servers in a backend server group.
-    members_per_pool = resource.Body('members_per_pool', type=int)
+    members_per_pool = resource.Body("members_per_pool", type=int)
     #: Specifies the backend server group quota.
-    pool = resource.Body('pool', type=int)
+    pool = resource.Body("pool", type=int)
     #: Specifies the IP address group quota.
-    project_id = resource.Body('project_id', type=str)
+    project_id = resource.Body("project_id", type=str)
 
     @classmethod
     def get(cls, session):
@@ -47,9 +47,7 @@ class Quota(resource.Resource):
         url = cls.base_path
         response = session.get(url)
         resp = response.json()
-        if 'error' in resp:
+        if "error" in resp:
             return
-        value = cls.existing(
-            connection=session._get_connection(),
-            **resp['quota'])
+        value = cls.existing(connection=session._get_connection(), **resp["quota"])
         return value

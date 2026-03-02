@@ -13,13 +13,11 @@
 """
 Take API offline
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 unpublish = conn.apig.offline_api(
-    gateway="gateway_id",
-    api="api_id",
-    env="environment_id",
-    remark="publish"
+    gateway="gateway_id", api="api_id", env="environment_id", remark="publish"
 )

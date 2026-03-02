@@ -17,44 +17,44 @@ Create CSS Cluster (opensearch)
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 attrs = {
-    'name': 'opensearch_test',
-    'instanceNum': 3,
-    'datastore': {
-        'type': 'opensearch',
-        'version': '1.3.6',
+    "name": "opensearch_test",
+    "instanceNum": 3,
+    "datastore": {
+        "type": "opensearch",
+        "version": "1.3.6",
     },
-    'instance': {
-        'availability_zone': 'eu-de-01',
-        'flavorRef': 'css.xlarge.2',
-        'volume': {
-            'volume_type': 'HIGH',
-            'size': 100,
+    "instance": {
+        "availability_zone": "eu-de-01",
+        "flavorRef": "css.xlarge.2",
+        "volume": {
+            "volume_type": "HIGH",
+            "size": 100,
         },
-        'nics': {
-            'vpcId': 'VPC-ID',
-            'netId': 'Network-ID',
-            'securityGroupId': 'SecurityGroup-ID',
+        "nics": {
+            "vpcId": "VPC-ID",
+            "netId": "Network-ID",
+            "securityGroupId": "SecurityGroup-ID",
         },
     },
-    'httpsEnable': 'false',
-    'diskEncryption': {
-        'systemEncrypted': '0',
+    "httpsEnable": "false",
+    "diskEncryption": {
+        "systemEncrypted": "0",
     },
-    'tags': [
-        {'key': 'key0', 'value': 'value0'},
-        {'key': 'key1', 'value': 'value1'},
+    "tags": [
+        {"key": "key0", "value": "value0"},
+        {"key": "key1", "value": "value1"},
     ],
-    'backupStrategy': {
-        'period': '00:00 GMT+01:00',
-        'prefix': 'backup',
-        'keepday': 1,
-        'bucket': 'css-backup-1663481103064',
-        'agency': 'test_agency',
-        'basePath': 'css',
+    "backupStrategy": {
+        "period": "00:00 GMT+01:00",
+        "prefix": "backup",
+        "keepday": 1,
+        "bucket": "css-backup-1663481103064",
+        "agency": "test_agency",
+        "basePath": "css",
     },
 }
 result = conn.css.create_cluster(**attrs)

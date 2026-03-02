@@ -13,13 +13,14 @@
 """
 List all tags for a specified DWS cluster.
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-cluster_id = 'cluster-uuid'
+cluster_id = "cluster-uuid"
 
 print(list(conn.dws.cluster_tags(cluster_id)))

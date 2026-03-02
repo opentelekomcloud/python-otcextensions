@@ -9,23 +9,20 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import mock
 from keystoneauth1 import adapter
 
-import mock
-
 from openstack.tests.unit import base
-
 from otcextensions.sdk.rds.v1 import datastore
 
-
-IDENTIFIER = 'IDENTIFIER'
+IDENTIFIER = "IDENTIFIER"
 EXAMPLE = {
     "id": IDENTIFIER,
     "name": "5.6.33",
     "datastore": "736270b9-27c7-4f03-823b-447d8245e1c2",
     "image": "36bdc308-0389-4830-8813-4a98d62b97de",
     "packages": "MySQL-server-5.6.33",
-    "active": 1
+    "active": 1,
 }
 
 
@@ -39,11 +36,9 @@ class TestDatastore(base.TestCase):
 
     def test_basic(self):
         sot = datastore.Datastore()
-        self.assertEqual('', sot.resource_key)
-        self.assertEqual('dataStores', sot.resources_key)
-        self.assertEqual('/datastores/%(datastore_name)s'
-                         '/versions',
-                         sot.base_path)
+        self.assertEqual("", sot.resource_key)
+        self.assertEqual("dataStores", sot.resources_key)
+        self.assertEqual("/datastores/%(datastore_name)s" "/versions", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_get)
@@ -53,27 +48,24 @@ class TestDatastore(base.TestCase):
     def test_make_it(self):
         sot = datastore.Datastore(**EXAMPLE)
         self.assertEqual(IDENTIFIER, sot.id)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['datastore'], sot.datastore)
-        self.assertEqual(EXAMPLE['image'], sot.image)
-        self.assertEqual(EXAMPLE['packages'], sot.packages)
-        self.assertEqual(EXAMPLE['active'], sot.active)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["datastore"], sot.datastore)
+        self.assertEqual(EXAMPLE["image"], sot.image)
+        self.assertEqual(EXAMPLE["packages"], sot.packages)
+        self.assertEqual(EXAMPLE["active"], sot.active)
 
     def test_list(self):
 
         mock_response = mock.Mock()
         mock_response.status_code = 200
-        mock_response.json.return_value = {'dataStores': [EXAMPLE]}
+        mock_response.json.return_value = {"dataStores": [EXAMPLE]}
 
         self.sess.get.return_value = mock_response
 
-        result = list(self.sot.list(
-            self.sess,
-            datastore_name='datastore')
-        )
+        result = list(self.sot.list(self.sess, datastore_name="datastore"))
 
         self.sess.get.assert_called_once_with(
-            '/datastores/%s/versions' % ('datastore'),
+            "/datastores/%s/versions" % ("datastore"),
             params={},
         )
 

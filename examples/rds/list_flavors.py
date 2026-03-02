@@ -13,14 +13,15 @@
 """
 List all flavors of a given RDS datastore and datastore version.
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-datastore_name = 'ds_name'
-version_name = 'version_name'
-for flavor in conn.rds.flavors(datastore_name=datastore_name,
-                               version_name=version_name):
+datastore_name = "ds_name"
+version_name = "version_name"
+for flavor in conn.rds.flavors(
+    datastore_name=datastore_name, version_name=version_name
+):
     print(flavor)

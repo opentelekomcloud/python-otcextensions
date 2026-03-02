@@ -11,7 +11,6 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.mrs.v1 import datasource
 
 EXAMPLE = {
@@ -20,7 +19,7 @@ EXAMPLE = {
     "is_protected": False,
     "is_public": False,
     "type": "hdfs",
-    "description": "this is the data source template"
+    "description": "this is the data source template",
 }
 
 
@@ -28,9 +27,9 @@ class TestDatasource(base.TestCase):
 
     def test_basic(self):
         sot = datasource.Datasource()
-        self.assertEqual('data_source', sot.resource_key)
-        self.assertEqual('data_sources', sot.resources_key)
-        path = '/data-sources'
+        self.assertEqual("data_source", sot.resource_key)
+        self.assertEqual("data_sources", sot.resources_key)
+        path = "/data-sources"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
@@ -40,9 +39,9 @@ class TestDatasource(base.TestCase):
 
     def test_make_it(self):
         sot = datasource.Datasource(**EXAMPLE)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['url'], sot.url)
-        self.assertEqual(EXAMPLE['type'], sot.type)
-        self.assertEqual(EXAMPLE['description'], sot.description)
-        self.assertEqual(EXAMPLE['is_public'], sot.is_public)
-        self.assertEqual(EXAMPLE['is_protected'], sot.is_protected)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["url"], sot.url)
+        self.assertEqual(EXAMPLE["type"], sot.type)
+        self.assertEqual(EXAMPLE["description"], sot.description)
+        self.assertEqual(EXAMPLE["is_public"], sot.is_public)
+        self.assertEqual(EXAMPLE["is_protected"], sot.is_protected)

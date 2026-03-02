@@ -13,11 +13,12 @@
 """
 Query details of a DIS Consumption App.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-app_name = 'test-app'
+app_name = "test-app"
 resp = conn.dis.get_app(app_name)
 print(resp)

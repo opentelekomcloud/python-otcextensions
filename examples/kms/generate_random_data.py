@@ -13,11 +13,11 @@
 """
 Generate Random Data
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 data = conn.kms.generate_random(random_data_length=512)
 print(data)

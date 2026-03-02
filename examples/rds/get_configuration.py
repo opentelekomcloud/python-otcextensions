@@ -13,12 +13,12 @@
 """
 Get a RDS configuration template by ID
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-configuration = 'configuration_id'
+configuration = "configuration_id"
 configuration = conn.rds.get_configuration(configuration)
 print(configuration)

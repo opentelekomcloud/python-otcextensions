@@ -13,9 +13,10 @@
 """
 Get gateway creation progress
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-conn.apig.get_gateway_progress('gateway_id')
+conn.apig.get_gateway_progress("gateway_id")

@@ -21,28 +21,22 @@ class TestDomain(TestSwr):
 
         self.org_name = "sdk-swr-org-" + uuid.uuid4().hex
         self.repo_name = "sdk-swr-repo-" + uuid.uuid4().hex
-        self.org = self.client.create_organization(
-            namespace=self.org_name
-        )
+        self.org = self.client.create_organization(namespace=self.org_name)
         self.repo = self.client.create_repository(
             namespace=self.org_name,
             repository=self.repo_name,
-            category='linux',
-            description='this is a acc test repository',
+            category="linux",
+            description="this is a acc test repository",
             is_public=False,
         )
 
     def tearDown(self):
         super(TestDomain, self).tearDown()
-        self.conn.swr.delete_repository(
-            self.org_name,
-            self.repo_name
-        )
+        self.conn.swr.delete_repository(self.org_name, self.repo_name)
         self.conn.swr.delete_organization(self.org_name)
 
     def test_list_domains(self):
-        domains = list(self.client.domains(
-            namespace=self.org.namespace,
-            repository=self.repo_name
-        ))
+        domains = list(
+            self.client.domains(namespace=self.org.namespace, repository=self.repo_name)
+        )
         self.assertGreaterEqual(len(domains), 0)

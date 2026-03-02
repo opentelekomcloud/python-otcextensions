@@ -11,13 +11,12 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.vlb.v3 import certificate
 
 EXAMPLE = {
-    'private_key': '_private_key',
-    'certificate': '_certificate',
-    'name': 'name',
+    "private_key": "_private_key",
+    "certificate": "_certificate",
+    "name": "name",
 }
 
 
@@ -25,7 +24,7 @@ class TestLoadBalancer(base.TestCase):
 
     def test_basic(self):
         sot = certificate.Certificate()
-        path = '/elb/certificates'
+        path = "/elb/certificates"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_list)
@@ -35,6 +34,6 @@ class TestLoadBalancer(base.TestCase):
 
     def test_make_it(self):
         sot = certificate.Certificate(**EXAMPLE)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['private_key'], sot.private_key)
-        self.assertEqual(EXAMPLE['certificate'], sot.certificate)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["private_key"], sot.private_key)
+        self.assertEqual(EXAMPLE["certificate"], sot.certificate)

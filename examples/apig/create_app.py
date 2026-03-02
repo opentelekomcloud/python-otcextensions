@@ -13,13 +13,10 @@
 """
 Create the App
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-attrs = {
-    "name": "app_demo",
-    "remark": "Demo app"
-}
-created = conn.apig.create_app(gateway='gateway_id',
-                               **attrs)
+conn = openstack.connect(cloud="otc")
+attrs = {"name": "app_demo", "remark": "Demo app"}
+created = conn.apig.create_app(gateway="gateway_id", **attrs)

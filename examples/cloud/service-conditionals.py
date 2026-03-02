@@ -11,8 +11,9 @@
 # under the License.
 
 import openstack
+
 openstack.enable_logging(debug=True)
 
-cloud = openstack.connect(cloud='kiss', region_name='region1')
-print(cloud.has_service('network'))
-print(cloud.has_service('container-orchestration'))
+cloud = openstack.connect(cloud="kiss", region_name="region1")
+print(cloud.has_service("network"))
+print(cloud.has_service("container-orchestration"))

@@ -13,13 +13,14 @@
 """
 Delete an Instance Topic
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-topics = ['topic_name']
-instance = 'test-instance'
+topics = ["topic_name"]
+instance = "test-instance"
 instance = conn.dms.find_instance(name_or_id=instance)
 
 raw = conn.dms.delete_topic(instance, topics)

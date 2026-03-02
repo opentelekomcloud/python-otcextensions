@@ -10,25 +10,24 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-'''
+"""
 Create MRS Job with attributes
-'''
+"""
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 attrs = {
     "name": "my-mapreduce-job",
     "mains": [],
-    "libs": [
-        "092b628b-26a3-4571-9ba4-f8d000df8877"
-    ],
+    "libs": ["092b628b-26a3-4571-9ba4-f8d000df8877"],
     "is_protected": False,
     "interface": [],
     "is_public": False,
     "type": "MapReduce",
-    "description": "This is the Map Reduce job template"
+    "description": "This is the Map Reduce job template",
 }
 
 job = conn.mrs.create_job(**attrs)

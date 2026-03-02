@@ -13,8 +13,9 @@
 """
 List the features of a gateway
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 features = list(conn.apig.gateway_features(gateway="gateway_id"))

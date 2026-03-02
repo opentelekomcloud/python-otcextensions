@@ -13,20 +13,16 @@
 """
 Update Predefined Tag
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 attrs = {
-    "new_tag": {
-        "key": "check_this",
-        "value": "mate"},
-    "old_tag": {
-        'key': 'key1',
-        'value': 'value1'
-    }
+    "new_tag": {"key": "check_this", "value": "mate"},
+    "old_tag": {"key": "key1", "value": "value1"},
 }
 conn.tms.update_predefined_tag(**attrs)

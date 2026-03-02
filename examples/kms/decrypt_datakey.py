@@ -13,15 +13,13 @@
 """
 Decrypt a KMS data encryption key
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 data = conn.kms.decrypt_datakey(
-    cmk='cmk_id',
-    cipher_text='64_bit_cipher',
-    datakey_cipher_length='64'
+    cmk="cmk_id", cipher_text="64_bit_cipher", datakey_cipher_length="64"
 )
 print(data)

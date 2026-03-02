@@ -13,17 +13,14 @@
 """
 Update Signature Key
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 attrs = {
     "name": "otce_signature_1",
     "sign_type": "aes",
     "sign_algorithm": "aes-128-cfb",
 }
-sign = conn.apig.update_signature(
-    sign="sign_id",
-    gateway="gateway_id",
-    **attrs
-)
+sign = conn.apig.update_signature(sign="sign_id", gateway="gateway_id", **attrs)

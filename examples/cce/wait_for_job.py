@@ -13,13 +13,13 @@
 """
 Wait for a job until it reaches a specific status
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 job_id = "123456_job_id"
-conn.cce.wait_for_job(job_id, status='success',
-                      failures=None, interval=5, wait=3600)
-print('Done')
+conn.cce.wait_for_job(job_id, status="success", failures=None, interval=5, wait=3600)
+print("Done")

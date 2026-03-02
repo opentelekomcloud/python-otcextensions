@@ -13,10 +13,11 @@
 """
 Create API
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 attrs = {
     "group_id": "group_id",
     "name": "test_api_001",
@@ -36,10 +37,7 @@ attrs = {
         "req_uri": "/test/benchmark",
         "timeout": 5000,
         "retry_count": "-1",
-        "url_domain": "192.168.189.156:12346"
+        "url_domain": "192.168.189.156:12346",
     },
 }
-created = conn.apig.create_api(
-    gateway="gateway_id",
-    **attrs
-)
+created = conn.apig.create_api(gateway="gateway_id", **attrs)

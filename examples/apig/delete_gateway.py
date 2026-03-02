@@ -13,9 +13,10 @@
 """
 Delete gateway
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-conn.apig.delete_gateway('gateway_id')
+conn.apig.delete_gateway("gateway_id")

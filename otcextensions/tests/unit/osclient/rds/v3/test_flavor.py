@@ -20,7 +20,10 @@ class TestListDatabaseFlavors(fakes.TestRds):
     objects = fakes.FakeFlavor.create_multiple(3)
 
     columns = (
-        'name', 'instance_mode', 'vcpus', 'ram',
+        "name",
+        "instance_mode",
+        "vcpus",
+        "ram",
     )
 
     data = []
@@ -36,15 +39,9 @@ class TestListDatabaseFlavors(fakes.TestRds):
         self.client.flavors = mock.Mock(return_value=self.objects)
 
     def test_list_flavors(self):
-        arglist = [
-            'MySQL',
-            '5.7'
-        ]
+        arglist = ["MySQL", "5.7"]
 
-        verifylist = [
-            ('database', 'mysql'),
-            ('version', '5.7')
-        ]
+        verifylist = [("database", "mysql"), ("version", "5.7")]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -53,8 +50,7 @@ class TestListDatabaseFlavors(fakes.TestRds):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.flavors.assert_called_with(
-            datastore_name='mysql',
-            version_name='5.7'
+            datastore_name="mysql", version_name="5.7"
         )
 
         self.assertEqual(self.columns, columns)

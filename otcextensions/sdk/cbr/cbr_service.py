@@ -10,13 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import service_description
-
 from otcextensions.sdk.cbr.v3 import _proxy
 
 
 class CbrService(service_description.ServiceDescription):
     """The Cloud Server Backup service."""
 
-    supported_versions = {
-        '3': _proxy.Proxy
-    }
+    supported_versions = {"3": _proxy.Proxy}

@@ -11,19 +11,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
- Update Direct Connect Endpoint Group.
+Update Direct Connect Endpoint Group.
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-attrs = {
-    "endpoint_group": "endpoint_group-uuid",
-    "name": "new-name"
-}
+attrs = {"endpoint_group": "endpoint_group-uuid", "name": "new-name"}
 
 c = conn.dcaas.update_endpoint_group(**attrs)
 print(c)

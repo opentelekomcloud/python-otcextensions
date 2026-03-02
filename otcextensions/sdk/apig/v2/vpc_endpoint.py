@@ -14,17 +14,18 @@ from openstack import resource
 
 class VpcEndpoint(resource.Resource):
     resources_key = "connections"
-    base_path = f'apigw/instances/%(gateway_id)s/vpc-endpoint/connections'
+    base_path = "apigw/instances/%(gateway_id)s/vpc-endpoint/connections"
 
-    _query_mapping = resource.QueryParameters('limit', 'offset', 'id',
-                                              'marker_id', 'status')
+    _query_mapping = resource.QueryParameters(
+        "limit", "offset", "id", "marker_id", "status"
+    )
 
     # capabilities
     allow_fetch = True
     allow_commit = True
     allow_list = True
 
-    gateway_id = resource.URI('gateway_id')
+    gateway_id = resource.URI("gateway_id")
 
     # Properties
     id = resource.Body("id")

@@ -10,7 +10,6 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 import mock
-
 from osc_lib import exceptions
 
 from otcextensions.osclient.auto_scaling.v1 import instance
@@ -28,23 +27,32 @@ class TestListAutoScalingInstance(TestAutoScalingInstance):
 
     instances = fakes.FakeInstance.create_multiple(3)
 
-    columns = ('ID', 'Name', 'scaling_group_name',
-               'scaling_configuration_id', 'scaling_configuration_name',
-               'lifecycle_state', 'health_status', 'create_time')
+    columns = (
+        "ID",
+        "Name",
+        "scaling_group_name",
+        "scaling_configuration_id",
+        "scaling_configuration_name",
+        "lifecycle_state",
+        "health_status",
+        "create_time",
+    )
 
     data = []
 
     for s in instances:
-        data.append((
-            s.id,
-            s.name,
-            s.scaling_group_name,
-            s.scaling_configuration_id,
-            s.scaling_configuration_name,
-            s.lifecycle_state,
-            s.health_status,
-            s.create_time,
-        ))
+        data.append(
+            (
+                s.id,
+                s.name,
+                s.scaling_group_name,
+                s.scaling_configuration_id,
+                s.scaling_configuration_name,
+                s.lifecycle_state,
+                s.health_status,
+                s.create_time,
+            )
+        )
 
     def setUp(self):
         super(TestListAutoScalingInstance, self).setUp()
@@ -55,17 +63,21 @@ class TestListAutoScalingInstance(TestAutoScalingInstance):
 
     def test_list(self):
         arglist = [
-            '--group', 'grp',
-            '--life-cycle-state', 'lc',
-            '--health-status', 'hs',
-            '--limit', '12'
+            "--group",
+            "grp",
+            "--life-cycle-state",
+            "lc",
+            "--health-status",
+            "hs",
+            "--limit",
+            "12",
         ]
 
         verifylist = [
-            ('group', 'grp'),
-            ('life_cycle_state', 'lc'),
-            ('health_status', 'hs'),
-            ('limit', 12)
+            ("group", "grp"),
+            ("life_cycle_state", "lc"),
+            ("health_status", "hs"),
+            ("limit", 12),
         ]
 
         # Verify cm is triggereg with default parameters
@@ -76,22 +88,16 @@ class TestListAutoScalingInstance(TestAutoScalingInstance):
         grp_mock.id = 2
 
         self.client.find_group = mock.Mock(return_value=grp_mock)
-        self.client.groups.side_effect = [
-            self.instances
-        ]
+        self.client.groups.side_effect = [self.instances]
 
-        self.client.instances.side_effect = [
-            self.instances
-        ]
+        self.client.instances.side_effect = [self.instances]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.instances.assert_called_once_with(
-            group=grp_mock.id,
-            life_cycle_state='lc',
-            health_status='hs',
-            limit=12)
+            group=grp_mock.id, life_cycle_state="lc", health_status="hs", limit=12
+        )
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
@@ -107,14 +113,8 @@ class TestDeleteAutoScalingInstance(TestAutoScalingInstance):
         self.client.delete_instance = mock.Mock()
 
     def test_remove(self):
-        arglist = [
-            'Instance1',
-            '--delete-instance'
-        ]
-        verifylist = [
-            ('instance', 'Instance1'),
-            ('delete_instance', True)
-        ]
+        arglist = ["Instance1", "--delete-instance"]
+        verifylist = [("instance", "Instance1"), ("delete_instance", True)]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -138,33 +138,30 @@ class TestBatchAutoScalingInstanceAction(TestAutoScalingInstance):
 
     def test_wrong_action(self):
         arglist = [
-            '--group', 'grp1',
-            'ADD1',
-            'Instance1',
-            '--delete-instance',
+            "--group",
+            "grp1",
+            "ADD1",
+            "Instance1",
+            "--delete-instance",
         ]
         verifylist = [
-            ('instance', ['Instance1']),
-            ('delete_instance', True),
-            ('action', 'ADD1')
+            ("instance", ["Instance1"]),
+            ("delete_instance", True),
+            ("action", "ADD1"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        self.assertRaises(
-            exceptions.CommandError, self.cmd.take_action, parsed_args
-        )
+        self.assertRaises(exceptions.CommandError, self.cmd.take_action, parsed_args)
 
     def test_add(self):
         arglist = [
-            '--group', 'grp1',
-            'ADD',
-            'Instance1',
+            "--group",
+            "grp1",
+            "ADD",
+            "Instance1",
         ]
-        verifylist = [
-            ('instance', ['Instance1']),
-            ('action', 'ADD')
-        ]
+        verifylist = [("instance", ["Instance1"]), ("action", "ADD")]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -175,24 +172,26 @@ class TestBatchAutoScalingInstanceAction(TestAutoScalingInstance):
         self.cmd.take_action(parsed_args)
 
         self.client.batch_instance_action.assert_called_with(
-            action='ADD',
+            action="ADD",
             delete_instance=False,
-            group='grp1',
-            ignore_missing=False, instance=['Instance1']
+            group="grp1",
+            ignore_missing=False,
+            instance=["Instance1"],
         )
 
     def test_remove(self):
         arglist = [
-            '--group', 'grp1',
-            'REMOVE',
-            'Instance1',
-            'Instance2',
-            '--delete-instance',
+            "--group",
+            "grp1",
+            "REMOVE",
+            "Instance1",
+            "Instance2",
+            "--delete-instance",
         ]
         verifylist = [
-            ('instance', ['Instance1', 'Instance2']),
-            ('delete_instance', True),
-            ('action', 'REMOVE')
+            ("instance", ["Instance1", "Instance2"]),
+            ("delete_instance", True),
+            ("action", "REMOVE"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -204,23 +203,22 @@ class TestBatchAutoScalingInstanceAction(TestAutoScalingInstance):
         self.cmd.take_action(parsed_args)
 
         self.client.batch_instance_action.assert_called_with(
-            action='REMOVE',
+            action="REMOVE",
             delete_instance=True,
-            group='grp1',
-            ignore_missing=False, instance=['Instance1', 'Instance2']
+            group="grp1",
+            ignore_missing=False,
+            instance=["Instance1", "Instance2"],
         )
 
     def test_protect(self):
         arglist = [
-            '--group', 'grp1',
-            'protect',
-            'Instance1',
-            'Instance2',
+            "--group",
+            "grp1",
+            "protect",
+            "Instance1",
+            "Instance2",
         ]
-        verifylist = [
-            ('instance', ['Instance1', 'Instance2']),
-            ('action', 'protect')
-        ]
+        verifylist = [("instance", ["Instance1", "Instance2"]), ("action", "protect")]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -231,23 +229,22 @@ class TestBatchAutoScalingInstanceAction(TestAutoScalingInstance):
         self.cmd.take_action(parsed_args)
 
         self.client.batch_instance_action.assert_called_with(
-            action='PROTECT',
+            action="PROTECT",
             delete_instance=False,
-            group='grp1',
-            ignore_missing=False, instance=['Instance1', 'Instance2']
+            group="grp1",
+            ignore_missing=False,
+            instance=["Instance1", "Instance2"],
         )
 
     def test_unprotect(self):
         arglist = [
-            '--group', 'grp1',
-            'unProtect',
-            'Instance1',
-            'Instance2',
+            "--group",
+            "grp1",
+            "unProtect",
+            "Instance1",
+            "Instance2",
         ]
-        verifylist = [
-            ('instance', ['Instance1', 'Instance2']),
-            ('action', 'unProtect')
-        ]
+        verifylist = [("instance", ["Instance1", "Instance2"]), ("action", "unProtect")]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -258,8 +255,9 @@ class TestBatchAutoScalingInstanceAction(TestAutoScalingInstance):
         self.cmd.take_action(parsed_args)
 
         self.client.batch_instance_action.assert_called_with(
-            action='UNPROTECT',
+            action="UNPROTECT",
             delete_instance=False,
-            group='grp1',
-            ignore_missing=False, instance=['Instance1', 'Instance2']
+            group="grp1",
+            ignore_missing=False,
+            instance=["Instance1", "Instance2"],
         )

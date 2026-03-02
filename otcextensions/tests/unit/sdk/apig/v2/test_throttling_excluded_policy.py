@@ -21,7 +21,7 @@ EXAMPLE = {
     "apply_time": "2020-08-04T02:40:56Z",
     "id": "a3e9ff8db55544ed9db91d8b048770c0",
     "app_id": "356de8eb7a8742168586e5daf5339965",
-    "object_type": "APP"
+    "object_type": "APP",
 }
 
 
@@ -30,19 +30,20 @@ class TestThrottlingPolicy(base.TestCase):
     def test_basic(self):
         sot = tx.ThrottlingExcludedPolicy()
         self.assertEqual(
-            f'/apigw/instances/%(gateway_id)s/throttles/'
-            f'%(throttle_id)s/throttle-specials',
-            sot.base_path)
+            "/apigw/instances/%(gateway_id)s/throttles/"
+            "%(throttle_id)s/throttle-specials",
+            sot.base_path,
+        )
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_commit)
         self.assertTrue(sot.allow_delete)
-        self.assertEqual('throttle_specials', sot.resources_key)
+        self.assertEqual("throttle_specials", sot.resources_key)
 
     def test_make_it(self):
         sot = tx.ThrottlingExcludedPolicy(**EXAMPLE)
-        self.assertEqual(EXAMPLE['call_limits'], sot.call_limits)
-        self.assertEqual(EXAMPLE['app_name'], sot.app_name)
-        self.assertEqual(EXAMPLE['object_name'], sot.object_name)
-        self.assertEqual(EXAMPLE['object_id'], sot.object_id)
-        self.assertEqual(EXAMPLE['throttle_id'], sot.throttle_id)
+        self.assertEqual(EXAMPLE["call_limits"], sot.call_limits)
+        self.assertEqual(EXAMPLE["app_name"], sot.app_name)
+        self.assertEqual(EXAMPLE["object_name"], sot.object_name)
+        self.assertEqual(EXAMPLE["object_id"], sot.object_id)
+        self.assertEqual(EXAMPLE["throttle_id"], sot.throttle_id)

@@ -13,19 +13,20 @@
 """
 Update SSL certificates
 """
-import openstack
+
 from pathlib import Path
 
+import openstack
+
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 attrs = {
     "name": "cert_demo",
     "cert_content": Path("/mnt/c/Users/sand1/fullchain.pem")
-    .read_text().replace('\r\n', '\n'),
+    .read_text()
+    .replace("\r\n", "\n"),
     "private_key": Path("/mnt/c/Users/sand1/privkey.pem")
-    .read_text().replace('\r\n', '\n'),
+    .read_text()
+    .replace("\r\n", "\n"),
 }
-result = conn.apig.update_ssl_certificate(
-    ssl_certificate="cert_id",
-    **attrs
-)
+result = conn.apig.update_ssl_certificate(ssl_certificate="cert_id", **attrs)

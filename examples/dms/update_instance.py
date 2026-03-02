@@ -13,16 +13,15 @@
 """
 Update an Instance
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-instance = 'name_or_id'
+instance = "name_or_id"
 instance = conn.dms.find_instance(name_or_id=instance)
-attrs = {
-    'description': 'That is just a test!'
-}
+attrs = {"description": "That is just a test!"}
 
 for raw in conn.dms.update_instance(instance, **attrs):
     print(raw)

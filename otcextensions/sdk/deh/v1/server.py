@@ -13,20 +13,20 @@ from openstack import resource
 
 
 class Server(resource.Resource):
-    resource_key = ''
-    resources_key = 'servers'
-    base_path = '/dedicated-hosts/%(dedicated_host_id)s/servers'
+    resource_key = ""
+    resources_key = "servers"
+    base_path = "/dedicated-hosts/%(dedicated_host_id)s/servers"
 
     # capabilities
     allow_list = True
 
     #: Properties
-    addresses = resource.Body('addresses', type=dict)
-    created_at = resource.Body('created')
-    dedicated_host_id = resource.URI('dedicated_host_id')
-    flavor = resource.Body('flavor')
-    metadata = resource.Body('metadata')
-    status = resource.Body('status')
-    tenant_id = resource.Body('tenant_id')
-    updated_at = resource.Body('updated')
-    user_id = resource.Body('user_id')
+    addresses = resource.Body("addresses", type=dict)
+    created_at = resource.Body("created")
+    dedicated_host_id = resource.URI("dedicated_host_id")
+    flavor = resource.Body("flavor")
+    metadata = resource.Body("metadata")
+    status = resource.Body("status")
+    tenant_id = resource.Body("tenant_id")
+    updated_at = resource.Body("updated")
+    user_id = resource.Body("user_id")

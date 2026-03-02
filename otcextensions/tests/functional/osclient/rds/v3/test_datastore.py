@@ -17,36 +17,31 @@ from tempest.lib import exceptions
 
 
 class TestRdsDatastore(base.TestCase):
-    """Functional tests for RDS Datastore. """
+    """Functional tests for RDS Datastore."""
 
     def test_datastore_list(self):
-        json_output = json.loads(self.openstack(
-            'rds datastore type list -f json '
-        ))
+        json_output = json.loads(self.openstack("rds datastore type list -f json "))
 
         self.assertItemsEqual(
-            ['postgresql', 'mysql', 'sqlserver'],
-            [ds.get('Name', None).lower() for ds in json_output]
+            ["postgresql", "mysql", "sqlserver"],
+            [ds.get("Name", None).lower() for ds in json_output],
         )
 
     def test_datastore_version_list(self):
-        datastores = json.loads(self.openstack(
-            'rds datastore type list -f json'
-        ))
+        datastores = json.loads(self.openstack("rds datastore type list -f json"))
         for datastore in datastores:
-            json_output = json.loads(self.openstack(
-                'rds datastore version list {ds} '
-                '-f json'.format(ds=datastore['Name'])
-            ))
-            self.assertIsNotNone(json_output)
-            self.assertEqual(
-                ['ID', 'Name'],
-                list(json_output[0].keys())
+            json_output = json.loads(
+                self.openstack(
+                    "rds datastore version list {ds} "
+                    "-f json".format(ds=datastore["Name"])
+                )
             )
+            self.assertIsNotNone(json_output)
+            self.assertEqual(["ID", "Name"], list(json_output[0].keys()))
 
     def test_invalid_datastore_version_list(self):
         self.assertRaises(
             exceptions.CommandFailed,
             self.openstack,
-            'rds datastore version list invalid_ds'
+            "rds datastore version list invalid_ds",
         )

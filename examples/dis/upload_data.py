@@ -13,21 +13,16 @@
 """
 Uploading Data.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-stream_name = 'test-stream'
+stream_name = "test-stream"
 records = [
-    {
-        "data": "MTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTE=",
-        "partition_id": "0"
-    },
-    {
-        "data": "aGVsbG8gT1RDCg==",
-        "partition_id": "1"
-    }
+    {"data": "MTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTE=", "partition_id": "0"},
+    {"data": "aGVsbG8gT1RDCg==", "partition_id": "1"},
 ]
 result = conn.dis.upload_data(stream_name, records=records)
 print(result)

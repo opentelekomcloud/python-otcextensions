@@ -13,20 +13,21 @@
 """
 Update exist domain
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 attrs = {
-    'namespace': 'new_org',
-    'repository': 'new_repo',
-    'access_domain': 'OTC00000000001000000100',
-    'permit': 'read',
-    'deadline': 'forever',
-    'description': 'update',
+    "namespace": "new_org",
+    "repository": "new_repo",
+    "access_domain": "OTC00000000001000000100",
+    "permit": "read",
+    "deadline": "forever",
+    "description": "update",
 }
 
 repo = conn.swr.update_domain(**attrs)

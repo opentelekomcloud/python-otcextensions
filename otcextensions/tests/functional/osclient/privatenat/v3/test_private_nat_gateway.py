@@ -22,7 +22,5 @@ class TestPrivateNatGateway(base.TestCase):
         super(TestPrivateNatGateway, self).setUp()
 
     def test_private_nat_gateway_list(self):
-        json_output = json.loads(self.openstack(
-            'privatenat gateway list -f json '
-        ))
+        json_output = json.loads(self.openstack("privatenat gateway list -f json "))
         self.assertIsNotNone(json_output)

@@ -11,7 +11,6 @@
 # under the License.
 from openstack import proxy
 from openstack import resource
-
 from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.vlb.v3 import availability_zone as _availability_zone
 from otcextensions.sdk.vlb.v3 import certificate as _certificate
@@ -24,9 +23,9 @@ from otcextensions.sdk.vlb.v3 import listener as _listener
 from otcextensions.sdk.vlb.v3 import load_balancer as _lb
 from otcextensions.sdk.vlb.v3 import load_balancer_status as _lb_statuses
 from otcextensions.sdk.vlb.v3 import member as _member
-from otcextensions.sdk.vlb.v3 import security_policy as _sp
 from otcextensions.sdk.vlb.v3 import pool as _pool
 from otcextensions.sdk.vlb.v3 import quota as _quota
+from otcextensions.sdk.vlb.v3 import security_policy as _sp
 
 
 class Proxy(proxy.Proxy):
@@ -69,8 +68,7 @@ class Proxy(proxy.Proxy):
         :returns: One :class:`~otcextensions.sdk.vlb.v3.load_balancer.
                   LoadBalancerStats`
         """
-        return self._get(_lb.LoadBalancerStats, lb_id=name_or_id,
-                         requires_id=False)
+        return self._get(_lb.LoadBalancerStats, lb_id=name_or_id, requires_id=False)
 
     def load_balancers(self, **query):
         """Retrieve a generator of load balancers
@@ -94,8 +92,9 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         # load_balancer = self._get_resource(_lb.LoadBalancer, load_balancer)
-        return self._delete(_lb.LoadBalancer, load_balancer,
-                            ignore_missing=ignore_missing)
+        return self._delete(
+            _lb.LoadBalancer, load_balancer, ignore_missing=ignore_missing
+        )
 
     def find_load_balancer(self, name_or_id, ignore_missing=True):
         """Find a single load balancer
@@ -109,8 +108,7 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._find(_lb.LoadBalancer, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(_lb.LoadBalancer, name_or_id, ignore_missing=ignore_missing)
 
     def update_load_balancer(self, load_balancer, **attrs):
         """Update a load balancer
@@ -126,12 +124,14 @@ class Proxy(proxy.Proxy):
         """
         return self._update(_lb.LoadBalancer, load_balancer, **attrs)
 
-    def wait_for_load_balancer(self, name_or_id, status='ACTIVE',
-                               failures=['ERROR'], interval=2, wait=300):
+    def wait_for_load_balancer(
+        self, name_or_id, status="ACTIVE", failures=["ERROR"], interval=2, wait=300
+    ):
         lb = self._find(_lb.LoadBalancer, name_or_id, ignore_missing=False)
 
-        return resource.wait_for_status(self, lb, status, failures, interval,
-                                        wait, attribute='provisioning_status')
+        return resource.wait_for_status(
+            self, lb, status, failures, interval, wait, attribute="provisioning_status"
+        )
 
     def wait_for_delete_load_balancer(self, name_or_id, interval=2, wait=300):
         """Wait for a load balancer to be deleted.
@@ -160,7 +160,7 @@ class Proxy(proxy.Proxy):
         return self._get(
             _lb_statuses.LoadBalancerStatus,
             requires_id=False,
-            loadbalancer_id=loadbalancer_id
+            loadbalancer_id=loadbalancer_id,
         )
 
     # ======== Listener ========
@@ -189,8 +189,7 @@ class Proxy(proxy.Proxy):
                     attempting to delete a nonexistent listener.
         :returns: ``None``
         """
-        self._delete(_listener.Listener, listener,
-                     ignore_missing=ignore_missing)
+        self._delete(_listener.Listener, listener, ignore_missing=ignore_missing)
 
     def update_listener(self, listener, **attrs):
         """Update a listener
@@ -217,8 +216,7 @@ class Proxy(proxy.Proxy):
         :returns: One :class:`~otcextensions.sdk.vlb.v3.listener.Listener`
          or None
         """
-        return self._find(_listener.Listener, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(_listener.Listener, name_or_id, ignore_missing=ignore_missing)
 
     def get_listener(self, listener):
         """Get a single listener
@@ -275,8 +273,9 @@ class Proxy(proxy.Proxy):
             delete a nonexistent certificate.
         :returns: ``None``
         """
-        return self._delete(_certificate.Certificate, certificate,
-                            ignore_missing=ignore_missing)
+        return self._delete(
+            _certificate.Certificate, certificate, ignore_missing=ignore_missing
+        )
 
     def get_certificate(self, certificate):
         """Get a single certificate
@@ -319,8 +318,9 @@ class Proxy(proxy.Proxy):
             One :class:`~otcextensions.sdk.vlb.v3.certificate.Certificate`
             or ``None``
         """
-        return self._find(_certificate.Certificate, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(
+            _certificate.Certificate, name_or_id, ignore_missing=ignore_missing
+        )
 
     # ======== Quota ========
     def get_quotas(self):
@@ -353,10 +353,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.vlb.v3.flavor.Flavor`
         """
 
-        return self._list(
-            _flavor.Flavor,
-            **query
-        )
+        return self._list(_flavor.Flavor, **query)
 
     def get_flavor(self, flavor):
         """Get a single flavor
@@ -380,8 +377,7 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._find(_flavor.Flavor, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(_flavor.Flavor, name_or_id, ignore_missing=ignore_missing)
 
     # ======= Pool =======
     def create_pool(self, **attrs):
@@ -432,8 +428,7 @@ class Proxy(proxy.Proxy):
             delete a nonexistent pool.
         :returns: ``None``
         """
-        return self._delete(_pool.Pool, pool,
-                            ignore_missing=ignore_missing)
+        return self._delete(_pool.Pool, pool, ignore_missing=ignore_missing)
 
     def find_pool(self, name_or_id, ignore_missing=True):
         """Find a single pool
@@ -446,8 +441,7 @@ class Proxy(proxy.Proxy):
             to delete a nonexistent pool.
         :returns: ``None``
         """
-        return self._find(_pool.Pool, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(_pool.Pool, name_or_id, ignore_missing=ignore_missing)
 
     def update_pool(self, pool, **attrs):
         """Update a pool
@@ -477,8 +471,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.vlb.v3.member.Member`
         """
         poolobj = self._get_resource(_pool.Pool, pool)
-        return self._create(_member.Member, pool_id=poolobj.id,
-                            **attrs)
+        return self._create(_member.Member, pool_id=poolobj.id, **attrs)
 
     def delete_member(self, member, pool, ignore_missing=True):
         """Delete a member
@@ -497,8 +490,9 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         poolobj = self._get_resource(_pool.Pool, pool)
-        self._delete(_member.Member, member,
-                     ignore_missing=ignore_missing, pool_id=poolobj.id)
+        self._delete(
+            _member.Member, member, ignore_missing=ignore_missing, pool_id=poolobj.id
+        )
 
     def find_member(self, name_or_id, pool, ignore_missing=True):
         """Find a single member
@@ -516,8 +510,12 @@ class Proxy(proxy.Proxy):
             or None
         """
         poolobj = self._get_resource(_pool.Pool, pool)
-        return self._find(_member.Member, name_or_id,
-                          ignore_missing=ignore_missing, pool_id=poolobj.id)
+        return self._find(
+            _member.Member,
+            name_or_id,
+            ignore_missing=ignore_missing,
+            pool_id=poolobj.id,
+        )
 
     def get_member(self, member, pool):
         """Get a single member
@@ -533,8 +531,7 @@ class Proxy(proxy.Proxy):
             when no resource can be found.
         """
         poolobj = self._get_resource(_pool.Pool, pool)
-        return self._get(_member.Member, member,
-                         pool_id=poolobj.id)
+        return self._get(_member.Member, member, pool_id=poolobj.id)
 
     def members(self, pool, **query):
         """Return a generator of members
@@ -565,8 +562,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.vlb.v3.member.Member`
         """
         poolobj = self._get_resource(_pool.Pool, pool)
-        return self._update(_member.Member, member,
-                            pool_id=poolobj.id, **attrs)
+        return self._update(_member.Member, member, pool_id=poolobj.id, **attrs)
 
     # ======= HealthMonitor =======
     def find_health_monitor(self, name_or_id, ignore_missing=True):
@@ -586,8 +582,7 @@ class Proxy(proxy.Proxy):
         :raises: :class:`openstack.exceptions.ResourceNotFound` if nothing
             is found and ignore_missing is ``False``.
         """
-        return self._find(_hm.HealthMonitor, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(_hm.HealthMonitor, name_or_id, ignore_missing=ignore_missing)
 
     def create_health_monitor(self, **attrs):
         """Create a new health monitor from attributes
@@ -637,8 +632,9 @@ class Proxy(proxy.Proxy):
             attempting to delete a nonexistent health monitor.
         :returns: ``None``
         """
-        return self._delete(_hm.HealthMonitor, healthmonitor,
-                            ignore_missing=ignore_missing)
+        return self._delete(
+            _hm.HealthMonitor, healthmonitor, ignore_missing=ignore_missing
+        )
 
     def update_health_monitor(self, healthmonitor, **attrs):
         """Update a health monitor
@@ -652,8 +648,7 @@ class Proxy(proxy.Proxy):
         :returns: The updated health monitor
         :rtype: :class:`~otcextensions.sdk.vlb.v3.health monitor.HealthMonitor`
         """
-        return self._update(_hm.HealthMonitor, healthmonitor,
-                            **attrs)
+        return self._update(_hm.HealthMonitor, healthmonitor, **attrs)
 
     # ======= L7Policy =======
     def create_l7_policy(self, **attrs):
@@ -681,8 +676,7 @@ class Proxy(proxy.Proxy):
             attempting to delete a nonexistent l7policy.
         :returns: ``None``
         """
-        self._delete(_l7policy.L7Policy, l7_policy,
-                     ignore_missing=ignore_missing)
+        self._delete(_l7policy.L7Policy, l7_policy, ignore_missing=ignore_missing)
 
     def find_l7_policy(self, name_or_id, ignore_missing=True):
         """Find a single l7policy
@@ -701,8 +695,7 @@ class Proxy(proxy.Proxy):
         :raises: :class:`openstack.exceptions.ResourceNotFound` if nothing
             is found and ignore_missing is ``False``.
         """
-        return self._find(_l7policy.L7Policy, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(_l7policy.L7Policy, name_or_id, ignore_missing=ignore_missing)
 
     def get_l7_policy(self, l7_policy):
         """Get a single l7policy
@@ -755,8 +748,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.vlb.v3.l7_rule.L7Rule`
         """
         l7policyobj = self._get_resource(_l7policy.L7Policy, l7_policy)
-        return self._create(_l7rule.L7Rule, l7policy_id=l7policyobj.id,
-                            **attrs)
+        return self._create(_l7rule.L7Rule, l7policy_id=l7policyobj.id, **attrs)
 
     def delete_l7_rule(self, l7rule, l7_policy, ignore_missing=True):
         """Delete a l7rule
@@ -775,8 +767,12 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         l7policyobj = self._get_resource(_l7policy.L7Policy, l7_policy)
-        self._delete(_l7rule.L7Rule, l7rule, ignore_missing=ignore_missing,
-                     l7policy_id=l7policyobj.id)
+        self._delete(
+            _l7rule.L7Rule,
+            l7rule,
+            ignore_missing=ignore_missing,
+            l7policy_id=l7policyobj.id,
+        )
 
     def find_l7_rule(self, name_or_id, l7_policy, ignore_missing=True):
         """Find a single l7rule
@@ -794,9 +790,12 @@ class Proxy(proxy.Proxy):
             or None
         """
         l7policyobj = self._get_resource(_l7policy.L7Policy, l7_policy)
-        return self._find(_l7rule.L7Rule, name_or_id,
-                          ignore_missing=ignore_missing,
-                          l7policy_id=l7policyobj.id)
+        return self._find(
+            _l7rule.L7Rule,
+            name_or_id,
+            ignore_missing=ignore_missing,
+            l7policy_id=l7policyobj.id,
+        )
 
     def get_l7_rule(self, l7rule, l7_policy):
         """Get a single l7rule
@@ -812,8 +811,7 @@ class Proxy(proxy.Proxy):
             when no resource can be found.
         """
         l7policyobj = self._get_resource(_l7policy.L7Policy, l7_policy)
-        return self._get(_l7rule.L7Rule, l7rule,
-                         l7policy_id=l7policyobj.id)
+        return self._get(_l7rule.L7Rule, l7rule, l7policy_id=l7policyobj.id)
 
     def l7_rules(self, l7_policy, **query):
         """Return a generator of l7rules
@@ -844,10 +842,9 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.vlb.v3.l7_rule.L7Rule`
         """
         l7policyobj = self._get_resource(_l7policy.L7Policy, l7_policy)
-        if 'value' in attrs:
-            attrs['rule_value'] = attrs.pop('value')
-        return self._update(_l7rule.L7Rule, l7rule,
-                            l7policy_id=l7policyobj.id, **attrs)
+        if "value" in attrs:
+            attrs["rule_value"] = attrs.pop("value")
+        return self._update(_l7rule.L7Rule, l7rule, l7policy_id=l7policyobj.id, **attrs)
 
     # ======== Security policy ========
     def create_security_policy(self, **attrs):
@@ -910,8 +907,7 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._find(_sp.SecurityPolicy, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(_sp.SecurityPolicy, name_or_id, ignore_missing=ignore_missing)
 
     def delete_security_policy(self, security_policy, ignore_missing=True):
         """Delete a security policy
@@ -927,8 +923,9 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._delete(_sp.SecurityPolicy, security_policy,
-                            ignore_missing=ignore_missing)
+        return self._delete(
+            _sp.SecurityPolicy, security_policy, ignore_missing=ignore_missing
+        )
 
     # ======== Ip address group ========
     def create_ip_address_group(self, **attrs):
@@ -978,10 +975,14 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        ip_address_group = self._get_resource(_ip_address_group.IpAddressGroup,
-                                              ip_address_group)
-        return self._delete(_ip_address_group.IpAddressGroup, ip_address_group,
-                            ignore_missing=ignore_missing)
+        ip_address_group = self._get_resource(
+            _ip_address_group.IpAddressGroup, ip_address_group
+        )
+        return self._delete(
+            _ip_address_group.IpAddressGroup,
+            ip_address_group,
+            ignore_missing=ignore_missing,
+        )
 
     def find_ip_address_group(self, name_or_id, ignore_missing=True):
         """Find a single ip address group
@@ -995,8 +996,9 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._find(_ip_address_group.IpAddressGroup, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(
+            _ip_address_group.IpAddressGroup, name_or_id, ignore_missing=ignore_missing
+        )
 
     def update_ip_address_group(self, ip_address_group, **attrs):
         """Update a ip address group
@@ -1011,11 +1013,9 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.vlb.v3.ip_address_group.
             IpAddressGroup`
         """
-        return self._update(_ip_address_group.IpAddressGroup, ip_address_group,
-                            **attrs)
+        return self._update(_ip_address_group.IpAddressGroup, ip_address_group, **attrs)
 
-    def update_ip_addresses_in_ip_address_group(self, ip_address_group,
-                                                ip_list):
+    def update_ip_addresses_in_ip_address_group(self, ip_address_group, ip_list):
         """Update ip addresses list in an existing ip address group
 
         :param ip_address_group: The value can be the ID of an ip address group
@@ -1029,15 +1029,13 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.vlb.v3.ip_address_group.
             IpAddressGroup`
         """
-        ip_address_group = self._get_resource(_ip_address_group.IpAddressGroup,
-                                              ip_address_group)
-
-        return ip_address_group.update_ip_addresses(
-            self, ip_list=ip_list
+        ip_address_group = self._get_resource(
+            _ip_address_group.IpAddressGroup, ip_address_group
         )
 
-    def delete_ip_addresses_in_ip_address_group(self, ip_address_group,
-                                                ip_list):
+        return ip_address_group.update_ip_addresses(self, ip_list=ip_list)
+
+    def delete_ip_addresses_in_ip_address_group(self, ip_address_group, ip_list):
         """Delete ip addresses list from an existing ip address group
 
         :param ip_address_group: The value can be the ID of a ip address group
@@ -1049,9 +1047,8 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.vlb.v3.ip_address_group.
             IpAddressGroup`
         """
-        ip_address_group = self._get_resource(_ip_address_group.IpAddressGroup,
-                                              ip_address_group)
-
-        return ip_address_group.delete_ip_addresses(
-            self, ip_list=ip_list
+        ip_address_group = self._get_resource(
+            _ip_address_group.IpAddressGroup, ip_address_group
         )
+
+        return ip_address_group.delete_ip_addresses(self, ip_list=ip_list)

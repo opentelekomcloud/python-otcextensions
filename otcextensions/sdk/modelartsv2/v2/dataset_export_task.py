@@ -82,9 +82,7 @@ class ExportParamsSpec(resource.Resource):
     #: Whether to clear hard example attributes.
     clear_hard_property = resource.Body("clear_hard_property", type=bool)
     #: Format of the dataset version to which data is exported.
-    export_dataset_version_format = resource.Body(
-        "export_dataset_version_format"
-    )
+    export_dataset_version_format = resource.Body("export_dataset_version_format")
     #: Name of the dataset version to which data is exported.
     export_dataset_version_name = resource.Body("export_dataset_version_name")
     #: Export destination.
@@ -92,9 +90,7 @@ class ExportParamsSpec(resource.Resource):
     #: Name of the new dataset to which data is exported.
     export_new_dataset_name = resource.Body("export_new_dataset_name")
     #: Working directory of the new dataset to which data is exported.
-    export_new_dataset_work_path = resource.Body(
-        "export_new_dataset_work_path"
-    )
+    export_new_dataset_work_path = resource.Body("export_new_dataset_work_path")
     #: Whether to randomly allocate the training set and validation set based
     #:  on the specified ratio.
     ratio_sample_usage = resource.Body("ratio_sample_usage", type=bool)

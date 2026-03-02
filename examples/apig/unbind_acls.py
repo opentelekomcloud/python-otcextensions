@@ -13,11 +13,10 @@
 """
 Unbind Access Control Policies from API
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-attrs = {
-    "acl_bindings": ["332c5db1458a477b89b2ea741fec94a3"]
-}
-result = list(conn.apig.unbind_acls(gateway='gateway_id', **attrs))
+conn = openstack.connect(cloud="otc")
+attrs = {"acl_bindings": ["332c5db1458a477b89b2ea741fec94a3"]}
+result = list(conn.apig.unbind_acls(gateway="gateway_id", **attrs))

@@ -11,16 +11,15 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.lts.v2 import stream
 
 EXAMPLE = {
-    'id': 'id',
-    'creation_time': 'creation-time',
-    'name': 'name',
-    'log_group_id': 'log_group_id',
-    'filter_count': 5,
-    'tag': 'tag',
+    "id": "id",
+    "creation_time": "creation-time",
+    "name": "name",
+    "log_group_id": "log_group_id",
+    "filter_count": 5,
+    "tag": "tag",
 }
 
 
@@ -28,7 +27,7 @@ class TestStream(base.TestCase):
 
     def test_basic(self):
         sot = stream.Stream()
-        path = '/groups/%(log_group_id)s/streams'
+        path = "/groups/%(log_group_id)s/streams"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_list)
@@ -38,9 +37,9 @@ class TestStream(base.TestCase):
 
     def test_make_it(self):
         sot = stream.Stream(**EXAMPLE)
-        self.assertEqual(EXAMPLE['id'], sot.id)
-        self.assertEqual(EXAMPLE['creation_time'], sot.creation_time)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['log_group_id'], sot.log_group_id)
-        self.assertEqual(EXAMPLE['filter_count'], sot.filter_count)
-        self.assertEqual(EXAMPLE['tag'], sot.tag)
+        self.assertEqual(EXAMPLE["id"], sot.id)
+        self.assertEqual(EXAMPLE["creation_time"], sot.creation_time)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["log_group_id"], sot.log_group_id)
+        self.assertEqual(EXAMPLE["filter_count"], sot.filter_count)
+        self.assertEqual(EXAMPLE["tag"], sot.tag)

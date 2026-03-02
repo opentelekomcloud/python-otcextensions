@@ -16,16 +16,17 @@ from otcextensions.sdk import quotamixin
 
 class Quota(quotamixin.QuotaProxyMixin, resource.Resource):
     """Key Management Service Quota resource"""
-    resources_key = 'quotas.resources'
-    base_path = '/quota'
+
+    resources_key = "quotas.resources"
+    base_path = "/quota"
 
     # capabilities
     allow_list = True
 
     #: Properties
     #: Quota type, value is ``CMK`` or ``grant_per_CMK``
-    type = resource.Body('type')
+    type = resource.Body("type")
     #: Used quota
-    used = resource.Body('used', type=int)
+    used = resource.Body("used", type=int)
     #: Total quota
-    quota = resource.Body('quota', type=int)
+    quota = resource.Body("quota", type=int)

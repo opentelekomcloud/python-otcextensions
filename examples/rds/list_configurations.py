@@ -13,11 +13,11 @@
 """
 List all RDS configuration templates
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 for config in conn.rds.configurations():
     print(config)

@@ -97,9 +97,7 @@ class NotebookSpec(resource.Resource):
     #: Extended parameter.
     extend_params = resource.Body("extend_params", type=dict)
     #: Extended storage list.
-    extend_storage = resource.Body(
-        "extend_storage", type=list, list_type=StorageSpec
-    )
+    extend_storage = resource.Body("extend_storage", type=list, list_type=StorageSpec)
     #: Cause for a creation or startup failure.
     failed_reasons = resource.Body("failed_reasons", type=FailedReasonsSpec)
     #: Path for storing custom image logs.
@@ -107,9 +105,7 @@ class NotebookSpec(resource.Resource):
     #: Git repository information.
     repository = resource.Body("repository", type=RepositorySpec)
     #: Time when the resource is reserved.
-    resource_reserved_timestamp = resource.Body(
-        "resource_reserved_timestamp", type=int
-    )
+    resource_reserved_timestamp = resource.Body("resource_reserved_timestamp", type=int)
     #: Storage path.
     storage = resource.Body("storage", type=StorageSpec)
 
@@ -330,8 +326,9 @@ class Devenv(resource.Resource):
         """stop the DevEnv Instance."""
         return self._action(session, "stop")
 
-    def _translate_response(self, response, has_body=None, error_message=None,
-                            resource_response_key=None):
+    def _translate_response(
+        self, response, has_body=None, error_message=None, resource_response_key=None
+    ):
         """Given a KSA response, inflate this instance with its data
 
         DELETE operations don't return a body, so only try to work

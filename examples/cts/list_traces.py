@@ -13,14 +13,13 @@
 """
 List CTS Tracker Traces
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-tracker_name = 'system'
-query = {
-    "trace_rating": "warning"
-}
+tracker_name = "system"
+query = {"trace_rating": "warning"}
 for trace in conn.cts.traces(tracker_name, **query):
     print(trace)

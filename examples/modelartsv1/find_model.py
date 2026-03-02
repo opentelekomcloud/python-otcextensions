@@ -12,6 +12,7 @@
 # under the License.
 #
 """Query a model by name or Id."""
+
 import openstack
 
 openstack.enable_logging(True)

@@ -13,10 +13,11 @@
 """
 Authorize Apps
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 result = conn.apig.list_apps_bound_to_api(gateway="id")
 print(list(result))

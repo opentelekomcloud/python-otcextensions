@@ -10,13 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import service_description
-
 from otcextensions.sdk.enterprise_dashboard.v1 import _proxy
 
 
 class EnterpriseDashboardService(service_description.ServiceDescription):
     """The Enterprise Dashboard service."""
 
-    supported_versions = {
-        '1': _proxy.Proxy
-    }
+    supported_versions = {"1": _proxy.Proxy}

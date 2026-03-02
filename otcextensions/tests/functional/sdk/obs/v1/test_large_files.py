@@ -10,12 +10,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import uuid
+
 from otcextensions.tests.functional import base
 
 
 class TestObsLargeFiles(base.BaseFunctionalTest):
     uuid_v4 = uuid.uuid4().hex[:8]
-    bucket_name = 'obs-test-' + uuid_v4
+    bucket_name = "obs-test-" + uuid_v4
     container = None
 
     def setUp(self):
@@ -23,20 +24,15 @@ class TestObsLargeFiles(base.BaseFunctionalTest):
         self.client = self.conn.obs
         self.container = self.client.create_container(
             name=self.bucket_name,
-            storage_acl='public-read-write',
-            storage_class='STANDARD'
+            storage_acl="public-read-write",
+            storage_class="STANDARD",
         )
         self.addCleanup(self.client.delete_container, self.container)
 
     def test_01_upload_large_file(self):
         fh = open("/mnt/d/Jellyfin/series/alien/s01.mkv", "rb")
-        self.client.create_object(
-            container=self.container,
-            name='largefile',
-            data=fh
-        )
+        self.client.create_object(container=self.container, name="largefile", data=fh)
         self.object = self.client.get_object_metadata(
-            container=self.container,
-            obj='largefile'
+            container=self.container, obj="largefile"
         )
         self.client.delete_object(self.object)

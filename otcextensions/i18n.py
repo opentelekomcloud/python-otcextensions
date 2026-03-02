@@ -15,7 +15,7 @@
 
 import oslo_i18n
 
-_translators = oslo_i18n.TranslatorFactory(domain='otcextensions')
+_translators = oslo_i18n.TranslatorFactory(domain="otcextensions")
 
 # The primary translation function using the well-known name "_"
 _ = _translators.primary

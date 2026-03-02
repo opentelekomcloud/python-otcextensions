@@ -13,10 +13,11 @@
 """
 List all Instance-Products
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 for raw in conn.dms.products():
     print(raw)

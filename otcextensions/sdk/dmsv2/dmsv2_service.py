@@ -10,13 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import service_description
-
 from otcextensions.sdk.dmsv2.v2 import _proxy as _proxy_v2
 
 
 class Dmsv2Service(service_description.ServiceDescription):
     """The DMS v2 service."""
 
-    supported_versions = {
-        '2': _proxy_v2.Proxy
-    }
+    supported_versions = {"2": _proxy_v2.Proxy}

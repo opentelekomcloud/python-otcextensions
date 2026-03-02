@@ -13,11 +13,12 @@
 """
 Pause Dump Tasks in Batches.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-stream_name = 'test-stream'
-task_ids = ['task1-id', 'task2-id']
+stream_name = "test-stream"
+task_ids = ["task1-id", "task2-id"]
 conn.dis.pause_dump_task(stream_name, task_ids)

@@ -13,10 +13,11 @@
 """
 Find Auto-Scaling Group.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 group = "group_name_or_id"
 

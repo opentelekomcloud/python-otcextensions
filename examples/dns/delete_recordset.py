@@ -13,12 +13,13 @@
 """
 Delete DNS recordset by id or class Recordset
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-zone = 'zone_id'
-recordset = 'recordset_id'
+zone = "zone_id"
+recordset = "recordset_id"
 conn.dns.delete_recordset(zone=zone, recordset=recordset, ignore_missing=True)

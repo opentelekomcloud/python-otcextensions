@@ -10,7 +10,8 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-'''CBR Task CLI implementation'''
+"""CBR Task CLI implementation"""
+
 import logging
 
 from osc_lib import utils
@@ -22,32 +23,37 @@ LOG = logging.getLogger(__name__)
 
 
 def _flatten_task(obj):
-    """Flatten the structure of the task into a single dict
-    """
+    """Flatten the structure of the task into a single dict"""
 
     data = {
-        'id': obj.id,
-        'checkpoint_id': obj.checkpoint_id,
-        'policy_id': obj.policy_id,
-        'provider_id': obj.provider_id,
-        'vault_id': obj.vault_id,
-        'vault_name': obj.vault_name,
-        'operation_type': obj.operation_type,
-        'error_mesage': obj.error_info.message,
-        'error_code': obj.error_info.code,
-        'created_at': obj.created_at,
-        'ended_at': obj.ended_at,
-        'started_at': obj.started_at,
-        'updated_at': obj.updated_at,
+        "id": obj.id,
+        "checkpoint_id": obj.checkpoint_id,
+        "policy_id": obj.policy_id,
+        "provider_id": obj.provider_id,
+        "vault_id": obj.vault_id,
+        "vault_name": obj.vault_name,
+        "operation_type": obj.operation_type,
+        "error_mesage": obj.error_info.message,
+        "error_code": obj.error_info.code,
+        "created_at": obj.created_at,
+        "ended_at": obj.ended_at,
+        "started_at": obj.started_at,
+        "updated_at": obj.updated_at,
     }
 
     return data
 
 
 class ListTasks(command.Lister):
-    _description = _('List CBR Tasks')
-    columns = ('id', 'checkpoint_id', 'provider_id',
-               'operation_type', 'created_at', 'ended_at')
+    _description = _("List CBR Tasks")
+    columns = (
+        "id",
+        "checkpoint_id",
+        "provider_id",
+        "operation_type",
+        "created_at",
+        "ended_at",
+    )
 
     def get_parser(self, prog_name):
         parser = super(ListTasks, self).get_parser(prog_name)
@@ -59,37 +65,41 @@ class ListTasks(command.Lister):
 
         data = client.tasks()
 
-        table = (self.columns,
-                 (utils.get_dict_properties(
-                     _flatten_task(s), self.columns,
-                 ) for s in data))
+        table = (
+            self.columns,
+            (
+                utils.get_dict_properties(
+                    _flatten_task(s),
+                    self.columns,
+                )
+                for s in data
+            ),
+        )
         return table
 
 
 class ShowTask(command.ShowOne):
-    _description = _('Show single Task details')
+    _description = _("Show single Task details")
     columns = (
-        'id',
-        'checkpoint_id',
-        'policy_id',
-        'provider_id',
-        'vault_id',
-        'vault_name',
-        'operation_type',
-        'error_mesage',
-        'error_code',
-        'created_at',
-        'ended_at',
-        'started_at',
-        'updated_at'
+        "id",
+        "checkpoint_id",
+        "policy_id",
+        "provider_id",
+        "vault_id",
+        "vault_name",
+        "operation_type",
+        "error_mesage",
+        "error_code",
+        "created_at",
+        "ended_at",
+        "started_at",
+        "updated_at",
     )
 
     def get_parser(self, prog_name):
         parser = super(ShowTask, self).get_parser(prog_name)
         parser.add_argument(
-            'operation_log_id',
-            metavar='<operation_log>',
-            help=_('ID of the CBR task.')
+            "operation_log_id", metavar="<operation_log>", help=_("ID of the CBR task.")
         )
         return parser
 
@@ -100,7 +110,6 @@ class ShowTask(command.ShowOne):
             parsed_args.operation_log_id,
         )
 
-        data = utils.get_dict_properties(
-            _flatten_task(obj), self.columns)
+        data = utils.get_dict_properties(_flatten_task(obj), self.columns)
 
         return self.columns, data

@@ -10,29 +10,27 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import _log
-
 from otcextensions.tests.functional import base
 
-
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestMisc(base.BaseFunctionalTest):
 
     def test_instance_num(self):
-        _logger.info('test_instance_num')
+        _logger.info("test_instance_num")
         num = self.conn.kms.get_instance_number()
 
         self.assertIsNotNone(num.instance_num)
 
     def test_random(self):
-        _logger.info('test_random')
+        _logger.info("test_random")
         obj = self.conn.kms.generate_random(512)
 
         self.assertIsNotNone(obj.random_data)
 
     def test_quotas(self):
-        _logger.info('test_quotas')
+        _logger.info("test_quotas")
         obj = list(self.conn.kms.quotas())
 
         self.assertIsNotNone(obj)

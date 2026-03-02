@@ -21,22 +21,15 @@ class TestEnvironmentVar(TestApiG):
         self.create_gateway()
         self.gateway_id = TestEnvironmentVar.gateway.id
         # self.gateway_id = "be76ca6de5fe4aa7af503c03b3b44dea"
-        env_attrs = {
-            "name": "DEV",
-            "remark": "Development environment"
-        }
+        env_attrs = {"name": "DEV", "remark": "Development environment"}
         environment = self.client.create_environment(
-            gateway=self.gateway_id,
-            **env_attrs)
+            gateway=self.gateway_id, **env_attrs
+        )
         self.assertIsNotNone(environment.id)
 
-        group_attrs = {
-            "name": "api_group_001",
-            "remark": "API group 1"
-        }
+        group_attrs = {"name": "api_group_001", "remark": "API group 1"}
         self.group = self.client.create_api_group(
-            gateway=self.gateway_id,
-            **group_attrs
+            gateway=self.gateway_id, **group_attrs
         )
         self.assertIsNotNone(self.group.id)
 
@@ -44,17 +37,16 @@ class TestEnvironmentVar(TestApiG):
             "variable_name": "address",
             "variable_value": "192.168.1.5",
             "env_id": environment.id,
-            "group_id": self.group.id
+            "group_id": self.group.id,
         }
         self.variable = self.client.create_environment_variable(
-            gateway=self.gateway_id,
-            **self.attrs
+            gateway=self.gateway_id, **self.attrs
         )
 
         self.addCleanup(
             self.client.delete_environment_variable,
             gateway=self.gateway_id,
-            var=self.variable
+            var=self.variable,
         )
         self.addCleanup(
             self.client.delete_environment,
@@ -69,15 +61,17 @@ class TestEnvironmentVar(TestApiG):
         self.addCleanup(self.delete_gateway())
 
     def test_list_environment_variables(self):
-        vars = list(self.client.environment_variables(
-            gateway=self.gateway_id,
-            group_id=self.group.id))
+        vars = list(
+            self.client.environment_variables(
+                gateway=self.gateway_id, group_id=self.group.id
+            )
+        )
         self.assertEqual(len(vars), 1)
 
     def test_get_environment_variable(self):
         var = self.client.get_environment_variable(
-            gateway=self.gateway_id,
-            var=self.variable.id)
+            gateway=self.gateway_id, var=self.variable.id
+        )
         self.assertEqual(var.id, self.variable.id)
 
     def test_update_environment_variable(self):
@@ -85,8 +79,6 @@ class TestEnvironmentVar(TestApiG):
             "variable_value": "192.168.1.6",
         }
         updated = self.client.update_environment_variable(
-            gateway=self.gateway_id,
-            var=self.variable.id,
-            **attrs
+            gateway=self.gateway_id, var=self.variable.id, **attrs
         )
         self.assertEqual(updated.variable_value, attrs["variable_value"])

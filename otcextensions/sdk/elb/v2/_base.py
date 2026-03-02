@@ -44,17 +44,15 @@ class Resource(resource.Resource):
         # Try to short-circuit by looking directly for a matching ID.
         try:
             match = cls.existing(
-                id=name_or_id,
-                connection=session._get_connection(),
-                **params)
+                id=name_or_id, connection=session._get_connection(), **params
+            )
             return match.fetch(session, **params)
         except exceptions.SDKException:
             # ELB will return 400 when we try to do GET with name
             pass
 
-        if ('name' in cls._query_mapping._mapping.keys()
-                and 'name' not in params):
-            params['name'] = name_or_id
+        if "name" in cls._query_mapping._mapping.keys() and "name" not in params:
+            params["name"] = name_or_id
 
         data = cls.list(session, **params)
 
@@ -65,11 +63,18 @@ class Resource(resource.Resource):
         if ignore_missing:
             return None
         raise exceptions.ResourceNotFound(
-            "No %s found for %s" % (cls.__name__, name_or_id))
+            "No %s found for %s" % (cls.__name__, name_or_id)
+        )
 
     @classmethod
-    def list(cls, session, paginated=True, base_path=None,
-             allow_unknown_params=False, **params):
+    def list(
+        cls,
+        session,
+        paginated=True,
+        base_path=None,
+        allow_unknown_params=False,
+        **params
+    ):
         """This method is a generator which yields resource objects.
 
         This resource object list generator handles pagination and takes query
@@ -111,12 +116,12 @@ class Resource(resource.Resource):
         if base_path is None:
             base_path = cls.base_path
         params = cls._query_mapping._validate(
-            params, base_path=base_path,
-            allow_unknown_params=allow_unknown_params)
+            params, base_path=base_path, allow_unknown_params=allow_unknown_params
+        )
         query_params = cls._query_mapping._transpose(params, cls)
         uri = base_path % params
 
-        limit = query_params.get('limit', '10')
+        limit = query_params.get("limit", "10")
 
         # Track the total number of resources yielded so we can paginate
         # swift objects
@@ -133,8 +138,8 @@ class Resource(resource.Resource):
             data = response.json()
 
             # Discard any existing pagination keys
-            query_params.pop('marker', None)
-            query_params.pop('limit', None)
+            query_params.pop("marker", None)
+            query_params.pop("limit", None)
 
             if cls.resources_key:
                 resources = data[cls.resources_key]
@@ -154,8 +159,8 @@ class Resource(resource.Resource):
                 raw_resource.pop("self", None)
 
                 value = cls.existing(
-                    connection=session._get_connection(),
-                    **raw_resource)
+                    connection=session._get_connection(), **raw_resource
+                )
                 marker = value.id
                 yield value
                 total_yielded += 1
@@ -163,20 +168,20 @@ class Resource(resource.Resource):
             if resources and paginated:
                 page += 1
                 uri, next_params = cls._get_next_link(
-                    uri, response, data, marker, limit, total_yielded, page)
+                    uri, response, data, marker, limit, total_yielded, page
+                )
                 query_params.update(next_params)
             else:
                 return
 
     @classmethod
-    def _get_next_link(cls, uri, response, data, marker, limit, total_yielded,
-                       page):
+    def _get_next_link(cls, uri, response, data, marker, limit, total_yielded, page):
         next_link = None
         params = {}
-        if total_yielded < data['instance_num']:
+        if total_yielded < data["instance_num"]:
             next_link = uri
-            params['offset'] = page
-            params['limit'] = limit
+            params["offset"] = page
+            params["limit"] = limit
         else:
             next_link = None
         query_params = cls._query_mapping._transpose(params, cls)

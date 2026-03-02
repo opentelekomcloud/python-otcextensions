@@ -11,64 +11,35 @@
 # under the License.
 import copy
 
+import mock
 from keystoneauth1 import adapter
 
-import mock
-
 from openstack.tests.unit import base
-
 from otcextensions.sdk.rds.v1 import instance
 
 # RDS requires those headers to be present in the request, to native API
 # otherwise 404
-RDS_HEADERS = {
-    'Content-Type': 'application/json',
-    'X-Language': 'en-us'
-}
+RDS_HEADERS = {"Content-Type": "application/json", "X-Language": "en-us"}
 
 # RDS requires those headers to be present in the request, to OS-compat API
 # otherwise 404
 OS_HEADERS = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
 }
 
 # PROJECT_ID = '123'
-IDENTIFIER = '37f52707-2fb3-482c-a444-77a70a4eafd6'
+IDENTIFIER = "37f52707-2fb3-482c-a444-77a70a4eafd6"
 EXAMPLE = {
     "status": "ACTIVE",
     "name": "rds-new-channle-read",
-    "links": [
-        {
-            "rel": "self",
-            "href": ""
-        },
-        {
-            "rel": "bookmark",
-            "href": ""
-        }
-    ],
+    "links": [{"rel": "self", "href": ""}, {"rel": "bookmark", "href": ""}],
     "id": IDENTIFIER,
-    "volume": {
-        "type": "COMMON",
-        "size": 100
-    },
+    "volume": {"type": "COMMON", "size": 100},
     "flavor": {
         "id": "7fbf27c5-07e5-43dc-cf13-ad7a0f1c5d9a",
-        "links": [
-            {
-                "rel": "self",
-                "href": ""
-            },
-            {
-                "rel": "bookmark",
-                "href": ""
-            }
-        ]
+        "links": [{"rel": "self", "href": ""}, {"rel": "bookmark", "href": ""}],
     },
-    "datastore": {
-        "type": "PostgreSQL",
-        "version": "PostgreSQL-9.5.5"
-    },
+    "datastore": {"type": "PostgreSQL", "version": "PostgreSQL-9.5.5"},
     "publicEndpoint": "10.11.77.101:8635",
     "dbPort": 8635,
     "region": "eu-de",
@@ -76,19 +47,10 @@ EXAMPLE = {
     "replica_of": [
         {
             "id": "c42cdd29-9912-4b57-91a8-c37a845566b1",
-            "links": [
-                {
-                    "rel": "self",
-                    "href": ""
-                },
-                {
-                    "rel": "bookmark",
-                    "href": ""
-                }
-            ]
+            "links": [{"rel": "self", "href": ""}, {"rel": "bookmark", "href": ""}],
         }
     ],
-    "hostname": 'test'
+    "hostname": "test",
 }
 
 
@@ -103,9 +65,9 @@ class TestInstance(base.TestCase):
 
     def test_basic(self):
         sot = instance.Instance()
-        self.assertEqual('instance', sot.resource_key)
-        self.assertEqual('instances', sot.resources_key)
-        self.assertEqual('/instances', sot.base_path)
+        self.assertEqual("instance", sot.resource_key)
+        self.assertEqual("instances", sot.resources_key)
+        self.assertEqual("/instances", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_get)
@@ -115,85 +77,67 @@ class TestInstance(base.TestCase):
     def test_make_it(self):
         sot = instance.Instance(**EXAMPLE)
         self.assertEqual(IDENTIFIER, sot.id)
-        self.assertEqual(EXAMPLE['status'], sot.status)
-        self.assertEqual(EXAMPLE['hostname'], sot.hostname)
+        self.assertEqual(EXAMPLE["status"], sot.status)
+        self.assertEqual(EXAMPLE["hostname"], sot.hostname)
         # self.assertEqual(EXAMPLE['links'], sot.links)
-        self.assertEqual(EXAMPLE['volume'], sot.volume)
-        self.assertEqual(EXAMPLE['flavor'], sot.flavor)
-        self.assertEqual(EXAMPLE['datastore'], sot.datastore)
-        self.assertEqual(EXAMPLE['publicEndpoint'], sot.publicEndpoint)
-        self.assertEqual(EXAMPLE['region'], sot.region)
+        self.assertEqual(EXAMPLE["volume"], sot.volume)
+        self.assertEqual(EXAMPLE["flavor"], sot.flavor)
+        self.assertEqual(EXAMPLE["datastore"], sot.datastore)
+        self.assertEqual(EXAMPLE["publicEndpoint"], sot.publicEndpoint)
+        self.assertEqual(EXAMPLE["region"], sot.region)
 
     def test_list(self):
 
         mock_response = mock.Mock()
         mock_response.status_code = 200
-        mock_response.json.return_value = {"instances": [
-            {"instance": {
-                "status": "ACTIVE",
-                "name": "rds-new-channle-read",
-                "links": [
-                    {
-                        "rel": "self",
-                        "href": ""
-                    },
-                    {
-                        "rel": "bookmark",
-                        "href": ""
-                    }
-                ],
-                "id": "37f52707-2fb3-482c-a444-77a70a4eafd6",
-                "volume": {
-                    "type": "COMMON",
-                    "size": 100
-                },
-                "flavor": {
-                    "id": "7fbf27c5-07e5-43dc-cf13-ad7a0f1c5d9a",
-                    "links": [
-                        {
-                            "rel": "self",
-                            "href": ""
-                        },
-                        {
-                            "rel": "bookmark",
-                            "href": ""
-                        }
-                    ]
-                },
-                "datastore": {
-                    "type": "PostgreSQL",
-                    "version": "PostgreSQL-9.5.5"
-                },
-                "publicEndpoint": "10.11.77.101:8635",
-                "dbPort": 8635,
-                "region": "eu-de",
-                "ip": "192.168.1.29",
-                "replica_of": [
-                    {
-                        "id": "c42cdd29-9912-4b57-91a8-c37a845566b1",
+        mock_response.json.return_value = {
+            "instances": [
+                {
+                    "instance": {
+                        "status": "ACTIVE",
+                        "name": "rds-new-channle-read",
                         "links": [
+                            {"rel": "self", "href": ""},
+                            {"rel": "bookmark", "href": ""},
+                        ],
+                        "id": "37f52707-2fb3-482c-a444-77a70a4eafd6",
+                        "volume": {"type": "COMMON", "size": 100},
+                        "flavor": {
+                            "id": "7fbf27c5-07e5-43dc-cf13-ad7a0f1c5d9a",
+                            "links": [
+                                {"rel": "self", "href": ""},
+                                {"rel": "bookmark", "href": ""},
+                            ],
+                        },
+                        "datastore": {
+                            "type": "PostgreSQL",
+                            "version": "PostgreSQL-9.5.5",
+                        },
+                        "publicEndpoint": "10.11.77.101:8635",
+                        "dbPort": 8635,
+                        "region": "eu-de",
+                        "ip": "192.168.1.29",
+                        "replica_of": [
                             {
-                                "rel": "self",
-                                "href": ""
-                            },
-                            {
-                                "rel": "bookmark",
-                                "href": ""
+                                "id": "c42cdd29-9912-4b57-91a8-c37a845566b1",
+                                "links": [
+                                    {"rel": "self", "href": ""},
+                                    {"rel": "bookmark", "href": ""},
+                                ],
                             }
-                        ]
+                        ],
+                        "hostname": "test",
                     }
-                ],
-                "hostname": 'test'
-            }
-            }
-        ]}
+                }
+            ]
+        }
 
         self.sess.get.return_value = mock_response
 
         result = list(self.sot.list(self.sess))
 
         self.sess.get.assert_called_once_with(
-            '/instances',
+            "/instances",
             params={},
         )
 
@@ -201,71 +145,50 @@ class TestInstance(base.TestCase):
 
     def test_get(self):
 
-        sot = instance.Instance.new(id='1234')
+        sot = instance.Instance.new(id="1234")
         mock_response = mock.Mock()
         mock_response.status_code = 200
         mock_response.headers = {}
 
-        res_json = {"instance": {
-            "configurationStatus": "In-Sync",
-            "paramsGroupId": "b89db814-6ba1-454f-a9ad-380064ef0c6f",
-            "type": "MySQL",
-            "subnetid": "0fb5d084-4e5d-463b-8920-fca10e6b4028",
-            "role": "master",
-            "internalSubnetId": "330a10fd-3962-44c5-b3a1-1d282617a183",
-            "group": "1",
-            "securegroup": "ca99fcef-502f-495f-b28d-85c9c6f4666e",
-            "vpc": "292997f2-3bf7-4d60-86a5-4e9d593bc850",
-            "azcode": "eu-de-01",
-            "region": None,
-            "created": "2017-05-12T02:18:46",
-            "updated": "2017-05-12T02:18:46",
-            "status": "ACTIVE",
-            "name": "rds-MySQL-1-1",
-            "publicEndpoint": "10.11.77.101:8635",
-            "dbPort": 8635,
-            "links": [
-                {
-                    "rel": "self",
-                    "href": ""
-                },
-                {
-                    "rel": "bookmark",
-                    "href": ""
-                }
-            ],
-            "id": "e8faac23-8129-4c68-a231-480e46fc5f4f",
-            "flavor": {
-                "id": "31b2863c-0e15-44fd-a80d-1e83a7aca338",
-                "links": [
-                    {
-                        "rel": "self",
-                        "href": ""
-                    },
-                    {
-                        "rel": "bookmark",
-                        "href": ""
-                    }
-                ]
-            },
-            "volume": {
-                "type": "COMMON",
-                "size": 210,
-                "used": 25.07
-            },
-            "datastore": {
+        res_json = {
+            "instance": {
+                "configurationStatus": "In-Sync",
+                "paramsGroupId": "b89db814-6ba1-454f-a9ad-380064ef0c6f",
                 "type": "MySQL",
-                "version": "MySQL-5.7.17"
-            },
-            "fault": None,
-            "configuration": None,
-            "locality": None,
-            "replicas": None,
-            "dbuser": "root",
-            "storageEngine": None,
-            "payModel": 0,
-            "cluster_id": "fb22f24c-0466-48f2-8275-70af04ef4935"
-        }
+                "subnetid": "0fb5d084-4e5d-463b-8920-fca10e6b4028",
+                "role": "master",
+                "internalSubnetId": "330a10fd-3962-44c5-b3a1-1d282617a183",
+                "group": "1",
+                "securegroup": "ca99fcef-502f-495f-b28d-85c9c6f4666e",
+                "vpc": "292997f2-3bf7-4d60-86a5-4e9d593bc850",
+                "azcode": "eu-de-01",
+                "region": None,
+                "created": "2017-05-12T02:18:46",
+                "updated": "2017-05-12T02:18:46",
+                "status": "ACTIVE",
+                "name": "rds-MySQL-1-1",
+                "publicEndpoint": "10.11.77.101:8635",
+                "dbPort": 8635,
+                "links": [{"rel": "self", "href": ""}, {"rel": "bookmark", "href": ""}],
+                "id": "e8faac23-8129-4c68-a231-480e46fc5f4f",
+                "flavor": {
+                    "id": "31b2863c-0e15-44fd-a80d-1e83a7aca338",
+                    "links": [
+                        {"rel": "self", "href": ""},
+                        {"rel": "bookmark", "href": ""},
+                    ],
+                },
+                "volume": {"type": "COMMON", "size": 210, "used": 25.07},
+                "datastore": {"type": "MySQL", "version": "MySQL-5.7.17"},
+                "fault": None,
+                "configuration": None,
+                "locality": None,
+                "replicas": None,
+                "dbuser": "root",
+                "storageEngine": None,
+                "payModel": 0,
+                "cluster_id": "fb22f24c-0466-48f2-8275-70af04ef4935",
+            }
         }
 
         # Sadly res_json is deleted somewhere in __GET__, so
@@ -277,81 +200,72 @@ class TestInstance(base.TestCase):
         res = sot.get(self.sess)
 
         self.sess.get.assert_called_once_with(
-            'instances/1234',
+            "instances/1234",
         )
 
-        self.assertEqual(res_json['instance']['vpc'], res.vpc)
-        self.assertEqual(res_json['instance']['id'], res.id)
-        self.assertEqual(res_json['instance']['paramsGroupId'],
-                         res.paramsGroupId)
+        self.assertEqual(res_json["instance"]["vpc"], res.vpc)
+        self.assertEqual(res_json["instance"]["id"], res.id)
+        self.assertEqual(res_json["instance"]["paramsGroupId"], res.paramsGroupId)
 
     def test_action_restart(self):
         sot = instance.Instance(**EXAMPLE)
         response = mock.Mock()
-        response.json = mock.Mock(return_value='')
+        response.json = mock.Mock(return_value="")
         sess = mock.Mock()
         sess.post = mock.Mock(return_value=response)
 
         self.assertIsNotNone(sot.restart(sess))
 
-        url = ("instances/%(id)s/action" % {
-            'id': IDENTIFIER,
-        })
-        body = {'restart': {}}
-        sess.post.assert_called_with(url,
-                                     json=body,
-                                     headers={'X-Language': 'en-us'})
+        url = "instances/%(id)s/action" % {
+            "id": IDENTIFIER,
+        }
+        body = {"restart": {}}
+        sess.post.assert_called_with(url, json=body, headers={"X-Language": "en-us"})
 
     def test_action_resize(self):
         sot = instance.Instance(**EXAMPLE)
         response = mock.Mock()
-        response.json = mock.Mock(return_value='')
+        response.json = mock.Mock(return_value="")
         sess = mock.Mock()
         sess.post = mock.Mock(return_value=response)
-        flavor = 'http://flavor/flav'
+        flavor = "http://flavor/flav"
 
         self.assertIsNotNone(sot.resize(sess, flavor))
 
-        url = ("instances/%(id)s/action" % {
-            'id': IDENTIFIER,
-        })
-        body = {'resize': {'flavorRef': flavor}}
-        sess.post.assert_called_with(url,
-                                     json=body,
-                                     headers={'X-Language': 'en-us'})
+        url = "instances/%(id)s/action" % {
+            "id": IDENTIFIER,
+        }
+        body = {"resize": {"flavorRef": flavor}}
+        sess.post.assert_called_with(url, json=body, headers={"X-Language": "en-us"})
 
     def test_action_resize_volume(self):
         sot = instance.Instance(**EXAMPLE)
         response = mock.Mock()
-        response.json = mock.Mock(return_value='')
+        response.json = mock.Mock(return_value="")
         sess = mock.Mock()
         sess.post = mock.Mock(return_value=response)
         size = 4
 
         self.assertIsNotNone(sot.resize_volume(sess, size))
 
-        url = ("instances/%(id)s/action" % {
-            'id': IDENTIFIER,
-        })
-        body = {'resize': {'volume': size}}
-        sess.post.assert_called_with(url,
-                                     json=body,
-                                     headers={'X-Language': 'en-us'})
+        url = "instances/%(id)s/action" % {
+            "id": IDENTIFIER,
+        }
+        body = {"resize": {"volume": size}}
+        sess.post.assert_called_with(url, json=body, headers={"X-Language": "en-us"})
 
     def test_action_restore(self):
         sot = instance.Instance(**EXAMPLE)
         response = mock.Mock()
-        response.json = mock.Mock(return_value='')
+        response.json = mock.Mock(return_value="")
         sess = mock.Mock()
         sess.post = mock.Mock(return_value=response)
-        backupRef = 'backupRef'
+        backupRef = "backupRef"
 
         self.assertIsNotNone(sot.restore(sess, backupRef))
 
-        url = ("instances/%(id)s/action" % {
-            'id': IDENTIFIER,
-        })
-        body = {'restore': {'backupRef': backupRef}}
-        sess.post.assert_called_with(url,
-                                     json=body,
-                                     headers={'X-Language': 'en-us'})
+        url = "instances/%(id)s/action" % {
+            "id": IDENTIFIER,
+        }
+        body = {"restore": {"backupRef": backupRef}}
+        sess.post.assert_called_with(url, json=body, headers={"X-Language": "en-us"})

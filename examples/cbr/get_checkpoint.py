@@ -12,11 +12,12 @@
 """
 Get single checkpoint by ID
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-checkpoint = 'checkpoint_id'
+checkpoint = "checkpoint_id"
 checkpoint = conn.cbr.get_checkpoint(checkpoint=checkpoint)
 print(checkpoint)

@@ -11,6 +11,7 @@
 # under the License.
 import time
 import uuid
+
 from otcextensions.tests.functional.sdk.vpcep import TestVpcep
 
 
@@ -19,18 +20,18 @@ class TestEndpoint(TestVpcep):
         super(TestEndpoint, self).setUp()
         self.network_data = self.create_network()
         self.addCleanup(self.destroy_network, self.network_data)
-        self.port = self.create_port(self.network_data['network_id'])
+        self.port = self.create_port(self.network_data["network_id"])
         self.addCleanup(self.destroy_port, self.port.id)
         self.service = self.create_service_helper()
-        self.endpoint_name = 'sdk-vpcep-test-endpoint-' + uuid.uuid4().hex[:8]
+        self.endpoint_name = "sdk-vpcep-test-endpoint-" + uuid.uuid4().hex[:8]
 
     def _create_endpoint(self, remove=True):
         attrs = {
-            'router_id': self.network_data['router_id'],
-            'network_id': self.network_data['network_id'],
-            'endpoint_service_id': self.service.id,
-            'enable_dns': False,
-            'tags': [{'key': 'test-key', 'value': 'test-value'}]
+            "router_id": self.network_data["router_id"],
+            "network_id": self.network_data["network_id"],
+            "endpoint_service_id": self.service.id,
+            "enable_dns": False,
+            "tags": [{"key": "test-key", "value": "test-value"}],
         }
         endpoint = self.client.create_endpoint(**attrs)
         self.assertIsNotNone(endpoint)
@@ -42,9 +43,9 @@ class TestEndpoint(TestVpcep):
         """Test creating an Endpoint and verifying its attributes."""
         ep = self._create_endpoint()
         self.assertEqual(self.service.id, ep.endpoint_service_id)
-        self.assertEqual(self.network_data['router_id'], ep.router_id)
+        self.assertEqual(self.network_data["router_id"], ep.router_id)
         self.assertTrue(len(ep.tags) > 0)
-        self.assertEqual('test-key', ep.tags[0].key)
+        self.assertEqual("test-key", ep.tags[0].key)
 
     def test_list_endpoints(self):
         """Test listing Endpoints."""

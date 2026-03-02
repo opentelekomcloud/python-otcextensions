@@ -13,13 +13,14 @@
 """
 Delete single CBR share member from CBR backup
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-backup = 'name_or_id'
-member = 'member_id'
+backup = "name_or_id"
+member = "member_id"
 backup = conn.cbr.find_backup(name_or_id=backup)
 member = conn.cbr.delete_member(backup=backup.id, member=member)
 print(member)

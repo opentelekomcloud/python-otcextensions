@@ -11,11 +11,10 @@
 # under the License.
 #
 from openstack import service_description
-
 from otcextensions.sdk.vpcep.v1 import _proxy
 
 
 class VpcepService(service_description.ServiceDescription):
     """The VPCEP service."""
 
-    supported_versions = {'1': _proxy.Proxy}
+    supported_versions = {"1": _proxy.Proxy}

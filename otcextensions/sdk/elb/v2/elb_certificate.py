@@ -11,13 +11,12 @@
 # under the License.
 
 from openstack import resource
-
 from otcextensions.sdk.elb.v2 import _base
 
 
 class Certificate(_base.Resource):
-    resources_key = 'certificates'
-    base_path = ('/lbaas/certificates')
+    resources_key = "certificates"
+    base_path = "/lbaas/certificates"
 
     # capabilities
     allow_create = True
@@ -27,33 +26,39 @@ class Certificate(_base.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'id', 'name', 'description',
-        'type', 'domain', 'content',
-        'private_key', 'marker', 'limit',
+        "id",
+        "name",
+        "description",
+        "type",
+        "domain",
+        "content",
+        "private_key",
+        "marker",
+        "limit",
     )
 
     # Properties
     #: Name
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: Id
-    id = resource.Body('id')
+    id = resource.Body("id")
     #: Description
-    description = resource.Body('description')
+    description = resource.Body("description")
     #: Certificate type.
-    type = resource.Body('type')
+    type = resource.Body("type")
     #: Domain name associated with the server certificate.
-    domain = resource.Body('domain')
+    domain = resource.Body("domain")
     #: Private key of the server certificate. *Type: string*
-    private_key = resource.Body('private_key')
+    private_key = resource.Body("private_key")
     #: Public key of the server certificate or CA certificate. *Type: string*
-    content = resource.Body('certificate')
+    content = resource.Body("certificate")
     #: Administrative status of the certificate.
-    admin_state_up = resource.Body('admin_state_up')
+    admin_state_up = resource.Body("admin_state_up")
     #: Creation time
-    create_time = resource.Body('create_time')
+    create_time = resource.Body("create_time")
     #: Specifies the project ID.
-    project_id = resource.Body('tenant_id')
+    project_id = resource.Body("tenant_id")
     #: Time when the certificate expires.
-    expire_time = resource.Body('expire_time')
+    expire_time = resource.Body("expire_time")
     #: Time when the certificate was updated.
-    update_time = resource.Body('update_time')
+    update_time = resource.Body("update_time")

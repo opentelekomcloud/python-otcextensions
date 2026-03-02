@@ -11,11 +11,10 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.cbr.v3 import task
 
 EXAMPLE = {
-    'id': 'id',
+    "id": "id",
 }
 
 
@@ -23,7 +22,7 @@ class TestTask(base.TestCase):
 
     def test_basic(self):
         sot = task.Task()
-        path = '/operation-logs'
+        path = "/operation-logs"
         self.assertEqual(path, sot.base_path)
         self.assertFalse(sot.allow_create)
         self.assertTrue(sot.allow_list)
@@ -33,4 +32,4 @@ class TestTask(base.TestCase):
 
     def test_make_it(self):
         sot = task.Task(**EXAMPLE)
-        self.assertEqual(EXAMPLE['id'], sot.id)
+        self.assertEqual(EXAMPLE["id"], sot.id)

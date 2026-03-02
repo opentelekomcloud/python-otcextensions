@@ -9,17 +9,13 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from keystoneauth1 import adapter
-
 import mock
+from keystoneauth1 import adapter
 
 from openstack.tests.unit import base
 from otcextensions.sdk.dis.v2 import checkpoint
 
-EXAMPLE = {
-    "sequence_number": "newstram",
-    "metadata": ""
-}
+EXAMPLE = {"sequence_number": "newstram", "metadata": ""}
 
 
 class TestCheckpoint(base.TestCase):
@@ -31,7 +27,7 @@ class TestCheckpoint(base.TestCase):
         sot = checkpoint.Checkpoint()
         self.assertEqual(None, sot.resource_key)
         self.assertEqual(None, sot.resources_key)
-        path = '/checkpoints'
+        path = "/checkpoints"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_fetch)
@@ -50,16 +46,13 @@ class TestCheckpoint(base.TestCase):
     def test_checkpoint_get(self):
         sot = checkpoint.Checkpoint()
         params = {
-            'stream_name': 'test-stream',
-            'partition_id': 'test-partition-id',
+            "stream_name": "test-stream",
+            "partition_id": "test-partition-id",
         }
         response = mock.Mock()
         response.status_code = 200
         response.headers = {}
-        response.json.return_value = {
-            "sequence_number": "newstram",
-            "metadata": ""
-        }
+        response.json.return_value = {"sequence_number": "newstram", "metadata": ""}
         self.sess.get.return_value = response
 
         rt = sot.get_checkpoint(self.sess, **params)
@@ -69,8 +62,8 @@ class TestCheckpoint(base.TestCase):
     def test_checkpoint_delete(self):
         sot = checkpoint.Checkpoint()
         params = {
-            'stream_name': 'test-stream',
-            'partition_id': 'test-partition-id',
+            "stream_name": "test-stream",
+            "partition_id": "test-partition-id",
         }
         response = mock.Mock()
         response.status_code = 204

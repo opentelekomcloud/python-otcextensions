@@ -11,6 +11,7 @@
 #   under the License.
 #
 """ModelArts service v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -24,9 +25,7 @@ LOG = logging.getLogger(__name__)
 def set_attributes_for_print(monitors):
     for monitor in monitors:
         monitor.cpu_core = f"{monitor.cpu_core_usage}/{monitor.cpu_core_total}"
-        monitor.cpu_memory = (
-            f"{monitor.cpu_memory_usage}/{monitor.cpu_memory_total}"
-        )
+        monitor.cpu_memory = f"{monitor.cpu_memory_usage}/{monitor.cpu_memory_total}"
         monitor.gpu = f"{monitor.gpu_usage}/{monitor.gpu_total}"
         yield monitor
 
@@ -56,8 +55,7 @@ class ServiceMonitor(command.Lister):
             "--node-id",
             metavar="<node_id>",
             help=_(
-                "ID of the node to be queried. By default, "
-                "all nodes are queried."
+                "ID of the node to be queried. By default, " "all nodes are queried."
             ),
         )
         return parser
@@ -68,9 +66,7 @@ class ServiceMonitor(command.Lister):
         if parsed_args.node_id:
             query_params["node_id"] = parsed_args.node_id
 
-        service = client.find_service(
-            parsed_args.service, ignore_missing=False
-        )
+        service = client.find_service(parsed_args.service, ignore_missing=False)
         data = client.service_monitor(service.id, **query_params)
 
         if data:

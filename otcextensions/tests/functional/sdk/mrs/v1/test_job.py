@@ -14,10 +14,9 @@ import uuid
 
 import openstack
 from openstack import _log
-
 from otcextensions.tests.functional.sdk.mrs import TestMrs
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestJob(TestMrs):
@@ -27,8 +26,8 @@ class TestJob(TestMrs):
         super(TestJob, self).setUp()
         res = self.client.create_job(
             name=uuid.uuid4().hex,
-            type='DistCp',
-            description='test job',
+            type="DistCp",
+            description="test job",
         )
         id = res.id
         self.job = self.client.get_job(id)
@@ -43,8 +42,7 @@ class TestJob(TestMrs):
                 pass
                 self.client.delete_job(self.job)
         except openstack.exceptions.SDKException as e:
-            _logger.warning('Got exception during clearing resources %s'
-                            % e.message)
+            _logger.warning("Got exception during clearing resources %s" % e.message)
         super(TestJob, self).tearDown()
 
     def test_list(self):
@@ -55,11 +53,9 @@ class TestJob(TestMrs):
 
     def test_update(self):
         res = self.client.update_job(
-            self.job,
-            type='DistCp',
-            description='funct_test update mapreduce'
+            self.job, type="DistCp", description="funct_test update mapreduce"
         )
-        self.assertEqual('funct_test update mapreduce', res.description)
+        self.assertEqual("funct_test update mapreduce", res.description)
         _logger.debug(res)
         self.jobs = list(self.client.jobs())
         self.assertGreaterEqual(len(self.jobs), 0)

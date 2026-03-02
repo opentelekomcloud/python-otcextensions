@@ -11,18 +11,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
- Create VPC
+Create VPC
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-attrs = {
-    "name": "test_vpc_1",
-    "cidr": "192.168.0.0/24"
-}
+attrs = {"name": "test_vpc_1", "cidr": "192.168.0.0/24"}
 
 vpc = conn.vpc.create_vpc(**attrs)
 print(vpc)

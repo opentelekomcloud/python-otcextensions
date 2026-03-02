@@ -10,9 +10,10 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-'''SDRS Job CLI implementation'''
-import logging
+"""SDRS Job CLI implementation"""
+
 import json
+import logging
 
 from osc_lib import utils
 from osc_lib.command import command
@@ -23,91 +24,72 @@ LOG = logging.getLogger(__name__)
 
 
 def _add_sub_jobs_to_obj(obj, data, columns):
-    name = 'entities'
-    data += ('\n'.join((f'sub_job={ent.job_id}'
-                        for ent in obj.entities.sub_jobs)),)
+    name = "entities"
+    data += ("\n".join((f"sub_job={ent.job_id}" for ent in obj.entities.sub_jobs)),)
 
     columns = columns + (name,)
     return data, columns
 
 
 def _add_server_group_to_obj(obj, data, columns):
-    name = 'entities'
-    data += ('protection_group_id=' + obj.entities.server_group_id,)
+    name = "entities"
+    data += ("protection_group_id=" + obj.entities.server_group_id,)
 
     columns = columns + (name,)
     return data, columns
 
 
 def _add_parsed_task_to_obj(obj, data, columns):
-    first, last = obj.fail_reason.split('error : ')
+    first, last = obj.fail_reason.split("error : ")
     error_dict = json.loads(last)
-    message = next(iter(error_dict.values()))['message']
-    code = next(iter(error_dict.values()))['code']
+    message = next(iter(error_dict.values()))["message"]
+    code = next(iter(error_dict.values()))["code"]
     data += (message,)
-    columns = columns + ('message',)
+    columns = columns + ("message",)
     data += (code,)
-    columns = columns + ('status_code',)
+    columns = columns + ("status_code",)
     data += (obj.error_code,)
-    columns += ('error_code',)
+    columns += ("error_code",)
     return data, columns
 
 
 def _flatten_job(obj):
-    """Flatten the structure of the job into a single dict
-    """
+    """Flatten the structure of the job into a single dict"""
 
     data = {
-        'id': obj.job_id,
-        'status': obj.status,
-        'job_type': obj.job_type,
-        'begin_time': obj.begin_time,
-        'end_time': obj.end_time
+        "id": obj.job_id,
+        "status": obj.status,
+        "job_type": obj.job_type,
+        "begin_time": obj.begin_time,
+        "end_time": obj.end_time,
     }
 
     return data
 
 
 class ShowJob(command.ShowOne):
-    _description = _('Show single job details')
-    columns = (
-        'id',
-        'status',
-        'job_type',
-        'begin_time',
-        'end_time'
-    )
+    _description = _("Show single job details")
+    columns = ("id", "status", "job_type", "begin_time", "end_time")
 
     def get_parser(self, prog_name):
         parser = super(ShowJob, self).get_parser(prog_name)
-        parser.add_argument(
-            'job',
-            metavar='<job>',
-            help=_('ID of the SDRS job.')
-        )
+        parser.add_argument("job", metavar="<job>", help=_("ID of the SDRS job."))
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.sdrs
 
-        obj = client.get_job(
-            job=parsed_args.job
-        )
+        obj = client.get_job(job=parsed_args.job)
 
-        data = utils.get_dict_properties(
-            _flatten_job(obj), self.columns
-        )
+        data = utils.get_dict_properties(_flatten_job(obj), self.columns)
 
-        if getattr(obj.entities, 'sub_jobs', None):
-            data, self.columns = _add_sub_jobs_to_obj(obj, data,
-                                                      self.columns)
+        if getattr(obj.entities, "sub_jobs", None):
+            data, self.columns = _add_sub_jobs_to_obj(obj, data, self.columns)
 
-        if getattr(obj.entities, 'server_group_id', None):
-            data, self.columns = _add_server_group_to_obj(obj, data,
-                                                          self.columns)
+        if getattr(obj.entities, "server_group_id", None):
+            data, self.columns = _add_server_group_to_obj(obj, data, self.columns)
 
         if obj.fail_reason:
-            data, self.columns = _add_parsed_task_to_obj(obj, data,
-                                                         self.columns)
+            data, self.columns = _add_parsed_task_to_obj(obj, data, self.columns)
 
         return (self.columns, data)

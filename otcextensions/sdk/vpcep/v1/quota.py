@@ -15,22 +15,22 @@ from openstack import resource
 
 
 class Quota(resource.Resource):
-    base_path = '/quotas'
+    base_path = "/quotas"
 
     # capabilities
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'type',
+        "type",
     )
 
     # Properties
     #: Specifies the maximum quota of resources.
-    quota = resource.Body('quota', type=int)
+    quota = resource.Body("quota", type=int)
     #: Specifies the resource type.
-    type = resource.Body('type')
+    type = resource.Body("type")
     #: Specifies the number of created resources.
-    used = resource.Body('used', type=int)
+    used = resource.Body("used", type=int)
 
     @classmethod
     def list(cls, session, paginated=False, base_path=None, **params):
@@ -92,11 +92,11 @@ class Quota(resource.Resource):
         exceptions.raise_from_response(response)
         data = response.json()
 
-        quotas_data = data.get('quotas')
+        quotas_data = data.get("quotas")
         if not quotas_data:
             return
 
-        resources = quotas_data.get('resources')
+        resources = quotas_data.get("resources")
         if not resources:
             return
 

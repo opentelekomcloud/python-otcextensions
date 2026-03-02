@@ -10,7 +10,8 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-'''DMS Instance AZ action implementations'''
+"""DMS Instance AZ action implementations"""
+
 from osc_lib import utils
 from osc_lib.command import command
 
@@ -18,8 +19,8 @@ from otcextensions.i18n import _
 
 
 class ListAZ(command.Lister):
-    _description = _('List Availability zones')
-    columns = ('ID', 'name', 'code', 'port', 'has_available_resources')
+    _description = _("List Availability zones")
+    columns = ("ID", "name", "code", "port", "has_available_resources")
 
     def get_parser(self, prog_name):
         parser = super(ListAZ, self).get_parser(prog_name)
@@ -31,8 +32,14 @@ class ListAZ(command.Lister):
 
         data = client.availability_zones()
 
-        table = (self.columns,
-                 (utils.get_item_properties(
-                     s, self.columns,
-                 ) for s in data))
+        table = (
+            self.columns,
+            (
+                utils.get_item_properties(
+                    s,
+                    self.columns,
+                )
+                for s in data
+            ),
+        )
         return table

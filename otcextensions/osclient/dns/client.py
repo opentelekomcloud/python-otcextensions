@@ -14,11 +14,10 @@ import logging
 
 from otcextensions import sdk
 
-
 LOG = logging.getLogger(__name__)
 
-DEFAULT_API_VERSION = '2.0'
-API_VERSION_OPTION = 'os_dns_api_version'
+DEFAULT_API_VERSION = "2.0"
+API_VERSION_OPTION = "os_dns_api_version"
 API_NAME = "dns"
 API_VERSIONS = {
     "2.0": "openstack.connection.Connection",
@@ -34,8 +33,7 @@ def make_client(instance):
     # register unconditionally, since we need to override default DNS
     sdk.register_otc_extensions(conn)
 
-    LOG.debug('dns client initialized using OpenStack OTC SDK: %s',
-              conn.dns)
+    LOG.debug("dns client initialized using OpenStack OTC SDK: %s", conn.dns)
     return conn.dns
 
 

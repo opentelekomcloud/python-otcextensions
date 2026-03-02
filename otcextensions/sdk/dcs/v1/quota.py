@@ -16,22 +16,23 @@ from otcextensions.sdk import quotamixin
 
 class Quota(quotamixin.QuotaProxyMixin, resource.Resource):
     """Distributed Cache Service Quota resource"""
-    resources_key = 'quotas.resources'
-    base_path = '/quota'
+
+    resources_key = "quotas.resources"
+    base_path = "/quota"
 
     # capabilities
     allow_list = True
 
     #: Properties
     #: Quota type, value is ``instance`` or ``ram``
-    type = resource.Body('type')
+    type = resource.Body("type")
     #: Quota amount of created instances and used memory
-    used = resource.Body('used', type=int)
+    used = resource.Body("used", type=int)
     #: Quota amount
-    quota = resource.Body('quota', type=int)
+    quota = resource.Body("quota", type=int)
     #: Resource unit, when ``type`` is set to ``ram`` ``GB`` is returned
-    unit = resource.Body('unit')
+    unit = resource.Body("unit")
     #: Max limit of instance or memory quota
-    max = resource.Body('max', type=int)
+    max = resource.Body("max", type=int)
     #: Min limit of instance or memory quota
-    min = resource.Body('min', type=int)
+    min = resource.Body("min", type=int)

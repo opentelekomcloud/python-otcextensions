@@ -21,20 +21,28 @@ class TestListLoadBalancer(fakes.TestLoadBalancer):
 
     _objects = fakes.FakeLoadBalancer.create_multiple(3)
 
-    columns = ('id', 'name', 'project_id', 'vip_address',
-               'provisioning_status', 'provider')
+    columns = (
+        "id",
+        "name",
+        "project_id",
+        "vip_address",
+        "provisioning_status",
+        "provider",
+    )
 
     data = []
 
     for s in _objects:
-        data.append((
-            s.id,
-            s.name,
-            s.project_id,
-            s.vip_address,
-            s.provisioning_status,
-            s.provider,
-        ))
+        data.append(
+            (
+                s.id,
+                s.name,
+                s.project_id,
+                s.vip_address,
+                s.provisioning_status,
+                s.provider,
+            )
+        )
 
     def setUp(self):
         super(TestListLoadBalancer, self).setUp()
@@ -44,18 +52,14 @@ class TestListLoadBalancer(fakes.TestLoadBalancer):
         self.client.load_balancers = mock.Mock()
 
     def test_list_default(self):
-        arglist = [
-        ]
+        arglist = []
 
-        verifylist = [
-        ]
+        verifylist = []
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.load_balancers.side_effect = [
-            self._objects
-        ]
+        self.client.load_balancers.side_effect = [self._objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -70,10 +74,21 @@ class TestShowLoadBalancer(fakes.TestLoadBalancer):
 
     _object = fakes.FakeLoadBalancer.create_one()
 
-    columns = ('admin_state_up', 'description', 'id',
-               'listener_ids', 'name', 'operating_status', 'pool_ids',
-               'project_id', 'provider', 'provisioning_status', 'vip_address',
-               'vip_port_id', 'vip_subnet_id')
+    columns = (
+        "admin_state_up",
+        "description",
+        "id",
+        "listener_ids",
+        "name",
+        "operating_status",
+        "pool_ids",
+        "project_id",
+        "provider",
+        "provisioning_status",
+        "vip_address",
+        "vip_port_id",
+        "vip_subnet_id",
+    )
 
     data = (
         _object.is_admin_state_up,
@@ -99,27 +114,20 @@ class TestShowLoadBalancer(fakes.TestLoadBalancer):
         self.client.find_load_balancer = mock.Mock()
 
     def test_show_default(self):
-        arglist = [
-            'lb'
-        ]
+        arglist = ["lb"]
 
-        verifylist = [
-            ('load_balancer', 'lb')
-        ]
+        verifylist = [("load_balancer", "lb")]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_load_balancer.side_effect = [
-            self._object
-        ]
+        self.client.find_load_balancer.side_effect = [self._object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_load_balancer.assert_called_once_with(
-            name_or_id='lb',
-            ignore_missing=False
+            name_or_id="lb", ignore_missing=False
         )
 
         self.assertEqual(self.columns, columns)
@@ -131,19 +139,20 @@ class TestCreateLoadBalancer(fakes.TestLoadBalancer):
     _object = fakes.FakeLoadBalancer.create_one()
 
     columns = (
-        'admin_state_up',
-        'description',
-        'id',
-        'listener_ids',
-        'name',
-        'operating_status',
-        'pool_ids',
-        'project_id',
-        'provider',
-        'provisioning_status',
-        'vip_address',
-        'vip_port_id',
-        'vip_subnet_id')
+        "admin_state_up",
+        "description",
+        "id",
+        "listener_ids",
+        "name",
+        "operating_status",
+        "pool_ids",
+        "project_id",
+        "provider",
+        "provisioning_status",
+        "vip_address",
+        "vip_port_id",
+        "vip_subnet_id",
+    )
 
     data = (
         _object.is_admin_state_up,
@@ -170,40 +179,43 @@ class TestCreateLoadBalancer(fakes.TestLoadBalancer):
 
     def test_create_default(self):
         arglist = [
-            '--disable',
-            '--description', 'descr',
-            '--name', 'nm',
-            '--vip_address', 'vip_addr',
-            '--vip_network_id', 'vip_network_id',
-            '--vip_qos_policy_id', 'vip_qos_policy_id'
+            "--disable",
+            "--description",
+            "descr",
+            "--name",
+            "nm",
+            "--vip_address",
+            "vip_addr",
+            "--vip_network_id",
+            "vip_network_id",
+            "--vip_qos_policy_id",
+            "vip_qos_policy_id",
         ]
 
         verifylist = [
-            ('disable', True),
-            ('description', 'descr'),
-            ('name', 'nm'),
-            ('vip_address', 'vip_addr'),
-            ('vip_network_id', 'vip_network_id'),
-            ('vip_qos_policy_id', 'vip_qos_policy_id'),
+            ("disable", True),
+            ("description", "descr"),
+            ("name", "nm"),
+            ("vip_address", "vip_addr"),
+            ("vip_network_id", "vip_network_id"),
+            ("vip_qos_policy_id", "vip_qos_policy_id"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.create_load_balancer.side_effect = [
-            self._object
-        ]
+        self.client.create_load_balancer.side_effect = [self._object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.create_load_balancer.assert_called_once_with(
             is_admin_state_up=False,
-            description='descr',
-            name='nm',
-            vip_address='vip_addr',
-            vip_network_id='vip_network_id',
-            vip_qos_policy_id='vip_qos_policy_id'
+            description="descr",
+            name="nm",
+            vip_address="vip_addr",
+            vip_network_id="vip_network_id",
+            vip_qos_policy_id="vip_qos_policy_id",
         )
 
         self.assertEqual(self.columns, columns)
@@ -211,25 +223,24 @@ class TestCreateLoadBalancer(fakes.TestLoadBalancer):
 
     def test_create_subnet(self):
         arglist = [
-            '--vip_subnet_id', 'vip_subnet_id',
+            "--vip_subnet_id",
+            "vip_subnet_id",
         ]
 
         verifylist = [
-            ('vip_subnet_id', 'vip_subnet_id'),
+            ("vip_subnet_id", "vip_subnet_id"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.create_load_balancer.side_effect = [
-            self._object
-        ]
+        self.client.create_load_balancer.side_effect = [self._object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.create_load_balancer.assert_called_once_with(
-            vip_subnet_id='vip_subnet_id',
+            vip_subnet_id="vip_subnet_id",
         )
 
         self.assertEqual(self.columns, columns)
@@ -237,25 +248,24 @@ class TestCreateLoadBalancer(fakes.TestLoadBalancer):
 
     def test_create_port(self):
         arglist = [
-            '--vip_port_id', 'vip_port_id',
+            "--vip_port_id",
+            "vip_port_id",
         ]
 
         verifylist = [
-            ('vip_port_id', 'vip_port_id'),
+            ("vip_port_id", "vip_port_id"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.create_load_balancer.side_effect = [
-            self._object
-        ]
+        self.client.create_load_balancer.side_effect = [self._object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.create_load_balancer.assert_called_once_with(
-            vip_port_id='vip_port_id',
+            vip_port_id="vip_port_id",
         )
 
         self.assertEqual(self.columns, columns)
@@ -267,11 +277,20 @@ class TestUpdateLoadBalancer(fakes.TestLoadBalancer):
     _object = fakes.FakeLoadBalancer.create_one()
 
     columns = (
-        'admin_state_up', 'description', 'id',
-        'listener_ids', 'name', 'operating_status',
-        'pool_ids', 'project_id', 'provider',
-        'provisioning_status', 'vip_address',
-        'vip_port_id', 'vip_subnet_id')
+        "admin_state_up",
+        "description",
+        "id",
+        "listener_ids",
+        "name",
+        "operating_status",
+        "pool_ids",
+        "project_id",
+        "provider",
+        "provisioning_status",
+        "vip_address",
+        "vip_port_id",
+        "vip_subnet_id",
+    )
 
     data = (
         _object.is_admin_state_up,
@@ -298,37 +317,38 @@ class TestUpdateLoadBalancer(fakes.TestLoadBalancer):
 
     def test_update_default(self):
         arglist = [
-            'lb',
-            '--disable',
-            '--description', 'descr',
-            '--name', 'nm',
-            '--vip_qos_policy_id', 'vip_qos_policy_id'
+            "lb",
+            "--disable",
+            "--description",
+            "descr",
+            "--name",
+            "nm",
+            "--vip_qos_policy_id",
+            "vip_qos_policy_id",
         ]
 
         verifylist = [
-            ('load_balancer', 'lb'),
-            ('disable', True),
-            ('description', 'descr'),
-            ('name', 'nm'),
-            ('vip_qos_policy_id', 'vip_qos_policy_id'),
+            ("load_balancer", "lb"),
+            ("disable", True),
+            ("description", "descr"),
+            ("name", "nm"),
+            ("vip_qos_policy_id", "vip_qos_policy_id"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.update_load_balancer.side_effect = [
-            self._object
-        ]
+        self.client.update_load_balancer.side_effect = [self._object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.update_load_balancer.assert_called_once_with(
-            load_balancer='lb',
+            load_balancer="lb",
             is_admin_state_up=False,
-            description='descr',
-            name='nm',
-            vip_qos_policy_id='vip_qos_policy_id'
+            description="descr",
+            name="nm",
+            vip_qos_policy_id="vip_qos_policy_id",
         )
 
         self.assertEqual(self.columns, columns)
@@ -349,27 +369,22 @@ class TestDeleteLoadBalancer(fakes.TestLoadBalancer):
 
     def test_create_default(self):
         arglist = [
-            'lb',
+            "lb",
         ]
 
         verifylist = [
-            ('load_balancer', ['lb']),
+            ("load_balancer", ["lb"]),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.delete_load_balancer.side_effect = [
-            {}
-        ]
-        self.client.find_load_balancer.side_effect = [
-            self._object
-        ]
+        self.client.delete_load_balancer.side_effect = [{}]
+        self.client.find_load_balancer.side_effect = [self._object]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
         self.client.delete_load_balancer.assert_called_once_with(
-            load_balancer=self._object.id,
-            ignore_missing=False
+            load_balancer=self._object.id, ignore_missing=False
         )

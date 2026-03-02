@@ -11,9 +11,10 @@
 # under the License.
 
 from openstack import cloud as openstack
+
 openstack.enable_logging(debug=True)
 
-cloud = openstack.connect(cloud='ovh', region_name='SBG1')
-image = cloud.get_image('Ubuntu 16.10')
+cloud = openstack.connect(cloud="ovh", region_name="SBG1")
+image = cloud.get_image("Ubuntu 16.10")
 print(image.name)
-print(image['name'])
+print(image["name"])

@@ -10,12 +10,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import proxy
-
 from otcextensions.common.utils import extract_url_parts
-from otcextensions.sdk.dcaas.v2 import virtual_gateway as _virtual_gateway
 from otcextensions.sdk.dcaas.v2 import connection as _connection
-from otcextensions.sdk.dcaas.v2 import virtual_interface as _virtual_interface
 from otcextensions.sdk.dcaas.v2 import endpoint_group as _endpoint_group
+from otcextensions.sdk.dcaas.v2 import virtual_gateway as _virtual_gateway
+from otcextensions.sdk.dcaas.v2 import virtual_interface as _virtual_interface
 
 
 class Proxy(proxy.Proxy):
@@ -45,8 +44,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.dcaas.v2.virtual_gateway.
             VirtualGateway`
         """
-        return self._create(_virtual_gateway.VirtualGateway,
-                            prepend_key=False, **attrs)
+        return self._create(_virtual_gateway.VirtualGateway, prepend_key=False, **attrs)
 
     def get_virtual_gateway(self, virtual_gateway):
         """Get a virtual_gateway
@@ -74,8 +72,11 @@ class Proxy(proxy.Proxy):
 
         :returns: `None`
         """
-        return self._delete(_virtual_gateway.VirtualGateway, virtual_gateway,
-                            ignore_missing=ignore_missing)
+        return self._delete(
+            _virtual_gateway.VirtualGateway,
+            virtual_gateway,
+            ignore_missing=ignore_missing,
+        )
 
     def update_virtual_gateway(self, virtual_gateway, **attrs):
         """Update virtual gateway attributes
@@ -88,8 +89,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.dcaas.v2.virtual_gateway.
             VirtualGateway`
         """
-        return self._update(_virtual_gateway.VirtualGateway,
-                            virtual_gateway, **attrs)
+        return self._update(_virtual_gateway.VirtualGateway, virtual_gateway, **attrs)
 
     def find_virtual_gateway(self, name_or_id, ignore_missing=True, **attrs):
         """Find a single virtual gateway
@@ -103,9 +103,12 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._find(_virtual_gateway.VirtualGateway, name_or_id,
-                          ignore_missing=ignore_missing,
-                          **attrs)
+        return self._find(
+            _virtual_gateway.VirtualGateway,
+            name_or_id,
+            ignore_missing=ignore_missing,
+            **attrs
+        )
 
     # ======== Connections ========
     def connections(self, **query):
@@ -153,8 +156,9 @@ class Proxy(proxy.Proxy):
 
         :returns: `None`
         """
-        return self._delete(_connection.Connection, connection,
-                            ignore_missing=ignore_missing)
+        return self._delete(
+            _connection.Connection, connection, ignore_missing=ignore_missing
+        )
 
     def update_connection(self, connection, **attrs):
         """Update connection attributes
@@ -181,9 +185,9 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._find(_connection.Connection, name_or_id,
-                          ignore_missing=ignore_missing,
-                          **attrs)
+        return self._find(
+            _connection.Connection, name_or_id, ignore_missing=ignore_missing, **attrs
+        )
 
     # ======== Virtual interface ========
     def virtual_interfaces(self, **query):
@@ -206,8 +210,9 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.dcaas.v2.virtual_interface.
             VirtualInterface`
         """
-        return self._create(_virtual_interface.VirtualInterface,
-                            prepend_key=False, **attrs)
+        return self._create(
+            _virtual_interface.VirtualInterface, prepend_key=False, **attrs
+        )
 
     def get_virtual_interface(self, virtual_interface):
         """Get a virtual_interface
@@ -220,8 +225,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.dcaas.v2.virtual_interface.
             VirtualInterface`
         """
-        return self._get(_virtual_interface.VirtualInterface,
-                         virtual_interface)
+        return self._get(_virtual_interface.VirtualInterface, virtual_interface)
 
     def delete_virtual_interface(self, virtual_interface, ignore_missing=True):
         """Delete a virtual interface
@@ -237,8 +241,11 @@ class Proxy(proxy.Proxy):
 
         :returns: `None`
         """
-        return self._delete(_virtual_interface.VirtualInterface,
-                            virtual_interface, ignore_missing=ignore_missing)
+        return self._delete(
+            _virtual_interface.VirtualInterface,
+            virtual_interface,
+            ignore_missing=ignore_missing,
+        )
 
     def update_virtual_interface(self, virtual_interface, **attrs):
         """Update virtual interface attributes
@@ -253,8 +260,9 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.dcaas.v2.virtual_interface.
             VirtualInterface`
         """
-        return self._update(_virtual_interface.VirtualInterface,
-                            virtual_interface, **attrs)
+        return self._update(
+            _virtual_interface.VirtualInterface, virtual_interface, **attrs
+        )
 
     def find_virtual_interface(self, name_or_id, ignore_missing=True, **attrs):
         """Find a single virtual interface
@@ -268,9 +276,12 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._find(_virtual_interface.VirtualInterface, name_or_id,
-                          ignore_missing=ignore_missing,
-                          **attrs)
+        return self._find(
+            _virtual_interface.VirtualInterface,
+            name_or_id,
+            ignore_missing=ignore_missing,
+            **attrs
+        )
 
     # ======== Direct Connect Endpoint Group ========
     def endpoint_groups(self, **query):
@@ -293,8 +304,9 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.dcaas.v2.endpoint_group.
             DirectConnectEndpointGroup`
         """
-        return self._create(_endpoint_group.DirectConnectEndpointGroup,
-                            prepend_key=False, **attrs)
+        return self._create(
+            _endpoint_group.DirectConnectEndpointGroup, prepend_key=False, **attrs
+        )
 
     def get_endpoint_group(self, endpoint_group):
         """Get a direct connect endpoint group.
@@ -307,8 +319,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.dcaas.v2.endpoint_group.
             DirectConnectEndpointGroup`
         """
-        return self._get(_endpoint_group.DirectConnectEndpointGroup,
-                         endpoint_group)
+        return self._get(_endpoint_group.DirectConnectEndpointGroup, endpoint_group)
 
     def delete_endpoint_group(self, endpoint_group, ignore_missing=True):
         """Delete a Direct Connect Endpoint Group.
@@ -324,8 +335,11 @@ class Proxy(proxy.Proxy):
 
         :returns: `None`
         """
-        return self._delete(_endpoint_group.DirectConnectEndpointGroup,
-                            endpoint_group, ignore_missing=ignore_missing)
+        return self._delete(
+            _endpoint_group.DirectConnectEndpointGroup,
+            endpoint_group,
+            ignore_missing=ignore_missing,
+        )
 
     def update_endpoint_group(self, endpoint_group, **attrs):
         """Update Direct Connect Endpoint Group attributes
@@ -340,8 +354,9 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.dcaas.v2.endpoint_group.
             DirectConnectEndpointGroup`
         """
-        return self._update(_endpoint_group.DirectConnectEndpointGroup,
-                            endpoint_group, **attrs)
+        return self._update(
+            _endpoint_group.DirectConnectEndpointGroup, endpoint_group, **attrs
+        )
 
     def find_endpoint_group(self, name_or_id, ignore_missing=True, **attrs):
         """Find a single Endpoint Group.
@@ -358,6 +373,9 @@ class Proxy(proxy.Proxy):
             DirectConnectEndpointGroup`
 
         """
-        return self._find(_endpoint_group.DirectConnectEndpointGroup,
-                          name_or_id, ignore_missing=ignore_missing,
-                          **attrs)
+        return self._find(
+            _endpoint_group.DirectConnectEndpointGroup,
+            name_or_id,
+            ignore_missing=ignore_missing,
+            **attrs
+        )

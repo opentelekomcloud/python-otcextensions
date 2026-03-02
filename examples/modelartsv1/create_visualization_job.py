@@ -12,6 +12,7 @@
 # under the License.
 #
 """Create a visualization job from attributes."""
+
 import openstack
 
 openstack.enable_logging(True)

@@ -13,19 +13,20 @@
 """
 Create gateway
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 attrs = {
-    'instance_name': 'name',
-    'spec_id': 'BASIC',
-    'vpc_id': 'vpc.id',
-    'subnet_id': 'subnet.id',
-    'security_group_id': 'security_group.id',
-    'available_zone_ids': ['available_zone_ids'],
+    "instance_name": "name",
+    "spec_id": "BASIC",
+    "vpc_id": "vpc.id",
+    "subnet_id": "subnet.id",
+    "security_group_id": "security_group.id",
+    "available_zone_ids": ["available_zone_ids"],
 }
 
 gateway = conn.apig.create_gateway(**attrs)

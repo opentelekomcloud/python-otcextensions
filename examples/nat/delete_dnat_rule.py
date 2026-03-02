@@ -13,11 +13,11 @@
 """
 Delete a DNAT Rule By DNAT-Rule-ID
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-dnat_rule_id = 'dnat_rule_id'
+dnat_rule_id = "dnat_rule_id"
 conn.nat.delete_dnat_rule(dnat_rule_id)

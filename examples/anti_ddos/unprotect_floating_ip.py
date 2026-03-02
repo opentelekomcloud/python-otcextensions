@@ -14,10 +14,11 @@
 Unprotect a Floating IP from Anti-DDoS by using id or an instance of class
 FloatingIP
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 fip = "floating_ip_id"
 conn.anti_ddos.unprotect_floating_ip(fip)

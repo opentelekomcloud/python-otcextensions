@@ -11,68 +11,70 @@
 # under the License.
 #
 """DIS Stream v2 action implementations"""
+
 import logging
 
-from osc_lib import utils
 from osc_lib import exceptions
+from osc_lib import utils
 from osc_lib.command import command
 
-from otcextensions.i18n import _
-from otcextensions.common import sdk_utils
 from otcextensions.common import cli_utils
-
+from otcextensions.common import sdk_utils
+from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
 
 _formatters = {
-    'created_at': cli_utils.UnixTimestampFormatter,
+    "created_at": cli_utils.UnixTimestampFormatter,
 }
 
 
 def _get_columns(item):
     column_map = {}
     hidden = [
-        'location',
-        'app_id',
+        "location",
+        "app_id",
     ]
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map,
-                                                           hidden)
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map, hidden)
 
 
 class ListApps(command.Lister):
     _description = _("Query List of Apps.")
 
     columns = (
-        'name',
-        'id',
-        'created_at',
+        "name",
+        "id",
+        "created_at",
     )
 
     display_columns = (
-        'App Name',
-        'Id',
-        'Created At',
+        "App Name",
+        "Id",
+        "Created At",
     )
 
     def get_parser(self, prog_name):
         parser = super(ListApps, self).get_parser(prog_name)
         parser.add_argument(
-            '--limit',
-            metavar='<limit>',
+            "--limit",
+            metavar="<limit>",
             type=int,
-            help=_("Maximum number of apps to list in a single API call. "
-                   "\nDefault: 10"),
+            help=_(
+                "Maximum number of apps to list in a single API call. " "\nDefault: 10"
+            ),
         )
         parser.add_argument(
-            '--start-app-name',
-            metavar='<start_app_name>',
-            help=_("Name of the app to start the list with. The returned "
-                   "app list does not contain this app name."),
+            "--start-app-name",
+            metavar="<start_app_name>",
+            help=_(
+                "Name of the app to start the list with. The returned "
+                "app list does not contain this app name."
+            ),
         )
         parser.add_argument(
-            '--stream-name',
-            metavar='<stream_name>',
+            "--stream-name",
+            metavar="<stream_name>",
             help=_("Name of the stream whose apps will be returned."),
         )
         return parser
@@ -80,9 +82,9 @@ class ListApps(command.Lister):
     def take_action(self, parsed_args):
         client = self.app.client_manager.dis
         args_list = (
-            'limit',
-            'start_app_name',
-            'stream_name',
+            "limit",
+            "start_app_name",
+            "stream_name",
         )
         attrs = {}
         for arg in args_list:
@@ -95,10 +97,9 @@ class ListApps(command.Lister):
         return (
             self.display_columns,
             (
-                utils.get_item_properties(
-                    s, self.columns, formatters=_formatters
-                ) for s in data
-            )
+                utils.get_item_properties(s, self.columns, formatters=_formatters)
+                for s in data
+            ),
         )
 
 
@@ -106,58 +107,63 @@ class ListAppConsumptions(command.Lister):
     _description = _("List App Consumptions.")
 
     columns = (
-        'partition_id',
-        'sequence_number',
-        'checkpoint_type',
+        "partition_id",
+        "sequence_number",
+        "checkpoint_type",
     )
 
     display_columns = (
-        'Partition Id',
-        'Sequence Number',
-        'Checkpoint Type',
+        "Partition Id",
+        "Sequence Number",
+        "Checkpoint Type",
     )
 
     def get_parser(self, prog_name):
         parser = super(ListAppConsumptions, self).get_parser(prog_name)
         parser.add_argument(
-            'streamName',
-            metavar='<streaName>',
+            "streamName",
+            metavar="<streaName>",
             help=_("Name of the stream to be queried."),
         )
         parser.add_argument(
-            'appName',
-            metavar='<appName>',
+            "appName",
+            metavar="<appName>",
             help=_("Name of the app to be queried."),
         )
         parser.add_argument(
-            '--limit',
-            metavar='<limit>',
+            "--limit",
+            metavar="<limit>",
             type=int,
-            help=_("Maximum number of apps to list in a single API call. "
-                   "\nDefault: 10"),
+            help=_(
+                "Maximum number of apps to list in a single API call. " "\nDefault: 10"
+            ),
         )
         parser.add_argument(
-            '--start-partition-id',
-            metavar='<start_partition_id>',
-            help=_("Name of the partition to start the partition list "
-                   "with. The returned partition list does not contain "
-                   "this partition."),
+            "--start-partition-id",
+            metavar="<start_partition_id>",
+            help=_(
+                "Name of the partition to start the partition list "
+                "with. The returned partition list does not contain "
+                "this partition."
+            ),
         )
         parser.add_argument(
-            '--checkpoint-type',
-            metavar='<checkpoint_type>',
-            default='LAST_READ',
-            help=_("Type of the checkpoint.\nLAST_READ: Only "
-                   "sequence numbers are recorded in databases."),
+            "--checkpoint-type",
+            metavar="<checkpoint_type>",
+            default="LAST_READ",
+            help=_(
+                "Type of the checkpoint.\nLAST_READ: Only "
+                "sequence numbers are recorded in databases."
+            ),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.dis
         args_list = (
-            'limit',
-            'start_partition_id',
-            'checkpoint_type',
+            "limit",
+            "start_partition_id",
+            "checkpoint_type",
         )
         attrs = {}
         for arg in args_list:
@@ -165,17 +171,16 @@ class ListAppConsumptions(command.Lister):
             if val:
                 attrs[arg] = val
 
-        data = client.app_consumptions(parsed_args.streamName,
-                                       parsed_args.appName,
-                                       **attrs)
+        data = client.app_consumptions(
+            parsed_args.streamName, parsed_args.appName, **attrs
+        )
 
         return (
             self.display_columns,
             (
-                utils.get_item_properties(
-                    s, self.columns, formatters=_formatters
-                ) for s in data
-            )
+                utils.get_item_properties(s, self.columns, formatters=_formatters)
+                for s in data
+            ),
         )
 
 
@@ -185,8 +190,8 @@ class ShowApp(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(ShowApp, self).get_parser(prog_name)
         parser.add_argument(
-            'appName',
-            metavar='<appName>',
+            "appName",
+            metavar="<appName>",
             help=_("Name of the app to be queried."),
         )
         return parser
@@ -207,8 +212,8 @@ class CreateApp(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(CreateApp, self).get_parser(prog_name)
         parser.add_argument(
-            'appName',
-            metavar='<appName>',
+            "appName",
+            metavar="<appName>",
             help=_("Specifies the name of the App."),
         )
         return parser
@@ -216,9 +221,7 @@ class CreateApp(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.dis
 
-        attrs = {
-            'app_name': parsed_args.appName
-        }
+        attrs = {"app_name": parsed_args.appName}
 
         obj = client.create_app(**attrs)
 
@@ -235,9 +238,9 @@ class DeleteApp(command.Command):
     def get_parser(self, prog_name):
         parser = super(DeleteApp, self).get_parser(prog_name)
         parser.add_argument(
-            'appName',
-            metavar='<appName>',
-            nargs='+',
+            "appName",
+            metavar="<appName>",
+            nargs="+",
             help=_("Name of Dis App(s) to delete."),
         )
         return parser
@@ -250,11 +253,14 @@ class DeleteApp(command.Command):
                 client.delete_app(app_name)
             except Exception as e:
                 result += 1
-                LOG.error(_("Failed to delete App with "
-                          "name '%(app_name)s': %(e)s"),
-                          {'app_name': app_name, 'e': e})
+                LOG.error(
+                    _("Failed to delete App with " "name '%(app_name)s': %(e)s"),
+                    {"app_name": app_name, "e": e},
+                )
         if result > 0:
             total = len(parsed_args.appName)
-            msg = (_("%(result)s of %(total)s DIS App(s) failed "
-                   "to delete.") % {'result': result, 'total': total})
+            msg = _("%(result)s of %(total)s DIS App(s) failed " "to delete.") % {
+                "result": result,
+                "total": total,
+            }
             raise exceptions.CommandError(msg)

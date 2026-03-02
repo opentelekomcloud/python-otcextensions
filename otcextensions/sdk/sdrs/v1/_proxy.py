@@ -10,15 +10,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import proxy
-
-from otcextensions.sdk.sdrs.v1 import job as _job
 from otcextensions.sdk.sdrs.v1 import active_domains as _active_domains
-from otcextensions.sdk.sdrs.v1 import protection_group as _protection_group
-from otcextensions.sdk.sdrs.v1 import protected_instance as _p_instance
-from otcextensions.sdk.sdrs.v1 import replication_pair as _replication_pair
 from otcextensions.sdk.sdrs.v1 import dr_drill as _dr_drill
-from otcextensions.sdk.sdrs.v1 import task_center as _task_center
+from otcextensions.sdk.sdrs.v1 import job as _job
+from otcextensions.sdk.sdrs.v1 import protected_instance as _p_instance
+from otcextensions.sdk.sdrs.v1 import protection_group as _protection_group
 from otcextensions.sdk.sdrs.v1 import quota as _quota
+from otcextensions.sdk.sdrs.v1 import replication_pair as _replication_pair
+from otcextensions.sdk.sdrs.v1 import task_center as _task_center
 
 
 class Proxy(proxy.Proxy):
@@ -26,7 +25,7 @@ class Proxy(proxy.Proxy):
 
     # ======== Job ========
     def get_job(self, job):
-        """ Get single SDRS job by UUID.
+        """Get single SDRS job by UUID.
 
         :param job: The id or and instance of
             :class:'~otcextensions.sdk.sdrs.v1.job.Job'
@@ -90,14 +89,9 @@ class Proxy(proxy.Proxy):
             :class:
             `~otcextensions.sdk.sdrs.v1.protection_group.ProtectionGroup`
         """
-        return self._get(
-            _protection_group.ProtectionGroup,
-            protection_group
-        )
+        return self._get(_protection_group.ProtectionGroup, protection_group)
 
-    def delete_protection_group(self,
-                                protection_group,
-                                ignore_missing=True):
+    def delete_protection_group(self, protection_group, ignore_missing=True):
         """Delete a single SDRS protection group.
 
         :param protection_group: The value can be the ID of a protection_group
@@ -131,8 +125,7 @@ class Proxy(proxy.Proxy):
             `~otcextensions.sdk.sdrs.v1.protection_group.ProtectionGroup`
         """
         return self._find(
-            _protection_group.ProtectionGroup, name_or_id,
-            ignore_missing=ignore_missing
+            _protection_group.ProtectionGroup, name_or_id, ignore_missing=ignore_missing
         )
 
     def update_protection_group(self, protection_group, name):
@@ -164,12 +157,10 @@ class Proxy(proxy.Proxy):
         :returns: The result is the job id of an action
         """
         protection_group = self._get_resource(
-            _protection_group.ProtectionGroup,
-            protection_group
+            _protection_group.ProtectionGroup, protection_group
         )
         return protection_group.enable_protection_group(
-            self,
-            protection_group=protection_group.id
+            self, protection_group=protection_group.id
         )
 
     def disable_protection(self, protection_group):
@@ -182,12 +173,10 @@ class Proxy(proxy.Proxy):
         :returns: The result is the job id of an action
         """
         protection_group = self._get_resource(
-            _protection_group.ProtectionGroup,
-            protection_group
+            _protection_group.ProtectionGroup, protection_group
         )
         return protection_group.disable_protection_group(
-            self,
-            protection_group=protection_group.id
+            self, protection_group=protection_group.id
         )
 
     def perform_failover(self, protection_group):
@@ -200,17 +189,13 @@ class Proxy(proxy.Proxy):
         :returns: The result is the job id of an action
         """
         protection_group = self._get_resource(
-            _protection_group.ProtectionGroup,
-            protection_group
+            _protection_group.ProtectionGroup, protection_group
         )
         return protection_group.perform_failover(
-            self,
-            protection_group=protection_group.id
+            self, protection_group=protection_group.id
         )
 
-    def perform_planned_failover(self,
-                                 protection_group,
-                                 priority_station='target'):
+    def perform_planned_failover(self, protection_group, priority_station="target"):
         """Perform failover for protection group
 
         :param protection_group: The value can be the ID of a protection group
@@ -222,13 +207,12 @@ class Proxy(proxy.Proxy):
         :returns: The result is the job id of an action
         """
         protection_group = self._get_resource(
-            _protection_group.ProtectionGroup,
-            protection_group
+            _protection_group.ProtectionGroup, protection_group
         )
         return protection_group.perform_planned_failover(
             self,
             protection_group=protection_group.id,
-            priority_station=priority_station
+            priority_station=priority_station,
         )
 
     # ======== Protected instance ========
@@ -243,16 +227,15 @@ class Proxy(proxy.Proxy):
         :rtype: :class `~otcextensions.sdk.sdrs.v1.protected_instance.
             ProtectedInstance`
         """
-        return self._create(
-            _p_instance.ProtectedInstance,
-            **attrs
-        )
+        return self._create(_p_instance.ProtectedInstance, **attrs)
 
-    def delete_protected_instance(self,
-                                  protected_instance,
-                                  delete_target_server=False,
-                                  delete_target_eip=False,
-                                  ignore_missing=True):
+    def delete_protected_instance(
+        self,
+        protected_instance,
+        delete_target_server=False,
+        delete_target_eip=False,
+        ignore_missing=True,
+    ):
         """Delete a single SDRS protected instance.
 
         :param protected_instance: The value can be the ID of
@@ -273,12 +256,13 @@ class Proxy(proxy.Proxy):
             :class:
             `~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
         """
-        res = self._get_resource(_p_instance.ProtectedInstance,
-                                 protected_instance)
-        return res.delete(self,
-                          delete_target_server=delete_target_server,
-                          delete_target_eip=delete_target_eip,
-                          ignore_missing=ignore_missing)
+        res = self._get_resource(_p_instance.ProtectedInstance, protected_instance)
+        return res.delete(
+            self,
+            delete_target_server=delete_target_server,
+            delete_target_eip=delete_target_eip,
+            ignore_missing=ignore_missing,
+        )
 
     def protected_instances(self, **query):
         """Retrieve a generator of Protected instances
@@ -301,8 +285,7 @@ class Proxy(proxy.Proxy):
             `~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
             instances
         """
-        return self._list(_p_instance.ProtectedInstance,
-                          **query)
+        return self._list(_p_instance.ProtectedInstance, **query)
 
     def get_protected_instance(self, instance_id):
         """Get the SDRS protected instance by UUID.
@@ -315,10 +298,7 @@ class Proxy(proxy.Proxy):
             :class:
             `~otcextensions.sdk.sdrs.v1.protected_instance.ProtectedInstance`
         """
-        return self._get(
-            _p_instance.ProtectedInstance,
-            instance_id
-        )
+        return self._get(_p_instance.ProtectedInstance, instance_id)
 
     def update_protected_instance(self, instance_id, name):
         """Update SDRS protected instance name
@@ -334,9 +314,7 @@ class Proxy(proxy.Proxy):
             _p_instance.ProtectedInstance, instance_id
         )
         return self._update(
-            _p_instance.ProtectedInstance,
-            protected_instance,
-            name=name
+            _p_instance.ProtectedInstance, protected_instance, name=name
         )
 
     def find_protected_instance(self, name_or_id, ignore_missing=True):
@@ -353,14 +331,12 @@ class Proxy(proxy.Proxy):
             ProtectedInstance`
         """
         return self._find(
-            _p_instance.ProtectedInstance,
-            name_or_id,
-            ignore_missing=ignore_missing
+            _p_instance.ProtectedInstance, name_or_id, ignore_missing=ignore_missing
         )
 
-    def attach_replication_pair(self, protected_instance,
-                                replication,
-                                device='/dev/vdb'):
+    def attach_replication_pair(
+        self, protected_instance, replication, device="/dev/vdb"
+    ):
         """Attach replication pair to protected instance
 
         :param protected_instance: The value can be the ID of a protected
@@ -372,21 +348,18 @@ class Proxy(proxy.Proxy):
         :param device: Disk device name of replication pair
         """
         protected_instance = self._get_resource(
-            _p_instance.ProtectedInstance,
-            protected_instance)
-        replication = self._get_resource(
-            _replication_pair.ReplicationPair, replication)
+            _p_instance.ProtectedInstance, protected_instance
+        )
+        replication = self._get_resource(_replication_pair.ReplicationPair, replication)
 
         return protected_instance.attach_pair(
             self,
             protected_instance=protected_instance.id,
             replication_id=replication.id,
-            device=device
+            device=device,
         )
 
-    def detach_replication_pair(self,
-                                protected_instance,
-                                replication):
+    def detach_replication_pair(self, protected_instance, replication):
         """Detach replication pair from protected instance
 
         :param protected_instance: The value can be the ID of a
@@ -397,18 +370,18 @@ class Proxy(proxy.Proxy):
             `~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`
         """
         protected_instance = self._get_resource(
-            _p_instance.ProtectedInstance,
-            protected_instance)
-        replication = self._get_resource(
-            _replication_pair.ReplicationPair, replication)
+            _p_instance.ProtectedInstance, protected_instance
+        )
+        replication = self._get_resource(_replication_pair.ReplicationPair, replication)
         return protected_instance.detach_pair(
             self,
             protected_instance=protected_instance.id,
-            replication_id=replication.id
+            replication_id=replication.id,
         )
 
-    def add_nic(self, protected_instance, subnet_id,
-                security_groups=None, ip_address=None):
+    def add_nic(
+        self, protected_instance, subnet_id, security_groups=None, ip_address=None
+    ):
         """Add NIC to a protected instance
 
         :param protected_instance: The value can be the ID of a
@@ -421,14 +394,14 @@ class Proxy(proxy.Proxy):
         :param str ip_address: IP address of NIC
         """
         protected_instance = self._get_resource(
-            _p_instance.ProtectedInstance,
-            protected_instance)
+            _p_instance.ProtectedInstance, protected_instance
+        )
         return protected_instance.add_nic(
             self,
             protected_instance=protected_instance.id,
             subnet_id=subnet_id,
             security_groups=security_groups,
-            ip_address=ip_address
+            ip_address=ip_address,
         )
 
     def delete_nic(self, protected_instance, nic_id):
@@ -440,19 +413,15 @@ class Proxy(proxy.Proxy):
         :param str nic_id: ID of a Network interface card to be deleted
         """
         protected_instance = self._get_resource(
-            _p_instance.ProtectedInstance,
-            protected_instance)
+            _p_instance.ProtectedInstance, protected_instance
+        )
         return protected_instance.delete_nic(
-            self,
-            protected_instance=protected_instance.id,
-            nic_id=nic_id
+            self, protected_instance=protected_instance.id, nic_id=nic_id
         )
 
-    def modify_protected_instance(self,
-                                  protected_instance,
-                                  flavor=None,
-                                  production_flavor=None,
-                                  dr_flavor=None):
+    def modify_protected_instance(
+        self, protected_instance, flavor=None, production_flavor=None, dr_flavor=None
+    ):
         """Modify server(s) flavor of protected instance
 
         :param protected_instance: The value can be the ID of
@@ -465,14 +434,14 @@ class Proxy(proxy.Proxy):
             If 'flavor' is specified this parameter doesn't take effect
         """
         protected_instance = self._get_resource(
-            _p_instance.ProtectedInstance,
-            protected_instance)
+            _p_instance.ProtectedInstance, protected_instance
+        )
         return protected_instance.modify_instance(
             self,
             protected_instance=protected_instance.id,
             flavor=flavor,
             production_flavor=production_flavor,
-            dr_flavor=dr_flavor
+            dr_flavor=dr_flavor,
         )
 
     # ======== Replication pair ========
@@ -488,16 +457,15 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.sdrs.v1.replication_pair.
             ReplicationPair`
         """
-        return self._create(
-            _replication_pair.ReplicationPair,
-            **attrs
-        )
+        return self._create(_replication_pair.ReplicationPair, **attrs)
 
-    def delete_replication_pair(self,
-                                replication,
-                                server_group_id=None,
-                                delete_target_volume=False,
-                                ignore_missing=True):
+    def delete_replication_pair(
+        self,
+        replication,
+        server_group_id=None,
+        delete_target_volume=False,
+        ignore_missing=True,
+    ):
         """Delete a single SDRS replication pair
 
         :param replication: The value can be the ID of a replication pair
@@ -516,12 +484,13 @@ class Proxy(proxy.Proxy):
             :class:
             `~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`
         """
-        res = self._get_resource(_replication_pair.ReplicationPair,
-                                 replication)
-        return res.delete(self,
-                          server_group_id=server_group_id,
-                          delete_target_volume=delete_target_volume,
-                          ignore_missing=ignore_missing)
+        res = self._get_resource(_replication_pair.ReplicationPair, replication)
+        return res.delete(
+            self,
+            server_group_id=server_group_id,
+            delete_target_volume=delete_target_volume,
+            ignore_missing=ignore_missing,
+        )
 
     def replication_pairs(self, **query):
         """Retrieve a generator of Replication pairs
@@ -546,8 +515,7 @@ class Proxy(proxy.Proxy):
             `~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`
             instances
         """
-        return self._list(_replication_pair.ReplicationPair,
-                          **query)
+        return self._list(_replication_pair.ReplicationPair, **query)
 
     def get_replication_pair(self, replication):
         """Get the SDRS replication pair by UUID.
@@ -560,8 +528,7 @@ class Proxy(proxy.Proxy):
             :class:
             `~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`
         """
-        return self._get(_replication_pair.ReplicationPair,
-                         replication)
+        return self._get(_replication_pair.ReplicationPair, replication)
 
     def find_replication_pair(self, name_or_id, ignore_missing=True):
         """Find a single SDRS replication pair by name or id
@@ -577,9 +544,7 @@ class Proxy(proxy.Proxy):
             `~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`
         """
         return self._find(
-            _replication_pair.ReplicationPair,
-            name_or_id,
-            ignore_missing=ignore_missing
+            _replication_pair.ReplicationPair, name_or_id, ignore_missing=ignore_missing
         )
 
     def expand_replication_pair(self, replication, new_size):
@@ -590,11 +555,10 @@ class Proxy(proxy.Proxy):
             `~otcextensions.sdk.sdrs.v1.replication_pair.ReplicationPair`
         :param int new_size: Replication pair new size
         """
-        replication = self._get_resource(_replication_pair.ReplicationPair,
-                                         replication)
-        return replication.expand_replication(self,
-                                              replication=replication.id,
-                                              new_size=new_size)
+        replication = self._get_resource(_replication_pair.ReplicationPair, replication)
+        return replication.expand_replication(
+            self, replication=replication.id, new_size=new_size
+        )
 
     def update_replication_pair(self, replication, name):
         """Update SDRS replication pair name
@@ -607,14 +571,8 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.sdrs.v1.replication_pair.
             ReplicationPair`
         """
-        replication = self._get_resource(
-            _replication_pair.ReplicationPair, replication
-        )
-        return self._update(
-            _replication_pair.ReplicationPair,
-            replication,
-            name=name
-        )
+        replication = self._get_resource(_replication_pair.ReplicationPair, replication)
+        return self._update(_replication_pair.ReplicationPair, replication, name=name)
 
     # ======== Disaster recovery drill ========
 
@@ -627,10 +585,7 @@ class Proxy(proxy.Proxy):
         :returns: The results of config creation
         :rtype: :class:`~otcextensions.sdk.sdrs.v1.dr_drill.DRDrill`
         """
-        return self._create(
-            _dr_drill.DRDrill,
-            **attrs
-        )
+        return self._create(_dr_drill.DRDrill, **attrs)
 
     def delete_dr_drill(self, dr_drill, ignore_missing=True):
         """Delete a single SDRS DR drill
@@ -667,8 +622,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.sdrs.v1.dr_drill.DRDrill`
             instances
         """
-        return self._list(_dr_drill.DRDrill,
-                          **query)
+        return self._list(_dr_drill.DRDrill, **query)
 
     def get_dr_drill(self, dr_drill):
         """Get the SDRS DR drill by UUID.
@@ -679,8 +633,7 @@ class Proxy(proxy.Proxy):
         :returns: instance of
             :class:`~otcextensions.sdk.sdrs.v1.dr_drill.DRDrill`
         """
-        return self._get(_dr_drill.DRDrill,
-                         dr_drill)
+        return self._get(_dr_drill.DRDrill, dr_drill)
 
     def find_dr_drill(self, name_or_id, ignore_missing=True):
         """Find a single SDRS DR drill by name or id
@@ -694,11 +647,7 @@ class Proxy(proxy.Proxy):
 
         :returns: a :class:`~otcextensions.sdk.sdrs.v1.dr_drill.DRDrill`
         """
-        return self._find(
-            _dr_drill.DRDrill,
-            name_or_id,
-            ignore_missing=ignore_missing
-        )
+        return self._find(_dr_drill.DRDrill, name_or_id, ignore_missing=ignore_missing)
 
     def update_dr_drill(self, dr_drill, name):
         """Update SDRS DR drill name
@@ -710,14 +659,8 @@ class Proxy(proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.sdrs.v1.dr_drill.DRDrill`
         """
-        dr_drill = self._get_resource(
-            _dr_drill.DRDrill, dr_drill
-        )
-        return self._update(
-            _dr_drill.DRDrill,
-            dr_drill,
-            name=name
-        )
+        dr_drill = self._get_resource(_dr_drill.DRDrill, dr_drill)
+        return self._update(_dr_drill.DRDrill, dr_drill, name=name)
 
     # ======== Failed tasks ========
 
@@ -738,8 +681,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.sdrs.v1.task_center.FailedTask`
             instances
         """
-        return self._list(_task_center.FailedTask,
-                          **query)
+        return self._list(_task_center.FailedTask, **query)
 
     def delete_failed_task(self, failed_job_id, ignore_missing=True):
         """Delete a single Failed task
@@ -764,8 +706,7 @@ class Proxy(proxy.Proxy):
         groups
         """
         endpoint = self.get_endpoint()
-        return _task_center.FailedTask.delete_all_tasks(self.session,
-                                                        endpoint)
+        return _task_center.FailedTask.delete_all_tasks(self.session, endpoint)
 
     def delete_protection_group_tasks(self, protection_group):
         """Delete all failed tasks of a single
@@ -777,14 +718,12 @@ class Proxy(proxy.Proxy):
              instance.
         """
         protection_group = self._get_resource(
-            _protection_group.ProtectionGroup,
-            protection_group
+            _protection_group.ProtectionGroup, protection_group
         )
         endpoint = self.get_endpoint()
         return _task_center.FailedTask.delete_protection_tasks(
-            self.session,
-            endpoint,
-            protection_group.id)
+            self.session, endpoint, protection_group.id
+        )
 
     # ======== Tenant SDRS quota ========
 

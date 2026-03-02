@@ -11,15 +11,14 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.lts.v2 import group
 
 EXAMPLE = {
-    'id': 'id',
-    'creation_time': 'creation-time',
-    'name': 'name',
-    'ttl_in_days': 5,
-    'tag': 'tag',
+    "id": "id",
+    "creation_time": "creation-time",
+    "name": "name",
+    "ttl_in_days": 5,
+    "tag": "tag",
 }
 
 
@@ -27,7 +26,7 @@ class TestGroup(base.TestCase):
 
     def test_basic(self):
         sot = group.Group()
-        path = '/groups'
+        path = "/groups"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_list)
@@ -37,8 +36,8 @@ class TestGroup(base.TestCase):
 
     def test_make_it(self):
         sot = group.Group(**EXAMPLE)
-        self.assertEqual(EXAMPLE['id'], sot.id)
-        self.assertEqual(EXAMPLE['creation_time'], sot.creation_time)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['ttl_in_days'], sot.ttl_in_days)
-        self.assertEqual(EXAMPLE['tag'], sot.tag)
+        self.assertEqual(EXAMPLE["id"], sot.id)
+        self.assertEqual(EXAMPLE["creation_time"], sot.creation_time)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["ttl_in_days"], sot.ttl_in_days)
+        self.assertEqual(EXAMPLE["tag"], sot.tag)

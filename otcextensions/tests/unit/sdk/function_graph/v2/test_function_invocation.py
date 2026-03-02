@@ -11,24 +11,19 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.function_graph.v2 import function_invocation
 
-
-EXAMPLE = {
-    'func_urn': 'test-function',
-    'attrs': {'a': 'b'}
-}
+EXAMPLE = {"func_urn": "test-function", "attrs": {"a": "b"}}
 
 
 class TestFunctionInvocation(base.TestCase):
 
     def test_basic(self):
         sot = function_invocation.FunctionInvocation()
-        path = '/fgs/functions/%(func_urn)s'
+        path = "/fgs/functions/%(func_urn)s"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_create)
 
     def test_make_it(self):
         sot = function_invocation.FunctionInvocation(**EXAMPLE)
-        self.assertEqual(EXAMPLE['func_urn'], sot.func_urn)
+        self.assertEqual(EXAMPLE["func_urn"], sot.func_urn)

@@ -12,7 +12,6 @@
 import uuid
 
 # from openstack import resource
-
 from otcextensions.tests.functional.sdk.elb import TestElb
 
 
@@ -109,7 +108,7 @@ PTtY3HPWl5ygsMsSy0Fi3xp3jmuIwzJhcQ3tcK5gC99HWp6Kw37RL8WoB8GWFU0Q
         self.cert = self.client.create_certificate(
             private_key=self._PRIVATE_KEY,
             certificate=self._CERTIFICATE,
-            name=self.cert_name
+            name=self.cert_name,
         )
         self.addCleanup(self.conn.elb.delete_certificate, self.cert)
 
@@ -135,7 +134,7 @@ PTtY3HPWl5ygsMsSy0Fi3xp3jmuIwzJhcQ3tcK5gC99HWp6Kw37RL8WoB8GWFU0Q
             self.cert,
             private_key=self._PRIVATE_KEY_UP,
             content=self._CERTIFICATE_UP,
-            name=self.cert_name + "_cp"
+            name=self.cert_name + "_cp",
         )
         self.assertEqual(self.cert.name, cert_cmp.name)
 
@@ -145,8 +144,7 @@ PTtY3HPWl5ygsMsSy0Fi3xp3jmuIwzJhcQ3tcK5gC99HWp6Kw37RL8WoB8GWFU0Q
 
     def test_update_certificate(self):
         cert_cmp = self.client.update_certificate(
-            self.cert,
-            name=self.cert_name + "_cp"
+            self.cert, name=self.cert_name + "_cp"
         )
         self.assertEqual(self.cert.name, cert_cmp.name)
 

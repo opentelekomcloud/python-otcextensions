@@ -12,10 +12,9 @@
 import uuid
 
 from openstack import _log
-
 from otcextensions.tests.functional import base
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestStream(base.BaseFunctionalTest):
@@ -23,19 +22,18 @@ class TestStream(base.BaseFunctionalTest):
     def setUp(self):
         super(TestStream, self).setUp()
         self.lts = self.conn.lts
-        self.log_group_name = 'teststream' + uuid.uuid4().hex[:8]
-        self.log_stream_name = 'teststream' + uuid.uuid4().hex[:8]
+        self.log_group_name = "teststream" + uuid.uuid4().hex[:8]
+        self.log_stream_name = "teststream" + uuid.uuid4().hex[:8]
         self.log_group = self.lts.create_group(
-            log_group_name=self.log_group_name,
-            ttl_in_days=5
+            log_group_name=self.log_group_name, ttl_in_days=5
         )
         self.assertIsNotNone(self.log_group)
         self.assertIsNotNone(self.log_group.id)
 
         attrs = {
-            'log_group': self.log_group.id,
-            'log_stream_name': self.log_stream_name,
-            'ttl_in_days': 5
+            "log_group": self.log_group.id,
+            "log_stream_name": self.log_stream_name,
+            "ttl_in_days": 5,
         }
         self.log_stream = self.lts.create_stream(**attrs)
         self.assertIsNotNone(self.log_stream)
@@ -47,13 +45,17 @@ class TestStream(base.BaseFunctionalTest):
 
     def tearDown(self):
         super(TestStream, self).tearDown()
-        log_stream = self.lts.delete_stream(log_stream=self.log_stream.id,
-                                            log_group=self.log_group.id,
-                                            ignore_missing=False)
+        log_stream = self.lts.delete_stream(
+            log_stream=self.log_stream.id,
+            log_group=self.log_group.id,
+            ignore_missing=False,
+        )
         self.assertIsNone(log_stream)
-        log_stream = self.lts.delete_stream(log_stream=self.log_stream.id,
-                                            log_group=self.log_group.id,
-                                            ignore_missing=True)
+        log_stream = self.lts.delete_stream(
+            log_stream=self.log_stream.id,
+            log_group=self.log_group.id,
+            ignore_missing=True,
+        )
         self.assertIsNone(log_stream)
         log_group = self.lts.delete_group(group=self.log_group.id)
         self.assertIsNone(log_group)

@@ -11,13 +11,10 @@
 # under the License.
 
 from openstack import service_description
-
 from otcextensions.sdk.evpn.v5 import _proxy
 
 
 class EvpnService(service_description.ServiceDescription):
     """The EnterpriseVPN service."""
 
-    supported_versions = {
-        '5': _proxy.Proxy
-    }
+    supported_versions = {"5": _proxy.Proxy}

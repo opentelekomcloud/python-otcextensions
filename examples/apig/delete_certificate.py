@@ -13,10 +13,11 @@
 """
 Delete ssl certificate
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 conn.apig.delete_certificate(
     certificate="ssl_id",
 )

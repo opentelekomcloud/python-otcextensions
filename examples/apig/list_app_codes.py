@@ -13,9 +13,14 @@
 """
 List AppCodes
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-found = list(conn.apig.app_codes(gateway='gateway_id',
-                                 app='app_id',))
+conn = openstack.connect(cloud="otc")
+found = list(
+    conn.apig.app_codes(
+        gateway="gateway_id",
+        app="app_id",
+    )
+)

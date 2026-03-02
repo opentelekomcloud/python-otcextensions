@@ -21,34 +21,36 @@ class TestListPrivateNatGateways(fakes.TestPrivateNat):
     objects = fakes.FakePrivateNatGateway.create_multiple(3)
 
     column_list_headers = (
-        'Id',
-        'Name',
-        'Spec',
-        'Status',
-        'Project Id',
-        'Enterprise Project Id',
+        "Id",
+        "Name",
+        "Spec",
+        "Status",
+        "Project Id",
+        "Enterprise Project Id",
     )
 
     columns = (
-        'id',
-        'name',
-        'spec',
-        'status',
-        'project_id',
-        'enterprise_project_id',
+        "id",
+        "name",
+        "spec",
+        "status",
+        "project_id",
+        "enterprise_project_id",
     )
 
     data = []
 
     for s in objects:
-        data.append((
-            s.id,
-            s.name,
-            s.spec,
-            s.status,
-            s.project_id,
-            s.enterprise_project_id,
-        ))
+        data.append(
+            (
+                s.id,
+                s.name,
+                s.spec,
+                s.status,
+                s.project_id,
+                s.enterprise_project_id,
+            )
+        )
 
     def setUp(self):
         super(TestListPrivateNatGateways, self).setUp()
@@ -75,33 +77,45 @@ class TestListPrivateNatGateways(fakes.TestPrivateNat):
 
     def test_list_args(self):
         arglist = [
-            '--limit', '1',
-            '--marker', 'm1',
-            '--page-reverse',
-            '--id', 'id1', 'id2',
-            '--name', 'n1',
-            '--description', 'd1',
-            '--spec', 'Small',
-            '--project-id', 'p1',
-            '--status', 'ACTIVE',
-            '--vpc-id', 'v1',
-            '--virsubnet-id', 's1',
-            '--enterprise-project-id', 'ep1',
+            "--limit",
+            "1",
+            "--marker",
+            "m1",
+            "--page-reverse",
+            "--id",
+            "id1",
+            "id2",
+            "--name",
+            "n1",
+            "--description",
+            "d1",
+            "--spec",
+            "Small",
+            "--project-id",
+            "p1",
+            "--status",
+            "ACTIVE",
+            "--vpc-id",
+            "v1",
+            "--virsubnet-id",
+            "s1",
+            "--enterprise-project-id",
+            "ep1",
         ]
 
         verifylist = [
-            ('limit', 1),
-            ('marker', 'm1'),
-            ('page_reverse', True),
-            ('id', ['id1', 'id2']),
-            ('name', ['n1']),
-            ('description', ['d1']),
-            ('spec', ['Small']),
-            ('project_id', ['p1']),
-            ('status', ['ACTIVE']),
-            ('vpc_id', ['v1']),
-            ('virsubnet_id', ['s1']),
-            ('enterprise_project_id', ['ep1']),
+            ("limit", 1),
+            ("marker", "m1"),
+            ("page_reverse", True),
+            ("id", ["id1", "id2"]),
+            ("name", ["n1"]),
+            ("description", ["d1"]),
+            ("spec", ["Small"]),
+            ("project_id", ["p1"]),
+            ("status", ["ACTIVE"]),
+            ("vpc_id", ["v1"]),
+            ("virsubnet_id", ["s1"]),
+            ("enterprise_project_id", ["ep1"]),
         ]
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -112,15 +126,15 @@ class TestListPrivateNatGateways(fakes.TestPrivateNat):
 
         self.client.api_mock.assert_called_with(
             limit=1,
-            marker='m1',
+            marker="m1",
             page_reverse=True,
-            id=['id1', 'id2'],
-            name=['n1'],
-            description=['d1'],
-            spec=['Small'],
-            project_id=['p1'],
-            status=['ACTIVE'],
-            vpc_id=['v1'],
-            virsubnet_id=['s1'],
-            enterprise_project_id=['ep1'],
+            id=["id1", "id2"],
+            name=["n1"],
+            description=["d1"],
+            spec=["Small"],
+            project_id=["p1"],
+            status=["ACTIVE"],
+            vpc_id=["v1"],
+            virsubnet_id=["s1"],
+            enterprise_project_id=["ep1"],
         )

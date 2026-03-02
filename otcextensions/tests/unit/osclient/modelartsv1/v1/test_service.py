@@ -495,9 +495,7 @@ class TestUpdateService(fakes.TestModelartsv1):
             ],
         }
 
-        self.client.update_service.assert_called_with(
-            self._service.id, **attrs
-        )
+        self.client.update_service.assert_called_with(self._service.id, **attrs)
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
 

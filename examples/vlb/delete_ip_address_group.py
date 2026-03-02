@@ -13,11 +13,12 @@
 """
 Delete ip address group
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 conn.vlb.delete_ip_address_group(ip_address_group="name")

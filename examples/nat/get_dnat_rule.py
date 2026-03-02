@@ -13,12 +13,12 @@
 """
 Get a DNAT Rule Details by DNAT-Rule-ID or instance of Dnat Class
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-dnat_rule_id = 'dnat_rule_id'
+dnat_rule_id = "dnat_rule_id"
 dnat_rule = conn.nat.get_dnat_rule(dnat_rule_id)
 print(dnat_rule)

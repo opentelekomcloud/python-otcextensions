@@ -185,9 +185,7 @@ class TestShowModel(fakes.TestModelartsv1):
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.find_model.assert_called_with(
-            self._model.id, ignore_missing=False
-        )
+        self.client.find_model.assert_called_with(self._model.id, ignore_missing=False)
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)

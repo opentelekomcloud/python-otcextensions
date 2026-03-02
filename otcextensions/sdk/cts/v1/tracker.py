@@ -9,17 +9,16 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import resource
 from openstack import exceptions
-
+from openstack import resource
 from otcextensions.common import exc
 
 
 class Smn(resource.Resource):
     #: Specifies whether SMN is supported.
-    enabled = resource.Body('is_support_smn', type=bool)
+    enabled = resource.Body("is_support_smn", type=bool)
     #: Specifies the theme of the SMN service.
-    topic_id = resource.Body('topic_id')
+    topic_id = resource.Body("topic_id")
     #: * Specifies trigger conditions for sending a notification when `Typical`
     #: is selected. You can select Delete, Create, or Login or at least one
     #: of them.
@@ -27,12 +26,11 @@ class Smn(resource.Resource):
     #: is selected. All conditions including Delete, Create, Change, and
     #: OpenStack API Event are selected by default. Modification is not
     #: allowed.
-    operations = resource.Body('operations', type=list)
+    operations = resource.Body("operations", type=list)
     #: You can select Typical or All for Trigger Condition.
     #: * When the value is `false`, operations cannot be left empty.
     #: * When the value is `true`, operations is not supported.
-    is_send_all_key_operation = resource.Body(
-        'is_send_all_key_operation', type=bool)
+    is_send_all_key_operation = resource.Body("is_send_all_key_operation", type=bool)
     #: In Typical scenario, you can specify the users using the login function.
     #: When these users log in, notifications will be sent.
     #: * After this function is enabled, the value is the list of the
@@ -40,14 +38,14 @@ class Smn(resource.Resource):
     #: users is supported.
     #: * If the value is null, the target objects are all users under the
     #: current tenant by default.
-    notify_users = resource.Body('need_notify_user_list', type=list)
+    notify_users = resource.Body("need_notify_user_list", type=list)
 
 
 class Tracker(resource.Resource):
 
-    base_path = '/tracker'
+    base_path = "/tracker"
 
-    _query_mapping = resource.QueryParameters('tracker_name')
+    _query_mapping = resource.QueryParameters("tracker_name")
 
     # capabilities
     allow_create = True
@@ -57,29 +55,29 @@ class Tracker(resource.Resource):
 
     # Properties
     #: tracker name
-    name = resource.Body('tracker_name', alternate_id=True)
+    name = resource.Body("tracker_name", alternate_id=True)
     #: bucket name
-    bucket_name = resource.Body('bucket_name')
+    bucket_name = resource.Body("bucket_name")
     #: file prefix name in a bucket
-    file_prefix_name = resource.Body('file_prefix_name')
+    file_prefix_name = resource.Body("file_prefix_name")
     #: Status of the tracker
     #: values: `enabled`, `disabled`, `error`
-    status = resource.Body('status')
+    status = resource.Body("status")
     #: Detail of the tracker, only validate if exception happens
-    detail = resource.Body('detail')
+    detail = resource.Body("detail")
     #: SMN
-    smn = resource.Body('smn', type=Smn)
+    smn = resource.Body("smn", type=Smn)
 
     def _delete_tracker(self, session, tracker):
-        """Delete Tracker
-        """
-        url = self.base_path + '?tracker_name={}'.format(tracker)
+        """Delete Tracker"""
+        url = self.base_path + "?tracker_name={}".format(tracker)
         response = session.delete(url)
         exceptions.raise_from_response(response)
         return None
 
-    def _translate_response(self, response, has_body=None, error_message=None,
-                            resource_response_key=None):
+    def _translate_response(
+        self, response, has_body=None, error_message=None, resource_response_key=None
+    ):
         """Given a KSA response, inflate this instance with its data
 
         'DELETE' operations don't return a body, so only try to work
@@ -94,7 +92,7 @@ class Tracker(resource.Resource):
         if has_body:
             if response.status_code == 204:
                 # Some bad APIs (i.e. DCS.Backup.List) return emptiness
-                self.log.warn('API returned no content, while it was expected')
+                self.log.warn("API returned no content, while it was expected")
                 return
             # NOTE: in difference to doc "GET" method return list with 1 item
             body = response.json()

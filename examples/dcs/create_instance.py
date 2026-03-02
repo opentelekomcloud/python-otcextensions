@@ -13,10 +13,11 @@
 """
 Create Distributed Cache Service Instance
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 instance = conn.dcs.create_instance(
@@ -36,7 +37,7 @@ instance = conn.dcs.create_instance(
 )
 print(instance)
 
-'''
+"""
 attrs = {
     "name": "dcs-test",
     "engine": "Redis",
@@ -63,4 +64,4 @@ attrs = {
 
 instance = conn.dcs.create_instance(**attrs)
 print(instance)
-'''
+"""

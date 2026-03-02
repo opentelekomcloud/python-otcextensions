@@ -10,19 +10,18 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-'''
+"""
 Bind resources to CBR vault
-'''
+"""
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-vault = 'vault_name_or_id'
-resources = [{
-    'id': 'server_id',
-    'type': 'OS::Nova::Server'}]
+vault = "vault_name_or_id"
+resources = [{"id": "server_id", "type": "OS::Nova::Server"}]
 
 vault = conn.cbr.find_vault(vault)
 conn.cbr.associate_resources(vault=vault.id, resources=resources)

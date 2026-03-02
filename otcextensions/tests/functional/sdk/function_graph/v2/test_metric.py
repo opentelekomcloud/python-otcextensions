@@ -12,26 +12,23 @@
 from datetime import datetime
 
 from openstack import _log
-
 from otcextensions.sdk.function_graph.v2 import function
 from otcextensions.tests.functional.sdk.function_graph import TestFg
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestFunctionMetric(TestFg):
     def test_list_metrics(self):
-        m = list(self.client.metrics(filter='monitor_data'))
+        m = list(self.client.metrics(filter="monitor_data"))
         self.assertIsNotNone(len(m[0].duration))
 
     def test_list_func_metrics(self):
         now = datetime.now().timestamp()
         self.function = self.client.create_function(**TestFg.function_attrs)
         assert isinstance(self.function, function.Function)
-        self.addCleanup(
-            self.client.delete_function,
-            self.function
+        self.addCleanup(self.client.delete_function, self.function)
+        m = list(
+            self.client.function_metrics(self.function, period=f"{now},{now - 3600}")
         )
-        m = list(self.client.function_metrics(
-            self.function, period=f'{now},{now - 3600}'))
         self.assertGreaterEqual(1, len(m))

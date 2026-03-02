@@ -13,7 +13,6 @@ import random
 import uuid
 
 import mock
-
 from openstack.network.v2 import health_monitor
 from openstack.network.v2 import listener
 from openstack.network.v2 import load_balancer
@@ -38,19 +37,19 @@ class FakeLoadBalancer(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'admin_state_up': True,
-            'description': 'descr-' + uuid.uuid4().hex,
-            'id': 'id-' + uuid.uuid4().hex,
-            'listeners': [{'id': 'id-' + uuid.uuid4().hex}],
-            'name': 'name-' + uuid.uuid4().hex,
-            'operating_status': 'op_stat-' + uuid.uuid4().hex,
-            'provisioning_status': 'ps-' + uuid.uuid4().hex,
-            'project_id': 'ten-' + uuid.uuid4().hex,
-            'vip_address': 'vip_addr-' + uuid.uuid4().hex,
-            'vip_subnet_id': 'vip_subn-' + uuid.uuid4().hex,
-            'vip_port_id': 'vip_port-' + uuid.uuid4().hex,
-            'provider': 'provider-' + uuid.uuid4().hex,
-            'pools': [{'id': 'id-' + uuid.uuid4().hex}],
+            "admin_state_up": True,
+            "description": "descr-" + uuid.uuid4().hex,
+            "id": "id-" + uuid.uuid4().hex,
+            "listeners": [{"id": "id-" + uuid.uuid4().hex}],
+            "name": "name-" + uuid.uuid4().hex,
+            "operating_status": "op_stat-" + uuid.uuid4().hex,
+            "provisioning_status": "ps-" + uuid.uuid4().hex,
+            "project_id": "ten-" + uuid.uuid4().hex,
+            "vip_address": "vip_addr-" + uuid.uuid4().hex,
+            "vip_subnet_id": "vip_subn-" + uuid.uuid4().hex,
+            "vip_port_id": "vip_port-" + uuid.uuid4().hex,
+            "provider": "provider-" + uuid.uuid4().hex,
+            "pools": [{"id": "id-" + uuid.uuid4().hex}],
         }
         obj = load_balancer.LoadBalancer.existing(**object_info)
         return obj
@@ -62,16 +61,15 @@ class FakeListener(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'id': 'id-' + uuid.uuid4().hex,
-            'name': 'name-' + uuid.uuid4().hex,
-            'admin_state_up': True,
-            'description': 'descr-' + uuid.uuid4().hex,
-            'loadbalancers': [{'id': 'id-' + uuid.uuid4().hex}],
-            'protocol': 'proto-' + uuid.uuid4().hex,
-            'protocol_port': random.randint(1, 65535),
-            'default_pool_id': 'poolid-' + uuid.uuid4().hex,
-            'connection_limit': random.randint(-1, 10),
-
+            "id": "id-" + uuid.uuid4().hex,
+            "name": "name-" + uuid.uuid4().hex,
+            "admin_state_up": True,
+            "description": "descr-" + uuid.uuid4().hex,
+            "loadbalancers": [{"id": "id-" + uuid.uuid4().hex}],
+            "protocol": "proto-" + uuid.uuid4().hex,
+            "protocol_port": random.randint(1, 65535),
+            "default_pool_id": "poolid-" + uuid.uuid4().hex,
+            "connection_limit": random.randint(-1, 10),
         }
         obj = listener.Listener.existing(**object_info)
         return obj
@@ -83,20 +81,19 @@ class FakePool(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'id': 'id-' + uuid.uuid4().hex,
-            'name': 'name-' + uuid.uuid4().hex,
-            'admin_state_up': True,
-            'description': 'descr-' + uuid.uuid4().hex,
-            'loadbalancers': [{'id': 'id-' + uuid.uuid4().hex}],
-            'listeners': [{'id': 'id-' + uuid.uuid4().hex}],
-            'protocol': 'proto-' + uuid.uuid4().hex,
-            'session_persistence': True,
-            'healthmonitor_id': 'hmid-' + uuid.uuid4().hex,
+            "id": "id-" + uuid.uuid4().hex,
+            "name": "name-" + uuid.uuid4().hex,
+            "admin_state_up": True,
+            "description": "descr-" + uuid.uuid4().hex,
+            "loadbalancers": [{"id": "id-" + uuid.uuid4().hex}],
+            "listeners": [{"id": "id-" + uuid.uuid4().hex}],
+            "protocol": "proto-" + uuid.uuid4().hex,
+            "session_persistence": True,
+            "healthmonitor_id": "hmid-" + uuid.uuid4().hex,
             # 'health_monitor_ids': [{'id': 'hmid-' + uuid.uuid4().hex}],
-            'member_ids': [{'id': 'id-' + uuid.uuid4().hex}],
-            'lb_algorithm': 'algo-' + uuid.uuid4().hex,
-            'status': 'dummy'
-
+            "member_ids": [{"id": "id-" + uuid.uuid4().hex}],
+            "lb_algorithm": "algo-" + uuid.uuid4().hex,
+            "status": "dummy",
         }
         obj = pool.Pool.existing(**object_info)
         return obj
@@ -108,15 +105,15 @@ class FakePoolMember(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'id': 'id-' + uuid.uuid4().hex,
-            'name': 'name-' + uuid.uuid4().hex,
-            'admin_state_up': True,
-            'address': 'addr-' + uuid.uuid4().hex,
-            'operating_status': 'stat-' + uuid.uuid4().hex,
-            'pool_id': 'pool_id-' + uuid.uuid4().hex,
-            'protocol_port': random.randint(1, 65535),
-            'weight': random.randint(1, 65535),
-            'subnet_id': 'subnet-' + uuid.uuid4().hex,
+            "id": "id-" + uuid.uuid4().hex,
+            "name": "name-" + uuid.uuid4().hex,
+            "admin_state_up": True,
+            "address": "addr-" + uuid.uuid4().hex,
+            "operating_status": "stat-" + uuid.uuid4().hex,
+            "pool_id": "pool_id-" + uuid.uuid4().hex,
+            "protocol_port": random.randint(1, 65535),
+            "weight": random.randint(1, 65535),
+            "subnet_id": "subnet-" + uuid.uuid4().hex,
         }
         obj = pool_member.PoolMember.existing(**object_info)
         return obj
@@ -128,17 +125,16 @@ class FakeHealthMonitor(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'id': 'id-' + uuid.uuid4().hex,
-            'name': 'name-' + uuid.uuid4().hex,
-            'admin_state_up': True,
-            'type': 'type-' + uuid.uuid4().hex,
-            'http_method': 'method-' + uuid.uuid4().hex,
-            'url_path': 'url_path-' + uuid.uuid4().hex,
-            'pools': [{'id': 'id-' + uuid.uuid4().hex}],
-            'max_retries': random.randint(1, 65535),
-            'timeout': random.randint(1, 65535),
-            'expected_codes': 'codes-' + uuid.uuid4().hex,
-
+            "id": "id-" + uuid.uuid4().hex,
+            "name": "name-" + uuid.uuid4().hex,
+            "admin_state_up": True,
+            "type": "type-" + uuid.uuid4().hex,
+            "http_method": "method-" + uuid.uuid4().hex,
+            "url_path": "url_path-" + uuid.uuid4().hex,
+            "pools": [{"id": "id-" + uuid.uuid4().hex}],
+            "max_retries": random.randint(1, 65535),
+            "timeout": random.randint(1, 65535),
+            "expected_codes": "codes-" + uuid.uuid4().hex,
         }
         obj = health_monitor.HealthMonitor.existing(**object_info)
         return obj

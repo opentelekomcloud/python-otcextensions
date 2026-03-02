@@ -10,13 +10,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
-
 from otcextensions.sdk.elb.v2 import _base_tag
 
 
 class Tag(_base_tag.Resource):
-    base_path = '/listeners/%(listener_id)s/tags'
+    base_path = "/listeners/%(listener_id)s/tags"
 
     # Properties
     #: Specifies listener
-    listener_id = resource.URI('listener_id')
+    listener_id = resource.URI("listener_id")

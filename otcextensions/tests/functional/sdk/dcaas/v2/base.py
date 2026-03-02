@@ -12,11 +12,11 @@
 
 import uuid
 
-from openstack import exceptions
 from openstack import _log
+from openstack import exceptions
 from otcextensions.tests.functional import base
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class BaseDCTest(base.BaseFunctionalTest):
@@ -29,46 +29,32 @@ class BaseDCTest(base.BaseFunctionalTest):
     CIDR = "192.168.0.0/16"
 
     def _create_network(self):
-        return self.conn.network.create_network(
-            name=self.NETWORK_NAME
-        )
+        return self.conn.network.create_network(name=self.NETWORK_NAME)
 
     def _delete_network(self, network):
-        return self.conn.network.delete_network(
-            network=network
-        )
+        return self.conn.network.delete_network(network=network)
 
     def _create_subnet(self, network_id):
         return self.conn.network.create_subnet(
             name=self.SUBNET_NAME,
             network_id=network_id,
             ip_version=self.IP_VERSION,
-            cidr=self.CIDR
+            cidr=self.CIDR,
         )
 
     def _delete_subnet(self, subnet):
-        return self.conn.network.delete_subnet(
-            subnet=subnet
-        )
+        return self.conn.network.delete_subnet(subnet=subnet)
 
     def _create_router(self, subnet_id):
-        router = self.conn.network.create_router(
-            name=self.ROUTER_NAME
-        )
-        self.conn.network.add_interface_to_router(
-            router=router,
-            subnet_id=subnet_id
-        )
+        router = self.conn.network.create_router(name=self.ROUTER_NAME)
+        self.conn.network.add_interface_to_router(router=router, subnet_id=subnet_id)
         return router
 
     def _delete_router(self, router, subnet_id):
         self.conn.network.remove_interface_from_router(
-            router=router,
-            subnet_id=subnet_id
+            router=router, subnet_id=subnet_id
         )
-        return self.conn.network.delete_router(
-            router=router
-        )
+        return self.conn.network.delete_router(router=router)
 
     def create_test_infra(self):
         network = self._create_network()
@@ -77,7 +63,7 @@ class BaseDCTest(base.BaseFunctionalTest):
         return {
             "network_id": network.id,
             "subnet_id": subnet.id,
-            "router_id": router.id
+            "router_id": router.id,
         }
 
     def delete_test_infra(self, infra: dict):
@@ -99,6 +85,5 @@ class BaseDCTest(base.BaseFunctionalTest):
         try:
             self.delete_test_infra(self.infra)
         except exceptions.SDKException as e:
-            _logger.warning('Got exception during clearing resources %s'
-                            % e.message)
+            _logger.warning("Got exception during clearing resources %s" % e.message)
         super(BaseDCTest, self).tearDown()

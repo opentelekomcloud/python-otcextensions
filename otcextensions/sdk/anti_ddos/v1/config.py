@@ -14,7 +14,7 @@ from openstack import resource
 
 class Config(resource.Resource):
 
-    base_path = '/antiddos/query_config_list'
+    base_path = "/antiddos/query_config_list"
 
     # capabilities
     allow_list = True
@@ -22,15 +22,13 @@ class Config(resource.Resource):
     # Properties
     #: A list of traffic limited.
     #: *Type: list*
-    traffic_limited_list = resource.Body('traffic_limited_list', type=list)
+    traffic_limited_list = resource.Body("traffic_limited_list", type=list)
     #: Http limit list
     #: *Type: list*
-    http_limited_list = resource.Body('http_limited_list', type=list)
+    http_limited_list = resource.Body("http_limited_list", type=list)
     #: Connection limit list
     #: *Type: list*
-    connection_limited_list = resource.Body('connection_limited_list',
-                                            type=list)
+    connection_limited_list = resource.Body("connection_limited_list", type=list)
     #: Extended configuration
     #: *Type: list*
-    extend_ddos_config = resource.Body('extend_ddos_config',
-                                       type=list)
+    extend_ddos_config = resource.Body("extend_ddos_config", type=list)

@@ -13,10 +13,11 @@
 """
 List Anti-DDoS events per day of a Floating IP by using id.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 fip = "floating_ip_id"

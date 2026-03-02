@@ -13,14 +13,12 @@
 """
 Update env in gateway
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-attrs = {
-    "name": "DEV",
-    "remark": "Development environment"
-}
-environment = conn.apig.update_environment(environment="env_id",
-                                           gateway="gateway_id",
-                                           **attrs)
+conn = openstack.connect(cloud="otc")
+attrs = {"name": "DEV", "remark": "Development environment"}
+environment = conn.apig.update_environment(
+    environment="env_id", gateway="gateway_id", **attrs
+)

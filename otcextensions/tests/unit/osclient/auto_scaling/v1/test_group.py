@@ -27,17 +27,12 @@ class TestListAutoScalingGroup(TestAutoScalingGroup):
 
     groups = fakes.FakeGroup.create_multiple(3)
 
-    columns = ('ID', 'Name', 'status', 'detail')
+    columns = ("ID", "Name", "status", "detail")
 
     data = []
 
     for s in groups:
-        data.append((
-            s.id,
-            s.name,
-            s.status,
-            s.detail
-        ))
+        data.append((s.id, s.name, s.status, s.detail))
 
     def setUp(self):
         super(TestListAutoScalingGroup, self).setUp()
@@ -48,35 +43,35 @@ class TestListAutoScalingGroup(TestAutoScalingGroup):
 
     def test_list_default(self):
         arglist = [
-            '--name', 'grp',
-            '--status', 'PAUSED',
-            '--scaling-configuration-id', '2',
-            '--limit', '12'
+            "--name",
+            "grp",
+            "--status",
+            "PAUSED",
+            "--scaling-configuration-id",
+            "2",
+            "--limit",
+            "12",
         ]
 
         verifylist = [
-            ('name', 'grp'),
-            ('status', 'PAUSED'),
-            ('scaling_configuration_id', '2'),
-            ('limit', 12)
+            ("name", "grp"),
+            ("status", "PAUSED"),
+            ("scaling_configuration_id", "2"),
+            ("limit", 12),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.groups.side_effect = [
-            self.groups
-        ]
+        self.client.groups.side_effect = [self.groups]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.groups.assert_called_once_with(
-            name='grp',
-            status='PAUSED',
-            scaling_configuration_id='2',
-            limit=12)
+            name="grp", status="PAUSED", scaling_configuration_id="2", limit=12
+        )
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
@@ -84,7 +79,7 @@ class TestListAutoScalingGroup(TestAutoScalingGroup):
 
 class TestShowAutoScalingGroup(TestAutoScalingGroup):
 
-    columns = ('create_time', 'detail', 'id', 'name', 'router_id', 'status')
+    columns = ("create_time", "detail", "id", "name", "router_id", "status")
 
     _group = fakes.FakeGroup.create_one()
 
@@ -105,19 +100,13 @@ class TestShowAutoScalingGroup(TestAutoScalingGroup):
         self.client.find_group = mock.Mock()
 
     def test_show_default(self):
-        arglist = [
-            'test_group'
-        ]
-        verifylist = [
-            ('group', 'test_group')
-        ]
+        arglist = ["test_group"]
+        verifylist = [("group", "test_group")]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_group.side_effect = [
-            self._group
-        ]
+        self.client.find_group.side_effect = [self._group]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -130,7 +119,7 @@ class TestShowAutoScalingGroup(TestAutoScalingGroup):
 
 class TestCreateAutoScalingGroup(TestAutoScalingGroup):
 
-    columns = ('create_time', 'detail', 'id', 'name', 'router_id', 'status')
+    columns = ("create_time", "detail", "id", "name", "router_id", "status")
 
     _group = fakes.FakeGroup.create_one()
 
@@ -152,74 +141,91 @@ class TestCreateAutoScalingGroup(TestAutoScalingGroup):
 
     def test_create(self):
         arglist = [
-            '--desire-instance-number', '10',
-            '--min-instance-number', '1',
-            '--max-instance-number', '15',
-            '--cool-down-time', '1',
-            '--availability-zone', 'eu-1',
-            '--availability-zone', 'eu-2',
-            '--network-id', 'sub1',
-            '--network-id', 'sub2',
-            '--router-id', 'vpc-1',
-            '--security-group', 'sg1',
-            '--security-group', 'sg2',
-            '--lb-listener-id', 'lb1',
-            '--lbaas-listener', 'lbas1:14',
-            '--lbaas-listener', 'lbas2:15:10',
-            '--audit-method', 'some_method',
-            '--audit-time', '15',
-            '--terminate-policy', 'pol',
-            '--notification', 'EMAIL',
-            '--notification', 'SMS',
-
-            'test_name'
+            "--desire-instance-number",
+            "10",
+            "--min-instance-number",
+            "1",
+            "--max-instance-number",
+            "15",
+            "--cool-down-time",
+            "1",
+            "--availability-zone",
+            "eu-1",
+            "--availability-zone",
+            "eu-2",
+            "--network-id",
+            "sub1",
+            "--network-id",
+            "sub2",
+            "--router-id",
+            "vpc-1",
+            "--security-group",
+            "sg1",
+            "--security-group",
+            "sg2",
+            "--lb-listener-id",
+            "lb1",
+            "--lbaas-listener",
+            "lbas1:14",
+            "--lbaas-listener",
+            "lbas2:15:10",
+            "--audit-method",
+            "some_method",
+            "--audit-time",
+            "15",
+            "--terminate-policy",
+            "pol",
+            "--notification",
+            "EMAIL",
+            "--notification",
+            "SMS",
+            "test_name",
         ]
         verifylist = [
-            ('desire_instance_number', 10),
-            ('min_instance_number', 1),
-            ('max_instance_number', 15),
-            ('cool_down_time', 1),
-            ('availability_zone', ['eu-1', 'eu-2']),
-            ('network_id', ['sub1', 'sub2']),
-            ('security_group', ['sg1', 'sg2']),
-            ('router_id', 'vpc-1'),
-            ('lb_listener_id', 'lb1'),
-            ('lbaas_listener', ['lbas1:14', 'lbas2:15:10']),
-            ('audit_method', 'some_method'),
-            ('audit_time', 15),
-            ('terminate_policy', 'pol'),
-            ('notification', ['EMAIL', 'SMS']),
-            ('name', 'test_name')
+            ("desire_instance_number", 10),
+            ("min_instance_number", 1),
+            ("max_instance_number", 15),
+            ("cool_down_time", 1),
+            ("availability_zone", ["eu-1", "eu-2"]),
+            ("network_id", ["sub1", "sub2"]),
+            ("security_group", ["sg1", "sg2"]),
+            ("router_id", "vpc-1"),
+            ("lb_listener_id", "lb1"),
+            ("lbaas_listener", ["lbas1:14", "lbas2:15:10"]),
+            ("audit_method", "some_method"),
+            ("audit_time", 15),
+            ("terminate_policy", "pol"),
+            ("notification", ["EMAIL", "SMS"]),
+            ("name", "test_name"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.create_group.side_effect = [
-            self._group
-        ]
+        self.client.create_group.side_effect = [self._group]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.create_group.assert_called_with(
-            available_zones=['eu-1', 'eu-2'],
+            available_zones=["eu-1", "eu-2"],
             cool_down_time=1,
             desire_instance_number=10,
-            health_periodic_audit_method='some_method',
+            health_periodic_audit_method="some_method",
             health_periodic_audit_time=15,
-            instance_terminate_policy='pol',
-            lb_listener_id='lb1',
+            instance_terminate_policy="pol",
+            lb_listener_id="lb1",
             lbaas_listeners=[
-                {'id': 'lbas1', 'protocol_port': '14'},
-                {'id': 'lbas2', 'protocol_port': '15', 'weight': '10'}],
+                {"id": "lbas1", "protocol_port": "14"},
+                {"id": "lbas2", "protocol_port": "15", "weight": "10"},
+            ],
             max_instance_number=15,
             min_instance_number=1,
-            name='test_name',
-            networks=[{'id': 'sub1'}, {'id': 'sub2'}],
-            notifications=['EMAIL', 'SMS'],
-            security_groups=[{'id': 'sg1'}, {'id': 'sg2'}],
-            router_id='vpc-1'
+            name="test_name",
+            networks=[{"id": "sub1"}, {"id": "sub2"}],
+            notifications=["EMAIL", "SMS"],
+            security_groups=[{"id": "sg1"}, {"id": "sg2"}],
+            router_id="vpc-1",
         )
 
         self.assertEqual(self.columns, columns)
@@ -236,12 +242,8 @@ class TestDeleteAutoScalingGroup(TestAutoScalingGroup):
         self.client.delete_group = mock.Mock()
 
     def test_sdelete(self):
-        arglist = [
-            'group1'
-        ]
-        verifylist = [
-            ('group', 'group1')
-        ]
+        arglist = ["group1"]
+        verifylist = [("group", "group1")]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -256,7 +258,7 @@ class TestDeleteAutoScalingGroup(TestAutoScalingGroup):
 
 class TestUpdateAutoScalingGroup(TestAutoScalingGroup):
 
-    columns = ('create_time', 'detail', 'id', 'name', 'router_id', 'status')
+    columns = ("create_time", "detail", "id", "name", "router_id", "status")
 
     _group = fakes.FakeGroup.create_one()
 
@@ -278,78 +280,93 @@ class TestUpdateAutoScalingGroup(TestAutoScalingGroup):
 
     def test_create(self):
         arglist = [
-            '--desire-instance-number', '10',
-            '--min-instance-number', '1',
-            '--max-instance-number', '15',
-            '--cool-down-time', '1',
-            '--availability-zone', 'eu-1',
-            '--availability-zone', 'eu-2',
-            '--network-id', 'sub1',
-            '--network-id', 'sub2',
-            '--router-id', 'vpc-1',
-            '--security-group', 'sg1',
-            '--security-group', 'sg2',
-            '--lb-listener-id', 'lb1',
-            '--lbaas-listener', 'lbas1:14',
-            '--lbaas-listener', 'lbas2:15:10',
-            '--audit-method', 'some_method',
-            '--audit-time', '15',
-            '--terminate-policy', 'pol',
-            '--notification', 'EMAIL',
-            '--notification', 'SMS',
-
-            'test_name'
+            "--desire-instance-number",
+            "10",
+            "--min-instance-number",
+            "1",
+            "--max-instance-number",
+            "15",
+            "--cool-down-time",
+            "1",
+            "--availability-zone",
+            "eu-1",
+            "--availability-zone",
+            "eu-2",
+            "--network-id",
+            "sub1",
+            "--network-id",
+            "sub2",
+            "--router-id",
+            "vpc-1",
+            "--security-group",
+            "sg1",
+            "--security-group",
+            "sg2",
+            "--lb-listener-id",
+            "lb1",
+            "--lbaas-listener",
+            "lbas1:14",
+            "--lbaas-listener",
+            "lbas2:15:10",
+            "--audit-method",
+            "some_method",
+            "--audit-time",
+            "15",
+            "--terminate-policy",
+            "pol",
+            "--notification",
+            "EMAIL",
+            "--notification",
+            "SMS",
+            "test_name",
         ]
         verifylist = [
-            ('desire_instance_number', 10),
-            ('min_instance_number', 1),
-            ('max_instance_number', 15),
-            ('cool_down_time', 1),
-            ('availability_zone', ['eu-1', 'eu-2']),
-            ('network_id', ['sub1', 'sub2']),
-            ('security_group', ['sg1', 'sg2']),
-            ('router_id', 'vpc-1'),
-            ('lb_listener_id', 'lb1'),
-            ('lbaas_listener', ['lbas1:14', 'lbas2:15:10']),
-            ('audit_method', 'some_method'),
-            ('audit_time', 15),
-            ('terminate_policy', 'pol'),
-            ('notification', ['EMAIL', 'SMS']),
-            ('group', 'test_name')
+            ("desire_instance_number", 10),
+            ("min_instance_number", 1),
+            ("max_instance_number", 15),
+            ("cool_down_time", 1),
+            ("availability_zone", ["eu-1", "eu-2"]),
+            ("network_id", ["sub1", "sub2"]),
+            ("security_group", ["sg1", "sg2"]),
+            ("router_id", "vpc-1"),
+            ("lb_listener_id", "lb1"),
+            ("lbaas_listener", ["lbas1:14", "lbas2:15:10"]),
+            ("audit_method", "some_method"),
+            ("audit_time", 15),
+            ("terminate_policy", "pol"),
+            ("notification", ["EMAIL", "SMS"]),
+            ("group", "test_name"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.update_group.side_effect = [
-            self._group
-        ]
+        self.client.update_group.side_effect = [self._group]
 
-        self.client.find_group.side_effect = [
-            self._group
-        ]
+        self.client.find_group.side_effect = [self._group]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.update_group.assert_called_with(
             self._group,
-            available_zones=['eu-1', 'eu-2'],
+            available_zones=["eu-1", "eu-2"],
             cool_down_time=1,
             desire_instance_number=10,
-            health_periodic_audit_method='some_method',
+            health_periodic_audit_method="some_method",
             health_periodic_audit_time=15,
-            instance_terminate_policy='pol',
-            lb_listener_id='lb1',
+            instance_terminate_policy="pol",
+            lb_listener_id="lb1",
             lbaas_listeners=[
-                {'id': 'lbas1', 'protocol_port': '14'},
-                {'id': 'lbas2', 'protocol_port': '15', 'weight': '10'}],
+                {"id": "lbas1", "protocol_port": "14"},
+                {"id": "lbas2", "protocol_port": "15", "weight": "10"},
+            ],
             max_instance_number=15,
             min_instance_number=1,
-            networks=[{'id': 'sub1'}, {'id': 'sub2'}],
-            notifications=['EMAIL', 'SMS'],
-            security_groups=[{'id': 'sg1'}, {'id': 'sg2'}],
-            router_id='vpc-1'
+            networks=[{"id": "sub1"}, {"id": "sub2"}],
+            notifications=["EMAIL", "SMS"],
+            security_groups=[{"id": "sg1"}, {"id": "sg2"}],
+            router_id="vpc-1",
         )
 
         self.assertEqual(self.columns, columns)
@@ -369,19 +386,13 @@ class TestEnableAutoScalingGroup(TestAutoScalingGroup):
         self.client.resume_group = mock.Mock()
 
     def test_enable(self):
-        arglist = [
-            'group1'
-        ]
-        verifylist = [
-            ('group', 'group1')
-        ]
+        arglist = ["group1"]
+        verifylist = [("group", "group1")]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_group.side_effect = [
-            self._group
-        ]
+        self.client.find_group.side_effect = [self._group]
         self.client.resume_group.side_effect = [{}]
 
         # Trigger the action
@@ -404,19 +415,13 @@ class TestDisableAutoScalingGroup(TestAutoScalingGroup):
         self.client.pause_group = mock.Mock()
 
     def test_disable(self):
-        arglist = [
-            'group1'
-        ]
-        verifylist = [
-            ('group', 'group1')
-        ]
+        arglist = ["group1"]
+        verifylist = [("group", "group1")]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_group.side_effect = [
-            self._group
-        ]
+        self.client.find_group.side_effect = [self._group]
         self.client.pause_group.side_effect = [{}]
 
         # Trigger the action

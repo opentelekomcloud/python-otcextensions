@@ -30,7 +30,7 @@ def list_cluster(conn):
     for cluster in conn.clustering.clusters():
         print(cluster.to_dict())
 
-    for cluster in conn.clustering.clusters(sort='name:asc'):
+    for cluster in conn.clustering.clusters(sort="name:asc"):
         print(cluster.to_dict())
 
 
@@ -107,9 +107,7 @@ def replace_nodes_in_cluster(conn):
 
     old_node = NODE_ID
     new_node = "cd803d4a-015d-4223-b15f-db29bad3146c"
-    spec = {
-        old_node: new_node
-    }
+    spec = {old_node: new_node}
     res = conn.clustering.replace_nodes_in_cluster(CLUSTER_ID, **spec)
     print(res)
 
@@ -132,10 +130,10 @@ def resize_cluster(conn):
     print("Resize of cluster:")
 
     spec = {
-        'min_size': 1,
-        'max_size': 6,
-        'adjustment_type': 'EXACT_CAPACITY',
-        'number': 2
+        "min_size": 1,
+        "max_size": 6,
+        "adjustment_type": "EXACT_CAPACITY",
+        "number": 2,
     }
     res = conn.clustering.resize_cluster(CLUSTER_ID, **spec)
     print(res)
@@ -144,9 +142,8 @@ def resize_cluster(conn):
 def attach_policy_to_cluster(conn):
     print("Attach policy to a cluster:")
 
-    spec = {'enabled': True}
-    res = conn.clustering.attach_policy_to_cluster(
-        CLUSTER_ID, POLICY_ID, **spec)
+    spec = {"enabled": True}
+    res = conn.clustering.attach_policy_to_cluster(CLUSTER_ID, POLICY_ID, **spec)
     print(res)
 
 
@@ -167,6 +164,6 @@ def check_cluster(conn):
 def recover_cluster(conn):
     print("Recover cluster:")
 
-    spec = {'check': True}
+    spec = {"check": True}
     res = conn.clustering.recover_cluster(CLUSTER_ID, **spec)
     print(res)

@@ -13,20 +13,20 @@
 """
 Accept or Reject VPC Peering request
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 peering = conn.vpc.get_peering("peering_id")
 
 # accept VPC peering request
-set_status = 'accept'
+set_status = "accept"
 peering = conn.vpc.set_peering(peering=peering, set_status=set_status)
 print(peering)
 
 # Reject VPC peering request
-set_status = 'reject'
+set_status = "reject"
 peering = conn.vpc.set_peering(peering=peering, set_status=set_status)
 print(peering)

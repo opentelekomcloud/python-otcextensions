@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack.tests.unit import test_proxy_base
-
 from otcextensions.sdk.imsv1.v1 import _proxy
 from otcextensions.sdk.imsv1.v1 import async_job
 
@@ -24,12 +23,10 @@ class TestImsProxy(test_proxy_base.TestProxyBase):
 class TestImsAsyncJob(TestImsProxy):
 
     def test_async_job_get(self):
-        self._verify('openstack.proxy.Proxy._get',
-                     self.proxy.get_async_job,
-                     expected_args=[async_job.AsyncJob],
-                     method_kwargs={
-                         'job_id': '1'
-                     },
-                     expected_kwargs={
-                         'id': '1'
-                     })
+        self._verify(
+            "openstack.proxy.Proxy._get",
+            self.proxy.get_async_job,
+            expected_args=[async_job.AsyncJob],
+            method_kwargs={"job_id": "1"},
+            expected_kwargs={"id": "1"},
+        )

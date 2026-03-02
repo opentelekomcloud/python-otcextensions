@@ -15,14 +15,14 @@ from openstack import resource
 
 class LoadBalancerStatus(resource.Resource):
 
-    base_path = '/elb/loadbalancers/%(loadbalancer_id)s/statuses'
+    base_path = "/elb/loadbalancers/%(loadbalancer_id)s/statuses"
 
     # capabilities
     allow_fetch = True
     allow_list = True
 
     # Properties
-    loadbalancer_id = resource.URI('loadbalancer_id')
+    loadbalancer_id = resource.URI("loadbalancer_id")
 
     #: Status of Load Balancer
-    statuses = resource.Body('statuses')
+    statuses = resource.Body("statuses")

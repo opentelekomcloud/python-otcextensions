@@ -21,39 +21,47 @@ from otcextensions.tests.unit.osclient import test_base
 
 def generate_eips_list():
     """Generate random list of vault UUIDs"""
-    eips = [{"eip_id": 'eip-uuid-1',
-             "eip_address": 'eip-address-1',
-             "ip_version": 'ip-version-1'},
-            {"eip_id": 'eip-uuid-2',
-             "eip_address": 'eip-address-2',
-             "ip_version": 'ip-version-2'}
-            ]
+    eips = [
+        {
+            "eip_id": "eip-uuid-1",
+            "eip_address": "eip-address-1",
+            "ip_version": "ip-version-1",
+        },
+        {
+            "eip_id": "eip-uuid-2",
+            "eip_address": "eip-address-2",
+            "ip_version": "ip-version-2",
+        },
+    ]
     return eips
 
 
 def generate_floating_ips_list():
     """Generate random list of vault UUIDs"""
-    floating_ips = [{"publicip_id": "publicip-id-1",
-                     "publicip_address": "publicip-address-1",
-                     "ip_version": "ip-version-1"},
-                    {"publicip_id": "publicip-id-2",
-                     "publicip_address": "publicip-address-2",
-                     "ip_version": "ip-version-2"}
-                    ]
+    floating_ips = [
+        {
+            "publicip_id": "publicip-id-1",
+            "publicip_address": "publicip-address-1",
+            "ip_version": "ip-version-1",
+        },
+        {
+            "publicip_id": "publicip-id-2",
+            "publicip_address": "publicip-address-2",
+            "ip_version": "ip-version-2",
+        },
+    ]
     return floating_ips
 
 
 def generate_listeners_list():
     """Generate random list of vault UUIDs"""
-    listeners = [{"id": 'listener-id-1'},
-                 {"id": 'listener-id-2'}]
+    listeners = [{"id": "listener-id-1"}, {"id": "listener-id-2"}]
     return listeners
 
 
 def generate_pools_list():
     """Generate random list of vault UUIDs"""
-    pools = [{"id": 'pool-id-1'},
-             {"id": 'pool-id-2'}]
+    pools = [{"id": "pool-id-1"}, {"id": "pool-id-2"}]
     return pools
 
 
@@ -69,7 +77,7 @@ def generate_network_ids_list():
 
 def generate_tags_list():
     """Generate random list of lb UUIDs"""
-    tags = [{'key': 'key-tags', 'value': 'val-tags'}]
+    tags = [{"key": "key-tags", "value": "val-tags"}]
     return tags
 
 
@@ -88,7 +96,7 @@ class FakeLoadBalancer(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            "availability_zones": ['eu-de-01'],
+            "availability_zones": ["eu-de-01"],
             "created_at": uuid.uuid4().hex,
             "description": uuid.uuid4().hex,
             "deletion_protection_enable": True,
@@ -123,16 +131,17 @@ class FakeLoadBalancer(test_base.Fake):
 
 def generate_ipgroup():
     """Generate random list of vault UUIDs"""
-    ipgroup = {"ipgroup_id": "ipgroup-uuid",
-               "enable_ipgroup": True,
-               "type": "ipgroup-type"}
+    ipgroup = {
+        "ipgroup_id": "ipgroup-uuid",
+        "enable_ipgroup": True,
+        "type": "ipgroup-type",
+    }
     return ipgroup
 
 
 def generate_loadbalancers_list():
     """Generate random list of loadbalancers UUIDs"""
-    loadbalancers = [{"id": 'loadbalancer-id-1'},
-                     {"id": 'loadbalancer-id-2'}]
+    loadbalancers = [{"id": "loadbalancer-id-1"}, {"id": "loadbalancer-id-2"}]
     return loadbalancers
 
 

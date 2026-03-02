@@ -13,16 +13,16 @@
 """
 Change the login password of a DCS instance.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-instance = 'name_or_id'
-old_password = 'old_pwd'
-new_password = 'new_pwd'
+instance = "name_or_id"
+old_password = "old_pwd"
+new_password = "new_pwd"
 conn.dcs.change_instance_password(
-    instance=instance,
-    current_password=old_password,
-    new_password=new_password)
+    instance=instance, current_password=old_password, new_password=new_password
+)

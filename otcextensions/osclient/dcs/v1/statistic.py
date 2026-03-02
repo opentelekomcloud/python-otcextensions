@@ -10,7 +10,8 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-'''DCS Statistics v1 action implementations'''
+"""DCS Statistics v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -22,10 +23,17 @@ LOG = logging.getLogger(__name__)
 
 
 class ListStatistic(command.Lister):
-    _description = _('List DCS Statistics')
-    columns = ('instance_id', 'max_memory', 'used_memory',
-               'cmd_get_count', 'cmd_set_count', 'used_cpu',
-               'input_kbps', 'output_kbps')
+    _description = _("List DCS Statistics")
+    columns = (
+        "instance_id",
+        "max_memory",
+        "used_memory",
+        "cmd_get_count",
+        "cmd_set_count",
+        "used_cpu",
+        "input_kbps",
+        "output_kbps",
+    )
 
     def get_parser(self, prog_name):
         parser = super(ListStatistic, self).get_parser(prog_name)
@@ -36,8 +44,14 @@ class ListStatistic(command.Lister):
 
         data = client.statistics()
 
-        table = (self.columns,
-                 (utils.get_item_properties(
-                     s, self.columns,
-                 ) for s in data))
+        table = (
+            self.columns,
+            (
+                utils.get_item_properties(
+                    s,
+                    self.columns,
+                )
+                for s in data
+            ),
+        )
         return table

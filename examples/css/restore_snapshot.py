@@ -17,14 +17,14 @@ Restore a snapshot to a cluster
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 attrs = {
-    'targetCluster': 'target-cluster-uuid',
-    'indices': 'myindex1,myindex2',
+    "targetCluster": "target-cluster-uuid",
+    "indices": "myindex1,myindex2",
 }
 
-cluster_id = 'cluster-uuid'
-snapshot_id = 'snapshot-uuid'
+cluster_id = "cluster-uuid"
+snapshot_id = "snapshot-uuid"
 
 conn.css.restore_snapshot(cluster_id, snapshot_id, **attrs)

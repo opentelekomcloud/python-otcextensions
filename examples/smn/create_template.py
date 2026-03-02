@@ -13,16 +13,13 @@
 """
 Create one SMN message template
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-attrs = {
-    'name': 'my_template',
-    'protocol': 'sms',
-    'content': 'my_content'
-}
+attrs = {"name": "my_template", "protocol": "sms", "content": "my_content"}
 template = conn.smn.create_template(**attrs)
 print(template)

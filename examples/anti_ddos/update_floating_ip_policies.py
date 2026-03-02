@@ -13,10 +13,11 @@
 """
 Update Anti-DDoS Policy attributes.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 fip = "floating_ip_id"
 attrs = {
@@ -24,7 +25,7 @@ attrs = {
     "traffic_pos_id": 2,
     "http_request_pos_id": 1,
     "cleaning_access_pos_id": 1,
-    "app_type_id": 1
+    "app_type_id": 1,
 }
 
 policy = conn.anti_ddos.update_floating_ip_policies(fip, **attrs)

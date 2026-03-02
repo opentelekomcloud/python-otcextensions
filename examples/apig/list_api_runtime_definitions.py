@@ -13,12 +13,13 @@
 """
 Retrieve the runtime definition of an API.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-definitions = list(conn.apig.api_runtime_definitions(
-    gateway="gateway_id",
-    api="api_id",
-    env_id="environment_id"
-))
+conn = openstack.connect(cloud="otc")
+definitions = list(
+    conn.apig.api_runtime_definitions(
+        gateway="gateway_id", api="api_id", env_id="environment_id"
+    )
+)

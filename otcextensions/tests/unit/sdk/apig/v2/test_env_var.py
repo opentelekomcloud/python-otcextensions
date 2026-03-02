@@ -17,7 +17,7 @@ EXAMPLE_VAR = {
     "env_id": "7a1ad0c350844ee69479b47df9a881cb",
     "group_id": "c77f5e81d9cb4424bf704ef2b0ac7600",
     "id": "25054838a624400bbf2267cf5b3a3f70",
-    "variable_name": "address"
+    "variable_name": "address",
 }
 
 
@@ -25,20 +25,18 @@ class TestApiEnvironment(base.TestCase):
 
     def test_basic(self):
         sot = var.ApiEnvironmentVar()
-        self.assertEqual(
-            '/apigw/instances/%(gateway_id)s/env-variables',
-            sot.base_path)
+        self.assertEqual("/apigw/instances/%(gateway_id)s/env-variables", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_commit)
         self.assertTrue(sot.allow_delete)
         self.assertTrue(sot.allow_fetch)
-        self.assertEqual('variables', sot.resources_key)
+        self.assertEqual("variables", sot.resources_key)
 
     def test_make_it(self):
         sot = var.ApiEnvironmentVar(**EXAMPLE_VAR)
-        self.assertEqual(EXAMPLE_VAR['variable_value'], sot.variable_value)
-        self.assertEqual(EXAMPLE_VAR['env_id'], sot.env_id)
-        self.assertEqual(EXAMPLE_VAR['group_id'], sot.group_id)
-        self.assertEqual(EXAMPLE_VAR['id'], sot.id)
-        self.assertEqual(EXAMPLE_VAR['variable_name'], sot.variable_name)
+        self.assertEqual(EXAMPLE_VAR["variable_value"], sot.variable_value)
+        self.assertEqual(EXAMPLE_VAR["env_id"], sot.env_id)
+        self.assertEqual(EXAMPLE_VAR["group_id"], sot.group_id)
+        self.assertEqual(EXAMPLE_VAR["id"], sot.id)
+        self.assertEqual(EXAMPLE_VAR["variable_name"], sot.variable_name)

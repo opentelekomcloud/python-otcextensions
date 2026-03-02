@@ -17,8 +17,8 @@ For a full guide see
 https://developer.openstack.org/sdks/python/openstacksdk/user/guides/cluster.html
 """
 
-NODE_NAME = 'Test_Node'
-NODE_ID = 'dd803d4a-015d-4223-b15f-db29bad3146c'
+NODE_NAME = "Test_Node"
+NODE_ID = "dd803d4a-015d-4223-b15f-db29bad3146c"
 PROFILE_ID = "b0e3a680-e270-4eb8-9361-e5c9503fba0a"
 
 
@@ -27,7 +27,7 @@ def list_nodes(conn):
 
     for node in conn.clustering.nodes():
         print(node.to_dict())
-    for node in conn.clustering.nodes(sort='asc:name'):
+    for node in conn.clustering.nodes(sort="asc:name"):
         print(node.to_dict())
 
 
@@ -35,8 +35,8 @@ def create_node(conn):
     print("Create Node:")
 
     spec = {
-        'name': NODE_NAME,
-        'profile_id': PROFILE_ID,
+        "name": NODE_NAME,
+        "profile_id": PROFILE_ID,
     }
     node = conn.clustering.create_node(**spec)
     print(node.to_dict())
@@ -60,8 +60,8 @@ def update_node(conn):
     print("Update Node:")
 
     spec = {
-        'name': 'Test_Node01',
-        'profile_id': 'c0e3a680-e270-4eb8-9361-e5c9503fba0b',
+        "name": "Test_Node01",
+        "profile_id": "c0e3a680-e270-4eb8-9361-e5c9503fba0b",
     }
 
     node = conn.clustering.update_node(NODE_ID, **spec)
@@ -88,6 +88,6 @@ def check_node(conn):
 def recover_node(conn):
     print("Recover Node:")
 
-    spec = {'check': True}
+    spec = {"check": True}
     node = conn.clustering.recover_node(NODE_ID, **spec)
     print(node)

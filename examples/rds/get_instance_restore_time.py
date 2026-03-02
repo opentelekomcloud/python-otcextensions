@@ -13,12 +13,12 @@
 """
 Get a RDS instance restore time by id
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-instance = 'instance_id'
+instance = "instance_id"
 time = conn.rds.get_instance_restore_time(instance)
 print(time)

@@ -26,7 +26,7 @@ def list_events(conn):
     for events in conn.clustering.events():
         print(events.to_dict())
 
-    for events in conn.clustering.events(sort='name:asc'):
+    for events in conn.clustering.events(sort="name:asc"):
         print(events.to_dict())
 
 

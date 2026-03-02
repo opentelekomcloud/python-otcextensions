@@ -182,9 +182,7 @@ class Model(resource.Resource):
     #: Time when a model is created, in milliseconds calculated from 1970.
     created_at = resource.Body("create_at", type=int)
     #: Package required for inference code and model.
-    dependencies = resource.Body(
-        "dependencies", type=list, list_type=DependencySpec
-    )
+    dependencies = resource.Body("dependencies", type=list, list_type=DependencySpec)
     #: Model description.
     description = resource.Body("description")
     #: OBS path for storing the execution code. The name of the
@@ -197,9 +195,7 @@ class Model(resource.Resource):
     #: image path generated after model packaging.
     image_address = resource.Body("image_address")
     #: Collection of input parameters of a model.
-    input_params = resource.Body(
-        "input_params", type=list, list_type=ParamsSpec
-    )
+    input_params = resource.Body("input_params", type=list, list_type=ParamsSpec)
     #: Supported service type for deployment.
     install_type = resource.Body("install_type", type=list)
     #: Whether a model can be published to the marketplace.
@@ -237,9 +233,7 @@ class Model(resource.Resource):
     #: Model name.
     name = resource.Body("name", alias="model_name")
     #: Collection of output parameters of a model.
-    output_params = resource.Body(
-        "output_params", type=list, list_type=ParamsSpec
-    )
+    output_params = resource.Body("output_params", type=list, list_type=ParamsSpec)
     #: User to which a model belongs.
     owner_id = resource.Body("owner")
     #: Project to which a model belongs.
@@ -271,8 +265,9 @@ class Model(resource.Resource):
     #: ID of the workspace to which a service belongs.
     workspace_id = resource.Body("workspace_id")
 
-    def _translate_response(self, response, has_body=None, error_message=None,
-                            resource_response_key=None):
+    def _translate_response(
+        self, response, has_body=None, error_message=None, resource_response_key=None
+    ):
         """Given a KSA response, inflate this instance with its data
         DELETE operations don't return a body, so only try to work
         with a body when has_body is True.
@@ -320,9 +315,7 @@ class Model(resource.Resource):
                     body_attrs.update(body)
                     self._unknown_attrs_in_body.update(body)
                 elif self._store_unknown_attrs_as_properties:
-                    body_attrs = self._pack_attrs_under_properties(
-                        body_attrs, body
-                    )
+                    body_attrs = self._pack_attrs_under_properties(body_attrs, body)
 
                 self._body.attributes.update(body_attrs)
                 self._body.clean()

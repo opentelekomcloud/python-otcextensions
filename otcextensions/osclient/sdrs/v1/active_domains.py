@@ -10,7 +10,8 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-'''SDRS Active-active domains CLI implementation'''
+"""SDRS Active-active domains CLI implementation"""
+
 import logging
 
 from osc_lib import utils
@@ -22,33 +23,32 @@ LOG = logging.getLogger(__name__)
 
 
 def _flatten_domain(obj):
-    """Flatten the structure of active-active domains into a single dict
-    """
+    """Flatten the structure of active-active domains into a single dict"""
     obj = obj.domains
     i = 0
     data = {
-        'id': obj[i].id,
-        'name': obj[i].name,
-        'description': obj[i].description,
-        'sold_out': obj[i].sold_out,
-        'local_replication_cluster':
-            obj[i].local_replication_cluster.availability_zone,
-        'remote_replication_cluster':
-            obj[i].remote_replication_cluster.availability_zone
+        "id": obj[i].id,
+        "name": obj[i].name,
+        "description": obj[i].description,
+        "sold_out": obj[i].sold_out,
+        "local_replication_cluster": obj[i].local_replication_cluster.availability_zone,
+        "remote_replication_cluster": obj[
+            i
+        ].remote_replication_cluster.availability_zone,
     }
 
     return data
 
 
 class ListDomain(command.Lister):
-    _description = _('List Active-active domains')
+    _description = _("List Active-active domains")
     columns = (
-        'ID',
-        'name',
-        'description',
-        'sold_out',
-        'local_replication_cluster',
-        'remote_replication_cluster'
+        "ID",
+        "name",
+        "description",
+        "sold_out",
+        "local_replication_cluster",
+        "remote_replication_cluster",
     )
 
     def get_parser(self, prog_name):
@@ -61,8 +61,14 @@ class ListDomain(command.Lister):
 
         data = client.get_domains()
 
-        table = (self.columns,
-                 (utils.get_dict_properties(
-                     _flatten_domain(s), self.columns,
-                 ) for s in data))
+        table = (
+            self.columns,
+            (
+                utils.get_dict_properties(
+                    _flatten_domain(s),
+                    self.columns,
+                )
+                for s in data
+            ),
+        )
         return table

@@ -13,12 +13,13 @@
 """
 Remove backend server
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 conn.apig.remove_backend_server(
     gateway="gateway_id",
     vpc_channel="vpc_channel_id",
-    backend_server="backend_server_id"
+    backend_server="backend_server_id",
 )

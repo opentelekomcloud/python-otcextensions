@@ -13,9 +13,10 @@
 """
 Get constraints of gateway
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 conn.apig.get_constraints("gateway.id")

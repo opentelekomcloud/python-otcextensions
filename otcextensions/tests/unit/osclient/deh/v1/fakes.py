@@ -14,28 +14,24 @@ import random
 import uuid
 
 import mock
-
 from keystoneauth1 import adapter
-
-from otcextensions.tests.unit.osclient import test_base
 
 from otcextensions.common import sdk_utils
 from otcextensions.osclient.deh.v1 import host as _host
-
 from otcextensions.sdk.deh.v1 import host
 from otcextensions.sdk.deh.v1 import host_type
 from otcextensions.sdk.deh.v1 import server
+from otcextensions.tests.unit.osclient import test_base
 
 
 def gen_data(data, columns):
-    """Fill expected data tuple based on columns list
-    """
+    """Fill expected data tuple based on columns list"""
     result = []
     for attr in columns:
-        _data = getattr(data, attr, '')
-        if attr == 'host_properties':
+        _data = getattr(data, attr, "")
+        if attr == "host_properties":
             result.append(_host.HostPropertiesFormatter(_data))
-        elif attr == 'tags':
+        elif attr == "tags":
             result.append(sdk_utils.ListOfDictColumn(_data))
         else:
             result.append(_data)
@@ -59,31 +55,28 @@ class FakeHost(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'id': 'id-' + uuid.uuid4().hex,
+            "id": "id-" + uuid.uuid4().hex,
             # 'dedicated_host_ids': ['id-' + uuid.uuid4().hex],
-            'name': uuid.uuid4().hex,
-            'auto_placement': random.choice(['on', 'off']),
-            'availability_zone': uuid.uuid4().hex,
-            'state': random.choice(['available', 'fault', 'released']),
-            'project_id': uuid.uuid4().hex,
-            'available_vcpus': random.randint(1, 600),
-            'available_memory': random.randint(1, 600),
-            'instance_total': random.randint(1, 600),
-            'allocated_at': uuid.uuid4().hex,
-            'released_at': uuid.uuid4().hex,
-            'host_properties': {
-                'vcpus': random.randint(1, 600),
-                'cores': random.randint(1, 600),
-                'sockets': random.randint(1, 600),
-                'memory': random.randint(1, 600),
-                'host_type': uuid.uuid4().hex,
-                'host_type_name': uuid.uuid4().hex,
-                'available_instance_capacities': [
-                    {'flavor': uuid.uuid4().hex}
-                ],
+            "name": uuid.uuid4().hex,
+            "auto_placement": random.choice(["on", "off"]),
+            "availability_zone": uuid.uuid4().hex,
+            "state": random.choice(["available", "fault", "released"]),
+            "project_id": uuid.uuid4().hex,
+            "available_vcpus": random.randint(1, 600),
+            "available_memory": random.randint(1, 600),
+            "instance_total": random.randint(1, 600),
+            "allocated_at": uuid.uuid4().hex,
+            "released_at": uuid.uuid4().hex,
+            "host_properties": {
+                "vcpus": random.randint(1, 600),
+                "cores": random.randint(1, 600),
+                "sockets": random.randint(1, 600),
+                "memory": random.randint(1, 600),
+                "host_type": uuid.uuid4().hex,
+                "host_type_name": uuid.uuid4().hex,
+                "available_instance_capacities": [{"flavor": uuid.uuid4().hex}],
             },
-            'tags': [{'key': uuid.uuid4().hex, 'value': uuid.uuid4().hex}]
-
+            "tags": [{"key": uuid.uuid4().hex, "value": uuid.uuid4().hex}],
         }
         obj = host.Host.existing(**object_info)
         return obj
@@ -95,8 +88,8 @@ class FakeHostType(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'host_type': uuid.uuid4().hex,
-            'host_type_name': uuid.uuid4().hex,
+            "host_type": uuid.uuid4().hex,
+            "host_type_name": uuid.uuid4().hex,
         }
         obj = host_type.HostType.existing(**object_info)
         return obj
@@ -108,23 +101,19 @@ class FakeServer(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'addresses': {
-                'id-' + uuid.uuid4().hex: [{
-                    'addr': 'addr-' + uuid.uuid4().hex,
-                    'version': 4
-                }]
+            "addresses": {
+                "id-"
+                + uuid.uuid4().hex: [{"addr": "addr-" + uuid.uuid4().hex, "version": 4}]
             },
-            'created_at': uuid.uuid4().hex,
-            'updated_at': uuid.uuid4().hex,
-            'flavor': {'id-' + uuid.uuid4().hex},
-            'id': 'id-' + uuid.uuid4().hex,
-            'metadata': {
-                'os_type': uuid.uuid4().hex
-            },
-            'name': uuid.uuid4().hex,
-            'status': uuid.uuid4().hex,
-            'tenant_id': uuid.uuid4().hex,
-            'user_id': uuid.uuid4().hex
+            "created_at": uuid.uuid4().hex,
+            "updated_at": uuid.uuid4().hex,
+            "flavor": {"id-" + uuid.uuid4().hex},
+            "id": "id-" + uuid.uuid4().hex,
+            "metadata": {"os_type": uuid.uuid4().hex},
+            "name": uuid.uuid4().hex,
+            "status": uuid.uuid4().hex,
+            "tenant_id": uuid.uuid4().hex,
+            "user_id": uuid.uuid4().hex,
         }
         obj = server.Server.existing(**object_info)
         return obj

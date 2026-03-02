@@ -13,20 +13,20 @@
 """
 Update a RDS configuration template
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-values = {
-    'max_connections': '11'
-}
-name_or_id = 'configuration_name_or_id'
+values = {"max_connections": "11"}
+name_or_id = "configuration_name_or_id"
 configuration = conn.rds.find_configuration(name_or_id=name_or_id)
-configuration = conn.rds.create_configuration(config=configuration,
-                                              name='configuration_update',
-                                              description='my new config',
-                                              values=values)
+configuration = conn.rds.create_configuration(
+    config=configuration,
+    name="configuration_update",
+    description="my new config",
+    values=values,
+)
 print(configuration)

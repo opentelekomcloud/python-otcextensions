@@ -11,13 +11,10 @@
 # under the License.
 
 from openstack import service_description
-
 from otcextensions.sdk.cfwv2.v2 import _proxy
 
 
 class Cfwv2Service(service_description.ServiceDescription):
     """The Cloud Firewall service."""
 
-    supported_versions = {
-        '2': _proxy.Proxy
-    }
+    supported_versions = {"2": _proxy.Proxy}

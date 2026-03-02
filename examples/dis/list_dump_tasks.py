@@ -13,12 +13,12 @@
 """
 List Dump Tasks for a specified stream.
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-stream_name = 'test-stream'
+stream_name = "test-stream"
 
 print(list(conn.dis.dump_tasks(stream_name)))

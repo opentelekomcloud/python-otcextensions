@@ -10,13 +10,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from otcextensions.sdk.gaussdb.v3 import _proxy as _proxy_v3
 from openstack import service_description
+from otcextensions.sdk.gaussdb.v3 import _proxy as _proxy_v3
 
 
 class GaussdbService(service_description.ServiceDescription):
     """The Gaussdb service."""
 
     supported_versions = {
-        '3': _proxy_v3.Proxy,
+        "3": _proxy_v3.Proxy,
     }

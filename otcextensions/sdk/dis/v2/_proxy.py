@@ -10,12 +10,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import csv
 import base64
 import binascii
+import csv
 from pathlib import Path
 
 from openstack import proxy
+
 # from openstack import exceptions
 from otcextensions.sdk.dis.v2 import app as _app
 from otcextensions.sdk.dis.v2 import checkpoint as _checkpoint
@@ -30,8 +31,10 @@ class Proxy(proxy.Proxy):
 
     def __init__(self, session, *args, **kwargs):
         super(Proxy, self).__init__(session=session, *args, **kwargs)
-        self.additional_headers = {"Accept": "application/json",
-                                   "Content-type": "application/json"}
+        self.additional_headers = {
+            "Accept": "application/json",
+            "Content-type": "application/json",
+        }
 
     # ======== Stream ========
     def streams(self, **params):
@@ -43,7 +46,7 @@ class Proxy(proxy.Proxy):
         :returns: a generator of
             (:class:`~otcextensions.sdk.dis.v2.stream.Stream`) instances
         """
-        if params.get('limit'):
+        if params.get("limit"):
             params.update(paginated=False)
         return self._list(_stream.Stream, **params)
 
@@ -80,8 +83,7 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._delete(_stream.Stream, stream_name,
-                            ignore_missing=ignore_missing)
+        return self._delete(_stream.Stream, stream_name, ignore_missing=ignore_missing)
 
     def update_stream_partition(self, stream_name, count):
         """Update a DIS stream partition count.
@@ -91,10 +93,7 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        attrs = {
-            'stream_name': stream_name,
-            'target_partition_count': count
-        }
+        attrs = {"stream_name": stream_name, "target_partition_count": count}
 
         return self._update(_stream.Stream, stream_name, **attrs)
 
@@ -119,7 +118,7 @@ class Proxy(proxy.Proxy):
         :returns: a generator of
             (:class:`~otcextensions.sdk.dis.v2.app.App`) instances
         """
-        if params.get('limit'):
+        if params.get("limit"):
             params.update(paginated=False)
         return self._list(_app.App, **params)
 
@@ -144,11 +143,12 @@ class Proxy(proxy.Proxy):
         :returns: a generator of
             (:class:`~otcextensions.sdk.dis.v2.app.App`) instances
         """
-        params.setdefault('checkpoint_type', 'LAST_READ')
-        if params.get('limit'):
+        params.setdefault("checkpoint_type", "LAST_READ")
+        if params.get("limit"):
             params.update(paginated=False)
-        return self._list(_app.AppConsumption, app_name=app_name,
-                          stream_name=stream_name, **params)
+        return self._list(
+            _app.AppConsumption, app_name=app_name, stream_name=stream_name, **params
+        )
 
     def delete_app(self, app_name, ignore_missing=False):
         """Delete a DIS App.
@@ -174,11 +174,12 @@ class Proxy(proxy.Proxy):
         :returns: The results of stream creation
         :rtype: :class:`~otcextensions.sdk.dis.v2.checkpoint.Checkpoint`
         """
-        attrs.update(checkpoint_type='LAST_READ')
+        attrs.update(checkpoint_type="LAST_READ")
         return self._create(_checkpoint.Checkpoint, **attrs)
 
-    def get_checkpoint(self, stream_name, app_name,
-                       partition_id, checkpoint_type='LAST_READ'):
+    def get_checkpoint(
+        self, stream_name, app_name, partition_id, checkpoint_type="LAST_READ"
+    ):
         """Query details of a Checkpoint.
 
         :param stream_name: Name of the stream to which the checkpoint belongs.
@@ -190,16 +191,17 @@ class Proxy(proxy.Proxy):
             when no resource can be found.
         """
         params = {
-            'stream_name': stream_name,
-            'app_name': app_name,
-            'partition_id': partition_id,
-            'checkpoint_type': checkpoint_type
+            "stream_name": stream_name,
+            "app_name": app_name,
+            "partition_id": partition_id,
+            "checkpoint_type": checkpoint_type,
         }
         obj = self._get_resource(_checkpoint.Checkpoint, None)
         return obj.get_checkpoint(self, **params)
 
-    def delete_checkpoint(self, stream_name, app_name,
-                          partition_id=None, checkpoint_type='LAST_READ'):
+    def delete_checkpoint(
+        self, stream_name, app_name, partition_id=None, checkpoint_type="LAST_READ"
+    ):
         """Delete a Checkpoint.
 
         :param stream_name: Name of the stream to which the checkpoint belongs.
@@ -210,9 +212,9 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         params = {
-            'stream_name': stream_name,
-            'app_name': app_name,
-            'checkpoint_type': checkpoint_type
+            "stream_name": stream_name,
+            "app_name": app_name,
+            "checkpoint_type": checkpoint_type,
         }
         if partition_id:
             params.update(partition_id=partition_id)
@@ -221,8 +223,7 @@ class Proxy(proxy.Proxy):
         return obj.delete_checkpoint(self, **params)
 
     # ======== Data Management ========
-    def upload_data(self, stream_name, stream_id=None,
-                    records=None, filename=None):
+    def upload_data(self, stream_name, stream_id=None, records=None, filename=None):
         """Upload data to DIS stream.
 
         :param stream_name: Name of the stream.
@@ -233,49 +234,46 @@ class Proxy(proxy.Proxy):
         :returns: The results of uploaded data.
         :rtype: :class:`~otcextensions.sdk.dis.v2.data.Data`
         """
+
         def encode_data(data):
             try:
                 base64.b64decode(data, validate=True)
                 return data
             except binascii.Error:
-                return base64.b64encode(data.encode('ascii')).decode('ascii')
+                return base64.b64encode(data.encode("ascii")).decode("ascii")
 
         records = records if records else []
         records_data = []
         if filename:
-            with Path(filename).open('r') as csv_content:
-                header = next(csv.reader(csv_content, delimiter=','))
-                if 'data' not in header:
+            with Path(filename).open("r") as csv_content:
+                header = next(csv.reader(csv_content, delimiter=","))
+                if "data" not in header:
                     raise ValueError(
-                        f'data column is missing in the header of {filename}'
+                        f"data column is missing in the header of {filename}"
                     )
-                reader = csv.DictReader(csv_content, header, delimiter=',')
+                reader = csv.DictReader(csv_content, header, delimiter=",")
                 for record in reader:
-                    data = record.get('data')
-                    if data and data != '':
-                        record['data'] = encode_data(data)
+                    data = record.get("data")
+                    if data and data != "":
+                        record["data"] = encode_data(data)
                     else:
-                        raise ValueError('Data File contains empty data!')
+                        raise ValueError("Data File contains empty data!")
                     records_data.append(record)
         else:
             for record in records:
-                data = record.get('data')
-                if data and data != '':
-                    record['data'] = encode_data(data)
+                data = record.get("data")
+                if data and data != "":
+                    record["data"] = encode_data(data)
                 else:
-                    raise ValueError('data is missing in the attributes')
+                    raise ValueError("data is missing in the attributes")
                 records_data.append(record)
 
-        request_attrs = {
-            'stream_name': stream_name,
-            'records': records_data
-        }
+        request_attrs = {"stream_name": stream_name, "records": records_data}
         if stream_id:
             request_attrs.append(stream_id=stream_id)
         return self._create(_data.Data, **request_attrs)
 
-    def download_data(self, partititon_cursor,
-                      max_fetch_bytes=None, filename=None):
+    def download_data(self, partititon_cursor, max_fetch_bytes=None, filename=None):
         """Download data from a DIS stream.
 
         :param partititon_cursor: Data cursor, which needs to be
@@ -287,25 +285,25 @@ class Proxy(proxy.Proxy):
         :returns: a generator of
             (:class:`~otcextensions.sdk.dis.v2.data.Data`) instances
         """
-        params = {'partition-cursor': partititon_cursor}
+        params = {"partition-cursor": partititon_cursor}
         if max_fetch_bytes:
             params.update(max_fetch_bytes=max_fetch_bytes)
         data = self._list(_data.Data, **params)
         if filename:
             columns = (
-                'sequence_number',
-                'data',
-                'timestamp',
-                'timestamp_type',
+                "sequence_number",
+                "data",
+                "timestamp",
+                "timestamp_type",
             )
-            with open(filename, 'w', encoding='UTF8', newline='') as f:
+            with open(filename, "w", encoding="UTF8", newline="") as f:
                 writer = csv.writer(f)
                 # write the header
                 writer.writerow(columns)
                 # write multiple rows
                 writer.writerows(
-                    (s.sequence_number, s.data, s.timestamp,
-                        s.timestamp_type) for s in data
+                    (s.sequence_number, s.data, s.timestamp, s.timestamp_type)
+                    for s in data
                 )
         else:
             return data
@@ -320,9 +318,9 @@ class Proxy(proxy.Proxy):
         :returns: `partition_cursor`.
         :rtype: :class:`~otcextensions.sdk.dis.v2.data.Data`
         """
-        params['stream-name'] = stream_name
-        params['partition-id'] = partition_id
-        obj = _data.Data('')
+        params["stream-name"] = stream_name
+        params["partition-id"] = partition_id
+        obj = _data.Data("")
         return obj.get_data_cursor(self, **params)
 
     # ======== Stream ========
@@ -337,9 +335,7 @@ class Proxy(proxy.Proxy):
         :returns: The results of adding DumpTask.
         :rtype: :class:`~otcextensions.sdk.dis.v2.dump_task.DumpTask`
         """
-        return self._create(
-            _dump_task.DumpTask, uri_stream_name=stream_name, **attrs
-        )
+        return self._create(_dump_task.DumpTask, uri_stream_name=stream_name, **attrs)
 
     def dump_tasks(self, stream_name):
         """List Dump tasks.
@@ -358,9 +354,12 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._delete(_dump_task.DumpTask, task_name,
-                            uri_stream_name=stream_name,
-                            ignore_missing=ignore_missing)
+        return self._delete(
+            _dump_task.DumpTask,
+            task_name,
+            uri_stream_name=stream_name,
+            ignore_missing=ignore_missing,
+        )
 
     def get_dump_task(self, stream_name, task_name):
         """Query Dump Task details.
@@ -371,8 +370,7 @@ class Proxy(proxy.Proxy):
         :raises: :class:`~openstack.exceptions.ResourceNotFound`
             when no resource can be found.
         """
-        return self._get(_dump_task.DumpTask, task_name,
-                         uri_stream_name=stream_name)
+        return self._get(_dump_task.DumpTask, task_name, uri_stream_name=stream_name)
 
     def start_dump_task(self, stream_name, *task_id):
         """Start dump tasks in batches.
@@ -382,7 +380,7 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         obj = _dump_task.DumpTask()
-        return obj._action(self, stream_name, 'start', *task_id)
+        return obj._action(self, stream_name, "start", *task_id)
 
     def pause_dump_task(self, stream_name, *task_id):
         """Pause dump tasks in batches.
@@ -392,4 +390,4 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         obj = _dump_task.DumpTask()
-        return obj._action(self, stream_name, 'stop', *task_id)
+        return obj._action(self, stream_name, "stop", *task_id)

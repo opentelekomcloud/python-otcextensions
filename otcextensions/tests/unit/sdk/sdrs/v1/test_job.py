@@ -11,16 +11,14 @@
 # under the License.
 
 import uuid
-from keystoneauth1 import adapter
-import mock
-from openstack.tests.unit import base
 
+import mock
+from keystoneauth1 import adapter
+
+from openstack.tests.unit import base
 from otcextensions.sdk.sdrs.v1 import job as _job
 
-
-EXAMPLE = {
-    'job_id': uuid.uuid4()
-}
+EXAMPLE = {"job_id": uuid.uuid4()}
 
 
 class TestJob(base.TestCase):
@@ -29,14 +27,13 @@ class TestJob(base.TestCase):
         super(TestJob, self).setUp()
         self.sess = mock.Mock(spec=adapter.Adapter)
         self.sess.get = mock.Mock()
-        self.sess.default_microversion = '1'
+        self.sess.default_microversion = "1"
         self.sess._get_connection = mock.Mock(return_value=self.cloud)
         self.sot = _job.Job()
 
     def test_basic(self):
         sot = _job.Job()
-        self.assertEqual('/jobs',
-                         sot.base_path)
+        self.assertEqual("/jobs", sot.base_path)
         self.assertFalse(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertTrue(sot.allow_fetch)
@@ -45,6 +42,4 @@ class TestJob(base.TestCase):
 
     def test_make_it(self):
         test_job = _job.Job(**EXAMPLE)
-        self.assertEqual(
-            EXAMPLE['job_id'],
-            test_job.job_id)
+        self.assertEqual(EXAMPLE["job_id"], test_job.job_id)

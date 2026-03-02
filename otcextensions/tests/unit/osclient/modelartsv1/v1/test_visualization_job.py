@@ -141,9 +141,7 @@ class TestCreateVisualizationJob(fakes.TestModelartsv1):
 
         self.cmd = visualization_job.CreateVisualizationJob(self.app, None)
 
-        self.client.create_visualization_job = mock.Mock(
-            return_value=self._data
-        )
+        self.client.create_visualization_job = mock.Mock(return_value=self._data)
 
     def test_create(self):
         arglist = [
@@ -202,9 +200,7 @@ class TestUpdateVisualizationJob(fakes.TestModelartsv1):
 
         self.cmd = visualization_job.UpdateVisualizationJob(self.app, None)
 
-        self.client.update_visualization_job = mock.Mock(
-            return_value=self._data
-        )
+        self.client.update_visualization_job = mock.Mock(return_value=self._data)
 
     def test_update(self):
         arglist = [

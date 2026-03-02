@@ -10,11 +10,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import mock
-
 from keystoneauth1 import adapter
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.dcs.v1 import instance
 
 FAKE_ID = "68d5745e-6af2-40e4-945d-fe449be00148"
@@ -47,7 +45,7 @@ EXAMPLE = {
     "user_name": "liutao02",
     "order_id": "XXXXXXXXX",
     "maintain_begin": "22:00:00",
-    "maintain_end": "02:00:00"
+    "maintain_end": "02:00:00",
 }
 
 
@@ -61,7 +59,7 @@ class TestInstance(base.TestCase):
     def test_basic(self):
         sot = instance.Instance()
 
-        self.assertEqual('/instances', sot.base_path)
+        self.assertEqual("/instances", sot.base_path)
 
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_list)
@@ -72,35 +70,34 @@ class TestInstance(base.TestCase):
     def test_make_it(self):
 
         sot = instance.Instance(**EXAMPLE)
-        self.assertEqual(EXAMPLE['instance_id'], sot.id)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['engine'], sot.engine)
-        self.assertEqual(EXAMPLE['capacity'], sot.capacity)
-        self.assertEqual(EXAMPLE['ip'], sot.ip)
-        self.assertEqual(EXAMPLE['port'], sot.port)
-        self.assertEqual(EXAMPLE['status'], sot.status)
-        self.assertEqual(EXAMPLE['description'], sot.description)
-        self.assertEqual(EXAMPLE['resource_spec_code'], sot.resource_spec_code)
-        self.assertEqual(EXAMPLE['engine_version'], sot.engine_version)
-        self.assertEqual(EXAMPLE['internal_version'], sot.internal_version)
-        self.assertEqual(EXAMPLE['charging_mode'], sot.charging_mode)
-        self.assertEqual(EXAMPLE['vpc_id'], sot.vpc_id)
-        self.assertEqual(EXAMPLE['vpc_name'], sot.vpc_name)
-        self.assertEqual(EXAMPLE['created_at'], sot.created_at)
-        self.assertEqual(EXAMPLE['error_code'], sot.error_code)
-        self.assertEqual(EXAMPLE['product_id'], sot.product_id)
-        self.assertEqual(EXAMPLE['security_group_id'], sot.security_group_id)
-        self.assertEqual(EXAMPLE['security_group_name'],
-                         sot.security_group_name)
-        self.assertEqual(EXAMPLE['subnet_id'], sot.subnet_id)
-        self.assertEqual(EXAMPLE['subnet_name'], sot.subnet_name)
-        self.assertEqual(EXAMPLE['available_zones'], sot.available_zones)
-        self.assertEqual(EXAMPLE['max_memory'], sot.max_memory)
-        self.assertEqual(EXAMPLE['used_memory'], sot.used_memory)
-        self.assertEqual(EXAMPLE['user_id'], sot.user_id)
-        self.assertEqual(EXAMPLE['user_name'], sot.user_name)
-        self.assertEqual(EXAMPLE['maintain_begin'], sot.maintain_begin)
-        self.assertEqual(EXAMPLE['maintain_end'], sot.maintain_end)
+        self.assertEqual(EXAMPLE["instance_id"], sot.id)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["engine"], sot.engine)
+        self.assertEqual(EXAMPLE["capacity"], sot.capacity)
+        self.assertEqual(EXAMPLE["ip"], sot.ip)
+        self.assertEqual(EXAMPLE["port"], sot.port)
+        self.assertEqual(EXAMPLE["status"], sot.status)
+        self.assertEqual(EXAMPLE["description"], sot.description)
+        self.assertEqual(EXAMPLE["resource_spec_code"], sot.resource_spec_code)
+        self.assertEqual(EXAMPLE["engine_version"], sot.engine_version)
+        self.assertEqual(EXAMPLE["internal_version"], sot.internal_version)
+        self.assertEqual(EXAMPLE["charging_mode"], sot.charging_mode)
+        self.assertEqual(EXAMPLE["vpc_id"], sot.vpc_id)
+        self.assertEqual(EXAMPLE["vpc_name"], sot.vpc_name)
+        self.assertEqual(EXAMPLE["created_at"], sot.created_at)
+        self.assertEqual(EXAMPLE["error_code"], sot.error_code)
+        self.assertEqual(EXAMPLE["product_id"], sot.product_id)
+        self.assertEqual(EXAMPLE["security_group_id"], sot.security_group_id)
+        self.assertEqual(EXAMPLE["security_group_name"], sot.security_group_name)
+        self.assertEqual(EXAMPLE["subnet_id"], sot.subnet_id)
+        self.assertEqual(EXAMPLE["subnet_name"], sot.subnet_name)
+        self.assertEqual(EXAMPLE["available_zones"], sot.available_zones)
+        self.assertEqual(EXAMPLE["max_memory"], sot.max_memory)
+        self.assertEqual(EXAMPLE["used_memory"], sot.used_memory)
+        self.assertEqual(EXAMPLE["user_id"], sot.user_id)
+        self.assertEqual(EXAMPLE["user_name"], sot.user_name)
+        self.assertEqual(EXAMPLE["maintain_begin"], sot.maintain_begin)
+        self.assertEqual(EXAMPLE["maintain_end"], sot.maintain_end)
 
     def test_stop(self):
 
@@ -116,10 +113,7 @@ class TestInstance(base.TestCase):
         sot.stop(self.sess)
 
         self.sess.put.assert_called_once_with(
-            'instances/status',
-            json={
-                'action': 'stop',
-                'instances': [FAKE_ID]}
+            "instances/status", json={"action": "stop", "instances": [FAKE_ID]}
         )
 
     def test_start(self):
@@ -136,10 +130,7 @@ class TestInstance(base.TestCase):
         sot.start(self.sess)
 
         self.sess.put.assert_called_once_with(
-            'instances/status',
-            json={
-                'action': 'start',
-                'instances': [FAKE_ID]}
+            "instances/status", json={"action": "start", "instances": [FAKE_ID]}
         )
 
     def test_restart(self):
@@ -156,10 +147,7 @@ class TestInstance(base.TestCase):
         sot.restart(self.sess)
 
         self.sess.put.assert_called_once_with(
-            'instances/status',
-            json={
-                'action': 'restart',
-                'instances': [FAKE_ID]}
+            "instances/status", json={"action": "restart", "instances": [FAKE_ID]}
         )
 
     def test_change_pwd(self):
@@ -173,11 +161,9 @@ class TestInstance(base.TestCase):
 
         self.sess.put.return_value = mock_response
 
-        sot.change_pwd(self.sess, 'curr', 'new')
+        sot.change_pwd(self.sess, "curr", "new")
 
         self.sess.put.assert_called_once_with(
-            'instances/%s/password' % (FAKE_ID),
-            json={
-                'old_password': 'curr',
-                'new_password': 'new'}
+            "instances/%s/password" % (FAKE_ID),
+            json={"old_password": "curr", "new_password": "new"},
         )

@@ -13,10 +13,11 @@
 """
 List all ELB certs
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 cert = conn.elb.find_certificate(name_or_id="cert-testServer")
 print(cert)

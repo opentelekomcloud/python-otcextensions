@@ -14,11 +14,10 @@ import logging
 
 from otcextensions import sdk
 
-
 LOG = logging.getLogger(__name__)
 
-DEFAULT_API_VERSION = '1'
-API_VERSION_OPTION = 'os_ces_api_version'
+DEFAULT_API_VERSION = "1"
+API_VERSION_OPTION = "os_ces_api_version"
 API_NAME = "ces"
 API_VERSIONS = {
     "1.0": "openstack.connection.Connection",
@@ -34,8 +33,7 @@ def make_client(instance):
     # register unconditionally, since we need to override default CES
     sdk.register_otc_extensions(conn)
 
-    LOG.debug('ces client initialized using OpenStack OTC SDK: %s',
-              conn.ces)
+    LOG.debug("ces client initialized using OpenStack OTC SDK: %s", conn.ces)
     return conn.ces
 
 

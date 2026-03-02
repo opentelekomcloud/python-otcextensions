@@ -13,8 +13,8 @@ from openstack import resource
 
 
 class Template(resource.Resource):
-    resources_key = 'message_templates'
-    base_path = '/notifications/message_template'
+    resources_key = "message_templates"
+    base_path = "/notifications/message_template"
 
     # capabilities
     allow_create = True
@@ -24,25 +24,25 @@ class Template(resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'offset', 'limit', 'protocol', 'name',
-        name='message_template_name')
+        "offset", "limit", "protocol", "name", name="message_template_name"
+    )
 
     #: Unique Request ID
-    id = resource.Body('message_template_id', alternate_id=True)
+    id = resource.Body("message_template_id", alternate_id=True)
     #: Specifies the Template Name.
     #: Contains only digits, letters, underscores and hyphens.
-    name = resource.Body('message_template_name')
+    name = resource.Body("message_template_name")
     #: Protocol supported by the template.
-    protocol = resource.Body('protocol')
+    protocol = resource.Body("protocol")
     #: Template content, which currently supports plain text only.
-    content = resource.Body('content')
+    content = resource.Body("content")
     #: Template variable list.
-    tag_names = resource.Body('tag_names', type=list)
+    tag_names = resource.Body("tag_names", type=list)
     #: Time when the template was created.
     #:  The UTC time is in YYYY-MM-DDTHH:MM:SSZ format.
-    create_time = resource.Body('create_time')
+    create_time = resource.Body("create_time")
     #: Last time when the template was updated.
     #:  The UTC time is in YYYY-MM-DDTHH:MM:SSZ format.
-    update_time = resource.Body('update_time')
+    update_time = resource.Body("update_time")
     #: Request ID, which is unique.
-    request_id = resource.Body('request_id')
+    request_id = resource.Body("request_id")

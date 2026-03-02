@@ -13,10 +13,11 @@
 """
 Disable or Enable the debugging domain name bound to an API group.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 updated = conn.apig.enable_debug_domain_name(
     gateway="gateway_id",

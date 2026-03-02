@@ -13,14 +13,11 @@
 """
 Create AK/SK credentials
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-credential = conn.identity.create_credential(
-    description='my creds',
-    user_id='user_id'
-)
+credential = conn.identity.create_credential(description="my creds", user_id="user_id")
 print(credential)

@@ -13,25 +13,21 @@
 """
 Update function metadata
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 metadata_attrs = {
-    'memory_size': 768,
-    'handler': 'index.handler',
-    'runtime': 'Python3.9',
-    'mount_config': {
-        'mount_user': {
-            'user_id': -1,
-            'user_group_id': -1
-        },
+    "memory_size": 768,
+    "handler": "index.handler",
+    "runtime": "Python3.9",
+    "mount_config": {
+        "mount_user": {"user_id": -1, "user_group_id": -1},
     },
-    'timeout': 40
+    "timeout": 40,
 }
-metadata = conn.functiongraph.update_function_metadata(
-    "func_urn", **metadata_attrs
-)
+metadata = conn.functiongraph.update_function_metadata("func_urn", **metadata_attrs)

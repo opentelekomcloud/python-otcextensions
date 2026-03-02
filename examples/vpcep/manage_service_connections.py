@@ -15,13 +15,11 @@
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-name_or_id = 'xyz'
-action = 'accept'
-endpoints = ['endpoint1-id', 'endpoint2-id']
+name_or_id = "xyz"
+action = "accept"
+endpoints = ["endpoint1-id", "endpoint2-id"]
 endpoint_service = conn.vpcep.find_service(name_or_id)
-connections = conn.vpcep.service_connections(
-    endpoint_service, action, endpoints
-)
+connections = conn.vpcep.service_connections(endpoint_service, action, endpoints)
 print(list(connections))

@@ -13,10 +13,11 @@
 """
 List all CCE clusters
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 for cluster in conn.cce.clusters():
     print(cluster)

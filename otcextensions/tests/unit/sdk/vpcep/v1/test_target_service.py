@@ -14,13 +14,12 @@ from openstack.tests.unit import base
 from otcextensions.sdk.vpcep.v1 import target_service
 from otcextensions.tests.unit.sdk.utils import assert_attributes_equal
 
-
 EXAMPLE = {
     "id": "9d4c1028-1336-4556-9881-b5d807c1b8a8",
     "service_name": "test123",
     "service_type": "interface",
     "created_at": "2018-09-17T07:28:31Z",
-    "is_charge": "true"
+    "is_charge": "true",
 }
 
 
@@ -30,7 +29,7 @@ class TestTargetService(base.TestCase):
         sot = target_service.TargetService()
         self.assertEqual(None, sot.resources_key)
         self.assertEqual(None, sot.resource_key)
-        self.assertEqual('/vpc-endpoint-services/describe', sot.base_path)
+        self.assertEqual("/vpc-endpoint-services/describe", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_fetch)
         self.assertFalse(sot.allow_create)
@@ -39,10 +38,10 @@ class TestTargetService(base.TestCase):
 
         self.assertDictEqual(
             {
-                'id': 'id',
-                'limit': 'limit',
-                'marker': 'marker',
-                'name': 'endpoint_service_name',
+                "id": "id",
+                "limit": "limit",
+                "marker": "marker",
+                "name": "endpoint_service_name",
             },
             sot._query_mapping._mapping,
         )

@@ -11,12 +11,12 @@
 # under the License.
 
 import uuid
+
+from openstack import _log
 from otcextensions.sdk.function_graph.v2 import dependency
 from otcextensions.tests.functional import base
 
-from openstack import _log
-
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestFunctionDependencies(base.BaseFunctionalTest):
@@ -25,21 +25,16 @@ class TestFunctionDependencies(base.BaseFunctionalTest):
 
     def setUp(self):
         super(TestFunctionDependencies, self).setUp()
-        u = 'https://fg-test-files.obs.eu-de.otc.t-systems.com/dependency.zip'
+        u = "https://fg-test-files.obs.eu-de.otc.t-systems.com/dependency.zip"
         self.attrs = {
-            'depend_link': u,
-            'depend_type': 'obs',
-            'runtime': 'Python3.10',
-            'name': 'test-dep-' + self.uuid
+            "depend_link": u,
+            "depend_type": "obs",
+            "runtime": "Python3.10",
+            "name": "test-dep-" + self.uuid,
         }
-        self.dep = self.conn.functiongraph.create_dependency_version(
-            **self.attrs
-        )
+        self.dep = self.conn.functiongraph.create_dependency_version(**self.attrs)
         assert isinstance(self.dep, dependency.Dependency)
-        self.addCleanup(
-            self.conn.functiongraph.delete_dependency_version,
-            self.dep
-        )
+        self.addCleanup(self.conn.functiongraph.delete_dependency_version, self.dep)
 
     def test_list_dependencies(self):
         dep = list(self.conn.functiongraph.dependencies())

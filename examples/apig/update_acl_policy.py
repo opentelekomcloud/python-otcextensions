@@ -13,16 +13,17 @@
 """
 Update Access Control Policy
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 attrs = {
     "acl_name": "acl_demo",
     "acl_type": "DENY",
     "acl_value": "192.168.1.5,192.168.10.1",
-    "entity_type": "IP"
+    "entity_type": "IP",
 }
-created = conn.apig.update_acl_policy(gateway='gateway_id',
-                                      acl_policy='acl_id',
-                                      **attrs)
+created = conn.apig.update_acl_policy(
+    gateway="gateway_id", acl_policy="acl_id", **attrs
+)

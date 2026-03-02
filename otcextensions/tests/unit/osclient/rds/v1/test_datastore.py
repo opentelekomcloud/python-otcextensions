@@ -11,15 +11,17 @@
 #   under the License.
 #
 import mock
-# from osc_lib import utils as common_utils
 
+# from osc_lib import utils as common_utils
 from otcextensions.osclient.rds.v1 import datastore
 from otcextensions.tests.unit.osclient.rds.v1 import fakes as rds_fakes
 
 
 class TestListDatastores(rds_fakes.TestRds):
 
-    columns_datastore_type = ['Name', ]
+    columns_datastore_type = [
+        "Name",
+    ]
 
     def setUp(self):
         super(TestListDatastores, self).setUp()
@@ -30,25 +32,21 @@ class TestListDatastores(rds_fakes.TestRds):
 
         self.datastore_types = []
         self.datastore_type_data = []
-        for ds in ['MySQL', 'PostgreSQL', 'SQLServer']:
-            obj = type('obj', (object,), {'name': ds})
+        for ds in ["MySQL", "PostgreSQL", "SQLServer"]:
+            obj = type("obj", (object,), {"name": ds})
             self.datastore_types.append(obj)
             # Since only one field is there leave a comma at the end
             self.datastore_type_data.append((ds,))
 
     def test_list_datastore_types(self):
-        arglist = [
-        ]
+        arglist = []
 
-        verifylist = [
-        ]
+        verifylist = []
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.rds.datastore_types.side_effect = [
-            self.datastore_types
-        ]
+        self.app.client_manager.rds.datastore_types.side_effect = [self.datastore_types]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -61,8 +59,8 @@ class TestListDatastores(rds_fakes.TestRds):
 
 class TestListDatastoreVersions(rds_fakes.TestRds):
     column_headers = [
-        'ID',
-        'Name',
+        "ID",
+        "Name",
         # 'Datastore',
         # 'Image',
         # 'Packages'
@@ -79,30 +77,26 @@ class TestListDatastoreVersions(rds_fakes.TestRds):
         self.datastore_data = []
 
         for s in self.datastores:
-            self.datastore_data.append((
-                s.id,
-                s.name,
-                # s.datastore,
-                # s.image,
-                # s.packages,
-            ))
+            self.datastore_data.append(
+                (
+                    s.id,
+                    s.name,
+                    # s.datastore,
+                    # s.image,
+                    # s.packages,
+                )
+            )
 
     def test_list_datastore_versions(self):
-        arglist = [
-            'test_type'
-        ]
+        arglist = ["test_type"]
 
-        verifylist = [
-            ('datastore', 'test_type')
-        ]
+        verifylist = [("datastore", "test_type")]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.rds.datastore_versions.side_effect = [
-            self.datastores
-        ]
+        self.app.client_manager.rds.datastore_versions.side_effect = [self.datastores]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -114,7 +108,14 @@ class TestListDatastoreVersions(rds_fakes.TestRds):
 
 
 class TestShowDatastoreVersion(rds_fakes.TestRds):
-    columns = ['Active', 'Datastore', 'ID', 'Image', 'Name', 'Packages', ]
+    columns = [
+        "Active",
+        "Datastore",
+        "ID",
+        "Image",
+        "Name",
+        "Packages",
+    ]
 
     def setUp(self):
         super(TestShowDatastoreVersion, self).setUp()
@@ -136,23 +137,18 @@ class TestShowDatastoreVersion(rds_fakes.TestRds):
         )
 
     def test_show_datastore_versions(self):
-        arglist = [
-            self.datastore.id,
-            '--datastore=test_ds'
-        ]
+        arglist = [self.datastore.id, "--datastore=test_ds"]
 
         verifylist = [
-            ('datastore', 'test_ds'),
-            ('datastore_version', self.datastore.id)
+            ("datastore", "test_ds"),
+            ("datastore_version", self.datastore.id),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.app.client_manager.rds.get_datastore_version.side_effect = [
-            self.datastore
-        ]
+        self.app.client_manager.rds.get_datastore_version.side_effect = [self.datastore]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)

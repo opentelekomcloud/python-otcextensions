@@ -19,8 +19,8 @@ from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
-DEFAULT_API_VERSION = '1'
-API_VERSION_OPTION = 'os_dws_api_version'
+DEFAULT_API_VERSION = "1"
+API_VERSION_OPTION = "os_dws_api_version"
 API_NAME = "dws"
 API_VERSIONS = {
     "1": "openstack.connection.Connection",
@@ -32,22 +32,21 @@ def make_client(instance):
 
     conn = instance.sdk_connection
 
-    if getattr(conn, 'dws', None) is None:
-        LOG.debug('OTC extensions are not registered. Do that now')
+    if getattr(conn, "dws", None) is None:
+        LOG.debug("OTC extensions are not registered. Do that now")
         sdk.register_otc_extensions(conn)
 
-    LOG.debug('DWS client initialized using OpenStack OTC SDK: %s',
-              conn.dws)
+    LOG.debug("DWS client initialized using OpenStack OTC SDK: %s", conn.dws)
     return conn.dws
 
 
 def build_option_parser(parser):
     """Hook to add global options"""
     parser.add_argument(
-        '--os-dws-api-version',
-        metavar='<dws-api-version>',
-        default=utils.env('OS_DWS_API_VERSION'),
-        help=_("DWS API version, default=%s "
-               "(Env: OS_DWS_API_VERSION)") % DEFAULT_API_VERSION
+        "--os-dws-api-version",
+        metavar="<dws-api-version>",
+        default=utils.env("OS_DWS_API_VERSION"),
+        help=_("DWS API version, default=%s " "(Env: OS_DWS_API_VERSION)")
+        % DEFAULT_API_VERSION,
     )
     return parser

@@ -13,7 +13,6 @@ from openstack import exceptions
 from openstack import proxy
 from openstack import resource
 from openstack import utils
-
 from otcextensions.sdk.auto_scaling.v1 import activity as _activity
 from otcextensions.sdk.auto_scaling.v1 import config as _config
 from otcextensions.sdk.auto_scaling.v1 import group as _group
@@ -52,9 +51,7 @@ class Proxy(proxy.Proxy):
         :returns: The results of group creation
         :rtype: :class:`~otcextensions.sdk.auto_scaling.v1.group.Group`
         """
-        return self._create(
-            _group.Group, prepend_key=False, **attrs
-        )
+        return self._create(_group.Group, prepend_key=False, **attrs)
 
     def update_group(self, group, **attrs):
         """update group with attributes
@@ -68,8 +65,7 @@ class Proxy(proxy.Proxy):
         :returns: The results of group creation
         :rtype: :class:`~otcextensions.sdk.auto_scaling.v1.group.Group`
         """
-        return self._update(
-            _group.Group, group, prepend_key=False, **attrs)
+        return self._update(_group.Group, group, prepend_key=False, **attrs)
 
     def get_group(self, group):
         """Get a group
@@ -81,7 +77,8 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.auto_scaling.v1.group.Group`
         """
         return self._get(
-            _group.Group, group,
+            _group.Group,
+            group,
         )
 
     def delete_group(self, group, ignore_missing=True, force_delete=False):
@@ -121,7 +118,8 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         return self._find(
-            _group.Group, name_or_id,
+            _group.Group,
+            name_or_id,
             ignore_missing=ignore_missing,
         )
 
@@ -132,8 +130,7 @@ class Proxy(proxy.Proxy):
              or a :class:`~otcextensions.sdk.auto_scaling.v1.group.Group`
              instance.
         """
-        group = self._get_resource(
-            _group.Group, group)
+        group = self._get_resource(_group.Group, group)
         return group.resume(self)
 
     def pause_group(self, group):
@@ -143,13 +140,12 @@ class Proxy(proxy.Proxy):
              or a :class:`~otcextensions.sdk.auto_scaling.v1.group.Group`
              instance.
         """
-        group = self._get_resource(
-            _group.Group, group
-        )
+        group = self._get_resource(_group.Group, group)
         return group.pause(self)
 
-    def wait_for_group(self, group, status='INSERVICE', failures=None,
-                       interval=2, wait=180):
+    def wait_for_group(
+        self, group, status="INSERVICE", failures=None, interval=2, wait=180
+    ):
         """Wait for a group to be in a particular status.
 
         :param group: The value can be the ID of a group
@@ -171,13 +167,9 @@ class Proxy(proxy.Proxy):
         :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
                  has transited to one of the failure statuses.
         """
-        group = self._get_resource(
-            _group.Group, group
-        )
-        failures = ['ERROR'] if failures is None else failures
-        return resource.wait_for_status(
-            self, group, status, failures, interval, wait
-        )
+        group = self._get_resource(_group.Group, group)
+        failures = ["ERROR"] if failures is None else failures
+        return resource.wait_for_status(self, group, status, failures, interval, wait)
 
     def wait_for_delete_group(self, group, interval=2, wait=60):
         """Wait for the group to be deleted.
@@ -225,12 +217,7 @@ class Proxy(proxy.Proxy):
         :returns: The results of config creation
         :rtype: :class:`~otcextensions.sdk.auto_scaling.v1.config.Config`
         """
-        return self._create(
-            _config.Config,
-            prepend_key=False,
-            name=name,
-            **attrs
-        )
+        return self._create(_config.Config, prepend_key=False, name=name, **attrs)
 
     def get_config(self, config):
         """Get a config
@@ -257,7 +244,8 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.auto_scaling.v1.config.Config`
         """
         return self._find(
-            _config.Config, name_or_id,
+            _config.Config,
+            name_or_id,
             ignore_missing=ignore_missing,
         )
 
@@ -277,7 +265,8 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.auto_scaling.v1.config.Config`
         """
         return self._delete(
-            _config.Config, config,
+            _config.Config,
+            config,
             ignore_missing=ignore_missing,
         )
 
@@ -313,7 +302,9 @@ class Proxy(proxy.Proxy):
         group = self._get_resource(_group.Group, group)
         return self._list(
             _policy.Policy,
-            base_path='/scaling_policy/{id}/list'.format(id=group.id), **query)
+            base_path="/scaling_policy/{id}/list".format(id=group.id),
+            **query
+        )
 
     def create_policy(self, **attrs):
         """Create a new policy from attributes
@@ -366,8 +357,7 @@ class Proxy(proxy.Proxy):
         :returns: Policy been deleted
         :rtype: :class:`~otcextensions.sdk.auto_scaling.v1.policy.Policy`
         """
-        return self._delete(_policy.Policy, policy,
-                            ignore_missing=ignore_missing)
+        return self._delete(_policy.Policy, policy, ignore_missing=ignore_missing)
 
     def find_policy(self, name_or_id, group, ignore_missing=True):
         """Find a single policy
@@ -383,9 +373,9 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         group = self._get_resource(_group.Group, group)
-        return self._find(_policy.Policy, name_or_id,
-                          ignore_missing=ignore_missing,
-                          group_id=group.id)
+        return self._find(
+            _policy.Policy, name_or_id, ignore_missing=ignore_missing, group_id=group.id
+        )
 
     def execute_policy(self, policy):
         """execute policy
@@ -438,8 +428,9 @@ class Proxy(proxy.Proxy):
         group = self._get_resource(_group.Group, group)
         return self._list(
             _instance.Instance,
-            base_path='/scaling_group_instance/{id}/list'.format(id=group.id),
-            **query)
+            base_path="/scaling_group_instance/{id}/list".format(id=group.id),
+            **query
+        )
 
     def find_instance(self, name_or_id, group, ignore_missing=True):
         """Find a single instance
@@ -457,12 +448,14 @@ class Proxy(proxy.Proxy):
             or None.
         """
         group = self._get_resource(_group.Group, group)
-        return self._find(_instance.Instance, name_or_id,
-                          ignore_missing=ignore_missing,
-                          group_id=group.id)
+        return self._find(
+            _instance.Instance,
+            name_or_id,
+            ignore_missing=ignore_missing,
+            group_id=group.id,
+        )
 
-    def remove_instance(self, instance, delete_instance=False,
-                        ignore_missing=True):
+    def remove_instance(self, instance, delete_instance=False, ignore_missing=True):
         """Remove an instance of auto scaling group
 
         :precondition:
@@ -485,13 +478,11 @@ class Proxy(proxy.Proxy):
         :returns: None
         """
         instance = self._get_resource(_instance.Instance, instance)
-        return instance.remove(self,
-                               delete_instance=delete_instance,
-                               ignore_missing=ignore_missing)
+        return instance.remove(
+            self, delete_instance=delete_instance, ignore_missing=ignore_missing
+        )
 
-    def batch_instance_action(
-            self, group, instances,
-            action, delete_instance=False):
+    def batch_instance_action(self, group, instances, action, delete_instance=False):
         """Batch add instances for auto scaling group
 
         :param group: The group which instances will be added to,
@@ -510,8 +501,9 @@ class Proxy(proxy.Proxy):
         instance = _instance.Instance(scaling_group_id=group.id)
         return instance.batch_action(self, instances, action, delete_instance)
 
-    def wait_for_instance(self, instance, status='INSERVICE', failures=None,
-                          interval=2, wait=180):
+    def wait_for_instance(
+        self, instance, status="INSERVICE", failures=None, interval=2, wait=180
+    ):
         """Wait for an instance to be in a particular status.
 
         :param instance:
@@ -534,15 +526,19 @@ class Proxy(proxy.Proxy):
                  has transited to one of the failure statuses.
         """
         instance = self._get_resource(_instance.Instance, instance)
-        failures = ['ERROR'] if failures is None else failures
+        failures = ["ERROR"] if failures is None else failures
         for count in utils.iterate_timeout(
             timeout=wait,
-            message="Timeout waiting for instance to be in {status} status"
-                    .format(status=status),
-            wait=interval
+            message="Timeout waiting for instance to be in {status} status".format(
+                status=status
+            ),
+            wait=interval,
         ):
-            instance = self._find(_instance.Instance, name_or_id=instance.id,
-                                  group_id=instance.scaling_group_id)
+            instance = self._find(
+                _instance.Instance,
+                name_or_id=instance.id,
+                group_id=instance.scaling_group_id,
+            )
             if instance and instance.lifecycle_state == status:
                 return instance
 
@@ -566,11 +562,14 @@ class Proxy(proxy.Proxy):
         for count in utils.iterate_timeout(
             timeout=wait,
             message="Timeout waiting for instance to delete",
-            wait=interval
+            wait=interval,
         ):
-            instance = self._find(_instance.Instance, name_or_id=instance.id,
-                                  group_id=instance.scaling_group_id,
-                                  ignore_missing=True)
+            instance = self._find(
+                _instance.Instance,
+                name_or_id=instance.id,
+                group_id=instance.scaling_group_id,
+                ignore_missing=True,
+            )
             if instance is None:
                 return
 
@@ -593,9 +592,7 @@ class Proxy(proxy.Proxy):
             instances
         """
         group = self._get_resource(_group.Group, group)
-        return self._list(_activity.Activity,
-                          scaling_group_id=group.id,
-                          **query)
+        return self._list(_activity.Activity, scaling_group_id=group.id, **query)
 
     # ======== Quotas ========
     def quotas(self, group=None):
@@ -609,22 +606,23 @@ class Proxy(proxy.Proxy):
         """
         if group:
             group = self._get_resource(_group.Group, group)
-            return self._list(_quota.ScalingQuota,
-                              paginated=False,
-                              scaling_group_id=group.id)
+            return self._list(
+                _quota.ScalingQuota, paginated=False, scaling_group_id=group.id
+            )
         else:
             return self._list(_quota.Quota, paginated=False)
 
     # ======== Project cleanup ========
     def _get_cleanup_dependencies(self):
-        return {
-            'auto_scaling': {
-                'before': ['compute', 'block_storage']
-            }
-        }
+        return {"auto_scaling": {"before": ["compute", "block_storage"]}}
 
-    def _service_cleanup(self, dry_run=True, client_status_queue=None,
-                         identified_resources=None,
-                         filters=None, resource_evaluation_fn=None,
-                         skip_resources=None):
+    def _service_cleanup(
+        self,
+        dry_run=True,
+        client_status_queue=None,
+        identified_resources=None,
+        filters=None,
+        resource_evaluation_fn=None,
+        skip_resources=None,
+    ):
         pass

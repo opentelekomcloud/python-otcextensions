@@ -13,10 +13,11 @@
 """
 List all SMN topics
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 query = {}
 for topic in conn.smn.topics(**query):

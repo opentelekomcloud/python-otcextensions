@@ -11,17 +11,10 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.function_graph.v2 import metric
 
-
 EXAMPLE = {
-    'duration': [
-        {
-            'timestamp': 1596679200000,
-            'value': -1
-        }
-    ],
+    "duration": [{"timestamp": 1596679200000, "value": -1}],
 }
 
 
@@ -29,13 +22,11 @@ class TestFunctionInvocation(base.TestCase):
 
     def test_basic(self):
         sot = metric.Metric()
-        path = '/fgs/functions/statistics'
+        path = "/fgs/functions/statistics"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_list)
 
     def test_make_it(self):
         sot = metric.Metric(**EXAMPLE)
-        self.assertEqual(EXAMPLE['duration'][0]['timestamp'],
-                         sot.duration[0].timestamp)
-        self.assertEqual(EXAMPLE['duration'][0]['value'],
-                         sot.duration[0].value)
+        self.assertEqual(EXAMPLE["duration"][0]["timestamp"], sot.duration[0].timestamp)
+        self.assertEqual(EXAMPLE["duration"][0]["value"], sot.duration[0].value)

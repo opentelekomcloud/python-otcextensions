@@ -15,10 +15,11 @@ Retrieve Anti-DDoS Policy for a specific Floating IP by using Floating IP id
 or an instance of class FloatingIP. Anti-DDoS must be enabled for this IP
 otherwise an error occures.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 fip = "floating_ip_id"
 policy = conn.anti_ddos.get_floating_ip_policies(fip)

@@ -13,11 +13,12 @@
 """
 Get details of DIS Stream by stream name.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-stream_name = 'test-stream'
+stream_name = "test-stream"
 resp = conn.dis.get_stream(stream_name)
 print(resp)

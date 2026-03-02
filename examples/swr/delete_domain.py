@@ -13,15 +13,16 @@
 """
 Delete sharing domain
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 org = conn.swr.delete_domain(
-    namespace='org',
-    repository='repo',
-    access_domain='OTC00000000001000000100',
+    namespace="org",
+    repository="repo",
+    access_domain="OTC00000000001000000100",
 )

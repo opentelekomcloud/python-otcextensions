@@ -11,14 +11,13 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.vlb.v3 import l7_rule
 
 EXAMPLE = {
-    'compare_type': 'compare_type',
-    'admin_state_up': True,
-    'value': 'value',
-    'type': 'type',
+    "compare_type": "compare_type",
+    "admin_state_up": True,
+    "value": "value",
+    "type": "type",
 }
 
 
@@ -26,7 +25,7 @@ class TestLoadBalancer(base.TestCase):
 
     def test_basic(self):
         sot = l7_rule.L7Rule()
-        path = '/elb/l7policies/%(l7policy_id)s/rules'
+        path = "/elb/l7policies/%(l7policy_id)s/rules"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_list)
@@ -36,6 +35,6 @@ class TestLoadBalancer(base.TestCase):
 
     def test_make_it(self):
         sot = l7_rule.L7Rule(**EXAMPLE)
-        self.assertEqual(EXAMPLE['compare_type'], sot.compare_type)
-        self.assertEqual(EXAMPLE['value'], sot.rule_value)
-        self.assertEqual(EXAMPLE['type'], sot.type)
+        self.assertEqual(EXAMPLE["compare_type"], sot.compare_type)
+        self.assertEqual(EXAMPLE["value"], sot.rule_value)
+        self.assertEqual(EXAMPLE["type"], sot.type)

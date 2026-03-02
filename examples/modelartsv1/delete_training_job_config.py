@@ -12,6 +12,7 @@
 # under the License.
 #
 """delete a training job configuration"""
+
 import openstack
 
 openstack.enable_logging(True)

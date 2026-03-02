@@ -10,13 +10,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from otcextensions.sdk.dns.v2 import _proxy
-from otcextensions.sdk.dns.v2 import zone
-from otcextensions.sdk.dns.v2 import nameserver as _ns
-from otcextensions.sdk.dns.v2 import floating_ip
-from otcextensions.sdk.dns.v2 import recordset
-
 from openstack.tests.unit import test_proxy_base
+from otcextensions.sdk.dns.v2 import _proxy
+from otcextensions.sdk.dns.v2 import floating_ip
+from otcextensions.sdk.dns.v2 import nameserver as _ns
+from otcextensions.sdk.dns.v2 import recordset
+from otcextensions.sdk.dns.v2 import zone
 
 
 class TestDnsProxy(test_proxy_base.TestProxyBase):
@@ -27,24 +26,26 @@ class TestDnsProxy(test_proxy_base.TestProxyBase):
 
 class TestDnsZone(TestDnsProxy):
     def test_zone_create(self):
-        self.verify_create(self.proxy.create_zone, zone.Zone,
-                           method_kwargs={'name': 'id'},
-                           expected_kwargs={'name': 'id',
-                                            'prepend_key': False})
+        self.verify_create(
+            self.proxy.create_zone,
+            zone.Zone,
+            method_kwargs={"name": "id"},
+            expected_kwargs={"name": "id", "prepend_key": False},
+        )
 
     def test_zone_delete(self):
-        self.verify_delete(self.proxy.delete_zone,
-                           zone.Zone, True)
+        self.verify_delete(self.proxy.delete_zone, zone.Zone, True)
 
     def test_zone_find(self):
         self.verify_find(self.proxy.find_zone, zone.Zone)
 
     def test_zone_find_private(self):
-        self.verify_find(self.proxy.find_zone, zone.Zone,
-                         method_kwargs={
-                             'p1': 'v1'
-                         },
-                         expected_kwargs={'p1': 'v1'})
+        self.verify_find(
+            self.proxy.find_zone,
+            zone.Zone,
+            method_kwargs={"p1": "v1"},
+            expected_kwargs={"p1": "v1"},
+        )
 
     def test_zone_get(self):
         self.verify_get(self.proxy.get_zone, zone.Zone)
@@ -57,74 +58,78 @@ class TestDnsZone(TestDnsProxy):
 
     def test_associate_router(self):
         self._verify(
-            'otcextensions.sdk.dns.v2.zone.Zone.associate_router',
+            "otcextensions.sdk.dns.v2.zone.Zone.associate_router",
             self.proxy.add_router_to_zone,
-            method_args=['zone_id'],
-            method_kwargs={'x': 1},
+            method_args=["zone_id"],
+            method_kwargs={"x": 1},
             expected_args=[self.proxy],
-            expected_kwargs={'x': 1}
+            expected_kwargs={"x": 1},
         )
 
     def test_disassociate_router(self):
         self._verify(
-            'otcextensions.sdk.dns.v2.zone.Zone.disassociate_router',
+            "otcextensions.sdk.dns.v2.zone.Zone.disassociate_router",
             self.proxy.remove_router_from_zone,
-            method_args=['zone_id'],
-            method_kwargs={'x': 1},
+            method_args=["zone_id"],
+            method_kwargs={"x": 1},
             expected_args=[self.proxy],
-            expected_kwargs={'x': 1}
+            expected_kwargs={"x": 1},
         )
 
     def test_ns(self):
         self.verify_list(
-            self.proxy.nameservers, _ns.NameServer,
-            method_kwargs={
-                'zone': 'zone_id'
-            },
-            expected_kwargs={
-                'paginated': False,
-                'zone_id': 'zone_id'
-            }
+            self.proxy.nameservers,
+            _ns.NameServer,
+            method_kwargs={"zone": "zone_id"},
+            expected_kwargs={"paginated": False, "zone_id": "zone_id"},
         )
 
 
 class TestDnsRecordset(TestDnsProxy):
     def test_recordset_create(self):
-        self.verify_create(self.proxy.create_recordset, recordset.Recordset,
-                           method_kwargs={'zone': 'id'},
-                           expected_kwargs={'zone_id': 'id',
-                                            'prepend_key': False})
+        self.verify_create(
+            self.proxy.create_recordset,
+            recordset.Recordset,
+            method_kwargs={"zone": "id"},
+            expected_kwargs={"zone_id": "id", "prepend_key": False},
+        )
 
     def test_recordset_delete(self):
-        self.verify_delete(self.proxy.delete_recordset,
-                           recordset.Recordset, True)
+        self.verify_delete(self.proxy.delete_recordset, recordset.Recordset, True)
 
     def test_recordset_update(self):
         self.verify_update(self.proxy.update_recordset, recordset.Recordset)
 
     def test_recordset_get(self):
-        self.verify_get(self.proxy.get_recordset, recordset.Recordset,
-                        method_kwargs={'zone': 'zid'},
-                        expected_kwargs={'zone_id': 'zid'}
-                        )
+        self.verify_get(
+            self.proxy.get_recordset,
+            recordset.Recordset,
+            method_kwargs={"zone": "zid"},
+            expected_kwargs={"zone_id": "zid"},
+        )
 
     def test_recordsets(self):
-        self.verify_list(self.proxy.recordsets, recordset.Recordset,
-                         base_path='/recordsets')
+        self.verify_list(
+            self.proxy.recordsets, recordset.Recordset, base_path="/recordsets"
+        )
 
     def test_recordsets_zone(self):
-        self.verify_list(self.proxy.recordsets, recordset.Recordset,
-                         method_kwargs={'zone': 'zid'},
-                         expected_kwargs={'zone_id': 'zid'})
+        self.verify_list(
+            self.proxy.recordsets,
+            recordset.Recordset,
+            method_kwargs={"zone": "zid"},
+            expected_kwargs={"zone_id": "zid"},
+        )
 
     def test_recordset_find(self):
-        self._verify("openstack.proxy.Proxy._find",
-                     self.proxy.find_recordset,
-                     method_args=['zone', 'rs'],
-                     method_kwargs={},
-                     expected_args=[recordset.Recordset, 'rs'],
-                     expected_kwargs={'ignore_missing': True,
-                                      'zone_id': 'zone'})
+        self._verify(
+            "openstack.proxy.Proxy._find",
+            self.proxy.find_recordset,
+            method_args=["zone", "rs"],
+            method_kwargs={},
+            expected_args=[recordset.Recordset, "rs"],
+            expected_kwargs={"ignore_missing": True, "zone_id": "zone"},
+        )
 
 
 class TestDnsFloatIP(TestDnsProxy):
@@ -135,17 +140,17 @@ class TestDnsFloatIP(TestDnsProxy):
         self.verify_get(self.proxy.get_floating_ip, floating_ip.FloatingIP)
 
     def test_floating_ip_update(self):
-        self.verify_update(self.proxy.update_floating_ip,
-                           floating_ip.FloatingIP)
+        self.verify_update(self.proxy.update_floating_ip, floating_ip.FloatingIP)
 
     def test_floating_ip_set(self):
-        self.verify_update(self.proxy.set_floating_ip,
-                           floating_ip.FloatingIP)
+        self.verify_update(self.proxy.set_floating_ip, floating_ip.FloatingIP)
 
     def test_floating_ip_unset(self):
-        self._verify('openstack.proxy.Proxy._update',
-                     self.proxy.unset_floating_ip,
-                     method_args=['value'],
-                     method_kwargs={},
-                     expected_args=[floating_ip.FloatingIP, 'value'],
-                     expected_kwargs={'ptrdname': None})
+        self._verify(
+            "openstack.proxy.Proxy._update",
+            self.proxy.unset_floating_ip,
+            method_args=["value"],
+            method_kwargs={},
+            expected_args=[floating_ip.FloatingIP, "value"],
+            expected_kwargs={"ptrdname": None},
+        )

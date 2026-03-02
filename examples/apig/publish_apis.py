@@ -13,13 +13,14 @@
 """
 Publish APIs
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 unpublish = conn.apig.offline_apis(
     gateway="gateway_id",
     apis=["api_id_1", "api_id_2"],
     env="environment_id",
-    remark="publish"
+    remark="publish",
 )

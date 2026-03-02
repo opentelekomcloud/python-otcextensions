@@ -21,14 +21,15 @@ class TestL7Policy(TestVlb):
         super(TestL7Policy, self).setUp()
         self.create_network()
         self.create_load_balancer()
-        self.create_listener(protocol='HTTP')
+        self.create_listener(protocol="HTTP")
         self.create_certificate()
         self.create_listener(
             protocol_port=443,
-            protocol='HTTPS',
-            name='sdk-vlb-test-r-lis-' + self.uuid_v4,
+            protocol="HTTPS",
+            name="sdk-vlb-test-r-lis-" + self.uuid_v4,
             additional=True,
-            default_tls_container_ref=TestVlb.certificate.id)
+            default_tls_container_ref=TestVlb.certificate.id,
+        )
         self.create_l7policy(TestVlb.additional_listener.id)
 
     def test_01_list_l7Policies(self):
@@ -44,12 +45,12 @@ class TestL7Policy(TestVlb):
         self.assertIsNotNone(l7p)
 
     def test_04_update_l7Policy(self):
-        description = 'updated_policy'
+        description = "updated_policy"
         l7p = self.client.update_l7_policy(
             TestVlb.l7policy,
             description=description,
         )
-        self.assertEqual(l7p['description'], description)
+        self.assertEqual(l7p["description"], description)
 
         # cleanup
         self.client.delete_l7_policy(TestVlb.l7policy)
@@ -57,8 +58,6 @@ class TestL7Policy(TestVlb):
         self.client.delete_listener(TestVlb.listener)
         self.client.delete_certificate(TestVlb.certificate)
         self.client.delete_load_balancer(TestVlb.load_balancer)
-        self.net_client.delete_ip(
-            TestVlb.load_balancer.floating_ips[0]['publicip_id']
-        )
+        self.net_client.delete_ip(TestVlb.load_balancer.floating_ips[0]["publicip_id"])
 
         self.addCleanup(self.destroy_network, TestVlb.network)

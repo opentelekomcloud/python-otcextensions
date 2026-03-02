@@ -10,7 +10,8 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-'''CES Alarm v1 action implementations'''
+"""CES Alarm v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -22,40 +23,37 @@ LOG = logging.getLogger(__name__)
 
 
 class ListMetrics(command.Lister):
-    _description = _('List CES Metrics')
+    _description = _("List CES Metrics")
     columns = (
-        'namespace',
-        'dimensions',
-        'metric_name',
-        'unit',
+        "namespace",
+        "dimensions",
+        "metric_name",
+        "unit",
     )
 
     table_columns = (
-        'namespace',
-        'dimensions.name',
-        'dimensions.value',
-        'metric_name',
-        'unit',
+        "namespace",
+        "dimensions.name",
+        "dimensions.value",
+        "metric_name",
+        "unit",
     )
 
     def get_parser(self, prog_name):
         parser = super(ListMetrics, self).get_parser(prog_name)
 
         parser.add_argument(
-            '--namespace',
-            metavar='<namespace>',
-            help=_('Namespace of the monitored object, e.g.\n'
-                   'SYS.ECS, SYS.VPC')
+            "--namespace",
+            metavar="<namespace>",
+            help=_("Namespace of the monitored object, e.g.\n" "SYS.ECS, SYS.VPC"),
         )
         parser.add_argument(
-            '--metric-name',
-            metavar='<metric_name>',
-            help=_('Name of the metrics object.')
+            "--metric-name",
+            metavar="<metric_name>",
+            help=_("Name of the metrics object."),
         )
         parser.add_argument(
-            '--unit',
-            metavar='<unit>',
-            help=_('Unit which is measured.')
+            "--unit", metavar="<unit>", help=_("Unit which is measured.")
         )
         return parser
 
@@ -65,11 +63,11 @@ class ListMetrics(command.Lister):
         query = {}
 
         if parsed_args.namespace:
-            query['namespace'] = parsed_args.namespace
+            query["namespace"] = parsed_args.namespace
         if parsed_args.metric_name:
-            query['metric_name'] = parsed_args.metric_name
+            query["metric_name"] = parsed_args.metric_name
         if parsed_args.unit:
-            query['unit'] = parsed_args.unit
+            query["unit"] = parsed_args.unit
 
         data = client.metrics(**query)
 

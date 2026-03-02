@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack.tests.unit import base
-
 from otcextensions.sdk.dds.v3 import instance
 
 EXAMPLE = {
@@ -18,7 +17,7 @@ EXAMPLE = {
     "datastore": {
         "type": "DDS-Community",
         "version": "3.4",
-        "storage_engine": "wiredTiger"
+        "storage_engine": "wiredTiger",
     },
     "region": "aaa",
     "availability_zone": "bbb",
@@ -28,31 +27,24 @@ EXAMPLE = {
     "password": "Test@123",
     "mode": "Sharding",
     "flavor": [
-        {
-            "type": "mongos",
-            "num": 2,
-            "spec_code": "dds.mongodb.s2.medium.4.mongos"
-        },
+        {"type": "mongos", "num": 2, "spec_code": "dds.mongodb.s2.medium.4.mongos"},
         {
             "type": "shard",
             "num": 2,
             "storage": "ULTRAHIGH",
             "size": 20,
-            "spec_code": "dds.mongodb.s2.medium.4.shard"
+            "spec_code": "dds.mongodb.s2.medium.4.shard",
         },
         {
             "type": "config",
             "num": 1,
             "storage": "ULTRAHIGH",
             "size": 20,
-            "spec_code": "dds.mongodb.s2.large.2.config"
-        }
+            "spec_code": "dds.mongodb.s2.large.2.config",
+        },
     ],
-    "backup_strategy": {
-        "start_time": "08:15-09:15",
-        "keep_days": "8"
-    },
-    "ssl_option": "1"
+    "backup_strategy": {"start_time": "08:15-09:15", "keep_days": "8"},
+    "ssl_option": "1",
 }
 
 
@@ -61,29 +53,32 @@ class TestFlavor(base.TestCase):
     def test_basic(self):
         sot = instance.Instance()
 
-        self.assertEqual('/instances', sot.base_path)
-        self.assertEqual('instances', sot.resources_key)
-        self.assertEqual('instance', sot.resource_key)
+        self.assertEqual("/instances", sot.base_path)
+        self.assertEqual("instances", sot.resources_key)
+        self.assertEqual("instance", sot.resource_key)
 
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_fetch)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_delete)
         self.assertTrue(sot.allow_commit)
-        self.assertDictEqual({
-            'id': 'id',
-            'name': 'name',
-            'mode': 'mode',
-            'marker': 'marker',
-            'datastore_type': 'datastore_type',
-            'vpc_id': 'vpc_id',
-            'subnet_id': 'subnet_id',
-            'limit': 'limit',
-            'offset': 'offset'},
-            sot._query_mapping._mapping)
+        self.assertDictEqual(
+            {
+                "id": "id",
+                "name": "name",
+                "mode": "mode",
+                "marker": "marker",
+                "datastore_type": "datastore_type",
+                "vpc_id": "vpc_id",
+                "subnet_id": "subnet_id",
+                "limit": "limit",
+                "offset": "offset",
+            },
+            sot._query_mapping._mapping,
+        )
 
     def test_make_it(self):
         sot = instance.Instance(**EXAMPLE)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['subnet_id'], sot.subnet_id)
-        self.assertEqual(EXAMPLE['security_group_id'], sot.security_group_id)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["subnet_id"], sot.subnet_id)
+        self.assertEqual(EXAMPLE["security_group_id"], sot.security_group_id)

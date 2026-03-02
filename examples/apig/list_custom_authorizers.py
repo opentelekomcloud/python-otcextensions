@@ -13,12 +13,10 @@
 """
 List custom authorizers
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-attrs = {
-    'limit': 2
-}
-found = list(conn.apig.custom_authorizers(gateway='gateway_id',
-                                          **attrs))
+conn = openstack.connect(cloud="otc")
+attrs = {"limit": 2}
+found = list(conn.apig.custom_authorizers(gateway="gateway_id", **attrs))

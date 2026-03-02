@@ -13,15 +13,12 @@
 """
 Update API group for gateway
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-attrs = {
-    'name': 'name',
-    'remark': 'new_remark'
-}
+conn = openstack.connect(cloud="otc")
+attrs = {"name": "name", "remark": "new_remark"}
 updated = conn.apig.update_api_group(
-    gateway='gateway_id',
-    api_group='api_group_id',
-    **attrs)
+    gateway="gateway_id", api_group="api_group_id", **attrs
+)

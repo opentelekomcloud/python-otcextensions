@@ -18,8 +18,8 @@ Scale nodes of CSS Cluster by cluster_id or
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-cluster_id = 'cluster-uuid'
+cluster_id = "cluster-uuid"
 add_nodes = 2
 conn.css.extend_cluster(cluster_id, add_nodes)

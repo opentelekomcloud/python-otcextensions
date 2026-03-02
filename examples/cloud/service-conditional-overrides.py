@@ -11,7 +11,8 @@
 # under the License.
 
 import openstack
+
 openstack.enable_logging(debug=True)
 
-cloud = openstack.connect(cloud='rax', region_name='DFW')
-print(cloud.has_service('network'))
+cloud = openstack.connect(cloud="rax", region_name="DFW")
+print(cloud.has_service("network"))

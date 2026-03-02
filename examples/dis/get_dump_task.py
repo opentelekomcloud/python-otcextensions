@@ -13,12 +13,13 @@
 """
 Query details of a Dump Task.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-stream_name = 'test-stream'
-task_name = 'test-dump-task'
+stream_name = "test-stream"
+task_name = "test-dump-task"
 resp = conn.dis.get_dump_task(stream_name, task_name)
 print(resp)

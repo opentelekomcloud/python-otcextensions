@@ -13,16 +13,11 @@
 """
 Bind Domain name to group
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-attrs = {
-    "url_domain": "example.com"
-}
-bind = conn.apig.bind_domain_name(
-    gateway="gateway_id",
-    group="group_id",
-    **attrs
-)
+attrs = {"url_domain": "example.com"}
+bind = conn.apig.bind_domain_name(gateway="gateway_id", group="group_id", **attrs)

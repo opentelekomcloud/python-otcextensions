@@ -11,13 +11,12 @@
 # under the License.
 
 
+from openstack.tests.unit import test_proxy_base
 from otcextensions.sdk.ctsv3.v3 import _proxy
 from otcextensions.sdk.ctsv3.v3 import key_event as _key_event
+from otcextensions.sdk.ctsv3.v3 import quota as _quota
 from otcextensions.sdk.ctsv3.v3 import trace as _trace
 from otcextensions.sdk.ctsv3.v3 import tracker as _tracker
-from otcextensions.sdk.ctsv3.v3 import quota as _quota
-
-from openstack.tests.unit import test_proxy_base
 
 
 class TestCTSv3Proxy(test_proxy_base.TestProxyBase):
@@ -28,48 +27,36 @@ class TestCTSv3Proxy(test_proxy_base.TestProxyBase):
 
 class TestKeyEvent(TestCTSv3Proxy):
     def test_key_event_create(self):
-        self.verify_create(
-            self.proxy.create_key_event,
-            _key_event.KeyEvent
-        )
+        self.verify_create(self.proxy.create_key_event, _key_event.KeyEvent)
 
     def test_key_event_update(self):
         self.verify_update(
             self.proxy.update_key_event,
             _key_event.KeyEvent,
             method_args=[],
-            expected_args=['']
+            expected_args=[""],
         )
 
     def test_key_event_list(self):
         self.verify_list(
             self.proxy.key_events,
             _key_event.KeyEvent,
-            method_kwargs={'notification_type': 'type'},
+            method_kwargs={"notification_type": "type"},
             expected_kwargs={},
         )
 
 
 class TestTraces(TestCTSv3Proxy):
     def test_trace_list(self):
-        self.verify_list(
-            self.proxy.traces,
-            _trace.Trace
-        )
+        self.verify_list(self.proxy.traces, _trace.Trace)
 
 
 class TestTracker(TestCTSv3Proxy):
     def test_tracker_list(self):
-        self.verify_list(
-            self.proxy.trackers,
-            _tracker.Tracker
-        )
+        self.verify_list(self.proxy.trackers, _tracker.Tracker)
 
     def test_tracker_create(self):
-        self.verify_create(
-            self.proxy.create_tracker,
-            _tracker.Tracker
-        )
+        self.verify_create(self.proxy.create_tracker, _tracker.Tracker)
 
     def test_tracker_update(self):
         self._verify(
@@ -84,7 +71,4 @@ class TestTracker(TestCTSv3Proxy):
 
 class TestQuota(TestCTSv3Proxy):
     def test_quota_list(self):
-        self.verify_list(
-            self.proxy.quotas,
-            _quota.Quota
-        )
+        self.verify_list(self.proxy.quotas, _quota.Quota)

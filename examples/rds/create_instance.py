@@ -13,29 +13,20 @@
 """
 Create a RDS instance
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 attrs = {
     "name": "rds_name",
     "port": 3306,
-    "ha": {
-        "mode": "Ha",
-        "replication_mode": "async"
-    },
+    "ha": {"mode": "Ha", "replication_mode": "async"},
     "region": "eu-de",
-    "datastore": {
-        "type": "MySQL",
-        "version": "8.0"
-    },
-    "volume": {
-        "type": "ULTRAHIGH",
-        "size": 40
-    },
+    "datastore": {"type": "MySQL", "version": "8.0"},
+    "volume": {"type": "ULTRAHIGH", "size": 40},
     "password": "admin_password",
     "private_ips": [],
     "public_ips": [],
@@ -46,13 +37,8 @@ attrs = {
     "security_group_id": "secgrp_id",
     "flavor_ref": "rds.mysql.c2.medium.ha",
     "switch_strategy": "reliability",
-    "backup_strategy": {
-        "start_time": "23:00-00:00",
-        "keep_days": 10
-    },
-    "charge_info": {
-        "charge_mode": "postPaid"
-    }
+    "backup_strategy": {"start_time": "23:00-00:00", "keep_days": 10},
+    "charge_info": {"charge_mode": "postPaid"},
 }
 
 instance = conn.rds.create_instance(**attrs)

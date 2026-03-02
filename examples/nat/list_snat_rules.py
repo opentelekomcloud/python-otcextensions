@@ -13,11 +13,11 @@
 """
 List all SNAT Rules
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 for snat_rule in conn.nat.snat_rules():
     print(snat_rule)

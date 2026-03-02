@@ -11,6 +11,7 @@
 #   under the License.
 #
 """ModelArts data import task v2 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -26,9 +27,7 @@ LOG = logging.getLogger(__name__)
 def _get_columns(item):
     column_map = {}
     hidden = ["location"]
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(
-        item, column_map, hidden
-    )
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map, hidden)
 
 
 class ListDatasetImportTasks(command.Lister):
@@ -63,9 +62,7 @@ class ListDatasetImportTasks(command.Lister):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
 
-        dataset = client.find_dataset(
-            parsed_args.dataset, ignore_missing=False
-        )
+        dataset = client.find_dataset(parsed_args.dataset, ignore_missing=False)
 
         query = {}
         if parsed_args.limit:
@@ -82,9 +79,7 @@ class ListDatasetImportTasks(command.Lister):
         return (
             self.columns,
             (
-                utils.get_dict_properties(
-                    s, self.columns, formatters=formatters
-                )
+                utils.get_dict_properties(s, self.columns, formatters=formatters)
                 for s in data
             ),
         )
@@ -112,9 +107,7 @@ class ShowDatasetImportTask(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
 
-        dataset = client.find_dataset(
-            parsed_args.dataset, ignore_missing=False
-        )
+        dataset = client.find_dataset(parsed_args.dataset, ignore_missing=False)
 
         obj = client.get_dataset_import_task(dataset, parsed_args.taskId)
         display_columns, columns = _get_columns(obj)

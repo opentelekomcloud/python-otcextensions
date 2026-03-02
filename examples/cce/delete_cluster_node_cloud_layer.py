@@ -13,14 +13,13 @@
 """
 Delete CCE Cluster node in cloud layer
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-cluster = 'name_or_id'
-node = 'name_or_id'
-conn.delete_cce_cluster_node(
-    cluster=cluster,
-    node=node)
+cluster = "name_or_id"
+node = "name_or_id"
+conn.delete_cce_cluster_node(cluster=cluster, node=node)

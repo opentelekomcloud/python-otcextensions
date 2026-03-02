@@ -27,21 +27,21 @@ class TestCluster(fakes.TestCCE):
         flat_data = cluster._flatten_cluster(_obj)
 
         data = (
-            flat_data['id'],
-            flat_data['name'],
-            flat_data['endpoint'],
-            flat_data['status'],
-            flat_data['version'],
-            flat_data['type'],
+            flat_data["id"],
+            flat_data["name"],
+            flat_data["endpoint"],
+            flat_data["status"],
+            flat_data["version"],
+            flat_data["type"],
         )
 
         cmp_data = (
             _obj.metadata.id,
             _obj.metadata.name,
-            _obj.status.endpoints['external_otc'],
+            _obj.status.endpoints["external_otc"],
             _obj.status.status,
             _obj.spec.version,
-            _obj.spec.type
+            _obj.spec.type,
         )
 
         self.assertEqual(data, cmp_data)
@@ -51,20 +51,22 @@ class TestClusterList(fakes.TestCCE):
 
     _objs = fakes.FakeCluster.create_multiple(3)
 
-    columns = ('ID', 'name', 'status', 'flavor', 'version', 'endpoint')
+    columns = ("ID", "name", "status", "flavor", "version", "endpoint")
 
     data = []
 
     for s in _objs:
         flat_data = cluster._flatten_cluster(s)
-        data.append((
-            flat_data['id'],
-            flat_data['name'],
-            flat_data['status'],
-            flat_data['flavor'],
-            flat_data['version'],
-            flat_data['endpoint'],
-        ))
+        data.append(
+            (
+                flat_data["id"],
+                flat_data["name"],
+                flat_data["status"],
+                flat_data["flavor"],
+                flat_data["version"],
+                flat_data["endpoint"],
+            )
+        )
 
     def setUp(self):
         super(TestClusterList, self).setUp()
@@ -82,9 +84,7 @@ class TestClusterList(fakes.TestCCE):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.clusters.side_effect = [
-            self._objs
-        ]
+        self.client.clusters.side_effect = [self._objs]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -99,19 +99,28 @@ class TestClusterShow(fakes.TestCCE):
 
     _obj = fakes.FakeCluster.create_one()
 
-    columns = ('ID', 'name', 'type', 'status', 'version', 'endpoint',
-               'flavor', 'router_id', 'network_id')
+    columns = (
+        "ID",
+        "name",
+        "type",
+        "status",
+        "version",
+        "endpoint",
+        "flavor",
+        "router_id",
+        "network_id",
+    )
     flat_data = cluster._flatten_cluster(_obj)
     data = (
-        flat_data['id'],
-        flat_data['name'],
-        flat_data['type'],
-        flat_data['status'],
-        flat_data['version'],
-        flat_data['endpoint'],
-        flat_data['flavor'],
-        flat_data['router_id'],
-        flat_data['network_id'],
+        flat_data["id"],
+        flat_data["name"],
+        flat_data["type"],
+        flat_data["status"],
+        flat_data["version"],
+        flat_data["endpoint"],
+        flat_data["flavor"],
+        flat_data["router_id"],
+        flat_data["network_id"],
     )
 
     def setUp(self):
@@ -122,28 +131,21 @@ class TestClusterShow(fakes.TestCCE):
         self.client.find_cluster = mock.Mock()
 
     def test_get(self):
-        arglist = [
-            'cluster_uuid'
-        ]
+        arglist = ["cluster_uuid"]
 
-        verifylist = [
-            ('cluster', 'cluster_uuid')
-        ]
+        verifylist = [("cluster", "cluster_uuid")]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_cluster.side_effect = [
-            self._obj
-        ]
+        self.client.find_cluster.side_effect = [self._obj]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_cluster.assert_called_once_with(
-            'cluster_uuid',
-            ignore_missing=False
+            "cluster_uuid", ignore_missing=False
         )
 
         self.assertEqual(self.columns, columns)
@@ -154,14 +156,14 @@ class TestClusterCreate(fakes.TestCCE):
 
     _obj = fakes.FakeCluster.create_one()
 
-    columns = ('ID', 'name', 'version', 'endpoint')
+    columns = ("ID", "name", "version", "endpoint")
 
     flat_data = cluster._flatten_cluster(_obj)
     data = (
-        flat_data['id'],
-        flat_data['name'],
-        flat_data['version'],
-        flat_data['endpoint'],
+        flat_data["id"],
+        flat_data["name"],
+        flat_data["version"],
+        flat_data["endpoint"],
     )
 
     def setUp(self):
@@ -169,28 +171,31 @@ class TestClusterCreate(fakes.TestCCE):
 
         self.cmd = cluster.CreateCCECluster(self.app, None)
 
-        self.sdk_client.create_cce_cluster = \
-            mock.Mock(return_value=self._obj)
+        self.sdk_client.create_cce_cluster = mock.Mock(return_value=self._obj)
 
     def test_create(self):
         arglist = [
-            'cluster_name',
-            'vpc_id',
-            'net_id',
-            '--description', 'descr',
-            '--type', 'VirtualMachine',
-            '--flavor', 'flavor',
-            '--container-network-mode', 'overlay_l2'
+            "cluster_name",
+            "vpc_id",
+            "net_id",
+            "--description",
+            "descr",
+            "--type",
+            "VirtualMachine",
+            "--flavor",
+            "flavor",
+            "--container-network-mode",
+            "overlay_l2",
         ]
 
         verifylist = [
-            ('name', 'cluster_name'),
-            ('router', 'vpc_id'),
-            ('network', 'net_id'),
-            ('description', 'descr'),
-            ('type', 'VirtualMachine'),
-            ('flavor', 'flavor'),
-            ('container_network_mode', 'overlay_l2')
+            ("name", "cluster_name"),
+            ("router", "vpc_id"),
+            ("network", "net_id"),
+            ("description", "descr"),
+            ("type", "VirtualMachine"),
+            ("flavor", "flavor"),
+            ("container_network_mode", "overlay_l2"),
         ]
 
         # Verify cm is triggereg with default parameters
@@ -200,14 +205,14 @@ class TestClusterCreate(fakes.TestCCE):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.sdk_client.create_cce_cluster.assert_called_once_with(
-            container_network_mode='overlay_l2',
-            description='descr',
-            flavor='flavor',
-            name='cluster_name',
-            network='net_id',
-            router='vpc_id',
-            type='VirtualMachine',
-            wait=False
+            container_network_mode="overlay_l2",
+            description="descr",
+            flavor="flavor",
+            name="cluster_name",
+            network="net_id",
+            router="vpc_id",
+            type="VirtualMachine",
+            wait=False,
         )
 
         self.assertEqual(self.columns, columns)
@@ -215,27 +220,32 @@ class TestClusterCreate(fakes.TestCCE):
 
     def test_wait(self):
         arglist = [
-            'cluster_name',
-            'vpc_id',
-            'net_id',
-            '--description', 'descr',
-            '--type', 'VirtualMachine',
-            '--flavor', 'flavor',
-            '--container-network-mode', 'overlay_l2',
-            '--wait',
-            '--wait-interval', '13'
+            "cluster_name",
+            "vpc_id",
+            "net_id",
+            "--description",
+            "descr",
+            "--type",
+            "VirtualMachine",
+            "--flavor",
+            "flavor",
+            "--container-network-mode",
+            "overlay_l2",
+            "--wait",
+            "--wait-interval",
+            "13",
         ]
 
         verifylist = [
-            ('name', 'cluster_name'),
-            ('router', 'vpc_id'),
-            ('network', 'net_id'),
-            ('description', 'descr'),
-            ('type', 'VirtualMachine'),
-            ('flavor', 'flavor'),
-            ('container_network_mode', 'overlay_l2'),
-            ('wait', True),
-            ('wait_interval', 13)
+            ("name", "cluster_name"),
+            ("router", "vpc_id"),
+            ("network", "net_id"),
+            ("description", "descr"),
+            ("type", "VirtualMachine"),
+            ("flavor", "flavor"),
+            ("container_network_mode", "overlay_l2"),
+            ("wait", True),
+            ("wait_interval", 13),
         ]
 
         # Verify cm is triggereg with default parameters
@@ -245,15 +255,15 @@ class TestClusterCreate(fakes.TestCCE):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.sdk_client.create_cce_cluster.assert_called_once_with(
-            container_network_mode='overlay_l2',
-            description='descr',
-            flavor='flavor',
-            name='cluster_name',
-            network='net_id',
-            router='vpc_id',
-            type='VirtualMachine',
+            container_network_mode="overlay_l2",
+            description="descr",
+            flavor="flavor",
+            name="cluster_name",
+            network="net_id",
+            router="vpc_id",
+            type="VirtualMachine",
             wait=True,
-            wait_interval=13
+            wait_interval=13,
         )
 
         self.assertEqual(self.columns, columns)
@@ -270,13 +280,9 @@ class TestClusterDelete(fakes.TestCCE):
         self.sdk_client.delete_cce_cluster = mock.Mock()
 
     def test_delete(self):
-        arglist = [
-            'cluster_uuid'
-        ]
+        arglist = ["cluster_uuid"]
 
-        verifylist = [
-            ('cluster', 'cluster_uuid')
-        ]
+        verifylist = [("cluster", "cluster_uuid")]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -285,17 +291,15 @@ class TestClusterDelete(fakes.TestCCE):
         self.cmd.take_action(parsed_args)
 
         self.sdk_client.delete_cce_cluster.assert_called_once_with(
-            cluster='cluster_uuid', wait=False)
+            cluster="cluster_uuid", wait=False
+        )
 
     def test_delete_wait(self):
-        arglist = [
-            'cluster_uuid',
-            '--wait'
-        ]
+        arglist = ["cluster_uuid", "--wait"]
 
         verifylist = [
-            ('cluster', 'cluster_uuid'),
-            ('wait', True),
+            ("cluster", "cluster_uuid"),
+            ("wait", True),
         ]
 
         # Verify cm is triggereg with default parameters
@@ -305,4 +309,5 @@ class TestClusterDelete(fakes.TestCCE):
         self.cmd.take_action(parsed_args)
 
         self.sdk_client.delete_cce_cluster.assert_called_once_with(
-            cluster='cluster_uuid', wait=True)
+            cluster="cluster_uuid", wait=True
+        )

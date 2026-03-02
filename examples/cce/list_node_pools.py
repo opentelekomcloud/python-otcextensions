@@ -13,13 +13,14 @@
 """
 List all node pools of a CCE cluster
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-cluster = 'name_or_id'
+cluster = "name_or_id"
 cluster = conn.cce.find_cluster(cluster)
 for pool in conn.cce.node_pools(cluster):
     print(pool)

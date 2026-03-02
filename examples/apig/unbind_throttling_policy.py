@@ -13,12 +13,10 @@
 """
 Unbinding a Request Throttling Policy
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-conn.apig.unbind_throttling_policy(
-    gateway="gateway_id",
-    bind="throttle_binding_id"
-)
+conn.apig.unbind_throttling_policy(gateway="gateway_id", bind="throttle_binding_id")

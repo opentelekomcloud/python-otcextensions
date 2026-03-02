@@ -9,17 +9,17 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import openstack
 import uuid
 
+import openstack
 from otcextensions.tests.functional.sdk.dns import TestDns
 
-_logger = openstack._log.setup_logging('openstack')
+_logger = openstack._log.setup_logging("openstack")
 
 
 class TestRecordsets(TestDns):
     uuid_v4 = uuid.uuid4().hex[:8]
-    zone_alias = uuid_v4 + 'dns.sdk-test-rs-zone-public.com.'
+    zone_alias = uuid_v4 + "dns.sdk-test-rs-zone-public.com."
     zones = []
 
     def setUp(self):
@@ -27,9 +27,7 @@ class TestRecordsets(TestDns):
 
         # create public zone
         try:
-            self.zone = self.client.create_zone(
-                name=self.zone_alias
-            )
+            self.zone = self.client.create_zone(name=self.zone_alias)
             self.client.wait_for_zone(self.zone)
         except openstack.exceptions.BadRequestException:
             self.zone = self.client.find_zone(self.zone_alias)
@@ -42,130 +40,124 @@ class TestRecordsets(TestDns):
                     self.client.delete_zone(zone)
                     self.client.wait_for_delete_zone(zone)
         except openstack.exceptions.SDKException as e:
-            _logger.warning('Got exception during clearing resources %s'
-                            % e.message)
+            _logger.warning("Got exception during clearing resources %s" % e.message)
         super(TestRecordsets, self).tearDown()
 
     def test_list_recordsets(self):
         rs = []
         recordsets = self.client.recordsets(self.zone.id)
         for record in recordsets:
-            rs.append(record['records'])
-        self.assertEqual(rs, [
-            ['ns1.open-telekom-cloud.com. '
-             'dl-otc-domains.telekom.de. (1 7200 900 1209600 300)'],
-            ['ns2.open-telekom-cloud.com.', 'ns1.open-telekom-cloud.com.']])
+            rs.append(record["records"])
+        self.assertEqual(
+            rs,
+            [
+                [
+                    "ns1.open-telekom-cloud.com. "
+                    "dl-otc-domains.telekom.de. (1 7200 900 1209600 300)"
+                ],
+                ["ns2.open-telekom-cloud.com.", "ns1.open-telekom-cloud.com."],
+            ],
+        )
 
     def test_create_recordset(self):
         rs = self.client.create_recordset(
             zone=self.zone.id,
-            name=f'a-record.{self.zone_alias}',
-            type='A',
-            records=['1.1.1.1', '2.2.2.2']
+            name=f"a-record.{self.zone_alias}",
+            type="A",
+            records=["1.1.1.1", "2.2.2.2"],
         )
         self.client.wait_for_recordset(rs)
-        self.assertEqual(rs.name, f'a-record.{self.zone_alias}')
+        self.assertEqual(rs.name, f"a-record.{self.zone_alias}")
 
         rs = self.client.create_recordset(
             zone=self.zone.id,
-            name=f'aaaa-record.{self.zone_alias}',
-            type='AAAA',
-            records=['ff03:0db8:85a3:0:0:8a2e:0370:7334']
+            name=f"aaaa-record.{self.zone_alias}",
+            type="AAAA",
+            records=["ff03:0db8:85a3:0:0:8a2e:0370:7334"],
         )
         self.client.wait_for_recordset(rs)
-        self.assertEqual(rs.name, f'aaaa-record.{self.zone_alias}')
+        self.assertEqual(rs.name, f"aaaa-record.{self.zone_alias}")
 
         rs = self.client.create_recordset(
             zone=self.zone.id,
-            name=f'cname-record.{self.zone_alias}',
-            type='CNAME',
-            records=['www.ex.com']
+            name=f"cname-record.{self.zone_alias}",
+            type="CNAME",
+            records=["www.ex.com"],
         )
         self.client.wait_for_recordset(rs)
-        self.assertEqual(rs.name, f'cname-record.{self.zone_alias}')
+        self.assertEqual(rs.name, f"cname-record.{self.zone_alias}")
 
         rs = self.client.create_recordset(
             zone=self.zone.id,
-            name=f'mx-record.{self.zone_alias}',
-            type='MX',
-            records=['10 mailserver1.example.com.']
+            name=f"mx-record.{self.zone_alias}",
+            type="MX",
+            records=["10 mailserver1.example.com."],
         )
         self.client.wait_for_recordset(rs)
-        self.assertEqual(rs.name, f'mx-record.{self.zone_alias}')
+        self.assertEqual(rs.name, f"mx-record.{self.zone_alias}")
 
         rs = self.client.create_recordset(
             zone=self.zone.id,
-            name=f'txt-record.{self.zone_alias}',
-            type='TXT',
-            records=["\"Text.\""]
+            name=f"txt-record.{self.zone_alias}",
+            type="TXT",
+            records=['"Text."'],
         )
         self.client.wait_for_recordset(rs)
-        self.assertEqual(rs.name, f'txt-record.{self.zone_alias}')
+        self.assertEqual(rs.name, f"txt-record.{self.zone_alias}")
 
         rs = self.client.create_recordset(
             zone=self.zone.id,
-            name=f'ns-record.{self.zone_alias}',
-            type='NS',
-            records=['ns.example.com']
+            name=f"ns-record.{self.zone_alias}",
+            type="NS",
+            records=["ns.example.com"],
         )
         self.client.wait_for_recordset(rs)
-        self.assertEqual(rs.name, f'ns-record.{self.zone_alias}')
+        self.assertEqual(rs.name, f"ns-record.{self.zone_alias}")
 
     def test_get_recordset(self):
         rs = self.client.create_recordset(
             zone=self.zone.id,
-            name=f'a-record.{self.zone_alias}',
-            type='A',
-            records=['1.1.1.1', '2.2.2.2']
+            name=f"a-record.{self.zone_alias}",
+            type="A",
+            records=["1.1.1.1", "2.2.2.2"],
         )
         self.client.wait_for_recordset(rs)
-        record = self.client.get_recordset(
-            recordset=rs.id,
-            zone=self.zone.id
-        )
-        self.assertEqual(record.name, f'a-record.{self.zone_alias}')
+        record = self.client.get_recordset(recordset=rs.id, zone=self.zone.id)
+        self.assertEqual(record.name, f"a-record.{self.zone_alias}")
 
     def test_find_recordset(self):
         rs = self.client.create_recordset(
             zone=self.zone.id,
-            name=f'a-record.{self.zone_alias}',
-            type='A',
-            records=['1.1.1.1', '2.2.2.2']
+            name=f"a-record.{self.zone_alias}",
+            type="A",
+            records=["1.1.1.1", "2.2.2.2"],
         )
         self.client.wait_for_recordset(rs)
-        record = self.client.find_recordset(
-            name_or_id=rs.id,
-            zone=self.zone.id
-        )
-        self.assertEqual(record.name, f'a-record.{self.zone_alias}')
+        record = self.client.find_recordset(name_or_id=rs.id, zone=self.zone.id)
+        self.assertEqual(record.name, f"a-record.{self.zone_alias}")
 
     def test_update_recordset(self):
         rs = self.client.create_recordset(
             zone=self.zone.id,
-            name=f'a-record.{self.zone_alias}',
-            type='A',
-            records=['1.1.1.1', '2.2.2.2']
+            name=f"a-record.{self.zone_alias}",
+            type="A",
+            records=["1.1.1.1", "2.2.2.2"],
         )
         self.client.wait_for_recordset(rs)
         record = self.client.update_recordset(
-            recordset=rs.id,
-            zone_id=self.zone.id,
-            description='updated'
+            recordset=rs.id, zone_id=self.zone.id, description="updated"
         )
-        self.assertEqual(record.description, 'updated')
+        self.assertEqual(record.description, "updated")
 
     def test_delete_recordset(self):
         rs = self.client.create_recordset(
             zone=self.zone.id,
-            name=f'a-record.{self.zone_alias}',
-            type='A',
-            records=['1.1.1.1', '2.2.2.2']
+            name=f"a-record.{self.zone_alias}",
+            type="A",
+            records=["1.1.1.1", "2.2.2.2"],
         )
         self.client.wait_for_recordset(rs)
-        self.assertEqual(rs.status, 'ACTIVE')
-        record = self.client.delete_recordset(
-            recordset=rs.id,
-            zone=self.zone.id
-        )
+        self.assertEqual(rs.status, "ACTIVE")
+        record = self.client.delete_recordset(recordset=rs.id, zone=self.zone.id)
         self.client.wait_for_delete_recordset(record)
         self.assertIsNotNone(record)

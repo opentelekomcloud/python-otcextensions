@@ -11,9 +11,8 @@
 # under the License.
 
 from openstack import cloud as openstack
+
 openstack.enable_logging()
 
-cloud = openstack.connect(cloud='fuga', region_name='cystack')
-cloud.pprint([
-    image for image in cloud.list_images()
-    if 'ubuntu' in image.name.lower()])
+cloud = openstack.connect(cloud="fuga", region_name="cystack")
+cloud.pprint([image for image in cloud.list_images() if "ubuntu" in image.name.lower()])

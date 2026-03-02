@@ -11,9 +11,7 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.smn.v2 import topic
-
 
 EXAMPLE = {
     "update_time": "2016-08-01T02:16:38Z",
@@ -22,7 +20,7 @@ EXAMPLE = {
     "name": "test_create_topic_v2",
     "topic_urn": "urn:smn:regionId:8bad8a40e0f7462f8c1676e3f",
     "display_name": "test create topic v2",
-    "request_id": "6837531fd3f54550927b930180a706bf"
+    "request_id": "6837531fd3f54550927b930180a706bf",
 }
 
 
@@ -30,8 +28,8 @@ class TestTopic(base.TestCase):
 
     def test_basic(self):
         sot = topic.Topic()
-        self.assertEqual('topics', sot.resources_key)
-        path = '/notifications/topics'
+        self.assertEqual("topics", sot.resources_key)
+        path = "/notifications/topics"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
@@ -41,9 +39,9 @@ class TestTopic(base.TestCase):
 
     def test_make_it(self):
         sot = topic.Topic(**EXAMPLE)
-        self.assertEqual(EXAMPLE['topic_urn'], sot.id)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['create_time'], sot.create_time)
-        self.assertEqual(EXAMPLE['update_time'], sot.update_time)
-        self.assertEqual(EXAMPLE['push_policy'], sot.push_policy)
-        self.assertEqual(EXAMPLE['request_id'], sot.request_id)
+        self.assertEqual(EXAMPLE["topic_urn"], sot.id)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["create_time"], sot.create_time)
+        self.assertEqual(EXAMPLE["update_time"], sot.update_time)
+        self.assertEqual(EXAMPLE["push_policy"], sot.push_policy)
+        self.assertEqual(EXAMPLE["request_id"], sot.request_id)

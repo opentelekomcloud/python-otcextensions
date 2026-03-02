@@ -9,8 +9,9 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import resource
 from openstack.dns.v2 import recordset
+
+from openstack import resource
 from otcextensions.sdk import dnsmixin
 
 
@@ -18,11 +19,20 @@ class Recordset(dnsmixin.DNSProxyMixin, recordset.Recordset):
     """DNS Recordset Resource"""
 
     _query_mapping = resource.QueryParameters(
-        'name', 'type', 'ttl', 'data', 'status', 'description',
-        'limit', 'marker', 'offset', 'tags')
+        "name",
+        "type",
+        "ttl",
+        "data",
+        "status",
+        "description",
+        "limit",
+        "marker",
+        "offset",
+        "tags",
+    )
 
     #: Properties
     #: Is the recordset created by system.
-    is_default = resource.Body('default', type=bool)
+    is_default = resource.Body("default", type=bool)
     #: Timestamp when the zone was last updated.
-    updated_at = resource.Body('update_at')
+    updated_at = resource.Body("update_at")

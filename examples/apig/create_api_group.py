@@ -13,13 +13,10 @@
 """
 Create API group for gateway
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-attrs = {
-    "name": "api_group_001",
-    "remark": "API group 1"
-}
-created = conn.apig.create_api_group(gateway="gateway_id",
-                                     **attrs)
+conn = openstack.connect(cloud="otc")
+attrs = {"name": "api_group_001", "remark": "API group 1"}
+created = conn.apig.create_api_group(gateway="gateway_id", **attrs)

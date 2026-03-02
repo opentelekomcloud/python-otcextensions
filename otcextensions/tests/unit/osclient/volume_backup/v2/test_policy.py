@@ -13,7 +13,6 @@
 #   under the License.
 #
 import mock
-
 from openstackclient.tests.unit import utils
 
 from otcextensions.osclient.volume_backup.v2 import policy
@@ -24,19 +23,20 @@ class TestListPolicy(fakes.TestVolumeBackup):
 
     _objects = fakes.FakePolicy.create_multiple(3)
 
-    columns = ('id', 'name', 'policy_resource_count', 'scheduled_policy',
-               'tags')
+    columns = ("id", "name", "policy_resource_count", "scheduled_policy", "tags")
 
     data = []
 
     for s in _objects:
-        data.append((
-            s.id,
-            s.name,
-            s.policy_resource_count,
-            policy.BackupPolicy(s.scheduled_policy),
-            s.tags
-        ))
+        data.append(
+            (
+                s.id,
+                s.name,
+                s.policy_resource_count,
+                policy.BackupPolicy(s.scheduled_policy),
+                s.tags,
+            )
+        )
 
     def setUp(self):
         super(TestListPolicy, self).setUp()
@@ -46,18 +46,14 @@ class TestListPolicy(fakes.TestVolumeBackup):
         self.client.backup_policies = mock.Mock()
 
     def test_list_default(self):
-        arglist = [
-        ]
+        arglist = []
 
-        verifylist = [
-        ]
+        verifylist = []
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.backup_policies.side_effect = [
-            self._objects
-        ]
+        self.client.backup_policies.side_effect = [self._objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -72,15 +68,14 @@ class TestShowPolicy(fakes.TestVolumeBackup):
 
     _object = fakes.FakePolicy.create_one()
 
-    columns = ('id', 'name', 'policy_resource_count', 'scheduled_policy',
-               'tags')
+    columns = ("id", "name", "policy_resource_count", "scheduled_policy", "tags")
 
     data = (
         _object.id,
         _object.name,
         _object.policy_resource_count,
         policy.BackupPolicy(_object.scheduled_policy),
-        _object.tags
+        _object.tags,
     )
 
     def setUp(self):
@@ -92,26 +87,24 @@ class TestShowPolicy(fakes.TestVolumeBackup):
 
     def test_show_default(self):
         arglist = [
-            'policy_name',
+            "policy_name",
         ]
 
         verifylist = [
-            ('policy', 'policy_name'),
+            ("policy", "policy_name"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_backup_policy.side_effect = [
-            self._object
-        ]
+        self.client.find_backup_policy.side_effect = [self._object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_backup_policy.assert_called_once_with(
-            name_or_id='policy_name',
+            name_or_id="policy_name",
         )
 
         self.assertEqual(self.columns, columns)
@@ -122,15 +115,14 @@ class TestCreatePolicy(fakes.TestVolumeBackup):
 
     _object = fakes.FakePolicy.create_one()
 
-    columns = ('id', 'name', 'policy_resource_count', 'scheduled_policy',
-               'tags')
+    columns = ("id", "name", "policy_resource_count", "scheduled_policy", "tags")
 
     data = (
         _object.id,
         _object.name,
         _object.policy_resource_count,
         policy.BackupPolicy(_object.scheduled_policy),
-        _object.tags
+        _object.tags,
     )
 
     def setUp(self):
@@ -142,44 +134,46 @@ class TestCreatePolicy(fakes.TestVolumeBackup):
 
     def test_create_default(self):
         arglist = [
-            'policy_name',
-            '--start_time', '12:12',
-            '--frequency', '13',
-            '--rentention_num', '14',
-            '--tag', 'a=b'
+            "policy_name",
+            "--start_time",
+            "12:12",
+            "--frequency",
+            "13",
+            "--rentention_num",
+            "14",
+            "--tag",
+            "a=b",
         ]
 
         verifylist = [
-            ('name', 'policy_name'),
-            ('start_time', '12:12'),
-            ('enable', False),
-            ('frequency', 13),
-            ('rentention_num', 14),
-            ('remain_first_backup_of_curMonth', False),
-            ('tag', ['a=b']),
+            ("name", "policy_name"),
+            ("start_time", "12:12"),
+            ("enable", False),
+            ("frequency", 13),
+            ("rentention_num", 14),
+            ("remain_first_backup_of_curMonth", False),
+            ("tag", ["a=b"]),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.create_backup_policy.side_effect = [
-            self._object
-        ]
+        self.client.create_backup_policy.side_effect = [self._object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.create_backup_policy.assert_called_once_with(
-            name='policy_name',
+            name="policy_name",
             scheduled_policy={
-                'start_time': '12:12',
-                'frequency': 13,
-                'rentention_num': 14,
-                'remain_first_backup_of_curMonth': 'N',
-                'status': 'OFF'
+                "start_time": "12:12",
+                "frequency": 13,
+                "rentention_num": 14,
+                "remain_first_backup_of_curMonth": "N",
+                "status": "OFF",
             },
-            tags=[{'key': 'a', 'value': 'b'}]
+            tags=[{"key": "a", "value": "b"}],
         )
 
         self.assertEqual(self.columns, columns)
@@ -187,47 +181,50 @@ class TestCreatePolicy(fakes.TestVolumeBackup):
 
     def test_create_optionals(self):
         arglist = [
-            'policy_name',
-            '--start_time', '12:12',
-            '--enable',
-            '--frequency', '13',
-            '--rentention_num', '14',
-            '--remain_first_backup_of_curMonth',
-            '--tag', 'a=b',
-            '--tag', 'c=d',
+            "policy_name",
+            "--start_time",
+            "12:12",
+            "--enable",
+            "--frequency",
+            "13",
+            "--rentention_num",
+            "14",
+            "--remain_first_backup_of_curMonth",
+            "--tag",
+            "a=b",
+            "--tag",
+            "c=d",
         ]
 
         verifylist = [
-            ('name', 'policy_name'),
-            ('start_time', '12:12'),
-            ('enable', True),
-            ('frequency', 13),
-            ('rentention_num', 14),
-            ('remain_first_backup_of_curMonth', True),
-            ('tag', ['a=b', 'c=d']),
+            ("name", "policy_name"),
+            ("start_time", "12:12"),
+            ("enable", True),
+            ("frequency", 13),
+            ("rentention_num", 14),
+            ("remain_first_backup_of_curMonth", True),
+            ("tag", ["a=b", "c=d"]),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.create_backup_policy.side_effect = [
-            self._object
-        ]
+        self.client.create_backup_policy.side_effect = [self._object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.create_backup_policy.assert_called_once_with(
-            name='policy_name',
+            name="policy_name",
             scheduled_policy={
-                'start_time': '12:12',
-                'frequency': 13,
-                'rentention_num': 14,
-                'remain_first_backup_of_curMonth': 'Y',
-                'status': 'ON'
+                "start_time": "12:12",
+                "frequency": 13,
+                "rentention_num": 14,
+                "remain_first_backup_of_curMonth": "Y",
+                "status": "ON",
             },
-            tags=[{'key': 'a', 'value': 'b'}, {'key': 'c', 'value': 'd'}]
+            tags=[{"key": "a", "value": "b"}, {"key": "c", "value": "d"}],
         )
 
         self.assertEqual(self.columns, columns)
@@ -235,24 +232,24 @@ class TestCreatePolicy(fakes.TestVolumeBackup):
 
     def test_create_frequense_not_allowed(self):
         arglist = [
-            'policy_name',
-            '--start_time', '12:12',
-            '--frequency', '15',
+            "policy_name",
+            "--start_time",
+            "12:12",
+            "--frequency",
+            "15",
         ]
 
         verifylist = [
-            ('name', 'policy_name'),
-            ('start_time', '12:12'),
-            ('enable', False),
-            ('frequency', 15),
-            ('remain_first_backup_of_curMonth', False),
+            ("name", "policy_name"),
+            ("start_time", "12:12"),
+            ("enable", False),
+            ("frequency", 15),
+            ("remain_first_backup_of_curMonth", False),
         ]
 
         # Verify cm is raising exception due to the exclusive group
         self.assertRaises(
-            utils.ParserException,
-            self.check_parser,
-            self.cmd, arglist, verifylist
+            utils.ParserException, self.check_parser, self.cmd, arglist, verifylist
         )
 
 
@@ -260,15 +257,14 @@ class TestUpdatePolicy(fakes.TestVolumeBackup):
 
     _object = fakes.FakePolicy.create_one()
 
-    columns = ('id', 'name', 'policy_resource_count', 'scheduled_policy',
-               'tags')
+    columns = ("id", "name", "policy_resource_count", "scheduled_policy", "tags")
 
     data = (
         _object.id,
         _object.name,
         _object.policy_resource_count,
         policy.BackupPolicy(_object.scheduled_policy),
-        _object.tags
+        _object.tags,
     )
 
     def setUp(self):
@@ -280,37 +276,35 @@ class TestUpdatePolicy(fakes.TestVolumeBackup):
 
     def test_update_name(self):
         arglist = [
-            'policy_id',
-            '--name', 'policy_name',
-            '--frequency', '13',
-            '--rentention_num', '14',
+            "policy_id",
+            "--name",
+            "policy_name",
+            "--frequency",
+            "13",
+            "--rentention_num",
+            "14",
         ]
 
         verifylist = [
-            ('id', 'policy_id'),
-            ('name', 'policy_name'),
-            ('frequency', 13),
-            ('rentention_num', 14),
+            ("id", "policy_id"),
+            ("name", "policy_name"),
+            ("frequency", 13),
+            ("rentention_num", 14),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.update_backup_policy.side_effect = [
-            self._object
-        ]
+        self.client.update_backup_policy.side_effect = [self._object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.update_backup_policy.assert_called_once_with(
-            backup_policy='policy_id',
-            name='policy_name',
-            scheduled_policy={
-                'frequency': 13,
-                'rentention_num': 14
-            }
+            backup_policy="policy_id",
+            name="policy_name",
+            scheduled_policy={"frequency": 13, "rentention_num": 14},
         )
 
         self.assertEqual(self.columns, columns)
@@ -318,31 +312,28 @@ class TestUpdatePolicy(fakes.TestVolumeBackup):
 
     def test_update_disable_remain_first(self):
         arglist = [
-            'policy_id',
-            '--remain_first_backup_of_curMonth', 'false',
+            "policy_id",
+            "--remain_first_backup_of_curMonth",
+            "false",
         ]
 
         verifylist = [
-            ('id', 'policy_id'),
-            ('remain_first_backup_of_curMonth', False),
+            ("id", "policy_id"),
+            ("remain_first_backup_of_curMonth", False),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.update_backup_policy.side_effect = [
-            self._object
-        ]
+        self.client.update_backup_policy.side_effect = [self._object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.update_backup_policy.assert_called_once_with(
-            backup_policy='policy_id',
-            scheduled_policy={
-                'remain_first_backup_of_curMonth': 'N'
-            }
+            backup_policy="policy_id",
+            scheduled_policy={"remain_first_backup_of_curMonth": "N"},
         )
 
         self.assertEqual(self.columns, columns)
@@ -350,89 +341,78 @@ class TestUpdatePolicy(fakes.TestVolumeBackup):
 
     def test_update_enable_remain_first(self):
         arglist = [
-            'policy_id',
-            '--remain_first_backup_of_curMonth', '1',
+            "policy_id",
+            "--remain_first_backup_of_curMonth",
+            "1",
         ]
 
         verifylist = [
-            ('id', 'policy_id'),
-            ('remain_first_backup_of_curMonth', True),
+            ("id", "policy_id"),
+            ("remain_first_backup_of_curMonth", True),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.update_backup_policy.side_effect = [
-            self._object
-        ]
+        self.client.update_backup_policy.side_effect = [self._object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.update_backup_policy.assert_called_once_with(
-            backup_policy='policy_id',
-            scheduled_policy={
-                'remain_first_backup_of_curMonth': 'Y'
-            }
+            backup_policy="policy_id",
+            scheduled_policy={"remain_first_backup_of_curMonth": "Y"},
         )
 
     def test_update_disable(self):
         arglist = [
-            'policy_id',
-            '--status', 'false',
+            "policy_id",
+            "--status",
+            "false",
         ]
 
         verifylist = [
-            ('id', 'policy_id'),
-            ('status', False),
+            ("id", "policy_id"),
+            ("status", False),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.update_backup_policy.side_effect = [
-            self._object
-        ]
+        self.client.update_backup_policy.side_effect = [self._object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.update_backup_policy.assert_called_once_with(
-            backup_policy='policy_id',
-            scheduled_policy={
-                'status': 'OFF'
-            }
+            backup_policy="policy_id", scheduled_policy={"status": "OFF"}
         )
 
     def test_update_enable(self):
         arglist = [
-            'policy_id',
-            '--status', 'True',
+            "policy_id",
+            "--status",
+            "True",
         ]
 
         verifylist = [
-            ('id', 'policy_id'),
-            ('status', True),
+            ("id", "policy_id"),
+            ("status", True),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.update_backup_policy.side_effect = [
-            self._object
-        ]
+        self.client.update_backup_policy.side_effect = [self._object]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.update_backup_policy.assert_called_once_with(
-            backup_policy='policy_id',
-            scheduled_policy={
-                'status': 'ON'
-            }
+            backup_policy="policy_id", scheduled_policy={"status": "ON"}
         )
 
 
@@ -447,27 +427,24 @@ class TestDeletePolicy(fakes.TestVolumeBackup):
 
     def test_delete_default(self):
         arglist = [
-            'pol',
+            "pol",
         ]
 
         verifylist = [
-            ('policy', 'pol'),
+            ("policy", "pol"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.delete_backup_policy.side_effect = [
-            {}
-        ]
+        self.client.delete_backup_policy.side_effect = [{}]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
         self.client.delete_backup_policy.assert_called_once_with(
-            backup_policy='pol',
-            ignore_missing=False
+            backup_policy="pol", ignore_missing=False
         )
 
 
@@ -482,27 +459,23 @@ class TestExecutePolicy(fakes.TestVolumeBackup):
 
     def test_execute_default(self):
         arglist = [
-            'pol',
+            "pol",
         ]
 
         verifylist = [
-            ('policy', 'pol'),
+            ("policy", "pol"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.execute_policy.side_effect = [
-            {}
-        ]
+        self.client.execute_policy.side_effect = [{}]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        self.client.execute_policy.assert_called_once_with(
-            backup_policy='pol'
-        )
+        self.client.execute_policy.assert_called_once_with(backup_policy="pol")
 
 
 class TestLinkResourceToPolicy(fakes.TestVolumeBackup):
@@ -515,31 +488,21 @@ class TestLinkResourceToPolicy(fakes.TestVolumeBackup):
         self.client.link_resources_to_policy = mock.Mock()
 
     def test_execute_default(self):
-        arglist = [
-            'pol',
-            '--volume', 'v1',
-            '--volume', 'v2'
-        ]
+        arglist = ["pol", "--volume", "v1", "--volume", "v2"]
 
-        verifylist = [
-            ('policy', 'pol'),
-            ('volume', ['v1', 'v2'])
-        ]
+        verifylist = [("policy", "pol"), ("volume", ["v1", "v2"])]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.link_resources_to_policy.side_effect = [
-            {}
-        ]
+        self.client.link_resources_to_policy.side_effect = [{}]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
         self.client.link_resources_to_policy.assert_called_once_with(
-            backup_policy='pol',
-            resources=['v1', 'v2']
+            backup_policy="pol", resources=["v1", "v2"]
         )
 
 
@@ -553,29 +516,19 @@ class TestUnlinkResourceToPolicy(fakes.TestVolumeBackup):
         self.client.unlink_resources_of_policy = mock.Mock()
 
     def test_execute_default(self):
-        arglist = [
-            'pol',
-            '--volume', 'v1',
-            '--volume', 'v2'
-        ]
+        arglist = ["pol", "--volume", "v1", "--volume", "v2"]
 
-        verifylist = [
-            ('policy', 'pol'),
-            ('volume', ['v1', 'v2'])
-        ]
+        verifylist = [("policy", "pol"), ("volume", ["v1", "v2"])]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.unlink_resources_of_policy.side_effect = [
-            {}
-        ]
+        self.client.unlink_resources_of_policy.side_effect = [{}]
 
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
         self.client.unlink_resources_of_policy.assert_called_once_with(
-            backup_policy='pol',
-            resources=['v1', 'v2']
+            backup_policy="pol", resources=["v1", "v2"]
         )

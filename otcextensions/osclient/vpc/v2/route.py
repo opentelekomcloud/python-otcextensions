@@ -11,10 +11,11 @@
 # under the License.
 #
 """VPC Route v2 action implementations"""
+
 import logging
 
-from osc_lib import utils
 from osc_lib import exceptions
+from osc_lib import utils
 from osc_lib.command import command
 
 from otcextensions.i18n import _
@@ -30,16 +31,10 @@ def set_attributes_for_print(routes):
 def translate_response(func):
     def new(self, *args, **kwargs):
         response = func(self, *args, **kwargs)
-        columns = (
-            'id',
-            'type',
-            'nexthop',
-            'destination',
-            'router_id',
-            'project_id'
-        )
+        columns = ("id", "type", "nexthop", "destination", "router_id", "project_id")
         data = utils.get_item_properties(response, columns)
         return (columns, data)
+
     new.__name__ = func.__name__
     new.__doc__ = func.__doc__
     return new
@@ -48,68 +43,66 @@ def translate_response(func):
 class ListVpcRoutes(command.Lister):
 
     _description = _("List Vpc Routes.")
-    columns = (
-        'Id',
-        'Type',
-        'Router Id',
-        'Project Id',
-        'NextHop',
-        'Destination'
-    )
+    columns = ("Id", "Type", "Router Id", "Project Id", "NextHop", "Destination")
 
     def get_parser(self, prog_name):
         parser = super(ListVpcRoutes, self).get_parser(prog_name)
 
         parser.add_argument(
-            '--id',
-            metavar='<id>',
+            "--id",
+            metavar="<id>",
             help=_("Specifies the ID of the VPC route."),
         )
         parser.add_argument(
-            '--limit',
-            metavar='<limit>',
+            "--limit",
+            metavar="<limit>",
             type=int,
             help=_("Limit to fetch number of records."),
         )
         parser.add_argument(
-            '--marker',
-            metavar='<marker>',
+            "--marker",
+            metavar="<marker>",
             help=_("Specifies the start resource ID of pagination query."),
         )
         parser.add_argument(
-            '--project-id',
-            metavar='<project_id>',
+            "--project-id",
+            metavar="<project_id>",
             help=_("Specifies the project ID."),
         )
         parser.add_argument(
-            '--router-id',
-            metavar='<router_id>',
+            "--router-id",
+            metavar="<router_id>",
             help=_("Specifies the router/vpc ID."),
         )
         parser.add_argument(
-            '--destination',
-            metavar='<destination>',
-            help=_("Specifies that the route destination address (CIDR) "
-                   "is used as the filtering condition."),
+            "--destination",
+            metavar="<destination>",
+            help=_(
+                "Specifies that the route destination address (CIDR) "
+                "is used as the filtering condition."
+            ),
         )
         parser.add_argument(
-            '--type',
-            metavar='<type>',
-            help=_("Specifies that the type is used as the filtering "
-                   "condition. Currently, the value can only be peering."),
+            "--type",
+            metavar="<type>",
+            help=_(
+                "Specifies that the type is used as the filtering "
+                "condition. Currently, the value can only be peering."
+            ),
         )
         return parser
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.vpc
         args_list = [
-            'id',
-            'type',
-            'limit',
-            'marker',
-            'project_id',
-            'router_id',
-            'destination']
+            "id",
+            "type",
+            "limit",
+            "marker",
+            "project_id",
+            "router_id",
+            "destination",
+        ]
         attrs = {}
         for arg in args_list:
             val = getattr(parsed_args, arg)
@@ -120,8 +113,10 @@ class ListVpcRoutes(command.Lister):
         if data:
             data = set_attributes_for_print(data)
 
-        return (self.columns, (utils.get_item_properties(s, self.columns)
-                               for s in data))
+        return (
+            self.columns,
+            (utils.get_item_properties(s, self.columns) for s in data),
+        )
 
 
 class ShowVpcRoute(command.ShowOne):
@@ -130,8 +125,8 @@ class ShowVpcRoute(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(ShowVpcRoute, self).get_parser(prog_name)
         parser.add_argument(
-            'route',
-            metavar='<route>',
+            "route",
+            metavar="<route>",
             help=_("Specifies the ID of the VPC route."),
         )
         return parser
@@ -148,29 +143,34 @@ class AddVpcRoute(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(AddVpcRoute, self).get_parser(prog_name)
         parser.add_argument(
-            '--destination',
-            metavar='<destination>',
+            "--destination",
+            metavar="<destination>",
             required=True,
-            help=_("Specifies the destination address in the CIDR "
-                   "notation format, for example, 192.168.200.0/24."),
+            help=_(
+                "Specifies the destination address in the CIDR "
+                "notation format, for example, 192.168.200.0/24."
+            ),
         )
         parser.add_argument(
-            '--nexthop',
-            metavar='<nexthop>',
+            "--nexthop",
+            metavar="<nexthop>",
             required=True,
-            help=_("Specifies the next hop. If the type is "
-                   "peering, enter the VPC peering connection ID."),
+            help=_(
+                "Specifies the next hop. If the type is "
+                "peering, enter the VPC peering connection ID."
+            ),
         )
         parser.add_argument(
-            '--type',
-            metavar='<type>',
-            default='peering',
-            help=_("Specifies the route type. Currently, the value can "
-                   "only be peering."),
+            "--type",
+            metavar="<type>",
+            default="peering",
+            help=_(
+                "Specifies the route type. Currently, the value can " "only be peering."
+            ),
         )
         parser.add_argument(
-            '--router-id',
-            metavar='<router_id>',
+            "--router-id",
+            metavar="<router_id>",
             required=True,
             help=_("Specifies the requesting router ID for creating a route."),
         )
@@ -179,11 +179,7 @@ class AddVpcRoute(command.ShowOne):
     @translate_response
     def take_action(self, parsed_args):
         client = self.app.client_manager.vpc
-        args_list = [
-            'type',
-            'router_id',
-            'destination',
-            'nexthop']
+        args_list = ["type", "router_id", "destination", "nexthop"]
         attrs = {}
         for arg in args_list:
             val = getattr(parsed_args, arg)
@@ -200,9 +196,9 @@ class DeleteVpcRoute(command.Command):
     def get_parser(self, prog_name):
         parser = super(DeleteVpcRoute, self).get_parser(prog_name)
         parser.add_argument(
-            'route',
-            metavar='<route>',
-            nargs='+',
+            "route",
+            metavar="<route>",
+            nargs="+",
             help=_("VPC Routes(s) ID to delete"),
         )
         return parser
@@ -216,11 +212,14 @@ class DeleteVpcRoute(command.Command):
                 client.delete_route(obj.id)
             except Exception as e:
                 result += 1
-                LOG.error(_("Failed to delete VPC route with "
-                          "ID '%(route)s': %(e)s"),
-                          {'route': route, 'e': e})
+                LOG.error(
+                    _("Failed to delete VPC route with " "ID '%(route)s': %(e)s"),
+                    {"route": route, "e": e},
+                )
         if result > 0:
             total = len(parsed_args.route)
-            msg = (_("%(result)s of %(total)s VPC route(s) failed "
-                   "to delete.") % {'result': result, 'total': total})
+            msg = _("%(result)s of %(total)s VPC route(s) failed " "to delete.") % {
+                "result": result,
+                "total": total,
+            }
             raise exceptions.CommandError(msg)

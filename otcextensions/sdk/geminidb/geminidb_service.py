@@ -11,13 +11,10 @@
 # under the License.
 
 from openstack import service_description
-
 from otcextensions.sdk.geminidb.v3 import _proxy
 
 
 class GeminidbService(service_description.ServiceDescription):
     """The Gemini DB service."""
 
-    supported_versions = {
-        '3': _proxy.Proxy
-    }
+    supported_versions = {"3": _proxy.Proxy}

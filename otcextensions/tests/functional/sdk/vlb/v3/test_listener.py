@@ -34,21 +34,12 @@ class TestListener(TestVlb):
         self.assertIsNotNone(lst)
 
     def test_05_update_listener(self):
-        new_description = 'changed'
-        lst = self.client.update_listener(
-            TestVlb.listener,
-            description=new_description
-        )
-        self.assertEqual(lst['description'], new_description)
+        new_description = "changed"
+        lst = self.client.update_listener(TestVlb.listener, description=new_description)
+        self.assertEqual(lst["description"], new_description)
 
         # cleanup
-        self.client.delete_listener(
-            TestVlb.listener
-        )
-        self.client.delete_load_balancer(
-            TestVlb.load_balancer
-        )
-        self.net_client.delete_ip(
-            TestVlb.load_balancer.floating_ips[0]['publicip_id']
-        )
+        self.client.delete_listener(TestVlb.listener)
+        self.client.delete_load_balancer(TestVlb.load_balancer)
+        self.net_client.delete_ip(TestVlb.load_balancer.floating_ips[0]["publicip_id"])
         self.addCleanup(self.destroy_network, TestVlb.network)

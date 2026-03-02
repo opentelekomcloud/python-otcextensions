@@ -17,7 +17,7 @@ For a full guide see
 https://developer.openstack.org/sdks/python/openstacksdk/user/guides/cluster.html
 """
 
-FAKE_NAME = 'test_receiver'
+FAKE_NAME = "test_receiver"
 CLUSTER_ID = "ae63a10b-4a90-452c-aef1-113a0b255ee3"
 
 
@@ -27,7 +27,7 @@ def list_receivers(conn):
     for receiver in conn.clustering.receivers():
         print(receiver.to_dict())
 
-    for receiver in conn.clustering.receivers(sort='name:asc'):
+    for receiver in conn.clustering.receivers(sort="name:asc"):
         print(receiver.to_dict())
 
 
@@ -39,10 +39,8 @@ def create_receiver(conn):
         "action": "CLUSTER_SCALE_OUT",
         "cluster_id": CLUSTER_ID,
         "name": FAKE_NAME,
-        "params": {
-            "count": "1"
-        },
-        "type": "webhook"
+        "params": {"count": "1"},
+        "type": "webhook",
     }
 
     receiver = conn.clustering.create_receiver(**spec)
@@ -66,12 +64,7 @@ def find_receiver(conn):
 def update_receiver(conn):
     print("Update Receiver:")
 
-    spec = {
-        "name": "test_receiver2",
-        "params": {
-            "count": "2"
-        }
-    }
+    spec = {"name": "test_receiver2", "params": {"count": "2"}}
     receiver = conn.clustering.update_receiver(FAKE_NAME, **spec)
     print(receiver.to_dict())
 

@@ -13,10 +13,11 @@
 """
 Resume an Auto-Scaling Group by id or an instance of class Group
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 group_id = "123456_group_id"

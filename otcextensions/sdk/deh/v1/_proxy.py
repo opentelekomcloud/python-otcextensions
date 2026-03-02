@@ -11,8 +11,8 @@
 # under the License.
 from openstack import proxy
 from otcextensions.sdk.deh.v1 import host as _host
-from otcextensions.sdk.deh.v1 import server as _server
 from otcextensions.sdk.deh.v1 import host_type as _host_type
+from otcextensions.sdk.deh.v1 import server as _server
 
 
 class Proxy(proxy.Proxy):
@@ -109,8 +109,7 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._find(_host.Host, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(_host.Host, name_or_id, ignore_missing=ignore_missing)
 
     # ======== servers ========
     def servers(self, host, **query):
@@ -137,5 +136,4 @@ class Proxy(proxy.Proxy):
         :returns: A generator of host
             :class:`~otcextensions.sdk.deh.v1.host_type.HostType` instances
         """
-        return self._list(
-            _host_type.HostType, availability_zone=az, paginated=False)
+        return self._list(_host_type.HostType, availability_zone=az, paginated=False)

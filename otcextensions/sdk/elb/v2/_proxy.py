@@ -10,13 +10,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack.load_balancer.v2 import _proxy
+from openstack.load_balancer.v2 import listener as _listener
 
 from otcextensions.common.utils import extract_url_parts
 from otcextensions.sdk.elb.v2 import elb_certificate as _certificate
-from otcextensions.sdk.elb.v2 import load_balancer as _load_balancer
-from openstack.load_balancer.v2 import listener as _listener
-from otcextensions.sdk.elb.v2 import load_balancer_tag as _lb_tag
 from otcextensions.sdk.elb.v2 import listener_tag as _lstnr_tag
+from otcextensions.sdk.elb.v2 import load_balancer as _load_balancer
+from otcextensions.sdk.elb.v2 import load_balancer_tag as _lb_tag
 
 
 class Proxy(_proxy.Proxy):
@@ -63,8 +63,9 @@ class Proxy(_proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._delete(_certificate.Certificate, certificate,
-                            ignore_missing=ignore_missing)
+        return self._delete(
+            _certificate.Certificate, certificate, ignore_missing=ignore_missing
+        )
 
     def get_certificate(self, certificate):
         """Get a single certificate
@@ -110,12 +111,12 @@ class Proxy(_proxy.Proxy):
             One :class:`~otcextensions.sdk.elb.v2.elb_certificate.Certificate`
              or ``None``
         """
-        return self._find(_certificate.Certificate, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(
+            _certificate.Certificate, name_or_id, ignore_missing=ignore_missing
+        )
 
     # ======== Load Balancer ========
-    def delete_loadbalancer(self, load_balancer, ignore_missing=True,
-                            cascade=False):
+    def delete_loadbalancer(self, load_balancer, ignore_missing=True, cascade=False):
         """Delete load balancer
 
         :param load_balancer: Either the ID of a load_balancer
@@ -127,46 +128,34 @@ class Proxy(_proxy.Proxy):
         loadbalancer = self.find_load_balancer(name_or_id=load_balancer)
         if cascade:
             resources = self.process_resources(loadbalancer)
-            for healthmonitor in resources['healthmonitors']:
+            for healthmonitor in resources["healthmonitors"]:
                 self.delete_health_monitor(healthmonitor)
-            for member in resources['members']:
-                self.delete_member(
-                    member=member['member_id'],
-                    pool=member['pool_id']
-                )
-            for pool in resources['pools']:
+            for member in resources["members"]:
+                self.delete_member(member=member["member_id"], pool=member["pool_id"])
+            for pool in resources["pools"]:
                 self.delete_pool(pool)
-            for listener in resources['listeners']:
+            for listener in resources["listeners"]:
                 self.delete_listener(listener)
 
         return self._delete(
-            _load_balancer.LoadBalancer, load_balancer,
-            ignore_missing=ignore_missing)
+            _load_balancer.LoadBalancer, load_balancer, ignore_missing=ignore_missing
+        )
 
     def process_resources(self, loadbalancer):
-        resources = {
-            'listeners': [],
-            'pools': [],
-            'members': [],
-            'healthmonitors': []
-        }
-        if loadbalancer.get('listeners'):
+        resources = {"listeners": [], "pools": [], "members": [], "healthmonitors": []}
+        if loadbalancer.get("listeners"):
             for listener in loadbalancer.listeners:
-                resources['listeners'].append(listener['id'])
-        if loadbalancer.get('pools'):
+                resources["listeners"].append(listener["id"])
+        if loadbalancer.get("pools"):
             for pool in loadbalancer.pools:
-                resources['pools'].append(pool['id'])
-                find_pool = self.find_pool(name_or_id=pool['id'])
-                if find_pool.get('health_monitor_id'):
-                    resources['healthmonitors'].append(
-                        find_pool['health_monitor_id'])
-                if find_pool.get('members'):
-                    for member in find_pool['members']:
-                        resources['members'].append(
-                            {
-                                'member_id': member['id'],
-                                'pool_id': find_pool['id']
-                            }
+                resources["pools"].append(pool["id"])
+                find_pool = self.find_pool(name_or_id=pool["id"])
+                if find_pool.get("health_monitor_id"):
+                    resources["healthmonitors"].append(find_pool["health_monitor_id"])
+                if find_pool.get("members"):
+                    for member in find_pool["members"]:
+                        resources["members"].append(
+                            {"member_id": member["id"], "pool_id": find_pool["id"]}
                         )
         return resources
 
@@ -183,10 +172,7 @@ class Proxy(_proxy.Proxy):
 
         :returns: A generator of tags objects.
         """
-        lb_obj = self._get_resource(
-            _load_balancer.LoadBalancer,
-            load_balancer
-        )
+        lb_obj = self._get_resource(_load_balancer.LoadBalancer, load_balancer)
         pr_id = self.session.get_project_id()
         base_path = pr_id + _lb_tag.Tag.base_path
         return self._list(
@@ -194,7 +180,8 @@ class Proxy(_proxy.Proxy):
             base_path=base_path,
             loadbalancer_id=lb_obj.id,
             paginated=False,
-            **query)
+            **query
+        )
 
     def create_load_balancer_tag(self, load_balancer, **attrs):
         """Create a new tag from attributes
@@ -211,18 +198,10 @@ class Proxy(_proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.elb.v2.load_balancer_tag.Tag`
         """
-        lb_obj = self._get_resource(
-            _load_balancer.LoadBalancer,
-            load_balancer
-        )
-        return self._create(
-            _lb_tag.Tag,
-            loadbalancer_id=lb_obj.id,
-            **attrs)
+        lb_obj = self._get_resource(_load_balancer.LoadBalancer, load_balancer)
+        return self._create(_lb_tag.Tag, loadbalancer_id=lb_obj.id, **attrs)
 
-    def delete_load_balancer_tag(
-            self, load_balancer, key, ignore_missing=True
-    ):
+    def delete_load_balancer_tag(self, load_balancer, key, ignore_missing=True):
         """Delete a tag
 
         :param key: tag key
@@ -238,10 +217,7 @@ class Proxy(_proxy.Proxy):
 
         :returns: ``None``
         """
-        lb_obj = self._get_resource(
-            _load_balancer.LoadBalancer,
-            load_balancer
-        )
+        lb_obj = self._get_resource(_load_balancer.LoadBalancer, load_balancer)
         return self._delete(
             _lb_tag.Tag,
             key,
@@ -262,10 +238,7 @@ class Proxy(_proxy.Proxy):
 
         :returns: A generator of tags objects.
         """
-        listener_obj = self._get_resource(
-            _listener.Listener,
-            listener
-        )
+        listener_obj = self._get_resource(_listener.Listener, listener)
         pr_id = self.session.get_project_id()
         base_path = pr_id + _lstnr_tag.Tag.base_path
         return self._list(
@@ -273,7 +246,8 @@ class Proxy(_proxy.Proxy):
             listener_id=listener_obj.id,
             base_path=base_path,
             paginated=False,
-            **query)
+            **query
+        )
 
     def create_listener_tag(self, listener, **attrs):
         """Create a new tag from attributes
@@ -290,15 +264,8 @@ class Proxy(_proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.elb.v2.listener_tag.Tag`
         """
-        listener_obj = self._get_resource(
-            _listener.Listener,
-            listener
-        )
-        return self._create(
-            _lstnr_tag.Tag,
-            listener_id=listener_obj.id,
-            **attrs
-        )
+        listener_obj = self._get_resource(_listener.Listener, listener)
+        return self._create(_lstnr_tag.Tag, listener_id=listener_obj.id, **attrs)
 
     def delete_listener_tag(self, listener, key, ignore_missing=True):
         """Delete a tag
@@ -316,13 +283,10 @@ class Proxy(_proxy.Proxy):
 
         :returns: ``None``
         """
-        listener_obj = self._get_resource(
-            _listener.Listener,
-            listener
-        )
+        listener_obj = self._get_resource(_listener.Listener, listener)
         return self._delete(
             _lstnr_tag.Tag,
             key,
             listener_id=listener_obj.id,
-            ignore_missing=ignore_missing
+            ignore_missing=ignore_missing,
         )

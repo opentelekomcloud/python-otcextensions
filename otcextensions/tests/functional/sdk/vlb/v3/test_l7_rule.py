@@ -21,14 +21,15 @@ class TestL7Rule(TestVlb):
         super(TestL7Rule, self).setUp()
         self.create_network()
         self.create_load_balancer()
-        self.create_listener(protocol='HTTP')
+        self.create_listener(protocol="HTTP")
         self.create_certificate()
         self.create_listener(
             protocol_port=443,
-            protocol='HTTPS',
-            name='sdk-vlb-test-r-lis-' + self.uuid_v4,
+            protocol="HTTPS",
+            name="sdk-vlb-test-r-lis-" + self.uuid_v4,
             additional=True,
-            default_tls_container_ref=TestVlb.certificate.id)
+            default_tls_container_ref=TestVlb.certificate.id,
+        )
         self.create_l7policy(TestVlb.additional_listener.id)
         self.create_l7rule()
 
@@ -45,20 +46,20 @@ class TestL7Rule(TestVlb):
         self.assertIsNotNone(l7p)
 
     def test_04_update_l7Rule(self):
-        compare_type = 'STARTS_WITH'
-        rule_value = '/testchange.com'
+        compare_type = "STARTS_WITH"
+        rule_value = "/testchange.com"
         l7p = self.client.update_l7_rule(
             TestVlb.l7rule,
             TestVlb.l7policy,
             compare_type=compare_type,
         )
-        self.assertEqual(l7p['compare_type'], compare_type)
+        self.assertEqual(l7p["compare_type"], compare_type)
         l7p = self.client.update_l7_rule(
             TestVlb.l7rule,
             TestVlb.l7policy,
             value=rule_value,
         )
-        self.assertEqual(l7p['value'], rule_value)
+        self.assertEqual(l7p["value"], rule_value)
         # cleanup
         self.client.delete_l7_rule(TestVlb.l7rule, TestVlb.l7policy)
         self.client.delete_l7_policy(TestVlb.l7policy)
@@ -66,8 +67,6 @@ class TestL7Rule(TestVlb):
         self.client.delete_listener(TestVlb.listener)
         self.client.delete_certificate(TestVlb.certificate)
         self.client.delete_load_balancer(TestVlb.load_balancer)
-        self.net_client.delete_ip(
-            TestVlb.load_balancer.floating_ips[0]['publicip_id']
-        )
+        self.net_client.delete_ip(TestVlb.load_balancer.floating_ips[0]["publicip_id"])
 
         self.addCleanup(self.destroy_network, TestVlb.network)

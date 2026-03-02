@@ -11,19 +11,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
- Create virtual gateway
+Create virtual gateway
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-attrs = {
-    "vpc_id": "vpc-uuid",
-    "local_ep_group_id": "local-ep-group-uuid"
-}
+attrs = {"vpc_id": "vpc-uuid", "local_ep_group_id": "local-ep-group-uuid"}
 
 vg = conn.dcaas.create_virtual_gateway(**attrs)
 print(vg)

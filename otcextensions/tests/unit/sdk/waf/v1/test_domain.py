@@ -10,13 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import mock
-
 from keystoneauth1 import adapter
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.waf.v1 import domain
-
 
 FAKE_ID = "68d5745e-6af2-40e4-945d-fe449be00148"
 EXAMPLE = {
@@ -35,18 +32,19 @@ EXAMPLE = {
             "client_protocol": "HTTPS",
             "server_protocol": "HTTP",
             "address": "X.X.X.X",
-            "port": 443
-        }, {
+            "port": 443,
+        },
+        {
             "client_protocol": "HTTP",
             "server_protocol": "HTTP",
             "address": "X.X.X.X",
-            "port": 80
-        }
+            "port": 80,
+        },
     ],
     "proxy": True,
     "sip_header_name": "default",
     "sip_header_list": ["X-Forwarded-For"],
-    "timestamp": 1499817600
+    "timestamp": 1499817600,
 }
 
 
@@ -60,8 +58,8 @@ class TestDomain(base.TestCase):
     def test_basic(self):
         sot = domain.Domain()
 
-        self.assertEqual('/waf/instance', sot.base_path)
-        self.assertEqual('items', sot.resources_key)
+        self.assertEqual("/waf/instance", sot.base_path)
+        self.assertEqual("items", sot.resources_key)
         self.assertIsNone(sot.resource_key)
 
         self.assertTrue(sot.allow_list)
@@ -73,19 +71,21 @@ class TestDomain(base.TestCase):
     def test_make_it(self):
 
         sot = domain.Domain(**EXAMPLE)
-        self.assertEqual(EXAMPLE['id'], sot.id)
-        self.assertEqual(EXAMPLE['hostname'], sot.name)
-        self.assertEqual(EXAMPLE['hostname'], sot.hostname)
-        self.assertEqual(EXAMPLE['access_status'], sot.access_status)
-        self.assertEqual(EXAMPLE['certificate_id'], sot.certificate_id)
-        self.assertEqual(len(EXAMPLE['server']), len(sot.server))
+        self.assertEqual(EXAMPLE["id"], sot.id)
+        self.assertEqual(EXAMPLE["hostname"], sot.name)
+        self.assertEqual(EXAMPLE["hostname"], sot.hostname)
+        self.assertEqual(EXAMPLE["access_status"], sot.access_status)
+        self.assertEqual(EXAMPLE["certificate_id"], sot.certificate_id)
+        self.assertEqual(len(EXAMPLE["server"]), len(sot.server))
 
-        self.assertDictEqual({
-            'hostname': 'hostname',
-            'limit': 'limit',
-            'marker': 'marker',
-            'name': 'hostname',
-            'offset': 'offset',
-            'policy_name': 'policyname'},
-            sot._query_mapping._mapping
+        self.assertDictEqual(
+            {
+                "hostname": "hostname",
+                "limit": "limit",
+                "marker": "marker",
+                "name": "hostname",
+                "offset": "offset",
+                "policy_name": "policyname",
+            },
+            sot._query_mapping._mapping,
         )

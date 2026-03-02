@@ -13,11 +13,9 @@
 """
 Delete env variable
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-conn.apig.delete_environment_variable(
-    gateway="gateway_id",
-    var="var_id"
-)
+conn = openstack.connect(cloud="otc")
+conn.apig.delete_environment_variable(gateway="gateway_id", var="var_id")

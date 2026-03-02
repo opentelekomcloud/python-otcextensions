@@ -45,9 +45,7 @@ class TrainingJobVersion(ConfigSpec):
 
     def stop(self, session):
         """Preform actions given the message body."""
-        uri = utils.urljoin(
-            self.base_path % self._uri.attributes, self.id, "stop"
-        )
+        uri = utils.urljoin(self.base_path % self._uri.attributes, self.id, "stop")
         response = session.post(uri, json=None)
         self._translate_response(response)
         return self

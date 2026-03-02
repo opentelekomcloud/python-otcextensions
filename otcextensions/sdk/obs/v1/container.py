@@ -16,17 +16,15 @@ from openstack import _log
 from openstack import exceptions
 from openstack import resource
 from openstack import utils
-
 from otcextensions.sdk.obs.v1 import _base
 
-
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class Container(_base.BaseResource):
 
-    resources_key = 'Buckets'
-    resource_key = 'Bucket'
+    resources_key = "Buckets"
+    resource_key = "Bucket"
 
     allow_get = True
     allow_fetch = True
@@ -35,59 +33,58 @@ class Container(_base.BaseResource):
     allow_create = True
     allow_delete = True
 
-    create_method = 'PUT'
+    create_method = "PUT"
 
-    base_path = '/'
+    base_path = "/"
 
     # all requests (except create) will default to requires_id = None
     requires_id = None
 
-    name = resource.Body('Name', alternate_id=True, alias='id')
-    creation_date = resource.Body('CreationDate')
+    name = resource.Body("Name", alternate_id=True, alias="id")
+    creation_date = resource.Body("CreationDate")
 
     # When creating a bucket, you can use this parameter
     # to set a pre-defined ACL.
-    storage_acl = resource.Header('x-amz-acl')
+    storage_acl = resource.Header("x-amz-acl")
     # When creating a bucket, you can add this header
     # to set the default storage class for the bucket.
     # Value range:
     # STANDARD (Standard storage)
     # WARM (Warm storage)
     # COLD (Cold storage)
-    storage_class = resource.Header('x-obs-storage-class')
+    storage_class = resource.Header("x-obs-storage-class")
     # Grants the read permission to all users in a specified domain.
-    grant_read = resource.Header('x-obs-grant-read')
+    grant_read = resource.Header("x-obs-grant-read")
     # Grants the WRITE permission to all users in a specified domain to create,
     # delete, and overwrite all objects in a bucket; and initiate multipart
     # uploads, upload parts, copy parts, assemble parts,
     # and cancel multipart uploads.
-    grant_write = resource.Header('x-obs-grant-write')
+    grant_write = resource.Header("x-obs-grant-write")
     # Grant the READ_ACP permission to all users in a specified domain
     # to allow them to read the bucket ACL.
-    grant_read_acp = resource.Header('x-obs-grant-read-acp')
+    grant_read_acp = resource.Header("x-obs-grant-read-acp")
     # Grants the WRITE_ACP permission to all users in a specified domain
     # to allow them to modify the bucket ACL.
-    grant_write_acp = resource.Header('x-obs-grant-write-acp')
+    grant_write_acp = resource.Header("x-obs-grant-write-acp")
     # Grants the FULL_CONTROL permission to all users in a specified domain.
-    grant_full_control = resource.Header('x-obs-grant-full-control')
+    grant_full_control = resource.Header("x-obs-grant-full-control")
     # Grants the READ permission to all users in a specified domain.
     # By default, the read permission is granted on all objects in the bucket.
-    grant_read_delivered = resource.Header('x-obs-grant-read-delivered')
+    grant_read_delivered = resource.Header("x-obs-grant-read-delivered")
     # Grants the FULL_CONTROL permission to all users in a specified domain.
     # By default, the FULL_CONTROL permission is granted on all
     # objects in the bucket.
-    grant_full_delivered = resource.Header(
-        'x-obs-grant-full-control-delivered'
-    )
+    grant_full_delivered = resource.Header("x-obs-grant-full-control-delivered")
     # This header can be carried when you want to create
     # a parallel file system.
-    fs_file_interface = resource.Header('x-obs-fs-file-interface')
+    fs_file_interface = resource.Header("x-obs-fs-file-interface")
     # When creating a bucket,
     # you can use this header to enable WORM for the bucket.
-    object_lock_enabled = resource.Header('x-obs-bucket-object-lock-enabled')
+    object_lock_enabled = resource.Header("x-obs-bucket-object-lock-enabled")
 
-    def _translate_response(self, response, has_body=True, error_message=None,
-                            resource_response_key=None):
+    def _translate_response(
+        self, response, has_body=True, error_message=None, resource_response_key=None
+    ):
         """Given a KSA response, inflate this instance with its data
 
         This method updates attributes that correspond to headers
@@ -125,7 +122,7 @@ class Container(_base.BaseResource):
         # if self.name:
         #     body['Bucket'] = self.name
 
-        base_path = '/'
+        base_path = "/"
         headers = {}
         for k, v in self._header.dirty.items():
             if isinstance(v, list):
@@ -136,16 +133,23 @@ class Container(_base.BaseResource):
         if requires_id:
             if self.id is None:
                 raise exceptions.InvalidRequest(
-                    "Request requires an ID but none was found")
+                    "Request requires an ID but none was found"
+                )
 
             uri = utils.urljoin(uri, self.id)
 
         return resource._Request(uri, body, headers)
 
     @classmethod
-    def list(cls, session, paginated=False,
-             endpoint_override=None, headers=None, requests_auth=None,
-             **params):
+    def list(
+        cls,
+        session,
+        paginated=False,
+        endpoint_override=None,
+        headers=None,
+        requests_auth=None,
+        **params
+    ):
         if not cls.allow_list:
             raise exceptions.MethodNotSupported(cls, "list")
 
@@ -155,15 +159,14 @@ class Container(_base.BaseResource):
         response = session.get(
             session.get_endpoint(),
             params=query_params.copy(),
-            requests_auth=requests_auth
+            requests_auth=requests_auth,
         )
 
         root = ET.fromstring(response.content)
 
-        if root.tag != ET.QName(cls.OBS_NS, 'ListAllMyBucketsResult'):
-            _logger.warn('Namespace in the response does not match '
-                         'expectation')
-            cls.OBS_NS = root.tag.split('}', 1)[0][1:]
+        if root.tag != ET.QName(cls.OBS_NS, "ListAllMyBucketsResult"):
+            _logger.warn("Namespace in the response does not match " "expectation")
+            cls.OBS_NS = root.tag.split("}", 1)[0][1:]
 
         for elements in root:
 
@@ -179,9 +182,15 @@ class Container(_base.BaseResource):
 
         return
 
-    def create(self, session, prepend_key=True,
-               endpoint_override=None, headers=None, requests_auth=None,
-               **attrs):
+    def create(
+        self,
+        session,
+        prepend_key=True,
+        endpoint_override=None,
+        headers=None,
+        requests_auth=None,
+        **attrs
+    ):
 
         if not self.allow_create:
             raise exceptions.MethodNotSupported(self, "create")
@@ -194,16 +203,16 @@ class Container(_base.BaseResource):
             endpoint_override=endpoint_override,
             request_headers=request.headers,
             additional_headers=headers,
-            requests_auth=requests_auth)
+            requests_auth=requests_auth,
+        )
         # hack for nl, strange that optional parameter
         # LocationConstraint is required there
-        if requests_auth.aws_region == 'eu-nl':
-            request.body = '''<CreateBucketConfiguration>
+        if requests_auth.aws_region == "eu-nl":
+            request.body = """<CreateBucketConfiguration>
                 <LocationConstraint>{region}</LocationConstraint>
                 </CreateBucketConfiguration>
-            '''.format(region=requests_auth.aws_region)
-        response = session.put(request.url,
-                               data=request.body, **req_args)
+            """.format(region=requests_auth.aws_region)
+        response = session.put(request.url, data=request.body, **req_args)
 
         self._translate_response(response)
         return self

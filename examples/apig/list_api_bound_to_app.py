@@ -13,15 +13,13 @@
 """
 Query Api Bound to App
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-attrs = {
-    'app_id': '74593f5c94f64a139db38b61a7705df3'
-}
+attrs = {"app_id": "74593f5c94f64a139db38b61a7705df3"}
 
-result = conn.apig.list_api_bound_to_app(gateway="id",
-                                         **attrs)
+result = conn.apig.list_api_bound_to_app(gateway="id", **attrs)
 print(list(result))

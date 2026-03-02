@@ -20,19 +20,12 @@ class TestListFloatingIP(fakes.TestAntiDDoS):
 
     objects = fakes.FakeFloatingIP.create_multiple(3)
 
-    columns = (
-        'floating_ip_address', 'floating_ip_id', 'network_type', 'status'
-    )
+    columns = ("floating_ip_address", "floating_ip_id", "network_type", "status")
 
     data = []
 
     for s in objects:
-        data.append((
-            s.floating_ip_address,
-            s.floating_ip_id,
-            s.network_type,
-            s.status
-        ))
+        data.append((s.floating_ip_address, s.floating_ip_id, s.network_type, s.status))
 
     def setUp(self):
         super(TestListFloatingIP, self).setUp()
@@ -43,55 +36,39 @@ class TestListFloatingIP(fakes.TestAntiDDoS):
         self.client.api_mock = self.client.floating_ips
 
     def test_list(self):
-        arglist = [
-        ]
+        arglist = []
 
-        verifylist = [
-        ]
+        verifylist = []
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self.objects
-        ]
+        self.client.api_mock.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.api_mock.assert_called_once_with(
-        )
+        self.client.api_mock.assert_called_once_with()
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
 
     def test_list_query(self):
-        arglist = [
-            '--ip', 'ip_pref',
-            '--status', 'normal'
-        ]
+        arglist = ["--ip", "ip_pref", "--status", "normal"]
 
-        verifylist = [
-            ('ip', 'ip_pref'),
-            ('status', 'normal')
-        ]
+        verifylist = [("ip", "ip_pref"), ("status", "normal")]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self.objects
-        ]
+        self.client.api_mock.side_effect = [self.objects]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.api_mock.assert_called_once_with(
-            ip='ip_pref',
-            status='normal'
-        )
+        self.client.api_mock.assert_called_once_with(ip="ip_pref", status="normal")
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, list(data))
@@ -102,9 +79,16 @@ class TestShow(fakes.TestAntiDDoS):
     _data = fakes.FakeFloatingIP.create_one()
 
     columns = (
-        'app_type_id', 'cleaning_access_pos_id', 'floating_ip_address',
-        'floating_ip_id', 'http_request_pos_id', 'id', 'is_enable_l7',
-        'network_type', 'status')
+        "app_type_id",
+        "cleaning_access_pos_id",
+        "floating_ip_address",
+        "floating_ip_id",
+        "http_request_pos_id",
+        "id",
+        "is_enable_l7",
+        "network_type",
+        "status",
+    )
 
     data = (
         _data.app_type_id,
@@ -115,7 +99,7 @@ class TestShow(fakes.TestAntiDDoS):
         _data.id,
         _data.is_enable_l7,
         _data.network_type,
-        _data.status
+        _data.status,
     )
 
     def setUp(self):
@@ -128,25 +112,21 @@ class TestShow(fakes.TestAntiDDoS):
 
     def test_show_default(self):
         arglist = [
-            'name_or_id',
+            "name_or_id",
         ]
         verifylist = [
-            ('floating_ip_id', 'name_or_id'),
+            ("floating_ip_id", "name_or_id"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self._data
-        ]
+        self.client.api_mock.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.api_mock.assert_called_with(
-            'name_or_id'
-        )
+        self.client.api_mock.assert_called_with("name_or_id")
 
         self.assertEqual(self.columns, columns)
         self.assertEqual(self.data, data)
@@ -157,9 +137,16 @@ class TestSetFloatingIP(fakes.TestAntiDDoS):
     _data = fakes.FakeFloatingIP.create_one()
 
     columns = (
-        'app_type_id', 'cleaning_access_pos_id', 'floating_ip_address',
-        'floating_ip_id', 'http_request_pos_id', 'id', 'is_enable_l7',
-        'network_type', 'status')
+        "app_type_id",
+        "cleaning_access_pos_id",
+        "floating_ip_address",
+        "floating_ip_id",
+        "http_request_pos_id",
+        "id",
+        "is_enable_l7",
+        "network_type",
+        "status",
+    )
 
     data = (
         _data.app_type_id,
@@ -170,7 +157,7 @@ class TestSetFloatingIP(fakes.TestAntiDDoS):
         _data.id,
         _data.is_enable_l7,
         _data.network_type,
-        _data.status
+        _data.status,
     )
 
     def setUp(self):
@@ -183,34 +170,36 @@ class TestSetFloatingIP(fakes.TestAntiDDoS):
 
     def test_default(self):
         arglist = [
-            'ip_id',
-            '--enable_l7',
-            '--traffic_pos_id', '1',
-            '--http_request_pos_id', '2',
-            '--cleaning_access_pos_id', '3',
-            '--app_type_id', '0',
+            "ip_id",
+            "--enable_l7",
+            "--traffic_pos_id",
+            "1",
+            "--http_request_pos_id",
+            "2",
+            "--cleaning_access_pos_id",
+            "3",
+            "--app_type_id",
+            "0",
         ]
         verifylist = [
-            ('floating_ip_id', 'ip_id'),
-            ('enable_l7', True),
-            ('traffic_pos_id', 1),
-            ('http_request_pos_id', 2),
-            ('cleaning_access_pos_id', 3),
-            ('app_type_id', 0),
+            ("floating_ip_id", "ip_id"),
+            ("enable_l7", True),
+            ("traffic_pos_id", 1),
+            ("http_request_pos_id", 2),
+            ("cleaning_access_pos_id", 3),
+            ("app_type_id", 0),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self._data
-        ]
+        self.client.api_mock.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_with(
-            floating_ip='ip_id',
+            floating_ip="ip_id",
             traffic_pos_id=1,
             http_request_pos_id=2,
             cleaning_access_pos_id=3,
@@ -222,34 +211,36 @@ class TestSetFloatingIP(fakes.TestAntiDDoS):
 
     def test_enable_false(self):
         arglist = [
-            'ip_id',
-            '--disable_l7',
-            '--traffic_pos_id', '1',
-            '--http_request_pos_id', '2',
-            '--cleaning_access_pos_id', '3',
-            '--app_type_id', '0',
+            "ip_id",
+            "--disable_l7",
+            "--traffic_pos_id",
+            "1",
+            "--http_request_pos_id",
+            "2",
+            "--cleaning_access_pos_id",
+            "3",
+            "--app_type_id",
+            "0",
         ]
         verifylist = [
-            ('floating_ip_id', 'ip_id'),
-            ('disable_l7', True),
-            ('traffic_pos_id', 1),
-            ('http_request_pos_id', 2),
-            ('cleaning_access_pos_id', 3),
-            ('app_type_id', 0),
+            ("floating_ip_id", "ip_id"),
+            ("disable_l7", True),
+            ("traffic_pos_id", 1),
+            ("http_request_pos_id", 2),
+            ("cleaning_access_pos_id", 3),
+            ("app_type_id", 0),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.api_mock.side_effect = [
-            self._data
-        ]
+        self.client.api_mock.side_effect = [self._data]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_with(
-            floating_ip='ip_id',
+            floating_ip="ip_id",
             traffic_pos_id=1,
             http_request_pos_id=2,
             cleaning_access_pos_id=3,

@@ -13,11 +13,12 @@
 """
 Get function code
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-code = conn.functiongraph.get_function_code(function='func_urn')
+code = conn.functiongraph.get_function_code(function="func_urn")

@@ -10,26 +10,27 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-'''CSS ELK cluster v1 action implementations'''
+"""CSS ELK cluster v1 action implementations"""
+
 import logging
 
 from osc_lib.command import command
+
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
 
 class DownloadCertificate(command.Command):
-    _description = _('Download the HTTPS certificate file of the server.')
+    _description = _("Download the HTTPS certificate file of the server.")
 
     def get_parser(self, prog_name):
         parser = super(DownloadCertificate, self).get_parser(prog_name)
         parser.add_argument(
-            '--out',
-            metavar='<out>',
+            "--out",
+            metavar="<out>",
             help=_(
-                'Name of the output file where certificate will be saved. '
-                '(Optional)'
+                "Name of the output file where certificate will be saved. " "(Optional)"
             ),
         )
         return parser

@@ -12,13 +12,12 @@
 # under the License.
 #
 """Update description of a visualization job."""
+
 import openstack
 
 openstack.enable_logging(True)
 conn = openstack.connect(cloud="otc")
 new_description = "This is a ModelArts job"
 job_id = 9446
-response = conn.modelartsv1.update_visualization_job(
-    job_id, new_description
-)
+response = conn.modelartsv1.update_visualization_job(job_id, new_description)
 print(response)

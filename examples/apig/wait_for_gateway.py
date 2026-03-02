@@ -17,6 +17,6 @@ Wait for GW state
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-conn.apig.wait_for_gateway('gateway_id')
+conn.apig.wait_for_gateway("gateway_id")

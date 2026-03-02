@@ -13,16 +13,17 @@
 """
 Get one domain
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-org_name = 'swr_org'
-repo_name = 'swr_repo'
-domain = 'OTC00000000001000000100'
+org_name = "swr_org"
+repo_name = "swr_repo"
+domain = "OTC00000000001000000100"
 repo = conn.swr.get_domain(
     org_name,
     repo_name,

@@ -11,18 +11,18 @@
 # under the License.
 from urllib.parse import urlparse
 
-from openstack import proxy
 from openstack.utils import urljoin
 
+from openstack import proxy
+from otcextensions.sdk.dcs.v1 import availability_zone as _az
 from otcextensions.sdk.dcs.v1 import backup as _backup
 from otcextensions.sdk.dcs.v1 import config as _config
 from otcextensions.sdk.dcs.v1 import instance as _instance
-from otcextensions.sdk.dcs.v1 import restore_record as _restore_record
-from otcextensions.sdk.dcs.v1 import statistic as _stat
-from otcextensions.sdk.dcs.v1 import quota as _quota
 from otcextensions.sdk.dcs.v1 import maintenance_time_window as _maintenance_tw
+from otcextensions.sdk.dcs.v1 import quota as _quota
+from otcextensions.sdk.dcs.v1 import restore_record as _restore_record
 from otcextensions.sdk.dcs.v1 import service_specification as _service_spec
-from otcextensions.sdk.dcs.v1 import availability_zone as _az
+from otcextensions.sdk.dcs.v1 import statistic as _stat
 
 
 class Proxy(proxy.Proxy):
@@ -31,11 +31,9 @@ class Proxy(proxy.Proxy):
 
     def _get_endpoint_with_api_version(self):
         url_parts = urlparse(self.get_endpoint())
-        api_version = url_parts.path.split('/').pop(1)
-        alternate_endpoint = '{scheme}://{netloc}/{api_version}'.format(
-            scheme=url_parts.scheme,
-            netloc=url_parts.netloc,
-            api_version=api_version
+        api_version = url_parts.path.split("/").pop(1)
+        alternate_endpoint = "{scheme}://{netloc}/{api_version}".format(
+            scheme=url_parts.scheme, netloc=url_parts.netloc, api_version=api_version
         )
         return alternate_endpoint
 
@@ -74,8 +72,7 @@ class Proxy(proxy.Proxy):
         :returns: one object of class
             :class:`~otcextensions.sdk.dcs.v1.instance.Instance`
         """
-        return self._find(_instance.Instance, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(_instance.Instance, name_or_id, ignore_missing=ignore_missing)
 
     def update_instance(self, instance, **attrs):
         """Update instance with attributes
@@ -104,8 +101,7 @@ class Proxy(proxy.Proxy):
             raised when the queue does not exist.
         :returns: `None`
         """
-        self._delete(_instance.Instance, instance,
-                     ignore_missing=ignore_missing)
+        self._delete(_instance.Instance, instance, ignore_missing=ignore_missing)
 
     def extend_instance(self, instance, capacity):
         """Extend capacity of existing instance
@@ -156,8 +152,7 @@ class Proxy(proxy.Proxy):
         res.restart(self)
         return self._get(_instance.Instance, res)
 
-    def change_instance_password(self, instance,
-                                 current_password, new_password):
+    def change_instance_password(self, instance, current_password, new_password):
         """Change instance password
 
         :param instance: The instance id, name or an instance of
@@ -169,9 +164,8 @@ class Proxy(proxy.Proxy):
         """
         res = self.find_instance(instance)
         return res.change_pwd(
-            self,
-            current_password=current_password,
-            new_password=new_password)
+            self, current_password=current_password, new_password=new_password
+        )
 
     # ======== Backups ========
     def backup_instance(self, instance, **kwargs):
@@ -192,12 +186,9 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.dcs.v1.backup.Backup`
         """
         inst = self._get_resource(_instance.Instance, instance)
-        return self._list(
-            _backup.Backup, paginated=False,
-            instance_id=inst.id, **query)
+        return self._list(_backup.Backup, paginated=False, instance_id=inst.id, **query)
 
-    def delete_instance_backup(self, instance, backup, ignore_missing=True,
-                               **attrs):
+    def delete_instance_backup(self, instance, backup, ignore_missing=True, **attrs):
         """Delete an instance backup
 
         :param backup: The instance id, an instance of
@@ -208,9 +199,13 @@ class Proxy(proxy.Proxy):
         :returns: `None`
         """
         inst = self._get_resource(_instance.Instance, instance)
-        self._delete(_backup.Backup, backup, instance_id=inst.id,
-                     ignore_missing=ignore_missing,
-                     **attrs)
+        self._delete(
+            _backup.Backup,
+            backup,
+            instance_id=inst.id,
+            ignore_missing=ignore_missing,
+            **attrs
+        )
 
     # ======== Restores ========
     def restore_instance(self, instance, backup=None, **kwargs):
@@ -224,9 +219,8 @@ class Proxy(proxy.Proxy):
         """
         inst = self._get_resource(_instance.Instance, instance)
         return self._create(
-            _restore_record.RestoreRecord,
-            instance_id=inst.id,
-            **kwargs)
+            _restore_record.RestoreRecord, instance_id=inst.id, **kwargs
+        )
 
     def restore_records(self, instance, **query):
         """List all instance restore records
@@ -238,8 +232,8 @@ class Proxy(proxy.Proxy):
         """
         inst = self._get_resource(_instance.Instance, instance)
         return self._list(
-            _restore_record.RestoreRecord, paginated=False,
-            instance_id=inst.id, **query)
+            _restore_record.RestoreRecord, paginated=False, instance_id=inst.id, **query
+        )
 
     # ======== Misc ========
     def statistics(self):
@@ -259,9 +253,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.dcs.v1.config.Config`
         """
         inst = self._get_resource(_instance.Instance, instance)
-        return self._list(
-            _config.Config, paginated=False,
-            instance_id=inst.id)
+        return self._list(_config.Config, paginated=False, instance_id=inst.id)
 
     def update_instance_params(self, instance, params):
         """Update instance configuration parameter with attributes
@@ -275,10 +267,7 @@ class Proxy(proxy.Proxy):
         """
         res = self._get_resource(_instance.Instance, instance)
         obj = self._get_resource(_config.Config, None, instance_id=res.id)
-        return obj._update(
-            self,
-            params
-        )
+        return obj._update(self, params)
 
     # ======== Quotas ========
     def quotas(self):
@@ -298,13 +287,9 @@ class Proxy(proxy.Proxy):
             :class:`~sdk.dcs.v1.maintenance_time_window.MaintenanceTimeWindow`.
         """
         base = self._get_endpoint_with_api_version()
-        base_path = urljoin(
-            base, _maintenance_tw.MaintenanceTimeWindow.base_path
-        )
+        base_path = urljoin(base, _maintenance_tw.MaintenanceTimeWindow.base_path)
 
-        return self._list(
-            _maintenance_tw.MaintenanceTimeWindow,
-            base_path=base_path)
+        return self._list(_maintenance_tw.MaintenanceTimeWindow, base_path=base_path)
 
     # ======== Service Specification ========
     def service_specifications(self):
@@ -314,14 +299,9 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~sdk.dcs.v1.service_specification.ServiceSpecification`
         """
         base = self._get_endpoint_with_api_version()
-        base_path = urljoin(
-            base, _service_spec.ServiceSpecification.base_path
-        )
+        base_path = urljoin(base, _service_spec.ServiceSpecification.base_path)
 
-        return self._list(
-            _service_spec.ServiceSpecification,
-            base_path=base_path
-        )
+        return self._list(_service_spec.ServiceSpecification, base_path=base_path)
 
     # ========= Available Zone ========
     def availability_zones(self):

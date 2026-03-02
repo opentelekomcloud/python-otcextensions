@@ -104,9 +104,7 @@ DATASOURCE_KEYS_MAP = {
         "* 1: security cluster"
     ),
     "cluster_name": "Name of a MRS cluster",
-    "database_name": (
-        "Name of the database to which the table dataset is imported."
-    ),
+    "database_name": ("Name of the database to which the table dataset is imported."),
     "input": "HDFS path of a table dataset",
     "ip": "IP address of your GaussDB(DWS) cluster",
     "port": "Port number of your GaussDB(DWS) cluster",
@@ -159,9 +157,7 @@ def _get_columns(item):
     hidden = [
         "location",
     ]
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(
-        item, column_map, hidden
-    )
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map, hidden)
 
 
 class AddDatasetSamples(command.ShowOne):
@@ -228,9 +224,7 @@ class AddDatasetSamples(command.ShowOne):
             "--sample-type",
             choices=list(SampleType.CHOICES_MAP.keys()),
             type=int,
-            help=_(
-                "Sample type. The options are as follows:\n" + SampleType.STR
-            ),
+            help=_("Sample type. The options are as follows:\n" + SampleType.STR),
         )
         parser.add_argument(
             "--data-source-path",
@@ -242,8 +236,7 @@ class AddDatasetSamples(command.ShowOne):
             choices=list(DataSourceType.CHOICES_MAP.keys()),
             type=int,
             help=_(
-                "Data source type. The options are as follows:\n"
-                + DataSourceType.STR
+                "Data source type. The options are as follows:\n" + DataSourceType.STR
             ),
         )
         parser.add_argument(
@@ -257,10 +250,7 @@ class AddDatasetSamples(command.ShowOne):
                 "Information required for importing a table data source.\n"
                 "Supported keys:\n"
                 + "\n".join(
-                    [
-                        f"{key}: {value}"
-                        for key, value in DATASOURCE_KEYS_MAP.items()
-                    ]
+                    [f"{key}: {value}" for key, value in DATASOURCE_KEYS_MAP.items()]
                 )
                 + "\nExample:\n"
                 "--data-source-info cluster_id=1234,cluster_mode=1"
@@ -297,10 +287,7 @@ class AddDatasetSamples(command.ShowOne):
                 "Sample label list.\n"
                 "Supported keys:\n"
                 + "\n".join(
-                    [
-                        f"{key}: {value}"
-                        for key, value in LABEL_KEYS_MAP.items()
-                    ]
+                    [f"{key}: {value}" for key, value in LABEL_KEYS_MAP.items()]
                 )
                 + "\nExample:\n"
                 "--label cluster_id=1234,cluster_mode=1"
@@ -320,9 +307,7 @@ class AddDatasetSamples(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
 
-        dataset = client.find_dataset(
-            parsed_args.dataset, ignore_missing=False
-        )
+        dataset = client.find_dataset(parsed_args.dataset, ignore_missing=False)
         sample = {}
         for arg in (
             # "name",
@@ -363,9 +348,7 @@ class AddDatasetSamples(command.ShowOne):
         }
         return (
             self.column_headers,
-            utils.get_item_properties(
-                data, self.columns, formatters=formatters
-            ),
+            utils.get_item_properties(data, self.columns, formatters=formatters),
         )
 
 
@@ -404,9 +387,7 @@ class ListDatasetSamples(command.Lister):
             "--label-type",
             choices=list(LabelType.CHOICES_MAP.keys()),
             type=int,
-            help=_(
-                "Labeling type. The options are as follows:" + LabelType.STR
-            ),
+            help=_("Labeling type. The options are as follows:" + LabelType.STR),
         )
         parser.add_argument(
             "--limit",
@@ -468,9 +449,7 @@ class ListDatasetSamples(command.Lister):
             "--sample-type",
             choices=list(SampleType.CHOICES_MAP.keys()),
             type=int,
-            help=_(
-                "Sample type. The options are as follows:" + SampleType.STR
-            ),
+            help=_("Sample type. The options are as follows:" + SampleType.STR),
         )
         parser.add_argument(
             "--search-conditions",
@@ -515,9 +494,7 @@ class ListDatasetSamples(command.Lister):
             if val or str(val) == "0":
                 query_params[arg] = val
 
-        dataset = client.find_dataset(
-            parsed_args.dataset, ignore_missing=False
-        )
+        dataset = client.find_dataset(parsed_args.dataset, ignore_missing=False)
         data = client.dataset_samples(dataset.id, **query_params)
 
         formatters = {
@@ -528,9 +505,7 @@ class ListDatasetSamples(command.Lister):
         return (
             self.columns,
             (
-                utils.get_dict_properties(
-                    s, self.columns, formatters=formatters
-                )
+                utils.get_dict_properties(s, self.columns, formatters=formatters)
                 for s in data
             ),
         )
@@ -555,9 +530,7 @@ class ShowDatasetSample(command.ShowOne):
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.modelartsv2
-        dataset = client.find_dataset(
-            parsed_args.dataset, ignore_missing=False
-        )
+        dataset = client.find_dataset(parsed_args.dataset, ignore_missing=False)
         obj = client.get_dataset_sample(dataset.id, parsed_args.sampleId)
 
         display_columns, columns = _get_columns(obj)
@@ -567,9 +540,7 @@ class ShowDatasetSample(command.ShowOne):
 
 
 class DeleteDatasetSamples(command.ShowOne):
-    _description = _(
-        "This API is used to delete the samples of a dataset in batches."
-    )
+    _description = _("This API is used to delete the samples of a dataset in batches.")
 
     def get_parser(self, prog_name):
         parser = super(DeleteDatasetSamples, self).get_parser(prog_name)
@@ -597,9 +568,7 @@ class DeleteDatasetSamples(command.ShowOne):
         if parsed_args.delete_source:
             delete_source = parsed_args.delete_source
 
-        dataset = client.find_dataset(
-            parsed_args.dataset, ignore_missing=False
-        )
+        dataset = client.find_dataset(parsed_args.dataset, ignore_missing=False)
         obj = client.delete_dataset_samples(
             dataset.id, parsed_args.sampleId, delete_source
         )

@@ -26,22 +26,24 @@ class TestListAutoScalingPolicy(TestAutoScalingPolicy):
 
     policies = fakes.FakePolicy.create_multiple(3)
 
-    columns = ['ID', 'Name']
+    columns = ["ID", "Name"]
 
     data = []
 
     for s in policies:
-        data.append((
-            s.id,
-            s.name,
-            # s.scaling_group_id,
-            # s.status,
-            # s.type,
-            # s.alarm_id,
-            # s.scheduled_policy,
-            # s.scaling_policy_action,
-            # s.cool_down_time,
-        ))
+        data.append(
+            (
+                s.id,
+                s.name,
+                # s.scaling_group_id,
+                # s.status,
+                # s.type,
+                # s.alarm_id,
+                # s.scheduled_policy,
+                # s.scaling_policy_action,
+                # s.cool_down_time,
+            )
+        )
 
     def setUp(self):
         super(TestListAutoScalingPolicy, self).setUp()
@@ -52,17 +54,14 @@ class TestListAutoScalingPolicy(TestAutoScalingPolicy):
 
     def test_list(self):
         arglist = [
-            '--group', 'grp',
+            "--group",
+            "grp",
         ]
 
-        verifylist = [
-            ('group', 'grp')
-        ]
+        verifylist = [("group", "grp")]
 
         # Set the response
-        self.client.groups.side_effect = [
-            self.policies
-        ]
+        self.client.groups.side_effect = [self.policies]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -72,9 +71,7 @@ class TestListAutoScalingPolicy(TestAutoScalingPolicy):
 
         self.client.find_group = mock.Mock(return_value=grp_mock)
         # Set the response
-        self.client.policies.side_effect = [
-            self.policies
-        ]
+        self.client.policies.side_effect = [self.policies]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -89,10 +86,17 @@ class TestShowAutoScalingPolicy(TestAutoScalingPolicy):
 
     _policy = fakes.FakePolicy.create_one()
 
-    columns = ['ID', 'Name', 'scaling_group_id', 'status',
-               'type', 'alarm_id', 'scheduled_policy',
-               'scaling_policy_action', 'cool_down_time'
-               ]
+    columns = [
+        "ID",
+        "Name",
+        "scaling_group_id",
+        "status",
+        "type",
+        "alarm_id",
+        "scheduled_policy",
+        "scaling_policy_action",
+        "cool_down_time",
+    ]
 
     data = (
         _policy.id,
@@ -114,19 +118,13 @@ class TestShowAutoScalingPolicy(TestAutoScalingPolicy):
         self.client.find_group = mock.Mock()
 
     def test_show_default(self):
-        arglist = [
-            'test_policy'
-        ]
-        verifylist = [
-            ('policy', 'test_policy')
-        ]
+        arglist = ["test_policy"]
+        verifylist = [("policy", "test_policy")]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.get_policy.side_effect = [
-            self._policy
-        ]
+        self.client.get_policy.side_effect = [self._policy]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -139,10 +137,17 @@ class TestShowAutoScalingPolicy(TestAutoScalingPolicy):
 
 class TestCreateAutoScalingPolicy(TestAutoScalingPolicy):
 
-    columns = ['ID', 'Name', 'scaling_group_id', 'status',
-               'type', 'alarm_id', 'scheduled_policy',
-               'scaling_policy_action', 'cool_down_time'
-               ]
+    columns = [
+        "ID",
+        "Name",
+        "scaling_group_id",
+        "status",
+        "type",
+        "alarm_id",
+        "scheduled_policy",
+        "scaling_policy_action",
+        "cool_down_time",
+    ]
 
     _obj = fakes.FakePolicy.create_one()
 
@@ -167,59 +172,67 @@ class TestCreateAutoScalingPolicy(TestAutoScalingPolicy):
 
     def test_create(self):
         arglist = [
-            '--group', 'group1',
-            '--type', 'ALARM',
-            '--cool-down-time', '1',
-            '--alarm-id', 'alarm1',
-            '--action-operation', 'ADD',
-            '--action-instance-number', '7',
-            '--launch-time', 'launch_time1',
-            '--recurrence-type', 'recurrence_type1',
-            '--recurrence-value', 'recurrence_value1',
-            '--start-time', 'st1',
-            '--end-time', 'et1',
-
-            'test_name'
+            "--group",
+            "group1",
+            "--type",
+            "ALARM",
+            "--cool-down-time",
+            "1",
+            "--alarm-id",
+            "alarm1",
+            "--action-operation",
+            "ADD",
+            "--action-instance-number",
+            "7",
+            "--launch-time",
+            "launch_time1",
+            "--recurrence-type",
+            "recurrence_type1",
+            "--recurrence-value",
+            "recurrence_value1",
+            "--start-time",
+            "st1",
+            "--end-time",
+            "et1",
+            "test_name",
         ]
         verifylist = [
-            ('group', 'group1'),
-            ('cool_down_time', 1),
-            ('type', 'ALARM'),
-            ('alarm_id', 'alarm1'),
-            ('action_operation', 'ADD'),
-            ('action_instance_number', 7),
-            ('launch_time', 'launch_time1'),
-            ('recurrence_type', 'recurrence_type1'),
-            ('recurrence_value', 'recurrence_value1'),
-            ('start_time', 'st1'),
-            ('end_time', 'et1'),
-            ('name', 'test_name')
+            ("group", "group1"),
+            ("cool_down_time", 1),
+            ("type", "ALARM"),
+            ("alarm_id", "alarm1"),
+            ("action_operation", "ADD"),
+            ("action_instance_number", 7),
+            ("launch_time", "launch_time1"),
+            ("recurrence_type", "recurrence_type1"),
+            ("recurrence_value", "recurrence_value1"),
+            ("start_time", "st1"),
+            ("end_time", "et1"),
+            ("name", "test_name"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.create_policy.side_effect = [
-            self._obj
-        ]
+        self.client.create_policy.side_effect = [self._obj]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.create_policy.assert_called_with(
-            alarm_id='alarm1',
+            alarm_id="alarm1",
             cool_down_time=1,
-            name='test_name',
-            scaling_group_id='group1',
-            scaling_policy_action={'operation': 'ADD', 'instance_number': 7},
+            name="test_name",
+            scaling_group_id="group1",
+            scaling_policy_action={"operation": "ADD", "instance_number": 7},
             scheduled_policy={
-                'launch_time': 'launch_time1',
-                'recurrence_type': 'recurrence_type1',
-                'recurrence_value': 'recurrence_value1',
-                'start_time': 'st1',
-                'end_time': 'et1'
+                "launch_time": "launch_time1",
+                "recurrence_type": "recurrence_type1",
+                "recurrence_value": "recurrence_value1",
+                "start_time": "st1",
+                "end_time": "et1",
             },
-            type='ALARM'
+            type="ALARM",
         )
 
         self.assertEqual(self.columns, columns)
@@ -237,12 +250,10 @@ class TestDeleteAutoScalingPolicy(TestAutoScalingPolicy):
 
     def test_delete(self):
         arglist = [
-            'policy1',
-            'policy2',
+            "policy1",
+            "policy2",
         ]
-        verifylist = [
-            ('policy', ['policy1', 'policy2'])
-        ]
+        verifylist = [("policy", ["policy1", "policy2"])]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -252,7 +263,7 @@ class TestDeleteAutoScalingPolicy(TestAutoScalingPolicy):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        calls = [mock.call('policy1'), mock.call('policy2')]
+        calls = [mock.call("policy1"), mock.call("policy2")]
 
         self.client.delete_policy.assert_has_calls(calls)
         self.assertEqual(2, self.client.delete_policy.call_count)
@@ -260,10 +271,17 @@ class TestDeleteAutoScalingPolicy(TestAutoScalingPolicy):
 
 class TestUpdateAutoScalingPolicy(TestAutoScalingPolicy):
 
-    columns = ['ID', 'Name', 'scaling_group_id', 'status',
-               'type', 'alarm_id', 'scheduled_policy',
-               'scaling_policy_action', 'cool_down_time'
-               ]
+    columns = [
+        "ID",
+        "Name",
+        "scaling_group_id",
+        "status",
+        "type",
+        "alarm_id",
+        "scheduled_policy",
+        "scaling_policy_action",
+        "cool_down_time",
+    ]
 
     _obj = fakes.FakePolicy.create_one()
 
@@ -288,63 +306,69 @@ class TestUpdateAutoScalingPolicy(TestAutoScalingPolicy):
 
     def test_create(self):
         arglist = [
-            '--group', 'group1',
-            '--type', 'ALARM',
-            '--cool-down-time', '1',
-            '--alarm-id', 'alarm1',
-            '--action-operation', 'ADD',
-            '--action-instance-number', '7',
-            '--launch-time', 'launch_time1',
-            '--recurrence-type', 'recurrence_type1',
-            '--recurrence-value', 'recurrence_value1',
-            '--start-time', 'st1',
-            '--end-time', 'et1',
-
-            'policy1'
+            "--group",
+            "group1",
+            "--type",
+            "ALARM",
+            "--cool-down-time",
+            "1",
+            "--alarm-id",
+            "alarm1",
+            "--action-operation",
+            "ADD",
+            "--action-instance-number",
+            "7",
+            "--launch-time",
+            "launch_time1",
+            "--recurrence-type",
+            "recurrence_type1",
+            "--recurrence-value",
+            "recurrence_value1",
+            "--start-time",
+            "st1",
+            "--end-time",
+            "et1",
+            "policy1",
         ]
         verifylist = [
-            ('group', 'group1'),
-            ('cool_down_time', 1),
-            ('type', 'ALARM'),
-            ('alarm_id', 'alarm1'),
-            ('action_operation', 'ADD'),
-            ('action_instance_number', 7),
-            ('launch_time', 'launch_time1'),
-            ('recurrence_type', 'recurrence_type1'),
-            ('recurrence_value', 'recurrence_value1'),
-            ('start_time', 'st1'),
-            ('end_time', 'et1'),
-            ('policy', 'policy1')
+            ("group", "group1"),
+            ("cool_down_time", 1),
+            ("type", "ALARM"),
+            ("alarm_id", "alarm1"),
+            ("action_operation", "ADD"),
+            ("action_instance_number", 7),
+            ("launch_time", "launch_time1"),
+            ("recurrence_type", "recurrence_type1"),
+            ("recurrence_value", "recurrence_value1"),
+            ("start_time", "st1"),
+            ("end_time", "et1"),
+            ("policy", "policy1"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.update_policy.side_effect = [
-            self._obj
-        ]
+        self.client.update_policy.side_effect = [self._obj]
 
-        self.client.get_policy.side_effect = [
-            self._obj
-        ]
+        self.client.get_policy.side_effect = [self._obj]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.update_policy.assert_called_with(
             self._obj,
-            alarm_id='alarm1',
+            alarm_id="alarm1",
             cool_down_time=1,
-            scaling_group_id='group1',
-            scaling_policy_action={'operation': 'ADD', 'instance_number': 7},
+            scaling_group_id="group1",
+            scaling_policy_action={"operation": "ADD", "instance_number": 7},
             scheduled_policy={
-                'launch_time': 'launch_time1',
-                'recurrence_type': 'recurrence_type1',
-                'recurrence_value': 'recurrence_value1',
-                'start_time': 'st1',
-                'end_time': 'et1'
+                "launch_time": "launch_time1",
+                "recurrence_type": "recurrence_type1",
+                "recurrence_value": "recurrence_value1",
+                "start_time": "st1",
+                "end_time": "et1",
             },
-            type='ALARM'
+            type="ALARM",
         )
 
         self.assertEqual(self.columns, columns)
@@ -361,12 +385,8 @@ class TestEnableAutoScalingPolicy(TestAutoScalingPolicy):
         self.client.resume_policy = mock.Mock()
 
     def test_enable(self):
-        arglist = [
-            'policy1'
-        ]
-        verifylist = [
-            ('policy', 'policy1')
-        ]
+        arglist = ["policy1"]
+        verifylist = [("policy", "policy1")]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -389,12 +409,8 @@ class TestDisableAutoScalingPolicy(TestAutoScalingPolicy):
         self.client.pause_policy = mock.Mock()
 
     def test_enable(self):
-        arglist = [
-            'policy1'
-        ]
-        verifylist = [
-            ('policy', 'policy1')
-        ]
+        arglist = ["policy1"]
+        verifylist = [("policy", "policy1")]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
@@ -417,12 +433,8 @@ class TestExecuteAutoScalingPolicy(TestAutoScalingPolicy):
         self.client.execute_policy = mock.Mock()
 
     def test_enable(self):
-        arglist = [
-            'policy1'
-        ]
-        verifylist = [
-            ('policy', 'policy1')
-        ]
+        arglist = ["policy1"]
+        verifylist = [("policy", "policy1")]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 

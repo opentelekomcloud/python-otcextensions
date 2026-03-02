@@ -13,12 +13,13 @@
 """
 Update DIS Stream Partition Count.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-stream_name = 'test-stream'
+stream_name = "test-stream"
 new_partition_count = 5
 result = conn.dis.update_stream_partition(stream_name, new_partition_count)
 print(result)

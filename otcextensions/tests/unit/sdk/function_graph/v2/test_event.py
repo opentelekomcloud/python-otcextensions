@@ -11,21 +11,16 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.function_graph.v2 import event
 
-
-EXAMPLE = {
-    'name': 'event-xx',
-    'content': 'eyJrIjoidiJ9'
-}
+EXAMPLE = {"name": "event-xx", "content": "eyJrIjoidiJ9"}
 
 
 class TestFunctionInvocation(base.TestCase):
 
     def test_basic(self):
         sot = event.Event()
-        path = '/fgs/functions/%(function_urn)s/events'
+        path = "/fgs/functions/%(function_urn)s/events"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_list)
@@ -35,5 +30,5 @@ class TestFunctionInvocation(base.TestCase):
 
     def test_make_it(self):
         sot = event.Event(**EXAMPLE)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['content'], sot.content)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["content"], sot.content)

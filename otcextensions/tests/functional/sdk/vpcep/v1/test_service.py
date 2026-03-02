@@ -19,26 +19,25 @@ class TestService(TestVpcep):
 
     def setUp(self):
         super(TestService, self).setUp()
-        self.service_name = 'svc' + uuid.uuid4().hex[:8]
+        self.service_name = "svc" + uuid.uuid4().hex[:8]
 
     def _create_service(self, remove=True, approval=False):
         """Create a test service using shared ELB."""
         attrs = {
-            'service_name': self.service_name,
-            'port_id': self.load_balancer.port_id,
-            'vpc_id': self.vpc_id,
-            'server_type': 'LB',
-            'ports': [{'client_port': 80, 'server_port': 80,
-                       'protocol': 'TCP'}],
-            'is_approval_enabled': approval,
-            'service_type': 'interface'
+            "service_name": self.service_name,
+            "port_id": self.load_balancer.port_id,
+            "vpc_id": self.vpc_id,
+            "server_type": "LB",
+            "ports": [{"client_port": 80, "server_port": 80, "protocol": "TCP"}],
+            "is_approval_enabled": approval,
+            "service_type": "interface",
         }
         service = self.client.create_service(**attrs)
         self.assertIsNotNone(service)
 
         if remove:
             self.addCleanup(self._cleanup_service, service.id)
-        self._wait_for_service_status(service.id, 'available')
+        self._wait_for_service_status(service.id, "available")
 
         return service
 
@@ -50,7 +49,7 @@ class TestService(TestVpcep):
             if svc.status == status:
                 return svc
             time.sleep(2)
-        raise Exception(f'Service {service_id} did not reach {status}')
+        raise Exception(f"Service {service_id} did not reach {status}")
 
     def test_create_service(self):
         """Test creating an Endpoint Service."""
@@ -92,11 +91,9 @@ class TestService(TestVpcep):
     def test_update_service(self):
         """Test updating an Endpoint Service."""
         service = self._create_service()
-        updated_name = self.service_name + '_upd'
+        updated_name = self.service_name + "_upd"
         s = self.client.update_service(
-            service.id,
-            service_name=updated_name,
-            is_approval_enabled=True
+            service.id, service_name=updated_name, is_approval_enabled=True
         )
         self.assertIn(updated_name, s.service_name)
         self.assertTrue(s.is_approval_enabled)

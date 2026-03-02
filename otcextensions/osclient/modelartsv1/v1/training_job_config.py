@@ -11,6 +11,7 @@
 #   under the License.
 #
 """ModelArts training job v1 action implementations"""
+
 import logging
 
 from cliff import columns as cliff_columns
@@ -35,9 +36,7 @@ _formatters = {
 def _get_columns(item):
     column_map = {}
     hidden = ["location"]
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(
-        item, column_map, hidden
-    )
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map, hidden)
 
 
 class JobStatus(cliff_columns.FormattableColumn):
@@ -157,9 +156,7 @@ class ListTrainingJobConfigs(command.Lister):
         table = (
             self.columns,
             (
-                utils.get_dict_properties(
-                    s, self.columns, formatters=_formatters
-                )
+                utils.get_dict_properties(s, self.columns, formatters=_formatters)
                 for s in data
             ),
         )
@@ -189,9 +186,7 @@ class CreateTrainingJobConfig(command.ShowOne):
             "--app-url",
             metavar="<app_url>",
             required=True,
-            help=_(
-                "Code directory of a training job, for example, /usr/app/."
-            ),
+            help=_("Code directory of a training job, for example, /usr/app/."),
         )
         mandatary_group.add_argument(
             "--boot-file-url",
@@ -207,10 +202,7 @@ class CreateTrainingJobConfig(command.ShowOne):
             metavar="<spec_id>",
             required=True,
             type=int,
-            help=_(
-                "ID of the resource specifications selected for a "
-                "training job."
-            ),
+            help=_("ID of the resource specifications selected for a " "training job."),
         )
         mandatary_group.add_argument(
             "--engine-id",
@@ -384,8 +376,7 @@ class DeleteTrainingJobConfig(command.Command):
         if result > 0:
             total = len(parsed_args.name)
             msg = _(
-                "%(result)s of %(total)s training job config(s) failed "
-                "to delete."
+                "%(result)s of %(total)s training job config(s) failed " "to delete."
             ) % {
                 "result": result,
                 "total": total,

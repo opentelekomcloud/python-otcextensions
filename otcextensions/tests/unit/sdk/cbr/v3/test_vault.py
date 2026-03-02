@@ -10,33 +10,32 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import mock
-
 from keystoneauth1 import adapter
-from openstack.tests.unit import base
 
+from openstack.tests.unit import base
 from otcextensions.sdk.cbr.v3 import vault
 
 EXAMPLE = {
-    'id': 'vault-id',
-    'auto_bind': False,
-    'auto_expand': False,
-    'description': 'my vault',
-    'billing': {
-        'protect_type': 'backup',
-        'object_type': 'server',
-        'size': 40,
-        'cloud_type': 'public',
-        'consistent_level': 'crash_consistent',
-        'charging_mode': 'post_paid'
+    "id": "vault-id",
+    "auto_bind": False,
+    "auto_expand": False,
+    "description": "my vault",
+    "billing": {
+        "protect_type": "backup",
+        "object_type": "server",
+        "size": 40,
+        "cloud_type": "public",
+        "consistent_level": "crash_consistent",
+        "charging_mode": "post_paid",
     },
-    'name': 'vault-name',
-    'resources': [
+    "name": "vault-name",
+    "resources": [
         {
-            'name': 'server-name',
-            'type': 'OS::Nova::Server',
-            'id': 'server-id',
+            "name": "server-name",
+            "type": "OS::Nova::Server",
+            "id": "server-id",
         }
-    ]
+    ],
 }
 
 
@@ -55,9 +54,9 @@ class TestVault(base.TestCase):
 
     def test_basic(self):
         sot = vault.Vault()
-        self.assertEqual('vault', sot.resource_key)
-        self.assertEqual('vaults', sot.resources_key)
-        self.assertEqual('/vaults', sot.base_path)
+        self.assertEqual("vault", sot.resource_key)
+        self.assertEqual("vaults", sot.resources_key)
+        self.assertEqual("/vaults", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_fetch)
@@ -68,57 +67,39 @@ class TestVault(base.TestCase):
         sot = vault.Vault.existing(**EXAMPLE)
         self.assertFalse(sot.auto_bind)
         self.assertFalse(sot.auto_expand)
-        self.assertEqual(EXAMPLE['id'], sot.id)
-        self.assertEqual(EXAMPLE['description'], sot.description)
+        self.assertEqual(EXAMPLE["id"], sot.id)
+        self.assertEqual(EXAMPLE["description"], sot.description)
+        self.assertEqual(EXAMPLE["billing"]["protect_type"], sot.billing.protect_type)
+        self.assertEqual(EXAMPLE["billing"]["object_type"], sot.billing.object_type)
+        self.assertEqual(EXAMPLE["billing"]["size"], sot.billing.size)
+        self.assertEqual(EXAMPLE["billing"]["cloud_type"], sot.billing.cloud_type)
         self.assertEqual(
-            EXAMPLE['billing']['protect_type'], sot.billing.protect_type)
-        self.assertEqual(
-            EXAMPLE['billing']['object_type'], sot.billing.object_type)
-        self.assertEqual(
-            EXAMPLE['billing']['size'], sot.billing.size)
-        self.assertEqual(
-            EXAMPLE['billing']['cloud_type'], sot.billing.cloud_type)
-        self.assertEqual(
-            EXAMPLE['billing']['consistent_level'],
-            sot.billing.consistent_level)
-        self.assertEqual(
-            EXAMPLE['billing']['charging_mode'], sot.billing.charging_mode)
-        self.assertEqual(
-            EXAMPLE['name'], sot.name)
-        self.assertEqual(
-            EXAMPLE['resources'][0]['name'],
-            sot.resources[0].name)
-        self.assertEqual(
-            EXAMPLE['resources'][0]['type'],
-            sot.resources[0].type)
-        self.assertEqual(
-            EXAMPLE['resources'][0]['id'],
-            sot.resources[0].id)
+            EXAMPLE["billing"]["consistent_level"], sot.billing.consistent_level
+        )
+        self.assertEqual(EXAMPLE["billing"]["charging_mode"], sot.billing.charging_mode)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["resources"][0]["name"], sot.resources[0].name)
+        self.assertEqual(EXAMPLE["resources"][0]["type"], sot.resources[0].type)
+        self.assertEqual(EXAMPLE["resources"][0]["id"], sot.resources[0].id)
 
     def test_get(self):
-        sot = vault.Vault.existing(
-            id=EXAMPLE['id'])
+        sot = vault.Vault.existing(id=EXAMPLE["id"])
         mock_response = mock.Mock()
         mock_response.status_code = 200
         mock_response.headers = {}
-        mock_response.json.return_value = {
-            'vault': EXAMPLE.copy()}
+        mock_response.json.return_value = {"vault": EXAMPLE.copy()}
 
         self.sess.get.return_value = mock_response
 
         result = sot.fetch(self.sess)
 
         self.sess.get.assert_called_once_with(
-            'vaults/%s' %
-            EXAMPLE['id'],
-            microversion=None,
-            params={},
-            skip_cache=False
+            "vaults/%s" % EXAMPLE["id"], microversion=None, params={}, skip_cache=False
         )
 
         self.assertEqual(sot, result)
-        self.assertEqual(EXAMPLE['id'], result.id)
-        self.assertEqual(EXAMPLE['name'], result.name)
+        self.assertEqual(EXAMPLE["id"], result.id)
+        self.assertEqual(EXAMPLE["name"], result.name)
 
     def test_bind_policy(self):
         mock_response = mock.Mock()
@@ -128,13 +109,12 @@ class TestVault(base.TestCase):
 
         self.sess.post.return_value = mock_response
 
-        sot = vault.Vault.existing(id=EXAMPLE['id'])
+        sot = vault.Vault.existing(id=EXAMPLE["id"])
 
-        sot.bind_policy(self.sess, 'policy_id')
+        sot.bind_policy(self.sess, "policy_id")
 
         self.sess.post.assert_called_once_with(
-            'vaults/%s/associatepolicy' % EXAMPLE['id'],
-            json={'policy_id': 'policy_id'}
+            "vaults/%s/associatepolicy" % EXAMPLE["id"], json={"policy_id": "policy_id"}
         )
 
     def test_unbind_policy(self):
@@ -145,13 +125,13 @@ class TestVault(base.TestCase):
 
         self.sess.post.return_value = mock_response
 
-        sot = vault.Vault.existing(id=EXAMPLE['id'])
+        sot = vault.Vault.existing(id=EXAMPLE["id"])
 
-        sot.unbind_policy(self.sess, 'policy_id')
+        sot.unbind_policy(self.sess, "policy_id")
 
         self.sess.post.assert_called_once_with(
-            'vaults/%s/dissociatepolicy' % EXAMPLE['id'],
-            json={'policy_id': 'policy_id'}
+            "vaults/%s/dissociatepolicy" % EXAMPLE["id"],
+            json={"policy_id": "policy_id"},
         )
 
     def test_associate_resources(self):
@@ -162,20 +142,16 @@ class TestVault(base.TestCase):
 
         self.sess.post.return_value = mock_response
 
-        resources = [{
-            'id': 'server1_id',
-            'type': 'OS::Nova::Server'
-        }, {
-            'id': 'server2_id',
-            'type': 'OS::Nova::Server'}
+        resources = [
+            {"id": "server1_id", "type": "OS::Nova::Server"},
+            {"id": "server2_id", "type": "OS::Nova::Server"},
         ]
-        sot = vault.Vault.existing(id=EXAMPLE['id'])
+        sot = vault.Vault.existing(id=EXAMPLE["id"])
 
         sot.associate_resources(self.sess, resources)
 
         self.sess.post.assert_called_once_with(
-            'vaults/%s/addresources' % EXAMPLE['id'],
-            json={'resources': resources}
+            "vaults/%s/addresources" % EXAMPLE["id"], json={"resources": resources}
         )
 
     def test_dissociate_resources(self):
@@ -186,12 +162,12 @@ class TestVault(base.TestCase):
 
         self.sess.post.return_value = mock_response
 
-        resources = ['id1', 'id2']
-        sot = vault.Vault.existing(id=EXAMPLE['id'])
+        resources = ["id1", "id2"]
+        sot = vault.Vault.existing(id=EXAMPLE["id"])
 
         sot.dissociate_resources(self.sess, resources)
 
         self.sess.post.assert_called_once_with(
-            'vaults/%s/removeresources' % EXAMPLE['id'],
-            json={'resource_ids': resources}
+            "vaults/%s/removeresources" % EXAMPLE["id"],
+            json={"resource_ids": resources},
         )

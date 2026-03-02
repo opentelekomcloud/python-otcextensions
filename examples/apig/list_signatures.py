@@ -13,8 +13,9 @@
 """
 List Signatures of specific gateway
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 environments = list(conn.apig.signatures(gateway="gateway_id"))

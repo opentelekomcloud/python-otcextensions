@@ -13,15 +13,14 @@
 """
 Get all repositories
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-query = {
-    'namespace': 'swr_org'
-}
+query = {"namespace": "swr_org"}
 for repo in conn.swr.repositories(**query):
     print(repo)

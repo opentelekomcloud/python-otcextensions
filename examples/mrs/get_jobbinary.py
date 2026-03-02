@@ -13,11 +13,12 @@
 """
 Get single MRS Job binary
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-job_binary = 'job_binary_id'
+job_binary = "job_binary_id"
 job_binary = conn.mrs.get_jobbinary(jobbinary=job_binary)
 print(job_binary)

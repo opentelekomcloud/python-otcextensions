@@ -11,14 +11,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
- Get Sfs Turbo file system
+Get Sfs Turbo file system
 """
+
 import openstack
 from otcextensions import sdk
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 share = conn.sfsturbo.get_share(share="share-uuid")

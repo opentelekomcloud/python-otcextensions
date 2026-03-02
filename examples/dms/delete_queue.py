@@ -13,11 +13,12 @@
 """
 Delete a Queue
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-queue_id = 'queue_id'
+queue_id = "queue_id"
 raw = conn.dms.delete_queue(queue_id, ignore_missing=True)
 print(raw)

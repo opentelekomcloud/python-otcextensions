@@ -13,14 +13,15 @@
 """
 Create new organization
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 attrs = {
-    'namespace': 'new_org',
+    "namespace": "new_org",
 }
 org = conn.swr.create_organization(**attrs)

@@ -24,10 +24,7 @@ class TestInstance(TestDds):
 
     def test_02_set_policy(self):
         new_number = random.randrange(1, 7)
-        attrs = {
-            "enabled": True,
-            "retention_period_in_days": new_number
-        }
+        attrs = {"enabled": True, "retention_period_in_days": new_number}
         self.client.create_policy(**attrs)
         result = self.client.get_policy()
-        self.assertEqual(new_number, result['retention_period_in_days'])
+        self.assertEqual(new_number, result["retention_period_in_days"])

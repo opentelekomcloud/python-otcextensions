@@ -13,11 +13,12 @@
 """
 Delete MRS Job
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-name_or_id = 'name_or_id'
+name_or_id = "name_or_id"
 job = conn.mrs.find_job(name_or_id)
 conn.mrs.delete_job(job=job)

@@ -13,8 +13,9 @@
 """
 Get SSL certificate
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 cert = conn.apig.self.get_ssl_certificate(ssl_certificate="cert_id")

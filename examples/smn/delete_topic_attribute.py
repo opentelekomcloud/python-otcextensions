@@ -13,15 +13,14 @@
 """
 Delete SMN topic attribute
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-urn = 'urn:smn:eu-de:123:test'
-name = 'myattribute'
-attribute = conn.smn.delete_topic_attribute(
-    topic=urn,
-    name=name)
+urn = "urn:smn:eu-de:123:test"
+name = "myattribute"
+attribute = conn.smn.delete_topic_attribute(topic=urn, name=name)
 print(attribute)

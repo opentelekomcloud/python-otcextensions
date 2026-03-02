@@ -11,52 +11,50 @@
 # under the License.
 import copy
 
+import mock
 from keystoneauth1 import adapter
 
-import mock
-
 from openstack.tests.unit import base
-
 from otcextensions.sdk.rds.v1 import configuration
 
 OS_HEADERS = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
 }
 
-ENDPOINT = 'http://some_endpoint'
+ENDPOINT = "http://some_endpoint"
 
-PROJECT_ID = '23'
-IDENTIFIER = 'IDENTIFIER'
+PROJECT_ID = "23"
+IDENTIFIER = "IDENTIFIER"
 EXAMPLE_GROUP = {
-    'id': IDENTIFIER,
-    'name': 'default-SQLServer-2014',
-    'datastore_version_id': '4f71c5b5-8939-424e-8825-8e3816e4303d',
-    'datastore_version_name': '2014',
-    'datastore_name': 'sqlserver',
-    'description': 'Default parameter group for sqlserver 2014',
-    'instance_count': 0,
-    'created': '2017-05-05T04:40:51',
-    'updated': '2017-05-05T04:40:51',
-    'values': {
-        'xp_cmdshell': '0'
-    },
-    'parameters': [{
-        'name': 'auto_increment_increment',
-        'value': '1',
-        'needRestart': '0',
-        'readonly': '1',
-        'valueRange': '1-65535',
-        'datatype': 'integer',
-        'description': 'auto_increment_increment and auto_increment_offset.'
-    }, {
-        'name': 'autocommit',
-        'value': 'ON',
-        'needRestart': '0',
-        'readonly': '1',
-        'valueRange': 'ON|OFF',
-        'datatype': 'boolean',
-        'description': 'The autocommit mode. If set to ON, all changes'
-    }
+    "id": IDENTIFIER,
+    "name": "default-SQLServer-2014",
+    "datastore_version_id": "4f71c5b5-8939-424e-8825-8e3816e4303d",
+    "datastore_version_name": "2014",
+    "datastore_name": "sqlserver",
+    "description": "Default parameter group for sqlserver 2014",
+    "instance_count": 0,
+    "created": "2017-05-05T04:40:51",
+    "updated": "2017-05-05T04:40:51",
+    "values": {"xp_cmdshell": "0"},
+    "parameters": [
+        {
+            "name": "auto_increment_increment",
+            "value": "1",
+            "needRestart": "0",
+            "readonly": "1",
+            "valueRange": "1-65535",
+            "datatype": "integer",
+            "description": "auto_increment_increment and auto_increment_offset.",
+        },
+        {
+            "name": "autocommit",
+            "value": "ON",
+            "needRestart": "0",
+            "readonly": "1",
+            "valueRange": "ON|OFF",
+            "datatype": "boolean",
+            "description": "The autocommit mode. If set to ON, all changes",
+        },
     ],
 }
 
@@ -80,9 +78,9 @@ class TestConfigurationGroup(base.TestCase):
 
     def test_basic(self):
         sot = configuration.ConfigurationGroup()
-        self.assertEqual('configuration', sot.resource_key)
-        self.assertEqual('configurations', sot.resources_key)
-        self.assertEqual('/%(project_id)s/configurations', sot.base_path)
+        self.assertEqual("configuration", sot.resource_key)
+        self.assertEqual("configurations", sot.resources_key)
+        self.assertEqual("/%(project_id)s/configurations", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_get)
@@ -93,38 +91,33 @@ class TestConfigurationGroup(base.TestCase):
         # TODO(agoncharov) check all parameters
         sot = configuration.ConfigurationGroup(**EXAMPLE_GROUP)
         self.assertEqual(IDENTIFIER, sot.id)
-        self.assertEqual(EXAMPLE_GROUP['name'], sot.name)
-        self.assertEqual(EXAMPLE_GROUP['created'], sot.created)
+        self.assertEqual(EXAMPLE_GROUP["name"], sot.name)
+        self.assertEqual(EXAMPLE_GROUP["created"], sot.created)
 
     def test_list(self):
 
         mock_response = mock.Mock()
         mock_response.status_code = 200
-        mock_response.json.return_value = {'configurations': [EXAMPLE_GROUP]}
+        mock_response.json.return_value = {"configurations": [EXAMPLE_GROUP]}
 
         self.sess.get.return_value = mock_response
 
-        result = list(self.sot.list(
-            self.sess,
-            project_id=PROJECT_ID,
-            headers=OS_HEADERS
-        ))
-
-        self.sess.get.assert_called_once_with(
-            '/%s/configurations' % (PROJECT_ID),
-            headers=OS_HEADERS,
-            params={}
+        result = list(
+            self.sot.list(self.sess, project_id=PROJECT_ID, headers=OS_HEADERS)
         )
 
-        self.assertEqual([configuration.ConfigurationGroup(**EXAMPLE_GROUP)],
-                         result)
+        self.sess.get.assert_called_once_with(
+            "/%s/configurations" % (PROJECT_ID), headers=OS_HEADERS, params={}
+        )
+
+        self.assertEqual([configuration.ConfigurationGroup(**EXAMPLE_GROUP)], result)
 
     def test_get(self):
 
         mock_response = mock.Mock()
         mock_response.status_code = 200
         mock_response.json.return_value = {
-            'configuration': copy.deepcopy(EXAMPLE_GROUP)
+            "configuration": copy.deepcopy(EXAMPLE_GROUP)
         }
         mock_response.headers = {}
 
@@ -139,46 +132,42 @@ class TestConfigurationGroup(base.TestCase):
         result = sot.get(self.sess, headers=OS_HEADERS)
 
         self.sess.get.assert_called_once_with(
-            '%s/configurations/%s' % (PROJECT_ID, IDENTIFIER),
+            "%s/configurations/%s" % (PROJECT_ID, IDENTIFIER),
             headers=OS_HEADERS,
         )
 
         self.assertEqual(
-            configuration.ConfigurationGroup(
-                project_id=PROJECT_ID,
-                **EXAMPLE_GROUP
-            ),
-            result)
+            configuration.ConfigurationGroup(project_id=PROJECT_ID, **EXAMPLE_GROUP),
+            result,
+        )
 
     def test_create(self):
 
         mock_response = mock.Mock()
         mock_response.status_code = 200
         mock_response.json.return_value = {
-            'configuration': copy.deepcopy(EXAMPLE_GROUP)
+            "configuration": copy.deepcopy(EXAMPLE_GROUP)
         }
         mock_response.headers = {}
 
         self.sess.post.return_value = mock_response
 
         sot = configuration.ConfigurationGroup.new(
-            project_id=PROJECT_ID,
-            **EXAMPLE_GROUP)
+            project_id=PROJECT_ID, **EXAMPLE_GROUP
+        )
 
         result = sot.create(self.sess, headers=OS_HEADERS)
 
         self.sess.post.assert_called_once_with(
-            '/%s/configurations' % (PROJECT_ID),
+            "/%s/configurations" % (PROJECT_ID),
             headers=OS_HEADERS,
-            json={'configuration': EXAMPLE_GROUP}
+            json={"configuration": EXAMPLE_GROUP},
         )
 
         self.assertEqual(
-            configuration.ConfigurationGroup(
-                project_id=PROJECT_ID,
-                **EXAMPLE_GROUP
-            ),
-            result)
+            configuration.ConfigurationGroup(project_id=PROJECT_ID, **EXAMPLE_GROUP),
+            result,
+        )
 
         # TODO(agoncharov)
         # {"badRequest":{"code":400,"message":
@@ -195,42 +184,37 @@ class TestConfigurationGroup(base.TestCase):
 
         self.sess.delete.return_value = mock_response
 
-        sot = configuration.ConfigurationGroup(
-            project_id=PROJECT_ID,
-            **EXAMPLE_GROUP
-        )
+        sot = configuration.ConfigurationGroup(project_id=PROJECT_ID, **EXAMPLE_GROUP)
 
         sot.delete(self.sess, headers=OS_HEADERS)
 
-        url = '%(project_id)s/configurations/%(id)s' % \
-            {
-                'project_id': PROJECT_ID,
-                'id': sot.id
-            }
+        url = "%(project_id)s/configurations/%(id)s" % {
+            "project_id": PROJECT_ID,
+            "id": sot.id,
+        }
 
         # utils.urljoin strips leading '/', but it is not a problem
-        self.sess.delete.assert_called_once_with(
-            url,
-            headers=OS_HEADERS
-        )
+        self.sess.delete.assert_called_once_with(url, headers=OS_HEADERS)
 
-    def _verify2(self, mock_method, test_method,
-                 method_args=None, method_kwargs={}, method_result=None,
-                 expected_args=None, expected_kwargs=None,
-                 expected_result=None):
-        """Internal invoke helper
-
-        """
+    def _verify2(
+        self,
+        mock_method,
+        test_method,
+        method_args=None,
+        method_kwargs={},
+        method_result=None,
+        expected_args=None,
+        expected_kwargs=None,
+        expected_result=None,
+    ):
+        """Internal invoke helper"""
 
         mock_method.reset_mock()
         mock_method.return_value = expected_result
 
         test_method(*method_args, **method_kwargs)
 
-        mock_method.assert_called_once_with(
-            *expected_args,
-            **expected_kwargs
-        )
+        mock_method.assert_called_once_with(*expected_args, **expected_kwargs)
 
     def test_get_associated_instances(self):
         mock_response = mock.Mock()
@@ -240,16 +224,12 @@ class TestConfigurationGroup(base.TestCase):
 
         self.sess.get.return_value = mock_response
 
-        sot = configuration.ConfigurationGroup(
-            project_id=PROJECT_ID,
-            **EXAMPLE_GROUP
-        )
+        sot = configuration.ConfigurationGroup(project_id=PROJECT_ID, **EXAMPLE_GROUP)
 
-        url = '%(project_id)s/configurations/%(id)s/instances' % \
-            {
-                'project_id': PROJECT_ID,
-                'id': sot.id
-            }
+        url = "%(project_id)s/configurations/%(id)s/instances" % {
+            "project_id": PROJECT_ID,
+            "id": sot.id,
+        }
 
         # Invoke without endpoint_override
         self._verify2(
@@ -260,8 +240,8 @@ class TestConfigurationGroup(base.TestCase):
             method_kwargs={},
             expected_args=[url],
             expected_kwargs={
-                'headers': OS_HEADERS,
-            }
+                "headers": OS_HEADERS,
+            },
         )
 
         # Invoke with endpoint_override as argument
@@ -270,12 +250,9 @@ class TestConfigurationGroup(base.TestCase):
             mock_method=self.sess.get,
             test_method=sot.get_associated_instances,
             method_args=[self.sess],
-            method_kwargs={'endpoint_override': ENDPOINT},
+            method_kwargs={"endpoint_override": ENDPOINT},
             expected_args=[url],
-            expected_kwargs={
-                'headers': OS_HEADERS,
-                'endpoint_override': ENDPOINT
-            }
+            expected_kwargs={"headers": OS_HEADERS, "endpoint_override": ENDPOINT},
         )
 
         # Invoke with endpoint_override as attribute
@@ -287,10 +264,7 @@ class TestConfigurationGroup(base.TestCase):
             method_args=[self.sess],
             method_kwargs={},
             expected_args=[url],
-            expected_kwargs={
-                'headers': OS_HEADERS,
-                'endpoint_override': ENDPOINT
-            }
+            expected_kwargs={"headers": OS_HEADERS, "endpoint_override": ENDPOINT},
         )
 
     # def test_add_custom_parameter(self):

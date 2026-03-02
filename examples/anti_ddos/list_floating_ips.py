@@ -13,10 +13,11 @@
 """
 List all Anti-DDoS Floating IPs and limit the output with query parameters.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 for fip in conn.anti_ddos.floating_ips():

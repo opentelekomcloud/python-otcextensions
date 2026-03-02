@@ -17,17 +17,17 @@ Set CSS Cluster Snapshot Basic Configuration
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-cluster_id = 'cluster-uuid'
+cluster_id = "cluster-uuid"
 
 # Set Cluster Snapshot Configuration automatically.
 conn.css.set_snapshot_configuration(cluster_id, auto_configure=True)
 
 # Set Cluster Snapshot Configuration with custom bucket & agency.
 attrs = {
-    'bucket': 'css-backup-1626212749424',
-    'agency': 'css_obs_agency',
-    'backup_path': 'css/repository/test-css',
+    "bucket": "css-backup-1626212749424",
+    "agency": "css_obs_agency",
+    "backup_path": "css/repository/test-css",
 }
 conn.css.set_snapshot_configuration(cluster_id, **attrs)

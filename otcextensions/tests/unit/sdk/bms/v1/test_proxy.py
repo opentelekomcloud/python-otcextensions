@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack.tests.unit import test_proxy_base
-
 from otcextensions.sdk.bms.v1 import _proxy
 
 
@@ -27,25 +26,28 @@ class TestExtractName(TestBMSProxy):
         self.assertEqual(
             [],
             self.proxy._extract_name(
-                '/v1',
-                project_id='7ed5f793b8354ea9b27a849f17af4733')
+                "/v1", project_id="7ed5f793b8354ea9b27a849f17af4733"
+            ),
         )
 
         self.assertEqual(
-            ['flavors'],
+            ["flavors"],
             self.proxy._extract_name(
-                '/v1/7ed5f793b8354ea9b27a849f17af4733/flavors',
-                project_id='7ed5f793b8354ea9b27a849f17af4733')
+                "/v1/7ed5f793b8354ea9b27a849f17af4733/flavors",
+                project_id="7ed5f793b8354ea9b27a849f17af4733",
+            ),
         )
         self.assertEqual(
-            ['detail'],
+            ["detail"],
             self.proxy._extract_name(
-                '/v1/7ed5f793b8354ea9b27a849f17af4733/detail',
-                project_id='7ed5f793b8354ea9b27a849f17af4733')
+                "/v1/7ed5f793b8354ea9b27a849f17af4733/detail",
+                project_id="7ed5f793b8354ea9b27a849f17af4733",
+            ),
         )
         self.assertEqual(
-            ['limits'],
+            ["limits"],
             self.proxy._extract_name(
-                '/v1/7ed5f793b8354ea9b27a849f17af4733/limits',
-                project_id='7ed5f793b8354ea9b27a849f17af4733')
+                "/v1/7ed5f793b8354ea9b27a849f17af4733/limits",
+                project_id="7ed5f793b8354ea9b27a849f17af4733",
+            ),
         )

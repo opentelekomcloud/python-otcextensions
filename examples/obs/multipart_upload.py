@@ -11,24 +11,23 @@
 # under the License.
 import openstack
 from otcextensions import sdk
+
 """
 Create an multipart upload of a large object
 """
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 sdk.get_ak_sk(conn)
 
 container = conn.obs.create_container(
-    name='test-multipart',
-    storage_acl='private',
-    storage_class='STANDARD'
+    name="test-multipart", storage_acl="private", storage_class="STANDARD"
 )
 
 obj = conn.obs.upload_object(
-    name='pdfs/book.pdf',
-    filename='my-book.pdf',
+    name="pdfs/book.pdf",
+    filename="my-book.pdf",
     container=container,
-    segment_size=1400000
+    segment_size=1400000,
 )

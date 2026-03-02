@@ -11,10 +11,9 @@
 # under the License.
 
 from openstack import _log
-
 from otcextensions.tests.functional import base
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestPredefinedTag(base.BaseFunctionalTest):
@@ -24,34 +23,20 @@ class TestPredefinedTag(base.BaseFunctionalTest):
         self.tms = self.conn.tms
 
     def test_create_tag(self):
-        attrs = {
-            'key': 'key2',
-            'value': 'value2'
-        }
+        attrs = {"key": "key2", "value": "value2"}
         self.tms.create_predefined_tag(**attrs)
-        attrs = {
-            'key': 'key1',
-            'value': 'value1'
-        }
+        attrs = {"key": "key1", "value": "value1"}
         self.tms.create_predefined_tag(**attrs)
 
     def test_update_tag(self):
         attrs = {
-            "new_tag": {
-                "key": "check_this",
-                "value": "mate"},
-            "old_tag": {
-                'key': 'key1',
-                'value': 'value1'
-            }
+            "new_tag": {"key": "check_this", "value": "mate"},
+            "old_tag": {"key": "key1", "value": "value1"},
         }
         self.tms.update_predefined_tag(**attrs)
 
     def test_delete_tag(self):
-        attrs = {
-            'key': 'key2',
-            'value': 'value2'
-        }
+        attrs = {"key": "key2", "value": "value2"}
         self.tms.delete_predefined_tag(**attrs)
 
     def test_tags_list(self):
@@ -59,13 +44,7 @@ class TestPredefinedTag(base.BaseFunctionalTest):
         self.assertGreaterEqual(len(tags), 0)
 
     def test_clear_tags(self):
-        attrs = {
-            "key": "check_this",
-            "value": "mate"
-        }
+        attrs = {"key": "check_this", "value": "mate"}
         self.tms.delete_predefined_tag(**attrs)
-        attrs = {
-            'key': 'key1',
-            'value': 'value1'
-        }
+        attrs = {"key": "key1", "value": "value1"}
         self.tms.delete_predefined_tag(**attrs)

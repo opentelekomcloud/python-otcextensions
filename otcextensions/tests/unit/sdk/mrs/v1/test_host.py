@@ -11,7 +11,6 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.mrs.v1 import cluster
 
 EXAMPLE = {
@@ -26,7 +25,7 @@ EXAMPLE = {
     "root_volume_size": "40",
     "data_volume_type": "SATA",
     "data_volume_size": 100,
-    "data_volume_count": 1
+    "data_volume_count": 1,
 }
 
 
@@ -34,8 +33,8 @@ class TestHost(base.TestCase):
 
     def test_basic(self):
         sot = cluster.Host()
-        self.assertEqual('hosts', sot.resources_key)
-        path = '/clusters/%(cluster_id)s/hosts'
+        self.assertEqual("hosts", sot.resources_key)
+        path = "/clusters/%(cluster_id)s/hosts"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
@@ -46,12 +45,12 @@ class TestHost(base.TestCase):
 
     def test_make_it(self):
         sot = cluster.Host(**EXAMPLE)
-        self.assertEqual(EXAMPLE['id'], sot.id)
-        self.assertEqual(EXAMPLE['ip'], sot.ip)
-        self.assertEqual(EXAMPLE['mem'], sot.mem)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['status'], sot.status)
-        self.assertEqual(EXAMPLE['type'], sot.type)
-        self.assertEqual(EXAMPLE['flavor'], sot.flavor)
-        self.assertEqual(EXAMPLE['cpu'], sot.cpu)
-        self.assertEqual(EXAMPLE['data_volume_size'], sot.data_volume_size)
+        self.assertEqual(EXAMPLE["id"], sot.id)
+        self.assertEqual(EXAMPLE["ip"], sot.ip)
+        self.assertEqual(EXAMPLE["mem"], sot.mem)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["status"], sot.status)
+        self.assertEqual(EXAMPLE["type"], sot.type)
+        self.assertEqual(EXAMPLE["flavor"], sot.flavor)
+        self.assertEqual(EXAMPLE["cpu"], sot.cpu)
+        self.assertEqual(EXAMPLE["data_volume_size"], sot.data_volume_size)

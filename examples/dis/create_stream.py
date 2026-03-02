@@ -13,15 +13,12 @@
 """
 Create DIS Stream.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-attrs = {
-    "stream_name": "newstream",
-    "partition_count": 3,
-    "data_duration": 24
-}
+attrs = {"stream_name": "newstream", "partition_count": 3, "data_duration": 24}
 result = conn.dis.create_stream(**attrs)
 print(result)

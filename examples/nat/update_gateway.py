@@ -13,19 +13,15 @@
 """
 Update a NAT Gateway by gateway_id or instance of Gateway class
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-attrs = {
-    "name": "new_name",
-    "description": "new description",
-    "spec": "1"
-}
+attrs = {"name": "new_name", "description": "new description", "spec": "1"}
 
-name_or_id = 'gateway_name_or_id'
+name_or_id = "gateway_name_or_id"
 gateway = conn.nat.find_gateway(name_or_id, ignore_missing=False)
 response = conn.nat.update_gateway(gateway, **attrs)
 print(response)

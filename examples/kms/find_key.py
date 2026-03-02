@@ -13,12 +13,13 @@
 """
 Find DNS cmk by name or id
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-key = 'cmk_name_or_id'
+key = "cmk_name_or_id"
 key = conn.kms.find_key(key)
 print(key)

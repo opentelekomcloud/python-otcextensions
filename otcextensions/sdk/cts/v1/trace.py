@@ -11,14 +11,13 @@
 # under the License.
 
 from openstack import resource
-
 from otcextensions.common import format
 
 
 class Trace(resource.Resource):
 
-    base_path = '/%(tracker_name)s/trace'
-    resources_key = 'traces'
+    base_path = "/%(tracker_name)s/trace"
+    resources_key = "traces"
     service_expectes_json_type = True
 
     allow_list = True
@@ -26,50 +25,60 @@ class Trace(resource.Resource):
     # NOTE: resource_type query param need to be renamed, due to a conflict
     # with proxy._list function
     _query_mapping = resource.QueryParameters(
-        'service_type', 'res_type', 'res_id', 'res_name',
-        'trace_name', 'limit', 'next', 'from', 'to',
-        'trace_id', 'level', 'user',
-        level='trace_rating',
-        res_type='resource_type',
-        res_id='resource_id',
-        res_name='resource_name')
+        "service_type",
+        "res_type",
+        "res_id",
+        "res_name",
+        "trace_name",
+        "limit",
+        "next",
+        "from",
+        "to",
+        "trace_id",
+        "level",
+        "user",
+        level="trace_rating",
+        res_type="resource_type",
+        res_id="resource_id",
+        res_name="resource_name",
+    )
 
     # Properties
-    tracker_name = resource.URI('tracker_name')
+    tracker_name = resource.URI("tracker_name")
     #: API version
-    api_version = resource.Body('api_version')
+    api_version = resource.Body("api_version")
     #: trace http return code
-    code = resource.Body('code')
+    code = resource.Body("code")
     #: Trace ID
-    id = resource.Body('trace_id', alternate_id=True)
+    id = resource.Body("trace_id", alternate_id=True)
     #: rating of the trace, normal, warning, incident
-    level = resource.Body('trace_rating')
+    level = resource.Body("trace_rating")
     #: remark of the trace
-    message = resource.Body('message')
+    message = resource.Body("message")
     #: metadata of the trace
     #: *Type: dict*
-    meta_data = resource.Body('meta_data', type=dict)
+    meta_data = resource.Body("meta_data", type=dict)
     #: name of the trace
-    name = resource.Body('trace_name')
+    name = resource.Body("trace_name")
     #: record time stampt
-    record_time = resource.Body('record_time', type=format.TimeTMsStr)
+    record_time = resource.Body("record_time", type=format.TimeTMsStr)
     #: trace request content
-    request = resource.Body('request')
+    request = resource.Body("request")
     #: trace resource id
-    resource_id = resource.Body('resource_id')
+    resource_id = resource.Body("resource_id")
     #: resource name of the trace
-    resource_name = resource.Body('resource_name')
+    resource_name = resource.Body("resource_name")
     #: trace resource type
-    resource_type = resource.Body('resource_type')
+    resource_type = resource.Body("resource_type")
     #: trace response content
-    response = resource.Body('response')
+    response = resource.Body("response")
     #: trace service type
-    service_type = resource.Body('service_type')
+    service_type = resource.Body("service_type")
     #: user ip of the trace
-    source_ip = resource.Body('source_ip')
+    source_ip = resource.Body("source_ip")
     #: *Type: int*
-    time = resource.Body('time', type=format.TimeTMsStr)
+    time = resource.Body("time", type=format.TimeTMsStr)
     #: trace source type
-    type = resource.Body('trace_type')
+    type = resource.Body("trace_type")
     #: trace user information
-    user = resource.Body('user')
+    user = resource.Body("user")

@@ -13,12 +13,13 @@
 """
 Find a CCE cluster node by name or id
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-cluster = conn.cce.find_cluster(cluster='name_or_id')
-node = conn.cce.find_cluster_node(cluster=cluster, node='name_or_id')
+cluster = conn.cce.find_cluster(cluster="name_or_id")
+node = conn.cce.find_cluster_node(cluster=cluster, node="name_or_id")
 print(node)

@@ -10,7 +10,8 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-'''Instance v1 action implementations'''
+"""Instance v1 action implementations"""
+
 import argparse
 import logging
 
@@ -21,100 +22,111 @@ from osc_lib.command import command
 from otcextensions.common import sdk_utils
 from otcextensions.i18n import _
 
-
 LOG = logging.getLogger(__name__)
 
 
 def _get_columns(item):
-    column_map = {
-    }
+    column_map = {}
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
 def set_attributes_for_print(instances):
     for instance in instances:
-        setattr(instance, 'flavor_id', instance.flavor['id'])
-        if getattr(instance, 'volume', None):
-            setattr(instance, 'size', instance.volume['size'])
+        setattr(instance, "flavor_id", instance.flavor["id"])
+        if getattr(instance, "volume", None):
+            setattr(instance, "size", instance.volume["size"])
         else:
-            setattr(instance, 'size', '-')
+            setattr(instance, "size", "-")
         datastore = instance.datastore
-        if datastore.get('version'):
-            setattr(instance, 'datastore_version',
-                    datastore['version'])
-        if datastore.get('type'):
-            setattr(instance, 'datastore_type', datastore['type'])
-        setattr(instance, 'type', instance.type)
+        if datastore.get("version"):
+            setattr(instance, "datastore_version", datastore["version"])
+        if datastore.get("type"):
+            setattr(instance, "datastore_type", datastore["type"])
+        setattr(instance, "type", instance.type)
         yield instance
 
 
 def set_attributes_for_print_detail(instance):
     info = {}  # instance._info.copy()
-    info['name'] = instance.name
-    info['flavor_id'] = instance.flavor['id']
-    if getattr(instance, 'volume', None):
-        info['volume'] = instance.volume['size']
-        if 'used' in instance.volume:
-            info['volume_used'] = instance.volume['used']
-    if getattr(instance, 'ip', None):
-        info['ip'] = ', '.join(instance.ip)
-    if getattr(instance, 'datastore', None):
-        info['datastore'] = instance.datastore['type']
-        info['datastore_version'] = instance.datastore['version']
-    if getattr(instance, 'configuration', None):
-        info['configuration'] = instance.configuration['id']
-    if getattr(instance, 'replica_of', None):
-        info['replica_of'] = instance.replica_of['id']
-    if getattr(instance, 'replicas', None):
-        replicas = [replica['id'] for replica in instance.replicas]
-        info['replicas'] = ', '.join(replicas)
-    if getattr(instance, 'networks', None):
-        info['networks'] = instance.networks['name']
-        info['networks_id'] = instance.networks['id']
-    if getattr(instance, 'fault', None):
-        info.pop('fault', None)
-        info['fault'] = instance.fault['message']
-        info['fault_date'] = instance.fault['created']
-        if 'details' in instance.fault and instance.fault['details']:
-            info['fault_details'] = instance.fault['details']
-    info.pop('links', None)
+    info["name"] = instance.name
+    info["flavor_id"] = instance.flavor["id"]
+    if getattr(instance, "volume", None):
+        info["volume"] = instance.volume["size"]
+        if "used" in instance.volume:
+            info["volume_used"] = instance.volume["used"]
+    if getattr(instance, "ip", None):
+        info["ip"] = ", ".join(instance.ip)
+    if getattr(instance, "datastore", None):
+        info["datastore"] = instance.datastore["type"]
+        info["datastore_version"] = instance.datastore["version"]
+    if getattr(instance, "configuration", None):
+        info["configuration"] = instance.configuration["id"]
+    if getattr(instance, "replica_of", None):
+        info["replica_of"] = instance.replica_of["id"]
+    if getattr(instance, "replicas", None):
+        replicas = [replica["id"] for replica in instance.replicas]
+        info["replicas"] = ", ".join(replicas)
+    if getattr(instance, "networks", None):
+        info["networks"] = instance.networks["name"]
+        info["networks_id"] = instance.networks["id"]
+    if getattr(instance, "fault", None):
+        info.pop("fault", None)
+        info["fault"] = instance.fault["message"]
+        info["fault_date"] = instance.fault["created"]
+        if "details" in instance.fault and instance.fault["details"]:
+            info["fault_details"] = instance.fault["details"]
+    info.pop("links", None)
     return info
 
 
 class ListDatabaseInstances(command.Lister):
-    _description = _('List database instances')
-    columns = ['ID', 'Name', 'Datastore Type', 'Datastore Version', 'Status',
-               'Flavor ID', 'Type', 'Size', 'Region']
+    _description = _("List database instances")
+    columns = [
+        "ID",
+        "Name",
+        "Datastore Type",
+        "Datastore Version",
+        "Status",
+        "Flavor ID",
+        "Type",
+        "Size",
+        "Region",
+    ]
 
     def get_parser(self, prog_name):
         parser = super(ListDatabaseInstances, self).get_parser(prog_name)
         parser.add_argument(
-            '--limit',
-            dest='limit',
-            metavar='<limit>',
+            "--limit",
+            dest="limit",
+            metavar="<limit>",
             type=int,
             default=None,
-            help=_('Limit the number of results displayed. (Not supported)')
+            help=_("Limit the number of results displayed. (Not supported)"),
         )
         parser.add_argument(
-            '--marker',
-            dest='marker',
-            metavar='<ID>',
-            help=_('Begin displaying the results for IDs greater than the '
-                   'specified marker. When used with --limit, set this to '
-                   'the last ID displayed in the previous run. '
-                   '(Not supported)')
+            "--marker",
+            dest="marker",
+            metavar="<ID>",
+            help=_(
+                "Begin displaying the results for IDs greater than the "
+                "specified marker. When used with --limit, set this to "
+                "the last ID displayed in the previous run. "
+                "(Not supported)"
+            ),
         )
         parser.add_argument(
-            '--include_clustered', '--include-clustered',
-            dest='include_clustered',
-            action='store_true',
+            "--include_clustered",
+            "--include-clustered",
+            dest="include_clustered",
+            action="store_true",
             default=False,
-            help=_('Include instances that are part of a cluster '
-                   '(default %(default)s).  --include-clustered may be '
-                   'deprecated in the future, retaining just '
-                   '--include_clustered.'
-                   '(Not supported)')
+            help=_(
+                "Include instances that are part of a cluster "
+                "(default %(default)s).  --include-clustered may be "
+                "deprecated in the future, retaining just "
+                "--include_clustered."
+                "(Not supported)"
+            ),
         )
 
         return parser
@@ -129,25 +141,36 @@ class ListDatabaseInstances(command.Lister):
 
         return (
             self.columns,
-            (utils.get_item_properties(
-                s,
-                self.columns,
-            ) for s in data)
+            (
+                utils.get_item_properties(
+                    s,
+                    self.columns,
+                )
+                for s in data
+            ),
         )
 
 
 class ShowDatabaseInstance(command.ShowOne):
     _description = _("Show instance details")
 
-    columns = ['ID', 'Name', 'Datastore', 'Datastore Version', 'Status',
-               'Flavor ID', 'Size', 'Region']
+    columns = [
+        "ID",
+        "Name",
+        "Datastore",
+        "Datastore Version",
+        "Status",
+        "Flavor ID",
+        "Size",
+        "Region",
+    ]
 
     def get_parser(self, prog_name):
         parser = super(ShowDatabaseInstance, self).get_parser(prog_name)
         parser.add_argument(
-            'instance',
-            metavar='<instance>',
-            help=_('Instance (name or ID)'),
+            "instance",
+            metavar="<instance>",
+            help=_("Instance (name or ID)"),
         )
         return parser
 
@@ -182,138 +205,147 @@ class CreateDatabaseInstance(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(CreateDatabaseInstance, self).get_parser(prog_name)
         parser.add_argument(
-            'name',
-            metavar='<name>',
+            "name",
+            metavar="<name>",
             help=_("Name of the instance."),
         )
         parser.add_argument(
-            'flavor',
-            metavar='<flavor>',
+            "flavor",
+            metavar="<flavor>",
             help=_("A flavor ID or name."),
         )
         parser.add_argument(
-            '--size',
-            metavar='<size>',
+            "--size",
+            metavar="<size>",
             type=int,
             required=True,
-            help=_("Size of the instance disk volume in GB. "
-                   "Required when volume support is enabled."),
+            help=_(
+                "Size of the instance disk volume in GB. "
+                "Required when volume support is enabled."
+            ),
         )
         parser.add_argument(
-            '--volume_type',
-            metavar='<volume_type>',
+            "--volume_type",
+            metavar="<volume_type>",
             type=str,
             default=None,
-            choices=['COMMON', 'ULTRAHIGH'],
+            choices=["COMMON", "ULTRAHIGH"],
             help=_("Volume type. (COMMON, ULTRAHIGH)."),
         )
         parser.add_argument(
-            '--databases',
-            metavar='<database>',
+            "--databases",
+            metavar="<database>",
             nargs="+",
             default=[],
             help=_("Optional list of databases. Not Supported"),
         )
         parser.add_argument(
-            '--users',
-            metavar='<user:password>',
+            "--users",
+            metavar="<user:password>",
             nargs="+",
             required=True,
             help=_("list of users."),
         )
         parser.add_argument(
-            '--backup',
-            metavar='<backup>',
+            "--backup",
+            metavar="<backup>",
             default=None,
             help=_("A backup name or ID."),
         )
         parser.add_argument(
-            '--availability_zone',
-            metavar='<availability_zone>',
+            "--availability_zone",
+            metavar="<availability_zone>",
             default=None,
             help=_("The Zone hint to give to Nova."),
         )
         parser.add_argument(
-            '--datastore',
-            metavar='<datastore>',
+            "--datastore",
+            metavar="<datastore>",
             default=None,
             help=_("A datastore name or ID."),
         )
         parser.add_argument(
-            '--datastore_version',
-            metavar='<datastore_version>',
+            "--datastore_version",
+            metavar="<datastore_version>",
             default=None,
             help=_("A datastore version name or ID."),
         )
         # API doc claims subnet, but it is network
         parser.add_argument(
-            '--nic',
-            metavar='<net-id=<net-uuid>,v4-fixed-ip=<ip-addr>,'
-                    'port-id=<port-uuid>>',
-            action='append',
-            dest='nics',
+            "--nic",
+            metavar="<net-id=<net-uuid>,v4-fixed-ip=<ip-addr>," "port-id=<port-uuid>>",
+            action="append",
+            dest="nics",
             default=[],
-            help=_("Create a NIC on the instance. Specify option multiple "
-                   "times to create multiple NICs. net-id: attach NIC to "
-                   "network with this ID (either port-id or net-id must be "
-                   "specified), v4-fixed-ip: IPv4 fixed address for NIC "
-                   "(optional), port-id: attach NIC to port with this ID "
-                   "(either port-id or net-id must be specified)."),
+            help=_(
+                "Create a NIC on the instance. Specify option multiple "
+                "times to create multiple NICs. net-id: attach NIC to "
+                "network with this ID (either port-id or net-id must be "
+                "specified), v4-fixed-ip: IPv4 fixed address for NIC "
+                "(optional), port-id: attach NIC to port with this ID "
+                "(either port-id or net-id must be specified)."
+            ),
         )
         parser.add_argument(
-            '--configuration',
-            metavar='<configuration>',
+            "--configuration",
+            metavar="<configuration>",
             default=None,
             help=_("ID of the configuration group to attach to the instance."),
         )
         parser.add_argument(
-            '--replica_of',
-            metavar='<source_instance>',
+            "--replica_of",
+            metavar="<source_instance>",
             default=None,
             help=_("ID or name of an existing instance to replicate from."),
         )
         parser.add_argument(
-            '--replica_count',
-            metavar='<count>',
+            "--replica_count",
+            metavar="<count>",
             type=int,
             default=None,
-            help=_("Number of replicas to create (defaults to 1 if "
-                   "replica_of specified)."
-                   "(None or 1 is allowed)"),
+            help=_(
+                "Number of replicas to create (defaults to 1 if "
+                "replica_of specified)."
+                "(None or 1 is allowed)"
+            ),
         )
         parser.add_argument(
-            '--module',
-            metavar='<module>',
+            "--module",
+            metavar="<module>",
             type=str,
-            dest='modules',
-            action='append',
+            dest="modules",
+            action="append",
             default=[],
-            help=_("ID or name of the module to apply.  Specify multiple "
-                   "times to apply multiple modules."
-                   "(Not supported)"),
+            help=_(
+                "ID or name of the module to apply.  Specify multiple "
+                "times to apply multiple modules."
+                "(Not supported)"
+            ),
         )
         parser.add_argument(
-            '--locality',
-            metavar='<policy>',
+            "--locality",
+            metavar="<policy>",
             default=None,
-            choices=['affinity', 'anti-affinity'],
-            help=_("Locality policy to use when creating replicas. Choose "
-                   "one of %(choices)s."
-                   "(Not supported)"),
+            choices=["affinity", "anti-affinity"],
+            help=_(
+                "Locality policy to use when creating replicas. Choose "
+                "one of %(choices)s."
+                "(Not supported)"
+            ),
         )
         parser.add_argument(
-            '--region',
-            metavar='<region>',
+            "--region",
+            metavar="<region>",
             type=str,
             default=None,
             help=argparse.SUPPRESS,
         )
         parser.add_argument(
-            '--network_id',
-            metavar='<network_id>',
+            "--network_id",
+            metavar="<network_id>",
             type=str,
             # required=True,
-            help=_('Network (VPC) ID')
+            help=_("Network (VPC) ID"),
         )
         # parser.add_argument(
         #     '--subnet_id',
@@ -323,11 +355,11 @@ class CreateDatabaseInstance(command.ShowOne):
         #     help=_('Subnet ID')
         # )
         parser.add_argument(
-            '--security_group',
-            metavar='<security_group>',
+            "--security_group",
+            metavar="<security_group>",
             type=str,
             # required=True,
-            help=_('Security group ID to be associated with NIC')
+            help=_("Security group ID to be associated with NIC"),
         )
         return parser
 
@@ -337,17 +369,18 @@ class CreateDatabaseInstance(command.ShowOne):
         client = self.app.client_manager.rds
 
         attrs = {}
-        attrs['flavorRef'] = client.find_flavor(parsed_args.flavor).id
+        attrs["flavorRef"] = client.find_flavor(parsed_args.flavor).id
         volume = None
         if parsed_args.size is not None and parsed_args.size <= 0:
             raise exceptions.ValidationError(
                 _("Volume size '%s' must be an integer and greater than 0.")
-                % parsed_args.size)
+                % parsed_args.size
+            )
         elif parsed_args.size:
             volume = {"size": parsed_args.size}
             if parsed_args.volume_type:
-                volume['type'] = parsed_args.volume_type
-            attrs['volume'] = volume
+                volume["type"] = parsed_args.volume_type
+            attrs["volume"] = volume
         # restore_point = None
         if parsed_args.backup:
             pass
@@ -358,8 +391,8 @@ class CreateDatabaseInstance(command.ShowOne):
         if parsed_args.replica_of:
             pass
             # TODO(agoncharov)
-            attrs['replica_of'] = client.find_instance(parsed_args.replica_of)
-            attrs['replica_count'] = replica_count or 1
+            attrs["replica_of"] = client.find_instance(parsed_args.replica_of)
+            attrs["replica_count"] = replica_count or 1
         # locality = None
         # if parsed_args.locality:
         #     locality = parsed_args.locality
@@ -367,44 +400,49 @@ class CreateDatabaseInstance(command.ShowOne):
         #         raise exceptions.ValidationError(
         #             _('Cannot specify locality when adding replicas '
         #               'to existing master.'))
-        attrs['users'] = [{'name': n, 'password': p} for (n, p) in
-                          [z.split(':')[:2] for z in parsed_args.users]]
+        attrs["users"] = [
+            {"name": n, "password": p}
+            for (n, p) in [z.split(":")[:2] for z in parsed_args.users]
+        ]
         nics = []
         for nic_str in parsed_args.nics:
-            nic_info = dict([(k, v) for (k, v) in [z.split("=", 1)[:2] for z in
-                                                   nic_str.split(",")]])
+            nic_info = dict(
+                [(k, v) for (k, v) in [z.split("=", 1)[:2] for z in nic_str.split(",")]]
+            )
             # need one or the other, not both, not none (!= ~ XOR)
-            if not (bool(nic_info.get('net-id')) != bool(
-                    nic_info.get('port-id'))):
-                raise exceptions.\
-                    ValidationError(_("Invalid NIC argument: %s. Must specify "
-                                      "either net-id or port-id but not both. "
-                                      "Please refer to help.")
-                                    % (_("nic='%s'") % nic_str))
+            if not (bool(nic_info.get("net-id")) != bool(nic_info.get("port-id"))):
+                raise exceptions.ValidationError(
+                    _(
+                        "Invalid NIC argument: %s. Must specify "
+                        "either net-id or port-id but not both. "
+                        "Please refer to help."
+                    )
+                    % (_("nic='%s'") % nic_str)
+                )
             if parsed_args.security_group:
-                nic_info['securityGroupId'] = parsed_args.security_group
+                nic_info["securityGroupId"] = parsed_args.security_group
             nics.append(nic_info)
         if len(nics):
-            attrs['nics'] = nics
+            attrs["nics"] = nics
         # modules = []
         # for module in parsed_args.modules:
         #     modules.append(osc_utils.find_resource(database.modules,
         #                                            module).id)
 
         datastore = {
-            'type': parsed_args.datastore,
-            'version': parsed_args.datastore_version
+            "type": parsed_args.datastore,
+            "version": parsed_args.datastore_version,
         }
-        attrs['datastore'] = datastore
-        attrs['name'] = parsed_args.name
+        attrs["datastore"] = datastore
+        attrs["name"] = parsed_args.name
         if parsed_args.availability_zone:
-            attrs['availability_zone'] = parsed_args.availability_zone
+            attrs["availability_zone"] = parsed_args.availability_zone
         if parsed_args.configuration:
-            attrs['configuration'] = parsed_args.configuration
+            attrs["configuration"] = parsed_args.configuration
         if parsed_args.region:
-            attrs['region_name'] = parsed_args.region
+            attrs["region_name"] = parsed_args.region
         if parsed_args.network_id:
-            attrs['vpc'] = parsed_args.network_id
+            attrs["vpc"] = parsed_args.network_id
         instance = client.create_instance(**attrs)
         instance = set_attributes_for_print_detail(instance)
         return zip(*sorted(instance.items()))
@@ -416,52 +454,58 @@ class CreateInstanceFromBackup(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(CreateInstanceFromBackup, self).get_parser(prog_name)
         parser.add_argument(
-            'name',
-            metavar='<name>',
+            "name",
+            metavar="<name>",
             help=_("Name of the instance."),
         )
         parser.add_argument(
-            '--flavor',
-            metavar='<flavor>',
+            "--flavor",
+            metavar="<flavor>",
             required=True,
             help=_("A flavor ID or name."),
         )
         parser.add_argument(
-            '--size',
-            metavar='<size>',
+            "--size",
+            metavar="<size>",
             type=int,
             required=True,
-            help=_("Size of the instance disk volume in GB. "
-                   "Required when volume support is enabled."),
+            help=_(
+                "Size of the instance disk volume in GB. "
+                "Required when volume support is enabled."
+            ),
         )
         parser.add_argument(
-            '--enable_ha',
-            action='store_true',
-            help=_('Specifies the HA configuration parameter.\n'
-                   'The value `true` indicates creating a primary/standby '
-                   'DB instance. The value `false` indicates creating '
-                   'a single DB instance.'),
+            "--enable_ha",
+            action="store_true",
+            help=_(
+                "Specifies the HA configuration parameter.\n"
+                "The value `true` indicates creating a primary/standby "
+                "DB instance. The value `false` indicates creating "
+                "a single DB instance."
+            ),
         )
         parser.add_argument(
-            '--replication_mode',
-            metavar='<replication_mode>',
+            "--replication_mode",
+            metavar="<replication_mode>",
             default=None,
-            choices=('async', 'sync', 'semisync'),
-            help=_('Specifies the replication mode for the standby DB '
-                   'instance. Valid values:'
-                   '* `async`: indicates the asynchronous replication mode.'
-                   '* `sync`: indicates the synchronous replication mode.'
-                   '* `semisync`: indicates the semisynchronous '
-                   'replication mode.'),
+            choices=("async", "sync", "semisync"),
+            help=_(
+                "Specifies the replication mode for the standby DB "
+                "instance. Valid values:"
+                "* `async`: indicates the asynchronous replication mode."
+                "* `sync`: indicates the synchronous replication mode."
+                "* `semisync`: indicates the semisynchronous "
+                "replication mode."
+            ),
         )
         parser.add_argument(
-            '--backup',
-            metavar='<backup>',
+            "--backup",
+            metavar="<backup>",
             help=_("ID or name of the backup to create instance from."),
         )
         parser.add_argument(
-            '--si',
-            metavar='<si>',
+            "--si",
+            metavar="<si>",
             help=_("ID or name of the backup to create instance from."),
         )
 
@@ -474,26 +518,27 @@ class CreateInstanceFromBackup(command.ShowOne):
 
         attrs = {}
         # attrs['flavorRef'] = client.find_flavor(parsed_args.flavor).id
-        attrs['flavorRef'] = parsed_args.flavor
+        attrs["flavorRef"] = parsed_args.flavor
         volume = None
         if parsed_args.size is not None and parsed_args.size <= 0:
             raise exceptions.ValidationError(
                 _("Volume size '%s' must be an integer and greater than 0.")
-                % parsed_args.size)
+                % parsed_args.size
+            )
         elif parsed_args.size:
             volume = {"size": parsed_args.size}
-            attrs['volume'] = volume
+            attrs["volume"] = volume
         if parsed_args.enable_ha or parsed_args.replication_mode:
-            attrs['ha'] = {
-                'enable': True,
-                'replicationMode': parsed_args.replication_mode
+            attrs["ha"] = {
+                "enable": True,
+                "replicationMode": parsed_args.replication_mode,
             }
         # restore_point = None
         if parsed_args.backup:
-            attrs['restore_point'] = {'backupRef': parsed_args.backup}
+            attrs["restore_point"] = {"backupRef": parsed_args.backup}
             if parsed_args.si:
-                attrs['restore_point']['sourceInstanceId'] = parsed_args.si
-        attrs['name'] = parsed_args.name
+                attrs["restore_point"]["sourceInstanceId"] = parsed_args.si
+        attrs["name"] = parsed_args.name
         instance = client.create_instance(**attrs)
         instance = set_attributes_for_print_detail(instance)
         return zip(*sorted(instance.items()))
@@ -506,9 +551,9 @@ class DeleteDatabaseInstance(command.Command):
     def get_parser(self, prog_name):
         parser = super(DeleteDatabaseInstance, self).get_parser(prog_name)
         parser.add_argument(
-            'instance',
-            metavar='<instance>',
-            help=_('ID or name of the Instance'),
+            "instance",
+            metavar="<instance>",
+            help=_("ID or name of the Instance"),
         )
         return parser
 
@@ -517,24 +562,28 @@ class DeleteDatabaseInstance(command.Command):
         try:
             client.delete_instance(parsed_args.instance)
         except Exception as e:
-            msg = (_("Failed to delete instance %(instance)s: %(e)s")
-                   % {'instance': parsed_args.instance, 'e': e})
+            msg = _("Failed to delete instance %(instance)s: %(e)s") % {
+                "instance": parsed_args.instance,
+                "e": e,
+            }
             raise exceptions.CommandError(msg)
 
 
 class ResetDatabaseInstanceStatus(command.Command):
 
-    _description = _("Set the task status of an instance to NONE if the "
-                     "instance is in BUILD or ERROR state. Resetting task "
-                     "status of an instance in BUILD state will allow "
-                     "the instance to be deleted.")
+    _description = _(
+        "Set the task status of an instance to NONE if the "
+        "instance is in BUILD or ERROR state. Resetting task "
+        "status of an instance in BUILD state will allow "
+        "the instance to be deleted."
+    )
 
     def get_parser(self, prog_name):
         parser = super(ResetDatabaseInstanceStatus, self).get_parser(prog_name)
         parser.add_argument(
-            'instance',
-            metavar='<instance>',
-            help=_('ID or name of the instance'),
+            "instance",
+            metavar="<instance>",
+            help=_("ID or name of the instance"),
         )
         return parser
 
@@ -551,20 +600,18 @@ class ResizeDatabaseInstanceFlavor(command.Command):
     _description = _("Resize an instance with a new flavor")
 
     def get_parser(self, prog_name):
-        parser = super(ResizeDatabaseInstanceFlavor, self).get_parser(
-            prog_name
+        parser = super(ResizeDatabaseInstanceFlavor, self).get_parser(prog_name)
+        parser.add_argument(
+            "instance",
+            metavar="<instance>",
+            type=str,
+            help=_("ID or name of the instance"),
         )
         parser.add_argument(
-            'instance',
-            metavar='<instance>',
+            "flavor_id",
+            metavar="<flavor_id>",
             type=str,
-            help=_('ID or name of the instance')
-        )
-        parser.add_argument(
-            'flavor_id',
-            metavar='<flavor_id>',
-            type=str,
-            help=_('New flavor of the instance')
+            help=_("New flavor of the instance"),
         )
         return parser
 
@@ -572,9 +619,7 @@ class ResizeDatabaseInstanceFlavor(command.Command):
         # raise NotImplementedError
         client = self.app.client_manager.rds
         instance = client.find_instance(parsed_args.instance)
-        flavor = client.find_flavor(
-            parsed_args.flavor_id,
-            ignore_missing=False)
+        flavor = client.find_flavor(parsed_args.flavor_id, ignore_missing=False)
 
         instance.resize(client, flavor.id)
 
@@ -586,15 +631,15 @@ class UpgradeDatabaseInstance(command.Command):
     def get_parser(self, prog_name):
         parser = super(UpgradeDatabaseInstance, self).get_parser(prog_name)
         parser.add_argument(
-            'instance',
-            metavar='<instance>',
+            "instance",
+            metavar="<instance>",
             type=str,
-            help=_('ID or name of the instance.'),
+            help=_("ID or name of the instance."),
         )
         parser.add_argument(
-            'datastore_version',
-            metavar='<datastore_version>',
-            help=_('ID or name of the instance.'),
+            "datastore_version",
+            metavar="<datastore_version>",
+            help=_("ID or name of the instance."),
         )
         return parser
 
@@ -613,16 +658,16 @@ class EnableDatabaseInstanceLog(command.ShowOne):
     def get_parser(self, prog_name):
         parser = super(EnableDatabaseInstanceLog, self).get_parser(prog_name)
         parser.add_argument(
-            'instance',
-            metavar='<instance>',
+            "instance",
+            metavar="<instance>",
             type=str,
-            help=_('Id or Name of the instance.')
+            help=_("Id or Name of the instance."),
         )
         parser.add_argument(
-            'log_name',
-            metavar='<log_name>',
+            "log_name",
+            metavar="<log_name>",
             type=str,
-            help=_('Name of log to publish.')
+            help=_("Name of log to publish."),
         )
         return parser
 
@@ -641,21 +686,19 @@ class ResizeDatabaseInstanceVolume(command.Command):
     _description = _("Resizes the volume size of an instance.")
 
     def get_parser(self, prog_name):
-        parser = super(ResizeDatabaseInstanceVolume, self).get_parser(
-            prog_name
-        )
+        parser = super(ResizeDatabaseInstanceVolume, self).get_parser(prog_name)
         parser.add_argument(
-            'instance',
-            metavar='<instance>',
+            "instance",
+            metavar="<instance>",
             type=str,
-            help=_('ID or name of the instance.')
+            help=_("ID or name of the instance."),
         )
         parser.add_argument(
-            'size',
-            metavar='<size>',
+            "size",
+            metavar="<size>",
             type=int,
             default=None,
-            help=_('New size of the instance disk volume in GB.')
+            help=_("New size of the instance disk volume in GB."),
         )
         return parser
 
@@ -672,12 +715,11 @@ class ForceDeleteDatabaseInstance(command.Command):
     _description = _("Force delete an instance.")
 
     def get_parser(self, prog_name):
-        parser = (super(ForceDeleteDatabaseInstance, self)
-                  .get_parser(prog_name))
+        parser = super(ForceDeleteDatabaseInstance, self).get_parser(prog_name)
         parser.add_argument(
-            'instance',
-            metavar='<instance>',
-            help=_('ID or name of the instance'),
+            "instance",
+            metavar="<instance>",
+            help=_("ID or name of the instance"),
         )
         return parser
 
@@ -700,14 +742,12 @@ class RestartDatabaseInstance(command.Command):
     _description = _("Restarts an instance.")
 
     def get_parser(self, prog_name):
-        parser = super(RestartDatabaseInstance, self).get_parser(
-            prog_name
-        )
+        parser = super(RestartDatabaseInstance, self).get_parser(prog_name)
         parser.add_argument(
-            'instance',
-            metavar='<instance>',
+            "instance",
+            metavar="<instance>",
             type=str,
-            help=_('ID or name of the instance.')
+            help=_("ID or name of the instance."),
         )
         return parser
 
@@ -722,20 +762,18 @@ class RestoreDatabaseInstance(command.Command):
     _description = _("Restores an instance from backup.")
 
     def get_parser(self, prog_name):
-        parser = super(RestoreDatabaseInstance, self).get_parser(
-            prog_name
+        parser = super(RestoreDatabaseInstance, self).get_parser(prog_name)
+        parser.add_argument(
+            "instance",
+            metavar="<instance>",
+            type=str,
+            help=_("ID or name of the instance."),
         )
         parser.add_argument(
-            'instance',
-            metavar='<instance>',
+            "--backup",
+            metavar="<backup>",
             type=str,
-            help=_('ID or name of the instance.')
-        )
-        parser.add_argument(
-            '--backup',
-            metavar='<backup>',
-            type=str,
-            help=_('ID or name of the backup.')
+            help=_("ID or name of the backup."),
         )
         return parser
 
@@ -743,53 +781,56 @@ class RestoreDatabaseInstance(command.Command):
         client = self.app.client_manager.rds
 
         client.restore_instance(
-            instance=parsed_args.instance,
-            backup=parsed_args.backup)
+            instance=parsed_args.instance, backup=parsed_args.backup
+        )
 
 
 class UpdateDatabaseInstance(command.Command):
 
-    _description = _("Updates an instance: Edits name, "
-                     "configuration, or replica source.")
+    _description = _(
+        "Updates an instance: Edits name, " "configuration, or replica source."
+    )
 
     def get_parser(self, prog_name):
         parser = super(UpdateDatabaseInstance, self).get_parser(prog_name)
         parser.add_argument(
-            'instance',
-            metavar='<instance>',
+            "instance",
+            metavar="<instance>",
             type=str,
-            help=_('ID or name of the instance.'),
+            help=_("ID or name of the instance."),
         )
         parser.add_argument(
-            '--name',
-            metavar='<name>',
-            type=str,
-            default=None,
-            help=_('ID or name of the instance.'),
-        )
-        parser.add_argument(
-            '--configuration',
-            metavar='<configuration>',
+            "--name",
+            metavar="<name>",
             type=str,
             default=None,
-            help=_('ID of the configuration reference to attach.'),
+            help=_("ID or name of the instance."),
         )
         parser.add_argument(
-            '--detach_replica_source',
-            '--detach-replica-source',
-            dest='detach_replica_source',
-            action="store_true",
-            default=False,
-            help=_('Detach the replica instance from its replication source. '
-                   '--detach-replica-source may be deprecated in the future '
-                   'in favor of just --detach_replica_source'),
+            "--configuration",
+            metavar="<configuration>",
+            type=str,
+            default=None,
+            help=_("ID of the configuration reference to attach."),
         )
         parser.add_argument(
-            '--remove_configuration',
-            dest='remove_configuration',
+            "--detach_replica_source",
+            "--detach-replica-source",
+            dest="detach_replica_source",
             action="store_true",
             default=False,
-            help=_('Drops the current configuration reference.'),
+            help=_(
+                "Detach the replica instance from its replication source. "
+                "--detach-replica-source may be deprecated in the future "
+                "in favor of just --detach_replica_source"
+            ),
+        )
+        parser.add_argument(
+            "--remove_configuration",
+            dest="remove_configuration",
+            action="store_true",
+            default=False,
+            help=_("Drops the current configuration reference."),
         )
         return parser
 

@@ -11,13 +11,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
- Assign bandwidth
+Assign bandwidth
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='test-dmd')
+conn = openstack.connect(cloud="test-dmd")
 
-example_bandwidth = conn.vpc.assign_bandwidgh(name='bandwidth123')
+example_bandwidth = conn.vpc.assign_bandwidgh(name="bandwidth123")
 print(example_bandwidth)

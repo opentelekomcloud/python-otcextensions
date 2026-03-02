@@ -12,6 +12,7 @@
 #
 
 """DCS Quota v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -23,8 +24,8 @@ LOG = logging.getLogger(__name__)
 
 
 class ListDCSQuota(command.Lister):
-    _description = _('List DCS Quotas')
-    columns = ('quota', 'used', 'type', 'min', 'max', 'unit')
+    _description = _("List DCS Quotas")
+    columns = ("quota", "used", "type", "min", "max", "unit")
 
     def get_parser(self, prog_name):
         parser = super(ListDCSQuota, self).get_parser(prog_name)
@@ -37,8 +38,5 @@ class ListDCSQuota(command.Lister):
 
         return (
             self.columns,
-            (utils.get_item_properties(
-                s,
-                self.columns
-            ) for s in data)
+            (utils.get_item_properties(s, self.columns) for s in data),
         )

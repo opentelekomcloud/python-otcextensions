@@ -12,7 +12,7 @@
 from openstack import _log
 from otcextensions.tests.functional import base
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestService(base.BaseFunctionalTest):

@@ -13,7 +13,6 @@ import random
 import uuid
 
 # from openstack import resource
-
 from otcextensions.tests.functional.sdk.waf import TestWaf
 
 
@@ -72,25 +71,26 @@ rNcviQ==
         super(TestDomain, self).setUp()
 
         self.cert_name = "SDK-D" + uuid.uuid4().hex
-        self.domain_name = 'example-{0}.org'.format(random.randint(1, 10000))
+        self.domain_name = "example-{0}.org".format(random.randint(1, 10000))
 
         self.cert = self.client.create_certificate(
-            key=self._PRIVATE_KEY,
-            content=self._CERTIFICATE,
-            name=self.cert_name
+            key=self._PRIVATE_KEY, content=self._CERTIFICATE, name=self.cert_name
         )
 
         self.domain = self.client.create_domain(
             name=self.domain_name,
             certificate_id=self.cert.id,
-            server=[dict(
-                client_protocol="HTTPS",
-                server_protocol="HTTP",
-                address="1.2.3.4",
-                port="80")],
+            server=[
+                dict(
+                    client_protocol="HTTPS",
+                    server_protocol="HTTP",
+                    address="1.2.3.4",
+                    port="80",
+                )
+            ],
             proxy=True,
             sip_header_name="default",
-            sip_header_list=['X-Forwarded-For']
+            sip_header_list=["X-Forwarded-For"],
         )
 
         # reverse order is super important
@@ -103,22 +103,25 @@ rNcviQ==
         # real, and not in units
         for i in range(0, cnt):
             domain = self.client.create_domain(
-                name='%s.%s' % (i, self.domain_name),
-                server=[dict(
-                    client_protocol="HTTP",
-                    server_protocol="HTTP",
-                    address="1.2.3.4",
-                    port="80")],
+                name="%s.%s" % (i, self.domain_name),
+                server=[
+                    dict(
+                        client_protocol="HTTP",
+                        server_protocol="HTTP",
+                        address="1.2.3.4",
+                        port="80",
+                    )
+                ],
                 proxy=False,
             )
 
             self.addCleanup(self.conn.waf.delete_domain, domain)
 
-        query = {'limit': 3}
+        query = {"limit": 3}
         domains = list(self.client.domains(**query))
         self.assertGreaterEqual(len(domains), cnt + 1)
 
-        query = {'limit': 1}
+        query = {"limit": 1}
         domains = list(self.client.domains(**query))
         self.assertGreaterEqual(len(domains), cnt + 1)
 
@@ -134,9 +137,7 @@ rNcviQ==
 
     def test_update_domain(self):
         cert2 = self.client.create_certificate(
-            key=self._PRIVATE_KEY,
-            content=self._CERTIFICATE,
-            name=self.cert_name + "_2"
+            key=self._PRIVATE_KEY, content=self._CERTIFICATE, name=self.cert_name + "_2"
         )
 
         domain = self.client.update_domain(

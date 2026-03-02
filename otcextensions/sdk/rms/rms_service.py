@@ -11,13 +11,10 @@
 # under the License.
 
 from openstack import service_description
-
 from otcextensions.sdk.rms.v1 import _proxy as _proxy_v1
 
 
 class RmsService(service_description.ServiceDescription):
     """The RMS service."""
 
-    supported_versions = {
-        '1': _proxy_v1.Proxy
-    }
+    supported_versions = {"1": _proxy_v1.Proxy}

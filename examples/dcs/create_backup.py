@@ -13,15 +13,13 @@
 """
 Backup a Distributed Cache Service instance.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-instance = 'instance_id'
-backup = conn.dcs.backup_instance(
-    instance=instance,
-    description='My new backup.'
-)
+instance = "instance_id"
+backup = conn.dcs.backup_instance(instance=instance, description="My new backup.")
 print(backup)

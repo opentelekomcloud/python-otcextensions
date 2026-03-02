@@ -13,14 +13,12 @@
 """
 Create a Group in an existing queue
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-attrs = {
-    'queue': 'queue_id',
-    'name': 'test'
-}
+attrs = {"queue": "queue_id", "name": "test"}
 for raw in conn.dms.create_group(**attrs):
     print(raw)

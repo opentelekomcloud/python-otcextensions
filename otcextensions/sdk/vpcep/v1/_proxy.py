@@ -11,13 +11,14 @@
 # under the License.
 #
 import re
+
 from openstack import exceptions
 from openstack import proxy
 from otcextensions.sdk.vpcep.v1 import connection as _connection
 from otcextensions.sdk.vpcep.v1 import endpoint as _endpoint
+from otcextensions.sdk.vpcep.v1 import public_service as _public_service
 from otcextensions.sdk.vpcep.v1 import quota as _quota
 from otcextensions.sdk.vpcep.v1 import service as _service
-from otcextensions.sdk.vpcep.v1 import public_service as _public_service
 from otcextensions.sdk.vpcep.v1 import target_service as _target_service
 from otcextensions.sdk.vpcep.v1 import whitelist as _whitelist
 
@@ -35,7 +36,7 @@ class Proxy(proxy.Proxy):
         :returns: A generator of endpoint objects
         :rtype: :class:`~otcextensions.sdk.vpcep.endpoint.Endpoint`
         """
-        if query.get('limit'):
+        if query.get("limit"):
             query.update(paginated=False)
         return self._list(_endpoint.Endpoint, **query)
 
@@ -49,13 +50,13 @@ class Proxy(proxy.Proxy):
         :returns: The results of endpoint creation
         :rtype: :class:`~otcextensions.sdk.vpcep.endpoint.Endpoint`
         """
-        if attrs.get('ip') and attrs.get('port_ip'):
+        if attrs.get("ip") and attrs.get("port_ip"):
             raise TypeError(
                 "You can use either the 'ip' or the 'port_ip' keyword argument"
             )
-        elif attrs.get('ip'):
-            attrs['port_ip'] = attrs['ip']
-            del attrs['ip']
+        elif attrs.get("ip"):
+            attrs["port_ip"] = attrs["ip"]
+            del attrs["ip"]
         return self._create(_endpoint.Endpoint, **attrs)
 
     def get_endpoint(self, endpoint):
@@ -85,9 +86,7 @@ class Proxy(proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._delete(
-            _endpoint.Endpoint, endpoint, ignore_missing=ignore_missing
-        )
+        return self._delete(_endpoint.Endpoint, endpoint, ignore_missing=ignore_missing)
 
     # ======== Endpoint Service ========
 
@@ -100,7 +99,7 @@ class Proxy(proxy.Proxy):
         :returns: A generator of endpoint service objects
         :rtype: :class:`~otcextensions.sdk.vpcep.service.Service`
         """
-        if query.get('limit'):
+        if query.get("limit"):
             query.update(paginated=False)
         return self._list(_service.Service, **query)
 
@@ -194,13 +193,11 @@ class Proxy(proxy.Proxy):
         :returns: A generator of connection objects.
         :rtype: :class:`~otcextensions.sdk.vpcep.connection.Connection`
         """
-        if query.get('limit'):
+        if query.get("limit"):
             query.update(paginated=False)
         endpoint_service = self._get_resource(_service.Service, service)
         return self._list(
-            _connection.Connection,
-            endpoint_service_id=endpoint_service.id,
-            **query
+            _connection.Connection, endpoint_service_id=endpoint_service.id, **query
         )
 
     def manage_service_connections(self, service, action, endpoints=[]):
@@ -219,13 +216,11 @@ class Proxy(proxy.Proxy):
             None,
             endpoint_service_id=endpoint_service.id,
         )
-        if action in ('accept', 'receive'):
+        if action in ("accept", "receive"):
             return connection.accept(self, endpoints)
-        elif action == 'reject':
+        elif action == "reject":
             return connection.reject(self, endpoints)
-        raise exceptions.SDKException(
-            "Value of action can be 'accept' or 'reject'."
-        )
+        raise exceptions.SDKException("Value of action can be 'accept' or 'reject'.")
 
     # ======== Endpoint Service Whitelist ========
 
@@ -240,13 +235,11 @@ class Proxy(proxy.Proxy):
         :returns: A generator of whitelist objects.
         :rtype: :class:`~otcextensions.sdk.vpcep.whitelist.Whitelist`
         """
-        if query.get('limit'):
+        if query.get("limit"):
             query.update(paginated=False)
         endpoint_service = self._get_resource(_service.Service, service)
         return self._list(
-            _whitelist.Whitelist,
-            endpoint_service_id=endpoint_service.id,
-            **query
+            _whitelist.Whitelist, endpoint_service_id=endpoint_service.id, **query
         )
 
     def manage_service_whitelist(self, service, action, domains=[]):
@@ -266,13 +259,11 @@ class Proxy(proxy.Proxy):
             None,
             endpoint_service_id=endpoint_service.id,
         )
-        if action == 'add':
+        if action == "add":
             return whitelist.add(self, domains)
-        elif action == 'remove':
+        elif action == "remove":
             return whitelist.remove(self, domains)
-        raise exceptions.SDKException(
-            "Value of action can be 'add' or 'remove'."
-        )
+        raise exceptions.SDKException("Value of action can be 'add' or 'remove'.")
 
     # ======== VPCEP Public Service  ========
 
@@ -285,7 +276,7 @@ class Proxy(proxy.Proxy):
         :returns: A generator of public endpoint service objects
         :rtype: :class:`~otcextensions.sdk.vpcep.public_service.PublicService`
         """
-        if query.get('limit'):
+        if query.get("limit"):
             query.update(paginated=False)
         return self._list(_public_service.PublicService, **query)
 
@@ -316,9 +307,8 @@ class Proxy(proxy.Proxy):
         )
 
         if isinstance(name_or_id, str) and uuid_re.match(name_or_id):
-            base_path = (
-                _target_service.TargetService.base_path
-                + "?id={}".format(name_or_id)
+            base_path = _target_service.TargetService.base_path + "?id={}".format(
+                name_or_id
             )
         else:
             base_path = (

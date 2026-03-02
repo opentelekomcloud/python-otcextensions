@@ -15,20 +15,26 @@ from openstack import resource
 
 
 class AvailabilityZone(resource.Resource):
-    base_path = '/elb/availability-zones'
+    base_path = "/elb/availability-zones"
 
     # capabilities
     allow_list = True
 
     # Properties
     #: Specifies the AZ code.
-    code = resource.Body('code', type=str)
+    code = resource.Body("code", type=str)
     #: Specifies the AZ status.
-    state = resource.Body('state', type=str)
+    state = resource.Body("state", type=str)
 
     @classmethod
-    def list(cls, session, paginated=True, base_path=None,
-             allow_unknown_params=False, **params):
+    def list(
+        cls,
+        session,
+        paginated=True,
+        base_path=None,
+        allow_unknown_params=False,
+        **params
+    ):
 
         if not cls.allow_list:
             raise exceptions.MethodNotSupported(cls, "list")
@@ -39,13 +45,12 @@ class AvailabilityZone(resource.Resource):
             base_path = cls.base_path
 
         response = session.get(
-            base_path,
-            headers={"Accept": "application/json"},
-            microversion=microversion)
+            base_path, headers={"Accept": "application/json"}, microversion=microversion
+        )
         exceptions.raise_from_response(response)
         data = response.json()
 
-        resources = data['availability_zones']
+        resources = data["availability_zones"]
 
         if not isinstance(resources, list):
             resources = [resources]
@@ -54,5 +59,6 @@ class AvailabilityZone(resource.Resource):
             value = cls.existing(
                 microversion=microversion,
                 connection=session._get_connection(),
-                **raw_resource)
+                **raw_resource
+            )
             yield value

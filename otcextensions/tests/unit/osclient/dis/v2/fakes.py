@@ -13,30 +13,24 @@
 # import uuid
 # from datetime import datetime
 import mock
-
+from openstackclient.tests.unit import utils
 from osc_lib import utils as _osc_lib_utils
 
-from openstackclient.tests.unit import utils
-
-from otcextensions.tests.unit.osclient import test_base
-from otcextensions.sdk.dis.v2 import stream
 from otcextensions.sdk.dis.v2 import app
 from otcextensions.sdk.dis.v2 import checkpoint
 from otcextensions.sdk.dis.v2 import dump_task
+from otcextensions.sdk.dis.v2 import stream
+from otcextensions.tests.unit.osclient import test_base
 
 
 def gen_data(obj, columns, formatters=None):
-    """Fill expected data tuple based on columns list
-    """
-    return _osc_lib_utils.get_item_properties(
-        obj, columns, formatters=formatters
-    )
+    """Fill expected data tuple based on columns list"""
+    return _osc_lib_utils.get_item_properties(obj, columns, formatters=formatters)
 
 
 def gen_data_dict(data, columns):
-    """Fill expected data tuple based on columns list
-    """
-    return tuple(data.get(attr, '') for attr in columns)
+    """Fill expected data tuple based on columns list"""
+    return tuple(data.get(attr, "") for attr in columns)
 
 
 class TestDis(utils.TestCommand):
@@ -50,6 +44,7 @@ class TestDis(utils.TestCommand):
 
 class FakeStream(test_base.Fake):
     """Fake one or more Dis Streams."""
+
     @classmethod
     def generate(cls):
         """Create a fake DIS Stream.
@@ -72,14 +67,14 @@ class FakeStream(test_base.Fake):
                     "hash_range": "[0 : 461168601842738]",
                     "partition_id": "shardId-0000000000",
                     "sequence_number_range": "[0 : 0]",
-                    "status": "ACTIVE"
+                    "status": "ACTIVE",
                 },
                 {
                     "hash_range": "[461168601842738 : 922337203685477]",
                     "partition_id": "shardId-0000000001",
                     "sequence_number_range": "[0 : 0]",
-                    "status": "ACTIVE"
-                }
+                    "status": "ACTIVE",
+                },
             ],
             "readable_partition_count": 2,
             "retention_period": 24,
@@ -87,7 +82,7 @@ class FakeStream(test_base.Fake):
             "stream_id": "VeamOHP5TNBWpprzcTi",
             "stream_name": "test-dis3",
             "stream_type": "COMMON",
-            "writable_partition_count": 2
+            "writable_partition_count": 2,
         }
 
         return stream.Stream(**object_info)
@@ -95,6 +90,7 @@ class FakeStream(test_base.Fake):
 
 class FakeApp(test_base.Fake):
     """Fake one or more Dis Apps."""
+
     @classmethod
     def generate(cls):
         """Create a fake DIS App.
@@ -107,7 +103,7 @@ class FakeApp(test_base.Fake):
             "app_id": "bd6IPpvgiIflQPMpi9M",
             "app_name": "newstream",
             "create_time": 1593569685875,
-            "commit_checkpoint_stream_names": ["newstream"]
+            "commit_checkpoint_stream_names": ["newstream"],
         }
 
         return app.App(**object_info)
@@ -115,6 +111,7 @@ class FakeApp(test_base.Fake):
 
 class FakeCheckpoint(test_base.Fake):
     """Fake one or more Dis Checkpoints."""
+
     @classmethod
     def generate(cls):
         """Create a fake DIS Checkpoint.
@@ -123,15 +120,13 @@ class FakeCheckpoint(test_base.Fake):
             A FakeResource object, with id, name and so on
         """
         # Set default attributes.
-        object_info = {
-            "sequence_number": "newstram",
-            "metadata": ""
-        }
+        object_info = {"sequence_number": "newstram", "metadata": ""}
         return checkpoint.Checkpoint(**object_info)
 
 
 class FakeDumpTask(test_base.Fake):
     """Fake one or more Dis Apps."""
+
     @classmethod
     def generate(cls):
         """Create a fake DIS App.
@@ -152,7 +147,7 @@ class FakeDumpTask(test_base.Fake):
                 "destination_file_type": "text",
                 "obs_bucket_path": "test-bucket-abcdef",
                 "record_delimiter": "\n",
-                "retry_duration": 0
+                "retry_duration": 0,
             },
             "partitions": [
                 {
@@ -160,22 +155,22 @@ class FakeDumpTask(test_base.Fake):
                     "last_transfer_offset": 0,
                     "last_transfer_timestamp": 1689377695587,
                     "partitionId": "shardId-0000000000",
-                    "state": "RUNNING"
+                    "state": "RUNNING",
                 },
                 {
                     "discard": 0,
                     "last_transfer_offset": 0,
                     "last_transfer_timestamp": 1689377695587,
                     "partitionId": "shardId-0000000001",
-                    "state": "RUNNING"
-                }
+                    "state": "RUNNING",
+                },
             ],
             "state": "RUNNING",
             "streamId": "bxdSOIEYPwJdSlAqq5z",
             "stream_id": "bxdSOIEYPwJdSlAqq5z",
             "stream_name": "test-dis",
             "task_id": "lJ4Ts5ObPd2UOpcRj3K",
-            "task_name": "test-dump-task"
+            "task_name": "test-dump-task",
         }
 
         return dump_task.DumpTask(**object_info)

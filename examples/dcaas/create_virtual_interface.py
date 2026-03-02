@@ -11,13 +11,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
- Create virtual interface
+Create virtual interface
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 attrs = {
@@ -30,7 +31,7 @@ attrs = {
     "local_gateway_v4_ip": "217.150.159.57/30",
     "remote_gateway_v4_ip": "217.150.159.58/30",
     "route_mode": "static",
-    "remote_ep_group_id": "remote_ep_group_uuid"
+    "remote_ep_group_id": "remote_ep_group_uuid",
 }
 
 vi = conn.dcaas.create_virtual_interface(**attrs)

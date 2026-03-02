@@ -13,11 +13,11 @@
 """
 Delete a SNAT Rule By SNAT-Rule-ID
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-snat_rule_id = 'snat_rule_id'
+snat_rule_id = "snat_rule_id"
 conn.nat.delete_snat_rule(snat_rule_id)

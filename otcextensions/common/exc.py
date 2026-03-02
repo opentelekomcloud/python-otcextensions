@@ -21,6 +21,7 @@ from openstack import exceptions
 
 class BaseException(Exception):
     """An error occurred."""
+
     def __init__(self, message=None):
         self.message = message
 
@@ -46,7 +47,8 @@ class ClientException(Exception):
 
 class HTTPException(ClientException):
     """Base exception for all HTTP-derived exceptions."""
-    code = 'N/A'
+
+    code = "N/A"
 
     def __init__(self, details=None):
         self.details = details or self.__class__.__name__
@@ -59,14 +61,13 @@ class HTTPMultipleChoices(HTTPException):
     code = 300
 
     def __str__(self):
-        self.details = ("Requested version of OpenStack Images API is not "
-                        "available.")
-        return "%s (HTTP %s) %s" % (self.__class__.__name__, self.code,
-                                    self.details)
+        self.details = "Requested version of OpenStack Images API is not " "available."
+        return "%s (HTTP %s) %s" % (self.__class__.__name__, self.code, self.details)
 
 
 class BadRequest(HTTPException):
     """DEPRECATED!"""
+
     code = 400
 
 
@@ -76,6 +77,7 @@ class HTTPBadRequest(BadRequest):
 
 class Unauthorized(HTTPException):
     """DEPRECATED!"""
+
     code = 401
 
 
@@ -85,6 +87,7 @@ class HTTPUnauthorized(Unauthorized):
 
 class Forbidden(HTTPException):
     """DEPRECATED!"""
+
     code = 403
 
 
@@ -94,6 +97,7 @@ class HTTPForbidden(Forbidden):
 
 class NotFound(HTTPException):
     """DEPRECATED!"""
+
     code = 404
 
 
@@ -107,6 +111,7 @@ class HTTPMethodNotAllowed(HTTPException):
 
 class Conflict(HTTPException):
     """DEPRECATED!"""
+
     code = 409
 
 
@@ -116,6 +121,7 @@ class HTTPConflict(Conflict):
 
 class OverLimit(HTTPException):
     """DEPRECATED!"""
+
     code = 413
 
 
@@ -137,6 +143,7 @@ class HTTPBadGateway(HTTPException):
 
 class ServiceUnavailable(HTTPException):
     """DEPRECATED!"""
+
     code = 503
 
 
@@ -148,7 +155,7 @@ class HTTPServiceUnavailable(ServiceUnavailable):
 # classes
 _code_map = {}
 for obj_name in dir(sys.modules[__name__]):
-    if obj_name.startswith('HTTP'):
+    if obj_name.startswith("HTTP"):
         obj = getattr(sys.modules[__name__], obj_name)
         _code_map[obj.code] = obj
 
@@ -156,17 +163,16 @@ for obj_name in dir(sys.modules[__name__]):
 def from_response(response, body=None):
     """Return an instance of an HTTPException based on httplib response."""
     cls = _code_map.get(response.status_code, HTTPException)
-    if body and 'json' in response.headers['content-type']:
+    if body and "json" in response.headers["content-type"]:
         # Iterate over the nested objects and retrieve the "message" attribute.
-        messages = [obj.get('message') for obj in response.json().values()]
+        messages = [obj.get("message") for obj in response.json().values()]
         # Join all of the messages together nicely and filter out any objects
         # that don't have a "message" attr.
-        details = '\n'.join(i for i in messages if i is not None)
+        details = "\n".join(i for i in messages if i is not None)
         return cls(details=details)
-    elif body and 'html' in response.headers['content-type']:
+    elif body and "html" in response.headers["content-type"]:
         # Split the lines, strip whitespace and inline HTML from the response.
-        details = [re.sub(r'<.+?>', '', i.strip())
-                   for i in response.text.splitlines()]
+        details = [re.sub(r"<.+?>", "", i.strip()) for i in response.text.splitlines()]
         details = [i for i in details if i]
         # Remove duplicates from the list.
         details_seen = set()
@@ -176,11 +182,11 @@ def from_response(response, body=None):
                 details_temp.append(i)
                 details_seen.add(i)
         # Return joined string separated by colons.
-        details = ': '.join(details_temp)
+        details = ": ".join(details_temp)
         return cls(details=details)
     elif body:
-        body = body.decode('utf-8')
-        details = body.replace('\n\n', '\n')
+        body = body.decode("utf-8")
+        details = body.replace("\n\n", "\n")
         return cls(details=details)
 
     return cls()
@@ -188,11 +194,13 @@ def from_response(response, body=None):
 
 class NoTokenLookupException(Exception):
     """DEPRECATED!"""
+
     pass
 
 
 class EndpointNotFound(Exception):
     """DEPRECATED!"""
+
     pass
 
 
@@ -207,18 +215,18 @@ class SSLCertificateError(BaseException):
 def _extract_message(obj):
     if isinstance(obj, dict):
         # Most of services: compute, network
-        if obj.get('message'):
-            return obj['message']
+        if obj.get("message"):
+            return obj["message"]
         # Ironic starting with Stein
-        elif obj.get('faultstring'):
-            return obj['faultstring']
-        elif obj.get('error_code'):
-            return obj['error_code']
-        elif obj.get('error_msg'):
-            return obj['error_msg']
+        elif obj.get("faultstring"):
+            return obj["faultstring"]
+        elif obj.get("error_code"):
+            return obj["error_code"]
+        elif obj.get("error_msg"):
+            return obj["error_msg"]
         # Stupid VBS service returns another incompatibility
-        elif obj.get('badRequest'):
-            return obj['badRequest']
+        elif obj.get("badRequest"):
+            return obj["badRequest"]
         else:
             # We are in the dead end. Not to hide potential error info take it
             # as it is
@@ -249,8 +257,8 @@ def raise_from_response(response, error_message=None):
         cls = exceptions.HttpException
 
     details = None
-    content_type = response.headers.get('content-type', '')
-    if response.content and 'application/json' in content_type:
+    content_type = response.headers.get("content-type", "")
+    if response.content and "application/json" in content_type:
         # Iterate over the nested objects to retrieve "message" attribute.
 
         try:
@@ -262,21 +270,20 @@ def raise_from_response(response, error_message=None):
 
             # Join all of the messages together nicely and filter out any
             # objects that don't have a "message" attr.
-            details = '\n'.join(msg for msg in messages if msg)
+            details = "\n".join(msg for msg in messages if msg)
         except Exception:
             details = response.text
-    elif response.content and 'text/html' in content_type:
+    elif response.content and "text/html" in content_type:
         # Split the lines, strip whitespace and inline HTML from the response.
-        details = [re.sub(r'<.+?>', '', i.strip())
-                   for i in response.text.splitlines()]
+        details = [re.sub(r"<.+?>", "", i.strip()) for i in response.text.splitlines()]
         details = list(set([msg for msg in details if msg]))
         # Return joined string separated by colons.
-        details = ': '.join(details)
+        details = ": ".join(details)
     if not details:
         details = response.reason if response.reason else response.text
 
     http_status = response.status_code
-    request_id = response.headers.get('x-openstack-request-id')
+    request_id = response.headers.get("x-openstack-request-id")
 
     # sdk.exception define default for message to Error, but we need
     # have a better info
@@ -284,6 +291,9 @@ def raise_from_response(response, error_message=None):
         error_message = details
 
     raise cls(
-        message=error_message, response=response, details=details,
-        http_status=http_status, request_id=request_id
+        message=error_message,
+        response=response,
+        details=details,
+        http_status=http_status,
+        request_id=request_id,
     )

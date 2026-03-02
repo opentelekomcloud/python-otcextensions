@@ -19,12 +19,10 @@ from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
-DEFAULT_API_VERSION = '2'
-API_VERSION_OPTION = 'os_nat_api_version'
+DEFAULT_API_VERSION = "2"
+API_VERSION_OPTION = "os_nat_api_version"
 API_NAME = "nat"
-API_VERSIONS = {
-    "2": "openstack.connection.Connection"
-}
+API_VERSIONS = {"2": "openstack.connection.Connection"}
 
 
 def make_client(instance):
@@ -32,22 +30,21 @@ def make_client(instance):
 
     conn = instance.sdk_connection
 
-    if getattr(conn, 'nat', None) is None:
-        LOG.debug('OTC extensions are not registered. Do that now')
+    if getattr(conn, "nat", None) is None:
+        LOG.debug("OTC extensions are not registered. Do that now")
         sdk.register_otc_extensions(conn)
 
-    LOG.debug('NAT client initialized using OpenStack OTC SDK: %s',
-              conn.nat)
+    LOG.debug("NAT client initialized using OpenStack OTC SDK: %s", conn.nat)
     return conn.nat
 
 
 def build_option_parser(parser):
     """Hook to add global options"""
     parser.add_argument(
-        '--os-nat-api-version',
-        metavar='<nat-api-version>',
-        default=utils.env('OS_NAT_API_VERSION'),
-        help=_("NAT API version, default=%s "
-               "(Env: OS_NAT_API_VERSION)") % DEFAULT_API_VERSION
+        "--os-nat-api-version",
+        metavar="<nat-api-version>",
+        default=utils.env("OS_NAT_API_VERSION"),
+        help=_("NAT API version, default=%s " "(Env: OS_NAT_API_VERSION)")
+        % DEFAULT_API_VERSION,
     )
     return parser

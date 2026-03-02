@@ -27,9 +27,7 @@ from otcextensions.tests.unit.sdk.modelartsv2.v2 import examples
 
 def gen_data(obj, columns, formatters=None):
     """Fill expected data tuple based on columns list"""
-    return _osc_lib_utils.get_item_properties(
-        obj, columns, formatters=formatters
-    )
+    return _osc_lib_utils.get_item_properties(obj, columns, formatters=formatters)
 
 
 class TestModelartsv2(utils.TestCommand):
@@ -75,9 +73,7 @@ class FakeDatasetStatistics(test_base.Fake):
         :return:
             A FakeResource object, with id, name and so on
         """
-        return dataset_statistics.DatasetStatistics(
-            **examples.DATASET_STATISTICS
-        )
+        return dataset_statistics.DatasetStatistics(**examples.DATASET_STATISTICS)
 
 
 class FakeDatasetSample(test_base.Fake):
@@ -132,9 +128,7 @@ class FakeDatasetImportTask(test_base.Fake):
 
     @classmethod
     def generate(cls):
-        return dataset_import_task.DatasetImportTask(
-            **examples.DATASET_IMPORT_TASK
-        )
+        return dataset_import_task.DatasetImportTask(**examples.DATASET_IMPORT_TASK)
 
 
 class FakeDatasetExportTask(test_base.Fake):
@@ -142,6 +136,4 @@ class FakeDatasetExportTask(test_base.Fake):
 
     @classmethod
     def generate(cls):
-        return dataset_export_task.DatasetExportTask(
-            **examples.DATASET_EXPORT_TASK
-        )
+        return dataset_export_task.DatasetExportTask(**examples.DATASET_EXPORT_TASK)

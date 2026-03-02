@@ -11,44 +11,37 @@
 # under the License.
 #
 import mock
+from openstackclient.tests.unit import utils as tests_utils
+from osc_lib import exceptions
 
 from otcextensions.osclient.dcaas.v2 import endpoint_group
 from otcextensions.tests.unit.osclient.dcaas.v2 import fakes
-
-from osc_lib import exceptions
-
-from openstackclient.tests.unit import utils as tests_utils
 
 
 class TestListEndpointGroups(fakes.TestDcaas):
 
     objects = fakes.FakeEndpointGroup.create_multiple(3)
     column_list_headers = (
-        'id',
-        'name',
-        'description',
-        'project id',
-        'type',
-        'endpoints',
+        "id",
+        "name",
+        "description",
+        "project id",
+        "type",
+        "endpoints",
     )
-    columns = (
-        'id',
-        'name',
-        'description',
-        'project id',
-        'type',
-        'endpoints'
-    )
+    columns = ("id", "name", "description", "project id", "type", "endpoints")
     data = []
     for s in objects:
-        data.append((
-            s.id,
-            s.name,
-            s.description,
-            s.project_id,
-            s.type,
-            s.endpoints,
-        ))
+        data.append(
+            (
+                s.id,
+                s.name,
+                s.description,
+                s.project_id,
+                s.type,
+                s.endpoints,
+            )
+        )
 
     def setUp(self):
         super(TestListEndpointGroups, self).setUp()
@@ -70,20 +63,27 @@ class TestListEndpointGroups(fakes.TestDcaas):
 
     def test_list_args(self):
         arglist = [
-            '--id', '1',
-            '--name', 'test',
-            '--description', 'test description',
-            '--project_id', 'tid1',
-            '--type', 'cidr',
-            '--endpoints', '10.2.0.0/24', '10.3.0.0/24',
+            "--id",
+            "1",
+            "--name",
+            "test",
+            "--description",
+            "test description",
+            "--project_id",
+            "tid1",
+            "--type",
+            "cidr",
+            "--endpoints",
+            "10.2.0.0/24",
+            "10.3.0.0/24",
         ]
         verifylist = [
-            ('id', '1'),
-            ('name', 'test'),
-            ('description', 'test description'),
-            ('project_id', 'tid1'),
-            ('type', 'cidr'),
-            ('endpoints', ["10.2.0.0/24", "10.3.0.0/24"]),
+            ("id", "1"),
+            ("name", "test"),
+            ("description", "test description"),
+            ("project_id", "tid1"),
+            ("type", "cidr"),
+            ("endpoints", ["10.2.0.0/24", "10.3.0.0/24"]),
         ]
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -91,11 +91,11 @@ class TestListEndpointGroups(fakes.TestDcaas):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_with(
-            id='1',
-            name='test',
-            description='test description',
-            project_id='tid1',
-            type='cidr',
+            id="1",
+            name="test",
+            description="test description",
+            project_id="tid1",
+            type="cidr",
             endpoints=["10.2.0.0/24", "10.3.0.0/24"],
         )
 
@@ -104,14 +104,7 @@ class TestCreateEndpointGroup(fakes.TestDcaas):
 
     _data = fakes.FakeEndpointGroup.create_one()
 
-    columns = (
-        'description',
-        'endpoints',
-        'id',
-        'name',
-        'project_id',
-        'type'
-    )
+    columns = ("description", "endpoints", "id", "name", "project_id", "type")
 
     data = fakes.gen_data(_data, columns)
 
@@ -122,27 +115,30 @@ class TestCreateEndpointGroup(fakes.TestDcaas):
 
     def test_create(self):
         arglist = [
-            '--name', 'test',
-            '--description', 'test description',
-            'tid1',
-            'cidr',
-            '10.2.0.0/24', '10.3.0.0/24'
+            "--name",
+            "test",
+            "--description",
+            "test description",
+            "tid1",
+            "cidr",
+            "10.2.0.0/24",
+            "10.3.0.0/24",
         ]
         verifylist = [
-            ('name', 'test'),
-            ('description', 'test description'),
-            ('project_id', 'tid1'),
-            ('type', 'cidr'),
-            ('endpoints', ["10.2.0.0/24", "10.3.0.0/24"])
+            ("name", "test"),
+            ("description", "test description"),
+            ("project_id", "tid1"),
+            ("type", "cidr"),
+            ("endpoints", ["10.2.0.0/24", "10.3.0.0/24"]),
         ]
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
         columns, data = self.cmd.take_action(parsed_args)
         self.client.create_endpoint_group.assert_called_with(
-            project_id='tid1',
+            project_id="tid1",
             endpoints=["10.2.0.0/24", "10.3.0.0/24"],
-            type='cidr',
-            name='test',
-            description='test description'
+            type="cidr",
+            name="test",
+            description="test description",
         )
         self.assertEqual(self.columns, columns)
 
@@ -151,14 +147,7 @@ class TestShowEndpointGroup(fakes.TestDcaas):
 
     _data = fakes.FakeEndpointGroup.create_one()
 
-    columns = (
-        'description',
-        'endpoints',
-        'id',
-        'name',
-        'project_id',
-        'type'
-    )
+    columns = ("description", "endpoints", "id", "name", "project_id", "type")
 
     data = fakes.gen_data(_data, columns)
 
@@ -170,16 +159,19 @@ class TestShowEndpointGroup(fakes.TestDcaas):
     def test_show_no_options(self):
         arglist = []
         verifylist = []
-        self.assertRaises(tests_utils.ParserException, self.check_parser,
-                          self.cmd, arglist, verifylist)
+        self.assertRaises(
+            tests_utils.ParserException,
+            self.check_parser,
+            self.cmd,
+            arglist,
+            verifylist,
+        )
 
     def test_show(self):
         arglist = [
             self._data.id,
         ]
-        verifylist = [
-            ('endpoint_group', self._data.id)
-        ]
+        verifylist = [("endpoint_group", self._data.id)]
 
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
         columns, data = self.cmd.take_action(parsed_args)
@@ -188,38 +180,23 @@ class TestShowEndpointGroup(fakes.TestDcaas):
         self.assertEqual(self.data, data)
 
     def test_show_non_existing(self):
-        arglist = [
-            'unexisted_endpoint_group'
-        ]
-        verifylist = [
-            ('endpoint_group', 'unexisted_endpoint_group')
-        ]
+        arglist = ["unexisted_endpoint_group"]
+        verifylist = [("endpoint_group", "unexisted_endpoint_group")]
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-        find_mock_result = exceptions.CommandError('Resource Not Found')
-        self.client.find_endpoint_group = (
-            mock.Mock(side_effect=find_mock_result)
-        )
+        find_mock_result = exceptions.CommandError("Resource Not Found")
+        self.client.find_endpoint_group = mock.Mock(side_effect=find_mock_result)
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual('Resource Not Found', str(e))
-        self.client.find_endpoint_group.assert_called_with(
-            'unexisted_endpoint_group'
-        )
+            self.assertEqual("Resource Not Found", str(e))
+        self.client.find_endpoint_group.assert_called_with("unexisted_endpoint_group")
 
 
 class TestUpdateEndpointGroup(fakes.TestDcaas):
 
     _data = fakes.FakeEndpointGroup.create_one()
 
-    columns = (
-        'description',
-        'endpoints',
-        'id',
-        'name',
-        'project_id',
-        'type'
-    )
+    columns = ("description", "endpoints", "id", "name", "project_id", "type")
 
     data = fakes.gen_data(_data, columns)
 
@@ -233,23 +210,21 @@ class TestUpdateEndpointGroup(fakes.TestDcaas):
     def test_update(self):
         arglist = [
             self._data.id,
-            '--name', 'updated_name',
-            '--description', 'updated description'
+            "--name",
+            "updated_name",
+            "--description",
+            "updated description",
         ]
         verifylist = [
-            ('endpoint_group', self._data.id),
-            ('name', 'updated_name'),
-            ('description', 'updated description')
+            ("endpoint_group", self._data.id),
+            ("name", "updated_name"),
+            ("description", "updated description"),
         ]
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
         columns, data = self.cmd.take_action(parsed_args)
-        self.client.api_mock.side_effect = [
-            self._data
-        ]
+        self.client.api_mock.side_effect = [self._data]
         self.client.api_mock.assert_called_with(
-            self._data.id,
-            name='updated_name',
-            description='updated description'
+            self._data.id, name="updated_name", description="updated description"
         )
         self.assertEqual(self.columns, columns)
 
@@ -267,12 +242,10 @@ class TestDeleteEndpointGroup(fakes.TestDcaas):
             self._data.name,
         ]
         verifylist = [
-            ('endpoint_group', self._data.name),
+            ("endpoint_group", self._data.name),
         ]
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
-        self.client.find_endpoint_group = (
-            mock.Mock(return_value=self._data)
-        )
+        self.client.find_endpoint_group = mock.Mock(return_value=self._data)
         result = self.cmd.take_action(parsed_args)
         self.client.delete_endpoint_group.assert_called_with(self._data.id)
         self.assertIsNone(result)

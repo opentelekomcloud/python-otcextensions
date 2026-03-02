@@ -19,9 +19,9 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect()
 
-cluster_name_or_id = 'ce50ce66-3083-437c-91aa-58921abd9f99'
+cluster_name_or_id = "ce50ce66-3083-437c-91aa-58921abd9f99"
 cluster = conn.css.find_cluster(cluster_name_or_id)
 
-nodes = ['5e134b90-8159-4233-9dae-4305029a838a']
+nodes = ["5e134b90-8159-4233-9dae-4305029a838a"]
 
 conn.css.scale_in_cluster(cluster, nodes)

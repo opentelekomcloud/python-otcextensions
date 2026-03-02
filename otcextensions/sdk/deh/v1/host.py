@@ -16,33 +16,32 @@ from openstack import utils
 
 class HostInstanceCapacity(resource.Resource):
     #: Specifies flavor ID
-    flavor = resource.Body('flavor')
+    flavor = resource.Body("flavor")
 
 
 class HostProperties(resource.Resource):
     #: Specifies the VM flavors placed on the DeH
-    available_instance_capacities = \
-        resource.Body('available_instance_capacities',
-                      type=list,
-                      list_type=HostInstanceCapacity)
+    available_instance_capacities = resource.Body(
+        "available_instance_capacities", type=list, list_type=HostInstanceCapacity
+    )
     #: Specifies the number of host physical cores
-    cores = resource.Body('cores', type=int)
+    cores = resource.Body("cores", type=int)
     #: Specifes the DeH type
-    host_type = resource.Body('host_type')
+    host_type = resource.Body("host_type")
     #: Specifes the DeH name of type
-    host_type_name = resource.Body('host_type_name')
+    host_type_name = resource.Body("host_type_name")
     #: Specifies the size of host physical memory (MB)
-    memory = resource.Body('memory', type=int)
+    memory = resource.Body("memory", type=int)
     #: Specifies the number of host physical sockets
-    sockets = resource.Body('sockets', type=int)
+    sockets = resource.Body("sockets", type=int)
     #: Specifies the number of host vCPUs
-    vcpus = resource.Body('vcpus', type=int)
+    vcpus = resource.Body("vcpus", type=int)
 
 
 class Host(resource.Resource):
-    resource_key = 'dedicated_host'
-    resources_key = 'dedicated_hosts'
-    base_path = '/dedicated-hosts'
+    resource_key = "dedicated_host"
+    resources_key = "dedicated_hosts"
+    base_path = "/dedicated-hosts"
 
     # capabilities
     allow_create = True
@@ -52,48 +51,58 @@ class Host(resource.Resource):
     allow_commit = True
 
     _query_mapping = resource.QueryParameters(
-        'id', 'name', 'host_type', 'host_type_name',
-        'flavor', 'status', 'tenant', 'availability_zone',
-        'changes_since', 'tags', 'instance_uuid', 'released_at',
-        changes_since='changes-since')
+        "id",
+        "name",
+        "host_type",
+        "host_type_name",
+        "flavor",
+        "status",
+        "tenant",
+        "availability_zone",
+        "changes_since",
+        "tags",
+        "instance_uuid",
+        "released_at",
+        changes_since="changes-since",
+    )
 
     #: Properties
     #: Specifies DeH ID
-    id = resource.Body('dedicated_host_id', alternate_id=True)
+    id = resource.Body("dedicated_host_id", alternate_id=True)
     #: Time at which the DeH has been allocated
-    allocated_at = resource.Body('allocated_at')
+    allocated_at = resource.Body("allocated_at")
     #: Specifies whether to allow a VM to be placed on this available
     #: host if its DeH ID is not specified during its creation
     #: value: ['on', 'off']
-    auto_placement = resource.Body('auto_placement')
+    auto_placement = resource.Body("auto_placement")
     #: Specifies the number of available vCPUs for the DeH
-    available_vcpus = resource.Body('available_vcpus', type=int)
+    available_vcpus = resource.Body("available_vcpus", type=int)
     #: Specifies the number of available memory for the DeH
-    available_memory = resource.Body('available_memory', type=int)
+    available_memory = resource.Body("available_memory", type=int)
     #: Specifies the AZ to which the DeH belongs
-    availability_zone = resource.Body('availability_zone')
+    availability_zone = resource.Body("availability_zone")
     #: list of created DeH hosts (during create)
-    dedicated_host_ids = resource.Body('dedicated_host_ids', type=list)
+    dedicated_host_ids = resource.Body("dedicated_host_ids", type=list)
     #: Specifies the property of host
-    host_properties = resource.Body('host_properties', type=HostProperties)
+    host_properties = resource.Body("host_properties", type=HostProperties)
     #: Specifies the DeH type (for creation)
-    host_type = resource.Body('host_type')
+    host_type = resource.Body("host_type")
     #: Specifies the number of the placed VMs
-    instance_total = resource.Body('instance_total', type=int)
+    instance_total = resource.Body("instance_total", type=int)
     #: Specifies the VMs started on the DeH.
     #: The "Querying DeHs" intercace does not display this parameter.
-    instance_uuids = resource.Body('instance_uuids', type=list)
+    instance_uuids = resource.Body("instance_uuids", type=list)
     #: Specifies the tenant who owns the DeH
-    project_id = resource.Body('project_id')
+    project_id = resource.Body("project_id")
     #: Specifies the number of allocated DeHs (during creation).
-    quantity = resource.Body('quantity', type=int)
+    quantity = resource.Body("quantity", type=int)
     #: Time at which the DeH has been released
-    released_at = resource.Body('released_at')
+    released_at = resource.Body("released_at")
     #: Specifies the DeH status.
     #: The value can be available, fault or released
-    status = resource.Body('state')
+    status = resource.Body("state")
     #: Tag.
-    tags = resource.Body('tags', type=list)
+    tags = resource.Body("tags", type=list)
 
     def fetch_tags(self, session):
         """Lists tags set on the entity.
@@ -101,7 +110,7 @@ class Host(resource.Resource):
         :param session: The session to use for making this request.
         :return: The list with tags attached to the entity
         """
-        url = utils.urljoin('dedicated-host-tags', self.id, 'tags')
+        url = utils.urljoin("dedicated-host-tags", self.id, "tags")
         session = self._get_session(session)
         response = session.get(url)
         exceptions.raise_from_response(response)
@@ -109,8 +118,8 @@ class Host(resource.Resource):
         # we can't rely on the resource_key, because tags are returned
         # without resource_key. Do parse response here
         json = response.json()
-        if 'tags' in json:
-            self._body.attributes.update({'tags': json['tags']})
+        if "tags" in json:
+            self._body.attributes.update({"tags": json["tags"]})
         return self
 
     def add_tags(self, session, tags=[]):
@@ -119,9 +128,9 @@ class Host(resource.Resource):
         :param session: The session to use for making this request.
         :param list tags: List with tags to be set on the resource
         """
-        url = utils.urljoin('dedicated-host-tags', self.id, 'tags', 'action')
+        url = utils.urljoin("dedicated-host-tags", self.id, "tags", "action")
         session = self._get_session(session)
-        response = session.post(url, json={'action': 'create', 'tags': tags})
+        response = session.post(url, json={"action": "create", "tags": tags})
         exceptions.raise_from_response(response)
         self.fetch_tags(session)
         return self
@@ -132,9 +141,9 @@ class Host(resource.Resource):
         :param session: The session to use for making this request.
         :param list tags: List with tags to be removed on the resource
         """
-        url = utils.urljoin('dedicated-host-tags', self.id, 'tags', 'action')
+        url = utils.urljoin("dedicated-host-tags", self.id, "tags", "action")
         session = self._get_session(session)
-        response = session.post(url, json={'action': 'delete', 'tags': tags})
+        response = session.post(url, json={"action": "delete", "tags": tags})
         exceptions.raise_from_response(response)
         self.fetch_tags(session)
         return self
@@ -142,7 +151,5 @@ class Host(resource.Resource):
     # Create method for host does not accept resource key while creation
     def create(self, session, prepend_key=False, base_path=None, **params):
         return super(Host, self).create(
-            session,
-            prepend_key=prepend_key,
-            base_path=base_path,
-            **params)
+            session, prepend_key=prepend_key, base_path=base_path, **params
+        )

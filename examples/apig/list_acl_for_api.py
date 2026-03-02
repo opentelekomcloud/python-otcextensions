@@ -13,12 +13,10 @@
 """
 List of Access Control Policies bound to API
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-attrs = {
-    'api_id': '64182cc7e77245ebbae8cf3b8522a540'
-}
-found = list(conn.apig.list_acl_for_api(
-    gateway='gateway_id', **attrs))
+conn = openstack.connect(cloud="otc")
+attrs = {"api_id": "64182cc7e77245ebbae8cf3b8522a540"}
+found = list(conn.apig.list_acl_for_api(gateway="gateway_id", **attrs))

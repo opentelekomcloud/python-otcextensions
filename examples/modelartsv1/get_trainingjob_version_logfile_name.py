@@ -12,6 +12,7 @@
 # under the License.
 #
 """Obtaining the Name of a Training Job Log File."""
+
 import openstack
 
 openstack.enable_logging(True)

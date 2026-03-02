@@ -19,7 +19,7 @@ from otcextensions.tests.unit.osclient.vpcep.v1 import fakes
 class TestListQuota(fakes.TestVpcep):
 
     objects = fakes.FakeQuota.create_multiple(2)
-    column_list_headers = ('Type', 'Quota', 'Used')
+    column_list_headers = ("Type", "Quota", "Used")
 
     data = []
 
@@ -54,10 +54,10 @@ class TestListQuota(fakes.TestVpcep):
         self.assertEqual(self.data, list(data))
 
     def test_list_args(self):
-        arglist = ['--type', 'endpoint']
+        arglist = ["--type", "endpoint"]
 
         verifylist = [
-            ('type', 'endpoint'),
+            ("type", "endpoint"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -69,4 +69,4 @@ class TestListQuota(fakes.TestVpcep):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
-        self.client.api_mock.assert_called_with('endpoint')
+        self.client.api_mock.assert_called_with("endpoint")

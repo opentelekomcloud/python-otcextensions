@@ -15,16 +15,17 @@ from openstack import resource
 class Mapping(resource.Resource):
     #: Properties
     #: Disk backup ID
-    backup_id = resource.Body('backup_id')
+    backup_id = resource.Body("backup_id")
     #: ID of the to which data is restored
-    volume_id = resource.Body('volume_id')
+    volume_id = resource.Body("volume_id")
 
 
 class Restore(resource.Resource):
     """CBR Backup Resource"""
-    resource_key = 'restore'
-    resources_key = ''
-    base_path = '/backups/%(backup_id)s/restore'
+
+    resource_key = "restore"
+    resources_key = ""
+    base_path = "/backups/%(backup_id)s/restore"
 
     # capabilities
     allow_create = True
@@ -37,18 +38,18 @@ class Restore(resource.Resource):
 
     #: Properties
     #: URI backup reference
-    backup_id = resource.URI('backup_id')
+    backup_id = resource.URI("backup_id")
     #: Restores mapping relationship.
     #: Mandatory for VM restoreation and optional for disk restoration
-    mappings = resource.Body('mappings', type=list, list_type=Mapping)
+    mappings = resource.Body("mappings", type=list, list_type=Mapping)
     #: Whether the server is powered on after restoration.
     #: Default: True
-    power_on = resource.Body('power_on', type=bool)
+    power_on = resource.Body("power_on", type=bool)
     #: ID of the resource to be restored
-    resource_id = resource.Body('resource_id')
+    resource_id = resource.Body("resource_id")
     #: ID of the target VM to be restored.
     #: Mandatory for VM restoration.
-    server_id = resource.Body('server_id')
+    server_id = resource.Body("server_id")
     #: ID of the target disk to be restored
     #: This parameter is mandatory for disk restoration
-    volume_id = resource.Body('volume_id')
+    volume_id = resource.Body("volume_id")

@@ -11,21 +11,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
- Create connection
+Create connection
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-attrs = {
-    "port_type": "10G",
-    "bandwidth": "50",
-    "location": "Biere",
-    "provider": "OTC"
-}
+attrs = {"port_type": "10G", "bandwidth": "50", "location": "Biere", "provider": "OTC"}
 
 c = conn.dcaas.create_connection(**attrs)
 print(c)

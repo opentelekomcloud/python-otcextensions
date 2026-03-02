@@ -10,7 +10,8 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-'''AS Quota v1 action implementations'''
+"""AS Quota v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -22,15 +23,15 @@ LOG = logging.getLogger(__name__)
 
 
 class ListAutoScalingQuota(command.Lister):
-    _description = _('List AutoScaling Instances')
-    columns = ('type', 'used', 'quota', 'max')
+    _description = _("List AutoScaling Instances")
+    columns = ("type", "used", "quota", "max")
 
     def get_parser(self, prog_name):
         parser = super(ListAutoScalingQuota, self).get_parser(prog_name)
         parser.add_argument(
-            '--group',
-            metavar='<group>',
-            help=_('AS Group ID or Name for the Quota query')
+            "--group",
+            metavar="<group>",
+            help=_("AS Group ID or Name for the Quota query"),
         )
 
         return parser
@@ -48,8 +49,11 @@ class ListAutoScalingQuota(command.Lister):
 
         return (
             self.columns,
-            (utils.get_item_properties(
-                s,
-                self.columns,
-            ) for s in data)
+            (
+                utils.get_item_properties(
+                    s,
+                    self.columns,
+                )
+                for s in data
+            ),
         )

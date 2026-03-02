@@ -13,11 +13,9 @@
 """
 Retrieve the historical versions of an API.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-groups = list(conn.apig.api_versions(
-    gateway="gateway_id",
-    api="api_id")
-)
+conn = openstack.connect(cloud="otc")
+groups = list(conn.apig.api_versions(gateway="gateway_id", api="api_id"))

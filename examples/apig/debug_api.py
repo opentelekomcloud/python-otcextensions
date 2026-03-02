@@ -13,18 +13,10 @@
 """
 Debug an API in a specified environment
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-attrs = {
-    "mode": "DEVELOPER",
-    "scheme": "HTTP",
-    "method": "GET",
-    "path": "/test/http"
-}
-debug = conn.apig.debug_api(
-    gateway="gateway_id",
-    api="api_id",
-    **attrs
-)
+conn = openstack.connect(cloud="otc")
+attrs = {"mode": "DEVELOPER", "scheme": "HTTP", "method": "GET", "path": "/test/http"}
+debug = conn.apig.debug_api(gateway="gateway_id", api="api_id", **attrs)

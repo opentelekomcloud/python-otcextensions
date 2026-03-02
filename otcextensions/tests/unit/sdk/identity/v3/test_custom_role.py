@@ -12,7 +12,6 @@
 import uuid
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.identity.v3 import custom_role
 
 EXAMPLE = {
@@ -36,8 +35,8 @@ class TestCustomRole(base.TestCase):
     def test_basic(self):
         sot = custom_role.CustomRole()
 
-        self.assertEqual('/v3.0/OS-ROLE/roles', sot.base_path)
-        self.assertEqual('roles', sot.resources_key)
+        self.assertEqual("/v3.0/OS-ROLE/roles", sot.base_path)
+        self.assertEqual("roles", sot.resources_key)
         self.assertTrue(sot.allow_list)
 
     def test_make_it(self):
@@ -45,10 +44,10 @@ class TestCustomRole(base.TestCase):
         sot = custom_role.CustomRole(connection=self.cloud, **EXAMPLE)
         # Check how the override with "real" connection works
         self.assertEqual(
-            'https://identity.example.com/v3.0/OS-ROLE/roles',
-            sot.base_path)
+            "https://identity.example.com/v3.0/OS-ROLE/roles", sot.base_path
+        )
 
-        self.assertEqual(EXAMPLE['id'], sot.id)
-        self.assertEqual(EXAMPLE['description'], sot.description)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['created_at'], sot.created_at)
+        self.assertEqual(EXAMPLE["id"], sot.id)
+        self.assertEqual(EXAMPLE["description"], sot.description)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["created_at"], sot.created_at)

@@ -10,36 +10,37 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-'''
+"""
 Create CBR vault with attributes
-'''
+"""
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 attrs = {
-    'description': 'my vault',
-    'auto_bind': False,
-    'bind_rules': {},
-    'name': 'vault-name',
-    'billing': {
-        'protect_type': 'backup',
-        'object_type': 'server',
-        'size': 40,
-        'cloud_type': 'public',
-        'consistent_level': 'crash_consistent',
-        'charging_mode': 'post_paid'
+    "description": "my vault",
+    "auto_bind": False,
+    "bind_rules": {},
+    "name": "vault-name",
+    "billing": {
+        "protect_type": "backup",
+        "object_type": "server",
+        "size": 40,
+        "cloud_type": "public",
+        "consistent_level": "crash_consistent",
+        "charging_mode": "post_paid",
     },
-    'auto_expand': False,
-    'resources': [
+    "auto_expand": False,
+    "resources": [
         {
-            'name': 'server-name',
-            'type': 'OS::Nova::Server',
-            'id': 'server-id',
+            "name": "server-name",
+            "type": "OS::Nova::Server",
+            "id": "server-id",
         }
-    ]
+    ],
 }
 
 vault = conn.cbr.create_vault(**attrs)

@@ -25,32 +25,32 @@ class TestListener(fakes.TestVLB):
         flat_data = listener._flatten_listener(obj)
 
         data = (
-            flat_data['client_ca_tls_container_ref'],
-            flat_data['connection_limit'],
-            flat_data['created_at'],
-            flat_data['default_pool_id'],
-            flat_data['default_tls_container_ref'],
-            flat_data['description'],
-            flat_data['http2_enable'],
-            flat_data['id'],
-            flat_data['insert_headers'],
-            flat_data['is_admin_state_up'],
-            flat_data['name'],
-            flat_data['project_id'],
-            flat_data['security_policy_id'],
-            flat_data['sni_match_algo'],
-            flat_data['protocol'],
-            flat_data['protocol_port'],
-            flat_data['sni_container_refs'],
-            flat_data['updated_at'],
-            flat_data['tls_ciphers_policy'],
-            flat_data['enable_member_retry'],
-            flat_data['keepalive_timeout'],
-            flat_data['client_timeout'],
-            flat_data['member_timeout'],
-            flat_data['ipgroup'],
-            flat_data['transparent_client_ip_enable'],
-            flat_data['enhance_l7policy_enable']
+            flat_data["client_ca_tls_container_ref"],
+            flat_data["connection_limit"],
+            flat_data["created_at"],
+            flat_data["default_pool_id"],
+            flat_data["default_tls_container_ref"],
+            flat_data["description"],
+            flat_data["http2_enable"],
+            flat_data["id"],
+            flat_data["insert_headers"],
+            flat_data["is_admin_state_up"],
+            flat_data["name"],
+            flat_data["project_id"],
+            flat_data["security_policy_id"],
+            flat_data["sni_match_algo"],
+            flat_data["protocol"],
+            flat_data["protocol_port"],
+            flat_data["sni_container_refs"],
+            flat_data["updated_at"],
+            flat_data["tls_ciphers_policy"],
+            flat_data["enable_member_retry"],
+            flat_data["keepalive_timeout"],
+            flat_data["client_timeout"],
+            flat_data["member_timeout"],
+            flat_data["ipgroup"],
+            flat_data["transparent_client_ip_enable"],
+            flat_data["enhance_l7policy_enable"],
         )
 
         cmp_data = (
@@ -79,8 +79,7 @@ class TestListener(fakes.TestVLB):
             obj.member_timeout,
             obj.ipgroup,
             obj.transparent_client_ip_enable,
-            obj.enhance_l7policy
-
+            obj.enhance_l7policy,
         )
 
         self.assertEqual(data, cmp_data)
@@ -90,30 +89,21 @@ class TestListener(fakes.TestVLB):
 
         column = ()
         data = ()
-        verify_column = (
-            'tags',
-        )
-        verify_data = (
-            ('value=val-tags, key=key-tags',)
-        )
+        verify_column = ("tags",)
+        verify_data = ("value=val-tags, key=key-tags",)
 
-        data, column = listener._add_tags_to_listener_obj(
-            obj, data, column)
+        data, column = listener._add_tags_to_listener_obj(obj, data, column)
 
         self.assertEqual(data, verify_data)
         self.assertEqual(column, verify_column)
 
     def test_normalize_tags(self):
-        tags = [
-            'key1=value',
-            'key2=',
-            'key3'
-        ]
+        tags = ["key1=value", "key2=", "key3"]
 
         verify_result = [
-            {'key': 'key1', 'value': 'value'},
-            {'key': 'key2', 'value': ''},
-            {'key': 'key3', 'value': ''}
+            {"key": "key1", "value": "value"},
+            {"key": "key2", "value": ""},
+            {"key": "key3", "value": ""},
         ]
 
         result = listener._normalize_tags(tags)
@@ -126,16 +116,15 @@ class TestListener(fakes.TestVLB):
         column = ()
         data = ()
         verify_column = (
-            'loadbalancer_id_1',
-            'loadbalancer_id_2',
+            "loadbalancer_id_1",
+            "loadbalancer_id_2",
         )
         verify_data = (
-            'loadbalancer-id-1',
-            'loadbalancer-id-2',
+            "loadbalancer-id-1",
+            "loadbalancer-id-2",
         )
 
-        data, column = listener._add_loadbalancers_to_listener_obj(
-            obj, data, column)
+        data, column = listener._add_loadbalancers_to_listener_obj(obj, data, column)
 
         self.assertEqual(data, verify_data)
         self.assertEqual(column, verify_column)

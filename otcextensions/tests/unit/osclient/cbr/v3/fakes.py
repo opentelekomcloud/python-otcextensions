@@ -17,8 +17,8 @@ import mock
 
 from otcextensions.sdk.cbr.v3 import backup
 from otcextensions.sdk.cbr.v3 import checkpoint
-from otcextensions.sdk.cbr.v3 import policy
 from otcextensions.sdk.cbr.v3 import member
+from otcextensions.sdk.cbr.v3 import policy
 from otcextensions.sdk.cbr.v3 import task
 from otcextensions.sdk.cbr.v3 import vault
 from otcextensions.tests.unit.osclient import test_base
@@ -29,41 +29,40 @@ def generate_vault_list():
     vault_list = []
     random_int = random.randint(1, 10)
     while random_int > 0:
-        vault_list.append({
-            'vault_id': uuid.uuid4().hex})
+        vault_list.append({"vault_id": uuid.uuid4().hex})
         random_int -= 1
     return vault_list
 
 
 def generate_pattern():
-    pattern = ''
+    pattern = ""
     on_daily_base = random.choice([True, False])
-    days = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU']
+    days = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"]
     if on_daily_base:
-        pattern = 'FREQ=DAILY;INTERVAL=' + str(random.randint(1, 30)) + ';'
+        pattern = "FREQ=DAILY;INTERVAL=" + str(random.randint(1, 30)) + ";"
     else:
-        pattern = 'FREQ=WEEKLY;BYDAY='
+        pattern = "FREQ=WEEKLY;BYDAY="
         day_count = random.randint(1, 7)
         day_list = random.sample(days, day_count)
         day_list_len = len(day_list)
         for item in day_list:
             pattern = pattern + item
             if day_list_len != 1:
-                pattern += ','
+                pattern += ","
             else:
-                pattern += ';'
+                pattern += ";"
             day_list_len -= 1
     byhour = random.randint(0, 23)
     if byhour < 10:
-        byhour = 'BYHOUR=' + '0' + str(byhour) + ';'
+        byhour = "BYHOUR=" + "0" + str(byhour) + ";"
     else:
-        byhour = 'BYHOUR=' + str(byhour) + ';'
+        byhour = "BYHOUR=" + str(byhour) + ";"
     pattern += byhour
     byminute = random.randint(0, 59)
     if byminute < 10:
-        byminute = 'BYMINUTE=' + '0' + str(byminute)
+        byminute = "BYMINUTE=" + "0" + str(byminute)
     else:
-        byminute = 'BYMINUTE=' + str(byminute)
+        byminute = "BYMINUTE=" + str(byminute)
     pattern += byminute
     return pattern
 
@@ -93,9 +92,9 @@ class FakeBackup(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            "id": 'id-' + uuid.uuid4().hex,
-            "name": 'name-' + uuid.uuid4().hex,
-            "checkpoint_id": 'id-' + uuid.uuid4().hex,
+            "id": "id-" + uuid.uuid4().hex,
+            "name": "name-" + uuid.uuid4().hex,
+            "checkpoint_id": "id-" + uuid.uuid4().hex,
             "created_at": uuid.uuid4().hex,
             "description": uuid.uuid4().hex,
             "expired_at": uuid.uuid4().hex,
@@ -105,16 +104,14 @@ class FakeBackup(test_base.Fake):
             "protected_at": uuid.uuid4().hex,
             "resource_az": uuid.uuid4().hex,
             "resource_id": uuid.uuid4().hex,
-            "resource_name": 'resname' + uuid.uuid4().hex,
+            "resource_name": "resname" + uuid.uuid4().hex,
             "resource_size": 5,
-            "resource_type": random.choice(['OS::Cinder::Volume',
-                                            'OS::Nova::Server']),
-            "status": 'available',
+            "resource_type": random.choice(["OS::Cinder::Volume", "OS::Nova::Server"]),
+            "status": "available",
             "updated_at": uuid.uuid4().hex,
             "vault_id": uuid.uuid4().hex,
             "provider_id": uuid.uuid4().hex,
-            "children": [{'id': 'child_backup_uuid_1'},
-                         {'id': 'child_backup_uuid_2'}]
+            "children": [{"id": "child_backup_uuid_1"}, {"id": "child_backup_uuid_2"}],
         }
 
         obj = backup.Backup.existing(**object_info)
@@ -127,30 +124,27 @@ class FakeCheckpoint(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'created_at': uuid.uuid4().hex,
-            'id': 'pid-' + uuid.uuid4().hex,
-            'status': 'available',
-            'name': 'checkpoint-' + uuid.uuid4().hex,
-            'vault':
-                {
-                    'id': uuid.uuid4().hex,
-                    'name': uuid.uuid4().hex,
-                    "resources": [
-                        {
-                            'name': 'resource-name-' + uuid.uuid4().hex,
-                            'resource_size': '6',
-                            'backup_size': '6840',
-                            'protect_status': 'available',
-                            'backup_count': '18',
-                            'type': 'OS::Nova::Server',
-                            'id': 'pid-' + uuid.uuid4().hex,
-                            'extra_info': '{}'
-                        }]
+            "created_at": uuid.uuid4().hex,
+            "id": "pid-" + uuid.uuid4().hex,
+            "status": "available",
+            "name": "checkpoint-" + uuid.uuid4().hex,
+            "vault": {
+                "id": uuid.uuid4().hex,
+                "name": uuid.uuid4().hex,
+                "resources": [
+                    {
+                        "name": "resource-name-" + uuid.uuid4().hex,
+                        "resource_size": "6",
+                        "backup_size": "6840",
+                        "protect_status": "available",
+                        "backup_count": "18",
+                        "type": "OS::Nova::Server",
+                        "id": "pid-" + uuid.uuid4().hex,
+                        "extra_info": "{}",
+                    }
+                ],
             },
-            'extra_info':
-                {
-                    'name': 'backup-' + uuid.uuid4().hex
-            }
+            "extra_info": {"name": "backup-" + uuid.uuid4().hex},
         }
 
         obj = checkpoint.Checkpoint.existing(**object_info)
@@ -163,7 +157,7 @@ class FakePolicy(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            "name": 'name-' + uuid.uuid4().hex,
+            "name": "name-" + uuid.uuid4().hex,
             "associated_vaults": generate_vault_list(),
             "enabled": random.choice([True, False]),
             "trigger": {
@@ -172,8 +166,8 @@ class FakePolicy(test_base.Fake):
                     "start_time": datetime.datetime.now(),
                 },
                 "type": "time",
-                "id": 'trigger-' + "uuid.uuid4().hex",
-                "name": "default"
+                "id": "trigger-" + "uuid.uuid4().hex",
+                "name": "default",
             },
             "operation_definition": {
                 "max_backups": random.randint(1, 99999),
@@ -182,10 +176,10 @@ class FakePolicy(test_base.Fake):
                 "day_backups": random.randint(0, 100),
                 "month_backups": random.randint(0, 100),
                 "week_backups": random.randint(0, 100),
-                "timezone": 'UTC+0' + str(random.randint(0, 9)) + ':00',
+                "timezone": "UTC+0" + str(random.randint(0, 9)) + ":00",
             },
-            "operation_type": random.choice(['backup', 'replication']),
-            "id": 'id-' + uuid.uuid4().hex,
+            "operation_type": random.choice(["backup", "replication"]),
+            "id": "id-" + uuid.uuid4().hex,
         }
 
         obj = policy.Policy.existing(**object_info)
@@ -194,30 +188,27 @@ class FakePolicy(test_base.Fake):
 
 class FakePolicyFixed(test_base.Fake):
     """Fake one or more CBR policies with fixed associated vaults and
-        schedule patterns.
+    schedule patterns.
     """
 
     @classmethod
     def generate(cls):
         object_info = {
-            "name": 'name-' + uuid.uuid4().hex,
+            "name": "name-" + uuid.uuid4().hex,
             "associated_vaults": [
-                {'vault_id': 'vault_id_1'},
-                {'vault_id': 'vault_id_2'},
-                {'vault_id': 'vault_id_3'},
+                {"vault_id": "vault_id_1"},
+                {"vault_id": "vault_id_2"},
+                {"vault_id": "vault_id_3"},
             ],
             "enabled": random.choice([True, False]),
             "trigger": {
                 "properties": {
-                    "pattern": [
-                        'pattern_1',
-                        'pattern_2'
-                    ],
+                    "pattern": ["pattern_1", "pattern_2"],
                     "start_time": datetime.datetime.now(),
                 },
                 "type": "time",
-                "id": 'trigger-' + "uuid.uuid4().hex",
-                "name": "default"
+                "id": "trigger-" + "uuid.uuid4().hex",
+                "name": "default",
             },
             "operation_definition": {
                 "max_backups": random.randint(1, 99999),
@@ -226,10 +217,10 @@ class FakePolicyFixed(test_base.Fake):
                 "day_backups": random.randint(0, 100),
                 "month_backups": random.randint(0, 100),
                 "week_backups": random.randint(0, 100),
-                "timezone": 'UTC+0' + str(random.randint(0, 9)) + ':00',
+                "timezone": "UTC+0" + str(random.randint(0, 9)) + ":00",
             },
-            "operation_type": random.choice(['backup', 'replication']),
-            "id": 'id-' + uuid.uuid4().hex,
+            "operation_type": random.choice(["backup", "replication"]),
+            "id": "id-" + uuid.uuid4().hex,
         }
 
         obj = policy.Policy.existing(**object_info)
@@ -242,14 +233,14 @@ class FakeMember(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            "id": 'id-' + uuid.uuid4().hex,
-            "status": random.choice(['pending', 'accepted', 'rejected']),
+            "id": "id-" + uuid.uuid4().hex,
+            "status": random.choice(["pending", "accepted", "rejected"]),
             "created_at": uuid.uuid4().hex,
             "updated_at": uuid.uuid4().hex,
             "backup_id": uuid.uuid4().hex,
             "image_id": uuid.uuid4().hex,
             "dest_project_id": uuid.uuid4().hex,
-            "vault_id": uuid.uuid4().hex
+            "vault_id": uuid.uuid4().hex,
         }
 
         obj = member.Member.existing(**object_info)
@@ -262,20 +253,20 @@ class FakeTask(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'status': 'success',
-            'provider_id': 'pid-' + uuid.uuid4().hex,
-            'checkpoint_id': 'cid-' + uuid.uuid4().hex,
-            'updated_at': uuid.uuid4().hex,
-            'error_info': {'message': '', 'code': ''},
-            'vault_id': 'pid-' + uuid.uuid4().hex,
-            'started_at': uuid.uuid4().hex,
-            'id': 'id-' + uuid.uuid4().hex,
-            'ended_at': uuid.uuid4().hex,
-            'created_at': uuid.uuid4().hex,
-            'operation_type': 'backup',
-            'vault_name': 'vault-' + uuid.uuid4().hex,
-            'project_id': 'prjid-' + uuid.uuid4().hex,
-            'policy_id': 'polid-' + uuid.uuid4().hex
+            "status": "success",
+            "provider_id": "pid-" + uuid.uuid4().hex,
+            "checkpoint_id": "cid-" + uuid.uuid4().hex,
+            "updated_at": uuid.uuid4().hex,
+            "error_info": {"message": "", "code": ""},
+            "vault_id": "pid-" + uuid.uuid4().hex,
+            "started_at": uuid.uuid4().hex,
+            "id": "id-" + uuid.uuid4().hex,
+            "ended_at": uuid.uuid4().hex,
+            "created_at": uuid.uuid4().hex,
+            "operation_type": "backup",
+            "vault_name": "vault-" + uuid.uuid4().hex,
+            "project_id": "prjid-" + uuid.uuid4().hex,
+            "policy_id": "polid-" + uuid.uuid4().hex,
         }
 
         obj = task.Task.existing(**object_info)
@@ -288,45 +279,41 @@ class FakeVault(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'id': 'id-' + uuid.uuid4().hex,
-            'backup_policy_id': 'bid-' + uuid.uuid4().hex,
-            'created_at': uuid.uuid4().hex,
-            'provider_id': uuid.uuid4().hex,
-            'user_id': uuid.uuid4().hex,
-            'billing': {
-                'cloud_type': 'public',
-                'consistent_level': 'crash_consistent',
-                'object_type': 'server',
-                'protect_type': 'backup',
-                'size': random.randint(0, 100),
-                'charging_mode': 'post_paid',
-                'is_auto_renew': False,
-                'is_auto_pay': False,
+            "id": "id-" + uuid.uuid4().hex,
+            "backup_policy_id": "bid-" + uuid.uuid4().hex,
+            "created_at": uuid.uuid4().hex,
+            "provider_id": uuid.uuid4().hex,
+            "user_id": uuid.uuid4().hex,
+            "billing": {
+                "cloud_type": "public",
+                "consistent_level": "crash_consistent",
+                "object_type": "server",
+                "protect_type": "backup",
+                "size": random.randint(0, 100),
+                "charging_mode": "post_paid",
+                "is_auto_renew": False,
+                "is_auto_pay": False,
             },
-            'description': 'vault_description',
-            'auto_bind': False,
-            'name': 'vault-' + uuid.uuid4().hex,
-            'tags': [{
-                'key': 'key-tags',
-                'value': 'val-tags'
-            }],
-            'resources': [{
-                'extra_info': {
-                    'include_volumes': [{
-                        'id': 'vid-' + uuid.uuid4().hex,
-                        'os_version': 'CentOS 7.6 64bit'
-                    }]
-                },
-                'id': 'resource_id',
-                'type': 'OS::Nova::Server'
-            }],
-            'bind_rules': {
-                'tags': [{
-                    'key': 'key-bind',
-                    'value': 'val-bind'
-                }]
-            },
-            'project_id': '0'
+            "description": "vault_description",
+            "auto_bind": False,
+            "name": "vault-" + uuid.uuid4().hex,
+            "tags": [{"key": "key-tags", "value": "val-tags"}],
+            "resources": [
+                {
+                    "extra_info": {
+                        "include_volumes": [
+                            {
+                                "id": "vid-" + uuid.uuid4().hex,
+                                "os_version": "CentOS 7.6 64bit",
+                            }
+                        ]
+                    },
+                    "id": "resource_id",
+                    "type": "OS::Nova::Server",
+                }
+            ],
+            "bind_rules": {"tags": [{"key": "key-bind", "value": "val-bind"}]},
+            "project_id": "0",
         }
 
         obj = vault.Vault.existing(**object_info)

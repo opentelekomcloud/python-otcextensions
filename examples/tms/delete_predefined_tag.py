@@ -13,15 +13,13 @@
 """
 Delete Predefined Tag
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-attrs = {
-    'key': 'key2',
-    'value': 'value2'
-}
+attrs = {"key": "key2", "value": "value2"}
 conn.tms.delete_predefined_tag(**attrs)

@@ -11,14 +11,13 @@
 # under the License.
 
 from openstack import resource
-
 from otcextensions.sdk.identity.v3 import _bad_base as _base
 
 
 class Credential(_base.BadBaseResource):
-    resource_key = 'credential'
-    resources_key = 'credentials'
-    base_path = '/v3.0/OS-CREDENTIAL/credentials'
+    resource_key = "credential"
+    resources_key = "credentials"
+    base_path = "/v3.0/OS-CREDENTIAL/credentials"
 
     # capabilities
     allow_create = True
@@ -26,22 +25,22 @@ class Credential(_base.BadBaseResource):
     allow_commit = True
     allow_delete = True
     allow_list = True
-    commit_method = 'PUT'
+    commit_method = "PUT"
 
     _query_mapping = resource.QueryParameters(
-        'user_id',
+        "user_id",
     )
 
     # Properties
     #: Access key
-    access = resource.Body('access', alternate_id=True)
+    access = resource.Body("access", alternate_id=True)
     #: Creation time
-    created_at = resource.Body('create_time')
+    created_at = resource.Body("create_time")
     #: Description
-    description = resource.Body('description')
+    description = resource.Body("description")
     #: Secret key
-    secret = resource.Body('secret')
+    secret = resource.Body("secret")
     #: Status
-    status = resource.Body('status')
+    status = resource.Body("status")
     #: References the user ID which owns the credential. *Type: string*
-    user_id = resource.Body('user_id')
+    user_id = resource.Body("user_id")

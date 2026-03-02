@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import proxy
-
 from otcextensions.sdk.lts.v2 import group as _group
 from otcextensions.sdk.lts.v2 import stream as _stream
 
@@ -21,8 +20,10 @@ class Proxy(proxy.Proxy):
 
     def __init__(self, session, *args, **kwargs):
         super(Proxy, self).__init__(session=session, *args, **kwargs)
-        self.additional_headers = {"Accept": "application/json",
-                                   "Content-type": "application/json"}
+        self.additional_headers = {
+            "Accept": "application/json",
+            "Content-type": "application/json",
+        }
 
     # ======== Group ========
     def groups(self):
@@ -42,10 +43,7 @@ class Proxy(proxy.Proxy):
         :returns: The results of config creation
         :rtype: :class:`~otcextensions.sdk.lts.v2.group.Group`
         """
-        return self._create(
-            _group.Group,
-            **attrs
-        )
+        return self._create(_group.Group, **attrs)
 
     def update_group(self, group, **attrs):
         """Update log group attributes
@@ -72,9 +70,7 @@ class Proxy(proxy.Proxy):
             delete a nonexistent log group.
         :returns:  None
         """
-        self._delete(
-            _group.Group, group, ignore_missing=ignore_missing
-        )
+        self._delete(_group.Group, group, ignore_missing=ignore_missing)
         return None
 
     # ======== Stream ========
@@ -89,10 +85,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.lts.v2.stream.Stream`
         """
         log_group = self._get_resource(_group.Group, log_group)
-        return self._list(
-            _stream.Stream,
-            log_group_id=log_group.id
-        )
+        return self._list(_stream.Stream, log_group_id=log_group.id)
 
     def create_stream(self, log_group, **query):
         """Create a log stream in log group
@@ -122,6 +115,7 @@ class Proxy(proxy.Proxy):
         """
         log_group = self._get_resource(_group.Group, log_group)
         log_stream = self._get_resource(_stream.Stream, log_stream)
-        log_group.delete_stream(self, log_stream_id=log_stream.id,
-                                ignore_missing=ignore_missing)
+        log_group.delete_stream(
+            self, log_stream_id=log_stream.id, ignore_missing=ignore_missing
+        )
         return None

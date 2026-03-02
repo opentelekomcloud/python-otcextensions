@@ -11,26 +11,24 @@
 # under the License.
 #
 import uuid
-import mock
 from datetime import datetime
 
+import mock
 from openstackclient.tests.unit import utils
-from otcextensions.tests.unit.osclient import test_base
 
 from otcextensions.sdk.vpc.v1 import peering
 from otcextensions.sdk.vpc.v1 import route
+from otcextensions.tests.unit.osclient import test_base
 
 
 def gen_data(data, columns):
-    """Fill expected data tuple based on columns list
-    """
-    return tuple(getattr(data, attr, '') for attr in columns)
+    """Fill expected data tuple based on columns list"""
+    return tuple(getattr(data, attr, "") for attr in columns)
 
 
 def gen_data_dict(data, columns):
-    """Fill expected data tuple based on columns list
-    """
-    return tuple(data.get(attr, '') for attr in columns)
+    """Fill expected data tuple based on columns list"""
+    return tuple(data.get(attr, "") for attr in columns)
 
 
 class TestVpc(utils.TestCommand):
@@ -44,6 +42,7 @@ class TestVpc(utils.TestCommand):
 
 class FakeVpcPeering(test_base.Fake):
     """Fake one or more VPC peering connections."""
+
     @classmethod
     def generate(cls):
         """Create a fake VPC peering connection.
@@ -57,16 +56,16 @@ class FakeVpcPeering(test_base.Fake):
             "name": "name-" + uuid.uuid4().hex,
             "request_vpc_info": {
                 "vpc_id": uuid.uuid4().hex,
-                "tenant_id": uuid.uuid4().hex
+                "tenant_id": uuid.uuid4().hex,
             },
             "accept_vpc_info": {
                 "vpc_id": uuid.uuid4().hex,
-                "tenant_id": uuid.uuid4().hex
+                "tenant_id": uuid.uuid4().hex,
             },
             "status": "ACTIVE",
             "description": "my vpc peering",
             "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),
-            "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+            "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),
         }
 
         return peering.Peering(**object_info)
@@ -74,6 +73,7 @@ class FakeVpcPeering(test_base.Fake):
 
 class FakeVpcRoute(test_base.Fake):
     """Fake one or more VPC routes."""
+
     @classmethod
     def generate(cls):
         """Create a fake VPC route.

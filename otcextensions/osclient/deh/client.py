@@ -14,11 +14,10 @@ import logging
 
 from otcextensions import sdk
 
-
 LOG = logging.getLogger(__name__)
 
-DEFAULT_API_VERSION = '1.0'
-API_VERSION_OPTION = 'os_deh_api_version'
+DEFAULT_API_VERSION = "1.0"
+API_VERSION_OPTION = "os_deh_api_version"
 API_NAME = "deh"
 API_VERSIONS = {
     "1.0": "openstack.connection.Connection",
@@ -34,8 +33,7 @@ def make_client(instance):
     # register unconditionally, since we need to override default DeH
     sdk.register_otc_extensions(conn)
 
-    LOG.debug('deh client initialized using OpenStack OTC SDK: %s',
-              conn.deh)
+    LOG.debug("deh client initialized using OpenStack OTC SDK: %s", conn.deh)
     return conn.deh
 
 

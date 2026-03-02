@@ -11,42 +11,41 @@
 # under the License.
 from openstack import proxy
 from openstack import resource
-
 from otcextensions.common.utils import extract_url_parts
-from otcextensions.sdk.apig.v2 import gateway as _gateway
-from otcextensions.sdk.apig.v2 import az as _az
-from otcextensions.sdk.apig.v2 import apienvironment as _api_environment
-from otcextensions.sdk.apig.v2 import apigroup as _api_group
-from otcextensions.sdk.apig.v2 import apienvironmentvar as _api_var
-from otcextensions.sdk.apig.v2 import throttling_policy as _tp
+from otcextensions.sdk.apig.v2 import acl_api_binding as _acl_api_binding
+from otcextensions.sdk.apig.v2 import acl_policy as _acl
 from otcextensions.sdk.apig.v2 import api as _api
+from otcextensions.sdk.apig.v2 import api_auth as _auth
+from otcextensions.sdk.apig.v2 import api_call as _api_call
 from otcextensions.sdk.apig.v2 import api_supplements as _supp
+from otcextensions.sdk.apig.v2 import apienvironment as _api_environment
+from otcextensions.sdk.apig.v2 import apienvironmentvar as _api_var
+from otcextensions.sdk.apig.v2 import apigroup as _api_group
 from otcextensions.sdk.apig.v2 import app as _app
 from otcextensions.sdk.apig.v2 import appcode as _app_code
+from otcextensions.sdk.apig.v2 import az as _az
+from otcextensions.sdk.apig.v2 import backend_server as _backend_server
+from otcextensions.sdk.apig.v2 import backend_server_group as _backend_group
+from otcextensions.sdk.apig.v2 import certificate as _c
+from otcextensions.sdk.apig.v2 import config as _config
+from otcextensions.sdk.apig.v2 import custom_authorizer as _custom_auth
+from otcextensions.sdk.apig.v2 import domain_name as _domain
+from otcextensions.sdk.apig.v2 import error_response as _error_response
+from otcextensions.sdk.apig.v2 import export_api as _export_api
+from otcextensions.sdk.apig.v2 import gateway as _gateway
+from otcextensions.sdk.apig.v2 import gateway_features as _gwf
+from otcextensions.sdk.apig.v2 import group_response as _group_response
+from otcextensions.sdk.apig.v2 import metric_data as _metric_data
+from otcextensions.sdk.apig.v2 import resource_query as _rq
 from otcextensions.sdk.apig.v2 import signature as _sign
 from otcextensions.sdk.apig.v2 import signature_binding as _sign_bind
-from otcextensions.sdk.apig.v2 import throttling_policy_binding as _tpb
-from otcextensions.sdk.apig.v2 import throttling_excluded as _tx
-from otcextensions.sdk.apig.v2 import gateway_features as _gwf
-from otcextensions.sdk.apig.v2 import resource_query as _rq
-from otcextensions.sdk.apig.v2 import domain_name as _domain
-from otcextensions.sdk.apig.v2 import certificate as _c
-from otcextensions.sdk.apig.v2 import api_auth as _auth
-from otcextensions.sdk.apig.v2 import acl_policy as _acl
-from otcextensions.sdk.apig.v2 import acl_api_binding as _acl_api_binding
-from otcextensions.sdk.apig.v2 import custom_authorizer as _custom_auth
-from otcextensions.sdk.apig.v2 import export_api as _export_api
-from otcextensions.sdk.apig.v2 import vpc_channel as _vpc_channel
-from otcextensions.sdk.apig.v2 import backend_server_group as _backend_group
-from otcextensions.sdk.apig.v2 import backend_server as _backend_server
-from otcextensions.sdk.apig.v2 import api_call as _api_call
-from otcextensions.sdk.apig.v2 import metric_data as _metric_data
-from otcextensions.sdk.apig.v2 import group_response as _group_response
-from otcextensions.sdk.apig.v2 import error_response as _error_response
 from otcextensions.sdk.apig.v2 import ssl_certificate as _ssl_certificate
 from otcextensions.sdk.apig.v2 import ssl_domain as _ssl_domain
 from otcextensions.sdk.apig.v2 import tag as _tag
-from otcextensions.sdk.apig.v2 import config as _config
+from otcextensions.sdk.apig.v2 import throttling_excluded as _tx
+from otcextensions.sdk.apig.v2 import throttling_policy as _tp
+from otcextensions.sdk.apig.v2 import throttling_policy_binding as _tpb
+from otcextensions.sdk.apig.v2 import vpc_channel as _vpc_channel
 from otcextensions.sdk.apig.v2 import vpc_endpoint as _vpc_endpoint
 
 
@@ -72,8 +71,9 @@ class Proxy(proxy.Proxy):
         """
         return self._create(_gateway.Gateway, **attrs)
 
-    def wait_for_gateway(self, gateway, status='Running', failures=None,
-                         interval=2, wait=960):
+    def wait_for_gateway(
+        self, gateway, status="Running", failures=None, interval=2, wait=960
+    ):
         """Wait for specific gateway status
         :param gateway: key id or an instance of
         :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
@@ -88,9 +88,8 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         if failures is None:
-            failures = ['ERROR']
-        return resource.wait_for_status(
-            self, gateway, status, failures, interval, wait)
+            failures = ["ERROR"]
+        return resource.wait_for_status(self, gateway, status, failures, interval, wait)
 
     def get_gateway(self, gateway):
         """Get details of specific gateway
@@ -299,9 +298,9 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.apig.v2.api_environment.ApiEnvironment`
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._create(_api_environment.ApiEnvironment,
-                            gateway_id=gateway.id,
-                            **attrs)
+        return self._create(
+            _api_environment.ApiEnvironment, gateway_id=gateway.id, **attrs
+        )
 
     def update_environment(self, gateway, environment, **attrs):
         """Update an existing environment for a specific API Gateway.
@@ -319,8 +318,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.apig.v2.environment.ApiEnvironment`
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        environment = self._get_resource(_api_environment.ApiEnvironment,
-                                         environment)
+        environment = self._get_resource(_api_environment.ApiEnvironment, environment)
         return environment._update_env(self, gateway, **attrs)
 
     def delete_environment(self, gateway, environment, **attrs):
@@ -337,12 +335,10 @@ class Proxy(proxy.Proxy):
         :returns: None
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        environment = self._get_resource(_api_environment.ApiEnvironment,
-                                         environment)
-        return self._delete(_api_environment.ApiEnvironment,
-                            environment,
-                            gateway_id=gateway.id,
-                            **attrs)
+        environment = self._get_resource(_api_environment.ApiEnvironment, environment)
+        return self._delete(
+            _api_environment.ApiEnvironment, environment, gateway_id=gateway.id, **attrs
+        )
 
     def environments(self, gateway, **attrs):
         """List all environments for a specific API Gateway.
@@ -358,10 +354,12 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.apig.v2.environment.ApiEnvironment`
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._list(_api_environment.ApiEnvironment,
-                          paginated=False,
-                          gateway_id=gateway.id,
-                          **attrs)
+        return self._list(
+            _api_environment.ApiEnvironment,
+            paginated=False,
+            gateway_id=gateway.id,
+            **attrs,
+        )
 
     def create_api_group(self, gateway, **attrs):
         """Create a new API group for a specific API Gateway.
@@ -376,9 +374,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.apig.v2.api_group.ApiGroup`
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._create(_api_group.ApiGroup,
-                            gateway_id=gateway.id,
-                            **attrs)
+        return self._create(_api_group.ApiGroup, gateway_id=gateway.id, **attrs)
 
     def update_api_group(self, gateway, api_group, **attrs):
         """Update an existing API group for a specific API Gateway.
@@ -415,10 +411,9 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         api_group = self._get_resource(_api_group.ApiGroup, api_group)
-        return self._delete(_api_group.ApiGroup,
-                            api_group,
-                            gateway_id=gateway.id,
-                            **attrs)
+        return self._delete(
+            _api_group.ApiGroup, api_group, gateway_id=gateway.id, **attrs
+        )
 
     def get_api_group(self, gateway, api_group):
         """Retrieve details of a specific API group.
@@ -435,16 +430,13 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.apig.v2.api_group.ApiGroup`
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._get(_api_group.ApiGroup,
-                         api_group,
-                         gateway_id=gateway.id)
+        return self._get(_api_group.ApiGroup, api_group, gateway_id=gateway.id)
 
     def api_groups(self, gateway, **attrs):
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._list(_api_group.ApiGroup,
-                          paginated=False,
-                          gateway_id=gateway.id,
-                          **attrs)
+        return self._list(
+            _api_group.ApiGroup, paginated=False, gateway_id=gateway.id, **attrs
+        )
 
     def verify_api_group_name(self, gateway, **attrs):
         gateway = self._get_resource(_gateway.Gateway, gateway)
@@ -464,9 +456,7 @@ class Proxy(proxy.Proxy):
         :returns: An instance of ApiEnvironmentVar
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._create(_api_var.ApiEnvironmentVar,
-                            gateway_id=gateway.id,
-                            **attrs)
+        return self._create(_api_var.ApiEnvironmentVar, gateway_id=gateway.id, **attrs)
 
     def update_environment_variable(self, gateway, var, **attrs):
         """Update an existing environment variable for a specific API Gateway.
@@ -480,14 +470,9 @@ class Proxy(proxy.Proxy):
         :returns: Updated instance of ApiEnvironmentVar
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        var = self._get_resource(
-            _api_var.ApiEnvironmentVar,
-            var)
+        var = self._get_resource(_api_var.ApiEnvironmentVar, var)
         return self._update(
-            _api_var.ApiEnvironmentVar,
-            var,
-            gateway_id=gateway.id,
-            **attrs
+            _api_var.ApiEnvironmentVar, var, gateway_id=gateway.id, **attrs
         )
 
     def delete_environment_variable(self, gateway, var, ignore_missing=False):
@@ -501,14 +486,12 @@ class Proxy(proxy.Proxy):
         :returns: None
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        var = self._get_resource(
-            _api_var.ApiEnvironmentVar,
-            var)
+        var = self._get_resource(_api_var.ApiEnvironmentVar, var)
         return self._delete(
             _api_var.ApiEnvironmentVar,
             var,
             gateway_id=gateway.id,
-            ignore_missing=ignore_missing
+            ignore_missing=ignore_missing,
         )
 
     def environment_variables(self, gateway, **attrs):
@@ -521,10 +504,9 @@ class Proxy(proxy.Proxy):
         :returns: A list of instances of ApiEnvironmentVar
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._list(_api_var.ApiEnvironmentVar,
-                          paginated=False,
-                          gateway_id=gateway.id,
-                          **attrs)
+        return self._list(
+            _api_var.ApiEnvironmentVar, paginated=False, gateway_id=gateway.id, **attrs
+        )
 
     def get_environment_variable(self, gateway, var):
         """Retrieve details of a specific environment variable.
@@ -537,15 +519,8 @@ class Proxy(proxy.Proxy):
         :returns: An instance of ApiEnvironmentVar
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        var = self._get_resource(
-            _api_var.ApiEnvironmentVar,
-            var
-        )
-        return self._get(
-            _api_var.ApiEnvironmentVar,
-            var,
-            gateway_id=gateway.id
-        )
+        var = self._get_resource(_api_var.ApiEnvironmentVar, var)
+        return self._get(_api_var.ApiEnvironmentVar, var, gateway_id=gateway.id)
 
     # ======== Throttling Policy Methods ========
 
@@ -560,9 +535,7 @@ class Proxy(proxy.Proxy):
         :returns: An instance of ThrottlingPolicy
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._create(_tp.ThrottlingPolicy,
-                            gateway_id=gateway.id,
-                            **attrs)
+        return self._create(_tp.ThrottlingPolicy, gateway_id=gateway.id, **attrs)
 
     def update_throttling_policy(self, gateway, policy, **attrs):
         """Update an existing throttling policy for a specific API Gateway.
@@ -576,14 +549,9 @@ class Proxy(proxy.Proxy):
         :returns: Updated instance of ThrottlingPolicy
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        policy = self._get_resource(
-            _tp.ThrottlingPolicy,
-            policy)
+        policy = self._get_resource(_tp.ThrottlingPolicy, policy)
         return self._update(
-            _tp.ThrottlingPolicy,
-            policy,
-            gateway_id=gateway.id,
-            **attrs
+            _tp.ThrottlingPolicy, policy, gateway_id=gateway.id, **attrs
         )
 
     def delete_throttling_policy(self, gateway, policy, ignore_missing=False):
@@ -597,14 +565,12 @@ class Proxy(proxy.Proxy):
         :returns: None
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        policy = self._get_resource(
-            _tp.ThrottlingPolicy,
-            policy)
+        policy = self._get_resource(_tp.ThrottlingPolicy, policy)
         return self._delete(
             _tp.ThrottlingPolicy,
             policy,
             gateway_id=gateway.id,
-            ignore_missing=ignore_missing
+            ignore_missing=ignore_missing,
         )
 
     def throttling_policies(self, gateway, **attrs):
@@ -617,10 +583,9 @@ class Proxy(proxy.Proxy):
         :returns: A list of instances of ThrottlingPolicy
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._list(_tp.ThrottlingPolicy,
-                          paginated=False,
-                          gateway_id=gateway.id,
-                          **attrs)
+        return self._list(
+            _tp.ThrottlingPolicy, paginated=False, gateway_id=gateway.id, **attrs
+        )
 
     def get_throttling_policy(self, gateway, policy):
         """Retrieve details of a specific throttling policy.
@@ -633,15 +598,8 @@ class Proxy(proxy.Proxy):
         :returns: An instance of ThrottlingPolicy
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        policy = self._get_resource(
-            _tp.ThrottlingPolicy,
-            policy
-        )
-        return self._get(
-            _tp.ThrottlingPolicy,
-            policy,
-            gateway_id=gateway.id
-        )
+        policy = self._get_resource(_tp.ThrottlingPolicy, policy)
+        return self._get(_tp.ThrottlingPolicy, policy, gateway_id=gateway.id)
 
     # ======== Api Methods ========
 
@@ -655,9 +613,7 @@ class Proxy(proxy.Proxy):
         :returns: An instance of Api
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._create(_api.Api,
-                            gateway_id=gateway.id,
-                            **attrs)
+        return self._create(_api.Api, gateway_id=gateway.id, **attrs)
 
     def update_api(self, gateway, api, **attrs):
         """Update an existing API for a specific API Gateway.
@@ -671,12 +627,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         api = self._get_resource(_api.Api, api)
-        return self._update(
-            _api.Api,
-            api,
-            gateway_id=gateway.id,
-            **attrs
-        )
+        return self._update(_api.Api, api, gateway_id=gateway.id, **attrs)
 
     def delete_api(self, gateway, api, ignore_missing=False):
         """Delete an existing API from a specific API Gateway.
@@ -690,10 +641,7 @@ class Proxy(proxy.Proxy):
         gateway = self._get_resource(_gateway.Gateway, gateway)
         api = self._get_resource(_api.Api, api)
         return self._delete(
-            _api.Api,
-            api,
-            gateway_id=gateway.id,
-            ignore_missing=ignore_missing
+            _api.Api, api, gateway_id=gateway.id, ignore_missing=ignore_missing
         )
 
     def apis(self, gateway, **attrs):
@@ -706,10 +654,7 @@ class Proxy(proxy.Proxy):
         :returns: A list of instances of Api
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._list(_api.Api,
-                          paginated=False,
-                          gateway_id=gateway.id,
-                          **attrs)
+        return self._list(_api.Api, paginated=False, gateway_id=gateway.id, **attrs)
 
     def get_api(self, gateway, api):
         """Retrieve details of a specific API.
@@ -722,11 +667,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         api = self._get_resource(_api.Api, api)
-        return self._get(
-            _api.Api,
-            api,
-            gateway_id=gateway.id
-        )
+        return self._get(_api.Api, api, gateway_id=gateway.id)
 
     def publish_api(self, gateway, env, api, **attrs):
         """Publish an API.
@@ -744,11 +685,7 @@ class Proxy(proxy.Proxy):
         api = self._get_resource(_api.Api, api)
         action = self._get_resource(_supp.PublishApi, "")
         return action.publish_api(
-            self,
-            api_id=api.id,
-            env_id=env.id,
-            gateway_id=gateway.id,
-            **attrs
+            self, api_id=api.id, env_id=env.id, gateway_id=gateway.id, **attrs
         )
 
     def offline_api(self, gateway, env, api, **attrs):
@@ -767,11 +704,7 @@ class Proxy(proxy.Proxy):
         api = self._get_resource(_api.Api, api)
         action = self._get_resource(_supp.PublishApi, "")
         return action.take_api_offline(
-            self,
-            api_id=api.id,
-            env_id=env.id,
-            gateway_id=gateway.id,
-            **attrs
+            self, api_id=api.id, env_id=env.id, gateway_id=gateway.id, **attrs
         )
 
     def check_api(self, gateway, **attrs):
@@ -784,10 +717,7 @@ class Proxy(proxy.Proxy):
         :returns: An instance of CheckApi
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._create(
-            _supp.CheckApi,
-            gateway_id=gateway.id,
-            **attrs)
+        return self._create(_supp.CheckApi, gateway_id=gateway.id, **attrs)
 
     def debug_api(self, gateway, api, **attrs):
         """Debug an API in a specified environment.
@@ -802,10 +732,8 @@ class Proxy(proxy.Proxy):
         gateway = self._get_resource(_gateway.Gateway, gateway)
         api = self._get_resource(_api.Api, api)
         return self._create(
-            _supp.DebugApi,
-            gateway_id=gateway.id,
-            api_id=api.id,
-            **attrs)
+            _supp.DebugApi, gateway_id=gateway.id, api_id=api.id, **attrs
+        )
 
     def publish_apis(self, gateway, env, **attrs):
         """Publish an APIs.
@@ -820,12 +748,7 @@ class Proxy(proxy.Proxy):
         gateway = self._get_resource(_gateway.Gateway, gateway)
         env = self._get_resource(_api_environment.ApiEnvironment, env)
         action = self._get_resource(_supp.PublishApis, "")
-        return action.publish_apis(
-            self,
-            env_id=env.id,
-            gateway_id=gateway.id,
-            **attrs
-        )
+        return action.publish_apis(self, env_id=env.id, gateway_id=gateway.id, **attrs)
 
     def offline_apis(self, gateway, env, **attrs):
         """Takes offline an APIs.
@@ -841,10 +764,7 @@ class Proxy(proxy.Proxy):
         env = self._get_resource(_api_environment.ApiEnvironment, env)
         action = self._get_resource(_supp.PublishApis, "")
         return action.take_apis_offline(
-            self,
-            env_id=env.id,
-            gateway_id=gateway.id,
-            **attrs
+            self, env_id=env.id, gateway_id=gateway.id, **attrs
         )
 
     def api_versions(self, gateway, api):
@@ -858,7 +778,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         api = self._get_resource(_supp.PublishApis, api)
-        base_path = f'/apigw/instances/%(gateway_id)s/apis/publish/%(api_id)s'
+        base_path = "/apigw/instances/%(gateway_id)s/apis/publish/%(api_id)s"
         return self._list(
             _supp.PublishApis,
             api_id=api.id,
@@ -897,10 +817,7 @@ class Proxy(proxy.Proxy):
         gateway = self._get_resource(_gateway.Gateway, gateway)
         api = self._get_resource(_supp.PublishApis, api)
         return self._list(
-            _supp.RuntimeDefinitionApi,
-            api_id=api.id,
-            gateway_id=gateway.id,
-            **query
+            _supp.RuntimeDefinitionApi, api_id=api.id, gateway_id=gateway.id, **query
         )
 
     def api_version_details(self, gateway, version_id):
@@ -914,14 +831,10 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return self._list(
-            _supp.VersionsApi,
-            gateway_id=gateway.id,
-            version_id=version_id
+            _supp.VersionsApi, gateway_id=gateway.id, version_id=version_id
         )
 
-    def take_api_version_offline(
-            self, gateway, version_id, ignore_missing=False
-    ):
+    def take_api_version_offline(self, gateway, version_id, ignore_missing=False):
         """Remove an effective version of an API.
 
         :param version_id: API version.
@@ -935,7 +848,7 @@ class Proxy(proxy.Proxy):
             _supp.VersionsApi,
             gateway_id=gateway.id,
             version_id=version_id,
-            ignore_missing=ignore_missing
+            ignore_missing=ignore_missing,
         )
 
     # ======== Signature Keys Methods ========
@@ -950,9 +863,7 @@ class Proxy(proxy.Proxy):
         :returns: An instance of Signature
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._create(_sign.Signature,
-                            gateway_id=gateway.id,
-                            **attrs)
+        return self._create(_sign.Signature, gateway_id=gateway.id, **attrs)
 
     def update_signature(self, gateway, sign, **attrs):
         """Update an existing Signature for a specific API Gateway.
@@ -966,12 +877,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         sign = self._get_resource(_sign.Signature, sign)
-        return self._update(
-            _sign.Signature,
-            sign,
-            gateway_id=gateway.id,
-            **attrs
-        )
+        return self._update(_sign.Signature, sign, gateway_id=gateway.id, **attrs)
 
     def delete_signature(self, gateway, sign, ignore_missing=False):
         """Delete an existing Signature from a specific API Gateway.
@@ -985,10 +891,7 @@ class Proxy(proxy.Proxy):
         gateway = self._get_resource(_gateway.Gateway, gateway)
         sign = self._get_resource(_sign.Signature, sign)
         return self._delete(
-            _sign.Signature,
-            sign,
-            gateway_id=gateway.id,
-            ignore_missing=ignore_missing
+            _sign.Signature, sign, gateway_id=gateway.id, ignore_missing=ignore_missing
         )
 
     def signatures(self, gateway, **attrs):
@@ -1002,10 +905,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return self._list(
-            _sign.Signature,
-            paginated=False,
-            gateway_id=gateway.id,
-            **attrs
+            _sign.Signature, paginated=False, gateway_id=gateway.id, **attrs
         )
 
     # ======== Signature Binding Methods ========
@@ -1020,10 +920,7 @@ class Proxy(proxy.Proxy):
         :returns: An instance of SignatureBind
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._create(
-            _sign_bind.SignatureBind,
-            gateway_id=gateway.id,
-            **attrs)
+        return self._create(_sign_bind.SignatureBind, gateway_id=gateway.id, **attrs)
 
     def unbind_signature(self, gateway, bind, ignore_missing=False):
         """Unbind a bound Signature from a specific API.
@@ -1041,7 +938,7 @@ class Proxy(proxy.Proxy):
             _sign_bind.SignatureBind,
             bind,
             gateway_id=gateway.id,
-            ignore_missing=ignore_missing
+            ignore_missing=ignore_missing,
         )
 
     def bound_signatures(self, gateway, **query):
@@ -1054,13 +951,13 @@ class Proxy(proxy.Proxy):
         :returns: A list of instances of SignatureBind
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        bp = '/apigw/instances/%(gateway_id)s/sign-bindings/binded-signs'
+        bp = "/apigw/instances/%(gateway_id)s/sign-bindings/binded-signs"
         return self._list(
             _sign_bind.SignatureBind,
             paginated=False,
             gateway_id=gateway.id,
             base_path=bp,
-            **query
+            **query,
         )
 
     def not_bound_apis(self, gateway, **query):
@@ -1074,10 +971,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return self._list(
-            _sign_bind.NotBoundApi,
-            paginated=False,
-            gateway_id=gateway.id,
-            **query
+            _sign_bind.NotBoundApi, paginated=False, gateway_id=gateway.id, **query
         )
 
     def bound_apis(self, gateway, **query):
@@ -1091,10 +985,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return self._list(
-            _sign_bind.BoundApi,
-            paginated=False,
-            gateway_id=gateway.id,
-            **query
+            _sign_bind.BoundApi, paginated=False, gateway_id=gateway.id, **query
         )
 
     # ======== Throttling Policy Binding Methods ========
@@ -1109,10 +1000,7 @@ class Proxy(proxy.Proxy):
         :returns: An instance of ThrottlingPolicyBind
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._create(
-            _tpb.ThrottlingPolicyBind,
-            gateway_id=gateway.id,
-            **attrs)
+        return self._create(_tpb.ThrottlingPolicyBind, gateway_id=gateway.id, **attrs)
 
     def unbind_throttling_policy(self, gateway, bind, ignore_missing=False):
         """Unbind a bound Signature from a specific API.
@@ -1130,7 +1018,7 @@ class Proxy(proxy.Proxy):
             _tpb.ThrottlingPolicyBind,
             bind,
             gateway_id=gateway.id,
-            ignore_missing=ignore_missing
+            ignore_missing=ignore_missing,
         )
 
     def unbind_throttling_policies(self, gateway, throttle_bindings: list):
@@ -1146,9 +1034,7 @@ class Proxy(proxy.Proxy):
         gateway = self._get_resource(_gateway.Gateway, gateway)
         bind = self._get_resource(_tpb.ThrottlingPolicyBind, "")
         return bind.unbind_policies(
-            self,
-            gateway_id=gateway.id,
-            throttle_bindings=throttle_bindings
+            self, gateway_id=gateway.id, throttle_bindings=throttle_bindings
         )
 
     def bound_throttling_policy_apis(self, gateway, **query):
@@ -1162,13 +1048,13 @@ class Proxy(proxy.Proxy):
         :returns: A list of instances of ThrottlingPolicyBind
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        bp = '/apigw/instances/%(gateway_id)s/throttle-bindings/binded-apis'
+        bp = "/apigw/instances/%(gateway_id)s/throttle-bindings/binded-apis"
         return self._list(
             _tpb.ThrottlingPolicyBind,
             paginated=False,
             gateway_id=gateway.id,
             base_path=bp,
-            **query
+            **query,
         )
 
     def not_bound_throttling_policy_apis(self, gateway, **query):
@@ -1183,10 +1069,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return self._list(
-            _tpb.NotBoundApi,
-            paginated=False,
-            gateway_id=gateway.id,
-            **query
+            _tpb.NotBoundApi, paginated=False, gateway_id=gateway.id, **query
         )
 
     def bound_throttling_policies(self, gateway, **query):
@@ -1200,10 +1083,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return self._list(
-            _tpb.BoundThrottles,
-            paginated=False,
-            gateway_id=gateway.id,
-            **query
+            _tpb.BoundThrottles, paginated=False, gateway_id=gateway.id, **query
         )
 
     # ======== Throttling Policy Methods ========
@@ -1223,13 +1103,14 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         policy = self._get_resource(_tp.ThrottlingPolicy, policy)
-        return self._create(_tx.ThrottlingExcludedPolicy,
-                            gateway_id=gateway.id,
-                            throttle_id=policy.id,
-                            **attrs)
+        return self._create(
+            _tx.ThrottlingExcludedPolicy,
+            gateway_id=gateway.id,
+            throttle_id=policy.id,
+            **attrs,
+        )
 
-    def update_throttling_excluded_policy(
-            self, gateway, policy, exclude, **attrs):
+    def update_throttling_excluded_policy(self, gateway, policy, exclude, **attrs):
         """Update an Excluded Request Throttling Configuration.
 
         :param exclude: The ID of the excluded throttling policy or
@@ -1254,11 +1135,12 @@ class Proxy(proxy.Proxy):
             exclude,
             gateway_id=gateway.id,
             throttle_id=policy.id,
-            **attrs
+            **attrs,
         )
 
     def delete_throttling_excluded_policy(
-            self, gateway, policy, exclude, ignore_missing=False):
+        self, gateway, policy, exclude, ignore_missing=False
+    ):
         """Deleting an Excluded Request Throttling Configuration.
 
         :param exclude: The ID of the excluded throttling policy or
@@ -1281,7 +1163,7 @@ class Proxy(proxy.Proxy):
             exclude,
             gateway_id=gateway.id,
             throttle_id=policy.id,
-            ignore_missing=ignore_missing
+            ignore_missing=ignore_missing,
         )
 
     def throttling_excluded_policies(self, gateway, policy, **query):
@@ -1304,7 +1186,7 @@ class Proxy(proxy.Proxy):
             paginated=False,
             gateway_id=gateway.id,
             throttle_id=policy.id,
-            **query
+            **query,
         )
 
     # ======== Gateway Features Methods ========
@@ -1319,10 +1201,7 @@ class Proxy(proxy.Proxy):
         :returns: An instance of GatewayFeatures
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._create(
-            _gwf.GatewayFeatures,
-            gateway_id=gateway.id,
-            **attrs)
+        return self._create(_gwf.GatewayFeatures, gateway_id=gateway.id, **attrs)
 
     def gateway_features(self, gateway, **query):
         """List all Gateway Features.
@@ -1334,10 +1213,7 @@ class Proxy(proxy.Proxy):
         :returns: A list of instances of GatewayFeatures
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._list(
-            _gwf.GatewayFeatures,
-            gateway_id=gateway.id,
-            **query)
+        return self._list(_gwf.GatewayFeatures, gateway_id=gateway.id, **query)
 
     def supported_gateway_features(self, gateway, **query):
         """List all the supported features of a Gateway.
@@ -1420,13 +1296,10 @@ class Proxy(proxy.Proxy):
         gateway = self._get_resource(_gateway.Gateway, gateway)
         group = self._get_resource(_api_group.ApiGroup, group)
         return self._create(
-            _domain.DomainName,
-            gateway_id=gateway.id,
-            group_id=group.id,
-            **attrs)
+            _domain.DomainName, gateway_id=gateway.id, group_id=group.id, **attrs
+        )
 
-    def unbind_domain_name(
-            self, gateway, group, domain, ignore_missing=False):
+    def unbind_domain_name(self, gateway, group, domain, ignore_missing=False):
         """Unbind domain name from group.
 
         :param domain: The ID of the gateway or an instance of
@@ -1446,11 +1319,10 @@ class Proxy(proxy.Proxy):
             domain,
             gateway_id=gateway.id,
             group_id=group.id,
-            ignore_missing=ignore_missing
+            ignore_missing=ignore_missing,
         )
 
-    def update_domain_name_bound(
-            self, gateway, group, domain, **attrs):
+    def update_domain_name_bound(self, gateway, group, domain, **attrs):
         """Update a bound of domain name to group.
 
         :param domain: The ID of the gateway or an instance of
@@ -1472,11 +1344,10 @@ class Proxy(proxy.Proxy):
             domain,
             gateway_id=gateway.id,
             group_id=group.id,
-            **attrs
+            **attrs,
         )
 
-    def create_certificate_for_domain_name(
-            self, gateway, group, domain, **attrs):
+    def create_certificate_for_domain_name(self, gateway, group, domain, **attrs):
         """Add certificate to domain name.
 
         :param gateway: The ID of the gateway or an instance of
@@ -1497,11 +1368,12 @@ class Proxy(proxy.Proxy):
             gateway_id=gateway.id,
             group_id=group.id,
             domain_id=domain.id,
-            **attrs)
+            **attrs,
+        )
 
     def unbind_certificate_from_domain_name(
-            self, gateway, group, domain,
-            certificate, ignore_missing=False):
+        self, gateway, group, domain, certificate, ignore_missing=False
+    ):
         """Unbind certificate from domain name.
 
         :param certificate: The ID of the gateway or an instance of
@@ -1527,7 +1399,7 @@ class Proxy(proxy.Proxy):
             group_id=group.id,
             domain_id=domain.id,
             certificate_id=certificate.id,
-            ignore_missing=ignore_missing
+            ignore_missing=ignore_missing,
         )
 
     def enable_debug_domain_name(self, gateway, group, domain, enable):
@@ -1552,7 +1424,8 @@ class Proxy(proxy.Proxy):
             gateway_id=gateway.id,
             group_id=group.id,
             domain_id=domain.id,
-            sl_domain_access_enabled=enable)
+            sl_domain_access_enabled=enable,
+        )
 
     def get_bound_certificate(self, gateway, group, domain, certificate):
         """Get the details of the certificate bound to a domain name.
@@ -1577,7 +1450,7 @@ class Proxy(proxy.Proxy):
             gateway_id=gateway.id,
             group_id=group.id,
             domain_id=domain.id,
-            id=certificate.id
+            id=certificate.id,
         )
 
     # ======== Certificate Methods ========
@@ -1591,11 +1464,7 @@ class Proxy(proxy.Proxy):
         :returns: None
         """
         certificate = self._get_resource(_c.Certificate, certificate)
-        return self._delete(
-            _c.Certificate,
-            certificate,
-            ignore_missing=ignore_missing
-        )
+        return self._delete(_c.Certificate, certificate, ignore_missing=ignore_missing)
 
     # ======== Credentials Management Methods ========
 
@@ -1609,9 +1478,7 @@ class Proxy(proxy.Proxy):
         :returns: An instance of App
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._create(_app.App,
-                            gateway_id=gateway.id,
-                            **attrs)
+        return self._create(_app.App, gateway_id=gateway.id, **attrs)
 
     def get_app(self, gateway, app):
         """Retrieve details of a specific App.
@@ -1624,11 +1491,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         app = self._get_resource(_app.App, app)
-        return self._get(
-            _app.App,
-            app,
-            gateway_id=gateway.id
-        )
+        return self._get(_app.App, app, gateway_id=gateway.id)
 
     def update_app(self, gateway, app, **attrs):
         """Update an existing App for a specific API Gateway.
@@ -1642,12 +1505,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         app = self._get_resource(_app.App, app)
-        return self._update(
-            _app.App,
-            app,
-            gateway_id=gateway.id,
-            **attrs
-        )
+        return self._update(_app.App, app, gateway_id=gateway.id, **attrs)
 
     def delete_app(self, gateway, app, ignore_missing=False):
         """Delete an existing identity from a specific API Gateway.
@@ -1661,10 +1519,7 @@ class Proxy(proxy.Proxy):
         gateway = self._get_resource(_gateway.Gateway, gateway)
         app = self._get_resource(_app.App, app)
         return self._delete(
-            _app.App,
-            app,
-            gateway_id=gateway.id,
-            ignore_missing=ignore_missing
+            _app.App, app, gateway_id=gateway.id, ignore_missing=ignore_missing
         )
 
     def apps(self, gateway, **attrs):
@@ -1676,11 +1531,7 @@ class Proxy(proxy.Proxy):
         :returns: An instance of App
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._list(
-            _app.App,
-            gateway_id=gateway.id,
-            **attrs
-        )
+        return self._list(_app.App, gateway_id=gateway.id, **attrs)
 
     def verify_app(self, gateway, app):
         """Verify if the App exists
@@ -1753,10 +1604,7 @@ class Proxy(proxy.Proxy):
         gateway = self._get_resource(_gateway.Gateway, gateway)
         app = self._get_resource(_app.App, app)
         return self._create(
-            _app_code.AppCode,
-            gateway_id=gateway.id,
-            app_id=app.id,
-            **attrs
+            _app_code.AppCode, gateway_id=gateway.id, app_id=app.id, **attrs
         )
 
     def generate_app_code(self, gateway, app, **attrs):
@@ -1797,10 +1645,7 @@ class Proxy(proxy.Proxy):
         gateway = self._get_resource(_gateway.Gateway, gateway)
         app = self._get_resource(_app.App, app)
         return self._list(
-            _app_code.AppCode,
-            gateway_id=gateway.id,
-            app_id=app.id,
-            **attrs
+            _app_code.AppCode, gateway_id=gateway.id, app_id=app.id, **attrs
         )
 
     def delete_app_code(self, gateway, app, app_code, ignore_missing=False):
@@ -1828,7 +1673,7 @@ class Proxy(proxy.Proxy):
             app_code,
             gateway_id=gateway.id,
             app_id=app.id,
-            ignore_missing=ignore_missing
+            ignore_missing=ignore_missing,
         )
 
     def quotas(self, gateway, app, **attrs):
@@ -1849,12 +1694,9 @@ class Proxy(proxy.Proxy):
         gateway = self._get_resource(_gateway.Gateway, gateway)
         app = self._get_resource(_app.App, app)
         return self._get(
-            _app.Quota,
-            gateway_id=gateway.id,
-            app_id=app.id,
-            requires_id=False,
-            **attrs
+            _app.Quota, gateway_id=gateway.id, app_id=app.id, requires_id=False, **attrs
         )
+
     #
     # def access_controls(self, gateway, app, **attrs):
     #     """Retrieve access control details for a specific application.
@@ -1934,9 +1776,9 @@ class Proxy(proxy.Proxy):
         return self._list(
             _auth.ApiAuthInfo,
             paginated=False,
-            base_path=f'{_auth.ApiAuthInfo.base_path}/binded-apis',
+            base_path=f"{_auth.ApiAuthInfo.base_path}/binded-apis",
             gateway_id=gateway.id,
-            **attrs
+            **attrs,
         )
 
     def list_apps_bound_to_api(self, gateway, **attrs):
@@ -1956,9 +1798,9 @@ class Proxy(proxy.Proxy):
         return self._list(
             _auth.ApiAuthInfo,
             paginated=False,
-            base_path=f'{_auth.ApiAuthInfo.base_path}/binded-apps',
+            base_path=f"{_auth.ApiAuthInfo.base_path}/binded-apps",
             gateway_id=gateway.id,
-            **attrs
+            **attrs,
         )
 
     def list_api_not_bound_to_app(self, gateway, **attrs):
@@ -1978,9 +1820,9 @@ class Proxy(proxy.Proxy):
         return self._list(
             _auth.ApiAuth,
             paginated=False,
-            base_path=f'{_auth.ApiAuthInfo.base_path}/unbinded-apis',
+            base_path=f"{_auth.ApiAuthInfo.base_path}/unbinded-apis",
             gateway_id=gateway.id,
-            **attrs
+            **attrs,
         )
 
     def create_auth_in_api(self, gateway, **attrs):
@@ -2001,11 +1843,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         auth = _auth.ApiAuthInfo()
-        return auth._authorize_apps(
-            self,
-            gateway_id=gateway.id,
-            **attrs
-        )
+        return auth._authorize_apps(self, gateway_id=gateway.id, **attrs)
 
     def delete_auth_from_api(self, gateway, auth_id):
         """Delete an API authorization from an application.
@@ -2021,11 +1859,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         auth = _auth.ApiAuthInfo()
-        return auth._cancel_auth(
-            self,
-            gateway_id=gateway.id,
-            app_auth_id=auth_id
-        )
+        return auth._cancel_auth(self, gateway_id=gateway.id, app_auth_id=auth_id)
 
     # ======== Access Control Policy Methods ========
 
@@ -2040,11 +1874,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.apig.v2.acl_policy.AclPolicy`
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._create(
-            _acl.AclPolicy,
-            gateway_id=gateway.id,
-            **attrs
-        )
+        return self._create(_acl.AclPolicy, gateway_id=gateway.id, **attrs)
 
     def update_acl_policy(self, gateway, acl_policy, **attrs):
         """Update an existing access control policy.
@@ -2063,15 +1893,9 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         acl_policy = self._get_resource(_acl.AclPolicy, acl_policy)
-        return self._update(
-            _acl.AclPolicy,
-            acl_policy,
-            gateway_id=gateway.id,
-            **attrs
-        )
+        return self._update(_acl.AclPolicy, acl_policy, gateway_id=gateway.id, **attrs)
 
-    def delete_acl_policy(self, gateway, acl_policy, ignore_missing=True,
-                          **attrs):
+    def delete_acl_policy(self, gateway, acl_policy, ignore_missing=True, **attrs):
         """Delete an access control policy.
 
         This method deletes an existing access control (ACL) policy from
@@ -2094,7 +1918,7 @@ class Proxy(proxy.Proxy):
             acl_policy,
             gateway_id=gateway.id,
             ignore_missing=ignore_missing,
-            **attrs
+            **attrs,
         )
 
     def delete_acl_policies(self, gateway, **attrs):
@@ -2111,11 +1935,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         acl = _acl.AclPolicy()
-        return acl._delete_multiple_acls(
-            self,
-            gateway_id=gateway.id,
-            **attrs
-        )
+        return acl._delete_multiple_acls(self, gateway_id=gateway.id, **attrs)
 
     def acl_policies(self, gateway, **attrs):
         """List all access control policies in an API Gateway instance.
@@ -2132,10 +1952,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return self._list(
-            _acl.AclPolicy,
-            paginated=False,
-            gateway_id=gateway.id,
-            **attrs
+            _acl.AclPolicy, paginated=False, gateway_id=gateway.id, **attrs
         )
 
     def get_acl_policy(self, gateway, acl_policy, **attrs):
@@ -2155,12 +1972,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         acl_policy = self._get_resource(_acl.AclPolicy, acl_policy)
-        return self._get(
-            _acl.AclPolicy,
-            acl_policy,
-            gateway_id=gateway.id,
-            **attrs
-        )
+        return self._get(_acl.AclPolicy, acl_policy, gateway_id=gateway.id, **attrs)
 
     # ======== Binding/Unbinding Access Control Policies Methods ========
 
@@ -2179,10 +1991,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return self._list(
-            _acl_api_binding.ApiForAcl,
-            paginated=False,
-            gateway_id=gateway.id,
-            **attrs
+            _acl_api_binding.ApiForAcl, paginated=False, gateway_id=gateway.id, **attrs
         )
 
     def list_api_not_bound_to_acl(self, gateway, **attrs):
@@ -2203,7 +2012,7 @@ class Proxy(proxy.Proxy):
             _acl_api_binding.UnbindApiForAcl,
             paginated=False,
             gateway_id=gateway.id,
-            **attrs
+            **attrs,
         )
 
     def list_acl_for_api(self, gateway, **attrs):
@@ -2221,10 +2030,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return self._list(
-            _acl_api_binding.AclForApi,
-            paginated=False,
-            gateway_id=gateway.id,
-            **attrs
+            _acl_api_binding.AclForApi, paginated=False, gateway_id=gateway.id, **attrs
         )
 
     def bind_acl_to_api(self, gateway, **attrs):
@@ -2242,11 +2048,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         acl = _acl_api_binding.AclApiBinding()
-        return acl._bind_to_api(
-            self,
-            gateway_id=gateway.id,
-            **attrs
-        )
+        return acl._bind_to_api(self, gateway_id=gateway.id, **attrs)
 
     def unbind_acl(self, gateway, acl, ignore_missing=True):
         """Unbind an access control policy from an API.
@@ -2269,7 +2071,7 @@ class Proxy(proxy.Proxy):
             _acl_api_binding.AclApiBinding,
             acl,
             gateway_id=gateway.id,
-            ignore_missing=ignore_missing
+            ignore_missing=ignore_missing,
         )
 
     def unbind_acls(self, gateway, **attrs):
@@ -2288,11 +2090,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         acl = _acl_api_binding.AclBindingFailure()
-        return acl._unbind_multiple_acls(
-            self,
-            gateway_id=gateway.id,
-            **attrs
-        )
+        return acl._unbind_multiple_acls(self, gateway_id=gateway.id, **attrs)
 
     # ======== Custom Authorizer Methods ========
 
@@ -2311,13 +2109,13 @@ class Proxy(proxy.Proxy):
         :returns: A list of instances of
             :class:`~otcextensions.sdk.apig.v2.custom_authorizer.
             CustomAuthorizer`
-            """
+        """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return self._list(
             _custom_auth.CustomAuthorizer,
             paginated=False,
             gateway_id=gateway.id,
-            **attrs
+            **attrs,
         )
 
     def get_custom_authorizer(self, gateway, custom_authorizer, **attrs):
@@ -2339,35 +2137,34 @@ class Proxy(proxy.Proxy):
             CustomAuthorizer`
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        custom_authorizer = self._get_resource(_custom_auth.CustomAuthorizer,
-                                               custom_authorizer)
+        custom_authorizer = self._get_resource(
+            _custom_auth.CustomAuthorizer, custom_authorizer
+        )
         return self._get(
             _custom_auth.CustomAuthorizer,
             custom_authorizer,
             gateway_id=gateway.id,
-            **attrs
+            **attrs,
         )
 
     def create_custom_authorizer(self, gateway, **attrs):
         """Create a custom authorizer in an API Gateway instance
 
-            This method creates a new custom authorizer within the specified
-            API Gateway instance. Custom authorizers enable custom
-            authentication and authorization logic for APIs
+        This method creates a new custom authorizer within the specified
+        API Gateway instance. Custom authorizers enable custom
+        authentication and authorization logic for APIs
 
-            :param gateway: The ID of the API Gateway or an instance of
-                :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
-            :param attrs: Attributes required to create the custom authorizer
+        :param gateway: The ID of the API Gateway or an instance of
+            :class:`~otcextensions.sdk.apig.v2.gateway.Gateway`
+        :param attrs: Attributes required to create the custom authorizer
 
-            :returns: An instance of
-                :class:`~otcextensions.sdk.apig.v2.custom_authorizer.
-                CustomAuthorizer`
-            """
+        :returns: An instance of
+            :class:`~otcextensions.sdk.apig.v2.custom_authorizer.
+            CustomAuthorizer`
+        """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         return self._create(
-            _custom_auth.CustomAuthorizer,
-            gateway_id=gateway.id,
-            **attrs
+            _custom_auth.CustomAuthorizer, gateway_id=gateway.id, **attrs
         )
 
     def update_custom_authorizer(self, gateway, custom_authorizer, **attrs):
@@ -2388,18 +2185,19 @@ class Proxy(proxy.Proxy):
             CustomAuthorizer`
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        custom_authorizer = self._get_resource(_custom_auth.CustomAuthorizer,
-                                               custom_authorizer)
+        custom_authorizer = self._get_resource(
+            _custom_auth.CustomAuthorizer, custom_authorizer
+        )
         return self._update(
             _custom_auth.CustomAuthorizer,
             custom_authorizer,
             gateway_id=gateway.id,
-            **attrs
+            **attrs,
         )
 
-    def delete_custom_authorizer(self, gateway, custom_authorizer,
-                                 ignore_missing=False,
-                                 **attrs):
+    def delete_custom_authorizer(
+        self, gateway, custom_authorizer, ignore_missing=False, **attrs
+    ):
         """Delete a custom authorizer
 
         This method deletes a custom authorizer from the specified
@@ -2417,14 +2215,15 @@ class Proxy(proxy.Proxy):
         :returns: None
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        custom_authorizer = self._get_resource(_custom_auth.CustomAuthorizer,
-                                               custom_authorizer)
+        custom_authorizer = self._get_resource(
+            _custom_auth.CustomAuthorizer, custom_authorizer
+        )
         return self._delete(
             _custom_auth.CustomAuthorizer,
             custom_authorizer,
             gateway_id=gateway.id,
             ignore_missing=ignore_missing,
-            **attrs
+            **attrs,
         )
 
     def import_api(self, gateway, **attrs):
@@ -2442,11 +2241,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         import_api = _export_api.ImportApi()
-        return import_api._import_api(
-            self,
-            gateway_id=gateway.id,
-            **attrs
-        )
+        return import_api._import_api(self, gateway_id=gateway.id, **attrs)
 
     def export_api(self, gateway, full_path, **attrs):
         """Export an API definition from API Gateway
@@ -2465,11 +2260,9 @@ class Proxy(proxy.Proxy):
         gateway = self._get_resource(_gateway.Gateway, gateway)
         export_api = _export_api.ExportApi()
         return export_api._export_api(
-            self,
-            gateway_id=gateway.id,
-            full_path=full_path,
-            **attrs
+            self, gateway_id=gateway.id, full_path=full_path, **attrs
         )
+
     # ======== VPC Channel Methods ========
 
     def create_vpc_channel(self, gateway, **attrs):
@@ -2486,11 +2279,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._create(
-            _vpc_channel.VpcChannel,
-            gateway_id=gateway.id,
-            **attrs
-        )
+        return self._create(_vpc_channel.VpcChannel, gateway_id=gateway.id, **attrs)
 
     def update_vpc_channel(self, gateway, vpc_channel, **attrs):
         """Update an existing VPC channel
@@ -2510,10 +2299,7 @@ class Proxy(proxy.Proxy):
         gateway = self._get_resource(_gateway.Gateway, gateway)
         vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
         return self._update(
-            _vpc_channel.VpcChannel,
-            vpc_channel,
-            gateway_id=gateway.id,
-            **attrs
+            _vpc_channel.VpcChannel, vpc_channel, gateway_id=gateway.id, **attrs
         )
 
     def delete_vpc_channel(self, gateway, vpc_channel, ignore_missing=False):
@@ -2537,7 +2323,7 @@ class Proxy(proxy.Proxy):
             _vpc_channel.VpcChannel,
             vpc_channel,
             gateway_id=gateway.id,
-            ignore_missing=ignore_missing
+            ignore_missing=ignore_missing,
         )
 
     def get_vpc_channel(self, gateway, vpc_channel):
@@ -2555,9 +2341,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._get(_vpc_channel.VpcChannel,
-                         vpc_channel,
-                         gateway_id=gateway.id)
+        return self._get(_vpc_channel.VpcChannel, vpc_channel, gateway_id=gateway.id)
 
     def vpc_channels(self, gateway, **attrs):
         """List all VPC channels under a gateway
@@ -2573,11 +2357,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.apig.v2.vpc_channel.VpcChannel`
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._list(
-            _vpc_channel.VpcChannel,
-            gateway_id=gateway.id,
-            **attrs
-        )
+        return self._list(_vpc_channel.VpcChannel, gateway_id=gateway.id, **attrs)
 
     def modify_vpc_channel_healthcheck(self, gateway, vpc_channel, **attrs):
         """Update the health check configuration of a VPC channel
@@ -2597,14 +2377,10 @@ class Proxy(proxy.Proxy):
         gateway = self._get_resource(_gateway.Gateway, gateway)
         vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
         return vpc_channel.modify_healthcheck(
-            self,
-            gateway_id=gateway.id,
-            vpc_channel_id=vpc_channel.id,
-            **attrs
+            self, gateway_id=gateway.id, vpc_channel_id=vpc_channel.id, **attrs
         )
 
-    def add_or_update_backend_server_group(self, gateway, vpc_channel,
-                                           **attrs):
+    def add_or_update_backend_server_group(self, gateway, vpc_channel, **attrs):
         """Add or update a backend server group for a VPC channel
 
         This method creates or updates a backend server group within the
@@ -2624,10 +2400,7 @@ class Proxy(proxy.Proxy):
         vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
         member_group = _backend_group.BackendServerGroup()
         return member_group.create_group(
-            self,
-            gateway_id=gateway.id,
-            vpc_channel_id=vpc_channel.id,
-            **attrs
+            self, gateway_id=gateway.id, vpc_channel_id=vpc_channel.id, **attrs
         )
 
     def backend_server_groups(self, gateway, vpc_channel, **attrs):
@@ -2652,7 +2425,7 @@ class Proxy(proxy.Proxy):
             _backend_group.BackendServerGroup,
             gateway_id=gateway.id,
             vpc_channel_id=vpc_channel.id,
-            **attrs
+            **attrs,
         )
 
     def get_backend_server_group(self, gateway, vpc_channel, backend_group):
@@ -2675,17 +2448,17 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
-        backend_group = self._get_resource(_backend_group.BackendServerGroup,
-                                           backend_group)
+        backend_group = self._get_resource(
+            _backend_group.BackendServerGroup, backend_group
+        )
         return self._get(
             _backend_group.BackendServerGroup,
             backend_group.member_group_id,
             gateway_id=gateway.id,
-            vpc_channel_id=vpc_channel.id
+            vpc_channel_id=vpc_channel.id,
         )
 
-    def update_backend_server_group(self, gateway, vpc_channel, backend_group,
-                                    **attrs):
+    def update_backend_server_group(self, gateway, vpc_channel, backend_group, **attrs):
         """Update a backend server group
 
         This method updates the specified backend server group under a given
@@ -2706,18 +2479,20 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
-        backend_group = self._get_resource(_backend_group.BackendServerGroup,
-                                           backend_group)
+        backend_group = self._get_resource(
+            _backend_group.BackendServerGroup, backend_group
+        )
         return self._update(
             _backend_group.BackendServerGroup,
             backend_group.member_group_id,
             gateway_id=gateway.id,
             vpc_channel_id=vpc_channel.id,
-            **attrs
+            **attrs,
         )
 
-    def delete_backend_server_group(self, gateway, vpc_channel, backend_group,
-                                    ignore_missing=False):
+    def delete_backend_server_group(
+        self, gateway, vpc_channel, backend_group, ignore_missing=False
+    ):
         """Delete a backend server group
 
         This method deletes the specified backend server group from a VPC
@@ -2737,14 +2512,15 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
-        backend_group = self._get_resource(_backend_group.BackendServerGroup,
-                                           backend_group)
+        backend_group = self._get_resource(
+            _backend_group.BackendServerGroup, backend_group
+        )
         self._delete(
             _backend_group.BackendServerGroup,
             backend_group.member_group_id,
             gateway_id=gateway.id,
             vpc_channel_id=vpc_channel.id,
-            ignore_missing=ignore_missing
+            ignore_missing=ignore_missing,
         )
 
     def add_or_update_backend_servers(self, gateway, vpc_channel, **attrs):
@@ -2767,10 +2543,7 @@ class Proxy(proxy.Proxy):
         vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
         member = _backend_server.BackendServer()
         return member.create_members(
-            self,
-            gateway_id=gateway.id,
-            vpc_channel_id=vpc_channel.id,
-            **attrs
+            self, gateway_id=gateway.id, vpc_channel_id=vpc_channel.id, **attrs
         )
 
     def list_backend_servers(self, gateway, vpc_channel, **attrs):
@@ -2795,7 +2568,7 @@ class Proxy(proxy.Proxy):
             _backend_server.BackendServer,
             gateway_id=gateway.id,
             vpc_chan_id=vpc_channel.id,
-            **attrs
+            **attrs,
         )
 
     def update_backend_server(self, gateway, vpc_channel, **attrs):
@@ -2818,14 +2591,12 @@ class Proxy(proxy.Proxy):
         vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
         member = _backend_server.BackendServer()
         return member.update_members(
-            self,
-            gateway_id=gateway.id,
-            vpc_channel_id=vpc_channel.id,
-            **attrs
+            self, gateway_id=gateway.id, vpc_channel_id=vpc_channel.id, **attrs
         )
 
-    def remove_backend_server(self, gateway, vpc_channel, backend_server,
-                              ignore_missing=False):
+    def remove_backend_server(
+        self, gateway, vpc_channel, backend_server, ignore_missing=False
+    ):
         """Delete a backend server instance
 
         This method deletes a specific backend server from a VPC channel
@@ -2844,18 +2615,18 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
-        backend_server = self._get_resource(_backend_server.BackendServer,
-                                            backend_server)
+        backend_server = self._get_resource(
+            _backend_server.BackendServer, backend_server
+        )
         self._delete(
             _backend_server.BackendServer,
             backend_server,
             gateway_id=gateway.id,
             vpc_chan_id=vpc_channel.id,
-            ignore_missing=ignore_missing
+            ignore_missing=ignore_missing,
         )
 
-    def enable_backend_server(self, gateway, vpc_channel, backend_server,
-                              **attrs):
+    def enable_backend_server(self, gateway, vpc_channel, backend_server, **attrs):
         """Enable a backend server instance
 
         This method enables a specific backend server instance by sending
@@ -2873,17 +2644,14 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
-        backend_server = self._get_resource(_backend_server.BackendServer,
-                                            backend_server)
+        backend_server = self._get_resource(
+            _backend_server.BackendServer, backend_server
+        )
         backend_server.enable_server(
-            self,
-            gateway_id=gateway.id,
-            vpc_chan_id=vpc_channel.id,
-            **attrs
+            self, gateway_id=gateway.id, vpc_chan_id=vpc_channel.id, **attrs
         )
 
-    def disable_backend_server(self, gateway, vpc_channel, backend_server,
-                               **attrs):
+    def disable_backend_server(self, gateway, vpc_channel, backend_server, **attrs):
         """Disable a backend server instance
 
         This method disables a specific backend server instance by sending
@@ -2901,13 +2669,11 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         vpc_channel = self._get_resource(_vpc_channel.VpcChannel, vpc_channel)
-        backend_server = self._get_resource(_backend_server.BackendServer,
-                                            backend_server)
+        backend_server = self._get_resource(
+            _backend_server.BackendServer, backend_server
+        )
         backend_server.disable_server(
-            self,
-            gateway_id=gateway.id,
-            vpc_chan_id=vpc_channel.id,
-            **attrs
+            self, gateway_id=gateway.id, vpc_chan_id=vpc_channel.id, **attrs
         )
 
     # ======== Monitoring Information Query Methods ========
@@ -2928,11 +2694,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         api_call = _api_call.ApiCallResult()
-        return api_call.get_api_calls_for_period(
-            self,
-            gateway_id=gateway.id,
-            **attrs
-        )
+        return api_call.get_api_calls_for_period(self, gateway_id=gateway.id, **attrs)
 
     def list_api_calls_for_group(self, gateway, **attrs):
         """List API call statistics for a specific group
@@ -2950,11 +2712,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         api_call = _api_call.ApiCallResult()
-        return api_call.get_api_calls_for_group(
-            self,
-            gateway_id=gateway.id,
-            **attrs
-        )
+        return api_call.get_api_calls_for_group(self, gateway_id=gateway.id, **attrs)
 
     def list_metric_data(self, gateway, **attrs):
         """List metric data for the API Gateway instance
@@ -2972,11 +2730,7 @@ class Proxy(proxy.Proxy):
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
         metric_data = _metric_data.MetricData()
-        return metric_data.get_metric_data(
-            self,
-            gateway_id=gateway.id,
-            **attrs
-        )
+        return metric_data.get_metric_data(self, gateway_id=gateway.id, **attrs)
 
     # ======== Group Response Management Methods ========
 
@@ -3001,7 +2755,7 @@ class Proxy(proxy.Proxy):
             _group_response.GroupResponse,
             gateway_id=gateway.id,
             group_id=group.id,
-            **attrs
+            **attrs,
         )
 
     def get_group_response(self, gateway, group, response):
@@ -3027,7 +2781,7 @@ class Proxy(proxy.Proxy):
             _group_response.GroupResponse,
             response.id,
             gateway_id=gateway.id,
-            group_id=group.id
+            group_id=group.id,
         )
 
     def group_responses(self, gateway, group, **attrs):
@@ -3051,7 +2805,7 @@ class Proxy(proxy.Proxy):
             _group_response.GroupResponse,
             gateway_id=gateway.id,
             group_id=group.id,
-            **attrs
+            **attrs,
         )
 
     def update_group_response(self, gateway, group, response, **attrs):
@@ -3078,11 +2832,10 @@ class Proxy(proxy.Proxy):
             response.id,
             gateway_id=gateway.id,
             group_id=group.id,
-            **attrs
+            **attrs,
         )
 
-    def delete_group_response(self, gateway, group, response,
-                              ignore_missing=False):
+    def delete_group_response(self, gateway, group, response, ignore_missing=False):
         """Delete a custom response for an API group
         This method deletes a specific custom response for an API group
         within the specified API Gateway instance.
@@ -3106,7 +2859,7 @@ class Proxy(proxy.Proxy):
             response.id,
             gateway_id=gateway.id,
             group_id=group.id,
-            ignore_missing=ignore_missing
+            ignore_missing=ignore_missing,
         )
 
     def get_error_response(self, gateway, group, response, response_type):
@@ -3136,11 +2889,10 @@ class Proxy(proxy.Proxy):
             gateway_id=gateway.id,
             group_id=group.id,
             response_id=response.id,
-            response_type=response_type
+            response_type=response_type,
         )
 
-    def update_error_response(self, gateway, group, response, response_type,
-                              **attrs):
+    def update_error_response(self, gateway, group, response, response_type, **attrs):
         """Update a custom error response for an API group
         This method updates an existing custom error response for a specific
         API group within the specified API Gateway instance.
@@ -3168,7 +2920,7 @@ class Proxy(proxy.Proxy):
             group_id=group.id,
             response_id=response.id,
             response_type=response_type,
-            **attrs
+            **attrs,
         )
 
     def delete_error_response(self, gateway, group, response, response_type):
@@ -3214,10 +2966,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.apig.v2.tag.Tag` instances
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._list(
-            _tag.Tag,
-            gateway_id=gateway.id
-        )
+        return self._list(_tag.Tag, gateway_id=gateway.id)
 
     # ======== SSL Certificate Management Methods ========
 
@@ -3232,10 +2981,7 @@ class Proxy(proxy.Proxy):
         :returns: An instance of
             :class:`~otcextensions.sdk.apig.v2.ssl_certificate.SslCertificate`
         """
-        return self._create(
-            _ssl_certificate.SslCertificate,
-            **attrs
-        )
+        return self._create(_ssl_certificate.SslCertificate, **attrs)
 
     def get_ssl_certificate(self, ssl_certificate):
         """Retrieve details of an SSL certificate
@@ -3269,11 +3015,7 @@ class Proxy(proxy.Proxy):
         :returns: A generator of
             :class:`~otcextensions.sdk.apig.v2.ssl_certificate.SslCertificate`
         """
-        return self._list(
-            _ssl_certificate.SslCertificate,
-            paginated=False,
-            **attrs
-        )
+        return self._list(_ssl_certificate.SslCertificate, paginated=False, **attrs)
 
     def update_ssl_certificate(self, ssl_certificate, **attrs):
         """Update an existing SSL certificate
@@ -3291,9 +3033,7 @@ class Proxy(proxy.Proxy):
             _ssl_certificate.SslCertificate, ssl_certificate
         )
         return self._update(
-            _ssl_certificate.SslCertificate,
-            ssl_certificate.id,
-            **attrs
+            _ssl_certificate.SslCertificate, ssl_certificate.id, **attrs
         )
 
     def delete_ssl_certificate(self, ssl_certificate, ignore_missing=False):
@@ -3315,7 +3055,7 @@ class Proxy(proxy.Proxy):
         self._delete(
             _ssl_certificate.SslCertificate,
             ssl_certificate.id,
-            ignore_missing=ignore_missing
+            ignore_missing=ignore_missing,
         )
 
     def bind_domain_to_certificate(self, gateway, group, domain, **attrs):
@@ -3338,11 +3078,7 @@ class Proxy(proxy.Proxy):
         domain = self._get_resource(_ssl_domain.SslDomain, domain)
         ssl_certificate = _ssl_certificate.SslCertificate()
         return ssl_certificate._bind_domain(
-            self,
-            gateway_id=gateway.id,
-            group_id=group.id,
-            domain_id=domain.id,
-            **attrs
+            self, gateway_id=gateway.id, group_id=group.id, domain_id=domain.id, **attrs
         )
 
     def unbind_domain_from_certificate(self, gateway, group, domain, **attrs):
@@ -3365,11 +3101,7 @@ class Proxy(proxy.Proxy):
         domain = self._get_resource(_ssl_domain.SslDomain, domain)
         ssl_certificate = _ssl_certificate.SslCertificate()
         return ssl_certificate._unbind_domain(
-            self,
-            gateway_id=gateway.id,
-            group_id=group.id,
-            domain_id=domain.id,
-            **attrs
+            self, gateway_id=gateway.id, group_id=group.id, domain_id=domain.id, **attrs
         )
 
     def domains_for_certificate(self, ssl_certificate, **attrs):
@@ -3389,9 +3121,7 @@ class Proxy(proxy.Proxy):
             _ssl_certificate.SslCertificate, ssl_certificate
         )
         return self._list(
-            _ssl_domain.SslDomain,
-            certificate_id=ssl_certificate.id,
-            **attrs
+            _ssl_domain.SslDomain, certificate_id=ssl_certificate.id, **attrs
         )
 
     def bind_ssl_certificates_for_domain(self, ssl_certificate, **attrs):
@@ -3410,9 +3140,7 @@ class Proxy(proxy.Proxy):
         )
         domain = _ssl_domain.SslDomain()
         return domain._bind_certificate(
-            self,
-            certificate_id=ssl_certificate.id,
-            **attrs
+            self, certificate_id=ssl_certificate.id, **attrs
         )
 
     def unbind_ssl_certificates_for_domain(self, ssl_certificate, **attrs):
@@ -3431,9 +3159,7 @@ class Proxy(proxy.Proxy):
         )
         domain = _ssl_domain.SslDomain()
         return domain._unbind_certificate(
-            self,
-            certificate_id=ssl_certificate.id,
-            **attrs
+            self, certificate_id=ssl_certificate.id, **attrs
         )
 
     # ======== Configuration Management Methods ========
@@ -3450,11 +3176,7 @@ class Proxy(proxy.Proxy):
         :returns: A generator of
             :class:`~otcextensions.sdk.apig.v2.config.Config` instances
         """
-        return self._list(
-            _config.Config,
-            paginated=False,
-            **attrs
-        )
+        return self._list(_config.Config, paginated=False, **attrs)
 
     def configs_for_gateway(self, gateway_id, **attrs):
         """Get configuration items for a specific gateway.
@@ -3464,12 +3186,13 @@ class Proxy(proxy.Proxy):
                        underlying `Session.get` method.
         :returns: A generator of configuration items.
         """
-        base_path = f'/apigw/instances/{gateway_id}/project/configs'
+        base_path = f"/apigw/instances/{gateway_id}/project/configs"
         return self._list(
             _config.Config,
             paginated=False,
             base_path=base_path,
-            **attrs,)
+            **attrs,
+        )
 
     # ======== VPC Endpoint Management Methods ========
 
@@ -3489,8 +3212,4 @@ class Proxy(proxy.Proxy):
             instances
         """
         gateway = self._get_resource(_gateway.Gateway, gateway)
-        return self._list(
-            _vpc_endpoint.VpcEndpoint,
-            gateway_id=gateway.id,
-            **attrs
-        )
+        return self._list(_vpc_endpoint.VpcEndpoint, gateway_id=gateway.id, **attrs)

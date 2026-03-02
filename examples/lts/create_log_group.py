@@ -13,15 +13,13 @@
 """
 Create new log group
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-attrs = {
-    'log_group_name': 'testgroup',
-    'ttl_in_days': 6
-}
+attrs = {"log_group_name": "testgroup", "ttl_in_days": 6}
 log_group = conn.lts.create_group(**attrs)

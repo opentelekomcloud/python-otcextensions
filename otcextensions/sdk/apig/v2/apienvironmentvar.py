@@ -13,7 +13,7 @@ from openstack import resource
 
 
 class ApiEnvironmentVar(resource.Resource):
-    base_path = f'/apigw/instances/%(gateway_id)s/env-variables'
+    base_path = "/apigw/instances/%(gateway_id)s/env-variables"
 
     allow_list = True
     allow_fetch = True
@@ -21,25 +21,24 @@ class ApiEnvironmentVar(resource.Resource):
     allow_commit = True
     allow_delete = True
 
-    resources_key = 'variables'
+    resources_key = "variables"
 
     _query_mapping = resource.QueryParameters(
-        'limit', 'offset', 'group_id',
-        'env_id', 'variable_name', 'precise_search'
+        "limit", "offset", "group_id", "env_id", "variable_name", "precise_search"
     )
 
-    gateway_id = resource.URI('gateway_id')
+    gateway_id = resource.URI("gateway_id")
 
     # The variable value can contain 1 to 255 characters.
     # Only letters, digits, and special characters (_-/.:) are allowed.
-    variable_value = resource.Body('variable_value')
+    variable_value = resource.Body("variable_value")
     # Environment ID.
-    env_id = resource.Body('env_id')
+    env_id = resource.Body("env_id")
     # API group ID.
-    group_id = resource.Body('group_id')
+    group_id = resource.Body("group_id")
     # Variable name, which can contain 3 to 32 characters,
     # starting with a letter.
     # Only letters, digits, hyphens (-), and underscores (_) are allowed.
-    variable_name = resource.Body('variable_name')
+    variable_name = resource.Body("variable_name")
     # Environment variable ID.
-    id = resource.Body('id')
+    id = resource.Body("id")

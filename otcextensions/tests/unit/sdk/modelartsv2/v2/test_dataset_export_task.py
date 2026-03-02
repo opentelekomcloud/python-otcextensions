@@ -25,9 +25,7 @@ class TestDatasetExportTask(base.TestCase):
     def test_basic(self):
         sot = dataset_export_task.DatasetExportTask()
 
-        self.assertEqual(
-            "/datasets/%(uri_dataset_id)s/export-tasks", sot.base_path
-        )
+        self.assertEqual("/datasets/%(uri_dataset_id)s/export-tasks", sot.base_path)
         self.assertEqual(None, sot.resource_key)
         self.assertEqual("export_tasks", sot.resources_key)
 
@@ -50,11 +48,11 @@ class TestDatasetExportTask(base.TestCase):
     def test_make_it(self):
         sot = dataset_export_task.DatasetExportTask(**EXAMPLE)
         for key, value in EXAMPLE.items():
-            if key == 'task_id':
+            if key == "task_id":
                 self.assertEqual(sot.id, value)
-            elif key == 'update_time':
+            elif key == "update_time":
                 self.assertEqual(sot.updated_at, value)
-            elif key == 'create_time':
+            elif key == "create_time":
                 self.assertEqual(sot.created_at, value)
             else:
                 assert_attributes_equal(self, getattr(sot, key), value)

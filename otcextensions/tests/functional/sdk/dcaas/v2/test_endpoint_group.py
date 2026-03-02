@@ -11,10 +11,9 @@
 # under the License.
 
 import openstack
-
 from otcextensions.tests.functional.sdk.dcaas.v2 import base
 
-_logger = openstack._log.setup_logging('openstack')
+_logger = openstack._log.setup_logging("openstack")
 
 
 class TestDirectConnectEndpointGroup(base.BaseDCTest):
@@ -42,7 +41,7 @@ class TestDirectConnectEndpointGroup(base.BaseDCTest):
             project_id=project_id,
             name=self.EG_NAME,
             endpoints=endpoints,
-            type=self.TYPE
+            type=self.TYPE,
         )
 
     def _delete_endpoint_group(self):
@@ -62,8 +61,7 @@ class TestDirectConnectEndpointGroup(base.BaseDCTest):
         updated_name = "updated_name"
         endpoint_group = self.dcaas.find_endpoint_group(self.EG_NAME)
         updated_ep_group = self.dcaas.update_endpoint_group(
-            endpoint_group=endpoint_group,
-            name=updated_name
+            endpoint_group=endpoint_group, name=updated_name
         )
         self.assertEqual(self.endpoint_group.id, endpoint_group.id)
         self.assertEqual(endpoint_group.id, updated_ep_group.id)

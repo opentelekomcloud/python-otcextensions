@@ -17,7 +17,7 @@ Disable the snapshot function of a CSS Cluster
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-cluster_id = 'cluster-uuid'
+cluster_id = "cluster-uuid"
 conn.css.disable_snapshot_function(cluster_id)

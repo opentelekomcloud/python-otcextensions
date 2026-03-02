@@ -12,13 +12,14 @@
 
 from openstack.tests.unit import base
 from otcextensions.sdk.ctsv3.v3 import tracker
+
 EXAMPLE = {
     "tracker_type": "system",
     "tracker_name": "system",
     "obs_info": {
         "is_obs_created": False,
         "bucket_name": "test-data-tracker",
-        "file_prefix_name": "11"
+        "file_prefix_name": "11",
     },
 }
 
@@ -26,7 +27,7 @@ EXAMPLE = {
 class TestTracker(base.TestCase):
     def test_basic(self):
         sot = tracker.Tracker()
-        self.assertEqual('/trackers', sot.base_path)
+        self.assertEqual("/trackers", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_commit)
@@ -34,11 +35,12 @@ class TestTracker(base.TestCase):
 
     def test_make_it(self):
         sot = tracker.Tracker(**EXAMPLE)
-        self.assertEqual(EXAMPLE['tracker_type'], sot.tracker_type)
-        self.assertEqual(EXAMPLE['tracker_name'], sot.tracker_name)
-        self.assertEqual(EXAMPLE['obs_info']['is_obs_created'],
-                         sot.obs_info.is_obs_created)
-        self.assertEqual(EXAMPLE['obs_info']['bucket_name'],
-                         sot.obs_info.bucket_name)
-        self.assertEqual(EXAMPLE['obs_info']['file_prefix_name'],
-                         sot.obs_info.file_prefix_name)
+        self.assertEqual(EXAMPLE["tracker_type"], sot.tracker_type)
+        self.assertEqual(EXAMPLE["tracker_name"], sot.tracker_name)
+        self.assertEqual(
+            EXAMPLE["obs_info"]["is_obs_created"], sot.obs_info.is_obs_created
+        )
+        self.assertEqual(EXAMPLE["obs_info"]["bucket_name"], sot.obs_info.bucket_name)
+        self.assertEqual(
+            EXAMPLE["obs_info"]["file_prefix_name"], sot.obs_info.file_prefix_name
+        )

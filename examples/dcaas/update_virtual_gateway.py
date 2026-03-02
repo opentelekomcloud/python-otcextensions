@@ -11,19 +11,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 """
- Update virtual gateway
+Update virtual gateway
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-attrs = {
-    "virtual_gateway": "virtual-gateway-uuid",
-    "name": "newname"
-}
+attrs = {"virtual_gateway": "virtual-gateway-uuid", "name": "newname"}
 
 vg = conn.dcaas.update_virtual_gateway(**attrs)
 print(vg)

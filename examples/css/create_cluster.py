@@ -17,37 +17,37 @@ Create CSS Cluster
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 attrs = {
-    'name': 'test-cluster',
-    'datastore': {'type': 'elasticsearch', 'version': '7.10.2'},
-    'instanceNum': 3,
-    'httpsEnable': False,
-    'diskEncryption': {
-        'systemEncrypted': '0',
+    "name": "test-cluster",
+    "datastore": {"type": "elasticsearch", "version": "7.10.2"},
+    "instanceNum": 3,
+    "httpsEnable": False,
+    "diskEncryption": {
+        "systemEncrypted": "0",
     },
-    'instance': {
-        'availability_zone': 'eu-de-01',
-        'flavorRef': 'css.xlarge.2',
-        'volume': {'volume_type': 'HIGH', 'size': 100},
-        'nics': {
-            'vpcId': 'router-id',
-            'netId': 'network-id',
-            'securityGroupId': 'security-group-id',
+    "instance": {
+        "availability_zone": "eu-de-01",
+        "flavorRef": "css.xlarge.2",
+        "volume": {"volume_type": "HIGH", "size": 100},
+        "nics": {
+            "vpcId": "router-id",
+            "netId": "network-id",
+            "securityGroupId": "security-group-id",
         },
     },
-    'tags': [
-        {'key': 'key0', 'value': 'value0'},
-        {'key': 'key1', 'value': 'value1'},
+    "tags": [
+        {"key": "key0", "value": "value0"},
+        {"key": "key1", "value": "value1"},
     ],
-    'backupStrategy': {
-        'period': '00:00 GMT+03:00',
-        'prefix': 'backup',
-        'keepday': 1,
-        'bucket': 'css-test-0',
-        'agency': 'test-css',
-        'basePath': 'css',
+    "backupStrategy": {
+        "period": "00:00 GMT+03:00",
+        "prefix": "backup",
+        "keepday": 1,
+        "bucket": "css-test-0",
+        "agency": "test-css",
+        "basePath": "css",
     },
 }
 cluster = conn.css.create_cluster(**attrs)

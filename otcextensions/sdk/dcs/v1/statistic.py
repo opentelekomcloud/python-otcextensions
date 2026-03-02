@@ -14,9 +14,9 @@ from openstack import resource
 
 class Statistic(resource.Resource):
 
-    resources_key = 'statistics'
+    resources_key = "statistics"
 
-    base_path = '/instances/statistic'
+    base_path = "/instances/statistic"
 
     # capabilities
     allow_list = True
@@ -25,31 +25,31 @@ class Statistic(resource.Resource):
     # Properties
     #: Number of times that the GET command is run.
     #: *Type: int*
-    cmd_get_count = resource.Body('cmd_get_count', type=int)
+    cmd_get_count = resource.Body("cmd_get_count", type=int)
     #: Number of times that the SET command is run.
     #: *Type: int*
-    cmd_set_count = resource.Body('cmd_set_count', type=int)
+    cmd_set_count = resource.Body("cmd_set_count", type=int)
     #: Incoming traffic of the DCS instance.
     #: Unit: kbit/s.
     #: *Type: str*
-    input_kbps = resource.Body('input_kbps')
+    input_kbps = resource.Body("input_kbps")
     #: Instance Id
-    instance_id = resource.Body('instance_id', alternate_id=True)
+    instance_id = resource.Body("instance_id", alternate_id=True)
     #: Number of data items stored in the cache.
     #: *Type: int*
-    keys = resource.Body('keys', type=int)
+    keys = resource.Body("keys", type=int)
     #: Overall memory size.
     #: Unit: MB.
     #: *Type: int*
-    max_memory = resource.Body('max_memory', type=int)
+    max_memory = resource.Body("max_memory", type=int)
     #: Outgoing traffic of the DCS instance.
     #: Unit: kbit/s.
     #: *Type: str*
-    output_kbps = resource.Body('output_kbps')
+    output_kbps = resource.Body("output_kbps")
     #: CPU Usage %
     #: *Type: str*
-    used_cpu = resource.Body('used_cpu')
+    used_cpu = resource.Body("used_cpu")
     #: Size of the used memory.
     #: Unit: MB.
     #: *Type: int*
-    used_memory = resource.Body('used_memory', type=int)
+    used_memory = resource.Body("used_memory", type=int)

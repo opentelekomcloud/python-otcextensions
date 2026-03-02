@@ -21,11 +21,13 @@ class TestBackendServer(TestApiG):
     def setUp(self):
         super(TestBackendServer, self).setUp()
         attrs = {
-            "members": [{
-                "host": "192.168.2.25",
-                "weight": 1,
-                "member_group_name": "vpc_member_group"
-            }]
+            "members": [
+                {
+                    "host": "192.168.2.25",
+                    "weight": 1,
+                    "member_group_name": "vpc_member_group",
+                }
+            ]
         }
         result = self.client.add_or_update_backend_servers(
             gateway=TestBackendServer.gateway,
@@ -40,25 +42,29 @@ class TestBackendServer(TestApiG):
         self.client.remove_backend_server(
             gateway=TestBackendServer.gateway,
             vpc_channel=TestBackendServer.vpc,
-            backend_server=TestBackendServer.server.id
+            backend_server=TestBackendServer.server.id,
         )
 
     def test_01_list_backend_servers(self):
-        found = list(self.client.list_backend_servers(
-            gateway=TestBackendServer.gateway,
-            vpc_channel=TestBackendServer.vpc,
-        ))
+        found = list(
+            self.client.list_backend_servers(
+                gateway=TestBackendServer.gateway,
+                vpc_channel=TestBackendServer.vpc,
+            )
+        )
         self.assertEqual(1, len(found))
 
     def test_02_update_backend_server(self):
         attrs = {
             "member_group_name": "vpc_member_group",
-            "members": [{
-                "host": "192.168.2.25",
-                "weight": 2,
-                "is_backup": True,
-                "member_group_name": "vpc_member_group"
-            }]
+            "members": [
+                {
+                    "host": "192.168.2.25",
+                    "weight": 2,
+                    "is_backup": True,
+                    "member_group_name": "vpc_member_group",
+                }
+            ],
         }
         updated = self.client.update_backend_server(
             gateway=TestBackendServer.gateway,
@@ -68,9 +74,7 @@ class TestBackendServer(TestApiG):
         self.assertEqual(updated[0].is_backup, True)
 
     def test_03_enable_backend_server(self):
-        attrs = {
-            "member_ids": [TestBackendServer.server.id]
-        }
+        attrs = {"member_ids": [TestBackendServer.server.id]}
         self.client.enable_backend_server(
             gateway=TestBackendServer.gateway,
             vpc_channel=TestBackendServer.vpc,
@@ -79,9 +83,7 @@ class TestBackendServer(TestApiG):
         )
 
     def test_04_disable_backend_server(self):
-        attrs = {
-            "member_ids": [TestBackendServer.server.id]
-        }
+        attrs = {"member_ids": [TestBackendServer.server.id]}
         self.client.disable_backend_server(
             gateway=TestBackendServer.gateway,
             vpc_channel=TestBackendServer.vpc,

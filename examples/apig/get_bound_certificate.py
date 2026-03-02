@@ -13,10 +13,11 @@
 """
 Get the details of the certificate bound to a domain name
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 found = conn.apig.get_bound_certificate(
     gateway="gateway_id",
     group="group_id",

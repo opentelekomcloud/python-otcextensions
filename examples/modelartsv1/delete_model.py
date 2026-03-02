@@ -12,6 +12,7 @@
 # under the License.
 #
 """Delete a model."""
+
 import openstack
 
 openstack.enable_logging(True)

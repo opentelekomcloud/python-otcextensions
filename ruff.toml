@@ -1,0 +1,9 @@
+[lint]
+select = ["E", "F", "I"]
+
+[lint.isort]
+force-single-line = true
+
+[format]
+quote-style = "double"
+indent-style = "space"

@@ -13,10 +13,11 @@
 """
 List all Auto-Scaling Policies of a specific AS Group.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 group = "group_name_or_id"
 group = conn.auto_scaling.find_group(group)

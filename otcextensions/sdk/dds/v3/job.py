@@ -14,30 +14,29 @@ from otcextensions.sdk.dds.v3 import instance as _instance
 
 
 class Job(resource.Resource):
-    base_path = '/jobs'
+    base_path = "/jobs"
 
     allow_fetch = True
 
-    id = resource.Body('id')
-    name = resource.Body('name')
-    status = resource.Body('status')
-    created = resource.Body('created')
-    ended = resource.Body('ended')
-    progress = resource.Body('progress')
-    instance = resource.Body('instance', type=_instance.Instance)
+    id = resource.Body("id")
+    name = resource.Body("name")
+    status = resource.Body("status")
+    created = resource.Body("created")
+    ended = resource.Body("ended")
+    progress = resource.Body("progress")
+    instance = resource.Body("instance", type=_instance.Instance)
 
-    def fetch(self, session, requires_id=True,
-              base_path=None, error_message=None, **params):
+    def fetch(
+        self, session, requires_id=True, base_path=None, error_message=None, **params
+    ):
         params = {
             "id": self.id,
         }
         request = self._prepare_request(
-            requires_id=False,
-            base_path=base_path,
-            params=params
+            requires_id=False, base_path=base_path, params=params
         )
         response = session.get(
             request.url,
         )
-        self._translate_response(response, resource_response_key='job')
+        self._translate_response(response, resource_response_key="job")
         return self

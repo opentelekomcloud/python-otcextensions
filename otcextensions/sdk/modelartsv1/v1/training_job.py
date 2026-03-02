@@ -108,9 +108,7 @@ class ConfigSpec(resource.Resource):
     #:  Default value.
     create_version = resource.Body("create_version", type=bool)
     #: Dataset of a training job.
-    data_source = resource.Body(
-        "data_source", type=list, list_type=DataSourceSpec
-    )
+    data_source = resource.Body("data_source", type=list, list_type=DataSourceSpec)
     #: OBS URL of the dataset required by a training job.
     data_url = resource.Body("data_url")
     #: Dataset ID of a training job.
@@ -210,9 +208,7 @@ class ConfigSpec(resource.Resource):
     #: Status of a training job.
     status = resource.Body("status", type=int)
     #: System monitoring metrics of a training job.
-    system_metric_list = resource.Body(
-        "system_metric_list", type=SystemMetricListSpec
-    )
+    system_metric_list = resource.Body("system_metric_list", type=SystemMetricListSpec)
     #: OBS URL of the output file of a training job.
     train_url = resource.Body("train_url")
     #: Boot command used to start the container of a

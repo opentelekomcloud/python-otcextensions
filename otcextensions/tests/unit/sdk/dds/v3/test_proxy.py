@@ -10,11 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack.tests.unit import test_proxy_base
-
 from otcextensions.sdk.dds.v3 import _proxy
 from otcextensions.sdk.dds.v3 import datastore as _datastore
-from otcextensions.sdk.dds.v3 import instance as _instance
 from otcextensions.sdk.dds.v3 import flavor as _flavor
+from otcextensions.sdk.dds.v3 import instance as _instance
 
 
 class TestDdsProxy(test_proxy_base.TestProxyBase):
@@ -27,17 +26,14 @@ class TestDdsProxy(test_proxy_base.TestProxyBase):
 class TestDatastore(TestDdsProxy):
     def test_datastore_types(self):
         res = list(self.proxy.datastore_types())
-        self.assertEqual('DDS-Community', res[0].name)
+        self.assertEqual("DDS-Community", res[0].name)
 
     def test_datastores(self):
         self.verify_list(
             self.proxy.datastores,
             _datastore.Datastore,
-            method_kwargs={
-                'datastore_name': 'foo'},
-            expected_kwargs={
-                'datastore_name': 'foo'
-            }
+            method_kwargs={"datastore_name": "foo"},
+            expected_kwargs={"datastore_name": "foo"},
         )
 
 
@@ -47,24 +43,22 @@ class TestFlavor(TestDdsProxy):
             self.proxy.flavors,
             _flavor.Flavor,
             method_kwargs={
-                'region': 'foo',
-                'engine_name': 'engine',
+                "region": "foo",
+                "engine_name": "engine",
             },
             expected_kwargs={
-                'region': 'foo',
-                'engine_name': 'engine',
-            }
+                "region": "foo",
+                "engine_name": "engine",
+            },
         )
 
 
 class TestInstance(TestDdsProxy):
     def test_get_instance(self):
-        self.verify_get(
-            self.proxy.get_instance,
-            _instance.Instance
-        )
+        self.verify_get(self.proxy.get_instance, _instance.Instance)
 
     def test_create_instance(self):
         self.verify_create(
             self.proxy.create_instance,
-            _instance.Instance,)
+            _instance.Instance,
+        )

@@ -11,7 +11,6 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.ces.v1 import metric
 
 
@@ -19,9 +18,9 @@ class TestMetric(base.TestCase):
 
     def test_basic(self):
         sot = metric.Metric()
-        self.assertEqual('metrics', sot.resources_key)
-        self.assertEqual('metric', sot.resource_key)
-        self.assertEqual('/metrics', sot.base_path)
+        self.assertEqual("metrics", sot.resources_key)
+        self.assertEqual("metric", sot.resource_key)
+        self.assertEqual("/metrics", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_fetch)

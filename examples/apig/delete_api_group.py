@@ -13,9 +13,9 @@
 """
 Delete API group from gateway
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-conn.apig.delete_api_group(gateway='gateway_id',
-                           api_group='api_group_id')
+conn = openstack.connect(cloud="otc")
+conn.apig.delete_api_group(gateway="gateway_id", api_group="api_group_id")

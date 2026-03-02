@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import proxy
-
 from otcextensions.sdk.cts.v1 import tracker as _tracker
 from otcextensions.sdk.ctsv2.v2 import trace as _trace
 
@@ -19,7 +18,7 @@ class Proxy(proxy.Proxy):
 
     skip_discovery = True
 
-    def traces(self, tracker='system', **query):
+    def traces(self, tracker="system", **query):
         """List all traces
 
         :param tracker: The name or an tracker of
@@ -29,6 +28,7 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.cts.v1.trace.Trace`
         """
         if isinstance(tracker, str):
-            tracker = self._get_resource(_tracker.Tracker, {'name': tracker})
-        return self._list(_trace.Trace, paginated=False,
-                          tracker_name=tracker.name, **query)
+            tracker = self._get_resource(_tracker.Tracker, {"name": tracker})
+        return self._list(
+            _trace.Trace, paginated=False, tracker_name=tracker.name, **query
+        )

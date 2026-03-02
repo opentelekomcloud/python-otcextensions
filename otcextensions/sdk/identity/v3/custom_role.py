@@ -11,20 +11,17 @@
 # under the License.
 
 from openstack import resource
-
 from otcextensions.sdk.identity.v3 import _bad_base as _base
 
 
 class CustomRole(_base.BadBaseResource):
-    resources_key = 'roles'
-    base_path = '/v3.0/OS-ROLE/roles'
+    resources_key = "roles"
+    base_path = "/v3.0/OS-ROLE/roles"
 
     # capabilities
     allow_list = True
 
-    _query_mapping = resource.QueryParameters(
-        'page', 'per_page'
-    )
+    _query_mapping = resource.QueryParameters("page", "per_page")
 
     #: Custom policy information.
     #: Properties

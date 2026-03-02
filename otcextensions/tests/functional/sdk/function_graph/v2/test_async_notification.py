@@ -11,13 +11,12 @@
 # under the License.
 
 import uuid
-from otcextensions.sdk.function_graph.v2 import function
 
 from openstack import _log
-
+from otcextensions.sdk.function_graph.v2 import function
 from otcextensions.tests.functional.sdk.function_graph import TestFg
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestFunctionAsyncNotification(TestFg):
@@ -37,32 +36,29 @@ class TestFunctionAsyncNotification(TestFg):
         self.assertIsNotNone(enable)
 
         self.inv = self.conn.functiongraph.executing_function_asynchronously(
-            self.function.func_urn, attrs={'a': 'b'}
+            self.function.func_urn, attrs={"a": "b"}
         )
         self.assertIsNotNone(self.inv.request_id)
 
-        self.addCleanup(
-            self.client.delete_function,
-            self.function
-        )
-        self.addCleanup(
-            self.client.delete_async_notification,
-            self.function
-        )
+        self.addCleanup(self.client.delete_function, self.function)
+        self.addCleanup(self.client.delete_async_notification, self.function)
 
     def test_async_notifications(self):
-        notifications = list(self.client.async_notifications(
-            self.function.func_urn))
+        notifications = list(self.client.async_notifications(self.function.func_urn))
         self.assertIn(self.function.func_urn, notifications[0].func_urn)
 
     def test_all_versions_async_notifications(self):
-        notifications = list(self.client.all_versions_async_notifications(
-            self.function.func_urn))
+        notifications = list(
+            self.client.all_versions_async_notifications(self.function.func_urn)
+        )
         self.assertIn(self.function.func_urn, notifications[0].func_urn)
 
     def test_async_invocation_requests(self):
-        requests = list(self.client.async_invocation_requests(
-            self.function, **{'request_id': self.inv.request_id}))
+        requests = list(
+            self.client.async_invocation_requests(
+                self.function, **{"request_id": self.inv.request_id}
+            )
+        )
         self.assertIsNotNone(requests)
 
     # def test_stop_async_invocation_request(self):

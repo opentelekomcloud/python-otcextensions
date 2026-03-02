@@ -12,6 +12,7 @@
 # under the License.
 #
 """Querying Service Monitoring Information"""
+
 import openstack
 
 openstack.enable_logging(True)

@@ -13,12 +13,13 @@
 """
 Get all Tenant-Level Function metrics
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-for m in conn.functiongraph.metrics(filter='monitor_data'):
+for m in conn.functiongraph.metrics(filter="monitor_data"):
     print(m)

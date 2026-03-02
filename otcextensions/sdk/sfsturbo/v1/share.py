@@ -10,18 +10,18 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import _log
+from openstack import exceptions
 from openstack import resource
 from openstack import utils
-from openstack import exceptions
 
 LOG = _log.setup_logging(__name__)
 
 
 class Share(resource.Resource):
 
-    base_path = '/sfs-turbo/shares'
-    resource_key = 'share'
-    resources_key = 'shares'
+    base_path = "/sfs-turbo/shares"
+    resource_key = "share"
+    resources_key = "shares"
 
     # capabilities
     allow_create = True
@@ -31,71 +31,71 @@ class Share(resource.Resource):
 
     #: Specifies the creation progress of the SFS Turbo file system.
     #: *Type: dict*
-    action_progress = resource.Body('action_progress', type=dict)
+    action_progress = resource.Body("action_progress", type=dict)
     #: Specifies the name of the AZ where the SFS Turbo file system is located.
     #: *Type: str*
-    az_name = resource.Body('az_name')
+    az_name = resource.Body("az_name")
     #: Specifies the available capacity of the SFS Turbo file system in the
     # unit of GB.
     #: *Type: str*
-    avail_capacity = resource.Body('avail_capacity')
+    avail_capacity = resource.Body("avail_capacity")
     #: Specifies the code of the AZ where the SFS Turbo file system is located.
     #: *Type: str*
-    availability_zone = resource.Body('availability_zone')
+    availability_zone = resource.Body("availability_zone")
     #: Specifies the creation time.
     #: *Type: str*
-    created_at = resource.Body('created_at')
+    created_at = resource.Body("created_at")
     #: Specifies the ID of the encryption key specified by the user.
     # This parameter is not returned for non-encrypted disks.
     #: *Type: str*
-    crypt_key_id = resource.Body('crypt_key_id')
+    crypt_key_id = resource.Body("crypt_key_id")
     #: For an enhanced file system, bandwidth is returned for this field.
     #: *Type: str*
-    expand_type = resource.Body('expand_type')
+    expand_type = resource.Body("expand_type")
     #: Specifies the mount point of the SFS Turbo file system.
     #: *Type: str*
-    export_location = resource.Body('export_location')
+    export_location = resource.Body("export_location")
     #: Specifies the name of the SFS Turbo file system.
     #: *Type: str*
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: Specifies the status of the SFS Turbo file system.
     #: *Type: str*
-    status = resource.Body('status')
+    status = resource.Body("status")
     #: Specifies the sub-status of the SFS Turbo file system.
     #: *Type:str*
-    sub_status = resource.Body('sub_status')
+    sub_status = resource.Body("sub_status")
     #: Specifies the type of the SFS Turbo file system.
     #: *Type: str*
-    share_type = resource.Body('share_type')
+    share_type = resource.Body("share_type")
     #: Specifies the region of the SFS Turbo file system.
     #: *Type: str*
-    region = resource.Body('region')
+    region = resource.Body("region")
     #: Specifies the network ID of the subnet specified by the user.
     #: *Type: str*
-    subnet_id = resource.Body('subnet_id')
+    subnet_id = resource.Body("subnet_id")
     #: Specifies the ID of a security group specified by the user.
     #: *Type: str*
-    security_group_id = resource.Body('security_group_id')
+    security_group_id = resource.Body("security_group_id")
     #: Specifies the total capacity of the SFS Turbo file system in the
     # unit of GB.
     #: *Type: str*
-    size = resource.Body('size')
+    size = resource.Body("size")
     #: Specifies the protocol type of the SFS Turbo file system.
     # The current value is NFS.
     #: *Type: str*
-    share_proto = resource.Body('share_proto')
+    share_proto = resource.Body("share_proto")
     #: Billing mode of the SFS Turbo file system.
     #: *Type: str*
-    pay_model = resource.Body('pay_model')
+    pay_model = resource.Body("pay_model")
     #: Project id.
     #: *Type: str*
-    project_id = resource.URI('project_id')
+    project_id = resource.URI("project_id")
     #: Specifies the version ID of the SFS Turbo file system.
     #: *Type:str*
-    version = resource.Body('version')
+    version = resource.Body("version")
     #: Specifies the VPC ID specified by the user.
     #: *Type: str*
-    vpc_id = resource.Body('vpc_id')
+    vpc_id = resource.Body("vpc_id")
 
     def extend_capacity(self, session, extend):
         """Method to extend the capacity of the file system
@@ -104,10 +104,8 @@ class Share(resource.Resource):
         :type session: :class:`~keystoneauth1.adapter.Adapter`
         :param dict extend: Specifies the extend object.
         """
-        url = utils.urljoin(self.base_path, self.id, 'action')
-        body = {
-            'extend': extend
-        }
+        url = utils.urljoin(self.base_path, self.id, "action")
+        body = {"extend": extend}
         response = session.post(url, json=body)
         return self._to_object(session, response)
 
@@ -119,10 +117,8 @@ class Share(resource.Resource):
         :param dict change_security_group: Specifies the change_security_group
             object.
         """
-        url = utils.urljoin(self.base_path, self.id, 'action')
-        body = {
-            'change_security_group': change_security_group
-        }
+        url = utils.urljoin(self.base_path, self.id, "action")
+        body = {"change_security_group": change_security_group}
         response = session.post(url, json=body)
         return self._to_object(session, response)
 
@@ -169,21 +165,17 @@ class Share(resource.Resource):
         """
 
         resource = self.fetch(session, skip_cache=True)
-        current_substatus = getattr(resource, 'sub_status')
+        current_substatus = getattr(resource, "sub_status")
         if current_substatus == desired_substatus:
             return self
 
-        name = "{res}:{id}".format(res=self.__class__.__name__,
-                                   id=self.id)
-        msg = "Timeout waiting for {name} to extend capacity".\
-            format(name=name)
+        name = "{res}:{id}".format(res=self.__class__.__name__, id=self.id)
+        msg = "Timeout waiting for {name} to extend capacity".format(name=name)
 
-        for count in utils.iterate_timeout(
-            timeout=wait, message=msg, wait=interval
-        ):
+        for count in utils.iterate_timeout(timeout=wait, message=msg, wait=interval):
             resource = self.fetch(session, skip_cache=True)
 
-            current_substatus = getattr(resource, 'sub_status')
+            current_substatus = getattr(resource, "sub_status")
             if current_substatus == desired_substatus:
                 return resource
             elif current_substatus == failure:
@@ -193,11 +185,8 @@ class Share(resource.Resource):
                     )
                 )
 
-            LOG.debug(
-                'Still waiting for resource %s to extend capacity',
-                name
-            )
+            LOG.debug("Still waiting for resource %s to extend capacity", name)
 
             if callback:
-                progress = getattr(resource, 'progress', None) or 0
+                progress = getattr(resource, "progress", None) or 0
                 callback(progress)

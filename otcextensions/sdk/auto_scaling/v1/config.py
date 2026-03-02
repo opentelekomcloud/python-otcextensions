@@ -13,7 +13,6 @@ import json
 
 from openstack import exceptions
 from openstack import resource
-
 from otcextensions.common import exc
 from otcextensions.i18n import _
 from otcextensions.sdk.auto_scaling.v1 import _base
@@ -24,39 +23,38 @@ class InstanceConfig(resource.Resource):
     #: reserved property
     #: Server Instance reference Id, if set, auto-scaling-group will create
     #: new instance use the same config as this one.
-    instance_id = resource.Body('instance_id')
+    instance_id = resource.Body("instance_id")
     #: reserved property
-    instance_name = resource.Body('instance_name')
+    instance_name = resource.Body("instance_name")
     #: The flavor reference to be used
-    flavor_id = resource.Body('flavorRef')
+    flavor_id = resource.Body("flavorRef")
     #: The image reference to be used
-    image_id = resource.Body('imageRef')
+    image_id = resource.Body("imageRef")
     #: The disks to be used
-    disk = resource.Body('disk', type=list)
+    disk = resource.Body("disk", type=list)
     #: The SSH key used to login server instance
-    key_name = resource.Body('key_name')
+    key_name = resource.Body("key_name")
     #: When a server is first created, it provides the administrator password.
-    admin_password = resource.Body('adminPass')
+    admin_password = resource.Body("adminPass")
     #: The file path and contents, text only, to inject into the server at
     #: launch. The maximum size of the file path data is 255 bytes.
     #: The maximum limit is The number of allowed bytes in the decoded,
     #: rather than encoded, data.
-    personality = resource.Body('personality')
+    personality = resource.Body("personality")
     #: EIP config for creating new instance
-    public_ip = resource.Body('public_ip')
+    public_ip = resource.Body("public_ip")
     #: reserved property, not used for now
-    user_data = resource.Body('user_data')
+    user_data = resource.Body("user_data")
     #: Metadata(key-pair) for creating new instance
-    metadata = resource.Body('metadata', type=dict)
+    metadata = resource.Body("metadata", type=dict)
     #: Security groups
-    security_groups = resource.Body('security_groups', type=list,
-                                    list_type=dict)
+    security_groups = resource.Body("security_groups", type=list, list_type=dict)
 
 
 class Config(_base.Resource):
-    resource_key = 'scaling_configuration'
-    resources_key = 'scaling_configurations'
-    base_path = '/scaling_configuration'
+    resource_key = "scaling_configuration"
+    resources_key = "scaling_configurations"
+    base_path = "/scaling_configuration"
     # query_marker_key = 'start_number'
     # service = auto_scaling_service.AutoScalingService()
 
@@ -75,16 +73,15 @@ class Config(_base.Resource):
 
     #: Properties
     #: AutoScaling config ID
-    id = resource.Body('scaling_configuration_id', alternate_id=True)
+    id = resource.Body("scaling_configuration_id", alternate_id=True)
     #: AutoScaling config name
-    name = resource.Body('scaling_configuration_name')
+    name = resource.Body("scaling_configuration_name")
     #: AutoScaling config created time
-    create_time = resource.Body('create_time')
+    create_time = resource.Body("create_time")
     #: AutoScaling config status
-    status = resource.Body('status')
+    status = resource.Body("status")
     #: Use the exists instance as template to create new instance
-    instance_config = resource.Body('instance_config',
-                                    type=InstanceConfig)
+    instance_config = resource.Body("instance_config", type=InstanceConfig)
 
     @classmethod
     def batch_delete(cls, session, configs):
@@ -97,30 +94,30 @@ class Config(_base.Resource):
 
         :returns: None
         """
-        ids = [config.id if isinstance(config, Config) else config
-               for config in configs]
-        json_body = {'scaling_configuration_id': ids}
-        response = session.post('/scaling_configurations',
-                                headers={'Accept': '*'},
-                                json=json_body)
+        ids = [
+            config.id if isinstance(config, Config) else config for config in configs
+        ]
+        json_body = {"scaling_configuration_id": ids}
+        response = session.post(
+            "/scaling_configurations", headers={"Accept": "*"}, json=json_body
+        )
         if response.status_code == 400:
             # Check if failed due to not exist
             content = response.json()
-            error = content.get('error', None)
-            if error.get('code', None) == 'AS.1038':
+            error = content.get("error", None)
+            if error.get("code", None) == "AS.1038":
                 ids = []
-                message = error.get('message', None)
-                if message.startswith('['):
+                message = error.get("message", None)
+                if message.startswith("["):
                     items = json.loads(message)
                     for config_message in items:
-                        id = config_message.get('id', None)
-                        code = config_message.get('errorCode', None)
-                        if code == 'AS.1004':
+                        id = config_message.get("id", None)
+                        code = config_message.get("errorCode", None)
+                        if code == "AS.1004":
                             # Config does not exist
                             ids.append(id)
                 if len(ids) > 0:
-                    message = (_('AS Configurations (%(ids)s) not found') %
-                               {'ids': ids})
+                    message = _("AS Configurations (%(ids)s) not found") % {"ids": ids}
                     raise exceptions.ResourceNotFound(message=message)
         # unknown failure
         exc.raise_from_response(response)

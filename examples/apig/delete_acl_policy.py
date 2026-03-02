@@ -13,9 +13,9 @@
 """
 Delete Access Control Policy
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-conn.apig.delete_acl_policy(gateway='gateway_id',
-                            acl_policy='acl_id')
+conn = openstack.connect(cloud="otc")
+conn.apig.delete_acl_policy(gateway="gateway_id", acl_policy="acl_id")

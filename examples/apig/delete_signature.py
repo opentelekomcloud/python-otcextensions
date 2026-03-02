@@ -13,11 +13,9 @@
 """
 Delete Signature Key
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-conn.apig.delete_signature(
-    gateway="gateway_id",
-    sign="signature_id"
-)
+conn = openstack.connect(cloud="otc")
+conn.apig.delete_signature(gateway="gateway_id", sign="signature_id")

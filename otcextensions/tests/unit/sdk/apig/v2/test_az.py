@@ -12,14 +12,13 @@
 from openstack.tests.unit import base
 from otcextensions.sdk.apig.v2 import az
 
-
 EXAMPLE_AZ = {
-    'name': 'eu-de-1a',
-    'id': 'az-12345',
-    'code': 'eu-de-1a',
-    'port': 443,
-    'local_name': {'en_us': 'Europe Germany AZ1', 'zh_cn': '欧洲德国AZ1'},
-    'specs': {'max_bandwidth': 1000, 'min_bandwidth': 50}
+    "name": "eu-de-1a",
+    "id": "az-12345",
+    "code": "eu-de-1a",
+    "port": 443,
+    "local_name": {"en_us": "Europe Germany AZ1", "zh_cn": "欧洲德国AZ1"},
+    "specs": {"max_bandwidth": 1000, "min_bandwidth": 50},
 }
 
 
@@ -27,19 +26,17 @@ class TestAZ(base.TestCase):
 
     def test_basic(self):
         sot = az.AZ()
-        self.assertEqual('/apigw/available-zones', sot.base_path)
+        self.assertEqual("/apigw/available-zones", sot.base_path)
         self.assertTrue(sot.allow_list)
-        self.assertEqual('AZ', sot.resource_name)
-        self.assertEqual('available_zones', sot.resources_key)
+        self.assertEqual("AZ", sot.resource_name)
+        self.assertEqual("available_zones", sot.resources_key)
 
     def test_make_it(self):
         sot = az.AZ(**EXAMPLE_AZ)
-        self.assertEqual(EXAMPLE_AZ['name'], sot.name)
-        self.assertEqual(EXAMPLE_AZ['id'], sot.id)
-        self.assertEqual(EXAMPLE_AZ['code'], sot.code)
-        self.assertEqual(EXAMPLE_AZ['port'], sot.port)
-        self.assertEqual(EXAMPLE_AZ['local_name']['en_us'],
-                         sot.local_name.en_us)
-        self.assertEqual(EXAMPLE_AZ['local_name']['zh_cn'],
-                         sot.local_name.zh_cn)
-        self.assertEqual(EXAMPLE_AZ['specs'], sot.specs)
+        self.assertEqual(EXAMPLE_AZ["name"], sot.name)
+        self.assertEqual(EXAMPLE_AZ["id"], sot.id)
+        self.assertEqual(EXAMPLE_AZ["code"], sot.code)
+        self.assertEqual(EXAMPLE_AZ["port"], sot.port)
+        self.assertEqual(EXAMPLE_AZ["local_name"]["en_us"], sot.local_name.en_us)
+        self.assertEqual(EXAMPLE_AZ["local_name"]["zh_cn"], sot.local_name.zh_cn)
+        self.assertEqual(EXAMPLE_AZ["specs"], sot.specs)

@@ -12,6 +12,7 @@
 # under the License.
 #
 """Querying Supported Service Deployment Specifications"""
+
 import openstack
 
 openstack.enable_logging(True)

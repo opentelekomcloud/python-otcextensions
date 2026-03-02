@@ -44,7 +44,7 @@ def create_keypair(conn):
             if e.errno != errno.EEXIST:
                 raise e
 
-        with open(PRIVATE_KEYPAIR_FILE, 'w') as f:
+        with open(PRIVATE_KEYPAIR_FILE, "w") as f:
             f.write("%s" % keypair.private_key)
 
         os.chmod(PRIVATE_KEYPAIR_FILE, 0o400)
@@ -61,11 +61,15 @@ def create_server(conn):
     keypair = create_keypair(conn)
 
     server = conn.compute.create_server(
-        name=SERVER_NAME, image_id=image.id, flavor_id=flavor.id,
-        networks=[{"uuid": network.id}], key_name=keypair.name)
+        name=SERVER_NAME,
+        image_id=image.id,
+        flavor_id=flavor.id,
+        networks=[{"uuid": network.id}],
+        key_name=keypair.name,
+    )
 
     server = conn.compute.wait_for_server(server)
 
-    print("ssh -i {key} root@{ip}".format(
-        key=PRIVATE_KEYPAIR_FILE,
-        ip=server.access_ipv4))
+    print(
+        "ssh -i {key} root@{ip}".format(key=PRIVATE_KEYPAIR_FILE, ip=server.access_ipv4)
+    )

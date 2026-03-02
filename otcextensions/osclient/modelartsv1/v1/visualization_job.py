@@ -11,6 +11,7 @@
 #   under the License.
 #
 """ModelArts visualization job v1 action implementations"""
+
 import logging
 
 from cliff import columns as cliff_columns
@@ -34,9 +35,7 @@ _formatters = {
 def _get_columns(item):
     column_map = {}
     hidden = ["location"]
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(
-        item, column_map, hidden
-    )
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map, hidden)
 
 
 class JobStatus(cliff_columns.FormattableColumn):
@@ -71,9 +70,7 @@ class JobStatus(cliff_columns.FormattableColumn):
 
 
 class ListVisualizationJobs(command.Lister):
-    _description = _(
-        "Query the visualization jobs that meet the search criteria."
-    )
+    _description = _("Query the visualization jobs that meet the search criteria.")
     columns = (
         "Job Id",
         "Job Name",
@@ -110,9 +107,7 @@ class ListVisualizationJobs(command.Lister):
             "--status",
             choices=list(JobStatus.CHOICES_MAP.keys()),
             type=int,
-            help=_(
-                "Job status. The options are as follows:\n" + JobStatus.STR
-            ),
+            help=_("Job status. The options are as follows:\n" + JobStatus.STR),
         )
         parser.add_argument(
             "--sort-by",
@@ -166,9 +161,7 @@ class ListVisualizationJobs(command.Lister):
         table = (
             self.columns,
             (
-                utils.get_dict_properties(
-                    s, self.columns, formatters=_formatters
-                )
+                utils.get_dict_properties(s, self.columns, formatters=_formatters)
                 for s in data
             ),
         )
@@ -377,8 +370,7 @@ class DeleteVisualizationJob(command.Command):
         if result > 0:
             total = len(parsed_args.jobId)
             msg = _(
-                "%(result)s of %(total)s visualization job(s) failed "
-                "to delete."
+                "%(result)s of %(total)s visualization job(s) failed " "to delete."
             ) % {
                 "result": result,
                 "total": total,

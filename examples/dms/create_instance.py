@@ -13,22 +13,23 @@
 """
 Create an Instance
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 attrs = {
-    'name': 'test-instance-2',
-    'engine': 'kafka',
-    'engine_version': '2.3.0',
-    'storage_space': '600',
-    'vpc_id': 'vpc_id',
-    'security_group_id': 'sec_group_id',
-    'subnet_id': 'network_id',
-    'available_zones': ['az_id'],
-    'product_id': 'product_id',
-    'storage_spec_code': 'dms.physical.storage.ultra'
+    "name": "test-instance-2",
+    "engine": "kafka",
+    "engine_version": "2.3.0",
+    "storage_space": "600",
+    "vpc_id": "vpc_id",
+    "security_group_id": "sec_group_id",
+    "subnet_id": "network_id",
+    "available_zones": ["az_id"],
+    "product_id": "product_id",
+    "storage_spec_code": "dms.physical.storage.ultra",
 }
 for raw in conn.dms.create_instance(**attrs):
     print(raw)

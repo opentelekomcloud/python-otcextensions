@@ -13,16 +13,14 @@
 """
 Delete organization permissions
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-user_ids = [
-    '5a23ecb3999b458d92d51d524bb7fb4c',
-    '5a23ecb3999b458d92d51d524bb7fb4e'
-]
-namespace = 'test'
+user_ids = ["5a23ecb3999b458d92d51d524bb7fb4c", "5a23ecb3999b458d92d51d524bb7fb4e"]
+namespace = "test"
 perm = conn.swr.delete_organization_permissions(namespace, user_ids)

@@ -10,25 +10,26 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from openstack import exceptions
 from openstack import resource
 from openstack import utils
-from openstack import exceptions
 
 
 class PredefinedTag(resource.Resource):
-    resource_key = 'predefine_tag'
-    base_path = '/predefine_tags'
+    resource_key = "predefine_tag"
+    base_path = "/predefine_tags"
 
     _query_mapping = resource.QueryParameters(
-        'key', 'value', 'limit', 'marker', 'order_field', 'order_method')
+        "key", "value", "limit", "marker", "order_field", "order_method"
+    )
 
     #: Properties
-    marker = resource.Body('marker')
-    total_count = resource.Body('total_count')
-    tags = resource.Body('tags', type=list)
-    action = resource.Body('action')
-    old_tag = resource.Body('old_tag', type=dict)
-    new_tag = resource.Body('new_tag', type=dict)
+    marker = resource.Body("marker")
+    total_count = resource.Body("total_count")
+    tags = resource.Body("tags", type=list)
+    action = resource.Body("action")
+    old_tag = resource.Body("old_tag", type=dict)
+    new_tag = resource.Body("new_tag", type=dict)
 
     #: Allow to create operation for this resource.
     allow_create = True
@@ -56,28 +57,16 @@ class PredefinedTag(resource.Resource):
     requires_id = False
 
     def _action(self, session, request_body):
-        url = utils.urljoin(self.base_path, 'action')
+        url = utils.urljoin(self.base_path, "action")
         response = session.post(url, json=request_body)
         exceptions.raise_from_response(response)
 
     def add_tag(self, session, key, value):
-        request_body = {
-            "action": "create",
-            "tags": [{
-                "key": key,
-                "value": value
-            }]
-        }
+        request_body = {"action": "create", "tags": [{"key": key, "value": value}]}
         self._action(session, request_body)
 
     def delete_tag(self, session, key, value):
-        request_body = {
-            "action": "delete",
-            "tags": [{
-                "key": key,
-                "value": value
-            }]
-        }
+        request_body = {"action": "delete", "tags": [{"key": key, "value": value}]}
         self._action(session, request_body)
 
     def _prepare_request_body(

@@ -20,19 +20,21 @@ class TestListRestoreRecords(fakes.TestDCS):
     objects = fakes.FakeRestoreRecord.create_multiple(3)
     inst = fakes.FakeInstance.create_one()
 
-    columns = ('id', 'name', 'backup_id', 'progress', 'status', 'error_code')
+    columns = ("id", "name", "backup_id", "progress", "status", "error_code")
 
     data = []
 
     for s in objects:
-        data.append((
-            s.id,
-            s.name,
-            s.backup_id,
-            s.progress,
-            s.status,
-            s.error_code,
-        ))
+        data.append(
+            (
+                s.id,
+                s.name,
+                s.backup_id,
+                s.progress,
+                s.status,
+                s.error_code,
+            )
+        )
 
     def setUp(self):
         super(TestListRestoreRecords, self).setUp()
@@ -43,30 +45,22 @@ class TestListRestoreRecords(fakes.TestDCS):
         self.client.find_instance = mock.Mock()
 
     def test_list(self):
-        arglist = [
-            'inst'
-        ]
+        arglist = ["inst"]
 
-        verifylist = [
-            ('instance', 'inst')
-        ]
+        verifylist = [("instance", "inst")]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.restore_records.side_effect = [
-            self.objects
-        ]
-        self.client.find_instance.side_effect = [
-            self.inst
-        ]
+        self.client.restore_records.side_effect = [self.objects]
+        self.client.find_instance.side_effect = [self.inst]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.restore_records.assert_called_once_with(
-            instance={'id': self.inst.id},
+            instance={"id": self.inst.id},
         )
 
         self.assertEqual(self.columns, columns)
@@ -74,41 +68,41 @@ class TestListRestoreRecords(fakes.TestDCS):
 
     def test_list_query(self):
         arglist = [
-            'inst',
-            '--limit', '1',
-            '--start', '2',
-            '--from_time', '3',
-            '--to_time', '4',
+            "inst",
+            "--limit",
+            "1",
+            "--start",
+            "2",
+            "--from_time",
+            "3",
+            "--to_time",
+            "4",
         ]
 
         verifylist = [
-            ('instance', 'inst'),
-            ('limit', 1),
-            ('start', 2),
-            ('from_time', '3'),
-            ('to_time', '4'),
+            ("instance", "inst"),
+            ("limit", 1),
+            ("start", 2),
+            ("from_time", "3"),
+            ("to_time", "4"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.restore_records.side_effect = [
-            self.objects
-        ]
-        self.client.find_instance.side_effect = [
-            self.inst
-        ]
+        self.client.restore_records.side_effect = [self.objects]
+        self.client.find_instance.side_effect = [self.inst]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.restore_records.assert_called_once_with(
-            instance={'id': self.inst.id},
+            instance={"id": self.inst.id},
             limit=1,
             start=2,
-            begin_time='3',
-            end_time='4'
+            begin_time="3",
+            end_time="4",
         )
 
         self.assertEqual(self.columns, columns)
@@ -122,9 +116,7 @@ class TestRecoverBackup(fakes.TestDCS):
 
     columns = ()
 
-    data = (
-
-    )
+    data = ()
 
     def setUp(self):
         super(TestRecoverBackup, self).setUp()
@@ -136,30 +128,27 @@ class TestRecoverBackup(fakes.TestDCS):
 
     def test_backup_create(self):
         arglist = [
-            'inst',
-            '--backup', '2',
+            "inst",
+            "--backup",
+            "2",
         ]
         verifylist = [
-            ('instance', 'inst'),
-            ('backup', '2'),
+            ("instance", "inst"),
+            ("backup", "2"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.restore_instance.side_effect = [
-            self._data
-        ]
-        self.client.find_instance.side_effect = [
-            self.inst
-        ]
+        self.client.restore_instance.side_effect = [self._data]
+        self.client.find_instance.side_effect = [self.inst]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.restore_instance.assert_called_with(
-            instance={'id': self.inst.id},
-            backup_id='2',
+            instance={"id": self.inst.id},
+            backup_id="2",
         )
 
         self.assertEqual(self.columns, columns)

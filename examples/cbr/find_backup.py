@@ -13,11 +13,12 @@
 """
 Find a single CBR Backup by name or id
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-name_or_id = 'name_or_id'
+name_or_id = "name_or_id"
 backup = conn.cbr.find_backup(name_or_id)
 print(backup)

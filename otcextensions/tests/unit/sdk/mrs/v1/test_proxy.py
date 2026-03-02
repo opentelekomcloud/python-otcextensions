@@ -10,9 +10,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from otcextensions.sdk.mrs.v1 import _proxy
-
 from openstack.tests.unit import test_proxy_base
+from otcextensions.sdk.mrs.v1 import _proxy
 
 
 class TestMrsProxy(test_proxy_base.TestProxyBase):

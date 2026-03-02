@@ -14,10 +14,10 @@ from otcextensions.sdk.dws.v1 import cluster as _cluster
 
 
 class Snapshot(resource.Resource):
-    base_path = '/snapshots'
+    base_path = "/snapshots"
 
-    resource_key = 'snapshot'
-    resources_key = 'snapshots'
+    resource_key = "snapshot"
+    resources_key = "snapshots"
 
     # capabilities
     allow_create = True
@@ -27,33 +27,33 @@ class Snapshot(resource.Resource):
 
     # Properties
     #: ID of the cluster for which snapshots are created.
-    cluster_id = resource.Body('cluster_id')
+    cluster_id = resource.Body("cluster_id")
     #: Time when a snapshot starts to be created.
-    created_at = resource.Body('started')
+    created_at = resource.Body("started")
     #: Snapshot description.
-    description = resource.Body('description')
+    description = resource.Body("description")
     #: Snapshot size, in GB.
-    size = resource.Body('size', type=float)
+    size = resource.Body("size", type=float)
     #: Snapshot status:
     #:  - CREATING
     #:  - AVAILABLE
     #:  - UNAVAILABLE
-    status = resource.Body('status')
+    status = resource.Body("status")
     #: Snapshot type. It can be:
     #:  - MANUAL
     #:  - AUTOMATED
-    type = resource.Body('type')
+    type = resource.Body("type")
     #: Time when a snapshot is complete.
-    updated_at = resource.Body('finished')
+    updated_at = resource.Body("finished")
 
 
 class Restore(_cluster.Cluster):
-    base_path = '/snapshots/%(snapshot_id)s/actions'
+    base_path = "/snapshots/%(snapshot_id)s/actions"
 
     resources_key = None
-    resource_key = 'restore'
+    resource_key = "restore"
 
-    snapshot_id = resource.URI('snapshot_id')
+    snapshot_id = resource.URI("snapshot_id")
 
     # capabilities
     allow_create = True
@@ -64,4 +64,4 @@ class Restore(_cluster.Cluster):
     allow_patch = False
 
     #: Returns `~otcextensions.sdk.dws.v1.cluster.Cluster` object.
-    cluster = resource.Body('cluster', type=_cluster.Cluster)
+    cluster = resource.Body("cluster", type=_cluster.Cluster)

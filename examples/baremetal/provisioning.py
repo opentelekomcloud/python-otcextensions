@@ -19,17 +19,17 @@ from __future__ import print_function
 
 def manage_and_inspect_node(conn, uuid):
     node = conn.baremetal.find_node(uuid)
-    print('Before:', node.provision_state)
-    conn.baremetal.set_node_provision_state(node, 'manage')
-    conn.baremetal.wait_for_nodes_provision_state([node], 'manageable')
-    conn.baremetal.set_node_provision_state(node, 'inspect')
-    res = conn.baremetal.wait_for_nodes_provision_state([node], 'manageable')
-    print('After:', res[0].provision_state)
+    print("Before:", node.provision_state)
+    conn.baremetal.set_node_provision_state(node, "manage")
+    conn.baremetal.wait_for_nodes_provision_state([node], "manageable")
+    conn.baremetal.set_node_provision_state(node, "inspect")
+    res = conn.baremetal.wait_for_nodes_provision_state([node], "manageable")
+    print("After:", res[0].provision_state)
 
 
 def provide_node(conn, uuid):
     node = conn.baremetal.find_node(uuid)
-    print('Before:', node.provision_state)
-    conn.baremetal.set_node_provision_state(node, 'provide')
-    res = conn.baremetal.wait_for_nodes_provision_state([node], 'available')
-    print('After:', res[0].provision_state)
+    print("Before:", node.provision_state)
+    conn.baremetal.set_node_provision_state(node, "provide")
+    res = conn.baremetal.wait_for_nodes_provision_state([node], "available")
+    print("After:", res[0].provision_state)

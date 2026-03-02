@@ -11,6 +11,7 @@
 # under the License.
 from unittest import mock
 
+from openstack.tests.unit import test_proxy_base
 from otcextensions.sdk.dms.v1 import _proxy
 from otcextensions.sdk.dms.v1 import az as _az
 from otcextensions.sdk.dms.v1 import group as _group
@@ -21,9 +22,7 @@ from otcextensions.sdk.dms.v1 import product as _product
 from otcextensions.sdk.dms.v1 import queue as _queue
 from otcextensions.sdk.dms.v1 import topic as _topic
 
-from openstack.tests.unit import test_proxy_base
-
-GROUP_ID = 'g-5ec247fd-d4a2-4d4f-9876-e4ff3280c461'
+GROUP_ID = "g-5ec247fd-d4a2-4d4f-9876-e4ff3280c461"
 
 
 class TestDMSProxy(test_proxy_base.TestProxyBase):
@@ -39,11 +38,7 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
 
     def test_queues(self):
         self.verify_list(
-            self.proxy.queues,
-            _queue.Queue,
-            expected_kwargs={
-                'paginated': False
-            }
+            self.proxy.queues, _queue.Queue, expected_kwargs={"paginated": False}
         )
 
     def test_queues_qp(self):
@@ -51,49 +46,34 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
             self.proxy.queues,
             _queue.Queue,
             method_kwargs={
-                'include_deadletter': True,
+                "include_deadletter": True,
             },
-            expected_kwargs={
-                'include_deadletter': True,
-                'paginated': False
-            }
+            expected_kwargs={"include_deadletter": True, "paginated": False},
         )
 
     def test_get_queue(self):
-        self.verify_get(
-            self.proxy.get_queue,
-            _queue.Queue
-        )
+        self.verify_get(self.proxy.get_queue, _queue.Queue)
 
     def test_delete_queue(self):
-        self.verify_delete(
-            self.proxy.delete_queue,
-            _queue.Queue,
-            False
-        )
+        self.verify_delete(self.proxy.delete_queue, _queue.Queue, False)
 
     def test_delete_queue_ignore(self):
-        self.verify_delete(
-            self.proxy.delete_queue,
-            _queue.Queue,
-            True
-        )
+        self.verify_delete(self.proxy.delete_queue, _queue.Queue, True)
 
     def test_create_group(self):
         self.verify_create(
             self.proxy.create_group,
             _group.Group,
-            method_kwargs={'queue': 'qip', 'name': 'grp'},
-            expected_kwargs={'queue_id': 'qip', 'name': 'grp'})
+            method_kwargs={"queue": "qip", "name": "grp"},
+            expected_kwargs={"queue_id": "qip", "name": "grp"},
+        )
 
     def test_groups(self):
         self.verify_list(
             self.proxy.groups,
             _group.Group,
-            method_kwargs={'queue': 'qid'},
-            expected_kwargs={
-                'queue_id': 'qid',
-                'paginated': False}
+            method_kwargs={"queue": "qid"},
+            expected_kwargs={"queue_id": "qid", "paginated": False},
         )
 
     def test_delete_group(self):
@@ -101,12 +81,9 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
             self.proxy.delete_group,
             _group.Group,
             False,
-            method_args=['QID', 'resource_or_id'],
-            expected_kwargs={
-                'ignore_missing': False,
-                'queue_id': 'QID'
-            },
-            expected_args=['resource_or_id']
+            method_args=["QID", "resource_or_id"],
+            expected_kwargs={"ignore_missing": False, "queue_id": "QID"},
+            expected_args=["resource_or_id"],
         )
 
     def test_delete_group_ignore(self):
@@ -114,12 +91,9 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
             self.proxy.delete_group,
             _group.Group,
             ignore_missing=True,
-            method_args=['QID', 'resource_or_id'],
-            expected_kwargs={
-                'ignore_missing': True,
-                'queue_id': 'QID'
-            },
-            expected_args=['resource_or_id']
+            method_args=["QID", "resource_or_id"],
+            expected_kwargs={"ignore_missing": True, "queue_id": "QID"},
+            expected_args=["resource_or_id"],
         )
 
     ######
@@ -130,24 +104,24 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
             self.proxy.send_messages,
             _message.Messages,
             method_kwargs={
-                'queue': 'qid',
-                'messages': [{
-                    'body': 'b1',
-                    'attributes': {
-                        'attribute1': 'value1',
-                        'attribute2': 'value2'}
-                }]
+                "queue": "qid",
+                "messages": [
+                    {
+                        "body": "b1",
+                        "attributes": {"attribute1": "value1", "attribute2": "value2"},
+                    }
+                ],
             },
             expected_kwargs={
-                'queue_id': 'qid',
-                'messages': [{
-                    'body': 'b1',
-                    'attributes': {
-                        'attribute1': 'value1',
-                        'attribute2': 'value2'}
-                }],
-                'return_id': False
-            }
+                "queue_id": "qid",
+                "messages": [
+                    {
+                        "body": "b1",
+                        "attributes": {"attribute1": "value1", "attribute2": "value2"},
+                    }
+                ],
+                "return_id": False,
+            },
         )
 
     def test_send_messages_msg(self):
@@ -155,66 +129,49 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
             self.proxy.send_messages,
             _message.Messages,
             method_kwargs={
-                'queue': 'qid',
-                'messages': [
+                "queue": "qid",
+                "messages": [
                     _message.Message(
-                        body='b1',
-                        attributes={
-                            'attribute1': 'value1',
-                            'attribute2': 'value2'}
+                        body="b1",
+                        attributes={"attribute1": "value1", "attribute2": "value2"},
                     )
-                ]
+                ],
             },
             expected_kwargs={
-                'queue_id': 'qid',
-                'messages': [{
-                    'body': 'b1',
-                    'attributes': {
-                        'attribute1': 'value1',
-                        'attribute2': 'value2'}
-                }],
-                'return_id': False
-            }
+                "queue_id": "qid",
+                "messages": [
+                    {
+                        "body": "b1",
+                        "attributes": {"attribute1": "value1", "attribute2": "value2"},
+                    }
+                ],
+                "return_id": False,
+            },
         )
 
     def test_send_message(self):
-        value = _message.Message(id='1')
+        value = _message.Message(id="1")
         self._verify(
-            'openstack.proxy.Proxy._create',
+            "openstack.proxy.Proxy._create",
             self.proxy.send_message,
-            method_kwargs={
-                'queue': 'qid',
-                'body': 'b1',
-                'attributes': {
-                    'p1': 'v1'
-                }
-            },
+            method_kwargs={"queue": "qid", "body": "b1", "attributes": {"p1": "v1"}},
             expected_kwargs={
-                'queue_id': 'qid',
-                'messages': [
-                    {'attributes': {'p1': 'v1'}, 'body': 'b1'}
-                ],
-                'return_id': True
+                "queue_id": "qid",
+                "messages": [{"attributes": {"p1": "v1"}, "body": "b1"}],
+                "return_id": True,
             },
             method_result=value,
-            expected_result=_message.Messages(
-                messages=[value]),
-            expected_args=[_message.Messages]
+            expected_result=_message.Messages(messages=[value]),
+            expected_args=[_message.Messages],
         )
 
     def test_consume_message(self):
         self.verify_list(
             self.proxy.consume_message,
             _message.Message,
-            method_kwargs={
-                'queue': 'qid',
-                'group': 'gid'
-            },
-            expected_kwargs={
-                'queue_id': 'qid',
-                'group_id': 'gid'
-            },
-            base_path='/queues/%(queue_id)s/groups/%(group_id)s/messages'
+            method_kwargs={"queue": "qid", "group": "gid"},
+            expected_kwargs={"queue_id": "qid", "group_id": "gid"},
+            base_path="/queues/%(queue_id)s/groups/%(group_id)s/messages",
         )
 
     def test_ack_consumed_message(self):
@@ -229,16 +186,11 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
         self.verify_list(
             self.proxy.instances,
             _instance.Instance,
-            expected_kwargs={
-                'paginated': False
-            }
+            expected_kwargs={"paginated": False},
         )
 
     def test_create_instance(self):
-        self.verify_create(
-            self.proxy.create_instance,
-            _instance.Instance
-        )
+        self.verify_create(self.proxy.create_instance, _instance.Instance)
 
     def test_delete_instance(self):
         self.verify_delete(
@@ -255,89 +207,78 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
         )
 
     def test_find_instance(self):
-        self.verify_find(
-            self.proxy.find_instance,
-            _instance.Instance
-        )
+        self.verify_find(self.proxy.find_instance, _instance.Instance)
 
     def test_get_instance(self):
-        self.verify_get(
-            self.proxy.get_instance,
-            _instance.Instance
-        )
+        self.verify_get(self.proxy.get_instance, _instance.Instance)
 
     def test_update_instance(self):
-        self.verify_update(
-            self.proxy.update_instance,
-            _instance.Instance
-        )
+        self.verify_update(self.proxy.update_instance, _instance.Instance)
 
     def test_restart_instance(self):
         self._verify(
-            'otcextensions.sdk.dms.v1.instance.Instance._action',
+            "otcextensions.sdk.dms.v1.instance.Instance._action",
             self.proxy.restart_instance,
-            method_args=['value'],
-            expected_args=[self.proxy, 'restart', ['value']]
+            method_args=["value"],
+            expected_args=[self.proxy, "restart", ["value"]],
         )
 
     def test_restart_instances(self):
         self._verify(
-            'otcextensions.sdk.dms.v1.instance.Instance._action',
+            "otcextensions.sdk.dms.v1.instance.Instance._action",
             self.proxy.restart_instances,
-            method_args=[['1', '2']],
-            expected_args=[self.proxy, 'restart', ['1', '2']]
+            method_args=[["1", "2"]],
+            expected_args=[self.proxy, "restart", ["1", "2"]],
         )
 
     def test_delete_failed(self):
         self._verify(
-            'otcextensions.sdk.dms.v1.instance.Instance.delete_failed',
+            "otcextensions.sdk.dms.v1.instance.Instance.delete_failed",
             self.proxy.delete_failed,
-            method_args=[]
+            method_args=[],
         )
 
     def test_delete_batch(self):
         self._verify(
-            'otcextensions.sdk.dms.v1.instance.Instance._action',
+            "otcextensions.sdk.dms.v1.instance.Instance._action",
             self.proxy.delete_batch,
-            method_args=[['1', '2']],
-            expected_args=[self.proxy, 'delete', ['1', '2']]
+            method_args=[["1", "2"]],
+            expected_args=[self.proxy, "delete", ["1", "2"]],
         )
 
     def test_create_topic(self):
         self.verify_create(
             self.proxy.create_topic,
             _topic.Topic,
-            method_args=['iid'],
-            expected_kwargs={'instance_id': 'iid', 'x': 1, 'y': 2, 'z': 3},
-            expected_args=[]
+            method_args=["iid"],
+            expected_kwargs={"instance_id": "iid", "x": 1, "y": 2, "z": 3},
+            expected_args=[],
         )
 
-    @mock.patch('otcextensions.sdk.dms.v1._proxy.Proxy.post')
+    @mock.patch("otcextensions.sdk.dms.v1._proxy.Proxy.post")
     def test_delete_topics(self, post_mock):
         response = mock.Mock()
         response.status_code = 200
         post_mock.return_value = response
-        self.proxy.delete_topic('instance', ['t1', 't2'])
+        self.proxy.delete_topic("instance", ["t1", "t2"])
 
         post_mock.assert_called_with(
-            '/instances/instance/topics/delete',
-            json={'topics': ['t1', 't2']})
+            "/instances/instance/topics/delete", json={"topics": ["t1", "t2"]}
+        )
 
-        self.proxy.delete_topic('instance', 't1')
+        self.proxy.delete_topic("instance", "t1")
 
         post_mock.assert_called_with(
-            '/instances/instance/topics/delete',
-            json={'topics': ['t1']})
+            "/instances/instance/topics/delete", json={"topics": ["t1"]}
+        )
 
     def test_topics(self):
         self.verify_list(
             self.proxy.topics,
             _topic.Topic,
-            method_args=['iid'],
-            expected_kwargs={
-                'instance_id': 'iid'
-            },
-            expected_args=[]
+            method_args=["iid"],
+            expected_kwargs={"instance_id": "iid"},
+            expected_args=[],
         )
 
     # Misc
@@ -348,13 +289,7 @@ class TestDMSProxy(test_proxy_base.TestProxyBase):
         )
 
     def test_products(self):
-        self.verify_list(
-            self.proxy.products,
-            _product.Product
-        )
+        self.verify_list(self.proxy.products, _product.Product)
 
     def test_mws(self):
-        self.verify_list(
-            self.proxy.maintenance_windows,
-            _mw.MaintenanceWindow
-        )
+        self.verify_list(self.proxy.maintenance_windows, _mw.MaintenanceWindow)

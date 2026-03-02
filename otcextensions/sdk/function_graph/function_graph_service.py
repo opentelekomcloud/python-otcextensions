@@ -11,13 +11,10 @@
 # under the License.
 
 from openstack import service_description
-
 from otcextensions.sdk.function_graph.v2 import _proxy
 
 
 class FunctionGraphService(service_description.ServiceDescription):
     """The FG service."""
 
-    supported_versions = {
-        '2': _proxy.Proxy
-    }
+    supported_versions = {"2": _proxy.Proxy}

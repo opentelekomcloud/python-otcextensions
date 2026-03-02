@@ -19,19 +19,19 @@ class TestFlavor(TestVlb):
         super(TestFlavor, self).setUp()
 
     def test_list_flavors(self):
-        flavor_name = 'L4_flavor.elb.s2.medium'
+        flavor_name = "L4_flavor.elb.s2.medium"
         flavors = list(self.client.flavors())
         self.assertGreaterEqual(len(flavors), 0)
         flavor = list(self.client.flavors(name=flavor_name))
         self.assertEqual(flavor[0].name, flavor_name)
 
     def test_get_flavor(self):
-        flavor_name = 'L4_flavor.elb.s2.medium'
+        flavor_name = "L4_flavor.elb.s2.medium"
         flavors = list(self.client.flavors(name=flavor_name))
         flavor = self.client.get_flavor(flavors[0])
         self.assertEqual(flavor.name, flavor_name)
 
     def test_find_flavor(self):
-        flavor_name = 'L4_flavor.elb.s2.medium'
+        flavor_name = "L4_flavor.elb.s2.medium"
         flavor = self.client.find_flavor(flavor_name)
         self.assertEqual(flavor.name, flavor_name)

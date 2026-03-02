@@ -13,10 +13,11 @@
 """
 Resume an Auto-Scaling Policy by id or an instance of class Policy
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 policy = "policy_name_or_id"

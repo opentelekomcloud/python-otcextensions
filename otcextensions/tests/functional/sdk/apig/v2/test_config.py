@@ -23,6 +23,7 @@ class TestConfig(TestApiG):
         self.assertGreater(len(configs), 0)
 
     def test_list_config_for_gateway(self):
-        configs = list(self.client.configs_for_gateway(
-            gateway_id=TestConfig.gateway_id))
+        configs = list(
+            self.client.configs_for_gateway(gateway_id=TestConfig.gateway_id)
+        )
         self.assertGreater(len(configs), 0)

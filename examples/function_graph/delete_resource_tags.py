@@ -13,19 +13,14 @@
 """
 Delete resource tags
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 conn.functiongraph.delete_resource_tags(
-    'func_urn',
-    tags=[
-        {
-            'key': 'testKey2',
-            'value': 'testValue2'
-        }
-    ]
+    "func_urn", tags=[{"key": "testKey2", "value": "testValue2"}]
 )

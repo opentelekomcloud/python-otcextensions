@@ -14,14 +14,9 @@ from unittest import mock
 from keystoneauth1 import adapter
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.dds.v3 import datastore
 
-
-EXAMPLE = {
-    "storage_engine": "wiredTiger",
-    "type": "DDS-Community",
-    "version": "3.2"}
+EXAMPLE = {"storage_engine": "wiredTiger", "type": "DDS-Community", "version": "3.2"}
 
 
 class TestDatastore(base.TestCase):
@@ -34,24 +29,21 @@ class TestDatastore(base.TestCase):
 
     def test_basic(self):
         sot = datastore.Datastore()
-        self.assertEqual(
-            '/datastores',
-            sot.base_path)
+        self.assertEqual("/datastores", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertFalse(sot.allow_fetch)
         self.assertFalse(sot.allow_create)
         self.assertFalse(sot.allow_delete)
         self.assertFalse(sot.allow_commit)
-        self.assertDictEqual({
-            'limit': 'limit',
-            'marker': 'marker'
-        }, sot._query_mapping._mapping)
+        self.assertDictEqual(
+            {"limit": "limit", "marker": "marker"}, sot._query_mapping._mapping
+        )
 
     def test_make_it(self):
         sot = datastore.Datastore(**EXAMPLE)
-        self.assertEqual(EXAMPLE['storage_engine'], sot.storage_engine)
-        self.assertEqual(EXAMPLE['type'], sot.type)
-        self.assertEqual(EXAMPLE['version'], sot.version)
+        self.assertEqual(EXAMPLE["storage_engine"], sot.storage_engine)
+        self.assertEqual(EXAMPLE["type"], sot.type)
+        self.assertEqual(EXAMPLE["version"], sot.version)
 
     def test_list(self):
         sot = datastore.Datastore()
@@ -60,19 +52,17 @@ class TestDatastore(base.TestCase):
         mock_response.json.return_value = {"versions": ["1", "2"]}
         self.sess.get.return_value = mock_response
 
-        datastore_name = 'foo'
+        datastore_name = "foo"
         res = list(sot.list(self.sess, datastore_name=datastore_name))
         self.sess.get.assert_called_with(
-            f'datastores/{datastore_name}/versions',
-            headers={'Accept': 'application/json'},
-            microversion=None
+            f"datastores/{datastore_name}/versions",
+            headers={"Accept": "application/json"},
+            microversion=None,
         )
         self.assertEqual(2, len(res))
         self.assertEqual(
             datastore.Datastore(
-                type=datastore_name,
-                storage_engine='wiredTiger',
-                version='1'
+                type=datastore_name, storage_engine="wiredTiger", version="1"
             ).to_dict(computed=False),
-            res[0].to_dict(computed=False)
+            res[0].to_dict(computed=False),
         )

@@ -9,13 +9,12 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import resource
 from openstack import _log
 from openstack import exceptions
-
+from openstack import resource
 from otcextensions.tests.functional import base
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestCleanup(base.BaseFunctionalTest):
@@ -28,29 +27,27 @@ class TestCleanup(base.BaseFunctionalTest):
         router = list(self.conn.network.routers())[0]
         security_group = list(self.conn.network.security_groups())[0]
         attrs = {
-            'name': 'dws-1',
-            'flavor': flavor['name'],
-            'num_nodes': 3,
-            'availability_zone': 'eu-de-01',
-            'router_id': router['id'],
-            'network_id': network['id'],
-            'security_group_id': security_group['id'],
-            'port': 8000,
-            'user_name': 'dbadmin',
-            'user_pwd': 'PasswordDbGauss!@',
-            'public_ip': {
-                'public_bind_type': 'auto_assign',
-                'eip_id': ''
-            }
+            "name": "dws-1",
+            "flavor": flavor["name"],
+            "num_nodes": 3,
+            "availability_zone": "eu-de-01",
+            "router_id": router["id"],
+            "network_id": network["id"],
+            "security_group_id": security_group["id"],
+            "port": 8000,
+            "user_name": "dbadmin",
+            "user_pwd": "PasswordDbGauss!@",
+            "public_ip": {"public_bind_type": "auto_assign", "eip_id": ""},
         }
         self.conn.dws.create_cluster(**attrs)
         try:
             resource.wait_for_status(
-                self.client, self.client.get_cluster(self.cluster.id),
+                self.client,
+                self.client.get_cluster(self.cluster.id),
                 "AVAILABLE",
                 ["CREATION FAILED", "UNAVAILABLE"],
                 10,
-                1200
+                1200,
             )
         except exceptions.ResourceFailure:
             self.client.delete_cluster(self.cluster.id)

@@ -11,17 +11,18 @@
 # under the License.
 #
 """Create VPC Endpoint."""
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 attrs = {
-    'network_id': 'network-uuid',
-    'router_id': 'router-uuid',
-    'tags': [{'key': 'test1', 'value': 'test1'}],
-    'endpoint_service_id': 'endpoint-service-uuid',
-    'enable_dns': True,
+    "network_id": "network-uuid",
+    "router_id": "router-uuid",
+    "tags": [{"key": "test1", "value": "test1"}],
+    "endpoint_service_id": "endpoint-service-uuid",
+    "enable_dns": True,
 }
 
 endpoint = conn.vpcep.create_endpoint(**attrs)

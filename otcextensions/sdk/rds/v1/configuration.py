@@ -13,10 +13,9 @@ from openstack import _log
 from openstack import exceptions
 from openstack import resource
 from openstack import utils
-
 from otcextensions.sdk import sdk_resource
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 # class InstanceConfiguration(sdk_resource.Resource):
@@ -73,9 +72,9 @@ _logger = _log.setup_logging('openstack')
 
 class ConfigurationGroup(sdk_resource.Resource):
 
-    base_path = '/%(project_id)s/configurations'
-    resource_key = 'configuration'
-    resources_key = 'configurations'
+    base_path = "/%(project_id)s/configurations"
+    resource_key = "configuration"
+    resources_key = "configurations"
 
     # capabilities
     allow_create = True
@@ -85,46 +84,46 @@ class ConfigurationGroup(sdk_resource.Resource):
     allow_list = True
 
     # Properties
-    project_id = resource.URI('project_id')
+    project_id = resource.URI("project_id")
     #: Id of the configuration group
     #: *Type:str*
-    id = resource.Body('id')
+    id = resource.Body("id")
     #: Name of the configuration group
     #: *Type:str*
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: Description of the configuration group
     #: *Type:str*
-    description = resource.Body('description')
+    description = resource.Body("description")
     #: Id of Datastore version
     #: *Type:str*
-    datastore_version_id = resource.Body('datastore_version_id')
+    datastore_version_id = resource.Body("datastore_version_id")
     #: name of Datastore version
     #: *Type:str*
-    datastore_version_name = resource.Body('datastore_version_name')
+    datastore_version_name = resource.Body("datastore_version_name")
     #: name of Datastore
     #: *Type:str*
-    datastore_name = resource.Body('datastore_name')
+    datastore_name = resource.Body("datastore_name")
     #: Date of created
     #: *Type:str*
-    created = resource.Body('created')
+    created = resource.Body("created")
     #: Date of updated
     #: *Type:str*
-    updated = resource.Body('updated')
+    updated = resource.Body("updated")
     # : Allow update or not, 0 for not allowed
     # : *Type:int*
     # allowed_updated = resource.Body('allowed_updated', type=int)
     #: Count of associated instance
     #: *Type:int*
-    instance_count = resource.Body('instance_count', type=int)
+    instance_count = resource.Body("instance_count", type=int)
     #: Params values
     #: *Type:dict*
-    values = resource.Body('values', type=dict)
+    values = resource.Body("values", type=dict)
     #: Parameter list
     #: *Type:dict*
-    parameters = resource.Body('parameters', type=list)
+    parameters = resource.Body("parameters", type=list)
     #: Datastore dict
     #: *Type:dict*
-    datastore = resource.Body('datastore', type=dict)
+    datastore = resource.Body("datastore", type=dict)
 
     def get_associated_instances(self, session, endpoint_override=None):
         """Get associated instancs
@@ -141,7 +140,7 @@ class ConfigurationGroup(sdk_resource.Resource):
         session = self._get_session(session)
 
         if not endpoint_override:
-            if getattr(self, 'endpoint_override', None):
+            if getattr(self, "endpoint_override", None):
                 # If we have internal endpoint_override - use it
                 endpoint_override = self.endpoint_override
 
@@ -149,20 +148,21 @@ class ConfigurationGroup(sdk_resource.Resource):
         args = self._prepare_override_args(
             endpoint_override=endpoint_override,
             request_headers=request.headers,
-            additional_headers={'Content-Type': 'application/json'}
+            additional_headers={"Content-Type": "application/json"},
         )
 
         # URL is a subpoin
-        url = utils.urljoin(request.url, 'instances')
+        url = utils.urljoin(request.url, "instances")
 
         resp = session.get(url, **args)
         resp = resp.json()
 
         if resp:
-            return resp['instances']
+            return resp["instances"]
 
-    def _translate_response(self, response, has_body=None, error_message=None,
-                            resource_response_key=None):
+    def _translate_response(
+        self, response, has_body=None, error_message=None, resource_response_key=None
+    ):
         """Given a KSA response, inflate this instance with its data
 
         'DELETE' operations don't return a body, so only try to work
@@ -177,21 +177,19 @@ class ConfigurationGroup(sdk_resource.Resource):
         if has_body:
             body = response.json()
 
-            errCode = body.get('errCode', None)
-            if errCode and errCode == 'RDS.0041':
+            errCode = body.get("errCode", None)
+            if errCode and errCode == "RDS.0041":
                 if self.resource_key and self.resource_key in body:
                     body = body[self.resource_key]
 
                 body = self._consume_body_attrs(body)
                 self._body.attributes.update(body)
                 self._body.clean()
-            elif errCode and errCode == 'RDS.0028':
-                raise exceptions.NotFoundException('Resource not found')
-            elif errCode and errCode != 'RDS.0041':
-                _logger.error('error during service invokation %s' % errCode)
-                raise exceptions.SDKException(
-                    body.get('externalMessage', body)
-                )
+            elif errCode and errCode == "RDS.0028":
+                raise exceptions.NotFoundException("Resource not found")
+            elif errCode and errCode != "RDS.0041":
+                _logger.error("error during service invokation %s" % errCode)
+                raise exceptions.SDKException(body.get("externalMessage", body))
             elif not errCode:
                 if self.resource_key and self.resource_key in body:
                     body = body[self.resource_key]

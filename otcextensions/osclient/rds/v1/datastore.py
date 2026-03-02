@@ -11,6 +11,7 @@
 #   under the License.
 #
 """Datastore v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -19,20 +20,18 @@ from osc_lib.command import command
 from otcextensions.common import sdk_utils
 from otcextensions.i18n import _
 
-
 LOG = logging.getLogger(__name__)
 
 
 def _get_columns(item):
-    column_map = {
-    }
+    column_map = {}
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
 class ListDatastores(command.Lister):
 
     _description = _("List available datastores")
-    columns = ['Name']
+    columns = ["Name"]
 
     def take_action(self, parsed_args):
         client = self.app.client_manager.rds
@@ -41,24 +40,27 @@ class ListDatastores(command.Lister):
 
         return (
             self.columns,
-            (utils.get_item_properties(
-                s,
-                self.columns,
-            ) for s in data)
+            (
+                utils.get_item_properties(
+                    s,
+                    self.columns,
+                )
+                for s in data
+            ),
         )
 
 
 class ShowDatastore(command.ShowOne):
 
     _description = _("Shows details of a datastore")
-    columns = ['Name']
+    columns = ["Name"]
 
     def get_parser(self, prog_name):
         parser = super(ShowDatastore, self).get_parser(prog_name)
         parser.add_argument(
-            'datastore',
-            metavar='<datastore>',
-            help=_('ID of the datastore'),
+            "datastore",
+            metavar="<datastore>",
+            help=_("ID of the datastore"),
         )
         return parser
 
@@ -72,22 +74,19 @@ class ShowDatastore(command.ShowOne):
             if ds.name == parsed_args.datastore:
                 datastore = ds
 
-        return (
-            self.columns,
-            utils.get_item_properties(datastore, self.columns)
-        )
+        return (self.columns, utils.get_item_properties(datastore, self.columns))
 
 
 class ListDatastoreVersions(command.Lister):
     _description = _("Lists available versions for a datastore")
-    columns = ['ID', 'Name']
+    columns = ["ID", "Name"]
 
     def get_parser(self, prog_name):
         parser = super(ListDatastoreVersions, self).get_parser(prog_name)
         parser.add_argument(
-            'datastore',
-            metavar='<datastore>',
-            help=_('Name of the datastore'),
+            "datastore",
+            metavar="<datastore>",
+            help=_("Name of the datastore"),
         )
         return parser
 
@@ -98,31 +97,43 @@ class ListDatastoreVersions(command.Lister):
 
         return (
             self.columns,
-            (utils.get_item_properties(
-                s,
-                self.columns,
-            ) for s in data)
+            (
+                utils.get_item_properties(
+                    s,
+                    self.columns,
+                )
+                for s in data
+            ),
         )
 
 
 class ShowDatastoreVersion(command.ShowOne):
     _description = _("Shows details of a datastore version.")
-    columns = ['Active', 'Datastore', 'ID', 'Image', 'Name', 'Packages', ]
+    columns = [
+        "Active",
+        "Datastore",
+        "ID",
+        "Image",
+        "Name",
+        "Packages",
+    ]
 
     def get_parser(self, prog_name):
         parser = super(ShowDatastoreVersion, self).get_parser(prog_name)
         parser.add_argument(
-            'datastore_version',
-            metavar='<datastore_version>',
-            help=_('ID or name of the datastore version.'),
+            "datastore_version",
+            metavar="<datastore_version>",
+            help=_("ID or name of the datastore version."),
         )
         parser.add_argument(
-            '--datastore',
-            metavar='<datastore>',
+            "--datastore",
+            metavar="<datastore>",
             default=None,
             required=True,
-            help=_('ID or name of the datastore. Optional if the ID of'
-                   'the datastore_version is provided.'),
+            help=_(
+                "ID or name of the datastore. Optional if the ID of"
+                "the datastore_version is provided."
+            ),
         )
         return parser
 
@@ -131,7 +142,7 @@ class ShowDatastoreVersion(command.ShowOne):
 
         obj = client.get_datastore_version(
             datastore=parsed_args.datastore,
-            datastore_version=parsed_args.datastore_version
+            datastore_version=parsed_args.datastore_version,
         )
 
         # display_columns, columns = _get_columns(obj)

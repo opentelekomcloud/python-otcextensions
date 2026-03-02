@@ -13,15 +13,16 @@
 """
 Update Cloud Trace Service Key Event
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 attrs = {
     "notification_name": "test_1",
     "operation_type": "complete",
     "status": "disabled",
-    "notification_id": 'notification_id'
+    "notification_id": "notification_id",
 }
 event = conn.ctsv3.update_key_event(**attrs)

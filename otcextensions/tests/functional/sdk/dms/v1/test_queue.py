@@ -11,22 +11,19 @@
 # under the License.
 from openstack import _log
 from openstack import exceptions
-
 from otcextensions.tests.functional import base
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestQueue(base.BaseFunctionalTest):
-    QUEUE_ALIAS = 'sdk_test_queue'
+    QUEUE_ALIAS = "sdk_test_queue"
     queues = []
 
     def setUp(self):
         super(TestQueue, self).setUp()
         try:
-            self.queue = self.conn.dms.create_queue(
-                name=TestQueue.QUEUE_ALIAS
-            )
+            self.queue = self.conn.dms.create_queue(name=TestQueue.QUEUE_ALIAS)
         except exceptions.DuplicateResource:
             self.queue = self.conn.dms.find_queue(alias=TestQueue.QUEUE_ALIAS)
 
@@ -38,8 +35,7 @@ class TestQueue(base.BaseFunctionalTest):
                 if queue.id:
                     self.conn.dms.delete_queue(queue)
         except exceptions.SDKException as e:
-            _logger.warning('Got exception during clearing resources %s'
-                            % e.message)
+            _logger.warning("Got exception during clearing resources %s" % e.message)
         super(TestQueue, self).tearDown()
 
     def test_list(self):

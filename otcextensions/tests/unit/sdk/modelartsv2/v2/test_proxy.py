@@ -291,10 +291,7 @@ class TestDatasetStatistics(TestModelartsV2Proxy):
             dataset_statistics.DatasetStatistics,
             method_args=[],
             method_kwargs={"dataset": "dataset-id"},
-            expected_kwargs={
-                "uri_dataset_id": "dataset-id",
-                "requires_id": False
-            },
+            expected_kwargs={"uri_dataset_id": "dataset-id", "requires_id": False},
         )
 
 

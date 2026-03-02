@@ -11,6 +11,7 @@
 #   under the License.
 #
 """ModelArts Service Update Logs v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
@@ -57,9 +58,7 @@ class ServiceLogs(command.Lister):
         if parsed_args.update_time:
             query_params["update_time"] = parsed_args.update_time
 
-        service = client.find_service(
-            parsed_args.service, ignore_missing=False
-        )
+        service = client.find_service(parsed_args.service, ignore_missing=False)
         data = client.service_logs(service.id, **query_params)
 
         formatters = {
@@ -70,9 +69,7 @@ class ServiceLogs(command.Lister):
         return (
             self.columns,
             (
-                utils.get_item_properties(
-                    s, self.columns, formatters=formatters
-                )
+                utils.get_item_properties(s, self.columns, formatters=formatters)
                 for s in data
             ),
         )

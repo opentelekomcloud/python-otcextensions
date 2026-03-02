@@ -13,7 +13,6 @@ from urllib import parse
 
 from openstack import proxy
 from openstack import resource
-
 from otcextensions.sdk.cce.v3 import cluster as _cluster
 from otcextensions.sdk.cce.v3 import cluster_cert as _cluster_cert
 from otcextensions.sdk.cce.v3 import cluster_node as _cluster_node
@@ -29,31 +28,27 @@ class Proxy(proxy.Proxy):
         url_path = parse.urlparse(url).path.strip()
         # Remove / from the beginning to keep the list indexes of interesting
         # things consistent
-        if url_path.startswith('/'):
+        if url_path.startswith("/"):
             url_path = url_path[1:]
 
         # Split url into parts and exclude potential project_id in some urls
         url_parts = [
-            x for x in url_path.split('/') if (
-                x != project_id
-                and (
-                    not project_id
-                    or (project_id and x != project_id)
-                ))
+            x
+            for x in url_path.split("/")
+            if (
+                x != project_id and (not project_id or (project_id and x != project_id))
+            )
         ]
         # Strip leading version piece so that
         # GET /api/v3/projects/xxx
         # returns []
-        if (
-            len(url_parts) >= 3
-            and url_parts[0] == 'api' and url_parts[2] == 'projects'
-        ):
+        if len(url_parts) >= 3 and url_parts[0] == "api" and url_parts[2] == "projects":
             url_parts = url_parts[3:]
 
         name_parts = self._extract_name_consume_url_parts(url_parts)
 
         if not name_parts:
-            name_parts = ['discovery']
+            name_parts = ["discovery"]
 
         # Strip out anything that's empty or None
         return [part for part in name_parts if part]
@@ -77,7 +72,8 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.cce.v3.cluster.Cluster`
         """
         return self._get(
-            _cluster.Cluster, cluster,
+            _cluster.Cluster,
+            cluster,
         )
 
     def create_cluster(self, **attrs):
@@ -90,9 +86,7 @@ class Proxy(proxy.Proxy):
         :returns: The results of cluster creation
         :rtype: :class:`~otcextensions.sdk.cce.v3.cluster.Cluster`
         """
-        return self._create(
-            _cluster.Cluster, prepend_key=False, **attrs
-        )
+        return self._create(_cluster.Cluster, prepend_key=False, **attrs)
 
     def find_cluster(self, name_or_id, ignore_missing=True):
         """Find a single cluster.
@@ -107,7 +101,8 @@ class Proxy(proxy.Proxy):
         :returns: ``None``
         """
         return self._find(
-            _cluster.Cluster, name_or_id,
+            _cluster.Cluster,
+            name_or_id,
             ignore_missing=ignore_missing,
         )
 
@@ -124,7 +119,9 @@ class Proxy(proxy.Proxy):
             delete a nonexistent cluster.
         """
         return self._delete(
-            _cluster.Cluster, cluster, ignore_missing=ignore_missing,
+            _cluster.Cluster,
+            cluster,
+            ignore_missing=ignore_missing,
         )
 
     def get_cluster_certificates(self, cluster):
@@ -138,12 +135,12 @@ class Proxy(proxy.Proxy):
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return self._get(
-            _cluster_cert.ClusterCertificate, cluster_id=cluster.id,
-            requires_id=False
+            _cluster_cert.ClusterCertificate, cluster_id=cluster.id, requires_id=False
         )
 
-    def wait_for_cluster(self, cluster, status='Available', failures=None,
-                         interval=2, wait=960):
+    def wait_for_cluster(
+        self, cluster, status="Available", failures=None, interval=2, wait=960
+    ):
         """Wait for a server to be in a particular status.
 
         :param cluster:
@@ -165,10 +162,10 @@ class Proxy(proxy.Proxy):
         :raises: :class:`~openstack.exceptions.ResourceFailure` if the resource
                  has transited to one of the failure statuses.
         """
-        failures = ['ERROR'] if failures is None else failures
+        failures = ["ERROR"] if failures is None else failures
         return resource.wait_for_status(
-            self, cluster, status, failures, interval, wait,
-            attribute='status.status')
+            self, cluster, status, failures, interval, wait, attribute="status.status"
+        )
 
     # ======== Cluster Nodes ========
     def cluster_nodes(self, cluster):
@@ -184,8 +181,7 @@ class Proxy(proxy.Proxy):
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
         return self._list(
-            _cluster_node.ClusterNode, cluster_id=cluster.id,
-            paginated=False
+            _cluster_node.ClusterNode, cluster_id=cluster.id, paginated=False
         )
 
     def get_cluster_node(self, cluster, node_id):
@@ -258,11 +254,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.cce.v3.cluster_node.ClusterNode`
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
-        return self._create(
-            _cluster_node.ClusterNode,
-            cluster_id=cluster.id,
-            **attrs
-        )
+        return self._create(_cluster_node.ClusterNode, cluster_id=cluster.id, **attrs)
 
     # ======== Node Pools ========
     def node_pools(self, cluster):
@@ -277,10 +269,7 @@ class Proxy(proxy.Proxy):
             instances
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
-        return self._list(
-            _node_pool.NodePool, cluster_id=cluster.id,
-            paginated=False
-        )
+        return self._list(_node_pool.NodePool, cluster_id=cluster.id, paginated=False)
 
     def get_node_pool(self, cluster, node_pool_id):
         """Get the CCE node pool by it's UUID.
@@ -352,11 +341,7 @@ class Proxy(proxy.Proxy):
         :rtype: :class:`~otcextensions.sdk.cce.v3.node_pool.NodePool`
         """
         cluster = self._get_resource(_cluster.Cluster, cluster)
-        return self._create(
-            _node_pool.NodePool,
-            cluster_id=cluster.id,
-            **attrs
-        )
+        return self._create(_node_pool.NodePool, cluster_id=cluster.id, **attrs)
 
     # ======== Job Operations ========
     def get_job(self, job):
@@ -369,31 +354,37 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.cce.v3.job.Job`
         """
         return self._get(
-            _job.Job, job,
+            _job.Job,
+            job,
         )
 
-    def wait_for_job(self, job_id, status='success',
-                     failures=None, interval=5, wait=3600,
-                     attribute='status.status'):
-        failures = ['FAILED'] if failures is None else failures
+    def wait_for_job(
+        self,
+        job_id,
+        status="success",
+        failures=None,
+        interval=5,
+        wait=3600,
+        attribute="status.status",
+    ):
+        failures = ["FAILED"] if failures is None else failures
         job = self.get_job(job_id)
         return resource.wait_for_status(
-            self, job, status, failures, interval, wait,
-            attribute='status.status')
+            self, job, status, failures, interval, wait, attribute="status.status"
+        )
 
     # ======== Project cleanup ========
     def _get_cleanup_dependencies(self):
-        return {
-            'cce': {
-                'before': ['compute', 'network']
-            }
-        }
+        return {"cce": {"before": ["compute", "network"]}}
 
     def _service_cleanup(
-        self, dry_run=True, client_status_queue=None,
+        self,
+        dry_run=True,
+        client_status_queue=None,
         identified_resources=None,
-        filters=None, resource_evaluation_fn=None,
-        skip_resources=None
+        filters=None,
+        resource_evaluation_fn=None,
+        skip_resources=None,
     ):
         for obj in self.clusters():
             self._service_cleanup_del_res(
@@ -403,4 +394,5 @@ class Proxy(proxy.Proxy):
                 client_status_queue=client_status_queue,
                 identified_resources=identified_resources,
                 filters=filters,
-                resource_evaluation_fn=resource_evaluation_fn)
+                resource_evaluation_fn=resource_evaluation_fn,
+            )

@@ -13,16 +13,15 @@
 """
 Create the AppCode
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 attrs = {
     "app_code": "GjOD3g80AABuuFeEJpVQADBlAjBh3UzC7W+gr4V"
-                "JBB5BtJ4fdVOQoSvoji3gFxUDb5pWBz9wUcw9+8"
-                "/bFZ1B/4pq29wCMQC0pQWX6zTndljDEl99As1pw+"
-                "WntAU9xcq+ffagoH6zDpKUvdxV6Ezj8LcCcPZN6BU="
+    "JBB5BtJ4fdVOQoSvoji3gFxUDb5pWBz9wUcw9+8"
+    "/bFZ1B/4pq29wCMQC0pQWX6zTndljDEl99As1pw+"
+    "WntAU9xcq+ffagoH6zDpKUvdxV6Ezj8LcCcPZN6BU="
 }
-created = conn.apig.create_app_code(gateway='gateway_id',
-                                    app='app_id',
-                                    **attrs)
+created = conn.apig.create_app_code(gateway="gateway_id", app="app_id", **attrs)

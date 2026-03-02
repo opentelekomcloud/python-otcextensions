@@ -13,17 +13,15 @@
 """
 Batch delete tags from a specified DWS cluster.
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-cluster_id = 'cluster-uuid'
-tags_to_delete = [
-    {'key': 'key1'},
-    {'key': 'key2'}
-]
+cluster_id = "cluster-uuid"
+tags_to_delete = [{"key": "key1"}, {"key": "key2"}]
 
 conn.dws.batch_delete_cluster_tags(cluster_id, tags_to_delete)

@@ -15,12 +15,10 @@ from openstack import utils
 
 class Resource(resource.Resource):
 
-    query_marker_key = 'start_number'
+    query_marker_key = "start_number"
 
     _query_mapping = resource.QueryParameters(
-        'marker', 'limit',
-        marker='start_number',
-        limit='limit'
+        "marker", "limit", marker="start_number", limit="limit"
     )
 
     @classmethod
@@ -28,10 +26,10 @@ class Resource(resource.Resource):
         # AS service pagination. Returns query for the next page
         next_link = None
         params = {}
-        if total_yielded < data['total_number']:
+        if total_yielded < data["total_number"]:
             next_link = uri
-            params['marker'] = total_yielded
-            params['limit'] = limit
+            params["marker"] = total_yielded
+            params["limit"] = limit
         else:
             next_link = None
         query_params = cls._query_mapping._transpose(params, cls)
@@ -41,7 +39,7 @@ class Resource(resource.Resource):
     def find_value_by_accessor(input_dict, accessor):
         """Gets value from a dictionary using a dotted accessor"""
         current_data = input_dict
-        for chunk in accessor.split('.'):
+        for chunk in accessor.split("."):
             if isinstance(current_data, dict):
                 current_data = current_data.get(chunk, {})
             else:
@@ -49,26 +47,34 @@ class Resource(resource.Resource):
         return current_data
 
     def _action(self, session, body):
-        """Preform alarm actions given the message body.
-
-        """
+        """Preform alarm actions given the message body."""
         # if getattr(self, 'endpoint_override', None):
         #     # If we have internal endpoint_override - use it
         #     endpoint_override = self.endpoint_override
-        url = utils.urljoin(self.base_path, self.id, 'action')
+        url = utils.urljoin(self.base_path, self.id, "action")
         return session.post(
             url,
             # endpoint_override=endpoint_override,
-            json=body)
+            json=body,
+        )
 
-    def commit(self, session, prepend_key=False, has_body=True,
-               retry_on_conflict=None, base_path=None):
-        return \
-            super(Resource, self).commit(session, prepend_key=prepend_key,
-                                         has_body=has_body,
-                                         retry_on_conflict=retry_on_conflict,
-                                         base_path=base_path)
+    def commit(
+        self,
+        session,
+        prepend_key=False,
+        has_body=True,
+        retry_on_conflict=None,
+        base_path=None,
+    ):
+        return super(Resource, self).commit(
+            session,
+            prepend_key=prepend_key,
+            has_body=has_body,
+            retry_on_conflict=retry_on_conflict,
+            base_path=base_path,
+        )
 
     def create(self, session, prepend_key=False, base_path=None, **params):
-        return super(Resource, self).create(session, prepend_key=prepend_key,
-                                            base_path=base_path, **params)
+        return super(Resource, self).create(
+            session, prepend_key=prepend_key, base_path=base_path, **params
+        )

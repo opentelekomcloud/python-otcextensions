@@ -36,8 +36,7 @@ class TestCertificate(TestVlb):
 
     def test_04_update_certificate(self):
         cert_updated = self.client.update_certificate(
-            TestVlb.certificate,
-            name=TestVlb.certificate.name + "_2_cp"
+            TestVlb.certificate, name=TestVlb.certificate.name + "_2_cp"
         )
         self.assertEqual(TestVlb.certificate.name, cert_updated.name)
 

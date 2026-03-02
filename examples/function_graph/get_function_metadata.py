@@ -13,11 +13,12 @@
 """
 Get function metadata
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-meta = conn.functiongraph.get_function_metadata(function='func_urn')
+meta = conn.functiongraph.get_function_metadata(function="func_urn")

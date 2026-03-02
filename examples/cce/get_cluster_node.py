@@ -13,10 +13,11 @@
 """
 Get a CCE cluster node by id or class ClusterNode
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 cluster = "cluster_name_or_id"

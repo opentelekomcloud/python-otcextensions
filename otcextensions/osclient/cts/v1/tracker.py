@@ -10,37 +10,36 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-'''CTS Tracker v1 action implementations'''
+"""CTS Tracker v1 action implementations"""
+
 import logging
 
 from osc_lib import utils
 from osc_lib.command import command
 
 from otcextensions.common import sdk_utils
-
 from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
-OPERATION_VALUES = ['create', 'delete', 'login']
+OPERATION_VALUES = ["create", "delete", "login"]
 
 
 def _get_columns(item):
-    column_map = {
-    }
+    column_map = {}
     return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map)
 
 
 class ShowTracker(command.ShowOne):
-    _description = _('Show details of a CTS tracker')
+    _description = _("Show details of a CTS tracker")
 
     def get_parser(self, prog_name):
         parser = super(ShowTracker, self).get_parser(prog_name)
         parser.add_argument(
-            'tracker',
-            metavar='<tracker>',
-            default='system',
-            help=_('Tracker name (currently only `system`)')
+            "tracker",
+            metavar="<tracker>",
+            default="system",
+            help=_("Tracker name (currently only `system`)"),
         )
         return parser
 
@@ -58,15 +57,15 @@ class ShowTracker(command.ShowOne):
 
 
 class DeleteTracker(command.Command):
-    _description = _('Delete CTS Tracker')
+    _description = _("Delete CTS Tracker")
 
     def get_parser(self, prog_name):
         parser = super(DeleteTracker, self).get_parser(prog_name)
         parser.add_argument(
-            'tracker',
-            metavar='<tracker>',
-            nargs='+',
-            help=_('Name or ID of the tracker to delete.')
+            "tracker",
+            metavar="<tracker>",
+            nargs="+",
+            help=_("Name or ID of the tracker to delete."),
         )
         return parser
 
@@ -79,73 +78,87 @@ class DeleteTracker(command.Command):
 
 
 class CreateTracker(command.ShowOne):
-    _description = _('Create a single CTS tracker')
+    _description = _("Create a single CTS tracker")
 
     def get_parser(self, prog_name):
         parser = super(CreateTracker, self).get_parser(prog_name)
         parser.add_argument(
-            '--bucket_name',
-            metavar='<bucket>',
+            "--bucket_name",
+            metavar="<bucket>",
             required=True,
-            help=_('Specifies the OBS bucket name. The value is a string of '
-                   '0 to 64 characters and can contain uppercase and '
-                   'lowercase letters (a to z and A to Z), digits (0 to '
-                   '9), hyphens (-), underscores (_), and periods (.). '
-                   'In addition, it must start and end with a letter.')
+            help=_(
+                "Specifies the OBS bucket name. The value is a string of "
+                "0 to 64 characters and can contain uppercase and "
+                "lowercase letters (a to z and A to Z), digits (0 to "
+                "9), hyphens (-), underscores (_), and periods (.). "
+                "In addition, it must start and end with a letter."
+            ),
         )
         parser.add_argument(
-            '--file_prefix_name',
-            metavar='<file_prefix_name>',
-            help=_('Specifies the prefix of a log that needs to be stored '
-                   'in an OBS  bucket. The value is a string of 0 to 64 '
-                   'characters and can contain uppercase and lowercase '
-                   'letters (a to z and A to Z), digits (0 to 9), '
-                   'hyphens (-), underscores (_), and periods (.)')
+            "--file_prefix_name",
+            metavar="<file_prefix_name>",
+            help=_(
+                "Specifies the prefix of a log that needs to be stored "
+                "in an OBS  bucket. The value is a string of 0 to 64 "
+                "characters and can contain uppercase and lowercase "
+                "letters (a to z and A to Z), digits (0 to 9), "
+                "hyphens (-), underscores (_), and periods (.)"
+            ),
         )
         parser.add_argument(
-            '--enable_smn',
-            action='store_true',
-            help=_('Specifies whether SMN is supported. When the value is '
-                   '`false`, `topic_id` and `operations` can be left empty.')
+            "--enable_smn",
+            action="store_true",
+            help=_(
+                "Specifies whether SMN is supported. When the value is "
+                "`false`, `topic_id` and `operations` can be left empty."
+            ),
         )
         parser.add_argument(
-            '--topic_id',
-            metavar='<topic>',
-            help=_('topic_id is obtained from SMN and in the format of '
-                   'urn:smn: ([A-Za-z0-9-]){1,32}:'
-                   '([A-Za-z0-9]){32}:'
-                   '([A-Za-z0-9]|[_\\-]){1,256}.')
+            "--topic_id",
+            metavar="<topic>",
+            help=_(
+                "topic_id is obtained from SMN and in the format of "
+                "urn:smn: ([A-Za-z0-9-]){1,32}:"
+                "([A-Za-z0-9]){32}:"
+                "([A-Za-z0-9]|[_\\-]){1,256}."
+            ),
         )
         parser.add_argument(
-            '--operation',
-            metavar='{' + ','.join(OPERATION_VALUES) + '}',
+            "--operation",
+            metavar="{" + ",".join(OPERATION_VALUES) + "}",
             type=lambda s: s.lower(),
             choices=OPERATION_VALUES,
-            action='append',
-            help=_('Specifies trigger conditions for sending a notification '
-                   'when Typical is selected. You can select `Delete`, '
-                   '`Create`, or `Login` or all of them via repetition. '
-                   'Specifies trigger conditions for sending a notification '
-                   'when `--send_all_key` is selected. All conditions '
-                   'including `Delete`, `Create`, `Change`, and `OpenStack '
-                   'API Event` are selected by default. '
-                   'Modification is not allowed.')
+            action="append",
+            help=_(
+                "Specifies trigger conditions for sending a notification "
+                "when Typical is selected. You can select `Delete`, "
+                "`Create`, or `Login` or all of them via repetition. "
+                "Specifies trigger conditions for sending a notification "
+                "when `--send_all_key` is selected. All conditions "
+                "including `Delete`, `Create`, `Change`, and `OpenStack "
+                "API Event` are selected by default. "
+                "Modification is not allowed."
+            ),
         )
         parser.add_argument(
-            '--send_all_key',
-            action='store_true',
-            help=_('You can select Typical or All for Trigger Condition.\n'
-                   'When the value is `false`, `operations` cannot be left '
-                   'empty. When the value is `true`, operations is not '
-                   'supported.')
+            "--send_all_key",
+            action="store_true",
+            help=_(
+                "You can select Typical or All for Trigger Condition.\n"
+                "When the value is `false`, `operations` cannot be left "
+                "empty. When the value is `true`, operations is not "
+                "supported."
+            ),
         )
         parser.add_argument(
-            '--notify_user',
-            metavar='<user>',
-            action='append',
-            help=_('In Typical scenario, you can specify the users using the '
-                   'login function. When these users log in, notifications '
-                   'will be sent.')
+            "--notify_user",
+            metavar="<user>",
+            action="append",
+            help=_(
+                "In Typical scenario, you can specify the users using the "
+                "login function. When these users log in, notifications "
+                "will be sent."
+            ),
         )
         return parser
 
@@ -156,21 +169,21 @@ class CreateTracker(command.ShowOne):
         attrs = {}
 
         if parsed_args.bucket_name:
-            attrs['bucket_name'] = parsed_args.bucket_name
+            attrs["bucket_name"] = parsed_args.bucket_name
         if parsed_args.file_prefix_name:
-            attrs['file_prefix_name'] = parsed_args.file_prefix_name
-        smn = {'enable': False}
+            attrs["file_prefix_name"] = parsed_args.file_prefix_name
+        smn = {"enable": False}
         if parsed_args.enable_smn:
-            smn['enable'] = True
+            smn["enable"] = True
             if parsed_args.topic_id:
-                smn['topic_id'] = parsed_args.topic_id
+                smn["topic_id"] = parsed_args.topic_id
             if parsed_args.send_all_key:
-                smn['topic_id'] = parsed_args.topic_id
+                smn["topic_id"] = parsed_args.topic_id
             if parsed_args.operation:
-                smn['operations'] = parsed_args.operation
+                smn["operations"] = parsed_args.operation
             if parsed_args.notify_user:
-                smn['notify_users'] = parsed_args.notify_user
-        attrs['smn'] = smn
+                smn["notify_users"] = parsed_args.notify_user
+        attrs["smn"] = smn
 
         obj = client.create_tracker(**attrs)
 
@@ -181,90 +194,102 @@ class CreateTracker(command.ShowOne):
 
 
 class SetTracker(command.ShowOne):
-    _description = _('Update single CTS tracker properties')
+    _description = _("Update single CTS tracker properties")
 
     def get_parser(self, prog_name):
         parser = super(SetTracker, self).get_parser(prog_name)
         parser.add_argument(
-            'tracker',
-            metavar='<tracker>',
-            help=_('Specifies the name of the tracker. Currently only '
-                   '`system` is supported.')
+            "tracker",
+            metavar="<tracker>",
+            help=_(
+                "Specifies the name of the tracker. Currently only "
+                "`system` is supported."
+            ),
         )
         parser.add_argument(
-            '--bucket_name',
-            metavar='<bucket>',
+            "--bucket_name",
+            metavar="<bucket>",
             required=True,
-            help=_('Specifies the OBS bucket name. The value is a string of '
-                   '0 to 64 characters and can contain uppercase and '
-                   'lowercase letters (a to z and A to Z), digits (0 to '
-                   '9), hyphens (-), underscores (_), and periods (.). '
-                   'In addition, it must start and end with a letter.')
+            help=_(
+                "Specifies the OBS bucket name. The value is a string of "
+                "0 to 64 characters and can contain uppercase and "
+                "lowercase letters (a to z and A to Z), digits (0 to "
+                "9), hyphens (-), underscores (_), and periods (.). "
+                "In addition, it must start and end with a letter."
+            ),
         )
         parser.add_argument(
-            '--file_prefix_name',
-            metavar='<file_prefix_name>',
-            help=_('Specifies the prefix of a log that needs to be stored '
-                   'in an OBS  bucket. The value is a string of 0 to 64 '
-                   'characters and can contain uppercase and lowercase '
-                   'letters (a to z and A to Z), digits (0 to 9), '
-                   'hyphens (-), underscores (_), and periods (.)')
+            "--file_prefix_name",
+            metavar="<file_prefix_name>",
+            help=_(
+                "Specifies the prefix of a log that needs to be stored "
+                "in an OBS  bucket. The value is a string of 0 to 64 "
+                "characters and can contain uppercase and lowercase "
+                "letters (a to z and A to Z), digits (0 to 9), "
+                "hyphens (-), underscores (_), and periods (.)"
+            ),
         )
         parser.add_argument(
-            '--enable_smn',
-            action='store_true',
-            help=_('Specifies whether SMN is supported. When the value is '
-                   '`false`, `topic_id` and `operations` can be left empty.')
+            "--enable_smn",
+            action="store_true",
+            help=_(
+                "Specifies whether SMN is supported. When the value is "
+                "`false`, `topic_id` and `operations` can be left empty."
+            ),
         )
         parser.add_argument(
-            '--topic_id',
-            metavar='<topic>',
-            help=_('topic_id is obtained from SMN and in the format of '
-                   'urn:smn: ([A-Za-z0-9-]){1,32}:'
-                   '([A-Za-z0-9]){32}:'
-                   '([A-Za-z0-9]|[_\\-]){1,256}.')
+            "--topic_id",
+            metavar="<topic>",
+            help=_(
+                "topic_id is obtained from SMN and in the format of "
+                "urn:smn: ([A-Za-z0-9-]){1,32}:"
+                "([A-Za-z0-9]){32}:"
+                "([A-Za-z0-9]|[_\\-]){1,256}."
+            ),
         )
         parser.add_argument(
-            '--operation',
-            metavar='{' + ','.join(OPERATION_VALUES) + '}',
+            "--operation",
+            metavar="{" + ",".join(OPERATION_VALUES) + "}",
             type=lambda s: s.lower(),
             choices=OPERATION_VALUES,
-            action='append',
-            help=_('Specifies trigger conditions for sending a notification '
-                   'when Typical is selected. You can select `Delete`, '
-                   '`Create`, or `Login` or all of them via repetition. '
-                   'Specifies trigger conditions for sending a notification '
-                   'when `--send_all_key` is selected. All conditions '
-                   'including `Delete`, `Create`, `Change`, and `OpenStack '
-                   'API Event` are selected by default. '
-                   'Modification is not allowed.')
+            action="append",
+            help=_(
+                "Specifies trigger conditions for sending a notification "
+                "when Typical is selected. You can select `Delete`, "
+                "`Create`, or `Login` or all of them via repetition. "
+                "Specifies trigger conditions for sending a notification "
+                "when `--send_all_key` is selected. All conditions "
+                "including `Delete`, `Create`, `Change`, and `OpenStack "
+                "API Event` are selected by default. "
+                "Modification is not allowed."
+            ),
         )
         parser.add_argument(
-            '--send_all_key',
-            action='store_true',
-            help=_('You can select Typical or All for Trigger Condition.\n'
-                   'When the value is `false`, `operations` cannot be left '
-                   'empty. When the value is `true`, operations is not '
-                   'supported.')
+            "--send_all_key",
+            action="store_true",
+            help=_(
+                "You can select Typical or All for Trigger Condition.\n"
+                "When the value is `false`, `operations` cannot be left "
+                "empty. When the value is `true`, operations is not "
+                "supported."
+            ),
         )
         parser.add_argument(
-            '--notify_user',
-            metavar='<user>',
-            action='append',
-            help=_('In Typical scenario, you can specify the users using the '
-                   'login function. When these users log in, notifications '
-                   'will be sent.')
+            "--notify_user",
+            metavar="<user>",
+            action="append",
+            help=_(
+                "In Typical scenario, you can specify the users using the "
+                "login function. When these users log in, notifications "
+                "will be sent."
+            ),
         )
         group = parser.add_mutually_exclusive_group()
         group.add_argument(
-            '--enable',
-            action='store_true',
-            help=_('Enable tracing into the bucket')
+            "--enable", action="store_true", help=_("Enable tracing into the bucket")
         )
         group.add_argument(
-            '--disable',
-            action='store_true',
-            help=_('Disable tracing into the bucket')
+            "--disable", action="store_true", help=_("Disable tracing into the bucket")
         )
         return parser
 
@@ -275,25 +300,25 @@ class SetTracker(command.ShowOne):
         attrs = {}
 
         if parsed_args.bucket_name:
-            attrs['bucket_name'] = parsed_args.bucket_name
+            attrs["bucket_name"] = parsed_args.bucket_name
         if parsed_args.file_prefix_name:
-            attrs['file_prefix_name'] = parsed_args.file_prefix_name
+            attrs["file_prefix_name"] = parsed_args.file_prefix_name
         if parsed_args.enable:
-            attrs['status'] = 'enabled'
+            attrs["status"] = "enabled"
         elif parsed_args.disable:
-            attrs['status'] = 'disabled'
-        smn = {'enable': False}
+            attrs["status"] = "disabled"
+        smn = {"enable": False}
         if parsed_args.enable_smn:
-            smn['enable'] = True
+            smn["enable"] = True
             if parsed_args.topic_id:
-                smn['topic_id'] = parsed_args.topic_id
+                smn["topic_id"] = parsed_args.topic_id
             if parsed_args.send_all_key:
-                smn['topic_id'] = parsed_args.topic_id
+                smn["topic_id"] = parsed_args.topic_id
             if parsed_args.operation:
-                smn['operations'] = parsed_args.operation
+                smn["operations"] = parsed_args.operation
             if parsed_args.notify_user:
-                smn['notify_users'] = parsed_args.notify_user
-        attrs['smn'] = smn
+                smn["notify_users"] = parsed_args.notify_user
+        attrs["smn"] = smn
 
         obj = client.update_tracker(tracker=parsed_args.tracker, **attrs)
 

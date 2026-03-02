@@ -19,8 +19,8 @@ from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
-DEFAULT_API_VERSION = '1'
-API_VERSION_OPTION = 'os_css_api_version'
+DEFAULT_API_VERSION = "1"
+API_VERSION_OPTION = "os_css_api_version"
 API_NAME = "css"
 API_VERSIONS = {
     "1": "openstack.connection.Connection",
@@ -32,22 +32,21 @@ def make_client(instance):
 
     conn = instance.sdk_connection
 
-    if getattr(conn, 'css', None) is None:
-        LOG.debug('OTC extensions are not registered. Do that now')
+    if getattr(conn, "css", None) is None:
+        LOG.debug("OTC extensions are not registered. Do that now")
         sdk.register_otc_extensions(conn)
 
-    LOG.debug('CSS client initialized using OpenStack OTC SDK: %s',
-              conn.css)
+    LOG.debug("CSS client initialized using OpenStack OTC SDK: %s", conn.css)
     return conn.css
 
 
 def build_option_parser(parser):
     """Hook to add global options"""
     parser.add_argument(
-        '--os-css-api-version',
-        metavar='<css-api-version>',
-        default=utils.env('OS_CSS_API_VERSION'),
-        help=_("CSS API version, default=%s "
-               "(Env: OS_CSS_API_VERSION)") % DEFAULT_API_VERSION
+        "--os-css-api-version",
+        metavar="<css-api-version>",
+        default=utils.env("OS_CSS_API_VERSION"),
+        help=_("CSS API version, default=%s " "(Env: OS_CSS_API_VERSION)")
+        % DEFAULT_API_VERSION,
     )
     return parser

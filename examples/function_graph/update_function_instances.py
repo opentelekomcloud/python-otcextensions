@@ -13,11 +13,12 @@
 """
 Update function instances
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-instances = conn.functiongraph.update_max_instances('func_urn', 300)
+instances = conn.functiongraph.update_max_instances("func_urn", 300)

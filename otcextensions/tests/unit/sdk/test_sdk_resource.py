@@ -9,12 +9,10 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import mock
 from keystoneauth1 import adapter
 
-import mock
-
 from openstack.tests.unit import base
-
 from otcextensions.sdk import sdk_resource
 
 # Only a basic tests for extended functionality are implemented since
@@ -22,19 +20,19 @@ from otcextensions.sdk import sdk_resource
 # TODO(agoncharov) make sense to implement (copy) existing base_resource
 # tests from SDK
 
-PROJECT_ID = '123'
-IDENTIFIER = 'IDENTIFIER'
+PROJECT_ID = "123"
+IDENTIFIER = "IDENTIFIER"
 EXAMPLE = {
-    'id': IDENTIFIER,
-    'links': '1',
-    'name': '2',
-    'ram': 3,
+    "id": IDENTIFIER,
+    "links": "1",
+    "name": "2",
+    "ram": 3,
 }
 
 
 class Res(sdk_resource.Resource):
 
-    base_path = '/'
+    base_path = "/"
     allow_list = True
 
 
@@ -86,7 +84,7 @@ class TestBaseResource(base.TestCase):
 
         self.sess.get.return_value = mock_response
 
-        result = list(self.sot.list(self.sess, headers={'a': 'b'}))
+        result = list(self.sot.list(self.sess, headers={"a": "b"}))
 
         self.sess.get.assert_called_once_with(
             self.base_path,
@@ -105,15 +103,16 @@ class TestBaseResource(base.TestCase):
 
         self.sess.get.return_value = mock_response
 
-        result = list(self.sot.list(
-            self.sess,
-            headers={'a': 'b'},
-            endpoint_override='http:example.com'))
+        result = list(
+            self.sot.list(
+                self.sess, headers={"a": "b"}, endpoint_override="http:example.com"
+            )
+        )
 
         self.sess.get.assert_called_once_with(
             self.base_path,
             headers={"a": "b"},
-            endpoint_override='http:example.com',
+            endpoint_override="http:example.com",
             params={},
         )
 

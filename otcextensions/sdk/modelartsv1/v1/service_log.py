@@ -50,9 +50,7 @@ class ServiceLog(resource.Resource):
     result = resource.Body("result")
     #: Operation result details. This parameter is returned when
     #:  infer_type is set to edge.
-    result_detail = resource.Body(
-        "result_detail", type=list, list_type=ResultSpec
-    )
+    result_detail = resource.Body("result_detail", type=list, list_type=ResultSpec)
     #: Service ID.
     service_id = resource.URI("service_id")
     #: Number of nodes that are successfully operated. This parameter

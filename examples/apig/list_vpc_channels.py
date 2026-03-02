@@ -13,8 +13,9 @@
 """
 List VPC channels
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 found = list(conn.apig.vpc_channels(gateway="gateway_id"))

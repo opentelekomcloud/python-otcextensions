@@ -13,16 +13,16 @@
 """
 Delete a backup of a Distributed Cache Service instance.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-backup_id = 'backup_id'
-instance = 'instance_name_or_id'
+backup_id = "backup_id"
+instance = "instance_name_or_id"
 instance = conn.dcs.find_instance(name_or_id=instance)
 conn.dcs.delete_instance_backup(
-    backup=backup_id,
-    instance=instance,
-    ignore_missing=True)
+    backup=backup_id, instance=instance, ignore_missing=True
+)

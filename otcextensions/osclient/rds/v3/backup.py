@@ -19,73 +19,72 @@ from osc_lib.command import command
 from otcextensions.common import sdk_utils
 from otcextensions.i18n import _
 
+BACKUP_TYPE_CHOICES = ["auto", "manual", "fragment", "incremental"]
 
-BACKUP_TYPE_CHOICES = ['auto', 'manual', 'fragment', 'incremental']
 
-
-_formatters = {
-}
+_formatters = {}
 
 
 def _get_columns(item):
     column_map = {}
-    hidden = ['location']
-    return sdk_utils.get_osc_show_columns_for_sdk_resource(
-        item, column_map, hidden)
+    hidden = ["location"]
+    return sdk_utils.get_osc_show_columns_for_sdk_resource(item, column_map, hidden)
 
 
 class ListBackup(command.Lister):
     _description = _("List database backups")
     column_headers = (
-        'ID', 'Name', 'Type', 'Instance Id', 'Size (KB)',
-        'Begin time', 'End time'
+        "ID",
+        "Name",
+        "Type",
+        "Instance Id",
+        "Size (KB)",
+        "Begin time",
+        "End time",
     )
 
-    columns = (
-        'id', 'name', 'type', 'instance_id', 'size',
-        'begin_time', 'end_time'
-    )
+    columns = ("id", "name", "type", "instance_id", "size", "begin_time", "end_time")
 
     def get_parser(self, prog_name):
         parser = super(ListBackup, self).get_parser(prog_name)
         parser.add_argument(
-            'instance',
-            metavar='<instance>',
-            help=_('Specify instance ID or Name to get backup list'),
+            "instance",
+            metavar="<instance>",
+            help=_("Specify instance ID or Name to get backup list"),
         )
         parser.add_argument(
-            '--backup-id',
-            metavar='<backup_id>',
-            help=_('Specify the backup ID.'),
+            "--backup-id",
+            metavar="<backup_id>",
+            help=_("Specify the backup ID."),
         )
         parser.add_argument(
-            '--backup-type',
-            metavar='{' + ','.join(BACKUP_TYPE_CHOICES) + '}',
+            "--backup-type",
+            metavar="{" + ",".join(BACKUP_TYPE_CHOICES) + "}",
             choices=BACKUP_TYPE_CHOICES,
             type=lambda s: s.lower(),
-            help=_('Specify the backup type.'),
+            help=_("Specify the backup type."),
         )
         parser.add_argument(
-            '--offset',
-            metavar='<offset>',
+            "--offset",
+            metavar="<offset>",
             type=int,
-            help=_('Specify the index position.'),
+            help=_("Specify the index position."),
         )
         parser.add_argument(
-            '--limit',
-            metavar='<limit>',
+            "--limit",
+            metavar="<limit>",
             type=int,
-            help=_('Specify the limit of resources to be queried.'),
+            help=_("Specify the limit of resources to be queried."),
         )
         parser.add_argument(
-            '--begin-time',
-            metavar='<begin_time>',
-            help=_('Specify the start time for obtaining the backup list.'),
+            "--begin-time",
+            metavar="<begin_time>",
+            help=_("Specify the start time for obtaining the backup list."),
         )
         parser.add_argument(
-            '--end-time',
-            metavar='<end_time>',
-            help=_('Specify the end time for obtaining the backup list.'),
+            "--end-time",
+            metavar="<end_time>",
+            help=_("Specify the end time for obtaining the backup list."),
         )
 
         return parser
@@ -94,65 +93,73 @@ class ListBackup(command.Lister):
         client = self.app.client_manager.rds
         attrs = {}
         args_list = [
-            'backup_id', 'backup_type', 'offset', 'limit',
-            'begin_time', 'end_time'
+            "backup_id",
+            "backup_type",
+            "offset",
+            "limit",
+            "begin_time",
+            "end_time",
         ]
         must_be_together_group = [parsed_args.begin_time, parsed_args.end_time]
 
         if any(must_be_together_group) and not all(must_be_together_group):
             raise exceptions.CommandError(
-                _('`--begin-time` and `--end-time` must be given together')
+                _("`--begin-time` and `--end-time` must be given together")
             )
         for arg in args_list:
             if getattr(parsed_args, arg):
                 attrs[arg] = getattr(parsed_args, arg)
         if parsed_args.limit:
-            attrs['paginated'] = False
+            attrs["paginated"] = False
 
-        instance = client.find_instance(parsed_args.instance,
-                                        ignore_missing=False)
+        instance = client.find_instance(parsed_args.instance, ignore_missing=False)
 
         data = client.backups(instance=instance, **attrs)
 
-        return (self.column_headers, (utils.get_item_properties(
-            s,
-            self.columns,
-        ) for s in data))
+        return (
+            self.column_headers,
+            (
+                utils.get_item_properties(
+                    s,
+                    self.columns,
+                )
+                for s in data
+            ),
+        )
 
 
 class CreateBackup(command.ShowOne):
-    _description = _('Create Database backup')
+    _description = _("Create Database backup")
 
     def get_parser(self, prog_name):
         parser = super(CreateBackup, self).get_parser(prog_name)
+        parser.add_argument("name", metavar="<name>", help=_("Name for the backup"))
         parser.add_argument(
-            'name',
-            metavar='<name>',
-            help=_('Name for the backup'))
-        parser.add_argument(
-            'instance',
-            metavar='<instance>',
-            help=_('ID or Name of the instance to create backup from'))
-        parser.add_argument(
-            '--description',
-            metavar='<description>',
-            help=_('Description for the backup'))
-        parser.add_argument(
-            '--databases',
-            metavar='<databases>',
-            help=_(
-                'Specifies a CSV list of self-built SQL Server'
-                'databases that are partially backed up'
-                '(Only SQL Server support partial backups.)'))
-        parser.add_argument(
-            '--wait',
-            action='store_true',
-            help=('Wait for the instance to become active')
+            "instance",
+            metavar="<instance>",
+            help=_("ID or Name of the instance to create backup from"),
         )
         parser.add_argument(
-            '--wait-interval',
-            type=int,
-            help=_('Interval for checking status')
+            "--description",
+            metavar="<description>",
+            help=_("Description for the backup"),
+        )
+        parser.add_argument(
+            "--databases",
+            metavar="<databases>",
+            help=_(
+                "Specifies a CSV list of self-built SQL Server"
+                "databases that are partially backed up"
+                "(Only SQL Server support partial backups.)"
+            ),
+        )
+        parser.add_argument(
+            "--wait",
+            action="store_true",
+            help=("Wait for the instance to become active"),
+        )
+        parser.add_argument(
+            "--wait-interval", type=int, help=_("Interval for checking status")
         )
 
         return parser
@@ -160,49 +167,44 @@ class CreateBackup(command.ShowOne):
     def take_action(self, parsed_args):
         client = self.app.client_manager.rds
 
-        attrs = {'name': parsed_args.name}
+        attrs = {"name": parsed_args.name}
         if parsed_args.description:
-            attrs['description'] = parsed_args.description
+            attrs["description"] = parsed_args.description
 
-        instance = client.find_instance(parsed_args.instance,
-                                        ignore_missing=False)
+        instance = client.find_instance(parsed_args.instance, ignore_missing=False)
 
-        if (parsed_args.databases
-                and instance.datastore['type'].lower() == 'sqlserver'):
-            attrs['databases'] = []
+        if parsed_args.databases and instance.datastore["type"].lower() == "sqlserver":
+            attrs["databases"] = []
             databases = parsed_args.databases
             databases = databases.split(",")
             for db_name in databases:
-                attrs['databases'].append({'name': db_name})
+                attrs["databases"].append({"name": db_name})
         else:
             # Do we want to raise error otherwise?
             pass
 
-        obj = client.create_backup(instance=instance,
-                                   **attrs)
+        obj = client.create_backup(instance=instance, **attrs)
 
         if parsed_args.wait:
             wait_args = {}
             if parsed_args.wait_interval:
-                wait_args['interval'] = parsed_args.wait_interval
+                wait_args["interval"] = parsed_args.wait_interval
             obj = client.wait_for_backup(obj, **wait_args)
 
         display_columns, columns = _get_columns(obj)
-        data = utils.get_item_properties(obj, columns,
-                                         formatters=_formatters)
+        data = utils.get_item_properties(obj, columns, formatters=_formatters)
 
         return (display_columns, data)
 
 
 class DeleteBackup(command.Command):
-    _description = _('Delete Backup')
+    _description = _("Delete Backup")
 
     def get_parser(self, prog_name):
         parser = super(DeleteBackup, self).get_parser(prog_name)
-        parser.add_argument('backup',
-                            metavar='<backup_id>',
-                            nargs='+',
-                            help=_('ID of the backup'))
+        parser.add_argument(
+            "backup", metavar="<backup_id>", nargs="+", help=_("ID of the backup")
+        )
         return parser
 
     def take_action(self, parsed_args):
@@ -214,24 +216,23 @@ class DeleteBackup(command.Command):
 
 
 class ListBackupDownloadLinks(command.Lister):
-    _description = _('List Backup Download Links')
+    _description = _("List Backup Download Links")
 
-    column_headers = ('Size (KB)', 'URL', 'Expires at')
-    columns = ('size', 'download_link', 'expires_at')
+    column_headers = ("Size (KB)", "URL", "Expires at")
+    columns = ("size", "download_link", "expires_at")
 
     def get_parser(self, prog_name):
         parser = super(ListBackupDownloadLinks, self).get_parser(prog_name)
-        parser.add_argument('backup_id',
-                            metavar='<backup_id>',
-                            help=_('ID of the backup'))
+        parser.add_argument(
+            "backup_id", metavar="<backup_id>", help=_("ID of the backup")
+        )
         return parser
 
     def take_action(self, parsed_args):
 
         client = self.app.client_manager.rds
         data = client.backup_download_links(backup_id=parsed_args.backup_id)
-        return (self.column_headers, (utils.get_item_properties(
-            s,
-            self.columns,
-            formatters={}
-        ) for s in data))
+        return (
+            self.column_headers,
+            (utils.get_item_properties(s, self.columns, formatters={}) for s in data),
+        )

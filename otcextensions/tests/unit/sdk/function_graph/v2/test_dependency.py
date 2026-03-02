@@ -11,7 +11,6 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.function_graph.v2 import dependency
 
 EXAMPLE = {
@@ -26,7 +25,7 @@ EXAMPLE = {
     "file_name": "python-kafka.zip",
     "version": 0,
     "dep_id": "edbd67fa-f107-40b3-af75-a85f0577ad61",
-    "last_modified": 1660029887
+    "last_modified": 1660029887,
 }
 
 
@@ -34,7 +33,7 @@ class TestFunctionDependency(base.TestCase):
 
     def test_basic(self):
         sot = dependency.Dependency()
-        path = '/fgs/dependencies'
+        path = "/fgs/dependencies"
         self.assertEqual(path, sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
@@ -44,5 +43,5 @@ class TestFunctionDependency(base.TestCase):
 
     def test_make_it(self):
         sot = dependency.Dependency(**EXAMPLE)
-        self.assertEqual(EXAMPLE['file_name'], sot.file_name)
-        self.assertEqual(EXAMPLE['link'], sot.link)
+        self.assertEqual(EXAMPLE["file_name"], sot.file_name)
+        self.assertEqual(EXAMPLE["link"], sot.link)

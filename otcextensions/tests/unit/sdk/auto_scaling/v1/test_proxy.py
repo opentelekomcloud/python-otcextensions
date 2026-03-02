@@ -10,7 +10,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack.tests.unit import test_proxy_base
-
 from otcextensions.sdk.auto_scaling.v1 import _proxy
 from otcextensions.sdk.auto_scaling.v1 import activity as _activity
 from otcextensions.sdk.auto_scaling.v1 import config as _config
@@ -30,80 +29,70 @@ class TestAutoScalingGroups(TestAutoScalingProxy):
 
     def test_list(self):
         self.verify_list(
-            self.proxy.groups, _group.Group,
+            self.proxy.groups,
+            _group.Group,
             method_kwargs={
-                'some_arg': 'arg_value',
+                "some_arg": "arg_value",
             },
             expected_kwargs={
-                'some_arg': 'arg_value',
-            }
+                "some_arg": "arg_value",
+            },
         )
 
     def test_get(self):
-        self.verify_get(
-            self.proxy.get_group,
-            _group.Group,
-            expected_kwargs={
-            }
-        )
+        self.verify_get(self.proxy.get_group, _group.Group, expected_kwargs={})
 
     def test_find(self):
         self._verify(
-            'openstack.proxy.Proxy._find',
+            "openstack.proxy.Proxy._find",
             self.proxy.find_group,
             method_args=["flavor"],
             expected_args=[_group.Group, "flavor"],
-            expected_kwargs={
-                "ignore_missing": True})
+            expected_kwargs={"ignore_missing": True},
+        )
 
     def test_create(self):
         self.verify_create(
-            self.proxy.create_group, _group.Group,
-            method_kwargs={
-                'instance': 'test',
-                'name': 'some_name'
-            },
+            self.proxy.create_group,
+            _group.Group,
+            method_kwargs={"instance": "test", "name": "some_name"},
             expected_kwargs={
-                'prepend_key': False,
-                'instance': 'test',
-                'name': 'some_name'
-            }
+                "prepend_key": False,
+                "instance": "test",
+                "name": "some_name",
+            },
         )
 
     def test_delete(self):
         self._verify(
-            mock_method='otcextensions.sdk.auto_scaling.v1.group.Group.delete',
+            mock_method="otcextensions.sdk.auto_scaling.v1.group.Group.delete",
             test_method=self.proxy.delete_group,
-            method_args=['group'],
+            method_args=["group"],
             expected_args=[self.proxy],
-            expected_kwargs={
-                'force_delete': False
-            }
+            expected_kwargs={"force_delete": False},
         )
 
     def test_delete_with_force_delete(self):
         self._verify(
-            mock_method='otcextensions.sdk.auto_scaling.v1.group.Group.delete',
+            mock_method="otcextensions.sdk.auto_scaling.v1.group.Group.delete",
             test_method=self.proxy.delete_group,
-            method_args=['group'],
-            method_kwargs={'force_delete': True},
+            method_args=["group"],
+            method_kwargs={"force_delete": True},
             expected_args=[self.proxy],
-            expected_kwargs={
-                'force_delete': True
-            }
+            expected_kwargs={"force_delete": True},
         )
 
     def test_update(self):
         self._verify(
-            'openstack.proxy.Proxy._update',
+            "openstack.proxy.Proxy._update",
             self.proxy.update_group,
-            method_args=['INSTANCE'],
-            method_kwargs={'test': 't'},
-            expected_args=[_group.Group, 'INSTANCE'],
+            method_args=["INSTANCE"],
+            method_kwargs={"test": "t"},
+            expected_args=[_group.Group, "INSTANCE"],
             expected_kwargs={
-                'test': 't',
-                'prepend_key': False,
-            }
+                "test": "t",
+                "prepend_key": False,
+            },
         )
 
 
@@ -111,52 +100,43 @@ class TestAutoScalingConfigs(TestAutoScalingProxy):
 
     def test_list(self):
         self.verify_list(
-            self.proxy.configs, _config.Config,
+            self.proxy.configs,
+            _config.Config,
             method_kwargs={
-                'some_arg': 'arg_value',
+                "some_arg": "arg_value",
             },
             expected_kwargs={
-                'some_arg': 'arg_value',
-            }
+                "some_arg": "arg_value",
+            },
         )
 
     def test_get(self):
-        self.verify_get(
-            self.proxy.get_config,
-            _config.Config,
-            expected_kwargs={
-            }
-        )
+        self.verify_get(self.proxy.get_config, _config.Config, expected_kwargs={})
 
     def test_find(self):
         self._verify(
-            'openstack.proxy.Proxy._find',
+            "openstack.proxy.Proxy._find",
             self.proxy.find_config,
             method_args=["flavor"],
             expected_args=[_config.Config, "flavor"],
-            expected_kwargs={
-                "ignore_missing": True})
+            expected_kwargs={"ignore_missing": True},
+        )
 
     def test_create(self):
         self.verify_create(
-            self.proxy.create_config, _config.Config,
-            method_kwargs={
-                'instance_config': {},
-                'name': 'some_name'
-            },
+            self.proxy.create_config,
+            _config.Config,
+            method_kwargs={"instance_config": {}, "name": "some_name"},
             expected_kwargs={
-                'prepend_key': False,
-                'instance_config': {},
-                'name': 'some_name'
-            }
+                "prepend_key": False,
+                "instance_config": {},
+                "name": "some_name",
+            },
         )
 
     def test_delete(self):
         self.verify_delete(
-            self.proxy.delete_config,
-            _config.Config, True,
-            expected_kwargs={
-            }
+            self.proxy.delete_config, _config.Config, True, expected_kwargs={}
         )
 
 
@@ -164,85 +144,73 @@ class TestAutoScalingPolicy(TestAutoScalingProxy):
 
     def test_list(self):
         self.verify_list(
-            self.proxy.policies, _policy.Policy,
-            method_kwargs={
-                'some_arg': 'arg_value',
-                'group': 'group_id'
-            },
-            base_path='/scaling_policy/group_id/list',
+            self.proxy.policies,
+            _policy.Policy,
+            method_kwargs={"some_arg": "arg_value", "group": "group_id"},
+            base_path="/scaling_policy/group_id/list",
             expected_kwargs={
-                'some_arg': 'arg_value',
-            }
+                "some_arg": "arg_value",
+            },
         )
 
     def test_delete(self):
         self.verify_delete(
-            self.proxy.delete_policy,
-            _policy.Policy, True,
-            expected_kwargs={
-            }
+            self.proxy.delete_policy, _policy.Policy, True, expected_kwargs={}
         )
 
     def test_create(self):
         self.verify_create(
-            self.proxy.create_policy, _policy.Policy,
-            method_kwargs={
-                'name': 'some_name'
-            },
-            expected_kwargs={
-                'prepend_key': False,
-                'name': 'some_name'
-            }
+            self.proxy.create_policy,
+            _policy.Policy,
+            method_kwargs={"name": "some_name"},
+            expected_kwargs={"prepend_key": False, "name": "some_name"},
         )
 
     def test_find(self):
         self._verify(
-            'openstack.proxy.Proxy._find',
+            "openstack.proxy.Proxy._find",
             self.proxy.find_policy,
-            method_args=['pol', 'group'],
+            method_args=["pol", "group"],
             method_kwargs={},
-            expected_args=[_policy.Policy, 'pol'],
-            expected_kwargs={
-                'ignore_missing': True,
-                'group_id': 'group'
-            }
+            expected_args=[_policy.Policy, "pol"],
+            expected_kwargs={"ignore_missing": True, "group_id": "group"},
         )
 
     def test_update(self):
         self._verify(
-            'openstack.proxy.Proxy._update',
+            "openstack.proxy.Proxy._update",
             self.proxy.update_policy,
-            method_args=['INSTANCE'],
-            method_kwargs={'test': 't'},
-            expected_args=[_policy.Policy, 'INSTANCE'],
+            method_args=["INSTANCE"],
+            method_kwargs={"test": "t"},
+            expected_args=[_policy.Policy, "INSTANCE"],
             expected_kwargs={
-                'test': 't',
-                'prepend_key': False,
-            }
+                "test": "t",
+                "prepend_key": False,
+            },
         )
 
     def test_execute(self):
         self._verify(
-            'otcextensions.sdk.auto_scaling.v1.policy.Policy._action',
+            "otcextensions.sdk.auto_scaling.v1.policy.Policy._action",
             self.proxy.execute_policy,
-            method_args=['INSTANCE'],
-            expected_args=[self.proxy, {'action': 'execute'}]
+            method_args=["INSTANCE"],
+            expected_args=[self.proxy, {"action": "execute"}],
         )
 
     def test_resume(self):
         self._verify(
-            'otcextensions.sdk.auto_scaling.v1.policy.Policy._action',
+            "otcextensions.sdk.auto_scaling.v1.policy.Policy._action",
             self.proxy.resume_policy,
-            method_args=['INSTANCE'],
-            expected_args=[self.proxy, {'action': 'resume'}]
+            method_args=["INSTANCE"],
+            expected_args=[self.proxy, {"action": "resume"}],
         )
 
     def test_pause(self):
         self._verify(
-            'otcextensions.sdk.auto_scaling.v1.policy.Policy._action',
+            "otcextensions.sdk.auto_scaling.v1.policy.Policy._action",
             self.proxy.pause_policy,
-            method_args=['INSTANCE'],
-            expected_args=[self.proxy, {'action': 'pause'}]
+            method_args=["INSTANCE"],
+            expected_args=[self.proxy, {"action": "pause"}],
         )
 
 
@@ -250,15 +218,13 @@ class TestAutoScalingActivityLog(TestAutoScalingProxy):
 
     def test_list(self):
         self.verify_list(
-            self.proxy.activities, _activity.Activity,
-            method_kwargs={
-                'some_arg': 'arg_value',
-                'group': 'group_id'
-            },
+            self.proxy.activities,
+            _activity.Activity,
+            method_kwargs={"some_arg": "arg_value", "group": "group_id"},
             expected_kwargs={
-                'some_arg': 'arg_value',
-                'scaling_group_id': 'group_id',
-            }
+                "some_arg": "arg_value",
+                "scaling_group_id": "group_id",
+            },
         )
 
 
@@ -266,21 +232,16 @@ class TestAutoScalingQuota(TestAutoScalingProxy):
 
     def test_list(self):
         self.verify_list(
-            self.proxy.quotas, _quota.Quota,
-            expected_kwargs={
-                'paginated': False
-            }
+            self.proxy.quotas, _quota.Quota, expected_kwargs={"paginated": False}
         )
 
     def test_list_scaling(self):
         self.verify_list(
-            self.proxy.quotas, _quota.ScalingQuota,
-            method_args=['INSTANCE'],
-            expected_kwargs={
-                'paginated': False,
-                'scaling_group_id': 'INSTANCE'
-            },
-            expected_args=[]
+            self.proxy.quotas,
+            _quota.ScalingQuota,
+            method_args=["INSTANCE"],
+            expected_kwargs={"paginated": False, "scaling_group_id": "INSTANCE"},
+            expected_args=[],
         )
 
 
@@ -288,62 +249,58 @@ class TestAutoScalingInstance(TestAutoScalingProxy):
 
     def test_list(self):
         self.verify_list(
-            self.proxy.instances, _instance.Instance,
-            method_args=['group'],
-            base_path='/scaling_group_instance/group/list',
-            expected_args=[]
+            self.proxy.instances,
+            _instance.Instance,
+            method_args=["group"],
+            base_path="/scaling_group_instance/group/list",
+            expected_args=[],
         )
 
     def test_batch_action_remove(self):
         self._verify(
-            'otcextensions.sdk.auto_scaling.v1.instance.Instance.batch_action',
+            "otcextensions.sdk.auto_scaling.v1.instance.Instance.batch_action",
             self.proxy.batch_instance_action,
-            method_args=['INSTANCE', ['a1', 'a2'], 'REMOVE'],
-            expected_args=[self.proxy, ['a1', 'a2'], 'REMOVE', False]
+            method_args=["INSTANCE", ["a1", "a2"], "REMOVE"],
+            expected_args=[self.proxy, ["a1", "a2"], "REMOVE", False],
         )
 
     def test_batch_action_add(self):
         self._verify(
-            'otcextensions.sdk.auto_scaling.v1.instance.Instance.batch_action',
+            "otcextensions.sdk.auto_scaling.v1.instance.Instance.batch_action",
             self.proxy.batch_instance_action,
-            method_args=['INSTANCE', ['a1', 'a2'], 'ADD'],
-            expected_args=[self.proxy, ['a1', 'a2'], 'ADD', False]
+            method_args=["INSTANCE", ["a1", "a2"], "ADD"],
+            expected_args=[self.proxy, ["a1", "a2"], "ADD", False],
         )
 
     def test_batch_action_protect(self):
         self._verify(
-            'otcextensions.sdk.auto_scaling.v1.instance.Instance.batch_action',
+            "otcextensions.sdk.auto_scaling.v1.instance.Instance.batch_action",
             self.proxy.batch_instance_action,
-            method_args=['INSTANCE', ['a1', 'a2'], 'PROTECT'],
-            expected_args=[self.proxy, ['a1', 'a2'], 'PROTECT', False]
+            method_args=["INSTANCE", ["a1", "a2"], "PROTECT"],
+            expected_args=[self.proxy, ["a1", "a2"], "PROTECT", False],
         )
 
     def test_batch_action_unprotect(self):
         self._verify(
-            'otcextensions.sdk.auto_scaling.v1.instance.Instance.batch_action',
+            "otcextensions.sdk.auto_scaling.v1.instance.Instance.batch_action",
             self.proxy.batch_instance_action,
-            method_args=['INSTANCE', ['a1', 'a2'], 'UNPROTECT'],
-            expected_args=[self.proxy, ['a1', 'a2'], 'UNPROTECT', False]
+            method_args=["INSTANCE", ["a1", "a2"], "UNPROTECT"],
+            expected_args=[self.proxy, ["a1", "a2"], "UNPROTECT", False],
         )
 
     def test_delete(self):
         self._verify(
             test_method=self.proxy.remove_instance,
-            mock_method='otcextensions.sdk.auto_scaling.v1.'
-                        'instance.Instance.remove',
-            method_args=['instance'],
+            mock_method="otcextensions.sdk.auto_scaling.v1." "instance.Instance.remove",
+            method_args=["instance"],
             expected_args=[self.proxy],
-            expected_kwargs={
-                'delete_instance': False
-            }
+            expected_kwargs={"delete_instance": False},
         )
 
     def test_find(self):
         self.verify_find(
             test_method=self.proxy.find_instance,
             resource_type=_instance.Instance,
-            method_kwargs={'group': 'group'},
-            expected_kwargs={
-                'group_id': 'group'
-            }
+            method_kwargs={"group": "group"},
+            expected_kwargs={"group_id": "group"},
         )

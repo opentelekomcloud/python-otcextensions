@@ -21,10 +21,12 @@ class TestVpcEndpoint(TestApiG):
 
     def test_01_list_vpc_endpoint(self):
         self.conn.vpcep.create_endpoint(
-            subnet_id='',
-            endpoint_service_id='',
-            vpc_id='',
+            subnet_id="",
+            endpoint_service_id="",
+            vpc_id="",
         )
-        list(self.client.vpc_endpoints(
-            gateway=TestVpcEndpoint.gateway,
-        ))
+        list(
+            self.client.vpc_endpoints(
+                gateway=TestVpcEndpoint.gateway,
+            )
+        )

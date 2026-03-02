@@ -10,16 +10,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import proxy
-
-from otcextensions.sdk.cts.v1 import tracker as _tracker
 from otcextensions.sdk.cts.v1 import trace as _trace
+from otcextensions.sdk.cts.v1 import tracker as _tracker
 
 
 class Proxy(proxy.Proxy):
 
     skip_discovery = True
 
-    def traces(self, tracker='system', **query):
+    def traces(self, tracker="system", **query):
         """List all traces
 
         :param tracker: The name or an tracker of
@@ -29,10 +28,10 @@ class Proxy(proxy.Proxy):
             :class:`~otcextensions.sdk.cts.v1.trace.Trace`
         """
         if isinstance(tracker, str):
-            tracker = self._get_resource(_tracker.Tracker, {'name': tracker})
-        return self._list(_trace.Trace,
-                          paginated=False,
-                          tracker_name=tracker.name, **query)
+            tracker = self._get_resource(_tracker.Tracker, {"name": tracker})
+        return self._list(
+            _trace.Trace, paginated=False, tracker_name=tracker.name, **query
+        )
 
     def get_tracker(self, tracker):
         """Get detail about a given tracker
@@ -66,7 +65,7 @@ class Proxy(proxy.Proxy):
         """
         return self._update(_tracker.Tracker, tracker, **attrs)
 
-    def delete_tracker(self, tracker='system', ignore_missing=True):
+    def delete_tracker(self, tracker="system", ignore_missing=True):
         """Delete a tracker
 
         :param tracker: The value can be the ID of a tracker or a

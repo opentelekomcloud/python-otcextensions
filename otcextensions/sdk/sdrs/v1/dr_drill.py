@@ -15,16 +15,17 @@ from openstack import resource
 class DrillServers(resource.Resource):
     #: Properties
     #: Protected instance ID of drill server
-    protected_instance = resource.Body('protected_instance')
+    protected_instance = resource.Body("protected_instance")
     #: Drill server ID
-    drill_server_id = resource.Body('drill_server_id')
+    drill_server_id = resource.Body("drill_server_id")
 
 
 class DRDrill(resource.Resource):
     """SDRS Disaster recovery Drill Resource"""
-    resource_key = 'disaster_recovery_drill'
-    resources_key = 'disaster_recovery_drills'
-    base_path = '/disaster-recovery-drills'
+
+    resource_key = "disaster_recovery_drill"
+    resources_key = "disaster_recovery_drills"
+    base_path = "/disaster-recovery-drills"
 
     # capabilities
     allow_create = True
@@ -34,27 +35,25 @@ class DRDrill(resource.Resource):
     allow_commit = True
 
     _query_mapping = resource.QueryParameters(
-        'drill_vpc_id', 'limit', 'marker', 'name',
-        'offset', 'server_group_id', 'status')
+        "drill_vpc_id", "limit", "marker", "name", "offset", "server_group_id", "status"
+    )
 
     #: Properties
     #: Creation time
-    created_at = resource.Body('created_at')
+    created_at = resource.Body("created_at")
     #: Drill servers information
-    drill_servers = resource.Body('drill_servers',
-                                  type=list,
-                                  list_type=DrillServers)
+    drill_servers = resource.Body("drill_servers", type=list, list_type=DrillServers)
     #: DR drill VPC ID
-    drill_vpc_id = resource.Body('drill_vpc_id')
+    drill_vpc_id = resource.Body("drill_vpc_id")
     #: Job ID
-    job_id = resource.Body('job_id')
+    job_id = resource.Body("job_id")
     #: DR drill ID
-    id = resource.Body('id')
+    id = resource.Body("id")
     #: DR drill name
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: Protection group ID
-    server_group_id = resource.Body('server_group_id')
+    server_group_id = resource.Body("server_group_id")
     #: DR drill status
-    status = resource.Body('status')
+    status = resource.Body("status")
     #: Update time
-    updated_at = resource.Body('updated_at')
+    updated_at = resource.Body("updated_at")

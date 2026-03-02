@@ -13,18 +13,22 @@
 """
 Create SSL certificate
 """
-import openstack
+
 from pathlib import Path
 
+import openstack
+
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 attrs = {
     "name": "cert_demo",
     "cert_content": Path("/mnt/c/Users/sand1/fullchain.pem")
-    .read_text().replace('\r\n', '\n'),
+    .read_text()
+    .replace("\r\n", "\n"),
     "private_key": Path("/mnt/c/Users/sand1/privkey.pem")
-    .read_text().replace('\r\n', '\n'),
+    .read_text()
+    .replace("\r\n", "\n"),
     "type": "instance",
-    "instance_id": "gateway_id"
+    "instance_id": "gateway_id",
 }
 cert = conn.apig.create_ssl_certificate(**attrs)

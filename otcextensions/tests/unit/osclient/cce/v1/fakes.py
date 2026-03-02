@@ -35,49 +35,40 @@ class FakeCluster(test_base.Fake):
     def generate(cls, cnt_hosts=1):
         hosts = []
         for i in range(cnt_hosts - 1):
-            host = {'kind': 'host'}
+            host = {"kind": "host"}
             hosts.append(host)
         object_info = {
-            'kind': 'cluster',
-            'metadata': {
-                'uuid': 'id-' + uuid.uuid4().hex,
-                'name': 'name-' + uuid.uuid4().hex,
+            "kind": "cluster",
+            "metadata": {
+                "uuid": "id-" + uuid.uuid4().hex,
+                "name": "name-" + uuid.uuid4().hex,
             },
-            'spec': {
-                'cpu': random.randint(1, 15),
-                'memory': random.randint(1, 150000),
-                'endpoint': 'endpoint-' + uuid.uuid4().hex,
-                'availability_zone': 'az-' + uuid.uuid4().hex,
-                'vpc': 'vpc-' + uuid.uuid4().hex,
-                'hostList': {
-                    'spec': {
-                        'hostList': hosts
-                    }
-                }
+            "spec": {
+                "cpu": random.randint(1, 15),
+                "memory": random.randint(1, 150000),
+                "endpoint": "endpoint-" + uuid.uuid4().hex,
+                "availability_zone": "az-" + uuid.uuid4().hex,
+                "vpc": "vpc-" + uuid.uuid4().hex,
+                "hostList": {"spec": {"hostList": hosts}},
             },
-            'status': {
-                'status': 'sts'
-            }
+            "status": {"status": "sts"},
         }
         obj = cluster.Cluster.existing(**object_info)
         return obj
 
     @classmethod
     def create_one(cls, cnt_hosts=1):
-        """Create a fake resource.
-        """
+        """Create a fake resource."""
         resource = cls.generate(cnt_hosts)
 
         return resource
 
     @classmethod
     def create_multiple(cls, count=2, attrs=None):
-        """Create multiple fake resources.
-        """
+        """Create multiple fake resources."""
         objects = []
         for i in range(0, count):
-            objects.append(
-                cls.create_one(1))
+            objects.append(cls.create_one(1))
 
         return objects
 
@@ -88,44 +79,44 @@ class FakeClusterNode(test_base.Fake):
     @classmethod
     def generate(cls):
         object_info = {
-            'kind': 'host',
-            'metadata': {
-                'uuid': 'id-' + uuid.uuid4().hex,
-                'name': 'name-' + uuid.uuid4().hex,
+            "kind": "host",
+            "metadata": {
+                "uuid": "id-" + uuid.uuid4().hex,
+                "name": "name-" + uuid.uuid4().hex,
             },
-            'spec': {
-                'cluster_uuid': 'clid-' + uuid.uuid4().hex,
-                'cpu': random.randint(1, 15),
-                'memory': random.randint(1, 150000),
-                'availability_zone': 'az-' + uuid.uuid4().hex,
-                'flavor': 'flavor-' + uuid.uuid4().hex,
-                'public_ip': 'public_ip-' + uuid.uuid4().hex,
-                'private_ip': 'private_ip-' + uuid.uuid4().hex,
-                'volume': [
+            "spec": {
+                "cluster_uuid": "clid-" + uuid.uuid4().hex,
+                "cpu": random.randint(1, 15),
+                "memory": random.randint(1, 150000),
+                "availability_zone": "az-" + uuid.uuid4().hex,
+                "flavor": "flavor-" + uuid.uuid4().hex,
+                "public_ip": "public_ip-" + uuid.uuid4().hex,
+                "private_ip": "private_ip-" + uuid.uuid4().hex,
+                "volume": [
                     {
-                        'disk_type': 'dt' + uuid.uuid4().hex,
-                        'disk_size': random.randint(1, 15000),
+                        "disk_type": "dt" + uuid.uuid4().hex,
+                        "disk_size": random.randint(1, 15000),
                     },
                     {
-                        'disk_type': 'dt' + uuid.uuid4().hex,
-                        'disk_size': random.randint(1, 15000),
+                        "disk_type": "dt" + uuid.uuid4().hex,
+                        "disk_size": random.randint(1, 15000),
                     },
                 ],
-                'status': {
-                    'capacity': {
-                        'cpu': random.randint(1, 15),
-                        'memory': random.randint(1, 15000),
-                        'pods': random.randint(1, 15000),
+                "status": {
+                    "capacity": {
+                        "cpu": random.randint(1, 15),
+                        "memory": random.randint(1, 15000),
+                        "pods": random.randint(1, 15000),
                     },
-                    'allocatable': {
-                        'cpu': random.randint(1, 15),
-                        'memory': random.randint(1, 15000),
-                        'pods': random.randint(1, 15000),
+                    "allocatable": {
+                        "cpu": random.randint(1, 15),
+                        "memory": random.randint(1, 15000),
+                        "pods": random.randint(1, 15000),
                     },
-                    'conditions': []
+                    "conditions": [],
                 },
             },
-            'status': 'sts'
+            "status": "sts",
         }
         obj = cluster_node.ClusterNode.existing(**object_info)
         return obj

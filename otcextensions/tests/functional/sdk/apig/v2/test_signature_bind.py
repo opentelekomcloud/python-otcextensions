@@ -23,13 +23,9 @@ class TestSignature(TestApiG):
         self.gateway_id = TestSignature.gateway.id
         # self.gateway_id = "be76ca6de5fe4aa7af503c03b3b44dea"
 
-        group_attrs = {
-            "name": f"api_group_{self.suffix}",
-            "remark": "API group 1"
-        }
+        group_attrs = {"name": f"api_group_{self.suffix}", "remark": "API group 1"}
         self.group = self.client.create_api_group(
-            gateway=self.gateway_id,
-            **group_attrs
+            gateway=self.gateway_id, **group_attrs
         )
         self.assertIsNotNone(self.group.id)
 
@@ -52,23 +48,18 @@ class TestSignature(TestApiG):
                 "req_uri": "/test/benchmark",
                 "timeout": 5000,
                 "retry_count": "-1",
-                "url_domain": "192.168.189.156:12346"
+                "url_domain": "192.168.189.156:12346",
             },
         }
-        self.api = self.client.create_api(
-            gateway=self.gateway_id,
-            **api_attrs
-        )
+        self.api = self.client.create_api(gateway=self.gateway_id, **api_attrs)
         self.environment = self.client.create_environment(
-            gateway=self.gateway_id,
-            name=f"testPub{self.suffix}",
-            remark="test publish"
+            gateway=self.gateway_id, name=f"testPub{self.suffix}", remark="test publish"
         )
         self.publish = self.client.publish_api(
             gateway=self.gateway_id,
             api=self.api.id,
             env=self.environment,
-            remark="publish"
+            remark="publish",
         )
 
         sign_attrs = {
@@ -76,19 +67,10 @@ class TestSignature(TestApiG):
             "sign_type": "aes",
             "sign_algorithm": "aes-256-cfb",
         }
-        self.sign = self.client.create_signature(
-            gateway=self.gateway_id,
-            **sign_attrs
-        )
+        self.sign = self.client.create_signature(gateway=self.gateway_id, **sign_attrs)
 
-        self.attrs = {
-            "sign_id": self.sign.id,
-            "publish_ids": [self.publish.publish_id]
-        }
-        self.bind = self.client.bind_signature(
-            gateway=self.gateway_id,
-            **self.attrs
-        )
+        self.attrs = {"sign_id": self.sign.id, "publish_ids": [self.publish.publish_id]}
+        self.bind = self.client.bind_signature(gateway=self.gateway_id, **self.attrs)
 
         self.addCleanup(
             self.client.delete_api_group,
@@ -101,47 +83,38 @@ class TestSignature(TestApiG):
             environment=self.environment,
         )
         self.addCleanup(
-            self.client.delete_signature,
-            gateway=self.gateway_id,
-            sign=self.sign
+            self.client.delete_signature, gateway=self.gateway_id, sign=self.sign
         )
-        self.addCleanup(
-            self.client.delete_api,
-            gateway=self.gateway_id,
-            api=self.api
-        )
+        self.addCleanup(self.client.delete_api, gateway=self.gateway_id, api=self.api)
         self.addCleanup(
             self.client.offline_api,
             gateway=self.gateway_id,
             api=self.api.id,
             env=self.environment,
-            remark="offline"
+            remark="offline",
         )
         self.addCleanup(
             self.client.unbind_signature,
             gateway=self.gateway_id,
-            bind=self.bind.bindings[0].id
+            bind=self.bind.bindings[0].id,
         )
 
         self.addCleanup(self.delete_gateway())
 
     def test_list_bound_signatures(self):
-        sign = list(self.client.bound_signatures(
-            gateway=self.gateway_id,
-            api_id=self.api.id
-        ))
+        sign = list(
+            self.client.bound_signatures(gateway=self.gateway_id, api_id=self.api.id)
+        )
         self.assertEqual(len(sign), 1)
 
     def test_list_bound_apis(self):
-        sign = list(self.client.bound_apis(
-            gateway=self.gateway_id,
-            sign_id=self.sign.id
-        ))
+        sign = list(
+            self.client.bound_apis(gateway=self.gateway_id, sign_id=self.sign.id)
+        )
         self.assertEqual(len(sign), 1)
 
     def test_list_not_bound_apis(self):
-        sign = list(self.client.not_bound_apis(
-            gateway=self.gateway_id,
-            sign_id=self.sign.id
-        ))
+        sign = list(
+            self.client.not_bound_apis(gateway=self.gateway_id, sign_id=self.sign.id)
+        )
         self.assertEqual(len(sign), 0)

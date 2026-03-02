@@ -13,15 +13,13 @@
 """
 Update log group
 """
+
 import openstack
 from otcextensions import sdk
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
-attrs = {
-    'log_group_name': 'testgroup',
-    'ttl_in_days': 5
-}
-log_group = conn.lts.update_group(group='log-group-uuid', **attrs)
+attrs = {"log_group_name": "testgroup", "ttl_in_days": 5}
+log_group = conn.lts.update_group(group="log-group-uuid", **attrs)

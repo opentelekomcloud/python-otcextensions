@@ -13,11 +13,12 @@
 """
 Get details of DWS Cluster by name_or_id
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-name_or_id = 'dws-test-1'
+name_or_id = "dws-test-1"
 resp = conn.dws.find_cluster(name_or_id, ignore_missing=False)
 print(resp)

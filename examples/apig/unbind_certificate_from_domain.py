@@ -13,10 +13,11 @@
 """
 Unbind certificate from domain name
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 unbind = conn.apig.unbind_certificate_from_domain_name(
     gateway="gateway_id",
     group="group_id",

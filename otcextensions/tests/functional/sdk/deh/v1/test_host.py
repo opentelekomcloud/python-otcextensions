@@ -10,11 +10,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import uuid
-import openstack
 
+import openstack
 from otcextensions.tests.functional import base
 
-_logger = openstack._log.setup_logging('openstack')
+_logger = openstack._log.setup_logging("openstack")
 
 
 class TestHost(base.BaseFunctionalTest):
@@ -24,9 +24,9 @@ class TestHost(base.BaseFunctionalTest):
         self.client = self.conn.deh
         res = self.client.create_host(
             name=uuid.uuid4().hex,
-            availability_zone='eu-de-01',
-            host_type='general',
-            quantity=1
+            availability_zone="eu-de-01",
+            host_type="general",
+            quantity=1,
         )
         assert len(res.dedicated_host_ids) == 1
         host_id = res.dedicated_host_ids[0]
@@ -37,8 +37,7 @@ class TestHost(base.BaseFunctionalTest):
             if self.host.id:
                 self.client.delete_host(self.host)
         except openstack.exceptions.SDKException as e:
-            _logger.warning('Got exception during clearing resources %s'
-                            % e.message)
+            _logger.warning("Got exception during clearing resources %s" % e.message)
 
     def test_list(self):
         self.hosts = list(self.conn.deh.hosts())
@@ -52,7 +51,7 @@ class TestHost(base.BaseFunctionalTest):
     def test_host_types(self):
         deh = self.conn.deh
 
-        host_types = list(deh.host_types('eu-de-01'))
+        host_types = list(deh.host_types("eu-de-01"))
 
         self.assertIsNotNone(host_types)
         _logger.debug(host_types)

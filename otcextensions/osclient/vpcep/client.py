@@ -19,12 +19,10 @@ from otcextensions.i18n import _
 
 LOG = logging.getLogger(__name__)
 
-DEFAULT_API_VERSION = '1'
-API_VERSION_OPTION = 'os_vpcep_api_version'
+DEFAULT_API_VERSION = "1"
+API_VERSION_OPTION = "os_vpcep_api_version"
 API_NAME = "vpcep"
-API_VERSIONS = {
-    "1": "openstack.connection.Connection"
-}
+API_VERSIONS = {"1": "openstack.connection.Connection"}
 
 
 def make_client(instance):
@@ -32,22 +30,21 @@ def make_client(instance):
 
     conn = instance.sdk_connection
 
-    if getattr(conn, 'vpcep', None) is None:
-        LOG.debug('OTC extensions are not registered. Do that now')
+    if getattr(conn, "vpcep", None) is None:
+        LOG.debug("OTC extensions are not registered. Do that now")
         sdk.register_otc_extensions(conn)
 
-    LOG.debug('VPC Endpoint client initialized using OpenStack OTC SDK: %s',
-              conn.vpcep)
+    LOG.debug("VPC Endpoint client initialized using OpenStack OTC SDK: %s", conn.vpcep)
     return conn.vpcep
 
 
 def build_option_parser(parser):
     """Hook to add global options"""
     parser.add_argument(
-        '--os-vpcep-api-version',
-        metavar='<vpcep-api-version>',
-        default=utils.env('OS_VPCEP_API_VERSION'),
-        help=_("VPCEP API version, default=%s "
-               "(Env: OS_VPCEP_API_VERSION)") % DEFAULT_API_VERSION
+        "--os-vpcep-api-version",
+        metavar="<vpcep-api-version>",
+        default=utils.env("OS_VPCEP_API_VERSION"),
+        help=_("VPCEP API version, default=%s " "(Env: OS_VPCEP_API_VERSION)")
+        % DEFAULT_API_VERSION,
     )
     return parser

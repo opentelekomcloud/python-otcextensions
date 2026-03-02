@@ -13,11 +13,12 @@
 """
 Find a single MRS Job binary by name or id
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-name_or_id = 'name_or_id'
+name_or_id = "name_or_id"
 job_binary = conn.mrs.find_jobbinary(name_or_id)
 print(job_binary)

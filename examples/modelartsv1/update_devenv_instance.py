@@ -12,6 +12,7 @@
 # under the License.
 #
 """Modifying the Description of a Development Environment Instance."""
+
 import openstack
 
 openstack.enable_logging(True)

@@ -11,13 +11,10 @@
 # under the License.
 
 from openstack import service_description
-
 from otcextensions.sdk.hss.v5 import _proxy
 
 
 class HssService(service_description.ServiceDescription):
     """The Host Security service."""
 
-    supported_versions = {
-        '5': _proxy.Proxy
-    }
+    supported_versions = {"5": _proxy.Proxy}

@@ -11,11 +11,12 @@
 # under the License.
 #
 """Get VPC Endpoint Service."""
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-endpoint_service = 'endpoint-service-uuid'
+endpoint_service = "endpoint-service-uuid"
 endpoint_service = conn.vpcep.get_service(endpoint_service)
 print(endpoint_service)

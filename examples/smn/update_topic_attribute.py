@@ -13,16 +13,14 @@
 """
 Update SMN topic attributes
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-urn = 'urn:smn:eu-de:123:test'
+urn = "urn:smn:eu-de:123:test"
 attrs = {}
-topic = conn.smn.update_topic_attribute(
-    topic=urn,
-    name='access_policy',
-    **attrs)
+topic = conn.smn.update_topic_attribute(topic=urn, name="access_policy", **attrs)
 print(topic)

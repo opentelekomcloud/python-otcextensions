@@ -14,31 +14,30 @@ from openstack import resource
 
 
 class Flavor(resource.Resource):
-    resource_key = 'flavor'
-    resources_key = 'flavors'
-    base_path = '/elb/flavors'
+    resource_key = "flavor"
+    resources_key = "flavors"
+    base_path = "/elb/flavors"
 
     # capabilities
     allow_fetch = True
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'marker', 'limit', 'page_reverse',
-        'id', 'name', 'type', 'shared'
+        "marker", "limit", "page_reverse", "id", "name", "type", "shared"
     )
 
     # Properties
     #: Specifies the flavor ID.
-    id = resource.Body('id')
+    id = resource.Body("id")
     #: Specifies the flavor details.
-    info = resource.Body('info', type=dict)
+    info = resource.Body("info", type=dict)
     #: Specifies whether the flavor is sold out.
-    flavor_sold_out = resource.Body('flavor_sold_out', type=bool)
+    flavor_sold_out = resource.Body("flavor_sold_out", type=bool)
     #: Specifies the flavor name.
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: Specifies whether the flavor is available to all users.
-    shared = resource.Body('shared', type=bool)
+    shared = resource.Body("shared", type=bool)
     #: Specifies the project ID.
-    project_id = resource.Body('project_id')
+    project_id = resource.Body("project_id")
     #: Specifies the flavor type.
-    type = resource.Body('type')
+    type = resource.Body("type")

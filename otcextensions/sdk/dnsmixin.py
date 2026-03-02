@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import urllib
+
 from openstack import exceptions
 
 
@@ -42,17 +43,15 @@ class DNSProxyMixin:
         # Try to short-circuit by looking directly for a matching ID.
         try:
             match = cls.existing(
-                id=name_or_id,
-                connection=session._get_connection(),
-                **params)
+                id=name_or_id, connection=session._get_connection(), **params
+            )
             return match.fetch(session, **params)
         except exceptions.SDKException:
             # DNS may return 400 when we try to do GET with name
             pass
 
-        if ('name' in cls._query_mapping._mapping.keys()
-                and 'name' not in params):
-            params['name'] = name_or_id
+        if "name" in cls._query_mapping._mapping.keys() and "name" not in params:
+            params["name"] = name_or_id
 
         data = cls.list(session, **params)
 
@@ -63,17 +62,18 @@ class DNSProxyMixin:
         if ignore_missing:
             return None
         raise exceptions.ResourceNotFound(
-            "No %s found for %s" % (cls.__name__, name_or_id))
+            "No %s found for %s" % (cls.__name__, name_or_id)
+        )
 
     @classmethod
     def _get_next_link(cls, uri, response, data, marker, limit, total_yielded):
         next_link = None
         params = {}
         if isinstance(data, dict):
-            links = data.get('links')
+            links = data.get("links")
             if links:
-                next_link = links.get('next')
-            total = data.get('metadata', {}).get('total_count')
+                next_link = links.get("next")
+            total = data.get("metadata", {}).get("total_count")
             if total:
                 # We have a kill switch
                 total_count = int(total)
@@ -94,7 +94,7 @@ class DNSProxyMixin:
         # is playing pagination ball so we should go ahead and try once more.
         if not next_link:
             next_link = uri
-            params['marker'] = marker
+            params["marker"] = marker
             if limit:
-                params['limit'] = limit
+                params["limit"] = limit
         return next_link, params

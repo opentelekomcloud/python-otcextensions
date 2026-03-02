@@ -13,17 +13,15 @@
 """
 Configure a Feature for a Gateway
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 attrs = {
     "name": "route",
     "enable": True,
-    "config": "{\"user_routes\":[\"172.16.128.0/20\",\"172.16.0.0/20\"]}",
+    "config": '{"user_routes":["172.16.128.0/20","172.16.0.0/20"]}',
 }
-feat = conn.apig.configure_gateway_feature(
-    gateway="gateway_id",
-    **attrs
-)
+feat = conn.apig.configure_gateway_feature(gateway="gateway_id", **attrs)

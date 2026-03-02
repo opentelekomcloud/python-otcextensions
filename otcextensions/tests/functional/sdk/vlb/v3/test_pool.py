@@ -35,27 +35,17 @@ class TestPool(TestVlb):
         self.assertIsNotNone(pool)
 
     def test_04_update_pool(self):
-        new_description = 'changed'
-        lb_algorithm = 'LEAST_CONNECTIONS'
+        new_description = "changed"
+        lb_algorithm = "LEAST_CONNECTIONS"
         pool = self.client.update_pool(
-            TestVlb.pool,
-            description=new_description,
-            lb_algorithm=lb_algorithm
+            TestVlb.pool, description=new_description, lb_algorithm=lb_algorithm
         )
-        self.assertEqual(pool['description'], new_description)
-        self.assertEqual(pool['lb_algorithm'], lb_algorithm)
+        self.assertEqual(pool["description"], new_description)
+        self.assertEqual(pool["lb_algorithm"], lb_algorithm)
 
         # cleanup
-        self.client.delete_pool(
-            TestVlb.pool
-        )
-        self.client.delete_listener(
-            TestVlb.listener
-        )
-        self.client.delete_load_balancer(
-            TestVlb.load_balancer
-        )
-        self.net_client.delete_ip(
-            TestVlb.load_balancer.floating_ips[0]['publicip_id']
-        )
+        self.client.delete_pool(TestVlb.pool)
+        self.client.delete_listener(TestVlb.listener)
+        self.client.delete_load_balancer(TestVlb.load_balancer)
+        self.net_client.delete_ip(TestVlb.load_balancer.floating_ips[0]["publicip_id"])
         self.addCleanup(self.destroy_network, TestVlb.network)

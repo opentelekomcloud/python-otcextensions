@@ -10,20 +10,19 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-'''
+"""
 Update CBR vault
-'''
+"""
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
-attrs = {
-    'name': 'vault2'
-}
+attrs = {"name": "vault2"}
 
-vault = 'vault1'
+vault = "vault1"
 vault = conn.cbr.find_find(name_or_id=vault)
 vault = conn.cbr.update_vault(vault=vault, **attrs)
 print(vault)

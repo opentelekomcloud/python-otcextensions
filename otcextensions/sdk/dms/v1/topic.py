@@ -10,33 +10,33 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
-
 from otcextensions.sdk.dms.v1 import _base
 
 
 class Topic(_base.Resource):
     """DMS Topic resource"""
-    resources_key = 'topics'
-    base_path = '/instances/%(instance_id)s/topics'
+
+    resources_key = "topics"
+    base_path = "/instances/%(instance_id)s/topics"
 
     # capabilities
     allow_list = True
     allow_create = True
     allow_delete = True
 
-#    _query_mapping = resource.QueryParameters('instance_id')
+    #    _query_mapping = resource.QueryParameters('instance_id')
 
-    instance_id = resource.URI('instance_id')
+    instance_id = resource.URI("instance_id")
 
     #: Properties
     #: Synchronous flushing. Default=false
-    is_sync_flush = resource.Body('sync_message_flush', type=bool)
+    is_sync_flush = resource.Body("sync_message_flush", type=bool)
     #: Synchronous replication. Default=false. With replication=1 can be only
     #: false
-    is_sync_replication = resource.Body('sync_replication', type=bool)
+    is_sync_replication = resource.Body("sync_replication", type=bool)
     #: Number of partitions. Default=3
-    partition = resource.Body('partition', type=int)
+    partition = resource.Body("partition", type=int)
     #: Replication factor. Default=3
-    replication = resource.Body('replication', type=int)
+    replication = resource.Body("replication", type=int)
     #: Retention time in hours. Default=72
-    retention_time = resource.Body('retention_time', type=int)
+    retention_time = resource.Body("retention_time", type=int)

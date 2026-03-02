@@ -13,17 +13,17 @@ from openstack import resource
 
 
 class Sms(resource.Resource):
-    base_path = '/notifications/sms'
+    base_path = "/notifications/sms"
 
     # capabilities
     allow_create = True
 
     #: Message ID, which is unique
-    message_id = resource.Body('message_id')
+    message_id = resource.Body("message_id")
     #: Request ID, which is unique.
-    request_id = resource.Body('request_id')
+    request_id = resource.Body("request_id")
     #: Phone number. The phone number must be preceded by
     #:  a plus sign (+) and a country code.
-    endpoint = resource.Body('endpoint')
+    endpoint = resource.Body("endpoint")
     #: SMS message content.
-    message = resource.Body('message')
+    message = resource.Body("message")

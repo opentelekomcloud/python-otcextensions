@@ -19,8 +19,8 @@ import openstack
 openstack.enable_logging(True)
 conn = openstack.connect()
 
-cluster_name_or_id = 'css-test0802'
-upgrade_type = 'same'
+cluster_name_or_id = "css-test0802"
+upgrade_type = "same"
 
 cluster = conn.css.find_cluster(cluster_name_or_id)
 

@@ -14,17 +14,17 @@ from openstack import resource
 
 
 class PublicService(resource.Resource):
-    base_path = '/vpc-endpoint-services/public'
-    resources_key = 'endpoint_services'
+    base_path = "/vpc-endpoint-services/public"
+    resources_key = "endpoint_services"
 
     _query_mapping = resource.QueryParameters(
-        'id',
-        'limit',
-        'name',
-        'offset',
-        'sort_key',
-        'sort_dir',
-        name='endpoint_service_name',
+        "id",
+        "limit",
+        "name",
+        "offset",
+        "sort_key",
+        "sort_dir",
+        name="endpoint_service_name",
     )
 
     # capabilities
@@ -36,14 +36,14 @@ class PublicService(resource.Resource):
 
     # Properties
     #: ID of the VPC endpoint service.
-    id = resource.Body('id')
+    id = resource.Body("id")
     #: Owner of the VPC endpoint service.
-    owner = resource.Body('owner')
+    owner = resource.Body("owner")
     #: Name of the VPC endpoint service.
-    service_name = resource.Body('service_name')
+    service_name = resource.Body("service_name")
     #: Type of the VPC endpoint service.
-    service_type = resource.Body('service_type')
+    service_type = resource.Body("service_type")
     #: Creation time of the VPC endpoint service.
-    created_at = resource.Body('created_at')
+    created_at = resource.Body("created_at")
     #: If the usage of the VPC endpoint service will be charged.
-    is_charge = resource.Body('is_charge')
+    is_charge = resource.Body("is_charge")

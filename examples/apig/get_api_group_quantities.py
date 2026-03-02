@@ -13,10 +13,10 @@
 """
 Get API Group Quantities
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-api_q = conn.apig.get_api_group_quantities(
-    gateway="gateway_id")
+api_q = conn.apig.get_api_group_quantities(gateway="gateway_id")

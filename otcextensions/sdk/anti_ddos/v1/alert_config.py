@@ -14,7 +14,7 @@ from openstack import resource
 
 class AlertConfig(resource.Resource):
 
-    base_path = '/warnalert/alertconfig/query'
+    base_path = "/warnalert/alertconfig/query"
 
     # capabilities
     allow_fetch = True
@@ -22,11 +22,11 @@ class AlertConfig(resource.Resource):
     # Properties
     #: warn alert config information
     #: *Type: dict*
-    config = resource.Body('warn_config', type=dict)
+    config = resource.Body("warn_config", type=dict)
     #: unique topic id
-    topic_urn = resource.Body('topic_urn')
+    topic_urn = resource.Body("topic_urn")
     #: warn alert group name
-    display_name = resource.Body('display_name')
+    display_name = resource.Body("display_name")
 
     # # This overrides the default behavior of resource get
     # def get(self, session, requires_id=False):

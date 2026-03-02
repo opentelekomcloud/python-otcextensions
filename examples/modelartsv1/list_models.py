@@ -12,6 +12,7 @@
 # under the License.
 #
 """List all Models."""
+
 import openstack
 
 openstack.enable_logging(True)

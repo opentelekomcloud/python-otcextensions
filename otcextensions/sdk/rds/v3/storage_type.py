@@ -14,23 +14,22 @@ from openstack import resource
 
 class StorageType(resource.Resource):
 
-    base_path = '/storage-type/%(datastore_name)s'
-    resources_key = 'storage_type'
+    base_path = "/storage-type/%(datastore_name)s"
+    resources_key = "storage_type"
 
     # capabilities
     allow_list = True
-    _query_mapping = resource.QueryParameters(
-        'version_name')
+    _query_mapping = resource.QueryParameters("version_name")
 
     #: DB engine name
     #: *Type: str*
-    datastore_name = resource.URI('datastore_name')
+    datastore_name = resource.URI("datastore_name")
     #: Indicates the storage type
     #: *Type: str*
-    name = resource.Body('name')
+    name = resource.Body("name")
     #: Indicates the performance specifications
     #: *Type: list*
-    compute_group_type = resource.Body('support_compute_group_type', type=list)
+    compute_group_type = resource.Body("support_compute_group_type", type=list)
     #: Availability Zone Status
     #: *Type: dict*
-    az_status = resource.Body('az_status', type=dict)
+    az_status = resource.Body("az_status", type=dict)

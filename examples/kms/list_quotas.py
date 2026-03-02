@@ -13,11 +13,11 @@
 """
 List all KMS quotas
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 for quota in conn.kms.quotas():
     print(quota)

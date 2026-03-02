@@ -13,10 +13,11 @@
 """
 List all Distributed Cache Service Maintenance Time Windows
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 for mtw in conn.dcs.maintenance_time_windows():

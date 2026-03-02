@@ -9,29 +9,27 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-'''
+"""
 Create CBR Checkpoint
-'''
+"""
+
 import openstack
 from otcextensions import sdk
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 sdk.register_otc_extensions(conn)
 
 
 attrs = {
-    'parameters': {
-        'auto_trigger': False,
-        'description': 'backup_description',
-        'incremental': False,
-        'name': 'manual_backup',
-        'resources': [
-            'ecs_id'
-        ]
+    "parameters": {
+        "auto_trigger": False,
+        "description": "backup_description",
+        "incremental": False,
+        "name": "manual_backup",
+        "resources": ["ecs_id"],
     },
-    'vault_id': 'vault_id'
+    "vault_id": "vault_id",
 }
 checkpoint = conn.cbr.create_checkpoint(**attrs)
 conn.cbr.wait_for_checkpoint(checkpoint)

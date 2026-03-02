@@ -11,13 +11,13 @@
 # under the License.
 
 from openstack.tests.unit import base
-
 from otcextensions.sdk.tms.v1 import resource_tag
 
 EXAMPLE = {
     "project_id": "786ef11caa5c43ff80256be4c7fee8b7",
-    "resources": [{"resource_id": "2079d0a6-3dbc-4d59-99da-6b8b7c899a97",
-                   "resource_type": "vpc"}],
+    "resources": [
+        {"resource_id": "2079d0a6-3dbc-4d59-99da-6b8b7c899a97", "resource_type": "vpc"}
+    ],
     "tags": [{"key": "ENV1", "value": "dev1"}],
 }
 
@@ -33,6 +33,6 @@ class TestResourceTag(base.TestCase):
 
     def test_make_it(self):
         sot = resource_tag.ResourceTag(**EXAMPLE)
-        self.assertEqual(EXAMPLE['tags'], sot.tags)
-        self.assertEqual(EXAMPLE['resources'], sot.resources)
-        self.assertEqual(EXAMPLE['project_id'], sot.project_id)
+        self.assertEqual(EXAMPLE["tags"], sot.tags)
+        self.assertEqual(EXAMPLE["resources"], sot.resources)
+        self.assertEqual(EXAMPLE["project_id"], sot.project_id)

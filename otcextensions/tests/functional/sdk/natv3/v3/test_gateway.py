@@ -10,10 +10,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import openstack
-
 from otcextensions.tests.functional import base
 
-_logger = openstack._log.setup_logging('openstack')
+_logger = openstack._log.setup_logging("openstack")
 
 
 class TestGateway(base.BaseFunctionalTest):

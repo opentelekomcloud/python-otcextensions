@@ -12,8 +12,8 @@
 from otcextensions.sdk import sdk_proxy
 from otcextensions.sdk.mrs.v1 import cluster as _cluster
 from otcextensions.sdk.mrs.v1 import datasource as _datasource
-from otcextensions.sdk.mrs.v1 import jobbinary as _jobbinary
 from otcextensions.sdk.mrs.v1 import job as _job
+from otcextensions.sdk.mrs.v1 import jobbinary as _jobbinary
 
 
 class Proxy(sdk_proxy.Proxy):
@@ -22,7 +22,7 @@ class Proxy(sdk_proxy.Proxy):
     def __init__(self, session, *args, **kwargs):
         super(Proxy, self).__init__(session=session, *args, **kwargs)
         self.additional_headers = {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
         }
 
     # ======== clusters ========
@@ -59,7 +59,8 @@ class Proxy(sdk_proxy.Proxy):
         :returns: ``None``
         """
         return self._find(
-            _cluster.ClusterInfo, name_or_id,
+            _cluster.ClusterInfo,
+            name_or_id,
             ignore_missing=ignore_missing,
         )
 
@@ -92,10 +93,7 @@ class Proxy(sdk_proxy.Proxy):
         """
         if isinstance(cluster, _cluster.ClusterInfo):
             cluster = cluster.id
-        return self._delete(
-            _cluster.Cluster,
-            cluster,
-            ignore_missing=ignore_missing)
+        return self._delete(_cluster.Cluster, cluster, ignore_missing=ignore_missing)
 
     def hosts(self, **query):
         """Retrieve a generator of hosts
@@ -157,8 +155,9 @@ class Proxy(sdk_proxy.Proxy):
         :returns: datasource been deleted
         :rtype: :class:`~otcextensions.sdk.mrs.v1.datasource.Datasource`
         """
-        return self._delete(_datasource.Datasource, datasource,
-                            ignore_missing=ignore_missing)
+        return self._delete(
+            _datasource.Datasource, datasource, ignore_missing=ignore_missing
+        )
 
     def find_datasource(self, name_or_id, ignore_missing=True):
         """Find a single datasource
@@ -172,8 +171,9 @@ class Proxy(sdk_proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._find(_datasource.Datasource, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(
+            _datasource.Datasource, name_or_id, ignore_missing=ignore_missing
+        )
 
     def update_datasource(self, datasource, **attrs):
         """Update ds attributes
@@ -236,8 +236,9 @@ class Proxy(sdk_proxy.Proxy):
 
         :rtype: :class:`~otcextensions.sdk.mrs.v1.jobbinary.Jobbinary`
         """
-        return self._delete(_jobbinary.Jobbinary, jobbinary,
-                            ignore_missing=ignore_missing)
+        return self._delete(
+            _jobbinary.Jobbinary, jobbinary, ignore_missing=ignore_missing
+        )
 
     def find_jobbinary(self, name_or_id, ignore_missing=True):
         """Find a single jobbinary
@@ -251,8 +252,9 @@ class Proxy(sdk_proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._find(_jobbinary.Jobbinary, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(
+            _jobbinary.Jobbinary, name_or_id, ignore_missing=ignore_missing
+        )
 
     def update_jobbinary(self, jobbinary, **attrs):
         """Update jobbinary attributes
@@ -316,8 +318,7 @@ class Proxy(sdk_proxy.Proxy):
         :returns: Job been deleted
         :rtype: :class:`~otcextensions.sdk.mrs.v1.job.Job`
         """
-        return self._delete(_job.Job, job,
-                            ignore_missing=ignore_missing)
+        return self._delete(_job.Job, job, ignore_missing=ignore_missing)
 
     def find_job(self, name_or_id, ignore_missing=True):
         """Find a single job
@@ -331,8 +332,7 @@ class Proxy(sdk_proxy.Proxy):
 
         :returns: ``None``
         """
-        return self._find(_job.Job, name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(_job.Job, name_or_id, ignore_missing=ignore_missing)
 
     def update_job(self, job, **attrs):
         """Update job attributes

@@ -10,17 +10,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-import mock
 from unittest.mock import call
 
+import mock
+from openstackclient.tests.unit import utils as tests_utils
 from osc_lib import exceptions
 
+from otcextensions.common import cli_utils
 from otcextensions.osclient.dis.v2 import app
 from otcextensions.sdk.dis.v2 import app as sdk_app
-from otcextensions.common import cli_utils
 from otcextensions.tests.unit.osclient.dis.v2 import fakes
-
-from openstackclient.tests.unit import utils as tests_utils
 
 
 class TestListApps(fakes.TestDis):
@@ -28,25 +27,27 @@ class TestListApps(fakes.TestDis):
     objects = fakes.FakeApp.create_multiple(3)
 
     column_list_headers = (
-        'App Name',
-        'Id',
-        'Created At',
+        "App Name",
+        "Id",
+        "Created At",
     )
 
     columns = (
-        'name',
-        'id',
-        'created_at',
+        "name",
+        "id",
+        "created_at",
     )
 
     data = []
 
     for s in objects:
-        data.append((
-            s.name,
-            s.id,
-            cli_utils.UnixTimestampFormatter(s.created_at),
-        ))
+        data.append(
+            (
+                s.name,
+                s.id,
+                cli_utils.UnixTimestampFormatter(s.created_at),
+            )
+        )
 
     def setUp(self):
         super(TestListApps, self).setUp()
@@ -77,15 +78,18 @@ class TestListApps(fakes.TestDis):
 
     def test_list_args(self):
         arglist = [
-            '--limit', '1',
-            '--start-app-name', '2',
-            '--stream-name', '3',
+            "--limit",
+            "1",
+            "--start-app-name",
+            "2",
+            "--stream-name",
+            "3",
         ]
 
         verifylist = [
-            ('limit', 1),
-            ('start_app_name', '2'),
-            ('stream_name', '3'),
+            ("limit", 1),
+            ("start_app_name", "2"),
+            ("stream_name", "3"),
         ]
 
         # Verify cm is triggered with default parameters
@@ -99,16 +103,14 @@ class TestListApps(fakes.TestDis):
 
         self.client.api_mock.assert_called_with(
             limit=1,
-            start_app_name='2',
-            stream_name='3',
+            start_app_name="2",
+            stream_name="3",
         )
 
 
 class TestCreateApp(fakes.TestDis):
 
-    columns = (
-        'name',
-    )
+    columns = ("name",)
 
     def setUp(self):
         super(TestCreateApp, self).setUp()
@@ -117,21 +119,20 @@ class TestCreateApp(fakes.TestDis):
 
     def test_create(self):
         arglist = [
-            'test-app',
+            "test-app",
         ]
         verifylist = [
-            ('appName', 'test-app'),
+            ("appName", "test-app"),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         attrs = {}
         attrs.update(
-            app_name='test-app',
+            app_name="test-app",
         )
 
-        self.client.create_app = mock.Mock(
-            return_value=sdk_app.App(**attrs))
+        self.client.create_app = mock.Mock(return_value=sdk_app.App(**attrs))
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -144,10 +145,10 @@ class TestShowApp(fakes.TestDis):
 
     _data = fakes.FakeApp.create_one()
     columns = (
-        'commit_checkpoint_stream_names',
-        'created_at',
-        'id',
-        'name',
+        "commit_checkpoint_stream_names",
+        "created_at",
+        "id",
+        "name",
     )
 
     data = fakes.gen_data(_data, columns, app._formatters)
@@ -165,8 +166,13 @@ class TestShowApp(fakes.TestDis):
 
         # Testing that a call without the required argument will fail and
         # throw a "ParserExecption"
-        self.assertRaises(tests_utils.ParserException,
-                          self.check_parser, self.cmd, arglist, verifylist)
+        self.assertRaises(
+            tests_utils.ParserException,
+            self.check_parser,
+            self.cmd,
+            arglist,
+            verifylist,
+        )
 
     def test_show(self):
         arglist = [
@@ -174,7 +180,7 @@ class TestShowApp(fakes.TestDis):
         ]
 
         verifylist = [
-            ('appName', self._data.name),
+            ("appName", self._data.name),
         ]
 
         # Verify cm is triggered with default parameters
@@ -189,27 +195,25 @@ class TestShowApp(fakes.TestDis):
 
     def test_show_non_existent(self):
         arglist = [
-            'unexist_dis_app',
+            "unexist_dis_app",
         ]
 
         verifylist = [
-            ('appName', 'unexist_dis_app'),
+            ("appName", "unexist_dis_app"),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        get_mock_result = exceptions.CommandError('Resource Not Found')
-        self.client.find_app = (
-            mock.Mock(side_effect=get_mock_result)
-        )
+        get_mock_result = exceptions.CommandError("Resource Not Found")
+        self.client.find_app = mock.Mock(side_effect=get_mock_result)
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual('Resource Not Found', str(e))
-        self.client.get_app.assert_called_with('unexist_dis_app')
+            self.assertEqual("Resource Not Found", str(e))
+        self.client.get_app.assert_called_with("unexist_dis_app")
 
 
 class TestDeleteApp(fakes.TestDis):
@@ -230,7 +234,7 @@ class TestDeleteApp(fakes.TestDis):
         ]
 
         verifylist = [
-            ('appName', [self._data[0].name]),
+            ("appName", [self._data[0].name]),
         ]
 
         # Verify cm is triggered with default parameters
@@ -248,7 +252,7 @@ class TestDeleteApp(fakes.TestDis):
             arglist.append(dis_app.name)
 
         verifylist = [
-            ('appName', arglist),
+            ("appName", arglist),
         ]
 
         # Verify cm is triggered with default parameters
@@ -266,10 +270,10 @@ class TestDeleteApp(fakes.TestDis):
     def test_multiple_delete_with_exception(self):
         arglist = [
             self._data[0].name,
-            'unexist_dis_app',
+            "unexist_dis_app",
         ]
         verifylist = [
-            ('appName', arglist),
+            ("appName", arglist),
         ]
 
         # Verify cm is triggered with default parameters
@@ -281,7 +285,7 @@ class TestDeleteApp(fakes.TestDis):
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual('1 of 2 DIS App(s) failed to delete.', str(e))
+            self.assertEqual("1 of 2 DIS App(s) failed to delete.", str(e))
 
-        calls = [call(self._data[0].name), call('unexist_dis_app')]
+        calls = [call(self._data[0].name), call("unexist_dis_app")]
         self.client.delete_app.assert_has_calls(calls)

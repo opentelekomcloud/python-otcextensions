@@ -14,47 +14,51 @@ from openstack import resource
 
 class RestoreRecord(resource.Resource):
 
-    resources_key = 'restore_record_response'
+    resources_key = "restore_record_response"
 
-    base_path = '/instances/%(instance_id)s/restores'
+    base_path = "/instances/%(instance_id)s/restores"
 
     # capabilities
     allow_list = True
     allow_create = True
 
     _query_mapping = resource.QueryParameters(
-        'limit', 'start', 'begin_time', 'end_time',
-        begin_time='beginTime',
-        end_time='endTime')
+        "limit",
+        "start",
+        "begin_time",
+        "end_time",
+        begin_time="beginTime",
+        end_time="endTime",
+    )
 
     # Properties
     #: Instance ID
-    instance_id = resource.URI('instance_id')
+    instance_id = resource.URI("instance_id")
     #: Backup description
-    backup_description = resource.Body('backup_remark')
+    backup_description = resource.Body("backup_remark")
     #: Backup ID
-    backup_id = resource.Body('backup_id')
+    backup_id = resource.Body("backup_id")
     #: Backup name
-    backup_name = resource.Body('backup_name')
+    backup_name = resource.Body("backup_name")
     #: Time at which the backup task is created.
-    created_at = resource.Body('created_at')
+    created_at = resource.Body("created_at")
     #: Restore description
-    description = resource.Body('remark')
+    description = resource.Body("remark")
     #: Error code returned if DCS instance restore fails.
-    error_code = resource.Body('error_code')
+    error_code = resource.Body("error_code")
     #: Restore ID
-    id = resource.Body('restore_id', alternate_id=True)
+    id = resource.Body("restore_id", alternate_id=True)
     #: Restore description
-    restore_description = resource.Body('restore_remark', alias='description')
+    restore_description = resource.Body("restore_remark", alias="description")
     #: Restore name
-    restore_name = resource.Body('restore_name')
+    restore_name = resource.Body("restore_name")
     #: Restore progress.
-    progress = resource.Body('progress')
+    progress = resource.Body("progress")
     #: Restore status.
     #: * waiting: DCS instance restore is waiting to begin.
     #: * restoring: DCS instance restore is in progress.
     #: * succeed: DCS instance restore succeeded.
     #: * failed: DCS instance restore failed.
-    status = resource.Body('status')
+    status = resource.Body("status")
     #: Time at which DCS instance restore is completed.
-    updated_at = resource.Body('updated_at')
+    updated_at = resource.Body("updated_at")

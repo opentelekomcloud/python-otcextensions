@@ -13,19 +13,20 @@
 """
 Update error response for api group
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 attrs = {
     "status": 403,
-    "body": "{\"error_code\": \"$context.error.code\", "
-            "\"error_msg\": \"$context.error.message\"}"
+    "body": '{"error_code": "$context.error.code", '
+    '"error_msg": "$context.error.message"}',
 }
 updated = conn.apig.update_error_response(
     gateway="gateway_id",
     group="group_id",
     response="response_id",
-    response_type='NOT_FOUND',
+    response_type="NOT_FOUND",
     **attrs
 )

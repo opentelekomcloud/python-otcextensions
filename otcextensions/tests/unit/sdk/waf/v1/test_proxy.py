@@ -10,11 +10,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from openstack.tests.unit import test_proxy_base
 from otcextensions.sdk.waf.v1 import _proxy
 from otcextensions.sdk.waf.v1 import certificate
 from otcextensions.sdk.waf.v1 import domain
-
-from openstack.tests.unit import test_proxy_base
 
 
 class TestWafProxy(test_proxy_base.TestProxyBase):
@@ -26,15 +25,15 @@ class TestWafProxy(test_proxy_base.TestProxyBase):
 
 class TestWafCertificate(TestWafProxy):
     def test_certificate_create(self):
-        self.verify_create(self.proxy.create_certificate,
-                           certificate.Certificate,
-                           method_kwargs={'name': 'id'},
-                           expected_kwargs={'name': 'id',
-                                            'prepend_key': False})
+        self.verify_create(
+            self.proxy.create_certificate,
+            certificate.Certificate,
+            method_kwargs={"name": "id"},
+            expected_kwargs={"name": "id", "prepend_key": False},
+        )
 
     def test_certificate_delete(self):
-        self.verify_delete(self.proxy.delete_certificate,
-                           certificate.Certificate, True)
+        self.verify_delete(self.proxy.delete_certificate, certificate.Certificate, True)
 
     def test_certificate_find(self):
         self.verify_find(self.proxy.find_certificate, certificate.Certificate)
@@ -46,21 +45,20 @@ class TestWafCertificate(TestWafProxy):
         self.verify_list(self.proxy.certificates, certificate.Certificate)
 
     def test_certificate_update(self):
-        self.verify_update(self.proxy.update_certificate,
-                           certificate.Certificate)
+        self.verify_update(self.proxy.update_certificate, certificate.Certificate)
 
 
 class TestWafDomain(TestWafProxy):
     def test_domain_create(self):
-        self.verify_create(self.proxy.create_domain,
-                           domain.Domain,
-                           method_kwargs={'name': 'id'},
-                           expected_kwargs={'name': 'id',
-                                            'prepend_key': False})
+        self.verify_create(
+            self.proxy.create_domain,
+            domain.Domain,
+            method_kwargs={"name": "id"},
+            expected_kwargs={"name": "id", "prepend_key": False},
+        )
 
     def test_domain_delete(self):
-        self.verify_delete(self.proxy.delete_domain,
-                           domain.Domain, True)
+        self.verify_delete(self.proxy.delete_domain, domain.Domain, True)
 
     def test_domain_find(self):
         self.verify_find(self.proxy.find_domain, domain.Domain)
@@ -72,5 +70,4 @@ class TestWafDomain(TestWafProxy):
         self.verify_list(self.proxy.domains, domain.Domain)
 
     def test_domain_update(self):
-        self.verify_update(self.proxy.update_domain,
-                           domain.Domain)
+        self.verify_update(self.proxy.update_domain, domain.Domain)

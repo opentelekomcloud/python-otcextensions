@@ -19,36 +19,43 @@ class TestKeyEvent(TestCtsv3):
 
     def test_01_create_event(self):
         attrs = {
-            "notification_name": f'event_{self.uuid_v4}',
+            "notification_name": f"event_{self.uuid_v4}",
             "operation_type": "complete",
         }
         event = self.conn.ctsv3.create_key_event(**attrs)
-        self.assertGreater(len(event['notification_id']), 0)
+        self.assertGreater(len(event["notification_id"]), 0)
 
     def test_02_key_events(self):
-        events = list(self.conn.ctsv3.key_events(notification_type='smn'))
+        events = list(self.conn.ctsv3.key_events(notification_type="smn"))
         self.assertGreater(len(events), 0)
 
     def test_03_update_event(self):
-        event = list(self.conn.ctsv3.key_events(
-            notification_type='smn',
-            notification_name=f'event_{self.uuid_v4}'))[0]
+        event = list(
+            self.conn.ctsv3.key_events(
+                notification_type="smn", notification_name=f"event_{self.uuid_v4}"
+            )
+        )[0]
         attrs = {
-            "notification_name": f'event_{self.uuid_v4}_update',
+            "notification_name": f"event_{self.uuid_v4}_update",
             "operation_type": "complete",
             "status": "disabled",
-            "notification_id": event['notification_id']
+            "notification_id": event["notification_id"],
         }
         event = self.conn.ctsv3.update_key_event(**attrs)
-        self.assertGreater(len(event['notification_id']), 0)
+        self.assertGreater(len(event["notification_id"]), 0)
 
     def test_04_delete_event(self):
-        event = list(self.conn.ctsv3.key_events(
-            notification_type='smn',
-            notification_name=f'event_{self.uuid_v4}_update'))[0]
+        event = list(
+            self.conn.ctsv3.key_events(
+                notification_type="smn",
+                notification_name=f"event_{self.uuid_v4}_update",
+            )
+        )[0]
         self.conn.ctsv3.delete_key_event(event)
-        events = list(self.conn.ctsv3.key_events(notification_type='smn'))
+        events = list(self.conn.ctsv3.key_events(notification_type="smn"))
         test_event = [
-            event for event in events
-            if event['notification_name'] == f'event_{self.uuid_v4}_update']
+            event
+            for event in events
+            if event["notification_name"] == f"event_{self.uuid_v4}_update"
+        ]
         self.assertEqual(len(test_event), 0)

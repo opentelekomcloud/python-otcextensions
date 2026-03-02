@@ -13,11 +13,12 @@
 """
 Delete MRS Datasource
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-name_or_id = 'name_or_id'
+name_or_id = "name_or_id"
 datasource = conn.mrs.find_datasource(name_or_id)
 conn.mrs.delete_datasource(datasource=datasource)

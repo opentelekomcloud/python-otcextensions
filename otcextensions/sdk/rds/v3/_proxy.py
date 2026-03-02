@@ -14,7 +14,6 @@ import datetime
 
 from openstack import proxy
 from openstack import resource
-
 from otcextensions.sdk import job
 from otcextensions.sdk.rds.v3 import backup as _backup
 from otcextensions.sdk.rds.v3 import configuration as _configuration
@@ -31,8 +30,8 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
     def __init__(self, session, *args, **kwargs):
         super(Proxy, self).__init__(session=session, *args, **kwargs)
         self.additional_headers = {
-            'Content-Type': 'application/json',
-            'X-Language': 'en-us'
+            "Content-Type": "application/json",
+            "X-Language": "en-us",
         }
 
     # ======= Datastores =======
@@ -42,8 +41,8 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         :returns: A generator of supported datastore type objects
             with name attribute.
         """
-        for ds in ['MySQL', 'PostgreSQL', 'SQLServer']:
-            obj = type('obj', (object, ), {'name': ds})
+        for ds in ["MySQL", "PostgreSQL", "SQLServer"]:
+            obj = type("obj", (object,), {"name": ds})
             yield obj
 
     def datastores(self, database_name):
@@ -72,9 +71,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
 
         :returns: A generator of flavor objects.
         """
-        return self._list(_flavor.Flavor,
-                          datastore_name=datastore_name,
-                          **params)
+        return self._list(_flavor.Flavor, datastore_name=datastore_name, **params)
 
     # ======= Storage Types =======
 
@@ -86,9 +83,11 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
 
         :returns: A generator of flavor objects.
         """
-        return self._list(_storage_type.StorageType,
-                          datastore_name=datastore_name,
-                          version_name=version_name)
+        return self._list(
+            _storage_type.StorageType,
+            datastore_name=datastore_name,
+            version_name=version_name,
+        )
 
     # ======= Instance =======
 
@@ -147,9 +146,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         :returns:
             One :class:`~otcextensions.sdk.rds.v3.instance.Instance` or None.
         """
-        return self._find(_instance.Instance,
-                          name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(_instance.Instance, name_or_id, ignore_missing=ignore_missing)
 
     def instances(self, **params):
         """Return a generator of instances
@@ -161,10 +158,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         """
         return self._list(_instance.Instance, **params)
 
-    def restore_instance(self,
-                         instance,
-                         backup=None,
-                         restore_time=None):
+    def restore_instance(self, instance, backup=None, restore_time=None):
         """Restore instance from backup or Restore using Point in
             Time Recovery
 
@@ -207,8 +201,9 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         instance = self._get_resource(_instance.Instance, instance)
         return instance.get_backup_policy(self)
 
-    def set_instance_backup_policy(self, instance, keep_days,
-                                   start_time=None, period=None):
+    def set_instance_backup_policy(
+        self, instance, keep_days, start_time=None, period=None
+    ):
         """Sets the backup policy of the instance
 
         :param instance: This parameter can be either the ID of an instance
@@ -220,8 +215,9 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         :returns: ``None``
         """
         instance = self._get_resource(_instance.Instance, instance)
-        return instance.set_backup_policy(self, keep_days=keep_days,
-                                          start_time=start_time, period=period)
+        return instance.set_backup_policy(
+            self, keep_days=keep_days, start_time=start_time, period=period
+        )
 
     def restart_instance(self, instance):
         """Restart the database instance
@@ -252,8 +248,16 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         instance = self._get_resource(_instance.Instance, instance)
         return instance.update_flavor(self, spec_code)
 
-    def get_instance_logs(self, instance, log_type, start_date=None,
-                          end_date=None, offset=1, limit=10, level='ALL'):
+    def get_instance_logs(
+        self,
+        instance,
+        log_type,
+        start_date=None,
+        end_date=None,
+        offset=1,
+        limit=10,
+        level="ALL",
+    ):
         """Get instance logs. If no dates are specified logs are gathered
             from the last 24 hours.
 
@@ -272,20 +276,24 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
             Values: ALL, INFO, LOG, WARNING, ERROR, FATAL, PANIC, NOTE.
         """
         instance = self._get_resource(_instance.Instance, instance)
-        if log_type not in ['errorlog', 'slowlog']:
-            raise Exception('The parameter log_type has to be either '
-                            '"errorlog" or "slowlog".')
+        if log_type not in ["errorlog", "slowlog"]:
+            raise Exception(
+                "The parameter log_type has to be either " '"errorlog" or "slowlog".'
+            )
         if bool(start_date) ^ bool(end_date):
-            raise Exception('The parameters start_date and end_date should '
-                            'only be specified together.')
+            raise Exception(
+                "The parameters start_date and end_date should "
+                "only be specified together."
+            )
         elif not any([start_date, end_date]):
             current_time = datetime.datetime.now().astimezone()
             yesterday = current_time - datetime.timedelta(days=1)
             start_date = yesterday.strftime("%Y-%m-%dT%H:%M:%S%z")
             end_date = current_time.strftime("%Y-%m-%dT%H:%M:%S%z")
 
-        return instance.get_logs(self, log_type, start_date, end_date,
-                                 offset, limit, level)
+        return instance.get_logs(
+            self, log_type, start_date, end_date, offset, limit, level
+        )
 
     def add_tag(self, instance, key, value):
         """Add tag to instance.
@@ -308,34 +316,34 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         instance = self._get_resource(_instance.Instance, instance)
         return instance.remove_tag(self, key)
 
-#     def get_instance_configuration(self, instance):
-#         """Obtaining a Configuration associated to instance.
-#
-#         :param instance: This parameter can be either the ID of an instance
-#             or a :class:`~openstack.sdk.rds.v3.instance.Instance`
-#         :returns: Configuration Group details associated to instance
-#         :rtype: :class:
-#             `~otcextensions.sdk.rds.v3.instance.InstanceConfiguration`
-#
-#         """
-#         instance = self._get_resource(instance)
-#         return self._get(_instance.InstanceConfiguration,
-#                          requires_id=False,
-#                          instance_id=instance.id)
-#
-#     def update_instance_configuration(self, instance, **attrs):
-#         """Updates the configuration params of the instance.
-#
-#         :param instance: This parameter can be either the ID of an instance
-#             or a :class:`~openstack.sdk.rds.v3.instance.Instance`
-#
-#         :returns: Parameter restart required as bool value
-#         """
-#         instance = self._get_resource(_instance.Instance, instance)
-#         return self._update(_instance.InstanceConfiguration,
-#                             instance_id=instance.id,
-#                             **attrs)
-#
+    #     def get_instance_configuration(self, instance):
+    #         """Obtaining a Configuration associated to instance.
+    #
+    #         :param instance: This parameter can be either the ID of an instance
+    #             or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+    #         :returns: Configuration Group details associated to instance
+    #         :rtype: :class:
+    #             `~otcextensions.sdk.rds.v3.instance.InstanceConfiguration`
+    #
+    #         """
+    #         instance = self._get_resource(instance)
+    #         return self._get(_instance.InstanceConfiguration,
+    #                          requires_id=False,
+    #                          instance_id=instance.id)
+    #
+    #     def update_instance_configuration(self, instance, **attrs):
+    #         """Updates the configuration params of the instance.
+    #
+    #         :param instance: This parameter can be either the ID of an instance
+    #             or a :class:`~openstack.sdk.rds.v3.instance.Instance`
+    #
+    #         :returns: Parameter restart required as bool value
+    #         """
+    #         instance = self._get_resource(_instance.Instance, instance)
+    #         return self._update(_instance.InstanceConfiguration,
+    #                             instance_id=instance.id,
+    #                             **attrs)
+    #
     # ======= Configurations =======
     def configurations(self, **params):
         """Obtaining a list of DB Configuration.
@@ -345,10 +353,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
 
         :returns: A generator of Configuration objects.
         """
-        return self._list(
-            _configuration.Configuration,
-            paginated=False
-        )
+        return self._list(_configuration.Configuration, paginated=False)
 
     def get_configuration(self, cg):
         """Obtaining a Configuration.
@@ -376,9 +381,9 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
 
         :rtype: :class:`~otcextensions.sdk.rds.v3.configuration.Configuration`
         """
-        return self._find(_configuration.Configuration,
-                          name_or_id,
-                          ignore_missing=ignore_missing)
+        return self._find(
+            _configuration.Configuration, name_or_id, ignore_missing=ignore_missing
+        )
 
     def create_configuration(self, **attrs):
         """Create DB Configuration.
@@ -390,9 +395,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         :rtype:
             :class:`~otcextensions.sdk.rds.v3.configuration.Configuration`
         """
-        return self._create(_configuration.Configuration,
-                            prepend_key=False,
-                            **attrs)
+        return self._create(_configuration.Configuration, prepend_key=False, **attrs)
 
     def delete_configuration(self, cg, ignore_missing=True):
         """Delete DB Configuration.
@@ -423,8 +426,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
 
         :returns: ``None``
         """
-        return self._update(_configuration.Configuration, config,
-                            **attrs)
+        return self._update(_configuration.Configuration, config, **attrs)
 
     def apply_configuration(self, configuration, instances):
         """Apply configuration to instances.
@@ -440,8 +442,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         :rtype:
             :class:`~otcextensions.rds.v3.configuration.Configuration`.
         """
-        cg = self._get_resource(_configuration.Configuration,
-                                configuration)
+        cg = self._get_resource(_configuration.Configuration, configuration)
         return cg.apply(self, instances)
 
     # ======= Backups =======
@@ -469,7 +470,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         :rtype: :class:`~otcextensions.sdk.rds.v3.backup.Backup`
         """
         instance = self._get_resource(_instance.Instance, instance)
-        attrs.update({'instance_id': instance.id})
+        attrs.update({"instance_id": instance.id})
         return self._create(_backup.Backup, **attrs)
 
     def delete_backup(self, backup, ignore_missing=True):
@@ -485,9 +486,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
 
         :returns: ``None``
         """
-        return self._delete(_backup.Backup,
-                            backup,
-                            ignore_missing=ignore_missing)
+        return self._delete(_backup.Backup, backup, ignore_missing=ignore_missing)
 
     def find_backup(self, name_or_id, instance, ignore_missing=True):
         """Find a single backup
@@ -505,10 +504,12 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
             or None
         """
         instance = self._get_resource(_instance.Instance, instance)
-        return self._find(_backup.Backup,
-                          name_or_id,
-                          ignore_missing=ignore_missing,
-                          instance_id=instance.id)
+        return self._find(
+            _backup.Backup,
+            name_or_id,
+            ignore_missing=ignore_missing,
+            instance_id=instance.id,
+        )
 
     def backup_download_links(self, backup_id):
         """Obtaining a backup file download links.
@@ -521,11 +522,17 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         """
         return self._list(_backup.BackupFile, backup_id=backup_id)
 
-    def wait_for_backup(self, backup, status='COMPLETED', failures=None,
-                        interval=2, wait=300, attribute='status'):
-        failures = ['FAILED'] if failures is None else failures
-        return resource.wait_for_status(
-            self, backup, status, failures, interval, wait)
+    def wait_for_backup(
+        self,
+        backup,
+        status="COMPLETED",
+        failures=None,
+        interval=2,
+        wait=300,
+        attribute="status",
+    ):
+        failures = ["FAILED"] if failures is None else failures
+        return resource.wait_for_status(self, backup, status, failures, interval, wait)
 
     def wait_for_delete(self, res, interval=2, wait=120, callback=None):
         """Wait for a resource to be deleted.
@@ -546,20 +553,16 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
         return resource.wait_for_delete(self, res, interval, wait, callback)
 
     def _get_cleanup_dependencies(self):
-        return {
-            'rds': {
-                'before': ['network']
-            }
-        }
+        return {"rds": {"before": ["network"]}}
 
     def _service_cleanup(
-            self,
-            dry_run=True,
-            client_status_queue=None,
-            identified_resources=None,
-            filters=None,
-            resource_evaluation_fn=None,
-            skip_resources=None,
+        self,
+        dry_run=True,
+        client_status_queue=None,
+        identified_resources=None,
+        filters=None,
+        resource_evaluation_fn=None,
+        skip_resources=None,
     ):
         if self.should_skip_resource_cleanup("instance", skip_resources):
             return
@@ -569,10 +572,10 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
             if not dry_run:
                 if instance.tags:
                     for tag in instance.tags:
-                        self.remove_tag(instance, tag['key'])
+                        self.remove_tag(instance, tag["key"])
                         self._service_cleanup_del_res(
                             self.remove_tag,
-                            tag['key'],
+                            tag["key"],
                             dry_run=dry_run,
                             client_status_queue=client_status_queue,
                             identified_resources=identified_resources,
@@ -580,7 +583,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
                             resource_evaluation_fn=resource_evaluation_fn,
                         )
             for backup in self.backups(instance):
-                if 'Automated' not in backup.type:
+                if "Automated" not in backup.type:
                     self._service_cleanup_del_res(
                         self.delete_backup,
                         backup,
@@ -606,7 +609,7 @@ class Proxy(proxy.Proxy, job.JobProxyMixin):
             self.wait_for_delete(instance)
 
         for config in self.configurations():
-            if 'Default-' not in config.name:
+            if "Default-" not in config.name:
                 self._service_cleanup_del_res(
                     self.delete_configuration,
                     config,

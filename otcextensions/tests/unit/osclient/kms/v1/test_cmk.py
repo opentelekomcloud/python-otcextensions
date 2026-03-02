@@ -11,7 +11,6 @@
 #   under the License.
 #
 import mock
-
 from osc_lib import exceptions
 
 from otcextensions.osclient.kms.v1 import cmk
@@ -29,16 +28,12 @@ class TestListCMK(TestCMK):
 
     _objs = fakes.FakeCMK.create_multiple(3)
 
-    columns = ('ID', 'key_alias', 'key_state')
+    columns = ("ID", "key_alias", "key_state")
 
     data = []
 
     for s in _objs:
-        data.append((
-            s.id,
-            s.key_alias,
-            s.key_state
-        ))
+        data.append((s.id, s.key_alias, s.key_state))
 
     def setUp(self):
         super(TestListCMK, self).setUp()
@@ -48,23 +43,15 @@ class TestListCMK(TestCMK):
         self.client.keys = mock.Mock()
 
     def test_list_default(self):
-        arglist = [
-            '--limit', '14',
-            '--state', '2'
-        ]
+        arglist = ["--limit", "14", "--state", "2"]
 
-        verifylist = [
-            ('limit', 14),
-            ('state', 2)
-        ]
+        verifylist = [("limit", 14), ("state", 2)]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.keys.side_effect = [
-            self._objs
-        ]
+        self.client.keys.side_effect = [self._objs]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
@@ -82,9 +69,17 @@ class TestShowCMK(TestCMK):
 
     _obj = fakes.FakeCMK.create_one()
 
-    columns = ['ID', 'key_alias', 'domain_id', 'realm',
-               'key_description', 'creation_date', 'scheduled_deletion_date',
-               'key_state', 'key_type']
+    columns = [
+        "ID",
+        "key_alias",
+        "domain_id",
+        "realm",
+        "key_description",
+        "creation_date",
+        "scheduled_deletion_date",
+        "key_state",
+        "key_type",
+    ]
 
     data = (
         _obj.id,
@@ -106,27 +101,23 @@ class TestShowCMK(TestCMK):
         self.client.find_key = mock.Mock()
 
     def test_show(self):
-        arglist = [
-            'key1'
-        ]
+        arglist = ["key1"]
 
         verifylist = [
-            ('key', 'key1'),
+            ("key", "key1"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.find_key.side_effect = [
-            self._obj
-        ]
+        self.client.find_key.side_effect = [self._obj]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.find_key.assert_called_once_with(
-            'key1',
+            "key1",
         )
 
         self.assertEqual(self.columns, columns)
@@ -137,9 +128,17 @@ class TestCreateCMK(TestCMK):
 
     _obj = fakes.FakeCMK.create_one()
 
-    columns = ['ID', 'key_alias', 'domain_id', 'realm',
-               'key_description', 'creation_date', 'scheduled_deletion_date',
-               'key_state', 'key_type']
+    columns = [
+        "ID",
+        "key_alias",
+        "domain_id",
+        "realm",
+        "key_description",
+        "creation_date",
+        "scheduled_deletion_date",
+        "key_state",
+        "key_type",
+    ]
 
     data = (
         _obj.id,
@@ -162,41 +161,44 @@ class TestCreateCMK(TestCMK):
 
     def test_create(self):
         arglist = [
-            'key1',
-            '--description', 'dscr',
-            '--realm', 'rlm',
-            '--key_policy', 'pol',
-            '--key_usage', 'usg',
-            '--type', 'typ'
+            "key1",
+            "--description",
+            "dscr",
+            "--realm",
+            "rlm",
+            "--key_policy",
+            "pol",
+            "--key_usage",
+            "usg",
+            "--type",
+            "typ",
         ]
 
         verifylist = [
-            ('alias', 'key1'),
-            ('description', 'dscr'),
-            ('realm', 'rlm'),
-            ('key_policy', 'pol'),
-            ('key_usage', 'usg'),
-            ('type', 'typ')
+            ("alias", "key1"),
+            ("description", "dscr"),
+            ("realm", "rlm"),
+            ("key_policy", "pol"),
+            ("key_usage", "usg"),
+            ("type", "typ"),
         ]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         # Set the response
-        self.client.create_key.side_effect = [
-            self._obj
-        ]
+        self.client.create_key.side_effect = [self._obj]
 
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.create_key.assert_called_once_with(
-            key_alias='key1',
-            key_description='dscr',
-            key_policy='pol',
-            key_type='typ',
-            key_usage='usg',
-            realm='rlm'
+            key_alias="key1",
+            key_description="dscr",
+            key_policy="pol",
+            key_type="typ",
+            key_usage="usg",
+            realm="rlm",
         )
 
         self.assertEqual(self.columns, columns)
@@ -216,12 +218,10 @@ class TestEnableCMK(TestCMK):
         self.client.find_key = mock.Mock()
 
     def test_enable(self):
-        arglist = [
-            'key1'
-        ]
+        arglist = ["key1"]
 
         verifylist = [
-            ('key', 'key1'),
+            ("key", "key1"),
         ]
 
         # Verify cm is triggereg with default parameters
@@ -234,7 +234,7 @@ class TestEnableCMK(TestCMK):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        self.client.find_key.assert_called_once_with('key1')
+        self.client.find_key.assert_called_once_with("key1")
         self.client.enable_key.assert_called()
 
 
@@ -251,12 +251,10 @@ class TestDisableCMK(TestCMK):
         self.client.find_key = mock.Mock()
 
     def test_disable(self):
-        arglist = [
-            'key1'
-        ]
+        arglist = ["key1"]
 
         verifylist = [
-            ('key', 'key1'),
+            ("key", "key1"),
         ]
 
         # Verify cm is triggereg with default parameters
@@ -269,7 +267,7 @@ class TestDisableCMK(TestCMK):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        self.client.find_key.assert_called_once_with('key1')
+        self.client.find_key.assert_called_once_with("key1")
         self.client.disable_key.assert_called_once()
 
 
@@ -286,14 +284,9 @@ class TestDeleteCMK(TestCMK):
         self.client.find_key = mock.Mock()
 
     def test_delete(self):
-        arglist = [
-            'key1', '7'
-        ]
+        arglist = ["key1", "7"]
 
-        verifylist = [
-            ('key', 'key1'),
-            ('days', 7)
-        ]
+        verifylist = [("key", "key1"), ("days", 7)]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -305,27 +298,20 @@ class TestDeleteCMK(TestCMK):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        self.client.find_key.assert_called_once_with('key1')
+        self.client.find_key.assert_called_once_with("key1")
         self.client.schedule_key_deletion.assert_called_once_with(
-            key=self._obj,
-            pending_days=7
+            key=self._obj, pending_days=7
         )
 
     def test_delete_out_of_range(self):
-        arglist = [
-            'key1', '3'
-        ]
+        arglist = ["key1", "3"]
 
-        verifylist = [
-            ('key', 'key1'),
-            ('days', 3)
-        ]
+        verifylist = [("key", "key1"), ("days", 3)]
 
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        self.assertRaises(
-            exceptions.CommandError, self.cmd.take_action, parsed_args)
+        self.assertRaises(exceptions.CommandError, self.cmd.take_action, parsed_args)
 
 
 class TestCancelDeleteCMK(TestCMK):
@@ -341,12 +327,10 @@ class TestCancelDeleteCMK(TestCMK):
         self.client.find_key = mock.Mock()
 
     def test_delete(self):
-        arglist = [
-            'key1'
-        ]
+        arglist = ["key1"]
 
         verifylist = [
-            ('key', 'key1'),
+            ("key", "key1"),
         ]
 
         # Verify cm is triggereg with default parameters
@@ -359,7 +343,7 @@ class TestCancelDeleteCMK(TestCMK):
         # Trigger the action
         self.cmd.take_action(parsed_args)
 
-        self.client.find_key.assert_called_once_with('key1')
+        self.client.find_key.assert_called_once_with("key1")
         self.client.cancel_key_deletion.assert_called_once_with(
             key=self._obj,
         )

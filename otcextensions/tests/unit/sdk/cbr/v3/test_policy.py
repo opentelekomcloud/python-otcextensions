@@ -10,32 +10,29 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from keystoneauth1 import adapter
 import mock
-from openstack.tests.unit import base
+from keystoneauth1 import adapter
 
+from openstack.tests.unit import base
 from otcextensions.sdk.cbr.v3 import policy as _policy
 
-
 EXAMPLE = {
-    'enabled': True,
-    'name': 'my_policy',
-    'operation_definition': {
-        'day_backups': 0,
-        'month_backups': 0,
-        'max_backups': 1,
-        'timezone': 'UTC+08:00',
-        'week_backups': 0,
-        'year_backups': 0
+    "enabled": True,
+    "name": "my_policy",
+    "operation_definition": {
+        "day_backups": 0,
+        "month_backups": 0,
+        "max_backups": 1,
+        "timezone": "UTC+08:00",
+        "week_backups": 0,
+        "year_backups": 0,
     },
-    'operation_type': 'backup',
-    'trigger': {
-        'properties': {
-            'pattern': [
-                'FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR,SA,SU;BYHOUR=14;BYMINUTE=00'
-            ]
+    "operation_type": "backup",
+    "trigger": {
+        "properties": {
+            "pattern": ["FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR,SA,SU;BYHOUR=14;BYMINUTE=00"]
         }
-    }
+    },
 }
 
 
@@ -49,17 +46,16 @@ class TestPolicy(base.TestCase):
         self.sess.list = mock.Mock()
         self.sess.delete = mock.Mock()
         self.sess.put = mock.Mock()
-        self.sess.default_microversion = '1'
+        self.sess.default_microversion = "1"
         self.sess._get_connection = mock.Mock(return_value=self.cloud)
         self.sot = _policy.Policy()
         self.sot_expected = _policy.Policy(**EXAMPLE)
 
     def test_basic(self):
         sot = _policy.Policy()
-        self.assertEqual('policy', sot.resource_key)
-        self.assertEqual('policies', sot.resources_key)
-        self.assertEqual('/policies',
-                         sot.base_path)
+        self.assertEqual("policy", sot.resource_key)
+        self.assertEqual("policies", sot.resources_key)
+        self.assertEqual("/policies", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_fetch)
@@ -69,30 +65,33 @@ class TestPolicy(base.TestCase):
     def test_make_it(self):
         test_policy = _policy.Policy(**EXAMPLE)
         self.assertTrue(test_policy.enabled)
+        self.assertEqual(EXAMPLE["name"], test_policy.name)
+        self.assertEqual(EXAMPLE["operation_type"], test_policy.operation_type)
         self.assertEqual(
-            EXAMPLE['name'],
-            test_policy.name)
+            EXAMPLE["operation_definition"]["day_backups"],
+            test_policy.operation_definition.day_backups,
+        )
         self.assertEqual(
-            EXAMPLE['operation_type'],
-            test_policy.operation_type)
+            EXAMPLE["operation_definition"]["month_backups"],
+            test_policy.operation_definition.month_backups,
+        )
         self.assertEqual(
-            EXAMPLE['operation_definition']['day_backups'],
-            test_policy.operation_definition.day_backups)
+            EXAMPLE["operation_definition"]["max_backups"],
+            test_policy.operation_definition.max_backups,
+        )
         self.assertEqual(
-            EXAMPLE['operation_definition']['month_backups'],
-            test_policy.operation_definition.month_backups)
+            EXAMPLE["operation_definition"]["timezone"],
+            test_policy.operation_definition.timezone,
+        )
         self.assertEqual(
-            EXAMPLE['operation_definition']['max_backups'],
-            test_policy.operation_definition.max_backups)
+            EXAMPLE["operation_definition"]["week_backups"],
+            test_policy.operation_definition.week_backups,
+        )
         self.assertEqual(
-            EXAMPLE['operation_definition']['timezone'],
-            test_policy.operation_definition.timezone)
+            EXAMPLE["operation_definition"]["year_backups"],
+            test_policy.operation_definition.year_backups,
+        )
         self.assertEqual(
-            EXAMPLE['operation_definition']['week_backups'],
-            test_policy.operation_definition.week_backups)
-        self.assertEqual(
-            EXAMPLE['operation_definition']['year_backups'],
-            test_policy.operation_definition.year_backups)
-        self.assertEqual(
-            EXAMPLE['trigger']['properties']['pattern'][0],
-            test_policy.trigger.properties.pattern[0])
+            EXAMPLE["trigger"]["properties"]["pattern"][0],
+            test_policy.trigger.properties.pattern[0],
+        )

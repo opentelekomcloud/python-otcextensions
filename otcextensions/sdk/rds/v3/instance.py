@@ -12,14 +12,13 @@
 from openstack import exceptions
 from openstack import resource
 from openstack import utils
-
 from otcextensions.sdk.rds.v3 import _base
 
 
 class Instance(_base.Resource):
 
-    base_path = '/instances'
-    resources_key = 'instances'
+    base_path = "/instances"
+    resources_key = "instances"
 
     # capabilities
     allow_create = True
@@ -28,116 +27,124 @@ class Instance(_base.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        'id', 'name', 'type', 'datastore_type', 'router_id',
-        'network_id', 'limit', 'offset',
-        network_id='subnet_id',
-        router_id='vpc_id')
+        "id",
+        "name",
+        "type",
+        "datastore_type",
+        "router_id",
+        "network_id",
+        "limit",
+        "offset",
+        network_id="subnet_id",
+        router_id="vpc_id",
+    )
 
     #: Availability Zone.
     #: *Type:string*
-    availability_zone = resource.Body('availability_zone')
+    availability_zone = resource.Body("availability_zone")
     # TODO(not_gtema): extract backup strategy into separate type
     #: Backup Strategy.
     #: *Type: dict*
-    backup_strategy = resource.Body('backup_strategy', type=dict)
+    backup_strategy = resource.Body("backup_strategy", type=dict)
     #: Specifies the billing information, which is pay-per-use.
     #: *Type:dict*
-    charge_info = resource.Body('charge_info', type=dict)
+    charge_info = resource.Body("charge_info", type=dict)
     #: Parameter configuration ID.
     #: *Type:uuid*
-    configuration_id = resource.Body('configuration_id')
+    configuration_id = resource.Body("configuration_id")
     #: Instance created time.
     #: *Type:string*
-    created_at = resource.Body('created')
+    created_at = resource.Body("created")
     #: Data store information.
     #: *Type:dict*
-    datastore = resource.Body('datastore', type=dict)
+    datastore = resource.Body("datastore", type=dict)
     #: Datastore type information (for querying).
     #: *Type:string*
-    datastore_type = resource.Body('datastore_type')
+    datastore_type = resource.Body("datastore_type")
     #: Disk Encryption Key Id.
     #: *Type:uuid*
-    disk_encryption_id = resource.Body('disk_encryption_id')
+    disk_encryption_id = resource.Body("disk_encryption_id")
     #: Flavor ID
     #: *Type:uuid*
-    flavor_ref = resource.Body('flavor_ref')
+    flavor_ref = resource.Body("flavor_ref")
     #: Async job id
     #: *Type:uuid*
-    job_id = resource.Body('job_id')
+    job_id = resource.Body("job_id")
     #: HighAvailability configuration parameters.
     #: *Type:dict*
-    ha = resource.Body('ha', type=dict)
+    ha = resource.Body("ha", type=dict)
     #: Maintenance time window.
     #: *Type:string*
-    maintenance_window = resource.Body('maintenance_window')
+    maintenance_window = resource.Body("maintenance_window")
     #: Node information
     #: Indicates the primary/standby DB instance information.
     #: *Type:list*
-    nodes = resource.Body('nodes', type=list)
+    nodes = resource.Body("nodes", type=list)
     #: Password of the default user.
     #: *Type:string*
-    password = resource.Body('password')
+    password = resource.Body("password")
     #: Database listen port number.
     #: *Type:int*
-    port = resource.Body('port', type=int)
+    port = resource.Body("port", type=int)
     #: Private IP address List.
     #: *Type:list*
-    private_ips = resource.Body('private_ips', type=list)
+    private_ips = resource.Body("private_ips", type=list)
     #: Public IP address List,
     #: *Type:list*
-    public_ips = resource.Body('public_ips', type=list)
+    public_ips = resource.Body("public_ips", type=list)
     #: Region where DB is deployed.
     #: *Type:string*
-    region = resource.Body('region')
+    region = resource.Body("region")
     #: list of associated DB instances.
     #: *Type:list*
-    related_instances = resource.Body('related_instance', type=list)
+    related_instances = resource.Body("related_instance", type=list)
     #: Specifies the DB instance ID, which is used to create a read replica.
     #: *Type:uuid*
-    replica_of_id = resource.Body('replica_of_id')
+    replica_of_id = resource.Body("replica_of_id")
     #: Specifies the restoration point for instance recovery.
     #: *Type:dict*
-    restore_point = resource.Body('restore_point', type=dict)
+    restore_point = resource.Body("restore_point", type=dict)
     #: Recovery time period for instance.
     #: *Type:string*
-    restore_time = resource.Body('restore_time')
+    restore_time = resource.Body("restore_time")
     #: Neutron router ID.
     #: *Type:uuid*
-    router_id = resource.Body('vpc_id')
+    router_id = resource.Body("vpc_id")
     #: Security Group Id.
     #: *Type:uuid*
-    security_group_id = resource.Body('security_group_id')
+    security_group_id = resource.Body("security_group_id")
     #: Id of network.
     #: *Type:uuid*
-    network_id = resource.Body('subnet_id')
+    network_id = resource.Body("subnet_id")
     #: Instance status.
     #: *Type:string*
-    status = resource.Body('status')
+    status = resource.Body("status")
     #: Switch Strategy. The value can be reliability or availability,
     #: indicating the reliability first and availability first, respectively.
     #: *Type:string*
-    switch_strategy = resource.Body('switch_strategy')
+    switch_strategy = resource.Body("switch_strategy")
     #: Lists the tags and their values attached to the instance.
     #: *Type:dict*
-    tags = resource.Body('tags', type=list)
+    tags = resource.Body("tags", type=list)
     #: Time Zone.
     #: *Type:string*
-    time_zone = resource.Body('time_zone')
+    time_zone = resource.Body("time_zone")
     #: Instance type Single/Ha/Replica.,
     #: *Type:string*
-    type = resource.Body('type')
+    type = resource.Body("type")
     # datastore: Instance updated time.
     #: *Type:string*
-    updated_at = resource.Body('updated')
+    updated_at = resource.Body("updated")
     #: Default user of the DB
     #: *Type:string*
-    user_name = resource.Body('db_user_name')
+    user_name = resource.Body("db_user_name")
     #: Volume information
     #: *Type:dict*
-    volume = resource.Body('volume', type=dict)
+    volume = resource.Body("volume", type=dict)
 
-    def _translate_response(self, response, has_body=None, error_message=None,
-                            resource_response_key=None):
+    def _translate_response(
+        self, response, has_body=None, error_message=None, resource_response_key=None
+    ):
         """Given a KSA response, inflate this instance with its data
 
         DELETE operations don't return a body, so only try to work
@@ -154,17 +161,16 @@ class Instance(_base.Resource):
                 body = response.json()
                 # Need to merge job_id on the root with other data inside of
                 # 'instance' container
-                job_id = body.get('job_id')
-                if 'instance' in body:
-                    body = body['instance']
+                job_id = body.get("job_id")
+                if "instance" in body:
+                    body = body["instance"]
                     if job_id:
-                        body['job_id'] = job_id
+                        body["job_id"] = job_id
 
                 body_attrs = self._consume_body_attrs(body)
 
                 if self._store_unknown_attrs_as_properties:
-                    body_attrs = self._pack_attrs_under_properties(
-                        body_attrs, body)
+                    body_attrs = self._pack_attrs_under_properties(body_attrs, body)
 
                 self._body.attributes.update(body_attrs)
                 self._body.clean()
@@ -219,7 +225,8 @@ class Instance(_base.Resource):
         if ignore_missing:
             return None
         raise exceptions.ResourceNotFound(
-            "No %s found for %s" % (cls.__name__, name_or_id))
+            "No %s found for %s" % (cls.__name__, name_or_id)
+        )
 
     @classmethod
     def _find(cls, session, name_or_id, **params):
@@ -230,17 +237,18 @@ class Instance(_base.Resource):
             return result
 
     def _action(self, session, request_body):
-        url = utils.urljoin(self.base_path, self.id, 'action')
+        url = utils.urljoin(self.base_path, self.id, "action")
         response = session.post(url, json=request_body)
         exceptions.raise_from_response(response)
 
     def _tag_action(self, session, request_body):
-        url = utils.urljoin(self.base_path, self.id, 'tags', 'action')
+        url = utils.urljoin(self.base_path, self.id, "tags", "action")
         response = session.post(url, json=request_body)
         exceptions.raise_from_response(response)
 
-    def fetch(self, session, requires_id=True,
-              base_path=None, error_message=None, **params):
+    def fetch(
+        self, session, requires_id=True, base_path=None, error_message=None, **params
+    ):
         """Get a remote resource based on this instance.
 
         :param session: The session to use for making this request.
@@ -262,8 +270,7 @@ class Instance(_base.Resource):
         data = self.list(session, paginated=False, id=self.id)
         result = self._get_one_match(self.id, data)
         if not result:
-            raise exceptions.ResourceNotFound(
-                "No Instance found for %s" % (self.id))
+            raise exceptions.ResourceNotFound("No Instance found for %s" % (self.id))
 
         self._body.attributes.update(result._body.attributes)
         self._body.clean()
@@ -271,9 +278,8 @@ class Instance(_base.Resource):
         return self
 
     def fetch_restore_times(self, session):
-        """List possible restore times for the instance.
-        """
-        url = utils.urljoin(self.base_path, self.id, 'restore-time')
+        """List possible restore times for the instance."""
+        url = utils.urljoin(self.base_path, self.id, "restore-time")
         response = session.get(url)
         self._translate_response(response)
         return self.restore_time
@@ -285,59 +291,46 @@ class Instance(_base.Resource):
         raise NotImplementedError()
 
     def restore(self, session, backup=None, restore_time=None):
-        """Restore instance from the backup of PIR.
-        """
-        url = utils.urljoin(self.base_path, 'recovery')
+        """Restore instance from the backup of PIR."""
+        url = utils.urljoin(self.base_path, "recovery")
 
-        body = {
-            'source': None,
-            'target': {'instance_id': self.id}
-        }
+        body = {"source": None, "target": {"instance_id": self.id}}
 
         if backup:
-            body['source'] = {'type': 'backup', 'backup_id': backup.id}
+            body["source"] = {"type": "backup", "backup_id": backup.id}
         elif restore_time:
-            body['source'] = {
-                'type': 'timestamp',
-                'restore_time': restore_time
-            }
+            body["source"] = {"type": "timestamp", "restore_time": restore_time}
 
-        body['source']['instance_id'] = self.id
+        body["source"]["instance_id"] = self.id
 
         response = session.post(url, json=body)
         exceptions.raise_from_response(response)
-        job_id = response.json().get('job_id')
+        job_id = response.json().get("job_id")
 
         return job_id
 
     def get_backup_policy(self, session):
-        """Get instance backup policy
-        """
-        url = utils.urljoin(self.base_path, self.id, 'backups', 'policy')
+        """Get instance backup policy"""
+        url = utils.urljoin(self.base_path, self.id, "backups", "policy")
         response = session.get(url)
         exceptions.raise_from_response(response)
 
-        return response.json().get('backup_policy')
+        return response.json().get("backup_policy")
 
-    def set_backup_policy(self, session, keep_days, start_time=None,
-                          period=None):
-        """Set instance backup policy
-        """
-        url = utils.urljoin(self.base_path, self.id, 'backups', 'policy')
-        body = {
-            'keep_days': keep_days
-        }
+    def set_backup_policy(self, session, keep_days, start_time=None, period=None):
+        """Set instance backup policy"""
+        url = utils.urljoin(self.base_path, self.id, "backups", "policy")
+        body = {"keep_days": keep_days}
         if start_time:
-            body['start_time'] = start_time
+            body["start_time"] = start_time
         if period:
-            body['period'] = period
-        response = session.put(url, json={'backup_policy': body})
+            body["period"] = period
+        response = session.put(url, json={"backup_policy": body})
         exceptions.raise_from_response(response)
 
         return None
 
-    def get_logs(self, session, log_type, start_date, end_date,
-                 offset, limit, level):
+    def get_logs(self, session, log_type, start_date, end_date, offset, limit, level):
         """Get instance logs
 
         :param session: The session to use for making this request.
@@ -354,52 +347,42 @@ class Instance(_base.Resource):
         :param str level: Specifies the log level.
 
         """
-        url_params = log_type + '?' + '&'.join([
-            'start_date=' + start_date,
-            'end_date=' + end_date,
-            'offset=' + str(offset),
-            'limit=' + str(limit),
-            'level=' + level
-        ])
+        url_params = (
+            log_type
+            + "?"
+            + "&".join(
+                [
+                    "start_date=" + start_date,
+                    "end_date=" + end_date,
+                    "offset=" + str(offset),
+                    "limit=" + str(limit),
+                    "level=" + level,
+                ]
+            )
+        )
         url = utils.urljoin(self.base_path, self.id, url_params)
         response = session.get(url)
         exceptions.raise_from_response(response)
         return response.json()
 
     def restart(self, session):
-        """Restart the database instance
-        """
+        """Restart the database instance"""
         self._action(session, {"restart": {}})
 
     def enlarge_volume(self, session, size):
-        """Enlarge the instance volume
-        """
+        """Enlarge the instance volume"""
         self._action(session, {"enlarge_volume": {"size": int(size)}})
 
     def update_flavor(self, session, spec_code):
-        """Chage the instance's flavor
-        """
+        """Chage the instance's flavor"""
         self._action(session, {"resize_flavor": {"spec_code": spec_code}})
 
     def add_tag(self, session, key, value):
-        """Add tag to instance
-        """
-        request_body = {
-            "action": "create",
-            "tags": [{
-                "key": key,
-                "value": value
-            }]
-        }
+        """Add tag to instance"""
+        request_body = {"action": "create", "tags": [{"key": key, "value": value}]}
         self._tag_action(session, request_body)
 
     def remove_tag(self, session, key):
-        """Remove tag from instance
-        """
-        request_body = {
-            "action": "delete",
-            "tags": [{
-                "key": key
-            }]
-        }
+        """Remove tag from instance"""
+        request_body = {"action": "delete", "tags": [{"key": key}]}
         self._tag_action(session, request_body)

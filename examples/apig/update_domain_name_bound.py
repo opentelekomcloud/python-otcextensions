@@ -13,17 +13,13 @@
 """
 Update Domain name bound
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-attrs = {
-    "min_ssl_version": "TLSv1.2"
-}
+attrs = {"min_ssl_version": "TLSv1.2"}
 updated = conn.apig.update_domain_name_bound(
-    gateway="gateway_id",
-    group="group_id",
-    domain="domain_id",
-    **attrs
+    gateway="gateway_id", group="group_id", domain="domain_id", **attrs
 )

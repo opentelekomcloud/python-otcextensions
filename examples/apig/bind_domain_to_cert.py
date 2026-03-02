@@ -13,24 +13,14 @@
 """
 Bind domain to SSL certificate
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-attrs = {
-    "url_domain": "test-domain-ssl-cert.com"
-}
-domain = conn.apig.bind_domain_name(
-    gateway="gateway_id",
-    group="group_id",
-    **attrs
-)
-attrs = {
-    "certificate_ids": ["cert_id"]
-}
+conn = openstack.connect(cloud="otc")
+attrs = {"url_domain": "test-domain-ssl-cert.com"}
+domain = conn.apig.bind_domain_name(gateway="gateway_id", group="group_id", **attrs)
+attrs = {"certificate_ids": ["cert_id"]}
 conn.apig.bind_domain_to_certificate(
-    gateway="gateway_id",
-    group="group_id",
-    domain=domain.id,
-    **attrs
+    gateway="gateway_id", group="group_id", domain=domain.id, **attrs
 )

@@ -13,12 +13,12 @@
 """
 List all host types in AZ
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-az = 'eu-de-01'
+az = "eu-de-01"
 for type in conn.deh.host_types(az=az):
     print(type)

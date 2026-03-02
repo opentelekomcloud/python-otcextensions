@@ -13,26 +13,25 @@
 """
 Create a DNS zone
 """
+
 import openstack
 from otcextensions.sdk.dns.v2.zone import Router
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
 
 zone = conn.dns.create_zone(
-    name='private-zone',
-    description='My private Zone',
-    zone_type='private',
+    name="private-zone",
+    description="My private Zone",
+    zone_type="private",
     ttl=300,
-    email='zone-admin@example.com',
-    router=Router(router_id='vpc_id',
-                  router_region='eu-de'
-                  )
+    email="zone-admin@example.com",
+    router=Router(router_id="vpc_id", router_region="eu-de"),
 )
 print(zone)
 
-'''
+"""
 attrs = {
     "name": "private-zone.",
     "description": "My private Zone",
@@ -46,4 +45,4 @@ attrs = {
 
 zone = conn.dns.create_zone(**attrs)
 print(zone)
-'''
+"""

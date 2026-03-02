@@ -11,13 +11,10 @@
 # under the License.
 
 from openstack import service_description
-
 from otcextensions.sdk.auto_scaling.v1 import _proxy
 
 
 class AutoScalingService(service_description.ServiceDescription):
     """The AutoScaling service."""
 
-    supported_versions = {
-        '1': _proxy.Proxy
-    }
+    supported_versions = {"1": _proxy.Proxy}

@@ -16,9 +16,9 @@ EXAMPLE = {
     "name": "throttle_demo",
     "created_at": "2020-07-31T08:44:02.205366118Z",
     "remark": "Total: 800 calls/second;"
-              " user: 500 calls/second;"
-              " app: 300 calls/second;"
-              " IP address: 600 calls/second",
+    " user: 500 calls/second;"
+    " app: 300 calls/second;"
+    " IP address: 600 calls/second",
     "type": 1,
     "time_interval": 1,
     "ip_call_limits": 600,
@@ -29,7 +29,7 @@ EXAMPLE = {
     "user_call_limits": 500,
     "enable_adaptive_control": "FALSE",
     "bind_num": 0,
-    "is_inclu_special_throttle": 2
+    "is_inclu_special_throttle": 2,
 }
 
 
@@ -37,20 +37,18 @@ class TestThrottlingPolicy(base.TestCase):
 
     def test_basic(self):
         sot = tp.ThrottlingPolicy()
-        self.assertEqual(
-            '/apigw/instances/%(gateway_id)s/throttles',
-            sot.base_path)
+        self.assertEqual("/apigw/instances/%(gateway_id)s/throttles", sot.base_path)
         self.assertTrue(sot.allow_list)
         self.assertTrue(sot.allow_create)
         self.assertTrue(sot.allow_commit)
         self.assertTrue(sot.allow_delete)
         self.assertTrue(sot.allow_fetch)
-        self.assertEqual('throttles', sot.resources_key)
+        self.assertEqual("throttles", sot.resources_key)
 
     def test_make_it(self):
         sot = tp.ThrottlingPolicy(**EXAMPLE)
-        self.assertEqual(EXAMPLE['name'], sot.name)
-        self.assertEqual(EXAMPLE['created_at'], sot.created_at)
-        self.assertEqual(EXAMPLE['remark'], sot.remark)
-        self.assertEqual(EXAMPLE['type'], sot.type)
-        self.assertEqual(EXAMPLE['time_interval'], sot.time_interval)
+        self.assertEqual(EXAMPLE["name"], sot.name)
+        self.assertEqual(EXAMPLE["created_at"], sot.created_at)
+        self.assertEqual(EXAMPLE["remark"], sot.remark)
+        self.assertEqual(EXAMPLE["type"], sot.type)
+        self.assertEqual(EXAMPLE["time_interval"], sot.time_interval)

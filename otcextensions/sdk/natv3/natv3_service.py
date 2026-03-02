@@ -11,13 +11,10 @@
 # under the License.
 
 from openstack import service_description
-
 from otcextensions.sdk.natv3.v3 import _proxy
 
 
 class Natv3Service(service_description.ServiceDescription):
     """The Private Nat Gateway service."""
 
-    supported_versions = {
-        '3': _proxy.Proxy
-    }
+    supported_versions = {"3": _proxy.Proxy}

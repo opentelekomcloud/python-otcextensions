@@ -11,10 +11,9 @@
 # under the License.
 
 from openstack import _log
-
 from otcextensions.tests.functional import base
 
-_logger = _log.setup_logging('openstack')
+_logger = _log.setup_logging("openstack")
 
 
 class TestAsyncJob(base.BaseFunctionalTest):
@@ -24,8 +23,6 @@ class TestAsyncJob(base.BaseFunctionalTest):
         self.ims = self.conn.imsv1
 
     def test_get_async_job(self):
-        attrs = {
-            "job_id": 'ff8080828f9a78db018fe7c6e2f772b2'
-        }
+        attrs = {"job_id": "ff8080828f9a78db018fe7c6e2f772b2"}
         result = self.ims.get_async_job(**attrs)
         self.assertEqual(result, None)

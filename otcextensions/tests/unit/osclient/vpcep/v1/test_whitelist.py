@@ -20,12 +20,12 @@ class TestListWhitelist(fakes.TestVpcep):
 
     _service = fakes.FakeService.create_one()
     objects = fakes.FakeWhitelist.create_multiple(3)
-    column_list_headers = ('Id', 'Permission', 'Created At')
+    column_list_headers = ("Id", "Permission", "Created At")
 
     columns = (
-        'id',
-        'persmission',
-        'created_at',
+        "id",
+        "persmission",
+        "created_at",
     )
 
     data = []
@@ -52,7 +52,7 @@ class TestListWhitelist(fakes.TestVpcep):
         arglist = [self._service.name]
 
         verifylist = [
-            ('service', self._service.name),
+            ("service", self._service.name),
         ]
 
         # Verify cm is triggered with default parameters
@@ -72,22 +72,22 @@ class TestListWhitelist(fakes.TestVpcep):
     def test_list_args(self):
         arglist = [
             self._service.name,
-            '--sort-key',
-            'created_at',
-            '--sort-dir',
-            'asc',
-            '--limit',
-            '2',
-            '--offset',
-            '3',
+            "--sort-key",
+            "created_at",
+            "--sort-dir",
+            "asc",
+            "--limit",
+            "2",
+            "--offset",
+            "3",
         ]
 
         verifylist = [
-            ('service', self._service.name),
-            ('sort_key', 'created_at'),
-            ('sort_dir', 'asc'),
-            ('limit', 2),
-            ('offset', 3),
+            ("service", self._service.name),
+            ("sort_key", "created_at"),
+            ("sort_dir", "asc"),
+            ("limit", 2),
+            ("offset", 3),
         ]
 
         # Verify cm is triggered with default parameters
@@ -101,8 +101,8 @@ class TestListWhitelist(fakes.TestVpcep):
 
         self.client.api_mock.assert_called_with(
             self._service,
-            sort_key='created_at',
-            sort_dir='asc',
+            sort_key="created_at",
+            sort_dir="asc",
             limit=2,
             offset=3,
         )
@@ -112,9 +112,9 @@ class TestManageWhitelist(fakes.TestVpcep):
 
     _service = fakes.FakeService.create_one()
     objects = fakes.FakeWhitelist.create_multiple(3)
-    column_list_headers = ('Permission',)
+    column_list_headers = ("Permission",)
 
-    columns = ('persmission',)
+    columns = ("persmission",)
 
     data = []
 
@@ -131,12 +131,12 @@ class TestManageWhitelist(fakes.TestVpcep):
         self.client.api_mock = self.client.manage_service_whitelist
 
     def test_add_whitelist(self):
-        arglist = [self._service.name, '123', 'xyz', '--add']
+        arglist = [self._service.name, "123", "xyz", "--add"]
 
         verifylist = [
-            ('service', self._service.name),
-            ('domain', ['123', 'xyz']),
-            ('add', True),
+            ("service", self._service.name),
+            ("domain", ["123", "xyz"]),
+            ("add", True),
         ]
 
         # Verify cm is triggered with default parameters
@@ -150,20 +150,20 @@ class TestManageWhitelist(fakes.TestVpcep):
 
         self.client.api_mock.assert_called_with(
             self._service,
-            domains=['123', 'xyz'],
-            action='add',
+            domains=["123", "xyz"],
+            action="add",
         )
 
         self.assertEqual(self.column_list_headers, columns)
         self.assertEqual(self.data, list(data))
 
     def test_remove_whitelist(self):
-        arglist = [self._service.name, '123', 'xyz', '--remove']
+        arglist = [self._service.name, "123", "xyz", "--remove"]
 
         verifylist = [
-            ('service', self._service.name),
-            ('domain', ['123', 'xyz']),
-            ('remove', True),
+            ("service", self._service.name),
+            ("domain", ["123", "xyz"]),
+            ("remove", True),
         ]
 
         # Verify cm is triggered with default parameters
@@ -177,8 +177,8 @@ class TestManageWhitelist(fakes.TestVpcep):
 
         self.client.api_mock.assert_called_with(
             self._service,
-            domains=['123', 'xyz'],
-            action='remove',
+            domains=["123", "xyz"],
+            action="remove",
         )
 
         self.assertEqual(self.column_list_headers, columns)

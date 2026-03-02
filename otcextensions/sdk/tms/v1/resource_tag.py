@@ -9,25 +9,25 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from openstack import resource
 from openstack import exceptions
+from openstack import resource
 
 
 class ResourceTag(resource.Resource):
-    resource_key = 'resource_tag'
-    base_path = '/resource-tags'
+    resource_key = "resource_tag"
+    base_path = "/resource-tags"
 
     _query_mapping = resource.QueryParameters(
-        'project_id', 'resource_id', 'resource_type'
+        "project_id", "resource_id", "resource_type"
     )
 
     #: Properties
-    project_id = resource.Body('project_id')
-    tags = resource.Body('tags', type=list)
-    resources = resource.Body('resources', type=list)
-    resource_id = resource.Body('resource_id')
-    resource_type = resource.Body('resource_type')
-    key = resource.Body('key')
+    project_id = resource.Body("project_id")
+    tags = resource.Body("tags", type=list)
+    resources = resource.Body("resources", type=list)
+    resource_id = resource.Body("resource_id")
+    resource_type = resource.Body("resource_type")
+    key = resource.Body("key")
 
     #: Allow to create operation for this resource.
     allow_create = True

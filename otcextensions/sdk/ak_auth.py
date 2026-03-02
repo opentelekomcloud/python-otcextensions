@@ -13,14 +13,12 @@ import datetime
 import functools
 import hashlib
 import hmac
-
-import requests
-
+from http import client as http_client
 from urllib.parse import quote
 from urllib.parse import urlparse
 from urllib.parse import urlsplit
 
-from http import client as http_client
+import requests
 
 
 class HTTPHeaders(http_client.HTTPMessage):
@@ -32,20 +30,19 @@ def ensure_unicode(s, encoding=None, errors=None):
     return s
 
 
-EMPTY_SHA256_HASH = (
-    'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855')
+EMPTY_SHA256_HASH = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
-UNSIGNED_PAYLOAD = 'UNSIGNED-PAYLOAD'
+UNSIGNED_PAYLOAD = "UNSIGNED-PAYLOAD"
 PAYLOAD_BUFFER = 1024 * 1024
 
 SIGNED_HEADERS_BLACKLIST = [
-    'expect',
-    'user-agent',
-    'x-amzn-trace-id',
-    'X-Auth-Token',
+    "expect",
+    "user-agent",
+    "x-amzn-trace-id",
+    "X-Auth-Token",
 ]
-ISO8601 = '%Y-%m-%dT%H:%M:%SZ'
-SIGV4_TIMESTAMP = '%Y%m%dT%H%M%SZ'
+ISO8601 = "%Y-%m-%dT%H:%M:%SZ"
+SIGV4_TIMESTAMP = "%Y%m%dT%H%M%SZ"
 
 
 class AKRequestsAuth(requests.auth.AuthBase):
@@ -55,15 +52,12 @@ class AKRequestsAuth(requests.auth.AuthBase):
     Adapted from
         https://docs.aws.amazon.com/general/latest/gr/sigv4-signed-request-examples.html
     """
-    IDENTITY_AUTH_HEADER_NAME = 'X-Amz-Security-Token'
 
-    def __init__(self,
-                 access_key,
-                 secret_access_key,
-                 host,
-                 region,
-                 service,
-                 token=None):
+    IDENTITY_AUTH_HEADER_NAME = "X-Amz-Security-Token"
+
+    def __init__(
+        self, access_key, secret_access_key, host, region, service, token=None
+    ):
         """
         Example usage for talking to an AWS Elasticsearch Service:
         AKRequestsAuth(aws_access_key='YOURKEY',
@@ -118,18 +112,18 @@ class AKRequestsAuth(requests.auth.AuthBase):
         self._inject_signature_to_request(request, signature)
 
     def _modify_request_before_signing(self, request):
-        if 'Authorization' in request.headers:
-            del request.headers['Authorization']
+        if "Authorization" in request.headers:
+            del request.headers["Authorization"]
         self._set_necessary_date_headers(request)
         if self.aws_token:
-            if 'X-Amz-Security-Token' in request.headers:
-                del request.headers['X-Amz-Security-Token']
-            request.headers['X-Amz-Security-Token'] = self.aws_token
+            if "X-Amz-Security-Token" in request.headers:
+                del request.headers["X-Amz-Security-Token"]
+            request.headers["X-Amz-Security-Token"] = self.aws_token
 
         # if not self._should_sha256_sign_payload(request):
-        if 'X-Amz-Content-SHA256' in request.headers:
-            del request.headers['X-Amz-Content-SHA256']
-        request.headers['X-Amz-Content-SHA256'] = UNSIGNED_PAYLOAD
+        if "X-Amz-Content-SHA256" in request.headers:
+            del request.headers["X-Amz-Content-SHA256"]
+        request.headers["X-Amz-Content-SHA256"] = UNSIGNED_PAYLOAD
 
     def _set_necessary_date_headers(self, request):
         # The spec allows for either the Date _or_ the X-Amz-Date value to be
@@ -144,16 +138,16 @@ class AKRequestsAuth(requests.auth.AuthBase):
         #     if 'X-Amz-Date' in request.headers:
         #         del request.headers['X-Amz-Date']
         # else:
-        if 'X-Amz-Date' in request.headers:
-            del request.headers['X-Amz-Date']
-        request.headers['X-Amz-Date'] = self.timestamp
+        if "X-Amz-Date" in request.headers:
+            del request.headers["X-Amz-Date"]
+        request.headers["X-Amz-Date"] = self.timestamp
 
     def _inject_signature_to_request(self, request, signature):
-        hdrs = ['AWS4-HMAC-SHA256 Credential=%s' % self.scope(request)]
+        hdrs = ["AWS4-HMAC-SHA256 Credential=%s" % self.scope(request)]
         headers_to_sign = self.headers_to_sign(request)
-        hdrs.append('SignedHeaders=%s' % self.signed_headers(headers_to_sign))
-        hdrs.append('Signature=%s' % signature)
-        request.headers['Authorization'] = ', '.join(hdrs)
+        hdrs.append("SignedHeaders=%s" % self.signed_headers(headers_to_sign))
+        hdrs.append("Signature=%s" % signature)
+        request.headers["Authorization"] = ", ".join(hdrs)
         return request
 
     def payload(self, request):
@@ -161,12 +155,11 @@ class AKRequestsAuth(requests.auth.AuthBase):
             # When payload signing is disabled, we use this static string in
             # place of the payload checksum.
             return UNSIGNED_PAYLOAD
-        if request.body and hasattr(request.body, 'seek'):
+        if request.body and hasattr(request.body, "seek"):
             position = request.body.tell()
-            read_chunksize = functools.partial(request.body.read,
-                                               PAYLOAD_BUFFER)
+            read_chunksize = functools.partial(request.body.read, PAYLOAD_BUFFER)
             checksum = hashlib.sha256()
-            for chunk in iter(read_chunksize, b''):
+            for chunk in iter(read_chunksize, b""):
                 checksum.update(chunk)
             hex_checksum = checksum.hexdigest()
             request.body.seek(position)
@@ -180,7 +173,7 @@ class AKRequestsAuth(requests.auth.AuthBase):
 
     def _should_sha256_sign_payload(self, request):
         # Payloads will always be signed over insecure connections.
-        if not request.url.startswith('https'):
+        if not request.url.startswith("https"):
             return True
 
         # Certain operations may have payload signing disabled by default.
@@ -198,10 +191,11 @@ class AKRequestsAuth(requests.auth.AuthBase):
         headers = []
         sorted_header_names = sorted(set(headers_to_sign))
         for key in sorted_header_names:
-            value = ','.join(self._header_value(v) for v in
-                             sorted(headers_to_sign.get_all(key)))
-            headers.append('%s:%s' % (key, ensure_unicode(value)))
-        return '\n'.join(headers)
+            value = ",".join(
+                self._header_value(v) for v in sorted(headers_to_sign.get_all(key))
+            )
+            headers.append("%s:%s" % (key, ensure_unicode(value)))
+        return "\n".join(headers)
 
     def _header_value(self, value):
         # From the sigv4 docs:
@@ -209,7 +203,7 @@ class AKRequestsAuth(requests.auth.AuthBase):
         #
         # The Trimall function removes excess white space before and after
         # values, and converts sequential spaces to a single space.
-        return ' '.join(value.split())
+        return " ".join(value.split())
 
     @classmethod
     def get_canonical_path(cls, r):
@@ -221,7 +215,7 @@ class AKRequestsAuth(requests.auth.AuthBase):
 
         # safe chars adapted from boto's use of urllib.parse.quote
         # https://github.com/boto/boto/blob/d9e5cfe900e1a58717e393c76a6e3580305f217a/boto/auth.py#L393
-        return quote(parsedurl.path if parsedurl.path else '/', safe='/-_.~')
+        return quote(parsedurl.path if parsedurl.path else "/", safe="/-_.~")
 
     @classmethod
     def get_canonical_querystring(cls, r):
@@ -240,24 +234,24 @@ class AKRequestsAuth(requests.auth.AuthBase):
         will be your responsibility to urleconde your query params before
         this method is called.
         """
-        canonical_querystring = ''
+        canonical_querystring = ""
 
         parsedurl = urlparse(r.url)
-        querystring_sorted = '&'.join(sorted(parsedurl.query.split('&')))
+        querystring_sorted = "&".join(sorted(parsedurl.query.split("&")))
 
-        for query_param in querystring_sorted.split('&'):
-            key_val_split = query_param.split('=', 1)
+        for query_param in querystring_sorted.split("&"):
+            key_val_split = query_param.split("=", 1)
 
             key = key_val_split[0]
             if len(key_val_split) > 1:
                 val = key_val_split[1]
             else:
-                val = ''
+                val = ""
 
             if key:
                 if canonical_querystring:
                     canonical_querystring += "&"
-                canonical_querystring += u'='.join([key, val])
+                canonical_querystring += "=".join([key, val])
 
         return canonical_querystring
 
@@ -271,8 +265,8 @@ class AKRequestsAuth(requests.auth.AuthBase):
             lname = name.lower()
             if lname not in SIGNED_HEADERS_BLACKLIST:
                 header_map[lname] = value
-        if 'host' not in header_map:
-            header_map['host'] = self._canonical_host(request.url)
+        if "host" not in header_map:
+            header_map["host"] = self._canonical_host(request.url)
         return header_map
 
     def canonical_request(self, request):
@@ -281,27 +275,26 @@ class AKRequestsAuth(requests.auth.AuthBase):
         cr.append(path)
         cr.append(self.get_canonical_querystring(request))
         headers_to_sign = self.headers_to_sign(request)
-        cr.append(self.canonical_headers(headers_to_sign) + '\n')
+        cr.append(self.canonical_headers(headers_to_sign) + "\n")
         cr.append(self.signed_headers(headers_to_sign))
-        if 'X-Amz-Content-SHA256' in request.headers:
-            body_checksum = request.headers['X-Amz-Content-SHA256']
+        if "X-Amz-Content-SHA256" in request.headers:
+            body_checksum = request.headers["X-Amz-Content-SHA256"]
         else:
             body_checksum = self.payload(request)
         cr.append(body_checksum)
-        return '\n'.join(cr)
+        return "\n".join(cr)
 
     def _canonical_host(self, url):
         url_parts = urlsplit(url)
-        default_ports = {
-            'http': 80,
-            'https': 443
-        }
-        if any(url_parts.scheme == scheme and url_parts.port == port
-               for scheme, port in default_ports.items()):
+        default_ports = {"http": 80, "https": 443}
+        if any(
+            url_parts.scheme == scheme and url_parts.port == port
+            for scheme, port in default_ports.items()
+        ):
             # No need to include the port if it's the default port.
             return url_parts.hostname
         # Strip out auth if it's present in the netloc.
-        return url_parts.netloc.rsplit('@', 1)[-1]
+        return url_parts.netloc.rsplit("@", 1)[-1]
 
     def string_to_sign(self, request, canonical_request):
         """
@@ -309,39 +302,34 @@ class AKRequestsAuth(requests.auth.AuthBase):
         containing the original version of all headers that
         were included in the StringToSign.
         """
-        sts = ['AWS4-HMAC-SHA256']
+        sts = ["AWS4-HMAC-SHA256"]
         sts.append(self.timestamp)
         sts.append(self.credential_scope(request))
-        sts.append(
-            hashlib.sha256(canonical_request.encode('utf-8')).hexdigest()
-        )
-        return '\n'.join(sts)
+        sts.append(hashlib.sha256(canonical_request.encode("utf-8")).hexdigest())
+        return "\n".join(sts)
 
     def signed_headers(self, headers_to_sign):
-        hdrs = ['%s' % n.lower().strip() for n in set(headers_to_sign)]
+        hdrs = ["%s" % n.lower().strip() for n in set(headers_to_sign)]
         hdrs = sorted(hdrs)
-        return ';'.join(hdrs)
+        return ";".join(hdrs)
+
     # def _normalize_url_path(self, path):
     #     normalized_path = quote(normalize_url_path(path), safe='/~')
     #     return normalized_path
 
     def _sign(self, key, msg, hex=False):
         if hex:
-            sig = hmac.new(
-                key,
-                msg.encode('utf-8'),
-                hashlib.sha256).hexdigest()
+            sig = hmac.new(key, msg.encode("utf-8"), hashlib.sha256).hexdigest()
         else:
-            sig = hmac.new(key, msg.encode('utf-8'), hashlib.sha256).digest()
+            sig = hmac.new(key, msg.encode("utf-8"), hashlib.sha256).digest()
         return sig
 
     def signature(self, string_to_sign, request):
         key = self.aws_secret_access_key
-        k_date = self._sign(('AWS4' + key).encode('utf-8'),
-                            self.timestamp[0:8])
+        k_date = self._sign(("AWS4" + key).encode("utf-8"), self.timestamp[0:8])
         k_region = self._sign(k_date, self.aws_region)
         k_service = self._sign(k_region, self.service)
-        k_signing = self._sign(k_service, 'aws4_request')
+        k_signing = self._sign(k_service, "aws4_request")
         return self._sign(k_signing, string_to_sign, hex=True)
 
     def credential_scope(self, request):
@@ -349,13 +337,13 @@ class AKRequestsAuth(requests.auth.AuthBase):
         scope.append(self.timestamp[0:8])
         scope.append(self.aws_region)
         scope.append(self.service)
-        scope.append('aws4_request')
-        return '/'.join(scope)
+        scope.append("aws4_request")
+        return "/".join(scope)
 
     def scope(self, request):
         scope = [self.aws_access_key]
         scope.append(self.timestamp[0:8])
         scope.append(self.aws_region)
         scope.append(self.service)
-        scope.append('aws4_request')
-        return '/'.join(scope)
+        scope.append("aws4_request")
+        return "/".join(scope)

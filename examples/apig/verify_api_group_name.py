@@ -13,11 +13,10 @@
 """
 Verify name of API group for gateway
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
-attrs = {
-    "group_name": "api_group_002"
-}
+conn = openstack.connect(cloud="otc")
+attrs = {"group_name": "api_group_002"}
 conn.apig.verify_api_group_name(gateway="gateway_id", **attrs)

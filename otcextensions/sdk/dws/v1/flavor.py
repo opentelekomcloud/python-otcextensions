@@ -14,30 +14,30 @@ from openstack import resource
 
 
 class Flavor(resource.Resource):
-    base_path = '/node-types'
+    base_path = "/node-types"
 
-    resources_key = 'node_types'
+    resources_key = "node_types"
 
     # capabilities
     allow_list = True
 
     # Properties
     #: Availability Zones
-    availability_zones = resource.Body('availableZones')
+    availability_zones = resource.Body("availableZones")
     #: Node type details
-    detail = resource.Body('detail', type=list, list_type=dict)
+    detail = resource.Body("detail", type=list, list_type=dict)
     #: Disk Size *Type: int*
-    disk_size = resource.Body('disk_size', type=int)
+    disk_size = resource.Body("disk_size", type=int)
     #: Disk Type *Type: str*
-    disk_type = resource.Body('disk_type')
+    disk_type = resource.Body("disk_type")
     #: Name of a node type
-    name = resource.Body('spec_name')
+    name = resource.Body("spec_name")
     #: ram. *Type: int*
-    ram = resource.Body('mem', type=int)
+    ram = resource.Body("mem", type=int)
     #: Name of a node type
-    spec_name = resource.Body('spec_name')
+    spec_name = resource.Body("spec_name")
     #: cpu count. *Type: int*
-    vcpu = resource.Body('vCPU', type=int)
+    vcpu = resource.Body("vCPU", type=int)
 
     @classmethod
     def list(cls, session, paginated=True, base_path=None, **params):
@@ -74,9 +74,9 @@ class Flavor(resource.Resource):
                  contains invalid params.
         """
         if not cls.allow_list:
-            raise exceptions.MethodNotSupported(cls, 'list')
+            raise exceptions.MethodNotSupported(cls, "list")
         session = cls._get_session(session)
-        microversion = cls._get_microversion(session, action='list')
+        microversion = cls._get_microversion(session, action="list")
 
         if base_path is None:
             base_path = cls.base_path
@@ -87,7 +87,7 @@ class Flavor(resource.Resource):
         # Copy query_params due to weird mock unittest interactions
         response = session.get(
             uri,
-            headers={'Accept': 'application/json'},
+            headers={"Accept": "application/json"},
             params=query_params.copy(),
             microversion=microversion,
         )
@@ -99,20 +99,20 @@ class Flavor(resource.Resource):
             resources = [resources]
 
         for raw_resource in resources:
-            raw_resource.pop('self', None)
+            raw_resource.pop("self", None)
 
-            for detail in raw_resource['detail']:
-                if detail['type'].lower() in (
-                    'ssd',
-                    'sata',
-                    'essd',
-                    'co-p1',
-                    'uh-l1',
+            for detail in raw_resource["detail"]:
+                if detail["type"].lower() in (
+                    "ssd",
+                    "sata",
+                    "essd",
+                    "co-p1",
+                    "uh-l1",
                 ):
-                    raw_resource['disk_type'] = detail['type']
-                    raw_resource['disk_size'] = detail['value']
+                    raw_resource["disk_type"] = detail["type"]
+                    raw_resource["disk_size"] = detail["value"]
                 else:
-                    raw_resource[detail['type']] = detail['value']
+                    raw_resource[detail["type"]] = detail["value"]
             value = cls.existing(
                 microversion=microversion,
                 connection=session._get_connection(),

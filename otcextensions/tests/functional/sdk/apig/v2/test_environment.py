@@ -21,21 +21,15 @@ class TestEnvironment(TestApiG):
         self.create_gateway()
 
     def test_01_create_environment(self):
-        attrs = {
-            "name": "DEV",
-            "remark": "Development environment"
-        }
+        attrs = {"name": "DEV", "remark": "Development environment"}
         environment = self.client.create_environment(
-            gateway=TestEnvironment.gateway,
-            **attrs)
+            gateway=TestEnvironment.gateway, **attrs
+        )
         TestEnvironment.environment = environment
 
     def test_02_update_environment(self):
         new_remark = "Updated remark"
-        attrs = {
-            "name": "DEV",
-            "remark": new_remark
-        }
+        attrs = {"name": "DEV", "remark": new_remark}
         environment = self.client.update_environment(
             environment=TestEnvironment.environment,
             gateway=TestEnvironment.gateway,
@@ -44,15 +38,15 @@ class TestEnvironment(TestApiG):
         self.assertEqual(environment.remark, new_remark)
 
     def test_03_list_environments(self):
-        environments = list(self.client.environments(
-            gateway=TestEnvironment.gateway))
+        environments = list(self.client.environments(gateway=TestEnvironment.gateway))
         self.assertGreater(len(environments), 1)
 
     def test_04_delete_environment(self):
-        self.client.delete_environment(gateway=TestEnvironment.gateway,
-                                       environment=TestEnvironment.environment,
-                                       )
-        self.assertEqual(1, len(list(self.client.environments(
-            gateway=TestEnvironment.gateway)
-        )))
+        self.client.delete_environment(
+            gateway=TestEnvironment.gateway,
+            environment=TestEnvironment.environment,
+        )
+        self.assertEqual(
+            1, len(list(self.client.environments(gateway=TestEnvironment.gateway)))
+        )
         self.delete_gateway()

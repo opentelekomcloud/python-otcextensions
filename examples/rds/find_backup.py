@@ -13,14 +13,13 @@
 """
 Find an RDS backup by name or id
 """
+
 import openstack
 
-
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-name_or_id = 'backup_name_or_id'
-instance = 'instance_id'
-backup = conn.rds.find_backup(instance=instance,
-                              name_or_id=name_or_id)
+name_or_id = "backup_name_or_id"
+instance = "instance_id"
+backup = conn.rds.find_backup(instance=instance, name_or_id=name_or_id)
 print(backup)

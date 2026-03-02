@@ -13,15 +13,14 @@
 """
 Create an Instance Topic
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-attrs = {
-    'id': 'topic_name'  # Required
-}
-instance = 'name_or_id'
+attrs = {"id": "topic_name"}  # Required
+instance = "name_or_id"
 instance = conn.dms.find_instance(name_or_id=instance)
 
 for raw in conn.dms.create_topic(instance, **attrs):

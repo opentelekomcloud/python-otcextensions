@@ -25,17 +25,17 @@ class TestListEndpoints(fakes.TestVpcep):
     objects = fakes.FakeEndpoint.create_multiple(3)
 
     column_list_headers = (
-        'Id',
-        'Endpoint Service Name',
-        'Status',
-        'Is Enabled',
+        "Id",
+        "Endpoint Service Name",
+        "Status",
+        "Is Enabled",
     )
 
     columns = (
-        'id',
-        'endpoint_service_name',
-        'status',
-        'is_enabled',
+        "id",
+        "endpoint_service_name",
+        "status",
+        "is_enabled",
     )
 
     data = []
@@ -79,27 +79,27 @@ class TestListEndpoints(fakes.TestVpcep):
 
     def test_list_args(self):
         arglist = [
-            '--id',
-            '1',
-            '--service-name',
-            '2',
-            '--sort-key',
-            'created_at',
-            '--sort-dir',
-            'desc',
-            '--limit',
-            '6',
-            '--offset',
-            '7',
+            "--id",
+            "1",
+            "--service-name",
+            "2",
+            "--sort-key",
+            "created_at",
+            "--sort-dir",
+            "desc",
+            "--limit",
+            "6",
+            "--offset",
+            "7",
         ]
 
         verifylist = [
-            ('id', '1'),
-            ('endpoint_service_name', '2'),
-            ('sort_key', 'created_at'),
-            ('sort_dir', 'desc'),
-            ('limit', 6),
-            ('offset', 7),
+            ("id", "1"),
+            ("endpoint_service_name", "2"),
+            ("sort_key", "created_at"),
+            ("sort_dir", "desc"),
+            ("limit", 6),
+            ("offset", 7),
         ]
 
         # Verify cm is triggered with default parameters
@@ -112,10 +112,10 @@ class TestListEndpoints(fakes.TestVpcep):
         columns, data = self.cmd.take_action(parsed_args)
 
         self.client.api_mock.assert_called_with(
-            id='1',
-            endpoint_service_name='2',
-            sort_key='created_at',
-            sort_dir='desc',
+            id="1",
+            endpoint_service_name="2",
+            sort_key="created_at",
+            sort_dir="desc",
             limit=6,
             offset=7,
         )
@@ -126,21 +126,21 @@ class TestCreateEndpoint(fakes.TestVpcep):
     _data = fakes.FakeEndpoint.create_one()
 
     columns = (
-        'created_at',
-        'endpoint_service_id',
-        'endpoint_service_name',
-        'id',
-        'is_dns_enabled',
-        'is_enabled',
-        'is_whitelist_enabled',
-        'marker_id',
-        'project_id',
-        'router_id',
-        'service_type',
-        'status',
-        'tags',
-        'updated_at',
-        'whitelist',
+        "created_at",
+        "endpoint_service_id",
+        "endpoint_service_name",
+        "id",
+        "is_dns_enabled",
+        "is_enabled",
+        "is_whitelist_enabled",
+        "marker_id",
+        "project_id",
+        "router_id",
+        "service_type",
+        "status",
+        "tags",
+        "updated_at",
+        "whitelist",
     )
 
     data = fakes.gen_data(_data, columns, formatters=endpoint._formatters)
@@ -155,41 +155,41 @@ class TestCreateEndpoint(fakes.TestVpcep):
 
     def test_create(self):
         arglist = [
-            '--service-id',
-            '1',
-            '--router-id',
-            '2',
-            '--network-id',
-            '3',
-            '--port-ip',
-            '4',
-            '--route-tables',
-            'abc',
-            '123',
-            '--whitelist',
-            'xyz',
-            '456',
-            '--specification-name',
-            '5',
-            '--description',
-            '6',
-            '--tags',
-            'key=tag-key,value=tag-value',
-            '--enable-dns',
-            '--enable-whitelist',
+            "--service-id",
+            "1",
+            "--router-id",
+            "2",
+            "--network-id",
+            "3",
+            "--port-ip",
+            "4",
+            "--route-tables",
+            "abc",
+            "123",
+            "--whitelist",
+            "xyz",
+            "456",
+            "--specification-name",
+            "5",
+            "--description",
+            "6",
+            "--tags",
+            "key=tag-key,value=tag-value",
+            "--enable-dns",
+            "--enable-whitelist",
         ]
         verifylist = [
-            ('endpoint_service_id', '1'),
-            ('vpc_id', '2'),
-            ('subnet_id', '3'),
-            ('port_ip', '4'),
-            ('routetables', ['abc', '123']),
-            ('whitelist', ['xyz', '456']),
-            ('specification_name', '5'),
-            ('description', '6'),
-            ('tags', [{'key': 'tag-key', 'value': 'tag-value'}]),
-            ('enable_dns', True),
-            ('enable_whitelist', True),
+            ("endpoint_service_id", "1"),
+            ("vpc_id", "2"),
+            ("subnet_id", "3"),
+            ("port_ip", "4"),
+            ("routetables", ["abc", "123"]),
+            ("whitelist", ["xyz", "456"]),
+            ("specification_name", "5"),
+            ("description", "6"),
+            ("tags", [{"key": "tag-key", "value": "tag-value"}]),
+            ("enable_dns", True),
+            ("enable_whitelist", True),
         ]
         # Verify cm is triggereg with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
@@ -197,17 +197,17 @@ class TestCreateEndpoint(fakes.TestVpcep):
         # Trigger the action
         columns, data = self.cmd.take_action(parsed_args)
         attrs = {
-            'endpoint_service_id': '1',
-            'vpc_id': '2',
-            'subnet_id': '3',
-            'port_ip': '4',
-            'routetables': ['abc', '123'],
-            'whitelist': ['xyz', '456'],
-            'specification_name': '5',
-            'description': '6',
-            'tags': [{'key': 'tag-key', 'value': 'tag-value'}],
-            'enable_dns': True,
-            'enable_whitelist': True,
+            "endpoint_service_id": "1",
+            "vpc_id": "2",
+            "subnet_id": "3",
+            "port_ip": "4",
+            "routetables": ["abc", "123"],
+            "whitelist": ["xyz", "456"],
+            "specification_name": "5",
+            "description": "6",
+            "tags": [{"key": "tag-key", "value": "tag-value"}],
+            "enable_dns": True,
+            "enable_whitelist": True,
         }
 
         self.client.create_endpoint.assert_called_with(**attrs)
@@ -219,21 +219,21 @@ class TestShowEndpoint(fakes.TestVpcep):
     _data = fakes.FakeEndpoint.create_one()
 
     columns = (
-        'created_at',
-        'endpoint_service_id',
-        'endpoint_service_name',
-        'id',
-        'is_dns_enabled',
-        'is_enabled',
-        'is_whitelist_enabled',
-        'marker_id',
-        'project_id',
-        'router_id',
-        'service_type',
-        'status',
-        'tags',
-        'updated_at',
-        'whitelist',
+        "created_at",
+        "endpoint_service_id",
+        "endpoint_service_name",
+        "id",
+        "is_dns_enabled",
+        "is_enabled",
+        "is_whitelist_enabled",
+        "marker_id",
+        "project_id",
+        "router_id",
+        "service_type",
+        "status",
+        "tags",
+        "updated_at",
+        "whitelist",
     )
 
     data = fakes.gen_data(_data, columns, formatters=endpoint._formatters)
@@ -265,7 +265,7 @@ class TestShowEndpoint(fakes.TestVpcep):
         ]
 
         verifylist = [
-            ('endpoint', self._data.id),
+            ("endpoint", self._data.id),
         ]
 
         # Verify cm is triggered with default parameters
@@ -280,25 +280,25 @@ class TestShowEndpoint(fakes.TestVpcep):
 
     def test_show_non_existent(self):
         arglist = [
-            'non-existing-endpoint-id',
+            "non-existing-endpoint-id",
         ]
 
         verifylist = [
-            ('endpoint', 'non-existing-endpoint-id'),
+            ("endpoint", "non-existing-endpoint-id"),
         ]
 
         # Verify cm is triggered with default parameters
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
-        find_mock_result = exceptions.CommandError('Resource Not Found')
+        find_mock_result = exceptions.CommandError("Resource Not Found")
         self.client.find_service = mock.Mock(side_effect=find_mock_result)
 
         # Trigger the action
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual('Resource Not Found', str(e))
-        self.client.get_endpoint.assert_called_with('non-existing-endpoint-id')
+            self.assertEqual("Resource Not Found", str(e))
+        self.client.get_endpoint.assert_called_with("non-existing-endpoint-id")
 
 
 class TestDeleteEndpoint(fakes.TestVpcep):
@@ -319,7 +319,7 @@ class TestDeleteEndpoint(fakes.TestVpcep):
         ]
 
         verifylist = [
-            ('endpoint', [self._data[0].id]),
+            ("endpoint", [self._data[0].id]),
         ]
 
         # Verify cm is triggered with default parameters
@@ -337,7 +337,7 @@ class TestDeleteEndpoint(fakes.TestVpcep):
             arglist.append(data.id)
 
         verifylist = [
-            ('endpoint', arglist),
+            ("endpoint", arglist),
         ]
 
         # Verify cm is triggered with default parameters
@@ -355,10 +355,10 @@ class TestDeleteEndpoint(fakes.TestVpcep):
     def test_multiple_delete_with_exception(self):
         arglist = [
             self._data[0].id,
-            'non-existing-endpoint-id',
+            "non-existing-endpoint-id",
         ]
         verifylist = [
-            ('endpoint', arglist),
+            ("endpoint", arglist),
         ]
 
         # Verify cm is triggered with default parameters
@@ -371,9 +371,7 @@ class TestDeleteEndpoint(fakes.TestVpcep):
         try:
             self.cmd.take_action(parsed_args)
         except Exception as e:
-            self.assertEqual(
-                '1 of 2 VPC endpoint(s) failed to delete.', str(e)
-            )
+            self.assertEqual("1 of 2 VPC endpoint(s) failed to delete.", str(e))
 
         self.client.delete_endpoint.assert_any_call(self._data[0].id)
-        self.client.delete_endpoint.assert_any_call('non-existing-endpoint-id')
+        self.client.delete_endpoint.assert_any_call("non-existing-endpoint-id")

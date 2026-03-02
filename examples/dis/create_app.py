@@ -13,13 +13,12 @@
 """
 Create DIS Consumption App.
 """
+
 import openstack
 
 openstack.enable_logging(True)
-conn = openstack.connect(cloud='otc')
+conn = openstack.connect(cloud="otc")
 
-attrs = {
-    "app_name": "newapp"
-}
+attrs = {"app_name": "newapp"}
 result = conn.dis.create_app(**attrs)
 print(result)

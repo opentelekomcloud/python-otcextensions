@@ -10,12 +10,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from openstack import resource
-
 from otcextensions.sdk import sdk_resource
 
 
 class BackupTask(sdk_resource.Resource):
     """Cloud Backup"""
+
     resources_key = "tasks"
     base_path = "/backuppolicy/%(policy_id)s/backuptasks"
 
@@ -23,9 +23,15 @@ class BackupTask(sdk_resource.Resource):
     allow_list = True
 
     _query_mapping = resource.QueryParameters(
-        "sort_dir", "sort_key", "status",
-        "limit", "marker", "offset", "status",
-        id="job_id")
+        "sort_dir",
+        "sort_key",
+        "status",
+        "limit",
+        "marker",
+        "offset",
+        "status",
+        id="job_id",
+    )
 
     #: Properties
     #: Task job id
