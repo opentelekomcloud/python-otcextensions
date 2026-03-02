@@ -34,7 +34,7 @@ This interface is used to create new group.
 :class:`~otcextensions.sdk.lts.v2.group.Group`.
 
 .. literalinclude:: ../examples/lts/create_log_group.py
-   :lines: 16-27
+   :lines: 16-25
 
 Update group
 ^^^^^^^^^^^^
@@ -43,7 +43,7 @@ This interface is used to update group.
 :class:`~otcextensions.sdk.lts.v2.group.Group`.
 
 .. literalinclude:: ../examples/lts/update_log_group.py
-   :lines: 16-27
+   :lines: 16-25
 
 Delete group
 ^^^^^^^^^^^^

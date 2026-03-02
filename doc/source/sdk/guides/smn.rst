@@ -49,7 +49,7 @@ This interface is used to create a SMN topic instance with
 parameters.
 
 .. literalinclude:: ../examples/smn/create_topic.py
-   :lines: 16-27
+   :lines: 16-25
 
 Update Topic
 ^^^^^^^^^^^^
@@ -58,7 +58,7 @@ This interface is used to update a SMN topic instance with
 parameters.
 
 .. literalinclude:: ../examples/smn/update_topic.py
-   :lines: 16-29
+   :lines: 16-27
 
 Delete Topic
 ^^^^^^^^^^^^
@@ -86,7 +86,7 @@ This interface is used to update a SMN topic attribute instance with
 parameters.
 
 .. literalinclude:: ../examples/smn/update_topic_attribute.py
-   :lines: 16-27
+   :lines: 16-26
 
 Delete Topic Attribute
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -94,7 +94,7 @@ Delete Topic Attribute
 This interface is used to delete a SMN topic attribute.
 
 .. literalinclude:: ../examples/smn/delete_topic_attribute.py
-   :lines: 16-27
+   :lines: 16-26
 
 Subscription
 ------------
@@ -184,7 +184,7 @@ This interface is used to create a SMN template instance with
 parameters.
 
 .. literalinclude:: ../examples/smn/create_template.py
-   :lines: 16-28
+   :lines: 16-25
 
 Update Template
 ^^^^^^^^^^^^^^^
@@ -193,7 +193,7 @@ This interface is used to update a SMN message template instance with
 parameters.
 
 .. literalinclude:: ../examples/smn/update_template.py
-   :lines: 16-28
+   :lines: 16-27
 
 Delete Template
 ^^^^^^^^^^^^^^^
@@ -223,5 +223,5 @@ Send a transactional SMS message to a specified phone number, usually used
 for verification code or notification.
 
 .. literalinclude:: ../examples/smn/send_sms.py
-   :lines: 16-27
+   :lines: 16-25
 

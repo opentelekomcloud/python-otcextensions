@@ -31,7 +31,7 @@ This interface is used to create a virtual gateway with parameters.
 :class:`~otcextensions.sdk.dcaas.v2.virtual_gateway.VirtualGateway`.
 
 .. literalinclude:: ../examples/dcaas/create_virtual_gateway.py
-   :lines: 16-29
+   :lines: 16-27
 
 Get Virtual Gateway
 ^^^^^^^^^^^^^^^^^^^
@@ -60,7 +60,7 @@ id or an instance of class.
 :class:`~otcextensions.sdk.dcaas.v2.virtual_gateway.VirtualGateway`.
 
 .. literalinclude:: ../examples/dcaas/update_virtual_gateway.py
-   :lines: 16-29
+   :lines: 16-27
 
 Delete Virtual Gateway
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -101,7 +101,7 @@ This interface is used to create a connection with parameters.
 :class:`~otcextensions.sdk.dcaas.v2.connection.Connection`.
 
 .. literalinclude:: ../examples/dcaas/create_connection.py
-   :lines: 16-29
+   :lines: 16-27
 
 Get Connection
 ^^^^^^^^^^^^^^
@@ -129,7 +129,7 @@ instance of class.
 :class:`~otcextensions.sdk.dcaas.v2.connection.Connection`.
 
 .. literalinclude:: ../examples/dcaas/update_connection.py
-   :lines: 16-29
+   :lines: 16-27
 
 Delete Connection
 ^^^^^^^^^^^^^^^^^
@@ -193,7 +193,7 @@ id or an instance of class.
 :class:`~otcextensions.sdk.dcaas.v2.virtual_interface.VirtualInterface`.
 
 .. literalinclude:: ../examples/dcaas/update_virtual_interface.py
-   :lines: 16-29
+   :lines: 16-27
 
 Delete Virtual Interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -251,7 +251,7 @@ or an instance of class
 :class:`~otcextensions.sdk.dcaas.v2.endpoint_group.DirectConnectEndpointGroup`.
 
 .. literalinclude:: ../examples/dcaas/update_endpoint_group.py
-   :lines: 16-29
+   :lines: 16-27
 
 Delete Endpoint Group
 ^^^^^^^^^^^^^^^^^^^^^

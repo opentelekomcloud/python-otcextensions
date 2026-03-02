@@ -116,7 +116,7 @@ This interface is used to obtain the CSS cluster updgrade details.
 :class:`~otcextensions.sdk.css.v1.cluster.Cluster`.
 
 .. literalinclude:: ../examples/css/get_cluster_upgrade_status.py
-   :lines: 17-29
+   :lines: 17-28
 
 Get CSS Cluster Upgradable Version Info
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -237,7 +237,7 @@ by id or an instance of cluster class.
 :class:`~otcextensions.sdk.css.v1.snapshot.Snapshot`.
 
 .. literalinclude:: ../examples/css/list_snapshots.py
-   :lines: 17-24
+   :lines: 17-23
 
 Find Snapshot
 ^^^^^^^^^^^^^
@@ -246,7 +246,7 @@ This interface is used to find a CSS snapshot by id or name.
 :class:`~otcextensions.sdk.css.v1.cluster.Cluster`.
 
 .. literalinclude:: ../examples/css/find_snapshot.py
-   :lines: 17-28
+   :lines: 17-26
 
 Create Snapshot
 ^^^^^^^^^^^^^^^
@@ -331,4 +331,4 @@ supported by CSS Cluster.
 :class:`~otcextensions.sdk.css.v1.flavor.Flavor`.
 
 .. literalinclude:: ../examples/css/list_flavors.py
-   :lines: 17-23
+   :lines: 17-22

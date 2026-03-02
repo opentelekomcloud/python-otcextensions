@@ -84,7 +84,7 @@ This interface is used to manage a VPCEP service whitelist.
 :class:`~otcextensions.sdk.vpcep.v2.whitelist.Whitelist`.
 
 .. literalinclude:: ../examples/vpcep/manage_service_whitelist.py
-   :lines: 14-27
+   :lines: 14-26
 
 List Service Connections
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -103,7 +103,7 @@ This interface is used to manage a VPCEP service connections.
 :class:`~otcextensions.sdk.vpcep.v2.connection.Connection`.
 
 .. literalinclude:: ../examples/vpcep/manage_service_connections.py
-   :lines: 14-27
+   :lines: 14-25
 
 VPC Endpoint
 ------------

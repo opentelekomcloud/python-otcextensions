@@ -215,7 +215,7 @@ This interface is used to create a MRS Job instance with
 parameters.
 
 .. literalinclude:: ../examples/mrs/create_job.py
-   :lines: 16-35
+   :lines: 16-34
 
 Update MRS Job
 ^^^^^^^^^^^^^^
@@ -224,7 +224,7 @@ This interface is used to update a MRS Job instance with
 parameters.
 
 .. literalinclude:: ../examples/mrs/update_job.py
-   :lines: 16-37
+   :lines: 16-36
 
 Delete MRS Job
 ^^^^^^^^^^^^^^

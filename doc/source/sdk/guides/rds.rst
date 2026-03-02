@@ -54,7 +54,7 @@ Create Instance
 This interface is used to create a RDS instance with parameters.
 
 .. literalinclude:: ../examples/rds/create_instance.py
-   :lines: 16-59
+   :lines: 16-45
 
 Get Instance
 ^^^^^^^^^^^^
@@ -105,7 +105,7 @@ Wait for Backup
 This interface is used to wait for a backup of an RDS instance to be completed.
 
 .. literalinclude:: ../examples/rds/wait_for_backup.py
-   :lines: 16-27
+   :lines: 16-26
 
 Find Backup
 ^^^^^^^^^^^
@@ -173,7 +173,7 @@ Create Configuration
 This interface is used to create a RDS configuration template with parameters.
 
 .. literalinclude:: ../examples/rds/create_configuration.py
-   :lines: 16-33
+   :lines: 16-30
 
 Get Configuration
 ^^^^^^^^^^^^^^^^^
@@ -208,7 +208,7 @@ Apply Configuration
 This interface is used to apply a RDS configuration to existing RDS instances.
 
 .. literalinclude:: ../examples/rds/apply_configuration.py
-   :lines: 16-29
+   :lines: 16-27
 
 Datastores
 ----------

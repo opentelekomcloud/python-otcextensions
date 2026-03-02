@@ -75,4 +75,4 @@ This interface is used to query all CTS Traces of a CTS tracker and to filter
 the output with query parameters.
 
 .. literalinclude:: ../examples/cts/list_traces.py
-   :lines: 16-26
+   :lines: 16-25

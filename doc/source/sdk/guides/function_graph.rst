@@ -74,7 +74,7 @@ Create Resource Tags
 This API is used to create resource tags.
 
 .. literalinclude:: ../examples/function_graph/create_resource_tags.py
-   :lines: 16-36
+   :lines: 16-27
 
 Delete Resource Tags
 ^^^^^^^^^^^^^^^^^^^^
@@ -82,7 +82,7 @@ Delete Resource Tags
 This API is used to delete resource tags.
 
 .. literalinclude:: ../examples/function_graph/delete_resource_tags.py
-   :lines: 16-31
+   :lines: 16-26
 
 Update Function Code
 ^^^^^^^^^^^^^^^^^^^^
@@ -98,7 +98,7 @@ Update Function Metadata
 This API is used to modify the metadata of a function.
 
 .. literalinclude:: ../examples/function_graph/update_function_metadata.py
-   :lines: 16-35
+   :lines: 16-33
 
 Update Function Instances
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -198,7 +198,7 @@ Creating a Test Event
 This API is used to query the test events of a function.
 
 .. literalinclude:: ../examples/function_graph/create_event.py
-   :lines: 16-39
+   :lines: 16-35
 
 Deleting a Test Event
 ^^^^^^^^^^^^^^^^^^^^^
@@ -206,7 +206,7 @@ Deleting a Test Event
 This API is used to delete a test event.
 
 .. literalinclude:: ../examples/function_graph/delete_event.py
-   :lines: 16-40
+   :lines: 16-36
 
 Obtaining the Details of a Test Event
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -214,7 +214,7 @@ Obtaining the Details of a Test Event
 This API is used to query the details of a test event.
 
 .. literalinclude:: ../examples/function_graph/get_event.py
-   :lines: 16-42
+   :lines: 16-37
 
 Updating a Test Event
 ^^^^^^^^^^^^^^^^^^^^^
@@ -222,7 +222,7 @@ Updating a Test Event
 This API is used to update a test event.
 
 .. literalinclude:: ../examples/function_graph/update_event.py
-   :lines: 16-45
+   :lines: 16-38
 
 Publishing a Function Version
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -230,7 +230,7 @@ Publishing a Function Version
 This API is used to publish a function version.
 
 .. literalinclude:: ../examples/function_graph/publish_version.py
-   :lines: 16-41
+   :lines: 16-40
 
 Querying the Versions of a Function
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -254,7 +254,7 @@ Creating an Alias for a Function Version
 This API is used to create an alias for a function version.
 
 .. literalinclude:: ../examples/function_graph/create_alias.py
-   :lines: 16-40
+   :lines: 16-36
 
 Deleting an Alias of a Function Version
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -262,7 +262,7 @@ Deleting an Alias of a Function Version
 This API is used to delete an alias of a function version.
 
 .. literalinclude:: ../examples/function_graph/delete_alias.py
-   :lines: 16-40
+   :lines: 16-36
 
 Modifying the Alias of a Function Version
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -270,7 +270,7 @@ Modifying the Alias of a Function Version
 This API is used to modify the alias of a function version.
 
 .. literalinclude:: ../examples/function_graph/update_alias.py
-   :lines: 16-47
+   :lines: 16-42
 
 Querying the Alias of a Function Version
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -278,7 +278,7 @@ Querying the Alias of a Function Version
 This API is used to query the alias of a function version.
 
 .. literalinclude:: ../examples/function_graph/get_alias.py
-   :lines: 16-42
+   :lines: 16-37
 
 Querying Metrics in a Specified Period
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -342,7 +342,7 @@ Changing the Number of Reserved Instances
 This API is used to change the number of reserved instances.
 
 .. literalinclude:: ../examples/function_graph/update_reserved_instances.py
-   :lines: 16-40
+   :lines: 16-36
 
 Importing a Function
 ^^^^^^^^^^^^^^^^^^^^
@@ -358,7 +358,7 @@ Exporting a Function
 This API is used to export a function.
 
 .. literalinclude:: ../examples/function_graph/export_function.py
-   :lines: 16-38
+   :lines: 16-36
 
 Deleting All Triggers of a Function
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -374,7 +374,7 @@ Deleting a Trigger
 This API is used to delete a trigger.
 
 .. literalinclude:: ../examples/function_graph/delete_trigger.py
-   :lines: 16-50
+   :lines: 16-43
 
 Querying All Triggers of a Function
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -390,7 +390,7 @@ Creating a Trigger
 This API is used to create a trigger.
 
 .. literalinclude:: ../examples/function_graph/create_trigger.py
-   :lines: 16-46
+   :lines: 16-41
 
 Querying a Trigger
 ^^^^^^^^^^^^^^^^^^
@@ -398,7 +398,7 @@ Querying a Trigger
 This API is used to query a specified trigger.
 
 .. literalinclude:: ../examples/function_graph/get_trigger.py
-   :lines: 16-50
+   :lines: 16-44
 
 Updating a Trigger
 ^^^^^^^^^^^^^^^^^^
@@ -406,7 +406,7 @@ Updating a Trigger
 This API is used to update a trigger.
 
 .. literalinclude:: ../examples/function_graph/update_trigger.py
-   :lines: 16-56
+   :lines: 16-48
 
 Querying Asynchronous Execution Notification Settings of a Function Version
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

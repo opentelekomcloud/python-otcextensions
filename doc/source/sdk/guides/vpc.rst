@@ -27,7 +27,7 @@ This interface is used to update a shared bandwidth.
 :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`.
 
 .. literalinclude:: ../examples/vpc/update_bandwidth.py
-   :lines: 16-26
+   :lines: 16-24
 
 Find bandwidth
 ^^^^^^^^^^^^^^
@@ -36,7 +36,7 @@ This interface is used to find a shared bandwidth by name or id.
 :class:`~otcextensions.sdk.vpc.v1.bandwidth.Bandwidth`.
 
 .. literalinclude:: ../examples/vpc/find_bandwidth.py
-   :lines: 16-24
+   :lines: 16-22
 
 Add eip to bandwidth
 ^^^^^^^^^^^^^^^^^^^^^
@@ -94,7 +94,7 @@ parameters.
 :class:`~otcextensions.sdk.vpc.v1.peering.Peering`.
 
 .. literalinclude:: ../examples/vpc/create_peering.py
-   :lines: 16-33
+   :lines: 16-31
 
 Get VPC Peering
 ^^^^^^^^^^^^^^^

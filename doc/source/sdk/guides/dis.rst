@@ -31,7 +31,7 @@ parameters.
 :class:`~otcextensions.sdk.dis.v2.stream.Stream`.
 
 .. literalinclude:: ../examples/dis/create_stream.py
-   :lines: 16-27
+   :lines: 16-24
 
 Get DIS Stream
 ^^^^^^^^^^^^^^^
@@ -186,7 +186,7 @@ This interface is used to upload data to DIS Stream.
 :class:`~otcextensions.sdk.dis.v2.data.Data`.
 
 .. literalinclude:: ../examples/dis/upload_data.py
-   :lines: 16-33
+   :lines: 16-28
 
 Obtain Data Cursor
 ^^^^^^^^^^^^^^^^^^

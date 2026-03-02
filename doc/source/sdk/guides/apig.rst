@@ -42,7 +42,7 @@ List Gateways
 This example demonstrates how to list all gateways.
 
 .. literalinclude:: ../examples/apig/list_gateways.py
-   :lines: 16-25
+   :lines: 16-24
 
 Get Gateway Details
 ^^^^^^^^^^^^^^^^^^^
@@ -66,7 +66,7 @@ Bind EIP
 This example demonstrates how to bind an Elastic IP (EIP) to a gateway.
 
 .. literalinclude:: ../examples/apig/bind_eip.py
-   :lines: 16-24
+   :lines: 16-23
 
 Unbind EIP
 ^^^^^^^^^^
@@ -83,7 +83,7 @@ Update Public Inbound Access
 This example demonstrates how to update public inbound access for a gateway.
 
 .. literalinclude:: ../examples/apig/update_ingress.py
-   :lines: 16-26
+   :lines: 16-24
 
 Enable Public Inbound Access
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -91,7 +91,7 @@ Enable Public Inbound Access
 This example demonstrates how to enable public inbound access for a gateway.
 
 .. literalinclude:: ../examples/apig/enable_ingress.py
-   :lines: 16-25
+   :lines: 16-23
 
 Disable Public Inbound Access
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -107,7 +107,7 @@ Enable Public Access
 This example demonstrates how to enable public access for a gateway.
 
 .. literalinclude:: ../examples/apig/enable_public_access.py
-   :lines: 16-25
+   :lines: 16-23
 
 Update Public Access
 ^^^^^^^^^^^^^^^^^^^^
@@ -115,7 +115,7 @@ Update Public Access
 This example demonstrates how to update public access settings for a gateway.
 
 .. literalinclude:: ../examples/apig/update_public_access.py
-   :lines: 16-26
+   :lines: 16-24
 
 Disable Public Access
 ^^^^^^^^^^^^^^^^^^^^^
@@ -150,7 +150,7 @@ This example demonstrates how to modify the specifications of an
 existing gateway.
 
 .. literalinclude:: ../examples/apig/modify_gateway_spec.py
-   :lines: 16-25
+   :lines: 16-24
 
 AZs
 ___
@@ -162,7 +162,7 @@ This example demonstrates how to list the availability zones (AZs)
 supported by API Gateway.
 
 .. literalinclude:: ../examples/apig/list_azs.py
-   :lines: 16-25
+   :lines: 16-24
 
 Environment
 ___________
@@ -174,7 +174,7 @@ This example demonstrates how to create a new environment within
 a specific API Gateway.
 
 .. literalinclude:: ../examples/apig/create_env.py
-   :lines: 16-25
+   :lines: 16-22
 
 
 Update Environment
@@ -184,7 +184,7 @@ This example demonstrates how to update an existing environment
 within a specific API Gateway.
 
 .. literalinclude:: ../examples/apig/update_env.py
-   :lines: 16-26
+   :lines: 16-24
 
 
 Delete Environment
@@ -215,7 +215,7 @@ Create Api Group
 This example demonstrates how to create a new API group in the API Gateway.
 
 .. literalinclude:: ../examples/apig/create_api_group.py
-   :lines: 16-25
+   :lines: 16-22
 
 Update Api Group
 ^^^^^^^^^^^^^^^^
@@ -224,7 +224,7 @@ This example demonstrates how to update an existing API group
 in the API Gateway.
 
 .. literalinclude:: ../examples/apig/update_api_group.py
-   :lines: 16-27
+   :lines: 16-24
 
 Delete Api Group
 ^^^^^^^^^^^^^^^^
@@ -260,7 +260,7 @@ This example demonstrates how to verify whether a given API group
 name is available in the API Gateway.
 
 .. literalinclude:: ../examples/apig/verify_api_group_name.py
-   :lines: 16-23
+   :lines: 16-22
 
 Creating a Variable
 ^^^^^^^^^^^^^^^^^^^
@@ -268,7 +268,7 @@ Creating a Variable
 This example demonstrates how to define environment variables.
 
 .. literalinclude:: ../examples/apig/create_env_variable.py
-   :lines: 16-30
+   :lines: 16-28
 
 Deleting a Variable
 ^^^^^^^^^^^^^^^^^^^
@@ -276,7 +276,7 @@ Deleting a Variable
 This example demonstrates how to delete environment variable.
 
 .. literalinclude:: ../examples/apig/delete_env_variable.py
-   :lines: 16-23
+   :lines: 16-21
 
 Querying Variable Details
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -284,7 +284,7 @@ Querying Variable Details
 This example demonstrates how to query the details of an environment variable.
 
 .. literalinclude:: ../examples/apig/get_env_variable.py
-   :lines: 16-24
+   :lines: 16-22
 
 Querying Environment Variables
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -301,7 +301,7 @@ Modifying a Variable
 This example demonstrates how to modify an environment variable.
 
 .. literalinclude:: ../examples/apig/update_env_variable.py
-   :lines: 16-27
+   :lines: 16-26
 
 Creating a Request Throttling Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -309,7 +309,7 @@ Creating a Request Throttling Policy
 This example demonstrates how to create throttling policy.
 
 .. literalinclude:: ../examples/apig/create_throttling_policy.py
-   :lines: 16-38
+   :lines: 16-36
 
 Modifying a Request Throttling Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -317,7 +317,7 @@ Modifying a Request Throttling Policy
 This example demonstrates how to update throttling policy.
 
 .. literalinclude:: ../examples/apig/update_throttling_policy.py
-   :lines: 16-34
+   :lines: 16-33
 
 Deleting a Request Throttling Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -325,7 +325,7 @@ Deleting a Request Throttling Policy
 This example demonstrates how to delete throttling policy.
 
 .. literalinclude:: ../examples/apig/delete_throttling_policy.py
-   :lines: 16-23
+   :lines: 16-21
 
 Querying Request Throttling Policies
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -341,7 +341,7 @@ Querying Details of a Request Throttling Policy
 This example demonstrates how to get throttling policy.
 
 .. literalinclude:: ../examples/apig/get_throttling_policy.py
-   :lines: 16-24
+   :lines: 16-22
 
 Creating an API
 ^^^^^^^^^^^^^^^
@@ -349,7 +349,7 @@ Creating an API
 This example demonstrates how to create an API.
 
 .. literalinclude:: ../examples/apig/create_api.py
-   :lines: 16-45
+   :lines: 16-43
 
 Modifying an API
 ^^^^^^^^^^^^^^^^
@@ -357,7 +357,7 @@ Modifying an API
 This example demonstrates how to update an API.
 
 .. literalinclude:: ../examples/apig/update_api.py
-   :lines: 16-46
+   :lines: 16-43
 
 Deleting an API
 ^^^^^^^^^^^^^^^
@@ -365,7 +365,7 @@ Deleting an API
 This example demonstrates how to delete an API.
 
 .. literalinclude:: ../examples/apig/delete_api.py
-   :lines: 16-23
+   :lines: 16-21
 
 Querying API Details
 ^^^^^^^^^^^^^^^^^^^^
@@ -373,7 +373,7 @@ Querying API Details
 This example demonstrates how to get an API.
 
 .. literalinclude:: ../examples/apig/get_api.py
-   :lines: 16-24
+   :lines: 16-22
 
 Querying APIs
 ^^^^^^^^^^^^^
@@ -389,7 +389,7 @@ Publishing an API
 This example demonstrates how to publish an API.
 
 .. literalinclude:: ../examples/apig/publish_api.py
-   :lines: 16-25
+   :lines: 16-23
 
 Take API offline
 ^^^^^^^^^^^^^^^^
@@ -397,7 +397,7 @@ Take API offline
 This example demonstrates how to take API offline.
 
 .. literalinclude:: ../examples/apig/offline_api.py
-   :lines: 16-25
+   :lines: 16-23
 
 Verifying the API Definition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -405,7 +405,7 @@ Verifying the API Definition
 This example demonstrates how to verify the API definition.
 
 .. literalinclude:: ../examples/apig/check_api.py
-   :lines: 16-27
+   :lines: 16-22
 
 Debugging an API
 ^^^^^^^^^^^^^^^^
@@ -413,7 +413,7 @@ Debugging an API
 This example demonstrates how to debug an API in a specified environment.
 
 .. literalinclude:: ../examples/apig/debug_api.py
-   :lines: 16-30
+   :lines: 16-22
 
 Publishing APIs
 ^^^^^^^^^^^^^^^
@@ -437,7 +437,7 @@ Querying Historical Versions of an API
 This example demonstrates how to query the historical versions of an API.
 
 .. literalinclude:: ../examples/apig/list_api_versions.py
-   :lines: 16-23
+   :lines: 16-21
 
 Switching the Version of an API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -445,7 +445,7 @@ Switching the Version of an API
 This example demonstrates how to switch the version of an API.
 
 .. literalinclude:: ../examples/apig/switch_api_version.py
-   :lines: 16-24
+   :lines: 16-23
 
 Querying the Runtime Definition of an API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -478,7 +478,7 @@ Creating a Signature Key
 This example demonstrates how to create a signature key.
 
 .. literalinclude:: ../examples/apig/create_signature.py
-   :lines: 16-28
+   :lines: 16-26
 
 Modifying a Signature Key
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -486,7 +486,7 @@ Modifying a Signature Key
 This example demonstrates how to update a signature key.
 
 .. literalinclude:: ../examples/apig/update_signature.py
-   :lines: 16-29
+   :lines: 16-26
 
 Deleting a Signature Key
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -494,7 +494,7 @@ Deleting a Signature Key
 This example demonstrates how to delete a signature key.
 
 .. literalinclude:: ../examples/apig/delete_signature.py
-   :lines: 16-23
+   :lines: 16-21
 
 Querying Signature Keys
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -510,7 +510,7 @@ Binding a Signature Key
 This example demonstrates how to bind a signature key.
 
 .. literalinclude:: ../examples/apig/bind_signature.py
-   :lines: 16-28
+   :lines: 16-23
 
 Unbinding a Signature Key
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -518,7 +518,7 @@ Unbinding a Signature Key
 This example demonstrates how to unbind a signature key.
 
 .. literalinclude:: ../examples/apig/unbind_signature.py
-   :lines: 16-24
+   :lines: 16-22
 
 Querying Signature Keys Bound to an API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -527,7 +527,7 @@ This example demonstrates how to list the signature keys that
 have been bound to a specified API.
 
 .. literalinclude:: ../examples/apig/list_bound_signatures.py
-   :lines: 16-24
+   :lines: 16-22
 
 Querying APIs Not Bound with a Signature Key
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -536,7 +536,7 @@ This example demonstrates how to list the APIs to which a signature key
 has not been bound.
 
 .. literalinclude:: ../examples/apig/list_not_bound_apis.py
-   :lines: 16-23
+   :lines: 16-21
 
 Querying APIs Bound with a Signature Key
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -545,7 +545,7 @@ This example demonstrates how to list the APIs to which a signature key
 has been bound.
 
 .. literalinclude:: ../examples/apig/list_bound_apis.py
-   :lines: 16-24
+   :lines: 16-22
 
 Binding a Request Throttling Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -553,7 +553,7 @@ Binding a Request Throttling Policy
 This example demonstrates how to bind request throttling policy to an API.
 
 .. literalinclude:: ../examples/apig/bind_throttling_policy.py
-   :lines: 16-28
+   :lines: 16-23
 
 Unbinding a Request Throttling Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -561,7 +561,7 @@ Unbinding a Request Throttling Policy
 This example demonstrates how to unbind request throttling policy from an API.
 
 .. literalinclude:: ../examples/apig/unbind_throttling_policy.py
-   :lines: 16-24
+   :lines: 16-22
 
 Querying APIs Bound with a Request Throttling Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -590,7 +590,7 @@ that have been bound to an API.
 Only one request throttling policy can be bound to an API in an environment
 
 .. literalinclude:: ../examples/apig/list_bound_throttling_policies.py
-   :lines: 16-24
+   :lines: 16-22
 
 Querying Request Throttling Policies Bound to an API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -598,7 +598,7 @@ Querying Request Throttling Policies Bound to an API
 This example demonstrates how to unbind request throttling policies from APIs.
 
 .. literalinclude:: ../examples/apig/unbind_throttling_policies.py
-   :lines: 16-27
+   :lines: 16-25
 
 Creating an Excluded Request Throttling Configuration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -607,7 +607,7 @@ This example demonstrates how to create an
 excluded request throttling configuration.
 
 .. literalinclude:: ../examples/apig/create_throttling_exclude.py
-   :lines: 16-50
+   :lines: 16-42
 
 Modifying an Excluded Request Throttling Configuration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -616,7 +616,7 @@ This example demonstrates how to update an
 excluded request throttling configuration.
 
 .. literalinclude:: ../examples/apig/update_throttling_exclude.py
-   :lines: 16-28
+   :lines: 16-24
 
 Deleting an Excluded Request Throttling Configuration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -625,7 +625,7 @@ This example demonstrates how to delete an
 excluded request throttling configuration.
 
 .. literalinclude:: ../examples/apig/delete_throttling_exclude.py
-   :lines: 16-24
+   :lines: 16-23
 
 Querying Excluded Request Throttling Configurations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -658,7 +658,7 @@ Querying Gateway Features
 This example demonstrates how to configure a feature for a gateway.
 
 .. literalinclude:: ../examples/apig/configure_gw_feature.py
-   :lines: 16-29
+   :lines: 16-27
 
 Querying API Quantities
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -694,7 +694,7 @@ Binding a Domain Name
 This example demonstrates how to bind domain name.
 
 .. literalinclude:: ../examples/apig/bind_domain_name.py
-   :lines: 16-28
+   :lines: 16-23
 
 Adding a Certificate to a Domain Name
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -702,7 +702,7 @@ Adding a Certificate to a Domain Name
 This example demonstrates how to add certificate to a domain name.
 
 .. literalinclude:: ../examples/apig/create_certificate_for_domain.py
-   :lines: 16-30
+   :lines: 16-24
 
 Modifying a Domain Name
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -711,7 +711,7 @@ This example demonstrates how to modify the configuration
 of a domain name bound to an API group.
 
 .. literalinclude:: ../examples/apig/update_domain_name_bound.py
-   :lines: 16-29
+   :lines: 16-25
 
 Unbinding a Domain Name
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -766,7 +766,7 @@ Create an App
 This example demonstrates how to create a new app in the API Gateway.
 
 .. literalinclude:: ../examples/apig/create_app.py
-   :lines: 16-25
+   :lines: 16-22
 
 Modify an App
 ^^^^^^^^^^^^^
@@ -818,7 +818,7 @@ This example demonstrates how to list all apps associated with a
 specific API Gateway.
 
 .. literalinclude:: ../examples/apig/list_apps.py
-   :lines: 16-23
+   :lines: 16-22
 
 Create an AppCode
 ^^^^^^^^^^^^^^^^^
@@ -827,7 +827,7 @@ This example demonstrates how to create a new AppCode for an app
 in the API Gateway.
 
 .. literalinclude:: ../examples/apig/create_app_code.py
-   :lines: 16-28
+   :lines: 16-27
 
 Generate an AppCode
 ^^^^^^^^^^^^^^^^^^^
@@ -902,7 +902,7 @@ This example demonstrates how to query all APIs that are
 currently bound to a specific app in the API Gateway.
 
 .. literalinclude:: ../examples/apig/list_api_bound_to_app.py
-   :lines: 16-27
+   :lines: 16-25
 
 Querying APIs Not Bound with an App
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -959,7 +959,7 @@ This example demonstrates how to delete multiple ACL policies
 in a single request in the API Gateway.
 
 .. literalinclude:: ../examples/apig/delete_acl_policies.py
-   :lines: 16-24
+   :lines: 16-22
 
 Querying Access Control Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -968,7 +968,7 @@ This example demonstrates how to list all ACL policies configured
 in a specific API Gateway.
 
 .. literalinclude:: ../examples/apig/list_acl_policies.py
-   :lines: 16-24
+   :lines: 16-22
 
 Get Access Control Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -998,7 +998,7 @@ This example demonstrates how to unbind a specific access control
 policy from an API in the API Gateway.
 
 .. literalinclude:: ../examples/apig/unbind_acl.py
-   :lines: 16-23
+   :lines: 16-22
 
 Unbinding Access Control Policies
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1007,7 +1007,7 @@ This example demonstrates how to unbind multiple access control
 policies from APIs in the API Gateway.
 
 .. literalinclude:: ../examples/apig/unbind_acls.py
-   :lines: 16-23
+   :lines: 16-22
 
 Query APIs Bound with an Access Control Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1016,7 +1016,7 @@ This example demonstrates how to query APIs that are bound to
 a specific access control policy in the API Gateway.
 
 .. literalinclude:: ../examples/apig/list_apis_for_acl.py
-   :lines: 16-24
+   :lines: 16-22
 
 Query APIs Not Bound with an Access Control Policy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1025,7 +1025,7 @@ This example demonstrates how to query APIs that are not bound
 to a specific access control policy in the API Gateway.
 
 .. literalinclude:: ../examples/apig/list_api_not_bound_to_acl.py
-   :lines: 16-24
+   :lines: 16-22
 
 Query Access Control Policies Bound to an API
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1034,7 +1034,7 @@ This example demonstrates how to query access control policies
 bound to a specific API in the API Gateway.
 
 .. literalinclude:: ../examples/apig/list_acl_for_api.py
-   :lines: 16-24
+   :lines: 16-22
 
 Custom Authorizer
 _________________
@@ -1055,7 +1055,7 @@ This example demonstrates how to modify an existing custom
 authorizer in the API Gateway.
 
 .. literalinclude:: ../examples/apig/update_custom_authorizer.py
-   :lines: 16-35
+   :lines: 16-33
 
 Deleting a Custom Authorizer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1082,7 +1082,7 @@ This example demonstrates how to list all custom authorizers
 configured in the API Gateway.
 
 .. literalinclude:: ../examples/apig/list_custom_authorizers.py
-   :lines: 16-24
+   :lines: 16-22
 
 API Import and Export
 _____________________
@@ -1093,7 +1093,7 @@ Exporting APIs
 This example demonstrates how to export an existing API from the API Gateway.
 
 .. literalinclude:: ../examples/apig/export_api.py
-   :lines: 16-28
+   :lines: 16-26
 
 Importing APIs
 ^^^^^^^^^^^^^^
@@ -1129,7 +1129,7 @@ Deleting a VPC Channel
 This example demonstrates how to delete a VPC channel from the API Gateway.
 
 .. literalinclude:: ../examples/apig/delete_vpc_channel.py
-  :lines: 16-22
+  :lines: 16-21
 
 Get VPC Channel Details
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -1137,7 +1137,7 @@ Get VPC Channel Details
 This example demonstrates how to retrieve details of a specific VPC channel.
 
 .. literalinclude:: ../examples/apig/get_vpc_channel.py
-  :lines: 16-23
+  :lines: 16-21
 
 List VPC Channels
 ^^^^^^^^^^^^^^^^^
@@ -1155,7 +1155,7 @@ This example demonstrates how to add or update backend instances for a
 VPC channel.
 
 .. literalinclude:: ../examples/apig/add_or_update_backend_servers.py
-  :lines: 16-31
+  :lines: 16-28
 
 Querying Backend Servers of a VPC Channel
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1191,7 +1191,7 @@ This example demonstrates how to enable one or more backend
 servers for a VPC channel.
 
 .. literalinclude:: ../examples/apig/enable_backend_server.py
-  :lines: 16-28
+  :lines: 16-27
 
 Disabling Backend Servers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1200,7 +1200,7 @@ This example demonstrates how to disable one or more backend
 servers for a VPC channel.
 
 .. literalinclude:: ../examples/apig/disable_backend_server.py
-  :lines: 16-28
+  :lines: 16-27
 
 Modifying VPC Channel Health Check
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1209,7 +1209,7 @@ This example demonstrates how to modify the health check
 settings of a VPC channel.
 
 .. literalinclude:: ../examples/apig/modify_vpc_channel_healthcheck.py
-  :lines: 16-36
+  :lines: 16-35
 
 Adding or Updating a Backend Server Group of a VPC Channel
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1218,7 +1218,7 @@ This example demonstrates how to add or update a backend server
 group for a VPC channel.
 
 .. literalinclude:: ../examples/apig/add_or_update_backend_server_group.py
-  :lines: 16-30
+  :lines: 16-28
 
 Querying Backend Server Groups of a VPC Channel
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1245,7 +1245,7 @@ This example demonstrates how to delete a backend server group
 from a VPC channel.
 
 .. literalinclude:: ../examples/apig/delete_backend_server_group.py
-  :lines: 16-24
+  :lines: 16-23
 
 Updating a Backend Server Group of a VPC Channel
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1304,7 +1304,7 @@ This example demonstrates how to retrieve details of a specific
 group response.
 
 .. literalinclude:: ../examples/apig/get_group_response.py
-   :lines: 16-25
+   :lines: 16-24
 
 Modifying a Group Response
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1313,7 +1313,7 @@ This example demonstrates how to update configuration of an existing
 group response.
 
 .. literalinclude:: ../examples/apig/update_group_response.py
-   :lines: 16-29
+   :lines: 16-27
 
 Deleting a Group Response
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1321,7 +1321,7 @@ Deleting a Group Response
 This example demonstrates how to delete a group response from the API Gateway.
 
 .. literalinclude:: ../examples/apig/delete_group_response.py
-   :lines: 16-25
+   :lines: 16-24
 
 Querying the Response of an Error Type
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1381,7 +1381,7 @@ This example demonstrates how to list SSL certificates configured
 in the API Gateway.
 
 .. literalinclude:: ../examples/apig/list_ssl_cert.py
-   :lines: 16-26
+   :lines: 16-22
 
 Creating an SSL Certificate
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1398,7 +1398,7 @@ This example demonstrates how to bind one or more SSL certificates
 to a domain name.
 
 .. literalinclude:: ../examples/apig/bind_domain_to_cert.py
-   :lines: 16-36
+   :lines: 16-26
 
 Unbinding a Domain Name's SSL Certificates
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1407,7 +1407,7 @@ This example demonstrates how to unbind SSL certificates from a
 domain name.
 
 .. literalinclude:: ../examples/apig/unbind_domain_from_cert.py
-   :lines: 16-28
+   :lines: 16-24
 
 Querying Certificate Details
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1443,7 +1443,7 @@ This example demonstrates how to bind a specific SSL certificate
 to a domain name.
 
 .. literalinclude:: ../examples/apig/bind_certificates_for_domain.py
-   :lines: 16-29
+   :lines: 16-24
 
 Unbinding an SSL Certificate from a Domain Name
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1452,7 +1452,7 @@ This example demonstrates how to unbind a specific SSL certificate
 from a domain name.
 
 .. literalinclude:: ../examples/apig/unbind_cert_from_domain.py
-   :lines: 16-29
+   :lines: 16-24
 
 Querying Domain Names of an SSL Certificate
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1461,7 +1461,7 @@ This example demonstrates how to list all domain names associated
 with a given SSL certificate.
 
 .. literalinclude:: ../examples/apig/list_domain_for_cert.py
-   :lines: 16-22
+   :lines: 16-21
 
 Config
 ------

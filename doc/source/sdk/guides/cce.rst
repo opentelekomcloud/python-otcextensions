@@ -30,7 +30,7 @@ This interface is used to create a CCE cluster instance with
 parameters.
 
 .. literalinclude:: ../examples/cce/create_cluster.py
-   :lines: 16-53
+   :lines: 16-46
 
 Get CCE Cluster
 ^^^^^^^^^^^^^^^
@@ -146,7 +146,7 @@ This interface is used to create a CCE node pool instance with
 parameters.
 
 .. literalinclude:: ../examples/cce/create_node_pool.py
-   :lines: 16-99
+   :lines: 16-70
 
 Get CCE Node Pool
 ^^^^^^^^^^^^^^^^^
