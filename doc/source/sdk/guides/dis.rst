@@ -95,7 +95,7 @@ with provided parameters.
 :class:`~otcextensions.sdk.dis.v2.app.App`.
 
 .. literalinclude:: ../examples/dis/create_app.py
-   :lines: 16-25
+   :lines: 16-24
 
 Delete Consumption App
 ^^^^^^^^^^^^^^^^^^^^^^
